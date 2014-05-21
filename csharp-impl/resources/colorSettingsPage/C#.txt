@@ -1,0 +1,32 @@
+/*
+ * Block comment
+ */
+[<attribute_name>Obsolete</attribute_name>]
+public class <class_name>MyClass</class_name> {
+    public static <class_name>String</class_name> <static_field>HELLO</static_field> = "Hello";
+    public static int <static_field>INT_VALUE</static_field> = 1;
+
+    public unsafe void Main(<class_name>String</class_name>[] args) {
+        "ExtensionCall".<extension_call>Call</extension_call>();
+
+        <static_call>Main</static_call>(new <class_name>String</class_name>[] {});
+    }
+}
+
+<macro_keyword>#if</macro_keyword> <macro_variable>DEFINE</macro_variable>
+public <soft_keyword>partial</soft_keyword> class <class_name>Generic</class_name><<generic_parameter_name>T</generic_parameter_name>> {
+    public <generic_parameter_name>T</generic_parameter_name> <instance_field>myField</instance_field> = default(<generic_parameter_name>T</generic_parameter_name>);
+}
+<macro_keyword>#else</macro_keyword>
+<disabled_block>public class Generic {
+
+}
+</disabled_block><macro_keyword>#endif</macro_keyword>
+
+public static class <class_name>StringExtensions</class_name> {
+
+    public static void Call(this <class_name>String</class_name> <parameter>param</parameter>) {
+        // line comment
+        <parameter>param</parameter>.<instance_call>toString</instance_call>();
+    }
+}

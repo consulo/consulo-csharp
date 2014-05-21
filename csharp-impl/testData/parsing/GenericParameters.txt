@@ -1,0 +1,20 @@
+FILE
+  CSharpTypeDeclarationImpl(TYPE_DECLARATION)
+    CSharpModifierListImpl(MODIFIER_LIST)
+      <empty list>
+    PsiElement(CLASS_KEYWORD)('class')
+    PsiWhiteSpace(' ')
+    PsiElement(IDENTIFIER)('List')
+    CSharpGenericParameterListImpl(GENERIC_PARAMETER_LIST)
+      PsiElement(LT)('<')
+      CSharpGenericParameterImpl(GENERIC_PARAMETER)
+        CSharpModifierListImpl(MODIFIER_LIST)
+          <empty list>
+        PsiElement(IDENTIFIER)('A')
+      PsiElement(GT)('>')
+    PsiWhiteSpace('\n')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace('\n')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n   ')
+  PsiComment(BLOCK_COMMENT)('/*\nclass Test<in A, out B> where A : Object, new()\n{\n}\n\nclass MyClass<T, U> where T : class where U : struct\n{\n}\n\ndelegate T MyDelegate<T>() where T : new()            */')
