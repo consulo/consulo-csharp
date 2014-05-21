@@ -127,6 +127,15 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		}
 	};
 
+	private static final Condition<PsiNamedElement> ourMethodDelegate = new Condition<PsiNamedElement>()
+	{
+		@Override
+		public boolean value(PsiNamedElement psiNamedElement)
+		{
+			return psiNamedElement instanceof DotNetMethodDeclaration && ((DotNetMethodDeclaration) psiNamedElement).isDelegate();
+		}
+	};
+
 	public static enum ResolveToKind
 	{
 		TYPE_PARAMETER_FROM_PARENT,
@@ -604,6 +613,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					else if(kind == ResolveToKind.ANY_MEMBER)
 					{
 						condition = Conditions.and(condition, Conditions.not(ourMethodCondition));
+					}
+					else if(kind == ResolveToKind.METHOD)
+					{
+						condition = Conditions.and(condition, Conditions.not(ourMethodDelegate));
 					}
 				}
 
