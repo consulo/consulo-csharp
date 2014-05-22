@@ -34,7 +34,7 @@ public abstract class MsilWrapperScopeProcessor extends UserDataHolderBase imple
 	public final boolean execute(@NotNull PsiElement element, ResolveState state)
 	{
 		PsiElement wrap = MsilToCSharpUtil.wrap(element);
-		return executeImpl(element, state);
+		return executeImpl(wrap, state);
 	}
 
 	public abstract boolean executeImpl(@NotNull PsiElement element, ResolveState state);
