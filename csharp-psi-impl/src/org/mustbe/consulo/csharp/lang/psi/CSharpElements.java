@@ -80,7 +80,7 @@ public interface CSharpElements
 
 	IElementType REFERENCE_TYPE = new IElementTypeAsPsiFactory("REFERENCE_TYPE", CSharpLanguage.INSTANCE, CSharpReferenceTypeImpl.class);
 
-	IElementType POINTER_TYPE = new IElementTypeAsPsiFactory("POINTER_TYPE", CSharpLanguage.INSTANCE, CSharpPointerTypeImpl.class);
+	IElementType POINTER_TYPE = new IElementTypeAsPsiFactory("POINTER_TYPE", CSharpLanguage.INSTANCE, DotNetPointerTypeImpl.class);
 
 	IElementType NULLABLE_TYPE = new IElementTypeAsPsiFactory("NULLABLE_TYPE", CSharpLanguage.INSTANCE, CSharpNullableTypeImpl.class);
 

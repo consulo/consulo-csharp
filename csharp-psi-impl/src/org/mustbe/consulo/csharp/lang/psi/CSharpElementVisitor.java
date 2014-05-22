@@ -148,7 +148,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(declaration);
 	}
 
-	public void visitPointerType(CSharpPointerTypeImpl type)
+	public void visitPointerType(DotNetPointerTypeImpl type)
 	{
 		visitElement(type);
 	}
