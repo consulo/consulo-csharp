@@ -18,10 +18,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilWrapperScopeProcessor;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.ResolveState;
@@ -31,7 +30,7 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  * @author VISTALL
  * @since 18.05.14
  */
-public abstract class SingleSearchProcessor<T> extends UserDataHolderBase implements PsiScopeProcessor
+public abstract class SingleSearchProcessor<T> extends MsilWrapperScopeProcessor implements PsiScopeProcessor
 {
 	private T myElement;
 
@@ -67,7 +66,7 @@ public abstract class SingleSearchProcessor<T> extends UserDataHolderBase implem
 	}
 
 	@Override
-	public boolean execute(@NotNull PsiElement element, ResolveState state)
+	public boolean executeImpl(@NotNull PsiElement element, ResolveState state)
 	{
 		T validElement = isValidElement(element);
 		if(validElement != null)
@@ -76,18 +75,5 @@ public abstract class SingleSearchProcessor<T> extends UserDataHolderBase implem
 			return false;
 		}
 		return true;
-	}
-
-	@Nullable
-	@Override
-	public <T> T getHint(@NotNull Key<T> tKey)
-	{
-		return getUserData(tKey);
-	}
-
-	@Override
-	public void handleEvent(Event event, @Nullable Object o)
-	{
-
 	}
 }

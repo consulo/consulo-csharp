@@ -14,29 +14,26 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi.impl.stub.index;
+package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
-import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.stubs.StringStubIndexExtension;
-import com.intellij.psi.stubs.StubIndexExtension;
-import com.intellij.psi.stubs.StubIndexKey;
+import com.intellij.util.Processor;
 
 /**
  * @author VISTALL
- * @since 18.12.13.
+ * @since 22.05.14
  */
-public class MemberByNamespaceQNameIndex extends StringStubIndexExtension<PsiElement>
+public abstract class MsilWrapperProcessor<T> implements Processor<T>
 {
-	public static MemberByNamespaceQNameIndex getInstance()
+	@Override
+	public final boolean process(T t)
 	{
-		return StubIndexExtension.EP_NAME.findExtension(MemberByNamespaceQNameIndex.class);
+		if(t instanceof PsiElement)
+		{
+			return processImpl((T) MsilToCSharpUtil.wrap((PsiElement) t));
+		}
+		return processImpl(t);
 	}
 
-	@NotNull
-	@Override
-	public StubIndexKey<String, PsiElement> getKey()
-	{
-		return CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX;
-	}
+	public abstract boolean processImpl(T t);
 }

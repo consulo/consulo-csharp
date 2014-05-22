@@ -58,7 +58,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 	}
 
 	@Override
-	public boolean execute(@NotNull PsiElement element, ResolveState state)
+	public boolean executeImpl(@NotNull PsiElement element, ResolveState state)
 	{
 		assert element instanceof CSharpTypeDeclaration;
 

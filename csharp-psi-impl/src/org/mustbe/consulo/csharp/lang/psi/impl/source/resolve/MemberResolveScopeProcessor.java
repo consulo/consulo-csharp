@@ -45,7 +45,7 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 	}
 
 	@Override
-	public boolean execute(@NotNull PsiElement element, ResolveState state)
+	public boolean executeImpl(@NotNull PsiElement element, ResolveState state)
 	{
 		if(element instanceof DotNetNamedElement)
 		{

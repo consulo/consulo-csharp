@@ -19,9 +19,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
-import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.util.CommonProcessors;
@@ -43,10 +43,10 @@ public class CSharpNamespaceHelper
 	{
 		assert !qName.isEmpty() : "Dont use empty namespace name. Use 'ROOT' field";
 
-		val findFirstProcessor = new CommonProcessors.FindFirstProcessor<DotNetElement>();
+		val findFirstProcessor = new CommonProcessors.FindFirstProcessor<PsiElement>();
 
 		StubIndex.getInstance().processElements(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX, qName, project, globalSearchScope,
-				DotNetElement.class, findFirstProcessor);
+				PsiElement.class, findFirstProcessor);
 
 		if(findFirstProcessor.getFoundValue() != null)
 		{

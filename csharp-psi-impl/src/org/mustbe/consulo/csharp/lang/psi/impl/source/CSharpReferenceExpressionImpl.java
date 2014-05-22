@@ -509,10 +509,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					{
 						parent = CSharpNamespaceHelper.ROOT;
 					}
-					val findFirstProcessor = new CommonProcessors.FindFirstProcessor<DotNetElement>();
+					val findFirstProcessor = new CommonProcessors.FindFirstProcessor<PsiElement>();
 
 					StubIndex.getInstance().processElements(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX, parent, element.getProject(),
-							element.getResolveScope(), DotNetElement.class, findFirstProcessor);
+							element.getResolveScope(), PsiElement.class, findFirstProcessor);
 
 					if(findFirstProcessor.getFoundValue() != null)
 					{

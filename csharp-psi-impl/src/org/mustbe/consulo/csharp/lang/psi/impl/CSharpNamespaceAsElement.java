@@ -22,12 +22,11 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilWrapperProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.NamespaceByQNameIndex;
-import org.mustbe.consulo.dotnet.psi.DotNetElement;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.openapi.project.Project;
@@ -92,9 +91,9 @@ public class CSharpNamespaceAsElement extends LightElement implements DotNetName
 	@Nullable
 	public PsiElement findFirstNamespaceEntry()
 	{
-		val findFirstProcessor = new CommonProcessors.FindFirstProcessor<DotNetElement>();
+		val findFirstProcessor = new CommonProcessors.FindFirstProcessor<PsiElement>();
 		StubIndex.getInstance().processElements(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX, myQName, getProject(), myScope,
-				DotNetElement.class, findFirstProcessor);
+				PsiElement.class, findFirstProcessor);
 		if(findFirstProcessor.getFoundValue() != null)
 		{
 			return findFirstProcessor.getFoundValue();
@@ -114,7 +113,7 @@ public class CSharpNamespaceAsElement extends LightElement implements DotNetName
 
 		if(findFirstProcessor2.getFoundValue() != null)
 		{
-			Collection<DotNetElement> dotNetNamespaceDeclarations = NamespaceByQNameIndex.getInstance().get(findFirstProcessor2
+			Collection<PsiElement> dotNetNamespaceDeclarations = NamespaceByQNameIndex.getInstance().get(findFirstProcessor2
 					.getFoundValue(), getProject(), myScope);
 
 			return ContainerUtil.getFirstItem(dotNetNamespaceDeclarations);
@@ -175,10 +174,10 @@ public class CSharpNamespaceAsElement extends LightElement implements DotNetName
 			return false;
 		}
 		process = StubIndex.getInstance().processElements(CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, getPresentableQName(),
-				getProject(), myScope, DotNetNamedElement.class, new Processor<DotNetNamedElement>()
+				getProject(), myScope, PsiElement.class, new MsilWrapperProcessor<PsiElement>()
 		{
 			@Override
-			public boolean process(DotNetNamedElement namedElement)
+			public boolean processImpl(PsiElement namedElement)
 			{
 				if(namedElement instanceof DotNetNamespaceDeclaration)
 				{
@@ -198,10 +197,10 @@ public class CSharpNamespaceAsElement extends LightElement implements DotNetName
 			return false;
 		}
 		return StubIndex.getInstance().processElements(CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, getPresentableQName(),
-				getProject(), myScope, DotNetNamedElement.class, new Processor<DotNetNamedElement>()
+				getProject(), myScope, PsiElement.class, new MsilWrapperProcessor<PsiElement>()
 		{
 			@Override
-			public boolean process(DotNetNamedElement namedElement)
+			public boolean processImpl(PsiElement namedElement)
 			{
 				if(namedElement instanceof DotNetNamespaceDeclaration)
 				{

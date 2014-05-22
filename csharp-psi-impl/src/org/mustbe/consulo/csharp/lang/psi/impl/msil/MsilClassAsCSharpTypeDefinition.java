@@ -1,0 +1,223 @@
+/*
+ * Copyright 2013-2014 must-be.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.mustbe.consulo.csharp.lang.psi.impl.msil;
+
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.CSharpLanguage;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
+import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
+import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.msil.MsilHelper;
+import org.mustbe.consulo.msil.lang.psi.ModifierElementType;
+import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.impl.light.LightElement;
+import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.Processor;
+
+/**
+ * @author VISTALL
+ * @since 22.05.14
+ */
+public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSharpTypeDeclaration
+{
+	private final MsilClassEntry myClassEntry;
+
+	public MsilClassAsCSharpTypeDefinition(MsilClassEntry classEntry)
+	{
+		super(classEntry.getManager(), CSharpLanguage.INSTANCE);
+		myClassEntry = classEntry;
+		setNavigationElement(classEntry); //TODO [VISTALL] generator from MSIL to C#
+	}
+
+	@Override
+	public boolean hasExtensions()
+	{
+		return false;
+	}
+
+	@Override
+	public PsiElement getLeftBrace()
+	{
+		return null;
+	}
+
+	@Override
+	public PsiElement getRightBrace()
+	{
+		return null;
+	}
+
+	@Nullable
+	@Override
+	public CSharpGenericConstraintList getGenericConstraintList()
+	{
+		return null;
+	}
+
+	@NotNull
+	@Override
+	public CSharpGenericConstraint[] getGenericConstraints()
+	{
+		return new CSharpGenericConstraint[0];
+	}
+
+	@Override
+	public boolean isInterface()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isStruct()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isEnum()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isInheritAllowed()
+	{
+		return false;
+	}
+
+	@Nullable
+	@Override
+	public DotNetTypeList getExtendList()
+	{
+		return null;
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef[] getExtendTypeRefs()
+	{
+		return new DotNetTypeRef[0];
+	}
+
+	@Override
+	public boolean isInheritor(@NotNull DotNetTypeDeclaration other, boolean deep)
+	{
+		return false;
+	}
+
+	@Override
+	public void processConstructors(@NotNull Processor<DotNetConstructorDeclaration> processor)
+	{
+
+	}
+
+	@Nullable
+	@Override
+	public DotNetGenericParameterList getGenericParameterList()
+	{
+		return null;
+	}
+
+	@NotNull
+	@Override
+	public DotNetGenericParameter[] getGenericParameters()
+	{
+		return new DotNetGenericParameter[0];
+	}
+
+	@Override
+	public int getGenericParametersCount()
+	{
+		return 0;
+	}
+
+	@NotNull
+	@Override
+	public DotNetNamedElement[] getMembers()
+	{
+		return new DotNetNamedElement[0];
+	}
+
+	@Override
+	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	{
+		ModifierElementType modifierElementType = MsilToCSharpUtil.toMsilModifier(modifier);
+		if(modifierElementType == null)
+		{
+			return false;
+		}
+		return myClassEntry.hasModifier(modifierElementType);
+	}
+
+	@Nullable
+	@Override
+	public DotNetModifierList getModifierList()
+	{
+		return myClassEntry.getModifierList();
+	}
+
+	@Nullable
+	@Override
+	public String getPresentableParentQName()
+	{
+		return myClassEntry.getPresentableQName();
+	}
+
+	@Override
+	public String getName()
+	{
+		return MsilHelper.cutGenericMarker(myClassEntry.getName());
+	}
+
+	@Nullable
+	@Override
+	public String getPresentableQName()
+	{
+		return MsilHelper.cutGenericMarker(myClassEntry.getPresentableQName());
+	}
+
+	@Override
+	public String toString()
+	{
+		return myClassEntry.toString();
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getNameIdentifier()
+	{
+		return myClassEntry.getNameIdentifier();
+	}
+
+	@Override
+	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
+	{
+		return null;
+	}
+}

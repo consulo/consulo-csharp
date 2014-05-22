@@ -21,10 +21,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilWrapperScopeProcessor;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
-import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.util.containers.ContainerUtil;
@@ -33,7 +31,7 @@ import com.intellij.util.containers.ContainerUtil;
  * @author VISTALL
  * @since 17.12.13.
  */
-public abstract class AbstractScopeProcessor extends UserDataHolderBase implements PsiScopeProcessor
+public abstract class AbstractScopeProcessor extends MsilWrapperScopeProcessor implements PsiScopeProcessor
 {
 	private static final Comparator<ResolveResultWithWeight> ourWeightComparator = new Comparator<ResolveResultWithWeight>()
 	{
@@ -44,13 +42,6 @@ public abstract class AbstractScopeProcessor extends UserDataHolderBase implemen
 		}
 	};
 	protected final List<ResolveResultWithWeight> myElements = new ArrayList<ResolveResultWithWeight>();
-
-	@Nullable
-	@Override
-	public <T> T getHint(@NotNull Key<T> tKey)
-	{
-		return getUserData(tKey);
-	}
 
 	public void add(ResolveResultWithWeight resolveResult)
 	{
@@ -95,11 +86,5 @@ public abstract class AbstractScopeProcessor extends UserDataHolderBase implemen
 		ResolveResultWithWeight[] resultWithWeights = ContainerUtil.toArray(myElements, ResolveResultWithWeight.ARRAY_FACTORY);
 		ContainerUtil.sort(resultWithWeights, ourWeightComparator);
 		return resultWithWeights;
-	}
-
-	@Override
-	public void handleEvent(Event event, @Nullable Object o)
-	{
-
 	}
 }
