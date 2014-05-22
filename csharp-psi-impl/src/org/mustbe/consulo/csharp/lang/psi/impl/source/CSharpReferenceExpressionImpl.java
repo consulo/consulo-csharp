@@ -114,8 +114,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		@Override
 		public boolean value(PsiNamedElement psiNamedElement)
 		{
-			return psiNamedElement instanceof CSharpTypeDeclaration || psiNamedElement instanceof CSharpGenericParameterImpl ||
-					psiNamedElement instanceof CSharpMethodDeclaration || psiNamedElement instanceof CSharpTypeDefStatementImpl;
+			return psiNamedElement instanceof DotNetTypeDeclaration || psiNamedElement instanceof DotNetGenericParameter ||
+					psiNamedElement instanceof DotNetMethodDeclaration || psiNamedElement instanceof CSharpTypeDefStatementImpl;
 		}
 	};
 
@@ -509,10 +509,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					{
 						parent = CSharpNamespaceHelper.ROOT;
 					}
-					val findFirstProcessor = new CommonProcessors.FindFirstProcessor<DotNetNamespaceDeclaration>();
+					val findFirstProcessor = new CommonProcessors.FindFirstProcessor<DotNetElement>();
 
 					StubIndex.getInstance().processElements(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX, parent, element.getProject(),
-							element.getResolveScope(), DotNetNamespaceDeclaration.class, findFirstProcessor);
+							element.getResolveScope(), DotNetElement.class, findFirstProcessor);
 
 					if(findFirstProcessor.getFoundValue() != null)
 					{

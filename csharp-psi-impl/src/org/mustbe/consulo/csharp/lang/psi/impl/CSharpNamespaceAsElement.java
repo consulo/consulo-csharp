@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.NamespaceByQNameIndex;
+import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
@@ -64,17 +65,18 @@ public class CSharpNamespaceAsElement extends LightElement implements DotNetName
 		myScope = scope;
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public PsiElement getNavigationElement()
 	{
-		return findFirstNamespace();
+		PsiElement firstNamespaceEntry = findFirstNamespaceEntry();
+		return firstNamespaceEntry == null ? this : firstNamespaceEntry;
 	}
 
 	@Override
 	public void navigate(boolean requestFocus)
 	{
-		PsiElement navigationElement = findFirstNamespace();
+		PsiElement navigationElement = findFirstNamespaceEntry();
 		if(navigationElement instanceof Navigatable)
 		{
 			((Navigatable) navigationElement).navigate(requestFocus);
@@ -84,15 +86,15 @@ public class CSharpNamespaceAsElement extends LightElement implements DotNetName
 	@Override
 	public boolean isValid()
 	{
-		return findFirstNamespace() != null;
+		return findFirstNamespaceEntry() != null;
 	}
 
 	@Nullable
-	public DotNetNamespaceDeclaration findFirstNamespace()
+	public PsiElement findFirstNamespaceEntry()
 	{
-		val findFirstProcessor = new CommonProcessors.FindFirstProcessor<DotNetNamespaceDeclaration>();
+		val findFirstProcessor = new CommonProcessors.FindFirstProcessor<DotNetElement>();
 		StubIndex.getInstance().processElements(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX, myQName, getProject(), myScope,
-				DotNetNamespaceDeclaration.class, findFirstProcessor);
+				DotNetElement.class, findFirstProcessor);
 		if(findFirstProcessor.getFoundValue() != null)
 		{
 			return findFirstProcessor.getFoundValue();
@@ -112,7 +114,7 @@ public class CSharpNamespaceAsElement extends LightElement implements DotNetName
 
 		if(findFirstProcessor2.getFoundValue() != null)
 		{
-			Collection<DotNetNamespaceDeclaration> dotNetNamespaceDeclarations = NamespaceByQNameIndex.getInstance().get(findFirstProcessor2
+			Collection<DotNetElement> dotNetNamespaceDeclarations = NamespaceByQNameIndex.getInstance().get(findFirstProcessor2
 					.getFoundValue(), getProject(), myScope);
 
 			return ContainerUtil.getFirstItem(dotNetNamespaceDeclarations);
