@@ -35,6 +35,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericParameterTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNamespaceDefTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpQualifiedTypeRef;
@@ -304,10 +305,14 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					{
 						if(psiNamedElement instanceof DotNetVariable)
 						{
-							PsiElement localVariableType = ((DotNetVariable) psiNamedElement).toTypeRef(true).resolve(e);
-							if(localVariableType instanceof DotNetMethodDeclaration)
+							DotNetTypeRef typeRef = ((DotNetVariable) psiNamedElement).toTypeRef(true);
+							if(typeRef instanceof CSharpLambdaTypeRef)
 							{
-								return MethodAcceptorImpl.calcAcceptableWeight(parameters, (CSharpMethodDeclaration) localVariableType);
+								PsiElement target = ((CSharpLambdaTypeRef) typeRef).getTarget();
+								if(target instanceof DotNetMethodDeclaration)
+								{
+									return MethodAcceptorImpl.calcAcceptableWeight(parameters, (CSharpMethodDeclaration) target);
+								}
 							}
 						}
 						else if(psiNamedElement instanceof DotNetMethodDeclaration)

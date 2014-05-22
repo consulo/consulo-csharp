@@ -103,7 +103,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 					DotNetTypeRef typeRef = ((DotNetVariable) callable).toTypeRef(false);
 					if(typeRef instanceof CSharpLambdaTypeRef)
 					{
-						PsiElement resolve = typeRef.resolve(element);
+						PsiElement resolve = ((CSharpLambdaTypeRef) typeRef).getTarget();
 						if(resolve instanceof DotNetLikeMethodDeclaration)
 						{
 							callable = resolve;

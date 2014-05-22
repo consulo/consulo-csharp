@@ -19,7 +19,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import org.mustbe.consulo.dotnet.resolve.DotNetPsiFacade;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 
@@ -123,6 +125,12 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 		return builder.toString();
 	}
 
+	@Nullable
+	public PsiElement getTarget()
+	{
+		return myTarget;
+	}
+
 	@Override
 	public boolean isNullable()
 	{
@@ -133,7 +141,7 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 	@Override
 	public PsiElement resolve(@NotNull PsiElement scope)
 	{
-		return myTarget;
+		return DotNetPsiFacade.getInstance(scope.getProject()).findType(DotNetTypes.System_MulticastDelegate, scope.getResolveScope(), 0);
 	}
 
 	@NotNull
