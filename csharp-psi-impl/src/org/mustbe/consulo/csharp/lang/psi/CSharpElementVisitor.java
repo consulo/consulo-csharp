@@ -163,7 +163,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(type);
 	}
 
-	public void visitTypeWrapperWithTypeArguments(CSharpTypeWrapperWithTypeArgumentsImpl typeArguments)
+	public void visitTypeWrapperWithTypeArguments(CSharpTypeWithTypeArgumentsImpl typeArguments)
 	{
 		visitElement(typeArguments);
 	}

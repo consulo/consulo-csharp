@@ -32,7 +32,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameterList;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetArrayMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -150,9 +150,9 @@ public class GenericUnwrapTool
 	@NotNull
 	public static DotNetTypeRef exchangeTypeRefs(DotNetTypeRef typeRef, DotNetGenericExtractor extractor, PsiElement element)
 	{
-		if(typeRef instanceof CSharpGenericWrapperTypeRef)
+		if(typeRef instanceof DotNetGenericWrapperTypeRef)
 		{
-			CSharpGenericWrapperTypeRef wrapperTypeRef = (CSharpGenericWrapperTypeRef) typeRef;
+			DotNetGenericWrapperTypeRef wrapperTypeRef = (DotNetGenericWrapperTypeRef) typeRef;
 
 			DotNetTypeRef inner = exchangeTypeRefs(wrapperTypeRef.getInner(), extractor, element);
 			DotNetTypeRef[] oldArguments = wrapperTypeRef.getArguments();
@@ -162,7 +162,7 @@ public class GenericUnwrapTool
 				DotNetTypeRef oldArgument = oldArguments[i];
 				arguments[i] = exchangeTypeRefs(oldArgument, extractor, element);
 			}
-			return new CSharpGenericWrapperTypeRef(inner, arguments);
+			return new DotNetGenericWrapperTypeRef(inner, arguments);
 		}
 		else if(typeRef instanceof DotNetPointerTypeImpl)
 		{

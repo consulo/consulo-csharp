@@ -22,7 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNativeTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNullableTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.DotNetPointerTypeImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeWrapperWithTypeArgumentsImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeWithTypeArgumentsImpl;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceType;
@@ -61,7 +61,7 @@ public class CSharpElementPresentationUtil extends DotNetElementPresentationUtil
 			}
 
 			@Override
-			public void visitTypeWrapperWithTypeArguments(CSharpTypeWrapperWithTypeArgumentsImpl typeArguments)
+			public void visitTypeWrapperWithTypeArguments(CSharpTypeWithTypeArgumentsImpl typeArguments)
 			{
 				builder.append(formatType(typeArguments.getInnerType()));
 

@@ -29,9 +29,9 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNativeTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNullableTypeImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeWrapperWithTypeArgumentsImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeWithTypeArgumentsImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromText;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeImpl;
@@ -139,7 +139,7 @@ public class CSharpStubTypeInfoUtil
 			}
 
 			@Override
-			public void visitTypeWrapperWithTypeArguments(CSharpTypeWrapperWithTypeArgumentsImpl typeArguments)
+			public void visitTypeWrapperWithTypeArguments(CSharpTypeWithTypeArgumentsImpl typeArguments)
 			{
 				CSharpStubTypeInfo inner = toStub(typeArguments.getInnerType());
 
@@ -197,7 +197,7 @@ public class CSharpStubTypeInfoUtil
 					CSharpStubTypeInfo argument = arguments[i];
 					arguments2[i] = toTypeRef(argument, element);
 				}
-				return new CSharpGenericWrapperTypeRef(toTypeRef(genericWrapperTypeInfo.getInnerType(), element), arguments2);
+				return new DotNetGenericWrapperTypeRef(toTypeRef(genericWrapperTypeInfo.getInnerType(), element), arguments2);
 			case NATIVE:
 				CSharpStubNativeTypeInfo nativeTypeInfo = (CSharpStubNativeTypeInfo) typeInfo;
 				return ourNativeRefs.get(nativeTypeInfo.getIndex());

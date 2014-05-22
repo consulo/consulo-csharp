@@ -19,10 +19,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeWrapperWithTypeArguments;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 
@@ -30,9 +30,9 @@ import com.intellij.lang.ASTNode;
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpTypeWrapperWithTypeArgumentsImpl extends CSharpElementImpl implements DotNetTypeWrapperWithTypeArguments
+public class CSharpTypeWithTypeArgumentsImpl extends CSharpElementImpl implements DotNetTypeWithTypeArguments
 {
-	public CSharpTypeWrapperWithTypeArgumentsImpl(@NotNull ASTNode node)
+	public CSharpTypeWithTypeArgumentsImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
@@ -55,7 +55,7 @@ public class CSharpTypeWrapperWithTypeArgumentsImpl extends CSharpElementImpl im
 			rArguments[i] = argument.toTypeRef();
 		}
 
-		return new CSharpGenericWrapperTypeRef(innerType.toTypeRef(), rArguments);
+		return new DotNetGenericWrapperTypeRef(innerType.toTypeRef(), rArguments);
 	}
 
 	@Override

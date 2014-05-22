@@ -342,9 +342,9 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 						if(element instanceof DotNetGenericParameterListOwner)
 						{
 							DotNetReferenceType referenceType = (DotNetReferenceType) e.getParent();
-							if(referenceType.getParent() instanceof DotNetTypeWrapperWithTypeArguments)
+							if(referenceType.getParent() instanceof DotNetTypeWithTypeArguments)
 							{
-								DotNetType[] arguments = ((DotNetTypeWrapperWithTypeArguments) referenceType.getParent()).getArguments();
+								DotNetType[] arguments = ((DotNetTypeWithTypeArguments) referenceType.getParent()).getArguments();
 								return arguments.length == ((DotNetGenericParameterListOwner) element).getGenericParameters().length ? MAX_WEIGHT
 										: 1;
 							}
