@@ -83,7 +83,7 @@ public class CSharpTypeUtil
 
 		PsiElement topElement = top.resolve(scope);
 		PsiElement targetElement = target.resolve(scope);
-		if(topElement != null && Comparing.equal(topElement, targetElement))
+		if(topElement != null && topElement.isEquivalentTo(targetElement))
 		{
 			return true;
 		}

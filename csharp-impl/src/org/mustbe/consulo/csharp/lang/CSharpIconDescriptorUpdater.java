@@ -29,9 +29,11 @@ import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceAsElement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
 import org.mustbe.consulo.dotnet.DotNetRunUtil;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.module.DotNetModuleUtil;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import org.mustbe.consulo.dotnet.psi.*;
+import org.mustbe.consulo.dotnet.resolve.DotNetPsiFacade;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.IconDescriptor;
 import com.intellij.ide.IconDescriptorUpdater;
@@ -232,28 +234,17 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 		}
 	}
 
-	//TODO [VISTALL] uncomment until fix delay at first completion
 	public static boolean isAttribute(final CSharpTypeDeclaration declaration)
 	{
-		/*DotNetTypeDeclaration type = DotNetPsiFacade.getInstance(declaration.getProject()).findType(DotNetTypes.System_Attribute,
+		DotNetTypeDeclaration type = DotNetPsiFacade.getInstance(declaration.getProject()).findType(DotNetTypes.System_Attribute,
 				declaration.getResolveScope(), 0);
-		if(type == null)
-		{
-			return false;
-		}
-		return declaration.isInheritor(type,  true); */
-		return false;
+		return type != null && declaration.isInheritor(type, true);
 	}
 
 	public static boolean isException(CSharpTypeDeclaration declaration)
 	{
-		/*DotNetTypeDeclaration type = DotNetPsiFacade.getInstance(declaration.getProject()).findType(DotNetTypes.System_Exception,
+		DotNetTypeDeclaration type = DotNetPsiFacade.getInstance(declaration.getProject()).findType(DotNetTypes.System_Exception,
 				declaration.getResolveScope(), 0);
-		if(type == null)
-		{
-			return false;
-		}
-		return declaration.isInheritor(type,  true);  */
-		return false;
+		return type != null && declaration.isInheritor(type, true);
 	}
 }

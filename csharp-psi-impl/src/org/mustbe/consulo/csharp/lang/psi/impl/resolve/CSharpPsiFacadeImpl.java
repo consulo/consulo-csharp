@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceHelper;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeByQNameIndex;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeIndex;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -62,28 +63,45 @@ public class CSharpPsiFacadeImpl extends DotNetPsiFacade.Adapter
 
 	@NotNull
 	@Override
-	public DotNetTypeDeclaration[] findTypes(@NotNull String qName, @NotNull GlobalSearchScope searchScope, int genericCount)
+	public DotNetTypeDeclaration[] findTypes(@NotNull ResolveContext context)
 	{
-		Collection<DotNetTypeDeclaration> dotNetTypeDeclarations = TypeByQNameIndex.getInstance().get(qName, myProject, searchScope);
+		Collection<DotNetTypeDeclaration> dotNetTypeDeclarations = TypeByQNameIndex.getInstance().get(context.getQName(), myProject, context.getScope());
 		if(dotNetTypeDeclarations.isEmpty())
 		{
 			return DotNetTypeDeclaration.EMPTY_ARRAY;
 		}
-		if(genericCount < 0)
+		if(context.getGenericCount() < 0 && context.getResoleKind() == ResoleKind.UNKNOWN)
 		{
 			return toArray(dotNetTypeDeclarations);
 		}
 
 		List<DotNetTypeDeclaration> list = new SmartList<DotNetTypeDeclaration>();
-		for(DotNetTypeDeclaration dotNetTypeDeclaration : dotNetTypeDeclarations)
+		for(DotNetTypeDeclaration type : dotNetTypeDeclarations)
 		{
-			if(dotNetTypeDeclaration.getGenericParametersCount() == genericCount)
+			if(isAcceptableType(context, type))
 			{
-				list.add(dotNetTypeDeclaration);
+				list.add(type);
 			}
 		}
 
 		return toArray(list);
+	}
+
+	@Override
+	@NotNull
+	protected DotNetTypeDeclaration[] toArray(@NotNull Collection<? extends DotNetTypeDeclaration> list)
+	{
+		if(list.isEmpty())
+		{
+			return DotNetTypeDeclaration.EMPTY_ARRAY;
+		}
+		DotNetTypeDeclaration[] array = new DotNetTypeDeclaration[list.size()];
+		int i = 0;
+		for(DotNetTypeDeclaration t : list)
+		{
+			array[i ++ ] = (DotNetTypeDeclaration) MsilToCSharpUtil.wrap(t);
+		}
+		return array;
 	}
 
 	@Override

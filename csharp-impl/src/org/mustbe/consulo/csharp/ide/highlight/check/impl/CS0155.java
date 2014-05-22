@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.highlight.check.AbstractCompilerCheck;
-import org.mustbe.consulo.csharp.lang.psi.CSharpInheritUtil;
+import org.mustbe.consulo.dotnet.lang.psi.DotNetInheritUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpThrowStatementImpl;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -41,6 +41,6 @@ public class CS0155 extends AbstractCompilerCheck<CSharpThrowStatementImpl>
 
 		DotNetTypeRef dotNetTypeRef = expression.toTypeRef(true);
 
-		return !CSharpInheritUtil.isParentOrSelf(DotNetTypes.System_Exception, dotNetTypeRef, statement, true);
+		return !DotNetInheritUtil.isParentOrSelf(DotNetTypes.System_Exception, dotNetTypeRef, statement, true);
 	}
 }

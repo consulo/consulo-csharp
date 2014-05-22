@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.ide.highlight;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.PropertyKey;
-import org.mustbe.consulo.csharp.lang.psi.CSharpInheritUtil;
+import org.mustbe.consulo.dotnet.lang.psi.DotNetInheritUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
@@ -92,7 +92,7 @@ public class CSharpHighlightUtil
 		TextAttributesKey key = null;
 		if(element instanceof CSharpTypeDeclaration)
 		{
-			if(CSharpInheritUtil.isParent(DotNetTypes.System_Attribute, (DotNetTypeDeclaration) element, true))
+			if(DotNetInheritUtil.isParent(DotNetTypes.System_Attribute, (DotNetTypeDeclaration) element, true))
 			{
 				key = CSharpHighlightKey.ATTRIBUTE_NAME;
 			}

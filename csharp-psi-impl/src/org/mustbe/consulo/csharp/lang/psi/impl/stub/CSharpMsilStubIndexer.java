@@ -19,8 +19,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceHelper;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
+import org.mustbe.consulo.msil.MsilHelper;
 import org.mustbe.consulo.msil.lang.psi.impl.elementType.stub.MsilClassEntryStub;
 import org.mustbe.consulo.msil.lang.psi.impl.elementType.stub.MsilStubIndexer;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.stubs.IndexSink;
 
 /**
@@ -30,12 +32,20 @@ import com.intellij.psi.stubs.IndexSink;
 public class CSharpMsilStubIndexer extends MsilStubIndexer
 {
 	@Override
-	public void indexClass(@NotNull MsilClassEntryStub msilClassEntryStub, @NotNull IndexSink indexSink)
+	public void indexClass(@NotNull MsilClassEntryStub stub, @NotNull IndexSink indexSink)
 	{
-		String namespaceForIndexing = CSharpNamespaceHelper.getNamespaceForIndexing(msilClassEntryStub.getNamespace());
+		String namespaceForIndexing = CSharpNamespaceHelper.getNamespaceForIndexing(stub.getNamespace());
+
+		String name = stub.getName();
+		if(StringUtil.isEmpty(name))
+		{
+			return;
+		}
 
 		indexSink.occurrence(CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, namespaceForIndexing);
 
 		indexSink.occurrence(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX, namespaceForIndexing);
+
+		indexSink.occurrence(CSharpIndexKeys.TYPE_BY_QNAME_INDEX, MsilHelper.appendNoGeneric(stub.getNamespace(), stub.getName()));
 	}
 }

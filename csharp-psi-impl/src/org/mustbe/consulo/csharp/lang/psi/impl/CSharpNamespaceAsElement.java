@@ -82,12 +82,6 @@ public class CSharpNamespaceAsElement extends LightElement implements DotNetName
 		}
 	}
 
-	@Override
-	public boolean isValid()
-	{
-		return findFirstNamespaceEntry() != null;
-	}
-
 	@Nullable
 	public PsiElement findFirstNamespaceEntry()
 	{

@@ -16,6 +16,8 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
+import java.util.Map;
+
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
@@ -24,6 +26,7 @@ import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.containers.ConcurrentHashMap;
 
 /**
  * @author VISTALL
@@ -68,14 +71,19 @@ public class MsilToCSharpUtil
 		}
 		return null;
 	}
+
+	private static Map<MsilEntry, MsilClassAsCSharpTypeDefinition> ourCache = new ConcurrentHashMap<MsilEntry, MsilClassAsCSharpTypeDefinition>();
+
 	public static PsiElement wrap(PsiElement element)
 	{
-		if(element instanceof MsilEntry)
+		if(element instanceof MsilClassEntry)
 		{
-			if(element instanceof MsilClassEntry)
+			MsilClassAsCSharpTypeDefinition cache = ourCache.get(element);
+			if(cache != null)
 			{
-				return new MsilClassAsCSharpTypeDefinition((MsilClassEntry) element);
+				return cache;
 			}
+			return new MsilClassAsCSharpTypeDefinition((MsilClassEntry) element);
 		}
 		return element;
 	}

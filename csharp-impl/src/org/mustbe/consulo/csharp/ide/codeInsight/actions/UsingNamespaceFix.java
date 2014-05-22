@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpInheritUtil;
+import org.mustbe.consulo.dotnet.lang.psi.DotNetInheritUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingNamespaceStatementImpl;
@@ -131,7 +131,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 					@Override
 					public boolean value(DotNetTypeDeclaration typeDeclaration)
 					{
-						return CSharpInheritUtil.isParent(DotNetTypes.System_Attribute, typeDeclaration, true);
+						return DotNetInheritUtil.isParent(DotNetTypes.System_Attribute, typeDeclaration, true);
 					}
 				};
 				// if attribute endwith Attribute - collect only with

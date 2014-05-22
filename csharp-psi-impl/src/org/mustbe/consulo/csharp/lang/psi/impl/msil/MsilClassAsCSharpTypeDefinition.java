@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
+import org.mustbe.consulo.dotnet.lang.psi.DotNetInheritUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -35,6 +36,8 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.MsilHelper;
 import org.mustbe.consulo.msil.lang.psi.ModifierElementType;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
+import org.mustbe.consulo.msil.lang.psi.MsilTokens;
+import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.light.LightElement;
 import com.intellij.util.IncorrectOperationException;
@@ -53,6 +56,16 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 		super(classEntry.getManager(), CSharpLanguage.INSTANCE);
 		myClassEntry = classEntry;
 		setNavigationElement(classEntry); //TODO [VISTALL] generator from MSIL to C#
+	}
+
+	@Override
+	public boolean isEquivalentTo(PsiElement another)
+	{
+		if(another instanceof DotNetTypeDeclaration)
+		{
+			return Comparing.equal(getPresentableQName(), ((DotNetTypeDeclaration) another).getPresentableQName());
+		}
+		return super.isEquivalentTo(another);
 	}
 
 	@Override
@@ -90,7 +103,7 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 	@Override
 	public boolean isInterface()
 	{
-		return false;
+		return myClassEntry.hasModifier(MsilTokens.INTERFACE_KEYWORD);
 	}
 
 	@Override
@@ -122,13 +135,13 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 	@Override
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{
-		return new DotNetTypeRef[0];
+		return myClassEntry.getExtendTypeRefs();
 	}
 
 	@Override
 	public boolean isInheritor(@NotNull DotNetTypeDeclaration other, boolean deep)
 	{
-		return false;
+		return DotNetInheritUtil.isInheritor(this, other, deep);
 	}
 
 	@Override

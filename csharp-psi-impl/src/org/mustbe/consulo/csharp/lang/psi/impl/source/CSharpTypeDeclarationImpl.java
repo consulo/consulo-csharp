@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
-import org.mustbe.consulo.csharp.lang.psi.CSharpInheritUtil;
+import org.mustbe.consulo.dotnet.lang.psi.DotNetInheritUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -189,7 +189,7 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeSt
 	@Override
 	public boolean isInheritor(@NotNull DotNetTypeDeclaration other, boolean deep)
 	{
-		return CSharpInheritUtil.isInheritor(this, other, deep);
+		return DotNetInheritUtil.isInheritor(this, other, deep);
 	}
 
 	@Override

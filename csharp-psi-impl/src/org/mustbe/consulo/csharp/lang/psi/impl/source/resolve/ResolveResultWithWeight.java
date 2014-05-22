@@ -18,7 +18,6 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
 import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
-import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
 
@@ -55,6 +54,6 @@ public class ResolveResultWithWeight extends PsiElementResolveResult
 	@Override
 	public boolean equals(Object o)
 	{
-		return o instanceof ResolveResultWithWeight && Comparing.equal(getElement(), ((ResolveResultWithWeight) o).getElement());
+		return o instanceof ResolveResultWithWeight && getElement().isEquivalentTo(((ResolveResultWithWeight) o).getElement());
 	}
 }
