@@ -17,9 +17,15 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeDefTypeRef;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.openapi.util.Comparing;
 import com.intellij.util.Processor;
 
 /**
@@ -28,6 +34,46 @@ import com.intellij.util.Processor;
  */
 public class CSharpTypeDeclarationImplUtil
 {
+	@NotNull
+	public static DotNetTypeRef[] getExtendTypeRefs(@NotNull DotNetTypeDeclaration t)
+	{
+		DotNetTypeRef[] typeRefs = DotNetTypeRef.EMPTY_ARRAY;
+		DotNetTypeList extendList = t.getExtendList();
+		if(extendList != null)
+		{
+			typeRefs = extendList.getTypeRefs();
+		}
+
+		if(typeRefs.length == 0)
+		{
+			String defaultSuperType = getDefaultSuperType(t);
+			typeRefs = new DotNetTypeRef[] {new CSharpTypeDefTypeRef(defaultSuperType, 0)};
+		}
+		return typeRefs;
+	}
+
+	@Nullable
+	public static String getDefaultSuperType(@NotNull DotNetTypeDeclaration typeDeclaration)
+	{
+		String presentableQName = typeDeclaration.getPresentableQName();
+		if(Comparing.equal(presentableQName, DotNetTypes.System_Object))
+		{
+			return null;
+		}
+		if(typeDeclaration.isStruct())
+		{
+			return DotNetTypes.System_ValueType;
+		}
+		else if(typeDeclaration.isEnum())
+		{
+			return DotNetTypes.System_Enum;
+		}
+		else
+		{
+			return DotNetTypes.System_Object;
+		}
+	}
+
 	public static void processConstructors(@NotNull DotNetTypeDeclaration type, @NotNull Processor<DotNetConstructorDeclaration> processor)
 	{
 		for(DotNetNamedElement dotNetNamedElement : type.getMembers())

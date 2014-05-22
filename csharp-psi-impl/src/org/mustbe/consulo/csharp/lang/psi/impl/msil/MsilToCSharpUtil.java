@@ -74,6 +74,7 @@ public class MsilToCSharpUtil
 
 	private static Map<MsilEntry, MsilClassAsCSharpTypeDefinition> ourCache = new ConcurrentHashMap<MsilEntry, MsilClassAsCSharpTypeDefinition>();
 
+	@Nullable
 	public static PsiElement wrap(PsiElement element)
 	{
 		if(element instanceof MsilClassEntry)

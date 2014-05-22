@@ -70,7 +70,7 @@ public class CSharpPsiFacadeImpl extends DotNetPsiFacade.Adapter
 		{
 			return DotNetTypeDeclaration.EMPTY_ARRAY;
 		}
-		if(context.getGenericCount() < 0 && context.getResoleKind() == ResoleKind.UNKNOWN)
+		if(context.getGenericCount() < 0 && context.getTypeResoleKind() == TypeResoleKind.UNKNOWN)
 		{
 			return toArray(dotNetTypeDeclarations);
 		}

@@ -22,8 +22,9 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
-import org.mustbe.consulo.dotnet.lang.psi.DotNetInheritUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.MsilToCSharpTypeRef;
+import org.mustbe.consulo.dotnet.lang.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
@@ -135,7 +136,17 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 	@Override
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{
-		return myClassEntry.getExtendTypeRefs();
+		DotNetTypeRef[] extendTypeRefs = myClassEntry.getExtendTypeRefs();
+		if(extendTypeRefs.length == 0)
+		{
+			return DotNetTypeRef.EMPTY_ARRAY;
+		}
+		DotNetTypeRef[] typeRefs = new DotNetTypeRef[extendTypeRefs.length];
+		for(int i = 0; i < typeRefs.length; i++)
+		{
+			typeRefs[i] = new MsilToCSharpTypeRef(extendTypeRefs[i]);
+		}
+		return typeRefs;
 	}
 
 	@Override

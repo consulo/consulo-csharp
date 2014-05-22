@@ -182,8 +182,7 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeSt
 	@Override
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{
-		DotNetTypeList extendList = getExtendList();
-		return extendList == null ? DotNetTypeRef.EMPTY_ARRAY : extendList.getTypeRefs();
+		return CSharpTypeDeclarationImplUtil.getExtendTypeRefs(this);
 	}
 
 	@Override

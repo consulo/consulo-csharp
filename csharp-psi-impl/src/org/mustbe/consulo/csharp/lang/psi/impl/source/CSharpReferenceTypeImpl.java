@@ -22,6 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaT
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceType;
+import org.mustbe.consulo.dotnet.resolve.DotNetPsiFacade;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -56,6 +57,13 @@ public class CSharpReferenceTypeImpl extends CSharpElementImpl implements DotNet
 			return new CSharpLambdaTypeRef(resolve, methodDeclaration.getParameterTypesForRuntime(), methodDeclaration.getReturnTypeRef());
 		}
 		return CSharpReferenceExpressionImpl.toTypeRef(resolve);
+	}
+
+	@NotNull
+	@Override
+	public DotNetPsiFacade.TypeResoleKind getTypeResoleKind()
+	{
+		return DotNetPsiFacade.TypeResoleKind.UNKNOWN;
 	}
 
 	@NotNull
