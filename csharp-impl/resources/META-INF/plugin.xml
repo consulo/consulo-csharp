@@ -86,7 +86,7 @@
 
 		<qualifiedNameProvider implementation="org.mustbe.consulo.csharp.ide.CSharpQualifiedNameProvider"/>
 
-		<itemPresentationProvider forClass="org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImpl"
+		<itemPresentationProvider forClass="org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration"
 								  implementationClass="org.mustbe.consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
 
 		<itemPresentationProvider forClass="org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration"

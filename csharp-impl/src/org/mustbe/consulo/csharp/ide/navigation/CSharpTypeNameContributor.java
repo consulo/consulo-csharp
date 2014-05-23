@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -53,7 +54,13 @@ public class CSharpTypeNameContributor implements ChooseByNameContributorEx, Got
 	public NavigationItem[] getItemsByName(String name, final String pattern, Project project, boolean includeNonProjectItems)
 	{
 		Collection<DotNetTypeDeclaration> cSharpTypeDeclarations = TypeIndex.getInstance().get(name, project, GlobalSearchScope.allScope(project));
-		return cSharpTypeDeclarations.toArray(new NavigationItem[cSharpTypeDeclarations.size()]);
+		NavigationItem[] items = new NavigationItem[cSharpTypeDeclarations.size()];
+		int i = 0;
+		for(DotNetTypeDeclaration t : cSharpTypeDeclarations)
+		{
+			items[i ++] = (NavigationItem) MsilToCSharpUtil.wrap(t);
+		}
+		return items;
 	}
 
 	@Override
@@ -63,12 +70,19 @@ public class CSharpTypeNameContributor implements ChooseByNameContributorEx, Got
 	}
 
 	@Override
-	public void processElementsWithName(@NotNull String name, @NotNull Processor<NavigationItem> navigationItemProcessor,
+	public void processElementsWithName(@NotNull String name, @NotNull final Processor<NavigationItem> navigationItemProcessor,
 			@NotNull FindSymbolParameters findSymbolParameters)
 	{
 		Project project = findSymbolParameters.getProject();
 		IdFilter idFilter = findSymbolParameters.getIdFilter();
-		Processor<DotNetTypeDeclaration> castVar = (Processor) navigationItemProcessor;
+		Processor<DotNetTypeDeclaration> castVar = new Processor<DotNetTypeDeclaration>()
+		{
+			@Override
+			public boolean process(DotNetTypeDeclaration typeDeclaration)
+			{
+				return navigationItemProcessor.process((NavigationItem) MsilToCSharpUtil.wrap(typeDeclaration));
+			}
+		};
 		GlobalSearchScope searchScope = findSymbolParameters.getSearchScope();
 
 		StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_INDEX, name, project, searchScope, idFilter, DotNetTypeDeclaration.class, castVar);

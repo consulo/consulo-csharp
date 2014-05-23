@@ -42,8 +42,11 @@ import org.mustbe.consulo.msil.MsilHelper;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.light.LightElement;
 import com.intellij.util.IncorrectOperationException;
@@ -64,6 +67,12 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 		myModifierList = new MsilModifierListToCSharpModifierList((MsilModifierList) classEntry.getModifierList());
 		myClassEntry = classEntry;
 		setNavigationElement(classEntry); //TODO [VISTALL] generator from MSIL to C#
+	}
+
+	@Override
+	public PsiFile getContainingFile()
+	{
+		return myClassEntry.getContainingFile();
 	}
 
 	@Override
@@ -260,6 +269,12 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 	public PsiElement getNameIdentifier()
 	{
 		return myClassEntry.getNameIdentifier();
+	}
+
+	@Override
+	public ItemPresentation getPresentation()
+	{
+		return ItemPresentationProviders.getItemPresentation(this);
 	}
 
 	@Override

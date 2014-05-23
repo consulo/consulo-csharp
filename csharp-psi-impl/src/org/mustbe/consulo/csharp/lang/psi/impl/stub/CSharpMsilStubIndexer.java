@@ -42,6 +42,8 @@ public class CSharpMsilStubIndexer extends MsilStubIndexer
 			return;
 		}
 
+		indexSink.occurrence(CSharpIndexKeys.TYPE_INDEX, name);
+
 		indexSink.occurrence(CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, namespaceForIndexing);
 
 		indexSink.occurrence(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX, namespaceForIndexing);
