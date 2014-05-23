@@ -21,6 +21,8 @@ import javax.swing.Icon;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.ide.IconDescriptorUpdaters;
@@ -51,6 +53,10 @@ public class CSharpQualifiedElementPresentationProvider implements ItemPresentat
 			if(myDeclaration instanceof DotNetTypeDeclaration)
 			{
 				return DotNetElementPresentationUtil.formatTypeWithGenericParameters((DotNetTypeDeclaration) myDeclaration);
+			}
+			else if(myDeclaration instanceof DotNetMethodDeclaration)
+			{
+				return DotNetElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) myDeclaration, 0);
 			}
 			//FIXME [VISTALL] use org.mustbe.consulo.csharp.ide.projectView.CSharpQElementTreeNode.getPresentableText() ?
 			return myDeclaration.getName();
