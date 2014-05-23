@@ -16,6 +16,9 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,6 +26,7 @@ import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.MsilToCSharpTypeRef;
 import org.mustbe.consulo.dotnet.lang.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
@@ -37,8 +41,10 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.MsilHelper;
 import org.mustbe.consulo.msil.lang.psi.ModifierElementType;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
+import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.light.LightElement;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.Processor;
@@ -53,7 +59,7 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 
 	public MsilClassAsCSharpTypeDefinition(MsilClassEntry classEntry)
 	{
-		super(classEntry.getManager(), CSharpLanguage.INSTANCE);
+		super(PsiManager.getInstance(classEntry.getProject()), CSharpLanguage.INSTANCE);
 		myClassEntry = classEntry;
 		setNavigationElement(classEntry); //TODO [VISTALL] generator from MSIL to C#
 	}
@@ -157,7 +163,7 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 	@Override
 	public void processConstructors(@NotNull Processor<DotNetConstructorDeclaration> processor)
 	{
-
+		CSharpTypeDeclarationImplUtil.processConstructors(this, processor);
 	}
 
 	@Nullable
@@ -184,7 +190,28 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
-		return new DotNetNamedElement[0];
+		DotNetNamedElement[] members = myClassEntry.getMembers();
+		List<DotNetNamedElement> list = new ArrayList<DotNetNamedElement>(members.length);
+		for(DotNetNamedElement member : members)
+		{
+			if(member instanceof MsilMethodEntry)
+			{
+				String name = member.getName();
+				if(MsilHelper.STATIC_CONSTRUCTOR_NAME.equals(name))
+				{
+					continue;
+				}
+				else if(MsilHelper.CONSTRUCTOR_NAME.equals(name))
+				{
+					//TODO [VISTALL] constructor
+				}
+				else
+				{
+					list.add(new MsilMethodAsCSharpMethodDefinition((MsilMethodEntry) member));
+				}
+			}
+		}
+		return list.isEmpty() ? DotNetNamedElement.EMPTY_ARRAY : list.toArray(new DotNetNamedElement[list.size()]);
 	}
 
 	@Override

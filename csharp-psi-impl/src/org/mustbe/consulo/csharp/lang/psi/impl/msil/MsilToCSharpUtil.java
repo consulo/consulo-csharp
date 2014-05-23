@@ -20,11 +20,17 @@ import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpQualifiedTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.ModifierElementType;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
+import org.mustbe.consulo.msil.lang.psi.impl.type.MsilArrayTypRefImpl;
+import org.mustbe.consulo.msil.lang.psi.impl.type.MsilReferenceTypeRefImpl;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ConcurrentHashMap;
 
@@ -84,8 +90,32 @@ public class MsilToCSharpUtil
 			{
 				return cache;
 			}
-			return new MsilClassAsCSharpTypeDefinition((MsilClassEntry) element);
+			ourCache.put((MsilClassEntry)element, cache = new MsilClassAsCSharpTypeDefinition((MsilClassEntry) element));
+			return cache;
 		}
 		return element;
+	}
+
+	public static DotNetTypeRef extractToCSharp(DotNetTypeRef typeRef, PsiElement scope)
+	{
+		if(typeRef == DotNetTypeRef.ERROR_TYPE)
+		{
+			return DotNetTypeRef.ERROR_TYPE;
+		}
+
+		if(typeRef instanceof MsilReferenceTypeRefImpl)
+		{
+			PsiElement resolve = typeRef.resolve(scope);
+			if(resolve == null)
+			{
+				return DotNetTypeRef.ERROR_TYPE;
+			}
+			return new CSharpQualifiedTypeRef((DotNetQualifiedElement) MsilToCSharpUtil.wrap(resolve));
+		}
+		else if(typeRef instanceof MsilArrayTypRefImpl)
+		{
+			return new CSharpArrayTypeRef(extractToCSharp(((MsilArrayTypRefImpl) typeRef).getInnerType(), scope), 0);
+		}
+		return typeRef;
 	}
 }
