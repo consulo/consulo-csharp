@@ -26,7 +26,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.msil.lang.psi.ModifierElementType;
+import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.light.LightElement;
@@ -39,10 +39,12 @@ import com.intellij.util.IncorrectOperationException;
 public class MsilVariableAsCSharpVariable extends LightElement implements DotNetVariable
 {
 	private final DotNetVariable myVariable;
+	private MsilModifierListToCSharpModifierList myModifierList;
 
 	public MsilVariableAsCSharpVariable(DotNetVariable variable)
 	{
 		super(PsiManager.getInstance(variable.getProject()), CSharpLanguage.INSTANCE);
+		myModifierList = new MsilModifierListToCSharpModifierList((MsilModifierList) variable.getModifierList());
 		myVariable = variable;
 	}
 
@@ -76,19 +78,14 @@ public class MsilVariableAsCSharpVariable extends LightElement implements DotNet
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		ModifierElementType modifierElementType = MsilToCSharpUtil.toMsilModifier(modifier);
-		if(modifierElementType == null)
-		{
-			return false;
-		}
-		return myVariable.hasModifier(modifierElementType);
+		return myModifierList.hasModifier(modifier);
 	}
 
 	@Nullable
 	@Override
 	public DotNetModifierList getModifierList()
 	{
-		return myVariable.getModifierList();
+		return myModifierList;
 	}
 
 	@Override

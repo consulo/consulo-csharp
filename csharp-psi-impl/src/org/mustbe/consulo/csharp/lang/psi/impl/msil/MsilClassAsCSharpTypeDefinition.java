@@ -39,9 +39,9 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.MsilHelper;
-import org.mustbe.consulo.msil.lang.psi.ModifierElementType;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
+import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
@@ -56,10 +56,12 @@ import com.intellij.util.Processor;
 public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSharpTypeDeclaration
 {
 	private final MsilClassEntry myClassEntry;
+	private MsilModifierListToCSharpModifierList myModifierList;
 
 	public MsilClassAsCSharpTypeDefinition(MsilClassEntry classEntry)
 	{
 		super(PsiManager.getInstance(classEntry.getProject()), CSharpLanguage.INSTANCE);
+		myModifierList = new MsilModifierListToCSharpModifierList((MsilModifierList) classEntry.getModifierList());
 		myClassEntry = classEntry;
 		setNavigationElement(classEntry); //TODO [VISTALL] generator from MSIL to C#
 	}
@@ -217,19 +219,14 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		ModifierElementType modifierElementType = MsilToCSharpUtil.toMsilModifier(modifier);
-		if(modifierElementType == null)
-		{
-			return false;
-		}
-		return myClassEntry.hasModifier(modifierElementType);
+		return myModifierList.hasModifier(modifier);
 	}
 
 	@Nullable
 	@Override
 	public DotNetModifierList getModifierList()
 	{
-		return myClassEntry.getModifierList();
+		return myModifierList;
 	}
 
 	@Nullable
