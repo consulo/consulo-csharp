@@ -203,7 +203,7 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 				}
 				else if(MsilHelper.CONSTRUCTOR_NAME.equals(name))
 				{
-					//TODO [VISTALL] constructor
+					list.add(new MsilMethodAsCSharpConstructorDefinition(this, (MsilMethodEntry) member));
 				}
 				else
 				{
