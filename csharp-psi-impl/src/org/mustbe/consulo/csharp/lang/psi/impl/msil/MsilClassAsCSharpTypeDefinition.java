@@ -44,6 +44,7 @@ import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilFieldEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
+import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.openapi.util.Comparing;
@@ -74,11 +75,19 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 				if(member instanceof MsilMethodEntry)
 				{
 					String name = member.getName();
-					if(MsilHelper.STATIC_CONSTRUCTOR_NAME.equals(name))
+					if(((MsilMethodEntry) member).hasModifier(MsilTokens.SPECIALNAME_KEYWORD))
 					{
-						//
+						// dont show properties methods
+						if(name.startsWith("get_") ||
+								name.startsWith("set_") ||
+								name.startsWith("add_") ||
+								name.startsWith("remove_") ||
+								name.equals(MsilHelper.STATIC_CONSTRUCTOR_NAME))
+						{
+							continue;
+						}
 					}
-					else if(MsilHelper.CONSTRUCTOR_NAME.equals(name))
+					if(MsilHelper.CONSTRUCTOR_NAME.equals(name))
 					{
 						list.add(new MsilMethodAsCSharpConstructorDefinition(MsilClassAsCSharpTypeDefinition.this, (MsilMethodEntry) member));
 					}
