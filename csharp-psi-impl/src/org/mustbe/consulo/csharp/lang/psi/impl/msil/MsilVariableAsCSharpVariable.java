@@ -28,6 +28,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.light.LightElement;
 import com.intellij.util.IncorrectOperationException;
@@ -44,8 +45,20 @@ public class MsilVariableAsCSharpVariable extends LightElement implements DotNet
 	public MsilVariableAsCSharpVariable(DotNetVariable variable)
 	{
 		super(PsiManager.getInstance(variable.getProject()), CSharpLanguage.INSTANCE);
+		setNavigationElement(variable);
 		myModifierList = new MsilModifierListToCSharpModifierList((MsilModifierList) variable.getModifierList());
 		myVariable = variable;
+	}
+
+	@Override
+	public PsiFile getContainingFile()
+	{
+		return myVariable.getContainingFile();
+	}
+
+	public DotNetVariable getVariable()
+	{
+		return myVariable;
 	}
 
 	@Override

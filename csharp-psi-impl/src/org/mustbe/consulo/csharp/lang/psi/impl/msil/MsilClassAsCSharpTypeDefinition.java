@@ -37,9 +37,11 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.MsilHelper;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
+import org.mustbe.consulo.msil.lang.psi.MsilFieldEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
 import com.intellij.navigation.ItemPresentation;
@@ -210,7 +212,7 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 				String name = member.getName();
 				if(MsilHelper.STATIC_CONSTRUCTOR_NAME.equals(name))
 				{
-					continue;
+					//
 				}
 				else if(MsilHelper.CONSTRUCTOR_NAME.equals(name))
 				{
@@ -220,6 +222,16 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 				{
 					list.add(new MsilMethodAsCSharpMethodDefinition((MsilMethodEntry) member));
 				}
+			}
+			else if(member instanceof MsilFieldEntry)
+			{
+				String name = member.getName();
+				if(Comparing.equal(name, "__value") && isEnum())
+				{
+					continue;
+				}
+
+				list.add(new MsilFieldAsCSharpFieldDefinition((DotNetVariable) member));
 			}
 		}
 		return list.isEmpty() ? DotNetNamedElement.EMPTY_ARRAY : list.toArray(new DotNetNamedElement[list.size()]);
