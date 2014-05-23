@@ -88,20 +88,20 @@ public class MsilMethodAsCSharpLikeMethodDefinition extends LightElement impleme
 	@Override
 	public DotNetGenericParameterList getGenericParameterList()
 	{
-		return null;
+		return myMethodEntry.getGenericParameterList();
 	}
 
 	@NotNull
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
-		return new DotNetGenericParameter[0];
+		return myMethodEntry.getGenericParameters();
 	}
 
 	@Override
 	public int getGenericParametersCount()
 	{
-		return 0;
+		return myMethodEntry.getGenericParametersCount();
 	}
 
 	@Override

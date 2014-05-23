@@ -111,7 +111,7 @@ public class MsilToCSharpUtil
 					}
 				});
 
-				assert msilMethodEntry != null;
+				assert msilMethodEntry != null : ((MsilClassEntry) element).getPresentableQName();
 
 				cache = new MsilMethodAsCSharpMethodDefinition((MsilClassEntry) element, msilMethodEntry);
 			}
@@ -150,10 +150,6 @@ public class MsilToCSharpUtil
 
 	public static boolean isInheritor(DotNetTypeDeclaration typeDeclaration, String other, boolean deep)
 	{
-		if(Comparing.equal(typeDeclaration.getPresentableQName(), other))
-		{
-			return true;
-		}
 		DotNetTypeRef[] anExtends = typeDeclaration.getExtendTypeRefs();
 		if(anExtends.length > 0)
 		{
@@ -165,6 +161,11 @@ public class MsilToCSharpUtil
 					if(psiElement.isEquivalentTo(typeDeclaration))
 					{
 						return false;
+					}
+
+					if(Comparing.equal(((DotNetTypeDeclaration) psiElement).getPresentableQName(), other))
+					{
+						return true;
 					}
 
 					if(deep)

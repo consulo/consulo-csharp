@@ -16,7 +16,11 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import com.intellij.psi.PsiElement;
 
@@ -32,6 +36,26 @@ public class MsilMethodAsCSharpConstructorDefinition extends MsilMethodAsCSharpL
 	{
 		super(methodEntry);
 		myTypeDefinition = typeDefinition;
+	}
+
+	@Nullable
+	@Override
+	public DotNetGenericParameterList getGenericParameterList()
+	{
+		return null;
+	}
+
+	@NotNull
+	@Override
+	public DotNetGenericParameter[] getGenericParameters()
+	{
+		return DotNetGenericParameter.EMPTY_ARRAY;
+	}
+
+	@Override
+	public int getGenericParametersCount()
+	{
+		return 0;
 	}
 
 	@Override

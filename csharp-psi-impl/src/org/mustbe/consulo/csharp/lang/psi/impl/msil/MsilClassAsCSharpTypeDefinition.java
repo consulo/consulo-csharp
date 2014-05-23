@@ -183,20 +183,20 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 	@Override
 	public DotNetGenericParameterList getGenericParameterList()
 	{
-		return null;
+		return myClassEntry.getGenericParameterList();
 	}
 
 	@NotNull
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
-		return new DotNetGenericParameter[0];
+		return myClassEntry.getGenericParameters();
 	}
 
 	@Override
 	public int getGenericParametersCount()
 	{
-		return 0;
+		return myClassEntry.getGenericParametersCount();
 	}
 
 	@NotNull
