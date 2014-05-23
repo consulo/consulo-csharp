@@ -47,6 +47,7 @@ import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
@@ -60,6 +61,47 @@ import com.intellij.util.Processor;
  */
 public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSharpTypeDeclaration
 {
+	private NotNullLazyValue<DotNetNamedElement[]> myMembersValue = new NotNullLazyValue<DotNetNamedElement[]>()
+	{
+		@NotNull
+		@Override
+		protected DotNetNamedElement[] compute()
+		{
+			DotNetNamedElement[] members = myClassEntry.getMembers();
+			List<DotNetNamedElement> list = new ArrayList<DotNetNamedElement>(members.length);
+			for(DotNetNamedElement member : members)
+			{
+				if(member instanceof MsilMethodEntry)
+				{
+					String name = member.getName();
+					if(MsilHelper.STATIC_CONSTRUCTOR_NAME.equals(name))
+					{
+						//
+					}
+					else if(MsilHelper.CONSTRUCTOR_NAME.equals(name))
+					{
+						list.add(new MsilMethodAsCSharpConstructorDefinition(MsilClassAsCSharpTypeDefinition.this, (MsilMethodEntry) member));
+					}
+					else
+					{
+						list.add(new MsilMethodAsCSharpMethodDefinition(null, (MsilMethodEntry) member));
+					}
+				}
+				else if(member instanceof MsilFieldEntry)
+				{
+					String name = member.getName();
+					if(Comparing.equal(name, "value__") && isEnum())
+					{
+						continue;
+					}
+
+					list.add(new MsilFieldAsCSharpFieldDefinition((DotNetVariable) member));
+				}
+			}
+			return list.isEmpty() ? DotNetNamedElement.EMPTY_ARRAY : list.toArray(new DotNetNamedElement[list.size()]);
+		}
+	};
+
 	private final MsilClassEntry myClassEntry;
 	private MsilModifierListToCSharpModifierList myModifierList;
 
@@ -203,38 +245,7 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
-		DotNetNamedElement[] members = myClassEntry.getMembers();
-		List<DotNetNamedElement> list = new ArrayList<DotNetNamedElement>(members.length);
-		for(DotNetNamedElement member : members)
-		{
-			if(member instanceof MsilMethodEntry)
-			{
-				String name = member.getName();
-				if(MsilHelper.STATIC_CONSTRUCTOR_NAME.equals(name))
-				{
-					//
-				}
-				else if(MsilHelper.CONSTRUCTOR_NAME.equals(name))
-				{
-					list.add(new MsilMethodAsCSharpConstructorDefinition(this, (MsilMethodEntry) member));
-				}
-				else
-				{
-					list.add(new MsilMethodAsCSharpMethodDefinition(null, (MsilMethodEntry) member));
-				}
-			}
-			else if(member instanceof MsilFieldEntry)
-			{
-				String name = member.getName();
-				if(Comparing.equal(name, "value__") && isEnum())
-				{
-					continue;
-				}
-
-				list.add(new MsilFieldAsCSharpFieldDefinition((DotNetVariable) member));
-			}
-		}
-		return list.isEmpty() ? DotNetNamedElement.EMPTY_ARRAY : list.toArray(new DotNetNamedElement[list.size()]);
+		return myMembersValue.getValue();
 	}
 
 	@Override
