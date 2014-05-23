@@ -78,7 +78,7 @@ public class CSharpHighlightUtil
 	@Nullable
 	public static HighlightInfo highlightNamed(@NotNull HighlightInfoHolder holder, @Nullable PsiElement element, @Nullable PsiElement target)
 	{
-		if(target == null)
+		if(target == null || element == null)
 		{
 			return null;
 		}
@@ -89,6 +89,31 @@ public class CSharpHighlightUtil
 			return null;
 		}
 
+		TextAttributesKey defaultTextAttributeKey = getDefaultTextAttributeKey(element);
+		if(defaultTextAttributeKey == null)
+		{
+			return null;
+		}
+
+		HighlightInfo info = HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes(defaultTextAttributeKey).create();
+		holder.add(info);
+		if(element instanceof DotNetModifierListOwner && DotNetAttributeUtil.hasAttribute((DotNetModifierListOwner) element,
+				DotNetTypes.System_ObsoleteAttribute))
+		{
+			holder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes(CodeInsightColors
+					.DEPRECATED_ATTRIBUTES).create());
+		}
+
+		if(CSharpHighlightUtil.isGeneratedElement(element))
+		{
+			holder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes(EditorColors
+					.INJECTED_LANGUAGE_FRAGMENT).create());
+		}
+		return info;
+	}
+
+	private static TextAttributesKey getDefaultTextAttributeKey(PsiElement element)
+	{
 		TextAttributesKey key = null;
 		if(element instanceof CSharpTypeDeclaration)
 		{
@@ -104,8 +129,7 @@ public class CSharpHighlightUtil
 		else if(element instanceof DotNetConstructorDeclaration)
 		{
 			PsiElement parent = element.getParent();
-			highlightNamed(holder, parent, target);
-			return null;
+			return getDefaultTextAttributeKey(parent);
 		}
 		else if(element instanceof DotNetGenericParameter || element instanceof CSharpTypeDefStatementImpl)
 		{
@@ -140,26 +164,7 @@ public class CSharpHighlightUtil
 			key = ((DotNetVariable) element).hasModifier(CSharpModifier.STATIC) ? CSharpHighlightKey.STATIC_FIELD : CSharpHighlightKey
 					.INSTANCE_FIELD;
 		}
-		else
-		{
-			return null;
-		}
-
-		HighlightInfo info = HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes(key).create();
-		holder.add(info);
-		if(element instanceof DotNetModifierListOwner && DotNetAttributeUtil.hasAttribute((DotNetModifierListOwner) element,
-				DotNetTypes.System_ObsoleteAttribute))
-		{
-			holder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes(CodeInsightColors
-					.DEPRECATED_ATTRIBUTES).create());
-		}
-
-		if(CSharpHighlightUtil.isGeneratedElement(element))
-		{
-			holder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes(EditorColors
-					.INJECTED_LANGUAGE_FRAGMENT).create());
-		}
-		return info;
+		return key;
 	}
 
 	@Nullable
