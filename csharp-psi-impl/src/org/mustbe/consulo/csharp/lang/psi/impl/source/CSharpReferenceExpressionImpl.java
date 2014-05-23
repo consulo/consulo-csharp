@@ -874,6 +874,11 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		else if(tempElement instanceof DotNetReferenceType)
 		{
 			PsiElement parentOfParent = tempElement.getParent();
+			if(parentOfParent instanceof DotNetTypeWithTypeArguments)
+			{
+				parentOfParent = parentOfParent.getParent();
+			}
+
 			if(parentOfParent instanceof CSharpMethodCallParameterListOwner && ((CSharpMethodCallParameterListOwner) parentOfParent).canResolve())
 			{
 				return ResolveToKind.CONSTRUCTOR;

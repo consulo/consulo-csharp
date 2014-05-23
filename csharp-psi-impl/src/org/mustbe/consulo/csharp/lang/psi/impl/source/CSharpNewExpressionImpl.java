@@ -25,11 +25,14 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpNewExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpAnonymTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
+import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceType;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -76,6 +79,13 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 			DotNetTypeRef typeRef = null;
 			if(canResolve())
 			{
+				DotNetType[] arguments = DotNetType.EMPTY_ARRAY;
+				if(type instanceof DotNetTypeWithTypeArguments)
+				{
+					arguments = ((DotNetTypeWithTypeArguments) type).getArguments();
+					type = ((DotNetTypeWithTypeArguments) type).getInnerType();
+				}
+
 				if(type instanceof DotNetReferenceType)
 				{
 					DotNetReferenceExpression referenceExpression = ((DotNetReferenceType) type).getReferenceExpression();
@@ -92,6 +102,11 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 				else
 				{
 					typeRef = type.toTypeRef();
+				}
+
+				if(arguments.length != 0)
+				{
+					typeRef = new DotNetGenericWrapperTypeRef(typeRef, DotNetTypeRefUtil.toArray(arguments));
 				}
 			}
 			else
