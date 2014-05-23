@@ -82,7 +82,7 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 		{
 			return false;
 		}
-		return myModifierList.hasModifier(modifier);
+		return myModifierList.hasModifier(modifierElementType);
 	}
 
 	@Override
