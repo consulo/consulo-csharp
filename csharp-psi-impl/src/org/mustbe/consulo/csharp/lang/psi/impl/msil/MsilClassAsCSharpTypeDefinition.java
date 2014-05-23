@@ -226,7 +226,7 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 			else if(member instanceof MsilFieldEntry)
 			{
 				String name = member.getName();
-				if(Comparing.equal(name, "__value") && isEnum())
+				if(Comparing.equal(name, "value__") && isEnum())
 				{
 					continue;
 				}
