@@ -49,6 +49,7 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 	private List<DotNetParameter> myParameters = new ArrayList<DotNetParameter>();
 	private String myParentQName;
 	private DotNetTypeRef myReturnType;
+	private CSharpLightModifierListBuilder myModifierListBuilder;
 
 	public CSharpLightLikeMethodDeclarationBuilder(Project project)
 	{
@@ -106,7 +107,11 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 	@Override
 	public DotNetModifierList getModifierList()
 	{
-		return null;
+		if(myModifierListBuilder == null)
+		{
+			myModifierListBuilder = new CSharpLightModifierListBuilder(myModifiers, getManager(), getLanguage());
+		}
+		return myModifierListBuilder;
 	}
 
 	@NotNull

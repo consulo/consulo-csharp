@@ -71,6 +71,7 @@ public class ConstructorProcessor extends AbstractScopeProcessor
 		builder.addModifier(CSharpModifier.PUBLIC);
 		builder.setNavigationElement(owner);
 		builder.withParent(owner);
+		builder.withName(owner.getName());
 
 		execute(builder, null);
 	}
