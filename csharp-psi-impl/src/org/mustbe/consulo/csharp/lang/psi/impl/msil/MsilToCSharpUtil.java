@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpQualifiedTypeRef;
 import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
@@ -145,7 +146,18 @@ public class MsilToCSharpUtil
 		{
 			return new CSharpArrayTypeRef(extractToCSharp(((MsilArrayTypRefImpl) typeRef).getInnerType(), scope), 0);
 		}
-		return typeRef;
+		else if(typeRef instanceof DotNetGenericWrapperTypeRef)
+		{
+			val inner = extractToCSharp(((DotNetGenericWrapperTypeRef) typeRef).getInner(), scope);
+			DotNetTypeRef[] arguments = ((DotNetGenericWrapperTypeRef) typeRef).getArguments();
+			DotNetTypeRef[] newArguments = new DotNetTypeRef[arguments.length];
+			for(int i = 0; i < newArguments.length; i++)
+			{
+				newArguments[i] = extractToCSharp(arguments[i], scope);
+			}
+			return new DotNetGenericWrapperTypeRef(inner, arguments);
+		}
+		return new MsilDelegateTypeRef(typeRef);
 	}
 
 	public static boolean isInheritor(DotNetTypeDeclaration typeDeclaration, String other, boolean deep)
