@@ -150,7 +150,13 @@ public class MsilMethodAsCSharpMethodDefinition extends LightElement implements 
 	@Override
 	public DotNetTypeRef[] getParameterTypesForRuntime()
 	{
-		return new DotNetTypeRef[0];
+		DotNetTypeRef[] parameters = myMethodEntry.getParameterTypesForRuntime();
+		DotNetTypeRef[] refs = new DotNetTypeRef[parameters.length];
+		for(int i = 0; i < parameters.length; i++)
+		{
+			refs[i] = MsilToCSharpUtil.extractToCSharp(parameters[i], myMethodEntry);
+		}
+		return refs;
 	}
 
 	@Nullable
@@ -164,7 +170,14 @@ public class MsilMethodAsCSharpMethodDefinition extends LightElement implements 
 	@Override
 	public DotNetParameter[] getParameters()
 	{
-		return new DotNetParameter[0];
+		DotNetParameter[] parameters = myMethodEntry.getParameters();
+		DotNetParameter[] newParameters = new DotNetParameter[parameters.length];
+		for(int i = 0; i < parameters.length; i++)
+		{
+			DotNetParameter parameter = parameters[i];
+			newParameters[i] = new MsilParameterAsCSharpParameter(parameter, i);
+		}
+		return newParameters;
 	}
 
 	@Nullable
