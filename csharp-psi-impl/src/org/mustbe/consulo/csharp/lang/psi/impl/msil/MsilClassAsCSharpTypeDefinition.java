@@ -37,7 +37,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.MsilHelper;
 import org.mustbe.consulo.msil.lang.psi.ModifierElementType;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
-import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.light.LightElement;
@@ -104,7 +103,7 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 	@Override
 	public boolean isInterface()
 	{
-		return myClassEntry.hasModifier(MsilTokens.INTERFACE_KEYWORD);
+		return myClassEntry.isInterface();
 	}
 
 	@Override
