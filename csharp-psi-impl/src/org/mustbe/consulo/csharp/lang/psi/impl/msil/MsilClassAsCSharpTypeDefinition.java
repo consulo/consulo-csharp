@@ -128,13 +128,13 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 	@Override
 	public boolean isStruct()
 	{
-		return false;
+		return myClassEntry.isStruct();
 	}
 
 	@Override
 	public boolean isEnum()
 	{
-		return false;
+		return myClassEntry.isEnum();
 	}
 
 	@Override
