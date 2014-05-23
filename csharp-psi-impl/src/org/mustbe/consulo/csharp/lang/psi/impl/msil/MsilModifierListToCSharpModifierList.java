@@ -23,11 +23,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightAttributeBuilder;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.msil.lang.psi.ModifierElementType;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
+import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.light.LightElement;
@@ -71,7 +74,18 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 	@Override
 	public DotNetAttribute[] getAttributes()
 	{
-		return myModifierList.getAttributes();
+		DotNetAttribute[] oldAttributes = myModifierList.getAttributes();
+		List<DotNetAttribute> attributes = new ArrayList<DotNetAttribute>(oldAttributes.length);
+		for(DotNetAttribute attribute : attributes)
+		{
+			attributes.add(attribute);
+		}
+
+		if(hasModifier(MsilTokens.SERIALIZABLE_KEYWORD))
+		{
+			attributes.add(new CSharpLightAttributeBuilder(myModifierList, DotNetTypes.System_Serializable));
+		}
+		return attributes.toArray(new DotNetAttribute[attributes.size()]);
 	}
 
 	@Override
