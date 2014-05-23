@@ -29,7 +29,8 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 public class CSharpLightConstructorDeclaration extends CSharpLightLikeMethodDeclaration<CSharpConstructorDeclaration> implements
 		CSharpConstructorDeclaration
 {
-	public CSharpLightConstructorDeclaration(CSharpConstructorDeclaration original, DotNetTypeRef returnTypeRef, DotNetParameterList parameterList)
+	public CSharpLightConstructorDeclaration(CSharpConstructorDeclaration original, DotNetTypeRef returnTypeRef,
+			@NotNull  DotNetParameterList parameterList)
 	{
 		super(original, returnTypeRef, parameterList);
 	}

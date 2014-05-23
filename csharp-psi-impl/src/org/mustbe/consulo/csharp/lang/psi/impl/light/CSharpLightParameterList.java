@@ -21,16 +21,17 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
  * @since 15.01.14
  */
-public class CSharpLightParameterList extends CSharpLightElement<DotNetParameterList> implements DotNetParameterList
+public class CSharpLightParameterList extends CSharpLightElement<PsiElement> implements DotNetParameterList
 {
 	private DotNetParameter[] myParameters;
 
-	public CSharpLightParameterList(DotNetParameterList original, DotNetParameter[] parameters)
+	public CSharpLightParameterList(PsiElement original, DotNetParameter[] parameters)
 	{
 		super(original);
 		myParameters = parameters;

@@ -42,7 +42,7 @@ public abstract class CSharpLightLikeMethodDeclaration<S extends DotNetLikeMetho
 	private final DotNetTypeRef myReturnTypeRef;
 	private final DotNetParameterList myParameterTypes;
 
-	public CSharpLightLikeMethodDeclaration(S original, DotNetTypeRef returnTypeRef, DotNetParameterList parameterList)
+	public CSharpLightLikeMethodDeclaration(S original, DotNetTypeRef returnTypeRef, @NotNull DotNetParameterList parameterList)
 	{
 		super(original);
 		myOriginal = original;

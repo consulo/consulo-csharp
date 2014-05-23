@@ -65,19 +65,16 @@ public class GenericUnwrapTool
 			DotNetTypeRef newReturnTypeRef = exchangeTypeRefs(methodDeclaration.getReturnTypeRef(), extractor, namedElement);
 
 			DotNetParameterList parameterList = methodDeclaration.getParameterList();
-			if(parameterList != null)
+
+			DotNetParameter[] parameters = methodDeclaration.getParameters();
+			DotNetParameter[] newParameters = new DotNetParameter[parameters.length];
+			for(int i = 0; i < parameters.length; i++)
 			{
-				DotNetParameter[] parameters = methodDeclaration.getParameters();
-
-				DotNetParameter[] newParameters = new DotNetParameter[parameters.length];
-				for(int i = 0; i < parameters.length; i++)
-				{
-					DotNetParameter parameter = parameters[i];
-					newParameters[i] = new CSharpLightParameter(parameter, exchangeTypeRefs(parameter.toTypeRef(true), extractor, parameter));
-				}
-
-				parameterList = new CSharpLightParameterList(parameterList, newParameters);
+				DotNetParameter parameter = parameters[i];
+				newParameters[i] = new CSharpLightParameter(parameter, exchangeTypeRefs(parameter.toTypeRef(true), extractor, parameter));
 			}
+
+			parameterList = new CSharpLightParameterList(parameterList == null ? namedElement : parameterList, newParameters);
 
 			return (T) new CSharpLightMethodDeclaration(methodDeclaration, newReturnTypeRef, parameterList);
 		}
@@ -88,42 +85,38 @@ public class GenericUnwrapTool
 			DotNetTypeRef newReturnTypeRef = exchangeTypeRefs(arrayMethodDeclaration.getReturnTypeRef(), extractor, namedElement);
 
 			DotNetParameterList parameterList = arrayMethodDeclaration.getParameterList();
-			if(parameterList != null)
+
+			DotNetParameter[] parameters = arrayMethodDeclaration.getParameters();
+
+			DotNetParameter[] newParameters = new DotNetParameter[parameters.length];
+			for(int i = 0; i < parameters.length; i++)
 			{
-				DotNetParameter[] parameters = arrayMethodDeclaration.getParameters();
-
-				DotNetParameter[] newParameters = new DotNetParameter[parameters.length];
-				for(int i = 0; i < parameters.length; i++)
-				{
-					DotNetParameter parameter = parameters[i];
-					newParameters[i] = new CSharpLightParameter(parameter, exchangeTypeRefs(parameter.toTypeRef(true), extractor, parameter));
-				}
-
-				parameterList = new CSharpLightParameterList(parameterList, newParameters);
+				DotNetParameter parameter = parameters[i];
+				newParameters[i] = new CSharpLightParameter(parameter, exchangeTypeRefs(parameter.toTypeRef(true), extractor, parameter));
 			}
+
+			parameterList = new CSharpLightParameterList(parameterList == null ? namedElement : parameterList, newParameters);
 
 			return (T) new CSharpLightArrayMethodDeclaration(arrayMethodDeclaration, newReturnTypeRef, parameterList);
 		}
 		else if(namedElement instanceof CSharpConstructorDeclaration)
 		{
-			CSharpConstructorDeclaration constructorDeclaration = (CSharpConstructorDeclaration) namedElement;
+			CSharpConstructorDeclaration constructor = (CSharpConstructorDeclaration) namedElement;
 
-			DotNetParameterList parameterList = constructorDeclaration.getParameterList();
-			if(parameterList != null)
+			DotNetParameterList parameterList = constructor.getParameterList();
+
+			DotNetParameter[] parameters = constructor.getParameters();
+
+			DotNetParameter[] newParameters = new DotNetParameter[parameters.length];
+			for(int i = 0; i < parameters.length; i++)
 			{
-				DotNetParameter[] parameters = constructorDeclaration.getParameters();
-
-				DotNetParameter[] newParameters = new DotNetParameter[parameters.length];
-				for(int i = 0; i < parameters.length; i++)
-				{
-					DotNetParameter parameter = parameters[i];
-					newParameters[i] = new CSharpLightParameter(parameter, exchangeTypeRefs(parameter.toTypeRef(true), extractor, parameter));
-				}
-
-				parameterList = new CSharpLightParameterList(parameterList, newParameters);
+				DotNetParameter parameter = parameters[i];
+				newParameters[i] = new CSharpLightParameter(parameter, exchangeTypeRefs(parameter.toTypeRef(true), extractor, parameter));
 			}
 
-			return (T) new CSharpLightConstructorDeclaration(constructorDeclaration, null, parameterList);
+			parameterList = new CSharpLightParameterList(parameterList == null ? namedElement : parameterList, newParameters);
+
+			return (T) new CSharpLightConstructorDeclaration(constructor, null, parameterList);
 		}
 		else if(namedElement instanceof CSharpPropertyDeclaration)
 		{

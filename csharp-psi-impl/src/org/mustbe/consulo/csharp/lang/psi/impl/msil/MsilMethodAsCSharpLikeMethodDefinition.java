@@ -134,7 +134,7 @@ public class MsilMethodAsCSharpLikeMethodDefinition extends LightElement impleme
 	@Override
 	public DotNetParameterList getParameterList()
 	{
-		return null;
+		return myMethodEntry.getParameterList();
 	}
 
 	@NotNull

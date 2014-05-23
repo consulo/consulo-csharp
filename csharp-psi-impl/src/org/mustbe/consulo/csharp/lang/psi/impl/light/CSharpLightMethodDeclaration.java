@@ -35,7 +35,7 @@ public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclarati
 {
 	private boolean myExtensionWrapper;
 
-	public CSharpLightMethodDeclaration(CSharpMethodDeclaration original, DotNetTypeRef returnTypeRef, DotNetParameterList parameterList)
+	public CSharpLightMethodDeclaration(CSharpMethodDeclaration original, DotNetTypeRef returnTypeRef, @NotNull DotNetParameterList parameterList)
 	{
 		super(original, returnTypeRef, parameterList);
 	}
