@@ -21,6 +21,8 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.msil.MsilHelper;
+import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -31,9 +33,32 @@ import com.intellij.psi.tree.IElementType;
  */
 public class MsilMethodAsCSharpMethodDefinition extends MsilMethodAsCSharpLikeMethodDefinition implements CSharpMethodDeclaration
 {
-	public MsilMethodAsCSharpMethodDefinition(MsilMethodEntry methodEntry)
+	private final MsilClassEntry myDelegate;
+
+	public MsilMethodAsCSharpMethodDefinition(@Nullable MsilClassEntry msilClassEntry, MsilMethodEntry methodEntry)
 	{
 		super(methodEntry);
+		myDelegate = msilClassEntry;
+	}
+
+	@Override
+	public String getName()
+	{
+		return myDelegate == null ? super.getName() : MsilHelper.cutGenericMarker(myDelegate.getName());
+	}
+
+	@Nullable
+	@Override
+	public String getPresentableParentQName()
+	{
+		return myDelegate == null ? super.getPresentableParentQName() : myDelegate.getPresentableParentQName();
+	}
+
+	@Nullable
+	@Override
+	public String getPresentableQName()
+	{
+		return myDelegate == null ? super.getPresentableQName() : MsilHelper.cutGenericMarker(myDelegate.getPresentableQName());
 	}
 
 	@Nullable
@@ -53,7 +78,7 @@ public class MsilMethodAsCSharpMethodDefinition extends MsilMethodAsCSharpLikeMe
 	@Override
 	public boolean isDelegate()
 	{
-		return false;
+		return myDelegate != null;
 	}
 
 	@Override

@@ -22,17 +22,25 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpQualifiedTypeRef;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.ModifierElementType;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilEntry;
+import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilArrayTypRefImpl;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilReferenceTypeRefImpl;
+import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ConcurrentHashMap;
+import com.intellij.util.containers.ContainerUtil;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -78,19 +86,40 @@ public class MsilToCSharpUtil
 		return null;
 	}
 
-	private static Map<MsilEntry, MsilClassAsCSharpTypeDefinition> ourCache = new ConcurrentHashMap<MsilEntry, MsilClassAsCSharpTypeDefinition>();
+	private static Map<MsilEntry, PsiElement> ourCache = new ConcurrentHashMap<MsilEntry, PsiElement>();
 
 	@Nullable
 	public static PsiElement wrap(PsiElement element)
 	{
 		if(element instanceof MsilClassEntry)
 		{
-			MsilClassAsCSharpTypeDefinition cache = ourCache.get(element);
+			PsiElement cache = ourCache.get(element);
 			if(cache != null)
 			{
 				return cache;
 			}
-			ourCache.put((MsilClassEntry)element, cache = new MsilClassAsCSharpTypeDefinition((MsilClassEntry) element));
+
+			if(isInheritor((MsilClassEntry) element, DotNetTypes.System_MulticastDelegate, true))
+			{
+				val msilMethodEntry = (MsilMethodEntry) ContainerUtil.find(((MsilClassEntry) element).getMembers(),
+						new Condition<DotNetNamedElement>()
+				{
+					@Override
+					public boolean value(DotNetNamedElement element)
+					{
+						return element instanceof MsilMethodEntry && Comparing.equal(element.getName(), "Invoke");
+					}
+				});
+
+				assert msilMethodEntry != null;
+
+				cache = new MsilMethodAsCSharpMethodDefinition((MsilClassEntry) element, msilMethodEntry);
+			}
+			else
+			{
+				cache = new MsilClassAsCSharpTypeDefinition((MsilClassEntry) element);
+			}
+			ourCache.put((MsilClassEntry) element, cache);
 			return cache;
 		}
 		return element;
@@ -117,5 +146,37 @@ public class MsilToCSharpUtil
 			return new CSharpArrayTypeRef(extractToCSharp(((MsilArrayTypRefImpl) typeRef).getInnerType(), scope), 0);
 		}
 		return typeRef;
+	}
+
+	public static boolean isInheritor(DotNetTypeDeclaration typeDeclaration, String other, boolean deep)
+	{
+		if(Comparing.equal(typeDeclaration.getPresentableQName(), other))
+		{
+			return true;
+		}
+		DotNetTypeRef[] anExtends = typeDeclaration.getExtendTypeRefs();
+		if(anExtends.length > 0)
+		{
+			for(DotNetTypeRef dotNetType : anExtends)
+			{
+				PsiElement psiElement = dotNetType.resolve(typeDeclaration);
+				if(psiElement instanceof DotNetTypeDeclaration)
+				{
+					if(psiElement.isEquivalentTo(typeDeclaration))
+					{
+						return false;
+					}
+
+					if(deep)
+					{
+						if(isInheritor((DotNetTypeDeclaration) psiElement, other, true))
+						{
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
 	}
 }

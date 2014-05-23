@@ -220,7 +220,7 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 				}
 				else
 				{
-					list.add(new MsilMethodAsCSharpMethodDefinition((MsilMethodEntry) member));
+					list.add(new MsilMethodAsCSharpMethodDefinition(null, (MsilMethodEntry) member));
 				}
 			}
 			else if(member instanceof MsilFieldEntry)

@@ -31,7 +31,10 @@ import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.light.LightElement;
 import com.intellij.util.IncorrectOperationException;
@@ -52,6 +55,12 @@ public class MsilMethodAsCSharpLikeMethodDefinition extends LightElement impleme
 		myModifierList = new MsilModifierListToCSharpModifierList((MsilModifierList) methodEntry.getModifierList());
 
 		setNavigationElement(methodEntry); //TODO [VISTALL] generator from MSIL to C#
+	}
+
+	@Override
+	public PsiFile getContainingFile()
+	{
+		return myMethodEntry.getContainingFile();
 	}
 
 	@Nullable
@@ -166,6 +175,12 @@ public class MsilMethodAsCSharpLikeMethodDefinition extends LightElement impleme
 	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
 	{
 		return null;
+	}
+
+	@Override
+	public ItemPresentation getPresentation()
+	{
+		return ItemPresentationProviders.getItemPresentation(this);
 	}
 
 	@Override
