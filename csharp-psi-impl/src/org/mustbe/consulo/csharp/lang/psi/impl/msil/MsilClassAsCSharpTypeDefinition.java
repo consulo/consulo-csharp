@@ -242,7 +242,7 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 	@Override
 	public String getPresentableParentQName()
 	{
-		return myClassEntry.getPresentableQName();
+		return myClassEntry.getPresentableParentQName();
 	}
 
 	@Override
