@@ -44,7 +44,7 @@ public class MsilPropertyAsCSharpPropertyDefinition extends MsilVariableAsCSharp
 		super(getAdditionalModifiers(pairs), variable);
 	}
 
-	private static CSharpModifier[] getAdditionalModifiers(List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
+	public static CSharpModifier[] getAdditionalModifiers(List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
 	{
 		boolean staticMod = false;
 		List<CSharpAccessModifier> modifiers = new SmartList<CSharpAccessModifier>();

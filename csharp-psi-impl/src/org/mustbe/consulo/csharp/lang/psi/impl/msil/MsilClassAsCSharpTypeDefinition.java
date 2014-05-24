@@ -34,6 +34,7 @@ import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.MsilHelper;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
+import org.mustbe.consulo.msil.lang.psi.MsilEventEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilFieldEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
@@ -103,7 +104,7 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 
 					list.add(new MsilPropertyAsCSharpPropertyDefinition((MsilPropertyEntry) element, pairs));
 				}
-				/*else if(element instanceof MsilEventEntry)
+				else if(element instanceof MsilEventEntry)
 				{
 					DotNetXXXAccessor[] accessors = ((MsilEventEntry) element).getAccessors();
 
@@ -118,7 +119,8 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 							copy.remove(methodEntry);
 						}
 					}
-				}    */
+					list.add(new MsilEventAsCSharpEventDefinition((MsilEventEntry) element, pairs));
+				}
 				else if(element instanceof MsilFieldEntry)
 				{
 					String name = element.getName();
