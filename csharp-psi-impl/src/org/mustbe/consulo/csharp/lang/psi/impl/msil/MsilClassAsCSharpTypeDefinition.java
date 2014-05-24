@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NonNls;
@@ -29,26 +30,22 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.MsilToCSharpTypeRef;
 import org.mustbe.consulo.dotnet.lang.psi.DotNetInheritUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
-import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.MsilHelper;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilFieldEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
+import org.mustbe.consulo.msil.lang.psi.MsilPropertyEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
+import org.mustbe.consulo.msil.lang.psi.MsilXXXAcessor;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.NotNullLazyValue;
+import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
@@ -68,24 +65,80 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 		@Override
 		protected DotNetNamedElement[] compute()
 		{
-			DotNetNamedElement[] members = myClassEntry.getMembers();
-			List<DotNetNamedElement> list = new ArrayList<DotNetNamedElement>(members.length);
-			for(DotNetNamedElement member : members)
+			DotNetNamedElement[] temp = myClassEntry.getMembers();
+			List<DotNetNamedElement> copy = new ArrayList<DotNetNamedElement>(temp.length);
+			Collections.addAll(copy, temp);
+
+			List<DotNetNamedElement> list = new ArrayList<DotNetNamedElement>(temp.length);
+
+			for(DotNetNamedElement element : temp)
+			{
+				if(element instanceof MsilPropertyEntry)
+				{
+					DotNetXXXAccessor[] accessors = ((MsilPropertyEntry) element).getAccessors();
+
+					List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs = new ArrayList<Pair<DotNetXXXAccessor, MsilMethodEntry>>(2);
+
+					for(DotNetXXXAccessor accessor : accessors)
+					{
+						MsilMethodEntry methodEntry = findMethodEntry(temp, (MsilXXXAcessor) accessor);
+						if(methodEntry != null)
+						{
+							pairs.add(Pair.create(accessor, methodEntry));
+							copy.remove(methodEntry);
+						}
+					}
+
+					if(!pairs.isEmpty() && Comparing.equal(element.getName(), "Item"))
+					{
+						Pair<DotNetXXXAccessor, MsilMethodEntry> value = pairs.get(0);
+
+						if(value.getFirst().getAccessorType() == MsilTokens._GET_KEYWORD && value.getSecond().getParameters().length == 1 ||
+								value.getFirst().getAccessorType() == MsilTokens._SET_KEYWORD && value.getSecond().getParameters().length == 2)
+						{
+							//TODO [VISTALL] array method
+							continue;
+						}
+					}
+
+					list.add(new MsilPropertyAsCSharpPropertyDefinition((MsilPropertyEntry) element, pairs));
+				}
+				/*else if(element instanceof MsilEventEntry)
+				{
+					DotNetXXXAccessor[] accessors = ((MsilEventEntry) element).getAccessors();
+
+					List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs = new ArrayList<Pair<DotNetXXXAccessor, MsilMethodEntry>>(2);
+
+					for(DotNetXXXAccessor accessor : accessors)
+					{
+						MsilMethodEntry methodEntry = findMethodEntry(temp, (MsilXXXAcessor) accessor);
+						if(methodEntry != null)
+						{
+							pairs.add(Pair.create(accessor, methodEntry));
+							copy.remove(methodEntry);
+						}
+					}
+				}    */
+				else if(element instanceof MsilFieldEntry)
+				{
+					String name = element.getName();
+					if(Comparing.equal(name, "value__") && isEnum())
+					{
+						continue;
+					}
+
+					list.add(new MsilFieldAsCSharpFieldDefinition((DotNetVariable) element));
+				}
+			}
+
+			for(DotNetNamedElement member : copy)
 			{
 				if(member instanceof MsilMethodEntry)
 				{
 					String name = member.getName();
-					if(((MsilMethodEntry) member).hasModifier(MsilTokens.SPECIALNAME_KEYWORD))
+					if(Comparing.equal(name, MsilHelper.STATIC_CONSTRUCTOR_NAME))
 					{
-						// dont show properties methods
-						if(name.startsWith("get_") ||
-								name.startsWith("set_") ||
-								name.startsWith("add_") ||
-								name.startsWith("remove_") ||
-								name.equals(MsilHelper.STATIC_CONSTRUCTOR_NAME))
-						{
-							continue;
-						}
+						continue;
 					}
 					if(MsilHelper.CONSTRUCTOR_NAME.equals(name))
 					{
@@ -96,18 +149,24 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 						list.add(new MsilMethodAsCSharpMethodDefinition(null, (MsilMethodEntry) member));
 					}
 				}
-				else if(member instanceof MsilFieldEntry)
-				{
-					String name = member.getName();
-					if(Comparing.equal(name, "value__") && isEnum())
-					{
-						continue;
-					}
-
-					list.add(new MsilFieldAsCSharpFieldDefinition((DotNetVariable) member));
-				}
 			}
 			return list.isEmpty() ? DotNetNamedElement.EMPTY_ARRAY : list.toArray(new DotNetNamedElement[list.size()]);
+		}
+
+		private MsilMethodEntry findMethodEntry(DotNetNamedElement[] dotNetNamedElements, MsilXXXAcessor accessor)
+		{
+			for(DotNetNamedElement element : dotNetNamedElements)
+			{
+				if(element instanceof MsilMethodEntry && ((MsilMethodEntry) element).hasModifier(MsilTokens.SPECIALNAME_KEYWORD))
+				{
+					String originalMethodName = StringUtil.unquoteString(((MsilMethodEntry) element).getNameFromBytecode());
+					if(Comparing.equal(originalMethodName, accessor.getMethodName()))
+					{
+						return (MsilMethodEntry) element;
+					}
+				}
+			}
+			return null;
 		}
 	};
 

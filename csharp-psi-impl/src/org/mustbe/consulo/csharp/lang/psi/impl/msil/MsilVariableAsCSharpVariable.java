@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
@@ -44,9 +45,14 @@ public class MsilVariableAsCSharpVariable extends LightElement implements DotNet
 
 	public MsilVariableAsCSharpVariable(DotNetVariable variable)
 	{
+		this(CSharpModifier.EMPTY_ARRAY, variable);
+	}
+
+	public MsilVariableAsCSharpVariable(CSharpModifier[] modifiers, DotNetVariable variable)
+	{
 		super(PsiManager.getInstance(variable.getProject()), CSharpLanguage.INSTANCE);
 		setNavigationElement(variable);
-		myModifierList = new MsilModifierListToCSharpModifierList((MsilModifierList) variable.getModifierList());
+		myModifierList = new MsilModifierListToCSharpModifierList(modifiers, (MsilModifierList) variable.getModifierList());
 		myVariable = variable;
 	}
 

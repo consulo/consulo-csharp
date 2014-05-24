@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +36,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.light.LightElement;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.ArrayUtil;
 
 /**
  * @author VISTALL
@@ -44,9 +46,17 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 {
 	private final MsilModifierList myModifierList;
 
+	private final CSharpModifier[] myAdditional;
+
 	public MsilModifierListToCSharpModifierList(MsilModifierList modifierList)
 	{
+		this(CSharpModifier.EMPTY_ARRAY, modifierList);
+	}
+
+	public MsilModifierListToCSharpModifierList(CSharpModifier[] additional, MsilModifierList modifierList)
+	{
 		super(PsiManager.getInstance(modifierList.getProject()), CSharpLanguage.INSTANCE);
+		myAdditional = additional;
 		myModifierList = modifierList;
 	}
 
@@ -67,6 +77,7 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 				list.add(cSharpModifier);
 			}
 		}
+		Collections.addAll(list, myAdditional);
 		return list.toArray(new DotNetModifier[list.size()]);
 	}
 
@@ -91,6 +102,10 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
+		if(ArrayUtil.contains(modifier, myAdditional))
+		{
+			return true;
+		}
 		MsilModifierElementType modifierElementType = MsilToCSharpUtil.toMsilModifier(modifier);
 		if(modifierElementType == null)
 		{

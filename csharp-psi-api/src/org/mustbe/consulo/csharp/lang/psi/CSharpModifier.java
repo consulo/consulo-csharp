@@ -37,6 +37,8 @@ public enum CSharpModifier implements DotNetModifier
 	ABSTRACT,
 	PARTIAL;
 
+	public static CSharpModifier[] EMPTY_ARRAY = new CSharpModifier[0];
+
 	private int myMask;
 
 	CSharpModifier()
