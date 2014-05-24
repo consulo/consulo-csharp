@@ -39,7 +39,7 @@ public enum CSharpAccessModifier
 			case PUBLIC:
 				return CSharpModifier.PUBLIC;
 			case INTERNAL:
-				//TODO [VISTALL] return CSharpModifier.INTERNAL;
+				return CSharpModifier.INTERNAL;
 			case PROTECTED:
 				return CSharpModifier.PROTECTED;
 			case PRIVATE:

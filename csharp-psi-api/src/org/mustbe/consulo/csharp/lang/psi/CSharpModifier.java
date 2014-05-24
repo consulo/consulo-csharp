@@ -35,7 +35,8 @@ public enum CSharpModifier implements DotNetModifier
 	PARAMS,
 	THIS,
 	ABSTRACT,
-	PARTIAL;
+	PARTIAL,
+	INTERNAL;
 
 	public static CSharpModifier[] EMPTY_ARRAY = new CSharpModifier[0];
 
