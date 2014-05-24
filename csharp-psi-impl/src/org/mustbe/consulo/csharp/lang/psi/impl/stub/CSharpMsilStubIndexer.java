@@ -34,6 +34,10 @@ public class CSharpMsilStubIndexer extends MsilStubIndexer
 	@Override
 	public void indexClass(@NotNull MsilClassEntryStub stub, @NotNull IndexSink indexSink)
 	{
+		if(stub.isNested())
+		{
+			return;
+		}
 		String namespaceForIndexing = CSharpNamespaceHelper.getNamespaceForIndexing(stub.getNamespace());
 
 		String name = stub.getName();

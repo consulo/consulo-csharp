@@ -255,6 +255,12 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 		return false;
 	}
 
+	@Override
+	public boolean isNested()
+	{
+		return myClassEntry.isNested();
+	}
+
 	@Nullable
 	@Override
 	public DotNetTypeList getExtendList()

@@ -122,6 +122,12 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 		return false;
 	}
 
+	@Override
+	public boolean isNested()
+	{
+		return false;
+	}
+
 	@Nullable
 	@Override
 	public DotNetTypeList getExtendList()

@@ -145,6 +145,13 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeSt
 	}
 
 	@Override
+	public boolean isNested()
+	{
+		PsiElement parentByStub = getParentByStub();
+		return parentByStub instanceof DotNetTypeDeclaration;
+	}
+
+	@Override
 	public boolean processDeclarations(
 			@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place)
 	{
