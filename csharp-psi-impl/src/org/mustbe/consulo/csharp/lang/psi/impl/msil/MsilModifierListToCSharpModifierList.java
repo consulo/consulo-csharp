@@ -28,7 +28,7 @@ import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
-import org.mustbe.consulo.msil.lang.psi.ModifierElementType;
+import org.mustbe.consulo.msil.lang.psi.MsilModifierElementType;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.psi.PsiElement;
@@ -57,7 +57,7 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 		List<CSharpModifier> list = new ArrayList<CSharpModifier>();
 		for(CSharpModifier cSharpModifier : CSharpModifier.values())
 		{
-			ModifierElementType modifierElementType = MsilToCSharpUtil.toMsilModifier(cSharpModifier);
+			MsilModifierElementType modifierElementType = MsilToCSharpUtil.toMsilModifier(cSharpModifier);
 			if(modifierElementType == null)
 			{
 				continue;
@@ -91,7 +91,7 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		ModifierElementType modifierElementType = MsilToCSharpUtil.toMsilModifier(modifier);
+		MsilModifierElementType modifierElementType = MsilToCSharpUtil.toMsilModifier(modifier);
 		if(modifierElementType == null)
 		{
 			return false;

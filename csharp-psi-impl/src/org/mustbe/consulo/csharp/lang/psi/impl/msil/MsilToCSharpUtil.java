@@ -29,7 +29,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.msil.lang.psi.ModifierElementType;
+import org.mustbe.consulo.msil.lang.psi.MsilModifierElementType;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
@@ -50,7 +50,7 @@ import lombok.val;
 public class MsilToCSharpUtil
 {
 	@Nullable
-	public static ModifierElementType toMsilModifier(DotNetModifier modifier)
+	public static MsilModifierElementType toMsilModifier(DotNetModifier modifier)
 	{
 		if(modifier == DotNetModifier.STATIC)
 		{
