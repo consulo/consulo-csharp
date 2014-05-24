@@ -28,6 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolve
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.NamespaceByQNameIndex;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
@@ -199,6 +200,20 @@ public class CSharpNamespaceAsElement extends LightElement implements DotNetName
 				if(namedElement instanceof DotNetNamespaceDeclaration)
 				{
 					val e = new CSharpNamespaceAsElement(getProject(), ((DotNetNamespaceDeclaration) namedElement).getPresentableQName(), myScope);
+					if(!CSharpResolveUtil.checkConditionKey(processor, namedElement))
+					{
+						return true;
+					}
+					return processor.execute(e, state);
+				}
+				else if(namedElement instanceof DotNetQualifiedElement)
+				{
+					String presentableParentQName = ((DotNetQualifiedElement) namedElement).getPresentableParentQName();
+					if(StringUtil.isEmpty(presentableParentQName))
+					{
+						return true;
+					}
+					val e = new CSharpNamespaceAsElement(getProject(), presentableParentQName, myScope);
 					if(!CSharpResolveUtil.checkConditionKey(processor, namedElement))
 					{
 						return true;
