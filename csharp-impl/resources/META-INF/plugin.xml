@@ -17,6 +17,7 @@
 <idea-plugin>
 	<id>org.mustbe.consulo.csharp</id>
 	<name>C#</name>
+	<resource-bundle>messages.CSharpBundle</resource-bundle>
 	<depends>org.mustbe.consulo.dotnet.core</depends>
 
 	<actions>
