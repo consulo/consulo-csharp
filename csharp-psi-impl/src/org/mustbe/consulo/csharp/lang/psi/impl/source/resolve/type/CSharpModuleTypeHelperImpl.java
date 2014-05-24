@@ -75,6 +75,7 @@ public class CSharpModuleTypeHelperImpl extends CSharpModuleTypeHelper
 				builder.append(", int index").append(i);
 			}
 			builder.append("] { get; set; }");
+			builder.append("public System.Collections.Generic.IEnumerator<T> GetEnumerator() { return null; }");
 			builder.append("}");
 
 			DotNetTypeDeclaration typeDeclaration = CSharpFileFactory.createTypeDeclaration(myModule.getProject(), builder.toString());
