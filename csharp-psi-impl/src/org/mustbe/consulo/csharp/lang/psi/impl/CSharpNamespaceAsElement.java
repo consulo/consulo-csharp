@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +29,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolve
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.NamespaceByQNameIndex;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
@@ -39,6 +41,7 @@ import com.intellij.psi.impl.light.LightElement;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
+import com.intellij.psi.util.QualifiedName;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.Processor;
@@ -86,8 +89,8 @@ public class CSharpNamespaceAsElement extends LightElement implements DotNetName
 	public PsiElement findFirstNamespaceEntry()
 	{
 		val findFirstProcessor = new CommonProcessors.FindFirstProcessor<PsiElement>();
-		StubIndex.getInstance().processElements(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX, myQName, getProject(), myScope,
-				PsiElement.class, findFirstProcessor);
+		StubIndex.getInstance().processElements(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX, myQName, getProject(), myScope, PsiElement.class,
+				findFirstProcessor);
 		if(findFirstProcessor.getFoundValue() != null)
 		{
 			return findFirstProcessor.getFoundValue();
@@ -107,8 +110,8 @@ public class CSharpNamespaceAsElement extends LightElement implements DotNetName
 
 		if(findFirstProcessor2.getFoundValue() != null)
 		{
-			Collection<PsiElement> dotNetNamespaceDeclarations = NamespaceByQNameIndex.getInstance().get(findFirstProcessor2
-					.getFoundValue(), getProject(), myScope);
+			Collection<PsiElement> dotNetNamespaceDeclarations = NamespaceByQNameIndex.getInstance().get(findFirstProcessor2.getFoundValue(),
+					getProject(), myScope);
 
 			return ContainerUtil.getFirstItem(dotNetNamespaceDeclarations);
 		}
@@ -146,6 +149,131 @@ public class CSharpNamespaceAsElement extends LightElement implements DotNetName
 		return result;
 	}
 
+	public static interface ProcessDeclaration
+	{
+		boolean process(
+				@NotNull final Project project,
+				@NotNull QualifiedName qualifiedName,
+				@NotNull GlobalSearchScope scope,
+				@NotNull final PsiScopeProcessor processor,
+				@NotNull final ResolveState state,
+				@Nullable final PsiElement lastParent,
+				@NotNull final PsiElement place);
+	}
+
+	public static class UsingProcessDeclaration implements ProcessDeclaration
+	{
+		@Override
+		public boolean process(
+				@NotNull final Project project,
+				@NotNull final QualifiedName qualifiedName,
+				@NotNull GlobalSearchScope scope,
+				@NotNull final PsiScopeProcessor processor,
+				@NotNull final ResolveState state,
+				@Nullable final PsiElement lastParent,
+				@NotNull final PsiElement place)
+		{
+			return StubIndex.getInstance().processElements(CSharpIndexKeys.USING_LIST_INDEX, qualifiedName.toString(), project, scope,
+					CSharpUsingListImpl.class, new Processor<CSharpUsingListImpl>()
+			{
+				@Override
+				public boolean process(CSharpUsingListImpl usingList)
+				{
+					return usingList.processDeclarations(processor, state, lastParent, place);
+				}
+			});
+		}
+	}
+
+	public static class MemberByNamespaceProcessor implements ProcessDeclaration
+	{
+		@Override
+		public boolean process(
+				@NotNull final Project project,
+				@NotNull final QualifiedName qualifiedName,
+				@NotNull final GlobalSearchScope scope,
+				@NotNull final PsiScopeProcessor processor,
+				@NotNull final ResolveState state,
+				@Nullable final PsiElement lastParent,
+				@NotNull final PsiElement place)
+		{
+			return StubIndex.getInstance().processElements(CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, qualifiedName.toString(), project,
+					scope, PsiElement.class, new MsilWrapperProcessor<PsiElement>()
+			{
+				@Override
+				public boolean processImpl(PsiElement namedElement)
+				{
+					if(namedElement instanceof DotNetNamespaceDeclaration)
+					{
+						return true;
+					}
+
+					if(namedElement instanceof DotNetQualifiedElement)
+					{
+						QualifiedName q = QualifiedName.fromDottedString(((DotNetQualifiedElement) namedElement).getPresentableParentQName());
+
+						if(!q.equals(qualifiedName))
+						{
+							return true;
+						}
+
+						if(!CSharpResolveUtil.checkConditionKey(processor, namedElement))
+						{
+							return true;
+						}
+
+						return processor.execute(namedElement, state);
+					}
+					return true;
+				}
+			});
+		}
+	}
+
+	public static class NamespaceProcessor implements ProcessDeclaration
+	{
+		@Override
+		public boolean process(
+				@NotNull final Project project,
+				@NotNull final QualifiedName qualifiedName,
+				@NotNull final GlobalSearchScope scope,
+				@NotNull final PsiScopeProcessor processor,
+				@NotNull final ResolveState state,
+				@Nullable final PsiElement lastParent,
+				@NotNull final PsiElement place)
+		{
+			return StubIndex.getInstance().processAllKeys(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX, new Processor<String>()
+			{
+				@Override
+				public boolean process(String s)
+				{
+					QualifiedName newQualified = QualifiedName.fromDottedString(s);
+
+					if(newQualified.getComponentCount() > qualifiedName.getComponentCount() && newQualified.matchesPrefix(qualifiedName))
+					{
+						List<String> list = newQualified.getComponents().subList(0, qualifiedName.getComponentCount() + 1);
+
+						String q = StringUtil.join(list, ".");
+						val e = new CSharpNamespaceAsElement(project, q, scope);
+						if(!CSharpResolveUtil.checkConditionKey(processor, e))
+						{
+							return true;
+						}
+						return processor.execute(e, state);
+					}
+					return true;
+				}
+			}, scope, IdFilter.getProjectIdFilter(project, true));
+
+		}
+	}
+
+	private static final ProcessDeclaration[] ourProcessDeclaraion = new ProcessDeclaration[]{
+			new UsingProcessDeclaration(),
+			new MemberByNamespaceProcessor(),
+			new NamespaceProcessor()
+	};
+
 	@Override
 	public boolean processDeclarations(
 			@NotNull final PsiScopeProcessor processor,
@@ -153,61 +281,17 @@ public class CSharpNamespaceAsElement extends LightElement implements DotNetName
 			final PsiElement lastParent,
 			@NotNull final PsiElement place)
 	{
-		boolean process = StubIndex.getInstance().processElements(CSharpIndexKeys.USING_LIST_INDEX, getPresentableQName(), getProject(), myScope,
-				CSharpUsingListImpl.class, new Processor<CSharpUsingListImpl>()
+		QualifiedName qualifiedName = CSharpNamespaceHelper.ROOT.equals(myQName) ? QualifiedName.ROOT : QualifiedName.fromDottedString(myQName);
+		//noinspection ForLoopReplaceableByForEach
+		for(int i = 0; i < ourProcessDeclaraion.length; i++)
 		{
-			@Override
-			public boolean process(CSharpUsingListImpl usingList)
+			ProcessDeclaration processDeclaration = ourProcessDeclaraion[i];
+			if(!processDeclaration.process(getProject(), qualifiedName, myScope, processor, state, lastParent, place))
 			{
-				return usingList.processDeclarations(processor, state, lastParent, place);
+				return false;
 			}
-		});
-
-		if(!process)
-		{
-			return false;
 		}
-		process = StubIndex.getInstance().processElements(CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, getPresentableQName(),
-				getProject(), myScope, PsiElement.class, new MsilWrapperProcessor<PsiElement>()
-		{
-			@Override
-			public boolean processImpl(PsiElement namedElement)
-			{
-				if(namedElement instanceof DotNetNamespaceDeclaration)
-				{
-					return true;
-				}
-
-				if(!CSharpResolveUtil.checkConditionKey(processor, namedElement))
-				{
-					return true;
-				}
-
-				return processor.execute(namedElement, state);
-			}
-		});
-		if(!process)
-		{
-			return false;
-		}
-		return StubIndex.getInstance().processElements(CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, getPresentableQName(),
-				getProject(), myScope, PsiElement.class, new MsilWrapperProcessor<PsiElement>()
-		{
-			@Override
-			public boolean processImpl(PsiElement namedElement)
-			{
-				if(namedElement instanceof DotNetNamespaceDeclaration)
-				{
-					val e = new CSharpNamespaceAsElement(getProject(), ((DotNetNamespaceDeclaration) namedElement).getPresentableQName(), myScope);
-					if(!CSharpResolveUtil.checkConditionKey(processor, namedElement))
-					{
-						return true;
-					}
-					return processor.execute(e, state);
-				}
-				return true;
-			}
-		});
+		return true;
 	}
 
 	@Override
