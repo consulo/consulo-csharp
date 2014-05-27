@@ -38,6 +38,8 @@
 		<psi.facade implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiFacadeImpl"/>
 		<debugger.provider implementation="org.mustbe.consulo.csharp.ide.debugger.CSharpDebuggerProvider"/>
 		<stubIndexer implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMsilStubIndexer" />
+
+		<msilFileRepresentation implementation="org.mustbe.consulo.csharp.ide.msil.representation.CSharpMsilFileRepresentationProvider"/>
 	</extensions>
 
 	<extensions defaultExtensionNs="com.intellij">

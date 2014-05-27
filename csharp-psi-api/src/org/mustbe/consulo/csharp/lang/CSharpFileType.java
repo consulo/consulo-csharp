@@ -30,6 +30,9 @@ import com.intellij.openapi.fileTypes.TemplateLanguageFileType;
  */
 public class CSharpFileType extends LanguageFileType implements TemplateLanguageFileType
 {
+	public static final String EXTENSION = "cs";
+	public static final String DOT_EXTENSION = "." + EXTENSION;
+
 	public static final CSharpFileType INSTANCE = new CSharpFileType();
 
 	private CSharpFileType()
@@ -55,7 +58,7 @@ public class CSharpFileType extends LanguageFileType implements TemplateLanguage
 	@Override
 	public String getDefaultExtension()
 	{
-		return "cs";
+		return EXTENSION;
 	}
 
 	@Nullable
