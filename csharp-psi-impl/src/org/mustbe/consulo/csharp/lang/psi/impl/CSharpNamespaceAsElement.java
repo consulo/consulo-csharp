@@ -173,8 +173,8 @@ public class CSharpNamespaceAsElement extends LightElement implements DotNetName
 				@Nullable final PsiElement lastParent,
 				@NotNull final PsiElement place)
 		{
-			return StubIndex.getInstance().processElements(CSharpIndexKeys.USING_LIST_INDEX, qualifiedName.toString(), project, scope,
-					CSharpUsingListImpl.class, new Processor<CSharpUsingListImpl>()
+			return StubIndex.getInstance().processElements(CSharpIndexKeys.USING_LIST_INDEX, CSharpNamespaceHelper.toString(qualifiedName), project,
+					scope, CSharpUsingListImpl.class, new Processor<CSharpUsingListImpl>()
 			{
 				@Override
 				public boolean process(CSharpUsingListImpl usingList)
@@ -197,8 +197,8 @@ public class CSharpNamespaceAsElement extends LightElement implements DotNetName
 				@Nullable final PsiElement lastParent,
 				@NotNull final PsiElement place)
 		{
-			return StubIndex.getInstance().processElements(CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, qualifiedName.toString(), project,
-					scope, PsiElement.class, new MsilWrapperProcessor<PsiElement>()
+			return StubIndex.getInstance().processElements(CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX,
+					CSharpNamespaceHelper.toString(qualifiedName), project, scope, PsiElement.class, new MsilWrapperProcessor<PsiElement>()
 			{
 				@Override
 				public boolean processImpl(PsiElement namedElement)

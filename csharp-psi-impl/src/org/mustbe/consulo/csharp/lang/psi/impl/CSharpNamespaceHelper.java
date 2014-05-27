@@ -24,6 +24,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
+import com.intellij.psi.util.QualifiedName;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.indexing.IdFilter;
 import lombok.val;
@@ -71,6 +72,12 @@ public class CSharpNamespaceHelper
 			return new CSharpNamespaceAsElement(project, qName, globalSearchScope);
 		}
 		return null;
+	}
+
+	@NotNull
+	public static String toString(@NotNull QualifiedName namespace)
+	{
+		return namespace == QualifiedName.ROOT ? ROOT : namespace.toString();
 	}
 
 	@NotNull
