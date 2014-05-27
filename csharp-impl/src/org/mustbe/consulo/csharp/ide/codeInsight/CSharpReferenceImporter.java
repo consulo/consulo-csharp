@@ -56,7 +56,7 @@ public class CSharpReferenceImporter implements ReferenceImporter
 			if(element instanceof CSharpReferenceExpressionImpl)
 			{
 				CSharpReferenceExpressionImpl ref = (CSharpReferenceExpressionImpl) element;
-				if(ref.multiResolve(true).length == 0)
+				if(ref.resolve() == null)
 				{
 					new UsingNamespaceFix(ref).doFix(editor);
 					return true;
@@ -79,7 +79,7 @@ public class CSharpReferenceImporter implements ReferenceImporter
 		if(element instanceof CSharpReferenceExpressionImpl)
 		{
 			CSharpReferenceExpressionImpl ref = (CSharpReferenceExpressionImpl) element;
-			if(ref.multiResolve(true).length == 0)
+			if(ref.resolve() == null)
 			{
 				new UsingNamespaceFix(ref).doFix(editor);
 				return true;
