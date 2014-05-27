@@ -16,42 +16,51 @@
 
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.dotnet.lang.psi.DotNetInheritUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingNamespaceStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.DelegateExpressionWithParameters;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodIndex;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MethodIndex;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeIndex;
 import org.mustbe.consulo.dotnet.DotNetBundle;
 import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.lang.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.msil.MsilHelper;
 import com.intellij.codeInsight.daemon.impl.ShowAutoImportPass;
 import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.codeInsight.intention.HighPriorityAction;
 import com.intellij.codeInspection.HintAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Conditions;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.stubs.StubIndex;
 import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.Processor;
 import com.intellij.util.containers.ArrayListSet;
+import com.intellij.util.indexing.IdFilter;
 import lombok.val;
 
 /**
@@ -137,24 +146,23 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 				// if attribute endwith Attribute - collect only with
 				if(referenceName.endsWith(CSharpReferenceExpressionImpl.AttributeSuffix))
 				{
-					tempTypes = TypeIndex.getInstance().get(referenceName, myRef.getProject(), myRef.getResolveScope());
+					tempTypes = getTypesWithGeneric(referenceName);
 
 					collect(set, tempTypes, cond);
 				}
 				else
 				{
-					tempTypes = TypeIndex.getInstance().get(referenceName, myRef.getProject(), myRef.getResolveScope());
+					tempTypes = getTypesWithGeneric(referenceName);
 
 					collect(set, tempTypes, cond);
 
-					tempTypes = TypeIndex.getInstance().get(referenceName + CSharpReferenceExpressionImpl.AttributeSuffix, myRef.getProject(),
-							myRef.getResolveScope());
+					tempTypes = getTypesWithGeneric(referenceName + CSharpReferenceExpressionImpl.AttributeSuffix);
 
 					collect(set, tempTypes, cond);
 				}
 				break;
 			default:
-				tempTypes = TypeIndex.getInstance().get(referenceName, myRef.getProject(), myRef.getResolveScope());
+				tempTypes = getTypesWithGeneric(referenceName);
 
 				collect(set, tempTypes, Conditions.<DotNetTypeDeclaration>alwaysTrue());
 
@@ -171,6 +179,36 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 				});
 				break;
 		}
+	}
+
+	private List<DotNetTypeDeclaration> getTypesWithGeneric(final String ref)
+	{
+		final Set<String> set = new TreeSet<String>();
+		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.TYPE_INDEX, new Processor<String>()
+		{
+			@Override
+			public boolean process(String name)
+			{
+				String nameNoGeneric = MsilHelper.cutGenericMarker(name);
+				if(Comparing.equal(nameNoGeneric, ref))
+				{
+					set.add(name);
+				}
+				return true;
+			}
+		}, myRef.getResolveScope(), IdFilter.getProjectIdFilter(myRef.getProject(), true));
+
+		if(set.isEmpty())
+		{
+			return Collections.emptyList();
+		}
+
+		List<DotNetTypeDeclaration> typeDeclarations = new ArrayList<DotNetTypeDeclaration>();
+		for(String t : set)
+		{
+			typeDeclarations.addAll(TypeIndex.getInstance().get(t, myRef.getProject(), myRef.getResolveScope()));
+		}
+		return typeDeclarations;
 	}
 
 	private void collectAvailableNamespacesForMethodExtensions(Set<String> set, String referenceName)
@@ -195,8 +233,8 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 
 		val delegatedExpression = new DelegateExpressionWithParameters(myRef, newExpressions);
 
-		Collection<DotNetLikeMethodDeclaration> list = ExtensionMethodIndex.getInstance().get(referenceName,
-				myRef.getProject(), myRef.getResolveScope());
+		Collection<DotNetLikeMethodDeclaration> list = ExtensionMethodIndex.getInstance().get(referenceName, myRef.getProject(),
+				myRef.getResolveScope());
 
 		for(DotNetLikeMethodDeclaration possibleMethod : list)
 		{
