@@ -97,7 +97,7 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 						if(value.getFirst().getAccessorType() == MsilTokens._GET_KEYWORD && value.getSecond().getParameters().length == 1 ||
 								value.getFirst().getAccessorType() == MsilTokens._SET_KEYWORD && value.getSecond().getParameters().length == 2)
 						{
-							//TODO [VISTALL] array method
+							list.add(new MsilPropertyAsCSharpArrayMethodDefinition((MsilPropertyEntry) element, pairs));
 							continue;
 						}
 					}

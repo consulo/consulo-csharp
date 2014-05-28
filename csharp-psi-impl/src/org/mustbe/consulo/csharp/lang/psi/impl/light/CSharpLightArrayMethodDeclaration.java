@@ -19,8 +19,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.light;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.dotnet.psi.DotNetArrayMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -36,12 +38,12 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 01.03.14
  */
-public class CSharpLightArrayMethodDeclaration extends CSharpLightNamedElement<DotNetArrayMethodDeclaration> implements DotNetArrayMethodDeclaration
+public class CSharpLightArrayMethodDeclaration extends CSharpLightNamedElement<CSharpArrayMethodDeclaration> implements CSharpArrayMethodDeclaration
 {
 	private final DotNetTypeRef myNewReturnTypeRef;
 	private final DotNetParameterList myParameterList;
 
-	public CSharpLightArrayMethodDeclaration(DotNetArrayMethodDeclaration arrayMethodDeclaration, DotNetTypeRef newReturnTypeRef,
+	public CSharpLightArrayMethodDeclaration(CSharpArrayMethodDeclaration arrayMethodDeclaration, DotNetTypeRef newReturnTypeRef,
 			DotNetParameterList parameterList)
 	{
 		super(arrayMethodDeclaration);
@@ -135,5 +137,32 @@ public class CSharpLightArrayMethodDeclaration extends CSharpLightNamedElement<D
 	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
 	{
 		return myOriginal.setName(s);
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getCodeBlock()
+	{
+		return null;
+	}
+
+	@Nullable
+	@Override
+	public DotNetGenericParameterList getGenericParameterList()
+	{
+		return null;
+	}
+
+	@NotNull
+	@Override
+	public DotNetGenericParameter[] getGenericParameters()
+	{
+		return DotNetGenericParameter.EMPTY_ARRAY;
+	}
+
+	@Override
+	public int getGenericParametersCount()
+	{
+		return 0;
 	}
 }

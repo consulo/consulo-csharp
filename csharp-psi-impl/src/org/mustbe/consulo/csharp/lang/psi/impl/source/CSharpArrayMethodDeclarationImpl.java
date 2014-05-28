@@ -18,11 +18,13 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpArrayMethodStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetArrayMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
@@ -30,12 +32,13 @@ import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
  * @since 01.03.14
  */
-public class CSharpArrayMethodDeclarationImpl extends CSharpStubMemberImpl<CSharpArrayMethodStub> implements DotNetArrayMethodDeclaration
+public class CSharpArrayMethodDeclarationImpl extends CSharpStubMemberImpl<CSharpArrayMethodStub> implements CSharpArrayMethodDeclaration
 {
 	public CSharpArrayMethodDeclarationImpl(@NotNull ASTNode node)
 	{
@@ -114,5 +117,32 @@ public class CSharpArrayMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 	public String getName()
 	{
 		return "Item";
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getCodeBlock()
+	{
+		return null;
+	}
+
+	@Nullable
+	@Override
+	public DotNetGenericParameterList getGenericParameterList()
+	{
+		return null;
+	}
+
+	@NotNull
+	@Override
+	public DotNetGenericParameter[] getGenericParameters()
+	{
+		return DotNetGenericParameter.EMPTY_ARRAY;
+	}
+
+	@Override
+	public int getGenericParametersCount()
+	{
+		return 0;
 	}
 }

@@ -280,7 +280,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					@Override
 					public boolean value(PsiNamedElement psiNamedElement)
 					{
-						return psiNamedElement instanceof DotNetArrayMethodDeclaration;
+						return psiNamedElement instanceof CSharpArrayMethodDeclaration;
 					}
 				};
 				break;
@@ -337,11 +337,11 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					@Override
 					public int getWeight(@NotNull PsiNamedElement psiNamedElement)
 					{
-						if(!(psiNamedElement instanceof DotNetArrayMethodDeclaration))
+						if(!(psiNamedElement instanceof CSharpArrayMethodDeclaration))
 						{
 							return 0;
 						}
-						return MethodAcceptorImpl.calcAcceptableWeight(parameters, (DotNetArrayMethodDeclaration) psiNamedElement);
+						return MethodAcceptorImpl.calcAcceptableWeight(parameters, (CSharpArrayMethodDeclaration) psiNamedElement);
 					}
 				};
 				break;

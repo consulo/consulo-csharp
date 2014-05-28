@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -43,16 +44,21 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 23.05.14
  */
-public class MsilMethodAsCSharpLikeMethodDefinition extends LightElement implements DotNetLikeMethodDeclaration
+public class MsilMethodAsCSharpLikeMethodDeclaration extends LightElement implements DotNetLikeMethodDeclaration
 {
 	protected final MsilMethodEntry myMethodEntry;
 	private MsilModifierListToCSharpModifierList myModifierList;
 
-	public MsilMethodAsCSharpLikeMethodDefinition(MsilMethodEntry methodEntry)
+	public MsilMethodAsCSharpLikeMethodDeclaration(MsilMethodEntry methodEntry)
+	{
+		this(CSharpModifier.EMPTY_ARRAY, methodEntry);
+	}
+
+	public MsilMethodAsCSharpLikeMethodDeclaration(CSharpModifier[] modifiers, MsilMethodEntry methodEntry)
 	{
 		super(PsiManager.getInstance(methodEntry.getProject()), CSharpLanguage.INSTANCE);
 		myMethodEntry = methodEntry;
-		myModifierList = new MsilModifierListToCSharpModifierList((MsilModifierList) methodEntry.getModifierList());
+		myModifierList = new MsilModifierListToCSharpModifierList(modifiers, (MsilModifierList) methodEntry.getModifierList());
 
 		setNavigationElement(methodEntry); //TODO [VISTALL] generator from MSIL to C#
 	}
@@ -63,11 +69,11 @@ public class MsilMethodAsCSharpLikeMethodDefinition extends LightElement impleme
 		return myMethodEntry.getContainingFile();
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public DotNetType getReturnType()
 	{
-		return null;
+		throw new IllegalArgumentException();
 	}
 
 	@NotNull

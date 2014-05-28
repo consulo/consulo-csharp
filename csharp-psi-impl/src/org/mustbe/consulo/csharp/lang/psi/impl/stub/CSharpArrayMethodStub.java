@@ -18,9 +18,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfo;
-import org.mustbe.consulo.dotnet.psi.DotNetArrayMethodDeclaration;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.io.StringRef;
 
@@ -28,7 +28,7 @@ import com.intellij.util.io.StringRef;
  * @author VISTALL
  * @since 01.03.14
  */
-public class CSharpArrayMethodStub extends MemberStub<DotNetArrayMethodDeclaration>
+public class CSharpArrayMethodStub extends MemberStub<CSharpArrayMethodDeclaration>
 {
 	private final CSharpStubTypeInfo myReturnType;
 

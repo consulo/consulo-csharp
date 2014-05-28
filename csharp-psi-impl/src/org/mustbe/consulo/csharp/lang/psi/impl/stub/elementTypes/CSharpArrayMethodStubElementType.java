@@ -19,11 +19,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayMethodDeclarationImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpArrayMethodStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.MemberStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetArrayMethodDeclaration;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
@@ -35,7 +35,7 @@ import lombok.val;
  * @author VISTALL
  * @since 01.03.14
  */
-public class CSharpArrayMethodStubElementType extends CSharpAbstractStubElementType<CSharpArrayMethodStub, DotNetArrayMethodDeclaration>
+public class CSharpArrayMethodStubElementType extends CSharpAbstractStubElementType<CSharpArrayMethodStub, CSharpArrayMethodDeclaration>
 {
 	public CSharpArrayMethodStubElementType()
 	{
@@ -43,24 +43,24 @@ public class CSharpArrayMethodStubElementType extends CSharpAbstractStubElementT
 	}
 
 	@Override
-	public DotNetArrayMethodDeclaration createPsi(@NotNull ASTNode astNode)
+	public CSharpArrayMethodDeclaration createPsi(@NotNull ASTNode astNode)
 	{
 		return new CSharpArrayMethodDeclarationImpl(astNode);
 	}
 
 	@Override
-	public DotNetArrayMethodDeclaration createPsi(@NotNull CSharpArrayMethodStub cSharpArrayMethodStub)
+	public CSharpArrayMethodDeclaration createPsi(@NotNull CSharpArrayMethodStub cSharpArrayMethodStub)
 	{
 		return new CSharpArrayMethodDeclarationImpl(cSharpArrayMethodStub);
 	}
 
 	@Override
-	public CSharpArrayMethodStub createStub(@NotNull DotNetArrayMethodDeclaration dotNetArrayMethodDeclaration, StubElement stubElement)
+	public CSharpArrayMethodStub createStub(@NotNull CSharpArrayMethodDeclaration CSharpArrayMethodDeclaration, StubElement stubElement)
 	{
-		StringRef name = StringRef.fromNullableString(dotNetArrayMethodDeclaration.getName());
-		StringRef parentQName = StringRef.fromNullableString(dotNetArrayMethodDeclaration.getPresentableParentQName());
-		int modifierMask = MemberStub.getModifierMask(dotNetArrayMethodDeclaration);
-		val typeInfo = CSharpStubTypeInfoUtil.toStub(dotNetArrayMethodDeclaration.getReturnType());
+		StringRef name = StringRef.fromNullableString(CSharpArrayMethodDeclaration.getName());
+		StringRef parentQName = StringRef.fromNullableString(CSharpArrayMethodDeclaration.getPresentableParentQName());
+		int modifierMask = MemberStub.getModifierMask(CSharpArrayMethodDeclaration);
+		val typeInfo = CSharpStubTypeInfoUtil.toStub(CSharpArrayMethodDeclaration.getReturnType());
 		return new CSharpArrayMethodStub(stubElement, name, parentQName, modifierMask, typeInfo);
 
 	}

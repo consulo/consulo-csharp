@@ -21,10 +21,12 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodCallParameterList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodCallParameterListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
-import org.mustbe.consulo.dotnet.psi.DotNetArrayMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -32,6 +34,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.MultiRangeReference;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedReference;
+import com.intellij.psi.ResolveResult;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
@@ -41,7 +44,7 @@ import com.intellij.util.containers.ContainerUtil;
  * @since 04.01.14.
  */
 public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implements DotNetExpression, MultiRangeReference,
-		CSharpExpressionWithParameters, PsiQualifiedReference
+		CSharpMethodCallParameterListOwner, PsiQualifiedReference
 {
 	public CSharpArrayAccessExpressionImpl(@NotNull ASTNode node)
 	{
@@ -59,9 +62,9 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
 		PsiElement resolve = resolve();
-		if(resolve instanceof DotNetArrayMethodDeclaration)
+		if(resolve instanceof CSharpArrayMethodDeclaration)
 		{
-			return ((DotNetArrayMethodDeclaration) resolve).getReturnTypeRef();
+			return ((CSharpArrayMethodDeclaration) resolve).getReturnTypeRef();
 		}
 		return DotNetTypeRef.ERROR_TYPE;
 	}
@@ -103,8 +106,8 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 	@Override
 	public PsiElement resolve()
 	{
-		ResolveResultWithWeight[] resolveResults = CSharpReferenceExpressionImpl.multiResolve0(CSharpReferenceExpressionImpl.ResolveToKind.ARRAY_METHOD,
-				this, this);
+		ResolveResultWithWeight[] resolveResults = CSharpReferenceExpressionImpl.multiResolve0(CSharpReferenceExpressionImpl.ResolveToKind
+				.ARRAY_METHOD, this, this);
 		for(ResolveResultWithWeight resolveResult : resolveResults)
 		{
 			if(resolveResult.isGoodResult())
@@ -151,7 +154,8 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 	@Override
 	public boolean isReferenceTo(PsiElement element)
 	{
-		return element == resolve();
+		PsiElement resolve = resolve();
+		return element.getManager().areElementsEquivalent(element, resolve);
 	}
 
 	@NotNull
@@ -180,5 +184,46 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 			}
 		}
 		return ContainerUtil.toArray(list, DotNetExpression.ARRAY_FACTORY);
+	}
+
+	@Override
+	public boolean canResolve()
+	{
+		return true;
+	}
+
+	@Nullable
+	@Override
+	public CSharpMethodCallParameterList getParameterList()
+	{
+		return null;
+	}
+
+	@Nullable
+	@Override
+	public PsiElement resolveToCallable()
+	{
+		return resolve();
+	}
+
+	@Override
+	public ResolveResult[] multiResolve(boolean incompleteCode)
+	{
+		ResolveResult[] resolveResults = CSharpReferenceExpressionImpl.multiResolve0(CSharpReferenceExpressionImpl.ResolveToKind.ARRAY_METHOD, this,
+				this);
+		if(!incompleteCode)
+		{
+			return resolveResults;
+		}
+		List<ResolveResultWithWeight> filter = new ArrayList<ResolveResultWithWeight>();
+		for(ResolveResult resolveResult : resolveResults)
+		{
+			ResolveResultWithWeight resolveResultWithWeight = (ResolveResultWithWeight) resolveResult;
+			if(resolveResultWithWeight.isGoodResult())
+			{
+				filter.add(resolveResultWithWeight);
+			}
+		}
+		return ContainerUtil.toArray(filter, ResolveResultWithWeight.ARRAY_FACTORY);
 	}
 }

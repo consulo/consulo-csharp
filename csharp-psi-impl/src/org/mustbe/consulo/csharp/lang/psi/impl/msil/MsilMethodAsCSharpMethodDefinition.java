@@ -31,7 +31,7 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 23.05.14
  */
-public class MsilMethodAsCSharpMethodDefinition extends MsilMethodAsCSharpLikeMethodDefinition implements CSharpMethodDeclaration
+public class MsilMethodAsCSharpMethodDefinition extends MsilMethodAsCSharpLikeMethodDeclaration implements CSharpMethodDeclaration
 {
 	private final MsilClassEntry myDelegate;
 

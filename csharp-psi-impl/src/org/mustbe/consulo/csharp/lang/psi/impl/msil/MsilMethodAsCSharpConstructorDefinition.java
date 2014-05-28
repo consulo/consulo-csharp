@@ -28,7 +28,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 23.05.14
  */
-public class MsilMethodAsCSharpConstructorDefinition extends MsilMethodAsCSharpLikeMethodDefinition implements CSharpConstructorDeclaration
+public class MsilMethodAsCSharpConstructorDefinition extends MsilMethodAsCSharpLikeMethodDeclaration implements CSharpConstructorDeclaration
 {
 	private final MsilClassAsCSharpTypeDefinition myTypeDefinition;
 

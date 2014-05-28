@@ -20,6 +20,7 @@ import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.assemblyInfo.CSharpAssemblyConstants;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
@@ -80,9 +81,9 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 
 			processModifierListOwner(element, iconDescriptor, flags);
 		}
-		else if(element instanceof DotNetArrayMethodDeclaration)
+		else if(element instanceof CSharpArrayMethodDeclaration)
 		{
-			iconDescriptor.setMainIcon(((DotNetArrayMethodDeclaration) element).hasModifier(CSharpModifier.ABSTRACT) ? AllIcons.Nodes.AbstractMethod
+			iconDescriptor.setMainIcon(((CSharpArrayMethodDeclaration) element).hasModifier(CSharpModifier.ABSTRACT) ? AllIcons.Nodes.AbstractMethod
 					: AllIcons.Nodes.Method);
 
 			processModifierListOwner(element, iconDescriptor, flags);

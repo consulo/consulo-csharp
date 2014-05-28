@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
@@ -34,7 +35,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightPropertyDeclarat
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeImpl;
-import org.mustbe.consulo.dotnet.psi.DotNetArrayMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -78,9 +78,9 @@ public class GenericUnwrapTool
 
 			return (T) new CSharpLightMethodDeclaration(methodDeclaration, newReturnTypeRef, parameterList);
 		}
-		else if(namedElement instanceof DotNetArrayMethodDeclaration)
+		else if(namedElement instanceof CSharpArrayMethodDeclaration)
 		{
-			DotNetArrayMethodDeclaration arrayMethodDeclaration = (DotNetArrayMethodDeclaration) namedElement;
+			CSharpArrayMethodDeclaration arrayMethodDeclaration = (CSharpArrayMethodDeclaration) namedElement;
 
 			DotNetTypeRef newReturnTypeRef = exchangeTypeRefs(arrayMethodDeclaration.getReturnTypeRef(), extractor, namedElement);
 
