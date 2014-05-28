@@ -23,6 +23,7 @@ import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProviders;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.StubBasedPsiElement;
@@ -59,6 +60,12 @@ public abstract class CSharpStubElementImpl<S extends StubElement> extends StubB
 	public ItemPresentation getPresentation()
 	{
 		return ItemPresentationProviders.getItemPresentation(this);
+	}
+
+	@Override
+	public PsiElement getParent()
+	{
+		return getParentByStub();
 	}
 
 	public CSharpStubElementImpl(@NotNull S stub, @NotNull IStubElementType<? extends S, ?> nodeType)
