@@ -275,7 +275,14 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			case THIS:
 			case BASE:
 			case ARRAY_METHOD:
-				namedElementCondition = Conditions.alwaysTrue();
+				namedElementCondition = new Condition<PsiNamedElement>()
+				{
+					@Override
+					public boolean value(PsiNamedElement psiNamedElement)
+					{
+						return psiNamedElement instanceof DotNetArrayMethodDeclaration;
+					}
+				};
 				break;
 			default:
 				val referenceName2 = e.getReferenceName();

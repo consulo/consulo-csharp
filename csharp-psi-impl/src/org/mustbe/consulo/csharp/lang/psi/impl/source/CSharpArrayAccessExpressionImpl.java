@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
 import org.mustbe.consulo.dotnet.psi.DotNetArrayMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -31,7 +32,6 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.MultiRangeReference;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedReference;
-import com.intellij.psi.ResolveResult;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
@@ -103,11 +103,11 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 	@Override
 	public PsiElement resolve()
 	{
-		ResolveResult[] resolveResults = CSharpReferenceExpressionImpl.multiResolve0( CSharpReferenceExpressionImpl.ResolveToKind.ARRAY_METHOD,
+		ResolveResultWithWeight[] resolveResults = CSharpReferenceExpressionImpl.multiResolve0(CSharpReferenceExpressionImpl.ResolveToKind.ARRAY_METHOD,
 				this, this);
-		for(ResolveResult resolveResult : resolveResults)
+		for(ResolveResultWithWeight resolveResult : resolveResults)
 		{
-			if(resolveResult.isValidResult())
+			if(resolveResult.isGoodResult())
 			{
 				return resolveResult.getElement();
 			}
