@@ -14,11 +14,14 @@
   ~ limitations under the License.
   -->
 
-<idea-plugin>
+<idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
 	<id>org.mustbe.consulo.csharp</id>
 	<name>C#</name>
 	<resource-bundle>messages.CSharpBundle</resource-bundle>
 	<depends>org.mustbe.consulo.dotnet.core</depends>
+	<depends optional="true" config-file="CSharpSpellchecker.xml">com.intellij.spellchecker</depends>
+
+	<xi:include href="/META-INF/CSharpInspections.xml" xpointer="xpointer(/idea-plugin/*)" />
 
 	<actions>
 		<action id="CSharp.Class" class="org.mustbe.consulo.csharp.ide.actions.NewCSharpClassAction">
