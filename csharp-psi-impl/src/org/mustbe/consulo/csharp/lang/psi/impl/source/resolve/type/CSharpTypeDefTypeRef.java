@@ -32,7 +32,7 @@ public class CSharpTypeDefTypeRef extends DotNetTypeRef.Adapter
 	private final String myQualifiedName;
 	private final int myGenericCount;
 
-	public CSharpTypeDefTypeRef(String qualifiedName, int genericCount)
+	public CSharpTypeDefTypeRef(@NotNull String qualifiedName, int genericCount)
 	{
 		myQualifiedName = qualifiedName;
 		myGenericCount = genericCount;
