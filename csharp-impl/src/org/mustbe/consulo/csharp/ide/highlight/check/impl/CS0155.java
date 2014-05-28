@@ -18,11 +18,12 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.highlight.check.AbstractCompilerCheck;
-import org.mustbe.consulo.dotnet.lang.psi.DotNetInheritUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpThrowStatementImpl;
-import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.lang.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -41,6 +42,7 @@ public class CS0155 extends AbstractCompilerCheck<CSharpThrowStatementImpl>
 
 		DotNetTypeRef dotNetTypeRef = expression.toTypeRef(true);
 
-		return !DotNetInheritUtil.isParentOrSelf(DotNetTypes.System_Exception, dotNetTypeRef, statement, true);
+		PsiElement resolve = dotNetTypeRef.resolve(statement);
+		return resolve != null && (!(resolve instanceof DotNetTypeDeclaration) || !DotNetInheritUtil.isException((DotNetTypeDeclaration) resolve));
 	}
 }

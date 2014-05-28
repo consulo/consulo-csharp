@@ -29,11 +29,10 @@ import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceAsElement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
 import org.mustbe.consulo.dotnet.DotNetRunUtil;
-import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.lang.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.module.DotNetModuleUtil;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import org.mustbe.consulo.dotnet.psi.*;
-import org.mustbe.consulo.dotnet.resolve.DotNetPsiFacade;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.IconDescriptor;
 import com.intellij.ide.IconDescriptorUpdater;
@@ -95,11 +94,11 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 			CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) element;
 			if(!DumbService.getInstance(element.getProject()).isDumb())
 			{
-				if(isAttribute(typeDeclaration))
+				if(DotNetInheritUtil.isAttribute(typeDeclaration))
 				{
 					main = AllIcons.Nodes.Annotationtype;
 				}
-				else if(isException(typeDeclaration))
+				else if(DotNetInheritUtil.isException(typeDeclaration))
 				{
 					main = typeDeclaration.hasModifier(CSharpModifier.ABSTRACT) ? AllIcons.Nodes.AbstractException : AllIcons.Nodes.ExceptionClass;
 				}
@@ -232,19 +231,5 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 		{
 			iconDescriptor.addLayerIcon(AllIcons.Nodes.RunnableMark);
 		}
-	}
-
-	public static boolean isAttribute(final CSharpTypeDeclaration declaration)
-	{
-		DotNetTypeDeclaration type = DotNetPsiFacade.getInstance(declaration.getProject()).findType(DotNetTypes.System_Attribute,
-				declaration.getResolveScope(), 0);
-		return type != null && declaration.isInheritor(type, true);
-	}
-
-	public static boolean isException(CSharpTypeDeclaration declaration)
-	{
-		DotNetTypeDeclaration type = DotNetPsiFacade.getInstance(declaration.getProject()).findType(DotNetTypes.System_Exception,
-				declaration.getResolveScope(), 0);
-		return type != null && declaration.isInheritor(type, true);
 	}
 }

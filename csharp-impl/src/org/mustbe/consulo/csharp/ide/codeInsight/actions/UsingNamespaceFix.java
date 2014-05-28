@@ -35,7 +35,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodIndex;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MethodIndex;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeIndex;
 import org.mustbe.consulo.dotnet.DotNetBundle;
-import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -140,7 +139,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 					@Override
 					public boolean value(DotNetTypeDeclaration typeDeclaration)
 					{
-						return DotNetInheritUtil.isParent(DotNetTypes.System_Attribute, typeDeclaration, true);
+						return DotNetInheritUtil.isAttribute(typeDeclaration);
 					}
 				};
 				// if attribute endwith Attribute - collect only with

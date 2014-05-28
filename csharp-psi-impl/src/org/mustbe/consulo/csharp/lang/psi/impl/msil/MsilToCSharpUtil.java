@@ -23,16 +23,16 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpQualifiedTypeRef;
 import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.lang.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.msil.lang.psi.MsilModifierElementType;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
+import org.mustbe.consulo.msil.lang.psi.MsilModifierElementType;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilArrayTypRefImpl;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilReferenceTypeRefImpl;
@@ -100,7 +100,7 @@ public class MsilToCSharpUtil
 				return cache;
 			}
 
-			if(isInheritor((MsilClassEntry) element, DotNetTypes.System_MulticastDelegate, true))
+			if(DotNetInheritUtil.isInheritor((MsilClassEntry) element, DotNetTypes.System_MulticastDelegate, true))
 			{
 				val msilMethodEntry = (MsilMethodEntry) ContainerUtil.find(((MsilClassEntry) element).getMembers(),
 						new Condition<DotNetNamedElement>()
@@ -158,38 +158,5 @@ public class MsilToCSharpUtil
 			return new DotNetGenericWrapperTypeRef(inner, arguments);
 		}
 		return new MsilDelegateTypeRef(typeRef);
-	}
-
-	public static boolean isInheritor(DotNetTypeDeclaration typeDeclaration, String other, boolean deep)
-	{
-		DotNetTypeRef[] anExtends = typeDeclaration.getExtendTypeRefs();
-		if(anExtends.length > 0)
-		{
-			for(DotNetTypeRef dotNetType : anExtends)
-			{
-				PsiElement psiElement = dotNetType.resolve(typeDeclaration);
-				if(psiElement instanceof DotNetTypeDeclaration)
-				{
-					if(psiElement.isEquivalentTo(typeDeclaration))
-					{
-						return false;
-					}
-
-					if(Comparing.equal(((DotNetTypeDeclaration) psiElement).getPresentableQName(), other))
-					{
-						return true;
-					}
-
-					if(deep)
-					{
-						if(isInheritor((DotNetTypeDeclaration) psiElement, other, true))
-						{
-							return true;
-						}
-					}
-				}
-			}
-		}
-		return false;
 	}
 }

@@ -117,7 +117,7 @@ public class CSharpHighlightUtil
 		TextAttributesKey key = null;
 		if(element instanceof CSharpTypeDeclaration)
 		{
-			if(DotNetInheritUtil.isParent(DotNetTypes.System_Attribute, (DotNetTypeDeclaration) element, true))
+			if(DotNetInheritUtil.isAttribute((DotNetTypeDeclaration) element))
 			{
 				key = CSharpHighlightKey.ATTRIBUTE_NAME;
 			}
