@@ -45,6 +45,6 @@ public class CSharpTypeOfExpressionImpl extends CSharpElementImpl implements Dot
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
-		return new CSharpTypeDefTypeRef(DotNetTypes.System_RuntimeType, 0);
+		return new CSharpTypeDefTypeRef(DotNetTypes.System_Type, 0);
 	}
 }
