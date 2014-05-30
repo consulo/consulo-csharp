@@ -17,10 +17,15 @@
 package org.mustbe.consulo.csharp.lang.psi.impl;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.CSharpFileType;
+import org.mustbe.consulo.dotnet.psi.DotNetStatement;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.PsiModificationTrackerImpl;
 import com.intellij.psi.impl.PsiTreeChangeEventImpl;
 import com.intellij.psi.impl.PsiTreeChangePreprocessor;
 import com.intellij.psi.util.PsiModificationTracker;
+import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
@@ -53,6 +58,21 @@ public class CSharpPsiTreeChangePreprocessor implements PsiTreeChangePreprocesso
 			case CHILD_MOVED:
 			case CHILDREN_CHANGED:
 			case PROPERTY_CHANGED:
+				PsiFile file = psiTreeChangeEvent.getFile();
+				if(file == null || file.getFileType() != CSharpFileType.INSTANCE)
+				{
+					return;
+				}
+				PsiElement element = psiTreeChangeEvent.getElement();
+				if(element == null)
+				{
+					return;
+				}
+				DotNetStatement statement = PsiTreeUtil.getParentOfType(element, DotNetStatement.class);
+				if(statement == null)
+				{
+					return;
+				}
 				myTracker.incCounter();
 				break;
 		}
