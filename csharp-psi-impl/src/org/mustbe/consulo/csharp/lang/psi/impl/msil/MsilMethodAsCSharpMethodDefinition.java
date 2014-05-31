@@ -16,14 +16,19 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.msil.MsilHelper;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
+import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 
@@ -33,6 +38,36 @@ import com.intellij.psi.tree.IElementType;
  */
 public class MsilMethodAsCSharpMethodDefinition extends MsilMethodAsCSharpLikeMethodDeclaration implements CSharpMethodDeclaration
 {
+	private static Map<String, Pair<String, IElementType>> ourOperatorNames = new HashMap<String, Pair<String, IElementType>>()
+	{
+		{
+			put("op_Addition", new Pair<String, IElementType>("+", CSharpTokens.PLUS));
+			put("op_UnaryPlus", new Pair<String, IElementType>("+", CSharpTokens.PLUS));
+			put("op_Subtraction", new Pair<String, IElementType>("-", CSharpTokens.MINUS));
+			put("op_UnaryNegation", new Pair<String, IElementType>("-", CSharpTokens.MINUS));
+			put("op_Multiply", new Pair<String, IElementType>("*", CSharpTokens.MUL));
+			put("op_Division", new Pair<String, IElementType>("/", CSharpTokens.DIV));
+			put("op_Modulus", new Pair<String, IElementType>("%", CSharpTokens.PERC));
+			put("op_BitwiseAnd", new Pair<String, IElementType>("&", CSharpTokens.AND));
+			put("op_BitwiseOr", new Pair<String, IElementType>("|", CSharpTokens.OR));
+			put("op_ExclusiveOr", new Pair<String, IElementType>("^", CSharpTokens.XOR));
+			put("op_LeftShift", new Pair<String, IElementType>("<<", CSharpTokens.LTLT));
+			put("op_RightShift", new Pair<String, IElementType>(">>", CSharpTokens.GTGT));
+			put("op_Equality", new Pair<String, IElementType>("==", CSharpTokens.EQEQ));
+			put("op_Inequality", new Pair<String, IElementType>("!=", CSharpTokens.NTEQ));
+			put("op_LessThan", new Pair<String, IElementType>("<", CSharpTokens.LT));
+			put("op_LessThanOrEqual", new Pair<String, IElementType>("<=", CSharpTokens.LTEQ));
+			put("op_GreaterThan", new Pair<String, IElementType>(">", CSharpTokens.GT));
+			put("op_GreaterThanOrEqual", new Pair<String, IElementType>(">=", CSharpTokens.GTEQ));
+			put("op_OnesComplement", new Pair<String, IElementType>("~", CSharpTokens.TILDE));
+			put("op_LogicalNot", new Pair<String, IElementType>("!", CSharpTokens.EXCL));
+			put("op_Increment", new Pair<String, IElementType>("++", CSharpTokens.PLUSPLUS));
+			put("op_Decrement", new Pair<String, IElementType>("--", CSharpTokens.MINUSMINUS));
+			//put("op_Explicit", "implicit");
+			//put("op_Implicit", "explicit");
+		}
+	};
+
 	private final MsilClassEntry myDelegate;
 
 	public MsilMethodAsCSharpMethodDefinition(@Nullable MsilClassEntry msilClassEntry, MsilMethodEntry methodEntry)
@@ -44,6 +79,11 @@ public class MsilMethodAsCSharpMethodDefinition extends MsilMethodAsCSharpLikeMe
 	@Override
 	public String getName()
 	{
+		Pair<String, IElementType> pair = ourOperatorNames.get(myMethodEntry.getName());
+		if(pair != null)
+		{
+			return pair.getFirst();
+		}
 		return myDelegate == null ? super.getName() : MsilHelper.cutGenericMarker(myDelegate.getName());
 	}
 
@@ -58,7 +98,8 @@ public class MsilMethodAsCSharpMethodDefinition extends MsilMethodAsCSharpLikeMe
 	@Override
 	public String getPresentableQName()
 	{
-		return myDelegate == null ? super.getPresentableQName() : MsilHelper.cutGenericMarker(myDelegate.getPresentableQName());
+		return myDelegate == null ? MsilHelper.append(getPresentableParentQName(), getName()) : MsilHelper.cutGenericMarker(myDelegate
+				.getPresentableQName());
 	}
 
 	@Nullable
@@ -84,14 +125,19 @@ public class MsilMethodAsCSharpMethodDefinition extends MsilMethodAsCSharpLikeMe
 	@Override
 	public boolean isOperator()
 	{
-		return false;
+		return ourOperatorNames.containsKey(myMethodEntry.getName());
 	}
 
 	@Nullable
 	@Override
 	public IElementType getOperatorElementType()
 	{
-		return null;
+		Pair<String, IElementType> pair = ourOperatorNames.get(myMethodEntry.getName());
+		if(pair == null)
+		{
+			return null;
+		}
+		return pair.getSecond();
 	}
 
 	@Nullable
