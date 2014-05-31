@@ -70,6 +70,8 @@ public class MsilToCSharpUtil
 					return MsilTokens.STATIC_KEYWORD;
 				case SEALED:
 					return MsilTokens.SEALED_KEYWORD;
+				case INTERNAL:
+					return MsilTokens.ASSEMBLY_KEYWORD;
 				case READONLY:
 					break;
 				case UNSAFE:
