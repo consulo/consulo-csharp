@@ -61,10 +61,10 @@ public class CSharpEventDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 	}
 
 	@Override
-	@NotNull
+	@Nullable
 	public DotNetType getType()
 	{
-		return findNotNullChildByClass(DotNetType.class);
+		return findChildByClass(DotNetType.class);
 	}
 
 	@Nullable
