@@ -20,6 +20,8 @@ import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiFacade;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -59,6 +61,10 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 	@LazyInstance
 	public String getPresentableText()
 	{
+		if(myTarget instanceof DotNetNamedElement)
+		{
+			return ((DotNetNamedElement) myTarget).getName();
+		}
 		StringBuilder builder = new StringBuilder();
 		builder.append("(");
 		for(int i = 0; i < myParameterTypes.length; i++)
@@ -95,6 +101,10 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 	@LazyInstance
 	public String getQualifiedText()
 	{
+		if(myTarget instanceof DotNetQualifiedElement)
+		{
+			return ((DotNetQualifiedElement) myTarget).getPresentableQName();
+		}
 		StringBuilder builder = new StringBuilder();
 		builder.append("(");
 		for(int i = 0; i < myParameterTypes.length; i++)
