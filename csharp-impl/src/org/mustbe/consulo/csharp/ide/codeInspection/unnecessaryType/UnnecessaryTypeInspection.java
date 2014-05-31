@@ -126,7 +126,10 @@ public class UnnecessaryTypeInspection extends LocalInspectionTool
 				}
 
 				DotNetType type = variable.getType();
-				assert type != null;
+				if(type == null)
+				{
+					return;
+				}
 
 				holder.registerProblem(type, "Can replaced by 'var'", ProblemHighlightType.LIKE_UNUSED_SYMBOL, new ReplaceByVarFix(type));
 			}
