@@ -25,10 +25,12 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpEventUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorHelper;
+import org.mustbe.consulo.dotnet.psi.DotNetEventDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -116,14 +118,20 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 				parent instanceof CSharpPrefixExpressionImpl ||
 				parent instanceof CSharpPostfixExpressionImpl)
 		{
-			//TODO [search in methods]
-
 			DotNetTypeRef returnTypeInStubs = findReturnTypeInStubs();
 			if(returnTypeInStubs != null)
 			{
 				return returnTypeInStubs;
 			}
 		}
+
+		DotNetEventDeclaration eventDeclaration = CSharpEventUtil.resolveEvent(parent);
+		if(eventDeclaration != null)
+		{
+			return eventDeclaration;
+		}
+
+		//TODO [search in methods]
 		return null;
 	}
 
@@ -142,9 +150,15 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		return DotNetTypeRef.ERROR_TYPE;
 	}
 
+	@NotNull
+	public IElementType getOperatorElementType()
+	{
+		return getOperator().getNode().getElementType();
+	}
+
 	private DotNetTypeRef findReturnTypeInStubs()
 	{
-		IElementType elementType = getOperator().getNode().getElementType();
+		IElementType elementType = getOperatorElementType();
 		if(elementType == CSharpTokenSets.OROR || elementType == CSharpTokens.ANDAND)
 		{
 			return CSharpNativeTypeRef.BOOL;
@@ -183,7 +197,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			return false;
 		}
 
-		IElementType elementType = reference.getOperator().getNode().getElementType();
+		IElementType elementType = reference.getOperatorElementType();
 
 		// normalize
 		IElementType normalized = ourAssignmentOperatorMap.get(elementType);
