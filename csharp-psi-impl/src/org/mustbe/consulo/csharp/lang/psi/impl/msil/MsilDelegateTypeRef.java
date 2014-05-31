@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.msil.MsilHelper;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -30,6 +31,20 @@ public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 	public MsilDelegateTypeRef(DotNetTypeRef typeRef)
 	{
 		super(typeRef);
+	}
+
+	@Nullable
+	@Override
+	public String getPresentableText()
+	{
+		return MsilHelper.cutGenericMarker(super.getPresentableText());
+	}
+
+	@Nullable
+	@Override
+	public String getQualifiedText()
+	{
+		return MsilHelper.cutGenericMarker(super.getQualifiedText());
 	}
 
 	@Nullable
