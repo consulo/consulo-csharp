@@ -81,7 +81,7 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 		CSharpMethodStub stub = getStub();
 		if(stub != null)
 		{
-			return BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodStub.OPERATOR_MASK);
+			return stub.getOperator() != null;
 		}
 		return findChildByType(CSharpTokens.OPERATOR_KEYWORD) != null;
 	}
@@ -90,12 +90,13 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 	@Override
 	public IElementType getOperatorElementType()
 	{
-		if(isOperator())
+		CSharpMethodStub stub = getStub();
+		if(stub != null)
 		{
-			PsiElement childByType = findChildByType(CSharpTokenSets.OVERLOADING_OPERATORS);
-			return childByType == null ? null : childByType.getNode().getElementType();
+			return  stub.getOperator();
 		}
-		return null;
+		PsiElement childByType = findChildByType(CSharpTokenSets.OVERLOADING_OPERATORS);
+		return childByType == null ? null : childByType.getNode().getElementType();
 	}
 
 	@Nullable

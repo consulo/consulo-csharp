@@ -32,6 +32,6 @@ public class CSharpConversionMethodStub extends CSharpMethodStub
 			int otherModifierMask,
 			CSharpStubTypeInfo typeInfo)
 	{
-		super(parent, CSharpStubElements.CONVERSION_METHOD_DECLARATION, name, qname, modifierMask, otherModifierMask, typeInfo);
+		super(parent, CSharpStubElements.CONVERSION_METHOD_DECLARATION, name, qname, modifierMask, otherModifierMask, typeInfo, -1);
 	}
 }

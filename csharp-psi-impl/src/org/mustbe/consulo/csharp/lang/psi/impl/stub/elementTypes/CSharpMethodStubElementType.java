@@ -67,17 +67,19 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 		int modifierMask = MemberStub.getModifierMask(methodDeclaration);
 		int otherModifierMask = CSharpMethodStub.getOtherModifierMask(methodDeclaration);
 		val typeInfo = CSharpStubTypeInfoUtil.toStub(methodDeclaration.getReturnType());
-		return new CSharpMethodStub(stubElement, name, parentQName, modifierMask, otherModifierMask, typeInfo);
+		int operatorIndex = CSharpMethodStub.getOperatorIndex(methodDeclaration);
+		return new CSharpMethodStub(stubElement, name, parentQName, modifierMask, otherModifierMask, typeInfo, operatorIndex);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpMethodStub cSharpTypeStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@NotNull CSharpMethodStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
-		stubOutputStream.writeName(cSharpTypeStub.getName());
-		stubOutputStream.writeName(cSharpTypeStub.getParentQName());
-		stubOutputStream.writeInt(cSharpTypeStub.getModifierMask());
-		stubOutputStream.writeInt(cSharpTypeStub.getOtherModifierMask());
-		cSharpTypeStub.getReturnType().writeTo(stubOutputStream);
+		stubOutputStream.writeName(stub.getName());
+		stubOutputStream.writeName(stub.getParentQName());
+		stubOutputStream.writeInt(stub.getModifierMask());
+		stubOutputStream.writeInt(stub.getOtherModifierMask());
+		stub.getReturnType().writeTo(stubOutputStream);
+		stubOutputStream.writeInt(stub.getOperatorIndex());
 	}
 
 	@NotNull
@@ -89,7 +91,8 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 		int modifierMask = stubInputStream.readInt();
 		int otherModifierMask = stubInputStream.readInt();
 		val typeInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
-		return new CSharpMethodStub(stubElement, name, qname, modifierMask, otherModifierMask, typeInfo);
+		int operatorIndex = stubInputStream.readInt();
+		return new CSharpMethodStub(stubElement, name, qname, modifierMask, otherModifierMask, typeInfo, operatorIndex);
 	}
 
 	@Override
