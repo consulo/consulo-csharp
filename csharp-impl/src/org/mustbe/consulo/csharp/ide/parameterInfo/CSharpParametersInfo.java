@@ -21,6 +21,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaT
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.codeInsight.CodeInsightSettings;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.UnfairTextRange;
@@ -122,7 +123,8 @@ public class CSharpParametersInfo
 		{
 			return EMPTY;
 		}
-		return myParameterRanges[i];
+		TextRange textRange = ArrayUtil2.safeGet(myParameterRanges, i);
+		return textRange == null ? EMPTY : textRange;
 	}
 
 	private void appendComma()
