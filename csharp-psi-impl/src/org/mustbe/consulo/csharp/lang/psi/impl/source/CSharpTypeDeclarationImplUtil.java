@@ -47,6 +47,10 @@ public class CSharpTypeDeclarationImplUtil
 		if(typeRefs.length == 0)
 		{
 			String defaultSuperType = getDefaultSuperType(t);
+			if(defaultSuperType == null)
+			{
+				return DotNetTypeRef.EMPTY_ARRAY;
+			}
 			typeRefs = new DotNetTypeRef[] {new CSharpTypeRefFromQualifiedName(defaultSuperType, 0)};
 		}
 		return typeRefs;
