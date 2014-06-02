@@ -132,7 +132,7 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 		if(element instanceof CSharpMethodDeclaration)
 		{
 			final CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) element;
-			final DotNetTypeRef[] parameterTypes = methodDeclaration.getParameterTypesForRuntime();
+			final DotNetTypeRef[] parameterTypes = methodDeclaration.getParameterTypeRefs();
 
 			String parameterText = "(" + StringUtil.join(parameterTypes, new Function<DotNetTypeRef, String>()
 			{

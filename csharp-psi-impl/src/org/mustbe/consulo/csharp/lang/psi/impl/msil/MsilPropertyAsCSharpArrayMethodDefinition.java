@@ -151,7 +151,7 @@ public class MsilPropertyAsCSharpArrayMethodDefinition extends LightElement impl
 
 	@NotNull
 	@Override
-	public DotNetTypeRef[] getParameterTypesForRuntime()
+	public DotNetTypeRef[] getParameterTypeRefs()
 	{
 		DotNetParameter[] parameters = getParameters();
 		DotNetTypeRef[] typeRefs = new DotNetTypeRef[parameters.length];

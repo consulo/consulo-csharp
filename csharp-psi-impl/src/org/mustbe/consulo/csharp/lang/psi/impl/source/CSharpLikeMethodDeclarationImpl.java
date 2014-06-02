@@ -68,7 +68,7 @@ public abstract class CSharpLikeMethodDeclarationImpl extends CSharpStubMemberIm
 
 	@NotNull
 	@Override
-	public DotNetTypeRef[] getParameterTypesForRuntime()
+	public DotNetTypeRef[] getParameterTypeRefs()
 	{
 		DotNetParameterList parameterList = getParameterList();
 		return parameterList == null ? DotNetTypeRef.EMPTY_ARRAY : parameterList.getParameterTypesForRuntime();

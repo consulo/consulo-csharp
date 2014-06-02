@@ -125,9 +125,9 @@ public class MsilMethodAsCSharpLikeMethodDeclaration extends LightElement implem
 
 	@NotNull
 	@Override
-	public DotNetTypeRef[] getParameterTypesForRuntime()
+	public DotNetTypeRef[] getParameterTypeRefs()
 	{
-		DotNetTypeRef[] parameters = myMethodEntry.getParameterTypesForRuntime();
+		DotNetTypeRef[] parameters = myMethodEntry.getParameterTypeRefs();
 		DotNetTypeRef[] refs = new DotNetTypeRef[parameters.length];
 		for(int i = 0; i < parameters.length; i++)
 		{

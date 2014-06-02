@@ -54,7 +54,7 @@ public class CSharpUserTypeImpl extends CSharpElementImpl implements DotNetUserT
 		if(resolve instanceof DotNetLikeMethodDeclaration)
 		{
 			DotNetLikeMethodDeclaration methodDeclaration = (DotNetLikeMethodDeclaration) resolve;
-			return new CSharpLambdaTypeRef(resolve, methodDeclaration.getParameterTypesForRuntime(), methodDeclaration.getReturnTypeRef());
+			return new CSharpLambdaTypeRef(resolve, methodDeclaration.getParameterTypeRefs(), methodDeclaration.getReturnTypeRef());
 		}
 		return CSharpReferenceExpressionImpl.toTypeRef(resolve);
 	}

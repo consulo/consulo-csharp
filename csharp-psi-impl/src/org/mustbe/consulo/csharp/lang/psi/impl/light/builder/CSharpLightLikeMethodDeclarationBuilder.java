@@ -116,7 +116,7 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 
 	@NotNull
 	@Override
-	public DotNetTypeRef[] getParameterTypesForRuntime()
+	public DotNetTypeRef[] getParameterTypeRefs()
 	{
 		DotNetParameter[] parameters = getParameters();
 		DotNetTypeRef[] typeRefs = new DotNetTypeRef[parameters.length];

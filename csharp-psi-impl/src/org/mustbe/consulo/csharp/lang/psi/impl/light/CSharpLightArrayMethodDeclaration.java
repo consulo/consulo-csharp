@@ -100,7 +100,7 @@ public class CSharpLightArrayMethodDeclaration extends CSharpLightNamedElement<C
 
 	@NotNull
 	@Override
-	public DotNetTypeRef[] getParameterTypesForRuntime()
+	public DotNetTypeRef[] getParameterTypeRefs()
 	{
 		return myParameterList.getParameterTypesForRuntime();
 	}
