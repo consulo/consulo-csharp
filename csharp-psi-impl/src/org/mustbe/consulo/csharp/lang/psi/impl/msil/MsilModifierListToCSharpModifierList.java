@@ -29,7 +29,6 @@ import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
-import org.mustbe.consulo.msil.lang.psi.MsilModifierElementType;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.psi.PsiElement;
@@ -67,12 +66,7 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 		List<CSharpModifier> list = new ArrayList<CSharpModifier>();
 		for(CSharpModifier cSharpModifier : CSharpModifier.values())
 		{
-			MsilModifierElementType modifierElementType = MsilToCSharpUtil.toMsilModifier(cSharpModifier);
-			if(modifierElementType == null)
-			{
-				continue;
-			}
-			if(myModifierList.hasModifier(modifierElementType))
+			if(MsilToCSharpUtil.hasCSharpInMsilModifierList(cSharpModifier, myModifierList))
 			{
 				list.add(cSharpModifier);
 			}
@@ -92,7 +86,7 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 			attributes.add(attribute);
 		}
 
-		if(hasModifier(MsilTokens.SERIALIZABLE_KEYWORD))
+		if(myModifierList.hasModifier(MsilTokens.SERIALIZABLE_KEYWORD))
 		{
 			attributes.add(new CSharpLightAttributeBuilder(myModifierList, DotNetTypes.System_Serializable));
 		}
@@ -106,12 +100,8 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 		{
 			return true;
 		}
-		MsilModifierElementType modifierElementType = MsilToCSharpUtil.toMsilModifier(modifier);
-		if(modifierElementType == null)
-		{
-			return false;
-		}
-		return myModifierList.hasModifier(modifierElementType);
+		CSharpModifier cSharpModifier = CSharpModifier.as(modifier);
+		return MsilToCSharpUtil.hasCSharpInMsilModifierList(cSharpModifier, myModifierList);
 	}
 
 	@Override

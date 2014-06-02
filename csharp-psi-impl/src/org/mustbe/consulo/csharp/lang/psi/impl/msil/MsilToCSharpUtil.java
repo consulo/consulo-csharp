@@ -27,8 +27,9 @@ import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetRefTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -36,6 +37,7 @@ import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierElementType;
+import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilArrayTypRefImpl;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilNativeTypeRefImpl;
@@ -53,47 +55,58 @@ import lombok.val;
  */
 public class MsilToCSharpUtil
 {
-	@Nullable
-	public static MsilModifierElementType toMsilModifier(DotNetModifier modifier)
+	private static Map<MsilEntry, PsiElement> ourCache = new ConcurrentHashMap<MsilEntry, PsiElement>();
+
+	public static boolean hasCSharpInMsilModifierList(CSharpModifier modifier, MsilModifierList modifierList)
 	{
-		if(modifier == DotNetModifier.STATIC)
+		MsilModifierElementType elementType = null;
+		switch(modifier)
 		{
-			return MsilTokens.STATIC_KEYWORD;
+			case PUBLIC:
+				elementType = MsilTokens.PUBLIC_KEYWORD;
+				break;
+			case PRIVATE:
+				elementType = MsilTokens.PRIVATE_KEYWORD;
+				break;
+			case PROTECTED:
+				elementType = MsilTokens.PROTECTED_KEYWORD;
+				break;
+			case STATIC:
+				elementType = MsilTokens.STATIC_KEYWORD;
+				break;
+			case SEALED:
+				elementType = MsilTokens.SEALED_KEYWORD;
+				break;
+			case INTERNAL:
+				elementType = MsilTokens.ASSEMBLY_KEYWORD;
+				break;
+			case READONLY:
+				break;
+			case UNSAFE:
+				break;
+			case PARAMS:
+				return hasAttribute(modifierList, DotNetTypes.System_ParamArrayAttribute);
+			case THIS:
+				return hasAttribute(modifierList, DotNetTypes.System_Runtime_CompilerServices_ExtensionAttribute);
+			case ABSTRACT:
+				elementType = MsilTokens.ABSTRACT_KEYWORD;
+				break;
 		}
-		if(modifier instanceof CSharpModifier)
-		{
-			switch((CSharpModifier) modifier)
-			{
-				case PUBLIC:
-					return MsilTokens.PUBLIC_KEYWORD;
-				case PRIVATE:
-					return MsilTokens.PRIVATE_KEYWORD;
-				case PROTECTED:
-					return MsilTokens.PROTECTED_KEYWORD;
-				case STATIC:
-					return MsilTokens.STATIC_KEYWORD;
-				case SEALED:
-					return MsilTokens.SEALED_KEYWORD;
-				case INTERNAL:
-					return MsilTokens.ASSEMBLY_KEYWORD;
-				case READONLY:
-					break;
-				case UNSAFE:
-					break;
-				case PARAMS: //TODO [VISTALL] handle System.ParamArrayAttribute
-					break;
-				case THIS:  //TODO [VISTALL] handle System.Runtime.CompilerServices.ExtensionAttribute
-					break;
-				case ABSTRACT:
-					return MsilTokens.ABSTRACT_KEYWORD;
-				case PARTIAL:
-					break;
-			}
-		}
-		return null;
+		return elementType != null && modifierList.hasModifier(elementType);
 	}
 
-	private static Map<MsilEntry, PsiElement> ourCache = new ConcurrentHashMap<MsilEntry, PsiElement>();
+	private static boolean hasAttribute(MsilModifierList modifierList, String qName)
+	{
+		for(DotNetAttribute attribute : modifierList.getAttributes())
+		{
+			DotNetTypeDeclaration typeDeclaration = attribute.resolveToType();
+			if(typeDeclaration != null && Comparing.equal(typeDeclaration.getPresentableQName(), qName))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 
 	@Nullable
 	public static PsiElement wrap(PsiElement element)
