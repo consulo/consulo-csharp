@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -52,7 +53,7 @@ public class DotNetPointerTypeImpl extends CSharpElementImpl implements DotNetPo
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
-		return new org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeImpl(innerType.toTypeRef());
+		return new DotNetPointerTypeRefImpl(innerType.toTypeRef());
 	}
 
 	@Nullable

@@ -34,7 +34,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTy
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromText;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeImpl;
+import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -174,7 +174,7 @@ public class CSharpStubTypeInfoUtil
 				return new CSharpTypeRefFromText(referenceTypeInfo.getText(), element);
 			case POINTER:
 				CSharpStubPointerTypeInfo pointerTypeInfo = (CSharpStubPointerTypeInfo) typeInfo;
-				return new DotNetPointerTypeImpl(toTypeRef(pointerTypeInfo.getInnerType(), element));
+				return new DotNetPointerTypeRefImpl(toTypeRef(pointerTypeInfo.getInnerType(), element));
 			case NULLABLE:
 				CSharpStubNullableTypeInfo nullableTypeInfo = (CSharpStubNullableTypeInfo) typeInfo;
 				return new DotNetTypeRef.Delegate(toTypeRef(nullableTypeInfo.getInnerType(), element))

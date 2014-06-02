@@ -26,8 +26,10 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefType
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
+import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetRefTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
@@ -204,6 +206,10 @@ public class MsilToCSharpUtil
 		else if(typeRef instanceof MsilArrayTypRefImpl)
 		{
 			return new CSharpArrayTypeRef(extractToCSharp(((MsilArrayTypRefImpl) typeRef).getInnerTypeRef(), scope), 0);
+		}
+		else if(typeRef instanceof DotNetPointerTypeRef)
+		{
+			return new DotNetPointerTypeRefImpl(extractToCSharp(((DotNetPointerTypeRef) typeRef).getInnerTypeRef(), scope));
 		}
 		else if(typeRef instanceof DotNetRefTypeRef)
 		{

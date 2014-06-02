@@ -34,7 +34,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameterList;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeImpl;
+import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -157,9 +157,9 @@ public class GenericUnwrapTool
 			}
 			return new DotNetGenericWrapperTypeRef(inner, arguments);
 		}
-		else if(typeRef instanceof DotNetPointerTypeImpl)
+		else if(typeRef instanceof DotNetPointerTypeRefImpl)
 		{
-			return new DotNetPointerTypeImpl(exchangeTypeRefs(((DotNetPointerTypeImpl) typeRef).getInnerTypeRef(), extractor, element));
+			return new DotNetPointerTypeRefImpl(exchangeTypeRefs(((DotNetPointerTypeRefImpl) typeRef).getInnerTypeRef(), extractor, element));
 		}
 		else if(typeRef instanceof CSharpArrayTypeRef)
 		{
