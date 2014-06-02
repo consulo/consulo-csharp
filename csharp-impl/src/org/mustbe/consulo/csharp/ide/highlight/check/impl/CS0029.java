@@ -60,7 +60,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			return null;
 		}
 
-		if(!CSharpTypeUtil.isInheritable(resolve.getSecond(), resolve.getFirst(), element))
+		if(!CSharpTypeUtil.isInheritable(resolve.getFirst(), resolve.getSecond(), element))
 		{
 			return result(resolve.getThird(), resolve.getSecond().getQualifiedText(), resolve.getFirst().getQualifiedText());
 		}

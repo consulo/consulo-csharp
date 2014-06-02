@@ -19,7 +19,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.resolve.DotNetRefTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
@@ -53,6 +55,20 @@ public class CSharpTypeUtil
 		if(top.equals(target))
 		{
 			return true;
+		}
+
+		if(target instanceof DotNetRefTypeRef && !(top instanceof DotNetRefTypeRef))
+		{
+			return false;
+		}
+
+		if(target instanceof CSharpRefTypeRef && top instanceof CSharpRefTypeRef)
+		{
+			if(((CSharpRefTypeRef) target).getType() != ((CSharpRefTypeRef) top).getType())
+			{
+				return false;
+			}
+			return isInheritable(((CSharpRefTypeRef) top).getInnerTypeRef(), ((CSharpRefTypeRef) target).getInnerTypeRef(), scope);
 		}
 
 		if(top instanceof CSharpLambdaTypeRef && target instanceof CSharpLambdaTypeRef)

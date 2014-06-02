@@ -41,6 +41,11 @@ public class CSharpRefTypeRef extends DotNetTypeRef.Delegate implements DotNetRe
 		myType = type;
 	}
 
+	public Type getType()
+	{
+		return myType;
+	}
+
 	@Nullable
 	@Override
 	public String getPresentableText()
