@@ -52,7 +52,7 @@ public class CSharpLightParameterList extends CSharpLightElement<PsiElement> imp
 
 	@NotNull
 	@Override
-	public DotNetTypeRef[] getParameterTypesForRuntime()
+	public DotNetTypeRef[] getParameterTypeRefs()
 	{
 		DotNetParameter[] parameters = getParameters();
 		if(parameters.length == 0)

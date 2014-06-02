@@ -49,7 +49,7 @@ public class CSharpLambdaParameterListImpl extends CSharpElementImpl implements 
 
 	@Override
 	@NotNull
-	public DotNetTypeRef[] getParameterTypesForRuntime()
+	public DotNetTypeRef[] getParameterTypeRefs()
 	{
 		CSharpLambdaParameter[] parameters = getParameters();
 		if(parameters.length == 0)

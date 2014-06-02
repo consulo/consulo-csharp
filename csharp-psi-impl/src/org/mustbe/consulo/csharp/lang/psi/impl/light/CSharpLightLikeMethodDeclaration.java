@@ -68,7 +68,7 @@ public abstract class CSharpLightLikeMethodDeclaration<S extends DotNetLikeMetho
 	@Override
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
-		return myParameterTypes.getParameterTypesForRuntime();
+		return myParameterTypes.getParameterTypeRefs();
 	}
 
 	@Nullable

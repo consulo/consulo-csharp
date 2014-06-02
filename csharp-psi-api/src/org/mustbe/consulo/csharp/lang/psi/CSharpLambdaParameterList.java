@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
+import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 
@@ -25,7 +26,9 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
  */
 public interface CSharpLambdaParameterList extends DotNetElement
 {
+	@NotNull
 	CSharpLambdaParameter[] getParameters();
 
-	DotNetTypeRef[] getParameterTypesForRuntime();
+	@NotNull
+	DotNetTypeRef[] getParameterTypeRefs();
 }

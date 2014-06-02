@@ -56,7 +56,7 @@ public class CSharpParameterListImpl extends CSharpStubElementImpl<CSharpParamet
 
 	@NotNull
 	@Override
-	public DotNetTypeRef[] getParameterTypesForRuntime()
+	public DotNetTypeRef[] getParameterTypeRefs()
 	{
 		DotNetParameter[] parameters = getParameters();
 		if(parameters.length == 0)

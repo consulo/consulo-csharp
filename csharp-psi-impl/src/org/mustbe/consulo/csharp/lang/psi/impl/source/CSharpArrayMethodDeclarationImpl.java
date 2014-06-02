@@ -110,7 +110,7 @@ public class CSharpArrayMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
 		DotNetParameterList parameterList = getParameterList();
-		return parameterList == null ? DotNetTypeRef.EMPTY_ARRAY : parameterList.getParameterTypesForRuntime();
+		return parameterList == null ? DotNetTypeRef.EMPTY_ARRAY : parameterList.getParameterTypeRefs();
 	}
 
 	@Override
