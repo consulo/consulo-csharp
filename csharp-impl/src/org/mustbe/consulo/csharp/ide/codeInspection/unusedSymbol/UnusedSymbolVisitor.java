@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
+import org.mustbe.consulo.dotnet.DotNetRunUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
@@ -32,10 +33,17 @@ public class UnusedSymbolVisitor extends CSharpElementVisitor
 	public void visitParameter(DotNetParameter parameter)
 	{
 		DotNetLikeMethodDeclaration method = parameter.getMethod();
-		// dont check delegatess
-		if(method instanceof DotNetMethodDeclaration && ((DotNetMethodDeclaration) method).isDelegate())
+		if(method instanceof DotNetMethodDeclaration)
 		{
-			return;
+			if(((DotNetMethodDeclaration) method).isDelegate())
+			{
+				return;
+			}
+
+			if(DotNetRunUtil.isEntryPoint((DotNetMethodDeclaration) method))
+			{
+				return;
+			}
 		}
 		myVariableStates.put(parameter, Boolean.FALSE);
 	}
