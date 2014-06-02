@@ -147,8 +147,8 @@ public class GenericUnwrapTool
 		{
 			DotNetGenericWrapperTypeRef wrapperTypeRef = (DotNetGenericWrapperTypeRef) typeRef;
 
-			DotNetTypeRef inner = exchangeTypeRefs(wrapperTypeRef.getInner(), extractor, element);
-			DotNetTypeRef[] oldArguments = wrapperTypeRef.getArguments();
+			DotNetTypeRef inner = exchangeTypeRefs(wrapperTypeRef.getInnerTypeRef(), extractor, element);
+			DotNetTypeRef[] oldArguments = wrapperTypeRef.getArgumentTypeRefs();
 			DotNetTypeRef[] arguments = new DotNetTypeRef[oldArguments.length];
 			for(int i = 0; i < oldArguments.length; i++)
 			{

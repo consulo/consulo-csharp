@@ -233,8 +233,8 @@ public class MsilToCSharpUtil
 		}
 		else if(typeRef instanceof DotNetGenericWrapperTypeRef)
 		{
-			val inner = extractToCSharp(((DotNetGenericWrapperTypeRef) typeRef).getInner(), scope);
-			DotNetTypeRef[] arguments = ((DotNetGenericWrapperTypeRef) typeRef).getArguments();
+			val inner = extractToCSharp(((DotNetGenericWrapperTypeRef) typeRef).getInnerTypeRef(), scope);
+			DotNetTypeRef[] arguments = ((DotNetGenericWrapperTypeRef) typeRef).getArgumentTypeRefs();
 			DotNetTypeRef[] newArguments = new DotNetTypeRef[arguments.length];
 			for(int i = 0; i < newArguments.length; i++)
 			{
