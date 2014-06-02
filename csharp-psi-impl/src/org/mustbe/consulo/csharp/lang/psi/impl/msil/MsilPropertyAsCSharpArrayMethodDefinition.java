@@ -67,7 +67,7 @@ public class MsilPropertyAsCSharpArrayMethodDefinition extends LightElement impl
 		Pair<DotNetXXXAccessor, MsilMethodEntry> p = pairs.get(0);
 
 		DotNetParameter firstParameter = p.getSecond().getParameters()[0];
-		myParameters = new DotNetParameter[] {new MsilParameterAsCSharpParameter(firstParameter, 0)};
+		myParameters = new DotNetParameter[] {new MsilParameterAsCSharpParameter(firstParameter, this, 0)};
 	}
 
 	@Nullable

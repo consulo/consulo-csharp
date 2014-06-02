@@ -152,7 +152,7 @@ public class MsilMethodAsCSharpLikeMethodDeclaration extends LightElement implem
 		for(int i = 0; i < parameters.length; i++)
 		{
 			DotNetParameter parameter = parameters[i];
-			newParameters[i] = new MsilParameterAsCSharpParameter(parameter, i);
+			newParameters[i] = new MsilParameterAsCSharpParameter(parameter, this, i);
 		}
 		return newParameters;
 	}

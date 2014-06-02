@@ -28,6 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefType
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
@@ -165,5 +166,12 @@ public class CSharpParameterImpl extends CSharpStubElementImpl<CSharpVariableStu
 			return new LocalSearchScope(parent.getParent());
 		}
 		return super.getUseScope();
+	}
+
+	@NotNull
+	@Override
+	public DotNetLikeMethodDeclaration getMethod()
+	{
+		return getStubOrPsiParentOfType(DotNetLikeMethodDeclaration.class);
 	}
 }

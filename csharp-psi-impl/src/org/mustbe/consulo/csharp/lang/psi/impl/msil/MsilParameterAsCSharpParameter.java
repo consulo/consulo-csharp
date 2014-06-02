@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetRefTypeRef;
@@ -30,11 +31,13 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable implements DotNetParameter
 {
+	private final DotNetLikeMethodDeclaration myMethodDeclaration;
 	private final int myIndex;
 
-	public MsilParameterAsCSharpParameter(DotNetVariable variable, int index)
+	public MsilParameterAsCSharpParameter(DotNetVariable variable, DotNetLikeMethodDeclaration methodDeclaration, int index)
 	{
 		super(variable);
+		myMethodDeclaration = methodDeclaration;
 		myIndex = index;
 	}
 
@@ -61,5 +64,12 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 	{
 		String name = super.getName();
 		return name == null ? "p" + myIndex : name;
+	}
+
+	@NotNull
+	@Override
+	public DotNetLikeMethodDeclaration getMethod()
+	{
+		return myMethodDeclaration;
 	}
 }
