@@ -18,44 +18,41 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.dotnet.resolve.DotNetPsiFacade;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
- * @since 18.12.13.
+ * @since 11.02.14
  */
-public class CSharpTypeDefTypeRef extends DotNetTypeRef.Adapter
+public class CSharpTypeRefFromQualifiedElement extends DotNetTypeRef.Adapter
 {
-	private final String myQualifiedName;
-	private final int myGenericCount;
+	private DotNetQualifiedElement myElement;
 
-	public CSharpTypeDefTypeRef(@NotNull String qualifiedName, int genericCount)
+	public CSharpTypeRefFromQualifiedElement(DotNetQualifiedElement element)
 	{
-		myQualifiedName = qualifiedName;
-		myGenericCount = genericCount;
+		myElement = element;
 	}
 
 	@Nullable
 	@Override
 	public String getPresentableText()
 	{
-		return StringUtil.getShortName(myQualifiedName);
+		return myElement.getName();
 	}
 
 	@Nullable
 	@Override
 	public String getQualifiedText()
 	{
-		return myQualifiedName;
+		return myElement.getPresentableQName();
 	}
 
 	@Nullable
 	@Override
 	public PsiElement resolve(@NotNull PsiElement scope)
 	{
-		return DotNetPsiFacade.getInstance(scope.getProject()).findType(myQualifiedName, scope.getResolveScope(), myGenericCount);
+		return myElement;
 	}
 }

@@ -34,7 +34,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceAsElement;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceHelper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeDefTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromQualifiedName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.debugger.DotNetVirtualMachineUtil;
@@ -248,11 +248,11 @@ public class CSharpResolveUtil
 				{
 					if(((CSharpGenericConstraintKeywordValue) value).getKeywordElementType() == CSharpTokens.STRUCT_KEYWORD)
 					{
-						superTypes.add(new CSharpTypeDefTypeRef(DotNetTypes.System_ValueType, 0));
+						superTypes.add(new CSharpTypeRefFromQualifiedName(DotNetTypes.System_ValueType, 0));
 					}
 					else if(((CSharpGenericConstraintKeywordValue) value).getKeywordElementType() == CSharpTokens.CLASS_KEYWORD)
 					{
-						superTypes.add(new CSharpTypeDefTypeRef(DotNetTypes.System_Object, 0));
+						superTypes.add(new CSharpTypeRefFromQualifiedName(DotNetTypes.System_Object, 0));
 					}
 				}
 			}

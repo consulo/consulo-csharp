@@ -31,11 +31,11 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNativeTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNullableTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeWithTypeArgumentsImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromText;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromText;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeImpl;
-import org.mustbe.consulo.dotnet.psi.DotNetReferenceType;
+import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Ref;
@@ -85,7 +85,7 @@ public class CSharpStubTypeInfoUtil
 		switch(value)
 		{
 			case USER:
-				return new CSharpStubReferenceTypeInfo(stubInputStream);
+				return new CSharpStubUserTypeInfo(stubInputStream);
 			case POINTER:
 				return new CSharpStubPointerTypeInfo(stubInputStream);
 			case ARRAY:
@@ -154,9 +154,9 @@ public class CSharpStubTypeInfoUtil
 			}
 
 			@Override
-			public void visitReferenceType(DotNetReferenceType type)
+			public void visitReferenceType(DotNetUserType type)
 			{
-				ref.set(new CSharpStubReferenceTypeInfo(type.getReferenceText()));
+				ref.set(new CSharpStubUserTypeInfo(type.getReferenceText()));
 			}
 		});
 		return ref.get();
@@ -170,7 +170,7 @@ public class CSharpStubTypeInfoUtil
 			case ERROR:
 				return DotNetTypeRef.ERROR_TYPE;
 			case USER:
-				CSharpStubReferenceTypeInfo referenceTypeInfo = (CSharpStubReferenceTypeInfo) typeInfo;
+				CSharpStubUserTypeInfo referenceTypeInfo = (CSharpStubUserTypeInfo) typeInfo;
 				return new CSharpTypeRefFromText(referenceTypeInfo.getText(), element);
 			case POINTER:
 				CSharpStubPointerTypeInfo pointerTypeInfo = (CSharpStubPointerTypeInfo) typeInfo;

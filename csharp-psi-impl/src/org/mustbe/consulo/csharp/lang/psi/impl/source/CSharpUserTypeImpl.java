@@ -21,7 +21,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetReferenceType;
+import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiFacade;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -31,9 +31,9 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpReferenceTypeImpl extends CSharpElementImpl implements DotNetReferenceType
+public class CSharpUserTypeImpl extends CSharpElementImpl implements DotNetUserType
 {
-	public CSharpReferenceTypeImpl(@NotNull ASTNode node)
+	public CSharpUserTypeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}

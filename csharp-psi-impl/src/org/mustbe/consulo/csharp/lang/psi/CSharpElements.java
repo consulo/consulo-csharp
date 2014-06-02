@@ -78,7 +78,7 @@ public interface CSharpElements
 	IElementType GENERIC_CONSTRAINT_TYPE_VALUE = new IElementTypeAsPsiFactory("GENERIC_CONSTRAINT_TYPE_VALUE", CSharpLanguage.INSTANCE,
 			CSharpGenericConstraintTypeValueImpl.class);
 
-	IElementType REFERENCE_TYPE = new IElementTypeAsPsiFactory("REFERENCE_TYPE", CSharpLanguage.INSTANCE, CSharpReferenceTypeImpl.class);
+	IElementType USER_TYPE = new IElementTypeAsPsiFactory("USER_TYPE", CSharpLanguage.INSTANCE, CSharpUserTypeImpl.class);
 
 	IElementType POINTER_TYPE = new IElementTypeAsPsiFactory("POINTER_TYPE", CSharpLanguage.INSTANCE, DotNetPointerTypeImpl.class);
 

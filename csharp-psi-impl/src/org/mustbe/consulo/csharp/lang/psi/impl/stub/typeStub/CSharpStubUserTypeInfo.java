@@ -26,16 +26,16 @@ import com.intellij.util.io.StringRef;
  * @author VISTALL
  * @since 15.01.14
  */
-public class CSharpStubReferenceTypeInfo extends CSharpStubTypeInfo
+public class CSharpStubUserTypeInfo extends CSharpStubTypeInfo
 {
 	private String myText;
 
-	public CSharpStubReferenceTypeInfo(String text)
+	public CSharpStubUserTypeInfo(String text)
 	{
 		myText = text;
 	}
 
-	public CSharpStubReferenceTypeInfo(StubInputStream inputStream) throws IOException
+	public CSharpStubUserTypeInfo(StubInputStream inputStream) throws IOException
 	{
 		myText = StringRef.toString(inputStream.readName());
 	}

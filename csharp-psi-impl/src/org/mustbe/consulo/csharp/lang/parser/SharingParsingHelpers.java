@@ -240,7 +240,7 @@ public class SharingParsingHelpers implements CSharpTokenSets, CSharpTokens, CSh
 		else if(builder.getTokenType() == IDENTIFIER)
 		{
 			ExpressionParsing.parseQualifiedReference(builder, null);
-			marker.done(REFERENCE_TYPE);
+			marker.done(USER_TYPE);
 		}
 		else if(builder.getTokenType() == GLOBAL_KEYWORD)
 		{
@@ -252,7 +252,7 @@ public class SharingParsingHelpers implements CSharpTokenSets, CSharpTokens, CSh
 				expect(builder, IDENTIFIER, "Identifier expected");
 			}
 			mark.done(REFERENCE_EXPRESSION);
-			marker.done(REFERENCE_TYPE);
+			marker.done(USER_TYPE);
 		}
 		else
 		{

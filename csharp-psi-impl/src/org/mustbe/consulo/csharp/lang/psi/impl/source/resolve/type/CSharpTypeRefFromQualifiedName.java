@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceHelper;
+import org.mustbe.consulo.dotnet.resolve.DotNetPsiFacade;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -27,13 +27,15 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 18.12.13.
  */
-public class CSharpNamespaceDefTypeRef extends DotNetTypeRef.Adapter
+public class CSharpTypeRefFromQualifiedName extends DotNetTypeRef.Adapter
 {
 	private final String myQualifiedName;
+	private final int myGenericCount;
 
-	public CSharpNamespaceDefTypeRef(String qualifiedName)
+	public CSharpTypeRefFromQualifiedName(@NotNull String qualifiedName, int genericCount)
 	{
 		myQualifiedName = qualifiedName;
+		myGenericCount = genericCount;
 	}
 
 	@Nullable
@@ -52,8 +54,8 @@ public class CSharpNamespaceDefTypeRef extends DotNetTypeRef.Adapter
 
 	@Nullable
 	@Override
-	public PsiElement resolve(@NotNull PsiElement element)
+	public PsiElement resolve(@NotNull PsiElement scope)
 	{
-		return CSharpNamespaceHelper.getNamespaceElementIfFind(element.getProject(), myQualifiedName, element.getResolveScope());
+		return DotNetPsiFacade.getInstance(scope.getProject()).findType(myQualifiedName, scope.getResolveScope(), myGenericCount);
 	}
 }

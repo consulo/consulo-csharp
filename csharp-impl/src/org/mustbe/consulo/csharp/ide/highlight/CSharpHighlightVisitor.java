@@ -43,7 +43,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetReferenceType;
+import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
@@ -394,7 +394,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 		{
 			return (CSharpMethodCallParameterListOwner) parent;
 		}
-		else if(parent instanceof DotNetReferenceType && parent.getParent() instanceof CSharpNewExpression)
+		else if(parent instanceof DotNetUserType && parent.getParent() instanceof CSharpNewExpression)
 		{
 			return (CSharpMethodCallParameterListOwner) parent.getParent();
 		}

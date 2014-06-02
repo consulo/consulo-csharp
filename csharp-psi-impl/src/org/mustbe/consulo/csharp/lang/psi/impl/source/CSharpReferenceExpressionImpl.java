@@ -34,12 +34,12 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScope
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericParameterTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNamespaceDefTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromNamespace;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpQualifiedTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeDefTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromQualifiedElement;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromQualifiedName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -353,7 +353,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					{
 						if(element instanceof DotNetGenericParameterListOwner)
 						{
-							DotNetReferenceType referenceType = (DotNetReferenceType) e.getParent();
+							DotNetUserType referenceType = (DotNetUserType) e.getParent();
 							if(referenceType.getParent() instanceof DotNetTypeWithTypeArguments)
 							{
 								DotNetType[] arguments = ((DotNetTypeWithTypeArguments) referenceType.getParent()).getArguments();
@@ -826,7 +826,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		DotNetTypeRef[] anExtends = typeDeclaration.getExtendTypeRefs();
 		if(anExtends.length == 0)
 		{
-			return new CSharpTypeDefTypeRef(DotNetTypes.System_Object, 0);
+			return new CSharpTypeRefFromQualifiedName(DotNetTypes.System_Object, 0);
 		}
 		else
 		{
@@ -839,7 +839,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				}
 			}
 
-			return new CSharpTypeDefTypeRef(DotNetTypes.System_Object, 0);
+			return new CSharpTypeRefFromQualifiedName(DotNetTypes.System_Object, 0);
 		}
 	}
 
@@ -878,7 +878,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		{
 			return ResolveToKind.SOFT_NAMESPACE;
 		}
-		else if(tempElement instanceof DotNetReferenceType)
+		else if(tempElement instanceof DotNetUserType)
 		{
 			PsiElement parentOfParent = tempElement.getParent();
 			if(parentOfParent instanceof DotNetTypeWithTypeArguments)
@@ -928,7 +928,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				return ResolveToKind.NAMESPACE;
 			}
 
-			if(PsiTreeUtil.getParentOfType(this, DotNetReferenceType.class) != null)
+			if(PsiTreeUtil.getParentOfType(this, DotNetUserType.class) != null)
 			{
 				return ResolveToKind.NAMESPACE;
 			}
@@ -1082,11 +1082,11 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	{
 		if(resolve instanceof CSharpNamespaceAsElement)
 		{
-			return new CSharpNamespaceDefTypeRef(((CSharpNamespaceAsElement) resolve).getPresentableQName());
+			return new CSharpTypeRefFromNamespace(((CSharpNamespaceAsElement) resolve).getPresentableQName());
 		}
 		else if(resolve instanceof DotNetTypeDeclaration)
 		{
-			return new CSharpQualifiedTypeRef((DotNetTypeDeclaration) resolve);
+			return new CSharpTypeRefFromQualifiedElement((DotNetTypeDeclaration) resolve);
 		}
 		else if(resolve instanceof CSharpTypeDefStatementImpl)
 		{
@@ -1094,7 +1094,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		}
 		else if(resolve instanceof DotNetGenericParameter)
 		{
-			return new CSharpGenericParameterTypeRef((DotNetGenericParameter) resolve);
+			return new CSharpTypeRefFromGenericParameter((DotNetGenericParameter) resolve);
 		}
 		else if(resolve instanceof CSharpMethodDeclaration)
 		{

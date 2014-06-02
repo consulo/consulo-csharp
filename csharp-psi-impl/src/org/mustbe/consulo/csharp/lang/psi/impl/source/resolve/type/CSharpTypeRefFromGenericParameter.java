@@ -18,41 +18,40 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
- * @since 11.02.14
+ * @since 15.01.14
  */
-public class CSharpQualifiedTypeRef extends DotNetTypeRef.Adapter
+public class CSharpTypeRefFromGenericParameter extends DotNetTypeRef.Adapter
 {
-	private DotNetQualifiedElement myElement;
+	private final DotNetGenericParameter myGenericParameter;
 
-	public CSharpQualifiedTypeRef(DotNetQualifiedElement element)
+	public CSharpTypeRefFromGenericParameter(DotNetGenericParameter genericParameter)
 	{
-		myElement = element;
-	}
-
-	@Nullable
-	@Override
-	public String getPresentableText()
-	{
-		return myElement.getName();
-	}
-
-	@Nullable
-	@Override
-	public String getQualifiedText()
-	{
-		return myElement.getPresentableQName();
+		myGenericParameter = genericParameter;
 	}
 
 	@Nullable
 	@Override
 	public PsiElement resolve(@NotNull PsiElement scope)
 	{
-		return myElement;
+		return myGenericParameter;
+	}
+
+	@Override
+	public boolean isNullable()
+	{
+		return false;
+	}
+
+	@Nullable
+	@Override
+	public String getPresentableText()
+	{
+		return myGenericParameter.getName();
 	}
 }

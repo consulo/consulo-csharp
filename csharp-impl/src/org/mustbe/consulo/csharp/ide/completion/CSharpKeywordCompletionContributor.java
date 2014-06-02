@@ -27,7 +27,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetReferenceType;
+import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
@@ -81,7 +81,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 					@NotNull CompletionResultSet completionResultSet)
 			{
 				PsiElement position = completionParameters.getPosition();
-				if(position.getParent() instanceof DotNetReferenceExpression && position.getParent().getParent() instanceof DotNetReferenceType)
+				if(position.getParent() instanceof DotNetReferenceExpression && position.getParent().getParent() instanceof DotNetUserType)
 				{
 					PsiElement parent1 = position.getParent().getParent();
 

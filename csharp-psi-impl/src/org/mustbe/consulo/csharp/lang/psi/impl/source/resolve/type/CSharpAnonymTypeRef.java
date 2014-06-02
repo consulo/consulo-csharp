@@ -95,7 +95,7 @@ public class CSharpAnonymTypeRef extends DotNetTypeRef.Adapter
 
 			if(valueReferenceExpression == null)
 			{
-				fieldBuilder.withTypeRef(new CSharpTypeDefTypeRef(DotNetTypes.System_Object, 0));
+				fieldBuilder.withTypeRef(new CSharpTypeRefFromQualifiedName(DotNetTypes.System_Object, 0));
 			}
 			else
 			{

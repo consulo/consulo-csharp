@@ -20,7 +20,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.*;
 import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
-import org.mustbe.consulo.dotnet.psi.DotNetReferenceType;
+import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import com.intellij.psi.PsiElementVisitor;
 
@@ -82,7 +82,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(declaration);
 	}
 
-	public void visitReferenceType(DotNetReferenceType type)
+	public void visitReferenceType(DotNetUserType type)
 	{
 		visitElement(type);
 	}

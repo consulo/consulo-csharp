@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpQualifiedTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromQualifiedElement;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableStub;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
@@ -90,7 +90,7 @@ public class CSharpEnumConstantDeclarationImpl extends CSharpStubVariableImpl<CS
 		{
 			return anExtends[0];
 		}
-		return new CSharpQualifiedTypeRef(parentOfType);
+		return new CSharpTypeRefFromQualifiedElement(parentOfType);
 	}
 
 	@Nullable

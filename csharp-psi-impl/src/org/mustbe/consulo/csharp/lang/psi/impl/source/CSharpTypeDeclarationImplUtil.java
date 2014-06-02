@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeDefTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromQualifiedName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -47,7 +47,7 @@ public class CSharpTypeDeclarationImplUtil
 		if(typeRefs.length == 0)
 		{
 			String defaultSuperType = getDefaultSuperType(t);
-			typeRefs = new DotNetTypeRef[] {new CSharpTypeDefTypeRef(defaultSuperType, 0)};
+			typeRefs = new DotNetTypeRef[] {new CSharpTypeRefFromQualifiedName(defaultSuperType, 0)};
 		}
 		return typeRefs;
 	}

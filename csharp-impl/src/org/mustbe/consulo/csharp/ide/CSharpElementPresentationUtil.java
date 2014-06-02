@@ -25,7 +25,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.DotNetPointerTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeWithTypeArgumentsImpl;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetReferenceType;
+import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import lombok.val;
 
@@ -47,7 +47,7 @@ public class CSharpElementPresentationUtil extends DotNetElementPresentationUtil
 		type.accept(new CSharpRecursiveElementVisitor()
 		{
 			@Override
-			public void visitReferenceType(DotNetReferenceType type)
+			public void visitReferenceType(DotNetUserType type)
 			{
 				DotNetReferenceExpression referenceExpression = type.getReferenceExpression();
 				if(referenceExpression == null)
