@@ -20,13 +20,16 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.msil.lang.psi.MsilEventEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
 
 /**
  * @author VISTALL
@@ -34,9 +37,23 @@ import com.intellij.psi.PsiElement;
  */
 public class MsilEventAsCSharpEventDefinition extends MsilVariableAsCSharpVariable implements CSharpEventDeclaration
 {
-	public MsilEventAsCSharpEventDefinition(MsilEventEntry variable, List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
+	public MsilEventAsCSharpEventDefinition(DotNetQualifiedElement buildRoot, MsilEventEntry variable, List<Pair<DotNetXXXAccessor,
+			MsilMethodEntry>> pairs)
 	{
-		super(MsilPropertyAsCSharpPropertyDefinition.getAdditionalModifiers(pairs), variable);
+		super(buildRoot, MsilPropertyAsCSharpPropertyDefinition.getAdditionalModifiers(pairs), variable);
+	}
+
+	@Override
+	public void accept(@NotNull PsiElementVisitor visitor)
+	{
+		if(visitor instanceof CSharpElementVisitor)
+		{
+			((CSharpElementVisitor) visitor).visitEventDeclaration(this);
+		}
+		else
+		{
+			visitor.visitElement(this);
+		}
 	}
 
 	@Override

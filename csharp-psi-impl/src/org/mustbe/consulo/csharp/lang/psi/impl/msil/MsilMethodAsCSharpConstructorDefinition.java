@@ -19,10 +19,13 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
 
 /**
  * @author VISTALL
@@ -32,10 +35,26 @@ public class MsilMethodAsCSharpConstructorDefinition extends MsilMethodAsCSharpL
 {
 	private final MsilClassAsCSharpTypeDefinition myTypeDefinition;
 
-	public MsilMethodAsCSharpConstructorDefinition(MsilClassAsCSharpTypeDefinition typeDefinition, MsilMethodEntry methodEntry)
+	public MsilMethodAsCSharpConstructorDefinition(
+			DotNetQualifiedElement buildRoot,
+			MsilClassAsCSharpTypeDefinition typeDefinition,
+			MsilMethodEntry methodEntry)
 	{
-		super(methodEntry);
+		super(buildRoot, methodEntry);
 		myTypeDefinition = typeDefinition;
+	}
+
+	@Override
+	public void accept(@NotNull PsiElementVisitor visitor)
+	{
+		if(visitor instanceof CSharpElementVisitor)
+		{
+			((CSharpElementVisitor) visitor).visitConstructorDeclaration(this);
+		}
+		else
+		{
+			visitor.visitElement(this);
+		}
 	}
 
 	@Nullable

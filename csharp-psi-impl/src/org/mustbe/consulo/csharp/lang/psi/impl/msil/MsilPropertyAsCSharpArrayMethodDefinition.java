@@ -21,17 +21,9 @@ import java.util.List;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
-import org.mustbe.consulo.dotnet.psi.DotNetType;
-import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
@@ -40,48 +32,58 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.impl.light.LightElement;
+import com.intellij.psi.PsiElementVisitor;
 import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
  * @since 28.05.14
  */
-public class MsilPropertyAsCSharpArrayMethodDefinition extends LightElement implements CSharpArrayMethodDeclaration
+public class MsilPropertyAsCSharpArrayMethodDefinition extends MsilElementWrapper<MsilPropertyEntry> implements CSharpArrayMethodDeclaration
 {
-	private final MsilPropertyEntry myPropertyEntry;
 	private final MsilModifierListToCSharpModifierList myModifierList;
 
 	private final DotNetParameter[] myParameters;
 
-	public MsilPropertyAsCSharpArrayMethodDefinition(MsilPropertyEntry propertyEntry, List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
+	public MsilPropertyAsCSharpArrayMethodDefinition(
+			DotNetQualifiedElement buildRoot, MsilPropertyEntry propertyEntry, List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
 	{
-		super(PsiManager.getInstance(propertyEntry.getProject()), CSharpLanguage.INSTANCE);
-		myPropertyEntry = propertyEntry;
+		super(buildRoot, propertyEntry);
+
 		myModifierList = new MsilModifierListToCSharpModifierList(MsilPropertyAsCSharpPropertyDefinition.getAdditionalModifiers(pairs),
 				(MsilModifierList) propertyEntry.getModifierList());
-
-		setNavigationElement(propertyEntry); //TODO [VISTALL] generator from MSIL to C#
 
 		Pair<DotNetXXXAccessor, MsilMethodEntry> p = pairs.get(0);
 
 		DotNetParameter firstParameter = p.getSecond().getParameters()[0];
-		myParameters = new DotNetParameter[] {new MsilParameterAsCSharpParameter(firstParameter, this, 0)};
+		myParameters = new DotNetParameter[]{new MsilParameterAsCSharpParameter(myBuildRoot, firstParameter, this, 0)};
+	}
+
+	@Override
+	public void accept(@NotNull PsiElementVisitor visitor)
+	{
+		if(visitor instanceof CSharpElementVisitor)
+		{
+			((CSharpElementVisitor) visitor).visitArrayMethodDeclaration(this);
+		}
+		else
+		{
+			visitor.visitElement(this);
+		}
 	}
 
 	@Nullable
 	@Override
 	public String getPresentableParentQName()
 	{
-		return myPropertyEntry.getPresentableParentQName();
+		return myMsilElement.getPresentableParentQName();
 	}
 
 	@Nullable
 	@Override
 	public String getPresentableQName()
 	{
-		return myPropertyEntry.getPresentableQName();
+		return myMsilElement.getPresentableQName();
 	}
 
 	@Override
@@ -126,7 +128,7 @@ public class MsilPropertyAsCSharpArrayMethodDefinition extends LightElement impl
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
-		return MsilToCSharpUtil.extractToCSharp(myPropertyEntry.toTypeRef(false), myPropertyEntry);
+		return MsilToCSharpUtil.extractToCSharp(myMsilElement.toTypeRef(false), myMsilElement);
 	}
 
 	@NotNull

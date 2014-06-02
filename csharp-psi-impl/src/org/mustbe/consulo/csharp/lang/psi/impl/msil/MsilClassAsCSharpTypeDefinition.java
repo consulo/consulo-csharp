@@ -23,7 +23,7 @@ import java.util.List;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.CSharpLanguage;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -48,9 +48,8 @@ import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.impl.light.LightElement;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.Processor;
 
@@ -58,7 +57,7 @@ import com.intellij.util.Processor;
  * @author VISTALL
  * @since 22.05.14
  */
-public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSharpTypeDeclaration
+public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClassEntry> implements CSharpTypeDeclaration
 {
 	private NotNullLazyValue<DotNetNamedElement[]> myMembersValue = new NotNullLazyValue<DotNetNamedElement[]>()
 	{
@@ -66,7 +65,7 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 		@Override
 		protected DotNetNamedElement[] compute()
 		{
-			DotNetNamedElement[] temp = myClassEntry.getMembers();
+			DotNetNamedElement[] temp = myMsilElement.getMembers();
 			List<DotNetNamedElement> copy = new ArrayList<DotNetNamedElement>(temp.length);
 			Collections.addAll(copy, temp);
 
@@ -94,15 +93,15 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 					{
 						Pair<DotNetXXXAccessor, MsilMethodEntry> value = pairs.get(0);
 
-						if(value.getFirst().getAccessorType() == MsilTokens._GET_KEYWORD && value.getSecond().getParameters().length == 1 ||
-								value.getFirst().getAccessorType() == MsilTokens._SET_KEYWORD && value.getSecond().getParameters().length == 2)
+						if(value.getFirst().getAccessorType() == MsilTokens._GET_KEYWORD && value.getSecond().getParameters().length == 1 || value
+								.getFirst().getAccessorType() == MsilTokens._SET_KEYWORD && value.getSecond().getParameters().length == 2)
 						{
-							list.add(new MsilPropertyAsCSharpArrayMethodDefinition((MsilPropertyEntry) element, pairs));
+							list.add(new MsilPropertyAsCSharpArrayMethodDefinition(myBuildRoot, (MsilPropertyEntry) element, pairs));
 							continue;
 						}
 					}
 
-					list.add(new MsilPropertyAsCSharpPropertyDefinition((MsilPropertyEntry) element, pairs));
+					list.add(new MsilPropertyAsCSharpPropertyDefinition(myBuildRoot, (MsilPropertyEntry) element, pairs));
 				}
 				else if(element instanceof MsilEventEntry)
 				{
@@ -119,7 +118,7 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 							copy.remove(methodEntry);
 						}
 					}
-					list.add(new MsilEventAsCSharpEventDefinition((MsilEventEntry) element, pairs));
+					list.add(new MsilEventAsCSharpEventDefinition(myBuildRoot, (MsilEventEntry) element, pairs));
 				}
 				else if(element instanceof MsilFieldEntry)
 				{
@@ -129,7 +128,7 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 						continue;
 					}
 
-					list.add(new MsilFieldAsCSharpFieldDefinition((DotNetVariable) element));
+					list.add(new MsilFieldAsCSharpFieldDefinition(myBuildRoot, (DotNetVariable) element));
 				}
 			}
 
@@ -144,11 +143,12 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 					}
 					if(MsilHelper.CONSTRUCTOR_NAME.equals(name))
 					{
-						list.add(new MsilMethodAsCSharpConstructorDefinition(MsilClassAsCSharpTypeDefinition.this, (MsilMethodEntry) member));
+						list.add(new MsilMethodAsCSharpConstructorDefinition(myBuildRoot, MsilClassAsCSharpTypeDefinition.this,
+								(MsilMethodEntry) member));
 					}
 					else
 					{
-						list.add(new MsilMethodAsCSharpMethodDefinition(null, (MsilMethodEntry) member));
+						list.add(new MsilMethodAsCSharpMethodDefinition(myBuildRoot, null, (MsilMethodEntry) member));
 					}
 				}
 			}
@@ -172,21 +172,31 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 		}
 	};
 
-	private final MsilClassEntry myClassEntry;
 	private MsilModifierListToCSharpModifierList myModifierList;
 
-	public MsilClassAsCSharpTypeDefinition(MsilClassEntry classEntry)
+	public MsilClassAsCSharpTypeDefinition(@Nullable DotNetQualifiedElement buildRoot, MsilClassEntry classEntry)
 	{
-		super(PsiManager.getInstance(classEntry.getProject()), CSharpLanguage.INSTANCE);
+		super(buildRoot, classEntry);
 		myModifierList = new MsilModifierListToCSharpModifierList((MsilModifierList) classEntry.getModifierList());
-		myClassEntry = classEntry;
-		setNavigationElement(classEntry); //TODO [VISTALL] generator from MSIL to C#
+	}
+
+	@Override
+	public void accept(@NotNull PsiElementVisitor visitor)
+	{
+		if(visitor instanceof CSharpElementVisitor)
+		{
+			((CSharpElementVisitor) visitor).visitTypeDeclaration(this);
+		}
+		else
+		{
+			visitor.visitElement(this);
+		}
 	}
 
 	@Override
 	public PsiFile getContainingFile()
 	{
-		return myClassEntry.getContainingFile();
+		return myMsilElement.getContainingFile();
 	}
 
 	@Override
@@ -234,19 +244,19 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 	@Override
 	public boolean isInterface()
 	{
-		return myClassEntry.isInterface();
+		return myMsilElement.isInterface();
 	}
 
 	@Override
 	public boolean isStruct()
 	{
-		return myClassEntry.isStruct();
+		return myMsilElement.isStruct();
 	}
 
 	@Override
 	public boolean isEnum()
 	{
-		return myClassEntry.isEnum();
+		return myMsilElement.isEnum();
 	}
 
 	@Override
@@ -258,7 +268,7 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 	@Override
 	public boolean isNested()
 	{
-		return myClassEntry.isNested();
+		return myMsilElement.isNested();
 	}
 
 	@Nullable
@@ -272,7 +282,7 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 	@Override
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{
-		DotNetTypeRef[] extendTypeRefs = myClassEntry.getExtendTypeRefs();
+		DotNetTypeRef[] extendTypeRefs = myMsilElement.getExtendTypeRefs();
 		if(extendTypeRefs.length == 0)
 		{
 			return DotNetTypeRef.EMPTY_ARRAY;
@@ -301,20 +311,20 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 	@Override
 	public DotNetGenericParameterList getGenericParameterList()
 	{
-		return myClassEntry.getGenericParameterList();
+		return myMsilElement.getGenericParameterList();
 	}
 
 	@NotNull
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
-		return myClassEntry.getGenericParameters();
+		return myMsilElement.getGenericParameters();
 	}
 
 	@Override
 	public int getGenericParametersCount()
 	{
-		return myClassEntry.getGenericParametersCount();
+		return myMsilElement.getGenericParametersCount();
 	}
 
 	@NotNull
@@ -341,33 +351,33 @@ public class MsilClassAsCSharpTypeDefinition extends LightElement implements CSh
 	@Override
 	public String getPresentableParentQName()
 	{
-		return myClassEntry.getPresentableParentQName();
+		return myMsilElement.getPresentableParentQName();
 	}
 
 	@Override
 	public String getName()
 	{
-		return MsilHelper.cutGenericMarker(myClassEntry.getName());
+		return MsilHelper.cutGenericMarker(myMsilElement.getName());
 	}
 
 	@Nullable
 	@Override
 	public String getPresentableQName()
 	{
-		return MsilHelper.cutGenericMarker(myClassEntry.getPresentableQName());
+		return MsilHelper.cutGenericMarker(myMsilElement.getPresentableQName());
 	}
 
 	@Override
 	public String toString()
 	{
-		return myClassEntry.toString();
+		return myMsilElement.toString();
 	}
 
 	@Nullable
 	@Override
 	public PsiElement getNameIdentifier()
 	{
-		return myClassEntry.getNameIdentifier();
+		return myMsilElement.getNameIdentifier();
 	}
 
 	@Override

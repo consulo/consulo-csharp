@@ -21,6 +21,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetRefTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -34,9 +35,10 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 	private final DotNetLikeMethodDeclaration myMethodDeclaration;
 	private final int myIndex;
 
-	public MsilParameterAsCSharpParameter(DotNetVariable variable, DotNetLikeMethodDeclaration methodDeclaration, int index)
+	public MsilParameterAsCSharpParameter(
+			DotNetQualifiedElement buildRoot, DotNetVariable variable, DotNetLikeMethodDeclaration methodDeclaration, int index)
 	{
-		super(variable);
+		super(buildRoot, variable);
 		myMethodDeclaration = methodDeclaration;
 		myIndex = index;
 	}

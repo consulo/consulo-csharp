@@ -21,15 +21,18 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilPropertyEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -39,9 +42,12 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class MsilPropertyAsCSharpPropertyDefinition extends MsilVariableAsCSharpVariable implements CSharpPropertyDeclaration
 {
-	public MsilPropertyAsCSharpPropertyDefinition(MsilPropertyEntry variable, List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
+	public MsilPropertyAsCSharpPropertyDefinition(
+			DotNetQualifiedElement buildRoot,
+			MsilPropertyEntry variable,
+			List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
 	{
-		super(getAdditionalModifiers(pairs), variable);
+		super(buildRoot, getAdditionalModifiers(pairs), variable);
 	}
 
 	public static CSharpModifier[] getAdditionalModifiers(List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
@@ -61,7 +67,10 @@ public class MsilPropertyAsCSharpPropertyDefinition extends MsilVariableAsCSharp
 		ContainerUtil.sort(modifiers);
 
 		CSharpModifier access = modifiers.isEmpty() ? CSharpModifier.PUBLIC : modifiers.get(0).toModifier();
-		return staticMod ? new CSharpModifier[] {access, CSharpModifier.STATIC} : new CSharpModifier[] {access};
+		return staticMod ? new CSharpModifier[]{
+				access,
+				CSharpModifier.STATIC
+		} : new CSharpModifier[]{access};
 	}
 
 	private static CSharpAccessModifier getAccessModifier(MsilMethodEntry second)
@@ -83,6 +92,19 @@ public class MsilPropertyAsCSharpPropertyDefinition extends MsilVariableAsCSharp
 			return CSharpAccessModifier.PROTECTED;
 		}
 		return CSharpAccessModifier.PUBLIC;
+	}
+
+	@Override
+	public void accept(@NotNull PsiElementVisitor visitor)
+	{
+		if(visitor instanceof CSharpElementVisitor)
+		{
+			((CSharpElementVisitor) visitor).visitPropertyDeclaration(this);
+		}
+		else
+		{
+			visitor.visitElement(this);
+		}
 	}
 
 	@Override

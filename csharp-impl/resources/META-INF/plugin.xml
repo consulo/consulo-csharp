@@ -21,7 +21,7 @@
 	<depends>org.mustbe.consulo.dotnet.core</depends>
 	<depends optional="true" config-file="CSharpSpellchecker.xml">com.intellij.spellchecker</depends>
 
-	<xi:include href="/META-INF/CSharpInspections.xml" xpointer="xpointer(/idea-plugin/*)" />
+	<xi:include href="/META-INF/CSharpInspections.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
 	<actions>
 		<action id="CSharp.Class" class="org.mustbe.consulo.csharp.ide.actions.NewCSharpClassAction">
@@ -40,7 +40,7 @@
 		<directClassInheritorsSearch implementation="org.mustbe.consulo.csharp.lang.psi.impl.search.CSharpDirectInheritorsSearcherExecutor"/>
 		<psi.facade implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiFacadeImpl"/>
 		<debugger.provider implementation="org.mustbe.consulo.csharp.ide.debugger.CSharpDebuggerProvider"/>
-		<stubIndexer implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMsilStubIndexer" />
+		<stubIndexer implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMsilStubIndexer"/>
 
 		<msilFileRepresentation implementation="org.mustbe.consulo.csharp.ide.msil.representation.CSharpMsilFileRepresentationProvider"/>
 	</extensions>
@@ -169,5 +169,8 @@
 		<lang.fileViewProviderFactory language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpFileViewProviderFactory"/>
 		<lang.versionResolver language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpLanguageVersionResolver"/>
 		<lang.documentationProvider language="C#" implementationClass="org.mustbe.consulo.dotnet.documentation.DotNetDocumentationProvider"/>
+
+		<defaultHighlightingSettingProvider
+				implementation="org.mustbe.consulo.csharp.ide.msil.representation.builder.MsilRepresentationHighlightingSettingProvider"/>
 	</extensions>
 </idea-plugin>

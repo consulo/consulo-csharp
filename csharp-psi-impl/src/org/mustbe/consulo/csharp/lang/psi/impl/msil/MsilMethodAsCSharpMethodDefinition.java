@@ -21,15 +21,18 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.msil.MsilHelper;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.tree.IElementType;
 
 /**
@@ -70,16 +73,29 @@ public class MsilMethodAsCSharpMethodDefinition extends MsilMethodAsCSharpLikeMe
 
 	private final MsilClassEntry myDelegate;
 
-	public MsilMethodAsCSharpMethodDefinition(@Nullable MsilClassEntry msilClassEntry, MsilMethodEntry methodEntry)
+	public MsilMethodAsCSharpMethodDefinition(DotNetQualifiedElement buildRoot, @Nullable MsilClassEntry msilClassEntry, MsilMethodEntry methodEntry)
 	{
-		super(methodEntry);
+		super(buildRoot, methodEntry);
 		myDelegate = msilClassEntry;
+	}
+
+	@Override
+	public void accept(@NotNull PsiElementVisitor visitor)
+	{
+		if(visitor instanceof CSharpElementVisitor)
+		{
+			((CSharpElementVisitor) visitor).visitMethodDeclaration(this);
+		}
+		else
+		{
+			visitor.visitElement(this);
+		}
 	}
 
 	@Override
 	public String getName()
 	{
-		Pair<String, IElementType> pair = ourOperatorNames.get(myMethodEntry.getName());
+		Pair<String, IElementType> pair = ourOperatorNames.get(myMsilElement.getName());
 		if(pair != null)
 		{
 			return pair.getFirst();
@@ -125,14 +141,14 @@ public class MsilMethodAsCSharpMethodDefinition extends MsilMethodAsCSharpLikeMe
 	@Override
 	public boolean isOperator()
 	{
-		return ourOperatorNames.containsKey(myMethodEntry.getName());
+		return ourOperatorNames.containsKey(myMsilElement.getName());
 	}
 
 	@Nullable
 	@Override
 	public IElementType getOperatorElementType()
 	{
-		Pair<String, IElementType> pair = ourOperatorNames.get(myMethodEntry.getName());
+		Pair<String, IElementType> pair = ourOperatorNames.get(myMsilElement.getName());
 		if(pair == null)
 		{
 			return null;

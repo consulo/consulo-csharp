@@ -19,52 +19,48 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.impl.light.LightElement;
 import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
  * @since 23.05.14
  */
-public class MsilVariableAsCSharpVariable extends LightElement implements DotNetVariable
+public class MsilVariableAsCSharpVariable extends MsilElementWrapper<DotNetVariable> implements DotNetVariable
 {
-	private final DotNetVariable myVariable;
 	private MsilModifierListToCSharpModifierList myModifierList;
 
-	public MsilVariableAsCSharpVariable(DotNetVariable variable)
+	public MsilVariableAsCSharpVariable(DotNetQualifiedElement buildRoot, DotNetVariable variable)
 	{
-		this(CSharpModifier.EMPTY_ARRAY, variable);
+		this(buildRoot, CSharpModifier.EMPTY_ARRAY, variable);
 	}
 
-	public MsilVariableAsCSharpVariable(CSharpModifier[] modifiers, DotNetVariable variable)
+	public MsilVariableAsCSharpVariable(DotNetQualifiedElement buildRoot, CSharpModifier[] modifiers, DotNetVariable variable)
 	{
-		super(PsiManager.getInstance(variable.getProject()), CSharpLanguage.INSTANCE);
+		super(buildRoot, variable);
 		setNavigationElement(variable);
 		myModifierList = new MsilModifierListToCSharpModifierList(modifiers, (MsilModifierList) variable.getModifierList());
-		myVariable = variable;
 	}
 
 	@Override
 	public PsiFile getContainingFile()
 	{
-		return myVariable.getContainingFile();
+		return myMsilElement.getContainingFile();
 	}
 
 	public DotNetVariable getVariable()
 	{
-		return myVariable;
+		return myMsilElement;
 	}
 
 	@Override
@@ -77,7 +73,7 @@ public class MsilVariableAsCSharpVariable extends LightElement implements DotNet
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
-		return MsilToCSharpUtil.extractToCSharp(myVariable.toTypeRef(resolveFromInitializer), myVariable);
+		return MsilToCSharpUtil.extractToCSharp(myMsilElement.toTypeRef(resolveFromInitializer), myMsilElement);
 	}
 
 	@Nullable
@@ -116,7 +112,7 @@ public class MsilVariableAsCSharpVariable extends LightElement implements DotNet
 	@Override
 	public String getName()
 	{
-		return myVariable.getName();
+		return myMsilElement.getName();
 	}
 
 	@Nullable

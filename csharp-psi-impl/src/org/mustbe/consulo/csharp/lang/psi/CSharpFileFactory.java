@@ -119,9 +119,9 @@ public class CSharpFileFactory
 		return (DotNetTypeDeclaration) psiFile.getMembers()[0];
 	}
 
-	private static CSharpFileImpl createTypeDeclarationWithScope(Project project, String clazz)
+	private static CSharpFileImpl createTypeDeclarationWithScope(Project project, String text)
 	{
-		val virtualFile = new LightVirtualFile("dummy.cs", CSharpFileType.INSTANCE, clazz, System.currentTimeMillis());
+		val virtualFile = new LightVirtualFile("dummy.cs", CSharpFileType.INSTANCE, text, System.currentTimeMillis());
 		val viewProvider = new SingleRootFileViewProvider(PsiManager.getInstance(project), virtualFile, false);
 		return new CSharpFileImpl(viewProvider);
 	}
