@@ -55,6 +55,6 @@ public class CSharpStubReferenceTypeInfo extends CSharpStubTypeInfo
 	@Override
 	public Id getId()
 	{
-		return Id.REF;
+		return Id.USER;
 	}
 }

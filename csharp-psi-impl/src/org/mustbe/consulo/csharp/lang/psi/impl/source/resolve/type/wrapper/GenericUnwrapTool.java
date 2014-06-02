@@ -159,12 +159,12 @@ public class GenericUnwrapTool
 		}
 		else if(typeRef instanceof DotNetPointerTypeImpl)
 		{
-			return new DotNetPointerTypeImpl(exchangeTypeRefs(((DotNetPointerTypeImpl) typeRef).getInnerType(), extractor, element));
+			return new DotNetPointerTypeImpl(exchangeTypeRefs(((DotNetPointerTypeImpl) typeRef).getInnerTypeRef(), extractor, element));
 		}
 		else if(typeRef instanceof CSharpArrayTypeRef)
 		{
 			CSharpArrayTypeRef arrayType = (CSharpArrayTypeRef) typeRef;
-			return new CSharpArrayTypeRef(exchangeTypeRefs(arrayType.getInnerType(), extractor, element), arrayType.getDimensions());
+			return new CSharpArrayTypeRef(exchangeTypeRefs(arrayType.getInnerTypeRef(), extractor, element), arrayType.getDimensions());
 		}
 		else
 		{

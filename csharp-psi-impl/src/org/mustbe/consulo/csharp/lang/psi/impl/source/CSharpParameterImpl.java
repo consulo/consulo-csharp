@@ -21,8 +21,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.reflactoring.CSharpRefactoringUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -76,7 +78,16 @@ public class CSharpParameterImpl extends CSharpStubElementImpl<CSharpVariableStu
 		}
 
 		DotNetType type = getType();
-		return type.toTypeRef();
+		DotNetTypeRef typeRef = type.toTypeRef();
+		if(hasModifier(CSharpModifier.REF))
+		{
+			return new CSharpRefTypeRef(CSharpRefTypeRef.Type.ref, typeRef);
+		}
+		else if(hasModifier(CSharpModifier.OUT))
+		{
+			return new CSharpRefTypeRef(CSharpRefTypeRef.Type.out, typeRef);
+		}
+		return typeRef;
 	}
 
 	@NotNull

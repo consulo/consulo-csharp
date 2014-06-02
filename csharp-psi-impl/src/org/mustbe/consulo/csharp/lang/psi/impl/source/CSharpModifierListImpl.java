@@ -59,6 +59,8 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements DotNetM
 			put(CSharpModifier.THIS, CSharpTokens.THIS_KEYWORD);
 			put(CSharpModifier.PARTIAL, CSharpSoftTokens.PARTIAL_KEYWORD);
 			put(CSharpModifier.INTERNAL, CSharpSoftTokens.INTERNAL_KEYWORD);
+			put(CSharpModifier.REF, CSharpSoftTokens.REF_KEYWORD);
+			put(CSharpModifier.OUT, CSharpSoftTokens.OUT_KEYWORD);
 		}
 	};
 	public CSharpModifierListImpl(@NotNull ASTNode node)

@@ -84,7 +84,7 @@ public class CSharpStubTypeInfoUtil
 		CSharpStubTypeInfo.Id value = CSharpStubTypeInfo.Id.VALUES[b];
 		switch(value)
 		{
-			case REF:
+			case USER:
 				return new CSharpStubReferenceTypeInfo(stubInputStream);
 			case POINTER:
 				return new CSharpStubPointerTypeInfo(stubInputStream);
@@ -169,7 +169,7 @@ public class CSharpStubTypeInfoUtil
 		{
 			case ERROR:
 				return DotNetTypeRef.ERROR_TYPE;
-			case REF:
+			case USER:
 				CSharpStubReferenceTypeInfo referenceTypeInfo = (CSharpStubReferenceTypeInfo) typeInfo;
 				return new CSharpTypeRefFromText(referenceTypeInfo.getText(), element);
 			case POINTER:

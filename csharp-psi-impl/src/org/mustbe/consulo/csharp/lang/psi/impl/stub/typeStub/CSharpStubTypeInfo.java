@@ -30,7 +30,7 @@ public abstract class CSharpStubTypeInfo
 	public static enum Id
 	{
 		ERROR,
-		REF,
+		USER,
 		POINTER,
 		ARRAY,
 		GENERIC_WRAPPER,
