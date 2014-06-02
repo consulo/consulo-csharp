@@ -16,8 +16,13 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
+import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.resolve.DotNetRefTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
  * @author VISTALL
@@ -31,6 +36,24 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 	{
 		super(variable);
 		myIndex = index;
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
+	{
+		DotNetTypeRef typeRef = super.toTypeRef(resolveFromInitializer);
+		// check to ref not needed - it default wrapping to ref
+		if(hasModifier(CSharpModifier.OUT))
+		{
+			if(!(typeRef instanceof DotNetRefTypeRef))
+			{
+				return typeRef;
+			}
+
+			return new CSharpRefTypeRef(CSharpRefTypeRef.Type.out, ((DotNetRefTypeRef) typeRef).getInnerTypeRef());
+		}
+		return typeRef;
 	}
 
 	@Override
