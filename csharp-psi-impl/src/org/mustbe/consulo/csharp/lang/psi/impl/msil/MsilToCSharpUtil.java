@@ -203,7 +203,7 @@ public class MsilToCSharpUtil
 		}
 		else if(typeRef instanceof MsilArrayTypRefImpl)
 		{
-			return new CSharpArrayTypeRef(extractToCSharp(((DotNetRefTypeRef) typeRef).getInnerTypeRef(), scope), 0);
+			return new CSharpArrayTypeRef(extractToCSharp(((MsilArrayTypRefImpl) typeRef).getInnerTypeRef(), scope), 0);
 		}
 		else if(typeRef instanceof DotNetRefTypeRef)
 		{
