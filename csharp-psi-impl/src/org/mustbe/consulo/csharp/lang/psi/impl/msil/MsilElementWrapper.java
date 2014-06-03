@@ -18,11 +18,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.ide.msil.representation.builder.CSharpFileBuilder;
-import org.mustbe.consulo.csharp.ide.msil.representation.builder.CSharpToMsiNavigateUtil;
+import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import org.mustbe.consulo.msil.representation.MsilRepresentationNavigateUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.light.LightElement;
@@ -53,9 +52,7 @@ public abstract class MsilElementWrapper<T extends PsiElement> extends LightElem
 	@Override
 	public void navigate(boolean requestFocus)
 	{
-		CSharpFileImpl file = CSharpFileBuilder.buildRoot(myBuildRoot, myMsilElement.getContainingFile().getVirtualFile());
-
-		CSharpToMsiNavigateUtil.navigateToRepresentation(file, myMsilElement);
+		MsilRepresentationNavigateUtil.navigateToRepresentation(myMsilElement, CSharpFileType.INSTANCE);
 	}
 
 	@NotNull

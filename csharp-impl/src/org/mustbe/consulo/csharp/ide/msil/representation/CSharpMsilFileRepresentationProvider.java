@@ -16,15 +16,33 @@
 
 package org.mustbe.consulo.csharp.ide.msil.representation;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.msil.representation.builder.CSharpStubBuilderVisitor;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
+import org.mustbe.consulo.dotnet.dll.vfs.builder.block.StubBlock;
+import org.mustbe.consulo.dotnet.dll.vfs.builder.block.StubBlockUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.msil.lang.psi.MsilFile;
 import org.mustbe.consulo.msil.representation.MsilFileRepresentationProvider;
+import org.mustbe.consulo.msil.representation.MsilFileRepresentationVirtualFile;
 import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.SingleRootFileViewProvider;
+import com.intellij.psi.impl.PsiManagerEx;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -34,15 +52,80 @@ public class CSharpMsilFileRepresentationProvider implements MsilFileRepresentat
 {
 	@Nullable
 	@Override
-	public Pair<String, ? extends FileType> getRepresentResult(@NotNull MsilFile msilFile)
+	public String getRepresentFileName(@NotNull MsilFile msilFile)
 	{
-		return Pair.create(FileUtil.getNameWithoutExtension(msilFile.getName()) + CSharpFileType.DOT_EXTENSION, CSharpFileType.INSTANCE);
+		return FileUtil.getNameWithoutExtension(msilFile.getName()) + CSharpFileType.DOT_EXTENSION;
 	}
 
 	@NotNull
 	@Override
-	public PsiFile transform(@NotNull MsilFile msilFile)
+	public FileType getFileType()
 	{
-		return null;
+		return CSharpFileType.INSTANCE;
+	}
+
+	@NotNull
+	@Override
+	public PsiFile transform(String fileName, @NotNull MsilFile msilFile)
+	{
+		DotNetNamedElement[] msilFileMembers = msilFile.getMembers();
+		List<DotNetQualifiedElement> wrapped = new ArrayList<DotNetQualifiedElement>(msilFileMembers.length);
+		for(DotNetNamedElement member : msilFileMembers)
+		{
+			PsiElement wrap = MsilToCSharpUtil.wrap(member);
+			if(wrap != member)  // wrapped
+			{
+				wrapped.add((DotNetQualifiedElement) wrap);
+			}
+		}
+
+		final Map<String, StubBlock> namespaces = new HashMap<String, StubBlock>();
+
+		final List<StubBlock> list = new ArrayList<StubBlock>();
+		for(DotNetQualifiedElement msilWrapperElement : wrapped)
+		{
+			String presentableParentQName = msilWrapperElement.getPresentableParentQName();
+
+			boolean namespace = !StringUtil.isEmpty(presentableParentQName);
+
+			if(namespace)
+			{
+				List<StubBlock> toAdd = null;
+
+				StubBlock stubBlock = namespaces.get(presentableParentQName);
+				if(stubBlock == null)
+				{
+					namespaces.put(presentableParentQName, stubBlock = new StubBlock("namespace " + presentableParentQName, null, StubBlock.BRACES));
+
+					list.add(stubBlock);
+
+					toAdd = stubBlock.getBlocks();
+				}
+				else
+				{
+					toAdd = stubBlock.getBlocks();
+				}
+
+				toAdd.addAll(CSharpStubBuilderVisitor.buildBlocks(msilWrapperElement));
+			}
+			else
+			{
+				list.addAll(CSharpStubBuilderVisitor.buildBlocks(msilWrapperElement));
+			}
+		}
+
+		CharSequence charSequence = StubBlockUtil.buildText(list);
+
+		val virtualFile = new MsilFileRepresentationVirtualFile(fileName, CSharpFileType.INSTANCE, charSequence);
+
+		SingleRootFileViewProvider viewProvider = new SingleRootFileViewProvider(PsiManager.getInstance(msilFile.getProject()), virtualFile, true);
+
+		CSharpFileImpl file = new CSharpFileImpl(viewProvider);
+
+		viewProvider.forceCachedPsi(file);
+
+		((PsiManagerEx) PsiManager.getInstance(msilFile.getProject())).getFileManager().setViewProvider(virtualFile, viewProvider);
+
+		return file;
 	}
 }
