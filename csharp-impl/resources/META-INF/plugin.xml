@@ -169,5 +169,7 @@
 		<lang.fileViewProviderFactory language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpFileViewProviderFactory"/>
 		<lang.versionResolver language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpLanguageVersionResolver"/>
 		<lang.documentationProvider language="C#" implementationClass="org.mustbe.consulo.dotnet.documentation.DotNetDocumentationProvider"/>
+
+		<newModuleBuilder implementation="org.mustbe.consulo.csharp.ide.newProjectOrModule.CSharpNewModuleBuilder" />
 	</extensions>
 </idea-plugin>

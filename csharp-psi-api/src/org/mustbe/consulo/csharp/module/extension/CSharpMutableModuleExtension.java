@@ -16,13 +16,14 @@
 
 package org.mustbe.consulo.csharp.module.extension;
 
+import org.consulo.module.extension.MutableModuleExtension;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author VISTALL
  * @since 15.05.14
  */
-public interface CSharpMutableModuleExtension<T extends CSharpModuleExtension<T>> extends CSharpModuleExtension<T>
+public interface CSharpMutableModuleExtension<T extends CSharpModuleExtension<T>> extends CSharpModuleExtension<T>, MutableModuleExtension<T>
 {
 	void setLanguageVersion(@NotNull CSharpLanguageVersion version);
 }
