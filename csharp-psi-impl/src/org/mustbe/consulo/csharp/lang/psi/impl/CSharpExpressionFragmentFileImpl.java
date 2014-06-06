@@ -17,13 +17,15 @@
 package org.mustbe.consulo.csharp.lang.psi.impl;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCodeFragment;
 import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.SingleRootFileViewProvider;
 import com.intellij.psi.impl.source.PsiFileImpl;
 import com.intellij.psi.tree.IElementType;
 
@@ -31,13 +33,16 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 17.04.14
  */
-public class CSharpExpressionFragmentFileImpl extends PsiFileImpl
+public class CSharpExpressionFragmentFileImpl extends PsiFileImpl implements CSharpCodeFragment
 {
+	@Nullable
+	private final PsiElement myContext;
+
 	public CSharpExpressionFragmentFileImpl(
-			@NotNull IElementType elementType, IElementType contentElementType, @NotNull FileViewProvider provider)
+			@NotNull IElementType elementType, IElementType contentElementType, @NotNull FileViewProvider provider, @Nullable PsiElement context)
 	{
 		super(elementType, contentElementType, provider);
-		((SingleRootFileViewProvider)getViewProvider()).forceCachedPsi(this);
+		myContext = context;
 	}
 
 	@NotNull
@@ -58,5 +63,12 @@ public class CSharpExpressionFragmentFileImpl extends PsiFileImpl
 	public void accept(@NotNull PsiElementVisitor psiElementVisitor)
 	{
 		psiElementVisitor.visitFile(this);
+	}
+
+	@Override
+	@Nullable
+	public PsiElement getScopeElement()
+	{
+		return myContext;
 	}
 }

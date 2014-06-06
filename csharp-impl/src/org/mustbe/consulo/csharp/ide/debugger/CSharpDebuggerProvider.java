@@ -30,6 +30,6 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 			@NotNull String text,
 			boolean isPhysical)
 	{
-		return CSharpExpressionFragmentFactory.createExpressionFragment(project, text);
+		return CSharpExpressionFragmentFactory.createExpressionFragment(project, text, sourcePosition);
 	}
 }

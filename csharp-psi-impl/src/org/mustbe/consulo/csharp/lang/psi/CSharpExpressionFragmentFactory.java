@@ -33,7 +33,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.SingleRootFileViewProvider;
-import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.testFramework.LightVirtualFile;
@@ -75,12 +74,15 @@ public class CSharpExpressionFragmentFactory
 		}
 	};
 
-	public static PsiFile createExpressionFragment(Project project, String text)
+	public static PsiFile createExpressionFragment(Project project, String text, PsiElement context)
 	{
 		val virtualFile = new LightVirtualFile("dummy.cs", CSharpFileType.INSTANCE, text, System.currentTimeMillis());
 		val viewProvider = new SingleRootFileViewProvider(PsiManager.getInstance(project), virtualFile, true);
 
-
-		return new CSharpExpressionFragmentFileImpl(TokenType.CODE_FRAGMENT, ourFileElementType, viewProvider);
+		CSharpExpressionFragmentFileImpl file = new CSharpExpressionFragmentFileImpl(ourFileElementType, ourFileElementType,
+				viewProvider, context);
+		viewProvider.forceCachedPsi(file);
+		file.getNode();
+		return file;
 	}
 }

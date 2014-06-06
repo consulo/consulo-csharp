@@ -16,7 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -25,6 +25,6 @@ import com.intellij.psi.PsiElement;
  */
 public interface CSharpCodeFragment extends PsiElement
 {
-	@NotNull
+	@Nullable
 	PsiElement getScopeElement();
 }
