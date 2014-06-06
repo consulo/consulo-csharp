@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
@@ -30,7 +31,6 @@ import com.intellij.lang.PsiBuilderFactory;
 import com.intellij.lang.PsiParser;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.SingleRootFileViewProvider;
 import com.intellij.psi.tree.IElementType;
@@ -74,7 +74,7 @@ public class CSharpExpressionFragmentFactory
 		}
 	};
 
-	public static PsiFile createExpressionFragment(Project project, String text, PsiElement context)
+	public static CSharpExpressionFragmentFileImpl createExpressionFragment(Project project, String text, @Nullable PsiElement context)
 	{
 		val virtualFile = new LightVirtualFile("dummy.cs", CSharpFileType.INSTANCE, text, System.currentTimeMillis());
 		val viewProvider = new SingleRootFileViewProvider(PsiManager.getInstance(project), virtualFile, true);

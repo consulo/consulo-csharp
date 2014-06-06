@@ -57,7 +57,7 @@ public class CSharpCodeFragmentImpl extends PsiFileImpl implements CSharpCodeFra
 		psiElementVisitor.visitFile(this);
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public PsiElement getScopeElement()
 	{

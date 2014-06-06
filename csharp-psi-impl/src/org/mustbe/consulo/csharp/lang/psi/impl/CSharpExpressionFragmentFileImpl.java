@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCodeFragment;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
@@ -43,6 +44,12 @@ public class CSharpExpressionFragmentFileImpl extends PsiFileImpl implements CSh
 	{
 		super(elementType, contentElementType, provider);
 		myContext = context;
+	}
+
+	@Nullable
+	public DotNetExpression getExpression()
+	{
+		return findChildByClass(DotNetExpression.class);
 	}
 
 	@NotNull

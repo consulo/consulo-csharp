@@ -800,7 +800,12 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			}
 			else if(temp instanceof CSharpCodeFragment)
 			{
-				temp = ((CSharpCodeFragment) temp).getScopeElement();
+				PsiElement scopeElement = ((CSharpCodeFragment) temp).getScopeElement();
+				if(scopeElement == null)
+				{
+					break;
+				}
+				temp = scopeElement;
 				continue;
 			}
 			temp = temp.getParent();
