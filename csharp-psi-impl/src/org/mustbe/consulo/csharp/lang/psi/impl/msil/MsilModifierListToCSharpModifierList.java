@@ -51,7 +51,7 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 		this(CSharpModifier.EMPTY_ARRAY, modifierList);
 	}
 
-	public MsilModifierListToCSharpModifierList(CSharpModifier[] additional, MsilModifierList modifierList)
+	public MsilModifierListToCSharpModifierList(@NotNull CSharpModifier[] additional, MsilModifierList modifierList)
 	{
 		super(PsiManager.getInstance(modifierList.getProject()), CSharpLanguage.INSTANCE);
 		myAdditional = additional;

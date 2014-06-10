@@ -50,7 +50,7 @@ public class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElementWrapper<
 		this(parent, CSharpModifier.EMPTY_ARRAY, methodEntry);
 	}
 
-	public MsilMethodAsCSharpLikeMethodDeclaration(PsiElement parent, CSharpModifier[] modifiers, MsilMethodEntry methodEntry)
+	public MsilMethodAsCSharpLikeMethodDeclaration(PsiElement parent, @NotNull CSharpModifier[] modifiers, MsilMethodEntry methodEntry)
 	{
 		super(parent, methodEntry);
 		myModifierList = new MsilModifierListToCSharpModifierList(modifiers, (MsilModifierList) methodEntry.getModifierList());

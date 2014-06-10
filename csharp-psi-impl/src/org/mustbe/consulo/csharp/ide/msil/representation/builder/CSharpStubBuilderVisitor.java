@@ -98,8 +98,6 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 		processModifierList(builder, declaration);
 
-		//MsilMethodAsCSharpMethodDefinition definition = (MsilMethodAsCSharpMethodDefinition) declaration;
-
 		if(declaration.isDelegate())
 		{
 			builder.append("delegate ");

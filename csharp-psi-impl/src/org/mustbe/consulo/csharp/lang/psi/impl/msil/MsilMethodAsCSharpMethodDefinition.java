@@ -25,11 +25,13 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.msil.MsilHelper;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.tree.IElementType;
@@ -74,8 +76,19 @@ public class MsilMethodAsCSharpMethodDefinition extends MsilMethodAsCSharpLikeMe
 
 	public MsilMethodAsCSharpMethodDefinition(PsiElement parent, @Nullable MsilClassEntry msilClassEntry, MsilMethodEntry methodEntry)
 	{
-		super(parent, methodEntry);
+		super(parent, getAdditionModifiers(methodEntry), methodEntry);
 		myDelegate = msilClassEntry;
+	}
+
+	@NotNull
+	private static CSharpModifier[] getAdditionModifiers(MsilMethodEntry methodEntry)
+	{
+		String nameFromBytecode = methodEntry.getNameFromBytecode();
+		if(StringUtil.containsChar(nameFromBytecode, '.'))
+		{
+			return new CSharpModifier[] {CSharpModifier.OVERRIDE};
+		}
+		return CSharpModifier.EMPTY_ARRAY;
 	}
 
 	@Override
@@ -160,11 +173,5 @@ public class MsilMethodAsCSharpMethodDefinition extends MsilMethodAsCSharpLikeMe
 	public PsiElement getNameIdentifier()
 	{
 		return null;
-	}
-
-	@NotNull
-	public String getNameFromBytecode()
-	{
-		return myMsilElement.getNameFromBytecode();
 	}
 }
