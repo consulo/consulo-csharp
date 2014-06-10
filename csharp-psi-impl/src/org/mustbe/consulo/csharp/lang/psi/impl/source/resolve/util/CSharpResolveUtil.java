@@ -385,6 +385,6 @@ public class CSharpResolveUtil
 	public static boolean checkConditionKey(@NotNull PsiScopeProcessor processor, @NotNull PsiElement element)
 	{
 		Condition<PsiElement> hint = processor.getHint(CONDITION_KEY);
-		return hint != null && hint.value(element);
+		return hint == null || hint.value(element);
 	}
 }

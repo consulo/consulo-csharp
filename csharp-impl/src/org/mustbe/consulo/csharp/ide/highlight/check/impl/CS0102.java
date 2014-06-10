@@ -101,7 +101,7 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 		return results;
 	}
 
-	private static boolean checkMethod(DotNetLikeMethodDeclaration o1, DotNetLikeMethodDeclaration o2)
+	public static boolean checkMethod(DotNetLikeMethodDeclaration o1, DotNetLikeMethodDeclaration o2)
 	{
 		if(o1 == o2)
 		{
