@@ -38,6 +38,7 @@ public enum CSharpModifier implements DotNetModifier
 	PARTIAL,
 	INTERNAL,
 	REF,
+	NEW,
 	OUT;
 
 	public static CSharpModifier[] EMPTY_ARRAY = new CSharpModifier[0];
