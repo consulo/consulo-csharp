@@ -31,6 +31,8 @@ import org.mustbe.consulo.dotnet.dll.vfs.builder.block.LineStubBlock;
 import org.mustbe.consulo.dotnet.dll.vfs.builder.block.StubBlock;
 import org.mustbe.consulo.dotnet.dll.vfs.builder.block.StubBlockUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
@@ -109,6 +111,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			builder.append("operator ");
 		}
 		builder.append(declaration.getName());
+		processGenericParameterList(builder, declaration);
 		builder.append("(");
 		StubBlockUtil.join(builder, declaration.getParameters(), new PairFunction<StringBuilder, DotNetParameter, Void>()
 		{
@@ -146,6 +149,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 		builder.append("class ");
 		builder.append(declaration.getName());
+		processGenericParameterList(builder, declaration);
 
 		StubBlock e = new StubBlock(builder, null, StubBlock.BRACES);
 		myBlocks.add(e);
@@ -154,6 +158,27 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		{
 			e.getBlocks().addAll(buildBlocks(dotNetNamedElement));
 		}
+	}
+
+	private static void processGenericParameterList(StringBuilder builder, DotNetGenericParameterListOwner owner)
+	{
+		DotNetGenericParameter[] genericParameters = owner.getGenericParameters();
+		if(genericParameters.length == 0)
+		{
+			return;
+		}
+		builder.append("<");
+		StubBlockUtil.join(builder, genericParameters, new PairFunction<StringBuilder, DotNetGenericParameter, Void>()
+		{
+			@Nullable
+			@Override
+			public Void fun(StringBuilder t, DotNetGenericParameter v)
+			{
+				t.append(v.getName());
+				return null;
+			}
+		}, ", ");
+		builder.append(">");
 	}
 
 	private static void processModifierList(StringBuilder builder, DotNetModifierListOwner owner)
