@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.CSharpIcons;
 import org.mustbe.consulo.csharp.ide.assemblyInfo.CSharpAssemblyConstants;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
@@ -97,7 +98,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 			{
 				if(DotNetInheritUtil.isAttribute(typeDeclaration))
 				{
-					main = AllIcons.Nodes.Annotationtype;
+					main = CSharpIcons.Nodes.AnnotationClass;
 				}
 				else if(DotNetInheritUtil.isException(typeDeclaration))
 				{

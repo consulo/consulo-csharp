@@ -32,6 +32,11 @@ public interface CSharpIcons
 		Icon HidedMethod = IconLoader.findIcon("/icons/gutter/hidedMethod.png");
 	}
 
+	interface Nodes
+	{
+		Icon AnnotationClass = IconLoader.findIcon("/icons/nodes/annotationClass.png");
+	}
+
 	Icon FileType = IconLoader.findIcon("/icons/csharp.png");
 	Icon Lang = IconLoader.findIcon("/icons/csharpLang.png");
 }
