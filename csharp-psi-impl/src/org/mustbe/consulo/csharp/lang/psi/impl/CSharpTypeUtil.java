@@ -93,7 +93,7 @@ public class CSharpTypeUtil
 			{
 				DotNetTypeRef targetParameter = targetParameters[i];
 				DotNetTypeRef topParameter = topParameters[i];
-				if(topParameter == DotNetTypeRef.AUTO_TYPE)
+				if(targetParameter == DotNetTypeRef.AUTO_TYPE)
 				{
 					continue;
 				}
@@ -104,7 +104,7 @@ public class CSharpTypeUtil
 			}
 			DotNetTypeRef targetReturnType = ((CSharpLambdaTypeRef) target).getReturnType();
 			DotNetTypeRef topReturnType = ((CSharpLambdaTypeRef) top).getReturnType();
-			return topReturnType == DotNetTypeRef.AUTO_TYPE || isInheritable(topReturnType, targetReturnType, scope);
+			return targetReturnType == DotNetTypeRef.AUTO_TYPE || isInheritable(topReturnType, targetReturnType, scope);
 		}
 
 		PsiElement topElement = top.resolve(scope);
