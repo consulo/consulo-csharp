@@ -161,4 +161,10 @@ public class MsilMethodAsCSharpMethodDefinition extends MsilMethodAsCSharpLikeMe
 	{
 		return null;
 	}
+
+	@NotNull
+	public String getNameFromBytecode()
+	{
+		return myMsilElement.getNameFromBytecode();
+	}
 }

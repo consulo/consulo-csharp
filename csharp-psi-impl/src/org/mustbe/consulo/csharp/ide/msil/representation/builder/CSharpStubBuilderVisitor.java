@@ -36,6 +36,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.PairFunction;
 
@@ -97,6 +98,8 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 		processModifierList(builder, declaration);
 
+		//MsilMethodAsCSharpMethodDefinition definition = (MsilMethodAsCSharpMethodDefinition) declaration;
+
 		if(declaration.isDelegate())
 		{
 			builder.append("delegate ");
@@ -115,8 +118,8 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			@Override
 			public Void fun(StringBuilder t, DotNetParameter v)
 			{
-				processModifierList(t, v);
-				t.append(v.toTypeRef(false).getQualifiedText());
+				DotNetTypeRef typeRef = v.toTypeRef(false);
+				t.append(typeRef.getQualifiedText());
 				t.append(" ");
 				t.append(v.getName());
 				return null;
