@@ -139,12 +139,6 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeSt
 	}
 
 	@Override
-	public boolean isInheritAllowed()
-	{
-		return !hasModifier(CSharpModifier.SEALED);
-	}
-
-	@Override
 	public boolean isNested()
 	{
 		PsiElement parentByStub = getParentByStub();

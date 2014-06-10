@@ -117,12 +117,6 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 	}
 
 	@Override
-	public boolean isInheritAllowed()
-	{
-		return false;
-	}
-
-	@Override
 	public boolean isNested()
 	{
 		return false;

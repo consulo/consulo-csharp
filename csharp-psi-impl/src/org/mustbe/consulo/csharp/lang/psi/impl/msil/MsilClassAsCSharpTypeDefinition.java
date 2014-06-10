@@ -260,12 +260,6 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	}
 
 	@Override
-	public boolean isInheritAllowed()
-	{
-		return false;
-	}
-
-	@Override
 	public boolean isNested()
 	{
 		return myMsilElement.isNested();

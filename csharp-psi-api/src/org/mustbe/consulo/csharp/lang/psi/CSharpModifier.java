@@ -20,9 +20,9 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 
 /**
-* @author VISTALL
-* @since 06.01.14.
-*/
+ * @author VISTALL
+ * @since 06.01.14.
+ */
 public enum CSharpModifier implements DotNetModifier
 {
 	PUBLIC,
@@ -60,6 +60,10 @@ public enum CSharpModifier implements DotNetModifier
 		if(modifierWithMask == DotNetModifier.STATIC)
 		{
 			return CSharpModifier.STATIC;
+		}
+		else if(modifierWithMask == DotNetModifier.SEALED)
+		{
+			return CSharpModifier.SEALED;
 		}
 
 		if(modifierWithMask instanceof CSharpModifier)
