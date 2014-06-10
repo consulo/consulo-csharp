@@ -27,9 +27,13 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.dotnet.dll.vfs.builder.block.LineStubBlock;
 import org.mustbe.consulo.dotnet.dll.vfs.builder.block.StubBlock;
 import org.mustbe.consulo.dotnet.dll.vfs.builder.block.StubBlockUtil;
+import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
@@ -38,6 +42,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.PairFunction;
@@ -63,7 +68,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	{
 		StringBuilder builder = new StringBuilder();
 		processModifierList(builder, declaration);
-		builder.append(declaration.toTypeRef(false).getQualifiedText());
+		appendTypeRef(builder, declaration.toTypeRef(false));
 		builder.append(" ");
 		builder.append(declaration.getName());
 		myBlocks.add(new StubBlock(builder, null, StubBlock.BRACES));
@@ -74,7 +79,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	{
 		StringBuilder builder = new StringBuilder();
 		processModifierList(builder, declaration);
-		builder.append(declaration.toTypeRef(false).getQualifiedText());
+		appendTypeRef(builder, declaration.toTypeRef(false));
 		builder.append(" ");
 		builder.append(declaration.getName());
 		builder.append(";\n");
@@ -87,7 +92,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		StringBuilder builder = new StringBuilder();
 		processModifierList(builder, declaration);
 		builder.append("event ");
-		builder.append(declaration.toTypeRef(false).getQualifiedText());
+		appendTypeRef(builder, declaration.toTypeRef(false));
 		builder.append(" ");
 		builder.append(declaration.getName());
 		myBlocks.add(new StubBlock(builder, null, StubBlock.BRACES));
@@ -104,7 +109,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		{
 			builder.append("delegate ");
 		}
-		builder.append(declaration.getReturnTypeRef().getQualifiedText());
+		appendTypeRef(builder, declaration.getReturnTypeRef());
 		builder.append(" ");
 		if(declaration.isOperator())
 		{
@@ -119,8 +124,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			@Override
 			public Void fun(StringBuilder t, DotNetParameter v)
 			{
-				DotNetTypeRef typeRef = v.toTypeRef(false);
-				t.append(typeRef.getQualifiedText());
+				appendTypeRef(t, v.toTypeRef(false));
 				t.append(" ");
 				t.append(v.getName());
 				return null;
@@ -157,6 +161,51 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		for(DotNetNamedElement dotNetNamedElement : declaration.getMembers())
 		{
 			e.getBlocks().addAll(buildBlocks(dotNetNamedElement));
+		}
+	}
+
+	private static void appendTypeRef(@NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef)
+	{
+		if(typeRef instanceof CSharpNativeTypeRef)
+		{
+			builder.append(typeRef.getPresentableText());
+		}
+		else if(typeRef instanceof CSharpArrayTypeRef)
+		{
+			appendTypeRef(builder, ((CSharpArrayTypeRef) typeRef).getInnerTypeRef());
+			builder.append("[]");
+		}
+		else if(typeRef instanceof DotNetGenericWrapperTypeRef)
+		{
+			appendTypeRef(builder, ((DotNetGenericWrapperTypeRef) typeRef).getInnerTypeRef());
+			DotNetTypeRef[] argumentTypeRefs = ((DotNetGenericWrapperTypeRef) typeRef).getArgumentTypeRefs();
+			builder.append("<");
+			StubBlockUtil.join(builder, argumentTypeRefs, new PairFunction<StringBuilder, DotNetTypeRef, Void>()
+			{
+				@Nullable
+				@Override
+				public Void fun(StringBuilder t, DotNetTypeRef v)
+				{
+					appendTypeRef(t, v);
+					return null;
+				}
+			}, ", ");
+			builder.append(">");
+		}
+		else if(typeRef instanceof CSharpRefTypeRef)
+		{
+			builder.append(((CSharpRefTypeRef) typeRef).getType().name());
+			builder.append(" ");
+			appendTypeRef(builder, ((CSharpRefTypeRef) typeRef).getInnerTypeRef());
+		}
+		else if(typeRef instanceof DotNetPointerTypeRef)
+		{
+			appendTypeRef(builder, ((DotNetPointerTypeRef) typeRef).getInnerTypeRef());
+			builder.append("*");
+		}
+		else
+		{
+			builder.append(typeRef.getQualifiedText());
 		}
 	}
 
