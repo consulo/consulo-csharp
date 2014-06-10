@@ -111,9 +111,16 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 
 	@Nullable
 	@Override
-	public PsiElement getModifierElement(DotNetModifier elementType)
+	public PsiElement getModifierElement(DotNetModifier modifier)
 	{
 		return null;
+	}
+
+	@NotNull
+	@Override
+	public List<PsiElement> getModifierElements(@NotNull DotNetModifier modifier)
+	{
+		return Collections.emptyList();
 	}
 
 	@Override

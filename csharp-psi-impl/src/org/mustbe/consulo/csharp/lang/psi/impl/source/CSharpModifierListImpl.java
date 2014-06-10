@@ -136,7 +136,8 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements DotNetM
 	@Override
 	public boolean hasModifierInTree(@NotNull DotNetModifier modifier)
 	{
-		return getModifierElement(modifier) != null;
+		IElementType iElementType = ourModifiers.get(CSharpModifier.as(modifier));
+		return findChildByType(iElementType) != null;
 	}
 
 	@Nullable
@@ -145,5 +146,13 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements DotNetM
 	{
 		IElementType iElementType = ourModifiers.get(CSharpModifier.as(modifier));
 		return findChildByType(iElementType);
+	}
+
+	@NotNull
+	@Override
+	public List<PsiElement> getModifierElements(@NotNull DotNetModifier modifier)
+	{
+		IElementType iElementType = ourModifiers.get(CSharpModifier.as(modifier));
+		return findChildrenByType(iElementType);
 	}
 }

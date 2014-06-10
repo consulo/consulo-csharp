@@ -53,6 +53,7 @@ public enum CSharpCompilerChecks
 	CS0449(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // struct or class constraint must be first
 	CS0516(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // constructor cant call itself
 	CS0815(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // lambdas cant be cast to 'var'
+	CS1004(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // duplicate modifier check
 	CS1100(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // 'this' modifier can be only set to first parameter
 	CS1644(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // features checks
 	CS1737(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR); // parameter default values check for order

@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.light.builder;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -71,9 +72,16 @@ public class CSharpLightModifierListBuilder extends LightElement implements DotN
 
 	@Nullable
 	@Override
-	public PsiElement getModifierElement(DotNetModifier elementType)
+	public PsiElement getModifierElement(DotNetModifier modifier)
 	{
 		return null;
+	}
+
+	@NotNull
+	@Override
+	public List<PsiElement> getModifierElements(@NotNull DotNetModifier modifier)
+	{
+		return Collections.emptyList();
 	}
 
 	@Override
