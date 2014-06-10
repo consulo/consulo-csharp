@@ -22,25 +22,53 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpGenericConstraintStub;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.stubs.IStubElementType;
 import lombok.val;
 
 /**
  * @author VISTALL
  * @since 30.11.13.
  */
-public class CSharpGenericConstraintImpl extends CSharpElementImpl implements CSharpGenericConstraint
+public class CSharpGenericConstraintImpl extends CSharpStubElementImpl<CSharpGenericConstraintStub> implements CSharpGenericConstraint
 {
 	public CSharpGenericConstraintImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
+	public CSharpGenericConstraintImpl(
+			@NotNull CSharpGenericConstraintStub stub, @NotNull IStubElementType<? extends CSharpGenericConstraintStub, ?> nodeType)
+	{
+		super(stub, nodeType);
+	}
+
 	@Override
 	public DotNetGenericParameter resolve()
 	{
+		CSharpGenericConstraintStub stub = getStub();
+		if(stub != null)
+		{
+			DotNetGenericParameterListOwner parentOfType = getStubOrPsiParentOfType(DotNetGenericParameterListOwner.class);
+			if(parentOfType == null)
+			{
+				return null;
+			}
+
+			for(DotNetGenericParameter parameter : parentOfType.getGenericParameters())
+			{
+				if(Comparing.equal(parameter.getName(), stub.getReferenceText()))
+				{
+					return parameter;
+				}
+			}
+			return null;
+		}
 		val genericParameterReference = getGenericParameterReference();
 		if(genericParameterReference == null)
 		{

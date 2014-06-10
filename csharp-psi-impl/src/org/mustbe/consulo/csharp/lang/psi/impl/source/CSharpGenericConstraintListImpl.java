@@ -20,17 +20,26 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpGenericConstraintListStub;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.stubs.IStubElementType;
 
 /**
  * @author VISTALL
  * @since 30.11.13.
  */
-public class CSharpGenericConstraintListImpl extends CSharpElementImpl implements CSharpGenericConstraintList
+public class CSharpGenericConstraintListImpl extends CSharpStubElementImpl<CSharpGenericConstraintListStub> implements CSharpGenericConstraintList
 {
 	public CSharpGenericConstraintListImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	public CSharpGenericConstraintListImpl(
+			@NotNull CSharpGenericConstraintListStub stub, @NotNull IStubElementType<? extends CSharpGenericConstraintListStub, ?> nodeType)
+	{
+		super(stub, nodeType);
 	}
 
 	@Override
@@ -43,6 +52,6 @@ public class CSharpGenericConstraintListImpl extends CSharpElementImpl implement
 	@Override
 	public CSharpGenericConstraint[] getGenericConstraints()
 	{
-		return findChildrenByClass(CSharpGenericConstraint.class);
+		return getStubOrPsiChildren(CSharpStubElements.GENERIC_CONSTRAINT, CSharpGenericConstraint.ARRAY_FACTORY);
 	}
 }

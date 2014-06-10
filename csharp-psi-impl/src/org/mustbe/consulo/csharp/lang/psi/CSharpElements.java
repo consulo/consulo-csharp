@@ -67,10 +67,9 @@ public interface CSharpElements
 
 	IElementType GENERIC_PARAMETER = CSharpStubElements.GENERIC_PARAMETER;
 
-	IElementType GENERIC_CONSTRAINT_LIST = new IElementTypeAsPsiFactory("GENERIC_CONSTRAINT_LIST", CSharpLanguage.INSTANCE,
-			CSharpGenericConstraintListImpl.class);
+	IElementType GENERIC_CONSTRAINT_LIST = CSharpStubElements.GENERIC_CONSTRAINT_LIST;
 
-	IElementType GENERIC_CONSTRAINT = new IElementTypeAsPsiFactory("GENERIC_CONSTRAINT", CSharpLanguage.INSTANCE, CSharpGenericConstraintImpl.class);
+	IElementType GENERIC_CONSTRAINT = CSharpStubElements.GENERIC_CONSTRAINT;
 
 	IElementType GENERIC_CONSTRAINT_KEYWORD_VALUE = new IElementTypeAsPsiFactory("GENERIC_CONSTRAINT_KEYWORD_VALUE", CSharpLanguage.INSTANCE,
 			CSharpGenericConstraintKeywordValueImpl.class);
