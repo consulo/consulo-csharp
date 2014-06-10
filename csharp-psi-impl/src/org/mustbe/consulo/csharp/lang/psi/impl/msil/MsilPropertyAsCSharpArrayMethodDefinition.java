@@ -46,9 +46,9 @@ public class MsilPropertyAsCSharpArrayMethodDefinition extends MsilElementWrappe
 	private final DotNetParameter[] myParameters;
 
 	public MsilPropertyAsCSharpArrayMethodDefinition(
-			DotNetQualifiedElement buildRoot, MsilPropertyEntry propertyEntry, List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
+			PsiElement parent, MsilPropertyEntry propertyEntry, List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
 	{
-		super(buildRoot, propertyEntry);
+		super(parent, propertyEntry);
 
 		myModifierList = new MsilModifierListToCSharpModifierList(MsilPropertyAsCSharpPropertyDefinition.getAdditionalModifiers(pairs),
 				(MsilModifierList) propertyEntry.getModifierList());
@@ -56,7 +56,7 @@ public class MsilPropertyAsCSharpArrayMethodDefinition extends MsilElementWrappe
 		Pair<DotNetXXXAccessor, MsilMethodEntry> p = pairs.get(0);
 
 		DotNetParameter firstParameter = p.getSecond().getParameters()[0];
-		myParameters = new DotNetParameter[]{new MsilParameterAsCSharpParameter(myBuildRoot, firstParameter, this, 0)};
+		myParameters = new DotNetParameter[]{new MsilParameterAsCSharpParameter(this, firstParameter, this, 0)};
 	}
 
 	@Override

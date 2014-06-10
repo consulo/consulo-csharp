@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.msil.representation.MsilRepresentationNavigateUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
@@ -32,15 +31,20 @@ import com.intellij.psi.impl.light.LightElement;
  */
 public abstract class MsilElementWrapper<T extends PsiElement> extends LightElement
 {
-	@NotNull
-	protected final DotNetQualifiedElement myBuildRoot;
+	private final PsiElement myParent;
 	protected T myMsilElement;
 
-	public MsilElementWrapper(@Nullable DotNetQualifiedElement buildRoot, T msilElement)
+	public MsilElementWrapper(@Nullable PsiElement parent, T msilElement)
 	{
 		super(PsiManager.getInstance(msilElement.getProject()), CSharpLanguage.INSTANCE);
-		myBuildRoot = buildRoot == null ? (DotNetQualifiedElement) this : buildRoot;
+		myParent = parent;
 		myMsilElement = msilElement;
+	}
+
+	@Override
+	public PsiElement getParent()
+	{
+		return myParent;
 	}
 
 	@Override

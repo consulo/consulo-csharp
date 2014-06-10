@@ -23,7 +23,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -40,14 +39,14 @@ public class MsilVariableAsCSharpVariable extends MsilElementWrapper<DotNetVaria
 {
 	private MsilModifierListToCSharpModifierList myModifierList;
 
-	public MsilVariableAsCSharpVariable(DotNetQualifiedElement buildRoot, DotNetVariable variable)
+	public MsilVariableAsCSharpVariable(PsiElement parent, DotNetVariable variable)
 	{
-		this(buildRoot, CSharpModifier.EMPTY_ARRAY, variable);
+		this(parent, CSharpModifier.EMPTY_ARRAY, variable);
 	}
 
-	public MsilVariableAsCSharpVariable(DotNetQualifiedElement buildRoot, CSharpModifier[] modifiers, DotNetVariable variable)
+	public MsilVariableAsCSharpVariable(PsiElement parent, CSharpModifier[] modifiers, DotNetVariable variable)
 	{
-		super(buildRoot, variable);
+		super(parent, variable);
 		setNavigationElement(variable);
 		myModifierList = new MsilModifierListToCSharpModifierList(modifiers, (MsilModifierList) variable.getModifierList());
 	}

@@ -25,7 +25,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilPropertyEntry;
@@ -43,11 +42,11 @@ import com.intellij.util.containers.ContainerUtil;
 public class MsilPropertyAsCSharpPropertyDefinition extends MsilVariableAsCSharpVariable implements CSharpPropertyDeclaration
 {
 	public MsilPropertyAsCSharpPropertyDefinition(
-			DotNetQualifiedElement buildRoot,
+			PsiElement parent,
 			MsilPropertyEntry variable,
 			List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
 	{
-		super(buildRoot, getAdditionalModifiers(pairs), variable);
+		super(parent, getAdditionalModifiers(pairs), variable);
 	}
 
 	public static CSharpModifier[] getAdditionalModifiers(List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)

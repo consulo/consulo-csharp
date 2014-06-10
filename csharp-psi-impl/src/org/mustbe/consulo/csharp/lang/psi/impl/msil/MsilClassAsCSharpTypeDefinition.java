@@ -65,6 +65,8 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		@Override
 		protected DotNetNamedElement[] compute()
 		{
+			MsilClassAsCSharpTypeDefinition parentThis = MsilClassAsCSharpTypeDefinition.this;
+
 			DotNetNamedElement[] temp = myMsilElement.getMembers();
 			List<DotNetNamedElement> copy = new ArrayList<DotNetNamedElement>(temp.length);
 			Collections.addAll(copy, temp);
@@ -96,12 +98,12 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 						if(value.getFirst().getAccessorType() == MsilTokens._GET_KEYWORD && value.getSecond().getParameters().length == 1 || value
 								.getFirst().getAccessorType() == MsilTokens._SET_KEYWORD && value.getSecond().getParameters().length == 2)
 						{
-							list.add(new MsilPropertyAsCSharpArrayMethodDefinition(myBuildRoot, (MsilPropertyEntry) element, pairs));
+							list.add(new MsilPropertyAsCSharpArrayMethodDefinition(parentThis, (MsilPropertyEntry) element, pairs));
 							continue;
 						}
 					}
 
-					list.add(new MsilPropertyAsCSharpPropertyDefinition(myBuildRoot, (MsilPropertyEntry) element, pairs));
+					list.add(new MsilPropertyAsCSharpPropertyDefinition(parentThis, (MsilPropertyEntry) element, pairs));
 				}
 				else if(element instanceof MsilEventEntry)
 				{
@@ -118,7 +120,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 							copy.remove(methodEntry);
 						}
 					}
-					list.add(new MsilEventAsCSharpEventDefinition(myBuildRoot, (MsilEventEntry) element, pairs));
+					list.add(new MsilEventAsCSharpEventDefinition(parentThis, (MsilEventEntry) element, pairs));
 				}
 				else if(element instanceof MsilFieldEntry)
 				{
@@ -128,7 +130,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 						continue;
 					}
 
-					list.add(new MsilFieldAsCSharpFieldDefinition(myBuildRoot, (DotNetVariable) element));
+					list.add(new MsilFieldAsCSharpFieldDefinition(parentThis, (DotNetVariable) element));
 				}
 			}
 
@@ -143,12 +145,12 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 					}
 					if(MsilHelper.CONSTRUCTOR_NAME.equals(name))
 					{
-						list.add(new MsilMethodAsCSharpConstructorDefinition(myBuildRoot, MsilClassAsCSharpTypeDefinition.this,
+						list.add(new MsilMethodAsCSharpConstructorDefinition(parentThis, MsilClassAsCSharpTypeDefinition.this,
 								(MsilMethodEntry) member));
 					}
 					else
 					{
-						list.add(new MsilMethodAsCSharpMethodDefinition(myBuildRoot, null, (MsilMethodEntry) member));
+						list.add(new MsilMethodAsCSharpMethodDefinition(parentThis, null, (MsilMethodEntry) member));
 					}
 				}
 			}
@@ -174,9 +176,9 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 
 	private MsilModifierListToCSharpModifierList myModifierList;
 
-	public MsilClassAsCSharpTypeDefinition(@Nullable DotNetQualifiedElement buildRoot, MsilClassEntry classEntry)
+	public MsilClassAsCSharpTypeDefinition(@Nullable PsiElement parent, MsilClassEntry classEntry)
 	{
-		super(buildRoot, classEntry);
+		super(parent, classEntry);
 		myModifierList = new MsilModifierListToCSharpModifierList((MsilModifierList) classEntry.getModifierList());
 	}
 

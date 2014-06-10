@@ -27,7 +27,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
@@ -46,14 +45,14 @@ public class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElementWrapper<
 {
 	private MsilModifierListToCSharpModifierList myModifierList;
 
-	public MsilMethodAsCSharpLikeMethodDeclaration(DotNetQualifiedElement buildRoot, MsilMethodEntry methodEntry)
+	public MsilMethodAsCSharpLikeMethodDeclaration(PsiElement parent, MsilMethodEntry methodEntry)
 	{
-		this(buildRoot, CSharpModifier.EMPTY_ARRAY, methodEntry);
+		this(parent, CSharpModifier.EMPTY_ARRAY, methodEntry);
 	}
 
-	public MsilMethodAsCSharpLikeMethodDeclaration(DotNetQualifiedElement buildRoot, CSharpModifier[] modifiers, MsilMethodEntry methodEntry)
+	public MsilMethodAsCSharpLikeMethodDeclaration(PsiElement parent, CSharpModifier[] modifiers, MsilMethodEntry methodEntry)
 	{
-		super(buildRoot, methodEntry);
+		super(parent, methodEntry);
 		myModifierList = new MsilModifierListToCSharpModifierList(modifiers, (MsilModifierList) methodEntry.getModifierList());
 	}
 
@@ -146,7 +145,7 @@ public class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElementWrapper<
 		for(int i = 0; i < parameters.length; i++)
 		{
 			DotNetParameter parameter = parameters[i];
-			newParameters[i] = new MsilParameterAsCSharpParameter(myBuildRoot, parameter, this, i);
+			newParameters[i] = new MsilParameterAsCSharpParameter(this, parameter, this, i);
 		}
 		return newParameters;
 	}

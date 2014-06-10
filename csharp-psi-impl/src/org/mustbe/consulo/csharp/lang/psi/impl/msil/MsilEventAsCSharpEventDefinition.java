@@ -23,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.msil.lang.psi.MsilEventEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
@@ -37,10 +36,10 @@ import com.intellij.psi.PsiElementVisitor;
  */
 public class MsilEventAsCSharpEventDefinition extends MsilVariableAsCSharpVariable implements CSharpEventDeclaration
 {
-	public MsilEventAsCSharpEventDefinition(DotNetQualifiedElement buildRoot, MsilEventEntry variable, List<Pair<DotNetXXXAccessor,
+	public MsilEventAsCSharpEventDefinition(PsiElement parent, MsilEventEntry variable, List<Pair<DotNetXXXAccessor,
 			MsilMethodEntry>> pairs)
 	{
-		super(buildRoot, MsilPropertyAsCSharpPropertyDefinition.getAdditionalModifiers(pairs), variable);
+		super(parent, MsilPropertyAsCSharpPropertyDefinition.getAdditionalModifiers(pairs), variable);
 	}
 
 	@Override

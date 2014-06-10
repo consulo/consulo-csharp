@@ -26,7 +26,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.msil.MsilHelper;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
@@ -73,9 +72,9 @@ public class MsilMethodAsCSharpMethodDefinition extends MsilMethodAsCSharpLikeMe
 
 	private final MsilClassEntry myDelegate;
 
-	public MsilMethodAsCSharpMethodDefinition(DotNetQualifiedElement buildRoot, @Nullable MsilClassEntry msilClassEntry, MsilMethodEntry methodEntry)
+	public MsilMethodAsCSharpMethodDefinition(PsiElement parent, @Nullable MsilClassEntry msilClassEntry, MsilMethodEntry methodEntry)
 	{
-		super(buildRoot, methodEntry);
+		super(parent, methodEntry);
 		myDelegate = msilClassEntry;
 	}
 
