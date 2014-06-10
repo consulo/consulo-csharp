@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -50,6 +52,11 @@ import lombok.val;
 @Logger
 public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptionsBuilder
 {
+	// impl from monolipse
+	// monolipse.core/src/monolipse/core/runtime/CSharpCompilerLauncher.java
+	// added support for column parsing by VISTALL
+	private static Pattern LINE_ERROR_PATTERN = Pattern.compile("(.+)\\((\\d+),(\\d+)\\):\\s(error|warning) (\\w+\\d+):\\s(.+)");
+
 	private String myExecutable;
 	private Sdk mySdk;
 
@@ -73,62 +80,29 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 		return this;
 	}
 
-	// src\Test.cs(7,42): error CS1002: ожидалась ;  [microsoft]
-	// C:\Users\VISTALL\\ConsuloProjects\\untitled30\mono-test\\Program.cs(7,17): error CS0117: error description [mono]
 	@Override
 	public DotNetCompilerMessage convertToMessage(Module module, String line)
 	{
-		String[] split = line.split(": ");
-		if(split.length == 3)
+		if(line.startsWith("error"))
 		{
-			String fileAndPosition = split[0].trim();
-			String idAndType = split[1].trim();
-			String message = split[2].trim();
-
-			String file = fileAndPosition.substring(0, fileAndPosition.lastIndexOf("("));
-			String position = fileAndPosition.substring(fileAndPosition.lastIndexOf("(") + 1, fileAndPosition.length() - 1);
-			String[] lineAndColumn = position.split(",");
-
-			String[] idAndTypeArray = idAndType.split(" ");
-			CompilerMessageCategory category = CompilerMessageCategory.INFORMATION;
-			if(idAndTypeArray[0].equals("error"))
-			{
-				category = CompilerMessageCategory.ERROR;
-			}
-			else if(idAndTypeArray[0].equals("warning"))
-			{
-				category = CompilerMessageCategory.WARNING;
-			}
-
-			String fileUrl = FileUtil.toSystemIndependentName(file);
-			if(!FileUtil.isAbsolute(fileUrl))
-			{
-				fileUrl = module.getModuleDirUrl() + "/" + fileUrl;
-			}
-			else
-			{
-				fileUrl = VirtualFileManager.constructUrl(StandardFileSystems.FILE_PROTOCOL, fileUrl);
-			}
-
-
-			int lineN = Integer.parseInt(lineAndColumn[0]);
-			int columnN = Integer.parseInt(lineAndColumn[1]);
-
-			return new DotNetCompilerMessage(category, message + " (" + idAndTypeArray[1] + ")", fileUrl, lineN, columnN);
+			return new DotNetCompilerMessage(CompilerMessageCategory.ERROR, line, null, -1, 1);
 		}
-		else if(split.length == 2)
+		else
 		{
-			String idAndType = split[0].trim();
-			String message = split[1].trim();
-
-			//C:\Users\VISTALL\ConsuloProjects\\untitled30\\mono-test\\Program.cs(5,9): (Location of the symbol related to previous error)
-			if(message.startsWith("(")) // only with ?
+			Matcher matcher = LINE_ERROR_PATTERN.matcher(line);
+			if(matcher.matches())
 			{
-				String file = idAndType.substring(0, idAndType.lastIndexOf("("));
-				String position = idAndType.substring(idAndType.lastIndexOf("(") + 1, idAndType.length() - 1);
-				String[] lineAndColumn = position.split(",");
+				CompilerMessageCategory category = CompilerMessageCategory.INFORMATION;
+				if(matcher.group(4).equals("error"))
+				{
+					category = CompilerMessageCategory.ERROR;
+				}
+				else if(matcher.group(4).equals("warning"))
+				{
+					category = CompilerMessageCategory.WARNING;
+				}
 
-				String fileUrl = FileUtil.toSystemIndependentName(file);
+				String fileUrl = FileUtil.toSystemIndependentName(matcher.group(1));
 				if(!FileUtil.isAbsolute(fileUrl))
 				{
 					fileUrl = module.getModuleDirUrl() + "/" + fileUrl;
@@ -138,39 +112,20 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 					fileUrl = VirtualFileManager.constructUrl(StandardFileSystems.FILE_PROTOCOL, fileUrl);
 				}
 
-				int lineN = Integer.parseInt(lineAndColumn[0]);
-				int columnN = Integer.parseInt(lineAndColumn[0]);
-
-				message = message.substring(1, message.length());
-				message = message.substring(0, message.length() - 1);
-
-				return new DotNetCompilerMessage(CompilerMessageCategory.INFORMATION, message, fileUrl, lineN, columnN);
-			}
-			else
-			{
-				String[] idAndTypeArray = idAndType.split(" ");
-				CompilerMessageCategory category = CompilerMessageCategory.INFORMATION;
-				if(idAndTypeArray[0].equals("error"))
-				{
-					category = CompilerMessageCategory.ERROR;
-				}
-				else if(idAndTypeArray[0].equals("warning"))
-				{
-					category = CompilerMessageCategory.WARNING;
-				}
-
-				return new DotNetCompilerMessage(category, message + " (" + idAndTypeArray[1] + ")", null, -1, -1);
+				int codeLine = Integer.parseInt(matcher.group(2));
+				int codeColumn = Integer.parseInt(matcher.group(3));
+				return new DotNetCompilerMessage(category, matcher.group(6), fileUrl, codeLine, codeColumn);
 			}
 		}
-		else
-		{
-			return new DotNetCompilerMessage(CompilerMessageCategory.INFORMATION, line, null, -1, -1);
-		}
+		return null;
 	}
 
 	@Override
 	@NotNull
-	public GeneralCommandLine createCommandLine(@NotNull Module module, @NotNull VirtualFile[] results, @NotNull String layerName,
+	public GeneralCommandLine createCommandLine(
+			@NotNull Module module,
+			@NotNull VirtualFile[] results,
+			@NotNull String layerName,
 			@NotNull MainConfigurationLayer dotNetLayer) throws IOException
 	{
 		DotNetModuleExtension<?> extension = ModuleUtilCore.getExtension(module, DotNetModuleExtension.class);
