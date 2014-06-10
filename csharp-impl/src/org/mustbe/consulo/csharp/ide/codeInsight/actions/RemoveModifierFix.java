@@ -17,43 +17,34 @@
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
-import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
+import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
  * @since 10.06.14
  */
-public class RemoveModifierFix extends PsiElementBaseIntentionAction
+public class RemoveModifierFix extends BaseIntentionAction
 {
-	public static RemoveModifierFix INSTANCE = new RemoveModifierFix();
+	private final DotNetModifier myModifier;
+	private final PsiElement myModifierElement;
 
-	public RemoveModifierFix()
+	public RemoveModifierFix(DotNetModifier modifier, PsiElement modifierElement)
 	{
-		setText("Remove modifier");
+		myModifier = modifier;
+		myModifierElement = modifierElement;
 	}
 
 	@NotNull
 	@Override
 	public String getText()
 	{
-		return super.getText();
-	}
-
-	@Override
-	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException
-	{
-		element.delete();
-	}
-
-	@Override
-	public boolean isAvailable(
-			@NotNull Project project, Editor editor, @NotNull PsiElement element)
-	{
-		return true;
+		return "Remove '" + myModifier.getPresentableText() + "' modifier";
 	}
 
 	@NotNull
@@ -61,5 +52,17 @@ public class RemoveModifierFix extends PsiElementBaseIntentionAction
 	public String getFamilyName()
 	{
 		return "C#";
+	}
+
+	@Override
+	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile psiFile)
+	{
+		return true;
+	}
+
+	@Override
+	public void invoke(@NotNull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException
+	{
+		myModifierElement.delete();
 	}
 }

@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -96,7 +97,7 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 					list = new ArrayList<CompilerCheckResult>(2);
 				}
 
-				list.add(result(modifierElement, modifier.getPresentableText()));
+				list.add(result(modifierElement, modifier.getPresentableText()).addQuickFix(new RemoveModifierFix(modifier, modifierElement)));
 			}
 		} return list;
 	}

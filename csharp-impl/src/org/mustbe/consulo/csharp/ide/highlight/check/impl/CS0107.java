@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -62,9 +63,9 @@ public class CS0107 extends CompilerCheck<DotNetModifierListOwner>
 			return Collections.emptyList();
 		}
 		List<CompilerCheckResult> list = new ArrayList<CompilerCheckResult>(map.size());
-		for(PsiElement psiElement : map.values())
+		for(Map.Entry<CSharpAccessModifier, PsiElement> entry : map.entrySet())
 		{
-			list.add(result(psiElement));
+			list.add(result(entry.getValue()).addQuickFix(new RemoveModifierFix(entry.getKey().toModifier(), entry.getValue())));
 		}
 		return list;
 	}
