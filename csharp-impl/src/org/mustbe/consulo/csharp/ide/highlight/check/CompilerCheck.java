@@ -49,9 +49,10 @@ public abstract class CompilerCheck<T extends PsiElement>
 			return myTextRange;
 		}
 
-		public void setTextRange(TextRange textRange)
+		public CompilerCheckResult setTextRange(TextRange textRange)
 		{
 			myTextRange = textRange;
+			return this;
 		}
 
 		public String getText()
@@ -59,9 +60,10 @@ public abstract class CompilerCheck<T extends PsiElement>
 			return myText;
 		}
 
-		public void setText(String text)
+		public CompilerCheckResult setText(String text)
 		{
 			myText = text;
+			return this;
 		}
 
 		public HighlightInfoType getHighlightInfoType()
@@ -69,18 +71,20 @@ public abstract class CompilerCheck<T extends PsiElement>
 			return myHighlightInfoType;
 		}
 
-		public void setHighlightInfoType(HighlightInfoType highlightInfoType)
+		public CompilerCheckResult setHighlightInfoType(HighlightInfoType highlightInfoType)
 		{
 			myHighlightInfoType = highlightInfoType;
+			return this;
 		}
 
-		public void addQuickFix(IntentionAction a)
+		public CompilerCheckResult addQuickFix(IntentionAction a)
 		{
 			if(myQuickFixes.isEmpty())
 			{
 				myQuickFixes = new ArrayList<IntentionAction>(3);
 			}
 			myQuickFixes.add(a);
+			return this;
 		}
 
 		public List<IntentionAction> getQuickFixes()
