@@ -40,6 +40,7 @@ public enum CSharpModifier implements DotNetModifier
 	REF,
 	NEW,
 	OVERRIDE,
+	VIRTUAL,
 	OUT;
 
 	public static CSharpModifier[] EMPTY_ARRAY = new CSharpModifier[0];

@@ -83,6 +83,9 @@ public class MsilToCSharpUtil
 			case OUT:
 				elementType = MsilTokens.BRACKET_OUT_KEYWORD;
 				break;
+			case VIRTUAL:
+				elementType = MsilTokens.VIRTUAL_KEYWORD;
+				break;
 			case READONLY:
 				break;
 			case UNSAFE:

@@ -58,11 +58,12 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements DotNetM
 			put(CSharpModifier.PARAMS, CSharpTokens.PARAMS_KEYWORD);
 			put(CSharpModifier.THIS, CSharpTokens.THIS_KEYWORD);
 			put(CSharpModifier.PARTIAL, CSharpSoftTokens.PARTIAL_KEYWORD);
-			put(CSharpModifier.INTERNAL, CSharpSoftTokens.INTERNAL_KEYWORD);
-			put(CSharpModifier.REF, CSharpSoftTokens.REF_KEYWORD);
-			put(CSharpModifier.OUT, CSharpSoftTokens.OUT_KEYWORD);
-			put(CSharpModifier.NEW, CSharpSoftTokens.NEW_KEYWORD);
-			put(CSharpModifier.OVERRIDE, CSharpSoftTokens.OVERRIDE_KEYWORD);
+			put(CSharpModifier.INTERNAL, CSharpTokens.INTERNAL_KEYWORD);
+			put(CSharpModifier.REF, CSharpTokens.REF_KEYWORD);
+			put(CSharpModifier.OUT, CSharpTokens.OUT_KEYWORD);
+			put(CSharpModifier.VIRTUAL, CSharpTokens.VIRTUAL_KEYWORD);
+			put(CSharpModifier.NEW, CSharpTokens.NEW_KEYWORD);
+			put(CSharpModifier.OVERRIDE, CSharpTokens.OVERRIDE_KEYWORD);
 		}
 	};
 	public CSharpModifierListImpl(@NotNull ASTNode node)
