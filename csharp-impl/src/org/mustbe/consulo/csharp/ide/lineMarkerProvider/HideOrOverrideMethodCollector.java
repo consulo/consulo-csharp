@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.CSharpIcons;
 import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0102;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
@@ -76,7 +77,7 @@ public class HideOrOverrideMethodCollector implements LineMarkerCollector
 					@Override
 					public Icon icon()
 					{
-						return AllIcons.Actions.Cross;
+						return CSharpIcons.Gutter.HidingMethod;
 					}
 				};
 

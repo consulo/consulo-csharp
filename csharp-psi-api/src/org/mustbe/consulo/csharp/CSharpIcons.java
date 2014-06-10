@@ -26,6 +26,12 @@ import com.intellij.openapi.util.IconLoader;
  */
 public interface CSharpIcons
 {
+	interface Gutter
+	{
+		Icon HidingMethod = IconLoader.findIcon("/icons/gutter/hidingMethod.png");
+		Icon HidedMethod = IconLoader.findIcon("/icons/gutter/hidedMethod.png");
+	}
+
 	Icon FileType = IconLoader.findIcon("/icons/csharp.png");
 	Icon Lang = IconLoader.findIcon("/icons/csharpLang.png");
 }
