@@ -34,7 +34,6 @@ import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.light.LightElement;
-import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
 
 /**
@@ -112,7 +111,7 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 
 	@Nullable
 	@Override
-	public PsiElement getModifier(IElementType elementType)
+	public PsiElement getModifierElement(DotNetModifier elementType)
 	{
 		return null;
 	}

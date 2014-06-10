@@ -56,6 +56,12 @@ public enum CSharpModifier implements DotNetModifier
 		return myMask;
 	}
 
+	@Override
+	public String getPresentableText()
+	{
+		return name().toLowerCase();
+	}
+
 	@NotNull
 	public static CSharpModifier as(DotNetModifier modifierWithMask)
 	{

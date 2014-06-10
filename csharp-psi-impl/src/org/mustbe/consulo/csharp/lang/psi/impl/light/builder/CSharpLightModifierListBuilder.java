@@ -28,7 +28,6 @@ import com.intellij.lang.Language;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.light.LightElement;
-import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
@@ -72,7 +71,7 @@ public class CSharpLightModifierListBuilder extends LightElement implements DotN
 
 	@Nullable
 	@Override
-	public PsiElement getModifier(IElementType elementType)
+	public PsiElement getModifierElement(DotNetModifier elementType)
 	{
 		return null;
 	}

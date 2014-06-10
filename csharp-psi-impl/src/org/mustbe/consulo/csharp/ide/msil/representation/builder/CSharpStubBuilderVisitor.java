@@ -162,7 +162,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		{
 			for(DotNetModifier dotNetModifier : modifierList.getModifiers())
 			{
-				builder.append(dotNetModifier.name().toLowerCase()).append(" ");
+				builder.append(dotNetModifier.getPresentableText()).append(" ");
 			}
 		}
 	}

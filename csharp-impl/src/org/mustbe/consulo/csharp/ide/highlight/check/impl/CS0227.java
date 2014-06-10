@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.highlight.check.AbstractCompilerCheck;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpModifierListImpl;
 import org.mustbe.consulo.csharp.module.extension.BaseCSharpModuleExtension;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -33,7 +33,7 @@ public class CS0227 extends AbstractCompilerCheck<CSharpModifierListImpl>
 	@Override
 	public boolean accept(@NotNull CSharpModifierListImpl list)
 	{
-		PsiElement modifier = list.getModifier(CSharpTokens.UNSAFE_KEYWORD);
+		PsiElement modifier = list.getModifierElement(CSharpModifier.UNSAFE);
 		if(modifier == null)
 		{
 			return false;
@@ -48,7 +48,7 @@ public class CS0227 extends AbstractCompilerCheck<CSharpModifierListImpl>
 	public void checkImpl(
 			@NotNull CSharpModifierListImpl list, @NotNull CompilerCheckResult checkResult)
 	{
-		PsiElement modifier = list.getModifier(CSharpTokens.UNSAFE_KEYWORD);
+		PsiElement modifier = list.getModifierElement(CSharpModifier.UNSAFE);
 		assert modifier != null;
 		checkResult.setTextRange(modifier.getTextRange());
 	}

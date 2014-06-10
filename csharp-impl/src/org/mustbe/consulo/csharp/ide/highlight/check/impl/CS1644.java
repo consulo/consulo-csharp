@@ -25,10 +25,10 @@ import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpGenericParameterListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -186,7 +186,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 							DotNetModifierList modifierList = parameters[0].getModifierList();
 							if(modifierList != null)
 							{
-								PsiElement modifier = modifierList.getModifier(CSharpTokens.THIS_KEYWORD);
+								PsiElement modifier = modifierList.getModifierElement(CSharpModifier.THIS);
 								if(modifier != null)
 								{
 									return modifier;
