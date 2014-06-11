@@ -13,9 +13,14 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<templateSet group="C# Output">
-	<template resource-bundle="messages.CSharpBundle" key="livetemplates.cwl"
-			  name="cwl" toReformat="true" toShortenFQNames="true" value="Console.WriteLine($END$);">
+
+<templateSet group="C# Foreach">
+	<template name="fore" value="foreach ($FOREACH_COMPONENT_TYPE$ $VAR$ in $FOREACH_TYPE$) {&#10;  $END$&#10;}"
+			  resource-bundle="messages.CSharpBundle" key="livetemplates.forv" toReformat="true" toShortenFQNames="true">
+		<variable name="FOREACH_TYPE" expression="foreachVariable()" defaultValue="" alwaysStopAt="true" />
+		<variable name="FOREACH_COMPONENT_TYPE" expression="foreachComponentType(FOREACH_TYPE)" defaultValue="var"
+				  alwaysStopAt="false"	/>
+		<variable name="VAR" expression="suggestVariableName()" defaultValue="it" alwaysStopAt="true" />
 		<context>
 			<option name="CSHARP_STATEMENT" value="true" />
 		</context>

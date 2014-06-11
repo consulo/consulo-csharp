@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.module.extension;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.psi.PsiElement;
 
@@ -27,8 +28,12 @@ import com.intellij.psi.PsiElement;
 public class CSharpModuleUtil
 {
 	@NotNull
-	public static CSharpLanguageVersion findLanguageVersion(@NotNull PsiElement element)
+	public static CSharpLanguageVersion findLanguageVersion(@Nullable PsiElement element)
 	{
+		if(element == null)
+		{
+			return CSharpLanguageVersion.HIGHEST;
+		}
 		CSharpModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpModuleExtension.class);
 		if(extension == null)
 		{

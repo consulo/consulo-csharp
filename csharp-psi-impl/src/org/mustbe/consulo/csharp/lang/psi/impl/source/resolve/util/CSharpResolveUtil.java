@@ -365,15 +365,19 @@ public class CSharpResolveUtil
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 
-		DotNetTypeRef typeRef = iterableExpression.toTypeRef(false);
+		return resolveIterableType(iterableExpression, iterableExpression.toTypeRef(false));
+	}
 
-		DotNetMethodDeclaration method = CSharpSearchUtil.findMethodByName("GetEnumerator", typeRef, foreachStatement);
+	@NotNull
+	public static DotNetTypeRef resolveIterableType(@NotNull PsiElement scope, @NotNull DotNetTypeRef typeRef)
+	{
+		DotNetMethodDeclaration method = CSharpSearchUtil.findMethodByName("GetEnumerator", typeRef, scope);
 		if(method == null)
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 
-		DotNetPropertyDeclaration current = CSharpSearchUtil.findPropertyByName("Current", method.getReturnTypeRef(), foreachStatement);
+		DotNetPropertyDeclaration current = CSharpSearchUtil.findPropertyByName("Current", method.getReturnTypeRef(), scope);
 		if(current == null)
 		{
 			return DotNetTypeRef.ERROR_TYPE;

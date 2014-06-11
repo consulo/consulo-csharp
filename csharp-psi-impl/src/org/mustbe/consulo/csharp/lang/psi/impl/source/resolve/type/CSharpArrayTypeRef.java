@@ -42,7 +42,7 @@ public class CSharpArrayTypeRef extends DotNetTypeRef.Adapter implements DotNetA
 		myDimensions = dimensions;
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public String getPresentableText()
 	{
@@ -57,7 +57,7 @@ public class CSharpArrayTypeRef extends DotNetTypeRef.Adapter implements DotNetA
 		return builder.toString();
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public String getQualifiedText()
 	{

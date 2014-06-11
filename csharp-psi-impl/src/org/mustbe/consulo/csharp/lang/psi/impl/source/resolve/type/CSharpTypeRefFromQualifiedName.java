@@ -38,14 +38,14 @@ public class CSharpTypeRefFromQualifiedName extends DotNetTypeRef.Adapter
 		myGenericCount = genericCount;
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public String getPresentableText()
 	{
 		return StringUtil.getShortName(myQualifiedName);
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public String getQualifiedText()
 	{

@@ -35,14 +35,14 @@ public class CSharpTypeRefFromQualifiedElement extends DotNetTypeRef.Adapter
 		myElement = element;
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public String getPresentableText()
 	{
 		return myElement.getName();
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public String getQualifiedText()
 	{

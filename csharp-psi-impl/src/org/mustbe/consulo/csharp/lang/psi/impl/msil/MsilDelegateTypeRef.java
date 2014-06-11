@@ -33,14 +33,14 @@ public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 		super(typeRef);
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public String getPresentableText()
 	{
 		return MsilHelper.cutGenericMarker(super.getPresentableText());
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public String getQualifiedText()
 	{

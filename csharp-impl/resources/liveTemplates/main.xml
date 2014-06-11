@@ -15,13 +15,13 @@
   -->
 
 <templateSet group="C# Main">
-	<template resource-bundle="messages.CSharpBundle" key="live.mplates.psvm"
+	<template resource-bundle="messages.CSharpBundle" key="livetemplates.psvm"
 			  name="psvm" toReformat="true" toShortenFQNames="true" value="public static void Main(){&#13;&#10;  $END$&#13;&#10;}">
 		<context>
 			<option name="CSHARP_CLASS_BODY" value="true" />
 		</context>
 	</template>
-	<template resource-bundle="messages.CSharpBundle" key="live.mplates.psvms"
+	<template resource-bundle="messages.CSharpBundle" key="livetemplates.psvms"
 			  name="psvms" toReformat="true" toShortenFQNames="true" value="public static void Main(string[] args){&#13;&#10;  $END$&#13;&#10;}">
 		<context>
 			<option name="CSHARP_CLASS_BODY" value="true" />

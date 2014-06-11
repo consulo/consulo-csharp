@@ -17,7 +17,6 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCodeFragment;
 import com.intellij.openapi.fileTypes.FileType;
@@ -60,6 +59,12 @@ public class CSharpCodeFragmentImpl extends PsiFileImpl implements CSharpCodeFra
 	@NotNull
 	@Override
 	public PsiElement getScopeElement()
+	{
+		return myScope;
+	}
+
+	@Override
+	public PsiElement getContext()
 	{
 		return myScope;
 	}

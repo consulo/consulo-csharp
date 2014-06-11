@@ -48,7 +48,7 @@ public class CSharpTypeRefFromGenericParameter extends DotNetTypeRef.Adapter
 		return false;
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public String getPresentableText()
 	{

@@ -53,7 +53,7 @@ public class CSharpAnonymTypeRef extends DotNetTypeRef.Adapter
 		return resolve(scope.getProject(), scope.getResolveScope());
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public String getPresentableText()
 	{
@@ -72,7 +72,7 @@ public class CSharpAnonymTypeRef extends DotNetTypeRef.Adapter
 		return builder.toString();
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public String getQualifiedText()
 	{

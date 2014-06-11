@@ -58,14 +58,14 @@ public class CSharpNativeTypeRef extends DotNetTypeRef.Adapter implements DotNet
 		myWrapperQualifiedClass = wrapperQualifiedClass;
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public String getPresentableText()
 	{
 		return myPresentableText;
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public String getQualifiedText()
 	{

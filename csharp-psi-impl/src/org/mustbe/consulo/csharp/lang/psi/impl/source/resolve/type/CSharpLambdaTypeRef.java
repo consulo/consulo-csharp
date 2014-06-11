@@ -56,7 +56,7 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 		return myParameterTypes;
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	@LazyInstance
 	public String getPresentableText()
@@ -96,7 +96,7 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 		return builder.toString();
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	@LazyInstance
 	public String getQualifiedText()

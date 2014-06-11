@@ -36,14 +36,14 @@ public class CSharpTypeRefFromNamespace extends DotNetTypeRef.Adapter
 		myQualifiedName = qualifiedName;
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public String getPresentableText()
 	{
 		return StringUtil.getShortName(myQualifiedName);
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public String getQualifiedText()
 	{

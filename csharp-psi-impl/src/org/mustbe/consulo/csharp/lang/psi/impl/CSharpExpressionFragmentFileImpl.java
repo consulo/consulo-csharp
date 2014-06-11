@@ -59,6 +59,16 @@ public class CSharpExpressionFragmentFileImpl extends PsiFileImpl implements CSh
 		return CSharpLanguage.INSTANCE;
 	}
 
+	@Override
+	public PsiElement getContext()
+	{
+		if(myContext != null)
+		{
+			return myContext;
+		}
+		return super.getContext();
+	}
+
 	@NotNull
 	@Override
 	public FileType getFileType()

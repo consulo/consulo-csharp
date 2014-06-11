@@ -637,11 +637,11 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		return ResolveResultWithWeight.EMPTY_ARRAY;
 	}
 
-	private static <T extends PsiQualifiedReference & PsiElement> ResolveResultWithWeight[] processAnyMember(
+	public static ResolveResultWithWeight[] processAnyMember(
 			PsiElement qualifier,
 			Condition<PsiNamedElement> condition,
 			WeightProcessor<PsiNamedElement> weightProcessor,
-			T element,
+			PsiElement element,
 			ResolveToKind kind,
 			boolean с)
 	{

@@ -47,14 +47,14 @@ public class CSharpTypeRefFromText extends DotNetTypeRef.Adapter
 		return CSharpCodeFragmentFactory.createType(myOwner, myText);
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public String getPresentableText()
 	{
 		return StringUtil.getShortName(myText);
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public String getQualifiedText()
 	{

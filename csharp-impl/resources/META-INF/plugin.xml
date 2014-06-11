@@ -150,6 +150,9 @@
 		<defaultLiveTemplatesProvider implementation="org.mustbe.consulo.csharp.ide.liveTemplates.CSharpLiveTemplatesProvider" />
 		<liveTemplateContext implementation="org.mustbe.consulo.csharp.ide.liveTemplates.context.CSharpStatementContextType" />
 		<liveTemplateContext implementation="org.mustbe.consulo.csharp.ide.liveTemplates.context.CSharpClassBodyContextType" />
+		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.SuggestVariableNameMacro" />
+		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.ForeachVariableMacro" />
+		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.ForeachComponentTypeMacro" />
 
 		<quoteHandler fileType="C#" className="org.mustbe.consulo.csharp.ide.CSharpQuoteHandler"/>
 		<colorSettingsPage implementation="org.mustbe.consulo.csharp.ide.highlight.CSharpColorSettingsPage"/>
