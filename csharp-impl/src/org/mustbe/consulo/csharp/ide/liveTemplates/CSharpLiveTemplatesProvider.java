@@ -29,7 +29,7 @@ public class CSharpLiveTemplatesProvider implements DefaultLiveTemplatesProvider
 	@Override
 	public String[] getDefaultLiveTemplateFiles()
 	{
-		return new String[] {"/liveTemplates/output"};
+		return new String[] {"/liveTemplates/output", "/liveTemplates/main"};
 	}
 
 	@Nullable
