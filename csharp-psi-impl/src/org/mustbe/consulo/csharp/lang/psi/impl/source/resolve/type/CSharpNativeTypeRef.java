@@ -47,6 +47,7 @@ public class CSharpNativeTypeRef extends DotNetTypeRef.Adapter implements DotNet
 	public static final CSharpNativeTypeRef DECIMAL = new CSharpNativeTypeRef("decimal", "System.Decimal");
 	public static final CSharpNativeTypeRef IMPLICIT = new CSharpNativeTypeRef("implicit", "System.Object");
 	public static final CSharpNativeTypeRef EXPLICIT = new CSharpNativeTypeRef("explicit", "System.Object");
+	public static final CSharpNativeTypeRef DYNAMIC = new CSharpNativeTypeRef("dynamic", "System.Object");
 
 	private final String myPresentableText;
 	private final String myWrapperQualifiedClass;

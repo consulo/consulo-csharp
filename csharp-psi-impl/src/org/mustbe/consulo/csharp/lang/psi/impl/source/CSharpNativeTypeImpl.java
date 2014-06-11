@@ -58,6 +58,7 @@ public class CSharpNativeTypeImpl extends CSharpElementImpl implements DotNetNat
 			put(CSharpTokens.DECIMAL_KEYWORD, CSharpNativeTypeRef.DECIMAL);
 			put(CSharpTokens.IMPLICIT_KEYWORD, CSharpNativeTypeRef.IMPLICIT);
 			put(CSharpTokens.EXPLICIT_KEYWORD, CSharpNativeTypeRef.EXPLICIT);
+			put(CSharpTokens.DYNAMIC_KEYWORD, CSharpNativeTypeRef.DYNAMIC);
 		}
 	};
 
