@@ -147,6 +147,9 @@
 		<codeInsight.template.postfixTemplateProvider language="C#"
 													  implementationClass="org.mustbe.consulo.csharp.ide.codeInsight.template.postfix.CSharpPostfixTemplateProvider"/>
 
+		<defaultLiveTemplatesProvider implementation="org.mustbe.consulo.csharp.ide.liveTemplates.CSharpLiveTemplatesProvider" />
+		<liveTemplateContext implementation="org.mustbe.consulo.csharp.ide.liveTemplates.context.CSharpStatementContextType" />
+
 		<quoteHandler fileType="C#" className="org.mustbe.consulo.csharp.ide.CSharpQuoteHandler"/>
 		<colorSettingsPage implementation="org.mustbe.consulo.csharp.ide.highlight.CSharpColorSettingsPage"/>
 		<fileEditorProvider implementation="org.mustbe.consulo.csharp.ide.assemblyInfo.CSharpAssemblyFileEditorProvider"/>
