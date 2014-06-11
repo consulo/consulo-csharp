@@ -118,14 +118,14 @@ public class UnnecessaryTypeInspection extends LocalInspectionTool
 					{
 						return;
 					}
-					else if(typeRef == CSharpNativeTypeRef.DYNAMIC)
-					{
-						return;
-					}
 				}
 
 				DotNetTypeRef typeRef = variable.toTypeRef(false);
 				if(typeRef == DotNetTypeRef.AUTO_TYPE)
+				{
+					return;
+				}
+				else if(typeRef == CSharpNativeTypeRef.DYNAMIC)
 				{
 					return;
 				}
