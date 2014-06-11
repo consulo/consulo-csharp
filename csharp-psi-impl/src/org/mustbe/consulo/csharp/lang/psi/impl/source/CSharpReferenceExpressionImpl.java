@@ -813,10 +813,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 		if(targetToWalkChildren == null)
 		{
-			return Couple.newOne(last, last);
+			return Couple.of(last, last);
 			//LOGGER.error(element.getText() + " " + last + " " + kind + " " + element.getParent() + " " + element.getContainingFile().getName());
 		}
-		return Couple.newOne(last, targetToWalkChildren);
+		return Couple.of(last, targetToWalkChildren);
 	}
 
 	@NotNull
