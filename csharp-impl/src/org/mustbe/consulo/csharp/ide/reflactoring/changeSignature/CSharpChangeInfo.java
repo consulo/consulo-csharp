@@ -31,11 +31,13 @@ public class CSharpChangeInfo implements ChangeInfo
 {
 	private final DotNetLikeMethodDeclaration myMethodDeclaration;
 	private final String myNewName;
+	private final String myNewReturnType;
 
-	public CSharpChangeInfo(DotNetLikeMethodDeclaration methodDeclaration, String newName)
+	public CSharpChangeInfo(DotNetLikeMethodDeclaration methodDeclaration, String newName, String newReturnType)
 	{
 		myMethodDeclaration = methodDeclaration;
 		myNewName = newName;
+		myNewReturnType = newReturnType;
 	}
 
 	@NotNull
@@ -84,7 +86,12 @@ public class CSharpChangeInfo implements ChangeInfo
 	@Override
 	public boolean isReturnTypeChanged()
 	{
-		return false;
+		return myNewReturnType != null;
+	}
+
+	public String getNewReturnType()
+	{
+		return myNewReturnType;
 	}
 
 	@Override

@@ -117,6 +117,10 @@ public class CSharpMethodDescriptor implements MethodDescriptor<CSharpParameterI
 	@Override
 	public ReadWriteOption canChangeReturnType()
 	{
-		return ReadWriteOption.ReadWrite;
+		if(myMethod instanceof CSharpMethodDeclaration)
+		{
+			return ReadWriteOption.ReadWrite;
+		}
+		return ReadWriteOption.None;
 	}
 }

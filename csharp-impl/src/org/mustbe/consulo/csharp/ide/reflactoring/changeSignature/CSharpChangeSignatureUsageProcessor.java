@@ -20,8 +20,11 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
+import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
 import com.intellij.openapi.application.ReadActionProcessor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Ref;
@@ -29,6 +32,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.searches.ReferencesSearch;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.refactoring.changeSignature.ChangeInfo;
 import com.intellij.refactoring.changeSignature.ChangeSignatureUsageProcessor;
 import com.intellij.refactoring.rename.ResolveSnapshotProvider;
@@ -105,11 +109,21 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 
 		DotNetLikeMethodDeclaration method = sharpChangeInfo.getMethod();
 
-		if(changeInfo.isNameChanged())
+		if(sharpChangeInfo.isNameChanged())
 		{
 			assert method instanceof CSharpMethodDeclaration;
 
-			method.setName(changeInfo.getNewName());
+			method.setName(sharpChangeInfo.getNewName());
+		}
+
+		if(sharpChangeInfo.isReturnTypeChanged())
+		{
+			String newReturnType = sharpChangeInfo.getNewReturnType();
+			CSharpFragmentFileImpl typeFragment = CSharpFragmentFactory.createTypeFragment(changeInfo.getMethod().getProject(), newReturnType,
+					changeInfo.getMethod());
+			DotNetType type = PsiTreeUtil.getChildOfType(typeFragment, DotNetType.class);
+			assert type != null;
+			method.getReturnType().replace(type);
 		}
 		return true;
 	}

@@ -35,7 +35,9 @@ import com.intellij.refactoring.BaseRefactoringProcessor;
 import com.intellij.refactoring.changeSignature.CallerChooserBase;
 import com.intellij.refactoring.changeSignature.ChangeSignatureDialogBase;
 import com.intellij.refactoring.changeSignature.ChangeSignatureProcessorBase;
+import com.intellij.refactoring.changeSignature.MethodDescriptor;
 import com.intellij.refactoring.ui.ComboBoxVisibilityPanel;
+import com.intellij.refactoring.ui.MethodSignatureComponent;
 import com.intellij.refactoring.ui.VisibilityPanelBase;
 import com.intellij.ui.ListCellRendererWrapper;
 import com.intellij.ui.treeStructure.Tree;
@@ -103,7 +105,17 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 			}
 		}
 
-		return new CSharpChangeInfo(myMethodDeclaration, newName);
+		String newReturnType = null;
+		if(myMethod.canChangeReturnType() == MethodDescriptor.ReadWriteOption.ReadWrite)
+		{
+			String returnType = myReturnTypeField.getText();
+			if(!Comparing.equal(calculateSignature(), returnType))
+			{
+				newReturnType = returnType;
+			}
+		}
+
+		return new CSharpChangeInfo(myMethodDeclaration, newName, newReturnType);
 	}
 
 	@Override
@@ -130,7 +142,21 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	@Override
 	protected String calculateSignature()
 	{
-		return myMethod.getMethod().getReturnTypeRef().getQualifiedText();
+		return myMethod.getMethod().getReturnTypeRef().getPresentableText();
+	}
+
+	@Override
+	protected MethodSignatureComponent createSignaturePreviewComponent()
+	{
+		return new MethodSignatureComponent(calculateSignature(), getProject(), getFileType())
+		{
+			@Nullable
+			@Override
+			protected String getFileName()
+			{
+				return "dummy.cs";
+			}
+		};
 	}
 
 	@Override
