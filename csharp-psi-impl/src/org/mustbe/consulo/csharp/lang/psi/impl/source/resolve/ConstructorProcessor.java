@@ -20,9 +20,13 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodCallParameterListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.ResolveState;
 
 /**
@@ -60,7 +64,7 @@ public class ConstructorProcessor extends AbstractScopeProcessor
 		return true;
 	}
 
-	public void executeDefault(DotNetConstructorListOwner owner)
+	public void executeDefault(PsiNamedElement owner)
 	{
 		if(!isEmpty())
 		{
@@ -72,6 +76,14 @@ public class ConstructorProcessor extends AbstractScopeProcessor
 		builder.setNavigationElement(owner);
 		builder.withParent(owner);
 		builder.withName(owner.getName());
+
+		if(!(owner instanceof DotNetConstructorListOwner))
+		{
+			CSharpLightParameterBuilder parameter = new CSharpLightParameterBuilder(owner.getProject());
+			parameter = parameter.withName("p1");
+			parameter = parameter.withTypeRef(new CSharpTypeRefFromQualifiedElement((DotNetQualifiedElement) owner));
+			builder.addParameter(parameter);
+		}
 
 		execute(builder, null);
 	}

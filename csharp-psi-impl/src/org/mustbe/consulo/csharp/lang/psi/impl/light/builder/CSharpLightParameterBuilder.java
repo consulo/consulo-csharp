@@ -29,6 +29,8 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpLightParameterBuilder extends CSharpLightVariableBuilder<CSharpLightParameterBuilder> implements DotNetParameter
 {
+	private DotNetLikeMethodDeclaration myMethod;
+
 	public CSharpLightParameterBuilder(Project project)
 	{
 		super(project);
@@ -49,6 +51,11 @@ public class CSharpLightParameterBuilder extends CSharpLightVariableBuilder<CSha
 	@Override
 	public DotNetLikeMethodDeclaration getMethod()
 	{
-		return null;
+		return myMethod;
+	}
+
+	public void setMethod(DotNetLikeMethodDeclaration method)
+	{
+		myMethod = method;
 	}
 }

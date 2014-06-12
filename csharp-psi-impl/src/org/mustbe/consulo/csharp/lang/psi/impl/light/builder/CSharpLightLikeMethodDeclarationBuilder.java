@@ -194,6 +194,10 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 		{
 			((CSharpLightElementBuilder) parameter).withParent(this);
 		}
+		if(parameter instanceof CSharpLightParameterBuilder)
+		{
+			((CSharpLightParameterBuilder) parameter).setMethod(this);
+		}
 		myParameters.add(parameter);
 		return (T) this;
 	}

@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
@@ -36,6 +37,11 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 	private final PsiElement myTarget;
 	private final DotNetTypeRef[] myParameterTypes;
 	private final DotNetTypeRef myReturnType;
+
+	public CSharpLambdaTypeRef(@NotNull CSharpPseudoMethod method)
+	{
+		this(method, method.getParameterTypeRefs(), method.getReturnTypeRef());
+	}
 
 	public CSharpLambdaTypeRef(@Nullable PsiElement target, @NotNull DotNetTypeRef[] parameterTypes, @NotNull DotNetTypeRef returnType)
 	{

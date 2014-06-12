@@ -224,7 +224,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		return ResolveCache.getInstance(getProject()).resolveWithCaching(this, OurResolver.INSTANCE, false, incompleteCode);
 	}
 
-	private ResolveResultWithWeight[] multiResolveImpl(ResolveToKind kind)
+	@NotNull
+	public ResolveResultWithWeight[] multiResolveImpl(ResolveToKind kind)
 	{
 		CSharpExpressionWithParameters p = null;
 		PsiElement parent = getParent();
@@ -584,25 +585,24 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				{
 					return ResolveResultWithWeight.EMPTY_ARRAY;
 				}
-				PsiElement type = resolveResultWithWeight.getElement();
-				if(!(type instanceof DotNetConstructorListOwner))
-				{
-					return ResolveResultWithWeight.EMPTY_ARRAY;
-				}
 
 				CSharpMethodCallParameterListOwner parent = PsiTreeUtil.getParentOfType(element, CSharpMethodCallParameterListOwner.class);
 
 				val constructorProcessor = new ConstructorProcessor(parent, completion);
-				((DotNetConstructorListOwner) type).processConstructors(new Processor<DotNetConstructorDeclaration>()
-				{
-					@Override
-					public boolean process(DotNetConstructorDeclaration constructorDeclaration)
-					{
-						return constructorProcessor.execute(constructorDeclaration, null);
-					}
-				});
 
-				constructorProcessor.executeDefault((DotNetConstructorListOwner) type);
+				PsiElement resolveElement = resolveResultWithWeight.getElement();
+				if(resolveElement instanceof DotNetConstructorListOwner)
+				{
+					((DotNetConstructorListOwner) resolveElement).processConstructors(new Processor<DotNetConstructorDeclaration>()
+					{
+						@Override
+						public boolean process(DotNetConstructorDeclaration constructorDeclaration)
+						{
+							return constructorProcessor.execute(constructorDeclaration, null);
+						}
+					});
+				}
+				constructorProcessor.executeDefault((PsiNamedElement) resolveElement);
 				return constructorProcessor.toResolveResults();
 			case ATTRIBUTE:
 				/*condition = Conditions.and(condition, ourTypeOrMethodOrGenericCondition);

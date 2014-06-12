@@ -21,16 +21,20 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySetBlock;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodCallParameterList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNewExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpAnonymTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
+import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.lang.ASTNode;
@@ -76,7 +80,7 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 		}
 		else
 		{
-			DotNetTypeRef typeRef = null;
+			DotNetTypeRef typeRef = DotNetTypeRef.ERROR_TYPE;
 			if(canResolve())
 			{
 				DotNetType[] arguments = DotNetType.EMPTY_ARRAY;
@@ -91,8 +95,21 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 					DotNetReferenceExpression referenceExpression = ((DotNetUserType) type).getReferenceExpression();
 					if(referenceExpression instanceof CSharpReferenceExpression)
 					{
-						typeRef = ((CSharpReferenceExpressionImpl) referenceExpression).toTypeRef(CSharpReferenceExpressionImpl
-								.ResolveToKind.TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD, resolveFromParent);
+						ResolveResultWithWeight[] resultWithWeights = ((CSharpReferenceExpressionImpl) referenceExpression).multiResolveImpl
+								(CSharpReferenceExpressionImpl.ResolveToKind.TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD);
+						if(resultWithWeights.length != 0)
+						{
+							PsiElement element = resultWithWeights[0].getElement();
+
+							if(element instanceof CSharpMethodDeclaration)
+							{
+								typeRef = new CSharpLambdaTypeRef((CSharpPseudoMethod) element);
+							}
+							else
+							{
+								typeRef = CSharpReferenceExpressionImpl.toTypeRef(element);
+							}
+						}
 					}
 					else
 					{
