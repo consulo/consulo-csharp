@@ -23,12 +23,12 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
+import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
@@ -77,7 +77,9 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 		extend(CompletionType.BASIC, StandardPatterns.psiElement(), new CompletionProvider<CompletionParameters>()
 		{
 			@Override
-			protected void addCompletions(@NotNull CompletionParameters completionParameters, ProcessingContext processingContext,
+			protected void addCompletions(
+					@NotNull CompletionParameters completionParameters,
+					ProcessingContext processingContext,
 					@NotNull CompletionResultSet completionResultSet)
 			{
 				PsiElement position = completionParameters.getPosition();
@@ -111,7 +113,9 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 		{
 
 			@Override
-			protected void addCompletions(@NotNull CompletionParameters completionParameters, ProcessingContext processingContext,
+			protected void addCompletions(
+					@NotNull CompletionParameters completionParameters,
+					ProcessingContext processingContext,
 					@NotNull CompletionResultSet completionResultSet)
 			{
 				DotNetReferenceExpression parent = (DotNetReferenceExpression) completionParameters.getPosition().getParent();
@@ -126,8 +130,8 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 		extend(CompletionType.BASIC, StandardPatterns.psiElement(), new CompletionProvider<CompletionParameters>()
 		{
 			@Override
-			protected void addCompletions(@NotNull CompletionParameters completionParameters, ProcessingContext processingContext,
-					@NotNull CompletionResultSet resultSet)
+			protected void addCompletions(
+					@NotNull CompletionParameters completionParameters, ProcessingContext processingContext, @NotNull CompletionResultSet resultSet)
 			{
 				PsiElement originalPosition = completionParameters.getOriginalPosition();
 				if(originalPosition == null)
@@ -135,29 +139,33 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 					return;
 				}
 
-				// ; Expected
 				PsiElement prevSibling = originalPosition.getPrevSibling();
 				if(prevSibling == null)
 				{
 					return;
 				}
 
-				prevSibling = prevSibling instanceof CSharpEventDeclaration ? prevSibling : prevSibling.getPrevSibling();
-
 				String text = null;
-				if(prevSibling instanceof CSharpFieldDeclaration)
+				if(prevSibling.getNode().getElementType() == CSharpTokens.LBRACE)
 				{
-					text = "{ get; set; }";
+					PsiElement parent = prevSibling.getParent();
+					if(parent instanceof CSharpPropertyDeclaration)
+					{
+						text = "get; set;";
+					}
+					else if(parent instanceof CSharpEventDeclaration)
+					{
+						text = "add; remove;";
+					}
 				}
-				else if(prevSibling instanceof CSharpEventDeclaration)
-				{
-					text = "{ add; remove; }";
-				}
-				else
+
+				if(text == null)
 				{
 					return;
 				}
+
 				LookupElementBuilder builder = LookupElementBuilder.create(text);
+				builder = builder.bold();
 				builder = builder.withRenderer(new LookupElementRenderer<LookupElement>()
 				{
 					@Override
@@ -166,9 +174,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 						String lookupString = lookupElement.getLookupString();
 						for(char o : lookupString.toCharArray())
 						{
-							boolean grey = o == '{' || o == '}' || o == ';';
-
-							lookupElementPresentation.appendTailText(String.valueOf(o), grey);
+							lookupElementPresentation.appendTailText(String.valueOf(o), o == ';');
 						}
 					}
 				});
