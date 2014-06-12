@@ -161,8 +161,6 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 				resultSet.addElement(builder.withAutoCompletionPolicy(AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE));
 			}
 		});
-
-
 	}
 
 	private static Condition<IElementType> createCondForFilterModifierOrTypeStart(PsiElement parent1)
