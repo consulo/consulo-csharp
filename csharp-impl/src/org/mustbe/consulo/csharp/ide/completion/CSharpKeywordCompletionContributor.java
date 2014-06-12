@@ -22,8 +22,12 @@ import java.util.Arrays;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetUserType;
@@ -94,15 +98,34 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 
 			@Override
 			protected void addCompletions(
-					@NotNull CompletionParameters completionParameters,
+					@NotNull final CompletionParameters completionParameters,
 					ProcessingContext processingContext,
 					@NotNull CompletionResultSet completionResultSet)
 			{
-				DotNetReferenceExpression parent = (DotNetReferenceExpression) completionParameters.getPosition().getParent();
+				val parent = (DotNetReferenceExpression) completionParameters.getPosition().getParent();
 
 				if(parent.getQualifier() == null)
 				{
-					CSharpCompletionUtil.tokenSetToLookup(completionResultSet, CSharpTokenSets.NATIVE_TYPES, null, null);
+					CSharpCompletionUtil.tokenSetToLookup(completionResultSet, CSharpTokenSets.NATIVE_TYPES, null, new Condition<IElementType>()
+					{
+						@Override
+						public boolean value(IElementType elementType)
+						{
+							if(elementType == CSharpTokens.EXPLICIT_KEYWORD || elementType == CSharpTokens.IMPLICIT_KEYWORD)
+							{
+								PsiElement invalidParent = PsiTreeUtil.getParentOfType(parent, DotNetStatement.class, DotNetParameterList.class);
+								return invalidParent == null;
+							}
+							if(elementType == CSharpSoftTokens.VAR_KEYWORD)
+							{
+								if(!CSharpModuleUtil.findLanguageVersion(completionParameters.getOriginalFile()).isAtLeast(CSharpLanguageVersion._2_0))
+								{
+									return false;
+								}
+							}
+							return true;
+						}
+					});
 				}
 			}
 		});
