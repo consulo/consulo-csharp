@@ -24,6 +24,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingNamespaceStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -84,6 +85,17 @@ public class CSharpFileFactory
 	}
 
 	@NotNull
+	public static DotNetLikeMethodDeclaration createMethod(@NotNull Project project, @NotNull CharSequence text)
+	{
+		val clazz = "class _Dummy { " + text + "; }";
+
+		CSharpFileImpl psiFile = createTypeDeclarationWithScope(project, clazz);
+
+		DotNetTypeDeclaration typeDeclaration = (DotNetTypeDeclaration) psiFile.getMembers()[0];
+		return (DotNetLikeMethodDeclaration) typeDeclaration.getMembers()[0];
+	}
+
+	@NotNull
 	public static PsiElement createIdentifier(@NotNull Project project, @NotNull String name)
 	{
 		CSharpFieldDeclaration field = createField(project, "int " + name);
@@ -119,7 +131,7 @@ public class CSharpFileFactory
 		return (DotNetTypeDeclaration) psiFile.getMembers()[0];
 	}
 
-	private static CSharpFileImpl createTypeDeclarationWithScope(Project project, String text)
+	private static CSharpFileImpl createTypeDeclarationWithScope(Project project, CharSequence text)
 	{
 		val virtualFile = new LightVirtualFile("dummy.cs", CSharpFileType.INSTANCE, text, System.currentTimeMillis());
 		val viewProvider = new SingleRootFileViewProvider(PsiManager.getInstance(project), virtualFile, false);

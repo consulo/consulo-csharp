@@ -17,7 +17,9 @@
 package org.mustbe.consulo.csharp.ide.reflactoring.changeSignature;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import com.intellij.lang.Language;
 import com.intellij.refactoring.changeSignature.ChangeInfo;
@@ -32,12 +34,14 @@ public class CSharpChangeInfo implements ChangeInfo
 	private final DotNetLikeMethodDeclaration myMethodDeclaration;
 	private final String myNewName;
 	private final String myNewReturnType;
+	private final CSharpModifier myNewVisibility;
 
-	public CSharpChangeInfo(DotNetLikeMethodDeclaration methodDeclaration, String newName, String newReturnType)
+	public CSharpChangeInfo(DotNetLikeMethodDeclaration methodDeclaration, String newName, String newReturnType, CSharpModifier newVisibility)
 	{
 		myMethodDeclaration = methodDeclaration;
 		myNewName = newName;
 		myNewReturnType = newReturnType;
+		myNewVisibility = newVisibility;
 	}
 
 	@NotNull
@@ -104,5 +108,11 @@ public class CSharpChangeInfo implements ChangeInfo
 	public Language getLanguage()
 	{
 		return CSharpLanguage.INSTANCE;
+	}
+
+	@Nullable
+	public CSharpModifier getNewVisibility()
+	{
+		return myNewVisibility;
 	}
 }

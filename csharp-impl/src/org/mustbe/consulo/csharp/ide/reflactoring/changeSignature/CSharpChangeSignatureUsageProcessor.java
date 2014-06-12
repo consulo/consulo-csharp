@@ -19,10 +19,13 @@ package org.mustbe.consulo.csharp.ide.reflactoring.changeSignature;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import com.intellij.openapi.application.ReadActionProcessor;
@@ -67,7 +70,8 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 			}
 		};
 
-		ReferencesSearch.search(new ReferencesSearch.SearchParameters(info.getMethod(), info.getMethod().getResolveScope(), false)).forEach(refProcessor);
+		ReferencesSearch.search(new ReferencesSearch.SearchParameters(info.getMethod(), info.getMethod().getResolveScope(),
+				false)).forEach(refProcessor);
 		return collectProcessor.toArray(UsageInfo.EMPTY_ARRAY);
 	}
 
@@ -124,6 +128,44 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 			DotNetType type = PsiTreeUtil.getChildOfType(typeFragment, DotNetType.class);
 			assert type != null;
 			method.getReturnType().replace(type);
+		}
+
+		StringBuilder builder = new StringBuilder();
+		CSharpModifier newVisibility = sharpChangeInfo.getNewVisibility();
+		if(newVisibility != null)
+		{
+			builder.append(newVisibility.getPresentableText()).append(" ");
+		}
+		if(method instanceof CSharpMethodDeclaration)
+		{
+			builder.append(method.getReturnTypeRef().getQualifiedText()).append(" ");
+		}
+		builder.append(method.getName());
+		builder.append("();");
+
+		DotNetLikeMethodDeclaration newMethod = CSharpFileFactory.createMethod(method.getProject(), builder);
+
+		if(newVisibility != null)
+		{
+			DotNetModifierList modifierList = method.getModifierList();
+			assert modifierList != null;
+
+			PsiElement modifier = null;
+			for(CSharpModifier accessModifier : CSharpMethodDescriptor.ourAccessModifiers)
+			{
+				PsiElement modifierElement = modifierList.getModifierElement(accessModifier);
+				if(modifierElement != null)
+				{
+					modifier = modifierElement;
+					break;
+				}
+			}
+
+			if(modifier != null)
+			{
+				PsiElement modifierElement = newMethod.getModifierList().getModifierElement(newVisibility);
+				modifier.replace(modifierElement);
+			}
 		}
 		return true;
 	}

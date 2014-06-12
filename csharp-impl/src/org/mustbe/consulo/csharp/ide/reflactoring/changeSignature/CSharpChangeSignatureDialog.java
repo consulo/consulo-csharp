@@ -115,7 +115,16 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 			}
 		}
 
-		return new CSharpChangeInfo(myMethodDeclaration, newName, newReturnType);
+		CSharpModifier newVisibility = null;
+		if(myMethod.canChangeVisibility())
+		{
+			CSharpModifier visibility = getVisibility();
+			if(myMethod.getVisibility() != visibility)
+			{
+				newVisibility = visibility;
+			}
+		}
+		return new CSharpChangeInfo(myMethodDeclaration, newName, newReturnType, newVisibility);
 	}
 
 	@Override
