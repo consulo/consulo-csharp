@@ -20,13 +20,17 @@ import gnu.trove.THashSet;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaParameterImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -75,6 +79,18 @@ public class CS0128 extends CompilerCheck<CSharpBlockStatementImpl>
 			}
 
 			@Override
+			public void visitForeachStatement(CSharpForeachStatementImpl statement)
+			{
+				visitAndRollback(statement);
+			}
+
+			@Override
+			public void visitForStatement(CSharpForStatementImpl statement)
+			{
+				visitAndRollback(statement);
+			}
+
+			@Override
 			public void visitParameter(DotNetParameter parameter)
 			{
 				String name = parameter.getName();
@@ -94,6 +110,16 @@ public class CS0128 extends CompilerCheck<CSharpBlockStatementImpl>
 				{
 					names.add(name);
 				}
+			}
+
+			private void visitAndRollback(PsiElement e)
+			{
+				Set<String> oldSet = new HashSet<String>(names);
+
+				visitElement(e);
+
+				names.clear();
+				names.addAll(oldSet);
 			}
 		});
 		return results;
