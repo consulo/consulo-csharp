@@ -23,15 +23,8 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.reflactoring.CSharpRefactoringUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpEventUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
-import org.mustbe.consulo.dotnet.psi.DotNetEventDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
-import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.LocalSearchScope;
@@ -90,69 +83,7 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 
 		int i = ArrayUtil.indexOf(parameters, this);
 
-		DotNetTypeRef typeRef = resolveTypeForParameter(lambdaExpression, i);
-		if(typeRef == null)
-		{
-			typeRef = DotNetTypeRef.UNKNOWN_TYPE;
-		}
-		return typeRef;
-	}
-
-	@Nullable
-	private static DotNetTypeRef resolveTypeForParameter(CSharpLambdaExpressionImpl lambdaExpression, int parameterIndex)
-	{
-		PsiElement parent = lambdaExpression.getParent();
-		if(parent instanceof DotNetVariable)
-		{
-			DotNetVariable variable = (DotNetVariable) parent;
-			if(variable.getInitializer() != lambdaExpression)
-			{
-				return DotNetTypeRef.UNKNOWN_TYPE;
-			}
-			return fromVariable(variable, parameterIndex);
-		}
-		else if(parent instanceof CSharpMethodCallParameterListImpl)
-		{
-			CSharpMethodCallExpressionImpl methodCallExpression = (CSharpMethodCallExpressionImpl) parent.getParent();
-			DotNetExpression callExpression = methodCallExpression.getCallExpression();
-			if(!(callExpression instanceof CSharpReferenceExpressionImpl))
-			{
-				return DotNetTypeRef.UNKNOWN_TYPE;
-			}
-			PsiElement resolve = ((CSharpReferenceExpressionImpl) callExpression).resolve();
-			if(!(resolve instanceof DotNetLikeMethodDeclaration))
-			{
-				return DotNetTypeRef.UNKNOWN_TYPE;
-			}
-			DotNetExpression[] parameterExpressions = methodCallExpression.getParameterExpressions();
-			int index = ArrayUtil.indexOf(parameterExpressions, lambdaExpression);
-			if(index == -1)
-			{
-				return DotNetTypeRef.UNKNOWN_TYPE;
-			}
-
-			return fromVariable(((DotNetLikeMethodDeclaration) resolve).getParameters()[index], parameterIndex);
-		}
-
-		DotNetEventDeclaration eventDeclaration = CSharpEventUtil.resolveEvent(parent);
-		if(eventDeclaration != null)
-		{
-			return fromVariable(eventDeclaration, parameterIndex);
-		}
-
-		return DotNetTypeRef.UNKNOWN_TYPE;
-	}
-
-	@Nullable
-	private static DotNetTypeRef fromVariable(DotNetVariable variable, int parameterIndex)
-	{
-		DotNetTypeRef leftTypeRef = variable.toTypeRef(false);
-		if(!(leftTypeRef instanceof CSharpLambdaTypeRef))
-		{
-			return DotNetTypeRef.UNKNOWN_TYPE;
-		}
-		DotNetTypeRef[] leftTypeParameters = ((CSharpLambdaTypeRef) leftTypeRef).getParameterTypes();
-		return ArrayUtil2.safeGet(leftTypeParameters, parameterIndex);
+		return CSharpLambdaExpressionImplUtil.resolveTypeForParameter(lambdaExpression, i);
 	}
 
 	@Override

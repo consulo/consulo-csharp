@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameterList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -33,7 +34,7 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpPseudoMethod
 {
 	public CSharpLambdaExpressionImpl(@NotNull ASTNode node)
 	{
@@ -84,6 +85,32 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements Dot
 			CSharpLambdaParameter parameter = parameters[i];
 			typeRefs[i] = parameter.toTypeRef(resolveFromParent);
 		}
-		return new CSharpLambdaTypeRef(null, typeRefs, DotNetTypeRef.AUTO_TYPE);
+		return new CSharpLambdaTypeRef(null, typeRefs, resolveFromParent ? getReturnTypeRef() : DotNetTypeRef.AUTO_TYPE);
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef[] getParameterTypeRefs()
+	{
+		CSharpLambdaParameter[] parameters = getParameters();
+		DotNetTypeRef[] typeRefs = new DotNetTypeRef[parameters.length];
+		for(int i = 0; i < parameters.length; i++)
+		{
+			CSharpLambdaParameter parameter = parameters[i];
+			typeRefs[i] = parameter.toTypeRef(false);
+		}
+		return typeRefs;
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef getReturnTypeRef()
+	{
+		CSharpLambdaTypeRef type = CSharpLambdaExpressionImplUtil.resolveLeftLambdaTypeRef(this);
+		if(type == null)
+		{
+			return DotNetTypeRef.UNKNOWN_TYPE;
+		}
+		return type.getReturnType();
 	}
 }

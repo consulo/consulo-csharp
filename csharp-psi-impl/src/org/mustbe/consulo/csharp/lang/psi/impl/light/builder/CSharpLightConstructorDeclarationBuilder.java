@@ -19,6 +19,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl.light.builder;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.project.Project;
 
 /**
@@ -31,6 +33,13 @@ public class CSharpLightConstructorDeclarationBuilder extends CSharpLightLikeMet
 	public CSharpLightConstructorDeclarationBuilder(Project project)
 	{
 		super(project);
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef getReturnTypeRef()
+	{
+		return CSharpNativeTypeRef.VOID;
 	}
 
 	@Override

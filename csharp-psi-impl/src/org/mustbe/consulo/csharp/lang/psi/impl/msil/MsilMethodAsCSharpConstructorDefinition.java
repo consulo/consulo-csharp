@@ -20,8 +20,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
@@ -41,6 +43,13 @@ public class MsilMethodAsCSharpConstructorDefinition extends MsilMethodAsCSharpL
 	{
 		super(parent, methodEntry);
 		myTypeDefinition = typeDefinition;
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef getReturnTypeRef()
+	{
+		return CSharpNativeTypeRef.VOID;
 	}
 
 	@Override

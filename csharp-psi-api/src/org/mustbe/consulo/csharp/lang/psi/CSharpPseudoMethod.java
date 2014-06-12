@@ -16,14 +16,19 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
-import org.consulo.lombok.annotations.ArrayFactoryFields;
-import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
+import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.dotnet.psi.DotNetElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
  * @author VISTALL
- * @since 30.11.13.
+ * @since 12.06.14
  */
-@ArrayFactoryFields
-public interface CSharpMethodDeclaration extends DotNetMethodDeclaration, CSharpGenericConstraintOwner, CSharpPseudoMethod
+public interface CSharpPseudoMethod extends DotNetElement
 {
+	@NotNull
+	DotNetTypeRef[] getParameterTypeRefs();
+
+	@NotNull
+	DotNetTypeRef getReturnTypeRef();
 }

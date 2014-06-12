@@ -22,6 +22,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
  * @author VISTALL
  * @since 09.01.14
  */
-public interface CSharpConstructorDeclaration extends DotNetConstructorDeclaration
+public interface CSharpConstructorDeclaration extends DotNetConstructorDeclaration, CSharpPseudoMethod
 {
 }
