@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpSwitchStatementImpl;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
@@ -39,17 +40,50 @@ import com.intellij.util.ProcessingContext;
  * @author VISTALL
  * @since 12.06.14
  */
-public class CSharpStatementCompletionContributor extends CompletionContributor
+public class CSharpStatementCompletionContributor extends CompletionContributor implements CSharpTokens
 {
-	private static final TokenSet ourElseStatementKeywords = TokenSet.create(CSharpTokens.NEW_KEYWORD, CSharpTokens.TRY_KEYWORD,
-			CSharpTokens.ELSE_KEYWORD);
+	private static final TokenSet ourElseStatementKeywords = TokenSet.create(NEW_KEYWORD, TRY_KEYWORD, ELSE_KEYWORD);
 
-	private static final TokenSet ourParStatementKeywords = TokenSet.create(CSharpTokenSets.IF_KEYWORD, CSharpTokens.FOR_KEYWORD,
-			CSharpTokens.FOREACH_KEYWORD, CSharpTokens.FOREACH_KEYWORD, CSharpTokens.FIXED_KEYWORD, CSharpTokens.UNCHECKED_KEYWORD,
-			CSharpTokens.CHECKED_KEYWORD, CSharpTokens.SWITCH_KEYWORD, CSharpTokens.USING_KEYWORD);
+	private static final TokenSet ourParStatementKeywords = TokenSet.create(CSharpTokenSets.IF_KEYWORD, FOR_KEYWORD, FOREACH_KEYWORD,
+			FOREACH_KEYWORD, FIXED_KEYWORD, UNCHECKED_KEYWORD, CHECKED_KEYWORD, SWITCH_KEYWORD, USING_KEYWORD, WHILE_KEYWORD, DO_KEYWORD);
+
+	private static final TokenSet ourCaseAndDefault = TokenSet.create(CSharpTokens.CASE_KEYWORD, CSharpTokens.DEFAULT_KEYWORD);
 
 	public CSharpStatementCompletionContributor()
 	{
+		extend(CompletionType.BASIC, StandardPatterns.psiElement().withSuperParent(4, CSharpSwitchStatementImpl.class),
+				new CompletionProvider<CompletionParameters>()
+
+		{
+			@Override
+			protected void addCompletions(
+					@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			{
+				CSharpCompletionUtil.tokenSetToLookup(result, ourCaseAndDefault, new NotNullPairFunction<LookupElementBuilder, IElementType,
+						LookupElementBuilder>()
+				{
+					@NotNull
+					@Override
+					public LookupElementBuilder fun(LookupElementBuilder t, final IElementType v)
+					{
+						t = t.withInsertHandler(new InsertHandler<LookupElement>()
+						{
+							@Override
+							public void handleInsert(InsertionContext insertionContext, LookupElement item)
+							{
+								int offset = insertionContext.getEditor().getCaretModel().getOffset();
+								insertionContext.getDocument().insertString(offset, " :");
+
+								insertionContext.getEditor().getCaretModel().moveToOffset(offset + 1);
+							}
+						});
+
+						return t;
+					}
+				}, null);
+			}
+		});
+
 		extend(CompletionType.BASIC, StandardPatterns.psiElement().withSuperParent(2, CSharpExpressionStatementImpl.class),
 				new CompletionProvider<CompletionParameters>()
 		{
@@ -64,7 +98,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor
 				{
 					@NotNull
 					@Override
-					public LookupElementBuilder fun(LookupElementBuilder t, IElementType v)
+					public LookupElementBuilder fun(LookupElementBuilder t, final IElementType v)
 					{
 						t = t.withInsertHandler(new InsertHandler<LookupElement>()
 						{
@@ -72,7 +106,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor
 							public void handleInsert(InsertionContext insertionContext, LookupElement item)
 							{
 								int offset = insertionContext.getEditor().getCaretModel().getOffset();
-								insertionContext.getDocument().insertString(offset, "()");
+								insertionContext.getDocument().insertString(offset, v == DO_KEYWORD ? "{}" : "()");
 
 								insertionContext.getEditor().getCaretModel().moveToOffset(offset + 1);
 							}
