@@ -20,12 +20,14 @@ import static com.intellij.patterns.StandardPatterns.or;
 import static com.intellij.patterns.StandardPatterns.psiElement;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpSwitchStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import com.intellij.codeInsight.AutoPopupController;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
@@ -41,8 +43,10 @@ import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.NotNullPairFunction;
 import com.intellij.util.ProcessingContext;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -59,11 +63,15 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 
 	private static final TokenSet ourContinueAndBreakKeywords = TokenSet.create(BREAK_KEYWORD, CONTINUE_KEYWORD, GOTO_KEYWORD);
 
+	private static final TokenSet ourReturnKeywords = TokenSet.create(RETURN_KEYWORD);
+
 	private static final ElementPattern<? extends PsiElement> ourContinueAndBreakPattern = psiElement().inside(or(psiElement().inside
 			(CSharpForeachStatementImpl.class), psiElement().inside(CSharpForStatementImpl.class)));
 
 	private static final ElementPattern<? extends PsiElement> ourGotoPattern = psiElement().inside(psiElement().inside(CSharpLabeledStatementImpl
 			.class));
+
+	private static final ElementPattern<? extends PsiElement> ourReturnPattern = psiElement().inside(psiElement().inside(CSharpPseudoMethod.class));
 
 	public CSharpStatementCompletionContributor()
 	{
@@ -89,6 +97,52 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 								int offset = insertionContext.getEditor().getCaretModel().getOffset();
 								insertionContext.getDocument().insertString(offset, ";");
 								insertionContext.getEditor().getCaretModel().moveToOffset(offset + 1);
+							}
+						});
+						return t;
+					}
+				}, null);
+			}
+		});
+
+		extend(CompletionType.BASIC, ourReturnPattern, new CompletionProvider<CompletionParameters>()
+		{
+			@Override
+			protected void addCompletions(
+					@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			{
+				val pseudoMethod = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpPseudoMethod.class);
+				assert pseudoMethod != null;
+				CSharpCompletionUtil.tokenSetToLookup(result, ourReturnKeywords, new NotNullPairFunction<LookupElementBuilder, IElementType,
+						LookupElementBuilder>()
+
+				{
+					@NotNull
+					@Override
+					public LookupElementBuilder fun(LookupElementBuilder t, IElementType v)
+					{
+						t = t.withInsertHandler(new InsertHandler<LookupElement>()
+						{
+							@Override
+							public void handleInsert(InsertionContext insertionContext, LookupElement item)
+							{
+								int offset = insertionContext.getEditor().getCaretModel().getOffset();
+								boolean isVoidReturnType = pseudoMethod.getReturnTypeRef() == CSharpNativeTypeRef.VOID;
+								if(!isVoidReturnType)
+								{
+									insertionContext.getDocument().insertString(offset, " ;");
+								}
+								else
+								{
+									insertionContext.getDocument().insertString(offset, ";");
+								}
+
+								insertionContext.getEditor().getCaretModel().moveToOffset(offset + 1);
+								Editor editor = parameters.getEditor();
+								if(!isVoidReturnType)
+								{
+									AutoPopupController.getInstance(editor.getProject()).autoPopupMemberLookup(editor, null);
+								}
 							}
 						});
 						return t;
