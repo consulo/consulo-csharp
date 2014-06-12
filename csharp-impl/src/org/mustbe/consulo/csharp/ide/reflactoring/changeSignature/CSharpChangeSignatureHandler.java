@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import com.intellij.lang.ASTNode;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -44,7 +45,8 @@ public class CSharpChangeSignatureHandler implements ChangeSignatureHandler
 	@Override
 	public PsiElement findTargetMember(PsiElement element)
 	{
-		if(element.getNode().getElementType() == CSharpTokens.IDENTIFIER && element.getParent() instanceof DotNetLikeMethodDeclaration)
+		ASTNode node = element.getNode();
+		if(node != null && node.getElementType() == CSharpTokens.IDENTIFIER && element.getParent() instanceof DotNetLikeMethodDeclaration)
 		{
 			return element.getParent();
 		}
