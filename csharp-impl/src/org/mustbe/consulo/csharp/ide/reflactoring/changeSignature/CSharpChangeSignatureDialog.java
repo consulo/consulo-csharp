@@ -18,6 +18,9 @@ package org.mustbe.consulo.csharp.ide.reflactoring.changeSignature;
 
 import java.util.Set;
 
+import javax.swing.JList;
+
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
@@ -25,14 +28,19 @@ import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiCodeFragment;
 import com.intellij.psi.PsiElement;
 import com.intellij.refactoring.BaseRefactoringProcessor;
 import com.intellij.refactoring.changeSignature.CallerChooserBase;
 import com.intellij.refactoring.changeSignature.ChangeSignatureDialogBase;
+import com.intellij.refactoring.changeSignature.ChangeSignatureProcessorBase;
 import com.intellij.refactoring.ui.ComboBoxVisibilityPanel;
 import com.intellij.refactoring.ui.VisibilityPanelBase;
+import com.intellij.ui.ListCellRendererWrapper;
 import com.intellij.ui.treeStructure.Tree;
+import com.intellij.usageView.UsageInfo;
+import com.intellij.usageView.UsageViewDescriptor;
 import com.intellij.util.Consumer;
 
 /**
@@ -42,9 +50,17 @@ import com.intellij.util.Consumer;
 public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CSharpParameterInfo, DotNetLikeMethodDeclaration, CSharpModifier,
 		CSharpMethodDescriptor, CSharpParameterTableModelItem, CSharpParameterTableModel>
 {
-	public CSharpChangeSignatureDialog(Project project, CSharpMethodDescriptor method, boolean allowDelegation, PsiElement defaultValueContext)
+	private final DotNetLikeMethodDeclaration myMethodDeclaration;
+
+	public CSharpChangeSignatureDialog(
+			Project project,
+			DotNetLikeMethodDeclaration methodDeclaration,
+			CSharpMethodDescriptor method,
+			boolean allowDelegation,
+			PsiElement defaultValueContext)
 	{
 		super(project, method, allowDelegation, defaultValueContext);
+		myMethodDeclaration = methodDeclaration;
 	}
 
 	@Override
@@ -62,7 +78,32 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	@Override
 	protected BaseRefactoringProcessor createRefactoringProcessor()
 	{
-		return null;
+		CSharpChangeInfo changeInfo = generateChangeInfo();
+
+		return new ChangeSignatureProcessorBase(getProject(), changeInfo)
+		{
+			@NotNull
+			@Override
+			protected UsageViewDescriptor createUsageViewDescriptor(UsageInfo[] usages)
+			{
+				return new ChangeSignatureViewDescriptor(myMethodDeclaration);
+			}
+		};
+	}
+
+	private CSharpChangeInfo generateChangeInfo()
+	{
+		String newName = null;
+		if(myMethod.canChangeName())
+		{
+			String methodName = getMethodName();
+			if(!Comparing.equal(methodName, myMethodDeclaration.getName()))
+			{
+				newName = methodName;
+			}
+		}
+
+		return new CSharpChangeInfo(myMethodDeclaration, newName);
 	}
 
 	@Override
@@ -95,6 +136,20 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	@Override
 	protected VisibilityPanelBase<CSharpModifier> createVisibilityControl()
 	{
-		return new ComboBoxVisibilityPanel<CSharpModifier>(CSharpMethodDescriptor.ourAccessModifiers);
+		return new ComboBoxVisibilityPanel<CSharpModifier>(CSharpMethodDescriptor.ourAccessModifiers)
+		{
+			@Override
+			protected ListCellRendererWrapper<CSharpModifier> getRenderer()
+			{
+				return new ListCellRendererWrapper<CSharpModifier>()
+				{
+					@Override
+					public void customize(JList list, CSharpModifier value, int index, boolean selected, boolean hasFocus)
+					{
+						setText(value.getPresentableText());
+					}
+				};
+			}
+		};
 	}
 }

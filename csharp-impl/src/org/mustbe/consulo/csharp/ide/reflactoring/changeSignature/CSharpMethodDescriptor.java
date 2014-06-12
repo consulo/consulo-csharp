@@ -34,7 +34,8 @@ public class CSharpMethodDescriptor implements MethodDescriptor<CSharpParameterI
 	public static CSharpModifier[] ourAccessModifiers = new CSharpModifier[]{
 			CSharpModifier.PUBLIC,
 			CSharpModifier.PRIVATE,
-			CSharpModifier.PROTECTED
+			CSharpModifier.PROTECTED,
+			CSharpModifier.INTERNAL
 	};
 
 	private List<CSharpParameterInfo> myParameters;

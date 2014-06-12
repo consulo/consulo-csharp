@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.ide.reflactoring.changeSignature;
 
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiCodeFragment;
@@ -34,15 +35,21 @@ public class CSharpParameterTableModel extends ParameterTableModelBase<CSharpPar
 
 	public CSharpParameterTableModel(Project project, PsiElement typeContext, PsiElement defaultValueContext)
 	{
-		super(typeContext, defaultValueContext, new ColumnInfo[]{new NameColumn<CSharpParameterInfo, CSharpParameterTableModelItem>(project)});
+		super(typeContext, defaultValueContext, new ColumnInfo[]{
+				new NameColumn<CSharpParameterInfo, CSharpParameterTableModelItem>(project),
+				new TypeColumn<CSharpParameterInfo, CSharpParameterTableModelItem>(project, CSharpFileType.INSTANCE),
+		});
 		myProject = project;
 	}
 
 	@Override
 	protected CSharpParameterTableModelItem createRowItem(@Nullable CSharpParameterInfo parameterInfo)
 	{
-		PsiCodeFragment fragment = CSharpFragmentFactory.createTypeFragment(myProject,
-				parameterInfo.getTypeText(), myDefaultValueContext);
+		if(parameterInfo == null)
+		{
+			parameterInfo = new CSharpParameterInfo("", getRowCount());
+		}
+		PsiCodeFragment fragment = CSharpFragmentFactory.createTypeFragment(myProject, parameterInfo.getTypeText(), myDefaultValueContext);
 
 		return new CSharpParameterTableModelItem(parameterInfo, fragment, null);
 	}

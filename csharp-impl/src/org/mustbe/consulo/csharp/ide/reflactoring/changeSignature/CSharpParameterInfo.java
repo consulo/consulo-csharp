@@ -26,16 +26,21 @@ import com.intellij.refactoring.changeSignature.ParameterInfo;
  */
 public class CSharpParameterInfo implements ParameterInfo
 {
-	private final DotNetParameter myParameter;
 	private String myName;
 	private String myTypeText;
 	private final int myIndex;
 
 	public CSharpParameterInfo(DotNetParameter parameter, int index)
 	{
-		myParameter = parameter;
 		myName = parameter.getName();
 		myTypeText = parameter.toTypeRef(false).getQualifiedText();
+		myIndex = index;
+	}
+
+	public CSharpParameterInfo(String name, int index)
+	{
+		myName = name;
+		myTypeText = "";
 		myIndex = index;
 	}
 
@@ -80,10 +85,5 @@ public class CSharpParameterInfo implements ParameterInfo
 	public void setUseAnySingleVariable(boolean b)
 	{
 
-	}
-
-	public DotNetParameter getParameter()
-	{
-		return myParameter;
 	}
 }

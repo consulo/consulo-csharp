@@ -64,8 +64,9 @@ public class CSharpChangeSignatureHandler implements ChangeSignatureHandler
 	{
 		PsiElement element = elements[0];
 
-		CSharpMethodDescriptor methodDescriptor = new CSharpMethodDescriptor((DotNetLikeMethodDeclaration) element);
-		CSharpChangeSignatureDialog dialog = new CSharpChangeSignatureDialog(project, methodDescriptor, false, element);
+		DotNetLikeMethodDeclaration method = (DotNetLikeMethodDeclaration) element;
+		CSharpMethodDescriptor methodDescriptor = new CSharpMethodDescriptor(method);
+		CSharpChangeSignatureDialog dialog = new CSharpChangeSignatureDialog(project, method, methodDescriptor, false, element);
 		dialog.show();
 	}
 

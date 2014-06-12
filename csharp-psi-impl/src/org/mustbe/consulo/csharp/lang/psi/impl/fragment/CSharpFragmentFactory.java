@@ -52,6 +52,10 @@ public class CSharpFragmentFactory
 		{
 			PsiBuilder.Marker mark = builder.mark();
 			ExpressionParsing.parse(new CSharpBuilderWrapper(builder));
+			if(!builder.eof())
+			{
+				builder.advanceLexer();
+			}
 			mark.done(elementType);
 			return builder.getTreeBuilt();
 		}
@@ -65,6 +69,10 @@ public class CSharpFragmentFactory
 		{
 			PsiBuilder.Marker mark = builder.mark();
 			SharingParsingHelpers.parseType(new CSharpBuilderWrapper(builder), SharingParsingHelpers.BracketFailPolicy.NOTHING, true);
+			if(!builder.eof())
+			{
+				builder.advanceLexer();
+			}
 			mark.done(elementType);
 			return builder.getTreeBuilt();
 		}

@@ -25,8 +25,7 @@ import com.intellij.refactoring.changeSignature.ParameterTableModelItemBase;
  */
 public class CSharpParameterTableModelItem extends ParameterTableModelItemBase<CSharpParameterInfo>
 {
-	public CSharpParameterTableModelItem(
-			CSharpParameterInfo parameter, PsiCodeFragment typeCodeFragment, PsiCodeFragment defaultValueCodeFragment)
+	public CSharpParameterTableModelItem(CSharpParameterInfo parameter, PsiCodeFragment typeCodeFragment, PsiCodeFragment defaultValueCodeFragment)
 	{
 		super(parameter, typeCodeFragment, defaultValueCodeFragment);
 	}
