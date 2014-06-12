@@ -47,7 +47,7 @@ public class CSharpParameterTableModel extends ParameterTableModelBase<CSharpPar
 	{
 		if(parameterInfo == null)
 		{
-			parameterInfo = new CSharpParameterInfo("", getRowCount());
+			parameterInfo = new CSharpParameterInfo("p" + getRowCount(), null, getRowCount());
 		}
 		PsiCodeFragment fragment = CSharpFragmentFactory.createTypeFragment(myProject, parameterInfo.getTypeText(), myDefaultValueContext);
 

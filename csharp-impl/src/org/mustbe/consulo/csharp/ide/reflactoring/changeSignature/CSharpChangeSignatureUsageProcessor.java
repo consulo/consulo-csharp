@@ -22,25 +22,27 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
-import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
+import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetType;
 import com.intellij.openapi.application.ReadActionProcessor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.refactoring.changeSignature.ChangeInfo;
 import com.intellij.refactoring.changeSignature.ChangeSignatureUsageProcessor;
+import com.intellij.refactoring.changeSignature.ParameterInfo;
 import com.intellij.refactoring.rename.ResolveSnapshotProvider;
 import com.intellij.usageView.UsageInfo;
 import com.intellij.util.CommonProcessors;
+import com.intellij.util.Function;
+import com.intellij.util.Processor;
 import com.intellij.util.containers.MultiMap;
 import lombok.val;
 
@@ -120,16 +122,6 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 			method.setName(sharpChangeInfo.getNewName());
 		}
 
-		if(sharpChangeInfo.isReturnTypeChanged())
-		{
-			String newReturnType = sharpChangeInfo.getNewReturnType();
-			CSharpFragmentFileImpl typeFragment = CSharpFragmentFactory.createTypeFragment(changeInfo.getMethod().getProject(), newReturnType,
-					changeInfo.getMethod());
-			DotNetType type = PsiTreeUtil.getChildOfType(typeFragment, DotNetType.class);
-			assert type != null;
-			method.getReturnType().replace(type);
-		}
-
 		StringBuilder builder = new StringBuilder();
 		CSharpModifier newVisibility = sharpChangeInfo.getNewVisibility();
 		if(newVisibility != null)
@@ -138,12 +130,35 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 		}
 		if(method instanceof CSharpMethodDeclaration)
 		{
-			builder.append(method.getReturnTypeRef().getQualifiedText()).append(" ");
+			if(changeInfo.isReturnTypeChanged())
+			{
+				builder.append(((CSharpChangeInfo) changeInfo).getNewReturnType()).append(" ");
+			}
+			else
+			{
+				builder.append(method.getReturnTypeRef().getQualifiedText()).append(" ");
+			}
 		}
 		builder.append(method.getName());
-		builder.append("();");
+		builder.append("(");
+
+		builder.append(StringUtil.join(sharpChangeInfo.getNewParameters(), new Function<ParameterInfo, String>()
+		{
+			@Override
+			public String fun(ParameterInfo parameterInfo)
+			{
+				return parameterInfo.getTypeText() + " " + parameterInfo.getName();
+			}
+		}, ", "));
+
+		builder.append(");");
 
 		DotNetLikeMethodDeclaration newMethod = CSharpFileFactory.createMethod(method.getProject(), builder);
+
+		if(sharpChangeInfo.isReturnTypeChanged())
+		{
+			method.getReturnType().replace(newMethod.getReturnType());
+		}
 
 		if(newVisibility != null)
 		{
@@ -165,6 +180,37 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 			{
 				PsiElement modifierElement = newMethod.getModifierList().getModifierElement(newVisibility);
 				modifier.replace(modifierElement);
+			}
+		}
+
+		if(sharpChangeInfo.isParametersChanged())
+		{
+			CSharpParameterInfo[] newParameters = sharpChangeInfo.getNewParameters();
+
+			for(final CSharpParameterInfo newParameter : newParameters)
+			{
+				DotNetParameter originalParameter = newParameter.getParameter();
+				if(originalParameter != null)
+				{
+					ReferencesSearch.search(new ReferencesSearch.SearchParameters(originalParameter, originalParameter.getUseScope(),
+							false)).forEach(new Processor<PsiReference>()
+					{
+						@Override
+						public boolean process(PsiReference reference)
+						{
+							reference.handleElementRename(newParameter.getName());
+							return true;
+						}
+					});
+
+					originalParameter.setName(newParameter.getName());
+				}
+			}
+
+			DotNetParameterList parameterList = method.getParameterList();
+			if(parameterList != null)
+			{
+				parameterList.replace(newMethod.getParameterList());
 			}
 		}
 		return true;
