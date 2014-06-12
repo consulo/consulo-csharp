@@ -14,42 +14,37 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi.impl;
+package org.mustbe.consulo.csharp.lang.psi.impl.fragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCodeFragment;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
+import com.intellij.psi.PsiCodeFragment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.impl.source.PsiFileImpl;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
  * @since 17.04.14
  */
-public class CSharpExpressionFragmentFileImpl extends PsiFileImpl implements CSharpCodeFragment
+public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFragment, PsiCodeFragment
 {
 	@Nullable
 	private final PsiElement myContext;
 
-	public CSharpExpressionFragmentFileImpl(
+	public CSharpFragmentFileImpl(
 			@NotNull IElementType elementType, IElementType contentElementType, @NotNull FileViewProvider provider, @Nullable PsiElement context)
 	{
 		super(elementType, contentElementType, provider);
 		myContext = context;
-	}
-
-	@Nullable
-	public DotNetExpression getExpression()
-	{
-		return findChildByClass(DotNetExpression.class);
 	}
 
 	@NotNull
@@ -87,5 +82,17 @@ public class CSharpExpressionFragmentFileImpl extends PsiFileImpl implements CSh
 	public PsiElement getScopeElement()
 	{
 		return myContext;
+	}
+
+	@Override
+	public void forceResolveScope(GlobalSearchScope searchScope)
+	{
+
+	}
+
+	@Override
+	public GlobalSearchScope getForcedResolveScope()
+	{
+		return null;
 	}
 }

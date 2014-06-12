@@ -17,9 +17,9 @@
 package org.mustbe.consulo.csharp.ide.reflactoring.changeSignature;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCodeFragmentFactory;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpCodeFragmentImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiCodeFragment;
 import com.intellij.psi.PsiElement;
 import com.intellij.refactoring.changeSignature.ParameterTableModelBase;
 import com.intellij.util.ui.ColumnInfo;
@@ -30,15 +30,20 @@ import com.intellij.util.ui.ColumnInfo;
  */
 public class CSharpParameterTableModel extends ParameterTableModelBase<CSharpParameterInfo, CSharpParameterTableModelItem>
 {
+	private final Project myProject;
+
 	public CSharpParameterTableModel(Project project, PsiElement typeContext, PsiElement defaultValueContext)
 	{
 		super(typeContext, defaultValueContext, new ColumnInfo[]{new NameColumn<CSharpParameterInfo, CSharpParameterTableModelItem>(project)});
+		myProject = project;
 	}
 
 	@Override
 	protected CSharpParameterTableModelItem createRowItem(@Nullable CSharpParameterInfo parameterInfo)
 	{
-		CSharpCodeFragmentImpl fragment = CSharpCodeFragmentFactory.createFragment(parameterInfo.getParameter(), parameterInfo.getTypeText());
+		PsiCodeFragment fragment = CSharpFragmentFactory.createTypeFragment(myProject,
+				parameterInfo.getTypeText(), myDefaultValueContext);
+
 		return new CSharpParameterTableModelItem(parameterInfo, fragment, null);
 	}
 }

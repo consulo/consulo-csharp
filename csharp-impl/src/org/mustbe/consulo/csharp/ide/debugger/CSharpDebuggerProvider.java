@@ -3,7 +3,7 @@ package org.mustbe.consulo.csharp.ide.debugger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
-import org.mustbe.consulo.csharp.lang.psi.CSharpExpressionFragmentFactory;
+import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import org.mustbe.consulo.dotnet.debugger.DotNetDebugContext;
 import org.mustbe.consulo.dotnet.debugger.DotNetDebuggerProvider;
 import org.mustbe.consulo.dotnet.debugger.nodes.DotNetLocalVariableMirrorNode;
@@ -13,6 +13,7 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.xdebugger.evaluation.XDebuggerEvaluator;
 import lombok.val;
 import mono.debugger.LocalVariableMirror;
@@ -37,7 +38,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 	public PsiFile createExpressionCodeFragment(
 			@NotNull Project project, @NotNull PsiElement sourcePosition, @NotNull String text, boolean isPhysical)
 	{
-		return CSharpExpressionFragmentFactory.createExpressionFragment(project, text, sourcePosition);
+		return CSharpFragmentFactory.createExpressionFragment(project, text, sourcePosition);
 	}
 
 	@Override
@@ -48,9 +49,9 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 			@Nullable PsiElement elementAt,
 			@NotNull XDebuggerEvaluator.XEvaluationCallback callback)
 	{
-		val expressionFragment = CSharpExpressionFragmentFactory.createExpressionFragment(debuggerContext.getProject(), expression, elementAt);
+		val expressionFragment = CSharpFragmentFactory.createExpressionFragment(debuggerContext.getProject(), expression, elementAt);
 
-		DotNetExpression expressionPsi = expressionFragment.getExpression();
+		DotNetExpression expressionPsi = PsiTreeUtil.getChildOfType(expressionFragment, DotNetExpression.class);
 
 		if(expressionPsi == null)
 		{

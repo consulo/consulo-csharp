@@ -19,11 +19,13 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCodeFragmentFactory;
+import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
+import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
@@ -44,7 +46,10 @@ public class CSharpTypeRefFromText extends DotNetTypeRef.Adapter
 	@LazyInstance
 	private DotNetType getType()
 	{
-		return CSharpCodeFragmentFactory.createType(myOwner, myText);
+		CSharpFragmentFileImpl typeFragment = CSharpFragmentFactory.createTypeFragment(myOwner.getProject(), myText, myOwner);
+		DotNetType dotNetType = PsiTreeUtil.getChildOfType(typeFragment, DotNetType.class);
+		assert dotNetType != null : myText;
+		return dotNetType;
 	}
 
 	@NotNull

@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpExpressionFragmentFactory;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpExpressionFragmentFileImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
+import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
@@ -34,6 +34,7 @@ import com.intellij.codeInsight.template.ExpressionContext;
 import com.intellij.codeInsight.template.Macro;
 import com.intellij.codeInsight.template.Result;
 import com.intellij.codeInsight.template.TextResult;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.SmartList;
 
 /**
@@ -102,10 +103,10 @@ public class ForeachComponentTypeMacro extends Macro
 		}
 		String text = result.toString();
 
-		CSharpExpressionFragmentFileImpl expressionFragment = CSharpExpressionFragmentFactory.createExpressionFragment(context.getProject(), text,
+		CSharpFragmentFileImpl expressionFragment = CSharpFragmentFactory.createExpressionFragment(context.getProject(), text,
 				context.getPsiElementAtStartOffset());
 
-		DotNetExpression expression = expressionFragment.getExpression();
+		DotNetExpression expression = PsiTreeUtil.getChildOfType(expressionFragment, DotNetExpression.class);
 
 		if(expression == null)
 		{

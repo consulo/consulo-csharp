@@ -20,8 +20,8 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCodeFragmentFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.project.Project;
@@ -68,7 +68,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	@Override
 	protected PsiCodeFragment createReturnTypeCodeFragment()
 	{
-		return CSharpCodeFragmentFactory.createFragment(myDefaultValueContext, calculateSignature());
+		return CSharpFragmentFactory.createTypeFragment(getProject(), calculateSignature(), myDefaultValueContext);
 	}
 
 	@Nullable
