@@ -57,7 +57,7 @@ public class ForeachVariableMacro extends VariableTypeMacroBase
 				if(psiNamedElement instanceof DotNetVariable)
 				{
 					DotNetTypeRef typeRef = CSharpResolveUtil.resolveIterableType(psiElementAtStartOffset, ((DotNetVariable) psiNamedElement)
-							.toTypeRef(false));
+							.toTypeRef(true));
 					return typeRef != DotNetTypeRef.ERROR_TYPE;
 				}
 				else
