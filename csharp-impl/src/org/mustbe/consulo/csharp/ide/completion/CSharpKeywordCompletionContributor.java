@@ -18,10 +18,8 @@ package org.mustbe.consulo.csharp.ide.completion;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
@@ -46,7 +44,6 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
-import com.intellij.util.containers.ConcurrentFactoryMap;
 import lombok.val;
 
 /**
@@ -55,23 +52,6 @@ import lombok.val;
  */
 public class CSharpKeywordCompletionContributor extends CompletionContributor
 {
-	private static Map<IElementType, String[]> ourCache = new ConcurrentFactoryMap<IElementType, String[]>()
-	{
-		@Nullable
-		@Override
-		protected String[] create(IElementType elementType)
-		{
-			if(elementType == CSharpTokens.BOOL_LITERAL)
-			{
-				return new String[]{
-						"true",
-						"false"
-				};
-			}
-			return new String[]{elementType.toString().replace("_KEYWORD", "").toLowerCase()};
-		}
-	};
-
 	public CSharpKeywordCompletionContributor()
 	{
 		extend(CompletionType.BASIC, StandardPatterns.psiElement(), new CompletionProvider<CompletionParameters>()
@@ -102,7 +82,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 					{
 						val tokeVal = TokenSet.orSet(CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START);
 
-						tokenSetToLookup(completionResultSet, tokeVal, createCondForFilterModifierOrTypeStart(parent1));
+						CSharpCompletionUtil.tokenSetToLookup(completionResultSet, tokeVal, null, createCondForFilterModifierOrTypeStart(parent1));
 					}
 				}
 			}
@@ -122,7 +102,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 
 				if(parent.getQualifier() == null)
 				{
-					tokenSetToLookup(completionResultSet, CSharpTokenSets.NATIVE_TYPES, null);
+					CSharpCompletionUtil.tokenSetToLookup(completionResultSet, CSharpTokenSets.NATIVE_TYPES, null, null);
 				}
 			}
 		});
@@ -181,24 +161,8 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 				resultSet.addElement(builder.withAutoCompletionPolicy(AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE));
 			}
 		});
-	}
 
-	private static void tokenSetToLookup(CompletionResultSet resultSet, TokenSet tokenSet, Condition<IElementType> condition)
-	{
-		for(IElementType iElementType : tokenSet.getTypes())
-		{
-			if(condition != null && !condition.value(iElementType))
-			{
-				continue;
-			}
 
-			for(String keyword : ourCache.get(iElementType))
-			{
-				LookupElementBuilder builder = LookupElementBuilder.create(keyword);
-				builder = builder.bold();
-				resultSet.addElement(builder);
-			}
-		}
 	}
 
 	private static Condition<IElementType> createCondForFilterModifierOrTypeStart(PsiElement parent1)
