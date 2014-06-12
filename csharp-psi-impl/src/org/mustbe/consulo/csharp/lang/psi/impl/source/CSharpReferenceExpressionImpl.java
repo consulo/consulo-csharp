@@ -34,10 +34,10 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScope
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromNamespace;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromNamespace;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromQualifiedElement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromQualifiedName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -1006,7 +1006,12 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@Override
 	public Object[] getVariants()
 	{
-		ResolveResult[] psiElements = collectResults(ResolveToKind.ANY_MEMBER, new Condition<PsiNamedElement>()
+		ResolveToKind kind = kind();
+		if(kind != ResolveToKind.LABEL)
+		{
+			kind = ResolveToKind.ANY_MEMBER;
+		}
+		Condition<PsiNamedElement> condition = kind == ResolveToKind.LABEL ? Conditions.<PsiNamedElement>alwaysTrue() : new Condition<PsiNamedElement>()
 		{
 			@Override
 			public boolean value(PsiNamedElement e)
@@ -1042,7 +1047,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				}
 				return true;
 			}
-		}, WeightProcessor.MAXIMUM, this, true);
+		};
+		ResolveResult[] psiElements = collectResults(kind, condition, WeightProcessor.MAXIMUM, this, true);
 		return CSharpLookupElementBuilder.getInstance(getProject()).buildToLookupElements(this, psiElements);
 	}
 
