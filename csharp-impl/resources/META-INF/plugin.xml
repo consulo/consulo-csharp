@@ -174,8 +174,7 @@
 		<lang.refactoringSupport language="C#" implementationClass="org.mustbe.consulo.csharp.ide.reflactoring.CSharpRefactoringSupportProvider"/>
 		<refactoring.changeSignatureUsageProcessor
 				implementation="org.mustbe.consulo.csharp.ide.reflactoring.changeSignature.CSharpChangeSignatureUsageProcessor" />
-		<refactoring.inlineHandler language="C#"
-								   implementationClass="org.mustbe.consulo.csharp.ide.reflactoring.inlineAction.CSharpInlineHandler" />
+		<inlineActionHandler implementation="org.mustbe.consulo.csharp.ide.reflactoring.inlineAction.CSharpLocalVariableInlineActionHandler" />
 		<lang.parserDefinition language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpParserDefinition"/>
 		<lang.parserDefinition language="C#Macro" implementationClass="org.mustbe.consulo.csharp.lang.CSharpMacroParserDefinition"/>
 		<lang.fileViewProviderFactory language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpFileViewProviderFactory"/>
