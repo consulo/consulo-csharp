@@ -20,15 +20,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightLocalVariableBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpXXXAccessorStub;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
@@ -40,7 +43,7 @@ import com.intellij.psi.util.PsiTreeUtil;
  * @author VISTALL
  * @since 04.12.13.
  */
-public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccessorStub> implements DotNetXXXAccessor
+public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccessorStub> implements DotNetXXXAccessor, CSharpPseudoMethod
 {
 	public CSharpXXXAccessorImpl(@NotNull ASTNode node)
 	{
@@ -50,6 +53,29 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 	public CSharpXXXAccessorImpl(@NotNull CSharpXXXAccessorStub stub)
 	{
 		super(stub, CSharpStubElements.XXX_ACCESSOR);
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef[] getParameterTypeRefs()
+	{
+		return DotNetTypeRef.EMPTY_ARRAY;
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef getReturnTypeRef()
+	{
+		if(getAccessorType() == CSharpSoftTokens.GET_KEYWORD)
+		{
+			CSharpPropertyDeclaration propertyDeclaration = PsiTreeUtil.getParentOfType(this, CSharpPropertyDeclaration.class);
+			if(propertyDeclaration == null)
+			{
+				return CSharpNativeTypeRef.VOID;
+			}
+			return propertyDeclaration.toTypeRef(false);
+		}
+		return CSharpNativeTypeRef.VOID;
 	}
 
 	@Override
