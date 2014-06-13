@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.lang.ASTNode;
@@ -36,5 +37,17 @@ public class CSharpTryStatementImpl extends CSharpElementImpl implements DotNetS
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
 		visitor.visitTryStatement(this);
+	}
+
+	@NotNull
+	public CSharpCatchStatementImpl[] getCatchStatements()
+	{
+		return findChildrenByClass(CSharpCatchStatementImpl.class);
+	}
+
+	@Nullable
+	public CSharpFinallyStatementImpl getFinallyStatement()
+	{
+		return findChildByClass(CSharpFinallyStatementImpl.class);
 	}
 }
