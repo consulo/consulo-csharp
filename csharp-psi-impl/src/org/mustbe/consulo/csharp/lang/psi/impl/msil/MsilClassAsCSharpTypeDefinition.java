@@ -145,12 +145,16 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 					}
 					if(MsilHelper.CONSTRUCTOR_NAME.equals(name))
 					{
-						list.add(new MsilMethodAsCSharpConstructorDefinition(parentThis, MsilClassAsCSharpTypeDefinition.this,
+						list.add(new MsilMethodAsCSharpConstructorDeclaration(parentThis, MsilClassAsCSharpTypeDefinition.this,
 								(MsilMethodEntry) member));
+					}
+					else if(Comparing.equal(name, "op_Implicit") || Comparing.equal(name, "op_Explicit"))
+					{
+						list.add(new MsilMethodAsCSharpConversionMethodDeclaration(parentThis, (MsilMethodEntry) member));
 					}
 					else
 					{
-						list.add(new MsilMethodAsCSharpMethodDefinition(parentThis, null, (MsilMethodEntry) member));
+						list.add(new MsilMethodAsCSharpMethodDeclaration(parentThis, null, (MsilMethodEntry) member));
 					}
 				}
 			}

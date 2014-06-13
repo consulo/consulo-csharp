@@ -16,7 +16,11 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
  * @author VISTALL
@@ -28,4 +32,10 @@ public interface CSharpConversionMethodDeclaration extends DotNetLikeMethodDecla
 	 * @return true if type equal implicit - if not method type is explicit
 	 */
 	boolean isImplicit();
+
+	@NotNull
+	DotNetTypeRef getConversionTypeRef();
+
+	@Nullable
+	DotNetType getConversionType();
 }

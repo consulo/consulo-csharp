@@ -39,14 +39,15 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 28.11.13.
  */
-public abstract class CSharpLikeMethodDeclarationImpl extends CSharpStubMemberImpl<CSharpMethodStub> implements DotNetLikeMethodDeclaration
+public abstract class CSharpLikeMethodDeclarationImpl<T extends CSharpMethodStub> extends CSharpStubMemberImpl<T> implements
+		DotNetLikeMethodDeclaration
 {
 	public CSharpLikeMethodDeclarationImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpLikeMethodDeclarationImpl(@NotNull CSharpMethodStub stub, @NotNull IStubElementType<? extends CSharpMethodStub, ?> nodeType)
+	public CSharpLikeMethodDeclarationImpl(@NotNull T stub, @NotNull IStubElementType<? extends T, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -92,7 +93,7 @@ public abstract class CSharpLikeMethodDeclarationImpl extends CSharpStubMemberIm
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
-		CSharpMethodStub stub = getStub();
+		T stub = getStub();
 		if(stub != null)
 		{
 			return CSharpStubTypeInfoUtil.toTypeRef(stub.getReturnType(), this);

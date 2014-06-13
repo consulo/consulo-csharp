@@ -18,38 +18,32 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
+import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 
 /**
  * @author VISTALL
- * @since 23.05.14
+ * @since 13.06.14
  */
-public class MsilMethodAsCSharpConstructorDefinition extends MsilMethodAsCSharpLikeMethodDeclaration implements CSharpConstructorDeclaration
+public class MsilMethodAsCSharpConversionMethodDeclaration extends MsilMethodAsCSharpLikeMethodDeclaration implements
+		CSharpConversionMethodDeclaration
 {
-	private final MsilClassAsCSharpTypeDefinition myTypeDefinition;
-
-	public MsilMethodAsCSharpConstructorDefinition(
-			PsiElement parent,
-			MsilClassAsCSharpTypeDefinition typeDefinition,
-			MsilMethodEntry methodEntry)
+	public MsilMethodAsCSharpConversionMethodDeclaration(PsiElement parent, MsilMethodEntry methodEntry)
 	{
 		super(parent, methodEntry);
-		myTypeDefinition = typeDefinition;
 	}
 
-	@NotNull
 	@Override
-	public DotNetTypeRef getReturnTypeRef()
+	public String getName()
 	{
-		return CSharpNativeTypeRef.VOID;
+		return super.getName();
 	}
 
 	@Override
@@ -57,7 +51,7 @@ public class MsilMethodAsCSharpConstructorDefinition extends MsilMethodAsCSharpL
 	{
 		if(visitor instanceof CSharpElementVisitor)
 		{
-			((CSharpElementVisitor) visitor).visitConstructorDeclaration(this);
+			((CSharpElementVisitor) visitor).visitConversionMethodDeclaration(this);
 		}
 		else
 		{
@@ -65,35 +59,48 @@ public class MsilMethodAsCSharpConstructorDefinition extends MsilMethodAsCSharpL
 		}
 	}
 
-	@Nullable
+	@NotNull
 	@Override
-	public DotNetGenericParameterList getGenericParameterList()
+	public DotNetTypeRef getReturnTypeRef()
 	{
-		return null;
+		if(isImplicit())
+		{
+			return CSharpNativeTypeRef.IMPLICIT;
+		}
+		else
+		{
+			return CSharpNativeTypeRef.EXPLICIT;
+		}
+	}
+
+	@Override
+	public boolean isImplicit()
+	{
+		if(Comparing.equal(myMsilElement.getName(), "op_Explicit"))
+		{
+			return true;
+		}
+		else if(Comparing.equal(myMsilElement.getName(), "op_Implicit"))
+		{
+			return false;
+		}
+		else
+		{
+			throw new IllegalArgumentException(myMsilElement.getName());
+		}
 	}
 
 	@NotNull
 	@Override
-	public DotNetGenericParameter[] getGenericParameters()
+	public DotNetTypeRef getConversionTypeRef()
 	{
-		return DotNetGenericParameter.EMPTY_ARRAY;
+		return MsilToCSharpUtil.extractToCSharp(myMsilElement.getReturnTypeRef(), myMsilElement);
 	}
 
+	@Nullable
 	@Override
-	public int getGenericParametersCount()
+	public DotNetType getConversionType()
 	{
-		return 0;
-	}
-
-	@Override
-	public String getName()
-	{
-		return myTypeDefinition.getName();
-	}
-
-	@Override
-	public boolean isDeConstructor()
-	{
-		return false;
+		return null;
 	}
 }

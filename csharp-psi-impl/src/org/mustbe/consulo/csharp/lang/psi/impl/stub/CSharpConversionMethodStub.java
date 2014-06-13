@@ -28,10 +28,19 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpConversionMethodStub extends CSharpMethodStub
 {
+	private final CSharpStubTypeInfo myConversionTypeInfo;
+
 	public CSharpConversionMethodStub(StubElement parent, @Nullable StringRef name, @Nullable StringRef qname, int modifierMask,
 			int otherModifierMask,
-			CSharpStubTypeInfo typeInfo)
+			CSharpStubTypeInfo typeInfo,
+			CSharpStubTypeInfo conversionTypeInfo)
 	{
 		super(parent, CSharpStubElements.CONVERSION_METHOD_DECLARATION, name, qname, modifierMask, otherModifierMask, typeInfo, -1);
+		myConversionTypeInfo = conversionTypeInfo;
+	}
+
+	public CSharpStubTypeInfo getConversionTypeInfo()
+	{
+		return myConversionTypeInfo;
 	}
 }

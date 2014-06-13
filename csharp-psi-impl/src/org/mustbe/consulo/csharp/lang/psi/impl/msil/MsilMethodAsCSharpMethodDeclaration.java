@@ -40,7 +40,7 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 23.05.14
  */
-public class MsilMethodAsCSharpMethodDefinition extends MsilMethodAsCSharpLikeMethodDeclaration implements CSharpMethodDeclaration
+public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeMethodDeclaration implements CSharpMethodDeclaration
 {
 	private static Map<String, Pair<String, IElementType>> ourOperatorNames = new HashMap<String, Pair<String, IElementType>>()
 	{
@@ -67,14 +67,12 @@ public class MsilMethodAsCSharpMethodDefinition extends MsilMethodAsCSharpLikeMe
 			put("op_LogicalNot", new Pair<String, IElementType>("!", CSharpTokens.EXCL));
 			put("op_Increment", new Pair<String, IElementType>("++", CSharpTokens.PLUSPLUS));
 			put("op_Decrement", new Pair<String, IElementType>("--", CSharpTokens.MINUSMINUS));
-			//put("op_Explicit", "implicit");
-			//put("op_Implicit", "explicit");
 		}
 	};
 
 	private final MsilClassEntry myDelegate;
 
-	public MsilMethodAsCSharpMethodDefinition(PsiElement parent, @Nullable MsilClassEntry msilClassEntry, MsilMethodEntry methodEntry)
+	public MsilMethodAsCSharpMethodDeclaration(PsiElement parent, @Nullable MsilClassEntry msilClassEntry, MsilMethodEntry methodEntry)
 	{
 		super(parent, getAdditionModifiers(methodEntry), methodEntry);
 		myDelegate = msilClassEntry;

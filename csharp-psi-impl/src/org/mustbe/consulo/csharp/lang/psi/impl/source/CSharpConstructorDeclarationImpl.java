@@ -33,7 +33,7 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpConstructorDeclarationImpl extends CSharpLikeMethodDeclarationImpl implements CSharpConstructorDeclaration
+public class CSharpConstructorDeclarationImpl extends CSharpLikeMethodDeclarationImpl<CSharpMethodStub> implements CSharpConstructorDeclaration
 {
 	public CSharpConstructorDeclarationImpl(@NotNull ASTNode node)
 	{

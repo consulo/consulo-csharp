@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -96,6 +97,44 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		builder.append(" ");
 		builder.append(declaration.getName());
 		myBlocks.add(new StubBlock(builder, null, StubBlock.BRACES));
+	}
+
+	@Override
+	public void visitConversionMethodDeclaration(CSharpConversionMethodDeclaration declaration)
+	{
+		StringBuilder builder = new StringBuilder();
+
+		processModifierList(builder, declaration);
+
+		appendTypeRef(builder, declaration.getReturnTypeRef());
+		builder.append(" ");
+		appendTypeRef(builder, declaration.getConversionTypeRef());
+		builder.append("(");
+		StubBlockUtil.join(builder, declaration.getParameters(), new PairFunction<StringBuilder, DotNetParameter, Void>()
+		{
+			@Nullable
+			@Override
+			public Void fun(StringBuilder t, DotNetParameter v)
+			{
+				appendTypeRef(t, v.toTypeRef(false));
+				t.append(" ");
+				t.append(v.getName());
+				return null;
+			}
+		}, ", ");
+		builder.append(")");
+
+		boolean canHaveBody = !declaration.hasModifier(CSharpModifier.ABSTRACT);
+
+		if(canHaveBody)
+		{
+			builder.append(" { /* compiled code */ }\n");
+		}
+		else
+		{
+			builder.append(";\n");
+		}
+		myBlocks.add(new LineStubBlock(builder));
 	}
 
 	@Override

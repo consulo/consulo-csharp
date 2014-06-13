@@ -139,7 +139,7 @@ public class MsilToCSharpUtil
 
 				assert msilMethodEntry != null : ((MsilClassEntry) element).getPresentableQName();
 
-				cache = new MsilMethodAsCSharpMethodDefinition(null, (MsilClassEntry) element, msilMethodEntry);
+				cache = new MsilMethodAsCSharpMethodDeclaration(null, (MsilClassEntry) element, msilMethodEntry);
 			}
 			else
 			{

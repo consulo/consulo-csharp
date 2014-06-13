@@ -407,7 +407,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(cSharpEnumConstant);
 	}
 
-	public void visitConversionMethodDeclaration(CSharpConversionMethodDeclarationImpl element)
+	public void visitConversionMethodDeclaration(CSharpConversionMethodDeclaration element)
 	{
 		visitElement(element);
 	}

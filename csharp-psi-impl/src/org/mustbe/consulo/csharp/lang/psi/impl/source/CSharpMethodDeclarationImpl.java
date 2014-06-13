@@ -36,7 +36,7 @@ import com.intellij.util.BitUtil;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl implements CSharpMethodDeclaration
+public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl<CSharpMethodStub> implements CSharpMethodDeclaration
 {
 	public CSharpMethodDeclarationImpl(@NotNull ASTNode node)
 	{
