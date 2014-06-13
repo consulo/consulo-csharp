@@ -108,6 +108,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 		appendTypeRef(builder, declaration.getReturnTypeRef());
 		builder.append(" ");
+		builder.append("operator ");
 		appendTypeRef(builder, declaration.getConversionTypeRef());
 		builder.append("(");
 		StubBlockUtil.join(builder, declaration.getParameters(), new PairFunction<StringBuilder, DotNetParameter, Void>()
