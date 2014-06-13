@@ -20,10 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodStub;
-import org.mustbe.consulo.dotnet.psi.DotNetNativeType;
-import org.mustbe.consulo.dotnet.psi.DotNetType;
 import com.intellij.lang.ASTNode;
 
 /**
@@ -51,9 +49,7 @@ public class CSharpConversionMethodDeclarationImpl extends CSharpLikeMethodDecla
 	@Override
 	public boolean isImplicit()
 	{
-		DotNetType returnType = getReturnType();
-		assert returnType instanceof DotNetNativeType;
-		return ((DotNetNativeType) returnType).getTypeElement().getNode().getElementType() == CSharpTokens.IMPLICIT_KEYWORD;
+		return getReturnTypeRef() == CSharpNativeTypeRef.IMPLICIT;
 	}
 
 	@Override
