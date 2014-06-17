@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
@@ -43,6 +44,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
@@ -105,36 +107,24 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		StringBuilder builder = new StringBuilder();
 
 		processModifierList(builder, declaration);
-
 		appendTypeRef(builder, declaration.getReturnTypeRef());
 		builder.append(" ");
 		builder.append("operator ");
 		appendTypeRef(builder, declaration.getConversionTypeRef());
-		builder.append("(");
-		StubBlockUtil.join(builder, declaration.getParameters(), new PairFunction<StringBuilder, DotNetParameter, Void>()
-		{
-			@Nullable
-			@Override
-			public Void fun(StringBuilder t, DotNetParameter v)
-			{
-				appendTypeRef(t, v.toTypeRef(false));
-				t.append(" ");
-				t.append(v.getName());
-				return null;
-			}
-		}, ", ");
-		builder.append(")");
+		processParameterList(declaration, builder);
+		builder.append(" { /* compiled code */ }\n");
+		myBlocks.add(new LineStubBlock(builder));
+	}
 
-		boolean canHaveBody = !declaration.hasModifier(CSharpModifier.ABSTRACT);
+	@Override
+	public void visitConstructorDeclaration(CSharpConstructorDeclaration declaration)
+	{
+		StringBuilder builder = new StringBuilder();
 
-		if(canHaveBody)
-		{
-			builder.append(" { /* compiled code */ }\n");
-		}
-		else
-		{
-			builder.append(";\n");
-		}
+		processModifierList(builder, declaration);
+		builder.append(declaration.getName());
+		processParameterList(declaration, builder);
+		builder.append(" { /* compiled code */ }\n");
 		myBlocks.add(new LineStubBlock(builder));
 	}
 
@@ -157,20 +147,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		}
 		builder.append(declaration.getName());
 		processGenericParameterList(builder, declaration);
-		builder.append("(");
-		StubBlockUtil.join(builder, declaration.getParameters(), new PairFunction<StringBuilder, DotNetParameter, Void>()
-		{
-			@Nullable
-			@Override
-			public Void fun(StringBuilder t, DotNetParameter v)
-			{
-				appendTypeRef(t, v.toTypeRef(false));
-				t.append(" ");
-				t.append(v.getName());
-				return null;
-			}
-		}, ", ");
-		builder.append(")");
+		processParameterList(declaration, builder);
 
 		boolean canHaveBody = !declaration.hasModifier(CSharpModifier.ABSTRACT);
 
@@ -268,6 +245,24 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			}
 		}, ", ");
 		builder.append(">");
+	}
+
+	private static void processParameterList(DotNetParameterListOwner declaration, StringBuilder builder)
+	{
+		builder.append("(");
+		StubBlockUtil.join(builder, declaration.getParameters(), new PairFunction<StringBuilder, DotNetParameter, Void>()
+		{
+			@Nullable
+			@Override
+			public Void fun(StringBuilder t, DotNetParameter v)
+			{
+				appendTypeRef(t, v.toTypeRef(false));
+				t.append(" ");
+				t.append(v.getName());
+				return null;
+			}
+		}, ", ");
+		builder.append(")");
 	}
 
 	private static void processModifierList(StringBuilder builder, DotNetModifierListOwner owner)
