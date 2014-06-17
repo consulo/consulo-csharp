@@ -24,7 +24,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetExpression;
  * @author VISTALL
  * @since 12.05.14
  */
-public interface CSharpMethodCallParameterList extends DotNetElement
+public interface CSharpCallArgumentList extends DotNetElement
 {
 	@NotNull
 	DotNetExpression[] getExpressions();

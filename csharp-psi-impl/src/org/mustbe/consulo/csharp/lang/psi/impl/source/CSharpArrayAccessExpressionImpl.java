@@ -22,9 +22,9 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodCallParameterList;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodCallParameterListOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -43,8 +43,7 @@ import com.intellij.util.containers.ContainerUtil;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implements DotNetExpression, MultiRangeReference,
-		CSharpMethodCallParameterListOwner, PsiQualifiedReference
+public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implements DotNetExpression, MultiRangeReference, CSharpCallArgumentListOwner, PsiQualifiedReference
 {
 	public CSharpArrayAccessExpressionImpl(@NotNull ASTNode node)
 	{
@@ -194,7 +193,7 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 
 	@Nullable
 	@Override
-	public CSharpMethodCallParameterList getParameterList()
+	public CSharpCallArgumentList getParameterList()
 	{
 		return null;
 	}

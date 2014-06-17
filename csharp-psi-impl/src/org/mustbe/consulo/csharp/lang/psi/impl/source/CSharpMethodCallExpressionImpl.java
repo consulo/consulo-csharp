@@ -18,9 +18,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodCallParameterList;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodCallParameterListOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -33,8 +33,7 @@ import com.intellij.psi.ResolveResult;
  * @author VISTALL
  * @since 16.12.13.
  */
-public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpExpressionWithParameters,
-		CSharpMethodCallParameterListOwner
+public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpExpressionWithParameters, CSharpCallArgumentListOwner
 {
 	public CSharpMethodCallExpressionImpl(@NotNull ASTNode node)
 	{
@@ -49,16 +48,16 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 
 	@Override
 	@Nullable
-	public CSharpMethodCallParameterList getParameterList()
+	public CSharpCallArgumentList getParameterList()
 	{
-		return findChildByClass(CSharpMethodCallParameterList.class);
+		return findChildByClass(CSharpCallArgumentList.class);
 	}
 
 	@Override
 	@NotNull
 	public DotNetExpression[] getParameterExpressions()
 	{
-		CSharpMethodCallParameterList parameterList = getParameterList();
+		CSharpCallArgumentList parameterList = getParameterList();
 		return parameterList == null ? DotNetExpression.EMPTY_ARRAY : parameterList.getExpressions();
 	}
 

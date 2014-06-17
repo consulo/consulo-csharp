@@ -26,12 +26,12 @@ import com.intellij.psi.ResolveResult;
  * @author VISTALL
  * @since 12.05.14
  */
-public interface CSharpMethodCallParameterListOwner extends DotNetElement, CSharpExpressionWithParameters
+public interface CSharpCallArgumentListOwner extends DotNetElement, CSharpExpressionWithParameters
 {
 	boolean canResolve();
 
 	@Nullable
-	CSharpMethodCallParameterList getParameterList();
+	CSharpCallArgumentList getParameterList();
 
 	@Nullable
 	PsiElement resolveToCallable();

@@ -24,7 +24,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetType;
  * @author VISTALL
  * @since 29.12.13.
  */
-public interface CSharpNewExpression extends DotNetExpression, CSharpMethodCallParameterListOwner
+public interface CSharpNewExpression extends DotNetExpression, CSharpCallArgumentListOwner
 {
 	@Nullable
 	DotNetType getNewType();

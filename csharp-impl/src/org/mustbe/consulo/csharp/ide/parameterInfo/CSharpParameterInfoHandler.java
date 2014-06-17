@@ -18,9 +18,9 @@ package org.mustbe.consulo.csharp.ide.parameterInfo;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodCallParameterListOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.UsefulPsiTreeUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallParameterListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -69,7 +69,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	public PsiElement findElementForParameterInfo(CreateParameterInfoContext context)
 	{
 		final PsiElement at = context.getFile().findElementAt(context.getEditor().getCaretModel().getOffset());
-		return PsiTreeUtil.getParentOfType(at, CSharpMethodCallParameterListOwner.class);
+		return PsiTreeUtil.getParentOfType(at, CSharpCallArgumentListOwner.class);
 	}
 
 	@Override
@@ -88,9 +88,9 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	{
 		Object callable = null;
 		int count = 0;
-		if(element instanceof CSharpMethodCallParameterListOwner)
+		if(element instanceof CSharpCallArgumentListOwner)
 		{
-			ResolveResult[] resolveResults = ((CSharpMethodCallParameterListOwner) element).multiResolve(false);
+			ResolveResult[] resolveResults = ((CSharpCallArgumentListOwner) element).multiResolve(false);
 			if(resolveResults.length > 0)
 			{
 				callable = resolveResults[0].getElement();
@@ -142,7 +142,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 		{
 			context.setParameterOwner(place);
 		}
-		else if(context.getParameterOwner() != PsiTreeUtil.getParentOfType(place, CSharpMethodCallParameterListOwner.class))
+		else if(context.getParameterOwner() != PsiTreeUtil.getParentOfType(place, CSharpCallArgumentListOwner.class))
 		{
 			context.removeHint();
 			return;
@@ -196,7 +196,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	public static int getArgumentIndex(PsiElement place)
 	{
 		int parameterIndex = -1;
-		final CSharpMethodCallParameterListImpl argumentList = PsiTreeUtil.getParentOfType(place, CSharpMethodCallParameterListImpl.class, false);
+		final CSharpCallArgumentList argumentList = PsiTreeUtil.getParentOfType(place, CSharpCallArgumentList.class, false);
 		if(place == argumentList)
 		{
 			assert argumentList != null;
@@ -215,10 +215,10 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 				}
 			}
 		}
-		else if(UsefulPsiTreeUtil.getPrevSiblingSkipWhiteSpacesAndComments(place, true) instanceof CSharpMethodCallParameterListImpl)
+		else if(UsefulPsiTreeUtil.getPrevSiblingSkipWhiteSpacesAndComments(place, true) instanceof CSharpCallArgumentList)
 		{
 			// seems foo(param1, param2<caret>)
-			final CSharpMethodCallParameterListImpl prevSibling = (CSharpMethodCallParameterListImpl) UsefulPsiTreeUtil
+			final CSharpCallArgumentList prevSibling = (CSharpCallArgumentList) UsefulPsiTreeUtil
 					.getPrevSiblingSkipWhiteSpacesAndComments(place, true);
 			assert prevSibling != null;
 			// callExpression -> arguments -> argumentList

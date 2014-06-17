@@ -341,7 +341,7 @@ public class SharingParsingHelpers implements CSharpTokenSets, CSharpTokens, CSh
 		if(builder.getTokenType() == RPAR)
 		{
 			builder.advanceLexer();
-			mark.done(METHOD_CALL_PARAMETER_LIST);
+			mark.done(CALL_ARGUMENT_LIST);
 			return;
 		}
 
@@ -374,7 +374,7 @@ public class SharingParsingHelpers implements CSharpTokenSets, CSharpTokens, CSh
 			}
 		}
 		expect(builder, RPAR, "')' expected");
-		mark.done(METHOD_CALL_PARAMETER_LIST);
+		mark.done(CALL_ARGUMENT_LIST);
 	}
 
 	protected static Pair<PsiBuilder.Marker, Boolean> parseModifierList(CSharpBuilderWrapper builder)

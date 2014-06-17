@@ -595,7 +595,7 @@ public class ExpressionParsing extends SharingParsingHelpers
 
 		final boolean closed = expect(builder, RPAR, "expected.rparen");
 
-		list.done(METHOD_CALL_PARAMETER_LIST);
+		list.done(CALL_ARGUMENT_LIST);
 		if(!closed)
 		{
 			list.setCustomEdgeTokenBinders(null, GREEDY_RIGHT_EDGE_PROCESSOR);
@@ -963,7 +963,7 @@ public class ExpressionParsing extends SharingParsingHelpers
 		if(builder.getTokenType() == RPAR)
 		{
 			builder.advanceLexer();
-			mark.done(METHOD_CALL_PARAMETER_LIST);
+			mark.done(CALL_ARGUMENT_LIST);
 			return;
 		}
 
@@ -996,7 +996,7 @@ public class ExpressionParsing extends SharingParsingHelpers
 			}
 		}
 		expect(builder, RPAR, "')' expected");
-		mark.done(METHOD_CALL_PARAMETER_LIST);
+		mark.done(CALL_ARGUMENT_LIST);
 	}
 
 	public static PsiBuilder.Marker parseParenthesesExpression(CSharpBuilderWrapper builder)

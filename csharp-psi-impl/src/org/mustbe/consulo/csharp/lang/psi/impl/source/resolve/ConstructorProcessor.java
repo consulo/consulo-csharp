@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodCallParameterListOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
@@ -38,7 +38,7 @@ public class ConstructorProcessor extends AbstractScopeProcessor
 	private WeightProcessor<PsiElement> myWeightProcessor;
 
 	@SuppressWarnings("unchecked")
-	public ConstructorProcessor(final CSharpMethodCallParameterListOwner parent, boolean completion)
+	public ConstructorProcessor(final CSharpCallArgumentListOwner parent, boolean completion)
 	{
 		myWeightProcessor = completion ? WeightProcessor.MAXIMUM : new WeightProcessor<PsiElement>()
 		{

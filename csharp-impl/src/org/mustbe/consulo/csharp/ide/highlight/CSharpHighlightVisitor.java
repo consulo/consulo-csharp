@@ -327,7 +327,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 
 	private static ResolveError createResolveError(PsiElement element, PsiElement resolveElement)
 	{
-		CSharpMethodCallParameterListOwner callOwner = findCallOwner(element);
+		CSharpCallArgumentListOwner callOwner = findCallOwner(element);
 		if(callOwner != null)
 		{
 			StringBuilder builder = new StringBuilder();
@@ -387,16 +387,16 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 		return null;
 	}
 
-	private static CSharpMethodCallParameterListOwner findCallOwner(PsiElement element)
+	private static CSharpCallArgumentListOwner findCallOwner(PsiElement element)
 	{
 		PsiElement parent = element.getParent();
 		if(parent instanceof CSharpMethodCallExpressionImpl || parent instanceof CSharpConstructorSuperCallImpl)
 		{
-			return (CSharpMethodCallParameterListOwner) parent;
+			return (CSharpCallArgumentListOwner) parent;
 		}
 		else if(parent instanceof DotNetUserType && parent.getParent() instanceof CSharpNewExpression)
 		{
-			return (CSharpMethodCallParameterListOwner) parent.getParent();
+			return (CSharpCallArgumentListOwner) parent.getParent();
 		}
 		return null;
 	}

@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodCallParameterList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import com.intellij.lang.ASTNode;
 
@@ -26,9 +26,9 @@ import com.intellij.lang.ASTNode;
  * @author VISTALL
  * @since 16.12.13.
  */
-public class CSharpMethodCallParameterListImpl extends CSharpElementImpl implements CSharpMethodCallParameterList
+public class CSharpCallArgumentListImpl extends CSharpElementImpl implements CSharpCallArgumentList
 {
-	public CSharpMethodCallParameterListImpl(@NotNull ASTNode node)
+	public CSharpCallArgumentListImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}

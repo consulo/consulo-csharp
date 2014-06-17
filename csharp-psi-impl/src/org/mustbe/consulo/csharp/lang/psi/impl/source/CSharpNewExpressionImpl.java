@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySetBlock;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodCallParameterList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNewExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
@@ -160,9 +160,9 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 
 	@Nullable
 	@Override
-	public CSharpMethodCallParameterList getParameterList()
+	public CSharpCallArgumentList getParameterList()
 	{
-		return findChildByClass(CSharpMethodCallParameterList.class);
+		return findChildByClass(CSharpCallArgumentList.class);
 	}
 
 	@Nullable
@@ -195,7 +195,7 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 	@Override
 	public DotNetExpression[] getParameterExpressions()
 	{
-		CSharpMethodCallParameterList parameterList = getParameterList();
+		CSharpCallArgumentList parameterList = getParameterList();
 		return parameterList == null ? DotNetExpression.EMPTY_ARRAY : parameterList.getExpressions();
 	}
 }

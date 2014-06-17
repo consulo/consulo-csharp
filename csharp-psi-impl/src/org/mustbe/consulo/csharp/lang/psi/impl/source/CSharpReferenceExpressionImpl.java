@@ -586,7 +586,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					return ResolveResultWithWeight.EMPTY_ARRAY;
 				}
 
-				CSharpMethodCallParameterListOwner parent = PsiTreeUtil.getParentOfType(element, CSharpMethodCallParameterListOwner.class);
+				CSharpCallArgumentListOwner parent = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
 
 				val constructorProcessor = new ConstructorProcessor(parent, completion);
 
@@ -764,7 +764,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				last = temp;
 				targetToWalkChildren = PsiTreeUtil.getParentOfType(temp, DotNetModifierListOwner.class);
 			}
-			else if(temp instanceof CSharpMethodCallParameterListImpl)
+			else if(temp instanceof CSharpCallArgumentList)
 			{
 				DotNetAttribute attribute = PsiTreeUtil.getParentOfType(temp, DotNetAttribute.class);
 				if(attribute != null)
@@ -891,7 +891,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				parentOfParent = parentOfParent.getParent();
 			}
 
-			if(parentOfParent instanceof CSharpMethodCallParameterListOwner && ((CSharpMethodCallParameterListOwner) parentOfParent).canResolve())
+			if(parentOfParent instanceof CSharpCallArgumentListOwner && ((CSharpCallArgumentListOwner) parentOfParent).canResolve())
 			{
 				return ResolveToKind.CONSTRUCTOR;
 			}
