@@ -521,4 +521,9 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	{
 		visitElement(element);
 	}
+
+	public void visitNamedCallArgument(CSharpNamedCallArgument argument)
+	{
+		visitElement(argument);
+	}
 }

@@ -455,20 +455,31 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 				return new ResolveResultWithWeight[]{new ResolveResultWithWeight(resolve)};
 			case FIELD_OR_PROPERTY:
-				CSharpNewExpression newExpression = PsiTreeUtil.getParentOfType(element, CSharpNewExpression.class);
-				assert newExpression != null;
-				DotNetTypeRef dotNetTypeRef = newExpression.toTypeRef(false);
-				if(dotNetTypeRef == DotNetTypeRef.ERROR_TYPE)
+				DotNetTypeRef resolvedTypeRef;
+				CSharpNamedCallArgument namedCallArgument = PsiTreeUtil.getParentOfType(element, CSharpNamedCallArgument.class);
+				if(namedCallArgument != null)
+				{
+					DotNetAttribute attribute = PsiTreeUtil.getParentOfType(element, DotNetAttribute.class);
+					assert attribute != null;
+					resolvedTypeRef = attribute.toTypeRef();
+				}
+				else
+				{
+					CSharpNewExpression newExpression = PsiTreeUtil.getParentOfType(element, CSharpNewExpression.class);
+					assert newExpression != null;
+					resolvedTypeRef = newExpression.toTypeRef(false);
+				}
+				if(resolvedTypeRef == DotNetTypeRef.ERROR_TYPE)
 				{
 					return ResolveResultWithWeight.EMPTY_ARRAY;
 				}
-				PsiElement psiElement1 = dotNetTypeRef.resolve(element);
+				PsiElement psiElement1 = resolvedTypeRef.resolve(element);
 				if(psiElement1 == null)
 				{
 					return ResolveResultWithWeight.EMPTY_ARRAY;
 				}
 				ResolveState resolveState = ResolveState.initial();
-				resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR_KEY, dotNetTypeRef.getGenericExtractor(psiElement1, element));
+				resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR_KEY, resolvedTypeRef.getGenericExtractor(psiElement1, element));
 
 				p = new MemberResolveScopeProcessor(Conditions.and(condition, new Condition<PsiNamedElement>()
 				{
@@ -908,6 +919,13 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		else if(tempElement instanceof CSharpAttributeImpl)
 		{
 			return ResolveToKind.ATTRIBUTE;
+		}
+		else if(tempElement instanceof CSharpNamedCallArgument)
+		{
+			if(((CSharpNamedCallArgument) tempElement).getArgumentNameReference() == this)
+			{
+				return ResolveToKind.FIELD_OR_PROPERTY;
+			}
 		}
 		else if(tempElement instanceof CSharpFieldOrPropertySet)
 		{

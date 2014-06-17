@@ -17,40 +17,43 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
- * @since 16.12.13.
+ * @since 17.06.14
  */
-public class CSharpCallArgumentListImpl extends CSharpElementImpl implements CSharpCallArgumentList
+public class CSharpNamedCallArgumentImpl extends CSharpElementImpl implements CSharpNamedCallArgument
 {
-	public CSharpCallArgumentListImpl(@NotNull ASTNode node)
+	public CSharpNamedCallArgumentImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	@NotNull
-	public DotNetExpression[] getExpressions()
-	{
-		return findChildrenByClass(DotNetExpression.class);
-	}
-
-	@NotNull
-	@Override
-	public CSharpNamedCallArgument[] getNamedArguments()
-	{
-		return findChildrenByClass(CSharpNamedCallArgument.class);
-	}
-
-	@Override
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		visitor.visitMethodCallParameterList(this);
+		visitor.visitNamedCallArgument(this);
+	}
+
+	@NotNull
+	@Override
+	public CSharpReferenceExpression getArgumentNameReference()
+	{
+		return (CSharpReferenceExpression) getFirstChild();
+	}
+
+	@Nullable
+	@Override
+	public DotNetExpression getArgumentExpression()
+	{
+		PsiElement lastChild = getLastChild();
+		return lastChild instanceof DotNetExpression ? (DotNetExpression) lastChild : null;
 	}
 }

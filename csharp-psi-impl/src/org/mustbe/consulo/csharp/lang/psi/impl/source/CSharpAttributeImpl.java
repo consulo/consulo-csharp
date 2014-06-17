@@ -69,6 +69,18 @@ public class CSharpAttributeImpl extends CSharpElementImpl implements DotNetAttr
 		return null;
 	}
 
+	@NotNull
+	@Override
+	public DotNetTypeRef toTypeRef()
+	{
+		DotNetExpression childByClass = findChildByClass(DotNetExpression.class);
+		if(childByClass == null)
+		{
+			return DotNetTypeRef.ERROR_TYPE;
+		}
+		return childByClass.toTypeRef(true);
+	}
+
 	@Override
 	public boolean canResolve()
 	{

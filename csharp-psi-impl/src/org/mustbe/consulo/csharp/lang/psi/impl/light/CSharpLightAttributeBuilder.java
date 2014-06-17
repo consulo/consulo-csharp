@@ -16,11 +16,14 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.light;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromQualifiedName;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiFacade;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.light.LightElement;
@@ -46,6 +49,13 @@ public class CSharpLightAttributeBuilder extends LightElement implements DotNetA
 	public DotNetTypeDeclaration resolveToType()
 	{
 		return DotNetPsiFacade.getInstance(myScope.getProject()).findType(myQualifiedName, myScope.getResolveScope(), 0);
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef toTypeRef()
+	{
+		return new CSharpTypeRefFromQualifiedName(myQualifiedName, 0);
 	}
 
 	@Override

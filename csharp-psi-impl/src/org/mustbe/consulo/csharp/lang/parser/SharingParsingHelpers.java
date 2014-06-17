@@ -326,7 +326,7 @@ public class SharingParsingHelpers implements CSharpTokenSets, CSharpTokens, CSh
 
 		if(builder.getTokenType() == LPAR)
 		{
-			parseAttributeParameterList(builder); //TODO [VISTALL] currently is bad due it cant be parsed expression like [A(t=true)]
+			parseAttributeParameterList(builder);
 		}
 		mark.done(ATTRIBUTE);
 		return mark;
@@ -348,16 +348,30 @@ public class SharingParsingHelpers implements CSharpTokenSets, CSharpTokens, CSh
 		boolean empty = true;
 		while(!builder.eof())
 		{
-			PsiBuilder.Marker marker = ExpressionParsing.parse(builder);
-			if(marker == null)
+			if(builder.getTokenType() == IDENTIFIER && builder.lookAhead(1) == EQ)
 			{
-				if(!empty)
+				PsiBuilder.Marker marker = builder.mark();
+				doneOneElement(builder, IDENTIFIER, REFERENCE_EXPRESSION, null);
+				builder.advanceLexer(); // eq
+				PsiBuilder.Marker expressionParser = ExpressionParsing.parse(builder);
+				if(expressionParser == null)
 				{
 					builder.error("Expression expected");
 				}
-				break;
+				marker.done(NAMED_CALL_ARGUMENT);
 			}
-
+			else
+			{
+				PsiBuilder.Marker marker = ExpressionParsing.parse(builder);
+				if(marker == null)
+				{
+					if(!empty)
+					{
+						builder.error("Expression expected");
+					}
+					break;
+				}
+			}
 			empty = false;
 
 			if(builder.getTokenType() == COMMA)

@@ -193,8 +193,10 @@ public interface CSharpElements
 	IElementType ARRAY_INITIALIZATION_EXPRESSION = new IElementTypeAsPsiFactory("ARRAY_INITIALIZATION_EXPRESSION", CSharpLanguage.INSTANCE,
 			CSharpArrayInitializationExpressionImpl.class);
 
-	IElementType CALL_ARGUMENT_LIST = new IElementTypeAsPsiFactory("CALL_ARGUMENT_LIST", CSharpLanguage.INSTANCE,
-			CSharpCallArgumentListImpl.class);
+	IElementType CALL_ARGUMENT_LIST = new IElementTypeAsPsiFactory("CALL_ARGUMENT_LIST", CSharpLanguage.INSTANCE, CSharpCallArgumentListImpl.class);
+
+	IElementType NAMED_CALL_ARGUMENT = new IElementTypeAsPsiFactory("NAMED_CALL_ARGUMENT", CSharpLanguage.INSTANCE,
+			CSharpNamedCallArgumentImpl.class);
 
 	IElementType LOCAL_VARIABLE_DECLARATION_STATEMENT = new IElementTypeAsPsiFactory("LOCAL_VARIABLE_DECLARATION_STATEMENT",
 			CSharpLanguage.INSTANCE, CSharpLocalVariableDeclarationStatementImpl.class);
