@@ -268,7 +268,10 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 					@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				DotNetStatement statement = PsiTreeUtil.getParentOfType(parameters.getPosition(), DotNetStatement.class);
-				assert statement != null;
+				if(statement == null)
+				{
+					return;
+				}
 
 				final PsiElement maybeTryStatement = UsefulPsiTreeUtil.getPrevSiblingSkipWhiteSpacesAndComments(statement, true);
 				if(maybeTryStatement instanceof CSharpTryStatementImpl)
