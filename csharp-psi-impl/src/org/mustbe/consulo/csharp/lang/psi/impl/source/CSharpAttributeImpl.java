@@ -18,9 +18,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -50,21 +52,16 @@ public class CSharpAttributeImpl extends CSharpElementImpl implements DotNetAttr
 	@Override
 	public DotNetTypeDeclaration resolveToType()
 	{
-		DotNetExpression childByClass = findChildByClass(DotNetExpression.class);
-		if(childByClass == null)
+		CSharpReferenceExpression ref = findChildByClass(CSharpReferenceExpression.class);
+		if(ref == null)
 		{
 			return null;
 		}
-		DotNetTypeRef dotNetTypeRef = childByClass.toTypeRef(true);
 
-		PsiElement resolve = dotNetTypeRef.resolve(this);
-		if(resolve instanceof DotNetTypeDeclaration)
+		PsiElement psiElement = CSharpReferenceExpressionImplUtil.resolveByTypeKind(ref, true);
+		if(psiElement instanceof DotNetTypeDeclaration)
 		{
-			return (DotNetTypeDeclaration) resolve;
-		}
-		else if(resolve != null)
-		{
-			return (DotNetTypeDeclaration) resolve.getParent();
+			return (DotNetTypeDeclaration) psiElement;
 		}
 		return null;
 	}
@@ -73,12 +70,12 @@ public class CSharpAttributeImpl extends CSharpElementImpl implements DotNetAttr
 	@Override
 	public DotNetTypeRef toTypeRef()
 	{
-		DotNetExpression childByClass = findChildByClass(DotNetExpression.class);
-		if(childByClass == null)
+		DotNetTypeDeclaration dotNetTypeDeclaration = resolveToType();
+		if(dotNetTypeDeclaration != null)
 		{
-			return DotNetTypeRef.ERROR_TYPE;
+			return new CSharpTypeRefFromQualifiedElement(dotNetTypeDeclaration);
 		}
-		return childByClass.toTypeRef(true);
+		return DotNetTypeRef.ERROR_TYPE;
 	}
 
 	@Override
@@ -106,12 +103,24 @@ public class CSharpAttributeImpl extends CSharpElementImpl implements DotNetAttr
 	@Override
 	public PsiElement resolveToCallable()
 	{
-		return null;
+		CSharpReferenceExpression ref = findChildByClass(CSharpReferenceExpression.class);
+		if(ref == null)
+		{
+			return null;
+		}
+
+		return ref.resolve();
 	}
 
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
-		return ResolveResult.EMPTY_ARRAY;
+		CSharpReferenceExpression ref = findChildByClass(CSharpReferenceExpression.class);
+		if(ref == null)
+		{
+			return null;
+		}
+
+		return ref.multiResolve(incompleteCode);
 	}
 }

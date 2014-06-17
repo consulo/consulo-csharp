@@ -26,6 +26,7 @@ import java.util.TreeSet;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingNamespaceStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.DelegateExpressionWithParameters;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
@@ -143,7 +144,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 					}
 				};
 				// if attribute endwith Attribute - collect only with
-				if(referenceName.endsWith(CSharpReferenceExpressionImpl.AttributeSuffix))
+				if(referenceName.endsWith(CSharpReferenceExpressionImplUtil.AttributeSuffix))
 				{
 					tempTypes = getTypesWithGeneric(referenceName);
 
@@ -155,7 +156,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 
 					collect(set, tempTypes, cond);
 
-					tempTypes = getTypesWithGeneric(referenceName + CSharpReferenceExpressionImpl.AttributeSuffix);
+					tempTypes = getTypesWithGeneric(referenceName + CSharpReferenceExpressionImplUtil.AttributeSuffix);
 
 					collect(set, tempTypes, cond);
 				}

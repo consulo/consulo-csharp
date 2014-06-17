@@ -25,7 +25,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNewExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpAnonymTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
@@ -95,19 +94,16 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 					DotNetReferenceExpression referenceExpression = ((DotNetUserType) type).getReferenceExpression();
 					if(referenceExpression instanceof CSharpReferenceExpression)
 					{
-						ResolveResultWithWeight[] resultWithWeights = ((CSharpReferenceExpressionImpl) referenceExpression).multiResolveImpl
-								(CSharpReferenceExpressionImpl.ResolveToKind.TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD);
-						if(resultWithWeights.length != 0)
+						PsiElement psiElement = CSharpReferenceExpressionImplUtil.resolveByTypeKind(referenceExpression, false);
+						if(psiElement != null)
 						{
-							PsiElement element = resultWithWeights[0].getElement();
-
-							if(element instanceof CSharpMethodDeclaration)
+							if(psiElement instanceof CSharpMethodDeclaration)
 							{
-								typeRef = new CSharpLambdaTypeRef((CSharpPseudoMethod) element);
+								typeRef = new CSharpLambdaTypeRef((CSharpPseudoMethod) psiElement);
 							}
 							else
 							{
-								typeRef = CSharpReferenceExpressionImpl.toTypeRef(element);
+								typeRef = CSharpReferenceExpressionImpl.toTypeRef(psiElement);
 							}
 						}
 					}

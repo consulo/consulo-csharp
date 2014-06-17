@@ -107,8 +107,6 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		}
 	}
 
-	public static final String AttributeSuffix = "Attribute";
-
 	private static final Condition<PsiNamedElement> ourTypeOrMethodOrGenericCondition = new Condition<PsiNamedElement>()
 	{
 		@Override
@@ -139,19 +137,19 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 	public static enum ResolveToKind
 	{
-		TYPE_PARAMETER_FROM_PARENT,
+		GENERIC_PARAMETER_FROM_PARENT, // return generic parameter from parent
 		NAMESPACE,
 		SOFT_NAMESPACE,
 		METHOD,
-		ATTRIBUTE,
-		NATIVE_TYPE_WRAPPER,
+		ATTRIBUTE,  // return type declaration but ref can find without Attribute sufix
+		NATIVE_TYPE_WRAPPER, // return type declaration of native type
 		ARRAY_METHOD,
-		TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD,
+		TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD, // return generic parameter or delegated method or type declaration
 		CONSTRUCTOR,
 		ANY_MEMBER,
 		FIELD_OR_PROPERTY,
-		THIS,
-		BASE,
+		THIS, // return type declaration of parent
+		BASE,  // return type declaration super class of parent
 		LABEL
 	}
 
@@ -236,8 +234,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		return multiResolve0(kind, p, this);
 	}
 
-	public static <T extends PsiQualifiedReference & PsiElement> ResolveResultWithWeight[] multiResolve0(
-			final ResolveToKind kind, final CSharpExpressionWithParameters parameters, final T e)
+	public static <T extends PsiQualifiedReference & PsiElement> ResolveResultWithWeight[] multiResolve0(ResolveToKind kind,
+			final CSharpExpressionWithParameters parameters, final T e)
 	{
 		Condition<PsiNamedElement> namedElementCondition;
 		@SuppressWarnings("unchecked") WeightProcessor<PsiNamedElement> weightProcessor = WeightProcessor.MAXIMUM;
@@ -254,6 +252,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					@Override
 					public boolean value(PsiNamedElement netNamedElement)
 					{
+						if(!(netNamedElement instanceof DotNetTypeDeclaration))
+						{
+							return false;
+						}
 						String candinateName = netNamedElement.getName();
 						if(candinateName == null)
 						{
@@ -264,13 +266,15 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 							return true;
 						}
 
-						if(candinateName.endsWith(AttributeSuffix) && Comparing.equal(referenceName + AttributeSuffix, netNamedElement.getName()))
+						if(candinateName.endsWith(CSharpReferenceExpressionImplUtil.AttributeSuffix) && Comparing.equal(referenceName +
+								CSharpReferenceExpressionImplUtil.AttributeSuffix, netNamedElement.getName()))
 						{
 							return true;
 						}
 						return false;
 					}
 				};
+				kind = ResolveToKind.TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD; //remap to type search
 				break;
 			case NATIVE_TYPE_WRAPPER:
 			case THIS:
@@ -354,7 +358,13 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					{
 						if(element instanceof DotNetGenericParameterListOwner)
 						{
-							DotNetUserType referenceType = (DotNetUserType) e.getParent();
+							PsiElement parent = e.getParent();
+							if(parent instanceof DotNetAttribute)
+							{
+								return MAX_WEIGHT;
+							}
+
+							DotNetUserType referenceType = (DotNetUserType) parent;
 							if(referenceType.getParent() instanceof DotNetTypeWithTypeArguments)
 							{
 								DotNetType[] arguments = ((DotNetTypeWithTypeArguments) referenceType.getParent()).getArguments();
@@ -378,11 +388,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		return collectResults(kind, namedElementCondition, weightProcessor, e, false);
 	}
 
-	private static <T extends PsiQualifiedReference & PsiElement> ResolveResultWithWeight[] collectResults(
-			@NotNull ResolveToKind kind,
-			@NotNull Condition<PsiNamedElement> condition,
-			@NotNull WeightProcessor<PsiNamedElement> weightProcessor,
-			final T element,
+	private static <T extends PsiQualifiedReference & PsiElement> ResolveResultWithWeight[] collectResults(@NotNull ResolveToKind kind,
+			@NotNull Condition<PsiNamedElement> condition, @NotNull WeightProcessor<PsiNamedElement> weightProcessor, final T element,
 			final boolean completion)
 	{
 		if(!element.isValid())
@@ -422,7 +429,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					return new ResolveResultWithWeight[]{new ResolveResultWithWeight(baseElement)};
 				}
 				break;
-			case TYPE_PARAMETER_FROM_PARENT:
+			case GENERIC_PARAMETER_FROM_PARENT:
 				DotNetGenericParameterListOwner parameterListOwner = PsiTreeUtil.getParentOfType(element, DotNetGenericParameterListOwner.class);
 				if(parameterListOwner == null)
 				{
@@ -571,22 +578,26 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				CSharpNamespaceAsElement namespaceAsElement = new CSharpNamespaceAsElement(element.getProject(), qName2, element.getResolveScope());
 				return new ResolveResultWithWeight[]{new ResolveResultWithWeight(namespaceAsElement)};
 			case CONSTRUCTOR:
-
 				CSharpReferenceExpressionImpl referenceExpression = (CSharpReferenceExpressionImpl) element;
+				CSharpCallArgumentListOwner parent = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
 
-				ResolveToKind newKind = ResolveToKind.TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD;
+				ResolveToKind typeResolveKind = ResolveToKind.TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD;
 				PsiElement referenceElement = referenceExpression.getReferenceElement();
 				assert referenceElement != null;
 				if(referenceElement.getNode().getElementType() == CSharpTokens.BASE_KEYWORD)
 				{
-					newKind = ResolveToKind.BASE;
+					typeResolveKind = ResolveToKind.BASE;
 				}
 				else if(referenceElement.getNode().getElementType() == CSharpTokens.THIS_KEYWORD)
 				{
-					newKind = ResolveToKind.THIS;
+					typeResolveKind = ResolveToKind.THIS;
+				}
+				else if(parent instanceof DotNetAttribute)
+				{
+					typeResolveKind = ResolveToKind.ATTRIBUTE;
 				}
 
-				ResolveResultWithWeight[] resolveResult = referenceExpression.multiResolveImpl(newKind);
+				ResolveResultWithWeight[] resolveResult = referenceExpression.multiResolveImpl(typeResolveKind);
 				if(resolveResult.length == 0)
 				{
 					return ResolveResultWithWeight.EMPTY_ARRAY;
@@ -597,7 +608,6 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					return ResolveResultWithWeight.EMPTY_ARRAY;
 				}
 
-				CSharpCallArgumentListOwner parent = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
 
 				val constructorProcessor = new ConstructorProcessor(parent, completion);
 
@@ -615,14 +625,6 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				}
 				constructorProcessor.executeDefault((PsiNamedElement) resolveElement);
 				return constructorProcessor.toResolveResults();
-			case ATTRIBUTE:
-				/*condition = Conditions.and(condition, ourTypeOrMethodOrGenericCondition);
-				val resolveResults = processAnyMember(qualifier, condition, named);
-				if(resolveResults.size() != 1)
-				{
-					return resolveResults;
-				}
-				return resolveResults; //TODO [VISTALL] resolve to constuctor   */
 			case TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD:
 			case METHOD:
 			case ARRAY_METHOD:
@@ -648,13 +650,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		return ResolveResultWithWeight.EMPTY_ARRAY;
 	}
 
-	public static ResolveResultWithWeight[] processAnyMember(
-			PsiElement qualifier,
-			Condition<PsiNamedElement> condition,
-			WeightProcessor<PsiNamedElement> weightProcessor,
-			PsiElement element,
-			ResolveToKind kind,
-			boolean с)
+	public static ResolveResultWithWeight[] processAnyMember(PsiElement qualifier, Condition<PsiNamedElement> condition,
+			WeightProcessor<PsiNamedElement> weightProcessor, PsiElement element, ResolveToKind kind, boolean с)
 	{
 		PsiElement target = element;
 		DotNetGenericExtractor extractor = DotNetGenericExtractor.EMPTY;
@@ -888,7 +885,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				return ResolveToKind.ANY_MEMBER;
 			}
 
-			return ResolveToKind.TYPE_PARAMETER_FROM_PARENT;
+			return ResolveToKind.GENERIC_PARAMETER_FROM_PARENT;
 		}
 		else if(tempElement instanceof CSharpNamespaceDeclarationImpl)
 		{
@@ -918,7 +915,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		}
 		else if(tempElement instanceof CSharpAttributeImpl)
 		{
-			return ResolveToKind.ATTRIBUTE;
+			return ResolveToKind.CONSTRUCTOR;
 		}
 		else if(tempElement instanceof CSharpNamedCallArgument)
 		{
@@ -1029,7 +1026,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		{
 			kind = ResolveToKind.ANY_MEMBER;
 		}
-		Condition<PsiNamedElement> condition = kind == ResolveToKind.LABEL ? Conditions.<PsiNamedElement>alwaysTrue() : new Condition<PsiNamedElement>()
+		Condition<PsiNamedElement> condition = kind == ResolveToKind.LABEL ? Conditions.<PsiNamedElement>alwaysTrue() : new
+				Condition<PsiNamedElement>()
 		{
 			@Override
 			public boolean value(PsiNamedElement e)
