@@ -61,18 +61,27 @@ public class CSharpParametersInfo
 			parametersInfo.myBuilder.append(" (");
 		}
 
-		for(int i = 0; i < parameters.length; i++)
+		if(parameters.length > 0)
 		{
-			if(i != 0)
+			for(int i = 0; i < parameters.length; i++)
 			{
-				parametersInfo.appendComma();
+				if(i != 0)
+				{
+					parametersInfo.appendComma();
+				}
+
+				Object parameter = parameters[i];
+
+				int length = parametersInfo.length();
+				parametersInfo.buildParameter(parameter, i);
+				parametersInfo.myParameterRanges[i] = new TextRange(length, parametersInfo.length());
 			}
-
-			Object parameter = parameters[i];
-
+		}
+		else
+		{
 			int length = parametersInfo.length();
-			parametersInfo.buildParameter(parameter, i);
-			parametersInfo.myParameterRanges[i] = new TextRange(length, parametersInfo.length());
+			parametersInfo.myBuilder.append("<no parameters>");
+			parametersInfo.myParameterRanges[0] = new TextRange(length, parametersInfo.length() + 6); //escaping
 		}
 
 		if(CodeInsightSettings.getInstance().SHOW_FULL_SIGNATURES_IN_PARAMETER_INFO)
@@ -84,11 +93,13 @@ public class CSharpParametersInfo
 	}
 
 	private TextRange[] myParameterRanges;
+	private int myParameterCount;
 	private StringBuilder myBuilder = new StringBuilder();
 
 	public CSharpParametersInfo(int count)
 	{
-		myParameterRanges = new TextRange[count];
+		myParameterCount = count;
+		myParameterRanges = new TextRange[myParameterCount == 0 ? 1 : myParameterCount];
 	}
 
 	private void buildParameter(Object o, int index)
@@ -121,6 +132,10 @@ public class CSharpParametersInfo
 	{
 		if(i == -1)
 		{
+			if(myParameterCount == 0)
+			{
+				return myParameterRanges[0];
+			}
 			return EMPTY;
 		}
 		TextRange textRange = ArrayUtil2.safeGet(myParameterRanges, i);

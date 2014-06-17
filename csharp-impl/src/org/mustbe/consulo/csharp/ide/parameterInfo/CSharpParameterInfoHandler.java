@@ -77,7 +77,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	{
 		Pair<Object, Integer> callableInfo = resolveToCallableInfo(element);
 
-		if(callableInfo != null && callableInfo.getSecond() > 0)
+		if(callableInfo != null)
 		{
 			context.setItemsToShow(new Object[]{callableInfo.getFirst()});
 			context.showHint(element, element.getTextRange().getStartOffset(), this);
