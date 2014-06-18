@@ -47,7 +47,7 @@ public class CSharpModuleTypeHelperImpl extends CSharpModuleTypeHelper
 			@Override
 			public void rootsChanged(ModuleRootEvent event)
 			{
-				myArrayTypes.clone();
+				myArrayTypes.clear();
 			}
 		});
 	}
