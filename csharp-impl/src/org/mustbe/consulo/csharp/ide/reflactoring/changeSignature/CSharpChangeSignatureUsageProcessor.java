@@ -16,12 +16,16 @@
 
 package org.mustbe.consulo.csharp.ide.reflactoring.changeSignature;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
@@ -40,7 +44,6 @@ import com.intellij.refactoring.changeSignature.ChangeSignatureUsageProcessor;
 import com.intellij.refactoring.changeSignature.ParameterInfo;
 import com.intellij.refactoring.rename.ResolveSnapshotProvider;
 import com.intellij.usageView.UsageInfo;
-import com.intellij.util.CommonProcessors;
 import com.intellij.util.Function;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.MultiMap;
@@ -53,28 +56,33 @@ import lombok.val;
 public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsageProcessor
 {
 	@Override
-	public UsageInfo[] findUsages(ChangeInfo info)
+	public UsageInfo[] findUsages(final ChangeInfo info)
 	{
 		if(!(info instanceof CSharpChangeInfo))
 		{
 			return UsageInfo.EMPTY_ARRAY;
 		}
-		val collectProcessor = new CommonProcessors.CollectProcessor<UsageInfo>();
+		val list = new ArrayList<UsageInfo>();
 
 		final ReadActionProcessor<PsiReference> refProcessor = new ReadActionProcessor<PsiReference>()
 		{
 			@Override
 			public boolean processInReadAction(final PsiReference ref)
 			{
+				final PsiElement resolve = ref.resolve();
+				if(resolve != info.getMethod())
+				{
+					return true;
+				}
 				TextRange rangeInElement = ref.getRangeInElement();
-				return collectProcessor.process(new UsageInfo(ref.getElement(), rangeInElement.getStartOffset(), rangeInElement.getEndOffset(),
-						false));
+				list.add(new UsageInfo(ref.getElement(), rangeInElement.getStartOffset(), rangeInElement.getEndOffset(),false));
+				return true;
 			}
 		};
 
 		ReferencesSearch.search(new ReferencesSearch.SearchParameters(info.getMethod(), info.getMethod().getResolveScope(),
 				false)).forEach(refProcessor);
-		return collectProcessor.toArray(UsageInfo.EMPTY_ARRAY);
+		return list.toArray(UsageInfo.EMPTY_ARRAY);
 	}
 
 	@Override
@@ -97,9 +105,52 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 		{
 			return false;
 		}
+
+		if(!beforeMethodChange)
+		{
+			return true;
+		}
+
 		if(changeInfo.isNameChanged())
 		{
 			((DotNetReferenceExpression) element).handleElementRename(changeInfo.getNewName());
+		}
+
+		if(((CSharpChangeInfo) changeInfo).isParametersChanged())
+		{
+			PsiElement parent = element.getParent();
+			if(parent instanceof CSharpCallArgumentListOwner)
+			{
+				CSharpCallArgumentList parameterList = ((CSharpCallArgumentListOwner) parent).getParameterList();
+				if(parameterList == null)
+				{
+					return true;
+				}
+
+				CSharpParameterInfo[] newParameters = ((CSharpChangeInfo) changeInfo).getNewParameters();
+
+				DotNetExpression[] expressions = parameterList.getExpressions();
+				String[] newArguments = new String[newParameters.length];
+
+				for(CSharpParameterInfo newParameter : newParameters)
+				{
+					if(newParameter.getOldIndex() != -1)
+					{
+						newArguments[newParameter.getNewIndex()] = expressions[newParameter.getOldIndex()].getText();
+					}
+					else
+					{
+						newArguments[newParameter.getNewIndex()] = newParameter.getDefaultValue();
+					}
+				}
+
+				StringBuilder builder = new StringBuilder("test(");
+				builder.append(StringUtil.join(newArguments, ", "));
+				builder.append(");");
+
+				val call = (CSharpCallArgumentListOwner) CSharpFileFactory.createExpression(usageInfo.getProject(), builder.toString());
+				parameterList.replace(call.getParameterList());
+			}
 		}
 		return true;
 	}

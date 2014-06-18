@@ -32,12 +32,14 @@ import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 
 /**
@@ -173,5 +175,13 @@ public class CSharpParameterImpl extends CSharpStubElementImpl<CSharpVariableStu
 	public DotNetLikeMethodDeclaration getMethod()
 	{
 		return getStubOrPsiParentOfType(DotNetLikeMethodDeclaration.class);
+	}
+
+	@Override
+	public int getIndex()
+	{
+		DotNetParameterList parameterList = getStubOrPsiParentOfType(DotNetParameterList.class);
+		assert parameterList != null;
+		return ArrayUtil.indexOf(parameterList.getParameters(), this);
 	}
 }

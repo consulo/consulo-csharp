@@ -54,6 +54,12 @@ public class CSharpLightParameterBuilder extends CSharpLightVariableBuilder<CSha
 		return myMethod;
 	}
 
+	@Override
+	public int getIndex()
+	{
+		return 0;
+	}
+
 	public void setMethod(DotNetLikeMethodDeclaration method)
 	{
 		myMethod = method;

@@ -29,22 +29,26 @@ public class CSharpParameterInfo implements ParameterInfo
 	private final DotNetParameter myParameter;
 	private String myName;
 	private String myTypeText;
-	private final int myIndex;
+	private String myDefaultValue;
+	private final int myNewIndex;
+	private final int myOldIndex;
 
-	public CSharpParameterInfo(DotNetParameter parameter, int index)
+	public CSharpParameterInfo(DotNetParameter parameter, int newIndex)
 	{
 		myParameter = parameter;
 		myName = parameter.getName();
 		myTypeText = parameter.toTypeRef(false).getPresentableText();
-		myIndex = index;
+		myNewIndex = newIndex;
+		myOldIndex = parameter.getIndex();
 	}
 
-	public CSharpParameterInfo(String name, DotNetParameter parameter, int index)
+	public CSharpParameterInfo(String name, DotNetParameter parameter, int newIndex)
 	{
 		myParameter = parameter;
 		myName = name;
 		myTypeText = "object";
-		myIndex = index;
+		myNewIndex = newIndex;
+		myOldIndex = parameter == null ? -1 : parameter.getIndex();
 	}
 
 	@Override
@@ -56,14 +60,14 @@ public class CSharpParameterInfo implements ParameterInfo
 	@Override
 	public int getOldIndex()
 	{
-		return myIndex;
+		return myOldIndex;
 	}
 
 	@Nullable
 	@Override
 	public String getDefaultValue()
 	{
-		return null;
+		return myDefaultValue;
 	}
 
 	@Override
@@ -90,6 +94,11 @@ public class CSharpParameterInfo implements ParameterInfo
 
 	}
 
+	public int getNewIndex()
+	{
+		return myNewIndex;
+	}
+
 	public void setTypeText(String typeText)
 	{
 		myTypeText = typeText;
@@ -99,5 +108,10 @@ public class CSharpParameterInfo implements ParameterInfo
 	public DotNetParameter getParameter()
 	{
 		return myParameter;
+	}
+
+	public void setDefaultValue(String defaultValue)
+	{
+		myDefaultValue = defaultValue;
 	}
 }

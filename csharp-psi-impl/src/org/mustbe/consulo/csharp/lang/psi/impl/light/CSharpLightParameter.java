@@ -55,4 +55,10 @@ public class CSharpLightParameter extends CSharpLightVariable<DotNetParameter> i
 	{
 		return null;
 	}
+
+	@Override
+	public int getIndex()
+	{
+		return 0;
+	}
 }

@@ -38,6 +38,7 @@ public class CSharpParameterTableModel extends ParameterTableModelBase<CSharpPar
 		super(typeContext, defaultValueContext, new ColumnInfo[]{
 				new NameColumn<CSharpParameterInfo, CSharpParameterTableModelItem>(project),
 				new TypeColumn<CSharpParameterInfo, CSharpParameterTableModelItem>(project, CSharpFileType.INSTANCE),
+				new DefaultValueColumn<CSharpParameterInfo, CSharpParameterTableModelItem>(project, CSharpFileType.INSTANCE, "Place value:")
 		});
 		myProject = project;
 	}
@@ -51,6 +52,7 @@ public class CSharpParameterTableModel extends ParameterTableModelBase<CSharpPar
 		}
 		PsiCodeFragment fragment = CSharpFragmentFactory.createTypeFragment(myProject, parameterInfo.getTypeText(), myDefaultValueContext);
 
-		return new CSharpParameterTableModelItem(parameterInfo, fragment, null);
+		PsiCodeFragment defaultValue = CSharpFragmentFactory.createExpressionFragment(myProject, "", myDefaultValueContext);
+		return new CSharpParameterTableModelItem(parameterInfo, fragment, defaultValue);
 	}
 }

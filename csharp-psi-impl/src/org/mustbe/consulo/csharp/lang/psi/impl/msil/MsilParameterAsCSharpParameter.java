@@ -74,4 +74,10 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 	{
 		return myMethodDeclaration;
 	}
+
+	@Override
+	public int getIndex()
+	{
+		return myIndex;
+	}
 }
