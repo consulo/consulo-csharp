@@ -24,7 +24,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpParameterImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.lang.refactoring.RefactoringSupportProvider;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.LocalSearchScope;
@@ -44,7 +43,7 @@ public class CSharpRefactoringSupportProvider extends RefactoringSupportProvider
 	@Override
 	public ChangeSignatureHandler getChangeSignatureHandler()
 	{
-		return ApplicationManager.getApplication().isInternal() ? new CSharpChangeSignatureHandler() : null;
+		return new CSharpChangeSignatureHandler();
 	}
 
 	@Nullable
