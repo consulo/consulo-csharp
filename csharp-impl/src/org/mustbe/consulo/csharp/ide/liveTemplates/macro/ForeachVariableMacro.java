@@ -78,7 +78,7 @@ public class ForeachVariableMacro extends VariableTypeMacroBase
 	@Override
 	public String getName()
 	{
-		return "foreachVariable";
+		return "csharpForeachVariable";
 	}
 
 	@Override

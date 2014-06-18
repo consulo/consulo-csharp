@@ -46,13 +46,13 @@ public class ForeachComponentTypeMacro extends Macro
 	@Override
 	public String getName()
 	{
-		return "foreachComponentType";
+		return "csharpForeachComponentType";
 	}
 
 	@Override
 	public String getPresentableName()
 	{
-		return "foreachComponentType(VARIABLE)";
+		return "csharpForeachComponentType(VARIABLE)";
 	}
 
 	@NotNull

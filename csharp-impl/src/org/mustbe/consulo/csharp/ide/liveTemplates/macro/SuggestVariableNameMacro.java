@@ -33,7 +33,7 @@ public class SuggestVariableNameMacro extends Macro
 	@Override
 	public String getName()
 	{
-		return "suggestVariableName";
+		return "csharpSuggestVariableName";
 	}
 
 	@Override
