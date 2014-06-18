@@ -30,6 +30,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNativeTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNullableTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeWithTypeArgumentsImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.DotNetPointerTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromText;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
@@ -114,7 +115,7 @@ public class CSharpStubTypeInfoUtil
 		t.accept(new CSharpElementVisitor()
 		{
 			@Override
-			public void visitPointerType(org.mustbe.consulo.csharp.lang.psi.impl.source.DotNetPointerTypeImpl type)
+			public void visitPointerType(DotNetPointerTypeImpl type)
 			{
 				ref.set(new CSharpStubPointerTypeInfo(toStub(type.getInnerType())));
 			}
