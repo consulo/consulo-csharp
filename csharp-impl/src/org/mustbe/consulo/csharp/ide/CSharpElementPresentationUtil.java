@@ -50,14 +50,7 @@ public class CSharpElementPresentationUtil extends DotNetElementPresentationUtil
 			public void visitReferenceType(DotNetUserType type)
 			{
 				DotNetReferenceExpression referenceExpression = type.getReferenceExpression();
-				if(referenceExpression == null)
-				{
-					builder.append("<null>");
-				}
-				else
-				{
-					builder.append(referenceExpression.getReferenceName());
-				}
+				builder.append(referenceExpression.getReferenceName());
 			}
 
 			@Override
