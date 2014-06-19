@@ -49,7 +49,8 @@ import lombok.val;
  */
 public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements PsiReference, CSharpExpressionWithParameters
 {
-	private static final TokenSet ourMergeSet = TokenSet.orSet(CSharpTokenSets.OVERLOADING_OPERATORS, CSharpTokenSets.ASSIGNMENT_OPERATORS);
+	private static final TokenSet ourMergeSet = TokenSet.orSet(CSharpTokenSets.OVERLOADING_OPERATORS, CSharpTokenSets.ASSIGNMENT_OPERATORS,
+			TokenSet.create(CSharpTokens.ANDAND, CSharpTokens.OROR));
 
 	private static final Map<IElementType, IElementType> ourAssignmentOperatorMap = new HashMap<IElementType, IElementType>()
 	{
