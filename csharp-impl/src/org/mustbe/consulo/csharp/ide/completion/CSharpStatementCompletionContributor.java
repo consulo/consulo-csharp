@@ -23,12 +23,14 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.UsefulPsiTreeUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDoWhileStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpSwitchStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTryStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpWhileStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.codeInsight.AutoPopupController;
@@ -71,8 +73,11 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 
 	private static final TokenSet ourCatchFinallyKeywords = TokenSet.create(CATCH_KEYWORD, FINALLY_KEYWORD);
 
-	private static final ElementPattern<? extends PsiElement> ourContinueAndBreakPattern = psiElement().inside(or(psiElement().inside
-			(CSharpForeachStatementImpl.class), psiElement().inside(CSharpForStatementImpl.class)));
+	private static final ElementPattern<? extends PsiElement> ourContinueAndBreakPattern = psiElement().inside(or(
+			psiElement().inside(CSharpForeachStatementImpl.class),
+			psiElement().inside(CSharpForStatementImpl.class),
+			psiElement().inside(CSharpWhileStatementImpl.class),
+			psiElement().inside(CSharpDoWhileStatementImpl.class)));
 
 	private static final ElementPattern<? extends PsiElement> ourGotoPattern = psiElement().inside(psiElement().inside(CSharpLabeledStatementImpl
 			.class));
