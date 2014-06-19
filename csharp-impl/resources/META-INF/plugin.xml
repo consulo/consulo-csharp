@@ -148,7 +148,10 @@
 		<codeInsight.template.postfixTemplateProvider language="C#"
 													  implementationClass="org.mustbe.consulo.csharp.ide.codeInsight.template.postfix.CSharpPostfixTemplateProvider"/>
 
-		<defaultLiveTemplatesProvider implementation="org.mustbe.consulo.csharp.ide.liveTemplates.CSharpLiveTemplatesProvider" />
+		<bundleLiveTemplateSet path="liveTemplates/output" />
+		<bundleLiveTemplateSet path="liveTemplates/main" />
+		<bundleLiveTemplateSet path="liveTemplates/foreach" />
+
 		<liveTemplateContext implementation="org.mustbe.consulo.csharp.ide.liveTemplates.context.CSharpStatementContextType" />
 		<liveTemplateContext implementation="org.mustbe.consulo.csharp.ide.liveTemplates.context.CSharpClassBodyContextType" />
 		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.SuggestVariableNameMacro" />
