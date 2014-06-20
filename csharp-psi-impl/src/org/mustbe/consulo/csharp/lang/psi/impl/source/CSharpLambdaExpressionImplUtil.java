@@ -39,9 +39,9 @@ import com.intellij.util.ObjectUtils;
 public class CSharpLambdaExpressionImplUtil
 {
 	@NotNull
-	public static DotNetTypeRef resolveTypeForParameter(CSharpLambdaExpressionImpl lambdaExpression, int parameterIndex)
+	public static DotNetTypeRef resolveTypeForParameter(PsiElement target, int parameterIndex)
 	{
-		CSharpLambdaTypeRef leftTypeRef = resolveLeftLambdaTypeRef(lambdaExpression);
+		CSharpLambdaTypeRef leftTypeRef = resolveLeftLambdaTypeRef(target);
 		if(leftTypeRef == null)
 		{
 			return DotNetTypeRef.UNKNOWN_TYPE;
@@ -64,13 +64,13 @@ public class CSharpLambdaExpressionImplUtil
 	}
 
 	@Nullable
-	public static CSharpLambdaTypeRef resolveLeftLambdaTypeRef(CSharpLambdaExpressionImpl lambdaExpression)
+	public static CSharpLambdaTypeRef resolveLeftLambdaTypeRef(PsiElement target)
 	{
-		PsiElement parent = lambdaExpression.getParent();
+		PsiElement parent = target.getParent();
 		if(parent instanceof DotNetVariable)
 		{
 			DotNetVariable variable = (DotNetVariable) parent;
-			if(variable.getInitializer() != lambdaExpression)
+			if(variable.getInitializer() != target)
 			{
 				return null;
 			}
@@ -90,7 +90,7 @@ public class CSharpLambdaExpressionImplUtil
 				return null;
 			}
 			DotNetExpression[] parameterExpressions = methodCallExpression.getParameterExpressions();
-			int index = ArrayUtil.indexOf(parameterExpressions, lambdaExpression);
+			int index = ArrayUtil.indexOf(parameterExpressions, target);
 			if(index == -1)
 			{
 				return null;
