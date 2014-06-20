@@ -72,7 +72,7 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 			return ((DotNetNamedElement) myTarget).getName();
 		}
 		StringBuilder builder = new StringBuilder();
-		builder.append("(");
+		builder.append("{(");
 		for(int i = 0; i < myParameterTypes.length; i++)
 		{
 			if(i != 0)
@@ -99,6 +99,7 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 		{
 			builder.append(" => ").append(myReturnType.getPresentableText());
 		}
+		builder.append("}");
 		return builder.toString();
 	}
 
@@ -112,7 +113,7 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 			return ((DotNetQualifiedElement) myTarget).getPresentableQName();
 		}
 		StringBuilder builder = new StringBuilder();
-		builder.append("(");
+		builder.append("{(");
 		for(int i = 0; i < myParameterTypes.length; i++)
 		{
 			if(i != 0)
@@ -138,6 +139,7 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 		{
 			builder.append(" => ").append(myReturnType.getQualifiedText());
 		}
+		builder.append("}");
 		return builder.toString();
 	}
 
