@@ -16,9 +16,12 @@
 
 package org.mustbe.consulo.csharp.ide.highlight;
 
+import java.awt.Color;
+
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
+import com.intellij.openapi.editor.markup.TextAttributes;
 
 /**
  * @author VISTALL
@@ -40,6 +43,8 @@ public interface CSharpHighlightKey
 			DefaultLanguageHighlighterColors.STATIC_METHOD);
 	TextAttributesKey EXTENSION_METHOD = TextAttributesKey.createTextAttributesKey("CSHARP_EXTENSION_METHOD",
 			DefaultLanguageHighlighterColors.LABEL);
+	TextAttributesKey METHOD_REF = TextAttributesKey.createTextAttributesKey("CSHARP_METHOD_REF",
+			new TextAttributes(null, new Color(0xFFE4A5), null, null, 0));
 	TextAttributesKey INSTANCE_METHOD = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
 			DefaultLanguageHighlighterColors.INSTANCE_METHOD);
 	TextAttributesKey PARAMETER = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,

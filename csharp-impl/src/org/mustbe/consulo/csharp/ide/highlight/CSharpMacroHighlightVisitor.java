@@ -77,7 +77,7 @@ public class CSharpMacroHighlightVisitor extends CSharpMacroElementVisitor imple
 
 	public void highlightNamed(@Nullable PsiElement element, @Nullable PsiElement target)
 	{
-		CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, element, target);
+		CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, element, target, null);
 	}
 
 	@NotNull

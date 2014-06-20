@@ -156,7 +156,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	@Override
 	public void visitGenericParameter(CSharpGenericParameterImpl parameter)
 	{
-		highlightNamed(parameter, parameter.getNameIdentifier());
+		highlightNamed(parameter, parameter.getNameIdentifier(), null);
 	}
 
 	@Override
@@ -171,7 +171,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 
 		if(resolve != null)
 		{
-			highlightNamed(resolve, reference);
+			highlightNamed(resolve, reference, null);
 		}
 		else
 		{
@@ -184,7 +184,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	{
 		super.visitTypeDeclaration(declaration);
 
-		highlightNamed(declaration, declaration.getNameIdentifier());
+		highlightNamed(declaration, declaration.getNameIdentifier(), null);
 	}
 
 	@Override
@@ -192,7 +192,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	{
 		super.visitFieldDeclaration(declaration);
 
-		highlightNamed(declaration, declaration.getNameIdentifier());
+		highlightNamed(declaration, declaration.getNameIdentifier(), null);
 	}
 
 	@Override
@@ -200,7 +200,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	{
 		super.visitEnumConstantDeclaration(declaration);
 
-		highlightNamed(declaration, declaration.getNameIdentifier());
+		highlightNamed(declaration, declaration.getNameIdentifier(), null);
 	}
 
 	@Override
@@ -208,7 +208,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	{
 		super.visitTypeDefStatement(statement);
 
-		highlightNamed(statement, statement.getNameIdentifier());
+		highlightNamed(statement, statement.getNameIdentifier(), null);
 	}
 
 	@Override
@@ -216,7 +216,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	{
 		super.visitParameter(parameter);
 
-		highlightNamed(parameter, parameter.getNameIdentifier());
+		highlightNamed(parameter, parameter.getNameIdentifier(), null);
 	}
 
 	@Override
@@ -224,7 +224,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	{
 		super.visitPropertyDeclaration(declaration);
 
-		highlightNamed(declaration, declaration.getNameIdentifier());
+		highlightNamed(declaration, declaration.getNameIdentifier(), null);
 	}
 
 	@Override
@@ -232,7 +232,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	{
 		super.visitEventDeclaration(declaration);
 
-		highlightNamed(declaration, declaration.getNameIdentifier());
+		highlightNamed(declaration, declaration.getNameIdentifier(), null);
 	}
 
 	@Override
@@ -291,7 +291,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 		if(goodResult != null)
 		{
 			PsiElement element = goodResult.getElement();
-			HighlightInfo highlightInfo = highlightNamed(element, referenceElement);
+			HighlightInfo highlightInfo = highlightNamed(element, referenceElement, expression);
 
 			if(highlightInfo != null && CSharpMethodImplUtil.isExtensionWrapper(element))
 			{
@@ -402,9 +402,9 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Nullable
-	public HighlightInfo highlightNamed(@Nullable PsiElement element, @Nullable PsiElement target)
+	public HighlightInfo highlightNamed(@Nullable PsiElement element, @Nullable PsiElement target, @Nullable PsiElement owner)
 	{
-		return CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, element, target);
+		return CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, element, target, owner);
 	}
 
 	@Override

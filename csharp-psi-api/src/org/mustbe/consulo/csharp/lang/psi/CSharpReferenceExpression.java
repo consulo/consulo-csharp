@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import com.intellij.psi.PsiElement;
@@ -26,6 +27,27 @@ import com.intellij.psi.PsiElement;
  */
 public interface CSharpReferenceExpression extends DotNetReferenceExpression
 {
+	public static enum ResolveToKind
+	{
+		GENERIC_PARAMETER_FROM_PARENT, // return generic parameter from parent
+		NAMESPACE,
+		SOFT_NAMESPACE,
+		METHOD,
+		ATTRIBUTE,  // return type declaration but ref can find without Attribute sufix
+		NATIVE_TYPE_WRAPPER, // return type declaration of native type
+		ARRAY_METHOD,
+		TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD, // return generic parameter or delegated method or type declaration
+		CONSTRUCTOR,
+		ANY_MEMBER,
+		FIELD_OR_PROPERTY,
+		THIS, // return type declaration of parent
+		BASE,  // return type declaration super class of parent
+		LABEL
+	}
+
 	@Nullable
 	PsiElement getReferenceElement();
+
+	@NotNull
+	ResolveToKind kind();
 }

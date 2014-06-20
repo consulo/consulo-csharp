@@ -135,24 +135,6 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		}
 	};
 
-	public static enum ResolveToKind
-	{
-		GENERIC_PARAMETER_FROM_PARENT, // return generic parameter from parent
-		NAMESPACE,
-		SOFT_NAMESPACE,
-		METHOD,
-		ATTRIBUTE,  // return type declaration but ref can find without Attribute sufix
-		NATIVE_TYPE_WRAPPER, // return type declaration of native type
-		ARRAY_METHOD,
-		TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD, // return generic parameter or delegated method or type declaration
-		CONSTRUCTOR,
-		ANY_MEMBER,
-		FIELD_OR_PROPERTY,
-		THIS, // return type declaration of parent
-		BASE,  // return type declaration super class of parent
-		LABEL
-	}
-
 	private static final TokenSet ourReferenceElements = TokenSet.create(CSharpTokens.THIS_KEYWORD, CSharpTokens.BASE_KEYWORD,
 			CSharpTokens.IDENTIFIER);
 
