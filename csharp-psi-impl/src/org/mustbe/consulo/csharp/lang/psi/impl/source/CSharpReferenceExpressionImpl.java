@@ -635,10 +635,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					{
 						condition = Conditions.and(condition, ourTypeOrMethodOrGenericCondition);
 					}
-					else if(kind == ResolveToKind.ANY_MEMBER)
+					/*else if(kind == ResolveToKind.ANY_MEMBER)
 					{
 						condition = Conditions.and(condition, Conditions.not(ourMethodCondition));
-					}
+					}  */
 					else if(kind == ResolveToKind.METHOD)
 					{
 						condition = Conditions.and(condition, Conditions.not(ourMethodDelegate));
@@ -1123,9 +1123,9 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		{
 			return new CSharpTypeRefFromGenericParameter((DotNetGenericParameter) resolve);
 		}
-		else if(resolve instanceof CSharpMethodDeclaration)
+		else if(resolve instanceof CSharpPseudoMethod)
 		{
-			return ((CSharpMethodDeclaration) resolve).getReturnTypeRef();
+			return new CSharpLambdaTypeRef((CSharpPseudoMethod) resolve);
 		}
 		else if(resolve instanceof DotNetVariable)
 		{

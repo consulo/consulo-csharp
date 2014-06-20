@@ -18,16 +18,13 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySetBlock;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNewExpression;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpAnonymTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
@@ -79,7 +76,7 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 		}
 		else
 		{
-			DotNetTypeRef typeRef = DotNetTypeRef.ERROR_TYPE;
+			DotNetTypeRef typeRef;
 			if(canResolve())
 			{
 				DotNetType[] arguments = DotNetType.EMPTY_ARRAY;
@@ -91,26 +88,9 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 
 				if(type instanceof DotNetUserType)
 				{
-					DotNetReferenceExpression referenceExpression = ((DotNetUserType) type).getReferenceExpression();
-					if(referenceExpression instanceof CSharpReferenceExpression)
-					{
-						PsiElement psiElement = CSharpReferenceExpressionImplUtil.resolveByTypeKind(referenceExpression, false);
-						if(psiElement != null)
-						{
-							if(psiElement instanceof CSharpMethodDeclaration)
-							{
-								typeRef = new CSharpLambdaTypeRef((CSharpPseudoMethod) psiElement);
-							}
-							else
-							{
-								typeRef = CSharpReferenceExpressionImpl.toTypeRef(psiElement);
-							}
-						}
-					}
-					else
-					{
-						typeRef = DotNetTypeRef.ERROR_TYPE;
-					}
+					PsiElement psiElement = CSharpReferenceExpressionImplUtil.resolveByTypeKind(((DotNetUserType) type).getReferenceExpression(),
+							false);
+					typeRef = CSharpReferenceExpressionImpl.toTypeRef(psiElement);
 				}
 				else
 				{

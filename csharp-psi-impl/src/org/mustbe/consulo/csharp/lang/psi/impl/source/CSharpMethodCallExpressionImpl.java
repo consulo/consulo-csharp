@@ -18,9 +18,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -110,6 +111,10 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 			{
 				return ((CSharpLambdaTypeRef) dotNetTypeRef).getReturnType();
 			}
+		}
+		if(resolve instanceof CSharpPseudoMethod)
+		{
+			return ((CSharpPseudoMethod) resolve).getReturnTypeRef();
 		}
 		return CSharpReferenceExpressionImpl.toTypeRef(resolve);
 	}

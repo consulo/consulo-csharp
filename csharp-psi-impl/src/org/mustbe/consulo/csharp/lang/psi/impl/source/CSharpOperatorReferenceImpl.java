@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpEventUtil;
@@ -143,6 +144,10 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		if(o instanceof DotNetTypeRef)
 		{
 			return (DotNetTypeRef) o;
+		}
+		else if(o instanceof CSharpPseudoMethod)
+		{
+			return ((CSharpPseudoMethod) o).getReturnTypeRef();
 		}
 		else if(o instanceof PsiElement)
 		{

@@ -18,14 +18,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiFacade;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -48,15 +45,7 @@ public class CSharpUserTypeImpl extends CSharpElementImpl implements DotNetUserT
 	@Override
 	public DotNetTypeRef toTypeRef()
 	{
-		DotNetReferenceExpression referenceExpression = getReferenceExpression();
-
-		PsiElement resolve = referenceExpression.resolve();
-		if(resolve instanceof DotNetLikeMethodDeclaration)
-		{
-			DotNetLikeMethodDeclaration methodDeclaration = (DotNetLikeMethodDeclaration) resolve;
-			return new CSharpLambdaTypeRef(resolve, methodDeclaration.getParameterTypeRefs(), methodDeclaration.getReturnTypeRef());
-		}
-		return CSharpReferenceExpressionImpl.toTypeRef(resolve);
+		return CSharpReferenceExpressionImpl.toTypeRef(getReferenceExpression().resolve());
 	}
 
 	@NotNull
