@@ -19,12 +19,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromQualifiedElement;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetConstructorListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.ResolveState;
@@ -77,11 +76,12 @@ public class ConstructorProcessor extends AbstractScopeProcessor
 		builder.withParent(owner);
 		builder.withName(owner.getName());
 
-		if(!(owner instanceof DotNetConstructorListOwner))
+		if(owner instanceof CSharpPseudoMethod)
 		{
 			CSharpLightParameterBuilder parameter = new CSharpLightParameterBuilder(owner.getProject());
-			parameter = parameter.withName("p1");
-			parameter = parameter.withTypeRef(new CSharpTypeRefFromQualifiedElement((DotNetQualifiedElement) owner));
+			parameter = parameter.withName("p");
+			parameter = parameter.withTypeRef(new CSharpLambdaTypeRef(null, ((CSharpPseudoMethod) owner).getParameterTypeRefs(),
+					((CSharpPseudoMethod) owner).getReturnTypeRef()));
 			builder.addParameter(parameter);
 		}
 
