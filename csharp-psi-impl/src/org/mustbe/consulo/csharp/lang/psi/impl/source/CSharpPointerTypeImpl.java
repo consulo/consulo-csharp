@@ -31,9 +31,9 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 13.12.13.
  */
-public class DotNetPointerTypeImpl extends CSharpElementImpl implements DotNetPointerType
+public class CSharpPointerTypeImpl extends CSharpElementImpl implements DotNetPointerType
 {
-	public DotNetPointerTypeImpl(@NotNull ASTNode node)
+	public CSharpPointerTypeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
