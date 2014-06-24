@@ -59,7 +59,7 @@ public static class ByteStubs
 	}
 
 	// -- byte = byte
-	public static byte operator -(byte param1)
+	public static byte operator --(byte param1)
 	{
 		return 0;
 	}

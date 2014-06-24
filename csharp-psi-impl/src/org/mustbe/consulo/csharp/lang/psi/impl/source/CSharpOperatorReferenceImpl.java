@@ -250,15 +250,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@Override
 	public boolean isSoft()
 	{
-		PsiElement parent = getParent();
-		if(parent instanceof CSharpBinaryExpressionImpl ||
-				parent instanceof CSharpPrefixExpressionImpl ||
-				parent instanceof CSharpAssignmentExpressionImpl ||
-				parent instanceof CSharpPostfixExpressionImpl)
-		{
-			return findReturnTypeInStubs() != null;
-		}
-		return false;
+		return resolve0() instanceof DotNetTypeRef;
 	}
 
 	@NotNull

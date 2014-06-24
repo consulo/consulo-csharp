@@ -38,7 +38,7 @@ public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 {
 	private static String[] ourStubs = new String[]
 	{
-			"/stub/ObjectStubs.cs",
+		"/stub/ObjectStubs.cs",
 		"/stub/EnumStubs.cs",
 		"/stub/BoolStubs.cs",
 		"/stub/StringStubs.cs",
@@ -46,6 +46,7 @@ public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 		"/stub/ShortStubs.cs",
 		"/stub/IntStubs.cs",
 		"/stub/LongStubs.cs",
+		"/stub/FloatStubs.cs",
 	};
 	private final Project myProject;
 

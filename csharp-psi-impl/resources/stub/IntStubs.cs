@@ -163,7 +163,7 @@ public static class IntStubs
 	}
 
 	// int > long = bool
-	public static int operator >(int param1, long param2)
+	public static bool operator >(int param1, long param2)
 	{
 		return false;
 	}
@@ -179,7 +179,7 @@ public static class IntStubs
 	}
 
 	// int >= long = bool
-	public static int operator >=(int param1, long param2)
+	public static bool operator >=(int param1, long param2)
 	{
 		return false;
 	}
@@ -195,7 +195,7 @@ public static class IntStubs
 	}
 
 	// int < long = bool
-	public static int operator <(int param1, long param2)
+	public static bool operator <(int param1, long param2)
 	{
 		return false;
 	}
@@ -211,7 +211,7 @@ public static class IntStubs
 	}
 
 	// int <= long = bool
-	public static int operator <=(int param1, long param2)
+	public static bool operator <=(int param1, long param2)
 	{
 		return false;
 	}
