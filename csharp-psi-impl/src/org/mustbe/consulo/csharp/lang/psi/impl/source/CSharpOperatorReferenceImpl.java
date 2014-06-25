@@ -82,6 +82,12 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	}
 
 	@Override
+	public PsiReference getReference()
+	{
+		return this;
+	}
+
+	@Override
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
 		visitor.visitOperatorReference(this);
