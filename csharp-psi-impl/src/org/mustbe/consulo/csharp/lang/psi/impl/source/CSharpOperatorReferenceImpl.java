@@ -28,17 +28,23 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpEventUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.OperatorResolveScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorHelper;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetEventDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.Condition;
+import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.ResolveState;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.IncorrectOperationException;
@@ -133,7 +139,31 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			return eventDeclaration;
 		}
 
-		//TODO [search in methods]
+		Couple<PsiElement> resolveLayers = CSharpReferenceExpressionImpl.getResolveLayers(this, false);
+
+		OperatorResolveScopeProcessor processor = new OperatorResolveScopeProcessor(new Condition<DotNetNamedElement>()
+		{
+			@Override
+			public boolean value(DotNetNamedElement dotNetNamedElement)
+			{
+				return isAccepted(CSharpOperatorReferenceImpl.this, dotNetNamedElement);
+			}
+		}, new WeightProcessor<DotNetNamedElement>()
+		{
+			@Override
+			public int getWeight(@NotNull DotNetNamedElement element)
+			{
+				return MethodAcceptorImpl.calcAcceptableWeight(CSharpOperatorReferenceImpl.this, (CSharpMethodDeclaration) element);
+			}
+		});
+
+		CSharpResolveUtil.walkChildren(processor, resolveLayers.getSecond(), false, null, ResolveState.initial());
+
+		final ResolveResultWithWeight[] resultWithWeights = processor.toResolveResults();
+		if(resultWithWeights.length > 0 && resultWithWeights[0].isGoodResult())
+		{
+			return resultWithWeights[0].getElement();
+		}
 		return null;
 	}
 

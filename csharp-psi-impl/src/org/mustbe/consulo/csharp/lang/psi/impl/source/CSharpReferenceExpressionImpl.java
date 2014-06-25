@@ -709,7 +709,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	}
 
 	@NotNull
-	private static Couple<PsiElement> getResolveLayers(PsiElement element, boolean strict)
+	public static Couple<PsiElement> getResolveLayers(PsiElement element, boolean strict)
 	{
 		PsiElement last = null;
 		PsiElement targetToWalkChildren = null;
