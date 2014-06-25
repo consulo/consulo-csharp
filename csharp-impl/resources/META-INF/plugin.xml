@@ -33,6 +33,10 @@
 		<action id="CSharp.AssemblyFile" class="org.mustbe.consulo.csharp.ide.actions.NewCSharpAssemblyFileAction">
 			<add-to-group group-id="NewGroup"/>
 		</action>
+		<group id="CSharp.GenerateActions">
+			<action id="CSharp.GenerateConstructor" class="org.mustbe.consulo.csharp.ide.actions.generate.GenerateConstructorAction"/>
+			<add-to-group group-id="GenerateGroup" anchor="first"/>
+		</group>
 	</actions>
 
 	<extensions defaultExtensionNs="org.mustbe.consulo.dotnet.core">

@@ -25,6 +25,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilWrapperScopeProcessor;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
@@ -86,5 +87,19 @@ public abstract class AbstractScopeProcessor extends MsilWrapperScopeProcessor i
 		ResolveResultWithWeight[] resultWithWeights = ContainerUtil.toArray(myElements, ResolveResultWithWeight.ARRAY_FACTORY);
 		ContainerUtil.sort(resultWithWeights, ourWeightComparator);
 		return resultWithWeights;
+	}
+
+	@NotNull
+	public PsiElement[] toPsiElements()
+	{
+		final ResolveResultWithWeight[] resultWithWeights = toResolveResults();
+		return ContainerUtil.map(resultWithWeights, new Function<ResolveResultWithWeight, PsiElement>()
+		{
+			@Override
+			public PsiElement fun(ResolveResultWithWeight resolveResultWithWeight)
+			{
+				return resolveResultWithWeight.getElement();
+			}
+		}, PsiElement.EMPTY_ARRAY);
 	}
 }

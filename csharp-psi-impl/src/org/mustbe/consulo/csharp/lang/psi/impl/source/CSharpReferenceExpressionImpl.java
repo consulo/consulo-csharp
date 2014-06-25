@@ -39,10 +39,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeT
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromNamespace;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromQualifiedElement;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromQualifiedName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
-import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -591,19 +589,12 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				}
 
 
-				val constructorProcessor = new ConstructorProcessor(parent, completion);
+				val constructorProcessor = new ConstructorProcessor(completion ? null : parent);
 
 				PsiElement resolveElement = resolveResultWithWeight.getElement();
 				if(resolveElement instanceof DotNetConstructorListOwner)
 				{
-					((DotNetConstructorListOwner) resolveElement).processConstructors(new Processor<DotNetConstructorDeclaration>()
-					{
-						@Override
-						public boolean process(DotNetConstructorDeclaration constructorDeclaration)
-						{
-							return constructorProcessor.execute(constructorDeclaration, null);
-						}
-					});
+					((DotNetConstructorListOwner) resolveElement).processConstructors(constructorProcessor);
 				}
 				constructorProcessor.executeDefault((PsiNamedElement) resolveElement);
 				return constructorProcessor.toResolveResults();
@@ -818,24 +809,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 
-		DotNetTypeRef[] anExtends = typeDeclaration.getExtendTypeRefs();
-		if(anExtends.length == 0)
-		{
-			return new CSharpTypeRefFromQualifiedName(DotNetTypes.System_Object, 0);
-		}
-		else
-		{
-			for(DotNetTypeRef anExtend : anExtends)
-			{
-				PsiElement resolve = anExtend.resolve(this);
-				if(resolve instanceof DotNetTypeDeclaration && !((DotNetTypeDeclaration) resolve).isInterface())
-				{
-					return anExtend;
-				}
-			}
-
-			return new CSharpTypeRefFromQualifiedName(DotNetTypes.System_Object, 0);
-		}
+		return CSharpTypeDeclarationImplUtil.resolveBaseTypeRef(typeDeclaration, this);
 	}
 
 	@Nullable

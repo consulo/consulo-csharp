@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
@@ -27,19 +28,20 @@ import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.ResolveState;
+import com.intellij.util.Processor;
 
 /**
  * @author VISTALL
  * @since 17.05.14
  */
-public class ConstructorProcessor extends AbstractScopeProcessor
+public class ConstructorProcessor extends AbstractScopeProcessor implements Processor<DotNetConstructorDeclaration>
 {
 	private WeightProcessor<PsiElement> myWeightProcessor;
 
 	@SuppressWarnings("unchecked")
-	public ConstructorProcessor(final CSharpCallArgumentListOwner parent, boolean completion)
+	public ConstructorProcessor(@Nullable final CSharpCallArgumentListOwner parent)
 	{
-		myWeightProcessor = completion ? WeightProcessor.MAXIMUM : new WeightProcessor<PsiElement>()
+		myWeightProcessor = parent == null ? WeightProcessor.MAXIMUM : new WeightProcessor<PsiElement>()
 		{
 			@Override
 			public int getWeight(@NotNull PsiElement psiNamedElement)
@@ -86,5 +88,11 @@ public class ConstructorProcessor extends AbstractScopeProcessor
 		}
 
 		execute(builder, null);
+	}
+
+	@Override
+	public boolean process(DotNetConstructorDeclaration dotNetConstructorDeclaration)
+	{
+		return execute(dotNetConstructorDeclaration, null);
 	}
 }

@@ -26,6 +26,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Comparing;
+import com.intellij.psi.PsiElement;
 import com.intellij.util.Processor;
 
 /**
@@ -54,6 +55,29 @@ public class CSharpTypeDeclarationImplUtil
 			typeRefs = new DotNetTypeRef[] {new CSharpTypeRefFromQualifiedName(defaultSuperType, 0)};
 		}
 		return typeRefs;
+	}
+
+	@NotNull
+	public static DotNetTypeRef resolveBaseTypeRef(@NotNull DotNetTypeDeclaration typeDeclaration, @NotNull PsiElement scope)
+	{
+		DotNetTypeRef[] anExtends = typeDeclaration.getExtendTypeRefs();
+		if(anExtends.length == 0)
+		{
+			return new CSharpTypeRefFromQualifiedName(DotNetTypes.System_Object, 0);
+		}
+		else
+		{
+			for(DotNetTypeRef anExtend : anExtends)
+			{
+				PsiElement resolve = anExtend.resolve(scope);
+				if(resolve instanceof DotNetTypeDeclaration && !((DotNetTypeDeclaration) resolve).isInterface())
+				{
+					return anExtend;
+				}
+			}
+
+			return new CSharpTypeRefFromQualifiedName(DotNetTypes.System_Object, 0);
+		}
 	}
 
 	@Nullable
