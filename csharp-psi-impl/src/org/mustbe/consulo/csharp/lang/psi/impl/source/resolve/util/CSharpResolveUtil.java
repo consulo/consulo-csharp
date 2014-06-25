@@ -156,7 +156,7 @@ public class CSharpResolveUtil
 	private static boolean walkChildrenImpl(
 			@NotNull final PsiScopeProcessor processor,
 			@NotNull final PsiElement entrance,
-			boolean gotoParent,
+			boolean walkParent,
 			@Nullable PsiElement maxScope,
 			@NotNull ResolveState state,
 			@NotNull Set<String> typeVisited)
@@ -212,9 +212,9 @@ public class CSharpResolveUtil
 				}
 			}
 
-			if(gotoParent)
+			if(walkParent)
 			{
-				if(!walkChildrenImpl(processor, entrance.getParent(), gotoParent, maxScope, state, typeVisited))
+				if(!walkChildrenImpl(processor, entrance.getParent(), walkParent, maxScope, state, typeVisited))
 				{
 					return false;
 				}
@@ -286,10 +286,13 @@ public class CSharpResolveUtil
 				return true;
 			}
 
-			CSharpNamespaceAsElement parentNamespace = new CSharpNamespaceAsElement(entrance.getProject(), pQName, entrance.getResolveScope());
-			if(!walkChildrenImpl(processor, parentNamespace, gotoParent, maxScope, state, typeVisited))
+			if(walkParent)
 			{
-				return false;
+				CSharpNamespaceAsElement parentNamespace = new CSharpNamespaceAsElement(entrance.getProject(), pQName, entrance.getResolveScope());
+				if(!walkChildrenImpl(processor, parentNamespace, walkParent, maxScope, state, typeVisited))
+				{
+					return false;
+				}
 			}
 		}
 		else if(entrance instanceof DotNetNamespaceDeclaration)
@@ -299,22 +302,26 @@ public class CSharpResolveUtil
 			{
 				return true;
 			}
-			CSharpNamespaceAsElement parentNamespace = new CSharpNamespaceAsElement(entrance.getProject(), presentableQName,
-					entrance.getResolveScope());
-			if(!walkChildrenImpl(processor, parentNamespace, gotoParent, maxScope, state, typeVisited))
+
+			if(walkParent)
 			{
-				return false;
+				CSharpNamespaceAsElement parentNamespace = new CSharpNamespaceAsElement(entrance.getProject(), presentableQName, entrance.getResolveScope());
+
+				if(!walkChildrenImpl(processor, parentNamespace, walkParent, maxScope, state, typeVisited))
+				{
+					return false;
+				}
 			}
 		}
 		else if(entrance instanceof PsiFile)
 		{
 			CSharpNamespaceAsElement parentNamespace = new CSharpNamespaceAsElement(entrance.getProject(), CSharpNamespaceHelper.ROOT,
 					entrance.getResolveScope());
-			return walkChildrenImpl(processor, parentNamespace, gotoParent, maxScope, state, typeVisited);
+			return walkChildrenImpl(processor, parentNamespace, walkParent, maxScope, state, typeVisited);
 		}
 
 		PsiFile psiFile = state.get(CONTAINS_FILE_KEY);
-		return psiFile == null || walkChildrenImpl(processor, psiFile, gotoParent, maxScope, state, typeVisited);
+		return psiFile == null || walkChildrenImpl(processor, psiFile, walkParent, maxScope, state, typeVisited);
 	}
 
 	private static boolean processTypeDeclaration(
