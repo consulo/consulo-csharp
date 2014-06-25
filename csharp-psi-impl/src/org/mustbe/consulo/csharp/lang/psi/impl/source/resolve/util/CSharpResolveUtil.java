@@ -182,7 +182,7 @@ public class CSharpResolveUtil
 						continue;
 					}
 
-					if(!processTypeDeclaration(processor, type, state, superTypes, extractor, typeVisited, gotoParent))
+					if(!processTypeDeclaration(processor, type, state, superTypes, extractor, typeVisited))
 					{
 						return false;
 					}
@@ -190,7 +190,7 @@ public class CSharpResolveUtil
 			}
 			else
 			{
-				if(!processTypeDeclaration(processor, typeDeclaration, state, superTypes, extractor, typeVisited, gotoParent))
+				if(!processTypeDeclaration(processor, typeDeclaration, state, superTypes, extractor, typeVisited))
 				{
 					return false;
 				}
@@ -323,8 +323,7 @@ public class CSharpResolveUtil
 			ResolveState state,
 			List<DotNetTypeRef> supers,
 			DotNetGenericExtractor genericExtractor,
-			Set<String> typeVisited,
-			boolean typeResolving)
+			Set<String> typeVisited)
 	{
 
 		String vmName = DotNetVirtualMachineUtil.toVMQualifiedName(typeDeclaration);
