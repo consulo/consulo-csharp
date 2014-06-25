@@ -163,7 +163,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			}
 		});
 
-		CSharpResolveUtil.walkChildren(processor, resolveLayers.getSecond(), false, null, ResolveState.initial());
+		CSharpResolveUtil.walkChildren(processor, resolveLayers.getSecond(), true, null, ResolveState.initial());
 
 		final ResolveResultWithWeight[] resultWithWeights = processor.toResolveResults();
 		if(resultWithWeights.length > 0 && resultWithWeights[0].isGoodResult())

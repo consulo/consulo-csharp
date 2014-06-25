@@ -146,17 +146,17 @@ public class CSharpResolveUtil
 	public static boolean walkChildren(
 			@NotNull final PsiScopeProcessor processor,
 			@NotNull final PsiElement entrance,
-			boolean typeResolving,
+			boolean gotoParent,
 			@Nullable PsiElement maxScope,
 			@NotNull ResolveState state)
 	{
-		return walkChildrenImpl(processor, entrance, typeResolving, maxScope, state, new HashSet<String>());
+		return walkChildrenImpl(processor, entrance, gotoParent, maxScope, state, new HashSet<String>());
 	}
 
 	private static boolean walkChildrenImpl(
 			@NotNull final PsiScopeProcessor processor,
 			@NotNull final PsiElement entrance,
-			boolean typeResolving,
+			boolean gotoParent,
 			@Nullable PsiElement maxScope,
 			@NotNull ResolveState state,
 			@NotNull Set<String> typeVisited)
@@ -182,7 +182,7 @@ public class CSharpResolveUtil
 						continue;
 					}
 
-					if(!processTypeDeclaration(processor, type, state, superTypes, extractor, typeVisited, typeResolving))
+					if(!processTypeDeclaration(processor, type, state, superTypes, extractor, typeVisited, gotoParent))
 					{
 						return false;
 					}
@@ -190,7 +190,7 @@ public class CSharpResolveUtil
 			}
 			else
 			{
-				if(!processTypeDeclaration(processor, typeDeclaration, state, superTypes, extractor, typeVisited, typeResolving))
+				if(!processTypeDeclaration(processor, typeDeclaration, state, superTypes, extractor, typeVisited, gotoParent))
 				{
 					return false;
 				}
@@ -212,9 +212,9 @@ public class CSharpResolveUtil
 				}
 			}
 
-			if(typeResolving)
+			if(gotoParent)
 			{
-				if(!walkChildrenImpl(processor, entrance.getParent(), typeResolving, maxScope, state, typeVisited))
+				if(!walkChildrenImpl(processor, entrance.getParent(), gotoParent, maxScope, state, typeVisited))
 				{
 					return false;
 				}
@@ -287,7 +287,7 @@ public class CSharpResolveUtil
 			}
 
 			CSharpNamespaceAsElement parentNamespace = new CSharpNamespaceAsElement(entrance.getProject(), pQName, entrance.getResolveScope());
-			if(!walkChildrenImpl(processor, parentNamespace, typeResolving, maxScope, state, typeVisited))
+			if(!walkChildrenImpl(processor, parentNamespace, gotoParent, maxScope, state, typeVisited))
 			{
 				return false;
 			}
@@ -301,7 +301,7 @@ public class CSharpResolveUtil
 			}
 			CSharpNamespaceAsElement parentNamespace = new CSharpNamespaceAsElement(entrance.getProject(), presentableQName,
 					entrance.getResolveScope());
-			if(!walkChildrenImpl(processor, parentNamespace, typeResolving, maxScope, state, typeVisited))
+			if(!walkChildrenImpl(processor, parentNamespace, gotoParent, maxScope, state, typeVisited))
 			{
 				return false;
 			}
@@ -310,11 +310,11 @@ public class CSharpResolveUtil
 		{
 			CSharpNamespaceAsElement parentNamespace = new CSharpNamespaceAsElement(entrance.getProject(), CSharpNamespaceHelper.ROOT,
 					entrance.getResolveScope());
-			return walkChildrenImpl(processor, parentNamespace, typeResolving, maxScope, state, typeVisited);
+			return walkChildrenImpl(processor, parentNamespace, gotoParent, maxScope, state, typeVisited);
 		}
 
 		PsiFile psiFile = state.get(CONTAINS_FILE_KEY);
-		return psiFile == null || walkChildrenImpl(processor, psiFile, typeResolving, maxScope, state, typeVisited);
+		return psiFile == null || walkChildrenImpl(processor, psiFile, gotoParent, maxScope, state, typeVisited);
 	}
 
 	private static boolean processTypeDeclaration(
