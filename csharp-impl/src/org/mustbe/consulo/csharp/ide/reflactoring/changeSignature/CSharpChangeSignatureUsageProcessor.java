@@ -32,7 +32,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import com.intellij.openapi.application.ReadActionProcessor;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
@@ -270,12 +269,6 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 
 	@Override
 	public boolean shouldPreviewUsages(ChangeInfo changeInfo, UsageInfo[] usages)
-	{
-		return false;
-	}
-
-	@Override
-	public boolean setupDefaultValues(ChangeInfo changeInfo, Ref<UsageInfo[]> refUsages, Project project)
 	{
 		return false;
 	}
