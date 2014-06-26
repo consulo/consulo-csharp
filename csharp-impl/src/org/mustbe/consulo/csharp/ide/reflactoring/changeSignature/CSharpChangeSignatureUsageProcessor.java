@@ -151,8 +151,9 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 				val call = (CSharpCallArgumentListOwner) CSharpFileFactory.createExpression(usageInfo.getProject(), builder.toString());
 				parameterList.replace(call.getParameterList());
 			}
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	@Override
@@ -274,8 +275,7 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 	}
 
 	@Override
-	public boolean setupDefaultValues(
-			ChangeInfo changeInfo, Ref<UsageInfo[]> refUsages, Project project)
+	public boolean setupDefaultValues(ChangeInfo changeInfo, Ref<UsageInfo[]> refUsages, Project project)
 	{
 		return false;
 	}
