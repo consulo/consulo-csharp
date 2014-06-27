@@ -159,9 +159,11 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			@Override
 			public int getWeight(@NotNull DotNetNamedElement element)
 			{
-				return MethodAcceptorImpl.calcAcceptableWeight(CSharpOperatorReferenceImpl.this, (CSharpMethodDeclaration) element);
+				return MethodAcceptorImpl.calcAcceptableWeight(CSharpOperatorReferenceImpl.this, CSharpOperatorReferenceImpl.this,
+						(CSharpMethodDeclaration) element);
 			}
-		});
+		}
+		);
 
 		CSharpResolveUtil.walkChildren(processor, resolveLayers.getSecond(), true, null, ResolveState.initial());
 
@@ -219,7 +221,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 				continue;
 			}
 
-			if(MethodAcceptorImpl.calcAcceptableWeight(this, (CSharpMethodDeclaration) dotNetNamedElement) == WeightProcessor.MAX_WEIGHT)
+			if(MethodAcceptorImpl.calcAcceptableWeight(this, this, (CSharpMethodDeclaration) dotNetNamedElement) == WeightProcessor.MAX_WEIGHT)
 			{
 				return ((CSharpMethodDeclaration) dotNetNamedElement).getReturnTypeRef();
 			}
@@ -325,7 +327,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			DotNetExpression expression = ((CSharpPrefixExpressionImpl) parent).getExpression();
 			if(expression != null)
 			{
-				return new DotNetExpression[] {expression};
+				return new DotNetExpression[]{expression};
 			}
 		}
 		else if(parent instanceof CSharpPostfixExpressionImpl)
@@ -333,7 +335,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			DotNetExpression expression = ((CSharpPostfixExpressionImpl) parent).getExpression();
 			if(expression != null)
 			{
-				return new DotNetExpression[] {expression};
+				return new DotNetExpression[]{expression};
 			}
 		}
 		else if(parent instanceof CSharpAssignmentExpressionImpl)

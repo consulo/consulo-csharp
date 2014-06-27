@@ -48,7 +48,7 @@ public class ConstructorProcessor extends AbstractScopeProcessor implements Proc
 			{
 				if(psiNamedElement instanceof DotNetConstructorDeclaration)
 				{
-					return MethodAcceptorImpl.calcAcceptableWeight(parent, (DotNetConstructorDeclaration) psiNamedElement);
+					return MethodAcceptorImpl.calcAcceptableWeight(parent, parent, (DotNetConstructorDeclaration) psiNamedElement);
 				}
 				return 0;
 			}

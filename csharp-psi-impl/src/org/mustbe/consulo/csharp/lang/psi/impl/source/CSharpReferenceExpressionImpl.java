@@ -303,13 +303,13 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 								PsiElement target = ((CSharpLambdaTypeRef) typeRef).getTarget();
 								if(target instanceof DotNetMethodDeclaration)
 								{
-									return MethodAcceptorImpl.calcAcceptableWeight(parameters, (CSharpMethodDeclaration) target);
+									return MethodAcceptorImpl.calcAcceptableWeight(e, parameters, (CSharpMethodDeclaration) target);
 								}
 							}
 						}
 						else if(psiNamedElement instanceof DotNetMethodDeclaration)
 						{
-							return MethodAcceptorImpl.calcAcceptableWeight(parameters, (CSharpMethodDeclaration) psiNamedElement);
+							return MethodAcceptorImpl.calcAcceptableWeight(e, parameters, (CSharpMethodDeclaration) psiNamedElement);
 						}
 						return 0;
 					}
@@ -326,7 +326,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 						{
 							return 0;
 						}
-						return MethodAcceptorImpl.calcAcceptableWeight(parameters, (CSharpArrayMethodDeclaration) psiNamedElement);
+						return MethodAcceptorImpl.calcAcceptableWeight(e, parameters,
+								(CSharpArrayMethodDeclaration) psiNamedElement);
 					}
 				};
 				break;

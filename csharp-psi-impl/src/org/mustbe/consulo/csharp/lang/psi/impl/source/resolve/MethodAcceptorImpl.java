@@ -37,14 +37,14 @@ public class MethodAcceptorImpl
 {
 	private static interface MethodAcceptor
 	{
-		int calcAcceptableWeight(@NotNull CSharpExpressionWithParameters scope, DotNetExpression[] expressions, DotNetParameter[] parameters);
+		int calcAcceptableWeight(@NotNull PsiElement scope, DotNetExpression[] expressions, DotNetParameter[] parameters);
 	}
 
 	private static class SimpleMethodAcceptor implements MethodAcceptor
 	{
 		@Override
 		public int calcAcceptableWeight(
-				@NotNull CSharpExpressionWithParameters scope,
+				@NotNull PsiElement scope,
 				DotNetExpression[] expressions,
 				DotNetParameter[] parameters)
 		{
@@ -75,7 +75,7 @@ public class MethodAcceptorImpl
 	{
 		@Override
 		public int calcAcceptableWeight(
-				@NotNull CSharpExpressionWithParameters scope,
+				@NotNull PsiElement scope,
 				DotNetExpression[] expressions,
 				DotNetParameter[] parameters)
 		{
@@ -117,7 +117,7 @@ public class MethodAcceptorImpl
 	{
 		@Override
 		public int calcAcceptableWeight(
-				@NotNull CSharpExpressionWithParameters scope,
+				@NotNull PsiElement scope,
 				DotNetExpression[] expressions,
 				DotNetParameter[] parameters)
 		{
@@ -140,7 +140,7 @@ public class MethodAcceptorImpl
 					newExpressions[0] = (DotNetExpression) qualifier;
 					System.arraycopy(expressions, 0, newExpressions, 1, expressions.length);
 
-					return MethodAcceptorImpl.calcAcceptableWeight(new DelegateExpressionWithParameters(scope, newExpressions), parameters);
+					return MethodAcceptorImpl.calcAcceptableWeight(scope, newExpressions, parameters);
 				}
 			}
 			return 0;
@@ -153,17 +153,25 @@ public class MethodAcceptorImpl
 			new MethodAcceptorForExtensions()
 	};
 
-	public static int calcAcceptableWeight(CSharpExpressionWithParameters scope, DotNetParameterListOwner methodDeclaration)
+	public static int calcAcceptableWeight(PsiElement scope, CSharpExpressionWithParameters withParameters, DotNetParameterListOwner parameterListOwner)
 	{
-		DotNetParameter[] parameters = methodDeclaration.getParameters();
-
-		return calcAcceptableWeight(scope, parameters);
+		DotNetParameter[] parameters = parameterListOwner.getParameters();
+		return calcAcceptableWeight(scope, withParameters.getParameterExpressions(), parameters);
 	}
 
-	public static int calcAcceptableWeight(CSharpExpressionWithParameters scope, DotNetParameter[] parameters)
+	public static int calcAcceptableWeight(PsiElement scope, CSharpExpressionWithParameters withParameters, DotNetParameter[] parameters)
 	{
-		DotNetExpression[] parameterExpressions = scope.getParameterExpressions();
+		return calcAcceptableWeight(scope, withParameters.getParameterExpressions(), parameters);
+	}
 
+	public static int calcAcceptableWeight(PsiElement scope, DotNetExpression[] parameterExpressions, DotNetParameterListOwner parameterListOwner)
+	{
+		DotNetParameter[] netParameters = parameterListOwner.getParameters();
+		return calcAcceptableWeight(scope, parameterExpressions, netParameters);
+	}
+
+	public static int calcAcceptableWeight(PsiElement scope, DotNetExpression[] parameterExpressions, DotNetParameter[] parameters)
+	{
 		int weight = 0;
 		for(MethodAcceptor ourAcceptor : ourAcceptors)
 		{

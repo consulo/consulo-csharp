@@ -28,7 +28,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpression
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingNamespaceStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.DelegateExpressionWithParameters;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
@@ -231,14 +230,12 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		newExpressions[0] = (DotNetExpression) qualifier;
 		System.arraycopy(parameterExpressions, 0, newExpressions, 1, parameterExpressions.length);
 
-		val delegatedExpression = new DelegateExpressionWithParameters(myRef, newExpressions);
-
 		Collection<DotNetLikeMethodDeclaration> list = ExtensionMethodIndex.getInstance().get(referenceName, myRef.getProject(),
 				myRef.getResolveScope());
 
 		for(DotNetLikeMethodDeclaration possibleMethod : list)
 		{
-			if(MethodAcceptorImpl.calcAcceptableWeight(delegatedExpression, possibleMethod) == WeightProcessor.MAX_WEIGHT)
+			if(MethodAcceptorImpl.calcAcceptableWeight(myRef, newExpressions, possibleMethod.getParameters()) == WeightProcessor.MAX_WEIGHT)
 			{
 				PsiElement parentOfMethod = possibleMethod.getParent();
 				if(parentOfMethod instanceof DotNetQualifiedElement)
