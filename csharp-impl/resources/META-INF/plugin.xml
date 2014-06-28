@@ -17,6 +17,7 @@
 <idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
 	<id>org.mustbe.consulo.csharp</id>
 	<name>C#</name>
+	<version>SNAPSHOT</version>
 	<resource-bundle>messages.CSharpBundle</resource-bundle>
 	<depends>org.mustbe.consulo.dotnet.core</depends>
 	<depends optional="true" config-file="CSharpSpellchecker.xml">com.intellij.spellchecker</depends>
