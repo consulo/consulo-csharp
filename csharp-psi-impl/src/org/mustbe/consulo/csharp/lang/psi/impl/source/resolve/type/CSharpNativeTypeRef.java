@@ -75,6 +75,10 @@ public class CSharpNativeTypeRef extends DotNetTypeRef.Adapter implements DotNet
 	@Override
 	public boolean isNullable()
 	{
+		if(this == OBJECT || this == STRING)
+		{
+			return true;
+		}
 		return false;
 	}
 
