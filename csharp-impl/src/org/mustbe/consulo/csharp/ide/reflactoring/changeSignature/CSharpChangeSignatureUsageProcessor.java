@@ -54,8 +54,9 @@ import lombok.val;
  */
 public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsageProcessor
 {
+	@NotNull
 	@Override
-	public UsageInfo[] findUsages(final ChangeInfo info)
+	public UsageInfo[] findUsages(@NotNull final ChangeInfo info)
 	{
 		if(!(info instanceof CSharpChangeInfo))
 		{
@@ -84,16 +85,16 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 		return list.toArray(UsageInfo.EMPTY_ARRAY);
 	}
 
+	@NotNull
 	@Override
-	public MultiMap<PsiElement, String> findConflicts(
-			ChangeInfo info, Ref<UsageInfo[]> refUsages)
+	public MultiMap<PsiElement, String> findConflicts(@NotNull ChangeInfo info, Ref<UsageInfo[]> refUsages)
 	{
-		return MultiMap.create();
+		return MultiMap.emptyInstance();
 	}
 
 	@Override
 	public boolean processUsage(
-			ChangeInfo changeInfo, UsageInfo usageInfo, boolean beforeMethodChange, UsageInfo[] usages)
+			@NotNull ChangeInfo changeInfo, @NotNull UsageInfo usageInfo, boolean beforeMethodChange, @NotNull UsageInfo[] usages)
 	{
 		if(!(changeInfo instanceof CSharpChangeInfo))
 		{
@@ -156,7 +157,7 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 	}
 
 	@Override
-	public boolean processPrimaryMethod(ChangeInfo changeInfo)
+	public boolean processPrimaryMethod(@NotNull ChangeInfo changeInfo)
 	{
 		if(!(changeInfo instanceof CSharpChangeInfo))
 		{
@@ -268,17 +269,17 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 	}
 
 	@Override
-	public boolean shouldPreviewUsages(ChangeInfo changeInfo, UsageInfo[] usages)
+	public boolean shouldPreviewUsages(@NotNull ChangeInfo changeInfo, @NotNull UsageInfo[] usages)
 	{
 		return false;
 	}
 
 	@Override
 	public void registerConflictResolvers(
-			List<ResolveSnapshotProvider.ResolveSnapshot> snapshots,
+			@NotNull List<ResolveSnapshotProvider.ResolveSnapshot> snapshots,
 			@NotNull ResolveSnapshotProvider resolveSnapshotProvider,
-			UsageInfo[] usages,
-			ChangeInfo changeInfo)
+			@NotNull UsageInfo[] usages,
+			@NotNull ChangeInfo changeInfo)
 	{
 
 	}
