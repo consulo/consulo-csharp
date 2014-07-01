@@ -37,6 +37,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.ArrayUtil;
 
 /**
  * @author VISTALL
@@ -54,7 +55,13 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	@Override
 	public Object[] getParametersForLookup(LookupElement item, ParameterInfoContext context)
 	{
-		return new Object[0];
+		Object object = item.getObject();
+		if(object instanceof DotNetLikeMethodDeclaration || object instanceof DotNetVariable && ((DotNetVariable) object).toTypeRef(false)
+				instanceof CSharpLambdaTypeRef)
+		{
+			return new Object[] {object};
+		}
+		return ArrayUtil.EMPTY_OBJECT_ARRAY;
 	}
 
 	@Nullable
