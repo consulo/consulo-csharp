@@ -61,7 +61,7 @@ public class MethodAcceptorImpl
 				DotNetTypeRef expressionType = expression.toTypeRef(false);
 				DotNetTypeRef parameterType = parameter.toTypeRef(false);
 
-				if(CSharpTypeUtil.isInheritable(expressionType, parameterType, scope))
+				if(CSharpTypeUtil.isInheritable(parameterType, expressionType, scope))
 				{
 					weight ++;
 				}
@@ -103,7 +103,7 @@ public class MethodAcceptorImpl
 				DotNetTypeRef expressionType = expression.toTypeRef(false);
 				DotNetTypeRef parameterType = parameter.toTypeRef(false);
 
-				if(!CSharpTypeUtil.isInheritable(expressionType, parameterType, scope))
+				if(!CSharpTypeUtil.isInheritable(parameterType, expressionType, scope))
 				{
 					return 0;
 				}

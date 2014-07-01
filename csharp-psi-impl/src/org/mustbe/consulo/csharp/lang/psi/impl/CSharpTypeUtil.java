@@ -63,6 +63,27 @@ public class CSharpTypeUtil
 			return false;
 		}
 
+		if(top == CSharpNativeTypeRef.FLOAT || top == CSharpNativeTypeRef.DOUBLE)
+		{
+			if(target == CSharpNativeTypeRef.BYTE ||
+					target == CSharpNativeTypeRef.SBYTE ||
+					target == CSharpNativeTypeRef.SHORT ||
+					target == CSharpNativeTypeRef.USHORT ||
+					target == CSharpNativeTypeRef.INT ||
+					target == CSharpNativeTypeRef.UINT ||
+					target == CSharpNativeTypeRef.ULONG ||
+					target == CSharpNativeTypeRef.FLOAT
+					)
+			{
+				return true;
+			}
+
+			if(top == CSharpNativeTypeRef.DOUBLE && target == CSharpNativeTypeRef.FLOAT)
+			{
+				return true;
+			}
+		}
+
 		if(target instanceof CSharpRefTypeRef && top instanceof CSharpRefTypeRef)
 		{
 			if(((CSharpRefTypeRef) target).getType() != ((CSharpRefTypeRef) top).getType())
