@@ -33,6 +33,7 @@ import org.mustbe.consulo.dotnet.module.MainConfigurationLayer;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleLangExtension;
 import com.intellij.execution.configurations.GeneralCommandLine;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.compiler.CompilerMessageCategory;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -114,7 +115,12 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 
 				int codeLine = Integer.parseInt(matcher.group(2));
 				int codeColumn = Integer.parseInt(matcher.group(3));
-				return new DotNetCompilerMessage(category, matcher.group(6), fileUrl, codeLine, codeColumn);
+				String message = matcher.group(6);
+				if(ApplicationManager.getApplication().isInternal())
+				{
+					message += "(" + matcher.group(5) + ")";
+				}
+				return new DotNetCompilerMessage(category, message, fileUrl, codeLine, codeColumn);
 			}
 		}
 		return null;

@@ -22,7 +22,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaT
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.resolve.DotNetRefTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
@@ -37,8 +36,8 @@ public class CSharpTypeUtil
 	 * We have expression
 	 * int a = "test";
 	 * <p/>
-	 * "test" - string type, ill be 'top' parameter
-	 * int - int type, ill 'target'
+	 * "test" - string type, ill be 'target' parameter
+	 * int - int type, ill 'top'
 	 * return false due it not be casted
 	 */
 	public static boolean isInheritable(@NotNull DotNetTypeRef top, @NotNull DotNetTypeRef target, @NotNull PsiElement scope)
@@ -48,7 +47,7 @@ public class CSharpTypeUtil
 			return false;
 		}
 
-		if(top == DotNetTypeRef.NULL_TYPE && target.isNullable())
+		if(top.isNullable() && target == DotNetTypeRef.NULL_TYPE)
 		{
 			return true;
 		}
@@ -56,11 +55,6 @@ public class CSharpTypeUtil
 		if(top.equals(target))
 		{
 			return true;
-		}
-
-		if(target instanceof DotNetRefTypeRef && !(top instanceof DotNetRefTypeRef))
-		{
-			return false;
 		}
 
 		if(top == CSharpNativeTypeRef.FLOAT || top == CSharpNativeTypeRef.DOUBLE)
