@@ -20,9 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import org.mustbe.consulo.csharp.lang.psi.UsefulPsiTreeUtil;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -31,6 +30,7 @@ import com.intellij.lang.parameterInfo.CreateParameterInfoContext;
 import com.intellij.lang.parameterInfo.ParameterInfoContext;
 import com.intellij.lang.parameterInfo.ParameterInfoHandler;
 import com.intellij.lang.parameterInfo.ParameterInfoUIContext;
+import com.intellij.lang.parameterInfo.ParameterInfoUtils;
 import com.intellij.lang.parameterInfo.UpdateParameterInfoContext;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
@@ -135,7 +135,13 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	@Override
 	public void updateParameterInfo(@NotNull PsiElement place, UpdateParameterInfoContext context)
 	{
-		int parameterIndex = getArgumentIndex(place);
+		int parameterIndex = -1;
+		CSharpCallArgumentList callArgumentList = PsiTreeUtil.getParentOfType(place, CSharpCallArgumentList.class, false);
+		if(callArgumentList != null)
+		{
+			parameterIndex = ParameterInfoUtils.getCurrentParameterIndex(callArgumentList.getNode(), context.getOffset(), CSharpTokens.COMMA);
+		}
+
 		context.setCurrentParameter(parameterIndex);
 
 		if(context.getParameterOwner() == null)
@@ -189,41 +195,5 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 
 		context.setupUIComponentPresentation(text, parameterRange.getStartOffset(), parameterRange.getEndOffset(), !context.isUIComponentEnabled(),
 				false, false, context.getDefaultParameterColor());
-	}
-
-	// from google-dart plugin
-	// author Fedor.Korotkov license apache 2
-	public static int getArgumentIndex(PsiElement place)
-	{
-		int parameterIndex = -1;
-		final CSharpCallArgumentList argumentList = PsiTreeUtil.getParentOfType(place, CSharpCallArgumentList.class, false);
-		if(place == argumentList)
-		{
-			assert argumentList != null;
-			final Pair<Object, Integer> info = resolveToCallableInfo(argumentList.getParent());
-			// the last one
-			parameterIndex = info == null ? -1 : info.getSecond() - 1;
-		}
-		else if(argumentList != null)
-		{
-			for(DotNetExpression expression : argumentList.getExpressions())
-			{
-				++parameterIndex;
-				if(expression.getTextRange().getEndOffset() >= place.getTextOffset())
-				{
-					break;
-				}
-			}
-		}
-		else if(UsefulPsiTreeUtil.getPrevSiblingSkipWhiteSpacesAndComments(place, true) instanceof CSharpCallArgumentList)
-		{
-			// seems foo(param1, param2<caret>)
-			final CSharpCallArgumentList prevSibling = (CSharpCallArgumentList) UsefulPsiTreeUtil
-					.getPrevSiblingSkipWhiteSpacesAndComments(place, true);
-			assert prevSibling != null;
-			// callExpression -> arguments -> argumentList
-			parameterIndex = prevSibling.getExpressions().length/* + prevSibling.getNamedArgumentList().size()*/;
-		}
-		return parameterIndex;
 	}
 }
