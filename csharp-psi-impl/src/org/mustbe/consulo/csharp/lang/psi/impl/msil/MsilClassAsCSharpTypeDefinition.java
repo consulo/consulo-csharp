@@ -29,7 +29,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.MsilToCSharpTypeRef;
-import org.mustbe.consulo.dotnet.lang.psi.DotNetInheritUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.MsilHelper;
@@ -203,6 +203,12 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	public PsiFile getContainingFile()
 	{
 		return myMsilElement.getContainingFile();
+	}
+
+	@Override
+	public String getVmQName()
+	{
+		return myMsilElement.getVmQName();
 	}
 
 	@Override

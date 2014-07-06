@@ -26,12 +26,13 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeStub;
-import org.mustbe.consulo.dotnet.lang.psi.DotNetInheritUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclarationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -95,6 +96,12 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeSt
 	{
 		DotNetGenericParameterList genericParameterList = getGenericParameterList();
 		return genericParameterList == null ? 0 : genericParameterList.getGenericParametersCount();
+	}
+
+	@Override
+	public String getVmQName()
+	{
+		return DotNetTypeDeclarationUtil.getVmQName(this);
 	}
 
 	@NotNull
@@ -163,8 +170,7 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeSt
 	{
 		if(another instanceof DotNetTypeDeclaration)
 		{
-			return Comparing.equal(getPresentableQName(), ((DotNetTypeDeclaration) another).getPresentableQName()) && getGenericParametersCount() ==
-					((DotNetTypeDeclaration) another).getGenericParametersCount();
+			return Comparing.equal(getVmQName(), ((DotNetTypeDeclaration) another).getVmQName());
 		}
 		else
 		{

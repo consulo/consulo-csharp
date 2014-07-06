@@ -35,6 +35,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclarationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.project.Project;
@@ -198,6 +199,12 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 			return ((DotNetQualifiedElement) parent).getPresentableQName();
 		}
 		return myParentQName;
+	}
+
+	@Override
+	public String getVmQName()
+	{
+		return DotNetTypeDeclarationUtil.getVmQName(this);
 	}
 
 	@Nullable
