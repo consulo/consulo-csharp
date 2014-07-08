@@ -23,7 +23,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeT
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -129,20 +128,10 @@ public class CSharpTypeUtil
 			return true;
 		}
 
-		if(topElement instanceof DotNetTypeDeclaration && target instanceof CSharpNativeTypeRef)
-		{
-			if(Comparing.equal(((DotNetTypeDeclaration) topElement).getPresentableQName(), ((CSharpNativeTypeRef) target).getWrapperQualifiedClass
-					()))
-			{
-				return true;
-			}
-		}
-
 		if(topElement instanceof DotNetTypeDeclaration && targetElement instanceof DotNetTypeDeclaration)
 		{
-			return ((DotNetTypeDeclaration) topElement).isInheritor((DotNetTypeDeclaration) targetElement, true);
+			return ((DotNetTypeDeclaration) targetElement).isInheritor((DotNetTypeDeclaration) topElement, true);
 		}
-
 
 		return false;
 	}
