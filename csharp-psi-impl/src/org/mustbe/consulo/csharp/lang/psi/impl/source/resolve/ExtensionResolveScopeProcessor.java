@@ -18,14 +18,19 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameterList;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionWithParameters;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
@@ -37,14 +42,19 @@ import com.intellij.psi.ResolveState;
  */
 public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 {
+	private final CSharpReferenceExpression myExpression;
 	private final Condition<PsiNamedElement> myCond;
-	private final WeightProcessor<PsiNamedElement> myWeightProcessor;
 	private final boolean myNamed;
+	private final DotNetExpression[] myNewExpression;
+	private final DotNetTypeRef myQualifierTypeRef;
 
-	public ExtensionResolveScopeProcessor(Condition<PsiNamedElement> condition, WeightProcessor<PsiNamedElement> weightProcessor, boolean named)
+	public ExtensionResolveScopeProcessor(DotNetTypeRef qualifierTypeRef, CSharpReferenceExpression expression,
+			Condition<PsiNamedElement> condition, boolean named)
 	{
+		myQualifierTypeRef = qualifierTypeRef;
+		myNewExpression = getNewExpressions(expression, qualifierTypeRef);
+		myExpression = expression;
 		myCond = condition;
-		myWeightProcessor = weightProcessor;
 		myNamed = named;
 
 		putUserData(CSharpResolveUtil.CONDITION_KEY, new Condition<PsiElement>()
@@ -69,8 +79,20 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 				continue;
 			}
 
-			int weight = myWeightProcessor.getWeight(dotNetNamedElement);
+
+			CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) dotNetNamedElement;
+
+			DotNetTypeRef[] parameterTypeRefs = methodDeclaration.getParameterTypeRefs();
+
+			if(!CSharpTypeUtil.isInheritable(parameterTypeRefs[0], myQualifierTypeRef, myExpression))
+			{
+				continue;
+			}
+
+			int weight = MethodAcceptorImpl.calcAcceptableWeight(myExpression, myNewExpression, methodDeclaration);
+
 			add(new ResolveResultWithWeight(transform((CSharpMethodDeclaration) dotNetNamedElement), weight));
+
 			if(weight == WeightProcessor.MAX_WEIGHT && myNamed)
 			{
 				return false;
@@ -79,7 +101,26 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 		return true;
 	}
 
-	private static PsiElement transform(CSharpMethodDeclaration methodDeclaration)
+	private static DotNetExpression[] getNewExpressions(CSharpReferenceExpression ex, DotNetTypeRef qType)
+	{
+		PsiElement parent = ex.getParent();
+		if(parent instanceof CSharpExpressionWithParameters)
+		{
+			DotNetExpression[] parameterExpressions = ((CSharpExpressionWithParameters) parent).getParameterExpressions();
+
+			DotNetExpression[] newParameters = new DotNetExpression[parameterExpressions.length + 1];
+			System.arraycopy(parameterExpressions, 0, newParameters, 1, parameterExpressions.length);
+
+			newParameters[0] = new DummyExpression(ex.getProject(), qType);
+
+			return newParameters;
+		}
+		else
+		{
+			return DotNetExpression.EMPTY_ARRAY;
+		}
+	}
+	private static CSharpLightMethodDeclaration transform(CSharpMethodDeclaration methodDeclaration)
 	{
 		DotNetParameterList parameterList = methodDeclaration.getParameterList();
 		assert parameterList != null;
@@ -89,8 +130,8 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 		System.arraycopy(oldParameters, 1, parameters, 0, parameters.length);
 
 		CSharpLightParameterList lightParameterList = new CSharpLightParameterList(parameterList, parameters);
-		CSharpLightMethodDeclaration declaration = new CSharpLightMethodDeclaration(methodDeclaration,
-				methodDeclaration.getReturnTypeRef(), lightParameterList);
+		CSharpLightMethodDeclaration declaration = new CSharpLightMethodDeclaration(methodDeclaration, methodDeclaration.getReturnTypeRef(),
+				lightParameterList);
 		declaration.setExtensionWrapper();
 		return declaration;
 	}

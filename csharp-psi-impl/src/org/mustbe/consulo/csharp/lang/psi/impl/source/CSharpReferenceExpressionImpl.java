@@ -630,16 +630,18 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		PsiElement target = element;
 		DotNetGenericExtractor extractor = DotNetGenericExtractor.EMPTY;
 
+		DotNetTypeRef qualifierTypeRef = DotNetTypeRef.ERROR_TYPE;
+
 		if(qualifier instanceof DotNetExpression)
 		{
-			DotNetTypeRef dotNetTypeRef = ((DotNetExpression) qualifier).toTypeRef(false);
+			qualifierTypeRef = ((DotNetExpression) qualifier).toTypeRef(false);
 
-			PsiElement resolve = dotNetTypeRef.resolve(element);
+			PsiElement resolve = qualifierTypeRef.resolve(element);
 
 			if(resolve != null)
 			{
 				target = resolve;
-				extractor = dotNetTypeRef.getGenericExtractor(resolve, element);
+				extractor = qualifierTypeRef.getGenericExtractor(resolve, element);
 			}
 			else
 			{
@@ -673,16 +675,24 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				return p.toResolveResults();
 			}
 
-			// walk for extensions
-			ExtensionResolveScopeProcessor p2 = new ExtensionResolveScopeProcessor(condition, weightProcessor, !с);
-			p2.merge(p);
+			if(element instanceof CSharpReferenceExpression)
+			{
+				// walk for extensions
+				ExtensionResolveScopeProcessor p2 = new ExtensionResolveScopeProcessor(qualifierTypeRef, (CSharpReferenceExpression) element,
+					condition, !с);
+				p2.merge(p);
 
-			resolveState = ResolveState.initial();
-			resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR_KEY, extractor);
-			resolveState = resolveState.put(CSharpResolveUtil.CONTAINS_FILE_KEY, element.getContainingFile());
+				resolveState = ResolveState.initial();
+				resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR_KEY, extractor);
+				resolveState = resolveState.put(CSharpResolveUtil.CONTAINS_FILE_KEY, element.getContainingFile());
 
-			CSharpResolveUtil.walkChildren(p2, targetToWalkChildren, false, null, resolveState);
-			return p2.toResolveResults();
+				CSharpResolveUtil.walkChildren(p2, targetToWalkChildren, true, null, resolveState);
+				return p2.toResolveResults();
+			}
+			else
+			{
+				return p.toResolveResults();
+			}
 		}
 		else
 		{
