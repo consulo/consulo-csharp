@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -102,6 +103,19 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	}
 
 	@Override
+	public void visitArrayMethodDeclaration(CSharpArrayMethodDeclaration declaration)
+	{
+		StringBuilder builder = new StringBuilder();
+
+		processModifierList(builder, declaration);
+		appendTypeRef(builder, declaration.getReturnTypeRef());
+		builder.append(" this");
+		processParameterList(declaration, builder, '[', ']');
+		builder.append(" { /* compiled code */ }\n");
+		myBlocks.add(new LineStubBlock(builder));
+	}
+
+	@Override
 	public void visitConversionMethodDeclaration(CSharpConversionMethodDeclaration declaration)
 	{
 		StringBuilder builder = new StringBuilder();
@@ -111,7 +125,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		builder.append(" ");
 		builder.append("operator ");
 		appendTypeRef(builder, declaration.getConversionTypeRef());
-		processParameterList(declaration, builder);
+		processParameterList(declaration, builder, '(', ')');
 		builder.append(" { /* compiled code */ }\n");
 		myBlocks.add(new LineStubBlock(builder));
 	}
@@ -123,7 +137,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 		processModifierList(builder, declaration);
 		builder.append(declaration.getName());
-		processParameterList(declaration, builder);
+		processParameterList(declaration, builder, '(', ')');
 		builder.append(" { /* compiled code */ }\n");
 		myBlocks.add(new LineStubBlock(builder));
 	}
@@ -147,7 +161,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		}
 		builder.append(declaration.getName());
 		processGenericParameterList(builder, declaration);
-		processParameterList(declaration, builder);
+		processParameterList(declaration, builder, '(', ')');
 
 		boolean canHaveBody = !declaration.hasModifier(CSharpModifier.ABSTRACT);
 
@@ -247,9 +261,9 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		builder.append(">");
 	}
 
-	private static void processParameterList(DotNetParameterListOwner declaration, StringBuilder builder)
+	private static void processParameterList(DotNetParameterListOwner declaration, StringBuilder builder, char p1, char p2)
 	{
-		builder.append("(");
+		builder.append(p1);
 		StubBlockUtil.join(builder, declaration.getParameters(), new PairFunction<StringBuilder, DotNetParameter, Void>()
 		{
 			@Nullable
@@ -262,7 +276,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 				return null;
 			}
 		}, ", ");
-		builder.append(")");
+		builder.append(p2);
 	}
 
 	private static void processModifierList(StringBuilder builder, DotNetModifierListOwner owner)

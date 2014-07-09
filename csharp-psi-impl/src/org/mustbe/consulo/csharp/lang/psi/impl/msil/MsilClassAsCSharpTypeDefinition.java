@@ -125,6 +125,10 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 				else if(element instanceof MsilFieldEntry)
 				{
 					String name = element.getName();
+					if(StringUtil.startsWith(name, "<>"))
+					{
+						continue;
+					}
 					if(Comparing.equal(name, "value__") && isEnum())
 					{
 						continue;
