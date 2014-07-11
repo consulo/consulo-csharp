@@ -31,13 +31,20 @@ public class CSharpVariableStub<V extends DotNetVariable> extends MemberStub<V>
 {
 	private final boolean myConstant;
 	private final CSharpStubTypeInfo myTypeInfo;
+	private final CSharpStubTypeInfo myImplementType;
 
 	public CSharpVariableStub(StubElement parent, CSharpAbstractStubElementType<?, ?> elementType, @Nullable StringRef name,
-			@Nullable StringRef namespaceQName, int modifierMask, boolean constant, CSharpStubTypeInfo typeInfo)
+			@Nullable StringRef namespaceQName, int modifierMask, boolean constant, CSharpStubTypeInfo typeInfo, CSharpStubTypeInfo implementType)
 	{
 		super(parent, elementType, name, namespaceQName, modifierMask, 0);
 		myConstant = constant;
 		myTypeInfo = typeInfo;
+		myImplementType = implementType;
+	}
+
+	public CSharpStubTypeInfo getImplementType()
+	{
+		return myImplementType;
 	}
 
 	public boolean isConstant()

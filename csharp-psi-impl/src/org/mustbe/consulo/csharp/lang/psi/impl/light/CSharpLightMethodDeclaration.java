@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -94,5 +95,19 @@ public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclarati
 	public CSharpGenericConstraint[] getGenericConstraints()
 	{
 		return CSharpGenericConstraint.EMPTY_ARRAY;
+	}
+
+	@Nullable
+	@Override
+	public DotNetType getTypeForImplement()
+	{
+		return null;
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef getTypeRefForImplement()
+	{
+		return DotNetTypeRef.ERROR_TYPE;
 	}
 }

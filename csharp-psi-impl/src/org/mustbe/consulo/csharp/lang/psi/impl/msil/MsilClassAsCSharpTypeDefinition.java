@@ -98,12 +98,12 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 						if(value.getFirst().getAccessorType() == MsilTokens._GET_KEYWORD && value.getSecond().getParameters().length == 1 || value
 								.getFirst().getAccessorType() == MsilTokens._SET_KEYWORD && value.getSecond().getParameters().length == 2)
 						{
-							list.add(new MsilPropertyAsCSharpArrayMethodDefinition(parentThis, (MsilPropertyEntry) element, pairs));
+							list.add(new MsilPropertyAsCSharpArrayMethodDeclaration(parentThis, (MsilPropertyEntry) element, pairs));
 							continue;
 						}
 					}
 
-					list.add(new MsilPropertyAsCSharpPropertyDefinition(parentThis, (MsilPropertyEntry) element, pairs));
+					list.add(new MsilPropertyAsCSharpPropertyDeclaration(parentThis, (MsilPropertyEntry) element, pairs));
 				}
 				else if(element instanceof MsilEventEntry)
 				{
@@ -120,7 +120,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 							copy.remove(methodEntry);
 						}
 					}
-					list.add(new MsilEventAsCSharpEventDefinition(parentThis, (MsilEventEntry) element, pairs));
+					list.add(new MsilEventAsCSharpEventDeclaration(parentThis, (MsilEventEntry) element, pairs));
 				}
 				else if(element instanceof MsilFieldEntry)
 				{
@@ -134,7 +134,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 						continue;
 					}
 
-					list.add(new MsilFieldAsCSharpFieldDefinition(parentThis, (DotNetVariable) element));
+					list.add(new MsilFieldAsCSharpFieldDeclaration(parentThis, (DotNetVariable) element));
 				}
 			}
 

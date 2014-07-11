@@ -29,9 +29,9 @@ import com.intellij.psi.PsiElementVisitor;
  * @author VISTALL
  * @since 23.05.14
  */
-public class MsilFieldAsCSharpFieldDefinition extends MsilVariableAsCSharpVariable implements CSharpFieldDeclaration
+public class MsilFieldAsCSharpFieldDeclaration extends MsilVariableAsCSharpVariable implements CSharpFieldDeclaration
 {
-	public MsilFieldAsCSharpFieldDefinition(PsiElement parent, DotNetVariable variable)
+	public MsilFieldAsCSharpFieldDeclaration(PsiElement parent, DotNetVariable variable)
 	{
 		super(parent, variable);
 	}

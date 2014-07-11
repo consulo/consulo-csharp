@@ -24,12 +24,16 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.typeParsing.SomeTypeParser;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilPropertyEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.util.SmartList;
@@ -39,12 +43,10 @@ import com.intellij.util.containers.ContainerUtil;
  * @author VISTALL
  * @since 24.05.14
  */
-public class MsilPropertyAsCSharpPropertyDefinition extends MsilVariableAsCSharpVariable implements CSharpPropertyDeclaration
+public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCSharpVariable implements CSharpPropertyDeclaration
 {
-	public MsilPropertyAsCSharpPropertyDefinition(
-			PsiElement parent,
-			MsilPropertyEntry variable,
-			List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
+	public MsilPropertyAsCSharpPropertyDeclaration(PsiElement parent, MsilPropertyEntry variable, List<Pair<DotNetXXXAccessor,
+			MsilMethodEntry>> pairs)
 	{
 		super(parent, getAdditionalModifiers(pairs), variable);
 	}
@@ -150,5 +152,20 @@ public class MsilPropertyAsCSharpPropertyDefinition extends MsilVariableAsCSharp
 	public String getPresentableQName()
 	{
 		return getVariable().getPresentableQName();
+	}
+
+	@Nullable
+	@Override
+	public DotNetType getTypeForImplement()
+	{
+		return null;
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef getTypeRefForImplement()
+	{
+		String typeBeforeDot = StringUtil.getPackageName(((MsilPropertyEntry)myMsilElement).getNameFromBytecode());
+		return SomeTypeParser.toDotNetTypeRef(typeBeforeDot, myMsilElement);
 	}
 }

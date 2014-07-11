@@ -1233,6 +1233,12 @@ public class ExpressionParsing extends SharingParsingHelpers
 
 	public static PsiBuilder.Marker parseQualifiedReference(@NotNull PsiBuilder builder, @Nullable PsiBuilder.Marker prevMarker)
 	{
+		return parseQualifiedReference(builder, prevMarker, TokenSet.EMPTY);
+	}
+
+	public static PsiBuilder.Marker parseQualifiedReference(@NotNull PsiBuilder builder, @Nullable PsiBuilder.Marker prevMarker,
+			TokenSet nameStopperSet)
+	{
 		if(prevMarker != null)
 		{
 			builder.advanceLexer(); // skip dot
@@ -1245,7 +1251,12 @@ public class ExpressionParsing extends SharingParsingHelpers
 
 			if(builder.getTokenType() == DOT)
 			{
-				marker = parseQualifiedReference(builder, marker.precede());
+				// if after dot we found stoppers, name expected - but we done
+				if(nameStopperSet.contains(builder.lookAhead(1)) || nameStopperSet.contains(builder.lookAhead(2)))
+				{
+					return marker;
+				}
+				marker = parseQualifiedReference(builder, marker.precede(), nameStopperSet);
 			}
 		}
 		else

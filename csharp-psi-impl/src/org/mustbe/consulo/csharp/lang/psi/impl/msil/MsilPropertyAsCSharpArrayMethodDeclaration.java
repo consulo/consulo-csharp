@@ -39,18 +39,18 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 28.05.14
  */
-public class MsilPropertyAsCSharpArrayMethodDefinition extends MsilElementWrapper<MsilPropertyEntry> implements CSharpArrayMethodDeclaration
+public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapper<MsilPropertyEntry> implements CSharpArrayMethodDeclaration
 {
 	private final MsilModifierListToCSharpModifierList myModifierList;
 
 	private final DotNetParameter[] myParameters;
 
-	public MsilPropertyAsCSharpArrayMethodDefinition(
-			PsiElement parent, MsilPropertyEntry propertyEntry, List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
+	public MsilPropertyAsCSharpArrayMethodDeclaration(PsiElement parent, MsilPropertyEntry propertyEntry, List<Pair<DotNetXXXAccessor,
+			MsilMethodEntry>> pairs)
 	{
 		super(parent, propertyEntry);
 
-		myModifierList = new MsilModifierListToCSharpModifierList(MsilPropertyAsCSharpPropertyDefinition.getAdditionalModifiers(pairs),
+		myModifierList = new MsilModifierListToCSharpModifierList(MsilPropertyAsCSharpPropertyDeclaration.getAdditionalModifiers(pairs),
 				(MsilModifierList) propertyEntry.getModifierList());
 
 		Pair<DotNetXXXAccessor, MsilMethodEntry> p = pairs.get(0);

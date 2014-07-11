@@ -37,15 +37,7 @@ import org.mustbe.consulo.dotnet.dll.vfs.builder.block.LineStubBlock;
 import org.mustbe.consulo.dotnet.dll.vfs.builder.block.StubBlock;
 import org.mustbe.consulo.dotnet.dll.vfs.builder.block.StubBlockUtil;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
-import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
+import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
@@ -74,7 +66,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		processModifierList(builder, declaration);
 		appendTypeRef(builder, declaration.toTypeRef(false));
 		builder.append(" ");
-		builder.append(declaration.getName());
+		appendName(declaration, builder);
 		myBlocks.add(new StubBlock(builder, null, StubBlock.BRACES));
 	}
 
@@ -98,7 +90,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		builder.append("event ");
 		appendTypeRef(builder, declaration.toTypeRef(false));
 		builder.append(" ");
-		builder.append(declaration.getName());
+		appendName(declaration, builder);
 		myBlocks.add(new StubBlock(builder, null, StubBlock.BRACES));
 	}
 
@@ -159,7 +151,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		{
 			builder.append("operator ");
 		}
-		builder.append(declaration.getName());
+		appendName(declaration, builder);
 		processGenericParameterList(builder, declaration);
 		processParameterList(declaration, builder, '(', ')');
 
@@ -237,6 +229,21 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		else
 		{
 			builder.append(typeRef.getQualifiedText());
+		}
+	}
+
+	private static <T extends DotNetVirtualImplementOwner & DotNetNamedElement> void appendName(T element, StringBuilder builder)
+	{
+		DotNetTypeRef typeRefForImplement = element.getTypeRefForImplement();
+		if(typeRefForImplement != DotNetTypeRef.ERROR_TYPE)
+		{
+			appendTypeRef(builder, typeRefForImplement);
+			builder.append(".");
+			builder.append(element.getName());
+		}
+		else
+		{
+			builder.append(element.getName());
 		}
 	}
 

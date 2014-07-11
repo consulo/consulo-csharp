@@ -200,7 +200,7 @@ public class HideOrOverrideMethodCollector implements LineMarkerCollector
 
 				if(element instanceof CSharpMethodDeclaration)
 				{
-					if(CS0102.checkMethod((CSharpMethodDeclaration) element, target))
+					if(CS0102.checkMethod((CSharpMethodDeclaration) element, target, element))
 					{
 						parents.add((CSharpMethodDeclaration) element);
 					}

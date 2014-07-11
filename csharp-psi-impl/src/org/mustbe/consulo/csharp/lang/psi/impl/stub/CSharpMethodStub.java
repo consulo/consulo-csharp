@@ -39,22 +39,31 @@ public class CSharpMethodStub extends MemberStub<CSharpMethodDeclaration>
 	public static final int EXTENSION_MASK = 1 << 1;
 
 	private final CSharpStubTypeInfo myReturnType;
+	private final CSharpStubTypeInfo myImplementType;
 	private final int myOperatorIndex;
 
 	public CSharpMethodStub(StubElement parent, @Nullable StringRef name, @Nullable StringRef qname, int modifierMask, int otherModifierMask,
-			CSharpStubTypeInfo returnType, int operatorIndex)
+			CSharpStubTypeInfo returnType, CSharpStubTypeInfo implementType,int operatorIndex)
 	{
 		super(parent, CSharpStubElements.METHOD_DECLARATION, name, qname, modifierMask, otherModifierMask);
 		myReturnType = returnType;
+		myImplementType = implementType;
 		myOperatorIndex = operatorIndex;
 	}
 
 	public CSharpMethodStub(StubElement parent, IStubElementType elementType, @Nullable StringRef name, StringRef qname, int modifierMask,
-			int otherModifierMask, CSharpStubTypeInfo returnType, int operatorIndex)
+			int otherModifierMask, CSharpStubTypeInfo returnType, CSharpStubTypeInfo implementType, int operatorIndex)
 	{
 		super(parent, elementType, name, qname, modifierMask, otherModifierMask);
 		myReturnType = returnType;
+		myImplementType = implementType;
 		myOperatorIndex = operatorIndex;
+	}
+
+	@NotNull
+	public CSharpStubTypeInfo getImplementType()
+	{
+		return myImplementType;
 	}
 
 	@NotNull

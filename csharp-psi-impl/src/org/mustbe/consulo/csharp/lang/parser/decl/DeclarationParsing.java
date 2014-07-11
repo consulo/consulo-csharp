@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.parser.UsingStatementParsing;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.Pair;
+import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.NotNullFunction;
 import lombok.val;
 
@@ -32,6 +33,9 @@ import lombok.val;
  */
 public class DeclarationParsing extends SharingParsingHelpers
 {
+	// { (
+	private static final TokenSet NAME_STOPPERS = TokenSet.create(LBRACE, LPAR);
+
 	public static boolean parse(@NotNull CSharpBuilderWrapper builder, boolean inner)
 	{
 		if(inner && builder.getTokenType() == RBRACE)
@@ -41,7 +45,8 @@ public class DeclarationParsing extends SharingParsingHelpers
 
 		PsiBuilder.Marker marker = builder.mark();
 
-		Pair<PsiBuilder.Marker, Boolean> modifierListPair = parseWithSoftElements(new NotNullFunction<CSharpBuilderWrapper, Pair<PsiBuilder.Marker, Boolean>>()
+		Pair<PsiBuilder.Marker, Boolean> modifierListPair = parseWithSoftElements(new NotNullFunction<CSharpBuilderWrapper, Pair<PsiBuilder.Marker,
+				Boolean>>()
 		{
 			@NotNull
 			@Override
@@ -131,8 +136,29 @@ public class DeclarationParsing extends SharingParsingHelpers
 
 					FieldOrPropertyParsing.parseArrayAfterThis(builder, marker);
 				}
-				else if(expect(builder, IDENTIFIER, "Name expected"))
+				else
 				{
+					TypeInfo implementType = parseType(builder, BracketFailPolicy.NOTHING, false, NAME_STOPPERS);
+					if(implementType == null)
+					{
+						modifierListMarker.drop();
+						marker.drop();
+						return false;
+					}
+
+					if(builder.getTokenType() == DOT)
+					{
+						builder.advanceLexer();
+
+						expect(builder, IDENTIFIER, "Name is expected");
+					}
+					else
+					{
+						implementType.marker.rollbackTo();
+
+						expect(builder, IDENTIFIER, "Name is expected");
+					}
+
 					// MODIFIER_LIST TYPE IDENTIFIER LPAR -> METHOD
 					if(builder.getTokenType() == LPAR || builder.getTokenType() == LT)
 					{
@@ -142,12 +168,6 @@ public class DeclarationParsing extends SharingParsingHelpers
 					{
 						FieldOrPropertyParsing.parseFieldOrPropertyAfterName(builder, marker);
 					}
-				}
-				else
-				{
-					modifierListMarker.drop();
-					marker.drop();
-					return false;
 				}
 			}
 		}

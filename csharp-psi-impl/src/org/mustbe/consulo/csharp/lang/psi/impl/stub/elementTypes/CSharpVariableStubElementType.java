@@ -49,7 +49,7 @@ public abstract class CSharpVariableStubElementType<P extends DotNetVariable> ex
 		int modifierMask = MemberStub.getModifierMask(dotNetPropertyDeclaration);
 		boolean constant = dotNetPropertyDeclaration.isConstant();
 		val typeInfo = CSharpStubTypeInfoUtil.toStub(dotNetPropertyDeclaration.getType());
-		return new CSharpVariableStub<P>(stubElement, this, name, null, modifierMask, constant, typeInfo);
+		return new CSharpVariableStub<P>(stubElement, this, name, null, modifierMask, constant, typeInfo, null);
 	}
 
 	@Override
@@ -69,6 +69,6 @@ public abstract class CSharpVariableStubElementType<P extends DotNetVariable> ex
 		int modifierMask = stubInputStream.readInt();
 		boolean constant = stubInputStream.readBoolean();
 		val typeInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
-		return new CSharpVariableStub<P>(stubElement, this, name, null, modifierMask, constant, typeInfo);
+		return new CSharpVariableStub<P>(stubElement, this, name, null, modifierMask, constant, typeInfo, null);
 	}
 }

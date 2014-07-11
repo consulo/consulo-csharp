@@ -25,6 +25,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.stub.MemberStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
@@ -44,24 +45,26 @@ public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & 
 	}
 
 	@Override
-	public CSharpVariableStub<P> createStub(@NotNull P dotNetPropertyDeclaration, StubElement stubElement)
+	public CSharpVariableStub<P> createStub(@NotNull P declaration, StubElement stubElement)
 	{
-		StringRef name = StringRef.fromNullableString(dotNetPropertyDeclaration.getName());
-		StringRef namespaceQName = StringRef.fromNullableString(dotNetPropertyDeclaration.getPresentableParentQName());
-		int modifierMask = MemberStub.getModifierMask(dotNetPropertyDeclaration);
-		boolean constant = dotNetPropertyDeclaration.isConstant();
-		val typeInfo = CSharpStubTypeInfoUtil.toStub(dotNetPropertyDeclaration.getType());
-		return new CSharpVariableStub<P>(stubElement, this, name, namespaceQName, modifierMask, constant, typeInfo);
+		StringRef name = StringRef.fromNullableString(declaration.getName());
+		StringRef namespaceQName = StringRef.fromNullableString(declaration.getPresentableParentQName());
+		int modifierMask = MemberStub.getModifierMask(declaration);
+		boolean constant = declaration.isConstant();
+		val typeInfo = CSharpStubTypeInfoUtil.toStub(declaration.getType());
+		val typeImplementInfo = CSharpStubTypeInfoUtil.toStub(declaration instanceof DotNetVirtualImplementOwner ? null : declaration.getType());
+		return new CSharpVariableStub<P>(stubElement, this, name, namespaceQName, modifierMask, constant, typeInfo, typeImplementInfo);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpVariableStub<P> cSharpPropertyStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@NotNull CSharpVariableStub<P> variableStub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
-		stubOutputStream.writeName(cSharpPropertyStub.getName());
-		stubOutputStream.writeName(cSharpPropertyStub.getParentQName());
-		stubOutputStream.writeInt(cSharpPropertyStub.getModifierMask());
-		stubOutputStream.writeBoolean(cSharpPropertyStub.isConstant());
-		cSharpPropertyStub.getTypeInfo().writeTo(stubOutputStream);
+		stubOutputStream.writeName(variableStub.getName());
+		stubOutputStream.writeName(variableStub.getParentQName());
+		stubOutputStream.writeInt(variableStub.getModifierMask());
+		stubOutputStream.writeBoolean(variableStub.isConstant());
+		variableStub.getTypeInfo().writeTo(stubOutputStream);
+		variableStub.getImplementType().writeTo(stubOutputStream);
 	}
 
 	@NotNull
@@ -73,6 +76,7 @@ public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & 
 		int modifierMask = stubInputStream.readInt();
 		boolean constant = stubInputStream.readBoolean();
 		val typeInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
-		return new CSharpVariableStub<P>(stubElement, this, name, parentQName, modifierMask, constant, typeInfo);
+		val typeImplementInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
+		return new CSharpVariableStub<P>(stubElement, this, name, parentQName, modifierMask, constant, typeInfo, typeImplementInfo);
 	}
 }

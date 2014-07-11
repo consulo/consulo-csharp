@@ -68,7 +68,8 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 		int otherModifierMask = CSharpMethodStub.getOtherModifierMask(methodDeclaration);
 		val typeInfo = CSharpStubTypeInfoUtil.toStub(methodDeclaration.getReturnType());
 		int operatorIndex = CSharpMethodStub.getOperatorIndex(methodDeclaration);
-		return new CSharpMethodStub(stubElement, name, parentQName, modifierMask, otherModifierMask, typeInfo, operatorIndex);
+		val typeForImplement = CSharpStubTypeInfoUtil.toStub(methodDeclaration.getTypeForImplement());
+		return new CSharpMethodStub(stubElement, name, parentQName, modifierMask, otherModifierMask, typeInfo, typeForImplement, operatorIndex);
 	}
 
 	@Override
@@ -79,6 +80,7 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 		stubOutputStream.writeInt(stub.getModifierMask());
 		stubOutputStream.writeInt(stub.getOtherModifierMask());
 		stub.getReturnType().writeTo(stubOutputStream);
+		stub.getImplementType().writeTo(stubOutputStream);
 		stubOutputStream.writeInt(stub.getOperatorIndex());
 	}
 
@@ -91,8 +93,9 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 		int modifierMask = stubInputStream.readInt();
 		int otherModifierMask = stubInputStream.readInt();
 		val typeInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
+		val typeImplementInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
 		int operatorIndex = stubInputStream.readInt();
-		return new CSharpMethodStub(stubElement, name, qname, modifierMask, otherModifierMask, typeInfo, operatorIndex);
+		return new CSharpMethodStub(stubElement, name, qname, modifierMask, otherModifierMask, typeInfo, typeImplementInfo, operatorIndex);
 	}
 
 	@Override

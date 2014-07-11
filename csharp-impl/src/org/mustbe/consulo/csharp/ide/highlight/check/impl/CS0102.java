@@ -21,12 +21,14 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Condition;
@@ -72,7 +74,7 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 					}
 					if(element instanceof DotNetLikeMethodDeclaration && namedElement instanceof DotNetLikeMethodDeclaration)
 					{
-						return checkMethod((DotNetLikeMethodDeclaration) element, (DotNetLikeMethodDeclaration) namedElement);
+						return checkMethod((DotNetLikeMethodDeclaration) element, (DotNetLikeMethodDeclaration) namedElement, element);
 					}
 					else if(element instanceof DotNetTypeDeclaration && namedElement instanceof DotNetTypeDeclaration)
 					{
@@ -81,6 +83,11 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 						{
 							return false;
 						}
+					}
+
+					if(!isEquals(element, namedElement, element))
+					{
+						return false;
 					}
 					return Comparing.equal(element.getName(), name);
 				}
@@ -101,7 +108,23 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 		return results;
 	}
 
-	public static boolean checkMethod(DotNetLikeMethodDeclaration o1, DotNetLikeMethodDeclaration o2)
+	private static boolean isEquals(PsiElement o1, PsiElement o2, PsiElement e)
+	{
+		if(o1 instanceof DotNetVirtualImplementOwner && o2 instanceof DotNetVirtualImplementOwner)
+		{
+			DotNetTypeRef t1 = ((DotNetVirtualImplementOwner) o1).getTypeRefForImplement();
+			DotNetTypeRef t2 = ((DotNetVirtualImplementOwner) o2).getTypeRefForImplement();
+			if(t1 == DotNetTypeRef.ERROR_TYPE && t2 == DotNetTypeRef.ERROR_TYPE)
+			{
+				return true;
+			}
+
+			return CSharpTypeUtil.isInheritable(t1, t2, e) && CSharpTypeUtil.isInheritable(t2, t1, e);
+		}
+		return true;
+	}
+
+	public static boolean checkMethod(DotNetLikeMethodDeclaration o1, DotNetLikeMethodDeclaration o2, PsiElement e)
 	{
 		if(o1 == o2)
 		{
@@ -109,6 +132,11 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 		}
 
 		if(!Comparing.equal(o1.getName(), o2.getName()))
+		{
+			return false;
+		}
+
+		if(!isEquals(o1, o2, e))
 		{
 			return false;
 		}

@@ -23,7 +23,9 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilEventEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import com.intellij.openapi.util.Pair;
@@ -34,12 +36,11 @@ import com.intellij.psi.PsiElementVisitor;
  * @author VISTALL
  * @since 24.05.14
  */
-public class MsilEventAsCSharpEventDefinition extends MsilVariableAsCSharpVariable implements CSharpEventDeclaration
+public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVariable implements CSharpEventDeclaration
 {
-	public MsilEventAsCSharpEventDefinition(PsiElement parent, MsilEventEntry variable, List<Pair<DotNetXXXAccessor,
-			MsilMethodEntry>> pairs)
+	public MsilEventAsCSharpEventDeclaration(PsiElement parent, MsilEventEntry variable, List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
 	{
-		super(parent, MsilPropertyAsCSharpPropertyDefinition.getAdditionalModifiers(pairs), variable);
+		super(parent, MsilPropertyAsCSharpPropertyDeclaration.getAdditionalModifiers(pairs), variable);
 	}
 
 	@Override
@@ -99,5 +100,19 @@ public class MsilEventAsCSharpEventDefinition extends MsilVariableAsCSharpVariab
 	public String getPresentableQName()
 	{
 		return getVariable().getPresentableQName();
+	}
+
+	@Nullable
+	@Override
+	public DotNetType getTypeForImplement()
+	{
+		return null;
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef getTypeRefForImplement()
+	{
+		return DotNetTypeRef.ERROR_TYPE;
 	}
 }

@@ -27,6 +27,9 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.typeParsing.SomeTypeParser;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.MsilHelper;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
@@ -81,11 +84,6 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 	@NotNull
 	private static CSharpModifier[] getAdditionModifiers(MsilMethodEntry methodEntry)
 	{
-		String nameFromBytecode = methodEntry.getNameFromBytecode();
-		if(StringUtil.containsChar(nameFromBytecode, '.'))
-		{
-			return new CSharpModifier[] {CSharpModifier.OVERRIDE};
-		}
 		return CSharpModifier.EMPTY_ARRAY;
 	}
 
@@ -171,5 +169,20 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 	public PsiElement getNameIdentifier()
 	{
 		return null;
+	}
+
+	@Nullable
+	@Override
+	public DotNetType getTypeForImplement()
+	{
+		return null;
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef getTypeRefForImplement()
+	{
+		String typeBeforeDot = StringUtil.getPackageName(myMsilElement.getNameFromBytecode());
+		return SomeTypeParser.toDotNetTypeRef(typeBeforeDot, myMsilElement);
 	}
 }

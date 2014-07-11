@@ -29,6 +29,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
@@ -86,7 +87,8 @@ public abstract class CSharpLikeMethodDeclarationImpl<T extends CSharpMethodStub
 	@Override
 	public DotNetType getReturnType()
 	{
-		return findChildByClass(DotNetType.class);
+		DotNetType[] types = findChildrenByClass(DotNetType.class);
+		return ArrayUtil2.safeGet(types, 0);
 	}
 
 	@NotNull

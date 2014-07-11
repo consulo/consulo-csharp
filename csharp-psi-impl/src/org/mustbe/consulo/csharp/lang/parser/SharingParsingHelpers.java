@@ -65,10 +65,15 @@ public class SharingParsingHelpers implements CSharpTokenSets, CSharpTokens, CSh
 
 	protected static boolean parseTypeList(@NotNull CSharpBuilderWrapper builder, boolean varSupport)
 	{
+		return parseTypeList(builder, varSupport, TokenSet.EMPTY);
+	}
+
+	protected static boolean parseTypeList(@NotNull CSharpBuilderWrapper builder, boolean varSupport, TokenSet nameStopperSet)
+	{
 		boolean empty = true;
 		while(!builder.eof())
 		{
-			val marker = parseType(builder, BracketFailPolicy.NOTHING, varSupport);
+			val marker = parseType(builder, BracketFailPolicy.NOTHING, varSupport, nameStopperSet);
 			if(marker == null)
 			{
 				if(!empty)
@@ -94,7 +99,13 @@ public class SharingParsingHelpers implements CSharpTokenSets, CSharpTokens, CSh
 
 	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder, BracketFailPolicy bracketFailPolicy, boolean varSupport)
 	{
-		TypeInfo typeInfo = parseInnerType(builder, varSupport);
+		return parseType(builder, bracketFailPolicy, varSupport, TokenSet.EMPTY);
+	}
+
+	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder, BracketFailPolicy bracketFailPolicy, boolean varSupport,
+			TokenSet nameStopperSet)
+	{
+		TypeInfo typeInfo = parseInnerType(builder, varSupport, nameStopperSet);
 		if(typeInfo == null)
 		{
 			return null;
@@ -111,7 +122,7 @@ public class SharingParsingHelpers implements CSharpTokenSets, CSharpTokens, CSh
 
 			PsiBuilder.Marker mark = builder.mark();
 			builder.advanceLexer();
-			if(parseTypeList(builder, varSupport))
+			if(parseTypeList(builder, varSupport, nameStopperSet))
 			{
 				builder.error("Type expected");
 			}
@@ -214,7 +225,7 @@ public class SharingParsingHelpers implements CSharpTokenSets, CSharpTokens, CSh
 		return typeInfo;
 	}
 
-	private static TypeInfo parseInnerType(@NotNull CSharpBuilderWrapper builder, boolean varSupport)
+	private static TypeInfo parseInnerType(@NotNull CSharpBuilderWrapper builder, boolean varSupport, TokenSet nameStopperSet)
 	{
 		TypeInfo typeInfo = new TypeInfo();
 
@@ -239,7 +250,7 @@ public class SharingParsingHelpers implements CSharpTokenSets, CSharpTokens, CSh
 		}
 		else if(builder.getTokenType() == IDENTIFIER)
 		{
-			ExpressionParsing.parseQualifiedReference(builder, null);
+			ExpressionParsing.parseQualifiedReference(builder, null, nameStopperSet);
 			marker.done(USER_TYPE);
 		}
 		else if(builder.getTokenType() == GLOBAL_KEYWORD)
