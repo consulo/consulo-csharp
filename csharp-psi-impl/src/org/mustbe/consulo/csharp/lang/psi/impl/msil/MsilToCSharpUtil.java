@@ -243,7 +243,7 @@ public class MsilToCSharpUtil
 			{
 				newArguments[i] = extractToCSharp(arguments[i], scope);
 			}
-			return new DotNetGenericWrapperTypeRef(inner, arguments);
+			return new DotNetGenericWrapperTypeRef(inner, newArguments);
 		}
 		return new MsilDelegateTypeRef(typeRef);
 	}
