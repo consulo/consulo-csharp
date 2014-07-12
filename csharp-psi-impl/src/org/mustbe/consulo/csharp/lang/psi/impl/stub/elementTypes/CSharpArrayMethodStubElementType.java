@@ -49,30 +49,30 @@ public class CSharpArrayMethodStubElementType extends CSharpAbstractStubElementT
 	}
 
 	@Override
-	public CSharpArrayMethodDeclaration createPsi(@NotNull CSharpArrayMethodStub cSharpArrayMethodStub)
+	public CSharpArrayMethodDeclaration createPsi(@NotNull CSharpArrayMethodStub methodStub)
 	{
-		return new CSharpArrayMethodDeclarationImpl(cSharpArrayMethodStub);
+		return new CSharpArrayMethodDeclarationImpl(methodStub);
 	}
 
 	@Override
-	public CSharpArrayMethodStub createStub(@NotNull CSharpArrayMethodDeclaration CSharpArrayMethodDeclaration, StubElement stubElement)
+	public CSharpArrayMethodStub createStub(@NotNull CSharpArrayMethodDeclaration declaration, StubElement stubElement)
 	{
-		StringRef name = StringRef.fromNullableString(CSharpArrayMethodDeclaration.getName());
-		StringRef parentQName = StringRef.fromNullableString(CSharpArrayMethodDeclaration.getPresentableParentQName());
-		int modifierMask = MemberStub.getModifierMask(CSharpArrayMethodDeclaration);
-		val typeInfo = CSharpStubTypeInfoUtil.toStub(CSharpArrayMethodDeclaration.getReturnType());
-		return new CSharpArrayMethodStub(stubElement, name, parentQName, modifierMask, typeInfo);
-
+		StringRef name = StringRef.fromNullableString(declaration.getName());
+		StringRef parentQName = StringRef.fromNullableString(declaration.getPresentableParentQName());
+		int modifierMask = MemberStub.getModifierMask(declaration);
+		val typeInfo = CSharpStubTypeInfoUtil.toStub(declaration.getReturnType());
+		val implementInfo = CSharpStubTypeInfoUtil.toStub(declaration.getTypeForImplement());
+		return new CSharpArrayMethodStub(stubElement, name, parentQName, modifierMask, typeInfo, implementInfo);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpArrayMethodStub cSharpArrayMethodStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@NotNull CSharpArrayMethodStub methodStub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
-		stubOutputStream.writeName(cSharpArrayMethodStub.getName());
-		stubOutputStream.writeName(cSharpArrayMethodStub.getParentQName());
-		stubOutputStream.writeInt(cSharpArrayMethodStub.getModifierMask());
-		cSharpArrayMethodStub.getReturnType().writeTo(stubOutputStream);
-
+		stubOutputStream.writeName(methodStub.getName());
+		stubOutputStream.writeName(methodStub.getParentQName());
+		stubOutputStream.writeInt(methodStub.getModifierMask());
+		methodStub.getReturnType().writeTo(stubOutputStream);
+		methodStub.getImplementType().writeTo(stubOutputStream);
 	}
 
 	@NotNull
@@ -83,7 +83,7 @@ public class CSharpArrayMethodStubElementType extends CSharpAbstractStubElementT
 		StringRef qname = inputStream.readName();
 		int modifierMask = inputStream.readInt();
 		val typeInfo = CSharpStubTypeInfoUtil.read(inputStream);
-		return new CSharpArrayMethodStub(stubElement, name, qname, modifierMask, typeInfo);
-
+		val implementInfo = CSharpStubTypeInfoUtil.read(inputStream);
+		return new CSharpArrayMethodStub(stubElement, name, qname, modifierMask, typeInfo, implementInfo);
 	}
 }

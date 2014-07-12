@@ -23,7 +23,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.dotnet.psi.*;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.typeParsing.SomeTypeParser;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
+import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
+import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
+import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
@@ -31,6 +40,7 @@ import org.mustbe.consulo.msil.lang.psi.MsilPropertyEntry;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.util.IncorrectOperationException;
@@ -204,5 +214,20 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 	public int getGenericParametersCount()
 	{
 		return 0;
+	}
+
+	@Nullable
+	@Override
+	public DotNetType getTypeForImplement()
+	{
+		return null;
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef getTypeRefForImplement()
+	{
+		String typeBeforeDot = StringUtil.getPackageName(myMsilElement.getNameFromBytecode());
+		return SomeTypeParser.toDotNetTypeRef(typeBeforeDot, myMsilElement);
 	}
 }

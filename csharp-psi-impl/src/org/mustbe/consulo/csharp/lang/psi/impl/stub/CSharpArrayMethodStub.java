@@ -31,16 +31,25 @@ import com.intellij.util.io.StringRef;
 public class CSharpArrayMethodStub extends MemberStub<CSharpArrayMethodDeclaration>
 {
 	private final CSharpStubTypeInfo myReturnType;
+	private final CSharpStubTypeInfo myImplementType;
 
-	public CSharpArrayMethodStub(StubElement parent, @Nullable StringRef name, @Nullable StringRef qname, int modifierMask, CSharpStubTypeInfo returnType)
+	public CSharpArrayMethodStub(StubElement parent, @Nullable StringRef name, @Nullable StringRef qname, int modifierMask,
+			CSharpStubTypeInfo returnType, CSharpStubTypeInfo implementType)
 	{
 		super(parent, CSharpStubElements.ARRAY_METHOD_DECLARATION, name, qname, modifierMask, 0);
 		myReturnType = returnType;
+		myImplementType = implementType;
 	}
 
 	@NotNull
 	public CSharpStubTypeInfo getReturnType()
 	{
 		return myReturnType;
+	}
+
+	@NotNull
+	public CSharpStubTypeInfo getImplementType()
+	{
+		return myImplementType;
 	}
 }

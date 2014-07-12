@@ -165,4 +165,18 @@ public class CSharpLightArrayMethodDeclaration extends CSharpLightNamedElement<C
 	{
 		return 0;
 	}
+
+	@Nullable
+	@Override
+	public DotNetType getTypeForImplement()
+	{
+		return null;
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef getTypeRefForImplement()
+	{
+		return DotNetTypeRef.ERROR_TYPE;
+	}
 }

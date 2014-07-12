@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.parser.UsingStatementParsing;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.Pair;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.NotNullFunction;
 import lombok.val;
@@ -34,7 +35,9 @@ import lombok.val;
 public class DeclarationParsing extends SharingParsingHelpers
 {
 	// { (
-	private static final TokenSet NAME_STOPPERS = TokenSet.create(LBRACE, LPAR);
+	private static final TokenSet NAME_STOPPERS = TokenSet.create(LBRACE, LPAR, THIS_KEYWORD);
+
+	private static final TokenSet NAME_TOKENS = TokenSet.create(THIS_KEYWORD, IDENTIFIER);
 
 	public static boolean parse(@NotNull CSharpBuilderWrapper builder, boolean inner)
 	{
@@ -130,15 +133,9 @@ public class DeclarationParsing extends SharingParsingHelpers
 				{
 					MethodParsing.parseMethodStartAfterType(builder, marker, typeInfo, MethodParsing.Target.METHOD);
 				}
-				else if(builder.getTokenType() == THIS_KEYWORD)
-				{
-					builder.advanceLexer();
-
-					FieldOrPropertyParsing.parseArrayAfterThis(builder, marker);
-				}
 				else
 				{
-					TypeInfo implementType = parseType(builder, BracketFailPolicy.NOTHING, false, NAME_STOPPERS);
+					TypeInfo implementType = parseImplementType(builder);
 					if(implementType == null)
 					{
 						modifierListMarker.drop();
@@ -146,21 +143,32 @@ public class DeclarationParsing extends SharingParsingHelpers
 						return false;
 					}
 
+					IElementType prevToken = null;
 					if(builder.getTokenType() == DOT)
 					{
 						builder.advanceLexer();
 
-						expect(builder, IDENTIFIER, "Name is expected");
+						prevToken = builder.getTokenType();
+
+						expect(builder, NAME_TOKENS, "Name is expected");
 					}
 					else
 					{
-						implementType.marker.rollbackTo();
+						if(implementType.marker != null)
+						{
+							implementType.marker.rollbackTo();
+						}
 
-						expect(builder, IDENTIFIER, "Name is expected");
+						prevToken = builder.getTokenType();
+
+						expect(builder, NAME_TOKENS, "Name is expected");
 					}
 
-					// MODIFIER_LIST TYPE IDENTIFIER LPAR -> METHOD
-					if(builder.getTokenType() == LPAR || builder.getTokenType() == LT)
+					if(prevToken == THIS_KEYWORD)
+					{
+						FieldOrPropertyParsing.parseArrayAfterThis(builder, marker);
+					}
+					else if(builder.getTokenType() == LPAR || builder.getTokenType() == LT) // MODIFIER_LIST TYPE IDENTIFIER LPAR -> METHOD
 					{
 						MethodParsing.parseMethodStartAfterName(builder, marker, MethodParsing.Target.METHOD);
 					}
@@ -172,5 +180,15 @@ public class DeclarationParsing extends SharingParsingHelpers
 			}
 		}
 		return true;
+	}
+
+	private static TypeInfo parseImplementType(CSharpBuilderWrapper builder)
+	{
+		IElementType tokenType = builder.getTokenType();
+		if(tokenType == THIS_KEYWORD)
+		{
+			return new TypeInfo();
+		}
+		return parseType(builder, BracketFailPolicy.NOTHING, false, NAME_STOPPERS);
 	}
 }

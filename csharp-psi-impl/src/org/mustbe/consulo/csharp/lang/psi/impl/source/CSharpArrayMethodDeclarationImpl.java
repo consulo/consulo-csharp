@@ -32,6 +32,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 
@@ -68,7 +69,8 @@ public class CSharpArrayMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 	@Override
 	public DotNetType getReturnType()
 	{
-		return findNotNullChildByClass(DotNetType.class);
+		DotNetType[] types = findChildrenByClass(DotNetType.class);
+		return ArrayUtil2.safeGet(types, 0);
 	}
 
 	@NotNull
@@ -152,5 +154,33 @@ public class CSharpArrayMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 	public int getGenericParametersCount()
 	{
 		return 0;
+	}
+
+	@Nullable
+	@Override
+	public DotNetType getTypeForImplement()
+	{
+		DotNetType[] types = findChildrenByClass(DotNetType.class);
+		return ArrayUtil2.safeGet(types, 1);
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef getTypeRefForImplement()
+	{
+		CSharpArrayMethodStub stub = getStub();
+		if(stub != null)
+		{
+			return CSharpStubTypeInfoUtil.toTypeRef(stub.getImplementType(), this);
+		}
+		DotNetType typeForImplement = getTypeForImplement();
+		if(typeForImplement == null)
+		{
+			return DotNetTypeRef.ERROR_TYPE;
+		}
+		else
+		{
+			return typeForImplement.toTypeRef();
+		}
 	}
 }

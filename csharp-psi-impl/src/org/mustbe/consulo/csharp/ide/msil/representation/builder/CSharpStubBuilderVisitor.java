@@ -101,7 +101,8 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 		processModifierList(builder, declaration);
 		appendTypeRef(builder, declaration.getReturnTypeRef());
-		builder.append(" this");
+		builder.append(" ");
+		appendName(declaration, builder);
 		processParameterList(declaration, builder, '[', ']');
 		builder.append(" { /* compiled code */ }\n");
 		myBlocks.add(new LineStubBlock(builder));
@@ -239,11 +240,25 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		{
 			appendTypeRef(builder, typeRefForImplement);
 			builder.append(".");
-			builder.append(element.getName());
+			if(element instanceof CSharpArrayMethodDeclaration)
+			{
+				builder.append("this");
+			}
+			else
+			{
+				builder.append(element.getName());
+			}
 		}
 		else
 		{
-			builder.append(element.getName());
+			if(element instanceof CSharpArrayMethodDeclaration)
+			{
+				builder.append("this");
+			}
+			else
+			{
+				builder.append(element.getName());
+			}
 		}
 	}
 
