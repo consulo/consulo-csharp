@@ -46,6 +46,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiFacade;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -82,18 +83,14 @@ public class CSharpResolveUtil
 	public static final Key<PsiFile> CONTAINS_FILE_KEY = Key.create("contains.file");
 	public static final Key<Condition<PsiElement>> CONDITION_KEY = Key.create("condition");
 
-	public static boolean treeWalkUp(
-			@NotNull PsiScopeProcessor processor, @NotNull PsiElement entrance, @NotNull PsiElement sender, @Nullable PsiElement maxScope)
+	public static boolean treeWalkUp(@NotNull PsiScopeProcessor processor, @NotNull PsiElement entrance, @NotNull PsiElement sender,
+			@Nullable PsiElement maxScope)
 	{
 		return treeWalkUp(processor, entrance, sender, maxScope, ResolveState.initial());
 	}
 
-	public static boolean treeWalkUp(
-			@NotNull final PsiScopeProcessor processor,
-			@NotNull final PsiElement entrance,
-			@NotNull final PsiElement sender,
-			@Nullable PsiElement maxScope,
-			@NotNull final ResolveState state)
+	public static boolean treeWalkUp(@NotNull final PsiScopeProcessor processor, @NotNull final PsiElement entrance,
+			@NotNull final PsiElement sender, @Nullable PsiElement maxScope, @NotNull final ResolveState state)
 	{
 		if(!entrance.isValid())
 		{
@@ -143,23 +140,14 @@ public class CSharpResolveUtil
 		return true;
 	}
 
-	public static boolean walkChildren(
-			@NotNull final PsiScopeProcessor processor,
-			@NotNull final PsiElement entrance,
-			boolean gotoParent,
-			@Nullable PsiElement maxScope,
-			@NotNull ResolveState state)
+	public static boolean walkChildren(@NotNull final PsiScopeProcessor processor, @NotNull final PsiElement entrance, boolean gotoParent,
+			@Nullable PsiElement maxScope, @NotNull ResolveState state)
 	{
 		return walkChildrenImpl(processor, entrance, gotoParent, maxScope, state, new HashSet<String>());
 	}
 
-	private static boolean walkChildrenImpl(
-			@NotNull final PsiScopeProcessor processor,
-			@NotNull final PsiElement entrance,
-			boolean walkParent,
-			@Nullable PsiElement maxScope,
-			@NotNull ResolveState state,
-			@NotNull Set<String> typeVisited)
+	private static boolean walkChildrenImpl(@NotNull final PsiScopeProcessor processor, @NotNull final PsiElement entrance, boolean walkParent,
+			@Nullable PsiElement maxScope, @NotNull ResolveState state, @NotNull Set<String> typeVisited)
 	{
 		ProgressIndicatorProvider.checkCanceled();
 		if(entrance instanceof DotNetTypeDeclaration)
@@ -305,7 +293,8 @@ public class CSharpResolveUtil
 
 			if(walkParent)
 			{
-				CSharpNamespaceAsElement parentNamespace = new CSharpNamespaceAsElement(entrance.getProject(), presentableQName, entrance.getResolveScope());
+				CSharpNamespaceAsElement parentNamespace = new CSharpNamespaceAsElement(entrance.getProject(), presentableQName,
+						entrance.getResolveScope());
 
 				if(!walkChildrenImpl(processor, parentNamespace, walkParent, maxScope, state, typeVisited))
 				{
@@ -324,13 +313,8 @@ public class CSharpResolveUtil
 		return psiFile == null || walkChildrenImpl(processor, psiFile, walkParent, maxScope, state, typeVisited);
 	}
 
-	private static boolean processTypeDeclaration(
-			@NotNull final PsiScopeProcessor processor,
-			DotNetTypeDeclaration typeDeclaration,
-			ResolveState state,
-			List<DotNetTypeRef> supers,
-			DotNetGenericExtractor genericExtractor,
-			Set<String> typeVisited)
+	private static boolean processTypeDeclaration(@NotNull final PsiScopeProcessor processor, DotNetTypeDeclaration typeDeclaration,
+			ResolveState state, List<DotNetTypeRef> supers, DotNetGenericExtractor genericExtractor, Set<String> typeVisited)
 	{
 
 		String vmName = DotNetVirtualMachineUtil.toVMQualifiedName(typeDeclaration);
@@ -346,6 +330,12 @@ public class CSharpResolveUtil
 		for(DotNetNamedElement namedElement : typeDeclaration.getMembers())
 		{
 			if(!checkConditionKey(processor, namedElement))
+			{
+				continue;
+			}
+
+			if(namedElement instanceof DotNetVirtualImplementOwner && ((DotNetVirtualImplementOwner) namedElement).getTypeRefForImplement() !=
+					DotNetTypeRef.ERROR_TYPE)
 			{
 				continue;
 			}
