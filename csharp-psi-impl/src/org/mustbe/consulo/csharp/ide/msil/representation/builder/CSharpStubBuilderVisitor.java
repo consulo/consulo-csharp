@@ -292,6 +292,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			@Override
 			public Void fun(StringBuilder t, DotNetParameter v)
 			{
+				processModifierList(t, v);
 				appendTypeRef(t, v.toTypeRef(false));
 				t.append(" ");
 				t.append(v.getName());
@@ -308,6 +309,10 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		{
 			for(DotNetModifier dotNetModifier : modifierList.getModifiers())
 			{
+				if(dotNetModifier == CSharpModifier.REF || dotNetModifier == CSharpModifier.OUT)
+				{
+					continue;
+				}
 				builder.append(dotNetModifier.getPresentableText()).append(" ");
 			}
 		}
