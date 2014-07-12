@@ -1021,6 +1021,11 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					return false;
 				}
 
+				if(e instanceof DotNetVirtualImplementOwner && ((DotNetVirtualImplementOwner) e).getTypeRefForImplement() != DotNetTypeRef.ERROR_TYPE)
+				{
+					return false;
+				}
+
 				if(e instanceof DotNetModifierListOwner)
 				{
 					if(!CSharpVisibilityUtil.isVisibleForCompletion((DotNetModifierListOwner) e, CSharpReferenceExpressionImpl.this))
