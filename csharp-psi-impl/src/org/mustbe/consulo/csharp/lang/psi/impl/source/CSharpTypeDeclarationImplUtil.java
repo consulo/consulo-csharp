@@ -18,8 +18,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromQualifiedName;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -52,7 +54,7 @@ public class CSharpTypeDeclarationImplUtil
 			{
 				return DotNetTypeRef.EMPTY_ARRAY;
 			}
-			typeRefs = new DotNetTypeRef[] {new CSharpTypeRefFromQualifiedName(defaultSuperType, 0)};
+			typeRefs = new DotNetTypeRef[] {new DotNetTypeRefByQName(defaultSuperType, CSharpTransform.INSTANCE)};
 		}
 		return typeRefs;
 	}
@@ -63,7 +65,7 @@ public class CSharpTypeDeclarationImplUtil
 		DotNetTypeRef[] anExtends = typeDeclaration.getExtendTypeRefs();
 		if(anExtends.length == 0)
 		{
-			return new CSharpTypeRefFromQualifiedName(DotNetTypes.System_Object, 0);
+			return CSharpNativeTypeRef.OBJECT;
 		}
 		else
 		{
@@ -76,7 +78,7 @@ public class CSharpTypeDeclarationImplUtil
 				}
 			}
 
-			return new CSharpTypeRefFromQualifiedName(DotNetTypes.System_Object, 0);
+			return CSharpNativeTypeRef.OBJECT;
 		}
 	}
 

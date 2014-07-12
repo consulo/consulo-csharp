@@ -29,15 +29,10 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpTypeStub extends MemberStub<CSharpTypeDeclaration>
 {
-	public static final int HAS_EXTENSIONS = 1 << 0;
 	public static final int INTERFACE = 1 << 1;
 	public static final int STRUCT = 1 << 2;
 	public static final int ENUM = 1 << 3;
-
-	public CSharpTypeStub(StubElement parent, @Nullable StringRef name, @Nullable StringRef parentQName, int modifierMask, int otherMask)
-	{
-		super(parent, CSharpStubElements.TYPE_DECLARATION, name, parentQName, modifierMask, otherMask);
-	}
+	public static final int HAS_EXTENSIONS = 1 << 0;
 
 	public static int getOtherModifiers(CSharpTypeDeclaration typeDeclaration)
 	{
@@ -59,6 +54,19 @@ public class CSharpTypeStub extends MemberStub<CSharpTypeDeclaration>
 			mask |= HAS_EXTENSIONS;
 		}
 		return mask;
+	}
+
+	private StringRef myVmQName;
+
+	public CSharpTypeStub(StubElement parent, @Nullable StringRef name, @Nullable StringRef parentQName, StringRef vmQName, int modifierMask, int otherMask)
+	{
+		super(parent, CSharpStubElements.TYPE_DECLARATION, name, parentQName, modifierMask, otherMask);
+		myVmQName = vmQName;
+	}
+
+	public String getVmQName()
+	{
+		return StringRef.toString(myVmQName);
 	}
 
 	public boolean isInterface()

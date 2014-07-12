@@ -18,8 +18,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.dotnet.resolve.DotNetNativeTypeRef;
-import org.mustbe.consulo.dotnet.resolve.DotNetPsiFacade;
+import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 
@@ -36,14 +37,14 @@ public class CSharpNativeTypeRef extends DotNetTypeRef.Adapter implements DotNet
 	public static final CSharpNativeTypeRef OBJECT = new CSharpNativeTypeRef("object", "System.Object");
 	public static final CSharpNativeTypeRef STRING = new CSharpNativeTypeRef("string", "System.String");
 	public static final CSharpNativeTypeRef SBYTE = new CSharpNativeTypeRef("sbyte", "System.SByte");
-	public static final CSharpNativeTypeRef BYTE =  new CSharpNativeTypeRef("byte", "System.Byte");
+	public static final CSharpNativeTypeRef BYTE = new CSharpNativeTypeRef("byte", "System.Byte");
 	public static final CSharpNativeTypeRef INT = new CSharpNativeTypeRef("int", "System.Int32");
-	public static final CSharpNativeTypeRef UINT =  new CSharpNativeTypeRef("uint", "System.UInt32");
+	public static final CSharpNativeTypeRef UINT = new CSharpNativeTypeRef("uint", "System.UInt32");
 	public static final CSharpNativeTypeRef LONG = new CSharpNativeTypeRef("long", "System.Int64");
 	public static final CSharpNativeTypeRef ULONG = new CSharpNativeTypeRef("ulong", "System.UInt64");
-	public static final CSharpNativeTypeRef VOID =  new CSharpNativeTypeRef("void", "System.Void");
+	public static final CSharpNativeTypeRef VOID = new CSharpNativeTypeRef("void", "System.Void");
 	public static final CSharpNativeTypeRef SHORT = new CSharpNativeTypeRef("short", "System.Int16");
-	public static final CSharpNativeTypeRef USHORT =  new CSharpNativeTypeRef("ushort", "System.UInt16");
+	public static final CSharpNativeTypeRef USHORT = new CSharpNativeTypeRef("ushort", "System.UInt16");
 	public static final CSharpNativeTypeRef DECIMAL = new CSharpNativeTypeRef("decimal", "System.Decimal");
 	public static final CSharpNativeTypeRef IMPLICIT = new CSharpNativeTypeRef("implicit", "System.Object");
 	public static final CSharpNativeTypeRef EXPLICIT = new CSharpNativeTypeRef("explicit", "System.Object");
@@ -86,7 +87,8 @@ public class CSharpNativeTypeRef extends DotNetTypeRef.Adapter implements DotNet
 	@Override
 	public PsiElement resolve(@NotNull PsiElement scope)
 	{
-		return DotNetPsiFacade.getInstance(scope.getProject()).findType(myWrapperQualifiedClass, scope.getResolveScope(), 0);
+		return DotNetPsiSearcher.getInstance(scope.getProject()).findType(myWrapperQualifiedClass, scope.getResolveScope(),
+				DotNetPsiSearcher.TypeResoleKind.UNKNOWN, CSharpTransform.INSTANCE);
 	}
 
 	@Override

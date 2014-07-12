@@ -20,11 +20,12 @@ import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
-import org.mustbe.consulo.dotnet.resolve.DotNetPsiFacade;
+import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 
@@ -159,7 +160,8 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 	@Override
 	public PsiElement resolve(@NotNull PsiElement scope)
 	{
-		return DotNetPsiFacade.getInstance(scope.getProject()).findType(DotNetTypes.System_MulticastDelegate, scope.getResolveScope(), 0);
+		return DotNetPsiSearcher.getInstance(scope.getProject()).findType(DotNetTypes.System_MulticastDelegate, scope.getResolveScope(),
+				DotNetPsiSearcher.TypeResoleKind.UNKNOWN, CSharpTransform.INSTANCE);
 	}
 
 	@NotNull

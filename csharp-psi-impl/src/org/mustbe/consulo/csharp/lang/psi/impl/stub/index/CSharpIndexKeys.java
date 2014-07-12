@@ -39,6 +39,7 @@ public interface CSharpIndexKeys
 	StubIndexKey<String, DotNetLikeMethodDeclaration> EXTENSION_METHOD_INDEX = StubIndexKey.createIndexKey("csharp.extension.method.index");
 	StubIndexKey<String, DotNetTypeDeclaration> TYPE_INDEX = StubIndexKey.createIndexKey("csharp.type.index");
 	StubIndexKey<String, DotNetTypeDeclaration> TYPE_BY_QNAME_INDEX = StubIndexKey.createIndexKey("csharp.type.by.qname.index");
+	StubIndexKey<String, DotNetTypeDeclaration> TYPE_BY_VMQNAME_INDEX = StubIndexKey.createIndexKey("csharp.type.by.vm.qname.index");
 
 	StubIndexKey<String, DotNetEventDeclaration> EVENT_INDEX = StubIndexKey.createIndexKey("csharp.event.index");
 	StubIndexKey<String, DotNetPropertyDeclaration> PROPERTY_INDEX = StubIndexKey.createIndexKey("csharp.property.index");

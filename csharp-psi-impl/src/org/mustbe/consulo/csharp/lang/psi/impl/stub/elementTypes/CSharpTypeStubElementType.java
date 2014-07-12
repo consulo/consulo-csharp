@@ -52,28 +52,30 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 	}
 
 	@Override
-	public CSharpTypeDeclaration createPsi(@NotNull CSharpTypeStub cSharpTypeStub)
+	public CSharpTypeDeclaration createPsi(@NotNull CSharpTypeStub stub)
 	{
-		return new CSharpTypeDeclarationImpl(cSharpTypeStub);
+		return new CSharpTypeDeclarationImpl(stub);
 	}
 
 	@Override
-	public CSharpTypeStub createStub(@NotNull CSharpTypeDeclaration cSharpTypeDeclaration, StubElement stubElement)
+	public CSharpTypeStub createStub(@NotNull CSharpTypeDeclaration typeDeclaration, StubElement stubElement)
 	{
-		StringRef name = StringRef.fromNullableString(cSharpTypeDeclaration.getName());
-		StringRef parentQName = StringRef.fromNullableString(cSharpTypeDeclaration.getPresentableParentQName());
-		int modifierMask = MemberStub.getModifierMask(cSharpTypeDeclaration);
-		int otherModifierMask = CSharpTypeStub.getOtherModifiers(cSharpTypeDeclaration);
-		return new CSharpTypeStub(stubElement, name, parentQName, modifierMask, otherModifierMask);
+		StringRef name = StringRef.fromNullableString(typeDeclaration.getName());
+		StringRef parentQName = StringRef.fromNullableString(typeDeclaration.getPresentableParentQName());
+		StringRef vmQName = StringRef.fromNullableString(typeDeclaration.getVmQName());
+		int modifierMask = MemberStub.getModifierMask(typeDeclaration);
+		int otherModifierMask = CSharpTypeStub.getOtherModifiers(typeDeclaration);
+		return new CSharpTypeStub(stubElement, name, parentQName, vmQName, modifierMask, otherModifierMask);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpTypeStub cSharpTypeStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@NotNull CSharpTypeStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
-		stubOutputStream.writeName(cSharpTypeStub.getName());
-		stubOutputStream.writeName(cSharpTypeStub.getParentQName());
-		stubOutputStream.writeInt(cSharpTypeStub.getModifierMask());
-		stubOutputStream.writeInt(cSharpTypeStub.getOtherModifierMask());
+		stubOutputStream.writeName(stub.getName());
+		stubOutputStream.writeName(stub.getParentQName());
+		stubOutputStream.writeName(stub.getVmQName());
+		stubOutputStream.writeInt(stub.getModifierMask());
+		stubOutputStream.writeInt(stub.getOtherModifierMask());
 	}
 
 	@NotNull
@@ -82,24 +84,27 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 	{
 		StringRef name = stubInputStream.readName();
 		StringRef parentQName = stubInputStream.readName();
+		StringRef vmQName = stubInputStream.readName();
 		int modifierMask = stubInputStream.readInt();
 		int otherModifierMask = stubInputStream.readInt();
-		return new CSharpTypeStub(stubElement, name, parentQName, modifierMask, otherModifierMask);
+		return new CSharpTypeStub(stubElement, name, parentQName, vmQName, modifierMask, otherModifierMask);
 	}
 
 	@Override
-	public void indexStub(@NotNull CSharpTypeStub cSharpTypeStub, @NotNull IndexSink indexSink)
+	public void indexStub(@NotNull CSharpTypeStub stub, @NotNull IndexSink indexSink)
 	{
-		String name = cSharpTypeStub.getName();
+		String name = stub.getName();
 		if(!StringUtil.isEmpty(name))
 		{
 			indexSink.occurrence(CSharpIndexKeys.TYPE_INDEX, name);
 
-			val parentQName = cSharpTypeStub.getParentQName();
+			val parentQName = stub.getParentQName();
 
 			indexSink.occurrence(CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, CSharpNamespaceHelper.getNamespaceForIndexing(parentQName));
 
 			indexSink.occurrence(CSharpIndexKeys.TYPE_BY_QNAME_INDEX, CSharpNamespaceHelper.getNameWithNamespaceForIndexing(parentQName, name));
+
+			indexSink.occurrence(CSharpIndexKeys.TYPE_BY_VMQNAME_INDEX, stub.getVmQName());
 		}
 	}
 }

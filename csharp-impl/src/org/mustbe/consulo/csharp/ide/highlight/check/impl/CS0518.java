@@ -23,7 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetNativeType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.resolve.DotNetPsiFacade;
+import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -36,13 +36,12 @@ public class CS0518 extends CompilerCheck<DotNetNativeType>
 
 	@Nullable
 	@Override
-	public CompilerCheckResult checkImpl(
-			@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetNativeType element)
+	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetNativeType element)
 	{
 		PsiElement typeElement = element.getTypeElement();
 		if(typeElement.getNode().getElementType() == CSharpTokens.DYNAMIC_KEYWORD)
 		{
-			DotNetTypeDeclaration type = DotNetPsiFacade.getInstance(element.getProject()).findType(ourCheckType, element.getResolveScope(), 0);
+			DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(element.getProject()).findType(ourCheckType, element.getResolveScope());
 			if(type == null)
 			{
 				return result(typeElement);

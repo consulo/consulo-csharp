@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.resolve.DotNetPsiFacade;
+import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import com.intellij.ProjectTopics;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.ModuleRootAdapter;
@@ -60,7 +60,7 @@ public class CSharpModuleTypeHelperImpl extends CSharpModuleTypeHelper
 		if(declaration == null)
 		{
 			GlobalSearchScope searchScope = GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(myModule);
-			DotNetTypeDeclaration type = DotNetPsiFacade.getInstance(myModule.getProject()).findType(DotNetTypes.System_Array, searchScope, 0);
+			DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(myModule.getProject()).findType(DotNetTypes.System_Array, searchScope);
 			if(type == null)
 			{
 				return null;

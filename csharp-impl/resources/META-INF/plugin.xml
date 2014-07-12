@@ -44,6 +44,7 @@
 		<allClassesSearch implementation="org.mustbe.consulo.csharp.lang.psi.impl.search.CSharpAllClassesSearchExecutor"/>
 		<directClassInheritorsSearch implementation="org.mustbe.consulo.csharp.lang.psi.impl.search.CSharpDirectInheritorsSearcherExecutor"/>
 		<psi.facade implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiFacadeImpl"/>
+		<psiSearcher implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher"/>
 		<debugger.provider implementation="org.mustbe.consulo.csharp.ide.debugger.CSharpDebuggerProvider"/>
 		<stubIndexer implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMsilStubIndexer"/>
 
@@ -131,6 +132,7 @@
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.NamespaceByQNameIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeByQNameIndex"/>
+		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeByVmQNameIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MethodIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MemberByNamespaceQNameIndex"/>
