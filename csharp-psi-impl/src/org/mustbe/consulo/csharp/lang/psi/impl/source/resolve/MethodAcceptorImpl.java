@@ -17,14 +17,17 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionWithParameters;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.ArrayUtil;
 
 /**
  * @author VISTALL
@@ -47,7 +50,7 @@ public class MethodAcceptorImpl
 			{
 				DotNetExpression expression = expressions[i];
 				DotNetParameter parameter = ArrayUtil2.safeGet(parameters, i);
-				if(expression == null || parameter == null)
+				if(parameter == null)
 				{
 					return weight;
 				}
@@ -59,9 +62,65 @@ public class MethodAcceptorImpl
 				{
 					weight++;
 				}
+				else
+				{
+					return weight;
+				}
 			}
 
 			return weight == parameters.length ? WeightProcessor.MAX_WEIGHT : weight;
+		}
+	}
+
+	private static class MethodAcceptorWithParams implements MethodAcceptor
+	{
+		@Override
+		public int calcAcceptableWeight(@NotNull PsiElement scope, DotNetExpression[] expressions, DotNetParameter[] parameters)
+		{
+			int weight = 0;
+			for(int i = 0; i < expressions.length; i++)
+			{
+				DotNetExpression expression = expressions[i];
+				DotNetParameter parameter = ArrayUtil2.safeGet(parameters, i);
+
+				DotNetTypeRef expressionType = expression.toTypeRef(false);
+
+				DotNetTypeRef parameterType = null;
+				if(parameter == null)
+				{
+					DotNetParameter lastParameter = ArrayUtil.getLastElement(parameters);
+					if(lastParameter == null || !lastParameter.hasModifier(CSharpModifier.PARAMS))
+					{
+						return weight;
+					}
+					parameterType = CSharpResolveUtil.resolveIterableType(scope, lastParameter.toTypeRef(false));
+				}
+				else
+				{
+					parameterType = parameter.toTypeRef(false);
+				}
+
+				if(CSharpTypeUtil.isInheritable(parameterType, expressionType, scope))
+				{
+					weight++;
+				}
+				else
+				{
+					if(parameter != null && parameter.hasModifier(CSharpModifier.PARAMS))
+					{
+						parameterType = CSharpResolveUtil.resolveIterableType(scope, parameterType);
+						if(CSharpTypeUtil.isInheritable(parameterType, expressionType, scope))
+						{
+							weight ++;
+							continue;
+						}
+					}
+
+					return weight;
+				}
+			}
+
+			return weight == expressions.length ? WeightProcessor.MAX_WEIGHT : weight;
 		}
 	}
 
@@ -106,6 +165,7 @@ public class MethodAcceptorImpl
 
 	private static final MethodAcceptor[] ourAcceptors = new MethodAcceptor[]{
 			new SimpleMethodAcceptor(),
+			new MethodAcceptorWithParams(),
 			new MethodAcceptorWithDefaultValues()
 	};
 
