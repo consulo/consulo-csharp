@@ -64,6 +64,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.ReferenceRange;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.xml.util.XmlStringUtil;
 
 /**
  * @author VISTALL
@@ -349,8 +350,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 					{
 						builder.append(", ");
 					}
-					DotNetTypeRef parameterType = parameterTypes[i];
-					builder.append(parameterType.getPresentableText());
+					appendType(builder, parameterTypes[i]);
 				}
 			}
 			else if(resolveElement instanceof DotNetLikeMethodDeclaration)
@@ -363,8 +363,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 					{
 						builder.append(", ");
 					}
-					DotNetParameter parameter = parameters[i];
-					builder.append(MethodAcceptorImpl.calcParameterTypeRef(element, parameter, e).getPresentableText());
+					appendType(builder, MethodAcceptorImpl.calcParameterTypeRef(element, parameters[i], e));
 				}
 			}
 			builder.append(")<br>");
@@ -376,8 +375,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 				{
 					builder.append(", ");
 				}
-				DotNetExpression parameterExpression = parameterExpressions[i];
-				builder.append(parameterExpression.toTypeRef(false).getPresentableText());
+				appendType(builder, parameterExpressions[i].toTypeRef(false));
 			}
 			builder.append(")");
 
@@ -389,6 +387,11 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 			return new ResolveError("", builder.toString(), parameterList);
 		}
 		return null;
+	}
+
+	private static void appendType(StringBuilder builder, DotNetTypeRef typeRef)
+	{
+		builder.append(XmlStringUtil.escapeString(typeRef.getPresentableText()));
 	}
 
 	private static CSharpCallArgumentListOwner findCallOwner(PsiElement element)
