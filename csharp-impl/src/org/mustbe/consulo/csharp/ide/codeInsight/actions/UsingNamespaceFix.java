@@ -35,13 +35,14 @@ import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodIndex;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MethodIndex;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeIndex;
 import org.mustbe.consulo.dotnet.DotNetBundle;
-import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.msil.MsilHelper;
 import com.intellij.codeInsight.daemon.impl.ShowAutoImportPass;
 import com.intellij.codeInsight.hint.HintManager;
@@ -235,7 +236,8 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 
 		for(DotNetLikeMethodDeclaration possibleMethod : list)
 		{
-			if(MethodAcceptorImpl.calcAcceptableWeight(myRef, newExpressions, possibleMethod.getParameters()) == WeightProcessor.MAX_WEIGHT)
+			if(MethodAcceptorImpl.calcAcceptableWeight(myRef, newExpressions, DotNetGenericExtractor.EMPTY,
+					possibleMethod) == WeightProcessor.MAX_WEIGHT)
 			{
 				PsiElement parentOfMethod = possibleMethod.getParent();
 				if(parentOfMethod instanceof DotNetQualifiedElement)

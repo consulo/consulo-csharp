@@ -21,9 +21,11 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.lang.parameterInfo.CreateParameterInfoContext;
@@ -59,7 +61,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 		if(object instanceof DotNetLikeMethodDeclaration || object instanceof DotNetVariable && ((DotNetVariable) object).toTypeRef(false)
 				instanceof CSharpLambdaTypeRef)
 		{
-			return new Object[] {object};
+			return new Object[]{Pair.create(object, DotNetGenericExtractor.EMPTY)};
 		}
 		return ArrayUtil.EMPTY_OBJECT_ARRAY;
 	}
@@ -82,19 +84,19 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	@Override
 	public void showParameterInfo(@NotNull PsiElement element, CreateParameterInfoContext context)
 	{
-		Pair<Object, Integer> callableInfo = resolveToCallableInfo(element);
+		Pair<Object, DotNetGenericExtractor> callableInfo = resolveToCallableInfo(element);
 
 		if(callableInfo != null)
 		{
-			context.setItemsToShow(new Object[]{callableInfo.getFirst()});
+			context.setItemsToShow(new Object[]{callableInfo});
 			context.showHint(element, element.getTextRange().getStartOffset(), this);
 		}
 	}
 
-	private static Pair<Object, Integer> resolveToCallableInfo(PsiElement element)
+	private static Pair<Object, DotNetGenericExtractor> resolveToCallableInfo(PsiElement element)
 	{
 		Object callable = null;
-		int count = 0;
+		DotNetGenericExtractor extractor = DotNetGenericExtractor.EMPTY;
 		if(element instanceof CSharpCallArgumentListOwner)
 		{
 			ResolveResult[] resolveResults = ((CSharpCallArgumentListOwner) element).multiResolve(false);
@@ -103,7 +105,8 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 				callable = resolveResults[0].getElement();
 				if(callable instanceof DotNetLikeMethodDeclaration)
 				{
-					count = ((DotNetLikeMethodDeclaration) callable).getParameters().length;
+					extractor = MethodAcceptorImpl.createExtractorFromCall((CSharpCallArgumentListOwner) element,
+							(DotNetLikeMethodDeclaration) callable);
 				}
 				else if(callable instanceof DotNetVariable)
 				{
@@ -119,7 +122,6 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 						{
 							callable = typeRef;
 						}
-						count = ((CSharpLambdaTypeRef) typeRef).getParameterTypes().length;
 					}
 				}
 			}
@@ -129,7 +131,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 		{
 			return null;
 		}
-		return Pair.create(callable, count);
+		return Pair.create(callable, extractor);
 	}
 
 	@Nullable

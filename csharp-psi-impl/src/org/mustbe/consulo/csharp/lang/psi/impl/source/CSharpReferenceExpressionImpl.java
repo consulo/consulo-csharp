@@ -205,17 +205,17 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@NotNull
 	public ResolveResultWithWeight[] multiResolveImpl(ResolveToKind kind)
 	{
-		CSharpExpressionWithParameters p = null;
+		CSharpCallArgumentListOwner p = null;
 		PsiElement parent = getParent();
-		if(parent instanceof CSharpExpressionWithParameters)
+		if(parent instanceof CSharpCallArgumentListOwner)
 		{
-			p = (CSharpExpressionWithParameters) parent;
+			p = (CSharpCallArgumentListOwner) parent;
 		}
 		return multiResolve0(kind, p, this);
 	}
 
 	public static <T extends PsiQualifiedReference & PsiElement> ResolveResultWithWeight[] multiResolve0(ResolveToKind kind,
-			final CSharpExpressionWithParameters parameters, final T e)
+			final CSharpCallArgumentListOwner parameters, final T e)
 	{
 		Condition<PsiNamedElement> namedElementCondition;
 		@SuppressWarnings("unchecked") WeightProcessor<PsiNamedElement> weightProcessor = WeightProcessor.MAXIMUM;

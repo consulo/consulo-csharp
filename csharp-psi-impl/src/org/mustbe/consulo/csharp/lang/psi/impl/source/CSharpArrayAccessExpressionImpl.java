@@ -28,6 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
@@ -194,6 +195,13 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 	@Nullable
 	@Override
 	public CSharpCallArgumentList getParameterList()
+	{
+		return null;
+	}
+
+	@Nullable
+	@Override
+	public DotNetTypeList getTypeArgumentList()
 	{
 		return null;
 	}

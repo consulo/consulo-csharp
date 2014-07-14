@@ -21,9 +21,11 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -34,7 +36,7 @@ import com.intellij.psi.ResolveResult;
  * @author VISTALL
  * @since 16.12.13.
  */
-public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpExpressionWithParameters, CSharpCallArgumentListOwner
+public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpCallArgumentListOwner
 {
 	public CSharpMethodCallExpressionImpl(@NotNull ASTNode node)
 	{
@@ -52,6 +54,13 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 	public CSharpCallArgumentList getParameterList()
 	{
 		return findChildByClass(CSharpCallArgumentList.class);
+	}
+
+	@Nullable
+	@Override
+	public DotNetTypeList getTypeArgumentList()
+	{
+		return (DotNetTypeList) findChildByType(CSharpElements.TYPE_ARGUMENTS);
 	}
 
 	@Override

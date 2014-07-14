@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRef
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -89,6 +90,13 @@ public class CSharpAttributeImpl extends CSharpElementImpl implements DotNetAttr
 	public CSharpCallArgumentList getParameterList()
 	{
 		return findChildByClass(CSharpCallArgumentList.class);
+	}
+
+	@Nullable
+	@Override
+	public DotNetTypeList getTypeArgumentList()
+	{
+		return null;
 	}
 
 	@Override

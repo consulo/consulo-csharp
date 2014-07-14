@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -55,6 +56,13 @@ public class CSharpConstructorSuperCallImpl extends CSharpElementImpl implements
 	public CSharpCallArgumentList getParameterList()
 	{
 		return findChildByClass(CSharpCallArgumentList.class);
+	}
+
+	@Nullable
+	@Override
+	public DotNetTypeList getTypeArgumentList()
+	{
+		return null;
 	}
 
 	@Nullable

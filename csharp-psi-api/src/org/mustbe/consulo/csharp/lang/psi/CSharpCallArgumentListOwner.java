@@ -16,9 +16,11 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionWithParameters;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 
@@ -26,12 +28,18 @@ import com.intellij.psi.ResolveResult;
  * @author VISTALL
  * @since 12.05.14
  */
-public interface CSharpCallArgumentListOwner extends DotNetElement, CSharpExpressionWithParameters
+public interface CSharpCallArgumentListOwner extends DotNetElement
 {
 	boolean canResolve();
 
 	@Nullable
 	CSharpCallArgumentList getParameterList();
+
+	@NotNull
+	DotNetExpression[] getParameterExpressions();
+
+	@Nullable
+	DotNetTypeList getTypeArgumentList();
 
 	@Nullable
 	PsiElement resolveToCallable();

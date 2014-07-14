@@ -17,19 +17,20 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameterList;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionWithParameters;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
@@ -89,7 +90,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 				continue;
 			}
 
-			int weight = MethodAcceptorImpl.calcAcceptableWeight(myExpression, myNewExpression, methodDeclaration);
+			int weight = MethodAcceptorImpl.calcAcceptableWeight(myExpression, myNewExpression, DotNetGenericExtractor.EMPTY, methodDeclaration);
 
 			add(new ResolveResultWithWeight(transform((CSharpMethodDeclaration) dotNetNamedElement), weight));
 
@@ -104,9 +105,9 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 	private static DotNetExpression[] getNewExpressions(CSharpReferenceExpression ex, DotNetTypeRef qType)
 	{
 		PsiElement parent = ex.getParent();
-		if(parent instanceof CSharpExpressionWithParameters)
+		if(parent instanceof CSharpCallArgumentListOwner)
 		{
-			DotNetExpression[] parameterExpressions = ((CSharpExpressionWithParameters) parent).getParameterExpressions();
+			DotNetExpression[] parameterExpressions = ((CSharpCallArgumentListOwner) parent).getParameterExpressions();
 
 			DotNetExpression[] newParameters = new DotNetExpression[parameterExpressions.length + 1];
 			System.arraycopy(parameterExpressions, 0, newParameters, 1, parameterExpressions.length);

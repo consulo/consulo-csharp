@@ -476,6 +476,35 @@ public class ExpressionParsing extends SharingParsingHelpers
 					expr = refExpr;
 				}
 			}
+			else if(tokenType == LT)
+			{
+				if(exprType(expr) != REFERENCE_EXPRESSION)
+				{
+					startMarker.drop();
+					return expr;
+				}
+
+				final PsiBuilder.Marker callExpr = expr.precede();
+
+				PsiBuilder.Marker argumentMark = builder.mark();
+				builder.advanceLexer();
+				parseTypeList(builder, false);
+				expect(builder, GT, "'>' expected");
+				argumentMark.done(TYPE_ARGUMENTS);
+
+				if(builder.getTokenType() == LPAR)
+				{
+					parseArgumentList(builder);
+					callExpr.done(METHOD_CALL_EXPRESSION);
+					expr = callExpr;
+				}
+				else
+				{
+					callExpr.drop();
+					startMarker.drop();
+					return expr;
+				}
+			}
 			else if(tokenType == LPAR)
 			{
 				if(exprType(expr) != REFERENCE_EXPRESSION)

@@ -21,6 +21,8 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
@@ -37,6 +39,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolve
 import org.mustbe.consulo.dotnet.psi.DotNetEventDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Condition;
@@ -44,6 +47,7 @@ import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
@@ -54,7 +58,7 @@ import lombok.val;
  * @author VISTALL
  * @since 12.03.14
  */
-public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements PsiReference, CSharpExpressionWithParameters
+public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements PsiReference, CSharpCallArgumentListOwner
 {
 	private static final TokenSet ourMergeSet = TokenSet.orSet(CSharpTokenSets.OVERLOADING_OPERATORS, CSharpTokenSets.ASSIGNMENT_OPERATORS,
 			TokenSet.create(CSharpTokens.ANDAND, CSharpTokens.OROR));
@@ -302,6 +306,39 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			typeRefs[i] = parameterExpression.toTypeRef(true);
 		}
 		return typeRefs;
+	}
+
+	@Override
+	public boolean canResolve()
+	{
+		return true;
+	}
+
+	@Nullable
+	@Override
+	public CSharpCallArgumentList getParameterList()
+	{
+		return null;
+	}
+
+	@Nullable
+	@Override
+	public DotNetTypeList getTypeArgumentList()
+	{
+		return null;
+	}
+
+	@Nullable
+	@Override
+	public PsiElement resolveToCallable()
+	{
+		return resolve();
+	}
+
+	@Override
+	public ResolveResult[] multiResolve(boolean incompleteCode)
+	{
+		return new ResolveResult[0];
 	}
 
 	@NotNull

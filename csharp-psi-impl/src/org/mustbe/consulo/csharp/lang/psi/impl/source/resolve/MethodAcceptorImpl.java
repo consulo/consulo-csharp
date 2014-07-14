@@ -17,13 +17,19 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionWithParameters;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.SimpleGenericExtractorImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.psi.PsiElement;
@@ -37,13 +43,15 @@ public class MethodAcceptorImpl
 {
 	private static interface MethodAcceptor
 	{
-		int calcAcceptableWeight(@NotNull PsiElement scope, DotNetExpression[] expressions, DotNetParameter[] parameters);
+		int calcAcceptableWeight(@NotNull PsiElement scope, DotNetExpression[] expressions, DotNetParameter[] parameters, DotNetGenericExtractor
+				extractor);
 	}
 
 	private static class SimpleMethodAcceptor implements MethodAcceptor
 	{
 		@Override
-		public int calcAcceptableWeight(@NotNull PsiElement scope, DotNetExpression[] expressions, DotNetParameter[] parameters)
+		public int calcAcceptableWeight(@NotNull PsiElement scope, DotNetExpression[] expressions, DotNetParameter[] parameters,
+				DotNetGenericExtractor extractor)
 		{
 			int weight = 0;
 			for(int i = 0; i < expressions.length; i++)
@@ -56,7 +64,7 @@ public class MethodAcceptorImpl
 				}
 
 				DotNetTypeRef expressionType = expression.toTypeRef(false);
-				DotNetTypeRef parameterType = parameter.toTypeRef(false);
+				DotNetTypeRef parameterType = calcParameterTypeRef(scope, parameter, extractor);
 
 				if(CSharpTypeUtil.isInheritable(parameterType, expressionType, scope))
 				{
@@ -75,7 +83,8 @@ public class MethodAcceptorImpl
 	private static class MethodAcceptorWithParams implements MethodAcceptor
 	{
 		@Override
-		public int calcAcceptableWeight(@NotNull PsiElement scope, DotNetExpression[] expressions, DotNetParameter[] parameters)
+		public int calcAcceptableWeight(@NotNull PsiElement scope, DotNetExpression[] expressions, DotNetParameter[] parameters,
+				DotNetGenericExtractor extractor)
 		{
 			DotNetParameter lastParameter = ArrayUtil.getLastElement(parameters);
 			if(lastParameter == null || !lastParameter.hasModifier(CSharpModifier.PARAMS))
@@ -94,11 +103,11 @@ public class MethodAcceptorImpl
 				DotNetTypeRef parameterType = null;
 				if(parameter == null)
 				{
-					parameterType = CSharpResolveUtil.resolveIterableType(scope, lastParameter.toTypeRef(false));
+					parameterType = CSharpResolveUtil.resolveIterableType(scope, calcParameterTypeRef(scope, lastParameter, extractor));
 				}
 				else
 				{
-					parameterType = parameter.toTypeRef(false);
+					parameterType = calcParameterTypeRef(scope, parameter, extractor);
 				}
 
 				if(CSharpTypeUtil.isInheritable(parameterType, expressionType, scope))
@@ -128,7 +137,7 @@ public class MethodAcceptorImpl
 	private static class MethodAcceptorWithDefaultValues implements MethodAcceptor
 	{
 		@Override
-		public int calcAcceptableWeight(@NotNull PsiElement scope, DotNetExpression[] expressions, DotNetParameter[] parameters)
+		public int calcAcceptableWeight(@NotNull PsiElement scope, DotNetExpression[] expressions, DotNetParameter[] parameters, DotNetGenericExtractor extractor)
 		{
 			if(expressions.length >= parameters.length)
 			{
@@ -152,7 +161,7 @@ public class MethodAcceptorImpl
 				}
 
 				DotNetTypeRef expressionType = expression.toTypeRef(false);
-				DotNetTypeRef parameterType = parameter.toTypeRef(false);
+				DotNetTypeRef parameterType = calcParameterTypeRef(scope, parameter, extractor);
 
 				if(!CSharpTypeUtil.isInheritable(parameterType, expressionType, scope))
 				{
@@ -170,30 +179,21 @@ public class MethodAcceptorImpl
 			new MethodAcceptorWithDefaultValues()
 	};
 
-	public static int calcAcceptableWeight(PsiElement scope, CSharpExpressionWithParameters withParameters,
-			DotNetParameterListOwner parameterListOwner)
+	public static int calcAcceptableWeight(PsiElement scope, CSharpCallArgumentListOwner owner, DotNetLikeMethodDeclaration declaration)
 	{
-		DotNetParameter[] parameters = parameterListOwner.getParameters();
-		return calcAcceptableWeight(scope, withParameters.getParameterExpressions(), parameters);
+		DotNetExpression[] parameterExpressions = owner.getParameterExpressions();
+		return calcAcceptableWeight(scope, parameterExpressions, createExtractorFromCall(owner, declaration), declaration);
 	}
 
-	public static int calcAcceptableWeight(PsiElement scope, CSharpExpressionWithParameters withParameters, DotNetParameter[] parameters)
+	public static int calcAcceptableWeight(PsiElement scope, DotNetExpression[] parameterExpressions,
+			DotNetGenericExtractor extractor, DotNetLikeMethodDeclaration declaration)
 	{
-		return calcAcceptableWeight(scope, withParameters.getParameterExpressions(), parameters);
-	}
+		DotNetParameter[] parameters = declaration.getParameters();
 
-	public static int calcAcceptableWeight(PsiElement scope, DotNetExpression[] parameterExpressions, DotNetParameterListOwner parameterListOwner)
-	{
-		DotNetParameter[] netParameters = parameterListOwner.getParameters();
-		return calcAcceptableWeight(scope, parameterExpressions, netParameters);
-	}
-
-	public static int calcAcceptableWeight(PsiElement scope, DotNetExpression[] parameterExpressions, DotNetParameter[] parameters)
-	{
 		int weight = 0;
 		for(MethodAcceptor ourAcceptor : ourAcceptors)
 		{
-			int calculatedWeight = ourAcceptor.calcAcceptableWeight(scope, parameterExpressions, parameters);
+			int calculatedWeight = ourAcceptor.calcAcceptableWeight(scope, parameterExpressions, parameters, extractor);
 			if(calculatedWeight == WeightProcessor.MAX_WEIGHT)
 			{
 				return WeightProcessor.MAX_WEIGHT;
@@ -204,5 +204,28 @@ public class MethodAcceptorImpl
 			}
 		}
 		return weight;
+	}
+
+	@NotNull
+	public static DotNetGenericExtractor createExtractorFromCall(CSharpCallArgumentListOwner owner, DotNetGenericParameterListOwner genericOwner)
+	{
+		DotNetTypeList typeArgumentList = owner.getTypeArgumentList();
+		DotNetTypeRef[] typeArguments = DotNetTypeRef.EMPTY_ARRAY;
+		if(typeArgumentList != null)
+		{
+			DotNetGenericParameter[] genericParameters = genericOwner.getGenericParameters();
+			typeArguments = typeArgumentList.getTypeRefs();
+			if(typeArguments.length > 0 && genericParameters.length == typeArguments.length)
+			{
+				return new SimpleGenericExtractorImpl(genericParameters, typeArguments);
+			}
+		}
+
+		return DotNetGenericExtractor.EMPTY;
+	}
+
+	public static DotNetTypeRef calcParameterTypeRef(PsiElement scope, DotNetParameter parameter, DotNetGenericExtractor extractor)
+	{
+		return GenericUnwrapTool.exchangeTypeRefs(parameter.toTypeRef(false), extractor, scope);
 	}
 }
