@@ -77,6 +77,12 @@ public class MethodAcceptorImpl
 		@Override
 		public int calcAcceptableWeight(@NotNull PsiElement scope, DotNetExpression[] expressions, DotNetParameter[] parameters)
 		{
+			DotNetParameter lastParameter = ArrayUtil.getLastElement(parameters);
+			if(lastParameter == null || !lastParameter.hasModifier(CSharpModifier.PARAMS))
+			{
+				return 0;
+			}
+
 			int weight = 0;
 			for(int i = 0; i < expressions.length; i++)
 			{
@@ -88,11 +94,6 @@ public class MethodAcceptorImpl
 				DotNetTypeRef parameterType = null;
 				if(parameter == null)
 				{
-					DotNetParameter lastParameter = ArrayUtil.getLastElement(parameters);
-					if(lastParameter == null || !lastParameter.hasModifier(CSharpModifier.PARAMS))
-					{
-						return weight;
-					}
 					parameterType = CSharpResolveUtil.resolveIterableType(scope, lastParameter.toTypeRef(false));
 				}
 				else
