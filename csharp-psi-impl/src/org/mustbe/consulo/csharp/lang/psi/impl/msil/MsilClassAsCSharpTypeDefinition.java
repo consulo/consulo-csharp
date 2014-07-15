@@ -136,6 +136,10 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 
 					list.add(new MsilFieldAsCSharpFieldDeclaration(parentThis, (DotNetVariable) element));
 				}
+				else if(element instanceof MsilClassEntry)
+				{
+					//list.add(new MsilClassAsCSharpTypeDefinition(parentThis, (MsilClassEntry) element));
+				}
 			}
 
 			for(DotNetNamedElement member : copy)
