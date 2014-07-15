@@ -21,15 +21,8 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.lexer.CSharpLexer;
+import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
@@ -295,7 +288,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 				processModifierList(t, v);
 				appendTypeRef(t, v.toTypeRef(false));
 				t.append(" ");
-				t.append(v.getName());
+				appendValidName(t, v.getName());
 				return null;
 			}
 		}, ", ");
@@ -315,6 +308,30 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 				}
 				builder.append(dotNetModifier.getPresentableText()).append(" ");
 			}
+		}
+	}
+
+	public static void appendValidName(StringBuilder builder, String name)
+	{
+		if(isKeyword(name))
+		{
+			builder.append("@");
+		}
+		builder.append(name);
+	}
+
+	public static boolean isKeyword(String str)
+	{
+		try
+		{
+			CSharpLexer cSharpLexer = new CSharpLexer();
+			cSharpLexer.start(str);
+			return CSharpTokenSets.KEYWORDS.contains(cSharpLexer.getTokenType());
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return false;
 		}
 	}
 
