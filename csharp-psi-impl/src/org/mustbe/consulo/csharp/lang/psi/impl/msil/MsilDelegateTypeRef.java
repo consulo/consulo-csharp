@@ -44,7 +44,7 @@ public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 	@Override
 	public String getQualifiedText()
 	{
-		return MsilHelper.cutGenericMarker(super.getQualifiedText());
+		return MsilHelper.prepareForUser(super.getQualifiedText());
 	}
 
 	@Nullable

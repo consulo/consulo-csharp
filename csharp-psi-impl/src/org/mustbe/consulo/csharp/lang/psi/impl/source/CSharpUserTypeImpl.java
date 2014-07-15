@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetUserType;
-import org.mustbe.consulo.dotnet.resolve.DotNetPsiFacade;
+import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 
@@ -50,9 +50,9 @@ public class CSharpUserTypeImpl extends CSharpElementImpl implements DotNetUserT
 
 	@NotNull
 	@Override
-	public DotNetPsiFacade.TypeResoleKind getTypeResoleKind()
+	public DotNetPsiSearcher.TypeResoleKind getTypeResoleKind()
 	{
-		return DotNetPsiFacade.TypeResoleKind.UNKNOWN;
+		return DotNetPsiSearcher.TypeResoleKind.UNKNOWN;
 	}
 
 	@NotNull
