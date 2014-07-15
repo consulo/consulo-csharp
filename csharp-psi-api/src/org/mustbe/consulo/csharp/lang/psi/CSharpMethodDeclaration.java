@@ -17,7 +17,9 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.consulo.lombok.annotations.ArrayFactoryFields;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
+import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
@@ -26,4 +28,10 @@ import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
 @ArrayFactoryFields
 public interface CSharpMethodDeclaration extends DotNetMethodDeclaration, CSharpGenericConstraintOwner, CSharpPseudoMethod
 {
+	boolean isDelegate();
+
+	boolean isOperator();
+
+	@Nullable
+	IElementType getOperatorElementType();
 }

@@ -106,12 +106,20 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@Override
 	public TextRange getRangeInElement()
 	{
-		PsiElement operator = getOperator();
-		return new TextRange(0, operator.getTextLength());
+		PsiElement operator = getFirstOperator();
+
+		int len = operator.getTextLength();
+
+		IElementType operatorElementType = getOperatorElementType();
+		if(operatorElementType == CSharpTokens.LTLT || operatorElementType == CSharpTokens.GTGT)
+		{
+			len += 1;
+		}
+		return new TextRange(0, len);
 	}
 
 	@NotNull
-	public PsiElement getOperator()
+	public PsiElement getFirstOperator()
 	{
 		return findNotNullChildByFilter(ourMergeSet);
 	}
@@ -201,7 +209,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@NotNull
 	public IElementType getOperatorElementType()
 	{
-		return getOperator().getNode().getElementType();
+		return CSharpOperatorHelper.mergeTwiceOperatorIfNeed(getFirstOperator());
 	}
 
 	private DotNetTypeRef findReturnTypeInStubs()
@@ -261,7 +269,16 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@Override
 	public String getCanonicalText()
 	{
-		return getOperator().getText();
+		IElementType operatorElementType = getOperatorElementType();
+		if(operatorElementType == CSharpTokens.LTLT)
+		{
+			return "<<";
+		}
+		else if(operatorElementType == CSharpTokens.LTLT)
+		{
+			return ">>";
+		}
+		return getFirstOperator().getText();
 	}
 
 	@Override

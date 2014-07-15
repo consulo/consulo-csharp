@@ -20,7 +20,10 @@ import java.util.List;
 
 import org.consulo.lombok.annotations.ProjectService;
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
@@ -31,4 +34,28 @@ public abstract class CSharpOperatorHelper
 {
 	@NotNull
 	public abstract List<DotNetNamedElement> getStubMembers();
+
+	@NotNull
+	public static IElementType mergeTwiceOperatorIfNeed(PsiElement element)
+	{
+		IElementType elementType = element.getNode().getElementType();
+		if(elementType == CSharpTokens.LT || elementType == CSharpTokens.GT)
+		{
+			PsiElement nextSibling = element.getNextSibling();
+			if(nextSibling != null)
+			{
+				IElementType elementType1 = nextSibling.getNode().getElementType();
+				if(elementType == CSharpTokens.LT && elementType1 == CSharpTokens.LT)
+				{
+					return CSharpTokens.LTLT;
+				}
+				else if(elementType == CSharpTokens.GT && elementType1 == CSharpTokens.GT)
+				{
+					return CSharpTokens.GTGT;
+				}
+			}
+		}
+
+		return elementType;
+	}
 }

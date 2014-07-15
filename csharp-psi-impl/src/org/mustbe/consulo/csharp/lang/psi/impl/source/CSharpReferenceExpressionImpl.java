@@ -129,7 +129,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		@Override
 		public boolean value(PsiNamedElement psiNamedElement)
 		{
-			return psiNamedElement instanceof DotNetMethodDeclaration && ((DotNetMethodDeclaration) psiNamedElement).isDelegate();
+			return psiNamedElement instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) psiNamedElement).isDelegate();
 		}
 	};
 

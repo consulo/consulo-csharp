@@ -25,6 +25,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorHelper;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
@@ -70,6 +71,24 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 	}
 
 	@Override
+	public String getName()
+	{
+		if(isOperator())
+		{
+			IElementType operatorElementType = getOperatorElementType();
+			if(operatorElementType == CSharpTokens.LTLT)
+			{
+				return "<<";
+			}
+			else if(operatorElementType == CSharpTokens.GTGT)
+			{
+				return ">>";
+			}
+		}
+		return super.getName();
+	}
+
+	@Override
 	public boolean isDelegate()
 	{
 		CSharpMethodStub stub = getStub();
@@ -101,7 +120,7 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 			return  stub.getOperator();
 		}
 		PsiElement childByType = findChildByType(CSharpTokenSets.OVERLOADING_OPERATORS);
-		return childByType == null ? null : childByType.getNode().getElementType();
+		return childByType == null ? null : CSharpOperatorHelper.mergeTwiceOperatorIfNeed(childByType);
 	}
 
 	@Nullable
