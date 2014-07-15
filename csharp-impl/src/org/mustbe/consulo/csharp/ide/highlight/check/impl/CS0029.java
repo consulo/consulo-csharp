@@ -82,7 +82,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		else if(element instanceof CSharpAssignmentExpressionImpl)
 		{
 			CSharpOperatorReferenceImpl operatorElement = ((CSharpAssignmentExpressionImpl) element).getOperatorElement();
-			if(operatorElement.getOperator().getNode().getElementType() != CSharpTokens.EQ)
+			if(operatorElement.getOperatorElementType() != CSharpTokens.EQ)
 			{
 				return null;
 			}
