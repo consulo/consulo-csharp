@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
 import java.util.Collection;
 
+import org.consulo.lombok.annotations.ProjectService;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeByVmQNameIndex;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -29,6 +30,7 @@ import com.intellij.psi.search.GlobalSearchScope;
  * @author VISTALL
  * @since 13.07.14
  */
+@ProjectService
 public class CSharpPsiSearcher extends DotNetPsiSearcher
 {
 	private Project myProject;

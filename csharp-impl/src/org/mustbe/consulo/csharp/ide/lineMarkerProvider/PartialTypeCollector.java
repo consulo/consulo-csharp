@@ -23,8 +23,8 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.resolve.DotNetPsiFacade;
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
@@ -56,10 +56,9 @@ public class PartialTypeCollector implements LineMarkerCollector
 				return;
 			}
 
-			val presentableQName = parent.getPresentableQName();
-			assert presentableQName != null;
-			DotNetTypeDeclaration[] types = DotNetPsiFacade.getInstance(parent.getProject()).findTypes(presentableQName, parent.getResolveScope(),
-					parent.getGenericParametersCount());
+			val vmQName = parent.getVmQName();
+			assert vmQName != null;
+			DotNetTypeDeclaration[] types = CSharpPsiSearcher.getInstance(parent.getProject()).findTypes(vmQName, parent.getResolveScope());
 
 			if(types.length > 1 && ArrayUtil.contains(parent, types))
 			{
@@ -79,8 +78,8 @@ public class PartialTypeCollector implements LineMarkerCollector
 					{
 						val typeDeclaration = (DotNetTypeDeclaration) element.getParent();
 
-						DotNetTypeDeclaration[] types = DotNetPsiFacade.getInstance(typeDeclaration.getProject()).findTypes(presentableQName,
-								typeDeclaration.getResolveScope(), typeDeclaration.getGenericParametersCount());
+						DotNetTypeDeclaration[] types = CSharpPsiSearcher.getInstance(typeDeclaration.getProject()).findTypes(vmQName,
+								typeDeclaration.getResolveScope());
 
 						DotNetTypeDeclaration[] newArray = ArrayUtil.remove(types, typeDeclaration);
 

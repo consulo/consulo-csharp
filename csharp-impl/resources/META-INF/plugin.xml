@@ -72,6 +72,7 @@
 
 		<fileTypeFactory implementation="org.mustbe.consulo.csharp.lang.CSharpFileTypeFactory"/>
 
+		<projectService serviceImplementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher" />
 		<syntaxHighlighter key="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpSyntaxHighlighter"/>
 		<syntaxHighlighter key="C#Macro" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpMacroSyntaxHighlighter"/>
 		<copyright.updater filetype="C#" implementationClass="org.mustbe.consulo.csharp.ide.copyright.CSharpUpdateCopyrightsProvider"/>
