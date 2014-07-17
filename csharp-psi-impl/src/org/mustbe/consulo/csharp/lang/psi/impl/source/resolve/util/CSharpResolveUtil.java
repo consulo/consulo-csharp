@@ -34,6 +34,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceAsElement;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceHelper;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
@@ -50,7 +51,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
-import org.mustbe.consulo.dotnet.resolve.DotNetPsiFacade;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.Comparing;
@@ -162,8 +162,8 @@ public class CSharpResolveUtil
 
 			if(typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
 			{
-				val types = DotNetPsiFacade.getInstance(entrance.getProject()).findTypes(typeDeclaration.getPresentableQName(),
-						entrance.getResolveScope(), typeDeclaration.getGenericParametersCount());
+				String vmQName = typeDeclaration.getVmQName();
+				val types = CSharpPsiSearcher.getInstance(entrance.getProject()).findTypes(vmQName, entrance.getResolveScope());
 
 				for(val type : types)
 				{
@@ -172,11 +172,12 @@ public class CSharpResolveUtil
 						continue;
 					}
 
-					if(!processTypeDeclaration(processor, type, state, superTypes, extractor, typeVisited))
+					if(!processTypeDeclaration(processor, type, state, superTypes, extractor, null))
 					{
 						return false;
 					}
 				}
+				typeVisited.add(vmQName);
 			}
 			else
 			{
@@ -316,17 +317,19 @@ public class CSharpResolveUtil
 	}
 
 	private static boolean processTypeDeclaration(@NotNull final PsiScopeProcessor processor, DotNetTypeDeclaration typeDeclaration,
-			ResolveState state, List<DotNetTypeRef> supers, DotNetGenericExtractor genericExtractor, Set<String> typeVisited)
+			ResolveState state, List<DotNetTypeRef> supers, DotNetGenericExtractor genericExtractor, @Nullable Set<String> typeVisited)
 	{
-
-		String vmName = DotNetVirtualMachineUtil.toVMQualifiedName(typeDeclaration);
-		if(typeVisited.contains(vmName))
+		if(typeVisited != null)
 		{
-			return true;
-		}
-		else
-		{
-			typeVisited.add(vmName);
+			String vmName = DotNetVirtualMachineUtil.toVMQualifiedName(typeDeclaration);
+			if(typeVisited.contains(vmName))
+			{
+				return true;
+			}
+			else
+			{
+				typeVisited.add(vmName);
+			}
 		}
 
 		for(DotNetNamedElement namedElement : typeDeclaration.getMembers())
