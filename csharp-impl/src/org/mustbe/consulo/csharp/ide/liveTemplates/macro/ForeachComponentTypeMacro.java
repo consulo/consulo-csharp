@@ -79,11 +79,11 @@ public class ForeachComponentTypeMacro extends Macro
 			return LookupElement.EMPTY_ARRAY;
 		}
 		List<LookupElement> list = new SmartList<LookupElement>();
+		list.add(LookupElementBuilder.create(result.toString()));
 		if(CSharpModuleUtil.findLanguageVersion(context.getPsiElementAtStartOffset()).isAtLeast(CSharpLanguageVersion._2_0))
 		{
 			list.add(LookupElementBuilder.create("var").bold());
 		}
-		list.add(LookupElementBuilder.create(result.toString()));
 		return list.toArray(new LookupElement[list.size()]);
 	}
 
