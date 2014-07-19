@@ -66,7 +66,7 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
-		if(getAccessorType() == CSharpSoftTokens.GET_KEYWORD)
+		if(getAccessorKind() == Kind.GET)
 		{
 			CSharpPropertyDeclaration propertyDeclaration = PsiTreeUtil.getParentOfType(this, CSharpPropertyDeclaration.class);
 			if(propertyDeclaration == null)
@@ -108,7 +108,7 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 	public boolean processDeclarations(
 			@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place)
 	{
-		if(getAccessorType() == CSharpSoftTokens.SET_KEYWORD)
+		if(getAccessorKind() == Kind.SET)
 		{
 			CSharpPropertyDeclaration propertyDeclaration = PsiTreeUtil.getParentOfType(this, CSharpPropertyDeclaration.class);
 			if(propertyDeclaration == null)
@@ -133,22 +133,46 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 		visitor.visitXXXAccessor(this);
 	}
 
-	@NotNull
+	@Nullable
 	@Override
-	public IElementType getAccessorType()
+	public PsiElement getCodeBlock()
+	{
+		return findChildByClass(DotNetStatement.class);
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getAccessorElement()
+	{
+		return getNameIdentifier();
+	}
+
+	@Nullable
+	@Override
+	public Kind getAccessorKind()
 	{
 		CSharpXXXAccessorStub stub = getStub();
 		if(stub != null)
 		{
 			return stub.getAccessorType();
 		}
-		return getNameIdentifier().getNode().getElementType();
-	}
-
-	@Nullable
-	@Override
-	public PsiElement getCodeBlock()
-	{
-		return findChildByClass(DotNetStatement.class);
+		IElementType elementType = getNameIdentifier().getNode().getElementType();
+		if(elementType == CSharpSoftTokens.GET_KEYWORD)
+		{
+			return Kind.GET;
+		}
+		else if(elementType == CSharpSoftTokens.SET_KEYWORD)
+		{
+			return Kind.SET;
+		}
+		else if(elementType == CSharpSoftTokens.ADD_KEYWORD)
+		{
+			return Kind.ADD;
+		}
+		else if(elementType == CSharpSoftTokens.REMOVE_KEYWORD)
+		{
+			return Kind.REMOVE;
+		}
+		return null;
 	}
 }

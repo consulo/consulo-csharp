@@ -16,11 +16,9 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
-import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.io.StringRef;
 
@@ -30,13 +28,6 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpXXXAccessorStub extends MemberStub<DotNetXXXAccessor>
 {
-	private static final IElementType[] ourElementTypes = new IElementType[]{
-			CSharpSoftTokens.ADD_KEYWORD,
-			CSharpSoftTokens.REMOVE_KEYWORD,
-			CSharpSoftTokens.SET_KEYWORD,
-			CSharpSoftTokens.GET_KEYWORD
-	};
-
 	public CSharpXXXAccessorStub(StubElement parent, StringRef name, int modifierMask, int otherModifiers)
 	{
 		super(parent, CSharpStubElements.XXX_ACCESSOR, name, null, modifierMask, otherModifiers);
@@ -49,13 +40,18 @@ public class CSharpXXXAccessorStub extends MemberStub<DotNetXXXAccessor>
 
 	public static int getOtherModifiers(DotNetXXXAccessor accessor)
 	{
-		int i = ArrayUtil.indexOf(ourElementTypes, accessor.getAccessorType());
+		DotNetXXXAccessor.Kind accessorKind = accessor.getAccessorKind();
+		if(accessorKind == null)
+		{
+			return -1;
+		}
+		int i = ArrayUtil.indexOf(DotNetXXXAccessor.Kind.VALUES, accessor.getAccessorKind());
 		assert i != -1;
 		return i;
 	}
 
-	public IElementType getAccessorType()
+	public DotNetXXXAccessor.Kind getAccessorType()
 	{
-		return ourElementTypes[getOtherModifierMask()];
+		return getOtherModifierMask() == -1 ? null : DotNetXXXAccessor.Kind.VALUES[getOtherModifierMask()];
 	}
 }

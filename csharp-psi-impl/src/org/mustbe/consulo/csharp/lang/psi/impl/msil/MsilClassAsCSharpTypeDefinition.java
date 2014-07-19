@@ -95,8 +95,8 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 					{
 						Pair<DotNetXXXAccessor, MsilMethodEntry> value = pairs.get(0);
 
-						if(value.getFirst().getAccessorType() == MsilTokens._GET_KEYWORD && value.getSecond().getParameters().length == 1 || value
-								.getFirst().getAccessorType() == MsilTokens._SET_KEYWORD && value.getSecond().getParameters().length == 2)
+						if(value.getFirst().getAccessorKind() == DotNetXXXAccessor.Kind.GET && value.getSecond().getParameters().length == 1 || value
+								.getFirst().getAccessorKind() == DotNetXXXAccessor.Kind.SET && value.getSecond().getParameters().length == 2)
 						{
 							list.add(new MsilPropertyAsCSharpArrayMethodDeclaration(parentThis, (MsilPropertyEntry) element, pairs));
 							continue;
