@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
@@ -26,6 +27,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightLocalVariableBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpXXXAccessorStub;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
@@ -110,14 +112,25 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 	{
 		if(getAccessorKind() == Kind.SET)
 		{
-			CSharpPropertyDeclaration propertyDeclaration = PsiTreeUtil.getParentOfType(this, CSharpPropertyDeclaration.class);
-			if(propertyDeclaration == null)
+			PsiElement element = PsiTreeUtil.getParentOfType(this, CSharpPropertyDeclaration.class, CSharpArrayMethodDeclaration.class);
+			if(element == null)
 			{
 				return true;
 			}
 
-			CSharpLightLocalVariableBuilder builder = new CSharpLightLocalVariableBuilder(propertyDeclaration).withName(VALUE).withParent(this)
-					.withTypeRef(propertyDeclaration.toTypeRef(true));
+			DotNetTypeRef typeRef = DotNetTypeRef.ERROR_TYPE;
+			if(element instanceof CSharpPropertyDeclaration)
+			{
+				typeRef = ((CSharpPropertyDeclaration) element).toTypeRef(false);
+			}
+			else if(element instanceof CSharpArrayMethodDeclaration)
+			{
+				typeRef = ((CSharpArrayMethodDeclaration) element).getReturnTypeRef();
+			}
+
+			CSharpLightLocalVariableBuilder builder = new CSharpLightLocalVariableBuilder(element).withName(VALUE).withParent(this)
+					.withTypeRef(typeRef);
+			builder.putUserData(CSharpResolveUtil.ACCESSOR_VALUE_VARIABLE, Boolean.TRUE);
 
 			if(!processor.execute(builder, state))
 			{

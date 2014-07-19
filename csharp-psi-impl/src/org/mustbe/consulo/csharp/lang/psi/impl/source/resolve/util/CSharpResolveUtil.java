@@ -82,6 +82,8 @@ public class CSharpResolveUtil
 		}
 	};
 
+	public static final Key<Boolean> ACCESSOR_VALUE_VARIABLE = Key.create("accessor.value.variable");
+
 	public static final Key<PsiFile> CONTAINS_FILE_KEY = Key.create("contains.file");
 	public static final Key<Condition<PsiElement>> CONDITION_KEY = Key.create("condition");
 
