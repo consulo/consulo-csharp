@@ -34,8 +34,6 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclaration<CSharpMethodDeclaration> implements CSharpMethodDeclaration
 {
-	private boolean myExtensionWrapper;
-
 	public CSharpLightMethodDeclaration(CSharpMethodDeclaration original, DotNetTypeRef returnTypeRef, @NotNull DotNetParameterList parameterList)
 	{
 		super(original, returnTypeRef, parameterList);
@@ -71,16 +69,6 @@ public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclarati
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
 		visitor.visitMethodDeclaration(this);
-	}
-
-	public void setExtensionWrapper()
-	{
-		myExtensionWrapper = true;
-	}
-
-	public boolean isExtensionWrapper()
-	{
-		return myExtensionWrapper;
 	}
 
 	@Nullable

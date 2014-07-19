@@ -133,7 +133,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 		CSharpLightParameterList lightParameterList = new CSharpLightParameterList(parameterList, parameters);
 		CSharpLightMethodDeclaration declaration = new CSharpLightMethodDeclaration(methodDeclaration, methodDeclaration.getReturnTypeRef(),
 				lightParameterList);
-		declaration.setExtensionWrapper();
+		declaration.putUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER, Boolean.TRUE);
 		return declaration;
 	}
 }

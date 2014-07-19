@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import com.intellij.psi.PsiElement;
 
@@ -42,6 +41,6 @@ public class CSharpMethodImplUtil
 
 	public static boolean isExtensionWrapper(@Nullable PsiElement element)
 	{
-		return element instanceof CSharpLightMethodDeclaration && ((CSharpLightMethodDeclaration) element).isExtensionWrapper();
+		return element instanceof CSharpMethodDeclaration && element.getUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER) == Boolean.TRUE;
 	}
 }
