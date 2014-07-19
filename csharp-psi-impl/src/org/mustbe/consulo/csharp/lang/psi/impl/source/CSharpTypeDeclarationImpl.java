@@ -104,6 +104,13 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeSt
 		return DotNetTypeDeclarationUtil.getVmQName(this);
 	}
 
+	@Nullable
+	@Override
+	public String getVmName()
+	{
+		return DotNetTypeDeclarationUtil.getVmName(this);
+	}
+
 	@NotNull
 	@Override
 	public DotNetQualifiedElement[] getMembers()

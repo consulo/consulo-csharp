@@ -201,6 +201,13 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 
 	@Nullable
 	@Override
+	public String getVmName()
+	{
+		return DotNetTypeDeclarationUtil.getVmName(this);
+	}
+
+	@Nullable
+	@Override
 	public String getPresentableQName()
 	{
 		String parentQName = getPresentableParentQName();

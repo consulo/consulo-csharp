@@ -219,6 +219,13 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		return myMsilElement.getVmQName();
 	}
 
+	@Nullable
+	@Override
+	public String getVmName()
+	{
+		return myMsilElement.getVmName();
+	}
+
 	@Override
 	public boolean isEquivalentTo(PsiElement another)
 	{
