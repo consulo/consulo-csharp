@@ -29,7 +29,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.MsilToCSharpTypeRef;
-import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.MsilHelper;
@@ -73,6 +72,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 
 			List<DotNetNamedElement> list = new ArrayList<DotNetNamedElement>(temp.length);
 
+			boolean isEnum = isEnum();
 			for(DotNetNamedElement element : temp)
 			{
 				if(element instanceof MsilPropertyEntry)
@@ -95,8 +95,8 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 					{
 						Pair<DotNetXXXAccessor, MsilMethodEntry> value = pairs.get(0);
 
-						if(value.getFirst().getAccessorKind() == DotNetXXXAccessor.Kind.GET && value.getSecond().getParameters().length == 1 || value
-								.getFirst().getAccessorKind() == DotNetXXXAccessor.Kind.SET && value.getSecond().getParameters().length == 2)
+						if(value.getFirst().getAccessorKind() == DotNetXXXAccessor.Kind.GET && value.getSecond().getParameters().length == 1 ||
+								value.getFirst().getAccessorKind() == DotNetXXXAccessor.Kind.SET && value.getSecond().getParameters().length == 2)
 						{
 							list.add(new MsilPropertyAsCSharpArrayMethodDeclaration(parentThis, (MsilPropertyEntry) element, pairs));
 							continue;
@@ -129,12 +129,19 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 					{
 						continue;
 					}
-					if(Comparing.equal(name, "value__") && isEnum())
+					if(Comparing.equal(name, "value__") && isEnum)
 					{
 						continue;
 					}
 
-					list.add(new MsilFieldAsCSharpFieldDeclaration(parentThis, (DotNetVariable) element));
+					if(isEnum)
+					{
+						list.add(new MsilFieldAsCSharpEnumConstantDeclaration(parentThis, (DotNetVariable) element));
+					}
+					else
+					{
+						list.add(new MsilFieldAsCSharpFieldDeclaration(parentThis, (DotNetVariable) element));
+					}
 				}
 				else if(element instanceof MsilClassEntry)
 				{
@@ -316,10 +323,23 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		return typeRefs;
 	}
 
+	@Nullable
+	@Override
+	public DotNetFieldDeclaration findFieldByName(@NotNull String name, boolean dep)
+	{
+		return DotNetTypeDeclarationUtil.findFieldByName(this, name, dep);
+	}
+
 	@Override
 	public boolean isInheritor(@NotNull DotNetTypeDeclaration other, boolean deep)
 	{
 		return DotNetInheritUtil.isInheritor(this, other, deep);
+	}
+
+	@Override
+	public DotNetTypeRef getTypeRefForEnumConstants()
+	{
+		return MsilToCSharpUtil.extractToCSharp(myMsilElement.getTypeRefForEnumConstants(), myMsilElement);
 	}
 
 	@Override

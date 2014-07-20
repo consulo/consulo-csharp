@@ -27,6 +27,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -135,6 +136,12 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 		return DotNetInheritUtil.isInheritor(this, other, deep);
 	}
 
+	@Override
+	public DotNetTypeRef getTypeRefForEnumConstants()
+	{
+		return CSharpNativeTypeRef.INT;
+	}
+
 	@Nullable
 	@Override
 	public DotNetGenericParameterList getGenericParameterList()
@@ -204,6 +211,13 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 	public String getVmName()
 	{
 		return DotNetTypeDeclarationUtil.getVmName(this);
+	}
+
+	@Nullable
+	@Override
+	public DotNetFieldDeclaration findFieldByName(@NotNull String name, boolean dep)
+	{
+		return DotNetTypeDeclarationUtil.findFieldByName(this, name, dep);
 	}
 
 	@Nullable

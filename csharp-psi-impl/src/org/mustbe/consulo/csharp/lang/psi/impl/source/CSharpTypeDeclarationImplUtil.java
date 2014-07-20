@@ -42,7 +42,7 @@ public class CSharpTypeDeclarationImplUtil
 	{
 		DotNetTypeRef[] typeRefs = DotNetTypeRef.EMPTY_ARRAY;
 		DotNetTypeList extendList = t.getExtendList();
-		if(extendList != null)
+		if(extendList != null && !t.isEnum())
 		{
 			typeRefs = extendList.getTypeRefs();
 		}

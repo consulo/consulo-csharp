@@ -24,12 +24,14 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeStub;
-import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
+import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclarationUtil;
@@ -159,8 +161,8 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeSt
 	}
 
 	@Override
-	public boolean processDeclarations(
-			@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place)
+	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent,
+			@NotNull PsiElement place)
 	{
 		for(DotNetGenericParameter dotNetGenericParameter : getGenericParameters())
 		{
@@ -205,6 +207,18 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeSt
 	}
 
 	@Override
+	public DotNetTypeRef getTypeRefForEnumConstants()
+	{
+		DotNetTypeList extendList = getExtendList();
+		if(extendList == null)
+		{
+			return CSharpNativeTypeRef.INT;
+		}
+		DotNetTypeRef[] typeRefs = extendList.getTypeRefs();
+		return typeRefs.length == 0 ? CSharpNativeTypeRef.INT : typeRefs[0];
+	}
+
+	@Override
 	public boolean hasExtensions()
 	{
 		CSharpTypeStub stub = getStub();
@@ -221,6 +235,13 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeSt
 			}
 		}
 		return false;
+	}
+
+	@Nullable
+	@Override
+	public DotNetFieldDeclaration findFieldByName(@NotNull String name, boolean dep)
+	{
+		return DotNetTypeDeclarationUtil.findFieldByName(this, name, dep);
 	}
 
 	@Nullable

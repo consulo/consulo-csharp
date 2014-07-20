@@ -64,6 +64,15 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	}
 
 	@Override
+	public void visitEnumConstantDeclaration(CSharpEnumConstantDeclaration declaration)
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append(declaration.getName());
+		builder.append(",\n");
+		myBlocks.add(new LineStubBlock(builder));
+	}
+
+	@Override
 	public void visitFieldDeclaration(DotNetFieldDeclaration declaration)
 	{
 		StringBuilder builder = new StringBuilder();
@@ -168,10 +177,46 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		StringBuilder builder = new StringBuilder();
 		processModifierList(builder, declaration);
 
-		builder.append("class ");
+		if(declaration.isEnum())
+		{
+			builder.append("enum ");
+		}
+		else if(declaration.isStruct())
+		{
+			builder.append("struct ");
+		}
+		else
+		{
+			builder.append("class ");
+		}
+
 		builder.append(declaration.getName());
 		processGenericParameterList(builder, declaration);
 
+		if(declaration.isEnum())
+		{
+			DotNetTypeRef typeRefForEnumConstants = declaration.getTypeRefForEnumConstants();
+			builder.append(" : ");
+			appendTypeRef(builder, typeRefForEnumConstants);
+		}
+		else
+		{
+			DotNetTypeRef[] extendTypeRefs = declaration.getExtendTypeRefs();
+			if(extendTypeRefs.length > 0)
+			{
+				builder.append(" : ");
+				StubBlockUtil.join(builder, extendTypeRefs, new PairFunction<StringBuilder, DotNetTypeRef, Void>()
+				{
+					@Nullable
+					@Override
+					public Void fun(StringBuilder builder, DotNetTypeRef typeRef)
+					{
+						appendTypeRef(builder, typeRef);
+						return null;
+					}
+				}, ", ");
+			}
+		}
 		StubBlock e = new StubBlock(builder, null, StubBlock.BRACES);
 		myBlocks.add(e);
 
