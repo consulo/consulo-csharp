@@ -87,6 +87,7 @@ public class MsilToCSharpUtil
 				elementType = MsilTokens.VIRTUAL_KEYWORD;
 				break;
 			case READONLY:
+				elementType = MsilTokens.INITONLY_KEYWORD;
 				break;
 			case UNSAFE:
 				break;
