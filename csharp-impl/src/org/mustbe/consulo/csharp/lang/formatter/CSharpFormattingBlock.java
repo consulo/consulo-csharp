@@ -90,6 +90,7 @@ public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSha
 				elementType == PROPERTY_DECLARATION ||
 				elementType == XXX_ACCESSOR ||
 				elementType == EVENT_DECLARATION ||
+				elementType == ENUM_CONSTANT_DECLARATION ||
 				elementType == USING_NAMESPACE_LIST ||
 				elementType == CONSTRUCTOR_DECLARATION)
 		{
