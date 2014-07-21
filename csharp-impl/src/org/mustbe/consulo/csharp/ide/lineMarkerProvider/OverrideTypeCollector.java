@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.codeHighlighting.Pass;
@@ -79,8 +80,8 @@ public class OverrideTypeCollector implements LineMarkerCollector
 							@Override
 							public void run()
 							{
-								ClassInheritorsSearch.search(typeDeclaration, true).forEach(new PsiElementProcessorAdapter<DotNetTypeDeclaration>
-										(collectProcessor));
+								ClassInheritorsSearch.search(typeDeclaration, true, CSharpTransform.INSTANCE).forEach(new PsiElementProcessorAdapter
+										<DotNetTypeDeclaration>(collectProcessor));
 							}
 						}, "Searching for overriding", true, typeDeclaration.getProject(), (JComponent) mouseEvent.getComponent()))
 						{
