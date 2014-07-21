@@ -77,6 +77,10 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	{
 		StringBuilder builder = new StringBuilder();
 		processModifierList(builder, declaration);
+		if(declaration.isConstant())
+		{
+			builder.append("const ");
+		}
 		appendTypeRef(builder, declaration.toTypeRef(false));
 		builder.append(" ");
 		builder.append(declaration.getName());
@@ -348,6 +352,11 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			for(DotNetModifier dotNetModifier : modifierList.getModifiers())
 			{
 				if(dotNetModifier == CSharpModifier.REF || dotNetModifier == CSharpModifier.OUT)
+				{
+					continue;
+				}
+
+				if(owner instanceof DotNetVariable && ((DotNetVariable) owner).isConstant() && dotNetModifier == CSharpModifier.STATIC)
 				{
 					continue;
 				}

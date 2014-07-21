@@ -22,6 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.msil.lang.psi.MsilFieldEntry;
+import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 
@@ -47,6 +48,12 @@ public class MsilFieldAsCSharpFieldDeclaration extends MsilVariableAsCSharpVaria
 		{
 			visitor.visitElement(this);
 		}
+	}
+
+	@Override
+	public boolean isConstant()
+	{
+		return getVariable().hasModifier(MsilTokens.LITERAL_KEYWORD);
 	}
 
 	@Nullable
