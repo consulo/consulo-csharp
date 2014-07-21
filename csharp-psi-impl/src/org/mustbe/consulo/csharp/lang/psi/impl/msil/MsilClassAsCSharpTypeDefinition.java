@@ -73,6 +73,28 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 			List<DotNetNamedElement> list = new ArrayList<DotNetNamedElement>(temp.length);
 
 			boolean isEnum = isEnum();
+			List<String> bannedNames = new ArrayList<String>();
+			for(DotNetNamedElement element : temp)
+			{
+				if(element instanceof MsilFieldEntry)
+				{
+					String name = element.getName();
+					if(name == null)
+					{
+						continue;
+					}
+
+					if(StringUtil.startsWith(name, "<>") || Comparing.equal(name, "value__") && isEnum)
+					{
+						bannedNames.add(name);
+					}
+				}
+				else if(element instanceof MsilEventEntry)
+				{
+					bannedNames.add(element.getName());
+				}
+			}
+
 			for(DotNetNamedElement element : temp)
 			{
 				if(element instanceof MsilPropertyEntry)
@@ -125,11 +147,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 				else if(element instanceof MsilFieldEntry)
 				{
 					String name = element.getName();
-					if(StringUtil.startsWith(name, "<>"))
-					{
-						continue;
-					}
-					if(Comparing.equal(name, "value__") && isEnum)
+					if(bannedNames.contains(name))
 					{
 						continue;
 					}

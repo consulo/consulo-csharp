@@ -165,7 +165,7 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{
-		String typeBeforeDot = StringUtil.getPackageName(((MsilPropertyEntry)myMsilElement).getNameFromBytecode());
+		String typeBeforeDot = StringUtil.getPackageName(getVariable().getNameFromBytecode());
 		return SomeTypeParser.toDotNetTypeRef(typeBeforeDot, myMsilElement);
 	}
 }
