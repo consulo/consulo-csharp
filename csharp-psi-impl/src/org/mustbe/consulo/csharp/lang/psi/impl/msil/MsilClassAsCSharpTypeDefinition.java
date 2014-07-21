@@ -28,7 +28,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.MsilToCSharpTypeRef;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.MsilHelper;
@@ -336,7 +335,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		DotNetTypeRef[] typeRefs = new DotNetTypeRef[extendTypeRefs.length];
 		for(int i = 0; i < typeRefs.length; i++)
 		{
-			typeRefs[i] = new MsilToCSharpTypeRef(extendTypeRefs[i]);
+			typeRefs[i] = MsilToCSharpUtil.extractToCSharp(extendTypeRefs[i], myMsilElement);
 		}
 		return typeRefs;
 	}
