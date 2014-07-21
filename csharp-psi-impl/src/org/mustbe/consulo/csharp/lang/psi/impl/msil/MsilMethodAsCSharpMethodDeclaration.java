@@ -131,7 +131,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
-		return myDelegate == null ? DotNetGenericParameter.EMPTY_ARRAY : myDelegate.getGenericParameters();
+		return myDelegate == null ? super.getGenericParameters() : myDelegate.getGenericParameters();
 	}
 
 	@Override
