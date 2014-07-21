@@ -28,6 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.typeParsing.SomeTypeParser;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.MsilHelper;
@@ -75,7 +76,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 
 	private final MsilClassEntry myDelegate;
 
-	public MsilMethodAsCSharpMethodDeclaration(PsiElement parent, @Nullable MsilClassEntry msilClassEntry, MsilMethodEntry methodEntry)
+	public MsilMethodAsCSharpMethodDeclaration(PsiElement parent, @Nullable MsilClassEntry msilClassEntry, @NotNull MsilMethodEntry methodEntry)
 	{
 		super(parent, getAdditionModifiers(methodEntry), methodEntry);
 		myDelegate = msilClassEntry;
@@ -126,6 +127,19 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 				.getPresentableQName());
 	}
 
+	@NotNull
+	@Override
+	public DotNetGenericParameter[] getGenericParameters()
+	{
+		return myDelegate == null ? DotNetGenericParameter.EMPTY_ARRAY : myDelegate.getGenericParameters();
+	}
+
+	@Override
+	public int getGenericParametersCount()
+	{
+		return getGenericParameters().length;
+	}
+
 	@Nullable
 	@Override
 	public CSharpGenericConstraintList getGenericConstraintList()
@@ -137,7 +151,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 	@Override
 	public CSharpGenericConstraint[] getGenericConstraints()
 	{
-		return new CSharpGenericConstraint[0];
+		return CSharpGenericConstraint.EMPTY_ARRAY;
 	}
 
 	@Override
