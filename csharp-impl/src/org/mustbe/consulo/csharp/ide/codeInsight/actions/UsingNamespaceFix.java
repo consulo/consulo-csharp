@@ -25,6 +25,7 @@ import java.util.TreeSet;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAttributeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
@@ -128,56 +129,55 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		{
 			return;
 		}
-
 		Collection<DotNetTypeDeclaration> tempTypes;
 		Collection<DotNetLikeMethodDeclaration> tempMethods;
-		val kind = myRef.kind();
-		switch(kind)
+
+		PsiElement parent = myRef.getParent();
+		if(parent instanceof CSharpAttributeImpl)
 		{
-			case ATTRIBUTE:
-				val cond = new Condition<DotNetTypeDeclaration>()
+			val cond = new Condition<DotNetTypeDeclaration>()
+			{
+				@Override
+				public boolean value(DotNetTypeDeclaration typeDeclaration)
 				{
-					@Override
-					public boolean value(DotNetTypeDeclaration typeDeclaration)
-					{
-						return DotNetInheritUtil.isAttribute(typeDeclaration);
-					}
-				};
-				// if attribute endwith Attribute - collect only with
-				if(referenceName.endsWith(CSharpReferenceExpressionImplUtil.AttributeSuffix))
-				{
-					tempTypes = getTypesWithGeneric(referenceName);
-
-					collect(set, tempTypes, cond);
+					return DotNetInheritUtil.isAttribute(typeDeclaration);
 				}
-				else
-				{
-					tempTypes = getTypesWithGeneric(referenceName);
-
-					collect(set, tempTypes, cond);
-
-					tempTypes = getTypesWithGeneric(referenceName + CSharpReferenceExpressionImplUtil.AttributeSuffix);
-
-					collect(set, tempTypes, cond);
-				}
-				break;
-			default:
+			};
+			// if attribute endwith Attribute - collect only with
+			if(referenceName.endsWith(CSharpReferenceExpressionImplUtil.AttributeSuffix))
+			{
 				tempTypes = getTypesWithGeneric(referenceName);
 
-				collect(set, tempTypes, Conditions.<DotNetTypeDeclaration>alwaysTrue());
+				collect(set, tempTypes, cond);
+			}
+			else
+			{
+				tempTypes = getTypesWithGeneric(referenceName);
 
-				tempMethods = MethodIndex.getInstance().get(referenceName, myRef.getProject(), myRef.getResolveScope());
+				collect(set, tempTypes, cond);
 
-				collect(set, tempMethods, new Condition<DotNetLikeMethodDeclaration>()
+				tempTypes = getTypesWithGeneric(referenceName + CSharpReferenceExpressionImplUtil.AttributeSuffix);
+
+				collect(set, tempTypes, cond);
+			}
+		}
+		else
+		{
+			tempTypes = getTypesWithGeneric(referenceName);
+
+			collect(set, tempTypes, Conditions.<DotNetTypeDeclaration>alwaysTrue());
+
+			tempMethods = MethodIndex.getInstance().get(referenceName, myRef.getProject(), myRef.getResolveScope());
+
+			collect(set, tempMethods, new Condition<DotNetLikeMethodDeclaration>()
+			{
+				@Override
+				public boolean value(DotNetLikeMethodDeclaration method)
 				{
-					@Override
-					public boolean value(DotNetLikeMethodDeclaration method)
-					{
-						return (method.getParent() instanceof DotNetNamespaceDeclaration || method.getParent() instanceof PsiFile) && method
-								instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) method).isDelegate();
-					}
-				});
-				break;
+					return (method.getParent() instanceof DotNetNamespaceDeclaration || method.getParent() instanceof PsiFile) && method
+							instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) method).isDelegate();
+				}
+			});
 		}
 	}
 
