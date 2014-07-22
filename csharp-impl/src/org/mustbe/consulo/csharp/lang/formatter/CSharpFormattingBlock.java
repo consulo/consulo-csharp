@@ -59,11 +59,7 @@ public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSha
 	public Wrap getWrap()
 	{
 		IElementType elementType = getNode().getElementType();
-		if(elementType == FIELD_OR_PROPERTY_SET)
-		{
-			return Wrap.createWrap(WrapType.ALWAYS, true);
-		}
-		else if(elementType == XXX_ACCESSOR)
+		if(elementType == LBRACE || elementType == RBRACE)
 		{
 			return Wrap.createWrap(WrapType.ALWAYS, true);
 		}
