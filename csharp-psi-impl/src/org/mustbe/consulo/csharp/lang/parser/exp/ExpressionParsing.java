@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.parser.SharingParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.decl.MethodParsing;
 import org.mustbe.consulo.csharp.lang.parser.stmt.StatementParsing;
 import com.intellij.lang.PsiBuilder;
+import com.intellij.lang.WhitespacesBinders;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
@@ -627,7 +628,7 @@ public class ExpressionParsing extends SharingParsingHelpers
 		list.done(CALL_ARGUMENT_LIST);
 		if(!closed)
 		{
-			list.setCustomEdgeTokenBinders(null, GREEDY_RIGHT_EDGE_PROCESSOR);
+			list.setCustomEdgeTokenBinders(null, WhitespacesBinders.DEFAULT_LEFT_BINDER);
 		}
 		return list;
 	}

@@ -16,8 +16,6 @@
 
 package org.mustbe.consulo.csharp.lang.parser;
 
-import java.util.List;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
@@ -27,7 +25,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.LighterASTNode;
 import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.WhitespacesAndCommentsBinder;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
@@ -40,15 +37,6 @@ import lombok.val;
  */
 public class SharingParsingHelpers implements CSharpTokenSets, CSharpTokens, CSharpElements
 {
-	public static final WhitespacesAndCommentsBinder GREEDY_RIGHT_EDGE_PROCESSOR = new WhitespacesAndCommentsBinder()
-	{
-		@Override
-		public int getEdgePosition(final List<IElementType> tokens, final boolean atStreamEdge, final TokenTextGetter getter)
-		{
-			return tokens.size();
-		}
-	};
-
 	public static enum BracketFailPolicy
 	{
 		NOTHING,
