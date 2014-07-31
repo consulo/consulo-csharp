@@ -138,6 +138,9 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 			case LIBRARY:
 				target = "library";
 				break;
+			case NET_MODULE:
+				target = "module";
+				break;
 		}
 
 
