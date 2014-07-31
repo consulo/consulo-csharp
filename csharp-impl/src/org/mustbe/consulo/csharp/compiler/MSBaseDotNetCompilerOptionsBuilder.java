@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.dotnet.DotNetTarget;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerMessage;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerUtil;
@@ -152,10 +153,23 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 		String outputFile = DotNetMacros.extract(module, extension);
 		addArgument("/out:" + outputFile);
 
-		val dependFiles = DotNetCompilerUtil.collectDependencies(module, true);
-		if(!dependFiles.isEmpty())
+		val libraryFiles = DotNetCompilerUtil.collectDependencies(module, DotNetTarget.LIBRARY, true);
+		if(!libraryFiles.isEmpty())
 		{
-			addArgument("/reference:" + StringUtil.join(dependFiles, new Function<File, String>()
+			addArgument("/reference:" + StringUtil.join(libraryFiles, new Function<File, String>()
+			{
+				@Override
+				public String fun(File file)
+				{
+					return StringUtil.QUOTER.fun(file.getAbsolutePath());
+				}
+			}, ","));
+		}
+
+		val moduleFiles = DotNetCompilerUtil.collectDependencies(module, DotNetTarget.NET_MODULE, true);
+		if(!moduleFiles.isEmpty())
+		{
+			addArgument("/addmodule:" + StringUtil.join(moduleFiles, new Function<File, String>()
 			{
 				@Override
 				public String fun(File file)
