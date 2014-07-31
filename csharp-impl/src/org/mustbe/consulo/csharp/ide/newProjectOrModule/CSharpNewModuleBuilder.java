@@ -29,6 +29,7 @@ import org.mustbe.consulo.ide.impl.UnzipNewModuleBuilderProcessor;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ContentEntry;
+import com.intellij.openapi.roots.ModifiableModuleRootLayer;
 import com.intellij.openapi.roots.ModifiableRootModel;
 
 /**
@@ -37,11 +38,21 @@ import com.intellij.openapi.roots.ModifiableRootModel;
  */
 public class CSharpNewModuleBuilder implements NewModuleBuilder
 {
+	private static final String DEBUG = "Debug";
+	private static final String RELEASE = "Release";
+	private static final String DEFAULT = "Default";
+
 	public static final Map<String, String[]> ourExtensionMapping = new HashMap<String, String[]>()
 	{
 		{
-			put("MONO_DOTNET_SDK", new String[] {"mono-dotnet", "mono-csharp"});
-			put("MICROSOFT_DOTNET_SDK", new String[] {"microsoft-dotnet", "microsoft-csharp"});
+			put("MONO_DOTNET_SDK", new String[]{
+					"mono-dotnet",
+					"mono-csharp"
+			});
+			put("MICROSOFT_DOTNET_SDK", new String[]{
+					"microsoft-dotnet",
+					"microsoft-csharp"
+			});
 		}
 	};
 
@@ -64,8 +75,8 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 			}
 
 			@Override
-			public void setupModule(
-					@NotNull CSharpNewModuleBuilderPanel panel, @NotNull ContentEntry contentEntry, @NotNull ModifiableRootModel modifiableRootModel)
+			public void setupModule(@NotNull CSharpNewModuleBuilderPanel panel, @NotNull ContentEntry contentEntry,
+					@NotNull ModifiableRootModel modifiableRootModel)
 			{
 				unzip(modifiableRootModel);
 
@@ -77,17 +88,36 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 
 				String[] pair = ourExtensionMapping.get(sdk.getSdkType().getName());
 
-				// first we need enable .NET module extension
-				DotNetMutableModuleExtension<?> dotNetMutableModuleExtension = modifiableRootModel.getExtensionWithoutCheck(pair[0]);
-				assert dotNetMutableModuleExtension != null;
+				for(String layerName : new String[]{
+						RELEASE,
+						DEBUG
+				})
+				{
+					ModifiableModuleRootLayer layer = modifiableRootModel.addLayer(layerName, DEFAULT, false);
 
-				dotNetMutableModuleExtension.setEnabled(true);
-				dotNetMutableModuleExtension.getInheritableSdk().set(null, sdk);
-				modifiableRootModel.addModuleExtensionSdkEntry(dotNetMutableModuleExtension);
+					assert layer != null;
 
-				CSharpMutableModuleExtension<?> cSharpMutableModuleExtension = modifiableRootModel.getExtensionWithoutCheck(pair[1]);
-				assert cSharpMutableModuleExtension != null;
-				cSharpMutableModuleExtension.setEnabled(true);
+					// first we need enable .NET module extension
+					DotNetMutableModuleExtension<?> dotNetMutableModuleExtension = layer.getExtensionWithoutCheck(pair[0]);
+					assert dotNetMutableModuleExtension != null;
+
+					dotNetMutableModuleExtension.setEnabled(true);
+					boolean debug = layerName.equals(DEBUG);
+					if(debug)
+					{
+						dotNetMutableModuleExtension.setAllowDebugInfo(true);
+						dotNetMutableModuleExtension.getVariables().add("DEBUG");
+					}
+					dotNetMutableModuleExtension.getInheritableSdk().set(null, sdk);
+					layer.addModuleExtensionSdkEntry(dotNetMutableModuleExtension);
+
+					CSharpMutableModuleExtension<?> cSharpMutableModuleExtension = layer.getExtensionWithoutCheck(pair[1]);
+					assert cSharpMutableModuleExtension != null;
+					cSharpMutableModuleExtension.setEnabled(true);
+				}
+
+				modifiableRootModel.setCurrentLayer(DEBUG);
+				modifiableRootModel.removeLayer(DEFAULT, false);
 			}
 		});
 	}
