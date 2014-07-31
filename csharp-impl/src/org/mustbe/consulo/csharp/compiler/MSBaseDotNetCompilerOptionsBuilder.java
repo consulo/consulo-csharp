@@ -136,6 +136,9 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 			case EXECUTABLE:
 				target = "exe";
 				break;
+			case WIN_EXECUTABLE:
+				target = "winexe";
+				break;
 			case LIBRARY:
 				target = "library";
 				break;
