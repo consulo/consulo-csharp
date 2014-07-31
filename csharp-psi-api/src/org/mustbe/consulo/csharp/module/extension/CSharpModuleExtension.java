@@ -25,6 +25,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface CSharpModuleExtension<T extends ModuleExtension<T>> extends ModuleExtension<T>
 {
+	boolean isAllowUnsafeCode();
+
 	@NotNull
 	CSharpLanguageVersion getLanguageVersion();
 }

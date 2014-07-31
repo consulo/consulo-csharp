@@ -38,7 +38,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroIfImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpFileStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.macro.MacroEvaluator;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.module.MainConfigurationLayer;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
@@ -123,10 +122,9 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 	}
 
 	@NotNull
-	public static List<TextRange> collectDisabledBlocks(PsiFile macroFile, DotNetModuleExtension extension)
+	public static List<TextRange> collectDisabledBlocks(PsiFile macroFile, @NotNull DotNetModuleExtension<?> extension)
 	{
-		MainConfigurationLayer currentProfileEx = (MainConfigurationLayer) extension.getCurrentLayer();
-		return collectDisabledBlocks(macroFile, currentProfileEx.getVariables());
+		return collectDisabledBlocks(macroFile, extension.getVariables());
 	}
 
 	private static List<TextRange> collectDisabledBlocks(PsiFile templateFile, final List<String> baseVariables)

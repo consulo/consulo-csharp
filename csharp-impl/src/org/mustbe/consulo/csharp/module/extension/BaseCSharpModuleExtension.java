@@ -16,14 +16,12 @@
 
 package org.mustbe.consulo.csharp.module.extension;
 
+import org.consulo.module.extension.impl.ModuleExtensionImpl;
+import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
-import org.mustbe.consulo.csharp.module.CSharpConfigurationLayer;
-import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
+import org.mustbe.consulo.csharp.module.CSharpLanguageVersionPointer;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleLangExtension;
-import org.mustbe.consulo.module.extension.ChildLayeredModuleExtensionImpl;
-import org.mustbe.consulo.module.extension.ConfigurationLayer;
-import org.mustbe.consulo.module.extension.LayeredModuleExtension;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.roots.ModifiableRootModel;
 
@@ -31,46 +29,74 @@ import com.intellij.openapi.roots.ModifiableRootModel;
  * @author VISTALL
  * @since 15.12.13.
  */
-public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtension<T>> extends ChildLayeredModuleExtensionImpl<T> implements
+public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtension<T>> extends ModuleExtensionImpl<T> implements
 		DotNetModuleLangExtension<T>, CSharpModuleExtension<T>
 {
+	private boolean myAllowUnsafeCode;
+	private CSharpLanguageVersionPointer myLanguageVersionPointer;
+
 	public BaseCSharpModuleExtension(@NotNull String id, @NotNull ModifiableRootModel module)
 	{
 		super(id, module);
+		myLanguageVersionPointer = new CSharpLanguageVersionPointer(getProject(), id);
 	}
 
+	@Override
 	public boolean isAllowUnsafeCode()
 	{
-		CSharpConfigurationLayer currentLayer = (CSharpConfigurationLayer) getCurrentLayer();
-		return currentLayer.isAllowUnsafeCode();
+		return myAllowUnsafeCode;
 	}
 
 	public void setLanguageVersion(@NotNull CSharpLanguageVersion languageVersion)
 	{
-		CSharpConfigurationLayer currentLayer = (CSharpConfigurationLayer) getCurrentLayer();
-		currentLayer.setLanguageVersion(languageVersion);
+		myLanguageVersionPointer.set(null, languageVersion);
+	}
+
+	public void setAllowUnsafeCode(boolean value)
+	{
+		myAllowUnsafeCode = value;
+	}
+
+	public boolean isModifiedImpl(@NotNull T mutableModuleExtension)
+	{
+		return myIsEnabled != mutableModuleExtension.isEnabled() ||
+				myAllowUnsafeCode != mutableModuleExtension.myAllowUnsafeCode ||
+				!myLanguageVersionPointer.equals(mutableModuleExtension.myLanguageVersionPointer);
+	}
+
+	public CSharpLanguageVersionPointer getLanguageVersionPointer()
+	{
+		return myLanguageVersionPointer;
+	}
+
+	@Override
+	protected void loadStateImpl(@NotNull Element element)
+	{
+		myAllowUnsafeCode = Boolean.valueOf(element.getAttributeValue("unsafe-code", "false"));
+		myLanguageVersionPointer.fromXml(element);
+	}
+
+	@Override
+	protected void getStateImpl(@NotNull Element element)
+	{
+		element.setAttribute("unsafe-code", Boolean.toString(myAllowUnsafeCode));
+		myLanguageVersionPointer.toXml(element);
+	}
+
+	@Override
+	public void commit(@NotNull T mutableModuleExtension)
+	{
+		super.commit(mutableModuleExtension);
+
+		myAllowUnsafeCode = mutableModuleExtension.myAllowUnsafeCode;
+		myLanguageVersionPointer.set(mutableModuleExtension.myLanguageVersionPointer);
 	}
 
 	@NotNull
 	@Override
 	public CSharpLanguageVersion getLanguageVersion()
 	{
-		CSharpConfigurationLayer currentLayer = (CSharpConfigurationLayer) getCurrentLayer();
-		return currentLayer.getLanguageVersion();
-	}
-
-	@NotNull
-	@Override
-	public Class<? extends LayeredModuleExtension> getHeadClass()
-	{
-		return DotNetModuleExtension.class;
-	}
-
-	@NotNull
-	@Override
-	protected ConfigurationLayer createLayer()
-	{
-		return new CSharpConfigurationLayer(getProject(), getId());
+		return myLanguageVersionPointer.get();
 	}
 
 	@NotNull

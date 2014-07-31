@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.module.extension;
 
 import org.consulo.module.extension.MutableModuleExtension;
+import org.consulo.module.extension.MutableModuleInheritableNamedPointer;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -25,5 +26,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface CSharpMutableModuleExtension<T extends CSharpModuleExtension<T>> extends CSharpModuleExtension<T>, MutableModuleExtension<T>
 {
+	MutableModuleInheritableNamedPointer<CSharpLanguageVersion> getLanguageVersionPointer();
+
 	void setLanguageVersion(@NotNull CSharpLanguageVersion version);
+
+	void setAllowUnsafeCode(boolean value);
 }

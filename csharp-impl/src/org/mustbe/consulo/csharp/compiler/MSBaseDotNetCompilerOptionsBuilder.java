@@ -29,7 +29,6 @@ import org.mustbe.consulo.dotnet.compiler.DotNetCompilerMessage;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerUtil;
 import org.mustbe.consulo.dotnet.compiler.DotNetMacros;
-import org.mustbe.consulo.dotnet.module.MainConfigurationLayer;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleLangExtension;
 import com.intellij.execution.configurations.GeneralCommandLine;
@@ -128,18 +127,10 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 
 	@Override
 	@NotNull
-	public GeneralCommandLine createCommandLine(
-			@NotNull Module module,
-			@NotNull VirtualFile[] results,
-			@NotNull String layerName,
-			@NotNull MainConfigurationLayer dotNetLayer) throws IOException
+	public GeneralCommandLine createCommandLine(@NotNull Module module, @NotNull VirtualFile[] results, @NotNull DotNetModuleExtension<?> extension) throws IOException
 	{
-		DotNetModuleExtension<?> extension = ModuleUtilCore.getExtension(module, DotNetModuleExtension.class);
-
-		assert extension != null;
-
 		String target = null;
-		switch(dotNetLayer.getTarget())
+		switch(extension.getTarget())
 		{
 			case EXECUTABLE:
 				target = "exe";
@@ -155,7 +146,7 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 		commandLine.setWorkDirectory(module.getModuleDirPath());
 
 		addArgument("/target:" + target);
-		String outputFile = DotNetMacros.extract(module, layerName, dotNetLayer);
+		String outputFile = DotNetMacros.extract(module, extension);
 		addArgument("/out:" + outputFile);
 
 		val dependFiles = DotNetCompilerUtil.collectDependencies(module, true);
@@ -171,18 +162,18 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 			}, ","));
 		}
 
-		if(dotNetLayer.isAllowDebugInfo())
+		if(extension.isAllowDebugInfo())
 		{
 			addArgument("/debug");
 		}
 
-		String defineVariables = StringUtil.join(dotNetLayer.getVariables(), ";");
+		String defineVariables = StringUtil.join(extension.getVariables(), ";");
 		if(!StringUtil.isEmpty(defineVariables))
 		{
 			addArgument("/define:" + defineVariables);
 		}
 
-		String mainType = dotNetLayer.getMainType();
+		String mainType = extension.getMainType();
 		if(!StringUtil.isEmpty(mainType))
 		{
 			addArgument("/main:" + mainType);
