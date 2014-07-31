@@ -32,8 +32,8 @@ import com.intellij.openapi.roots.ModifiableRootModel;
 public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtension<T>> extends ModuleExtensionImpl<T> implements
 		DotNetModuleLangExtension<T>, CSharpModuleExtension<T>
 {
-	private boolean myAllowUnsafeCode;
-	private CSharpLanguageVersionPointer myLanguageVersionPointer;
+	protected boolean myAllowUnsafeCode;
+	protected CSharpLanguageVersionPointer myLanguageVersionPointer;
 
 	public BaseCSharpModuleExtension(@NotNull String id, @NotNull ModifiableRootModel module)
 	{
