@@ -59,6 +59,8 @@
 		<internalFileTemplate name="CSharpFile"/>
 		<internalFileTemplate name="CSharpAssemblyFile"/>
 
+		<errorHandler implementation="com.intellij.diagnostic.ITNReporter" />
+
 		<additionalTextAttributes scheme="Darcula" file="/colorScheme/CSharpDarcula.xml"/>
 		<additionalTextAttributes scheme="Default" file="/colorScheme/CSharpDefault.xml"/>
 		<additionalTextAttributes scheme="Consulo Light" file="/colorScheme/CSharpDefault.xml"/>
