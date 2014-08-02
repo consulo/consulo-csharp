@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.parser.SharingParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.decl.FieldOrPropertyParsing;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import org.mustbe.consulo.csharp.lang.parser.exp.LinqParsing;
+import com.intellij.lang.LighterASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
@@ -147,8 +148,8 @@ public class StatementParsing extends SharingParsingHelpers
 		{
 			parseUsingOrFixed(wrapper, marker, FIXED_STATEMENT);
 		}
-		else if(tokenType == CASE_KEYWORD ||
-				tokenType == DEFAULT_KEYWORD && wrapper.lookAhead(1) == COLON)  // accept with colon only, default can be expression
+		else if(tokenType == CASE_KEYWORD || tokenType == DEFAULT_KEYWORD && wrapper.lookAhead(1) == COLON)  // accept with colon only,
+		// default can be expression
 		{
 			parseSwitchLabel(wrapper, marker, tokenType == CASE_KEYWORD);
 		}
@@ -181,8 +182,53 @@ public class StatementParsing extends SharingParsingHelpers
 				return marker;
 			}
 
-			PsiBuilder.Marker varMarker = parseVariableDecl(wrapper, false);
-			if(varMarker == null)
+			PsiBuilder.Marker newMarker = wrapper.mark();
+
+			int i = 0;
+			PsiBuilder.Marker[] array = new PsiBuilder.Marker[2];
+			while(!wrapper.eof())
+			{
+				if(i == 2)
+				{
+					break;
+				}
+				val expressionMarker = ExpressionParsing.parse(wrapper);
+				if(expressionMarker == null)
+				{
+					break;
+				}
+
+				array[i++] = expressionMarker;
+			}
+
+			newMarker.rollbackTo();
+
+			if((getElementType(array[0]) == REFERENCE_EXPRESSION || getElementType(array[0]) == ARRAY_ACCESS_EXPRESSION) && (getElementType(array[1])
+					== REFERENCE_EXPRESSION || getElementType(array[1]) == ASSIGNMENT_EXPRESSION))
+			{
+				PsiBuilder.Marker varMarker = parseVariableDecl(wrapper, false);
+				if(varMarker == null)
+				{
+					PsiBuilder.Marker expressionMarker = ExpressionParsing.parse(wrapper);
+					if(expressionMarker == null)
+					{
+						wrapper.error("Expression expected");
+						wrapper.advanceLexer();
+					}
+					else
+					{
+						expect(wrapper, SEMICOLON, "';' expected");
+					}
+					marker.done(EXPRESSION_STATEMENT);
+				}
+				else
+				{
+					//expect(wrapper, SEMICOLON, "';' expected");
+
+					marker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
+				}
+			}
+			else
 			{
 				PsiBuilder.Marker expressionMarker = ExpressionParsing.parse(wrapper);
 				if(expressionMarker == null)
@@ -196,14 +242,17 @@ public class StatementParsing extends SharingParsingHelpers
 				}
 				marker.done(EXPRESSION_STATEMENT);
 			}
-			else
-			{
-				//expect(wrapper, SEMICOLON, "';' expected");
-
-				marker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
-			}
 		}
 		return marker;
+	}
+
+	private static IElementType getElementType(PsiBuilder.Marker marker)
+	{
+		if(marker instanceof LighterASTNode)
+		{
+			return ((LighterASTNode) marker).getTokenType();
+		}
+		return null;
 	}
 
 	private static void parseTryStatement(@NotNull CSharpBuilderWrapper builder, final PsiBuilder.Marker marker)
