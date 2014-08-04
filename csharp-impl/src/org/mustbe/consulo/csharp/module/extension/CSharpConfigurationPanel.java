@@ -125,6 +125,52 @@ public class CSharpConfigurationPanel extends JPanel
 
 		add(LabeledComponent.left(levelComboBox, "Language Version: "));
 
+		val platformComboBox = new ComboBox(CSharpPlatform.values());
+		platformComboBox.setSelectedItem(ext.getPlatform());
+		platformComboBox.setRenderer(new ColoredListCellRendererWrapper<CSharpPlatform>()
+		{
+			@Override
+			protected void doCustomize(JList jList, CSharpPlatform cSharpPlatform, int i, boolean b, boolean b2)
+			{
+				switch(cSharpPlatform)
+				{
+					case ANY_CPU:
+						append("Any CPU");
+						break;
+					case ANY_CPU_32BIT_PREFERRED:
+						append("Any CPU");
+						append(" (32 bit preferred)", SimpleTextAttributes.GRAY_ATTRIBUTES);
+						break;
+					case ARM:
+						append("ARM");
+						break;
+					case X86:
+						append("x86");
+						break;
+					case X64:
+						append("x64");
+						break;
+					case ITANIUM:
+						append("Itanium");
+						break;
+				}
+			}
+		});
+
+		platformComboBox.addItemListener(new ItemListener()
+		{
+			@Override
+			public void itemStateChanged(ItemEvent e)
+			{
+				if(e.getStateChange() == ItemEvent.SELECTED)
+				{
+					ext.setPlatform((CSharpPlatform) platformComboBox.getSelectedItem());
+				}
+			}
+		});
+
+		add(LabeledComponent.left(platformComboBox, "Platform: "));
+
 		val allowUnsafeCode = new JBCheckBox("Allow unsafe code?", ext.isAllowUnsafeCode());
 		allowUnsafeCode.addActionListener(new ActionListener()
 		{

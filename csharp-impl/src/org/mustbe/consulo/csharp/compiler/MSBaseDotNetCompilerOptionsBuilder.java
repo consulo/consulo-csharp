@@ -201,6 +201,28 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 		{
 			addArgument("/optimize+");
 		}
+
+		switch(csharpExtension.getPlatform())
+		{
+			case ANY_CPU:
+				addArgument("/platform:anycpu");
+				break;
+			case ANY_CPU_32BIT_PREFERRED:
+				addArgument("/platform:anycpu32bitpreferred");
+				break;
+			case ARM:
+				addArgument("/platform:ARM");
+				break;
+			case X86:
+				addArgument("/platform:x86");
+				break;
+			case X64:
+				addArgument("/platform:x64");
+				break;
+			case ITANIUM:
+				addArgument("/platform:Itanium");
+				break;
+		}
 		addArgument("/nologo");
 		addArgument("/nostdlib+");
 

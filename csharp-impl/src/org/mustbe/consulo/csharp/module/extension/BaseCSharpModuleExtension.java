@@ -34,12 +34,20 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 {
 	protected boolean myAllowUnsafeCode;
 	protected boolean myOptimizeCode;
+	protected CSharpPlatform myPlatform = CSharpPlatform.ANY_CPU;
 	protected CSharpLanguageVersionPointer myLanguageVersionPointer;
 
 	public BaseCSharpModuleExtension(@NotNull String id, @NotNull ModifiableRootModel module)
 	{
 		super(id, module);
 		myLanguageVersionPointer = new CSharpLanguageVersionPointer(getProject(), id);
+	}
+
+	@NotNull
+	@Override
+	public CSharpPlatform getPlatform()
+	{
+		return myPlatform;
 	}
 
 	@Override
@@ -52,6 +60,11 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	public boolean isOptimizeCode()
 	{
 		return myOptimizeCode;
+	}
+
+	public void setPlatform(@NotNull CSharpPlatform platform)
+	{
+		myPlatform = platform;
 	}
 
 	public void setOptimizeCode(boolean optimizeCode)
@@ -74,6 +87,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 		return myIsEnabled != mutableModuleExtension.isEnabled() ||
 				myAllowUnsafeCode != mutableModuleExtension.myAllowUnsafeCode ||
 				myOptimizeCode != mutableModuleExtension.myOptimizeCode ||
+				myPlatform != mutableModuleExtension.myPlatform ||
 				!myLanguageVersionPointer.equals(mutableModuleExtension.myLanguageVersionPointer);
 	}
 
@@ -87,6 +101,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	{
 		myAllowUnsafeCode = Boolean.valueOf(element.getAttributeValue("unsafe-code", "false"));
 		myOptimizeCode = Boolean.valueOf(element.getAttributeValue("optimize-code", "false"));
+		myPlatform = CSharpPlatform.valueOf(element.getAttributeValue("platform", CSharpPlatform.ANY_CPU.name()));
 		myLanguageVersionPointer.fromXml(element);
 	}
 
@@ -95,6 +110,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	{
 		element.setAttribute("unsafe-code", Boolean.toString(myAllowUnsafeCode));
 		element.setAttribute("optimize-code", Boolean.toString(myOptimizeCode));
+		element.setAttribute("platform", myPlatform.name());
 		myLanguageVersionPointer.toXml(element);
 	}
 
@@ -105,6 +121,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 
 		myAllowUnsafeCode = mutableModuleExtension.myAllowUnsafeCode;
 		myOptimizeCode = mutableModuleExtension.myOptimizeCode;
+		myPlatform = mutableModuleExtension.myPlatform;
 		myLanguageVersionPointer.set(mutableModuleExtension.myLanguageVersionPointer);
 	}
 

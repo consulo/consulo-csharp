@@ -16,23 +16,16 @@
 
 package org.mustbe.consulo.csharp.module.extension;
 
-import org.consulo.module.extension.MutableModuleExtension;
-import org.consulo.module.extension.MutableModuleInheritableNamedPointer;
-import org.jetbrains.annotations.NotNull;
-
 /**
  * @author VISTALL
- * @since 15.05.14
+ * @since 05.08.14
  */
-public interface CSharpMutableModuleExtension<T extends CSharpModuleExtension<T>> extends CSharpModuleExtension<T>, MutableModuleExtension<T>
+public enum CSharpPlatform
 {
-	MutableModuleInheritableNamedPointer<CSharpLanguageVersion> getLanguageVersionPointer();
-
-	void setLanguageVersion(@NotNull CSharpLanguageVersion version);
-
-	void setAllowUnsafeCode(boolean value);
-
-	void setOptimizeCode(boolean value);
-
-	void setPlatform(@NotNull CSharpPlatform platform);
+	ANY_CPU,
+	ANY_CPU_32BIT_PREFERRED,
+	ARM,
+	X86,
+	X64,
+	ITANIUM
 }

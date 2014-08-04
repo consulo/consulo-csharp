@@ -30,5 +30,8 @@ public interface CSharpModuleExtension<T extends ModuleExtension<T>> extends Mod
 	boolean isOptimizeCode();
 
 	@NotNull
+	CSharpPlatform getPlatform();
+
+	@NotNull
 	CSharpLanguageVersion getLanguageVersion();
 }
