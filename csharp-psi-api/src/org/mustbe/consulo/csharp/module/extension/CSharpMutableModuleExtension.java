@@ -31,4 +31,6 @@ public interface CSharpMutableModuleExtension<T extends CSharpModuleExtension<T>
 	void setLanguageVersion(@NotNull CSharpLanguageVersion version);
 
 	void setAllowUnsafeCode(boolean value);
+
+	void setOptimizeCode(boolean value);
 }

@@ -27,6 +27,8 @@ public interface CSharpModuleExtension<T extends ModuleExtension<T>> extends Mod
 {
 	boolean isAllowUnsafeCode();
 
+	boolean isOptimizeCode();
+
 	@NotNull
 	CSharpLanguageVersion getLanguageVersion();
 }

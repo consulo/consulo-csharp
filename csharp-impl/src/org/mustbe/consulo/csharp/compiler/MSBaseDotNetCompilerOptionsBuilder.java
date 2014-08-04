@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
 import org.mustbe.consulo.dotnet.DotNetTarget;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerMessage;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
@@ -128,8 +129,13 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 
 	@Override
 	@NotNull
-	public GeneralCommandLine createCommandLine(@NotNull Module module, @NotNull VirtualFile[] results, @NotNull DotNetModuleExtension<?> extension) throws IOException
+	public GeneralCommandLine createCommandLine(@NotNull Module module, @NotNull VirtualFile[] results, @NotNull DotNetModuleExtension<?> extension)
+			throws IOException
 	{
+		CSharpModuleExtension csharpExtension = ModuleUtilCore.getExtension(module, CSharpModuleExtension.class);
+
+		assert csharpExtension != null;
+
 		String target = null;
 		switch(extension.getTarget())
 		{
@@ -146,7 +152,6 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 				target = "module";
 				break;
 		}
-
 
 		GeneralCommandLine commandLine = new GeneralCommandLine();
 		commandLine.setExePath(myExecutable);
@@ -186,6 +191,18 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 		{
 			addArgument("/debug");
 		}
+
+		if(csharpExtension.isAllowUnsafeCode())
+		{
+			addArgument("/unsafe");
+		}
+
+		if(csharpExtension.isOptimizeCode())
+		{
+			addArgument("/optimize+");
+		}
+		addArgument("/nologo");
+		addArgument("/nostdlib+");
 
 		String defineVariables = StringUtil.join(extension.getVariables(), ";");
 		if(!StringUtil.isEmpty(defineVariables))

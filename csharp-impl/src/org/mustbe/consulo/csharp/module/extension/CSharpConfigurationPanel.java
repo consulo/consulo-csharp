@@ -123,17 +123,29 @@ public class CSharpConfigurationPanel extends JPanel
 			}
 		});
 
-		val comp = new JBCheckBox("Allow unsafe code?", ext.isAllowUnsafeCode());
-		comp.addActionListener(new ActionListener()
+		add(LabeledComponent.left(levelComboBox, "Language Version: "));
+
+		val allowUnsafeCode = new JBCheckBox("Allow unsafe code?", ext.isAllowUnsafeCode());
+		allowUnsafeCode.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				ext.setAllowUnsafeCode(comp.isSelected());
+				ext.setAllowUnsafeCode(allowUnsafeCode.isSelected());
 			}
 		});
 
-		add(LabeledComponent.left(levelComboBox, "Language Version: "));
-		add(comp);
+		add(allowUnsafeCode);
+
+		val optimizeCode = new JBCheckBox("Optimize Code?", ext.isOptimizeCode());
+		optimizeCode.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				ext.setOptimizeCode(optimizeCode.isSelected());
+			}
+		});
+		add(optimizeCode);
 	}
 }

@@ -33,6 +33,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 		DotNetModuleLangExtension<T>, CSharpModuleExtension<T>
 {
 	protected boolean myAllowUnsafeCode;
+	protected boolean myOptimizeCode;
 	protected CSharpLanguageVersionPointer myLanguageVersionPointer;
 
 	public BaseCSharpModuleExtension(@NotNull String id, @NotNull ModifiableRootModel module)
@@ -45,6 +46,17 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	public boolean isAllowUnsafeCode()
 	{
 		return myAllowUnsafeCode;
+	}
+
+	@Override
+	public boolean isOptimizeCode()
+	{
+		return myOptimizeCode;
+	}
+
+	public void setOptimizeCode(boolean optimizeCode)
+	{
+		myOptimizeCode = optimizeCode;
 	}
 
 	public void setLanguageVersion(@NotNull CSharpLanguageVersion languageVersion)
@@ -61,6 +73,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	{
 		return myIsEnabled != mutableModuleExtension.isEnabled() ||
 				myAllowUnsafeCode != mutableModuleExtension.myAllowUnsafeCode ||
+				myOptimizeCode != mutableModuleExtension.myOptimizeCode ||
 				!myLanguageVersionPointer.equals(mutableModuleExtension.myLanguageVersionPointer);
 	}
 
@@ -73,6 +86,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	protected void loadStateImpl(@NotNull Element element)
 	{
 		myAllowUnsafeCode = Boolean.valueOf(element.getAttributeValue("unsafe-code", "false"));
+		myOptimizeCode = Boolean.valueOf(element.getAttributeValue("optimize-code", "false"));
 		myLanguageVersionPointer.fromXml(element);
 	}
 
@@ -80,6 +94,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	protected void getStateImpl(@NotNull Element element)
 	{
 		element.setAttribute("unsafe-code", Boolean.toString(myAllowUnsafeCode));
+		element.setAttribute("optimize-code", Boolean.toString(myOptimizeCode));
 		myLanguageVersionPointer.toXml(element);
 	}
 
@@ -89,6 +104,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 		super.commit(mutableModuleExtension);
 
 		myAllowUnsafeCode = mutableModuleExtension.myAllowUnsafeCode;
+		myOptimizeCode = mutableModuleExtension.myOptimizeCode;
 		myLanguageVersionPointer.set(mutableModuleExtension.myLanguageVersionPointer);
 	}
 
