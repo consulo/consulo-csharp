@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 
@@ -40,6 +41,9 @@ public interface CSharpCallArgumentListOwner extends DotNetElement
 
 	@Nullable
 	DotNetTypeList getTypeArgumentList();
+
+	@NotNull
+	DotNetTypeRef[] getTypeArgumentListRefs();
 
 	@Nullable
 	PsiElement resolveToCallable();

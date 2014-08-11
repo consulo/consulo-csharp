@@ -16,43 +16,58 @@
 
 public static class EnumStubs
 {
-	// --------------------------------------------------------------
-	// >
-	// --------------------------------------------------------------
+	// System.Enum + System.Enum = T
+	[EnumOperator]
+	public static T operator +(T param1, T param2)
+	{
+		return default(T);
+	}
+
+	// System.Enum - System.Enum = T
+	[EnumOperator]
+	public static T operator -(T param1, T param2)
+	{
+		return default(T);
+	}
+
+	// System.Enum | System.Enum = T
+	[EnumOperator]
+	public static T operator |(T param1, T param2)
+	{
+		return default(T);
+	}
+
+	// System.Enum & System.Enum = T
+	[EnumOperator]
+	public static T operator &(T param1, T param2)
+	{
+		return default(T);
+	}
 
 	// System.Enum > System.Enum = bool
-	public static bool operator >(System.Enum param1, System.Enum param2)
+	[EnumOperator]
+	public static bool operator >(T param1, T param2)
 	{
 		return false;
 	}
-
-	// --------------------------------------------------------------
-	// >=
-	// --------------------------------------------------------------
 
 	// System.Enum >= System.Enum = bool
-	public static bool operator >=(System.Enum param1, System.Enum param2)
+	[EnumOperator]
+	public static bool operator >=(T param1, T param2)
 	{
 		return false;
 	}
-
-
-	// --------------------------------------------------------------
-	// <
-	// --------------------------------------------------------------
 
 	// System.Enum < System.Enum = bool
-	public static bool operator <(System.Enum param1, System.Enum param2)
+	[EnumOperator]
+	public static bool operator <(T param1, T param2)
 	{
 		return false;
 	}
 
-	// --------------------------------------------------------------
-	// <=
-	// --------------------------------------------------------------
-
 	// System.Enum <= System.Enum = bool
-	public static bool operator <=(System.Enum param1, System.Enum param2)
+	[EnumOperator]
+	public static bool operator <=(T param1, T param2)
 	{
 		return false;
 	}

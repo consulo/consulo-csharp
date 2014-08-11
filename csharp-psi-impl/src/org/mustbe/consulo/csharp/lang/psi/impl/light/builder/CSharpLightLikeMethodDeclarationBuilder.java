@@ -17,16 +17,14 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.light.builder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
@@ -35,6 +33,8 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
@@ -43,13 +43,13 @@ import com.intellij.util.containers.ContainerUtil;
  */
 @SuppressWarnings("unchecked")
 public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLightLikeMethodDeclarationBuilder<T>> extends
-		CSharpLightNamedElementBuilder<T> implements DotNetLikeMethodDeclaration
+		CSharpLightNamedElementWiModifierListBuilder<T> implements DotNetLikeMethodDeclaration
 {
-	private List<DotNetModifier> myModifiers = new ArrayList<DotNetModifier>();
-	private List<DotNetParameter> myParameters = new ArrayList<DotNetParameter>();
+	private List<DotNetParameter> myParameters = Collections.emptyList();
+	private List<DotNetGenericParameter> myGenericParameters = Collections.emptyList();
+
 	private String myParentQName;
 	private DotNetTypeRef myReturnType;
-	private CSharpLightModifierListBuilder myModifierListBuilder;
 
 	public CSharpLightLikeMethodDeclarationBuilder(Project project)
 	{
@@ -88,30 +88,13 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
-		return new DotNetGenericParameter[0];
+		return ContainerUtil.toArray(myGenericParameters, DotNetGenericParameter.ARRAY_FACTORY);
 	}
 
 	@Override
 	public int getGenericParametersCount()
 	{
-		return 0;
-	}
-
-	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
-	{
-		return myModifiers.contains(CSharpModifier.as(modifier));
-	}
-
-	@Nullable
-	@Override
-	public DotNetModifierList getModifierList()
-	{
-		if(myModifierListBuilder == null)
-		{
-			myModifierListBuilder = new CSharpLightModifierListBuilder(myModifiers, getManager(), getLanguage());
-		}
-		return myModifierListBuilder;
+		return myGenericParameters.size();
 	}
 
 	@NotNull
@@ -166,7 +149,30 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 		return parentQName + "." + getName();
 	}
 
-@NotNull
+	@Override
+	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement
+			place)
+	{
+		for(DotNetGenericParameter dotNetGenericParameter : getGenericParameters())
+		{
+			if(!processor.execute(dotNetGenericParameter, state))
+			{
+				return false;
+			}
+		}
+
+		for(DotNetParameter parameter : getParameters())
+		{
+			if(!processor.execute(parameter, state))
+			{
+				return false;
+			}
+		}
+
+		return super.processDeclarations(processor, state, lastParent, place);
+	}
+
+	@NotNull
 	public T withReturnType(DotNetTypeRef type)
 	{
 		myReturnType = type;
@@ -180,16 +186,25 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 		return (T) this;
 	}
 
-	@NotNull
-	public T addModifier(DotNetModifier modifierWithMask)
+	public T addGenericParameter(DotNetGenericParameter genericParameter)
 	{
-		myModifiers.add(modifierWithMask);
+		if(myGenericParameters.isEmpty())
+		{
+			myGenericParameters = new ArrayList<DotNetGenericParameter>(2);
+		}
+
+		myGenericParameters.add(genericParameter);
 		return (T) this;
 	}
 
 	@NotNull
 	public T addParameter(DotNetParameter parameter)
 	{
+		if(myParameters.isEmpty())
+		{
+			myParameters = new ArrayList<DotNetParameter>(5);
+		}
+
 		if(parameter instanceof CSharpLightElementBuilder)
 		{
 			((CSharpLightElementBuilder) parameter).withParent(this);

@@ -157,7 +157,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
-	public void visitGenericParameter(CSharpGenericParameterImpl parameter)
+	public void visitGenericParameter(DotNetGenericParameter parameter)
 	{
 		highlightNamed(parameter, parameter.getNameIdentifier(), null);
 	}

@@ -19,16 +19,27 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameter;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightGenericConstraintBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightGenericParameterBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDeclarationBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAttributeImpl;
+import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -36,17 +47,16 @@ import com.intellij.openapi.util.io.FileUtil;
  */
 public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 {
-	private static String[] ourStubs = new String[]
-	{
-		"/stub/ObjectStubs.cs",
-		"/stub/EnumStubs.cs",
-		"/stub/BoolStubs.cs",
-		"/stub/StringStubs.cs",
-		"/stub/ByteStubs.cs",
-		"/stub/ShortStubs.cs",
-		"/stub/IntStubs.cs",
-		"/stub/LongStubs.cs",
-		"/stub/FloatStubs.cs",
+	private static String[] ourStubs = new String[]{
+			"/stub/ObjectStubs.cs",
+			"/stub/EnumStubs.cs",
+			"/stub/BoolStubs.cs",
+			"/stub/StringStubs.cs",
+			"/stub/ByteStubs.cs",
+			"/stub/ShortStubs.cs",
+			"/stub/IntStubs.cs",
+			"/stub/LongStubs.cs",
+			"/stub/FloatStubs.cs",
 	};
 	private final Project myProject;
 
@@ -72,7 +82,76 @@ public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 			{
 				String text = FileUtil.loadTextAndClose(resourceAsStream);
 				DotNetTypeDeclaration declaration = CSharpFileFactory.createTypeDeclaration(myProject, text);
-				Collections.addAll(list, declaration.getMembers());
+				for(DotNetNamedElement dotNetNamedElement : declaration.getMembers())
+				{
+					boolean modify = false;
+
+					CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) dotNetNamedElement;
+					DotNetAttribute[] attributes = methodDeclaration.getModifierList().getAttributes();
+					for(DotNetAttribute it : attributes)
+					{
+						CSharpAttributeImpl attribute = (CSharpAttributeImpl) it;
+
+						CSharpReferenceExpression referenceExpression = attribute.getReferenceExpression();
+						if(referenceExpression == null)
+						{
+							continue;
+						}
+						String referenceExpressionText = referenceExpression.getText();
+						if(referenceExpressionText.equals("EnumOperator"))
+						{
+							modify = true;
+							break;
+						}
+					}
+
+					if(modify)
+					{
+						CSharpLightMethodDeclarationBuilder builder = new CSharpLightMethodDeclarationBuilder(myProject);
+						builder.setOperator(methodDeclaration.getOperatorElementType());
+
+
+						CSharpLightGenericParameterBuilder genericParameterBuilder = new CSharpLightGenericParameterBuilder(myProject);
+						genericParameterBuilder.withName("T");
+
+						CSharpLightGenericConstraintBuilder constraintBuilder = new CSharpLightGenericConstraintBuilder(genericParameterBuilder);
+						constraintBuilder.addTypeConstraint(new CSharpTypeRefFromText(DotNetTypes.System_Enum, builder));
+
+						builder.addGenericParameter(genericParameterBuilder);
+						builder.addGenericConstraint(constraintBuilder);
+
+						if(isTextEqual(methodDeclaration.getReturnType(), "T"))
+						{
+							builder.withReturnType(new CSharpTypeRefFromGenericParameter(genericParameterBuilder));
+						}
+						else
+						{
+							builder.withReturnType(methodDeclaration.getReturnTypeRef());
+						}
+
+						for(DotNetParameter parameter : methodDeclaration.getParameters())
+						{
+							if(isTextEqual(parameter.getType(), "T"))
+							{
+								CSharpLightParameterBuilder b = new CSharpLightParameterBuilder(parameter);
+								b.withName(parameter.getName());
+								b.withTypeRef(new CSharpTypeRefFromGenericParameter(genericParameterBuilder));
+
+								builder.addParameter(b);
+							}
+							else
+							{
+								builder.addParameter(new CSharpLightParameter(parameter));
+							}
+						}
+
+						list.add(builder);
+					}
+					else
+					{
+						list.add(dotNetNamedElement);
+					}
+				}
 			}
 			catch(IOException e)
 			{
@@ -80,5 +159,10 @@ public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 			}
 		}
 		return list;
+	}
+
+	private static boolean isTextEqual(PsiElement element, String text)
+	{
+		return element.getText().equals(text);
 	}
 }

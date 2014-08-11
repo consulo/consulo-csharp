@@ -40,35 +40,35 @@ public abstract class CSharpLightLikeMethodDeclaration<S extends DotNetLikeMetho
 {
 	protected S myOriginal;
 	private final DotNetTypeRef myReturnTypeRef;
-	private final DotNetParameterList myParameterTypes;
+	private final DotNetParameterList myParameterList;
 
-	public CSharpLightLikeMethodDeclaration(S original, DotNetTypeRef returnTypeRef, @NotNull DotNetParameterList parameterList)
+	public CSharpLightLikeMethodDeclaration(S original, DotNetTypeRef returnTypeRef, @Nullable DotNetParameterList parameterList)
 	{
 		super(original);
 		myOriginal = original;
 		myReturnTypeRef = returnTypeRef;
-		myParameterTypes = parameterList;
+		myParameterList = parameterList;
 	}
 
 	@Nullable
 	@Override
 	public DotNetParameterList getParameterList()
 	{
-		return myParameterTypes;
+		return myParameterList;
 	}
 
 	@NotNull
 	@Override
 	public DotNetParameter[] getParameters()
 	{
-		return myParameterTypes.getParameters();
+		return myParameterList == null ? DotNetParameter.EMPTY_ARRAY : myParameterList.getParameters();
 	}
 
 	@NotNull
 	@Override
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
-		return myParameterTypes.getParameterTypeRefs();
+		return myParameterList == null ? DotNetTypeRef.EMPTY_ARRAY : myParameterList.getParameterTypeRefs();
 	}
 
 	@Nullable

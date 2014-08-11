@@ -99,6 +99,14 @@ public class CSharpAttributeImpl extends CSharpElementImpl implements DotNetAttr
 		return null;
 	}
 
+
+	@NotNull
+	@Override
+	public DotNetTypeRef[] getTypeArgumentListRefs()
+	{
+		return DotNetTypeRef.EMPTY_ARRAY;
+	}
+
 	@Override
 	@NotNull
 	public DotNetExpression[] getParameterExpressions()
@@ -111,7 +119,7 @@ public class CSharpAttributeImpl extends CSharpElementImpl implements DotNetAttr
 	@Override
 	public PsiElement resolveToCallable()
 	{
-		CSharpReferenceExpression ref = findChildByClass(CSharpReferenceExpression.class);
+		CSharpReferenceExpression ref = getReferenceExpression();
 		if(ref == null)
 		{
 			return null;
@@ -123,12 +131,18 @@ public class CSharpAttributeImpl extends CSharpElementImpl implements DotNetAttr
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
-		CSharpReferenceExpression ref = findChildByClass(CSharpReferenceExpression.class);
+		CSharpReferenceExpression ref = getReferenceExpression();
 		if(ref == null)
 		{
 			return null;
 		}
 
 		return ref.multiResolve(incompleteCode);
+	}
+
+	@Nullable
+	public CSharpReferenceExpression getReferenceExpression()
+	{
+		return findChildByClass(CSharpReferenceExpression.class);
 	}
 }

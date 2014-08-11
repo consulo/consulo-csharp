@@ -14,56 +14,48 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi.impl.light;
+package org.mustbe.consulo.csharp.lang.psi.impl.light.builder;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.openapi.project.Project;
 
 /**
  * @author VISTALL
- * @since 15.01.14
+ * @since 11.08.14
  */
-public class CSharpLightParameter extends CSharpLightVariable<DotNetParameter> implements DotNetParameter
+public class CSharpLightGenericConstraintTypeValueBuilder extends CSharpLightElementBuilder<CSharpLightGenericConstraintTypeValueBuilder>
+		implements CSharpGenericConstraintTypeValue
 {
-	private DotNetTypeRef myTypeRef;
+	private final DotNetTypeRef myTypeRef;
 
-	public CSharpLightParameter(DotNetParameter original)
+	public CSharpLightGenericConstraintTypeValueBuilder(@NotNull Project project, @NotNull DotNetTypeRef typeRef)
 	{
-		this(original, original.toTypeRef(false));
-	}
-
-	public CSharpLightParameter(DotNetParameter original, DotNetTypeRef dotNetTypeRef)
-	{
-		super(original);
-		myTypeRef = dotNetTypeRef;
-	}
-
-	@NotNull
-	@Override
-	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
-	{
-		return myTypeRef;
+		super(project);
+		myTypeRef = typeRef;
 	}
 
 	@Override
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		visitor.visitParameter(this);
+		visitor.visitGenericConstraintTypeValue(this);
 	}
 
-	@NotNull
+	@Nullable
 	@Override
-	public DotNetLikeMethodDeclaration getMethod()
+	public DotNetType getType()
 	{
 		return null;
 	}
 
+	@NotNull
 	@Override
-	public int getIndex()
+	public DotNetTypeRef toTypeRef()
 	{
-		return 0;
+		return myTypeRef;
 	}
 }

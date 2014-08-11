@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,9 +36,11 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithW
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorHelper;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetEventDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -226,7 +229,8 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
 		CSharpOperatorHelper operatorHelper = CSharpOperatorHelper.getInstance(getProject());
 
-		for(DotNetNamedElement dotNetNamedElement : operatorHelper.getStubMembers())
+		List<DotNetNamedElement> stubMembers = operatorHelper.getStubMembers();
+		for(DotNetNamedElement dotNetNamedElement : stubMembers)
 		{
 			if(!isAccepted(this, dotNetNamedElement))
 			{
@@ -235,7 +239,14 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
 			if(MethodAcceptorImpl.calcAcceptableWeight(this, this, (CSharpMethodDeclaration) dotNetNamedElement) == WeightProcessor.MAX_WEIGHT)
 			{
-				return ((CSharpMethodDeclaration) dotNetNamedElement).getReturnTypeRef();
+				int genericParametersCount = ((CSharpMethodDeclaration) dotNetNamedElement).getGenericParametersCount();
+				DotNetTypeRef returnTypeRef = ((CSharpMethodDeclaration) dotNetNamedElement).getReturnTypeRef();
+				if(genericParametersCount > 0)
+				{
+					val extractorFromCall = MethodAcceptorImpl.createExtractorFromCall(this, (DotNetGenericParameterListOwner) dotNetNamedElement);
+					return GenericUnwrapTool.exchangeTypeRefs(returnTypeRef, extractorFromCall, this);
+				}
+				return returnTypeRef;
 			}
 		}
 		return null;
@@ -343,6 +354,18 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	public DotNetTypeList getTypeArgumentList()
 	{
 		return null;
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef[] getTypeArgumentListRefs()
+	{
+		DotNetExpression[] parameterExpressions = getParameterExpressions();
+		if(parameterExpressions.length == 0)
+		{
+			return DotNetTypeRef.EMPTY_ARRAY;
+		}
+		return new DotNetTypeRef[]{parameterExpressions[0].toTypeRef(false)};
 	}
 
 	@Nullable

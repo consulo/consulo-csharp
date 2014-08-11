@@ -149,6 +149,13 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 		return null;
 	}
 
+	@NotNull
+	@Override
+	public DotNetTypeRef[] getTypeArgumentListRefs()
+	{
+		return DotNetTypeRef.EMPTY_ARRAY;
+	}
+
 	@Nullable
 	@Override
 	public PsiElement resolveToCallable()

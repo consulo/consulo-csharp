@@ -16,6 +16,10 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.light.builder;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -35,6 +39,9 @@ import com.intellij.psi.tree.IElementType;
 public class CSharpLightMethodDeclarationBuilder extends CSharpLightLikeMethodDeclarationBuilder<CSharpLightMethodDeclarationBuilder> implements
 		CSharpMethodDeclaration
 {
+	private IElementType myOperatorElementType;
+	private List<CSharpGenericConstraint> myGenericConstraints = Collections.emptyList();
+
 	public CSharpLightMethodDeclarationBuilder(Project project)
 	{
 		super(project);
@@ -55,14 +62,14 @@ public class CSharpLightMethodDeclarationBuilder extends CSharpLightLikeMethodDe
 	@Override
 	public boolean isOperator()
 	{
-		return false;
+		return myOperatorElementType != null;
 	}
 
 	@Nullable
 	@Override
 	public IElementType getOperatorElementType()
 	{
-		return null;
+		return myOperatorElementType;
 	}
 
 	@Nullable
@@ -98,5 +105,23 @@ public class CSharpLightMethodDeclarationBuilder extends CSharpLightLikeMethodDe
 	public DotNetTypeRef getTypeRefForImplement()
 	{
 		return DotNetTypeRef.ERROR_TYPE;
+	}
+
+	@NotNull
+	public CSharpLightMethodDeclarationBuilder setOperator(@Nullable IElementType elementType)
+	{
+		myOperatorElementType = elementType;
+		return this;
+	}
+
+	@NotNull
+	public CSharpLightMethodDeclarationBuilder addGenericConstraint(CSharpGenericConstraint genericConstraint)
+	{
+		if(myGenericConstraints.isEmpty())
+		{
+			myGenericConstraints = new ArrayList<CSharpGenericConstraint>(2);
+		}
+		myGenericConstraints.add(genericConstraint);
+		return this;
 	}
 }

@@ -206,6 +206,13 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 		return null;
 	}
 
+	@NotNull
+	@Override
+	public DotNetTypeRef[] getTypeArgumentListRefs()
+	{
+		return DotNetTypeRef.EMPTY_ARRAY;
+	}
+
 	@Nullable
 	@Override
 	public PsiElement resolveToCallable()

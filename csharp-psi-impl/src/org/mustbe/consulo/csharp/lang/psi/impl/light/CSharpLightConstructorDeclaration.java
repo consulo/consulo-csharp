@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.light;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
@@ -31,7 +32,7 @@ public class CSharpLightConstructorDeclaration extends CSharpLightLikeMethodDecl
 		CSharpConstructorDeclaration
 {
 	public CSharpLightConstructorDeclaration(CSharpConstructorDeclaration original, DotNetTypeRef returnTypeRef,
-			@NotNull  DotNetParameterList parameterList)
+			@Nullable DotNetParameterList parameterList)
 	{
 		super(original, returnTypeRef, parameterList);
 	}

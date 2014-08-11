@@ -34,7 +34,12 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclaration<CSharpMethodDeclaration> implements CSharpMethodDeclaration
 {
-	public CSharpLightMethodDeclaration(CSharpMethodDeclaration original, DotNetTypeRef returnTypeRef, @NotNull DotNetParameterList parameterList)
+	public CSharpLightMethodDeclaration(@NotNull CSharpMethodDeclaration declaration)
+	{
+		this(declaration, declaration.getReturnTypeRef(), declaration.getParameterList());
+	}
+
+	public CSharpLightMethodDeclaration(CSharpMethodDeclaration original, DotNetTypeRef returnTypeRef, @Nullable DotNetParameterList parameterList)
 	{
 		super(original, returnTypeRef, parameterList);
 	}
