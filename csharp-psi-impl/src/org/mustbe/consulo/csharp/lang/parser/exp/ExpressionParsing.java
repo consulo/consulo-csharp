@@ -501,6 +501,7 @@ public class ExpressionParsing extends SharingParsingHelpers
 				}
 				else
 				{
+					argumentMark.rollbackTo();
 					callExpr.drop();
 					startMarker.drop();
 					return expr;
@@ -1027,23 +1028,6 @@ public class ExpressionParsing extends SharingParsingHelpers
 		}
 		expect(builder, RPAR, "')' expected");
 		mark.done(CALL_ARGUMENT_LIST);
-	}
-
-	public static PsiBuilder.Marker parseParenthesesExpression(CSharpBuilderWrapper builder)
-	{
-		PsiBuilder.Marker mark = builder.mark();
-		if(expect(builder, LPAR, "'(' expected"))
-		{
-			parse(builder);
-			expect(builder, RPAR, "')' expected");
-			mark.done(PARENTHESES_EXPRESSION);
-			return mark;
-		}
-		else
-		{
-			mark.drop();
-			return null;
-		}
 	}
 
 	private static enum AfterNewParsingTarget
