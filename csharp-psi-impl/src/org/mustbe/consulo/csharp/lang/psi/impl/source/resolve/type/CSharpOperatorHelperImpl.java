@@ -19,13 +19,17 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightGenericConstraintBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightGenericParameterBuilder;
@@ -40,6 +44,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
@@ -58,6 +63,39 @@ public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 			"/stub/LongStubs.cs",
 			"/stub/FloatStubs.cs",
 	};
+
+	private Map<IElementType, String> myOperatorNames = new HashMap<IElementType, String>()
+	{
+		{
+			put(CSharpTokens.LT, "<");
+			put(CSharpTokens.LTEQ, ">");
+			put(CSharpTokens.GT, ">");
+			put(CSharpTokens.GTEQ, ">");
+			put(CSharpTokens.MUL, "*");
+			put(CSharpTokens.MULEQ, "*");
+			put(CSharpTokens.DIV, "/");
+			put(CSharpTokens.DIVEQ, "/");
+			put(CSharpTokens.PLUS, "+");
+			put(CSharpTokens.PLUSEQ, "+");
+			put(CSharpTokens.PLUSPLUS, "++");
+			put(CSharpTokens.MINUS, "-");
+			put(CSharpTokens.MINUSEQ, "-");
+			put(CSharpTokens.MINUSMINUS, "--");
+			put(CSharpTokens.LTLT, "-<<");
+			put(CSharpTokens.LTLTEQ, "<<");
+			put(CSharpTokens.GTGT, ">>");
+			put(CSharpTokens.GTGTEQ, ">>");
+			put(CSharpTokens.EXCL, "!");
+			put(CSharpTokens.AND, "&");
+			put(CSharpTokens.ANDEQ, "&");
+			put(CSharpTokens.OR, "|");
+			put(CSharpTokens.OREQ, "|");
+			put(CSharpTokens.XOR, "^");
+			put(CSharpTokens.XOREQ, "^");
+			put(CSharpTokens.TILDE, "~");
+		}
+	};
+
 	private final Project myProject;
 
 	public CSharpOperatorHelperImpl(Project project)
@@ -159,6 +197,13 @@ public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 			}
 		}
 		return list;
+	}
+
+	@Nullable
+	@Override
+	public String getOperatorName(@NotNull IElementType elementType)
+	{
+		return myOperatorNames.get(elementType);
 	}
 
 	private static boolean isTextEqual(PsiElement element, String text)

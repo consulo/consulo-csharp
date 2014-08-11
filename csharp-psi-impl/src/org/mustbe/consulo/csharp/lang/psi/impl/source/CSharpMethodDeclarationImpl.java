@@ -75,15 +75,7 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 	{
 		if(isOperator())
 		{
-			IElementType operatorElementType = getOperatorElementType();
-			if(operatorElementType == CSharpTokens.LTLT)
-			{
-				return "<<";
-			}
-			else if(operatorElementType == CSharpTokens.GTGT)
-			{
-				return ">>";
-			}
+			return CSharpOperatorHelper.getInstance(getProject()).getOperatorName(getOperatorElementType());
 		}
 		return super.getName();
 	}

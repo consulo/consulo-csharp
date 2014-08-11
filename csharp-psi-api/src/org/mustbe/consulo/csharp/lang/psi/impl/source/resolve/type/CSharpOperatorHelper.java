@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.consulo.lombok.annotations.ProjectService;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import com.intellij.psi.PsiElement;
@@ -58,4 +59,7 @@ public abstract class CSharpOperatorHelper
 
 		return elementType;
 	}
+
+	@Nullable
+	public abstract String getOperatorName(@NotNull IElementType elementType);
 }

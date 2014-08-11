@@ -36,6 +36,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithW
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorHelper;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorHelperImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetEventDeclaration;
@@ -47,6 +48,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Couple;
+import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
@@ -55,6 +57,8 @@ import com.intellij.psi.ResolveState;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.SmartList;
+import com.intellij.util.containers.ContainerUtil;
 import lombok.val;
 
 /**
@@ -131,7 +135,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@Override
 	public PsiElement resolve()
 	{
-		Object o = resolve0();
+		Object o = resolve0(null);
 		if(o instanceof PsiElement)
 		{
 			return (PsiElement) o;
@@ -139,7 +143,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		return null;
 	}
 
-	private Object resolve0()
+	private Object resolve0(@Nullable Ref<PsiElement> last)
 	{
 		PsiElement parent = getParent();
 		if(parent instanceof CSharpBinaryExpressionImpl ||
@@ -147,7 +151,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 				parent instanceof CSharpPrefixExpressionImpl ||
 				parent instanceof CSharpPostfixExpressionImpl)
 		{
-			DotNetTypeRef returnTypeInStubs = findReturnTypeInStubs();
+			DotNetTypeRef returnTypeInStubs = findReturnTypeInStubs(last);
 			if(returnTypeInStubs != null)
 			{
 				return returnTypeInStubs;
@@ -193,7 +197,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@NotNull
 	public DotNetTypeRef resolveToTypeRef()
 	{
-		Object o = resolve0();
+		Object o = resolve0(null);
 		if(o instanceof DotNetTypeRef)
 		{
 			return (DotNetTypeRef) o;
@@ -215,7 +219,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		return CSharpOperatorHelper.mergeTwiceOperatorIfNeed(getFirstOperator());
 	}
 
-	private DotNetTypeRef findReturnTypeInStubs()
+	private DotNetTypeRef findReturnTypeInStubs(@Nullable Ref<PsiElement> last)
 	{
 		IElementType elementType = getOperatorElementType();
 		if(elementType == CSharpTokenSets.OROR || elementType == CSharpTokens.ANDAND)
@@ -237,16 +241,22 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 				continue;
 			}
 
-			if(MethodAcceptorImpl.calcAcceptableWeight(this, this, (CSharpMethodDeclaration) dotNetNamedElement) == WeightProcessor.MAX_WEIGHT)
+			int genericParametersCount = ((CSharpMethodDeclaration) dotNetNamedElement).getGenericParametersCount();
+			if(genericParametersCount > 0)
 			{
-				int genericParametersCount = ((CSharpMethodDeclaration) dotNetNamedElement).getGenericParametersCount();
-				DotNetTypeRef returnTypeRef = ((CSharpMethodDeclaration) dotNetNamedElement).getReturnTypeRef();
-				if(genericParametersCount > 0)
-				{
-					val extractorFromCall = MethodAcceptorImpl.createExtractorFromCall(this, (DotNetGenericParameterListOwner) dotNetNamedElement);
-					return GenericUnwrapTool.exchangeTypeRefs(returnTypeRef, extractorFromCall, this);
-				}
-				return returnTypeRef;
+				val extractorFromCall = MethodAcceptorImpl.createExtractorFromCall(this, (DotNetGenericParameterListOwner) dotNetNamedElement);
+				dotNetNamedElement = GenericUnwrapTool.extract(dotNetNamedElement, extractorFromCall);
+			}
+
+			int i = MethodAcceptorImpl.calcAcceptableWeight(this, this, (CSharpMethodDeclaration) dotNetNamedElement);
+			if(i == WeightProcessor.MAX_WEIGHT)
+			{
+				return ((CSharpMethodDeclaration) dotNetNamedElement).getReturnTypeRef();
+			}
+
+			if(i > 0 && last != null)
+			{
+				last.setIfNull(dotNetNamedElement);
 			}
 		}
 		return null;
@@ -280,16 +290,9 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@Override
 	public String getCanonicalText()
 	{
-		IElementType operatorElementType = getOperatorElementType();
-		if(operatorElementType == CSharpTokens.LTLT)
-		{
-			return "<<";
-		}
-		else if(operatorElementType == CSharpTokens.LTLT)
-		{
-			return ">>";
-		}
-		return getFirstOperator().getText();
+		String operatorName = CSharpOperatorHelperImpl.getInstance(getProject()).getOperatorName(getOperatorElementType());
+		assert operatorName != null : getOperatorElementType();
+		return operatorName;
 	}
 
 	@Override
@@ -320,7 +323,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@Override
 	public boolean isSoft()
 	{
-		return resolve0() instanceof DotNetTypeRef;
+		return resolve0(null) instanceof DotNetTypeRef;
 	}
 
 	@NotNull
@@ -378,7 +381,28 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
-		return new ResolveResult[0];
+		Ref<PsiElement> psiElementRef = new Ref<PsiElement>();
+		Object o = resolve0(psiElementRef);
+
+		List<ResolveResult> elements = new SmartList<ResolveResult>();
+		if(o instanceof PsiElement)
+		{
+			elements.add(new ResolveResultWithWeight((PsiElement) o, WeightProcessor.MAX_WEIGHT));
+		}
+		else if(o != null)
+		{
+			elements.add(new ResolveResultWithWeight(this, WeightProcessor.MAX_WEIGHT));
+		}
+
+		if(!incompleteCode)
+		{
+			PsiElement psiElement = psiElementRef.get();
+			if(psiElement != null)
+			{
+				elements.add(new ResolveResultWithWeight(psiElement, 1));
+			}
+		}
+		return ContainerUtil.toArray(elements, ResolveResult.EMPTY_ARRAY);
 	}
 
 	@NotNull

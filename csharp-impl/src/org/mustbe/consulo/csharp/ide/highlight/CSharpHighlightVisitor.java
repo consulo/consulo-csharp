@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.ide.highlight;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -23,10 +24,10 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.ConvertToNormalCallFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.*;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayAccessExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpGenericParameterImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
@@ -48,6 +49,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.daemon.impl.HighlightVisitor;
@@ -60,9 +62,14 @@ import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.PsiPolyVariantReference;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.ReferenceRange;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.ui.ColorUtil;
+import com.intellij.ui.JBColor;
 import com.intellij.xml.util.XmlStringUtil;
 
 /**
@@ -82,6 +89,13 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 			this.description = description;
 			this.tooltip = tooltip;
 			this.range = range;
+		}
+
+		@Nullable
+		public HighlightInfo create()
+		{
+			return HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR).description(description).escapedToolTip
+					(tooltip).range(range).create();
 		}
 	}
 
@@ -241,19 +255,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	@Override
 	public void visitOperatorReference(CSharpOperatorReferenceImpl referenceExpression)
 	{
-		super.visitOperatorReference(referenceExpression);
-
-		PsiElement resolve = referenceExpression.resolve();
-
-		if(resolve == null && !referenceExpression.isSoft())
-		{
-			PsiElement element = referenceExpression.getElement();
-
-			HighlightInfo info = HighlightInfo.newHighlightInfo(HighlightInfoType.WRONG_REF).descriptionAndTooltip("Operator is not resolved").range
-					(element).create();
-
-			myHighlightInfoHolder.add(info);
-		}
+		highlightCall(referenceExpression, referenceExpression);
 	}
 
 	@Override
@@ -286,7 +288,21 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 			return;
 		}
 
-		ResolveResult[] resolveResults = expression.multiResolve(false);
+		highlightCall(expression, referenceElement);
+	}
+
+	private void highlightCall(@NotNull PsiElement callElement, @NotNull PsiElement referenceElement)
+	{
+		ResolveResult[] resolveResults = ResolveResult.EMPTY_ARRAY;
+
+		if(callElement instanceof PsiPolyVariantReference)
+		{
+			resolveResults = ((PsiPolyVariantReference) callElement).multiResolve(false);
+		}
+		else if(callElement instanceof CSharpOperatorReferenceImpl)
+		{
+			resolveResults = ((CSharpOperatorReferenceImpl) callElement).multiResolve(false);
+		}
 
 		ResolveResult goodResult = resolveResults.length > 0 && ((ResolveResultWithWeight) resolveResults[0]).isGoodResult() ? resolveResults[0] :
 				null;
@@ -294,7 +310,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 		if(goodResult != null)
 		{
 			PsiElement element = goodResult.getElement();
-			HighlightInfo highlightInfo = highlightNamed(element, referenceElement, expression);
+			HighlightInfo highlightInfo = highlightNamed(element, referenceElement, callElement);
 
 			if(highlightInfo != null && CSharpMethodImplUtil.isExtensionWrapper(element))
 			{
@@ -310,31 +326,45 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 
 				myHighlightInfoHolder.add(info);
 
-				UnresolvedReferenceQuickFixProvider.registerReferenceFixes(expression, new QuickFixActionRegistrarImpl(info));
+				if(callElement instanceof PsiReference)
+				{
+					UnresolvedReferenceQuickFixProvider.registerReferenceFixes((PsiReference) callElement, new QuickFixActionRegistrarImpl(info));
+				}
 			}
 			else
 			{
-				ResolveError forError = createResolveError(expression, resolveResults[0].getElement());
+				ResolveError forError = createResolveError(callElement, resolveResults[0].getElement());
 				if(forError == null)
 				{
 					return;
 				}
 
-				HighlightInfo info = HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR).description(forError.description).escapedToolTip
-						(forError.tooltip).range(forError.range).create();
-
-				myHighlightInfoHolder.add(info);
+				myHighlightInfoHolder.add(forError.create());
 			}
 		}
 	}
 
-	private static ResolveError createResolveError(PsiElement element, PsiElement resolveElement)
+	private static ResolveError createResolveError(@NotNull PsiElement element, @NotNull PsiElement resolveElement)
 	{
 		CSharpCallArgumentListOwner callOwner = findCallOwner(element);
 		if(callOwner != null)
 		{
 			StringBuilder builder = new StringBuilder();
-			builder.append("<b>Expected:</b> (");
+			builder.append("<b>");
+			// sometimes name can be null
+			if(element instanceof CSharpOperatorReferenceImpl)
+			{
+				String canonicalText = ((CSharpOperatorReferenceImpl) element).getCanonicalText();
+				builder.append(XmlStringUtil.escapeString(canonicalText));
+			}
+			else
+			{
+				String name = ((PsiNamedElement) resolveElement).getName();
+				builder.append(name);
+			}
+			builder.append("&#x9;(");
+
+			List<DotNetTypeRef> typeRefs = new ArrayList<DotNetTypeRef>();
 			if(resolveElement instanceof DotNetVariable)
 			{
 				DotNetTypeRef typeRef = ((DotNetVariable) resolveElement).toTypeRef(false);
@@ -349,7 +379,9 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 					{
 						builder.append(", ");
 					}
-					appendType(builder, parameterTypes[i]);
+					DotNetTypeRef parameterType = parameterTypes[i];
+					typeRefs.add(parameterType);
+					appendType(builder, parameterType);
 				}
 			}
 			else if(resolveElement instanceof DotNetLikeMethodDeclaration)
@@ -362,11 +394,14 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 					{
 						builder.append(", ");
 					}
-					appendType(builder, MethodAcceptorImpl.calcParameterTypeRef(element, parameters[i], e));
+					DotNetTypeRef typeRef = MethodAcceptorImpl.calcParameterTypeRef(element, parameters[i], e);
+					typeRefs.add(typeRef);
+					appendType(builder, typeRef);
 				}
 			}
-			builder.append(")<br>");
-			builder.append("<b>Found:</b> (");
+			builder.append(")</b> cannot be applied<br>");
+
+			builder.append("to&#x9;<b>(");
 			DotNetExpression[] parameterExpressions = callOwner.getParameterExpressions();
 			for(int i = 0; i < parameterExpressions.length; i++)
 			{
@@ -374,9 +409,23 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 				{
 					builder.append(", ");
 				}
-				appendType(builder, parameterExpressions[i].toTypeRef(false));
+
+				DotNetTypeRef requiredType = ArrayUtil2.safeGet(typeRefs, i);
+				DotNetTypeRef foundType = parameterExpressions[i].toTypeRef(false);
+
+				boolean isInvalid = requiredType == null || !CSharpTypeUtil.isInheritable(requiredType, foundType, callOwner);
+
+				if(isInvalid)
+				{
+					builder.append("<font color=\"").append(ColorUtil.toHex(JBColor.RED)).append("\">");
+				}
+				appendType(builder, foundType);
+				if(isInvalid)
+				{
+					builder.append("</font>");
+				}
 			}
-			builder.append(")");
+			builder.append(")</b>");
 
 			PsiElement parameterList = callOwner.getParameterList();
 			if(parameterList == null)
@@ -396,7 +445,11 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	private static CSharpCallArgumentListOwner findCallOwner(PsiElement element)
 	{
 		PsiElement parent = element.getParent();
-		if(parent instanceof CSharpMethodCallExpressionImpl || parent instanceof CSharpConstructorSuperCallImpl)
+		if(element instanceof CSharpOperatorReferenceImpl)
+		{
+			return (CSharpCallArgumentListOwner) element;
+		}
+		else if(parent instanceof CSharpMethodCallExpressionImpl || parent instanceof CSharpConstructorSuperCallImpl)
 		{
 			return (CSharpCallArgumentListOwner) parent;
 		}
