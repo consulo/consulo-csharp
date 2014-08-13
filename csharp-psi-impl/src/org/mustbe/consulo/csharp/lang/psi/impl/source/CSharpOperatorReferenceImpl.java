@@ -146,12 +146,9 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	private Object resolve0(@Nullable Ref<PsiElement> last)
 	{
 		PsiElement parent = getParent();
-		if(parent instanceof CSharpBinaryExpressionImpl ||
-				parent instanceof CSharpAssignmentExpressionImpl ||
-				parent instanceof CSharpPrefixExpressionImpl ||
-				parent instanceof CSharpPostfixExpressionImpl)
+		if(parent instanceof CSharpExpressionWithOperatorImpl)
 		{
-			DotNetTypeRef returnTypeInStubs = findReturnTypeInStubs(last);
+			Object returnTypeInStubs = findInStubs(last);
 			if(returnTypeInStubs != null)
 			{
 				return returnTypeInStubs;
@@ -219,7 +216,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		return CSharpOperatorHelper.mergeTwiceOperatorIfNeed(getFirstOperator());
 	}
 
-	private DotNetTypeRef findReturnTypeInStubs(@Nullable Ref<PsiElement> last)
+	private Object findInStubs(@Nullable Ref<PsiElement> last)
 	{
 		IElementType elementType = getOperatorElementType();
 		if(elementType == CSharpTokenSets.OROR || elementType == CSharpTokens.ANDAND)
@@ -251,7 +248,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			int i = MethodAcceptorImpl.calcAcceptableWeight(this, this, (CSharpMethodDeclaration) dotNetNamedElement);
 			if(i == WeightProcessor.MAX_WEIGHT)
 			{
-				return ((CSharpMethodDeclaration) dotNetNamedElement).getReturnTypeRef();
+				return dotNetNamedElement;
 			}
 
 			if(i > 0 && last != null)
@@ -410,38 +407,9 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	public DotNetExpression[] getParameterExpressions()
 	{
 		PsiElement parent = getParent();
-		if(parent instanceof CSharpBinaryExpressionImpl)
+		if(parent instanceof CSharpExpressionWithOperatorImpl)
 		{
-			DotNetExpression leftExpression = ((CSharpBinaryExpressionImpl) parent).getLeftExpression();
-			DotNetExpression rightExpression = ((CSharpBinaryExpressionImpl) parent).getRightExpression();
-			if(rightExpression == null)
-			{
-				return new DotNetExpression[]{leftExpression};
-			}
-			return new DotNetExpression[]{
-					leftExpression,
-					rightExpression
-			};
-		}
-		else if(parent instanceof CSharpPrefixExpressionImpl)
-		{
-			DotNetExpression expression = ((CSharpPrefixExpressionImpl) parent).getExpression();
-			if(expression != null)
-			{
-				return new DotNetExpression[]{expression};
-			}
-		}
-		else if(parent instanceof CSharpPostfixExpressionImpl)
-		{
-			DotNetExpression expression = ((CSharpPostfixExpressionImpl) parent).getExpression();
-			if(expression != null)
-			{
-				return new DotNetExpression[]{expression};
-			}
-		}
-		else if(parent instanceof CSharpAssignmentExpressionImpl)
-		{
-			return ((CSharpAssignmentExpressionImpl) parent).getExpressions();
+			return ((CSharpExpressionWithOperatorImpl) parent).getParameterExpressions();
 		}
 		return DotNetExpression.EMPTY_ARRAY;
 	}

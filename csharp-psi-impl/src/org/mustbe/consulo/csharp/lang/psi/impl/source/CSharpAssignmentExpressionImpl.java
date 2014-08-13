@@ -27,7 +27,7 @@ import com.intellij.lang.ASTNode;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpAssignmentExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public class CSharpAssignmentExpressionImpl extends CSharpExpressionWithOperatorImpl implements DotNetExpression
 {
 	public CSharpAssignmentExpressionImpl(@NotNull ASTNode node)
 	{
@@ -38,12 +38,6 @@ public class CSharpAssignmentExpressionImpl extends CSharpElementImpl implements
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
 		visitor.visitAssignmentExpression(this);
-	}
-
-	@NotNull
-	public CSharpOperatorReferenceImpl getOperatorElement()
-	{
-		return findNotNullChildByClass(CSharpOperatorReferenceImpl.class);
 	}
 
 	@NotNull

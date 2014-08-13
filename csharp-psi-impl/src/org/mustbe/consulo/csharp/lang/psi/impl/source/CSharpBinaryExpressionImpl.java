@@ -18,10 +18,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpBinaryExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 
@@ -29,7 +28,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 29.12.13.
  */
-public class CSharpBinaryExpressionImpl extends CSharpElementImpl implements CSharpBinaryExpression
+public class CSharpBinaryExpressionImpl extends CSharpExpressionWithOperatorImpl implements DotNetExpression, CSharpCallArgumentListOwner
 {
 	public CSharpBinaryExpressionImpl(@NotNull ASTNode node)
 	{
@@ -48,12 +47,6 @@ public class CSharpBinaryExpressionImpl extends CSharpElementImpl implements CSh
 		return findChildByClass(DotNetExpression.class);
 	}
 
-	@NotNull
-	public CSharpOperatorReferenceImpl getOperatorElement()
-	{
-		return findNotNullChildByClass(CSharpOperatorReferenceImpl.class);
-	}
-
 	@Nullable
 	public DotNetExpression getRightExpression()
 	{
@@ -68,14 +61,5 @@ public class CSharpBinaryExpressionImpl extends CSharpElementImpl implements CSh
 			nextSibling = nextSibling.getNextSibling();
 		}
 		return null;
-	}
-
-	@NotNull
-	@Override
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
-	{
-		CSharpOperatorReferenceImpl operatorElement = getOperatorElement();
-
-		return operatorElement.resolveToTypeRef();
 	}
 }

@@ -20,14 +20,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 
 /**
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpPostfixExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public class CSharpPostfixExpressionImpl extends CSharpExpressionWithOperatorImpl implements DotNetExpression
 {
 	public CSharpPostfixExpressionImpl(@NotNull ASTNode node)
 	{
@@ -40,24 +39,9 @@ public class CSharpPostfixExpressionImpl extends CSharpElementImpl implements Do
 		visitor.visitPostfixExpression(this);
 	}
 
-	@NotNull
-	public CSharpOperatorReferenceImpl getOperatorElement()
-	{
-		return findNotNullChildByClass(CSharpOperatorReferenceImpl.class);
-	}
-
 	@Nullable
 	public DotNetExpression getExpression()
 	{
 		return findChildByClass(DotNetExpression.class);
-	}
-
-	@NotNull
-	@Override
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
-	{
-		CSharpOperatorReferenceImpl operatorElement = getOperatorElement();
-
-		return operatorElement.resolveToTypeRef();
 	}
 }
