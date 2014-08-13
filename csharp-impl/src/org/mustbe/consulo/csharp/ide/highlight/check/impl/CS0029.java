@@ -56,8 +56,8 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		}
 
 		if(resolve.getFirst() == DotNetTypeRef.AUTO_TYPE ||
-				resolve.getFirst() == DotNetTypeRef.ERROR_TYPE ||
-				resolve.getSecond() == DotNetTypeRef.ERROR_TYPE)
+				CSharpTypeUtil.haveErrorType(resolve.getFirst()) ||
+				CSharpTypeUtil.haveErrorType(resolve.getSecond()))
 		{
 			return null;
 		}

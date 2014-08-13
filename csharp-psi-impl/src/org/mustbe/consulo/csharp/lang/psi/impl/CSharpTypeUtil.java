@@ -21,8 +21,10 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTy
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
+import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithInnerTypeRef;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayUtil;
 
@@ -140,6 +142,31 @@ public class CSharpTypeUtil
 		if(topElement instanceof DotNetTypeDeclaration && targetElement instanceof DotNetTypeDeclaration)
 		{
 			return ((DotNetTypeDeclaration) targetElement).isInheritor((DotNetTypeDeclaration) topElement, true);
+		}
+
+		return false;
+	}
+
+	public static boolean haveErrorType(DotNetTypeRef typeRef)
+	{
+		if(typeRef == DotNetTypeRef.ERROR_TYPE)
+		{
+			return true;
+		}
+
+		if(typeRef instanceof DotNetTypeRefWithInnerTypeRef)
+		{
+			if(typeRef instanceof DotNetGenericWrapperTypeRef)
+			{
+				for(DotNetTypeRef dotNetTypeRef : ((DotNetGenericWrapperTypeRef) typeRef).getArgumentTypeRefs())
+				{
+					if(haveErrorType(dotNetTypeRef))
+					{
+						return true;
+					}
+				}
+			}
+			return haveErrorType(((DotNetTypeRefWithInnerTypeRef) typeRef).getInnerTypeRef());
 		}
 
 		return false;
