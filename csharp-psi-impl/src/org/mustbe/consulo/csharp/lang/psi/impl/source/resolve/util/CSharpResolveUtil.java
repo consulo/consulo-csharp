@@ -348,7 +348,7 @@ public class CSharpResolveUtil
 				continue;
 			}
 
-			DotNetNamedElement extracted = GenericUnwrapTool.extract(namedElement, genericExtractor);
+			DotNetNamedElement extracted = GenericUnwrapTool.extract(namedElement, genericExtractor, false);
 
 			if(!processor.execute(extracted, state))
 			{

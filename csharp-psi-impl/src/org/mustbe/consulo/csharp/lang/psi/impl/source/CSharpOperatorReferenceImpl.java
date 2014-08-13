@@ -242,7 +242,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			if(genericParametersCount > 0)
 			{
 				val extractorFromCall = MethodAcceptorImpl.createExtractorFromCall(this, (DotNetGenericParameterListOwner) dotNetNamedElement);
-				dotNetNamedElement = GenericUnwrapTool.extract(dotNetNamedElement, extractorFromCall);
+				dotNetNamedElement = GenericUnwrapTool.extract(dotNetNamedElement, extractorFromCall, true);
 			}
 
 			int i = MethodAcceptorImpl.calcAcceptableWeight(this, this, (CSharpMethodDeclaration) dotNetNamedElement);

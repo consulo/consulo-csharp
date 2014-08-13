@@ -141,6 +141,11 @@ public class CSharpHighlightUtil
 		}
 		else if(element instanceof DotNetMethodDeclaration)
 		{
+			if(element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isOperator())
+			{
+				return null;
+			}
+
 			if(CSharpMethodImplUtil.isExtensionWrapper(element))
 			{
 				key = CSharpHighlightKey.EXTENSION_METHOD;

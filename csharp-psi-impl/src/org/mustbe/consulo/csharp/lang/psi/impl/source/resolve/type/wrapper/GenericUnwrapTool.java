@@ -51,10 +51,10 @@ import com.intellij.psi.PsiElement;
 public class GenericUnwrapTool
 {
 	@SuppressWarnings("unchecked")
-	public static <T extends DotNetNamedElement> T extract(T namedElement, DotNetGenericExtractor extractor)
+	public static <T extends DotNetNamedElement> T extract(T namedElement, DotNetGenericExtractor extractor, boolean allowStatic)
 	{
 		if(extractor == DotNetGenericExtractor.EMPTY || namedElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) namedElement)
-				.hasModifier(CSharpModifier.STATIC))
+				.hasModifier(CSharpModifier.STATIC) && !allowStatic)
 		{
 			return namedElement;
 		}

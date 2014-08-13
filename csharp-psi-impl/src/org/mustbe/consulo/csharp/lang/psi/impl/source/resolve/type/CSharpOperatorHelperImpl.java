@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameter;
@@ -157,6 +158,8 @@ public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 
 						builder.addGenericParameter(genericParameterBuilder);
 						builder.addGenericConstraint(constraintBuilder);
+
+						builder.addModifier(CSharpModifier.PUBLIC).addModifier(CSharpModifier.STATIC);
 
 						if(isTextEqual(methodDeclaration.getReturnType(), "T"))
 						{
