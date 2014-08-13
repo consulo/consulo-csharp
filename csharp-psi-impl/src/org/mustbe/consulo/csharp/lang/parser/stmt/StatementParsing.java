@@ -233,8 +233,8 @@ public class StatementParsing extends SharingParsingHelpers
 				PsiBuilder.Marker expressionMarker = ExpressionParsing.parse(wrapper);
 				if(expressionMarker == null)
 				{
-					wrapper.error("Expression expected");
-					wrapper.advanceLexer();
+					marker.drop();
+					return null;
 				}
 				else
 				{
