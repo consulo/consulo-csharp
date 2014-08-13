@@ -24,6 +24,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefType
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.ArrayUtil;
 
 /**
  * @author VISTALL
@@ -31,6 +32,19 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpTypeUtil
 {
+	private static final DotNetTypeRef[] ourNumberRanks = new DotNetTypeRef[]{
+			CSharpNativeTypeRef.BYTE,
+			CSharpNativeTypeRef.SBYTE,
+			CSharpNativeTypeRef.SHORT,
+			CSharpNativeTypeRef.USHORT,
+			CSharpNativeTypeRef.INT,
+			CSharpNativeTypeRef.UINT,
+			CSharpNativeTypeRef.LONG,
+			CSharpNativeTypeRef.ULONG,
+			CSharpNativeTypeRef.FLOAT,
+			CSharpNativeTypeRef.DOUBLE,
+	};
+
 	/**
 	 * We have expression
 	 * int a = "test";
@@ -56,22 +70,12 @@ public class CSharpTypeUtil
 			return true;
 		}
 
-		if(top == CSharpNativeTypeRef.FLOAT || top == CSharpNativeTypeRef.DOUBLE)
-		{
-			if(target == CSharpNativeTypeRef.BYTE ||
-					target == CSharpNativeTypeRef.SBYTE ||
-					target == CSharpNativeTypeRef.SHORT ||
-					target == CSharpNativeTypeRef.USHORT ||
-					target == CSharpNativeTypeRef.INT ||
-					target == CSharpNativeTypeRef.UINT ||
-					target == CSharpNativeTypeRef.ULONG ||
-					target == CSharpNativeTypeRef.FLOAT
-					)
-			{
-				return true;
-			}
+		int topRank = ArrayUtil.find(ourNumberRanks, top);
+		int targetRank = ArrayUtil.find(ourNumberRanks, target);
 
-			if(top == CSharpNativeTypeRef.DOUBLE && target == CSharpNativeTypeRef.FLOAT)
+		if(topRank != -1 && targetRank != 1)
+		{
+			if(targetRank <= topRank)
 			{
 				return true;
 			}
