@@ -45,6 +45,11 @@ public class CSharpTypeUtil
 			CSharpNativeTypeRef.DOUBLE,
 	};
 
+	public static int getNumberRank(DotNetTypeRef typeRef)
+	{
+		return ArrayUtil.find(ourNumberRanks, typeRef);
+	}
+
 	/**
 	 * We have expression
 	 * int a = "test";

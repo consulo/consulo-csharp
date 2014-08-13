@@ -22,8 +22,11 @@ import org.joou.Unsigned;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetConstantExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
@@ -72,7 +75,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 		}
 		else if(elementType == CSharpTokens.INTEGER_LITERAL)
 		{
-			return CSharpNativeTypeRef.INT;
+			return findFromParent(resolveFromParent, CSharpNativeTypeRef.INT);
 		}
 		else if(elementType == CSharpTokens.LONG_LITERAL)
 		{
@@ -95,6 +98,28 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 			return CSharpNativeTypeRef.BOOL;
 		}
 		return DotNetTypeRef.ERROR_TYPE;
+	}
+
+	@NotNull
+	private DotNetTypeRef findFromParent(boolean resolveFromParent, @NotNull DotNetTypeRef defaultTypeRef)
+	{
+		PsiElement parent = getParent();
+		if(parent instanceof DotNetVariable)
+		{
+			DotNetExpression initializer = ((DotNetVariable) parent).getInitializer();
+			if(initializer == this)
+			{
+				DotNetTypeRef typeRef = ((DotNetVariable) parent).toTypeRef(false);
+
+				int topRank = CSharpTypeUtil.getNumberRank(defaultTypeRef);
+				int targetRank = CSharpTypeUtil.getNumberRank(typeRef);
+				if(targetRank != -1 && targetRank < topRank)
+				{
+					return typeRef;
+				}
+			}
+		}
+		return defaultTypeRef;
 	}
 
 	@Nullable
