@@ -22,12 +22,14 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.*;
 import com.intellij.ide.IconDescriptorUpdaters;
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.util.Iconable;
+import com.intellij.psi.PsiNamedElement;
 
 /**
  * @author VISTALL
@@ -120,6 +122,31 @@ public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetN
 
 		presentationData.setIcon(IconDescriptorUpdaters.getIcon(value, Iconable.ICON_FLAG_VISIBILITY));
 
-		presentationData.setPresentableText(CSharpQElementTreeNode.getPresentableText(value));
+		presentationData.setPresentableText(getPresentableText(value));
+	}
+
+	public static String getPresentableText(PsiNamedElement value)
+	{
+		if(value instanceof DotNetLikeMethodDeclaration)
+		{
+			return DotNetElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) value, DotNetElementPresentationUtil
+					.METHOD_SCALA_LIKE_FULL);
+		}
+		else if(value instanceof DotNetFieldDeclaration)
+		{
+			return DotNetElementPresentationUtil.formatField((DotNetFieldDeclaration) value);
+		}
+		else if(value instanceof DotNetNamespaceDeclaration)
+		{
+			return ((DotNetNamespaceDeclaration) value).getPresentableQName();
+		}
+		else if(value instanceof DotNetTypeDeclaration)
+		{
+			return DotNetElementPresentationUtil.formatTypeWithGenericParameters((DotNetTypeDeclaration) value);
+		}
+		else
+		{
+			return value.getName();
+		}
 	}
 }
