@@ -22,7 +22,9 @@
 	<depends>org.mustbe.consulo.dotnet.core</depends>
 	<depends optional="true" config-file="CSharpSpellchecker.xml">com.intellij.spellchecker</depends>
 
-	<xi:include href="/META-INF/CSharpInspections.xml" xpointer="xpointer(/idea-plugin/*)"/>
+	<xi:include href="/META-INF/CSharpInspections.xml" xpointer="xpointer(/idea-plugin/*)">
+		<xi:fallback />
+	</xi:include>
 
 	<actions>
 		<action id="CSharp.Class" class="org.mustbe.consulo.csharp.ide.actions.NewCSharpClassAction">
@@ -83,7 +85,10 @@
 		<externalAnnotator language="C#Macro" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpNonActiveAnnotator"/>
 		<iconDescriptorUpdater implementation="org.mustbe.consulo.csharp.lang.CSharpIconDescriptorUpdater"/>
 		<treeStructureProvider implementation="org.mustbe.consulo.csharp.ide.projectView.CSharpProjectViewProvider"/>
-		<autoImportOptionsProvider instance="org.mustbe.consulo.csharp.ide.codeInsight.CSharpAutoImportOptions"/>
+		<applicationConfigurable id="editor.preferences.import.csharp"
+								 parentId="editor.preferences.import"
+								 displayName="C#"
+								 instance="org.mustbe.consulo.csharp.ide.codeInsight.CSharpAutoImportConfigurable"/>
 		<stubElementTypeHolder class="org.mustbe.consulo.csharp.lang.psi.CSharpStubElements"/>
 		<codeInsight.lineMarkerProvider language="C#" implementationClass="org.mustbe.consulo.csharp.ide.CSharpLineMarkerProvider"/>
 
