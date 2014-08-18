@@ -30,7 +30,7 @@ import org.mustbe.consulo.dotnet.DotNetTarget;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerMessage;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerUtil;
-import org.mustbe.consulo.dotnet.compiler.DotNetMacros;
+import org.mustbe.consulo.dotnet.compiler.DotNetMacroUtil;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleLangExtension;
 import com.intellij.execution.configurations.GeneralCommandLine;
@@ -158,7 +158,7 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 		commandLine.setWorkDirectory(module.getModuleDirPath());
 
 		addArgument("/target:" + target);
-		String outputFile = DotNetMacros.extract(module, extension);
+		String outputFile = DotNetMacroUtil.expandOutputFile(extension);
 		addArgument("/out:" + outputFile);
 
 		val libraryFiles = DotNetCompilerUtil.collectDependencies(module, DotNetTarget.LIBRARY, true);
