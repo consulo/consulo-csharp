@@ -80,7 +80,7 @@ public class CSharpTypeUtil
 		int topRank = ArrayUtil.find(ourNumberRanks, top);
 		int targetRank = ArrayUtil.find(ourNumberRanks, target);
 
-		if(topRank != -1 && targetRank != 1)
+		if(topRank != -1 && targetRank != -1)
 		{
 			if(targetRank <= topRank)
 			{
