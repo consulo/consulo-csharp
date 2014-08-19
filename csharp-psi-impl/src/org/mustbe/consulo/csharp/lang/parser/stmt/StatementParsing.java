@@ -429,24 +429,16 @@ public class StatementParsing extends SharingParsingHelpers
 			{
 				ParseVariableOrExpressionResult parseVariableOrExpressionResult = parseVariableOrExpression(builder, null);
 
-				if(parseVariableOrExpressionResult != null)
+				if(parseVariableOrExpressionResult == ParseVariableOrExpressionResult.EXPRESSION)
 				{
 					while(builder.getTokenType() == COMMA)
 					{
 						builder.advanceLexer();
 
-						ParseVariableOrExpressionResult nextResult = parseVariableOrExpression(builder, null);
-						if(nextResult == null)
+						PsiBuilder.Marker nextMarker = ExpressionParsing.parse(builder);
+						if(nextMarker == null)
 						{
-							switch(parseVariableOrExpressionResult)
-							{
-								case VARIABLE:
-									builder.error("Variable expected");
-									break;
-								case EXPRESSION:
-									builder.error("Expression expected");
-									break;
-							}
+							builder.error("Expression expected");
 						}
 					}
 				}
