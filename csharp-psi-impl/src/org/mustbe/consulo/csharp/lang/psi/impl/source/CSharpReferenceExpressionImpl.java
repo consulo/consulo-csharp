@@ -751,7 +751,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				assert targetToWalkChildren != null;
 				last = targetToWalkChildren.getParent();
 			}
-			else if(temp instanceof CSharpAttributeImpl)
+			else if(temp instanceof CSharpAttribute)
 			{
 				last = temp;
 				targetToWalkChildren = PsiTreeUtil.getParentOfType(temp, DotNetModifierListOwner.class);
@@ -880,7 +880,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		{
 			return ResolveToKind.CONSTRUCTOR;
 		}
-		else if(tempElement instanceof CSharpAttributeImpl)
+		else if(tempElement instanceof CSharpAttribute)
 		{
 			return ResolveToKind.CONSTRUCTOR;
 		}

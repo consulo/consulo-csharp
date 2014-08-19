@@ -213,7 +213,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(list);
 	}
 
-	public void visitAttribute(CSharpAttributeImpl attribute)
+	public void visitAttribute(CSharpAttribute attribute)
 	{
 		visitElement(attribute);
 	}

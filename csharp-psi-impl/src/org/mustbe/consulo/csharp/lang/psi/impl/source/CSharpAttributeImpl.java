@@ -18,12 +18,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromQualifiedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
@@ -36,7 +35,7 @@ import com.intellij.psi.ResolveResult;
  * @author VISTALL
  * @since 19.12.13.
  */
-public class CSharpAttributeImpl extends CSharpElementImpl implements DotNetAttribute, CSharpCallArgumentListOwner
+public class CSharpAttributeImpl extends CSharpElementImpl implements CSharpAttribute
 {
 	public CSharpAttributeImpl(@NotNull ASTNode node)
 	{
@@ -140,6 +139,7 @@ public class CSharpAttributeImpl extends CSharpElementImpl implements DotNetAttr
 		return ref.multiResolve(incompleteCode);
 	}
 
+	@Override
 	@Nullable
 	public CSharpReferenceExpression getReferenceExpression()
 	{

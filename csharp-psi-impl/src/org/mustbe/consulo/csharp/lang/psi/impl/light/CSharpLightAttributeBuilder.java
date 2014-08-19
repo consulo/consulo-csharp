@@ -16,24 +16,36 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.light;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
-import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.impl.light.LightElement;
+import com.intellij.util.SmartList;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
  * @since 23.05.14
  */
-public class CSharpLightAttributeBuilder extends LightElement implements DotNetAttribute
+public class CSharpLightAttributeBuilder extends LightElement implements CSharpAttribute
 {
+	private final List<DotNetExpression> myParameterExpressions = new SmartList<DotNetExpression>();
 	private final PsiElement myScope;
 	private final String myQualifiedName;
 
@@ -42,6 +54,16 @@ public class CSharpLightAttributeBuilder extends LightElement implements DotNetA
 		super(PsiManager.getInstance(scope.getProject()), CSharpLanguage.INSTANCE);
 		myScope = scope;
 		myQualifiedName = qualifiedName;
+	}
+
+	public void addParameterExpression(Object o)
+	{
+		if(o instanceof String)
+		{
+			o = StringUtil.QUOTER.fun((String)o);
+		}
+
+		myParameterExpressions.add(CSharpFileFactory.createExpression(getProject(), String.valueOf(o)));
 	}
 
 	@Nullable
@@ -62,5 +84,59 @@ public class CSharpLightAttributeBuilder extends LightElement implements DotNetA
 	public String toString()
 	{
 		return "CSharpLightAttributeBuilder: " + myQualifiedName;
+	}
+
+	@Nullable
+	@Override
+	public CSharpReferenceExpression getReferenceExpression()
+	{
+		return null;
+	}
+
+	@Override
+	public boolean canResolve()
+	{
+		return true;
+	}
+
+	@Nullable
+	@Override
+	public CSharpCallArgumentList getParameterList()
+	{
+		return null;
+	}
+
+	@NotNull
+	@Override
+	public DotNetExpression[] getParameterExpressions()
+	{
+		return ContainerUtil.toArray(myParameterExpressions, DotNetExpression.ARRAY_FACTORY);
+	}
+
+	@Nullable
+	@Override
+	public DotNetTypeList getTypeArgumentList()
+	{
+		return null;
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef[] getTypeArgumentListRefs()
+	{
+		return new DotNetTypeRef[0];
+	}
+
+	@Nullable
+	@Override
+	public PsiElement resolveToCallable()
+	{
+		return null;
+	}
+
+	@Override
+	public ResolveResult[] multiResolve(boolean incompleteCode)
+	{
+		return new ResolveResult[0];
 	}
 }

@@ -26,6 +26,7 @@ import java.util.Map;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
@@ -36,7 +37,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightGenericC
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightGenericParameterBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAttributeImpl;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -131,7 +131,7 @@ public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 					DotNetAttribute[] attributes = methodDeclaration.getModifierList().getAttributes();
 					for(DotNetAttribute it : attributes)
 					{
-						CSharpAttributeImpl attribute = (CSharpAttributeImpl) it;
+						CSharpAttribute attribute = (CSharpAttribute) it;
 
 						CSharpReferenceExpression referenceExpression = attribute.getReferenceExpression();
 						if(referenceExpression == null)

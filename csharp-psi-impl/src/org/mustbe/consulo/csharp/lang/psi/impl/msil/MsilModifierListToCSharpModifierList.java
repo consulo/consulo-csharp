@@ -45,6 +45,7 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 	private final MsilModifierList myModifierList;
 
 	private final CSharpModifier[] myAdditional;
+	private List<DotNetAttribute> myAdditionalAttributes = Collections.emptyList();
 
 	public MsilModifierListToCSharpModifierList(MsilModifierList modifierList)
 	{
@@ -56,6 +57,20 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 		super(PsiManager.getInstance(modifierList.getProject()), CSharpLanguage.INSTANCE);
 		myAdditional = additional;
 		myModifierList = modifierList;
+
+		if(myModifierList.hasModifier(MsilTokens.SERIALIZABLE_KEYWORD))
+		{
+			addAdditionalAttribute(new CSharpLightAttributeBuilder(myModifierList, DotNetTypes.System_Serializable));
+		}
+	}
+
+	public void addAdditionalAttribute(@NotNull DotNetAttribute attribute)
+	{
+		if(myAdditionalAttributes.isEmpty())
+		{
+			myAdditionalAttributes = new ArrayList<DotNetAttribute>(5);
+		}
+		myAdditionalAttributes.add(attribute);
 	}
 
 	@NotNull
@@ -78,17 +93,14 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 	@Override
 	public DotNetAttribute[] getAttributes()
 	{
+		if(myAdditionalAttributes.isEmpty())
+		{
+			return myModifierList.getAttributes();
+		}
 		DotNetAttribute[] oldAttributes = myModifierList.getAttributes();
-		List<DotNetAttribute> attributes = new ArrayList<DotNetAttribute>(oldAttributes.length);
-		for(DotNetAttribute attribute : attributes)
-		{
-			attributes.add(attribute);
-		}
-
-		if(myModifierList.hasModifier(MsilTokens.SERIALIZABLE_KEYWORD))
-		{
-			attributes.add(new CSharpLightAttributeBuilder(myModifierList, DotNetTypes.System_Serializable));
-		}
+		List<DotNetAttribute> attributes = new ArrayList<DotNetAttribute>(oldAttributes.length + myAdditionalAttributes.size());
+		Collections.addAll(attributes, oldAttributes);
+		attributes.addAll(myAdditionalAttributes);
 		return attributes.toArray(new DotNetAttribute[attributes.size()]);
 	}
 

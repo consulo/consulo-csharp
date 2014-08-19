@@ -112,7 +112,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 						}
 					}
 
-					if(!pairs.isEmpty() && Comparing.equal(element.getName(), "Item"))
+					if(!pairs.isEmpty())
 					{
 						Pair<DotNetXXXAccessor, MsilMethodEntry> value = pairs.get(0);
 

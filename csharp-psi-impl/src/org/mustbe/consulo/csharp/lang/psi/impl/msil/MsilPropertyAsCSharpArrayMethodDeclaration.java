@@ -23,22 +23,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightAttributeBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.typeParsing.SomeTypeParser;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
-import org.mustbe.consulo.dotnet.psi.DotNetType;
-import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
+import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
 import org.mustbe.consulo.msil.lang.psi.MsilPropertyEntry;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProviders;
+import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -63,6 +58,16 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 		myModifierList = new MsilModifierListToCSharpModifierList(MsilPropertyAsCSharpPropertyDeclaration.getAdditionalModifiers(pairs),
 				(MsilModifierList) propertyEntry.getModifierList());
 
+		String name = getName();
+		if(!Comparing.equal(name, DotNetPropertyDeclaration.DEFAULT_INDEX_PROPERTY_NAME))
+		{
+			CSharpLightAttributeBuilder attribute = new CSharpLightAttributeBuilder(propertyEntry, DotNetTypes.System.Runtime.CompilerServices
+					.IndexerName);
+
+			attribute.addParameterExpression(name);
+
+			myModifierList.addAdditionalAttribute(attribute);
+		}
 		Pair<DotNetXXXAccessor, MsilMethodEntry> p = pairs.get(0);
 
 		DotNetParameter firstParameter = p.getSecond().getParameters()[0];
@@ -99,7 +104,7 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 	@Override
 	public String getName()
 	{
-		return "Item";
+		return myMsilElement.getName();
 	}
 
 	@Override

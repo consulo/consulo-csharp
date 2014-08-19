@@ -24,8 +24,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAttributeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
@@ -133,7 +133,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		Collection<DotNetLikeMethodDeclaration> tempMethods;
 
 		PsiElement parent = myRef.getParent();
-		if(parent instanceof CSharpAttributeImpl)
+		if(parent instanceof CSharpAttribute)
 		{
 			val cond = new Condition<DotNetTypeDeclaration>()
 			{
