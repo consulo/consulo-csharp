@@ -182,68 +182,87 @@ public class StatementParsing extends SharingParsingHelpers
 				return marker;
 			}
 
-			PsiBuilder.Marker newMarker = wrapper.mark();
-
-			int i = 0;
-			PsiBuilder.Marker[] array = new PsiBuilder.Marker[2];
-			while(!wrapper.eof())
+			if(!parseVariableOrExpression(wrapper, marker))
 			{
-				if(i == 2)
-				{
-					break;
-				}
-				val expressionMarker = ExpressionParsing.parse(wrapper);
-				if(expressionMarker == null)
-				{
-					break;
-				}
+				return null;
+			}
+		}
+		return marker;
+	}
 
-				array[i++] = expressionMarker;
+	private static boolean parseVariableOrExpression(CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker someMarker)
+	{
+		PsiBuilder.Marker newMarker = builder.mark();
+
+		int i = 0;
+		PsiBuilder.Marker[] array = new PsiBuilder.Marker[2];
+		while(!builder.eof())
+		{
+			if(i == 2)
+			{
+				break;
+			}
+			val expressionMarker = ExpressionParsing.parse(builder);
+			if(expressionMarker == null)
+			{
+				break;
 			}
 
-			newMarker.rollbackTo();
+			array[i++] = expressionMarker;
+		}
 
-			if((getElementType(array[0]) == REFERENCE_EXPRESSION || getElementType(array[0]) == ARRAY_ACCESS_EXPRESSION) && (getElementType(array[1])
-					== REFERENCE_EXPRESSION || getElementType(array[1]) == ASSIGNMENT_EXPRESSION))
+		newMarker.rollbackTo();
+
+		if((getElementType(array[0]) == REFERENCE_EXPRESSION || getElementType(array[0]) == ARRAY_ACCESS_EXPRESSION) && (getElementType(array[1])
+				== REFERENCE_EXPRESSION || getElementType(array[1]) == ASSIGNMENT_EXPRESSION))
+		{
+			PsiBuilder.Marker varMarker = parseVariableDecl(builder, false);
+			if(varMarker == null)
 			{
-				PsiBuilder.Marker varMarker = parseVariableDecl(wrapper, false);
-				if(varMarker == null)
+				PsiBuilder.Marker expressionMarker = ExpressionParsing.parse(builder);
+				if(expressionMarker == null)
 				{
-					PsiBuilder.Marker expressionMarker = ExpressionParsing.parse(wrapper);
-					if(expressionMarker == null)
-					{
-						wrapper.error("Expression expected");
-						wrapper.advanceLexer();
-					}
-					else
-					{
-						expect(wrapper, SEMICOLON, "';' expected");
-					}
-					marker.done(EXPRESSION_STATEMENT);
+					builder.error("Expression expected");
+					builder.advanceLexer();
 				}
 				else
 				{
-					//expect(wrapper, SEMICOLON, "';' expected");
-
-					marker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
+					expect(builder, SEMICOLON, "';' expected");
+				}
+				if(someMarker != null)
+				{
+					someMarker.done(EXPRESSION_STATEMENT);
 				}
 			}
 			else
 			{
-				PsiBuilder.Marker expressionMarker = ExpressionParsing.parse(wrapper);
-				if(expressionMarker == null)
+				if(someMarker != null)
 				{
-					marker.drop();
-					return null;
+					someMarker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
 				}
-				else
-				{
-					expect(wrapper, SEMICOLON, "';' expected");
-				}
-				marker.done(EXPRESSION_STATEMENT);
 			}
 		}
-		return marker;
+		else
+		{
+			PsiBuilder.Marker expressionMarker = ExpressionParsing.parse(builder);
+			if(expressionMarker == null)
+			{
+				if(someMarker != null)
+				{
+					someMarker.drop();
+				}
+				return false;
+			}
+			else
+			{
+				expect(builder, SEMICOLON, "';' expected");
+			}
+			if(someMarker != null)
+			{
+				someMarker.done(EXPRESSION_STATEMENT);
+			}
+		}
+		return true;
 	}
 
 	private static IElementType getElementType(PsiBuilder.Marker marker)
@@ -290,7 +309,7 @@ public class StatementParsing extends SharingParsingHelpers
 
 	private static void parseCatchStatement(@NotNull CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker marker)
 	{
-		PsiBuilder.Marker mark = null;
+		PsiBuilder.Marker mark;
 		if(marker != null)
 		{
 			builder.error("'try' expected");
@@ -338,7 +357,7 @@ public class StatementParsing extends SharingParsingHelpers
 
 	private static void parseFinallyStatement(@NotNull CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker marker)
 	{
-		PsiBuilder.Marker mark = null;
+		PsiBuilder.Marker mark;
 		if(marker != null)
 		{
 			builder.error("'try' expected");
@@ -391,7 +410,7 @@ public class StatementParsing extends SharingParsingHelpers
 		{
 			if(builder.getTokenType() != SEMICOLON)
 			{
-				FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, builder.mark(), LOCAL_VARIABLE);
+				parseVariableOrExpression(builder, null);
 			}
 			else
 			{
