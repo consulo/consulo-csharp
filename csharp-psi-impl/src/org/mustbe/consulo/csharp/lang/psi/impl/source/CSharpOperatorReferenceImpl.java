@@ -223,8 +223,14 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		{
 			return CSharpNativeTypeRef.BOOL;
 		}
+
 		if(elementType == CSharpTokenSets.EQ)
 		{
+			DotNetExpression[] parameterExpressions = getParameterExpressions();
+			if(parameterExpressions.length > 0)
+			{
+				return parameterExpressions[0].toTypeRef(false);
+			}
 			return CSharpNativeTypeRef.VOID;
 		}
 
