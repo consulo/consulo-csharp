@@ -68,6 +68,8 @@ public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 	private Map<IElementType, String> myOperatorNames = new HashMap<IElementType, String>()
 	{
 		{
+			put(CSharpTokens.EQEQ, "==");
+			put(CSharpTokens.NTEQ, "!=");
 			put(CSharpTokens.LT, "<");
 			put(CSharpTokens.LTEQ, ">");
 			put(CSharpTokens.GT, ">");
