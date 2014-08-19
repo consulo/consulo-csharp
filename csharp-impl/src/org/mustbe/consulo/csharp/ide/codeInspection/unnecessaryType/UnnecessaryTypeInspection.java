@@ -21,6 +21,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpCatchStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -105,7 +106,7 @@ public class UnnecessaryTypeInspection extends LocalInspectionTool
 			@Override
 			public void visitLocalVariable(CSharpLocalVariable variable)
 			{
-				if(variable.isConstant())
+				if(variable.isConstant() || variable.getParent() instanceof CSharpCatchStatementImpl)
 				{
 					return;
 				}
