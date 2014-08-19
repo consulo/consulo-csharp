@@ -52,7 +52,7 @@ public class UnnecessaryCastInspection extends LocalInspectionTool
 				DotNetTypeRef innerType = innerExpression.toTypeRef(false);
 				DotNetTypeRef castType = expression.toTypeRef(false);
 
-				if(CSharpTypeUtil.isInheritable(castType, innerType, expression))
+				if(CSharpTypeUtil.isInheritable(innerType, castType, expression) && CSharpTypeUtil.isInheritable(castType, innerType, expression))
 				{
 					holder.registerProblem(expression.getType(), "Unnecessary cast", ProblemHighlightType.LIKE_UNUSED_SYMBOL);
 				}
