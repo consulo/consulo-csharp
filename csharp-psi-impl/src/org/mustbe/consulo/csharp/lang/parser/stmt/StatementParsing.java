@@ -182,7 +182,7 @@ public class StatementParsing extends SharingParsingHelpers
 				return marker;
 			}
 
-			if(!parseVariableOrExpression(wrapper, marker))
+			if(parseVariableOrExpression(wrapper, marker) == null)
 			{
 				return null;
 			}
@@ -190,7 +190,14 @@ public class StatementParsing extends SharingParsingHelpers
 		return marker;
 	}
 
-	private static boolean parseVariableOrExpression(CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker someMarker)
+	private static enum ParseVariableOrExpressionResult
+	{
+		VARIABLE,
+		EXPRESSION
+	}
+
+	@Nullable
+	private static ParseVariableOrExpressionResult parseVariableOrExpression(CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker someMarker)
 	{
 		PsiBuilder.Marker newMarker = builder.mark();
 
@@ -227,12 +234,17 @@ public class StatementParsing extends SharingParsingHelpers
 				}
 				else
 				{
-					expect(builder, SEMICOLON, "';' expected");
+					if(someMarker != null)
+					{
+						expect(builder, SEMICOLON, "';' expected");
+					}
 				}
+
 				if(someMarker != null)
 				{
 					someMarker.done(EXPRESSION_STATEMENT);
 				}
+				return ParseVariableOrExpressionResult.EXPRESSION;
 			}
 			else
 			{
@@ -240,6 +252,7 @@ public class StatementParsing extends SharingParsingHelpers
 				{
 					someMarker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
 				}
+				return ParseVariableOrExpressionResult.VARIABLE;
 			}
 		}
 		else
@@ -251,18 +264,22 @@ public class StatementParsing extends SharingParsingHelpers
 				{
 					someMarker.drop();
 				}
-				return false;
+				return null;
 			}
 			else
 			{
-				expect(builder, SEMICOLON, "';' expected");
+				if(someMarker != null)
+				{
+					expect(builder, SEMICOLON, "';' expected");
+				}
 			}
+
 			if(someMarker != null)
 			{
 				someMarker.done(EXPRESSION_STATEMENT);
 			}
+			return ParseVariableOrExpressionResult.EXPRESSION;
 		}
-		return true;
 	}
 
 	private static IElementType getElementType(PsiBuilder.Marker marker)
@@ -410,7 +427,29 @@ public class StatementParsing extends SharingParsingHelpers
 		{
 			if(builder.getTokenType() != SEMICOLON)
 			{
-				parseVariableOrExpression(builder, null);
+				ParseVariableOrExpressionResult parseVariableOrExpressionResult = parseVariableOrExpression(builder, null);
+
+				if(parseVariableOrExpressionResult != null)
+				{
+					while(builder.getTokenType() == COMMA)
+					{
+						builder.advanceLexer();
+
+						ParseVariableOrExpressionResult nextResult = parseVariableOrExpression(builder, null);
+						if(nextResult == null)
+						{
+							switch(parseVariableOrExpressionResult)
+							{
+								case VARIABLE:
+									builder.error("Variable expected");
+									break;
+								case EXPRESSION:
+									builder.error("Expression expected");
+									break;
+							}
+						}
+					}
+				}
 			}
 			else
 			{
