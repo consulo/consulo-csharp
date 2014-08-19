@@ -41,7 +41,7 @@ public class CSharpEventUtil
 
 			if(operatorElementType == CSharpTokens.PLUSEQ || operatorElementType == CSharpTokens.MINUSEQ)
 			{
-				DotNetExpression expression = ((CSharpAssignmentExpressionImpl) parent).getExpressions()[0];
+				DotNetExpression expression = ((CSharpAssignmentExpressionImpl) parent).getParameterExpressions()[0];
 				if(expression instanceof CSharpReferenceExpression)
 				{
 					PsiElement resolve = ((CSharpReferenceExpression) expression).resolve();

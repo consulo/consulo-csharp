@@ -18,7 +18,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 
 /**
@@ -39,8 +41,14 @@ public class CSharpAssignmentExpressionImpl extends CSharpExpressionWithOperator
 	}
 
 	@NotNull
-	public DotNetExpression[] getExpressions()
+	@Override
+	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
-		return findChildrenByClass(DotNetExpression.class);
+		DotNetExpression[] expressions = getParameterExpressions();
+		if(expressions.length > 0)
+		{
+			return expressions[0].toTypeRef(false);
+		}
+		return CSharpNativeTypeRef.VOID;
 	}
 }

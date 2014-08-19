@@ -88,7 +88,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				return null;
 			}
-			DotNetExpression[] expressions = ((CSharpAssignmentExpressionImpl) element).getExpressions();
+			DotNetExpression[] expressions = ((CSharpAssignmentExpressionImpl) element).getParameterExpressions();
 			if(expressions.length != 2)
 			{
 				return null;
