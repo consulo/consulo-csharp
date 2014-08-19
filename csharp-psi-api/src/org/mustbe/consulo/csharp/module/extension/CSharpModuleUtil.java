@@ -34,7 +34,7 @@ public class CSharpModuleUtil
 		{
 			return CSharpLanguageVersion.HIGHEST;
 		}
-		CSharpModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpModuleExtension.class);
+		CSharpModuleExtension<?> extension = ModuleUtilCore.getExtension(element, CSharpModuleExtension.class);
 		if(extension == null)
 		{
 			return CSharpLanguageVersion.HIGHEST;
