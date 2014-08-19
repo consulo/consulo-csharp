@@ -60,7 +60,7 @@ public class CSharpModuleTypeHelperImpl extends CSharpModuleTypeHelper
 		if(declaration == null)
 		{
 			GlobalSearchScope searchScope = GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(myModule);
-			DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(myModule.getProject()).findType(DotNetTypes.System_Array, searchScope);
+			DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(myModule.getProject()).findType(DotNetTypes.System.Array, searchScope);
 			if(type == null)
 			{
 				return null;

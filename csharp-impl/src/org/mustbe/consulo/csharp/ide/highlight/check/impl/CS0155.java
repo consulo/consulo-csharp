@@ -41,6 +41,6 @@ public class CS0155 extends AbstractCompilerCheck<CSharpThrowStatementImpl>
 
 		DotNetTypeRef dotNetTypeRef = expression.toTypeRef(true);
 
-		return !DotNetInheritUtil.isParentOrSelf(DotNetTypes.System_Exception, dotNetTypeRef, statement, true);
+		return !DotNetInheritUtil.isParentOrSelf(DotNetTypes.System.Exception, dotNetTypeRef, statement, true);
 	}
 }

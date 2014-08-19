@@ -156,7 +156,7 @@ public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 						genericParameterBuilder.withName("T");
 
 						CSharpLightGenericConstraintBuilder constraintBuilder = new CSharpLightGenericConstraintBuilder(genericParameterBuilder);
-						constraintBuilder.addTypeConstraint(new CSharpTypeRefFromText(DotNetTypes.System_Enum, builder));
+						constraintBuilder.addTypeConstraint(new CSharpTypeRefFromText(DotNetTypes.System.Enum, builder));
 
 						builder.addGenericParameter(genericParameterBuilder);
 						builder.addGenericConstraint(constraintBuilder);

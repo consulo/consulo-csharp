@@ -173,7 +173,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 		{
 			CSharpParameterInfo e = new CSharpParameterInfo(item.parameter.getName(), item.parameter.getParameter(), i++);
 			DotNetType type = PsiTreeUtil.getChildOfType(item.typeCodeFragment, DotNetType.class);
-			e.setTypeText(type == null ? DotNetTypes.System_Object : type.getText());
+			e.setTypeText(type == null ? DotNetTypes.System.Object : type.getText());
 			DotNetExpression expression = PsiTreeUtil.getChildOfType(item.defaultValueCodeFragment, DotNetExpression.class);
 			e.setDefaultValue(expression == null ? "" : expression.getText());
 			result.add(e);

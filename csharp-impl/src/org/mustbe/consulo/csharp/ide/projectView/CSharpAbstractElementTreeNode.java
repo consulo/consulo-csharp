@@ -43,7 +43,7 @@ public abstract class CSharpAbstractElementTreeNode<T extends PsiElement> extend
 	{
 		T value = getValue();
 		return value instanceof DotNetModifierListOwner && DotNetAttributeUtil.hasAttribute((DotNetModifierListOwner) value,
-				DotNetTypes.System_ObsoleteAttribute);
+				DotNetTypes.System.ObsoleteAttribute);
 	}
 
 	private boolean canRepresent(final PsiElement psiElement, final Object element)

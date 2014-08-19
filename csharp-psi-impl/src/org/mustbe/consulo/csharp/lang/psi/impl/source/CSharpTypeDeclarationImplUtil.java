@@ -88,21 +88,21 @@ public class CSharpTypeDeclarationImplUtil
 	public static String getDefaultSuperType(@NotNull DotNetTypeDeclaration typeDeclaration)
 	{
 		String presentableQName = typeDeclaration.getPresentableQName();
-		if(Comparing.equal(presentableQName, DotNetTypes.System_Object))
+		if(Comparing.equal(presentableQName, DotNetTypes.System.Object))
 		{
 			return null;
 		}
 		if(typeDeclaration.isStruct())
 		{
-			return DotNetTypes.System_ValueType;
+			return DotNetTypes.System.ValueType;
 		}
 		else if(typeDeclaration.isEnum())
 		{
-			return DotNetTypes.System_Enum;
+			return DotNetTypes.System.Enum;
 		}
 		else
 		{
-			return DotNetTypes.System_Object;
+			return DotNetTypes.System.Object;
 		}
 	}
 

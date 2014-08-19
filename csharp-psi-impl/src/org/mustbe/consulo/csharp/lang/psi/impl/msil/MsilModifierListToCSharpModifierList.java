@@ -60,7 +60,7 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 
 		if(myModifierList.hasModifier(MsilTokens.SERIALIZABLE_KEYWORD))
 		{
-			addAdditionalAttribute(new CSharpLightAttributeBuilder(myModifierList, DotNetTypes.System_Serializable));
+			addAdditionalAttribute(new CSharpLightAttributeBuilder(myModifierList, DotNetTypes.System.Serializable));
 		}
 	}
 

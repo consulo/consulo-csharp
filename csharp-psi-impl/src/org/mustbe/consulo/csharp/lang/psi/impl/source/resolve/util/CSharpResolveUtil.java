@@ -242,7 +242,7 @@ public class CSharpResolveUtil
 				{
 					if(((CSharpGenericConstraintKeywordValue) value).getKeywordElementType() == CSharpTokens.STRUCT_KEYWORD)
 					{
-						superTypes.add(new DotNetTypeRefByQName(DotNetTypes.System_ValueType, CSharpTransform.INSTANCE));
+						superTypes.add(new DotNetTypeRefByQName(DotNetTypes.System.ValueType, CSharpTransform.INSTANCE));
 					}
 					else if(((CSharpGenericConstraintKeywordValue) value).getKeywordElementType() == CSharpTokens.CLASS_KEYWORD)
 					{

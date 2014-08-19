@@ -92,7 +92,7 @@ public class MsilToCSharpUtil
 			case UNSAFE:
 				break;
 			case PARAMS:
-				return hasAttribute(modifierList, DotNetTypes.System_ParamArrayAttribute);
+				return hasAttribute(modifierList, DotNetTypes.System.ParamArrayAttribute);
 			case THIS:
 				return hasAttribute(modifierList, DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute);
 			case ABSTRACT:
@@ -126,7 +126,7 @@ public class MsilToCSharpUtil
 				return cache;
 			}
 
-			if(DotNetInheritUtil.isInheritor((MsilClassEntry) element, DotNetTypes.System_MulticastDelegate, true))
+			if(DotNetInheritUtil.isInheritor((MsilClassEntry) element, DotNetTypes.System.MulticastDelegate, true))
 			{
 				val msilMethodEntry = (MsilMethodEntry) ContainerUtil.find(((MsilClassEntry) element).getMembers(),
 						new Condition<DotNetNamedElement>()
