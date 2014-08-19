@@ -18,6 +18,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -117,6 +119,17 @@ public class CSharpTypeDeclarationImplUtil
 			{
 				return;
 			}
+		}
+
+		if(type.isStruct())
+		{
+			CSharpLightConstructorDeclarationBuilder builder = new CSharpLightConstructorDeclarationBuilder(type.getProject());
+			builder.addModifier(CSharpModifier.PUBLIC);
+			builder.setNavigationElement(type);
+			builder.withParent(type);
+			builder.withName(type.getName());
+
+			processor.process(builder);
 		}
 	}
 }
