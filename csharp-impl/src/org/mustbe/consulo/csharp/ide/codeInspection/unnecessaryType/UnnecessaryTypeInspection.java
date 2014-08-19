@@ -114,7 +114,7 @@ public class UnnecessaryTypeInspection extends LocalInspectionTool
 				if(initializer != null)
 				{
 					DotNetTypeRef typeRef = initializer.toTypeRef(false);
-					if(typeRef instanceof CSharpLambdaTypeRef)
+					if(typeRef instanceof CSharpLambdaTypeRef || typeRef == DotNetTypeRef.NULL_TYPE)
 					{
 						return;
 					}
