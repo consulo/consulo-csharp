@@ -54,6 +54,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Conditions;
+import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -92,21 +93,21 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 			return PopupResult.NOT_AVAILABLE;
 		}
 
-		Set<String> q = collectAllAvailableNamespaces();
+		Set<Couple<String>> q = collectAllAvailableNamespaces();
 		if(q.isEmpty())
 		{
 			return PopupResult.NOT_AVAILABLE;
 		}
 
 		AddUsingAction action = new AddUsingAction(editor, myRef, q);
-		String message = ShowAutoImportPass.getMessage(q.size() != 1, DotNetBundle.message("use.popup", q.iterator().next()));
+		String message = ShowAutoImportPass.getMessage(q.size() != 1, DotNetBundle.message("use.popup", q.iterator().next().getSecond()));
 
 		HintManager.getInstance().showQuestionHint(editor, message, myRef.getTextOffset(), myRef.getTextRange().getEndOffset(), action);
 
 		return PopupResult.SHOW_HIT;
 	}
 
-	private Set<String> collectAllAvailableNamespaces()
+	private Set<Couple<String>> collectAllAvailableNamespaces()
 	{
 		if(myRef.getParent() instanceof CSharpUsingNamespaceStatementImpl || !myRef.isValid())
 		{
@@ -117,13 +118,14 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		{
 			return Collections.emptySet();
 		}
-		Set<String> q = new ArrayListSet<String>();
+		Set<Couple<String>> q = new ArrayListSet<Couple<String>>();
 		collectAvailableNamespaces(q, referenceName);
 		collectAvailableNamespacesForMethodExtensions(q, referenceName);
+		q.addAll(LibrariesSearcher.getInstance().searchInSystemLibraries(myRef, referenceName));
 		return q;
 	}
 
-	private void collectAvailableNamespaces(Set<String> set, String referenceName)
+	private void collectAvailableNamespaces(Set<Couple<String>> set, String referenceName)
 	{
 		if(myRef.getQualifier() != null)
 		{
@@ -211,7 +213,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		return typeDeclarations;
 	}
 
-	private void collectAvailableNamespacesForMethodExtensions(Set<String> set, String referenceName)
+	private void collectAvailableNamespacesForMethodExtensions(Set<Couple<String>> set, String referenceName)
 	{
 		PsiElement qualifier = myRef.getQualifier();
 		if(qualifier == null)
@@ -242,13 +244,13 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 				PsiElement parentOfMethod = possibleMethod.getParent();
 				if(parentOfMethod instanceof DotNetQualifiedElement)
 				{
-					set.add(((DotNetQualifiedElement) parentOfMethod).getPresentableParentQName());
+					set.add(Couple.of(null, ((DotNetQualifiedElement) parentOfMethod).getPresentableParentQName()));
 				}
 			}
 		}
 	}
 
-	private static <T extends DotNetQualifiedElement> void collect(Set<String> namespaces, Collection<T> element, Condition<T> condition)
+	private static <T extends DotNetQualifiedElement> void collect(Set<Couple<String>> result, Collection<T> element, Condition<T> condition)
 	{
 		for(val type : element)
 		{
@@ -262,7 +264,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 			{
 				continue;
 			}
-			namespaces.add(presentableParentQName);
+			result.add(Couple.of(null, presentableParentQName));
 		}
 	}
 

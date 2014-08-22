@@ -22,6 +22,7 @@ import java.util.Set;
 import javax.swing.Icon;
 
 import org.consulo.lombok.annotations.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.codeInsight.CSharpCodeInsightSettings;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
@@ -29,6 +30,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionI
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeByQNameIndex;
 import org.mustbe.consulo.dotnet.DotNetBundle;
+import org.mustbe.consulo.dotnet.module.roots.DotNetLibraryOrderEntryImpl;
+import org.mustbe.consulo.dotnet.module.roots.DotNetLibraryOrderEntryTypeProvider;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.codeInsight.actions.OptimizeImportsProcessor;
@@ -41,17 +44,22 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.RangeMarker;
 import com.intellij.openapi.editor.ScrollType;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.roots.impl.ModuleRootLayerImpl;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
+import com.intellij.openapi.util.Couple;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiParserFacade;
-import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -63,9 +71,9 @@ public class AddUsingAction implements QuestionAction
 	private final Editor myEditor;
 	private final Project myProject;
 	private final CSharpReferenceExpressionImpl myRef;
-	private final Set<String> myElements;
+	private final Set<Couple<String>> myElements;
 
-	public AddUsingAction(Editor editor, CSharpReferenceExpressionImpl ref, Set<String> q)
+	public AddUsingAction(Editor editor, CSharpReferenceExpressionImpl ref, Set<Couple<String>> q)
 	{
 		myEditor = editor;
 		myRef = ref;
@@ -92,22 +100,40 @@ public class AddUsingAction implements QuestionAction
 	{
 		PsiDocumentManager.getInstance(myProject).commitAllDocuments();
 
-		if(myElements.size() == 1)
+		Couple<String> firstCount = myElements.size() == 1 ? ContainerUtil.getFirstItem(myElements) : null;
+
+		if(firstCount != null && firstCount.getFirst() == null)
 		{
 			execute0(ContainerUtil.getFirstItem(myElements));
 		}
 		else
 		{
-			BaseListPopupStep<String> step = new BaseListPopupStep<String>(DotNetBundle.message("add.using"), ArrayUtil.toStringArray(myElements))
+			BaseListPopupStep<Couple<String>> step = new BaseListPopupStep<Couple<String>>(DotNetBundle.message("add.using"),
+					myElements.toArray(new Couple[myElements.size()]))
 			{
 				@Override
-				public Icon getIconFor(String aValue)
+				public Icon getIconFor(Couple<String> aValue)
 				{
 					return AllIcons.Nodes.Package;
 				}
 
+				@NotNull
 				@Override
-				public PopupStep onChosen(final String selectedValue, boolean finalChoice)
+				public String getTextFor(Couple<String> value)
+				{
+					String first = value.getFirst();
+					if(first == null)
+					{
+						return value.getSecond();
+					}
+					else
+					{
+						return value.getSecond() + " in '" + value.getFirst() + "'";
+					}
+				}
+
+				@Override
+				public PopupStep onChosen(final Couple<String> selectedValue, boolean finalChoice)
 				{
 					execute0(selectedValue);
 					return FINAL_CHOICE;
@@ -120,7 +146,7 @@ public class AddUsingAction implements QuestionAction
 		return true;
 	}
 
-	private void execute0(final String qName)
+	private void execute0(final Couple<String> couple)
 	{
 		PsiDocumentManager.getInstance(myProject).commitAllDocuments();
 
@@ -129,7 +155,31 @@ public class AddUsingAction implements QuestionAction
 			@Override
 			protected void run(Result<Object> objectResult) throws Throwable
 			{
-				addUsing(qName);
+				addUsing(couple.getSecond());
+
+				String first = couple.getFirst();
+				if(first != null)
+				{
+					Module moduleForFile = ModuleUtilCore.findModuleForPsiElement(myRef);
+					if(moduleForFile != null)
+					{
+						ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(moduleForFile);
+
+						val modifiableModel = moduleRootManager.getModifiableModel();
+
+						modifiableModel.addOrderEntry(new DotNetLibraryOrderEntryImpl(DotNetLibraryOrderEntryTypeProvider.getInstance(),
+								(ModuleRootLayerImpl) moduleRootManager.getCurrentLayer(), first));
+
+						new WriteCommandAction<Object>(moduleForFile.getProject())
+						{
+							@Override
+							protected void run(Result<Object> objectResult) throws Throwable
+							{
+								modifiableModel.commit();
+							}
+						}.execute();
+					}
+				}
 			}
 		}.execute();
 	}
@@ -172,14 +222,15 @@ public class AddUsingAction implements QuestionAction
 		{
 			bindToRef(qName);
 
-			if (CSharpCodeInsightSettings.getInstance().OPTIMIZE_IMPORTS_ON_THE_FLY)
+			if(CSharpCodeInsightSettings.getInstance().OPTIMIZE_IMPORTS_ON_THE_FLY)
 			{
 				Document document = myEditor.getDocument();
 				PsiFile psiFile = PsiDocumentManager.getInstance(myProject).getPsiFile(document);
 				new OptimizeImportsProcessor(myProject, psiFile).runWithoutProgress();
 			}
 		}
-		catch(IncorrectOperationException e){
+		catch(IncorrectOperationException e)
+		{
 			LOGGER.error(e);
 		}
 
