@@ -39,7 +39,7 @@ public class CSharpParameterListStubElementType extends CSharpAbstractStubElemen
 	}
 
 	@Override
-	public DotNetParameterList createPsi(@NotNull ASTNode astNode)
+	public DotNetParameterList createElement(@NotNull ASTNode astNode)
 	{
 		return new CSharpParameterListImpl(astNode);
 	}

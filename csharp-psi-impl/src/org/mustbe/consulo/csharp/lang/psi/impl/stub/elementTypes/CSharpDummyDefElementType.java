@@ -38,7 +38,7 @@ public class CSharpDummyDefElementType extends CSharpAbstractStubElementType<CSh
 	}
 
 	@Override
-	public CSharpDummyDeclarationImpl createPsi(@NotNull ASTNode astNode)
+	public CSharpDummyDeclarationImpl createElement(@NotNull ASTNode astNode)
 	{
 		return new CSharpDummyDeclarationImpl(astNode);
 	}

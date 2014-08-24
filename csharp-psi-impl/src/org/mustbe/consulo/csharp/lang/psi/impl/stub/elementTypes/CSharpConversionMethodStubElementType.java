@@ -43,7 +43,7 @@ public class CSharpConversionMethodStubElementType extends CSharpAbstractStubEle
 	}
 
 	@Override
-	public CSharpConversionMethodDeclarationImpl createPsi(@NotNull ASTNode astNode)
+	public CSharpConversionMethodDeclarationImpl createElement(@NotNull ASTNode astNode)
 	{
 		return new CSharpConversionMethodDeclarationImpl(astNode);
 	}

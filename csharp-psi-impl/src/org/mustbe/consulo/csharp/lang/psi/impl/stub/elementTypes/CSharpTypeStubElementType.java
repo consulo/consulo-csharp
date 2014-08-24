@@ -46,7 +46,7 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 	}
 
 	@Override
-	public CSharpTypeDeclaration createPsi(@NotNull ASTNode astNode)
+	public CSharpTypeDeclaration createElement(@NotNull ASTNode astNode)
 	{
 		return new CSharpTypeDeclarationImpl(astNode);
 	}

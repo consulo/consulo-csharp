@@ -41,7 +41,7 @@ public class CSharpGenericParameterStubElementType extends CSharpAbstractStubEle
 	}
 
 	@Override
-	public DotNetGenericParameter createPsi(@NotNull ASTNode astNode)
+	public DotNetGenericParameter createElement(@NotNull ASTNode astNode)
 	{
 		return new CSharpGenericParameterImpl(astNode);
 	}

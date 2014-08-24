@@ -41,7 +41,7 @@ public class CSharpGenericConstraintStubElementType extends CSharpAbstractStubEl
 	}
 
 	@Override
-	public CSharpGenericConstraint createPsi(@NotNull ASTNode astNode)
+	public CSharpGenericConstraint createElement(@NotNull ASTNode astNode)
 	{
 		return new CSharpGenericConstraintImpl(astNode);
 	}

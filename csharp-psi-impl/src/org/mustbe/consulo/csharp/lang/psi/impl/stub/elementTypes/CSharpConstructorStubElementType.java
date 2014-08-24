@@ -40,7 +40,7 @@ public class CSharpConstructorStubElementType extends CSharpAbstractStubElementT
 	}
 
 	@Override
-	public CSharpConstructorDeclarationImpl createPsi(@NotNull ASTNode astNode)
+	public CSharpConstructorDeclarationImpl createElement(@NotNull ASTNode astNode)
 	{
 		return new CSharpConstructorDeclarationImpl(astNode);
 	}
