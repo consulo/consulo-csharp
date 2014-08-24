@@ -41,7 +41,7 @@ public class CSharpXXXAccessorStubElementType extends CSharpAbstractStubElementT
 	}
 
 	@Override
-	public CSharpXXXAccessorImpl createPsi(@NotNull ASTNode astNode)
+	public CSharpXXXAccessorImpl createElement(@NotNull ASTNode astNode)
 	{
 		return new CSharpXXXAccessorImpl(astNode);
 	}

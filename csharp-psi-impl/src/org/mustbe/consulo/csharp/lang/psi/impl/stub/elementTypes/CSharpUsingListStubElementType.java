@@ -45,7 +45,7 @@ public class CSharpUsingListStubElementType extends CSharpAbstractStubElementTyp
 	}
 
 	@Override
-	public CSharpUsingListImpl createPsi(@NotNull ASTNode astNode)
+	public CSharpUsingListImpl createElement(@NotNull ASTNode astNode)
 	{
 		return new CSharpUsingListImpl(astNode);
 	}

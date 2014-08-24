@@ -43,7 +43,7 @@ public class CSharpArrayMethodStubElementType extends CSharpAbstractStubElementT
 	}
 
 	@Override
-	public CSharpArrayMethodDeclaration createPsi(@NotNull ASTNode astNode)
+	public CSharpArrayMethodDeclaration createElement(@NotNull ASTNode astNode)
 	{
 		return new CSharpArrayMethodDeclarationImpl(astNode);
 	}

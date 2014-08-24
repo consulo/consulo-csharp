@@ -37,7 +37,7 @@ public class CSharpFieldStubElementType extends CSharpQVariableStubElementType<D
 	}
 
 	@Override
-	public DotNetFieldDeclaration createPsi(@NotNull ASTNode astNode)
+	public DotNetFieldDeclaration createElement(@NotNull ASTNode astNode)
 	{
 		return new CSharpFieldDeclarationImpl(astNode);
 	}

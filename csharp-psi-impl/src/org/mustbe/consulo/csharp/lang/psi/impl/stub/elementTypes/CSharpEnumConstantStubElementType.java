@@ -36,7 +36,7 @@ public class CSharpEnumConstantStubElementType extends CSharpQVariableStubElemen
 	}
 
 	@Override
-	public CSharpEnumConstantDeclarationImpl createPsi(@NotNull ASTNode astNode)
+	public CSharpEnumConstantDeclarationImpl createElement(@NotNull ASTNode astNode)
 	{
 		return new CSharpEnumConstantDeclarationImpl(astNode);
 	}

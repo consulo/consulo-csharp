@@ -19,24 +19,23 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.IndexSink;
 import com.intellij.psi.stubs.StubElement;
+import com.intellij.psi.tree.IElementTypeAsPsiFactory;
 
 /**
  * @author VISTALL
  * @since 15.12.13.
  */
-public abstract class CSharpAbstractStubElementType<S extends StubElement, P extends PsiElement> extends IStubElementType<S, P>
+public abstract class CSharpAbstractStubElementType<S extends StubElement, P extends PsiElement> extends IStubElementType<S,
+		P> implements IElementTypeAsPsiFactory
 {
 	public CSharpAbstractStubElementType(@NotNull @NonNls String debugName)
 	{
 		super(debugName, CSharpLanguage.INSTANCE);
 	}
-
-	public abstract P createPsi(@NotNull ASTNode astNode);
 
 	@NotNull
 	@Override

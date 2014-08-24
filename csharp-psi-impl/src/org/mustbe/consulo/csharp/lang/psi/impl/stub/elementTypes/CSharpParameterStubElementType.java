@@ -34,7 +34,7 @@ public class CSharpParameterStubElementType extends CSharpVariableStubElementTyp
 	}
 
 	@Override
-	public DotNetParameter createPsi(@NotNull ASTNode astNode)
+	public DotNetParameter createElement(@NotNull ASTNode astNode)
 	{
 		return new CSharpParameterImpl(astNode);
 	}

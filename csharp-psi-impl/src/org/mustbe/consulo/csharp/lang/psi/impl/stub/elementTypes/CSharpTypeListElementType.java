@@ -47,7 +47,7 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 	}
 
 	@Override
-	public DotNetTypeList createPsi(@NotNull ASTNode astNode)
+	public DotNetTypeList createElement(@NotNull ASTNode astNode)
 	{
 		return new CSharpStubTypeListImpl(astNode);
 	}

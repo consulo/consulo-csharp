@@ -49,7 +49,7 @@ public class CSharpNamespaceStubElementType extends CSharpAbstractStubElementTyp
 	}
 
 	@Override
-	public CSharpNamespaceDeclarationImpl createPsi(@NotNull ASTNode astNode)
+	public CSharpNamespaceDeclarationImpl createElement(@NotNull ASTNode astNode)
 	{
 		return new CSharpNamespaceDeclarationImpl(astNode);
 	}

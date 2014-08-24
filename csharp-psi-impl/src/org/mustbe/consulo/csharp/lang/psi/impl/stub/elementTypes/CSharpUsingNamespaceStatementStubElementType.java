@@ -40,7 +40,7 @@ public class CSharpUsingNamespaceStatementStubElementType extends CSharpAbstract
 	}
 
 	@Override
-	public CSharpUsingNamespaceStatementImpl createPsi(@NotNull ASTNode astNode)
+	public CSharpUsingNamespaceStatementImpl createElement(@NotNull ASTNode astNode)
 	{
 		return new CSharpUsingNamespaceStatementImpl(astNode);
 	}

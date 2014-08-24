@@ -37,7 +37,7 @@ public class CSharpEventElementType extends CSharpQVariableStubElementType<DotNe
 	}
 
 	@Override
-	public DotNetEventDeclaration createPsi(@NotNull ASTNode astNode)
+	public DotNetEventDeclaration createElement(@NotNull ASTNode astNode)
 	{
 		return new CSharpEventDeclarationImpl(astNode);
 	}
