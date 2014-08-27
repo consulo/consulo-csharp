@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi;
+package org.mustbe.consulo.csharp.ide.codeInspection;
 
-import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import org.consulo.lombok.annotations.Bundle;
 
 /**
  * @author VISTALL
- * @since 09.01.14
+ * @since 28.08.14
  */
-public interface CSharpConstructorDeclaration extends DotNetConstructorDeclaration, CSharpPseudoMethod, PsiNameIdentifierOwner
+@Bundle
+public class CSharpInspectionBundle
 {
 }

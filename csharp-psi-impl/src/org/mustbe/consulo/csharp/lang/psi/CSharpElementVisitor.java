@@ -48,9 +48,9 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(declaration);
 	}
 
-	public void visitMethodDeclaration(CSharpMethodDeclaration methodDeclaration)
+	public void visitMethodDeclaration(CSharpMethodDeclaration declaration)
 	{
-		visitElement(methodDeclaration);
+		visitElement(declaration);
 	}
 
 	public void visitModifierList(CSharpModifierListImpl list)

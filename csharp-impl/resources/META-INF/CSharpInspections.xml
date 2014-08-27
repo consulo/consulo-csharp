@@ -16,6 +16,8 @@
 
 <idea-plugin>
 	<extensions defaultExtensionNs="com.intellij">
+		<localInspection implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.obsolete.ObsoleteInspection"
+						 displayName="Obsolete warnings" groupName="C#" enabledByDefault="true" />
 		<localInspection implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryCast.UnnecessaryCastInspection"
 						 displayName="Unnecessary Cast" groupName="C#" enabledByDefault="true" />
 		<localInspection implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryType.UnnecessaryTypeInspection"
