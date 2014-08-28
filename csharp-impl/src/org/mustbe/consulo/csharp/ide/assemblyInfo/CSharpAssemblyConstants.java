@@ -23,7 +23,4 @@ package org.mustbe.consulo.csharp.ide.assemblyInfo;
 public interface CSharpAssemblyConstants
 {
 	String FileName = "AssemblyInfo.cs";
-
-	String AssemblyTitleAttribute = "System.Reflection.AssemblyTitleAttribute";
-	String AssemblyDescriptionAttribute = "System.Reflection.AssemblyDescriptionAttribute";
 }

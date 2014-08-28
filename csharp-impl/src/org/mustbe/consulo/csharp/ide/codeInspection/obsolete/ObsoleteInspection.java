@@ -20,8 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.codeInspection.CSharpInspectionBundle;
 import org.mustbe.consulo.csharp.ide.projectView.CSharpElementTreeNode;
+import org.mustbe.consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
 import org.mustbe.consulo.csharp.lang.psi.*;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
@@ -151,24 +151,14 @@ public class ObsoleteInspection extends LocalInspectionTool
 				CSharpReferenceExpression argumentNameReference = namedCallArgument.getArgumentNameReference();
 				if("Message".equals(argumentNameReference.getReferenceName()))
 				{
-					return stringValueOfExpression(namedCallArgument.getArgumentExpression());
+					return  new ConstantExpressionEvaluator(namedCallArgument.getArgumentExpression()).getValueAs(String.class);
 				}
 			}
 		}
 		else
 		{
 			DotNetExpression expression = expressions[0];
-			return stringValueOfExpression(expression);
-		}
-		return null;
-	}
-
-	private static String stringValueOfExpression(DotNetExpression expression)
-	{
-		if(expression instanceof CSharpConstantExpressionImpl)
-		{
-			Object value = ((CSharpConstantExpressionImpl) expression).getValue();
-			return value instanceof String ? (String) value : null;
+			return  new ConstantExpressionEvaluator(expression).getValueAs(String.class);
 		}
 		return null;
 	}

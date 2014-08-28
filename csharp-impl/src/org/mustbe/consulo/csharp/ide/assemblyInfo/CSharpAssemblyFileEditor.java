@@ -22,25 +22,38 @@ import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
-import org.jdesktop.swingx.HorizontalLayout;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.assemblyInfo.blocks.CSharpAssemblyBlock;
 import org.mustbe.consulo.csharp.ide.assemblyInfo.blocks.CSharpSimpleStringAssemblyBlock;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import com.intellij.codeHighlighting.BackgroundEditorHighlighter;
 import com.intellij.ide.structureView.StructureViewBuilder;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorLocation;
 import com.intellij.openapi.fileEditor.FileEditorState;
 import com.intellij.openapi.fileEditor.FileEditorStateLevel;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.VerticalFlowLayout;
+import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.UserDataHolderBase;
+import com.intellij.openapi.vfs.ReadonlyStatusHandler;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.intellij.ui.components.JBScrollPane;
+import com.intellij.ui.ColoredTreeCellRenderer;
+import com.intellij.ui.OnePixelSplitter;
+import com.intellij.ui.ScrollPaneFactory;
+import com.intellij.ui.treeStructure.SimpleTree;
+import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.ui.tree.TreeUtil;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -48,57 +61,92 @@ import com.intellij.ui.components.JBScrollPane;
  */
 public class CSharpAssemblyFileEditor extends UserDataHolderBase implements FileEditor
 {
-	private List<CSharpAssemblyBlock> myFirstBlocks = new ArrayList<CSharpAssemblyBlock>();
-	private List<CSharpAssemblyBlock> mySecondBlocks = new ArrayList<CSharpAssemblyBlock>();
-	private List<CSharpAssemblyBlock> myThirdBlocks = new ArrayList<CSharpAssemblyBlock>();
-
 	private final VirtualFile myVirtualFile;
 	private final PsiFile myPsiFile;
+	private final boolean myIsReadonlyFile;
 
-	public CSharpAssemblyFileEditor(Project project, VirtualFile virtualFile)
+	private List<CSharpAssemblyBlock> myBlocks = new ArrayList<CSharpAssemblyBlock>();
+
+	public CSharpAssemblyFileEditor(final Project project, VirtualFile virtualFile)
 	{
 		myVirtualFile = virtualFile;
 		myPsiFile = PsiManager.getInstance(project).findFile(virtualFile);
 		assert myPsiFile != null;
+		myIsReadonlyFile = ApplicationManager.getApplication().runReadAction(new Computable<Boolean>()
+		{
+			@Override
+			public Boolean compute()
+			{
+				return !ReadonlyStatusHandler.ensureFilesWritable(project, myVirtualFile);
+			}
+		});
 
-		myFirstBlocks.add(new CSharpSimpleStringAssemblyBlock("Title", CSharpAssemblyConstants.AssemblyTitleAttribute));
-		myFirstBlocks.add(new CSharpSimpleStringAssemblyBlock("Description", CSharpAssemblyConstants.AssemblyDescriptionAttribute));
+		myBlocks.add(new CSharpSimpleStringAssemblyBlock("Name", DotNetTypes.System.Reflection.AssemblyProductAttribute));
+		myBlocks.add(new CSharpSimpleStringAssemblyBlock("Title", DotNetTypes.System.Reflection.AssemblyTitleAttribute));
+		myBlocks.add(new CSharpSimpleStringAssemblyBlock("Description", DotNetTypes.System.Reflection.AssemblyDescriptionAttribute));
+		myBlocks.add(new CSharpSimpleStringAssemblyBlock("Company", DotNetTypes.System.Reflection.AssemblyDescriptionAttribute));
 
-		mySecondBlocks.add(new CSharpSimpleStringAssemblyBlock("Title", CSharpAssemblyConstants.AssemblyTitleAttribute));
-		mySecondBlocks.add(new CSharpSimpleStringAssemblyBlock("Title", CSharpAssemblyConstants.AssemblyTitleAttribute));
-
-		myThirdBlocks.add(new CSharpSimpleStringAssemblyBlock("Title", CSharpAssemblyConstants.AssemblyTitleAttribute));
-		myThirdBlocks.add(new CSharpSimpleStringAssemblyBlock("Title", CSharpAssemblyConstants.AssemblyTitleAttribute));
+		myBlocks.add(new CSharpSimpleStringAssemblyBlock("Copyright", DotNetTypes.System.Reflection.AssemblyCopyrightAttribute));
+		myBlocks.add(new CSharpSimpleStringAssemblyBlock("Trademark", DotNetTypes.System.Reflection.AssemblyTrademarkAttribute));
+		myBlocks.add(new CSharpSimpleStringAssemblyBlock("Version", DotNetTypes.System.Reflection.AssemblyVersionAttribute));
+		myBlocks.add(new CSharpSimpleStringAssemblyBlock("File Version", DotNetTypes.System.Reflection.AssemblyFileVersionAttribute));
 	}
 
 	@NotNull
 	@Override
 	public JComponent getComponent()
 	{
-		JPanel panel = new JPanel(new HorizontalLayout());
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode();
 
-		JPanel fPanel = new JPanel(new VerticalFlowLayout());
-		for(CSharpAssemblyBlock block : myFirstBlocks)
+		for(CSharpAssemblyBlock block : myBlocks)
 		{
-			fPanel.add(block.createComponent());
-		}
-		panel.add(fPanel);
+			DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(block);
 
-		JPanel sPanel = new JPanel(new VerticalFlowLayout());
-		for(CSharpAssemblyBlock block : mySecondBlocks)
+			root.add(newChild);
+		}
+
+		val simpleTree = new SimpleTree(new DefaultTreeModel(root));
+		simpleTree.setRootVisible(false);
+		simpleTree.setCellRenderer(new ColoredTreeCellRenderer()
 		{
-			sPanel.add(block.createComponent());
-		}
-		panel.add(sPanel);
+			@Override
+			public void customizeCellRenderer(JTree jTree, Object o, boolean b, boolean b2, boolean b3, int i, boolean b4)
+			{
+				Object object = ((DefaultMutableTreeNode) o).getUserObject();
+				if(object instanceof CSharpAssemblyBlock)
+				{
+					append(((CSharpAssemblyBlock) object).getTitle());
+				}
+			}
+		});
 
-		JPanel tPanel = new JPanel(new VerticalFlowLayout());
-		for(CSharpAssemblyBlock block : myThirdBlocks)
+		val splitter = new OnePixelSplitter();
+		simpleTree.addTreeSelectionListener(new TreeSelectionListener()
 		{
-			tPanel.add(block.createComponent());
-		}
-		panel.add(tPanel);
+			@Override
+			public void valueChanged(TreeSelectionEvent e)
+			{
+				List<CSharpAssemblyBlock> cSharpAssemblyBlocks = TreeUtil.collectSelectedObjectsOfType(simpleTree, CSharpAssemblyBlock.class);
 
-		return new JBScrollPane(panel);
+				CSharpAssemblyBlock firstItem = ContainerUtil.getFirstItem(cSharpAssemblyBlocks);
+				if(firstItem == null)
+				{
+					splitter.setSecondComponent(new JPanel());
+				}
+				else
+				{
+
+					splitter.setSecondComponent(firstItem.createAndLoadComponent(myPsiFile, !myIsReadonlyFile));
+				}
+			}
+		});
+
+		splitter.setAndLoadSplitterProportionKey("CSharpAssemblyFileEditor");
+
+		splitter.setFirstComponent(simpleTree);
+		splitter.setSecondComponent(new JPanel());
+
+		return ScrollPaneFactory.createScrollPane(splitter);
 	}
 
 	@Nullable
