@@ -36,19 +36,13 @@ import com.intellij.psi.PsiManager;
  */
 public class CSharpAssemblyFileEditorProvider implements FileEditorProvider
 {
-	public static class EapDescriptor implements EarlyAccessProgramDescriptor
+	public static class EapDescriptor extends EarlyAccessProgramDescriptor
 	{
 		@NotNull
 		@Override
 		public String getName()
 		{
 			return "AssemblyInfo.cs UI Editor";
-		}
-
-		@Override
-		public boolean getDefaultState()
-		{
-			return false;
 		}
 
 		@NotNull
@@ -58,6 +52,7 @@ public class CSharpAssemblyFileEditorProvider implements FileEditorProvider
 			return "";
 		}
 	}
+
 	@Override
 	public boolean accept(@NotNull Project project, @NotNull VirtualFile virtualFile)
 	{
