@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpChameleonTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -49,7 +50,7 @@ public class CSharpTypeUtil
 
 	public static int getNumberRank(DotNetTypeRef typeRef)
 	{
-		return ArrayUtil.find(ourNumberRanks, typeRef);
+		return ArrayUtil.find(ourNumberRanks, typeRef.getQualifiedText());
 	}
 
 	/**
@@ -75,6 +76,11 @@ public class CSharpTypeUtil
 		if(top.equals(target))
 		{
 			return true;
+		}
+
+		if(target instanceof CSharpChameleonTypeRef)
+		{
+			target = ((CSharpChameleonTypeRef) target).doMirror(top);
 		}
 
 		int topRank = ArrayUtil.find(ourNumberRanks, top.getQualifiedText());
