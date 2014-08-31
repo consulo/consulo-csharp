@@ -22,6 +22,8 @@ import org.mustbe.consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -32,7 +34,6 @@ import com.intellij.lang.injection.MultiHostRegistrar;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtil;
 
@@ -45,7 +46,7 @@ public class CfsMultiHostInjector implements MultiHostInjector
 	@Override
 	public void injectLanguages(@NotNull MultiHostRegistrar multiHostRegistrar, @NotNull PsiElement element)
 	{
-		PsiLanguageInjectionHost host = (PsiLanguageInjectionHost) element;
+		CSharpConstantExpressionImpl host = (CSharpConstantExpressionImpl) element;
 		if(!host.isValidHost())
 		{
 			return;
@@ -115,7 +116,12 @@ public class CfsMultiHostInjector implements MultiHostInjector
 			return;
 		}
 
-		multiHostRegistrar.startInjecting(CfsLanguage.INSTANCE).addPlace("", "", host, new TextRange(1,
+		int firstIndex = 1;
+		if(host.getLiteralType() == CSharpTokens.VERBATIM_STRING_LITERAL)
+		{
+			firstIndex = 2;
+		}
+		multiHostRegistrar.startInjecting(CfsLanguage.INSTANCE).addPlace("", "", host, new TextRange(firstIndex,
 				element.getTextLength() - 1)).doneInjecting();
 	}
 }

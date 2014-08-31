@@ -182,13 +182,20 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 		throw new IllegalArgumentException(elementType.toString());
 	}
 
+	@NotNull
 	@Override
-	public boolean isValidHost()
+	public IElementType getLiteralType()
 	{
 		PsiElement byType = getFirstChild();
 		assert byType != null;
-		IElementType elementType = byType.getNode().getElementType();
-		return elementType == CSharpTokens.STRING_LITERAL;
+		return byType.getNode().getElementType();
+	}
+
+	@Override
+	public boolean isValidHost()
+	{
+		IElementType elementType = getLiteralType();
+		return elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL;
 	}
 
 	@Override
@@ -203,6 +210,17 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 	@Override
 	public LiteralTextEscaper<? extends PsiLanguageInjectionHost> createLiteralTextEscaper()
 	{
-		return new CSharpStringLiteralEscaper<CSharpConstantExpressionImpl>(this);
+		PsiElement byType = getFirstChild();
+		assert byType != null;
+		IElementType elementType = byType.getNode().getElementType();
+		if(elementType == CSharpTokens.STRING_LITERAL)
+		{
+			return new CSharpStringLiteralEscaper<CSharpConstantExpressionImpl>(this);
+		}
+		else if(elementType == CSharpTokens.VERBATIM_STRING_LITERAL)
+		{
+			return LiteralTextEscaper.createSimple(this);
+		}
+		throw new IllegalArgumentException("Unknown " + elementType);
 	}
 }
