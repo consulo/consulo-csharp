@@ -18,9 +18,9 @@ package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -37,23 +37,23 @@ public class MethodGenerateUtil
 			return "null";
 		}
 
-		if(typeRef == CSharpNativeTypeRef.INT)
+		if(DotNetTypeRefUtil.isInt32(typeRef))
 		{
 			return "0";
 		}
-		else if(typeRef == CSharpNativeTypeRef.LONG)
+		else if(DotNetTypeRefUtil.isInt64(typeRef))
 		{
 			return "0l";
 		}
-		else if(typeRef == CSharpNativeTypeRef.UINT)
+		else if(DotNetTypeRefUtil.isUInt32(typeRef))
 		{
 			return "0u";
 		}
-		else if(typeRef == CSharpNativeTypeRef.ULONG)
+		else if(DotNetTypeRefUtil.isUInt64(typeRef))
 		{
 			return "0ul";
 		}
-		else if(typeRef == CSharpNativeTypeRef.BOOL)
+		else if(DotNetTypeRefUtil.isBool(typeRef))
 		{
 			return "false";
 		}

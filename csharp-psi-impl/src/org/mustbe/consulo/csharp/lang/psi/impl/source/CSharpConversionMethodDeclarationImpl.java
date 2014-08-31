@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpConversionMethodStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
@@ -55,7 +55,7 @@ public class CSharpConversionMethodDeclarationImpl extends CSharpLikeMethodDecla
 	@Override
 	public boolean isImplicit()
 	{
-		return getReturnTypeRef() == CSharpNativeTypeRef.IMPLICIT;
+		return getReturnTypeRef() == CSharpStaticTypeRef.IMPLICIT;
 	}
 
 	@NotNull

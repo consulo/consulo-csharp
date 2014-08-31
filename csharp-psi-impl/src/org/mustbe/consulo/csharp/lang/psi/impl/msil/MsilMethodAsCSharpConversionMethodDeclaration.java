@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
@@ -65,11 +65,11 @@ public class MsilMethodAsCSharpConversionMethodDeclaration extends MsilMethodAsC
 	{
 		if(isImplicit())
 		{
-			return CSharpNativeTypeRef.IMPLICIT;
+			return CSharpStaticTypeRef.IMPLICIT;
 		}
 		else
 		{
-			return CSharpNativeTypeRef.EXPLICIT;
+			return CSharpStaticTypeRef.EXPLICIT;
 		}
 	}
 

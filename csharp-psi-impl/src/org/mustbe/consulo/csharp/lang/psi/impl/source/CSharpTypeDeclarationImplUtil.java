@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
@@ -67,7 +66,7 @@ public class CSharpTypeDeclarationImplUtil
 		DotNetTypeRef[] anExtends = typeDeclaration.getExtendTypeRefs();
 		if(anExtends.length == 0)
 		{
-			return CSharpNativeTypeRef.OBJECT;
+			return new DotNetTypeRefByQName(DotNetTypes.System.Object, CSharpTransform.INSTANCE);
 		}
 		else
 		{
@@ -80,7 +79,7 @@ public class CSharpTypeDeclarationImplUtil
 				}
 			}
 
-			return CSharpNativeTypeRef.OBJECT;
+			return new DotNetTypeRefByQName(DotNetTypes.System.Object, CSharpTransform.INSTANCE);
 		}
 	}
 

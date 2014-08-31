@@ -19,8 +19,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -34,17 +34,17 @@ import com.intellij.util.ArrayUtil;
  */
 public class CSharpTypeUtil
 {
-	private static final DotNetTypeRef[] ourNumberRanks = new DotNetTypeRef[]{
-			CSharpNativeTypeRef.BYTE,
-			CSharpNativeTypeRef.SBYTE,
-			CSharpNativeTypeRef.SHORT,
-			CSharpNativeTypeRef.USHORT,
-			CSharpNativeTypeRef.INT,
-			CSharpNativeTypeRef.UINT,
-			CSharpNativeTypeRef.LONG,
-			CSharpNativeTypeRef.ULONG,
-			CSharpNativeTypeRef.FLOAT,
-			CSharpNativeTypeRef.DOUBLE,
+	private static final String[] ourNumberRanks = new String[]{
+			DotNetTypes.System.Byte,
+			DotNetTypes.System.SByte,
+			DotNetTypes.System.Int16,
+			DotNetTypes.System.UInt16,
+			DotNetTypes.System.Int32,
+			DotNetTypes.System.UInt32,
+			DotNetTypes.System.Int64,
+			DotNetTypes.System.UInt64,
+			DotNetTypes.System.Single,
+			DotNetTypes.System.Double,
 	};
 
 	public static int getNumberRank(DotNetTypeRef typeRef)
@@ -77,8 +77,8 @@ public class CSharpTypeUtil
 			return true;
 		}
 
-		int topRank = ArrayUtil.find(ourNumberRanks, top);
-		int targetRank = ArrayUtil.find(ourNumberRanks, target);
+		int topRank = ArrayUtil.find(ourNumberRanks, top.getQualifiedText());
+		int targetRank = ArrayUtil.find(ourNumberRanks, target.getQualifiedText());
 
 		if(topRank != -1 && targetRank != -1)
 		{

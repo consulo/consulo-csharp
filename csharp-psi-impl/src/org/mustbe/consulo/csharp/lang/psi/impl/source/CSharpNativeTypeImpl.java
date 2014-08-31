@@ -24,7 +24,10 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
+import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetNativeType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -37,28 +40,25 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CSharpNativeTypeImpl extends CSharpElementImpl implements DotNetNativeType
 {
-	public static final Map<IElementType, CSharpNativeTypeRef> ELEMENT_TYPE_TO_TYPE = new HashMap<IElementType, CSharpNativeTypeRef>()
+	public static final Map<IElementType, String> ourElementToQTypes = new HashMap<IElementType, String>()
 	{
 		{
-			put(CSharpTokens.BOOL_KEYWORD, CSharpNativeTypeRef.BOOL);
-			put(CSharpTokens.DOUBLE_KEYWORD, CSharpNativeTypeRef.DOUBLE);
-			put(CSharpTokens.FLOAT_KEYWORD, CSharpNativeTypeRef.FLOAT);
-			put(CSharpTokens.CHAR_KEYWORD, CSharpNativeTypeRef.CHAR);
-			put(CSharpTokens.OBJECT_KEYWORD, CSharpNativeTypeRef.OBJECT);
-			put(CSharpTokens.STRING_KEYWORD, CSharpNativeTypeRef.STRING);
-			put(CSharpTokens.SBYTE_KEYWORD, CSharpNativeTypeRef.SBYTE);
-			put(CSharpTokens.BYTE_KEYWORD, CSharpNativeTypeRef.BYTE);
-			put(CSharpTokens.INT_KEYWORD, CSharpNativeTypeRef.INT);
-			put(CSharpTokens.UINT_KEYWORD, CSharpNativeTypeRef.UINT);
-			put(CSharpTokens.LONG_KEYWORD, CSharpNativeTypeRef.LONG);
-			put(CSharpTokens.ULONG_KEYWORD, CSharpNativeTypeRef.ULONG);
-			put(CSharpTokens.VOID_KEYWORD, CSharpNativeTypeRef.VOID);
-			put(CSharpTokens.SHORT_KEYWORD, CSharpNativeTypeRef.SHORT);
-			put(CSharpTokens.USHORT_KEYWORD, CSharpNativeTypeRef.USHORT);
-			put(CSharpTokens.DECIMAL_KEYWORD, CSharpNativeTypeRef.DECIMAL);
-			put(CSharpTokens.IMPLICIT_KEYWORD, CSharpNativeTypeRef.IMPLICIT);
-			put(CSharpTokens.EXPLICIT_KEYWORD, CSharpNativeTypeRef.EXPLICIT);
-			put(CSharpTokens.DYNAMIC_KEYWORD, CSharpNativeTypeRef.DYNAMIC);
+			put(CSharpTokens.BOOL_KEYWORD, DotNetTypes.System.Boolean);
+			put(CSharpTokens.DOUBLE_KEYWORD, DotNetTypes.System.Double);
+			put(CSharpTokens.FLOAT_KEYWORD, DotNetTypes.System.Single);
+			put(CSharpTokens.CHAR_KEYWORD, DotNetTypes.System.Char);
+			put(CSharpTokens.OBJECT_KEYWORD, DotNetTypes.System.Object);
+			put(CSharpTokens.STRING_KEYWORD, DotNetTypes.System.String);
+			put(CSharpTokens.SBYTE_KEYWORD, DotNetTypes.System.SByte);
+			put(CSharpTokens.BYTE_KEYWORD, DotNetTypes.System.Byte);
+			put(CSharpTokens.INT_KEYWORD, DotNetTypes.System.Int32);
+			put(CSharpTokens.UINT_KEYWORD, DotNetTypes.System.UInt32);
+			put(CSharpTokens.LONG_KEYWORD, DotNetTypes.System.Int64);
+			put(CSharpTokens.ULONG_KEYWORD, DotNetTypes.System.UInt64);
+			put(CSharpTokens.VOID_KEYWORD, DotNetTypes.System.Void);
+			put(CSharpTokens.SHORT_KEYWORD, DotNetTypes.System.Int16);
+			put(CSharpTokens.USHORT_KEYWORD, DotNetTypes.System.UInt16);
+			put(CSharpTokens.DECIMAL_KEYWORD, DotNetTypes.System.Decimal);
 		}
 	};
 
@@ -82,9 +82,27 @@ public class CSharpNativeTypeImpl extends CSharpElementImpl implements DotNetNat
 		{
 			return DotNetTypeRef.AUTO_TYPE;
 		}
-		CSharpNativeTypeRef cSharpNativeTypeRef = ELEMENT_TYPE_TO_TYPE.get(elementType);
-		assert cSharpNativeTypeRef != null : elementType.toString();
-		return cSharpNativeTypeRef;
+		else if(elementType == CSharpTokens.IMPLICIT_KEYWORD)
+		{
+			return CSharpStaticTypeRef.IMPLICIT;
+		}
+		else if(elementType == CSharpTokens.EXPLICIT_KEYWORD)
+		{
+			return CSharpStaticTypeRef.EXPLICIT;
+		}
+		else if(elementType == CSharpTokens.DYNAMIC_KEYWORD)
+		{
+			return CSharpStaticTypeRef.DYNAMIC;
+		}
+
+		String q = ourElementToQTypes.get(elementType);
+		assert q != null : elementType.toString();
+		boolean nullable = false;
+		if(DotNetTypes.System.Object.equals(q) || DotNetTypes.System.String.equals(q))
+		{
+			nullable = true;
+		}
+		return new DotNetTypeRefByQName(q, CSharpTransform.INSTANCE, nullable);
 	}
 
 	@NotNull

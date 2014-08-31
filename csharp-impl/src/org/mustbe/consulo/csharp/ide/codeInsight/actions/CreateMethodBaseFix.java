@@ -20,9 +20,11 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
+import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
@@ -69,7 +71,7 @@ public abstract class CreateMethodBaseFix extends PsiElementBaseIntentionAction
 			builder.append("static ");
 		}
 
-		DotNetTypeRef returnTypeRef = CSharpNativeTypeRef.OBJECT; //TODO [VISTALL]
+		DotNetTypeRef returnTypeRef = new DotNetTypeRefByQName(DotNetTypes.System.Object, CSharpTransform.INSTANCE); //TODO [VISTALL]
 
 		builder.append(returnTypeRef.getPresentableText()).append(" ");
 		builder.append(myReferenceName);

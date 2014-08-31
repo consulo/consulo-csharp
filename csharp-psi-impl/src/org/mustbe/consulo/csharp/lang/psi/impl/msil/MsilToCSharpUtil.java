@@ -21,13 +21,13 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
+import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
+import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
@@ -44,7 +44,6 @@ import org.mustbe.consulo.msil.lang.psi.impl.type.MsilNativeTypeRefImpl;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
 import com.intellij.util.containers.ConcurrentHashMap;
 import com.intellij.util.containers.ContainerUtil;
 import lombok.val;
@@ -161,67 +160,13 @@ public class MsilToCSharpUtil
 
 		if(typeRef instanceof MsilNativeTypeRefImpl)
 		{
-			IElementType elementType = ((MsilNativeTypeRefImpl) typeRef).getElementType();
-			if(elementType == MsilTokens.INT8_KEYWORD)
+			String qualifiedText = typeRef.getQualifiedText();
+			boolean nullable = false;
+			if(DotNetTypes.System.Object.equals(qualifiedText) || DotNetTypes.System.String.equals(qualifiedText))
 			{
-				return CSharpNativeTypeRef.SBYTE;
+				nullable = true;
 			}
-			else if(elementType == MsilTokens.UINT8_KEYWORD)
-			{
-				return CSharpNativeTypeRef.BYTE;
-			}
-			else if(elementType == MsilTokens.INT16_KEYWORD)
-			{
-				return CSharpNativeTypeRef.SHORT;
-			}
-			else if(elementType == MsilTokens.UINT16_KEYWORD)
-			{
-				return CSharpNativeTypeRef.USHORT;
-			}
-			else if(elementType == MsilTokens.INT32_KEYWORD)
-			{
-				return CSharpNativeTypeRef.INT;
-			}
-			else if(elementType == MsilTokens.UINT32_KEYWORD)
-			{
-				return CSharpNativeTypeRef.UINT;
-			}
-			else if(elementType == MsilTokens.INT64_KEYWORD)
-			{
-				return CSharpNativeTypeRef.LONG;
-			}
-			else if(elementType == MsilTokens.UINT64_KEYWORD)
-			{
-				return CSharpNativeTypeRef.ULONG;
-			}
-			else if(elementType == MsilTokens.STRING_KEYWORD)
-			{
-				return CSharpNativeTypeRef.STRING;
-			}
-			else if(elementType == MsilTokens.OBJECT_KEYWORD)
-			{
-				return CSharpNativeTypeRef.OBJECT;
-			}
-			else if(elementType == MsilTokens.CHAR_KEYWORD)
-			{
-				return CSharpNativeTypeRef.CHAR;
-			}
-			else if(elementType == MsilTokens.BOOL_KEYWORD)
-			{
-				return CSharpNativeTypeRef.BOOL;
-			}
-			else if(elementType == MsilTokens.FLOAT_KEYWORD)
-			{
-				return CSharpNativeTypeRef.FLOAT;
-			}
-			else if(elementType == MsilTokens.FLOAT64_KEYWORD)
-			{
-				return CSharpNativeTypeRef.DOUBLE;
-			}
-			else if(elementType == MsilTokens.VOID_KEYWORD)
-			{
-				return CSharpNativeTypeRef.VOID;
-			}
+			return new DotNetTypeRefByQName(typeRef.getQualifiedText(), CSharpTransform.INSTANCE, nullable);
 		}
 		else if(typeRef instanceof MsilArrayTypRefImpl)
 		{

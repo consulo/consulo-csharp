@@ -19,9 +19,9 @@ package org.mustbe.consulo.csharp.ide.reflactoring.introduceVariable;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
@@ -68,7 +68,7 @@ public class CSharpIntroduceVariableHandler implements RefactoringActionHandler
 		}
 
 		DotNetTypeRef dotNetTypeRef = expression.toTypeRef(true);
-		if(dotNetTypeRef == CSharpNativeTypeRef.VOID)
+		if(DotNetTypeRefUtil.isVoid(dotNetTypeRef))
 		{
 			CommonRefactoringUtil.showErrorHint(project, editor, "Expression type is 'void'", RefactoringBundle.message("introduce.variable.title"),
 					"IntroduceVariable");

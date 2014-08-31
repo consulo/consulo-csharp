@@ -31,8 +31,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpSwitchStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTryStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpWhileStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.codeInsight.AutoPopupController;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
@@ -138,7 +138,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 							public void handleInsert(InsertionContext insertionContext, LookupElement item)
 							{
 								int offset = insertionContext.getEditor().getCaretModel().getOffset();
-								boolean isVoidReturnType = pseudoMethod.getReturnTypeRef() == CSharpNativeTypeRef.VOID;
+								boolean isVoidReturnType = DotNetTypeRefUtil.isVoid(pseudoMethod.getReturnTypeRef());
 								if(!isVoidReturnType)
 								{
 									insertionContext.getDocument().insertString(offset, " ;");

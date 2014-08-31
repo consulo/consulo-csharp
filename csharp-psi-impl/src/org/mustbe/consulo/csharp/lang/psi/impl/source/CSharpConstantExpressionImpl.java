@@ -22,8 +22,10 @@ import org.joou.Unsigned;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.injection.CSharpStringLiteralEscaper;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
+import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetConstantExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -62,35 +64,35 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 		IElementType elementType = byType.getNode().getElementType();
 		if(elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL)
 		{
-			return CSharpNativeTypeRef.STRING;
+			return new DotNetTypeRefByQName(DotNetTypes.System.String, CSharpTransform.INSTANCE);
 		}
 		else if(elementType == CSharpTokens.CHARACTER_LITERAL)
 		{
-			return CSharpNativeTypeRef.CHAR;
+			return new DotNetTypeRefByQName(DotNetTypes.System.Char, CSharpTransform.INSTANCE, false);
 		}
 		else if(elementType == CSharpTokens.UINTEGER_LITERAL)
 		{
-			return CSharpNativeTypeRef.UINT;
+			return new DotNetTypeRefByQName(DotNetTypes.System.UInt32, CSharpTransform.INSTANCE, false);
 		}
 		else if(elementType == CSharpTokens.ULONG_LITERAL)
 		{
-			return CSharpNativeTypeRef.ULONG;
+			return new DotNetTypeRefByQName(DotNetTypes.System.UInt64, CSharpTransform.INSTANCE, false);
 		}
 		else if(elementType == CSharpTokens.INTEGER_LITERAL)
 		{
-			return findFromParent(resolveFromParent, CSharpNativeTypeRef.INT);
+			return findFromParent(resolveFromParent, new DotNetTypeRefByQName(DotNetTypes.System.Int32, CSharpTransform.INSTANCE, false));
 		}
 		else if(elementType == CSharpTokens.LONG_LITERAL)
 		{
-			return CSharpNativeTypeRef.LONG;
+			return new DotNetTypeRefByQName(DotNetTypes.System.Int64, CSharpTransform.INSTANCE, false);
 		}
 		else if(elementType == CSharpTokens.FLOAT_LITERAL)
 		{
-			return CSharpNativeTypeRef.FLOAT;
+			return new DotNetTypeRefByQName(DotNetTypes.System.Single, CSharpTransform.INSTANCE, false);
 		}
 		else if(elementType == CSharpTokens.DOUBLE_LITERAL)
 		{
-			return CSharpNativeTypeRef.DOUBLE;
+			return new DotNetTypeRefByQName(DotNetTypes.System.Double, CSharpTransform.INSTANCE, false);
 		}
 		else if(elementType == CSharpTokens.NULL_LITERAL)
 		{
@@ -98,7 +100,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 		}
 		else if(elementType == CSharpTokens.BOOL_LITERAL)
 		{
-			return CSharpNativeTypeRef.BOOL;
+			return new DotNetTypeRefByQName(DotNetTypes.System.Boolean, CSharpTransform.INSTANCE, false);
 		}
 		return DotNetTypeRef.ERROR_TYPE;
 	}

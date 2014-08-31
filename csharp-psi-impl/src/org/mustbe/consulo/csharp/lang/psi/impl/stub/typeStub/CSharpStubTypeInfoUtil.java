@@ -32,9 +32,9 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNullableTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPointerTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeWithTypeArgumentsImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromText;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
@@ -58,13 +58,13 @@ public class CSharpStubTypeInfoUtil
 		try
 		{
 			byte i = 0;
-			Field[] fields = CSharpNativeTypeRef.class.getFields();
+			Field[] fields = CSharpStaticTypeRef.class.getFields();
 			for(Field field : fields)
 			{
-				if(Modifier.isStatic(field.getModifiers()) && field.getType() == CSharpNativeTypeRef.class)
+				if(Modifier.isStatic(field.getModifiers()) && field.getType() == CSharpStaticTypeRef.class)
 				{
 					byte value = i;
-					CSharpNativeTypeRef typeRef = (CSharpNativeTypeRef) field.get(null);
+					CSharpStaticTypeRef typeRef = (CSharpStaticTypeRef) field.get(null);
 
 					ourNativeRefs.put(value, typeRef);
 					ourNativeRefs2.put(typeRef, value);
