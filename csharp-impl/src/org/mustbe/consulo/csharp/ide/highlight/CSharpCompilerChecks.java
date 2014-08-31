@@ -54,6 +54,7 @@ public enum CSharpCompilerChecks
 	CS0516(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // constructor cant call itself
 	CS0518(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // dynamic checks
 	CS0721(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static classes in parameters
+	CS0722(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static classes in methods
 	CS0723(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static classes in variables
 	CS0815(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // lambdas cant be cast to 'var'
 	CS1004(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // duplicate modifier check
