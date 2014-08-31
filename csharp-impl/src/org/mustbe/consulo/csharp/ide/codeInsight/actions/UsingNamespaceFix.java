@@ -121,7 +121,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		Set<Couple<String>> q = new ArrayListSet<Couple<String>>();
 		collectAvailableNamespaces(q, referenceName);
 		collectAvailableNamespacesForMethodExtensions(q, referenceName);
-		q.addAll(LibrariesSearcher.getInstance().searchInSystemLibraries(myRef, referenceName));
+		//q.addAll(LibrariesSearcher.getInstance().searchInSystemLibraries(myRef, referenceName));
 		return q;
 	}
 
