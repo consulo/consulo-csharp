@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.CSharpIcons;
 import org.mustbe.consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import org.mustbe.consulo.dotnet.module.extension.DotNetMutableModuleExtension;
+import org.mustbe.consulo.dotnet.module.roots.DotNetLibraryOrderEntryImpl;
 import org.mustbe.consulo.ide.impl.NewModuleBuilder;
 import org.mustbe.consulo.ide.impl.NewModuleContext;
 import org.mustbe.consulo.ide.impl.UnzipNewModuleBuilderProcessor;
@@ -31,6 +32,7 @@ import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableModuleRootLayer;
 import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.roots.impl.ModuleRootLayerImpl;
 
 /**
  * @author VISTALL
@@ -114,6 +116,9 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 					CSharpMutableModuleExtension<?> cSharpMutableModuleExtension = layer.getExtensionWithoutCheck(pair[1]);
 					assert cSharpMutableModuleExtension != null;
 					cSharpMutableModuleExtension.setEnabled(true);
+
+					layer.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) layer, "mscorlib.dll"));
+					layer.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) layer, "System.dll"));
 				}
 
 				modifiableRootModel.setCurrentLayer(DEBUG);

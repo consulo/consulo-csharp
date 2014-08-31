@@ -31,7 +31,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeByQNameIndex;
 import org.mustbe.consulo.dotnet.DotNetBundle;
 import org.mustbe.consulo.dotnet.module.roots.DotNetLibraryOrderEntryImpl;
-import org.mustbe.consulo.dotnet.module.roots.DotNetLibraryOrderEntryTypeProvider;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.codeInsight.actions.OptimizeImportsProcessor;
@@ -167,8 +166,7 @@ public class AddUsingAction implements QuestionAction
 
 						val modifiableModel = moduleRootManager.getModifiableModel();
 
-						modifiableModel.addOrderEntry(new DotNetLibraryOrderEntryImpl(DotNetLibraryOrderEntryTypeProvider.getInstance(),
-								(ModuleRootLayerImpl) moduleRootManager.getCurrentLayer(), first));
+						modifiableModel.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) moduleRootManager.getCurrentLayer(), first));
 
 						new WriteCommandAction<Object>(moduleForFile.getProject())
 						{
