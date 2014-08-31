@@ -154,9 +154,6 @@ public interface CSharpElements
 
 	IElementType PREFIX_EXPRESSION = new ElementTypeAsPsiFactory("PREFIX_EXPRESSION", CSharpLanguage.INSTANCE, CSharpPrefixExpressionImpl.class);
 
-	IElementType POLYADIC_EXPRESSION = new ElementTypeAsPsiFactory("POLYADIC_EXPRESSION", CSharpLanguage.INSTANCE,
-			CSharpPolyadicExpressionImpl.class);
-
 	IElementType EMPTY_EXPRESSION = new ElementTypeAsPsiFactory("EMPTY_EXPRESSION", CSharpLanguage.INSTANCE, CSharpEmptyExpressionImpl.class);
 
 	IElementType PARENTHESES_EXPRESSION = new ElementTypeAsPsiFactory("PARENTHESES_EXPRESSION", CSharpLanguage.INSTANCE,

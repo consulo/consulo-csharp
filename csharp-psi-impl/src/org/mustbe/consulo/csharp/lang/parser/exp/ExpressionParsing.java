@@ -289,38 +289,24 @@ public class ExpressionParsing extends SharingParsingHelpers
 		{
 			return null;
 		}
-		int operandCount = 1;
 
 		IElementType tokenType = builder.getTokenTypeGGLL();
-		IElementType currentExprTokenType = tokenType;
-		while(true)
+		if(ops.contains(tokenType))
 		{
-			if(tokenType == null || !ops.contains(tokenType))
+			// save
+			result = result.precede();
+
+			PsiBuilder.Marker operatorMarker = builder.mark();
+			builder.advanceLexerGGLL();
+			operatorMarker.done(OPERATOR_REFERENCE);
+
+			PsiBuilder.Marker right = parse(builder);
+			if(right == null)
 			{
-				break;
+				builder.error("Expression expected");
 			}
 
-			doneOneElementGGLL(builder, tokenType, OPERATOR_REFERENCE, null);
-
-			final PsiBuilder.Marker right = parseExpression(builder, type);
-			operandCount++;
-			tokenType = builder.getTokenType();
-			if(tokenType == null || !ops.contains(tokenType) || tokenType != currentExprTokenType || right == null)
-			{
-				// save
-				result = result.precede();
-				if(right == null)
-				{
-					builder.error("Expression expected");
-				}
-				result.done(operandCount > 2 ? POLYADIC_EXPRESSION : BINARY_EXPRESSION);
-				if(right == null)
-				{
-					break;
-				}
-				currentExprTokenType = tokenType;
-				operandCount = 1;
-			}
+			result.done(BINARY_EXPRESSION);
 		}
 
 		return result;

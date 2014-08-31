@@ -313,11 +313,6 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(expression);
 	}
 
-	public void visitPolyadicExpression(CSharpPolyadicExpressionImpl expression)
-	{
-		visitElement(expression);
-	}
-
 	public void visitLambdaExpression(CSharpLambdaExpressionImpl expression)
 	{
 		visitElement(expression);
