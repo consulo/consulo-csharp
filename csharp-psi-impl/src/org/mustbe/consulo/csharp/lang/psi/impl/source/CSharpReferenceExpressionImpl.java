@@ -65,6 +65,7 @@ import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.QualifiedName;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.Processor;
@@ -493,6 +494,12 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				}), weightProcessor, !completion);
 				CSharpResolveUtil.treeWalkUp(p, element, element, parentOfType);
 				return p.toResolveResults();
+			case TYPE_OR_NAMESPACE:
+				ResolveResultWithWeight[] typeResults = collectResults(ResolveToKind.TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD,
+						condition, weightProcessor, element, completion);
+				ResolveResultWithWeight[] namespaceResults = collectResults(ResolveToKind.NAMESPACE,
+						condition, weightProcessor, element, completion);
+				return ArrayUtil.mergeArrays(typeResults, namespaceResults);
 			case NAMESPACE:
 				if(!completion)
 				{
@@ -843,6 +850,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@NotNull
 	public ResolveToKind kind()
 	{
+		String text = getReferenceName();
 		PsiElement tempElement = getParent();
 		if(tempElement instanceof CSharpGenericConstraintImpl)
 		{
@@ -917,7 +925,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 			if(PsiTreeUtil.getParentOfType(this, DotNetUserType.class) != null)
 			{
-				return ResolveToKind.NAMESPACE;
+				return ResolveToKind.TYPE_OR_NAMESPACE;
 			}
 		}
 		else if(tempElement instanceof CSharpMethodCallExpressionImpl)
