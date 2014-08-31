@@ -17,7 +17,6 @@
 package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
 import org.mustbe.consulo.csharp.ide.highlight.check.AbstractCompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
@@ -44,11 +43,6 @@ public class CS0516 extends AbstractCompilerCheck<CSharpConstructorSuperCallImpl
 		CSharpConstructorDeclaration parent = (CSharpConstructorDeclaration) element.getParent();
 		CSharpTypeDeclaration type = (CSharpTypeDeclaration) parent.getParent();
 
-		StringBuilder builder = new StringBuilder();
-		builder.append(DotNetElementPresentationUtil.formatTypeWithGenericParameters(type));
-		builder.append(".");
-		builder.append(DotNetElementPresentationUtil.formatMethod(parent, 0));
-
-		checkResult.setText(CSharpErrorBundle.message(myId, builder.toString()));
+		checkResult.setText(CSharpErrorBundle.message(myId, formatElement(parent)));
 	}
 }
