@@ -200,5 +200,8 @@
 		<lang.documentationProvider language="C#" implementationClass="org.mustbe.consulo.dotnet.documentation.DotNetDocumentationProvider"/>
 
 		<newModuleBuilder implementation="org.mustbe.consulo.csharp.ide.newProjectOrModule.CSharpNewModuleBuilder" />
+
+		<multiHostInjector forClass="org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl"
+						   implementationClass="org.mustbe.consulo.csharp.ide.cfs.CfsMultiHostInjector" />
 	</extensions>
 </idea-plugin>

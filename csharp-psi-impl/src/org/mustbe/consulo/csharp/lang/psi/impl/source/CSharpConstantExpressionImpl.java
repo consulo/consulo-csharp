@@ -20,9 +20,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joou.Unsigned;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.injection.CSharpStringLiteralEscaper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNativeTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetConstantExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -30,14 +30,17 @@ import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.LiteralTextEscaper;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLanguageInjectionHost;
+import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
  * @since 16.12.13.
  */
-public class CSharpConstantExpressionImpl extends CSharpElementImpl implements DotNetConstantExpression
+public class CSharpConstantExpressionImpl extends CSharpElementImpl implements DotNetConstantExpression, PsiLanguageInjectionHost
 {
 	public CSharpConstantExpressionImpl(@NotNull ASTNode node)
 	{
@@ -54,7 +57,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
-		PsiElement byType = findChildByType(CSharpTokenSets.LITERALS);
+		PsiElement byType = getFirstChild();
 		assert byType != null;
 		IElementType elementType = byType.getNode().getElementType();
 		if(elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL)
@@ -126,7 +129,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 	@Override
 	public Object getValue()
 	{
-		PsiElement byType = findChildByType(CSharpTokenSets.LITERALS);
+		PsiElement byType = getFirstChild();
 		assert byType != null;
 		IElementType elementType = byType.getNode().getElementType();
 		String text = getText();
@@ -177,5 +180,29 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 			return Boolean.parseBoolean(text);
 		}
 		throw new IllegalArgumentException(elementType.toString());
+	}
+
+	@Override
+	public boolean isValidHost()
+	{
+		PsiElement byType = getFirstChild();
+		assert byType != null;
+		IElementType elementType = byType.getNode().getElementType();
+		return elementType == CSharpTokens.STRING_LITERAL;
+	}
+
+	@Override
+	public PsiLanguageInjectionHost updateText(@NotNull String s)
+	{
+		LeafPsiElement first = (LeafPsiElement) getFirstChild();
+		first.replaceWithText(s);
+		return this;
+	}
+
+	@NotNull
+	@Override
+	public LiteralTextEscaper<? extends PsiLanguageInjectionHost> createLiteralTextEscaper()
+	{
+		return new CSharpStringLiteralEscaper<CSharpConstantExpressionImpl>(this);
 	}
 }
