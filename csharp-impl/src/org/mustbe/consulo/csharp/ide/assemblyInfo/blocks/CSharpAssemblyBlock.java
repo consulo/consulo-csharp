@@ -18,11 +18,68 @@ package org.mustbe.consulo.csharp.ide.assemblyInfo.blocks;
 
 import javax.swing.JComponent;
 
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDummyDeclarationImpl;
+import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
+import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.util.PsiTreeUtil;
+
 /**
  * @author VISTALL
  * @since 09.03.14
  */
-public interface CSharpAssemblyBlock
+public abstract class CSharpAssemblyBlock
 {
-	JComponent createComponent();
+	private final String myTitle;
+	private final String myAttributeType;
+
+	public CSharpAssemblyBlock(String title, String attributeType)
+	{
+		myTitle = title;
+		myAttributeType = attributeType;
+	}
+
+	public abstract JComponent createAndLoadComponent(PsiFile file, boolean mutable);
+
+	@Nullable
+	public <T> T getValue(PsiFile file, Class<T> clazz)
+	{
+		CSharpDummyDeclarationImpl childOfAnyType = PsiTreeUtil.findChildOfAnyType(file, CSharpDummyDeclarationImpl.class);
+		if(childOfAnyType == null)
+		{
+			return null;
+		}
+
+		DotNetAttribute attribute = DotNetAttributeUtil.findAttribute(childOfAnyType, myAttributeType);
+		if(attribute == null)
+		{
+			return null;
+		}
+
+		if(!(attribute instanceof CSharpAttribute))
+		{
+			return null;
+		}
+
+		DotNetExpression[] parameterExpressions = ((CSharpAttribute) attribute).getParameterExpressions();
+		if(parameterExpressions.length == 0)
+		{
+			return null;
+		}
+		return new ConstantExpressionEvaluator(parameterExpressions[0]).getValueAs(clazz);
+	}
+
+	public String getTitle()
+	{
+		return myTitle;
+	}
+
+	public String getAttributeType()
+	{
+		return myAttributeType;
+	}
 }

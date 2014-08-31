@@ -16,49 +16,35 @@
 
 package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.SmartList;
 
 /**
  * @author VISTALL
- * @since 10.06.14
+ * @since 31.08.14
  */
-public class CS1004 extends CompilerCheck<DotNetModifierListOwner>
+public class CS0722 extends CompilerCheck<DotNetLikeMethodDeclaration>
 {
-	@NotNull
+	@Nullable
 	@Override
-	public List<CompilerCheckResult> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetModifierListOwner element)
+	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetLikeMethodDeclaration element)
 	{
-		DotNetModifierList modifierList = element.getModifierList();
-		if(modifierList == null)
+		DotNetType type = element.getReturnType();
+		PsiElement resolve = DotNetTypeRefUtil.resolve(type);
+		if(resolve instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) resolve).hasModifier(DotNetModifier.STATIC))
 		{
-			return Collections.emptyList();
+			return result(type, formatElement(element)).addQuickFix(new RemoveModifierFix(DotNetModifier.STATIC, (DotNetModifierListOwner) resolve));
 		}
-
-		List<CompilerCheckResult> results = new SmartList<CompilerCheckResult>();
-		for(CSharpModifier modifier : CSharpModifier.values())
-		{
-			List<PsiElement> modifierElements = modifierList.getModifierElements(modifier);
-			if(modifierElements.size() <= 1)
-			{
-				continue;
-			}
-
-			for(PsiElement modifierElement : modifierElements)
-			{
-				results.add(result(modifierElement, modifier.getPresentableText()).addQuickFix(new RemoveModifierFix(modifier, element)));
-			}
-		}
-		return results;
+		return null;
 	}
 }

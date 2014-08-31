@@ -94,4 +94,11 @@ public class MsilMethodAsCSharpConstructorDeclaration extends MsilMethodAsCSharp
 	{
 		return false;
 	}
+
+	@Nullable
+	@Override
+	public PsiElement getNameIdentifier()
+	{
+		return null;
+	}
 }

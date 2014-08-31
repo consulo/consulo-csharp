@@ -19,14 +19,12 @@ package org.mustbe.consulo.csharp.lang;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.CSharpAbstractStubElementType;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.LanguageVersionableParserDefinition;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 
 /**
@@ -46,11 +44,6 @@ public class CSharpParserDefinition extends LanguageVersionableParserDefinition
 	@Override
 	public PsiElement createElement(ASTNode astNode)
 	{
-		IElementType elementType = astNode.getElementType();
-		if(elementType instanceof CSharpAbstractStubElementType)
-		{
-			return ((CSharpAbstractStubElementType) elementType).createPsi(astNode);
-		}
 		return new ASTWrapperPsiElement(astNode);
 	}
 
@@ -60,6 +53,7 @@ public class CSharpParserDefinition extends LanguageVersionableParserDefinition
 		return new CSharpFileImpl(fileViewProvider);
 	}
 
+	@NotNull
 	@Override
 	public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode astNode, ASTNode astNode2)
 	{

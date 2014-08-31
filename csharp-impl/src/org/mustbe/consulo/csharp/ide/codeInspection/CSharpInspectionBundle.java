@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.ide.assemblyInfo;
+package org.mustbe.consulo.csharp.ide.codeInspection;
+
+import org.consulo.lombok.annotations.Bundle;
 
 /**
  * @author VISTALL
- * @since 09.03.14
+ * @since 28.08.14
  */
-public interface CSharpAssemblyConstants
+@Bundle
+public class CSharpInspectionBundle
 {
-	String FileName = "AssemblyInfo.cs";
 }

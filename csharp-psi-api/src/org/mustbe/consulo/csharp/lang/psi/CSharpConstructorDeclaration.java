@@ -17,11 +17,12 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
+import com.intellij.psi.PsiNameIdentifierOwner;
 
 /**
  * @author VISTALL
  * @since 09.01.14
  */
-public interface CSharpConstructorDeclaration extends DotNetConstructorDeclaration, CSharpPseudoMethod
+public interface CSharpConstructorDeclaration extends DotNetConstructorDeclaration, CSharpPseudoMethod, PsiNameIdentifierOwner
 {
 }

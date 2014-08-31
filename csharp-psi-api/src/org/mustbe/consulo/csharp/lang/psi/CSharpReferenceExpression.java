@@ -31,6 +31,7 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression
 	{
 		GENERIC_PARAMETER_FROM_PARENT, // return generic parameter from parent
 		NAMESPACE,
+		TYPE_OR_NAMESPACE,
 		SOFT_NAMESPACE,
 		METHOD,
 		ATTRIBUTE,  // return type declaration but ref can find without Attribute sufix

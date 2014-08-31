@@ -21,8 +21,6 @@ import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
 import org.mustbe.consulo.csharp.ide.highlight.check.AbstractCompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import com.intellij.psi.PsiElement;
@@ -47,14 +45,7 @@ public class CS1105 extends AbstractCompilerCheck<CSharpMethodDeclaration>
 	@Override
 	public void checkImpl(@NotNull CSharpMethodDeclaration element, @NotNull CompilerCheckResult checkResult)
 	{
-		CSharpTypeDeclaration type = (CSharpTypeDeclaration) element.getParent();
-
-		StringBuilder builder = new StringBuilder();
-		builder.append(DotNetElementPresentationUtil.formatTypeWithGenericParameters(type));
-		builder.append(".");
-		builder.append(DotNetElementPresentationUtil.formatMethod(element, 0));
-
-		checkResult.setText(CSharpErrorBundle.message(myId, builder.toString()));
+		checkResult.setText(CSharpErrorBundle.message(myId,formatElement(element)));
 		PsiElement nameIdentifier = element.getNameIdentifier();
 		if(nameIdentifier != null)
 		{

@@ -16,39 +16,34 @@
 
 package org.mustbe.consulo.csharp.ide.assemblyInfo.blocks;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-
 import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
+import javax.swing.JTextArea;
 
-import com.intellij.ui.components.JBTextField;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiFile;
 
 /**
  * @author VISTALL
  * @since 09.03.14
  */
-public class CSharpSimpleStringAssemblyBlock implements CSharpAssemblyBlock
+public class CSharpSimpleStringAssemblyBlock extends CSharpAssemblyBlock
 {
-	private final String myTitle;
-	private final String myAttributeType;
-
 	public CSharpSimpleStringAssemblyBlock(String title, String attributeType)
 	{
-		myTitle = title;
-		myAttributeType = attributeType;
+		super(title, attributeType);
 	}
 
 	@Override
-	public JComponent createComponent()
+	public JComponent createAndLoadComponent(PsiFile file, boolean mutable)
 	{
-		JPanel panel = new JPanel(new BorderLayout());
+		JTextArea comp = new JTextArea();
+		comp.setEditable(mutable);
 
-		panel.setBorder(new TitledBorder(myTitle));
-		JBTextField comp = new JBTextField();
-		comp.setPreferredSize(new Dimension(250, comp.getMinimumSize().height));
-		panel.add(comp);
-		return panel;
+		String value = getValue(file, String.class);
+		if(value != null)
+		{
+			comp.setText(StringUtil.unescapeSlashes(value));
+		}
+		return comp;
 	}
 }

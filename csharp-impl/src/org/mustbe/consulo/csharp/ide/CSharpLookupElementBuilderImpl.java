@@ -29,13 +29,16 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.AutoPopupController;
 import com.intellij.codeInsight.completion.CompletionData;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
+import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.ide.IconDescriptorUpdaters;
@@ -129,6 +132,7 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 
 	private LookupElement buildLookupElement(PsiElement element)
 	{
+		LookupElementBuilder builder = null;
 		if(element instanceof CSharpMethodDeclaration)
 		{
 			final CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) element;
@@ -143,7 +147,7 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 				}
 			}, ", ") + ")";
 
-			LookupElementBuilder builder = LookupElementBuilder.create(methodDeclaration);
+			builder = LookupElementBuilder.create(methodDeclaration);
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 
 			builder = builder.withTypeText(methodDeclaration.getReturnTypeRef().getPresentableText());
@@ -178,35 +182,41 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 					}
 				});
 			}
-			return builder;
 		}
 		else if(element instanceof DotNetVariable)
 		{
 			DotNetVariable dotNetVariable = (DotNetVariable) element;
-			LookupElementBuilder builder = LookupElementBuilder.create(dotNetVariable);
+			builder = LookupElementBuilder.create(dotNetVariable);
 
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 
 			builder = builder.withTypeText(((DotNetVariable) element).toTypeRef(true).getPresentableText());
-
-			return builder;
 		}
 		else if(element instanceof CSharpMacroDefine)
 		{
-			LookupElementBuilder builder = LookupElementBuilder.create((CSharpMacroDefine) element);
+			builder = LookupElementBuilder.create((CSharpMacroDefine) element);
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
-			return builder;
 		}
 		else if(element instanceof CSharpTypeDeclaration)
 		{
 			CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) element;
-			LookupElementBuilder builder = LookupElementBuilder.create(typeDeclaration);
+			builder = LookupElementBuilder.create(typeDeclaration);
 
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 
 			builder = builder.withTypeText(typeDeclaration.getPresentableParentQName());
 
 			builder = builder.withTailText(DotNetElementPresentationUtil.formatGenericParameters(typeDeclaration), true);
+		}
+
+		if(builder != null)
+		{
+			if(DotNetAttributeUtil.hasAttribute(element, DotNetTypes.System.ObsoleteAttribute))
+			{
+				builder = builder.withStrikeoutness(true);
+
+				return PrioritizedLookupElement.withPriority(builder, -1.0);
+			}
 
 			return builder;
 		}

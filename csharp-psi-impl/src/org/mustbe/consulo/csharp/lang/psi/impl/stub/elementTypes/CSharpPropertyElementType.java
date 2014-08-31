@@ -36,7 +36,7 @@ public class CSharpPropertyElementType extends CSharpQVariableStubElementType<CS
 	}
 
 	@Override
-	public CSharpPropertyDeclarationImpl createPsi(@NotNull ASTNode astNode)
+	public CSharpPropertyDeclarationImpl createElement(@NotNull ASTNode astNode)
 	{
 		return new CSharpPropertyDeclarationImpl(astNode);
 	}

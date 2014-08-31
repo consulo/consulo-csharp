@@ -65,7 +65,7 @@ public class CS0107 extends CompilerCheck<DotNetModifierListOwner>
 		List<CompilerCheckResult> list = new ArrayList<CompilerCheckResult>(map.size());
 		for(Map.Entry<CSharpAccessModifier, PsiElement> entry : map.entrySet())
 		{
-			list.add(result(entry.getValue()).addQuickFix(new RemoveModifierFix(entry.getKey().toModifier(), entry.getValue())));
+			list.add(result(entry.getValue()).addQuickFix(new RemoveModifierFix(entry.getKey().toModifier(), element)));
 		}
 		return list;
 	}

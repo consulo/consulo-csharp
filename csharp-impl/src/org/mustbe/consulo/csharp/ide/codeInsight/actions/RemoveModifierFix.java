@@ -17,12 +17,16 @@
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.util.IncorrectOperationException;
 
 /**
@@ -32,12 +36,23 @@ import com.intellij.util.IncorrectOperationException;
 public class RemoveModifierFix extends BaseIntentionAction
 {
 	private final DotNetModifier myModifier;
-	private final PsiElement myModifierElement;
+	private final DotNetModifierListOwner myModifierElementOwner;
 
-	public RemoveModifierFix(DotNetModifier modifier, PsiElement modifierElement)
+	public RemoveModifierFix(DotNetModifier modifier, DotNetModifierListOwner parent)
 	{
 		myModifier = modifier;
-		myModifierElement = modifierElement;
+		myModifierElementOwner = parent;
+	}
+
+	@Nullable
+	private PsiElement findModifier()
+	{
+		DotNetModifierList modifierList = myModifierElementOwner.getModifierList();
+		if(modifierList == null)
+		{
+			return null;
+		}
+		return modifierList.getModifierElement(myModifier);
 	}
 
 	@NotNull
@@ -57,12 +72,23 @@ public class RemoveModifierFix extends BaseIntentionAction
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile psiFile)
 	{
-		return true;
+		return findModifier() != null;
 	}
 
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException
 	{
-		myModifierElement.delete();
+		PsiElement modifier = findModifier();
+		if(modifier != null)
+		{
+			PsiElement next = modifier.getNextSibling();
+			if(next instanceof PsiWhiteSpace)
+			{
+				next.delete();
+			}
+
+
+			modifier.delete();
+		}
 	}
 }

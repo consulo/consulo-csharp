@@ -38,12 +38,16 @@ import com.intellij.ide.fileTemplates.FileTemplateUtil;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.util.IncorrectOperationException;
 import lombok.val;
 
@@ -78,8 +82,7 @@ public class NewCSharpClassAction extends CreateFromTemplateAction<PsiFile>
 				{
 					return false;
 				}
-				PsiPackage aPackage = PsiPackageManager.getInstance(module.getProject()).findPackage(orChooseDirectory,
-						DotNetModuleExtension.class);
+				PsiPackage aPackage = PsiPackageManager.getInstance(module.getProject()).findPackage(orChooseDirectory, DotNetModuleExtension.class);
 
 				if(aPackage == null)
 				{
@@ -108,6 +111,35 @@ public class NewCSharpClassAction extends CreateFromTemplateAction<PsiFile>
 				namespace = name.substring(0, index);
 				name = name.substring(index + 1, name.length());
 			}
+			else
+			{
+				Module moduleForPsiElement = ModuleUtilCore.findModuleForPsiElement(dir);
+				if(moduleForPsiElement != null)
+				{
+					DotNetModuleExtension extension = ModuleUtilCore.getExtension(moduleForPsiElement, DotNetModuleExtension.class);
+					if(extension != null)
+					{
+						String relativePath = VfsUtil.getRelativePath(dir.getVirtualFile(), moduleForPsiElement.getModuleDir(), '.');
+
+						if(!StringUtil.isEmpty(relativePath))
+						{
+							String namespacePrefix = extension.getNamespacePrefix();
+							if(!StringUtil.isEmpty(namespacePrefix))
+							{
+								namespace = namespacePrefix + "." + relativePath;
+							}
+							else
+							{
+								namespace = relativePath;
+							}
+						}
+						else
+						{
+							namespace = extension.getNamespacePrefix();
+						}
+					}
+				}
+			}
 		}
 
 		val template = FileTemplateManager.getInstance().getInternalTemplate(templateName);
@@ -127,13 +159,19 @@ public class NewCSharpClassAction extends CreateFromTemplateAction<PsiFile>
 		try
 		{
 			Properties defaultProperties = FileTemplateManager.getInstance().getDefaultProperties(project);
-			if(namespaceName != null)
+			if(!StringUtil.isEmpty(namespaceName))
 			{
 				defaultProperties.put("NAMESPACE_NAME", namespaceName);
 			}
 
 			element = FileTemplateUtil.createFromTemplate(template, name, defaultProperties, dir);
-			val psiFile = element.getContainingFile();
+			PsiFile psiFile = element.getContainingFile();
+
+			if(template.isReformatCode())
+			{
+				//FIXME [VISTALL] this is hack until find reason - com.intellij.psi.codeStyle.CodeStyleManager.reformat() : 57 is not work?
+				CodeStyleManager.getInstance(project).reformat(psiFile);
+			}
 
 			val virtualFile = psiFile.getVirtualFile();
 			if(virtualFile != null)

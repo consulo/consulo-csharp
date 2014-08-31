@@ -23,11 +23,20 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
+import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -147,5 +156,51 @@ public abstract class CompilerCheck<T extends PsiElement>
 			message = id + ": " + message;
 		}
 		return message;
+	}
+
+	public static String formatElement(PsiElement e)
+	{
+		if(e instanceof DotNetParameter)
+		{
+			return ((DotNetParameter) e).getName();
+		}
+		else if(e instanceof CSharpLocalVariable)
+		{
+			return ((CSharpLocalVariable) e).getName();
+		}
+
+		String parentName = null;
+		PsiElement parent = e.getParent();
+		if(parent instanceof DotNetNamespaceDeclaration)
+		{
+			parentName = ((DotNetNamespaceDeclaration) parent).getPresentableQName();
+		}
+		else if(parent instanceof DotNetTypeDeclaration)
+		{
+			parentName = DotNetElementPresentationUtil.formatTypeWithGenericParameters((DotNetTypeDeclaration) parent);
+		}
+
+		String currentText = "Unknown element : " + e.getClass().getSimpleName();
+		if(e instanceof DotNetLikeMethodDeclaration)
+		{
+			currentText = DotNetElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration)e, 0);
+		}
+		else if(e instanceof DotNetTypeDeclaration)
+		{
+			currentText = DotNetElementPresentationUtil.formatTypeWithGenericParameters((DotNetTypeDeclaration) e);
+		}
+		else if(e instanceof DotNetVariable && e instanceof DotNetQualifiedElement)
+		{
+			currentText = ((DotNetQualifiedElement) e).getName();
+		}
+
+		if(StringUtil.isEmpty(parentName))
+		{
+			return currentText;
+		}
+		else
+		{
+			return parentName + "." + currentText;
+		}
 	}
 }

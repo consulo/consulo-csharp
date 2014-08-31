@@ -23,7 +23,7 @@ import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.module.CSharpLanguageVersionPointer;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleLangExtension;
 import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.roots.ModuleRootLayer;
 
 /**
  * @author VISTALL
@@ -37,7 +37,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	protected CSharpPlatform myPlatform = CSharpPlatform.ANY_CPU;
 	protected CSharpLanguageVersionPointer myLanguageVersionPointer;
 
-	public BaseCSharpModuleExtension(@NotNull String id, @NotNull ModifiableRootModel module)
+	public BaseCSharpModuleExtension(@NotNull String id, @NotNull ModuleRootLayer module)
 	{
 		super(id, module);
 		myLanguageVersionPointer = new CSharpLanguageVersionPointer(getProject(), id);

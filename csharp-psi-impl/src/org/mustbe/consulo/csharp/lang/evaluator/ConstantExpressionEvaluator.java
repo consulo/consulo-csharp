@@ -14,35 +14,46 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi.impl.source;
+package org.mustbe.consulo.csharp.lang.evaluator;
 
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.lang.ASTNode;
 
 /**
  * @author VISTALL
- * @since 04.01.14.
+ * @since 28.08.14
  */
-public class CSharpPolyadicExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public class ConstantExpressionEvaluator extends CSharpElementVisitor
 {
-	public CSharpPolyadicExpressionImpl(@NotNull ASTNode node)
+	private Object myValue;
+
+	public ConstantExpressionEvaluator(DotNetExpression expression)
 	{
-		super(node);
+		expression.accept(this);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void visitConstantExpression(CSharpConstantExpressionImpl expression)
 	{
-		visitor.visitPolyadicExpression(this);
+		myValue = expression.getValue();
 	}
 
-	@NotNull
-	@Override
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	@Nullable
+	@SuppressWarnings("unchecked")
+	public <T> T getValueAs(Class<T> clazz)
 	{
-		return DotNetTypeRef.ERROR_TYPE;
+		Object object = getValue();
+		if(clazz.isInstance(object))
+		{
+			return (T) object;
+		}
+		return null;
+	}
+
+	public Object getValue()
+	{
+		return myValue;
 	}
 }
