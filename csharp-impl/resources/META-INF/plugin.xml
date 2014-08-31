@@ -26,6 +26,10 @@
 		<xi:fallback />
 	</xi:include>
 
+	<xi:include href="/META-INF/CSharpIntentions.xml" xpointer="xpointer(/idea-plugin/*)">
+		<xi:fallback />
+	</xi:include>
+
 	<actions>
 		<action id="CSharp.Class" class="org.mustbe.consulo.csharp.ide.actions.NewCSharpClassAction">
 			<add-to-group group-id="NewGroup1" anchor="after" relative-to-action="NewClass"/>

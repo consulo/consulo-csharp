@@ -73,6 +73,18 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 		myAdditionalAttributes.add(attribute);
 	}
 
+	@Override
+	public void addModifier(@NotNull DotNetModifier modifier)
+	{
+
+	}
+
+	@Override
+	public void removeModifier(@NotNull DotNetModifier modifier)
+	{
+
+	}
+
 	@NotNull
 	@Override
 	public DotNetModifier[] getModifiers()

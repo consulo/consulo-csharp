@@ -44,6 +44,18 @@ public class CSharpLightModifierListBuilder extends LightElement implements DotN
 		myModifiers = modifiers;
 	}
 
+	@Override
+	public void addModifier(@NotNull DotNetModifier modifier)
+	{
+		myModifiers.add(modifier);
+	}
+
+	@Override
+	public void removeModifier(@NotNull DotNetModifier modifier)
+	{
+		myModifiers.remove(modifier);
+	}
+
 	@NotNull
 	@Override
 	public DotNetModifier[] getModifiers()

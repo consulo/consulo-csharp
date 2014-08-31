@@ -26,7 +26,6 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.util.IncorrectOperationException;
 
 /**
@@ -78,17 +77,12 @@ public class RemoveModifierFix extends BaseIntentionAction
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException
 	{
-		PsiElement modifier = findModifier();
-		if(modifier != null)
+		DotNetModifierList modifierList = myModifierElementOwner.getModifierList();
+		if(modifierList == null)
 		{
-			PsiElement next = modifier.getNextSibling();
-			if(next instanceof PsiWhiteSpace)
-			{
-				next.delete();
-			}
-
-
-			modifier.delete();
+			return;
 		}
+
+		modifierList.removeModifier(myModifier);
 	}
 }

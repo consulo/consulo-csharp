@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -36,6 +37,8 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiParserFacade;
+import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.tree.IElementType;
 
 /**
@@ -92,6 +95,34 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements DotNetM
 			Collections.addAll(attributes, childrenByClas.getAttributes());
 		}
 		return attributes.isEmpty() ? DotNetAttribute.EMPTY_ARRAY : attributes.toArray(new DotNetAttribute[attributes.size()]);
+	}
+
+	@Override
+	public void addModifier(@NotNull DotNetModifier modifier)
+	{
+		PsiElement firstChild = getFirstChild();
+
+		CSharpFieldDeclaration field = CSharpFileFactory.createField(getProject(), modifier.getPresentableText() + " int b");
+		PsiElement modifierElement = field.getModifierList().getModifierElement(modifier);
+
+		PsiElement psiElement = addBefore(modifierElement, firstChild);
+		addAfter(PsiParserFacade.SERVICE.getInstance(getProject()).createWhiteSpaceFromText(" "), psiElement);
+	}
+
+	@Override
+	public void removeModifier(@NotNull DotNetModifier modifier)
+	{
+		PsiElement modifierElement = getModifierElement(modifier);
+		if(modifierElement != null)
+		{
+			PsiElement next = modifierElement.getNextSibling();
+			if(next instanceof PsiWhiteSpace)
+			{
+				next.delete();
+			}
+
+			modifierElement.delete();
+		}
 	}
 
 	@NotNull
