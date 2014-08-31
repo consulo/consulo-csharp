@@ -257,7 +257,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 					defs = baseVariables;
 				}
 
-				return !defs.isEmpty() && MacroEvaluator.evaluate(text, defs);
+				return MacroEvaluator.evaluate(text, defs);
 			}
 		}); List<TextRange> list = listRef.get();
 		return list == null ? Collections.<TextRange>emptyList() : list;
