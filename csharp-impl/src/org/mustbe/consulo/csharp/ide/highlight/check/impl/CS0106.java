@@ -97,7 +97,7 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 					list = new ArrayList<CompilerCheckResult>(2);
 				}
 
-				list.add(result(modifierElement, modifier.getPresentableText()).addQuickFix(new RemoveModifierFix(modifier, modifierElement)));
+				list.add(result(modifierElement, modifier.getPresentableText()).addQuickFix(new RemoveModifierFix(modifier, element)));
 			}
 		} return list;
 	}
