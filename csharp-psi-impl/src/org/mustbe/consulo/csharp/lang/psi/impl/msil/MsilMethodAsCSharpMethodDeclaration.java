@@ -30,9 +30,9 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.typeParsing.SomeTypeParser;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.MsilHelper;
-import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
@@ -74,12 +74,12 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 		}
 	};
 
-	private final MsilClassEntry myDelegate;
+	private final DotNetTypeDeclaration myDelegate;
 
-	public MsilMethodAsCSharpMethodDeclaration(PsiElement parent, @Nullable MsilClassEntry msilClassEntry, @NotNull MsilMethodEntry methodEntry)
+	public MsilMethodAsCSharpMethodDeclaration(PsiElement parent, @Nullable DotNetTypeDeclaration declaration, @NotNull MsilMethodEntry methodEntry)
 	{
 		super(parent, getAdditionModifiers(methodEntry), methodEntry);
-		myDelegate = msilClassEntry;
+		myDelegate = declaration;
 	}
 
 	@NotNull

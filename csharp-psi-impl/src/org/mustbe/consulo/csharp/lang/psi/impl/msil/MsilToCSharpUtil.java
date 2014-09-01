@@ -18,9 +18,12 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
 import java.util.Map;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
@@ -125,23 +128,8 @@ public class MsilToCSharpUtil
 				return cache;
 			}
 
-			if(DotNetInheritUtil.isInheritor((MsilClassEntry) element, DotNetTypes.System.MulticastDelegate, true))
-			{
-				val msilMethodEntry = (MsilMethodEntry) ContainerUtil.find(((MsilClassEntry) element).getMembers(),
-						new Condition<DotNetNamedElement>()
-				{
-					@Override
-					public boolean value(DotNetNamedElement element)
-					{
-						return element instanceof MsilMethodEntry && Comparing.equal(element.getName(), "Invoke");
-					}
-				});
-
-				assert msilMethodEntry != null : ((MsilClassEntry) element).getPresentableQName();
-
-				cache = new MsilMethodAsCSharpMethodDeclaration(null, (MsilClassEntry) element, msilMethodEntry);
-			}
-			else
+			cache = wrapToDelegateMethod((DotNetTypeDeclaration) element);
+			if(cache == null)
 			{
 				cache = new MsilClassAsCSharpTypeDefinition(null, (MsilClassEntry) element);
 			}
@@ -149,6 +137,30 @@ public class MsilToCSharpUtil
 			return cache;
 		}
 		return element;
+	}
+
+	@Nullable
+	public static CSharpMethodDeclaration wrapToDelegateMethod(@NotNull DotNetTypeDeclaration typeDeclaration)
+	{
+		if(DotNetInheritUtil.isInheritor(typeDeclaration, DotNetTypes.System.MulticastDelegate, true))
+		{
+			val msilMethodEntry = (MsilMethodEntry) ContainerUtil.find((typeDeclaration).getMembers(), new Condition<DotNetNamedElement>()
+			{
+				@Override
+				public boolean value(DotNetNamedElement element)
+				{
+					return element instanceof MsilMethodEntry && Comparing.equal(element.getName(), "Invoke");
+				}
+			});
+
+			assert msilMethodEntry != null : typeDeclaration.getPresentableQName();
+
+			return new MsilMethodAsCSharpMethodDeclaration(null, typeDeclaration, msilMethodEntry);
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	public static DotNetTypeRef extractToCSharp(DotNetTypeRef typeRef, PsiElement scope)
@@ -190,6 +202,16 @@ public class MsilToCSharpUtil
 				newArguments[i] = extractToCSharp(arguments[i], scope);
 			}
 			return new DotNetGenericWrapperTypeRef(inner, newArguments);
+		}
+
+		PsiElement resolve = typeRef.resolve(scope);
+		if(resolve instanceof DotNetTypeDeclaration)
+		{
+			CSharpMethodDeclaration delegateMethod = wrapToDelegateMethod((DotNetTypeDeclaration) resolve);
+			if(delegateMethod != null)
+			{
+				return new CSharpLambdaTypeRef(delegateMethod);
+			}
 		}
 		return new MsilDelegateTypeRef(typeRef);
 	}
