@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -69,6 +70,7 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements DotNetM
 			put(CSharpModifier.OVERRIDE, CSharpTokens.OVERRIDE_KEYWORD);
 		}
 	};
+
 	public CSharpModifierListImpl(@NotNull ASTNode node)
 	{
 		super(node);
@@ -159,6 +161,13 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements DotNetM
 					{
 						return true;
 					}
+				}
+				break;
+			case ABSTRACT:
+				if(parent instanceof CSharpMethodDeclaration && parent.getParent() instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration)
+						parent.getParent()).isInterface())
+				{
+					return true;
 				}
 				break;
 		}

@@ -46,6 +46,14 @@
 		</group>
 	</actions>
 
+	<extensionPoints>
+		<extensionPoint name="unusedElementPolicy" interface="org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.UnusedElementPolicy" />
+	</extensionPoints>
+
+	<extensions defaultExtensionNs="org.mustbe.consulo.csharp">
+		<unusedElementPolicy implementation="org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.impl.DefaultUnusedElementPolicy" />
+	</extensions>
+
 	<extensions defaultExtensionNs="org.mustbe.consulo.dotnet.core">
 		<allClassesSearch implementation="org.mustbe.consulo.csharp.lang.psi.impl.search.CSharpAllClassesSearchExecutor"/>
 		<directClassInheritorsSearch implementation="org.mustbe.consulo.csharp.lang.psi.impl.search.CSharpDirectInheritorsSearcherExecutor"/>

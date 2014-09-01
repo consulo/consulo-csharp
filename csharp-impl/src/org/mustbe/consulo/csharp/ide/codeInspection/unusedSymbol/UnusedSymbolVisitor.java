@@ -7,10 +7,7 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
-import org.mustbe.consulo.dotnet.DotNetRunUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
@@ -32,15 +29,9 @@ public class UnusedSymbolVisitor extends CSharpElementVisitor
 	@Override
 	public void visitParameter(DotNetParameter parameter)
 	{
-		DotNetLikeMethodDeclaration method = parameter.getMethod();
-		if(method instanceof CSharpMethodDeclaration)
+		for(UnusedElementPolicy unusedElementPolicy : UnusedElementPolicy.EP_NAME.getExtensions())
 		{
-			if(((CSharpMethodDeclaration) method).isDelegate())
-			{
-				return;
-			}
-
-			if(DotNetRunUtil.isEntryPoint((CSharpMethodDeclaration) method))
+			if(!unusedElementPolicy.canMarkAsUnused(parameter))
 			{
 				return;
 			}
