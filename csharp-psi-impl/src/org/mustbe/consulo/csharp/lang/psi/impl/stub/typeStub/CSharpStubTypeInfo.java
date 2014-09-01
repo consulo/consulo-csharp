@@ -34,8 +34,9 @@ public abstract class CSharpStubTypeInfo
 		POINTER,
 		ARRAY,
 		GENERIC_WRAPPER,
-		NATIVE,
-		NULLABLE;
+		STATIC,
+		NULLABLE,
+		QUALIFIED;
 
 		@Immutable
 		public static final Id[] VALUES = values();

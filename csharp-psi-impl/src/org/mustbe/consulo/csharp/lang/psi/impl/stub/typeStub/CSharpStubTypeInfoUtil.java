@@ -26,6 +26,7 @@ import java.lang.reflect.Modifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNativeTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNullableTypeImpl;
@@ -36,6 +37,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticT
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromText;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
+import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -50,8 +52,8 @@ import lombok.val;
  */
 public class CSharpStubTypeInfoUtil
 {
-	private static TIntObjectHashMap<DotNetTypeRef> ourNativeRefs = new TIntObjectHashMap<DotNetTypeRef>();
-	private static TObjectIntHashMap<DotNetTypeRef> ourNativeRefs2 = new TObjectIntHashMap<DotNetTypeRef>();
+	private static TIntObjectHashMap<DotNetTypeRef> ourStaticRefs = new TIntObjectHashMap<DotNetTypeRef>();
+	private static TObjectIntHashMap<DotNetTypeRef> ourStaticRefs2 = new TObjectIntHashMap<DotNetTypeRef>();
 
 	static
 	{
@@ -66,8 +68,8 @@ public class CSharpStubTypeInfoUtil
 					byte value = i;
 					CSharpStaticTypeRef typeRef = (CSharpStaticTypeRef) field.get(null);
 
-					ourNativeRefs.put(value, typeRef);
-					ourNativeRefs2.put(typeRef, value);
+					ourStaticRefs.put(value, typeRef);
+					ourStaticRefs2.put(typeRef, value);
 
 					i++;
 				}
@@ -87,13 +89,15 @@ public class CSharpStubTypeInfoUtil
 		{
 			case USER:
 				return new CSharpStubUserTypeInfo(stubInputStream);
+			case QUALIFIED:
+				return new CSharpStubQualifiedTypeInfo(stubInputStream);
 			case POINTER:
 				return new CSharpStubPointerTypeInfo(stubInputStream);
 			case ARRAY:
 				return new CSharpStubArrayTypeInfo(stubInputStream);
 			case GENERIC_WRAPPER:
 				return new CSharpStubGenericWrapperTypeInfo(stubInputStream);
-			case NATIVE:
+			case STATIC:
 				return new CSharpStubNativeTypeInfo(stubInputStream);
 			case NULLABLE:
 				return new CSharpStubNullableTypeInfo(stubInputStream);
@@ -129,8 +133,16 @@ public class CSharpStubTypeInfoUtil
 			@Override
 			public void visitNativeType(CSharpNativeTypeImpl type)
 			{
-				int i = ourNativeRefs2.get(type.toTypeRef());
-				ref.set(new CSharpStubNativeTypeInfo(i));
+				DotNetTypeRef typeRef = type.toTypeRef();
+				//if(typeRef instanceof CSharpStaticTypeRef)
+				{
+					int i = ourStaticRefs2.get(typeRef);
+					ref.set(new CSharpStubNativeTypeInfo(i));
+				}
+				/*else
+				{
+					ref.set(new CSharpStubQualifiedTypeInfo(typeRef.getQualifiedText(), typeRef.isNullable()));
+				}  */
 			}
 
 			@Override
@@ -173,6 +185,9 @@ public class CSharpStubTypeInfoUtil
 			case USER:
 				CSharpStubUserTypeInfo referenceTypeInfo = (CSharpStubUserTypeInfo) typeInfo;
 				return new CSharpTypeRefFromText(referenceTypeInfo.getText(), element);
+			case QUALIFIED:
+				CSharpStubQualifiedTypeInfo qualifiedTypeInfo = (CSharpStubQualifiedTypeInfo) typeInfo;
+				return new DotNetTypeRefByQName(qualifiedTypeInfo.getQualifiedText(), CSharpTransform.INSTANCE, qualifiedTypeInfo.isNullable());
 			case POINTER:
 				CSharpStubPointerTypeInfo pointerTypeInfo = (CSharpStubPointerTypeInfo) typeInfo;
 				return new DotNetPointerTypeRefImpl(toTypeRef(pointerTypeInfo.getInnerType(), element));
@@ -199,9 +214,9 @@ public class CSharpStubTypeInfoUtil
 					arguments2[i] = toTypeRef(argument, element);
 				}
 				return new DotNetGenericWrapperTypeRef(toTypeRef(genericWrapperTypeInfo.getInnerType(), element), arguments2);
-			case NATIVE:
+			case STATIC:
 				CSharpStubNativeTypeInfo nativeTypeInfo = (CSharpStubNativeTypeInfo) typeInfo;
-				return ourNativeRefs.get(nativeTypeInfo.getIndex());
+				return ourStaticRefs.get(nativeTypeInfo.getIndex());
 			default:
 				throw new IllegalArgumentException();
 		}

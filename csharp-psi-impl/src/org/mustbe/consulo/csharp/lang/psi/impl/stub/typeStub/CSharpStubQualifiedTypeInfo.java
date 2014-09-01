@@ -20,41 +20,50 @@ import java.io.IOException;
 
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
+import com.intellij.util.io.StringRef;
 
 /**
  * @author VISTALL
  * @since 15.01.14
  */
-public class CSharpStubNativeTypeInfo extends CSharpStubTypeInfo
+public class CSharpStubQualifiedTypeInfo extends CSharpStubTypeInfo
 {
-	private final int myIndex;
+	private String myQualifiedText;
+	private boolean myNullable;
 
-	public CSharpStubNativeTypeInfo(int id)
+	public CSharpStubQualifiedTypeInfo(String qualifiedText, boolean nullable)
 	{
-		myIndex = id;
+		myQualifiedText = qualifiedText;
+		myNullable = nullable;
 	}
 
-	public CSharpStubNativeTypeInfo(StubInputStream stubInputStream) throws IOException
+	public CSharpStubQualifiedTypeInfo(StubInputStream inputStream) throws IOException
 	{
-		myIndex = stubInputStream.readByte();
+		myQualifiedText = StringRef.toString(inputStream.readName());
+		myNullable = inputStream.readBoolean();
 	}
 
 	@Override
 	public void writeTo(StubOutputStream stubOutputStream) throws IOException
 	{
 		super.writeTo(stubOutputStream);
-
-		stubOutputStream.writeByte(myIndex);
+		stubOutputStream.writeName(myQualifiedText);
+		stubOutputStream.writeBoolean(myNullable);
 	}
 
-	public int getIndex()
+	public boolean isNullable()
 	{
-		return myIndex;
+		return myNullable;
+	}
+
+	public String getQualifiedText()
+	{
+		return myQualifiedText;
 	}
 
 	@Override
 	public Id getId()
 	{
-		return Id.STATIC;
+		return Id.QUALIFIED;
 	}
 }
