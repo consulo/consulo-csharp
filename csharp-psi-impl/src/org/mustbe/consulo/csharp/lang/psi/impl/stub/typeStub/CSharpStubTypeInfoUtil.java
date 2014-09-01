@@ -134,15 +134,15 @@ public class CSharpStubTypeInfoUtil
 			public void visitNativeType(CSharpNativeTypeImpl type)
 			{
 				DotNetTypeRef typeRef = type.toTypeRef();
-				//if(typeRef instanceof CSharpStaticTypeRef)
+				if(typeRef instanceof CSharpStaticTypeRef)
 				{
 					int i = ourStaticRefs2.get(typeRef);
 					ref.set(new CSharpStubNativeTypeInfo(i));
 				}
-				/*else
+				else
 				{
 					ref.set(new CSharpStubQualifiedTypeInfo(typeRef.getQualifiedText(), typeRef.isNullable()));
-				}  */
+				}
 			}
 
 			@Override
