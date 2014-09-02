@@ -134,6 +134,7 @@ public class CSharpLightAttributeBuilder extends LightElement implements CSharpA
 		return null;
 	}
 
+	@NotNull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{

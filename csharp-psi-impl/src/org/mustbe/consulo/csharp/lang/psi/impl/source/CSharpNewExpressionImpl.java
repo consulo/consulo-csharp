@@ -163,6 +163,7 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 		return null;
 	}
 
+	@NotNull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{

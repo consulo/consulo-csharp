@@ -87,6 +87,7 @@ public class CSharpConstructorSuperCallImpl extends CSharpElementImpl implements
 		return findNotNullChildByClass(CSharpReferenceExpression.class);
 	}
 
+	@NotNull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
