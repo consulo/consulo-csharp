@@ -48,7 +48,13 @@ public class MsilVariableAsCSharpVariable extends MsilElementWrapper<DotNetVaria
 	{
 		super(parent, variable);
 		setNavigationElement(variable);
-		myModifierList = new MsilModifierListToCSharpModifierList(modifiers, (MsilModifierList) variable.getModifierList());
+		myModifierList = createModifierList(modifiers, variable);
+	}
+
+	@NotNull
+	protected MsilModifierListToCSharpModifierList createModifierList(CSharpModifier[] modifiers, DotNetVariable variable)
+	{
+		return new MsilModifierListToCSharpModifierList(modifiers, (MsilModifierList) variable.getModifierList());
 	}
 
 	@Override

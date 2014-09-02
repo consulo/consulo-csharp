@@ -20,12 +20,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightAttributeBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightAttributeWithSelfTypeBuilder;
 import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeArgumentNode;
+import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeHolder;
+import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeNode;
+import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributesUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
@@ -105,15 +111,40 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 	@Override
 	public DotNetAttribute[] getAttributes()
 	{
-		if(myAdditionalAttributes.isEmpty())
-		{
-			return myModifierList.getAttributes();
-		}
 		DotNetAttribute[] oldAttributes = myModifierList.getAttributes();
 		List<DotNetAttribute> attributes = new ArrayList<DotNetAttribute>(oldAttributes.length + myAdditionalAttributes.size());
 		Collections.addAll(attributes, oldAttributes);
 		attributes.addAll(myAdditionalAttributes);
+
+		ExternalAttributeHolder holder = getExternalAttributeHolder();
+
+		if(holder != null)
+		{
+			List<ExternalAttributeNode> nodes = findAttributes(holder);
+			for(ExternalAttributeNode node : nodes)
+			{
+				CSharpLightAttributeWithSelfTypeBuilder builder = new CSharpLightAttributeWithSelfTypeBuilder(myModifierList, node.getName());
+
+				for(ExternalAttributeArgumentNode argumentNode : node.getArguments())
+				{
+					builder.addParameterExpression(argumentNode.toJavaObject());
+				}
+				attributes.add(builder);
+			}
+		}
 		return attributes.toArray(new DotNetAttribute[attributes.size()]);
+	}
+
+	@NotNull
+	public List<ExternalAttributeNode> findAttributes(ExternalAttributeHolder holder)
+	{
+		return Collections.emptyList();
+	}
+
+	@LazyInstance(notNull = false)
+	private ExternalAttributeHolder getExternalAttributeHolder()
+	{
+		return ExternalAttributesUtil.findHolder(myModifierList);
 	}
 
 	@Override

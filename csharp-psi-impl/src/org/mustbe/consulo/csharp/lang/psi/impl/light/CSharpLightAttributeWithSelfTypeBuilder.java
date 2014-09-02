@@ -18,46 +18,47 @@ package org.mustbe.consulo.csharp.lang.psi.impl.light;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightTypeDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
- * @since 23.05.14
+ * @since 02.09.14
  */
-public class CSharpLightAttributeBuilder extends CSharpAbstractLightAttributeBuilder implements CSharpAttribute
+public class CSharpLightAttributeWithSelfTypeBuilder extends CSharpAbstractLightAttributeBuilder
 {
-	private final PsiElement myScope;
-	private final String myQualifiedName;
+	private final CSharpLightTypeDeclarationBuilder myType;
 
-	public CSharpLightAttributeBuilder(PsiElement scope, String qualifiedName)
+	public CSharpLightAttributeWithSelfTypeBuilder(PsiElement scope, String qualifiedName)
 	{
 		super(scope.getProject());
-		myScope = scope;
-		myQualifiedName = qualifiedName;
+		myType = new CSharpLightTypeDeclarationBuilder(scope);
+		myType.withParentQName(StringUtil.getPackageName(qualifiedName)) ;
+		myType.withName(StringUtil.getShortName(qualifiedName));
 	}
 
 	@Nullable
 	@Override
 	public DotNetTypeDeclaration resolveToType()
 	{
-		return (DotNetTypeDeclaration) toTypeRef().resolve(myScope);
+		return myType;
 	}
 
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef()
 	{
-		return new DotNetTypeRefByQName(myQualifiedName, CSharpTransform.INSTANCE);
+		return new DotNetTypeRefByQName(myType.getVmQName(), CSharpTransform.INSTANCE);
 	}
 
 	@Override
 	public String toString()
 	{
-		return "CSharpLightAttributeBuilder: " + myQualifiedName;
+		return "CSharpLightAttributeWithSelfTypeBuilder: " + myType.getVmQName();
 	}
 }
