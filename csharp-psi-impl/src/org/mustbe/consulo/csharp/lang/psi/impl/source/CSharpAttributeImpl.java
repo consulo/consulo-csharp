@@ -127,6 +127,7 @@ public class CSharpAttributeImpl extends CSharpElementImpl implements CSharpAttr
 		return ref.resolve();
 	}
 
+	@NotNull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{

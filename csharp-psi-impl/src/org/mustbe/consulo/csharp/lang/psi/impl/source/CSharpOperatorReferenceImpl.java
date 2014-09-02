@@ -383,6 +383,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		return resolve();
 	}
 
+	@NotNull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{

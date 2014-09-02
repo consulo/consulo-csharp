@@ -104,6 +104,7 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 		return null;
 	}
 
+	@NotNull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{

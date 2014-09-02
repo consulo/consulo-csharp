@@ -220,6 +220,7 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 		return resolve();
 	}
 
+	@NotNull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{

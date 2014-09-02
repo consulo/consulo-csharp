@@ -18,35 +18,25 @@ package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.dotnet.psi.DotNetElement;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetCallArgumentListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
 
 /**
  * @author VISTALL
  * @since 12.05.14
  */
-public interface CSharpCallArgumentListOwner extends DotNetElement
+public interface CSharpCallArgumentListOwner extends DotNetCallArgumentListOwner
 {
 	boolean canResolve();
 
+	@Override
 	@Nullable
 	CSharpCallArgumentList getParameterList();
-
-	@NotNull
-	DotNetExpression[] getParameterExpressions();
 
 	@Nullable
 	DotNetTypeList getTypeArgumentList();
 
 	@NotNull
 	DotNetTypeRef[] getTypeArgumentListRefs();
-
-	@Nullable
-	PsiElement resolveToCallable();
-
-	ResolveResult[] multiResolve(final boolean incompleteCode);
 }

@@ -34,8 +34,10 @@ import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
+import com.intellij.openapi.roots.types.BinariesOrderRootType;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.Ref;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.MultiMap;
 import edu.arizona.cs.mbel.mbel.ModuleParser;
@@ -67,7 +69,7 @@ public class LibrariesSearcher
 			return Collections.emptyList();
 		}
 
-		List<File> availableSystemLibraries = extension.getAvailableSystemLibraries();
+		Map<String, String> availableSystemLibraries = extension.getAvailableSystemLibraries();
 		if(availableSystemLibraries.isEmpty())
 		{
 			return Collections.emptyList();
@@ -75,8 +77,15 @@ public class LibrariesSearcher
 
 		val list = new ArrayList<Couple<String>>();
 
-		for(val availableSystemLibrary : availableSystemLibraries)
+		for(String libraryName : availableSystemLibraries.values())
 		{
+			String[] systemLibraryUrls = extension.getSystemLibraryUrls(libraryName, BinariesOrderRootType.getInstance());
+			if(systemLibraryUrls.length == 0)
+			{
+				continue;
+			}
+
+			val availableSystemLibrary = new File(VfsUtil.urlToPath(systemLibraryUrls[0]));
 			MultiMap<String, String> map = myCacheMap.get(availableSystemLibrary);
 			if(map == null)
 			{

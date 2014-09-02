@@ -205,7 +205,13 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 	@Override
 	public String getVmQName()
 	{
-		return DotNetTypeDeclarationUtil.getVmQName(this);
+		String presentableQName = getPresentableQName();
+		int genericParametersCount = getGenericParametersCount();
+		if(genericParametersCount == 0)
+		{
+			return presentableQName;
+		}
+		return presentableQName + DotNetTypeDeclarationUtil.GENERIC_MARKER_IN_NAME + genericParametersCount;
 	}
 
 	@Nullable

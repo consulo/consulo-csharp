@@ -94,6 +94,7 @@ public abstract class CSharpExpressionWithOperatorImpl extends CSharpElementImpl
 		return getOperatorElement().resolve();
 	}
 
+	@NotNull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
