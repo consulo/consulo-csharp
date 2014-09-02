@@ -18,12 +18,15 @@ package org.mustbe.consulo.csharp.ide.actions;
 
 import java.text.ParseException;
 import java.util.Properties;
+import java.util.UUID;
 
 import org.consulo.psi.PsiPackage;
 import org.consulo.psi.PsiPackageManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.CSharpIcons;
+import org.mustbe.consulo.csharp.ide.assemblyInfo.CSharpAssemblyConstants;
+import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.module.extension.BaseCSharpModuleExtension;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import com.intellij.icons.AllIcons;
@@ -42,8 +45,11 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VfsUtil;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileVisitor;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -55,11 +61,11 @@ import lombok.val;
  * @author VISTALL
  * @since 15.12.13.
  */
-public class NewCSharpClassAction extends CreateFromTemplateAction<PsiFile>
+public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
 {
-	public NewCSharpClassAction()
+	public CreateCSharpFileAction()
 	{
-		super(null, null, new IconDescriptor(AllIcons.Nodes.Class).addLayerIcon(CSharpIcons.Lang).toIcon());
+		super(null, null, CSharpFileType.INSTANCE.getIcon());
 	}
 
 	@Override
@@ -164,6 +170,14 @@ public class NewCSharpClassAction extends CreateFromTemplateAction<PsiFile>
 				defaultProperties.put("NAMESPACE_NAME", namespaceName);
 			}
 
+			if(template.getName().equals("CSharpAssemblyFile"))
+			{
+				Module module = ModuleUtilCore.findModuleForPsiElement(dir);
+				assert module != null;
+				defaultProperties.put("MODULE", module.getName());
+				defaultProperties.put("GUID", UUID.randomUUID().toString());
+			}
+
 			element = FileTemplateUtil.createFromTemplate(template, name, defaultProperties, dir);
 			PsiFile psiFile = element.getContainingFile();
 
@@ -205,11 +219,52 @@ public class NewCSharpClassAction extends CreateFromTemplateAction<PsiFile>
 		builder.addKind("Interface", new IconDescriptor(AllIcons.Nodes.Interface).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpInterface");
 		builder.addKind("Enum", new IconDescriptor(AllIcons.Nodes.Enum).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpEnum");
 		builder.addKind("Struct", new IconDescriptor(AllIcons.Nodes.Static).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpStruct");
+		builder.addKind("Attribute", new IconDescriptor(CSharpIcons.Nodes.AnnotationClass).addLayerIcon(CSharpIcons.Lang).toIcon(),
+				"CSharpAttribukte");
+		if(isCreationOfAssemblyFileAvailable(psiDirectory))
+		{
+			builder.addKind("Assembly File", AllIcons.FileTypes.Config, "CSharpAssemblyFile");
+		}
+		builder.addKind("Empty File", CSharpFileType.INSTANCE.getIcon(), "CSharpFile");
+	}
+
+	private static boolean isCreationOfAssemblyFileAvailable(PsiDirectory directory)
+	{
+		Module module = ModuleUtilCore.findModuleForPsiElement(directory);
+		if(module != null)
+		{
+			DotNetModuleExtension extension = ModuleUtilCore.getExtension(module, DotNetModuleExtension.class);
+			if(extension != null && extension.isAllowSourceRoots())
+			{
+				return false;
+			}
+		}
+		if(module == null || ModuleUtilCore.getExtension(module, BaseCSharpModuleExtension.class) == null)
+		{
+			return false;
+		}
+
+		final Ref<VirtualFile> ref = Ref.create();
+		VfsUtil.visitChildrenRecursively(module.getModuleDir(), new VirtualFileVisitor<Object>()
+		{
+			@Override
+			public boolean visitFile(@NotNull VirtualFile file)
+			{
+				if(file.getName().equals(CSharpAssemblyConstants.FileName))
+				{
+					ref.set(file);
+					return false;
+				}
+				return true;
+			}
+		});
+
+		return ref.get() == null;
 	}
 
 	@Override
 	protected String getActionName(PsiDirectory psiDirectory, String s, String s2)
 	{
-		return "Create C# Class";
+		return "Create C# File";
 	}
 }

@@ -31,15 +31,10 @@
 	</xi:include>
 
 	<actions>
-		<action id="CSharp.Class" class="org.mustbe.consulo.csharp.ide.actions.NewCSharpClassAction">
+		<action id="CSharp.File" class="org.mustbe.consulo.csharp.ide.actions.CreateCSharpFileAction">
 			<add-to-group group-id="NewGroup1" anchor="after" relative-to-action="NewClass"/>
 		</action>
-		<action id="CSharp.File" class="org.mustbe.consulo.csharp.ide.actions.NewCSharpFileAction">
-			<add-to-group group-id="NewGroup1" anchor="after" relative-to-action="NewClass"/>
-		</action>
-		<action id="CSharp.AssemblyFile" class="org.mustbe.consulo.csharp.ide.actions.NewCSharpAssemblyFileAction">
-			<add-to-group group-id="NewGroup"/>
-		</action>
+
 		<group id="CSharp.GenerateActions">
 			<action id="CSharp.GenerateConstructor" class="org.mustbe.consulo.csharp.ide.actions.generate.GenerateConstructorAction"/>
 			<add-to-group group-id="GenerateGroup" anchor="first"/>
@@ -69,6 +64,7 @@
 		<internalFileTemplate name="CSharpClass"/>
 		<internalFileTemplate name="CSharpInterface"/>
 		<internalFileTemplate name="CSharpEnum"/>
+		<internalFileTemplate name="CSharpAttribute"/>
 		<internalFileTemplate name="CSharpStruct"/>
 		<internalFileTemplate name="CSharpFile"/>
 		<internalFileTemplate name="CSharpAssemblyFile"/>
