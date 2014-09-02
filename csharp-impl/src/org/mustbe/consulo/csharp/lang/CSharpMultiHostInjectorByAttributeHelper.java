@@ -59,11 +59,11 @@ public class CSharpMultiHostInjectorByAttributeHelper implements MultiHostInject
 			IElementType literalType = ((CSharpConstantExpressionImpl) expression).getLiteralType();
 			if(literalType == CSharpTokens.VERBATIM_STRING_LITERAL)
 			{
-				return new TextRange(2, expression.getTextLength());
+				return new TextRange(2, expression.getTextLength() - 1);
 			}
 			else if(literalType == CSharpTokens.STRING_LITERAL)
 			{
-				return new TextRange(1, expression.getTextLength());
+				return new TextRange(1, expression.getTextLength() - 1);
 			}
 		}
 		return null;
