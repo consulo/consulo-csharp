@@ -111,7 +111,6 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 						dotNetMutableModuleExtension.getVariables().add("DEBUG");
 					}
 					dotNetMutableModuleExtension.getInheritableSdk().set(null, sdk);
-					layer.addModuleExtensionSdkEntry(dotNetMutableModuleExtension);
 
 					CSharpMutableModuleExtension<?> cSharpMutableModuleExtension = layer.getExtensionWithoutCheck(pair[1]);
 					assert cSharpMutableModuleExtension != null;
