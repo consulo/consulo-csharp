@@ -116,8 +116,8 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 					assert cSharpMutableModuleExtension != null;
 					cSharpMutableModuleExtension.setEnabled(true);
 
-					layer.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) layer, "mscorlib.dll"));
-					layer.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) layer, "System.dll"));
+					layer.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) layer, "mscorlib"));
+					layer.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) layer, "System"));
 				}
 
 				modifiableRootModel.setCurrentLayer(DEBUG);
