@@ -22,7 +22,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
-import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeCompositeNode;
+import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeWithChildrenNode;
 import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeHolder;
 import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeNode;
 import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeSimpleNode;
@@ -71,7 +71,7 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 				}
 
 				String vmQName = ((DotNetTypeDeclaration) parent).getVmQName();
-				ExternalAttributeCompositeNode classNode = holder.findClassNode(vmQName);
+				ExternalAttributeWithChildrenNode classNode = holder.findClassNode(vmQName);
 				if(classNode == null)
 				{
 					return Collections.emptyList();
@@ -79,10 +79,10 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 
 				DotNetTypeRef[] parameterTypeRefs = myMethodDeclaration.getParameterTypeRefs();
 
-				ExternalAttributeCompositeNode correctExternalMethod = null;
+				ExternalAttributeWithChildrenNode correctExternalMethod = null;
 				topLoop:for(ExternalAttributeSimpleNode simpleNode : classNode.getChildren())
 				{
-					if(!(simpleNode instanceof ExternalAttributeCompositeNode))
+					if(!(simpleNode instanceof ExternalAttributeWithChildrenNode))
 					{
 						continue;
 					}
@@ -92,7 +92,7 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 						continue ;
 					}
 
-					List<ExternalAttributeSimpleNode> children = ((ExternalAttributeCompositeNode) simpleNode).getChildren();
+					List<ExternalAttributeSimpleNode> children = ((ExternalAttributeWithChildrenNode) simpleNode).getChildren();
 
 					if(parameterTypeRefs.length != children.size())
 					{
@@ -108,7 +108,7 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 							continue topLoop;
 						}
 					}
-					correctExternalMethod = (ExternalAttributeCompositeNode) simpleNode;
+					correctExternalMethod = (ExternalAttributeWithChildrenNode) simpleNode;
 					break;
 				}
 
