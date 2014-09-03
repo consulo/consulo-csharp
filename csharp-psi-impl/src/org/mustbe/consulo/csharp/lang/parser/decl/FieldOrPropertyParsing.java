@@ -128,15 +128,15 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 		if(builderWrapper.getTokenType() == LBRACKET)
 		{
 			MethodParsing.parseParameterList(builderWrapper, RBRACKET);
-
-			parseAccessors(builderWrapper, XXX_ACCESSOR, PROPERTY_ACCESSOR_START);
-
-			marker.done(ARRAY_METHOD_DECLARATION);
 		}
 		else
 		{
 			builderWrapper.error("'[' expected");
 		}
+
+		parseAccessors(builderWrapper, XXX_ACCESSOR, PROPERTY_ACCESSOR_START);
+
+		marker.done(ARRAY_METHOD_DECLARATION);
 	}
 
 	public static void parseFieldOrPropertyAfterName(CSharpBuilderWrapper builderWrapper, PsiBuilder.Marker marker)
