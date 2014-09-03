@@ -24,8 +24,8 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.lexer.CSharpLexer;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.dotnet.dll.vfs.builder.block.LineStubBlock;
 import org.mustbe.consulo.dotnet.dll.vfs.builder.block.StubBlock;
 import org.mustbe.consulo.dotnet.dll.vfs.builder.block.StubBlockUtil;
@@ -33,8 +33,11 @@ import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGeneric
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
+import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.PairFunction;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -218,7 +221,16 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			if(extendTypeRefs.length > 0)
 			{
 				builder.append(" : ");
-				StubBlockUtil.join(builder, extendTypeRefs, new PairFunction<StringBuilder, DotNetTypeRef, Void>()
+				List<DotNetTypeRef> temp = ContainerUtil.filter(extendTypeRefs, new Condition<DotNetTypeRef>()
+				{
+					@Override
+					public boolean value(DotNetTypeRef typeRef)
+					{
+						return !DotNetTypeRefUtil.isObject(typeRef);
+					}
+				});
+
+				StubBlockUtil.join(builder, temp, new PairFunction<StringBuilder, DotNetTypeRef, Void>()
 				{
 					@Nullable
 					@Override
