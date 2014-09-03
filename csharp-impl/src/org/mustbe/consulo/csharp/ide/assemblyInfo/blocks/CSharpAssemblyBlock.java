@@ -19,12 +19,8 @@ package org.mustbe.consulo.csharp.ide.assemblyInfo.blocks;
 import javax.swing.JComponent;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
-import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDummyDeclarationImpl;
-import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
-import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 
@@ -54,23 +50,7 @@ public abstract class CSharpAssemblyBlock
 			return null;
 		}
 
-		DotNetAttribute attribute = DotNetAttributeUtil.findAttribute(childOfAnyType, myAttributeType);
-		if(attribute == null)
-		{
-			return null;
-		}
-
-		if(!(attribute instanceof CSharpAttribute))
-		{
-			return null;
-		}
-
-		DotNetExpression[] parameterExpressions = ((CSharpAttribute) attribute).getParameterExpressions();
-		if(parameterExpressions.length == 0)
-		{
-			return null;
-		}
-		return new ConstantExpressionEvaluator(parameterExpressions[0]).getValueAs(clazz);
+		return CSharpAttributeUtil.findSingleAttributeValue(childOfAnyType, myAttributeType, clazz);
 	}
 
 	public String getTitle()

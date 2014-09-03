@@ -34,6 +34,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -126,7 +127,10 @@ public class CSharpArrayMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 	@Override
 	public String getName()
 	{
-		return "Item";
+		String singleAttributeValue = null;/* CSharpAttributeUtil.findSingleAttributeValue(this, DotNetTypes.System.Runtime.CompilerServices
+		.IndexerName, String.class);  */
+		//TODO [VISTALL] fix stackoverflow and uncomment
+		return StringUtil.notNullize(singleAttributeValue, "Item");
 	}
 
 	@Nullable
