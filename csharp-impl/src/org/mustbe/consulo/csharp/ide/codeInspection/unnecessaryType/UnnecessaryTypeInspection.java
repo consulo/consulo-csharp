@@ -120,6 +120,10 @@ public class UnnecessaryTypeInspection extends LocalInspectionTool
 						return;
 					}
 				}
+				else
+				{
+					return;
+				}
 
 				DotNetTypeRef typeRef = variable.toTypeRef(false);
 				if(typeRef == DotNetTypeRef.AUTO_TYPE)

@@ -57,6 +57,7 @@ public enum CSharpCompilerChecks
 	CS0722(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static classes in methods
 	CS0723(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static classes in variables
 	CS0815(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // lambdas cant be cast to 'var'
+	CS0818(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // var can be used if not initializer
 	CS1004(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // duplicate modifier check
 	CS1100(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // 'this' modifier can be only set to first parameter
 	CS1105(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // 'this' modifier can be only in method with static modifier
