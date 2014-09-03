@@ -21,10 +21,8 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
-import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -60,17 +58,6 @@ public class CSharpPsiUtilImpl
 			return oldName.substring(1, oldName.length());
 		}
 		return oldName;
-	}
-
-	public static boolean isCompiledElement(@NotNull PsiElement psi)
-	{
-		PsiFile containingFile = psi.getContainingFile();
-		if(containingFile == null)
-		{
-			return false;
-		}
-		VirtualFile virtualFile = containingFile.getVirtualFile();
-		return virtualFile != null && ProjectFileIndex.SERVICE.getInstance(psi.getProject()).isInLibraryClasses(virtualFile);
 	}
 
 	@Nullable

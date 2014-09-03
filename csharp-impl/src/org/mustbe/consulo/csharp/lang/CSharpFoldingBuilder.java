@@ -28,10 +28,10 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import com.intellij.codeInsight.folding.CodeFoldingSettings;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
@@ -39,6 +39,7 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.tree.IElementType;
 import lombok.val;
@@ -56,11 +57,6 @@ public class CSharpFoldingBuilder implements FoldingBuilder
 		val foldingList = new ArrayList<FoldingDescriptor>();
 
 		PsiElement psi = astNode.getPsi();
-
-		if(CSharpPsiUtilImpl.isCompiledElement(psi))
-		{
-			return FoldingDescriptor.EMPTY;
-		}
 
 		psi.accept(new CSharpRecursiveElementVisitor()
 		{
@@ -129,28 +125,22 @@ public class CSharpFoldingBuilder implements FoldingBuilder
 			@Override
 			public void visitComment(PsiComment comment)
 			{
-				int start = comment.getStartOffsetInParent();
+				PsiFile containingFile = comment.getContainingFile();
 
-				int end = 0;
-
-				IElementType tokenType = comment.getTokenType();
-				if(tokenType == CSharpTokens.BLOCK_COMMENT)
+				if(containingFile == null)
 				{
-					end = start + comment.getTextLength();
+					return;
 				}
-				else
-				{
-					PsiElement prevSibling = comment.getPrevSibling();
-					if(isAcceptableComment(prevSibling, tokenType) || prevSibling != null && isAcceptableComment(prevSibling.getNextSibling(),
-							tokenType))
-					{
-						return;
-					}
 
-					PsiElement lastComment = findLastComment(comment, tokenType);
-					end = lastComment.getTextRange().getEndOffset();
+				if(containingFile.getFirstChild() == comment)
+				{
+					TextRange textRange = comment.getTextRange();
+					int startOffset = textRange.getStartOffset();
+
+					PsiElement lastComment = findLastComment(comment, comment.getTokenType());
+
+					foldingList.add(new FoldingDescriptor(comment, new TextRange(startOffset, lastComment.getTextRange().getEndOffset())));
 				}
-				foldingList.add(new FoldingDescriptor(comment, new TextRange(start, end)));
 			}
 		});
 		return foldingList.toArray(new FoldingDescriptor[foldingList.size()]);
@@ -246,9 +236,9 @@ public class CSharpFoldingBuilder implements FoldingBuilder
 		{
 			return true;
 		}
-		else if(psi instanceof PsiComment && psi.getPrevSibling() == null)
+		else if(psi instanceof PsiComment)
 		{
-			return true;
+			return  CodeFoldingSettings.getInstance().COLLAPSE_FILE_HEADER;
 		}
 
 		return false;
