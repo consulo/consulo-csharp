@@ -94,8 +94,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 		@Nullable
 		public HighlightInfo create()
 		{
-			return HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR).description(description).escapedToolTip
-					(tooltip).range(range).create();
+			return HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR).description(description).escapedToolTip(tooltip).range(range).create();
 		}
 	}
 
@@ -141,8 +140,8 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 
 			for(CSharpCompilerChecks classEntry : CSharpCompilerChecks.VALUES)
 			{
-				if(languageVersion.ordinal() >= classEntry.getLanguageVersion().ordinal() &&
-						classEntry.getTargetClass().isAssignableFrom(element.getClass()))
+				if(languageVersion.ordinal() >= classEntry.getLanguageVersion().ordinal() && classEntry.getTargetClass().isAssignableFrom(element
+						.getClass()))
 				{
 					List<CompilerCheck.CompilerCheckResult> results = classEntry.check(languageVersion, element);
 					if(results.isEmpty())
@@ -449,7 +448,8 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 		{
 			return (CSharpCallArgumentListOwner) element;
 		}
-		else if(parent instanceof CSharpMethodCallExpressionImpl || parent instanceof CSharpConstructorSuperCallImpl)
+		else if(parent instanceof CSharpMethodCallExpressionImpl || parent instanceof CSharpConstructorSuperCallImpl || parent instanceof
+				CSharpAttribute)
 		{
 			return (CSharpCallArgumentListOwner) parent;
 		}
