@@ -17,21 +17,52 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.ContributedReferenceHost;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.PsiReferenceService;
+import com.intellij.psi.tree.TokenSet;
 
 /**
  * @author VISTALL
  * @since 16.12.13.
  */
-public class CSharpCallArgumentListImpl extends CSharpElementImpl implements CSharpCallArgumentList
+public class CSharpCallArgumentListImpl extends CSharpElementImpl implements CSharpCallArgumentList, ContributedReferenceHost
 {
+	private static final TokenSet ourOpenSet = TokenSet.create(CSharpTokens.LPAR, CSharpTokens.LBRACKET);
+	private static final TokenSet ourCloseSet = TokenSet.create(CSharpTokens.RPAR, CSharpTokens.RBRACKET);
+
 	public CSharpCallArgumentListImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	@NotNull
+	@Override
+	public PsiReference[] getReferences()
+	{
+		return PsiReferenceService.getService().getContributedReferences(this);
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getOpenElement()
+	{
+		return findChildByFilter(ourOpenSet);
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getCloseElement()
+	{
+		return findChildByFilter(ourCloseSet);
 	}
 
 	@Override

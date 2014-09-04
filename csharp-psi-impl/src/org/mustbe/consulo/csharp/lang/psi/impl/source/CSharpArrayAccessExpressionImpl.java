@@ -22,29 +22,23 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.MultiRangeReference;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiQualifiedReference;
 import com.intellij.psi.ResolveResult;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implements DotNetExpression, MultiRangeReference, CSharpCallArgumentListOwner, PsiQualifiedReference
+public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpCallArgumentListOwner, CSharpQualifiedNonReference
 {
 	public CSharpArrayAccessExpressionImpl(@NotNull ASTNode node)
 	{
@@ -61,61 +55,12 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
-		PsiElement resolve = resolve();
+		PsiElement resolve = resolveToCallable();
 		if(resolve instanceof CSharpArrayMethodDeclaration)
 		{
 			return ((CSharpArrayMethodDeclaration) resolve).getReturnTypeRef();
 		}
 		return DotNetTypeRef.ERROR_TYPE;
-	}
-
-	@Override
-	public List<TextRange> getRanges()
-	{
-		PsiElement l = findChildByType(CSharpTokens.LBRACKET);
-		PsiElement r = findChildByType(CSharpTokens.RBRACKET);
-
-		List<TextRange> list = new SmartList<TextRange>();
-		if(l != null)
-		{
-			list.add(new TextRange(l.getStartOffsetInParent(), l.getStartOffsetInParent() + 1));
-		}
-
-		if(r != null)
-		{
-			list.add(new TextRange(r.getStartOffsetInParent(), r.getStartOffsetInParent() + 1));
-		}
-
-		return list;
-	}
-
-	@Override
-	public PsiElement getElement()
-	{
-		return this;
-	}
-
-	@Override
-	public TextRange getRangeInElement()
-	{
-		List<TextRange> ranges = getRanges();
-		return ranges.isEmpty() ? TextRange.EMPTY_RANGE : ranges.get(0);
-	}
-
-	@Nullable
-	@Override
-	public PsiElement resolve()
-	{
-		ResolveResultWithWeight[] resolveResults = CSharpReferenceExpressionImpl.multiResolve0(CSharpReferenceExpressionImpl.ResolveToKind
-				.ARRAY_METHOD, this, this);
-		for(ResolveResultWithWeight resolveResult : resolveResults)
-		{
-			if(resolveResult.isGoodResult())
-			{
-				return resolveResult.getElement();
-			}
-		}
-		return null;
 	}
 
 	@Override
@@ -129,61 +74,15 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 	@Override
 	public String getReferenceName()
 	{
-		return getQualifier().getText();
-	}
-
-	@NotNull
-	@Override
-	public String getCanonicalText()
-	{
-		return "array";
-	}
-
-	@Override
-	public PsiElement handleElementRename(String s) throws IncorrectOperationException
-	{
-		return null;
-	}
-
-	@Override
-	public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException
-	{
-		return null;
-	}
-
-	@Override
-	public boolean isReferenceTo(PsiElement element)
-	{
-		PsiElement resolve = resolve();
-		return element.getManager().areElementsEquivalent(element, resolve);
-	}
-
-	@NotNull
-	@Override
-	public Object[] getVariants()
-	{
-		return new Object[0];
-	}
-
-	@Override
-	public boolean isSoft()
-	{
-		return false;
+		throw new IllegalArgumentException("This methid is never called");
 	}
 
 	@NotNull
 	@Override
 	public DotNetExpression[] getParameterExpressions()
 	{
-		List<DotNetExpression> list = new ArrayList<DotNetExpression>(2);
-		for(PsiElement element : getChildren())
-		{
-			if(element != getFirstChild() && element instanceof DotNetExpression)
-			{
-				list.add((DotNetExpression) element);
-			}
-		}
-		return ContainerUtil.toArray(list, DotNetExpression.ARRAY_FACTORY);
+		CSharpCallArgumentList parameterList = getParameterList();
+		return parameterList == null ? DotNetExpression.EMPTY_ARRAY : parameterList.getExpressions();
 	}
 
 	@Override
@@ -196,7 +95,7 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 	@Override
 	public CSharpCallArgumentList getParameterList()
 	{
-		return null;
+		return findChildByClass(CSharpCallArgumentList.class);
 	}
 
 	@Nullable
@@ -217,7 +116,17 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 	@Override
 	public PsiElement resolveToCallable()
 	{
-		return resolve();
+		ResolveResult[] resolveResults = multiResolve(false);
+		if(resolveResults.length == 0)
+		{
+			return null;
+		}
+		ResolveResultWithWeight resolveResult = (ResolveResultWithWeight) resolveResults[0];
+		if(!resolveResult.isGoodResult())
+		{
+			return null;
+		}
+		return resolveResult.getElement();
 	}
 
 	@NotNull

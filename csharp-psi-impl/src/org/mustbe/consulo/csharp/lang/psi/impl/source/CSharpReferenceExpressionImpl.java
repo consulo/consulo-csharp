@@ -57,7 +57,6 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiQualifiedReference;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
@@ -79,7 +78,7 @@ import lombok.val;
  * @since 28.11.13.
  */
 @Logger
-public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements CSharpReferenceExpression, PsiPolyVariantReference
+public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements CSharpReferenceExpression, PsiPolyVariantReference, CSharpQualifiedNonReference
 {
 	private static class OurResolver implements ResolveCache.PolyVariantResolver<CSharpReferenceExpressionImpl>
 	{
@@ -216,7 +215,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		return multiResolve0(kind, p, this);
 	}
 
-	public static <T extends PsiQualifiedReference & PsiElement> ResolveResultWithWeight[] multiResolve0(ResolveToKind kind,
+	public static <T extends CSharpQualifiedNonReference & PsiElement> ResolveResultWithWeight[] multiResolve0(ResolveToKind kind,
 			final CSharpCallArgumentListOwner parameters, final T e)
 	{
 		Condition<PsiNamedElement> namedElementCondition;
@@ -371,7 +370,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		return collectResults(kind, namedElementCondition, weightProcessor, e, false);
 	}
 
-	private static <T extends PsiQualifiedReference & PsiElement> ResolveResultWithWeight[] collectResults(@NotNull ResolveToKind kind,
+	private static <T extends CSharpQualifiedNonReference & PsiElement> ResolveResultWithWeight[] collectResults(@NotNull ResolveToKind kind,
 			@NotNull Condition<PsiNamedElement> condition, @NotNull WeightProcessor<PsiNamedElement> weightProcessor, final T element,
 			final boolean completion)
 	{

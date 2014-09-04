@@ -65,7 +65,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReference;
-import com.intellij.psi.ReferenceRange;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.ui.ColorUtil;
@@ -262,12 +261,28 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	{
 		super.visitArrayAccessExpression(expression);
 
-		PsiElement resolve = expression.resolve();
+		PsiElement resolve = expression.resolveToCallable();
 		if(resolve == null)
 		{
-			List<TextRange> absoluteRanges = ReferenceRange.getAbsoluteRanges(expression);
+			CSharpCallArgumentList parameterList = expression.getParameterList();
+			if(parameterList == null)
+			{
+				return;
+			}
 
-			for(TextRange textRange : absoluteRanges)
+			List<TextRange> list = new ArrayList<TextRange>();
+			PsiElement temp = parameterList.getOpenElement();
+			if(temp != null)
+			{
+				list.add(temp.getTextRange());
+			}
+			temp = parameterList.getCloseElement();
+			if(temp != null)
+			{
+				list.add(temp.getTextRange());
+			}
+
+			for(TextRange textRange : list)
 			{
 				HighlightInfo info = HighlightInfo.newHighlightInfo(HighlightInfoType.WRONG_REF).descriptionAndTooltip("Array method is not " +
 						"resolved").range(textRange).create();

@@ -14,30 +14,20 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi;
+package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.dotnet.psi.DotNetCallArgumentList;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
- * @since 12.05.14
+ * @since 04.09.14
  */
-public interface CSharpCallArgumentList extends DotNetCallArgumentList
+public interface CSharpQualifiedNonReference extends PsiElement
 {
 	@Nullable
-	PsiElement getOpenElement();
+	String getReferenceName();
 
 	@Nullable
-	PsiElement getCloseElement();
-
-	@Override
-	@NotNull
-	DotNetExpression[] getExpressions();
-
-	@NotNull
-	CSharpNamedCallArgument[] getNamedArguments();
+	PsiElement getQualifier();
 }

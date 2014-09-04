@@ -514,9 +514,9 @@ public class ExpressionParsing extends SharingParsingHelpers
 					return expr;
 				}
 
-				builder.advanceLexer();
-
 				final PsiBuilder.Marker arrayAccess = expr.precede();
+				PsiBuilder.Marker argumentListMarker = builder.mark();
+				builder.advanceLexer();
 
 				while(true)
 				{
@@ -539,11 +539,13 @@ public class ExpressionParsing extends SharingParsingHelpers
 				if(builder.getTokenType() != RBRACKET)
 				{
 					builder.error("']' expected");
+					argumentListMarker.done(CALL_ARGUMENT_LIST);
 					arrayAccess.done(ARRAY_ACCESS_EXPRESSION);
 					startMarker.drop();
 					return arrayAccess;
 				}
 				builder.advanceLexer();
+				argumentListMarker.done(CALL_ARGUMENT_LIST);
 
 				arrayAccess.done(ARRAY_ACCESS_EXPRESSION);
 				expr = arrayAccess;
