@@ -39,14 +39,12 @@ public abstract class CSharpLightLikeMethodDeclaration<S extends DotNetLikeMetho
 		DotNetLikeMethodDeclaration
 {
 	protected S myOriginal;
-	private final DotNetTypeRef myReturnTypeRef;
 	private final DotNetParameterList myParameterList;
 
-	public CSharpLightLikeMethodDeclaration(S original, DotNetTypeRef returnTypeRef, @Nullable DotNetParameterList parameterList)
+	public CSharpLightLikeMethodDeclaration(S original, @Nullable DotNetParameterList parameterList)
 	{
 		super(original);
 		myOriginal = original;
-		myReturnTypeRef = returnTypeRef;
 		myParameterList = parameterList;
 	}
 
@@ -83,13 +81,6 @@ public abstract class CSharpLightLikeMethodDeclaration<S extends DotNetLikeMetho
 	public DotNetType getReturnType()
 	{
 		return myOriginal.getReturnType();
-	}
-
-	@NotNull
-	@Override
-	public DotNetTypeRef getReturnTypeRef()
-	{
-		return myReturnTypeRef;
 	}
 
 	@Nullable

@@ -28,6 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightArrayMethodDecla
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightFieldDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightLikeMethodDeclarationWithImplType;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameterList;
@@ -36,10 +37,12 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTy
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
+import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
@@ -58,11 +61,10 @@ public class GenericUnwrapTool
 		{
 			return namedElement;
 		}
+
 		if(namedElement instanceof CSharpMethodDeclaration)
 		{
 			CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) namedElement;
-
-			DotNetTypeRef newReturnTypeRef = exchangeTypeRefs(methodDeclaration.getReturnTypeRef(), extractor, namedElement);
 
 			DotNetParameterList parameterList = methodDeclaration.getParameterList();
 
@@ -76,13 +78,13 @@ public class GenericUnwrapTool
 
 			parameterList = new CSharpLightParameterList(parameterList == null ? namedElement : parameterList, newParameters);
 
-			return (T) new CSharpLightMethodDeclaration(methodDeclaration, newReturnTypeRef, parameterList);
+			CSharpLightMethodDeclaration copy = new CSharpLightMethodDeclaration(methodDeclaration, parameterList);
+			exchangeMethodTypeRefs(copy, methodDeclaration, extractor);
+			return (T) copy;
 		}
 		else if(namedElement instanceof CSharpArrayMethodDeclaration)
 		{
 			CSharpArrayMethodDeclaration arrayMethodDeclaration = (CSharpArrayMethodDeclaration) namedElement;
-
-			DotNetTypeRef newReturnTypeRef = exchangeTypeRefs(arrayMethodDeclaration.getReturnTypeRef(), extractor, namedElement);
 
 			DotNetParameterList parameterList = arrayMethodDeclaration.getParameterList();
 
@@ -97,7 +99,9 @@ public class GenericUnwrapTool
 
 			parameterList = new CSharpLightParameterList(parameterList == null ? namedElement : parameterList, newParameters);
 
-			return (T) new CSharpLightArrayMethodDeclaration(arrayMethodDeclaration, newReturnTypeRef, parameterList);
+			CSharpLightArrayMethodDeclaration copy = new CSharpLightArrayMethodDeclaration(arrayMethodDeclaration, parameterList);
+			exchangeMethodTypeRefs(copy, arrayMethodDeclaration, extractor);
+			return (T) copy;
 		}
 		else if(namedElement instanceof CSharpConstructorDeclaration)
 		{
@@ -116,7 +120,8 @@ public class GenericUnwrapTool
 
 			parameterList = new CSharpLightParameterList(parameterList == null ? namedElement : parameterList, newParameters);
 
-			return (T) new CSharpLightConstructorDeclaration(constructor, null, parameterList);
+			CSharpLightConstructorDeclaration copy = new CSharpLightConstructorDeclaration(constructor, parameterList);
+			return (T) copy;
 		}
 		else if(namedElement instanceof CSharpPropertyDeclaration)
 		{
@@ -138,6 +143,14 @@ public class GenericUnwrapTool
 			System.out.println("Unsupported: " + namedElement);
 		}
 		return namedElement;
+	}
+
+	private static <S extends DotNetLikeMethodDeclaration & DotNetVirtualImplementOwner> void exchangeMethodTypeRefs
+			(CSharpLightLikeMethodDeclarationWithImplType<?> copy, S original, DotNetGenericExtractor extractor)
+	{
+		copy.withReturnTypeRef(exchangeTypeRefs(original.getReturnTypeRef(), extractor, original));
+
+		copy.withTypeRefForImplement(exchangeTypeRefs(original.getTypeRefForImplement(), extractor, original));
 	}
 
 	@NotNull

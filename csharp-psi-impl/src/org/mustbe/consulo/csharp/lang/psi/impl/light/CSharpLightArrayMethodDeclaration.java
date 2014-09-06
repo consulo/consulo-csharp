@@ -16,39 +16,24 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.light;
 
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
  * @since 01.03.14
  */
-public class CSharpLightArrayMethodDeclaration extends CSharpLightNamedElement<CSharpArrayMethodDeclaration> implements CSharpArrayMethodDeclaration
+public class CSharpLightArrayMethodDeclaration extends CSharpLightLikeMethodDeclarationWithImplType<CSharpArrayMethodDeclaration> implements CSharpArrayMethodDeclaration
 {
-	private final DotNetTypeRef myNewReturnTypeRef;
-	private final DotNetParameterList myParameterList;
-
-	public CSharpLightArrayMethodDeclaration(CSharpArrayMethodDeclaration arrayMethodDeclaration, DotNetTypeRef newReturnTypeRef,
-			DotNetParameterList parameterList)
+	public CSharpLightArrayMethodDeclaration(CSharpArrayMethodDeclaration arrayMethodDeclaration, DotNetParameterList parameterList)
 	{
-		super(arrayMethodDeclaration);
-		myNewReturnTypeRef = newReturnTypeRef;
-		myParameterList = parameterList;
+		super(arrayMethodDeclaration, parameterList);
 	}
 
 	@Override
@@ -66,104 +51,9 @@ public class CSharpLightArrayMethodDeclaration extends CSharpLightNamedElement<C
 
 	@NotNull
 	@Override
-	public DotNetType getReturnType()
-	{
-		return myOriginal.getReturnType();
-	}
-
-	@NotNull
-	@Override
-	public DotNetTypeRef getReturnTypeRef()
-	{
-		return myNewReturnTypeRef;
-	}
-
-	@NotNull
-	@Override
 	public DotNetNamedElement[] getMembers()
 	{
 		return myOriginal.getMembers();
-	}
-
-	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
-	{
-		return myOriginal.hasModifier(modifier);
-	}
-
-	@Nullable
-	@Override
-	public DotNetModifierList getModifierList()
-	{
-		return myOriginal.getModifierList();
-	}
-
-	@NotNull
-	@Override
-	public DotNetTypeRef[] getParameterTypeRefs()
-	{
-		return myParameterList.getParameterTypeRefs();
-	}
-
-	@Nullable
-	@Override
-	public DotNetParameterList getParameterList()
-	{
-		return myParameterList;
-	}
-
-	@NotNull
-	@Override
-	public DotNetParameter[] getParameters()
-	{
-		return myParameterList.getParameters();
-	}
-
-	@Nullable
-	@Override
-	public String getPresentableParentQName()
-	{
-		return myOriginal.getPresentableParentQName();
-	}
-
-	@Nullable
-	@Override
-	public String getPresentableQName()
-	{
-		return myOriginal.getPresentableQName();
-	}
-
-	@Override
-	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
-	{
-		return myOriginal.setName(s);
-	}
-
-	@Nullable
-	@Override
-	public PsiElement getCodeBlock()
-	{
-		return null;
-	}
-
-	@Nullable
-	@Override
-	public DotNetGenericParameterList getGenericParameterList()
-	{
-		return null;
-	}
-
-	@NotNull
-	@Override
-	public DotNetGenericParameter[] getGenericParameters()
-	{
-		return DotNetGenericParameter.EMPTY_ARRAY;
-	}
-
-	@Override
-	public int getGenericParametersCount()
-	{
-		return 0;
 	}
 
 	@Nullable
@@ -171,12 +61,5 @@ public class CSharpLightArrayMethodDeclaration extends CSharpLightNamedElement<C
 	public DotNetType getTypeForImplement()
 	{
 		return null;
-	}
-
-	@NotNull
-	@Override
-	public DotNetTypeRef getTypeRefForImplement()
-	{
-		return DotNetTypeRef.ERROR_TYPE;
 	}
 }

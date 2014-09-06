@@ -32,16 +32,16 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 13.01.14
  */
-public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclaration<CSharpMethodDeclaration> implements CSharpMethodDeclaration
+public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclarationWithImplType<CSharpMethodDeclaration> implements CSharpMethodDeclaration
 {
 	public CSharpLightMethodDeclaration(@NotNull CSharpMethodDeclaration declaration)
 	{
-		this(declaration, declaration.getReturnTypeRef(), declaration.getParameterList());
+		this(declaration, declaration.getParameterList());
 	}
 
-	public CSharpLightMethodDeclaration(CSharpMethodDeclaration original, DotNetTypeRef returnTypeRef, @Nullable DotNetParameterList parameterList)
+	public CSharpLightMethodDeclaration(CSharpMethodDeclaration original, @Nullable DotNetParameterList parameterList)
 	{
-		super(original, returnTypeRef, parameterList);
+		super(original, parameterList);
 	}
 
 	@Override
@@ -95,12 +95,5 @@ public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclarati
 	public DotNetType getTypeForImplement()
 	{
 		return null;
-	}
-
-	@NotNull
-	@Override
-	public DotNetTypeRef getTypeRefForImplement()
-	{
-		return DotNetTypeRef.ERROR_TYPE;
 	}
 }
