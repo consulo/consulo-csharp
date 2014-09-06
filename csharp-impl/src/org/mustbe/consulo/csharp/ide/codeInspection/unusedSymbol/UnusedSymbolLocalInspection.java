@@ -16,7 +16,7 @@ import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.LocalQuickFixOnPsiElement;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.ide.util.DeleteHandler;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
@@ -51,7 +51,14 @@ public class UnusedSymbolLocalInspection extends LocalInspectionTool
 		@Override
 		public void invoke(@NotNull Project project, @NotNull PsiFile psiFile, @NotNull final PsiElement element, @NotNull PsiElement element2)
 		{
-			DeleteHandler.deletePsiElement(new PsiElement[]{element}, project);
+			new WriteCommandAction.Simple<Object>(project, psiFile)
+			{
+				@Override
+				protected void run() throws Throwable
+				{
+					element.delete();
+				}
+			}.execute();
 		}
 
 		@NotNull
