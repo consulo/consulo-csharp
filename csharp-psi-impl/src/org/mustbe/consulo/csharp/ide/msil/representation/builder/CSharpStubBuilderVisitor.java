@@ -212,8 +212,11 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		if(declaration.isEnum())
 		{
 			DotNetTypeRef typeRefForEnumConstants = declaration.getTypeRefForEnumConstants();
-			builder.append(" : ");
-			appendTypeRef(builder, typeRefForEnumConstants);
+			if(!DotNetTypeRefUtil.isInt32(typeRefForEnumConstants))
+			{
+				builder.append(" : ");
+				appendTypeRef(builder, typeRefForEnumConstants);
+			}
 		}
 		else
 		{
