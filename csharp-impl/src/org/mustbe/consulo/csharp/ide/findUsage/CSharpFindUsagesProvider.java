@@ -29,8 +29,10 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
+import com.intellij.util.Function;
 
 /**
  * @author VISTALL
@@ -66,6 +68,10 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		if(element instanceof CSharpTypeDeclaration)
 		{
 			return "type";
+		}
+		else if(element instanceof CSharpLocalVariableDeclarationStatement)
+		{
+			return "local variable statement";
 		}
 		else if(element instanceof CSharpConstructorDeclaration)
 		{
@@ -127,7 +133,17 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 			String name = ((DotNetNamedElement) element).getName();
 			return name == null ? "null" : name;
 		}
-
+		if(element instanceof CSharpLocalVariableDeclarationStatement)
+		{
+			return StringUtil.join(((CSharpLocalVariableDeclarationStatement) element).getVariables(), new Function<CSharpLocalVariable, String>()
+			{
+				@Override
+				public String fun(CSharpLocalVariable cSharpLocalVariable)
+				{
+					return cSharpLocalVariable.getName();
+				}
+			}, ", ");
+		}
 		return "getDescriptiveName " + element.getNode().getElementType();
 	}
 
@@ -135,6 +151,7 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 	@Override
 	public String getNodeText(@NotNull PsiElement element, boolean b)
 	{
+
 		return "getNodeText " + element.getNode().getElementType();
 	}
 }

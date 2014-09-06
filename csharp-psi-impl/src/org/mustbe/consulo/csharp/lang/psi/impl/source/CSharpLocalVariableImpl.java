@@ -16,6 +16,8 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,10 +33,13 @@ import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.SmartList;
 
 /**
  * @author VISTALL
@@ -153,5 +158,91 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 			return new LocalSearchScope(parent.getParent());
 		}
 		return super.getUseScope();
+	}
+
+	@Override
+	public void delete() throws IncorrectOperationException
+	{
+		List<PsiElement> collectForDelete = new SmartList<PsiElement>();
+		PsiElement parent = getParent();
+		if(parent instanceof CSharpLocalVariableDeclarationStatement)
+		{
+			CSharpLocalVariable[] variables = ((CSharpLocalVariableDeclarationStatement) parent).getVariables();
+			if(variables.length == 1)
+			{
+				collectForDelete.add(parent);
+			}
+			/*else
+			{
+				// first variable cant remove type
+				if(variables[0] == this)
+				{
+					DotNetExpression initializer = getInitializer();
+					if(initializer != null)
+					{
+						removeWithPrevSibling(initializer, CSharpTokens.EQ, collectForDelete);
+						removeWithNextSibling(initializer, CSharpTokens.COMMA, collectForDelete);
+						collectForDelete.add(initializer);
+					}
+
+					PsiElement nameIdentifier = getNameIdentifier();
+					if(nameIdentifier != null)
+					{
+						collectForDelete.add(nameIdentifier);
+						removeWithNextSibling(nameIdentifier, CSharpTokens.COMMA, collectForDelete);
+					}
+				}
+				else
+				{
+					removeWithPrevSibling(this, CSharpTokens.COMMA, collectForDelete);
+					collectForDelete.add(this);
+				}
+			}  */
+		}
+		else
+		{
+			collectForDelete.add(this);
+		}
+
+		for(PsiElement element : collectForDelete)
+		{
+			element.delete();
+		}
+	}
+
+	private static void removeWithNextSibling(PsiElement element, IElementType token, List<PsiElement> collectForDelete)
+	{
+		PsiElement nextSibling = element.getNextSibling();
+		if(nextSibling instanceof PsiWhiteSpace)
+		{
+			collectForDelete.add(nextSibling);
+			nextSibling = nextSibling.getNextSibling();
+		}
+
+		if(nextSibling != null && nextSibling.getNode().getElementType() == token)
+		{
+			collectForDelete.add(nextSibling);
+			nextSibling = nextSibling.getNextSibling();
+		}
+
+		if(nextSibling instanceof PsiWhiteSpace)
+		{
+			collectForDelete.add(nextSibling);
+		}
+	}
+
+	private static void removeWithPrevSibling(PsiElement element, IElementType token, List<PsiElement> collectForDelete)
+	{
+		PsiElement prevSibling = element.getPrevSibling();
+		if(prevSibling instanceof PsiWhiteSpace)
+		{
+			collectForDelete.add(prevSibling);
+			prevSibling = prevSibling.getPrevSibling();
+		}
+
+		if(prevSibling != null && prevSibling.getNode().getElementType() == token)
+		{
+			collectForDelete.add(prevSibling);
+		}
 	}
 }

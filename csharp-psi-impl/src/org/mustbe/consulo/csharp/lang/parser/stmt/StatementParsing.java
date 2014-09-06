@@ -204,6 +204,7 @@ public class StatementParsing extends SharingParsingHelpers
 			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, mark, LOCAL_VARIABLE);
 			if(someMarker != null)
 			{
+				expect(builder, SEMICOLON, "';' expected");
 				someMarker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
 			}
 			return ParseVariableOrExpressionResult.VARIABLE;
