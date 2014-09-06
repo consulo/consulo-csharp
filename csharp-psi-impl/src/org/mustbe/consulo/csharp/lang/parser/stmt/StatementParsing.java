@@ -23,7 +23,6 @@ import org.mustbe.consulo.csharp.lang.parser.SharingParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.decl.FieldOrPropertyParsing;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import org.mustbe.consulo.csharp.lang.parser.exp.LinqParsing;
-import com.intellij.lang.LighterASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
@@ -199,30 +198,7 @@ public class StatementParsing extends SharingParsingHelpers
 	@Nullable
 	private static ParseVariableOrExpressionResult parseVariableOrExpression(CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker someMarker)
 	{
-		PsiBuilder.Marker newMarker = builder.mark();
-
-		int i = 0;
-		PsiBuilder.Marker[] array = new PsiBuilder.Marker[2];
-		while(!builder.eof())
-		{
-			if(i == 2)
-			{
-				break;
-			}
-			val expressionMarker = ExpressionParsing.parse(builder);
-			if(expressionMarker == null)
-			{
-				break;
-			}
-
-			array[i++] = expressionMarker;
-		}
-
-		newMarker.rollbackTo();
-
-		if(getElementType(array[0]) == BINARY_EXPRESSION || (getElementType(array[0]) == REFERENCE_EXPRESSION ||
-				getElementType(array[0]) == ARRAY_ACCESS_EXPRESSION
-				&& (getElementType(array[1]) == REFERENCE_EXPRESSION || getElementType(array[1]) == ASSIGNMENT_EXPRESSION)))
+		if(canParseAsVariable(builder))
 		{
 			PsiBuilder.Marker varMarker = parseVariableDecl(builder, false);
 			if(varMarker == null)
@@ -283,13 +259,32 @@ public class StatementParsing extends SharingParsingHelpers
 		}
 	}
 
-	private static IElementType getElementType(PsiBuilder.Marker marker)
+	private static boolean canParseAsVariable(CSharpBuilderWrapper builder)
 	{
-		if(marker instanceof LighterASTNode)
+		PsiBuilder.Marker newMarker = builder.mark();
+
+		try
 		{
-			return ((LighterASTNode) marker).getTokenType();
+			TypeInfo typeInfo = parseType(builder, BracketFailPolicy.NOTHING, true);
+			if(typeInfo == null)
+			{
+				return false;
+			}
+
+			if(builder.getTokenType() == IDENTIFIER)
+			{
+				IElementType lookAhead = builder.lookAhead(1);
+				if(lookAhead == SEMICOLON || lookAhead == EQ || lookAhead == COMMA)
+				{
+					return true;
+				}
+			}
+			return false;
 		}
-		return null;
+		finally
+		{
+			newMarker.rollbackTo();
+		}
 	}
 
 	private static void parseTryStatement(@NotNull CSharpBuilderWrapper builder, final PsiBuilder.Marker marker)
