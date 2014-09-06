@@ -220,8 +220,9 @@ public class StatementParsing extends SharingParsingHelpers
 
 		newMarker.rollbackTo();
 
-		if((getElementType(array[0]) == REFERENCE_EXPRESSION || getElementType(array[0]) == ARRAY_ACCESS_EXPRESSION) && (getElementType(array[1])
-				== REFERENCE_EXPRESSION || getElementType(array[1]) == ASSIGNMENT_EXPRESSION))
+		if(getElementType(array[0]) == BINARY_EXPRESSION || (getElementType(array[0]) == REFERENCE_EXPRESSION ||
+				getElementType(array[0]) == ARRAY_ACCESS_EXPRESSION
+				&& (getElementType(array[1]) == REFERENCE_EXPRESSION || getElementType(array[1]) == ASSIGNMENT_EXPRESSION)))
 		{
 			PsiBuilder.Marker varMarker = parseVariableDecl(builder, false);
 			if(varMarker == null)
