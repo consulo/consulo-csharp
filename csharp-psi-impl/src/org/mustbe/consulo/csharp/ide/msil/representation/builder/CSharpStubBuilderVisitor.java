@@ -221,17 +221,18 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		else
 		{
 			DotNetTypeRef[] extendTypeRefs = declaration.getExtendTypeRefs();
-			if(extendTypeRefs.length > 0)
+			List<DotNetTypeRef> temp = ContainerUtil.filter(extendTypeRefs, new Condition<DotNetTypeRef>()
+			{
+				@Override
+				public boolean value(DotNetTypeRef typeRef)
+				{
+					return !DotNetTypeRefUtil.isObject(typeRef);
+				}
+			});
+
+			if(!temp.isEmpty())
 			{
 				builder.append(" : ");
-				List<DotNetTypeRef> temp = ContainerUtil.filter(extendTypeRefs, new Condition<DotNetTypeRef>()
-				{
-					@Override
-					public boolean value(DotNetTypeRef typeRef)
-					{
-						return !DotNetTypeRefUtil.isObject(typeRef);
-					}
-				});
 
 				StubBlockUtil.join(builder, temp, new PairFunction<StringBuilder, DotNetTypeRef, Void>()
 				{
