@@ -200,37 +200,13 @@ public class StatementParsing extends SharingParsingHelpers
 	{
 		if(canParseAsVariable(builder))
 		{
-			PsiBuilder.Marker varMarker = parseVariableDecl(builder, false);
-			if(varMarker == null)
+			PsiBuilder.Marker mark = builder.mark();
+			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, mark, LOCAL_VARIABLE);
+			if(someMarker != null)
 			{
-				PsiBuilder.Marker expressionMarker = ExpressionParsing.parse(builder);
-				if(expressionMarker == null)
-				{
-					builder.error("Expression expected");
-					builder.advanceLexer();
-				}
-				else
-				{
-					if(someMarker != null)
-					{
-						expect(builder, SEMICOLON, "';' expected");
-					}
-				}
-
-				if(someMarker != null)
-				{
-					someMarker.done(EXPRESSION_STATEMENT);
-				}
-				return ParseVariableOrExpressionResult.EXPRESSION;
+				someMarker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
 			}
-			else
-			{
-				if(someMarker != null)
-				{
-					someMarker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
-				}
-				return ParseVariableOrExpressionResult.VARIABLE;
-			}
+			return ParseVariableOrExpressionResult.VARIABLE;
 		}
 		else
 		{
@@ -269,6 +245,12 @@ public class StatementParsing extends SharingParsingHelpers
 			if(typeInfo == null)
 			{
 				return false;
+			}
+
+			// binary expression cant be at statement
+			if(typeInfo.isParameterized)
+			{
+				return true;
 			}
 
 			if(builder.getTokenType() == IDENTIFIER)
@@ -788,63 +770,5 @@ public class StatementParsing extends SharingParsingHelpers
 		expect(wrapper, SEMICOLON, null);
 
 		marker.done(doneElement);
-	}
-
-	private static PsiBuilder.Marker parseVariableDecl(CSharpBuilderWrapper builder, boolean constToken)
-	{
-		PsiBuilder.Marker mark = builder.mark();
-
-		if(constToken)
-		{
-			builder.advanceLexer();
-		}
-
-		TypeInfo typeMarker = parseType(builder, BracketFailPolicy.DROP, true);
-		if(typeMarker == null)
-		{
-			if(constToken)
-			{
-				builder.error("Type expected");
-			}
-			mark.rollbackTo();
-
-			return null;
-		}
-
-		if(builder.getTokenType() == IDENTIFIER)
-		{
-			builder.advanceLexer();
-
-			if(builder.getTokenType() == EQ)
-			{
-				builder.advanceLexer();
-				PsiBuilder.Marker parse = ExpressionParsing.parse(builder);
-				if(parse == null)
-				{
-					builder.error("Expression expected");
-				}
-			}
-
-			if(builder.getTokenType() == COMMA)
-			{
-				mark.done(LOCAL_VARIABLE);
-
-				builder.advanceLexer();
-
-				FieldOrPropertyParsing.parseFieldOrLocalVariableAtNameWithDone(builder, builder.mark(), LOCAL_VARIABLE);
-
-				expect(builder, SEMICOLON, "';' expected");
-			}
-			else
-			{
-				expect(builder, SEMICOLON, "';' expected");
-
-				mark.done(LOCAL_VARIABLE);
-			}
-			return mark;
-		}
-
-		mark.rollbackTo();
-		return null;
 	}
 }
