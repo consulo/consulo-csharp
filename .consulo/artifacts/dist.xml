@@ -1,0 +1,21 @@
+<component name="ArtifactManager">
+  <artifact name="dist">
+    <output-path>$PROJECT_DIR$/out/artifacts/dist</output-path>
+    <root id="root">
+      <element id="directory" name="csharp">
+        <element id="directory" name="lib">
+          <element id="zip-archive" name="csharp.jar">
+            <element id="module-output" name="csharp-impl" />
+            <element id="module-production-resource-output" name="csharp-impl" />
+            <element id="module-output" name="csharp-psi-impl" />
+            <element id="module-production-resource-output" name="csharp-psi-impl" />
+            <element id="module-output" name="csharp-spellchecker" />
+            <element id="module-production-resource-output" name="csharp-psi-api" />
+            <element id="module-output" name="csharp-psi-api" />
+          </element>
+          <element id="file-copy" path="$PROJECT_DIR$/csharp-psi-impl/lib/jel.jar" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
