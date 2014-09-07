@@ -21,6 +21,8 @@
 	<resource-bundle>messages.CSharpBundle</resource-bundle>
 	<depends>org.mustbe.consulo.dotnet.core</depends>
 	<depends optional="true" config-file="CSharpSpellchecker.xml">com.intellij.spellchecker</depends>
+	<depends config-file="microsoft-csharp.xml" optional="true">org.mustbe.consulo.microsoft.dotnet</depends>
+	<depends config-file="mono-csharp.xml" optional="true">org.mustbe.consulo.dotnet.mono</depends>
 
 	<xi:include href="/META-INF/CSharpInspections.xml" xpointer="xpointer(/idea-plugin/*)">
 		<xi:fallback />

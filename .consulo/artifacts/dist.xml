@@ -14,6 +14,14 @@
             <element id="module-output" name="csharp-psi-api" />
           </element>
           <element id="file-copy" path="$PROJECT_DIR$/csharp-psi-impl/lib/jel.jar" />
+          <element id="zip-archive" name="microsoft-csharp.jar">
+            <element id="module-output" name="consulo-microsoft-dotnet" />
+            <element id="module-production-resource-output" name="consulo-microsoft-dotnet" />
+          </element>
+          <element id="zip-archive" name="mono-csharp.jar">
+            <element id="module-output" name="consulo-mono-dotnet" />
+            <element id="module-production-resource-output" name="consulo-mono-dotnet" />
+          </element>
         </element>
       </element>
     </root>
