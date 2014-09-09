@@ -42,18 +42,18 @@ public class CSharpAwaitExpressionImpl extends CSharpElementImpl implements DotN
 		}
 
 		DotNetTypeRef typeRef = innerExpression.toTypeRef(b);
-		Pair<DotNetTypeDeclaration, DotNetGenericExtractor> typeInSuper = CSharpTypeUtil.findTypeInSuper(typeRef, "System.Threading.Tasks.Task", this);
-		if(typeInSuper != null)
-		{
-			return new DotNetTypeRefByQName(DotNetTypes.System.Void, CSharpTransform.INSTANCE, false);
-		}
-
-		typeInSuper = CSharpTypeUtil.findTypeInSuper(typeRef, "System.Threading.Tasks.Task`1", this);
+		Pair<DotNetTypeDeclaration, DotNetGenericExtractor> typeInSuper = CSharpTypeUtil.findTypeInSuper(typeRef, "System.Threading.Tasks.Task`1", this);
 		if(typeInSuper != null)
 		{
 			DotNetTypeRef extract = typeInSuper.getSecond().extract(typeInSuper.getFirst().getGenericParameters()[0]);
 			assert extract != null;
 			return extract;
+		}
+
+		typeInSuper = CSharpTypeUtil.findTypeInSuper(typeRef, "System.Threading.Tasks.Task", this);
+		if(typeInSuper != null)
+		{
+			return new DotNetTypeRefByQName(DotNetTypes.System.Void, CSharpTransform.INSTANCE, false);
 		}
 		return DotNetTypeRef.ERROR_TYPE;
 	}
