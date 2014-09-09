@@ -232,7 +232,8 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{
-		String typeBeforeDot = StringUtil.getPackageName(myMsilElement.getNameFromBytecode());
-		return SomeTypeParser.toDotNetTypeRef(typeBeforeDot, myMsilElement);
+		String nameFromBytecode = myMsilElement.getNameFromBytecode();
+		String typeBeforeDot = StringUtil.getPackageName(nameFromBytecode);
+		return SomeTypeParser.toDotNetTypeRef(typeBeforeDot, nameFromBytecode, myMsilElement);
 	}
 }

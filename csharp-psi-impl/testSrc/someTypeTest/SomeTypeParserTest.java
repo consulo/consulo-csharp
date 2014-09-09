@@ -32,7 +32,7 @@ public class SomeTypeParserTest extends Assert
 	{
 		String s = "System.Collections.Generic.List<System.Collections.Generic.Dictionary<int,System.String>,System.String>";
 
-		SomeType someType = SomeTypeParser.parseType(s);
+		SomeType someType = SomeTypeParser.parseType(s, s);
 
 		assertEquals(someType.toString(), s);
 	}
@@ -42,7 +42,7 @@ public class SomeTypeParserTest extends Assert
 	{
 		String s = "System.Collections.Generic.List<System.String>";
 
-		SomeType someType = SomeTypeParser.parseType(s);
+		SomeType someType = SomeTypeParser.parseType(s, s);
 
 		assertEquals(someType.toString(), s);
 	}
@@ -52,7 +52,7 @@ public class SomeTypeParserTest extends Assert
 	{
 		String s = "System.Collections.Generic.List";
 
-		SomeType someType = SomeTypeParser.parseType(s);
+		SomeType someType = SomeTypeParser.parseType(s, s);
 
 		assertEquals(someType.toString(), s);
 	}

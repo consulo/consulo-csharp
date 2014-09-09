@@ -22,6 +22,7 @@ import java.util.List;
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromText;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Ref;
@@ -39,14 +40,14 @@ import com.intellij.util.containers.IntArrayList;
 public class SomeTypeParser
 {
 	@NotNull
-	public static DotNetTypeRef toDotNetTypeRef(String text, PsiElement scope)
+	public static DotNetTypeRef toDotNetTypeRef(String text, String nameFromBytecode, PsiElement scope)
 	{
 		if(StringUtil.isEmpty(text))
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 
-		SomeType someType = parseType(text);
+		SomeType someType = parseType(text, nameFromBytecode);
 
 		return convert(someType, scope);
 	}
@@ -79,7 +80,7 @@ public class SomeTypeParser
 		return typeRefRef.get();
 	}
 
-	public static SomeType parseType(String text)
+	public static SomeType parseType(String text, final String nameFromBytecode)
 	{
 		try
 		{
@@ -97,7 +98,7 @@ public class SomeTypeParser
 					@Override
 					public SomeType fun(String s)
 					{
-						return parseType(s);
+						return parseType(s, nameFromBytecode);
 					}
 				});
 				return new GenericWrapperType(new UserType(innerType), map);
@@ -109,8 +110,8 @@ public class SomeTypeParser
 		}
 		catch(Exception e)
 		{
-			LOGGER.error("Type {0} cant parsed", text);
-			return new UserType(text);
+			LOGGER.error("Type " + nameFromBytecode + " cant parsed");
+			return new UserType(DotNetTypes.System.Object);
 		}
 	}
 

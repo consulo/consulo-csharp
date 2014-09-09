@@ -72,7 +72,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 			List<DotNetNamedElement> list = new ArrayList<DotNetNamedElement>(temp.length);
 
 			boolean isEnum = isEnum();
-			List<String> bannedNames = new ArrayList<String>();
+			List<String> bannedFieldNames = new ArrayList<String>();
 			for(DotNetNamedElement element : temp)
 			{
 				if(element instanceof MsilFieldEntry)
@@ -83,14 +83,14 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 						continue;
 					}
 
-					if(StringUtil.startsWith(name, "<>") || Comparing.equal(name, "value__") && isEnum)
+					if(StringUtil.contains(name, "<>") || Comparing.equal(name, "value__") && isEnum)
 					{
-						bannedNames.add(name);
+						bannedFieldNames.add(name);
 					}
 				}
 				else if(element instanceof MsilEventEntry)
 				{
-					bannedNames.add(element.getName());
+					bannedFieldNames.add(element.getName());
 				}
 			}
 
@@ -146,7 +146,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 				else if(element instanceof MsilFieldEntry)
 				{
 					String name = element.getName();
-					if(bannedNames.contains(name))
+					if(bannedFieldNames.contains(name))
 					{
 						continue;
 					}
@@ -170,17 +170,17 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 			{
 				if(member instanceof MsilMethodEntry)
 				{
-					String name = member.getName();
-					if(Comparing.equal(name, MsilHelper.STATIC_CONSTRUCTOR_NAME))
+					String nameFromBytecode = ((MsilMethodEntry) member).getNameFromBytecode();
+					if(Comparing.equal(nameFromBytecode, MsilHelper.STATIC_CONSTRUCTOR_NAME) || StringUtil.startsWith(nameFromBytecode, "<"))
 					{
 						continue;
 					}
-					if(MsilHelper.CONSTRUCTOR_NAME.equals(name))
+					if(MsilHelper.CONSTRUCTOR_NAME.equals(nameFromBytecode))
 					{
 						list.add(new MsilMethodAsCSharpConstructorDeclaration(parentThis, MsilClassAsCSharpTypeDefinition.this,
 								(MsilMethodEntry) member));
 					}
-					else if(Comparing.equal(name, "op_Implicit") || Comparing.equal(name, "op_Explicit"))
+					else if(Comparing.equal(nameFromBytecode, "op_Implicit") || Comparing.equal(nameFromBytecode, "op_Explicit"))
 					{
 						list.add(new MsilMethodAsCSharpConversionMethodDeclaration(parentThis, (MsilMethodEntry) member));
 					}

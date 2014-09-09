@@ -115,7 +115,8 @@ public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVaria
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{
-		String typeBeforeDot = StringUtil.getPackageName(getVariable().getNameFromBytecode());
-		return SomeTypeParser.toDotNetTypeRef(typeBeforeDot, myMsilElement);
+		String nameFromBytecode = getVariable().getNameFromBytecode();
+		String typeBeforeDot = StringUtil.getPackageName(nameFromBytecode);
+		return SomeTypeParser.toDotNetTypeRef(typeBeforeDot, nameFromBytecode, myMsilElement);
 	}
 }
