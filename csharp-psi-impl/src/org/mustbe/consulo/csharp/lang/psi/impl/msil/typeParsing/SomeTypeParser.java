@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil.typeParsing;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromText;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
@@ -34,6 +35,7 @@ import com.intellij.util.containers.IntArrayList;
  * @author VISTALL
  * @since 11.07.14
  */
+@Logger
 public class SomeTypeParser
 {
 	@NotNull
@@ -79,27 +81,35 @@ public class SomeTypeParser
 
 	public static SomeType parseType(String text)
 	{
-		int i = text.indexOf("<");
-		if(i != -1)
+		try
 		{
-			String innerType = text.substring(0, i);
-
-			String argumentsList = text.substring(i + 1, text.lastIndexOf(">"));
-
-			List<String> types = splitButIgnoreInsideLtGt(argumentsList);
-
-			List<SomeType> map = ContainerUtil.map(types, new Function<String, SomeType>()
+			int i = text.indexOf("<");
+			if(i != -1)
 			{
-				@Override
-				public SomeType fun(String s)
+				String innerType = text.substring(0, i);
+
+				String argumentsList = text.substring(i + 1, text.lastIndexOf(">"));
+
+				List<String> types = splitButIgnoreInsideLtGt(argumentsList);
+
+				List<SomeType> map = ContainerUtil.map(types, new Function<String, SomeType>()
 				{
-					return parseType(s);
-				}
-			});
-			return new GenericWrapperType(new UserType(innerType), map);
+					@Override
+					public SomeType fun(String s)
+					{
+						return parseType(s);
+					}
+				});
+				return new GenericWrapperType(new UserType(innerType), map);
+			}
+			else
+			{
+				return new UserType(text);
+			}
 		}
-		else
+		catch(Exception e)
 		{
+			LOGGER.error("Type {0} cant parsed", text);
 			return new UserType(text);
 		}
 	}
