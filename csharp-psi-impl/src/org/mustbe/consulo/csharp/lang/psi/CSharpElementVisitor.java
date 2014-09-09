@@ -522,4 +522,9 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	{
 		visitElement(argument);
 	}
+
+	public void visitAwaitExpression(CSharpAwaitExpressionImpl expression)
+	{
+		visitElement(expression);
+	}
 }

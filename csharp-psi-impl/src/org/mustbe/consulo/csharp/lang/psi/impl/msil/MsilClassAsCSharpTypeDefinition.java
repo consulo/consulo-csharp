@@ -28,6 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.MsilHelper;
@@ -327,6 +328,12 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	@Override
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{
+		String vmQName = getVmQName();
+		// hack
+		if(DotNetTypes.System.Object.equals(vmQName))
+		{
+			return DotNetTypeRef.EMPTY_ARRAY;
+		}
 		DotNetTypeRef[] extendTypeRefs = myMsilElement.getExtendTypeRefs();
 		if(extendTypeRefs.length == 0)
 		{

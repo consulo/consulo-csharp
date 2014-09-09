@@ -21,9 +21,12 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.CSharpLanguageVersionWrapper;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import com.intellij.lang.LanguageVersion;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.impl.PsiBuilderAdapter;
 import com.intellij.psi.tree.IElementType;
@@ -47,10 +50,22 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 	}
 
 	private TokenSet mySoftSet = TokenSet.EMPTY;
+	private LanguageVersion myLanguageVersion;
 
-	public CSharpBuilderWrapper(PsiBuilder delegate)
+	public CSharpBuilderWrapper(PsiBuilder delegate, LanguageVersion languageVersion)
 	{
 		super(delegate);
+		myLanguageVersion = languageVersion;
+	}
+
+	@NotNull
+	public CSharpLanguageVersion getVersion()
+	{
+		if(myLanguageVersion instanceof CSharpLanguageVersionWrapper)
+		{
+			return ((CSharpLanguageVersionWrapper) myLanguageVersion).getLanguageVersion();
+		}
+		throw new UnsupportedOperationException(myLanguageVersion.toString());
 	}
 
 	public void enableSoftKeywords(@NotNull TokenSet tokenSet)

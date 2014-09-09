@@ -90,12 +90,17 @@ public class CSharpLanguageVersionWrapper implements LanguageVersion<CSharpLangu
 	@Override
 	public String getName()
 	{
-		return myLanguageVersion.name();
+		return getLanguageVersion().name();
 	}
 
 	@Override
 	public CSharpLanguage getLanguage()
 	{
 		return CSharpLanguage.INSTANCE;
+	}
+
+	public CSharpLanguageVersion getLanguageVersion()
+	{
+		return myLanguageVersion;
 	}
 }

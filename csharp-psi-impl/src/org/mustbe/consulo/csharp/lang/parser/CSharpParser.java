@@ -36,7 +36,7 @@ public class CSharpParser extends SharingParsingHelpers implements PsiParser
 	public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
 	{
 		builder.setDebugMode(true);
-		val builderWrapper = new CSharpBuilderWrapper(builder);
+		val builderWrapper = new CSharpBuilderWrapper(builder, languageVersion);
 
 		val marker = builderWrapper.mark();
 

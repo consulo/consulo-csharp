@@ -51,7 +51,7 @@ public class CSharpFragmentFactory
 		public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
 		{
 			PsiBuilder.Marker mark = builder.mark();
-			ExpressionParsing.parse(new CSharpBuilderWrapper(builder));
+			ExpressionParsing.parse(new CSharpBuilderWrapper(builder, languageVersion));
 			if(!builder.eof())
 			{
 				builder.advanceLexer();
@@ -68,7 +68,7 @@ public class CSharpFragmentFactory
 		public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
 		{
 			PsiBuilder.Marker mark = builder.mark();
-			SharingParsingHelpers.parseType(new CSharpBuilderWrapper(builder), SharingParsingHelpers.BracketFailPolicy.NOTHING, true);
+			SharingParsingHelpers.parseType(new CSharpBuilderWrapper(builder, languageVersion), SharingParsingHelpers.BracketFailPolicy.NOTHING, true);
 			if(!builder.eof())
 			{
 				builder.advanceLexer();

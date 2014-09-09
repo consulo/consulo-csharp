@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpChameleonTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
@@ -24,8 +25,10 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefType
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithInnerTypeRef;
+import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayUtil;
 
@@ -53,6 +56,32 @@ public class CSharpTypeUtil
 		return ArrayUtil.find(ourNumberRanks, typeRef.getQualifiedText());
 	}
 
+	@Nullable
+	public static Pair<DotNetTypeDeclaration, DotNetGenericExtractor> findTypeInSuper(@NotNull DotNetTypeRef typeRef, @NotNull String vmQName,
+			@NotNull PsiElement scope)
+	{
+		PsiElement resolve = typeRef.resolve(scope);
+		if(!(resolve instanceof DotNetTypeDeclaration))
+		{
+			return null;
+		}
+
+		String otherVQName = ((DotNetTypeDeclaration) resolve).getVmQName();
+		if(vmQName.equals(otherVQName))
+		{
+			return Pair.create((DotNetTypeDeclaration)resolve, typeRef.getGenericExtractor(resolve, scope));
+		}
+
+		for(DotNetTypeRef superType : ((DotNetTypeDeclaration) resolve).getExtendTypeRefs())
+		{
+			Pair<DotNetTypeDeclaration, DotNetGenericExtractor> typeInSuper = findTypeInSuper(superType, vmQName, scope);
+			if(typeInSuper != null)
+			{
+				return typeInSuper;
+			}
+		}
+		return null;
+	}
 	/**
 	 * We have expression
 	 * int a = "test";

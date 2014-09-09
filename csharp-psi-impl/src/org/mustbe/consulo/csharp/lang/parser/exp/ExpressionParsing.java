@@ -22,6 +22,8 @@ import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharingParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.decl.MethodParsing;
 import org.mustbe.consulo.csharp.lang.parser.stmt.StatementParsing;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
+import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.WhitespacesBinders;
 import com.intellij.psi.TokenType;
@@ -625,7 +627,16 @@ public class ExpressionParsing extends SharingParsingHelpers
 	@Nullable
 	private static PsiBuilder.Marker parsePrimaryExpressionStart(final CSharpBuilderWrapper builder)
 	{
+		CSharpLanguageVersion version = builder.getVersion();
+		if(version.isAtLeast(CSharpLanguageVersion._4_0))
+		{
+			builder.enableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);
+		}
 		IElementType tokenType = builder.getTokenType();
+		if(version.isAtLeast(CSharpLanguageVersion._4_0))
+		{
+			builder.disableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);
+		}
 
 		if(LITERALS.contains(tokenType))
 		{
@@ -673,6 +684,11 @@ public class ExpressionParsing extends SharingParsingHelpers
 		if(tokenType == REF_KEYWORD || tokenType == OUT_KEYWORD)
 		{
 			return parseOutRefWrapExpression(builder);
+		}
+
+		if(tokenType == AWAIT_KEYWORD)
+		{
+			return parseAwaitExpression(builder);
 		}
 
 		if(tokenType == LPAR)
@@ -758,6 +774,20 @@ public class ExpressionParsing extends SharingParsingHelpers
 		}
 		mark.done(OUT_REF_WRAP_EXPRESSION);
 		return mark;
+	}
+
+	private static PsiBuilder.Marker parseAwaitExpression(@NotNull CSharpBuilderWrapper builder)
+	{
+		val marker = builder.mark();
+		builder.advanceLexer();
+
+		if(parse(builder) == null)
+		{
+			builder.error("Expression expected");
+		}
+
+		marker.done(AWAIT_EXPRESSION);
+		return marker;
 	}
 
 	private static PsiBuilder.Marker parseAnonymMethodExpression(@NotNull CSharpBuilderWrapper builder, final PsiBuilder.Marker m)

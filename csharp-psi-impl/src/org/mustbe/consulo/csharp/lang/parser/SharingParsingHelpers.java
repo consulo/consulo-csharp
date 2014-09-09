@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.lang.LighterASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.Pair;
@@ -218,6 +219,7 @@ public class SharingParsingHelpers implements CSharpTokenSets, CSharpTokens, CSh
 		TypeInfo typeInfo = new TypeInfo();
 
 		PsiBuilder.Marker marker = builder.mark();
+		varSupport = varSupport && builder.getVersion().isAtLeast(CSharpLanguageVersion._2_0);
 		if(varSupport)
 		{
 			builder.enableSoftKeyword(CSharpSoftTokens.VAR_KEYWORD);
