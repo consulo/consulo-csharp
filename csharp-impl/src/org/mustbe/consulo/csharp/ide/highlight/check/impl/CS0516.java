@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
 import org.mustbe.consulo.csharp.ide.highlight.check.AbstractCompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
 import com.intellij.psi.PsiElement;
 
@@ -41,7 +40,6 @@ public class CS0516 extends AbstractCompilerCheck<CSharpConstructorSuperCallImpl
 	public void checkImpl(@NotNull CSharpConstructorSuperCallImpl element, @NotNull CompilerCheckResult checkResult)
 	{
 		CSharpConstructorDeclaration parent = (CSharpConstructorDeclaration) element.getParent();
-		CSharpTypeDeclaration type = (CSharpTypeDeclaration) parent.getParent();
 
 		checkResult.setText(CSharpErrorBundle.message(myId, formatElement(parent)));
 	}

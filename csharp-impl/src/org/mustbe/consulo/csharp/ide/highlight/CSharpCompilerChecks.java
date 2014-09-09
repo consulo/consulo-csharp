@@ -64,7 +64,8 @@ public enum CSharpCompilerChecks
 	CS1106(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // 'this' modifier can be only in type with static modifier and no generic
 	CS1620(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ref out exp checks
 	CS1644(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // features checks
-	CS1737(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR); // parameter default values check for order
+	CS1737(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // parameter default values check for order
+	CS4009(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF); // async modifier cant be at entry point
 
 	public static final CSharpCompilerChecks[] VALUES = CSharpCompilerChecks.values();
 

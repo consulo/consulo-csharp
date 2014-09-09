@@ -44,7 +44,8 @@ public enum CSharpModifier implements DotNetModifier
 	NEW,
 	OVERRIDE,
 	VIRTUAL,
-	OUT;
+	OUT,
+	ASYNC;
 
 	public static CSharpModifier[] EMPTY_ARRAY = new CSharpModifier[0];
 	private static Map<DotNetModifier, CSharpModifier> ourReplaceMap = new HashMap<DotNetModifier, CSharpModifier>()

@@ -68,6 +68,7 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements DotNetM
 			put(CSharpModifier.VIRTUAL, CSharpTokens.VIRTUAL_KEYWORD);
 			put(CSharpModifier.NEW, CSharpTokens.NEW_KEYWORD);
 			put(CSharpModifier.OVERRIDE, CSharpTokens.OVERRIDE_KEYWORD);
+			put(CSharpModifier.ASYNC, CSharpSoftTokens.ASYNC_KEYWORD);
 		}
 	};
 
