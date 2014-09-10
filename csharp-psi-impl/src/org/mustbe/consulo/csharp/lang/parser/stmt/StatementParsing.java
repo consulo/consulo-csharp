@@ -507,12 +507,9 @@ public class StatementParsing extends SharingParsingHelpers
 
 		if(expect(builder, LPAR, "'(' expected"))
 		{
-			if(FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithRollback(builder, builder.mark(), LOCAL_VARIABLE) == null)
+			if(parseVariableOrExpression(builder, null) == null)
 			{
-				if(ExpressionParsing.parse(builder) == null)
-				{
-					builder.error("Expression expected");
-				}
+				builder.error("Variable or expression expected");
 			}
 
 			expect(builder, RPAR, "')' expected");
