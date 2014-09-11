@@ -213,6 +213,18 @@ public class CS1644 extends CompilerCheck<PsiElement>
 					return null;
 				}
 			}));
+			add(new Feature("asynchronous functions", CSharpLanguageVersion._4_0, new Function<PsiElement, PsiElement>()
+			{
+				@Override
+				public PsiElement fun(PsiElement element)
+				{
+					if(element instanceof CSharpMethodDeclaration)
+					{
+						return ((CSharpMethodDeclaration) element).getModifierList().getModifierElement(CSharpModifier.ASYNC);
+					}
+					return null;
+				}
+			}));
 		}
 	};
 
