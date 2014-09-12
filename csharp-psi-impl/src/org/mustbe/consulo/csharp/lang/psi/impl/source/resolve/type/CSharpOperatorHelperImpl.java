@@ -71,9 +71,9 @@ public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 			put(CSharpTokens.EQEQ, "==");
 			put(CSharpTokens.NTEQ, "!=");
 			put(CSharpTokens.LT, "<");
-			put(CSharpTokens.LTEQ, ">");
+			put(CSharpTokens.LTEQ, "<=");
 			put(CSharpTokens.GT, ">");
-			put(CSharpTokens.GTEQ, ">");
+			put(CSharpTokens.GTEQ, ">=");
 			put(CSharpTokens.MUL, "*");
 			put(CSharpTokens.MULEQ, "*");
 			put(CSharpTokens.DIV, "/");
