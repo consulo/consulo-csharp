@@ -67,6 +67,12 @@ public class CSharpNamespaceAsElement extends LightElement implements DotNetName
 		myScope = scope;
 	}
 
+	@Override
+	public boolean isValid()
+	{
+		return true;
+	}
+
 	@NotNull
 	@Override
 	public PsiElement getNavigationElement()
