@@ -325,10 +325,8 @@ public class SharingParsingHelpers implements CSharpTokenSets, CSharpTokens, CSh
 			return null;
 		}
 
-		if(builder.getTokenType() == LPAR)
-		{
-			parseAttributeParameterList(builder);
-		}
+		parseAttributeParameterList(builder);
+
 		mark.done(ATTRIBUTE);
 		return mark;
 	}
@@ -336,6 +334,12 @@ public class SharingParsingHelpers implements CSharpTokenSets, CSharpTokens, CSh
 	public static void parseAttributeParameterList(CSharpBuilderWrapper builder)
 	{
 		PsiBuilder.Marker mark = builder.mark();
+
+		if(builder.getTokenType() != LPAR)
+		{
+			mark.done(CALL_ARGUMENT_LIST);
+			return;
+		}
 
 		builder.advanceLexer();
 
