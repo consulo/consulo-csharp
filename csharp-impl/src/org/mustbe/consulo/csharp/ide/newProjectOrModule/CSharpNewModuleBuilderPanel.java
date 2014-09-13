@@ -16,10 +16,12 @@
 
 package org.mustbe.consulo.csharp.ide.newProjectOrModule;
 
-import java.awt.BorderLayout;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JPanel;
 
+import org.consulo.module.extension.ModuleExtensionProviderEP;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkTable;
@@ -28,6 +30,7 @@ import com.intellij.openapi.projectRoots.impl.SdkListCellRenderer;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.VerticalFlowLayout;
+import com.intellij.util.SmartList;
 
 /**
  * @author VISTALL
@@ -46,16 +49,29 @@ public class CSharpNewModuleBuilderPanel extends JPanel
 		myComboBox.setRenderer(new SdkListCellRenderer("<none>"));
 
 		myComboBox.addItem(null);
+
+		List<String> validSdkTypes = new SmartList<String>();
+		for(Map.Entry<String, String[]> entry : CSharpNewModuleBuilder.ourExtensionMapping.entrySet())
+		{
+			// need check C# extension
+			ModuleExtensionProviderEP providerEP = ModuleExtensionProviderEP.findProviderEP(entry.getValue()[1]);
+			if(providerEP == null)
+			{
+				continue;
+			}
+			validSdkTypes.add(entry.getKey());
+		}
+
 		for(Sdk o : sdkTable.getAllSdks())
 		{
 			SdkTypeId sdkType = o.getSdkType();
-			if(CSharpNewModuleBuilder.ourExtensionMapping.get(sdkType.getName()) != null)
+			if(validSdkTypes.contains(sdkType.getName()))
 			{
 				myComboBox.addItem(o);
 			}
 		}
 
-		add(LabeledComponent.create(myComboBox, ".NET SDK").setLabelLocation(BorderLayout.WEST));
+		add(LabeledComponent.left(myComboBox, ".NET SDK"));
 	}
 
 	@Nullable
