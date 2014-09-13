@@ -25,7 +25,6 @@ import org.mustbe.consulo.csharp.lang.parser.stmt.StatementParsing;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.WhitespacesBinders;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
@@ -483,7 +482,7 @@ public class ExpressionParsing extends SharingParsingHelpers
 
 				if(builder.getTokenType() == LPAR)
 				{
-					parseArgumentList(builder);
+					parseArgumentList(builder, COLON);
 					callExpr.done(METHOD_CALL_EXPRESSION);
 					expr = callExpr;
 				}
@@ -504,7 +503,7 @@ public class ExpressionParsing extends SharingParsingHelpers
 				}
 
 				final PsiBuilder.Marker callExpr = expr.precede();
-				parseArgumentList(builder);
+				parseArgumentList(builder, COLON);
 				callExpr.done(METHOD_CALL_EXPRESSION);
 				expr = callExpr;
 			}
@@ -560,68 +559,69 @@ public class ExpressionParsing extends SharingParsingHelpers
 		}
 	}
 
-	@NotNull
-	public static PsiBuilder.Marker parseArgumentList(final CSharpBuilderWrapper builder)
+	public static void parseArgumentList(CSharpBuilderWrapper builder, @Nullable IElementType namedToken)
 	{
-		final PsiBuilder.Marker list = builder.mark();
+		PsiBuilder.Marker mark = builder.mark();
+
+		if(builder.getTokenType() != LPAR)
+		{
+			mark.done(CALL_ARGUMENT_LIST);
+			return;
+		}
+
 		builder.advanceLexer();
 
-		boolean first = true;
-		while(true)
+		if(builder.getTokenType() == RPAR)
 		{
-			final IElementType tokenType = builder.getTokenType();
-			if(first && (ARGS_LIST_END.contains(tokenType) || builder.eof()))
-			{
-				break;
-			}
-			if(!first && !ARGS_LIST_CONTINUE.contains(tokenType))
-			{
-				break;
-			}
+			builder.advanceLexer();
+			mark.done(CALL_ARGUMENT_LIST);
+			return;
+		}
 
-			boolean hasError = false;
-			if(!first)
+		boolean empty = true;
+		while(!builder.eof())
+		{
+			if(namedToken != null && builder.getTokenType() == IDENTIFIER && builder.lookAhead(1) == namedToken)
 			{
-				if(builder.getTokenType() == COMMA)
-				{
-					builder.advanceLexer();
-				}
-				else
-				{
-					hasError = true;
-					builder.error("Expected ',' or ')'");
-					emptyExpression(builder);
-				}
-			}
-			first = false;
-
-			final PsiBuilder.Marker arg = parse(builder);
-			if(arg == null)
-			{
-				if(!hasError)
+				PsiBuilder.Marker marker = builder.mark();
+				doneOneElement(builder, IDENTIFIER, REFERENCE_EXPRESSION, null);
+				builder.advanceLexer(); // eq
+				PsiBuilder.Marker expressionParser = ExpressionParsing.parse(builder);
+				if(expressionParser == null)
 				{
 					builder.error("Expression expected");
-					emptyExpression(builder);
 				}
-				if(!ARGS_LIST_CONTINUE.contains(builder.getTokenType()))
+				marker.done(NAMED_CALL_ARGUMENT);
+			}
+			else
+			{
+				PsiBuilder.Marker marker = ExpressionParsing.parse(builder);
+				if(marker == null)
 				{
+					if(!empty)
+					{
+						builder.error("Expression expected");
+					}
 					break;
 				}
-				if(builder.getTokenType() != COMMA && !builder.eof())
-				{
-					builder.advanceLexer();
-				}
+			}
+			empty = false;
+
+			if(builder.getTokenType() == COMMA)
+			{
+				builder.advanceLexer();
+			}
+			else if(builder.getTokenType() == RPAR)
+			{
+				break;
+			}
+			else
+			{
+				break;
 			}
 		}
-
-		final boolean closed = expect(builder, RPAR, "expected.rparen");
-
-		list.done(CALL_ARGUMENT_LIST);
-		if(!closed)
-		{
-			list.setCustomEdgeTokenBinders(null, WhitespacesBinders.DEFAULT_LEFT_BINDER);
-		}
-		return list;
+		expect(builder, RPAR, "')' expected");
+		mark.done(CALL_ARGUMENT_LIST);
 	}
 
 	@Nullable
@@ -987,7 +987,7 @@ public class ExpressionParsing extends SharingParsingHelpers
 
 			if(builder.getTokenType() == LPAR)
 			{
-				parseArgumentList(builder);
+				parseArgumentList(builder, COLON);
 			}
 			else
 			{
@@ -1088,7 +1088,7 @@ public class ExpressionParsing extends SharingParsingHelpers
 
 			if(builder.getTokenType() == LPAR)
 			{
-				parseArgumentList(builder);
+				parseArgumentList(builder, COLON);
 			}
 
 			AfterNewParsingTarget target = getTarget(builder);

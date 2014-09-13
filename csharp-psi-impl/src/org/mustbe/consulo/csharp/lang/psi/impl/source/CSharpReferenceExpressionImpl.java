@@ -69,6 +69,7 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.Processor;
+import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.indexing.IdFilter;
 import lombok.val;
@@ -607,6 +608,35 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				}
 				constructorProcessor.executeDefault((PsiNamedElement) resolveElement);
 				return constructorProcessor.toResolveResults();
+			case PARAMETER:
+				CSharpCallArgumentListOwner argumentListOwner = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
+				if(argumentListOwner == null)
+				{
+					return ResolveResultWithWeight.EMPTY_ARRAY;
+				}
+				ResolveResult[] resolveResults = argumentListOwner.multiResolve(false);
+				ResolveResult firstItem = ArrayUtil.getFirstElement(resolveResults);
+				if(firstItem == null)
+				{
+					return ResolveResultWithWeight.EMPTY_ARRAY;
+				}
+
+				PsiElement element1 = firstItem.getElement();
+				if(!(element1 instanceof DotNetParameterListOwner))
+				{
+					return ResolveResultWithWeight.EMPTY_ARRAY;
+				}
+
+				DotNetParameter[] parameters = ((DotNetParameterListOwner) element1).getParameters();
+				List<ResolveResultWithWeight> res = new SmartList<ResolveResultWithWeight>();
+				for(DotNetParameter parameter : parameters)
+				{
+					if(condition.value(parameter))
+					{
+						res.add(new ResolveResultWithWeight(parameter, WeightProcessor.MAX_WEIGHT));
+					}
+				}
+				return ContainerUtil.toArray(res, ResolveResultWithWeight.ARRAY_FACTORY);
 			case TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD:
 			case METHOD:
 			case ARRAY_METHOD:
@@ -897,7 +927,15 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		{
 			if(((CSharpNamedCallArgument) tempElement).getArgumentNameReference() == this)
 			{
-				return ResolveToKind.FIELD_OR_PROPERTY;
+				CSharpCallArgumentListOwner argumentListOwner = PsiTreeUtil.getParentOfType(this, CSharpCallArgumentListOwner.class);
+				if(argumentListOwner instanceof CSharpAttribute)
+				{
+					return ResolveToKind.FIELD_OR_PROPERTY;
+				}
+				else
+				{
+					return ResolveToKind.PARAMETER;
+				}
 			}
 		}
 		else if(tempElement instanceof CSharpFieldOrPropertySet)

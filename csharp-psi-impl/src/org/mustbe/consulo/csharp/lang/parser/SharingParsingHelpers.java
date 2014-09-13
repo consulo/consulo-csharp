@@ -325,75 +325,10 @@ public class SharingParsingHelpers implements CSharpTokenSets, CSharpTokens, CSh
 			return null;
 		}
 
-		parseAttributeParameterList(builder);
+		ExpressionParsing.parseArgumentList(builder, EQ);
 
 		mark.done(ATTRIBUTE);
 		return mark;
-	}
-
-	public static void parseAttributeParameterList(CSharpBuilderWrapper builder)
-	{
-		PsiBuilder.Marker mark = builder.mark();
-
-		if(builder.getTokenType() != LPAR)
-		{
-			mark.done(CALL_ARGUMENT_LIST);
-			return;
-		}
-
-		builder.advanceLexer();
-
-		if(builder.getTokenType() == RPAR)
-		{
-			builder.advanceLexer();
-			mark.done(CALL_ARGUMENT_LIST);
-			return;
-		}
-
-		boolean empty = true;
-		while(!builder.eof())
-		{
-			if(builder.getTokenType() == IDENTIFIER && builder.lookAhead(1) == EQ)
-			{
-				PsiBuilder.Marker marker = builder.mark();
-				doneOneElement(builder, IDENTIFIER, REFERENCE_EXPRESSION, null);
-				builder.advanceLexer(); // eq
-				PsiBuilder.Marker expressionParser = ExpressionParsing.parse(builder);
-				if(expressionParser == null)
-				{
-					builder.error("Expression expected");
-				}
-				marker.done(NAMED_CALL_ARGUMENT);
-			}
-			else
-			{
-				PsiBuilder.Marker marker = ExpressionParsing.parse(builder);
-				if(marker == null)
-				{
-					if(!empty)
-					{
-						builder.error("Expression expected");
-					}
-					break;
-				}
-			}
-			empty = false;
-
-			if(builder.getTokenType() == COMMA)
-			{
-				builder.advanceLexer();
-			}
-			else if(builder.getTokenType() == RPAR)
-			{
-				break;
-			}
-			else
-			{
-				break;
-			}
-		}
-		expect(builder, RPAR, "')' expected");
-		mark.done(CALL_ARGUMENT_LIST);
 	}
 
 	protected static Pair<PsiBuilder.Marker, Boolean> parseModifierList(CSharpBuilderWrapper builder)

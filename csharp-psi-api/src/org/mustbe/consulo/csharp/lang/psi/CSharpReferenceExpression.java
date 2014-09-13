@@ -41,6 +41,7 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression
 		CONSTRUCTOR,
 		ANY_MEMBER,
 		FIELD_OR_PROPERTY,
+		PARAMETER,
 		THIS, // return type declaration of parent
 		BASE,  // return type declaration super class of parent
 		LABEL
