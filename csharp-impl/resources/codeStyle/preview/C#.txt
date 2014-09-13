@@ -1,0 +1,14 @@
+/*
+ * Block comment
+ */
+[Obsolete]
+public class MyClass {
+    public static String HELLO = "Hello";
+    public static int INT_VALUE = 1;
+
+    public unsafe void Main(String[] args) {
+        "ExtensionCall".Call();
+
+        Main(new String[] {});
+    }
+}
