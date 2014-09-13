@@ -878,10 +878,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		return resolveResult.getElement();
 	}
 
+	@Override
 	@NotNull
 	public ResolveToKind kind()
 	{
-		String text = getReferenceName();
 		PsiElement tempElement = getParent();
 		if(tempElement instanceof CSharpGenericConstraintImpl)
 		{
