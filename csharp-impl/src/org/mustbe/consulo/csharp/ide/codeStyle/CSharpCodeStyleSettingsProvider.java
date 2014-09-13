@@ -25,14 +25,14 @@ public class CSharpCodeStyleSettingsProvider extends CodeStyleSettingsProvider
 			@Override
 			protected CodeStyleAbstractPanel createPanel(CodeStyleSettings settings)
 			{
-				return new CSharpCodeStylePanel(settings);
+				return new CSharpTabbedLanguageCodeStylePanel(getCurrentSettings(), settings);
 			}
 
 			@Nullable
 			@Override
 			public String getHelpTopic()
 			{
-				return null;
+				return "reference.settingsdialog.codestyle.csharp";
 			}
 		};
 	}
