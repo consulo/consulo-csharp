@@ -41,22 +41,6 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 		}
 	}
 
-	public static PsiBuilder.Marker parseFieldOrLocalVariableAtTypeWithRollback(CSharpBuilderWrapper builder, PsiBuilder.Marker marker,
-		IElementType to)
-	{
-		if(parseType(builder, BracketFailPolicy.NOTHING, false) == null)
-		{
-			builder.error("Type expected");
-
-			marker.rollbackTo();
-			return null;
-		}
-		else
-		{
-			return parseFieldOrLocalVariableAtNameWithRollback(builder, marker, to);
-		}
-	}
-
 	public static boolean parseFieldOrLocalVariableAtNameWithDone(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, IElementType to)
 	{
 		if(builder.getTokenType() == IDENTIFIER)
