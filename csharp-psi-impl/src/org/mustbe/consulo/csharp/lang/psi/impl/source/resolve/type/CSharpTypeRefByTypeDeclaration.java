@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 
@@ -26,13 +26,19 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 11.02.14
  */
-public class CSharpTypeRefFromQualifiedElement extends DotNetTypeRef.Adapter
+public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRef.Adapter
 {
-	private DotNetQualifiedElement myElement;
+	private DotNetTypeDeclaration myElement;
 
-	public CSharpTypeRefFromQualifiedElement(DotNetQualifiedElement element)
+	public CSharpTypeRefByTypeDeclaration(@NotNull DotNetTypeDeclaration element)
 	{
 		myElement = element;
+	}
+
+	@Override
+	public boolean isNullable()
+	{
+		return !myElement.isStruct();
 	}
 
 	@NotNull

@@ -22,7 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromQualifiedElement;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
@@ -73,7 +73,7 @@ public class CSharpAttributeImpl extends CSharpElementImpl implements CSharpAttr
 		DotNetTypeDeclaration dotNetTypeDeclaration = resolveToType();
 		if(dotNetTypeDeclaration != null)
 		{
-			return new CSharpTypeRefFromQualifiedElement(dotNetTypeDeclaration);
+			return new CSharpTypeRefByTypeDeclaration(dotNetTypeDeclaration);
 		}
 		return DotNetTypeRef.ERROR_TYPE;
 	}

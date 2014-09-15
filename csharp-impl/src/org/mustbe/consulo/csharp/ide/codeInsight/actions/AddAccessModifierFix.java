@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
@@ -42,7 +43,7 @@ public class AddAccessModifierFix extends AddXModifierFix
 			return modifier == CSharpModifier.INTERNAL || modifier == CSharpModifier.PUBLIC;
 		}
 
-		return super.isAllow(owner, modifier);
+		return CSharpStubElements.QUALIFIED_MEMBERS.contains(owner.getNode().getElementType());
 	}
 
 	@Override
