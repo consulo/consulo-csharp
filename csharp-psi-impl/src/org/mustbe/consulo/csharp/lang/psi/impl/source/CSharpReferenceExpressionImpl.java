@@ -448,18 +448,20 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			case FIELD_OR_PROPERTY:
 				DotNetTypeRef resolvedTypeRef;
 				CSharpCallArgumentListOwner callArgumentListOwner = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
-				if(callArgumentListOwner != null)
+
+				if(callArgumentListOwner instanceof CSharpNewExpression)
 				{
-					DotNetAttribute attribute = PsiTreeUtil.getParentOfType(element, DotNetAttribute.class);
-					assert attribute != null;
-					resolvedTypeRef = attribute.toTypeRef();
+					resolvedTypeRef = ((CSharpNewExpression) callArgumentListOwner).toTypeRef(false);
+				}
+				else if(callArgumentListOwner instanceof DotNetAttribute)
+				{
+					resolvedTypeRef = ((DotNetAttribute) callArgumentListOwner).toTypeRef();
 				}
 				else
 				{
-					CSharpNewExpression newExpression = PsiTreeUtil.getParentOfType(element, CSharpNewExpression.class);
-					assert newExpression != null;
-					resolvedTypeRef = newExpression.toTypeRef(false);
+					throw new IllegalArgumentException(callArgumentListOwner == null ? "null" : callArgumentListOwner.getClass().getName());
 				}
+
 				if(resolvedTypeRef == DotNetTypeRef.ERROR_TYPE)
 				{
 					return ResolveResultWithWeight.EMPTY_ARRAY;
