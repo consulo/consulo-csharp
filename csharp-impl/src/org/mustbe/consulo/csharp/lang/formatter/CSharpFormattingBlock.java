@@ -20,7 +20,9 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
@@ -58,8 +60,15 @@ public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSha
 	@Override
 	public Wrap getWrap()
 	{
-		IElementType elementType = getNode().getElementType();
+		ASTNode node = getNode();
+		IElementType elementType = node.getElementType();
 		if(elementType == LBRACE || elementType == RBRACE)
+		{
+			return Wrap.createWrap(WrapType.ALWAYS, true);
+		}
+
+		PsiElement psi = node.getPsi();
+		if(psi instanceof CSharpFieldOrPropertySet && !(psi.getParent() instanceof CSharpCallArgumentList))
 		{
 			return Wrap.createWrap(WrapType.ALWAYS, true);
 		}
