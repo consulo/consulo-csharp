@@ -51,6 +51,7 @@ public enum CSharpCompilerChecks
 	CS0409(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // generic constraint already defined for generic
 	CS0413(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // 'S' operator  cant use to generic without class constraint, or reference
 	CS0449(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // struct or class constraint must be first
+	CS0453(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // nullable type required notnull type
 	CS0516(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // constructor cant call itself
 	CS0518(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // dynamic checks
 	CS0721(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static classes in parameters

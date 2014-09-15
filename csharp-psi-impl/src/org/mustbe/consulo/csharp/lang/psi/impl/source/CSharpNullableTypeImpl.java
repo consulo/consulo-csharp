@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -30,7 +29,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 17.04.14
  */
-public class CSharpNullableTypeImpl extends CSharpElementImpl implements DotNetPointerType
+public class CSharpNullableTypeImpl extends CSharpElementImpl implements DotNetType
 {
 	public CSharpNullableTypeImpl(@NotNull ASTNode node)
 	{
@@ -43,8 +42,8 @@ public class CSharpNullableTypeImpl extends CSharpElementImpl implements DotNetP
 		visitor.visitNullableType(this);
 	}
 
-	@NotNull
 	@Override
+	@NotNull
 	public DotNetTypeRef toTypeRef()
 	{
 		DotNetType innerType = getInnerType();
@@ -63,15 +62,13 @@ public class CSharpNullableTypeImpl extends CSharpElementImpl implements DotNetP
 	}
 
 	@Nullable
-	@Override
 	public DotNetType getInnerType()
 	{
 		return findChildByClass(DotNetType.class);
 	}
 
 	@NotNull
-	@Override
-	public PsiElement getAsterisk()
+	public PsiElement getQuestElement()
 	{
 		return findNotNullChildByType(CSharpTokens.QUEST);
 	}
