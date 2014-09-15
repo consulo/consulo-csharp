@@ -38,7 +38,7 @@ public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRef.Adapter
 	@Override
 	public boolean isNullable()
 	{
-		return !myElement.isStruct();
+		return !myElement.isStruct() && !myElement.isEnum();
 	}
 
 	@NotNull
