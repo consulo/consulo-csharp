@@ -65,8 +65,11 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.ReferenceRange;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.xml.XmlAttribute;
+import com.intellij.psi.xml.XmlTag;
 import com.intellij.ui.ColorUtil;
 import com.intellij.ui.JBColor;
 import com.intellij.xml.util.XmlStringUtil;
@@ -163,6 +166,37 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 							}
 						}
 					}
+				}
+			}
+		}
+
+		if(element instanceof XmlTag)
+		{
+			PsiReference[] references = element.getReferences();
+			for(PsiReference reference : references)
+			{
+				PsiElement resolve = reference.resolve();
+				if(resolve == null)
+				{
+					List<TextRange> range = ReferenceRange.getAbsoluteRanges(reference);
+
+					myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.WRONG_REF).range(range.get(0))
+							.descriptionAndTooltip("Unknown tag").create());
+				}
+			}
+		}
+		if(element instanceof XmlAttribute)
+		{
+			PsiReference[] references = element.getReferences();
+			for(PsiReference reference : references)
+			{
+				PsiElement resolve = reference.resolve();
+				if(resolve == null)
+				{
+					List<TextRange> range = ReferenceRange.getAbsoluteRanges(reference);
+
+					myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.WRONG_REF).range(range.get(0))
+							.descriptionAndTooltip("Unknown attribute").create());
 				}
 			}
 		}

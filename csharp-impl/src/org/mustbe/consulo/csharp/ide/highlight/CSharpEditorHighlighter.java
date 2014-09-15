@@ -20,6 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
+import com.intellij.ide.highlighter.XmlFileHighlighter;
 import com.intellij.lexer.Lexer;
 import com.intellij.lexer.StringLiteralLexer;
 import com.intellij.openapi.editor.colors.EditorColorsScheme;
@@ -46,6 +48,7 @@ public class CSharpEditorHighlighter extends LayeredLexerEditorHighlighter
 				return new StringLiteralLexer('\"', CSharpTokens.STRING_LITERAL);
 			}
 		}, ""));
+		registerLayer(CSharpTokensImpl.LINE_DOC_COMMENT, new LayerDescriptor(new XmlFileHighlighter(), ""));
 		registerLayer(CSharpTokens.CHARACTER_LITERAL, new LayerDescriptor(new CSharpSyntaxHighlighter()
 		{
 			@NotNull

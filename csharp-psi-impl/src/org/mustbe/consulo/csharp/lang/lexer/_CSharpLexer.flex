@@ -331,7 +331,7 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	"null"                    { return CSharpTokens.NULL_LITERAL; }
 
-	{SINGLE_LINE_DOC_COMMENT} { return CSharpTokens.LINE_DOC_COMMENT; }
+	{SINGLE_LINE_DOC_COMMENT} { return CSharpTokensImpl.LINE_DOC_COMMENT; }
 
 	{SINGLE_LINE_COMMENT}     { return CSharpTokens.LINE_COMMENT; }
 

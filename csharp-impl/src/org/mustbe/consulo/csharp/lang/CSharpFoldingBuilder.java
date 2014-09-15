@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListChild;
@@ -212,7 +213,7 @@ public class CSharpFoldingBuilder implements FoldingBuilder
 		else if(psi instanceof PsiComment)
 		{
 			IElementType tokenType = ((PsiComment) psi).getTokenType();
-			if(tokenType == CSharpTokens.LINE_DOC_COMMENT)
+			if(tokenType == CSharpTokensImpl.LINE_DOC_COMMENT)
 			{
 				return "/// ...";
 			}

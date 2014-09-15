@@ -23,6 +23,7 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
 import com.intellij.lexer.FlexAdapter;
 import com.intellij.lexer.Lexer;
 import com.intellij.lexer.MergeFunction;
@@ -39,7 +40,7 @@ import lombok.val;
 public class CSharpLexer extends MergingLexerAdapterBase
 {
 	private static final TokenSet ourMergeSet = TokenSet.create(CSharpTemplateTokens.MACRO_FRAGMENT, CSharpTokens.NON_ACTIVE_SYMBOL,
-			CSharpTokens.LINE_DOC_COMMENT);
+			CSharpTokensImpl.LINE_DOC_COMMENT);
 
 	private static class MyMergeFunction implements MergeFunction
 	{
@@ -63,17 +64,17 @@ public class CSharpLexer extends MergingLexerAdapterBase
 				IElementType currentToken = modifyNonActiveSymbols(originalLexer, myRanges);
 
 				// we need merge two docs if one line between
-				if(mergeToken == CSharpTokens.LINE_DOC_COMMENT && currentToken == CSharpTokens.WHITE_SPACE)
+				if(mergeToken == CSharpTokensImpl.LINE_DOC_COMMENT && currentToken == CSharpTokens.WHITE_SPACE)
 				{
 					if(hasOnlyOneLine(originalLexer.getTokenSequence()))
 					{
 						val currentPosition = originalLexer.getCurrentPosition();
 						originalLexer.advance();
-						boolean docIsNext = originalLexer.getTokenType() == CSharpTokens.LINE_DOC_COMMENT;
+						boolean docIsNext = originalLexer.getTokenType() == CSharpTokensImpl.LINE_DOC_COMMENT;
 						originalLexer.restore(currentPosition);
 						if(docIsNext)
 						{
-							currentToken = CSharpTokens.LINE_DOC_COMMENT;
+							currentToken = CSharpTokensImpl.LINE_DOC_COMMENT;
 						}
 						else
 						{

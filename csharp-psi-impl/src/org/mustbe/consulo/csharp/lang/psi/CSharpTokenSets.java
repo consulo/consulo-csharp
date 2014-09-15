@@ -24,7 +24,7 @@ import com.intellij.psi.tree.TokenSet;
  * @author VISTALL
  * @since 22.11.13.
  */
-public interface CSharpTokenSets extends CSharpSoftTokens
+public interface CSharpTokenSets extends CSharpSoftTokens, CSharpTokensImpl
 {
 	TokenSet NATIVE_TYPES = TokenSet.create(STRING_KEYWORD, VOID_KEYWORD, INT_KEYWORD, BOOL_KEYWORD, BYTE_KEYWORD, CHAR_KEYWORD, DECIMAL_KEYWORD,
 			DOUBLE_KEYWORD, FLOAT_KEYWORD, LONG_KEYWORD, OBJECT_KEYWORD, SBYTE_KEYWORD, SHORT_KEYWORD, UINT_KEYWORD, ULONG_KEYWORD, USHORT_KEYWORD,

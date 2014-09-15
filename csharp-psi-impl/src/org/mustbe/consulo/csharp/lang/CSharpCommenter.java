@@ -17,13 +17,17 @@
 package org.mustbe.consulo.csharp.lang;
 
 import org.jetbrains.annotations.Nullable;
-import com.intellij.lang.Commenter;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
+import com.intellij.lang.CodeDocumentationAwareCommenter;
+import com.intellij.psi.PsiComment;
+import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
  * @since 13.01.14
  */
-public class CSharpCommenter implements Commenter
+public class CSharpCommenter implements CodeDocumentationAwareCommenter
 {
 	@Nullable
 	@Override
@@ -58,5 +62,53 @@ public class CSharpCommenter implements Commenter
 	public String getCommentedBlockCommentSuffix()
 	{
 		return null;
+	}
+
+	@Nullable
+	@Override
+	public IElementType getLineCommentTokenType()
+	{
+		return CSharpTokens.LINE_COMMENT;
+	}
+
+	@Nullable
+	@Override
+	public IElementType getBlockCommentTokenType()
+	{
+		return CSharpTokens.BLOCK_COMMENT;
+	}
+
+	@Nullable
+	@Override
+	public IElementType getDocumentationCommentTokenType()
+	{
+		return CSharpTokensImpl.LINE_DOC_COMMENT;
+	}
+
+	@Nullable
+	@Override
+	public String getDocumentationCommentPrefix()
+	{
+		return null;
+	}
+
+	@Nullable
+	@Override
+	public String getDocumentationCommentLinePrefix()
+	{
+		return "///";
+	}
+
+	@Nullable
+	@Override
+	public String getDocumentationCommentSuffix()
+	{
+		return null;
+	}
+
+	@Override
+	public boolean isDocumentationComment(PsiComment psiComment)
+	{
+		return false;
 	}
 }
