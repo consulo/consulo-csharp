@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -83,5 +84,12 @@ public class CSharpCallArgumentListImpl extends CSharpElementImpl implements CSh
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
 		visitor.visitMethodCallParameterList(this);
+	}
+
+	@NotNull
+	@Override
+	public CSharpFieldOrPropertySet[] getSets()
+	{
+		return findChildrenByClass(CSharpFieldOrPropertySet.class);
 	}
 }

@@ -26,7 +26,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 12.05.14
  */
-public interface CSharpCallArgumentList extends DotNetCallArgumentList
+public interface CSharpCallArgumentList extends DotNetCallArgumentList, CSharpFieldOrPropertySetBlock
 {
 	@Nullable
 	PsiElement getOpenElement();

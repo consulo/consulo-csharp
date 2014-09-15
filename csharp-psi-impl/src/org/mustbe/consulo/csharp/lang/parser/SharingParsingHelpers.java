@@ -325,7 +325,7 @@ public class SharingParsingHelpers implements CSharpTokenSets, CSharpTokens, CSh
 			return null;
 		}
 
-		ExpressionParsing.parseArgumentList(builder, EQ);
+		ExpressionParsing.parseArgumentList(builder, true);
 
 		mark.done(ATTRIBUTE);
 		return mark;

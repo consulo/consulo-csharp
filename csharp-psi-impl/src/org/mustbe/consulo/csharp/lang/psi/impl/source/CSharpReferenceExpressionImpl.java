@@ -447,8 +447,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				return new ResolveResultWithWeight[]{new ResolveResultWithWeight(resolve)};
 			case FIELD_OR_PROPERTY:
 				DotNetTypeRef resolvedTypeRef;
-				CSharpNamedCallArgument namedCallArgument = PsiTreeUtil.getParentOfType(element, CSharpNamedCallArgument.class);
-				if(namedCallArgument != null)
+				CSharpCallArgumentListOwner callArgumentListOwner = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
+				if(callArgumentListOwner != null)
 				{
 					DotNetAttribute attribute = PsiTreeUtil.getParentOfType(element, DotNetAttribute.class);
 					assert attribute != null;
@@ -927,15 +927,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		{
 			if(((CSharpNamedCallArgument) tempElement).getArgumentNameReference() == this)
 			{
-				CSharpCallArgumentListOwner argumentListOwner = PsiTreeUtil.getParentOfType(this, CSharpCallArgumentListOwner.class);
-				if(argumentListOwner instanceof CSharpAttribute)
-				{
-					return ResolveToKind.FIELD_OR_PROPERTY;
-				}
-				else
-				{
-					return ResolveToKind.PARAMETER;
-				}
+				return ResolveToKind.PARAMETER;
 			}
 		}
 		else if(tempElement instanceof CSharpFieldOrPropertySet)

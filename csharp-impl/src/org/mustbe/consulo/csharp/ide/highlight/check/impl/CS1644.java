@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
@@ -223,6 +224,14 @@ public class CS1644 extends CompilerCheck<PsiElement>
 						return ((CSharpMethodDeclaration) element).getModifierList().getModifierElement(CSharpModifier.ASYNC);
 					}
 					return null;
+				}
+			}));
+			add(new Feature("named arguments", CSharpLanguageVersion._4_0, new Function<PsiElement, PsiElement>()
+			{
+				@Override
+				public PsiElement fun(PsiElement element)
+				{
+					return element instanceof CSharpNamedCallArgument ? element : null;
 				}
 			}));
 		}

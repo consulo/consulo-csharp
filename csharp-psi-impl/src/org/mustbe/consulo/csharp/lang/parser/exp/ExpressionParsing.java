@@ -482,7 +482,7 @@ public class ExpressionParsing extends SharingParsingHelpers
 
 				if(builder.getTokenType() == LPAR)
 				{
-					parseArgumentList(builder, COLON);
+					parseArgumentList(builder, false);
 					callExpr.done(METHOD_CALL_EXPRESSION);
 					expr = callExpr;
 				}
@@ -503,7 +503,7 @@ public class ExpressionParsing extends SharingParsingHelpers
 				}
 
 				final PsiBuilder.Marker callExpr = expr.precede();
-				parseArgumentList(builder, COLON);
+				parseArgumentList(builder, false);
 				callExpr.done(METHOD_CALL_EXPRESSION);
 				expr = callExpr;
 			}
@@ -559,7 +559,7 @@ public class ExpressionParsing extends SharingParsingHelpers
 		}
 	}
 
-	public static void parseArgumentList(CSharpBuilderWrapper builder, @Nullable IElementType namedToken)
+	public static void parseArgumentList(CSharpBuilderWrapper builder, boolean fieldSet)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
@@ -581,7 +581,7 @@ public class ExpressionParsing extends SharingParsingHelpers
 		boolean empty = true;
 		while(!builder.eof())
 		{
-			if(namedToken != null && builder.getTokenType() == IDENTIFIER && builder.lookAhead(1) == namedToken)
+			if(builder.getTokenType() == IDENTIFIER && builder.lookAhead(1) == COLON)
 			{
 				PsiBuilder.Marker marker = builder.mark();
 				doneOneElement(builder, IDENTIFIER, REFERENCE_EXPRESSION, null);
@@ -592,6 +592,18 @@ public class ExpressionParsing extends SharingParsingHelpers
 					builder.error("Expression expected");
 				}
 				marker.done(NAMED_CALL_ARGUMENT);
+			}
+			else if(fieldSet && builder.getTokenType() == IDENTIFIER && builder.lookAhead(1) == EQ)
+			{
+				PsiBuilder.Marker marker = builder.mark();
+				doneOneElement(builder, IDENTIFIER, REFERENCE_EXPRESSION, null);
+				builder.advanceLexer(); // eq
+				PsiBuilder.Marker expressionParser = ExpressionParsing.parse(builder);
+				if(expressionParser == null)
+				{
+					builder.error("Expression expected");
+				}
+				marker.done(FIELD_OR_PROPERTY_SET);
 			}
 			else
 			{
@@ -987,7 +999,7 @@ public class ExpressionParsing extends SharingParsingHelpers
 
 			if(builder.getTokenType() == LPAR)
 			{
-				parseArgumentList(builder, COLON);
+				parseArgumentList(builder, false);
 			}
 			else
 			{
@@ -1088,7 +1100,7 @@ public class ExpressionParsing extends SharingParsingHelpers
 
 			if(builder.getTokenType() == LPAR)
 			{
-				parseArgumentList(builder, COLON);
+				parseArgumentList(builder, false);
 			}
 
 			AfterNewParsingTarget target = getTarget(builder);
