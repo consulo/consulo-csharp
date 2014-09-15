@@ -20,22 +20,127 @@ import java.io.Reader;
 import java.util.Collections;
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lexer.FlexAdapter;
-import com.intellij.lexer.MergingLexerAdapter;
+import com.intellij.lexer.Lexer;
+import com.intellij.lexer.MergeFunction;
+import com.intellij.lexer.MergingLexerAdapterBase;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import lombok.val;
 
 /**
  * @author VISTALL
  * @since 22.11.13.
  */
-public class CSharpLexer extends MergingLexerAdapter
+public class CSharpLexer extends MergingLexerAdapterBase
 {
-	private static final TokenSet ourMergeSet = TokenSet.create(CSharpTemplateTokens.MACRO_FRAGMENT, CSharpTokens.NON_ACTIVE_SYMBOL);
-	private final List<TextRange> myRanges;
+	private static final TokenSet ourMergeSet = TokenSet.create(CSharpTemplateTokens.MACRO_FRAGMENT, CSharpTokens.NON_ACTIVE_SYMBOL,
+			CSharpTokens.LINE_DOC_COMMENT);
+
+	private static class MyMergeFunction implements MergeFunction
+	{
+		private List<TextRange> myRanges;
+
+		private MyMergeFunction(List<TextRange> ranges)
+		{
+			myRanges = ranges;
+		}
+
+		@Override
+		public IElementType merge(final IElementType mergeToken, final Lexer originalLexer)
+		{
+			if(!ourMergeSet.contains(mergeToken))
+			{
+				return mergeToken;
+			}
+
+			while(true)
+			{
+				IElementType currentToken = modifyNonActiveSymbols(originalLexer, myRanges);
+
+				// we need merge two docs if one line between
+				if(mergeToken == CSharpTokens.LINE_DOC_COMMENT && currentToken == CSharpTokens.WHITE_SPACE)
+				{
+					if(hasOnlyOneLine(originalLexer.getTokenSequence()))
+					{
+						val currentPosition = originalLexer.getCurrentPosition();
+						originalLexer.advance();
+						boolean docIsNext = originalLexer.getTokenType() == CSharpTokens.LINE_DOC_COMMENT;
+						originalLexer.restore(currentPosition);
+						if(docIsNext)
+						{
+							currentToken = CSharpTokens.LINE_DOC_COMMENT;
+						}
+						else
+						{
+							break;
+						}
+					}
+				}
+
+				if(currentToken != mergeToken)
+				{
+					break;
+				}
+
+				originalLexer.advance();
+			}
+			return mergeToken;
+		}
+
+		@Nullable
+		private static IElementType modifyNonActiveSymbols(Lexer originalLexer, List<TextRange> textRanges)
+		{
+			IElementType tokenType = originalLexer.getTokenType();
+			if(tokenType == null)
+			{
+				return null;
+			}
+
+			if(textRanges.isEmpty())
+			{
+				return tokenType;
+			}
+
+			for(int i = 0; i < textRanges.size(); i++)
+			{
+				TextRange textRange = textRanges.get(i);
+				if(textRange.contains(originalLexer.getTokenStart()))
+				{
+					return CSharpTokens.NON_ACTIVE_SYMBOL;
+				}
+			}
+			return tokenType;
+		}
+
+		private static boolean hasOnlyOneLine(CharSequence sequence)
+		{
+			int c = 0;
+			int len = sequence.length();
+			if(len == 0)
+			{
+				return false;
+			}
+			for(int i = 0; i < len; i++)
+			{
+				if(sequence.charAt(i) == '\n')
+				{
+					c++;
+					if(c == 2)
+					{
+						return false;
+					}
+				}
+			}
+			return c == 1;
+		}
+	}
+
+	private final MyMergeFunction myMergeFunction;
 
 	public CSharpLexer()
 	{
@@ -44,32 +149,13 @@ public class CSharpLexer extends MergingLexerAdapter
 
 	public CSharpLexer(List<TextRange> ranges)
 	{
-		super(new FlexAdapter(new _CSharpLexer((Reader) null)), ourMergeSet);
-		myRanges = ranges;
+		super(new FlexAdapter(new _CSharpLexer((Reader) null)));
+		myMergeFunction = new MyMergeFunction(ranges);
 	}
 
 	@Override
-	public IElementType getTokenType()
+	public MergeFunction getMergeFunction()
 	{
-		IElementType tokenType = super.getTokenType();
-		if(tokenType == null)
-		{
-			return null;
-		}
-
-		if(myRanges.isEmpty())
-		{
-			return tokenType;
-		}
-
-		for(int i = 0; i < myRanges.size(); i++)
-		{
-			TextRange textRange = myRanges.get(i);
-			if(textRange.contains(getTokenStart()))
-			{
-				return CSharpTokens.NON_ACTIVE_SYMBOL;
-			}
-		}
-		return tokenType;
+		return myMergeFunction;
 	}
 }
