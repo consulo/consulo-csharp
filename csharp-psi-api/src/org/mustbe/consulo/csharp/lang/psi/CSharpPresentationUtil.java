@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
  * @author VISTALL
@@ -56,12 +55,6 @@ public class CSharpPresentationUtil
 			put(DotNetTypes.System.Decimal, "decimal");
 		}
 	};
-
-	@NotNull
-	public static String getPresentableText(@NotNull DotNetTypeRef typeRef)
-	{
-		return getPresentableText(typeRef.getQualifiedText(), typeRef.isNullable());
-	}
 
 	@NotNull
 	public static String getPresentableText(@NotNull String qualifiedText, boolean nullable)

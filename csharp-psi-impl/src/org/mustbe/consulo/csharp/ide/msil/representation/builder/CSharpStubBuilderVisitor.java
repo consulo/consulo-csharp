@@ -296,7 +296,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		}
 		else
 		{
-			builder.append(typeRef.getQualifiedText());
+			builder.append(CSharpPresentationUtil.getPresentableText(typeRef.getQualifiedText(), typeRef.isNullable()));
 		}
 	}
 

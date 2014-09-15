@@ -163,7 +163,12 @@ public class MsilToCSharpUtil
 		}
 	}
 
-	public static DotNetTypeRef extractToCSharp(DotNetTypeRef typeRef, PsiElement scope)
+	public static DotNetTypeRef extractToCSharp(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
+	{
+		return extractToCSharp(typeRef, scope, null);
+	}
+
+	public static DotNetTypeRef extractToCSharp(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope, @Nullable Boolean forceNullable)
 	{
 		if(typeRef == DotNetTypeRef.ERROR_TYPE)
 		{
@@ -177,6 +182,11 @@ public class MsilToCSharpUtil
 			if(DotNetTypes.System.Object.equals(qualifiedText) || DotNetTypes.System.String.equals(qualifiedText))
 			{
 				nullable = true;
+			}
+
+			if(forceNullable != null)
+			{
+				nullable = forceNullable;
 			}
 			return new DotNetTypeRefByQName(typeRef.getQualifiedText(), CSharpTransform.INSTANCE, nullable);
 		}
@@ -194,13 +204,19 @@ public class MsilToCSharpUtil
 		}
 		else if(typeRef instanceof DotNetGenericWrapperTypeRef)
 		{
-			val inner = extractToCSharp(((DotNetGenericWrapperTypeRef) typeRef).getInnerTypeRef(), scope);
+			DotNetTypeRef innerTypeRef = ((DotNetGenericWrapperTypeRef) typeRef).getInnerTypeRef();
 			DotNetTypeRef[] arguments = ((DotNetGenericWrapperTypeRef) typeRef).getArgumentTypeRefs();
+			if(DotNetTypes.System.Nullable$1.equals(innerTypeRef.getQualifiedText()))
+			{
+				return extractToCSharp(arguments[0], scope, Boolean.TRUE);
+			}
+			val inner = extractToCSharp(innerTypeRef, scope);
 			DotNetTypeRef[] newArguments = new DotNetTypeRef[arguments.length];
 			for(int i = 0; i < newArguments.length; i++)
 			{
 				newArguments[i] = extractToCSharp(arguments[i], scope);
 			}
+
 			return new DotNetGenericWrapperTypeRef(inner, newArguments);
 		}
 
