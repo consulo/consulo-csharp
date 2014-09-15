@@ -25,7 +25,7 @@ import lombok.val;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class UsingStatementParsing extends SharingParsingHelpers
+public class UsingStatementParsing extends SharedParsingHelpers
 {
 	public static void parseUsingList(CSharpBuilderWrapper builder, PsiBuilder.Marker marker)
 	{

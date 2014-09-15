@@ -16,7 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.parser.macro;
 
-import org.mustbe.consulo.csharp.lang.parser.SharingParsingHelpers;
+import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 import com.intellij.lang.PsiBuilder;
@@ -66,7 +66,7 @@ public class MacroParsing implements CSharpMacroTokens, CSharpMacroElements
 				builder.error("Expression expected");
 			}
 
-			SharingParsingHelpers.expect(builder, MACRO_STOP, null);
+			SharedParsingHelpers.expect(builder, MACRO_STOP, null);
 			startMarker.done(MACRO_BLOCK_START);
 
 			parseAndDoneUntilCondStoppers(builder, condBlock);
@@ -92,7 +92,7 @@ public class MacroParsing implements CSharpMacroTokens, CSharpMacroElements
 				PsiBuilder.Marker endIfMarker = builder.mark();
 				builder.advanceLexer();
 
-				SharingParsingHelpers.expect(builder, MACRO_STOP, null);
+				SharedParsingHelpers.expect(builder, MACRO_STOP, null);
 
 				endIfMarker.done(MACRO_BLOCK_STOP);
 			}
@@ -177,7 +177,7 @@ public class MacroParsing implements CSharpMacroTokens, CSharpMacroElements
 		}
 
 		builder.advanceLexer();
-		SharingParsingHelpers.expect(builder, MACRO_STOP, null);
+		SharedParsingHelpers.expect(builder, MACRO_STOP, null);
 
 		headerMarker.done(MACRO_BLOCK_START);
 
@@ -218,7 +218,7 @@ public class MacroParsing implements CSharpMacroTokens, CSharpMacroElements
 			builder.error("Expression expected");
 		}
 
-		SharingParsingHelpers.expect(builder, MACRO_STOP, null);
+		SharedParsingHelpers.expect(builder, MACRO_STOP, null);
 
 		headerMarker.done(MACRO_BLOCK_START);
 

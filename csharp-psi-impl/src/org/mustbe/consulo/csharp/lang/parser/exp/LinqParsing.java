@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.lang.parser.exp;
 
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
-import org.mustbe.consulo.csharp.lang.parser.SharingParsingHelpers;
+import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
@@ -26,7 +26,7 @@ import com.intellij.psi.tree.TokenSet;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class LinqParsing extends SharingParsingHelpers
+public class LinqParsing extends SharedParsingHelpers
 {
 	public static final TokenSet LINQ_KEYWORDS = TokenSet.create(LET_KEYWORD, FROM_KEYWORD, SELECT_KEYWORD, GROUP_KEYWORD, BY_KEYWORD,
 			INTO_KEYWORD, ORDERBY_KEYWORD, WHERE_KEYWORD);

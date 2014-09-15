@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.lang.parser.macro;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.parser.SharingParsingHelpers;
+import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 import com.intellij.lang.PsiBuilder;
@@ -181,7 +181,7 @@ public class MacroExpressionParsing implements CSharpMacroTokens, CSharpMacroEle
 				builder.error("Expression expected");
 			}
 
-			if(!SharingParsingHelpers.expect(builder, RPAR, null))
+			if(!SharedParsingHelpers.expect(builder, RPAR, null))
 			{
 				if(inner != null)
 				{

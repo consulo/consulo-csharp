@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.lang.parser.decl;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
-import org.mustbe.consulo.csharp.lang.parser.SharingParsingHelpers;
+import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
@@ -29,7 +29,7 @@ import lombok.val;
  * @author VISTALL
  * @since 30.11.13.
  */
-public class GenericParameterParsing extends SharingParsingHelpers
+public class GenericParameterParsing extends SharedParsingHelpers
 {
 	public static void parseList(CSharpBuilderWrapper builder)
 	{

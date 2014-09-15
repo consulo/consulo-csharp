@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.lang.parser.stmt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
-import org.mustbe.consulo.csharp.lang.parser.SharingParsingHelpers;
+import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.decl.FieldOrPropertyParsing;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import org.mustbe.consulo.csharp.lang.parser.exp.LinqParsing;
@@ -34,7 +34,7 @@ import lombok.val;
  * @author VISTALL
  * @since 16.12.13.
  */
-public class StatementParsing extends SharingParsingHelpers
+public class StatementParsing extends SharedParsingHelpers
 {
 	private static final TokenSet BODY_SOFT_KEYWORDS = TokenSet.orSet(TokenSet.create(YIELD_KEYWORD), LinqParsing.LINQ_KEYWORDS);
 

@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
-import org.mustbe.consulo.csharp.lang.parser.SharingParsingHelpers;
+import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
@@ -68,7 +68,7 @@ public class CSharpFragmentFactory
 		public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
 		{
 			PsiBuilder.Marker mark = builder.mark();
-			SharingParsingHelpers.parseType(new CSharpBuilderWrapper(builder, languageVersion), SharingParsingHelpers.BracketFailPolicy.NOTHING, true);
+			SharedParsingHelpers.parseType(new CSharpBuilderWrapper(builder, languageVersion), SharedParsingHelpers.BracketFailPolicy.NOTHING, true);
 			if(!builder.eof())
 			{
 				builder.advanceLexer();

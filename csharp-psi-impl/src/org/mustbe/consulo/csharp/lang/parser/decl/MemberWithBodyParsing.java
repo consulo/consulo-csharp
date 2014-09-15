@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.lang.parser.decl;
 
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
-import org.mustbe.consulo.csharp.lang.parser.SharingParsingHelpers;
+import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.stmt.StatementParsing;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
@@ -28,7 +28,7 @@ import lombok.val;
  * @author VISTALL
  * @since 04.12.13.
  */
-public class MemberWithBodyParsing extends SharingParsingHelpers
+public class MemberWithBodyParsing extends SharedParsingHelpers
 {
 	protected static void parseAccessors(CSharpBuilderWrapper builder, IElementType to, TokenSet tokenSet)
 	{

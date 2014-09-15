@@ -36,7 +36,7 @@ import lombok.val;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class SharingParsingHelpers implements CSharpTokenSets, CSharpTokens, CSharpElements
+public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSharpElements
 {
 	public static enum BracketFailPolicy
 	{

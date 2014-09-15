@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.lang.parser.decl;
 
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
-import org.mustbe.consulo.csharp.lang.parser.SharingParsingHelpers;
+import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import com.intellij.lang.PsiBuilder;
 
@@ -25,7 +25,7 @@ import com.intellij.lang.PsiBuilder;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class NamespaceDeclarationParsing extends SharingParsingHelpers
+public class NamespaceDeclarationParsing extends SharedParsingHelpers
 {
 	public static void parse(CSharpBuilderWrapper builder, PsiBuilder.Marker marker)
 	{

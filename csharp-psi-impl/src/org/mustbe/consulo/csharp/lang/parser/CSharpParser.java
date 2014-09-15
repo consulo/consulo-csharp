@@ -29,7 +29,7 @@ import lombok.val;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpParser extends SharingParsingHelpers implements PsiParser
+public class CSharpParser extends SharedParsingHelpers implements PsiParser
 {
 	@NotNull
 	@Override

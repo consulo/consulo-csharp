@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.lang.parser.decl;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
-import org.mustbe.consulo.csharp.lang.parser.SharingParsingHelpers;
+import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.Pair;
@@ -28,7 +28,7 @@ import com.intellij.util.NotNullFunction;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class TypeDeclarationParsing extends SharingParsingHelpers
+public class TypeDeclarationParsing extends SharedParsingHelpers
 {
 	public static void parse(CSharpBuilderWrapper builder, PsiBuilder.Marker marker)
 	{

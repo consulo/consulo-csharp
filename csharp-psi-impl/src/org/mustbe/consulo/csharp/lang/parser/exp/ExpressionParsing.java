@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.lang.parser.exp;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
-import org.mustbe.consulo.csharp.lang.parser.SharingParsingHelpers;
+import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.decl.MethodParsing;
 import org.mustbe.consulo.csharp.lang.parser.stmt.StatementParsing;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
@@ -30,7 +30,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import lombok.val;
 
-public class ExpressionParsing extends SharingParsingHelpers
+public class ExpressionParsing extends SharedParsingHelpers
 {
 	private enum ExprType
 	{
