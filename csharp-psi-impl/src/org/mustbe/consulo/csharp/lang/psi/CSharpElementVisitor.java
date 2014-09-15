@@ -518,6 +518,11 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(element);
 	}
 
+	public void visitCallArgument(CSharpCallArgument argument)
+	{
+		visitElement(argument);
+	}
+
 	public void visitNamedCallArgument(CSharpNamedCallArgument argument)
 	{
 		visitElement(argument);

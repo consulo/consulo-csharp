@@ -28,7 +28,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 public interface CSharpFieldOrPropertySet extends DotNetElement
 {
 	@NotNull
-	DotNetExpression getNameReferenceExpression();
+	CSharpReferenceExpression getNameReferenceExpression();
 
 	@Nullable
 	DotNetExpression getValueReferenceExpression();

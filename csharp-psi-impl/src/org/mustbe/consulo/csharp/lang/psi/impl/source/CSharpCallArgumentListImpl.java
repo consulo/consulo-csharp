@@ -16,8 +16,12 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
@@ -30,6 +34,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceService;
 import com.intellij.psi.tree.TokenSet;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -66,18 +71,29 @@ public class CSharpCallArgumentListImpl extends CSharpElementImpl implements CSh
 		return findChildByFilter(ourCloseSet);
 	}
 
+	@NotNull
+	@Override
+	public CSharpCallArgument[] getArguments()
+	{
+		return findChildrenByClass(CSharpCallArgument.class);
+	}
+
 	@Override
 	@NotNull
 	public DotNetExpression[] getExpressions()
 	{
-		return findChildrenByClass(DotNetExpression.class);
-	}
-
-	@NotNull
-	@Override
-	public CSharpNamedCallArgument[] getNamedArguments()
-	{
-		return findChildrenByClass(CSharpNamedCallArgument.class);
+		CSharpCallArgument[] arguments = getArguments();
+		List<DotNetExpression> list = new ArrayList<DotNetExpression>(arguments.length);
+		for(CSharpCallArgument callArgument : arguments)
+		{
+			if(!(callArgument instanceof CSharpNamedCallArgument))
+			{
+				DotNetExpression argumentExpression = callArgument.getArgumentExpression();
+				assert argumentExpression != null;
+				list.add(argumentExpression);
+			}
+		}
+		return ContainerUtil.toArray(list, DotNetExpression.ARRAY_FACTORY);
 	}
 
 	@Override

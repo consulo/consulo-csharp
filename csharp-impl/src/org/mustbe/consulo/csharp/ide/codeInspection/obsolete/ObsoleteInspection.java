@@ -146,12 +146,12 @@ public class ObsoleteInspection extends LocalInspectionTool
 		DotNetExpression[] expressions = parameterList.getExpressions();
 		if(expressions.length == 0)
 		{
-			for(CSharpNamedCallArgument namedCallArgument : parameterList.getNamedArguments())
+			for(CSharpFieldOrPropertySet namedCallArgument : parameterList.getSets())
 			{
-				CSharpReferenceExpression argumentNameReference = namedCallArgument.getArgumentNameReference();
+				CSharpReferenceExpression argumentNameReference = namedCallArgument.getNameReferenceExpression();
 				if("Message".equals(argumentNameReference.getReferenceName()))
 				{
-					return  new ConstantExpressionEvaluator(namedCallArgument.getArgumentExpression()).getValueAs(String.class);
+					return  new ConstantExpressionEvaluator(namedCallArgument.getValueReferenceExpression()).getValueAs(String.class);
 				}
 			}
 		}

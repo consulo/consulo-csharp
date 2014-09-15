@@ -19,7 +19,6 @@ package org.mustbe.consulo.csharp.lang.psi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetCallArgumentList;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -34,10 +33,6 @@ public interface CSharpCallArgumentList extends DotNetCallArgumentList, CSharpFi
 	@Nullable
 	PsiElement getCloseElement();
 
-	@Override
 	@NotNull
-	DotNetExpression[] getExpressions();
-
-	@NotNull
-	CSharpNamedCallArgument[] getNamedArguments();
+	CSharpCallArgument[] getArguments();
 }

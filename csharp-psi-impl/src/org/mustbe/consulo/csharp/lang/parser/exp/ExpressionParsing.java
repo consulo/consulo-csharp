@@ -607,14 +607,20 @@ public class ExpressionParsing extends SharedParsingHelpers
 			}
 			else
 			{
+				PsiBuilder.Marker argumentMarker = builder.mark();
 				PsiBuilder.Marker marker = ExpressionParsing.parse(builder);
 				if(marker == null)
 				{
+					argumentMarker.drop();
 					if(!empty)
 					{
 						builder.error("Expression expected");
 					}
 					break;
+				}
+				else
+				{
+					argumentMarker.done(CALL_ARGUMENT);
 				}
 			}
 			empty = false;

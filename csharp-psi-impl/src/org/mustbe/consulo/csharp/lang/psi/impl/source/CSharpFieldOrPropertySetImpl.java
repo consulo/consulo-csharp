@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -43,9 +44,9 @@ public class CSharpFieldOrPropertySetImpl extends CSharpElementImpl implements C
 
 	@NotNull
 	@Override
-	public DotNetExpression getNameReferenceExpression()
+	public CSharpReferenceExpression getNameReferenceExpression()
 	{
-		return (DotNetExpression) getFirstChild();
+		return (CSharpReferenceExpression) getFirstChild();
 	}
 
 	@Nullable

@@ -17,19 +17,13 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.dotnet.psi.DotNetElement;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 
 /**
  * @author VISTALL
  * @since 17.06.14
  */
-public interface CSharpNamedCallArgument extends DotNetElement
+public interface CSharpNamedCallArgument extends CSharpCallArgument
 {
 	@NotNull
 	CSharpReferenceExpression getArgumentNameReference();
-
-	@Nullable
-	DotNetExpression getArgumentExpression();
 }

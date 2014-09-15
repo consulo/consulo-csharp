@@ -194,6 +194,9 @@ public interface CSharpElements
 
 	IElementType CALL_ARGUMENT_LIST = new ElementTypeAsPsiFactory("CALL_ARGUMENT_LIST", CSharpLanguage.INSTANCE, CSharpCallArgumentListImpl.class);
 
+	IElementType CALL_ARGUMENT = new ElementTypeAsPsiFactory("CALL_ARGUMENT", CSharpLanguage.INSTANCE,
+			CSharpCallArgumentImpl.class);
+
 	IElementType NAMED_CALL_ARGUMENT = new ElementTypeAsPsiFactory("NAMED_CALL_ARGUMENT", CSharpLanguage.INSTANCE,
 			CSharpNamedCallArgumentImpl.class);
 
