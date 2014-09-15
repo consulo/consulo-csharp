@@ -521,10 +521,17 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 				while(true)
 				{
+					PsiBuilder.Marker argumentMarker = builder.mark();
+
 					final PsiBuilder.Marker index = parse(builder);
 					if(index == null)
 					{
+						argumentMarker.drop();
 						builder.error("Expression expected");
+					}
+					else
+					{
+						argumentMarker.done(CALL_ARGUMENT);
 					}
 
 					if(builder.getTokenType() != COMMA)
