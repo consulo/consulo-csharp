@@ -30,6 +30,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
+import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Condition;
@@ -49,8 +50,8 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 	private final DotNetExpression[] myNewExpression;
 	private final DotNetTypeRef myQualifierTypeRef;
 
-	public ExtensionResolveScopeProcessor(DotNetTypeRef qualifierTypeRef, CSharpReferenceExpression expression,
-			Condition<PsiNamedElement> condition, boolean named)
+	public ExtensionResolveScopeProcessor(@NotNull DotNetTypeRef qualifierTypeRef, @NotNull CSharpReferenceExpression expression,
+			@NotNull Condition<PsiNamedElement> condition, boolean named)
 	{
 		myQualifierTypeRef = qualifierTypeRef;
 		myNewExpression = getNewExpressions(expression, qualifierTypeRef);
@@ -83,9 +84,9 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 
 			CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) dotNetNamedElement;
 
-			DotNetTypeRef[] parameterTypeRefs = methodDeclaration.getParameterTypeRefs();
+			DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(methodDeclaration);
 
-			if(!CSharpTypeUtil.isInheritable(parameterTypeRefs[0], myQualifierTypeRef, myExpression))
+			if(!CSharpTypeUtil.isInheritable(firstParameterTypeRef, myQualifierTypeRef, myExpression))
 			{
 				continue;
 			}
@@ -100,6 +101,14 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 			}
 		}
 		return true;
+	}
+
+	@NotNull
+	private static DotNetTypeRef getFirstTypeRefOrParameter(DotNetParameterListOwner owner)
+	{
+		DotNetParameter[] parameters = owner.getParameters();
+		assert parameters.length != 0;
+		return parameters[0].toTypeRef(false);
 	}
 
 	private static DotNetExpression[] getNewExpressions(CSharpReferenceExpression ex, DotNetTypeRef qType)
