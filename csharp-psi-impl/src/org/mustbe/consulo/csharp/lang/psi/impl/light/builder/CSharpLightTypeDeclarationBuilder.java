@@ -28,7 +28,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.*;
@@ -72,14 +71,7 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 	@Override
 	public boolean hasExtensions()
 	{
-		for(DotNetQualifiedElement qualifiedElement : getMembers())
-		{
-			if(CSharpMethodImplUtil.isExtensionMethod(qualifiedElement))
-			{
-				return true;
-			}
-		}
-		return false;
+		return CSharpTypeDeclarationImplUtil.hasExtensions(this);
 	}
 
 	@Override

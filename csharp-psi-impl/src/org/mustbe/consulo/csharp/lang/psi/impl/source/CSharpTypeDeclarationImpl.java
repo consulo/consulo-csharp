@@ -25,7 +25,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeStub;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
@@ -229,14 +228,7 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeSt
 			return stub.hasExtensions();
 		}
 
-		for(DotNetQualifiedElement qualifiedElement : getMembers())
-		{
-			if(CSharpMethodImplUtil.isExtensionMethod(qualifiedElement))
-			{
-				return true;
-			}
-		}
-		return false;
+		return CSharpTypeDeclarationImplUtil.hasExtensions(this);
 	}
 
 	@Nullable

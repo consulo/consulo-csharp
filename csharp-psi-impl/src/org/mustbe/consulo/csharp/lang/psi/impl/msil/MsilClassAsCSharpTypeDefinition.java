@@ -264,7 +264,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	@Override
 	public boolean hasExtensions()
 	{
-		return false;
+		return CSharpTypeDeclarationImplUtil.hasExtensions(this);
 	}
 
 	@Override
