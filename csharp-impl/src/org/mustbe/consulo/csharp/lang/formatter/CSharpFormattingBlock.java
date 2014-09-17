@@ -62,7 +62,7 @@ public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSha
 	{
 		ASTNode node = getNode();
 		IElementType elementType = node.getElementType();
-		if(elementType == LBRACE || elementType == RBRACE)
+		if(elementType == LBRACE || elementType == RBRACE || elementType == CSharpElements.XXX_ACCESSOR)
 		{
 			return Wrap.createWrap(WrapType.ALWAYS, true);
 		}
