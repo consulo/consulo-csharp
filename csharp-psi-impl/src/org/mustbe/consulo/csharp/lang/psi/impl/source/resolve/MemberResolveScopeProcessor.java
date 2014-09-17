@@ -49,10 +49,17 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 	{
 		if(element instanceof DotNetNamedElement)
 		{
-			if(myNameCondition.value((PsiNamedElement) element))
+			PsiNamedElement namedElement = (PsiNamedElement) element;
+			if(myNameCondition.value(namedElement))
 			{
-				int weight = myWeightProcessor.getWeight((PsiNamedElement) element);
-				addElement(element, weight);
+				PsiNamedElement temp = namedElement;
+				if(myWeightProcessor instanceof PreProcessor)
+				{
+					temp = ((PreProcessor<PsiNamedElement>) myWeightProcessor).transform(namedElement);
+				}
+
+				int weight = myWeightProcessor.getWeight(temp);
+				addElement(temp, weight);
 				if(weight == WeightProcessor.MAX_WEIGHT && myNamed)
 				{
 					return false;

@@ -32,7 +32,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpression
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
@@ -42,12 +41,10 @@ import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
@@ -434,7 +431,6 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 			}
 			else if(resolveElement instanceof DotNetLikeMethodDeclaration)
 			{
-				DotNetGenericExtractor e = MethodAcceptorImpl.createExtractorFromCall(callOwner, (DotNetGenericParameterListOwner) resolveElement);
 				DotNetParameter[] parameters = ((DotNetLikeMethodDeclaration) resolveElement).getParameters();
 				for(int i = 0; i < parameters.length; i++)
 				{
@@ -442,7 +438,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 					{
 						builder.append(", ");
 					}
-					DotNetTypeRef typeRef = MethodAcceptorImpl.calcParameterTypeRef(element, parameters[i], e);
+					DotNetTypeRef typeRef = parameters[i].toTypeRef(false);
 					typeRefs.add(typeRef);
 					appendType(builder, typeRef);
 				}

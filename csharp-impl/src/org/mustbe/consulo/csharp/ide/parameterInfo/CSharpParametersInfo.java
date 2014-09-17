@@ -17,15 +17,12 @@
 package org.mustbe.consulo.csharp.ide.parameterInfo;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.codeInsight.CodeInsightSettings;
-import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.UnfairTextRange;
 
@@ -37,13 +34,8 @@ public class CSharpParametersInfo
 {
 	private static final TextRange EMPTY = new UnfairTextRange(-1, -1);
 
-	public static CSharpParametersInfo build(Object o)
+	public static CSharpParametersInfo build(Object callable)
 	{
-		//noinspection unchecked
-		Pair<Object, DotNetGenericExtractor> pair = (Pair<Object, DotNetGenericExtractor>) o;
-
-		Object callable = pair.getFirst();
-
 		Object[] parameters = null;
 		DotNetTypeRef returnType = null;
 		if(callable instanceof DotNetLikeMethodDeclaration)
@@ -81,7 +73,7 @@ public class CSharpParametersInfo
 				Object parameter = parameters[i];
 
 				int length = parametersInfo.length();
-				parametersInfo.buildParameter(parameter, pair.getSecond(), i);
+				parametersInfo.buildParameter(parameter, i);
 				parametersInfo.myParameterRanges[i] = new TextRange(length, parametersInfo.length());
 			}
 		}
@@ -110,13 +102,13 @@ public class CSharpParametersInfo
 		myParameterRanges = new TextRange[myParameterCount == 0 ? 1 : myParameterCount];
 	}
 
-	private void buildParameter(Object o, DotNetGenericExtractor extractor, int index)
+	private void buildParameter(Object o, int index)
 	{
 		DotNetTypeRef typeRef = DotNetTypeRef.UNKNOWN_TYPE;
 		String name = null;
 		if(o instanceof DotNetParameter)
 		{
-			typeRef = MethodAcceptorImpl.calcParameterTypeRef((DotNetParameter)o, (DotNetParameter) o, extractor);
+			typeRef = ((DotNetParameter) o).toTypeRef(false);
 			name = ((DotNetParameter) o).getName();
 		}
 		else if(o instanceof DotNetTypeRef)

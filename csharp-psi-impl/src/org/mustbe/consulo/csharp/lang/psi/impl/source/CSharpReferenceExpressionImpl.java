@@ -35,6 +35,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScope
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CallWeightProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
@@ -292,7 +293,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		switch(kind)
 		{
 			case METHOD:
-				weightProcessor = new WeightProcessor<PsiNamedElement>()
+				weightProcessor = new CallWeightProcessor<PsiNamedElement>(e)
 				{
 					@Override
 					public int getWeight(@NotNull PsiNamedElement psiNamedElement)
