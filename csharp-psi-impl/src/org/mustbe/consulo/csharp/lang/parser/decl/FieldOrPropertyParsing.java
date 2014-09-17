@@ -27,56 +27,51 @@ import com.intellij.psi.tree.IElementType;
  */
 public class FieldOrPropertyParsing extends MemberWithBodyParsing
 {
-	public static void parseFieldOrLocalVariableAtTypeWithDone(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, IElementType to)
+	public static void parseFieldOrLocalVariableAtTypeWithDone(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, IElementType to,
+			boolean semicolonEat)
 	{
 		if(parseType(builder, BracketFailPolicy.NOTHING, false) == null)
 		{
 			builder.error("Type expected");
 
+			if(semicolonEat)
+			{
+				expect(builder, SEMICOLON, "';' expected");
+			}
 			marker.done(to);
 		}
 		else
 		{
-			parseFieldOrLocalVariableAtNameWithDone(builder, marker, to);
+			parseFieldOrLocalVariableAtNameWithDone(builder, marker, to, semicolonEat);
 		}
 	}
 
-	public static boolean parseFieldOrLocalVariableAtNameWithDone(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, IElementType to)
+	public static boolean parseFieldOrLocalVariableAtNameWithDone(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, IElementType to,
+			boolean semicolonEat)
 	{
 		if(builder.getTokenType() == IDENTIFIER)
 		{
 			builder.advanceLexer();
 
-			parseFieldAfterName(builder, marker, to);
+			parseFieldAfterName(builder, marker, to, semicolonEat);
 			return true;
 		}
 		else
 		{
 			builder.error("Name expected");
 
+			if(semicolonEat)
+			{
+				expect(builder, SEMICOLON, "';' expected");
+			}
+
 			marker.done(to);
 			return false;
 		}
 	}
 
-	public static PsiBuilder.Marker parseFieldOrLocalVariableAtNameWithRollback(CSharpBuilderWrapper builder, PsiBuilder.Marker marker,
-			IElementType to)
-	{
-		if(builder.getTokenType() == IDENTIFIER)
-		{
-			builder.advanceLexer();
-
-			return parseFieldAfterName(builder, marker, to);
-		}
-		else
-		{
-			builder.error("Name expected");
-			marker.rollbackTo();
-			return null;
-		}
-	}
-
-	private static PsiBuilder.Marker parseFieldAfterName(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, IElementType to)
+	private static PsiBuilder.Marker parseFieldAfterName(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, IElementType to,
+			boolean semicolonEat)
 	{
 		if(builder.getTokenType() == EQ)
 		{
@@ -89,18 +84,23 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 
 		if(builder.getTokenType() == COMMA)
 		{
-			marker.done(to);
-
 			builder.advanceLexer();
+
+			marker.done(to);
 
 			PsiBuilder.Marker newMarker = builder.mark();
 
-			parseFieldOrLocalVariableAtNameWithDone(builder, newMarker, to);
+			parseFieldOrLocalVariableAtNameWithDone(builder, newMarker, to, semicolonEat);
 
 			return marker;
 		}
 		else
 		{
+			if(semicolonEat)
+			{
+				expect(builder, SEMICOLON, "';' expected");
+			}
+
 			marker.done(to);
 
 			return marker;
@@ -143,9 +143,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 		}
 		else
 		{
-			parseFieldAfterName(builderWrapper, marker, FIELD_DECLARATION);
-
-			expect(builderWrapper, SEMICOLON, "';' expected");
+			parseFieldAfterName(builderWrapper, marker, FIELD_DECLARATION, true);
 		}
 	}
 }

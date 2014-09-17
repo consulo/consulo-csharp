@@ -162,9 +162,7 @@ public class StatementParsing extends SharedParsingHelpers
 
 			wrapper.advanceLexer();
 
-			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(wrapper, varMark, LOCAL_VARIABLE);
-
-			expect(wrapper, SEMICOLON, "';' expected");
+			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(wrapper, varMark, LOCAL_VARIABLE, true);
 
 			marker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
 		}
@@ -201,10 +199,9 @@ public class StatementParsing extends SharedParsingHelpers
 		if(canParseAsVariable(builder))
 		{
 			PsiBuilder.Marker mark = builder.mark();
-			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, mark, LOCAL_VARIABLE);
+			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, mark, LOCAL_VARIABLE, someMarker != null);
 			if(someMarker != null)
 			{
-				expect(builder, SEMICOLON, "';' expected");
 				someMarker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
 			}
 			return ParseVariableOrExpressionResult.VARIABLE;
