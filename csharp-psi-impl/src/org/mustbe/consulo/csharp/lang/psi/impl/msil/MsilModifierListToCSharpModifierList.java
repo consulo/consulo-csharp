@@ -35,6 +35,7 @@ import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributesUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.psi.PsiElement;
@@ -48,6 +49,10 @@ import com.intellij.util.ArrayUtil;
  */
 public class MsilModifierListToCSharpModifierList extends LightElement implements DotNetModifierList
 {
+	private static final String[] ourAttributeBans = new String[] {
+			DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute
+	};
+
 	private final MsilModifierList myModifierList;
 
 	private final CSharpModifier[] myAdditional;
@@ -113,7 +118,15 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 	{
 		DotNetAttribute[] oldAttributes = myModifierList.getAttributes();
 		List<DotNetAttribute> attributes = new ArrayList<DotNetAttribute>(oldAttributes.length + myAdditionalAttributes.size());
-		Collections.addAll(attributes, oldAttributes);
+		for(DotNetAttribute oldAttribute : oldAttributes)
+		{
+			DotNetTypeDeclaration resolvedType = oldAttribute.resolveToType();
+			if(resolvedType != null && ArrayUtil.contains(resolvedType.getVmQName(), ourAttributeBans))
+			{
+				continue;
+			}
+			attributes.add(oldAttribute);
+		}
 		attributes.addAll(myAdditionalAttributes);
 
 		ExternalAttributeHolder holder = getExternalAttributeHolder();

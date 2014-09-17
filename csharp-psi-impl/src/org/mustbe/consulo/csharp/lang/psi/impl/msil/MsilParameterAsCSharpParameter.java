@@ -22,10 +22,12 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
-import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeWithChildrenNode;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeHolder;
 import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeNode;
 import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeSimpleNode;
+import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeWithChildrenNode;
+import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -46,12 +48,26 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 	private final DotNetLikeMethodDeclaration myMethodDeclaration;
 	private final int myIndex;
 
-	public MsilParameterAsCSharpParameter(
-			PsiElement parent, DotNetVariable variable, DotNetLikeMethodDeclaration methodDeclaration, int index)
+	public MsilParameterAsCSharpParameter(PsiElement parent, DotNetVariable variable, DotNetLikeMethodDeclaration methodDeclaration, int index)
 	{
-		super(parent, variable);
+		super(parent, getAdditionalModifiers(index, methodDeclaration), variable);
 		myMethodDeclaration = methodDeclaration;
 		myIndex = index;
+	}
+
+	private static CSharpModifier[] getAdditionalModifiers(int index, DotNetLikeMethodDeclaration parent)
+	{
+		if(index == 0)
+		{
+			PsiElement msilElement = ((MsilElementWrapper) parent).getMsilElement();
+			// we can use mirror due ExtensionAttribute is in ban list
+			if(DotNetAttributeUtil.hasAttribute(msilElement, DotNetTypes.System.Runtime.CompilerServices
+					.ExtensionAttribute))
+			{
+				return new CSharpModifier[]{CSharpModifier.THIS};
+			}
+		}
+		return CSharpModifier.EMPTY_ARRAY;
 	}
 
 	@NotNull
@@ -80,7 +96,8 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 				DotNetTypeRef[] parameterTypeRefs = myMethodDeclaration.getParameterTypeRefs();
 
 				ExternalAttributeWithChildrenNode correctExternalMethod = null;
-				topLoop:for(ExternalAttributeSimpleNode simpleNode : classNode.getChildren())
+				topLoop:
+				for(ExternalAttributeSimpleNode simpleNode : classNode.getChildren())
 				{
 					if(!(simpleNode instanceof ExternalAttributeWithChildrenNode))
 					{
@@ -89,7 +106,7 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 
 					if(!Comparing.equal(simpleNode.getName(), myMethodDeclaration.getName()))
 					{
-						continue ;
+						continue;
 					}
 
 					List<ExternalAttributeSimpleNode> children = ((ExternalAttributeWithChildrenNode) simpleNode).getChildren();

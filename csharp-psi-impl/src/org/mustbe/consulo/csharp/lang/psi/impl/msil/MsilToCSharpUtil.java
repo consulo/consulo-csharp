@@ -95,8 +95,6 @@ public class MsilToCSharpUtil
 				break;
 			case PARAMS:
 				return hasAttribute(modifierList, DotNetTypes.System.ParamArrayAttribute);
-			case THIS:
-				return hasAttribute(modifierList, DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute);
 			case ABSTRACT:
 				elementType = MsilTokens.ABSTRACT_KEYWORD;
 				break;
