@@ -20,11 +20,13 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -53,8 +55,8 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 	}
 
 	@NotNull
-	public static <T extends DotNetMemberOwner & DotNetQualifiedElement> List<CompilerCheckResult> doCheck(
-			@NotNull CompilerCheck<T> compilerCheck, @NotNull T element)
+	public static <T extends DotNetMemberOwner & DotNetQualifiedElement> List<CompilerCheckResult> doCheck(@NotNull CompilerCheck<T> compilerCheck,
+			@NotNull T element)
 	{
 		List<CompilerCheckResult> results = new SmartList<CompilerCheckResult>();
 
@@ -129,6 +131,14 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 		if(o1 == o2)
 		{
 			return true;
+		}
+
+		if(o1 instanceof CSharpConstructorDeclaration && o2 instanceof CSharpConstructorDeclaration)
+		{
+			if(o1.hasModifier(DotNetModifier.STATIC) != o2.hasModifier(DotNetModifier.STATIC))
+			{
+				return false;
+			}
 		}
 
 		if(!Comparing.equal(o1.getName(), o2.getName()))
