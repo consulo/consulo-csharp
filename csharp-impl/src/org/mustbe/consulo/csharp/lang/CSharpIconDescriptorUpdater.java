@@ -28,10 +28,10 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceAsElement;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
 import org.mustbe.consulo.dotnet.DotNetRunUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.module.DotNetModuleUtil;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import org.mustbe.consulo.dotnet.psi.*;
@@ -43,6 +43,7 @@ import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.Iconable;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -68,11 +69,15 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 			return;
 		}
 
-		PsiFile containingFile = element.getContainingFile();
-		if(containingFile != null && CSharpAssemblyConstants.FileName.equals(containingFile.getName()))
+		VirtualFile virtualFile = null;
+		if(element instanceof CSharpFileImpl)
 		{
-			iconDescriptor.setMainIcon(AllIcons.FileTypes.Config);
-			return;
+			virtualFile = ((CSharpFileImpl) element).getVirtualFile();
+			if(virtualFile != null && StringUtil.equals(virtualFile.getNameSequence(), CSharpAssemblyConstants.FileName))
+			{
+				iconDescriptor.setMainIcon(AllIcons.FileTypes.Config);
+				return;
+			}
 		}
 
 		if(element instanceof DotNetLikeMethodDeclaration)
@@ -175,23 +180,25 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 			processModifierListOwner(element, iconDescriptor, flags);
 		}
 
-		DotNetModuleExtension extension = ModuleUtilCore.getExtension(element, DotNetModuleExtension.class);
-		if(containingFile != null && containingFile.getFileType() == CSharpFileType.INSTANCE && extension != null && extension.isAllowSourceRoots()
-				&& !DotNetModuleUtil.isUnderSourceRoot(element))
+		if(virtualFile == null)
 		{
-			ProjectFileIndex fileIndex = ProjectRootManager.getInstance(element.getProject()).getFileIndex();
-			VirtualFile virtualFile = containingFile.getVirtualFile();
-			if(virtualFile == null)
-			{
-				return;
-			}
-			if(fileIndex.isInLibraryClasses(virtualFile) || fileIndex.isInLibrarySource(virtualFile))
-			{
-				return;
-			}
-			iconDescriptor.addLayerIcon(AllIcons.Nodes.ExcludedFromCompile);
+			PsiFile containingFile = element.getContainingFile();
+			virtualFile = containingFile == null ? null : containingFile.getVirtualFile();
 		}
 
+		if(virtualFile != null && virtualFile.getFileType() == CSharpFileType.INSTANCE)
+		{
+			DotNetModuleExtension extension = ModuleUtilCore.getExtension(element, DotNetModuleExtension.class);
+			if(extension != null && extension.isAllowSourceRoots() && !DotNetModuleUtil.isUnderSourceRoot(element))
+			{
+				ProjectFileIndex fileIndex = ProjectRootManager.getInstance(element.getProject()).getFileIndex();
+				if(fileIndex.isInLibraryClasses(virtualFile) || fileIndex.isInLibrarySource(virtualFile))
+				{
+					return;
+				}
+				iconDescriptor.addLayerIcon(AllIcons.Nodes.ExcludedFromCompile);
+			}
+		}
 	}
 
 	private static void processModifierListOwner(PsiElement element, IconDescriptor iconDescriptor, int flags)
