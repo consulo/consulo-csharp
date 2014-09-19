@@ -102,7 +102,7 @@ public class CSharpNamespaceAsElement extends LightElement implements DotNetName
 			return findFirstProcessor.getFoundValue();
 		}
 
-		val findFirstProcessor2 = new CommonProcessors.FindFirstProcessor<String>()
+		val findFirstProcessor2 = new CommonProcessors.FindProcessor<String>()
 		{
 			@Override
 			protected boolean accept(String qName2)

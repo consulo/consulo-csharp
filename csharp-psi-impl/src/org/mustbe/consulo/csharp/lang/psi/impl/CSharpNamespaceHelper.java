@@ -16,6 +16,8 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl;
 
+import java.util.Collection;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
@@ -26,7 +28,6 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.util.QualifiedName;
 import com.intellij.util.CommonProcessors;
-import com.intellij.util.indexing.IdFilter;
 import lombok.val;
 
 /**
@@ -56,7 +57,7 @@ public class CSharpNamespaceHelper
 
 		// for example u decl 'namespace NUnit.Test', but dont decl 'namespace NUnit'
 		// and that 'using NUnit' ill be error
-		val findFirstProcessor2 = new CommonProcessors.FindFirstProcessor<String>()
+		val findFirstProcessor2 = new CommonProcessors.FindProcessor<String>()
 		{
 			@Override
 			protected boolean accept(String qName2)
@@ -64,11 +65,17 @@ public class CSharpNamespaceHelper
 				return qName2.startsWith(qName);
 			}
 		};
-		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX, findFirstProcessor2, globalSearchScope,
-				IdFilter.getProjectIdFilter(project, false));
+
+		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX, findFirstProcessor2, globalSearchScope, null);
 
 		if(findFirstProcessor2.getFoundValue() != null)
 		{
+			Collection<PsiElement> elements = StubIndex.getElements(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX,
+					findFirstProcessor2.getFoundValue(), project, globalSearchScope, PsiElement.class);
+			if(elements.isEmpty())
+			{
+				return null;
+			}
 			return new CSharpNamespaceAsElement(project, qName, globalSearchScope);
 		}
 		return null;
