@@ -89,7 +89,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		}
 		appendTypeRef(builder, declaration.toTypeRef(false));
 		builder.append(" ");
-		builder.append(declaration.getName());
+		appendValidName(builder, declaration.getName());
 		builder.append(";\n");
 		myBlocks.add(new LineStubBlock(builder));
 	}
@@ -313,7 +313,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			}
 			else
 			{
-				builder.append(element.getName());
+				appendValidName(builder, element.getName());
 			}
 		}
 		else
@@ -324,7 +324,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			}
 			else
 			{
-				builder.append(element.getName());
+				appendValidName(builder, element.getName());
 			}
 		}
 	}
