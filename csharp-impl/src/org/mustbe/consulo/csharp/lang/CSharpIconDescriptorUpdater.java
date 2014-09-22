@@ -19,7 +19,6 @@ package org.mustbe.consulo.csharp.lang;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.CSharpIcons;
 import org.mustbe.consulo.csharp.ide.assemblyInfo.CSharpAssemblyConstants;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
@@ -39,7 +38,6 @@ import com.intellij.icons.AllIcons;
 import com.intellij.ide.IconDescriptor;
 import com.intellij.ide.IconDescriptorUpdater;
 import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.Iconable;
@@ -99,7 +97,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 			Icon main = null;
 
 			CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) element;
-			if(!DumbService.getInstance(element.getProject()).isDumb())
+			/*if(!DumbService.getInstance(element.getProject()).isDumb())
 			{
 				if(DotNetInheritUtil.isAttribute(typeDeclaration))
 				{
@@ -109,7 +107,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 				{
 					main = typeDeclaration.hasModifier(CSharpModifier.ABSTRACT) ? AllIcons.Nodes.AbstractException : AllIcons.Nodes.ExceptionClass;
 				}
-			}
+			}       */
 
 			if(main == null)
 			{
