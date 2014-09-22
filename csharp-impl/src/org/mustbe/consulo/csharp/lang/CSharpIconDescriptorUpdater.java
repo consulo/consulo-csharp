@@ -20,7 +20,6 @@ import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.assemblyInfo.CSharpAssemblyConstants;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
@@ -85,13 +84,6 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 
 			processModifierListOwner(element, iconDescriptor, flags);
 		}
-		else if(element instanceof CSharpArrayMethodDeclaration)
-		{
-			iconDescriptor.setMainIcon(((CSharpArrayMethodDeclaration) element).hasModifier(CSharpModifier.ABSTRACT) ? AllIcons.Nodes.AbstractMethod
-					: AllIcons.Nodes.Method);
-
-			processModifierListOwner(element, iconDescriptor, flags);
-		}
 		else if(element instanceof DotNetTypeDeclaration)
 		{
 			Icon main = null;
@@ -121,7 +113,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 				}
 				else if(typeDeclaration.isStruct())
 				{
-					main = AllIcons.Nodes.Static;  //TODO [VISTALL] icon
+					main = AllIcons.Nodes.Struct;
 				}
 				else
 				{
@@ -163,7 +155,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 		}
 		else if(element instanceof DotNetEventDeclaration)
 		{
-			iconDescriptor.setMainIcon(AllIcons.Nodes.Property);  //TODO [VISTALL] icon
+			iconDescriptor.setMainIcon(AllIcons.Nodes.Event);
 
 			processModifierListOwner(element, iconDescriptor, flags);
 		}

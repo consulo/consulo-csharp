@@ -218,8 +218,8 @@ public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
 		builder.addKind("Class", new IconDescriptor(AllIcons.Nodes.Class).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpClass");
 		builder.addKind("Interface", new IconDescriptor(AllIcons.Nodes.Interface).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpInterface");
 		builder.addKind("Enum", new IconDescriptor(AllIcons.Nodes.Enum).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpEnum");
-		builder.addKind("Struct", new IconDescriptor(AllIcons.Nodes.Static).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpStruct");
-		builder.addKind("Attribute", new IconDescriptor(CSharpIcons.Nodes.AnnotationClass).addLayerIcon(CSharpIcons.Lang).toIcon(),
+		builder.addKind("Struct", new IconDescriptor(AllIcons.Nodes.Struct).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpStruct");
+		builder.addKind("Attribute", new IconDescriptor(AllIcons.Nodes.Attribute).addLayerIcon(CSharpIcons.Lang).toIcon(),
 				"CSharpAttribukte");
 		if(isCreationOfAssemblyFileAvailable(psiDirectory))
 		{
