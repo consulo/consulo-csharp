@@ -65,6 +65,7 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
+		CSharpNewArrayLengthImpl[] arrayLengths = getNewArrayLengths();
 		DotNetType type = getNewType();
 		if(type == null)
 		{
@@ -108,7 +109,7 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 				typeRef = type.toTypeRef();
 			}
 
-			for(CSharpNewArrayLengthImpl length : getNewArrayLengths())
+			for(CSharpNewArrayLengthImpl length : arrayLengths)
 			{
 				typeRef = new CSharpArrayTypeRef(typeRef, length.getDimensionSize());
 			}

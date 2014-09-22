@@ -1087,69 +1087,70 @@ public class ExpressionParsing extends SharedParsingHelpers
 		builder.advanceLexer();
 
 		val typeMarker = parseType(builder, BracketFailPolicy.RETURN_BEFORE, false);
-		if(typeMarker != null)
-		{
-			while(builder.getTokenType() == LBRACKET)
-			{
-				val arrayMarker = builder.mark();
-				builder.advanceLexer();
 
-				while(true)
+		boolean forceArray = false;
+		while(builder.getTokenType() == LBRACKET)
+		{
+			forceArray = true;
+
+			val arrayMarker = builder.mark();
+			builder.advanceLexer();
+
+			while(true)
+			{
+				parse(builder);
+				if(builder.getTokenType() != COMMA)
 				{
-					parse(builder);
-					if(builder.getTokenType() != COMMA)
-					{
-						break;
-					}
-					else
-					{
-						builder.advanceLexer();
-					}
+					break;
 				}
-
-				expect(builder, RBRACKET, "']' expected");
-				arrayMarker.done(NEW_ARRAY_LENGTH);
+				else
+				{
+					builder.advanceLexer();
+				}
 			}
 
-			if(builder.getTokenType() == LPAR)
-			{
-				parseArgumentList(builder, false);
-			}
-
-			AfterNewParsingTarget target = getTarget(builder);
-			switch(target)
-			{
-				case NONE:
-					break;
-				case PROPERTY_SET_LIST:
-					parseFieldOrPropertySetBlock(builder);
-					break;
-				case ARRAY_INITIALIZATION:
-					parseArrayInitialization(builder);
-					break;
-			}
+			expect(builder, RBRACKET, "']' expected");
+			arrayMarker.done(NEW_ARRAY_LENGTH);
 		}
-		else
+
+		if(!forceArray && builder.getTokenType() == LPAR)
 		{
-			if(builder.getTokenType() == LBRACE)
-			{
+			parseArgumentList(builder, false);
+		}
+
+		AfterNewParsingTarget target = getTarget(builder, forceArray, typeMarker);
+		switch(target)
+		{
+			case NONE:
+				break;
+			case PROPERTY_SET_LIST:
 				parseFieldOrPropertySetBlock(builder);
-			}
-			else
-			{
-				builder.error("'{' expected");
-			}
+				break;
+			case ARRAY_INITIALIZATION:
+				parseArrayInitialization(builder);
+				break;
 		}
 
 		newExpr.done(NEW_EXPRESSION);
 		return newExpr;
 	}
 
-	private static AfterNewParsingTarget getTarget(CSharpBuilderWrapper builderWrapper)
+	private static AfterNewParsingTarget getTarget(CSharpBuilderWrapper builderWrapper, boolean forceArray, TypeInfo typeInfo)
 	{
 		if(builderWrapper.getTokenType() != LBRACE)
 		{
 			return AfterNewParsingTarget.NONE;
+		}
+
+		if(forceArray)
+		{
+			return AfterNewParsingTarget.ARRAY_INITIALIZATION;
+		}
+
+		// force property list, anonym object
+		if(typeInfo == null)
+		{
+			return AfterNewParsingTarget.PROPERTY_SET_LIST;
 		}
 
 		if(builderWrapper.lookAhead(1) == IDENTIFIER && builderWrapper.lookAhead(2) == EQ)
