@@ -120,6 +120,12 @@ public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<CSharpType
 	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent,
 			@NotNull PsiElement place)
 	{
+		// any type defs can enter to another type def
+		if(processor.getHint(CSharpResolveUtil.NO_USING_LIST) == Boolean.TRUE)
+		{
+			return true;
+		}
+
 		if(!processor.execute(this, state))
 		{
 			return false;

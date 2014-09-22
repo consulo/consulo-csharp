@@ -696,6 +696,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		}
 
 		MemberResolveScopeProcessor p = new MemberResolveScopeProcessor(condition, weightProcessor, !с);
+		if(PsiTreeUtil.getParentOfType(element, CSharpTypeDefStatementImpl.class) != null)
+		{
+			p.putUserData(CSharpResolveUtil.NO_USING_LIST, Boolean.TRUE);
+		}
 
 		ResolveState resolveState = ResolveState.initial();
 		resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR_KEY, extractor);
