@@ -29,7 +29,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingNamespaceStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
@@ -59,6 +59,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.stubs.StubIndex;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.ArrayListSet;
@@ -109,7 +110,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 
 	private Set<Couple<String>> collectAllAvailableNamespaces()
 	{
-		if(myRef.getParent() instanceof CSharpUsingNamespaceStatementImpl || !myRef.isValid())
+		if(PsiTreeUtil.getParentOfType(myRef, CSharpUsingListChild.class) != null || !myRef.isValid())
 		{
 			return Collections.emptySet();
 		}
