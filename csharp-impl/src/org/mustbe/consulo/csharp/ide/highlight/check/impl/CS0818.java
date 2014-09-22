@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.highlight.check.AbstractCompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
@@ -30,6 +31,10 @@ public class CS0818 extends AbstractCompilerCheck<CSharpLocalVariable>
 	@Override
 	public boolean accept(@NotNull CSharpLocalVariable element)
 	{
+		if(element.getParent() instanceof CSharpForeachStatementImpl)
+		{
+			return false;
+		}
 		return element.toTypeRef(false) == DotNetTypeRef.AUTO_TYPE && element.getInitializer() == null;
 	}
 }
