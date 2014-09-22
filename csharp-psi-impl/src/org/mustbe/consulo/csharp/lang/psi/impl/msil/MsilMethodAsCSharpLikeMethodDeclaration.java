@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
+import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -71,6 +72,7 @@ public class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElementWrapper<
 
 	@NotNull
 	@Override
+	@LazyInstance
 	public DotNetTypeRef getReturnTypeRef()
 	{
 		return MsilToCSharpUtil.extractToCSharp(myMsilElement.getReturnTypeRef(), myMsilElement);
