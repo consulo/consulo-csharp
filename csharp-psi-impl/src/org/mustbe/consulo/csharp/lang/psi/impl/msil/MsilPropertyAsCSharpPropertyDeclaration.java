@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
 import java.util.List;
 
+import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
@@ -163,6 +164,7 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 
 	@NotNull
 	@Override
+	@LazyInstance
 	public DotNetTypeRef getTypeRefForImplement()
 	{
 		String nameFromBytecode = getVariable().getNameFromBytecode();

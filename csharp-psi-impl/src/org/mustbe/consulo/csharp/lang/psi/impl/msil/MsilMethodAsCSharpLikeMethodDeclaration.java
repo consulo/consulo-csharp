@@ -120,6 +120,7 @@ public class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElementWrapper<
 
 	@NotNull
 	@Override
+	@LazyInstance
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
 		DotNetTypeRef[] parameters = myMsilElement.getParameterTypeRefs();

@@ -150,9 +150,9 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
+	public DotNetTypeRef toTypeRefImpl()
 	{
-		DotNetTypeRef typeRef = super.toTypeRef(resolveFromInitializer);
+		DotNetTypeRef typeRef = super.toTypeRefImpl();
 		// check to ref not needed - it default wrapping to ref
 		if(hasModifier(CSharpModifier.OUT))
 		{

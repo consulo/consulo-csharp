@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
 import java.util.List;
 
+import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -168,6 +169,7 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 
 	@NotNull
 	@Override
+	@LazyInstance
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
 		DotNetParameter[] parameters = getParameters();
@@ -230,6 +232,7 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 
 	@NotNull
 	@Override
+	@LazyInstance
 	public DotNetTypeRef getTypeRefForImplement()
 	{
 		String nameFromBytecode = myMsilElement.getNameFromBytecode();

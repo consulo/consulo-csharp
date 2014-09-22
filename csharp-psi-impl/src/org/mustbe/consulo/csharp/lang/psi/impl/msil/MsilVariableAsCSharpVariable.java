@@ -27,6 +27,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
+import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
@@ -38,6 +39,15 @@ import com.intellij.util.IncorrectOperationException;
 public class MsilVariableAsCSharpVariable extends MsilElementWrapper<DotNetVariable> implements DotNetVariable
 {
 	private MsilModifierListToCSharpModifierList myModifierList;
+	private NotNullLazyValue<DotNetTypeRef> myVariableTypRefValue = new NotNullLazyValue<DotNetTypeRef>()
+	{
+		@NotNull
+		@Override
+		protected DotNetTypeRef compute()
+		{
+			return toTypeRefImpl();
+		}
+	};
 
 	public MsilVariableAsCSharpVariable(PsiElement parent, DotNetVariable variable)
 	{
@@ -76,9 +86,15 @@ public class MsilVariableAsCSharpVariable extends MsilElementWrapper<DotNetVaria
 
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
+	public final DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
-		return MsilToCSharpUtil.extractToCSharp(myMsilElement.toTypeRef(resolveFromInitializer), myMsilElement);
+		return myVariableTypRefValue.getValue();
+	}
+
+	@NotNull
+	public DotNetTypeRef toTypeRefImpl()
+	{
+		return MsilToCSharpUtil.extractToCSharp(myMsilElement.toTypeRef(false), myMsilElement);
 	}
 
 	@Nullable

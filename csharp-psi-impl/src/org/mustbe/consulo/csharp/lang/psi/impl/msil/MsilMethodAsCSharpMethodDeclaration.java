@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -194,6 +195,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 
 	@NotNull
 	@Override
+	@LazyInstance
 	public DotNetTypeRef getTypeRefForImplement()
 	{
 		String nameFromBytecode = myMsilElement.getNameFromBytecode();
