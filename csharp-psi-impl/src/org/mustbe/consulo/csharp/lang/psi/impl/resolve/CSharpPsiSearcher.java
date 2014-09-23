@@ -20,10 +20,16 @@ import java.util.Collection;
 
 import org.consulo.lombok.annotations.ProjectService;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceAsElementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MemberByAllNamespaceQNameIndex;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MemberByNamespaceQNameIndex;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeByVmQNameIndex;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 
 /**
@@ -38,6 +44,24 @@ public class CSharpPsiSearcher extends DotNetPsiSearcher
 	public CSharpPsiSearcher(Project project)
 	{
 		myProject = project;
+	}
+
+	@Nullable
+	@Override
+	public DotNetNamespaceAsElement findNamespaceImpl(@NotNull String indexKey, @NotNull String qName, @NotNull GlobalSearchScope scope)
+	{
+		Collection<PsiElement> temp = MemberByNamespaceQNameIndex.getInstance().get(indexKey, myProject, scope);
+		if(!temp.isEmpty())
+		{
+			return new CSharpNamespaceAsElementImpl(myProject, indexKey, qName);
+		}
+
+		temp = MemberByAllNamespaceQNameIndex.getInstance().get(indexKey, myProject, scope);
+		if(!temp.isEmpty())
+		{
+			return new CSharpNamespaceAsElementImpl(myProject, indexKey, qName);
+		}
+		return null;
 	}
 
 	@NotNull

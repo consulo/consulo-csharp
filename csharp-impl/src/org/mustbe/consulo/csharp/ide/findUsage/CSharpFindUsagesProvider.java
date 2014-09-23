@@ -20,12 +20,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.lexer.CSharpLexer;
 import org.mustbe.consulo.csharp.lang.psi.*;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceAsElement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpEnumConstantDeclarationImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
@@ -81,7 +81,7 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		{
 			return "method";
 		}
-		else if(element instanceof CSharpNamespaceAsElement)
+		else if(element instanceof DotNetNamespaceAsElement)
 		{
 			return "namespace";
 		}

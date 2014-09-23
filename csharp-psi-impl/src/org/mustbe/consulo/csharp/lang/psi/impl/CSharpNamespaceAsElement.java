@@ -23,12 +23,12 @@ import java.util.List;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.DeprecationInfo;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilWrapperProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.NamespaceByQNameIndex;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
@@ -43,10 +43,8 @@ import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.util.QualifiedName;
-import com.intellij.util.CommonProcessors;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.Processor;
-import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.indexing.IdFilter;
 import lombok.val;
 
@@ -54,6 +52,8 @@ import lombok.val;
  * @author VISTALL
  * @since 29.12.13.
  */
+@Deprecated
+@DeprecationInfo(value = "Old impl, see DotNetPsiSearcher", until = "1.0")
 public class CSharpNamespaceAsElement extends LightElement implements DotNetNamespaceAsElement
 {
 	@NotNull
@@ -95,34 +95,6 @@ public class CSharpNamespaceAsElement extends LightElement implements DotNetName
 	@Nullable
 	public PsiElement findFirstNamespaceEntry()
 	{
-		val findFirstProcessor = new CommonProcessors.FindFirstProcessor<PsiElement>();
-		StubIndex.getInstance().processElements(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX, myQName, getProject(), myScope, PsiElement.class,
-				findFirstProcessor);
-		if(findFirstProcessor.getFoundValue() != null)
-		{
-			return findFirstProcessor.getFoundValue();
-		}
-
-		val findFirstProcessor2 = new CommonProcessors.FindProcessor<String>()
-		{
-			@Override
-			protected boolean accept(String qName2)
-			{
-				return qName2.startsWith(myQName);
-			}
-		};
-
-		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX, findFirstProcessor2, myScope,
-				IdFilter.getProjectIdFilter(getProject(), false));
-
-		if(findFirstProcessor2.getFoundValue() != null)
-		{
-			Collection<PsiElement> dotNetNamespaceDeclarations = NamespaceByQNameIndex.getInstance().get(findFirstProcessor2.getFoundValue(),
-					getProject(), myScope);
-
-			return ContainerUtil.getFirstItem(dotNetNamespaceDeclarations);
-		}
-
 		return null;
 	}
 
@@ -290,9 +262,9 @@ public class CSharpNamespaceAsElement extends LightElement implements DotNetName
 	}
 
 	private static final ProcessDeclaration[] ourProcessDeclaraion = new ProcessDeclaration[]{
-			new UsingProcessDeclaration(),
+		/*	new UsingProcessDeclaration(),
 			new MemberByNamespaceProcessor(),
-			new NamespaceProcessor()
+			new NamespaceProcessor() */
 	};
 
 	@Override

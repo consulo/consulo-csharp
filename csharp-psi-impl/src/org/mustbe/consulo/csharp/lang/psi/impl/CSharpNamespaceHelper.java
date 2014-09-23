@@ -16,24 +16,18 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl;
 
-import java.util.Collection;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.util.QualifiedName;
-import com.intellij.util.CommonProcessors;
-import lombok.val;
 
 /**
  * @author VISTALL
  * @since 28.12.13.
  */
+@Deprecated
 public class CSharpNamespaceHelper
 {
 	public static final String ROOT = "<root>";
@@ -45,39 +39,6 @@ public class CSharpNamespaceHelper
 	{
 		assert !qName.isEmpty() : "Dont use empty namespace name. Use 'ROOT' field";
 
-		val findFirstProcessor = new CommonProcessors.FindFirstProcessor<PsiElement>();
-
-		StubIndex.getInstance().processElements(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX, qName, project, globalSearchScope,
-				PsiElement.class, findFirstProcessor);
-
-		if(findFirstProcessor.getFoundValue() != null)
-		{
-			return new CSharpNamespaceAsElement(project, qName, globalSearchScope);
-		}
-
-		// for example u decl 'namespace NUnit.Test', but dont decl 'namespace NUnit'
-		// and that 'using NUnit' ill be error
-		val findFirstProcessor2 = new CommonProcessors.FindProcessor<String>()
-		{
-			@Override
-			protected boolean accept(String qName2)
-			{
-				return qName2.startsWith(qName);
-			}
-		};
-
-		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX, findFirstProcessor2, globalSearchScope, null);
-
-		if(findFirstProcessor2.getFoundValue() != null)
-		{
-			Collection<PsiElement> elements = StubIndex.getElements(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX,
-					findFirstProcessor2.getFoundValue(), project, globalSearchScope, PsiElement.class);
-			if(elements.isEmpty())
-			{
-				return null;
-			}
-			return new CSharpNamespaceAsElement(project, qName, globalSearchScope);
-		}
 		return null;
 	}
 

@@ -24,19 +24,19 @@ import com.intellij.psi.stubs.StubIndexKey;
 
 /**
  * @author VISTALL
- * @since 15.12.13.
+ * @since 18.12.13.
  */
-public class NamespaceByQNameIndex extends StringStubIndexExtension<PsiElement>
+public class MemberByAllNamespaceQNameIndex extends StringStubIndexExtension<PsiElement>
 {
-	public static NamespaceByQNameIndex getInstance()
+	public static MemberByAllNamespaceQNameIndex getInstance()
 	{
-		return StubIndexExtension.EP_NAME.findExtension(NamespaceByQNameIndex.class);
+		return StubIndexExtension.EP_NAME.findExtension(MemberByAllNamespaceQNameIndex.class);
 	}
 
 	@NotNull
 	@Override
 	public StubIndexKey<String, PsiElement> getKey()
 	{
-		return CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX;
+		return CSharpIndexKeys.MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX;
 	}
 }

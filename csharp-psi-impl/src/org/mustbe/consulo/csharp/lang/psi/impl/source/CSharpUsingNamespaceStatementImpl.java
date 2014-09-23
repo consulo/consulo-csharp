@@ -21,10 +21,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceAsElement;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceHelper;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpUsingNamespaceStatementStub;
+import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
+import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.CharFilter;
 import com.intellij.openapi.util.text.StringUtil;
@@ -63,7 +64,7 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 	}
 
 	@Nullable
-	public CSharpNamespaceAsElement resolve()
+	public DotNetNamespaceAsElement resolve()
 	{
 		String referenceText = getReferenceText();
 		if(referenceText == null)
@@ -71,7 +72,7 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 			return null;
 		}
 		String qName = StringUtil.strip(referenceText, CharFilter.NOT_WHITESPACE_FILTER);
-		return CSharpNamespaceHelper.getNamespaceElementIfFind(getProject(), qName, getResolveScope());
+		return DotNetPsiSearcher.getInstance(getProject()).findNamespace(qName, getResolveScope());
 	}
 
 	public DotNetReferenceExpression getNamespaceReference()
@@ -83,9 +84,12 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement
 			place)
 	{
-		CSharpNamespaceAsElement resolve = resolve();
+		DotNetNamespaceAsElement resolve = resolve();
 
-		return resolve == null || resolve.processDeclarations(processor, state, lastParent, place);
+		ResolveState newState = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, getResolveScope());
+		newState = newState.put(BaseDotNetNamespaceAsElement.WITH_CHILD_NAMESPACES, Boolean.TRUE);
+
+		return resolve == null || resolve.processDeclarations(processor, newState, lastParent, place);
 	}
 
 	@Override

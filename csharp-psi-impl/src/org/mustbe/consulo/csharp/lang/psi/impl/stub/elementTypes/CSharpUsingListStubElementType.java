@@ -19,10 +19,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceHelper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpUsingListStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
+import org.mustbe.consulo.dotnet.psi.DotNetNamespaceUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -63,7 +63,7 @@ public class CSharpUsingListStubElementType extends CSharpAbstractStubElementTyp
 		PsiElement parent = cSharpUsingNamespaceList.getParent();
 		if(parent instanceof PsiFile)
 		{
-			parentQName = CSharpNamespaceHelper.ROOT;
+			parentQName = DotNetNamespaceUtil.ROOT_FOR_INDEXING;
 		}
 		else if(parent instanceof DotNetQualifiedElement)
 		{

@@ -20,7 +20,6 @@ import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceHelper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodDeclarationImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.MemberStub;
@@ -108,7 +107,7 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 
 			val parentQName = cSharpTypeStub.getParentQName();
 
-			indexSink.occurrence(CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, CSharpNamespaceHelper.getNamespaceForIndexing(parentQName));
+			//indexSink.occurrence(CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, CSharpNamespaceHelper.getNamespaceForIndexing(parentQName));
 
 			if(BitUtil.isSet(cSharpTypeStub.getOtherModifierMask(), CSharpMethodStub.EXTENSION_MASK))
 			{

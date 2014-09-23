@@ -25,7 +25,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceAsElement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
@@ -33,6 +32,7 @@ import org.mustbe.consulo.dotnet.DotNetRunUtil;
 import org.mustbe.consulo.dotnet.module.DotNetModuleUtil;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import org.mustbe.consulo.dotnet.psi.*;
+import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.IconDescriptor;
 import com.intellij.ide.IconDescriptorUpdater;
@@ -55,7 +55,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 	@Override
 	public void updateIcon(@NotNull IconDescriptor iconDescriptor, @NotNull PsiElement element, int flags)
 	{
-		if(element instanceof CSharpNamespaceAsElement)
+		if(element instanceof DotNetNamespaceAsElement)
 		{
 			iconDescriptor.setMainIcon(AllIcons.Nodes.Package);
 			return;

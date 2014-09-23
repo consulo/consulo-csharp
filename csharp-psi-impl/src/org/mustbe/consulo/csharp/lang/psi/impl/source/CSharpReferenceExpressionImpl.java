@@ -25,25 +25,25 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceAsElement;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceHelper;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CallWeightProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ConstructorProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExtensionResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CallWeightProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromNamespace;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
+import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -62,17 +62,12 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.impl.source.resolve.ResolveCache;
-import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.QualifiedName;
 import com.intellij.util.ArrayUtil;
-import com.intellij.util.CommonProcessors;
 import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.Processor;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.indexing.IdFilter;
 import lombok.val;
 
 /**
@@ -506,65 +501,39 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 						condition, weightProcessor, element, completion);
 				return ArrayUtil.mergeArrays(typeResults, namespaceResults);
 			case NAMESPACE:
+				String qName = StringUtil.strip(element.getText(), CharFilter.NOT_WHITESPACE_FILTER);
+
+				DotNetNamespaceAsElement namespace = DotNetPsiSearcher.getInstance(element.getProject()).findNamespace(qName,
+						element.getResolveScope());
+
+				if(namespace == null)
+				{
+					return ResolveResultWithWeight.EMPTY_ARRAY;
+				}
+
 				if(!completion)
 				{
-					String qName = StringUtil.strip(element.getText(), CharFilter.NOT_WHITESPACE_FILTER);
-					val aPackage = CSharpNamespaceHelper.getNamespaceElementIfFind(element.getProject(), qName, element.getResolveScope());
-
-					if(aPackage == null)
-					{
-						return ResolveResultWithWeight.EMPTY_ARRAY;
-					}
-					return new ResolveResultWithWeight[]{new ResolveResultWithWeight(aPackage)};
+					return new ResolveResultWithWeight[]{new ResolveResultWithWeight(namespace)};
 				}
 				else
 				{
-					String parent = null;
-					if(qualifier != null)
+					p = new AbstractScopeProcessor()
 					{
-						parent = StringUtil.strip(qualifier.getText(), CharFilter.NOT_WHITESPACE_FILTER);
-					}
-					else
-					{
-						parent = CSharpNamespaceHelper.ROOT;
-					}
-					val findFirstProcessor = new CommonProcessors.FindFirstProcessor<PsiElement>();
-
-					StubIndex.getInstance().processElements(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX, parent, element.getProject(),
-							element.getResolveScope(), PsiElement.class, findFirstProcessor);
-
-					if(findFirstProcessor.getFoundValue() != null)
-					{
-						val elements = new ArrayList<ResolveResultWithWeight>();
-
-						val parentQName = QualifiedName.fromDottedString(parent);
-						StubIndex.getInstance().processAllKeys(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX, new Processor<String>()
+						@Override
+						public boolean executeImpl(@NotNull PsiElement element, ResolveState state)
 						{
-							@Override
-							public boolean process(String qName)
+							if(element instanceof DotNetNamespaceAsElement)
 							{
-								ProgressIndicatorProvider.checkCanceled();
-
-								QualifiedName childQName = QualifiedName.fromDottedString(qName);
-								if(childQName.matchesPrefix(parentQName) && parentQName.getComponentCount() == (childQName.getComponentCount() - 1))
-								{
-									val namespaceAsElement = new CSharpNamespaceAsElement(element.getProject(), qName, element.getResolveScope());
-									if(!namespaceAsElement.isValid())
-									{
-										return true;
-									}
-									elements.add(new ResolveResultWithWeight(namespaceAsElement));
-								}
-								return true;
+								addElement(element, WeightProcessor.MAX_WEIGHT);
 							}
-						}, element.getResolveScope(), IdFilter.getProjectIdFilter(element.getProject(), false));
+							return true;
+						}
+					};
 
-						return ContainerUtil.toArray(elements, ResolveResultWithWeight.ARRAY_FACTORY);
-					}
-					else
-					{
-						return ResolveResultWithWeight.EMPTY_ARRAY;
-					}
+					ResolveState state = ResolveState.initial();
+					state = state.put(BaseDotNetNamespaceAsElement.WITH_CHILD_NAMESPACES, Boolean.TRUE);
+					namespace.processDeclarations(p, state, null, element);
+					return p.toResolveResults();
 				}
 			case SOFT_NAMESPACE:
 				String qName2 = StringUtil.strip(element.getText(), CharFilter.NOT_WHITESPACE_FILTER);
@@ -1022,9 +991,9 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	public boolean isReferenceTo(PsiElement element)
 	{
 		PsiElement resolve = resolve();
-		if(element instanceof CSharpNamespaceAsElement && resolve instanceof CSharpNamespaceAsElement)
+		if(element instanceof DotNetNamespaceAsElement && resolve instanceof DotNetNamespaceAsElement)
 		{
-			return Comparing.equal(((CSharpNamespaceAsElement) resolve).getPresentableQName(), ((CSharpNamespaceAsElement) element)
+			return Comparing.equal(((DotNetNamespaceAsElement) resolve).getPresentableQName(), ((DotNetNamespaceAsElement) element)
 					.getPresentableQName());
 		}
 		return element.getManager().areElementsEquivalent(element, resolve);
@@ -1125,9 +1094,9 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@NotNull
 	public static DotNetTypeRef toTypeRef(@Nullable PsiElement resolve)
 	{
-		if(resolve instanceof CSharpNamespaceAsElement)
+		if(resolve instanceof DotNetNamespaceAsElement)
 		{
-			return new CSharpTypeRefFromNamespace(((CSharpNamespaceAsElement) resolve).getPresentableQName());
+			return new CSharpTypeRefFromNamespace(((DotNetNamespaceAsElement) resolve).getPresentableQName());
 		}
 		else if(resolve instanceof DotNetTypeDeclaration)
 		{

@@ -153,13 +153,13 @@
 		<moduleService serviceInterface="org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpModuleTypeHelper"
 					   serviceImplementation="org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpModuleTypeHelperImpl"/>
 
-		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.NamespaceByQNameIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeByQNameIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeByVmQNameIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MethodIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MemberByNamespaceQNameIndex"/>
+		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MemberByAllNamespaceQNameIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.FieldIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.PropertyIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.EventIndex"/>

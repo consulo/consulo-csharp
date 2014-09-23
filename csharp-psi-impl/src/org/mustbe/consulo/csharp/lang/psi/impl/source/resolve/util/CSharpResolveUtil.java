@@ -31,14 +31,13 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceAsElement;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceHelper;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.debugger.DotNetVirtualMachineUtil;
+import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -50,17 +49,20 @@ import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
-import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.KeyWithDefaultValue;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.SmartList;
 import lombok.val;
 
@@ -162,6 +164,7 @@ public class CSharpResolveUtil
 			@Nullable PsiElement maxScope, @NotNull ResolveState state, @NotNull Set<String> typeVisited)
 	{
 		ProgressIndicatorProvider.checkCanceled();
+		GlobalSearchScope resolveScope = entrance.getResolveScope();
 		if(entrance instanceof DotNetTypeDeclaration)
 		{
 			DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR_KEY);
@@ -173,7 +176,7 @@ public class CSharpResolveUtil
 			if(typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
 			{
 				String vmQName = typeDeclaration.getVmQName();
-				val types = CSharpPsiSearcher.getInstance(entrance.getProject()).findTypes(vmQName, entrance.getResolveScope());
+				val types = CSharpPsiSearcher.getInstance(entrance.getProject()).findTypes(vmQName, resolveScope);
 
 				for(val type : types)
 				{
@@ -274,23 +277,26 @@ public class CSharpResolveUtil
 				}
 			}
 		}
-		else if(entrance instanceof CSharpNamespaceAsElement)
+		else if(entrance instanceof DotNetNamespaceAsElement)
 		{
+			state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, resolveScope);
+			state = state.put(BaseDotNetNamespaceAsElement.WITH_CHILD_NAMESPACES, Boolean.TRUE);
 			if(!entrance.processDeclarations(processor, state, maxScope, entrance))
 			{
 				return false;
 			}
 
-			String pQName = CSharpNamespaceHelper.getNamespaceForIndexing(((CSharpNamespaceAsElement) entrance).getPresentableParentQName());
-			if(Comparing.equal(pQName, CSharpNamespaceHelper.ROOT))
+			String parentQName = ((DotNetNamespaceAsElement) entrance).getPresentableParentQName();
+			if(StringUtil.isEmpty(parentQName))
 			{
 				return true;
 			}
 
 			if(walkParent)
 			{
-				CSharpNamespaceAsElement parentNamespace = new CSharpNamespaceAsElement(entrance.getProject(), pQName, entrance.getResolveScope());
-				if(!walkChildrenImpl(processor, parentNamespace, walkParent, maxScope, state, typeVisited))
+				DotNetNamespaceAsElement parentNamespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace(parentQName,
+						resolveScope);
+				if(parentNamespace != null && !walkChildrenImpl(processor, parentNamespace, walkParent, maxScope, state, typeVisited))
 				{
 					return false;
 				}
@@ -306,10 +312,12 @@ public class CSharpResolveUtil
 
 			if(walkParent)
 			{
-				CSharpNamespaceAsElement parentNamespace = new CSharpNamespaceAsElement(entrance.getProject(), presentableQName,
-						entrance.getResolveScope());
+				state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, resolveScope);
+				state = state.put(BaseDotNetNamespaceAsElement.WITH_CHILD_NAMESPACES, Boolean.TRUE);
 
-				if(!walkChildrenImpl(processor, parentNamespace, walkParent, maxScope, state, typeVisited))
+				DotNetNamespaceAsElement parentNamespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace(presentableQName,
+						resolveScope);
+				if(parentNamespace != null && !walkChildrenImpl(processor, parentNamespace, walkParent, maxScope, state, typeVisited))
 				{
 					return false;
 				}
@@ -317,9 +325,11 @@ public class CSharpResolveUtil
 		}
 		else if(entrance instanceof PsiFile)
 		{
-			CSharpNamespaceAsElement parentNamespace = new CSharpNamespaceAsElement(entrance.getProject(), CSharpNamespaceHelper.ROOT,
-					entrance.getResolveScope());
-			return walkChildrenImpl(processor, parentNamespace, walkParent, maxScope, state, typeVisited);
+			state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, resolveScope);
+			state = state.put(BaseDotNetNamespaceAsElement.WITH_CHILD_NAMESPACES, Boolean.TRUE);
+
+			DotNetNamespaceAsElement namespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace("", resolveScope);
+			return namespace != null && walkChildrenImpl(processor, namespace, walkParent, maxScope, state, typeVisited);
 		}
 
 		PsiFile psiFile = state.get(CONTAINS_FILE_KEY);

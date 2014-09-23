@@ -58,7 +58,7 @@ public class CSharpUsingListImpl extends CSharpStubElementImpl<CSharpUsingListSt
 
 		CSharpUsingListChild[] statements = getStatements();
 
-	//	CSharpUsingNamespaceStatementImpl last = statements[statements.length - 1];
+		//	CSharpUsingNamespaceStatementImpl last = statements[statements.length - 1];
 
 		LeafPsiElement leafPsiElement = new LeafPsiElement(TokenType.WHITE_SPACE, "\n");
 
@@ -68,8 +68,8 @@ public class CSharpUsingListImpl extends CSharpStubElementImpl<CSharpUsingListSt
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement
-			place)
+	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent,
+			@NotNull PsiElement place)
 	{
 		if(processor.getHint(CSharpResolveUtil.NO_USING_LIST) == Boolean.TRUE)
 		{

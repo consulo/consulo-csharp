@@ -29,10 +29,11 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpTypeStub extends MemberStub<CSharpTypeDeclaration>
 {
+	public static final int HAS_EXTENSIONS = 1 << 0;
 	public static final int INTERFACE = 1 << 1;
 	public static final int STRUCT = 1 << 2;
 	public static final int ENUM = 1 << 3;
-	public static final int HAS_EXTENSIONS = 1 << 0;
+	public static final int NESTED = 1 << 4;
 
 	public static int getOtherModifiers(CSharpTypeDeclaration typeDeclaration)
 	{
@@ -82,6 +83,11 @@ public class CSharpTypeStub extends MemberStub<CSharpTypeDeclaration>
 	public boolean isStruct()
 	{
 		return BitUtil.isSet(getOtherModifierMask(), STRUCT);
+	}
+
+	public boolean isNested()
+	{
+		return BitUtil.isSet(getOtherModifierMask(), NESTED);
 	}
 
 	public boolean hasExtensions()

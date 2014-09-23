@@ -25,12 +25,14 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.MemberStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
+import org.mustbe.consulo.dotnet.psi.DotNetNamespaceUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.stubs.IndexSink;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
+import com.intellij.psi.util.QualifiedName;
 import com.intellij.util.io.StringRef;
 import lombok.val;
 
@@ -100,7 +102,16 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 
 			val parentQName = stub.getParentQName();
 
-			indexSink.occurrence(CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, CSharpNamespaceHelper.getNamespaceForIndexing(parentQName));
+			indexSink.occurrence(CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, DotNetNamespaceUtil.getIndexableNamespace(parentQName));
+
+			if(!StringUtil.isEmpty(parentQName) && !stub.isNested())
+			{
+				QualifiedName parent = QualifiedName.fromDottedString(parentQName);
+				while((parent = parent.getParent()) != null)
+				{
+					indexSink.occurrence(CSharpIndexKeys.MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX, DotNetNamespaceUtil.getIndexableNamespace(parent));
+				}
+			}
 
 			indexSink.occurrence(CSharpIndexKeys.TYPE_BY_QNAME_INDEX, CSharpNamespaceHelper.getNameWithNamespaceForIndexing(parentQName, name));
 
