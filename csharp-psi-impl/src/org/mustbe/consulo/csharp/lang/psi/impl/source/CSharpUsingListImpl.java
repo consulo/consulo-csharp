@@ -47,6 +47,18 @@ public class CSharpUsingListImpl extends CSharpStubElementImpl<CSharpUsingListSt
 	}
 
 	@NotNull
+	public CSharpTypeDefStatementImpl[] getTypeDefs()
+	{
+		return getStubOrPsiChildren(CSharpStubElements.TYPE_DEF_STATEMENT, CSharpTypeDefStatementImpl.ARRAY_FACTORY);
+	}
+
+	@NotNull
+	public CSharpUsingNamespaceStatementImpl[] getUsingDirectives()
+	{
+		return getStubOrPsiChildren(CSharpStubElements.USING_NAMESPACE_STATEMENT, CSharpUsingNamespaceStatementImpl.ARRAY_FACTORY);
+	}
+
+	@NotNull
 	public CSharpUsingListChild[] getStatements()
 	{
 		return getStubOrPsiChildren(CSharpStubElements.USING_CHILDREN, CSharpUsingListChild.ARRAY_FACTORY);
@@ -84,9 +96,16 @@ public class CSharpUsingListImpl extends CSharpStubElementImpl<CSharpUsingListSt
 
 		if(psiFile.equals(containingFile) || psiFile.getOriginalFile().equals(containingFile))
 		{
-			for(CSharpUsingListChild cSharpUsingStatement : getStatements())
+			for(CSharpTypeDefStatementImpl statement : getTypeDefs())
 			{
-				if(!cSharpUsingStatement.processDeclarations(processor, state, lastParent, place))
+				if(!statement.processDeclarations(processor, state, lastParent, place))
+				{
+					return false;
+				}
+			}
+			for(CSharpUsingNamespaceStatementImpl statement : getUsingDirectives())
+			{
+				if(!statement.processDeclarations(processor, state, lastParent, place))
 				{
 					return false;
 				}

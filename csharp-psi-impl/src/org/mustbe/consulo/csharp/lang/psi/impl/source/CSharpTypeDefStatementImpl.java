@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
+import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,6 +41,7 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 11.02.14
  */
+@ArrayFactoryFields
 public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<CSharpTypeDefStub> implements DotNetNamedElement, PsiNameIdentifierOwner,
 		CSharpUsingListChild
 {
