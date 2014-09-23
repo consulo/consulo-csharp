@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NonNls;
@@ -153,6 +154,20 @@ public class CSharpNamespaceAsElement extends LightElement implements DotNetName
 		int result = getPresentableQName().hashCode();
 		result = 31 * result + myScope.hashCode();
 		return result;
+	}
+
+	@NotNull
+	@Override
+	public Collection<? extends PsiElement> getChildren(@NotNull GlobalSearchScope scope, boolean b)
+	{
+		return Collections.emptyList();
+	}
+
+	@NotNull
+	@Override
+	public PsiElement[] findChildren(@NotNull String s, @NotNull GlobalSearchScope scope, boolean b)
+	{
+		return new PsiElement[0];
 	}
 
 	public static interface ProcessDeclaration
