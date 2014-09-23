@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.lang.psi.*;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceAsElement;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
@@ -501,6 +500,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 						condition, weightProcessor, element, completion);
 				return ArrayUtil.mergeArrays(typeResults, namespaceResults);
 			case NAMESPACE:
+			case SOFT_NAMESPACE:
 				String qName = StringUtil.strip(element.getText(), CharFilter.NOT_WHITESPACE_FILTER);
 
 				DotNetNamespaceAsElement namespace = DotNetPsiSearcher.getInstance(element.getProject()).findNamespace(qName,
@@ -535,10 +535,6 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					namespace.processDeclarations(p, state, null, element);
 					return p.toResolveResults();
 				}
-			case SOFT_NAMESPACE:
-				String qName2 = StringUtil.strip(element.getText(), CharFilter.NOT_WHITESPACE_FILTER);
-				CSharpNamespaceAsElement namespaceAsElement = new CSharpNamespaceAsElement(element.getProject(), qName2, element.getResolveScope());
-				return new ResolveResultWithWeight[]{new ResolveResultWithWeight(namespaceAsElement)};
 			case CONSTRUCTOR:
 				CSharpReferenceExpressionImpl referenceExpression = (CSharpReferenceExpressionImpl) element;
 				CSharpCallArgumentListOwner parent = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
@@ -1058,7 +1054,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@Override
 	public boolean isSoft()
 	{
-		return false;
+		return kind() == ResolveToKind.SOFT_NAMESPACE;
 	}
 
 	@NotNull

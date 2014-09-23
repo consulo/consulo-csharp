@@ -328,7 +328,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	{
 		super.visitReferenceExpression(expression);
 		PsiElement referenceElement = expression.getReferenceElement();
-		if(referenceElement == null)
+		if(referenceElement == null || expression.isSoft())
 		{
 			return;
 		}

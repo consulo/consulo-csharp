@@ -19,8 +19,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceHelper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.MemberStub;
@@ -113,9 +113,19 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 				}
 			}
 
-			indexSink.occurrence(CSharpIndexKeys.TYPE_BY_QNAME_INDEX, CSharpNamespaceHelper.getNameWithNamespaceForIndexing(parentQName, name));
+			indexSink.occurrence(CSharpIndexKeys.TYPE_BY_QNAME_INDEX, getNameWithNamespaceForIndexing(parentQName, name));
 
 			indexSink.occurrence(CSharpIndexKeys.TYPE_BY_VMQNAME_INDEX, stub.getVmQName());
 		}
+	}
+
+	@NotNull
+	public static String getNameWithNamespaceForIndexing(@Nullable String namespace, @NotNull String name)
+	{
+		if(StringUtil.isEmpty(namespace))
+		{
+			return name;
+		}
+		return namespace + "." + name;
 	}
 }
