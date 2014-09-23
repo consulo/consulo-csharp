@@ -17,16 +17,11 @@
 package org.mustbe.consulo.csharp.ide;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceAsElement;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceHelper;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.resolve.DotNetPsiFacade;
 import com.intellij.ide.actions.QualifiedNameProvider;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.GlobalSearchScope;
 
 /**
  * @author VISTALL
@@ -56,17 +51,6 @@ public class CSharpQualifiedNameProvider implements QualifiedNameProvider
 	@Override
 	public PsiElement qualifiedNameToElement(String s, Project project)
 	{
-		GlobalSearchScope globalSearchScope = GlobalSearchScope.allScope(project);
-		DotNetTypeDeclaration type = DotNetPsiFacade.getInstance(project).findType(s, globalSearchScope, -1);
-		if(type !=  null)
-		{
-			return type;
-		}
-		CSharpNamespaceAsElement namespaceElementIfFind = CSharpNamespaceHelper.getNamespaceElementIfFind(project, s, globalSearchScope);
-		if(namespaceElementIfFind != null)
-		{
-			return namespaceElementIfFind;
-		}
 		return null;
 	}
 

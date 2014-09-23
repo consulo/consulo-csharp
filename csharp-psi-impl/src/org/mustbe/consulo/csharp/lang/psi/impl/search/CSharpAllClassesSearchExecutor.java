@@ -18,6 +18,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.search;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -25,9 +26,9 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeIndex;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.search.searches.AllClassesSearch;
-import org.mustbe.consulo.dotnet.resolve.DotNetPsiFacade;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
@@ -69,16 +70,14 @@ public class CSharpAllClassesSearchExecutor implements QueryExecutor<DotNetTypeD
 	}
 
 	private static boolean processAllClassesInGlobalScope(final GlobalSearchScope scope, final Processor<DotNetTypeDeclaration> processor,
-			AllClassesSearch.SearchParameters parameters)
+			final AllClassesSearch.SearchParameters parameters)
 	{
-		final DotNetPsiFacade cache = DotNetPsiFacade.getInstance(parameters.getProject());
-
-		final String[] names = ApplicationManager.getApplication().runReadAction(new Computable<String[]>()
+		final Collection<String> names = ApplicationManager.getApplication().runReadAction(new Computable<Collection<String>>()
 		{
 			@Override
-			public String[] compute()
+			public Collection<String> compute()
 			{
-				return cache.getAllTypeNames();
+				return TypeIndex.getInstance().getAllKeys(parameters.getProject());
 			}
 		});
 
@@ -88,10 +87,10 @@ public class CSharpAllClassesSearchExecutor implements QueryExecutor<DotNetTypeD
 			indicator.checkCanceled();
 		}
 
-		List<String> sorted = new ArrayList<String>(names.length);
-		for(int i = 0; i < names.length; i++)
+		List<String> sorted = new ArrayList<String>(names.size());
+		int i = 0;
+		for(String name : names)
 		{
-			String name = names[i];
 			if(parameters.nameMatches(name))
 			{
 				sorted.add(name);
@@ -100,6 +99,8 @@ public class CSharpAllClassesSearchExecutor implements QueryExecutor<DotNetTypeD
 			{
 				indicator.checkCanceled();
 			}
+
+			i++;
 		}
 
 		if(indicator != null)
@@ -119,12 +120,12 @@ public class CSharpAllClassesSearchExecutor implements QueryExecutor<DotNetTypeD
 		for(final String name : sorted)
 		{
 			ProgressIndicatorProvider.checkCanceled();
-			final DotNetTypeDeclaration[] classes = ApplicationManager.getApplication().runReadAction(new Computable<DotNetTypeDeclaration[]>()
+			final Collection<DotNetTypeDeclaration> classes = ApplicationManager.getApplication().runReadAction(new Computable<Collection<DotNetTypeDeclaration>>()
 			{
 				@Override
-				public DotNetTypeDeclaration[] compute()
+				public Collection<DotNetTypeDeclaration> compute()
 				{
-					return cache.getTypesByName(name, scope);
+					return TypeIndex.getInstance().get(name, parameters.getProject(), scope);
 				}
 			});
 			for(DotNetTypeDeclaration psiClass : classes)

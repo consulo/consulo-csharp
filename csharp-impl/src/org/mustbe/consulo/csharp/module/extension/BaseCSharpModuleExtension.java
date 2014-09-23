@@ -16,14 +16,25 @@
 
 package org.mustbe.consulo.csharp.module.extension;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.consulo.module.extension.impl.ModuleExtensionImpl;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.module.CSharpLanguageVersionPointer;
+import org.mustbe.consulo.dotnet.DotNetRunUtil;
+import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleLangExtension;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.search.searches.AllClassesSearch;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.roots.ModuleRootLayer;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.Processor;
+import com.intellij.util.Query;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -41,6 +52,33 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	{
 		super(id, module);
 		myLanguageVersionPointer = new CSharpLanguageVersionPointer(getProject(), id);
+	}
+
+	@NotNull
+	@Override
+	public PsiElement[] getEntryPointElements()
+	{
+		DotNetModuleExtension extension = myModuleRootLayer.getExtension(DotNetModuleExtension.class);
+		if(extension == null)
+		{
+			return PsiElement.EMPTY_ARRAY;
+		}
+		Query<DotNetTypeDeclaration> search = AllClassesSearch.search(extension.getScopeForResolving(false), getProject());
+
+		final List<DotNetTypeDeclaration> typeDeclarations = new ArrayList<DotNetTypeDeclaration>();
+		search.forEach(new Processor<DotNetTypeDeclaration>()
+		{
+			@Override
+			public boolean process(DotNetTypeDeclaration typeDeclaration)
+			{
+				if(typeDeclaration.getGenericParametersCount() == 0 && DotNetRunUtil.hasEntryPoint(typeDeclaration))
+				{
+					typeDeclarations.add(typeDeclaration);
+				}
+				return true;
+			}
+		});
+		return ContainerUtil.toArray(typeDeclarations, DotNetTypeDeclaration.ARRAY_FACTORY);
 	}
 
 	@NotNull
