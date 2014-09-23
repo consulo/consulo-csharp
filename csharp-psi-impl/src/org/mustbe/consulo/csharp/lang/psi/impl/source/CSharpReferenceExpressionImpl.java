@@ -112,6 +112,15 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		}
 	};
 
+	private static final Condition<PsiNamedElement> ourNotConstructorCondition = new Condition<PsiNamedElement>()
+	{
+		@Override
+		public boolean value(PsiNamedElement psiNamedElement)
+		{
+			return !(psiNamedElement instanceof DotNetConstructorDeclaration);
+		}
+	};
+
 	private static final Condition<PsiNamedElement> ourMethodCondition = new Condition<PsiNamedElement>()
 	{
 		@Override
@@ -609,6 +618,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			case METHOD:
 			case ARRAY_METHOD:
 			case ANY_MEMBER:
+				condition = Conditions.and(condition, ourNotConstructorCondition);
 				if(!completion)
 				{
 					if(kind == ResolveToKind.TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD)
