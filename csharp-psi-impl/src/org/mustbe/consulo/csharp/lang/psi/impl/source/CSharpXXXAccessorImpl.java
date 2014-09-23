@@ -37,6 +37,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
@@ -72,12 +73,8 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 	{
 		if(getAccessorKind() == Kind.GET)
 		{
-			CSharpPropertyDeclaration propertyDeclaration = PsiTreeUtil.getParentOfType(this, CSharpPropertyDeclaration.class);
-			if(propertyDeclaration == null)
-			{
-				return new DotNetTypeRefByQName(DotNetTypes.System.Void, CSharpTransform.INSTANCE, false);
-			}
-			return propertyDeclaration.toTypeRef(false);
+			Pair<DotNetTypeRef, ? extends PsiElement> typeRefOfParent = getTypeRefOfParent();
+			return typeRefOfParent.getFirst();
 		}
 		return new DotNetTypeRefByQName(DotNetTypes.System.Void, CSharpTransform.INSTANCE, false);
 	}
@@ -108,30 +105,41 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 		return findNotNullChildByType(CSharpTokenSets.XXX_ACCESSOR_START);
 	}
 
+	@NotNull
+	private Pair<DotNetTypeRef, ? extends PsiElement> getTypeRefOfParent()
+	{
+		PsiElement element = PsiTreeUtil.getParentOfType(this, CSharpPropertyDeclaration.class, CSharpArrayMethodDeclaration.class);
+		if(element == null)
+		{
+			return Pair.create(DotNetTypeRef.ERROR_TYPE, null);
+		}
+
+		DotNetTypeRef typeRef = DotNetTypeRef.ERROR_TYPE;
+		if(element instanceof CSharpPropertyDeclaration)
+		{
+			typeRef = ((CSharpPropertyDeclaration) element).toTypeRef(false);
+		}
+		else if(element instanceof CSharpArrayMethodDeclaration)
+		{
+			typeRef = ((CSharpArrayMethodDeclaration) element).getReturnTypeRef();
+		}
+		return Pair.create(typeRef, element);
+	}
+
 	@Override
 	public boolean processDeclarations(
 			@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place)
 	{
 		if(getAccessorKind() == Kind.SET)
 		{
-			PsiElement element = PsiTreeUtil.getParentOfType(this, CSharpPropertyDeclaration.class, CSharpArrayMethodDeclaration.class);
-			if(element == null)
+			Pair<DotNetTypeRef, ? extends PsiElement> pair = getTypeRefOfParent();
+			if(pair.getSecond() == null)
 			{
 				return true;
 			}
 
-			DotNetTypeRef typeRef = DotNetTypeRef.ERROR_TYPE;
-			if(element instanceof CSharpPropertyDeclaration)
-			{
-				typeRef = ((CSharpPropertyDeclaration) element).toTypeRef(false);
-			}
-			else if(element instanceof CSharpArrayMethodDeclaration)
-			{
-				typeRef = ((CSharpArrayMethodDeclaration) element).getReturnTypeRef();
-			}
-
-			CSharpLightLocalVariableBuilder builder = new CSharpLightLocalVariableBuilder(element).withName(VALUE).withParent(this)
-					.withTypeRef(typeRef);
+			CSharpLightLocalVariableBuilder builder = new CSharpLightLocalVariableBuilder(pair.getSecond()).withName(VALUE).withParent(this)
+					.withTypeRef(pair.getFirst());
 			builder.putUserData(CSharpResolveUtil.ACCESSOR_VALUE_VARIABLE, Boolean.TRUE);
 
 			if(!processor.execute(builder, state))
