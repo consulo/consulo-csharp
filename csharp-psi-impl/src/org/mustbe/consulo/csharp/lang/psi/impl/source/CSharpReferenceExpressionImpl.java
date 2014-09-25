@@ -512,20 +512,34 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			case SOFT_NAMESPACE:
 				String qName = StringUtil.strip(element.getText(), CharFilter.NOT_WHITESPACE_FILTER);
 
-				DotNetNamespaceAsElement namespace = DotNetPsiSearcher.getInstance(element.getProject()).findNamespace(qName,
-						element.getResolveScope());
-
-				if(namespace == null)
-				{
-					return ResolveResultWithWeight.EMPTY_ARRAY;
-				}
+				DotNetNamespaceAsElement namespace = null;
 
 				if(!completion)
 				{
+					namespace = DotNetPsiSearcher.getInstance(element.getProject()).findNamespace(qName,
+							element.getResolveScope());
+
+					if(namespace == null)
+					{
+						return ResolveResultWithWeight.EMPTY_ARRAY;
+					}
 					return new ResolveResultWithWeight[]{new ResolveResultWithWeight(namespace)};
 				}
 				else
 				{
+					String qualifiedText = "";
+					if(qualifier != null)
+					{
+						qualifiedText = StringUtil.strip(qualifier.getText(), CharFilter.NOT_WHITESPACE_FILTER);
+					}
+
+					namespace = DotNetPsiSearcher.getInstance(element.getProject()).findNamespace(qualifiedText, element.getResolveScope());
+
+					if(namespace == null)
+					{
+						return ResolveResultWithWeight.EMPTY_ARRAY;
+					}
+
 					p = new AbstractScopeProcessor()
 					{
 						@Override
@@ -533,6 +547,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 						{
 							if(element instanceof DotNetNamespaceAsElement)
 							{
+								if(StringUtil.equals(((DotNetNamespaceAsElement) element).getPresentableQName(), DotNetNamespaceUtil.ROOT_FOR_INDEXING))
+								{
+									return true;
+								}
 								addElement(element, WeightProcessor.MAX_WEIGHT);
 							}
 							return true;
@@ -541,6 +559,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 					ResolveState state = ResolveState.initial();
 					state = state.put(BaseDotNetNamespaceAsElement.WITH_CHILD_NAMESPACES, Boolean.TRUE);
+					state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, element.getResolveScope());
 					namespace.processDeclarations(p, state, null, element);
 					return p.toResolveResults();
 				}
@@ -671,7 +690,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		}
 
 		MemberResolveScopeProcessor p = new MemberResolveScopeProcessor(condition, weightProcessor, !с);
-		if(PsiTreeUtil.getParentOfType(element, CSharpTypeDefStatementImpl.class) != null)
+		if(PsiTreeUtil.getParentOfType(element, CSharpUsingListImpl.class) != null)
 		{
 			p.putUserData(CSharpResolveUtil.NO_USING_LIST, Boolean.TRUE);
 		}
@@ -1010,7 +1029,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	public Object[] getVariants()
 	{
 		ResolveToKind kind = kind();
-		if(kind != ResolveToKind.LABEL)
+		if(kind != ResolveToKind.LABEL && kind != ResolveToKind.NAMESPACE && kind != ResolveToKind.SOFT_NAMESPACE)
 		{
 			kind = ResolveToKind.ANY_MEMBER;
 		}

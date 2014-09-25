@@ -25,6 +25,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceAsElementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MemberByAllNamespaceQNameIndex;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MemberByNamespaceQNameIndex;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeByVmQNameIndex;
+import org.mustbe.consulo.dotnet.psi.DotNetNamespaceUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
@@ -50,6 +51,11 @@ public class CSharpPsiSearcher extends DotNetPsiSearcher
 	@Override
 	public DotNetNamespaceAsElement findNamespaceImpl(@NotNull String indexKey, @NotNull String qName, @NotNull GlobalSearchScope scope)
 	{
+		if(DotNetNamespaceUtil.ROOT_FOR_INDEXING.equals(indexKey))
+		{
+			return new CSharpNamespaceAsElementImpl(myProject, indexKey, qName);
+		}
+
 		Collection<PsiElement> temp = MemberByNamespaceQNameIndex.getInstance().get(indexKey, myProject, scope);
 		if(!temp.isEmpty())
 		{
