@@ -43,6 +43,9 @@ import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.Processor;
 
 /**
@@ -118,7 +121,16 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeSt
 	@Override
 	public DotNetQualifiedElement[] getMembers()
 	{
-		return getStubOrPsiChildren(CSharpStubElements.QUALIFIED_MEMBERS, DotNetQualifiedElement.ARRAY_FACTORY);
+		return CachedValuesManager.getCachedValue(this, new CachedValueProvider<DotNetQualifiedElement[]>()
+		{
+			@Nullable
+			@Override
+			public Result<DotNetQualifiedElement[]> compute()
+			{
+				return Result.create(getStubOrPsiChildren(CSharpStubElements.QUALIFIED_MEMBERS, DotNetQualifiedElement.ARRAY_FACTORY),
+						PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+			}
+		});
 	}
 
 	@Override
