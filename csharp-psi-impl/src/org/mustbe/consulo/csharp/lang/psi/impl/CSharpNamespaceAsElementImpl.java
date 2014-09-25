@@ -9,7 +9,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MemberByAllNamespaceQN
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MemberByNamespaceQNameIndex;
 import org.mustbe.consulo.dotnet.lang.psi.impl.IndexBasedDotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceUtil;
-import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
@@ -68,11 +67,5 @@ public class CSharpNamespaceAsElementImpl extends IndexBasedDotNetNamespaceAsEle
 	public StringStubIndexExtension<? extends PsiElement> getSoftIndexExtension()
 	{
 		return MemberByAllNamespaceQNameIndex.getInstance();
-	}
-
-	@Override
-	public DotNetNamespaceAsElement createNamespace(@NotNull String indexKey, @NotNull String qName)
-	{
-		return new CSharpNamespaceAsElementImpl(myProject, indexKey, qName);
 	}
 }
