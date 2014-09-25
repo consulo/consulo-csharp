@@ -17,8 +17,11 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
+import org.mustbe.consulo.msil.MsilHelper;
 import org.mustbe.consulo.msil.lang.psi.impl.elementType.stub.MsilClassEntryStub;
 import org.mustbe.consulo.msil.lang.psi.impl.elementType.stub.MsilStubIndexer;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.stubs.IndexSink;
 
 /**
@@ -35,12 +38,18 @@ public class CSharpMsilStubIndexer extends MsilStubIndexer
 			return;
 		}
 
-//		indexSink.occurrence(CSharpIndexKeys.TYPE_INDEX, name);
+		String name = stub.getName();
+		if(StringUtil.isEmpty(name))
+		{
+			return;
+		}
+
+		indexSink.occurrence(CSharpIndexKeys.TYPE_INDEX, name);
 
 		//indexSink.occurrence(CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, namespaceForIndexing);
 
 		//indexSink.occurrence(CSharpIndexKeys.NAMESPACE_BY_QNAME_INDEX, namespaceForIndexing);
 
-		//indexSink.occurrence(CSharpIndexKeys.TYPE_BY_QNAME_INDEX, MsilHelper.appendNoGeneric(stub.getNamespace(), stub.getName()));
+		indexSink.occurrence(CSharpIndexKeys.TYPE_BY_QNAME_INDEX, MsilHelper.appendNoGeneric(stub.getNamespace(), stub.getName()));
 	}
 }
