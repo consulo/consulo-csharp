@@ -107,10 +107,11 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 			if(!StringUtil.isEmpty(parentQName) && !stub.isNested())
 			{
 				QualifiedName parent = QualifiedName.fromDottedString(parentQName);
-				while((parent = parent.getParent()) != null)
+				do
 				{
 					indexSink.occurrence(CSharpIndexKeys.MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX, DotNetNamespaceUtil.getIndexableNamespace(parent));
 				}
+				while((parent = parent.getParent()) != null);
 			}
 
 			indexSink.occurrence(CSharpIndexKeys.TYPE_BY_QNAME_INDEX, getNameWithNamespaceForIndexing(parentQName, name));
