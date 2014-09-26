@@ -35,6 +35,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.MsilHelper;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
+import com.intellij.openapi.util.NullableLazyValue;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -75,6 +76,21 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 		}
 	};
 
+	private NullableLazyValue<String> myNameValue = new NullableLazyValue<String>()
+	{
+		@Nullable
+		@Override
+		protected String compute()
+		{
+			Pair<String, IElementType> pair = ourOperatorNames.get(myMsilElement.getName());
+			if(pair != null)
+			{
+				return pair.getFirst();
+			}
+			return myDelegate == null ? MsilMethodAsCSharpMethodDeclaration.super.getName() : MsilHelper.cutGenericMarker(myDelegate.getName());
+		}
+	};
+
 	private final DotNetTypeDeclaration myDelegate;
 
 	public MsilMethodAsCSharpMethodDeclaration(PsiElement parent, @Nullable DotNetTypeDeclaration declaration, @NotNull MsilMethodEntry methodEntry)
@@ -105,12 +121,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 	@Override
 	public String getName()
 	{
-		Pair<String, IElementType> pair = ourOperatorNames.get(myMsilElement.getName());
-		if(pair != null)
-		{
-			return pair.getFirst();
-		}
-		return myDelegate == null ? super.getName() : MsilHelper.cutGenericMarker(myDelegate.getName());
+		return myNameValue.getValue();
 	}
 
 	@Nullable
