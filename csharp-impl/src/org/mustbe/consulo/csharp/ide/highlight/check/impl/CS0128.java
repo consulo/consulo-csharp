@@ -28,11 +28,13 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAnonymMethodExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpCatchStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaParameterImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTryStatementImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -100,6 +102,12 @@ public class CS0128 extends CompilerCheck<CSharpBlockStatementImpl>
 			}
 
 			@Override
+			public void visitBlockStatement(CSharpBlockStatementImpl statement)
+			{
+				visitAndRollback(statement);
+			}
+
+			@Override
 			public void visitForeachStatement(CSharpForeachStatementImpl statement)
 			{
 				visitAndRollback(statement);
@@ -116,6 +124,18 @@ public class CS0128 extends CompilerCheck<CSharpBlockStatementImpl>
 			{
 				String name = parameter.getName();
 				names.add(name);
+			}
+
+			@Override
+			public void visitLambdaExpression(CSharpLambdaExpressionImpl expression)
+			{
+				visitAndRollback(expression);
+			}
+
+			@Override
+			public void visitAnonymMethodExpression(CSharpAnonymMethodExpressionImpl method)
+			{
+				visitAndRollback(method);
 			}
 
 			@Override

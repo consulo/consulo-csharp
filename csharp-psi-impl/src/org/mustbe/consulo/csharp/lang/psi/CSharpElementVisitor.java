@@ -453,7 +453,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(list);
 	}
 
-	public void visitAnonymMethod(CSharpAnonymMethodExpressionImpl method)
+	public void visitAnonymMethodExpression(CSharpAnonymMethodExpressionImpl method)
 	{
 		visitElement(method);
 	}

@@ -56,7 +56,7 @@ public class CSharpAnonymMethodExpressionImpl extends CSharpElementImpl implemen
 	@Override
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		visitor.visitAnonymMethod(this);
+		visitor.visitAnonymMethodExpression(this);
 	}
 
 	@Override
