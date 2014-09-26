@@ -23,11 +23,10 @@ import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.decl.FieldOrPropertyParsing;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import org.mustbe.consulo.csharp.lang.parser.exp.LinqParsing;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import com.intellij.lang.PsiBuilder;
-import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.intellij.util.NotNullFunction;
 import lombok.val;
 
 /**
@@ -40,22 +39,18 @@ public class StatementParsing extends SharedParsingHelpers
 
 	public static PsiBuilder.Marker parse(CSharpBuilderWrapper wrapper)
 	{
-		return parseWithSoftElements(new NotNullFunction<CSharpBuilderWrapper, Pair<PsiBuilder.Marker, Boolean>>()
-		{
-			@NotNull
-			@Override
-			public Pair<PsiBuilder.Marker, Boolean> fun(CSharpBuilderWrapper builderWrapper)
-			{
-				return new Pair<PsiBuilder.Marker, Boolean>(parseStatement(builderWrapper), Boolean.TRUE);
-			}
-		}, wrapper, BODY_SOFT_KEYWORDS).getFirst();
+		return parseStatement(wrapper);
 	}
 
 	private static PsiBuilder.Marker parseStatement(CSharpBuilderWrapper wrapper)
 	{
 		val marker = wrapper.mark();
 
+		wrapper.enableSoftKeyword(CSharpSoftTokens.YIELD_KEYWORD);
+
 		val tokenType = wrapper.getTokenType();
+
+		wrapper.disableSoftKeyword(CSharpSoftTokens.YIELD_KEYWORD);
 
 		if(tokenType == LOCK_KEYWORD)
 		{
