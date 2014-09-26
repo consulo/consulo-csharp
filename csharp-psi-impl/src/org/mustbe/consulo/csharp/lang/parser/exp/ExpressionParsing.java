@@ -653,11 +653,19 @@ public class ExpressionParsing extends SharedParsingHelpers
 	private static PsiBuilder.Marker parsePrimaryExpressionStart(final CSharpBuilderWrapper builder)
 	{
 		CSharpLanguageVersion version = builder.getVersion();
+		if(version.isAtLeast(CSharpLanguageVersion._3_0))
+		{
+			builder.enableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
+		}
 		if(version.isAtLeast(CSharpLanguageVersion._4_0))
 		{
 			builder.enableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);
 		}
 		IElementType tokenType = builder.getTokenType();
+		if(version.isAtLeast(CSharpLanguageVersion._3_0))
+		{
+			builder.disableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
+		}
 		if(version.isAtLeast(CSharpLanguageVersion._4_0))
 		{
 			builder.disableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);

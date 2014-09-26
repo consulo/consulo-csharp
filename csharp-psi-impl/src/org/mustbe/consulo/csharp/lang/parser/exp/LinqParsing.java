@@ -16,11 +16,14 @@
 
 package org.mustbe.consulo.csharp.lang.parser.exp;
 
+import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import com.intellij.lang.PsiBuilder;
+import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import com.intellij.util.NotNullFunction;
 
 /**
  * @author VISTALL
@@ -28,10 +31,23 @@ import com.intellij.psi.tree.TokenSet;
  */
 public class LinqParsing extends SharedParsingHelpers
 {
-	public static final TokenSet LINQ_KEYWORDS = TokenSet.create(LET_KEYWORD, FROM_KEYWORD, SELECT_KEYWORD, GROUP_KEYWORD, BY_KEYWORD,
+	public static final TokenSet LINQ_KEYWORDS = TokenSet.create(LET_KEYWORD, /*FROM_KEYWORD, */SELECT_KEYWORD, GROUP_KEYWORD, BY_KEYWORD,
 			INTO_KEYWORD, ORDERBY_KEYWORD, WHERE_KEYWORD);
 
 	public static PsiBuilder.Marker parseLinqExpression(final CSharpBuilderWrapper builder)
+	{
+		return parseWithSoftElements(new NotNullFunction<CSharpBuilderWrapper, Pair<PsiBuilder.Marker, Boolean>>()
+		{
+			@NotNull
+			@Override
+			public Pair<PsiBuilder.Marker, Boolean> fun(CSharpBuilderWrapper wrapper)
+			{
+				return new Pair<PsiBuilder.Marker, Boolean>(parse0(builder), Boolean.TRUE);
+			}
+		}, builder, LINQ_KEYWORDS).getFirst();
+	}
+
+	public static PsiBuilder.Marker parse0(final CSharpBuilderWrapper builder)
 	{
 		if(builder.getTokenType() != FROM_KEYWORD)
 		{
