@@ -35,6 +35,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
@@ -284,6 +285,11 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	@Override
 	public void visitOperatorReference(CSharpOperatorReferenceImpl referenceExpression)
 	{
+		if(!CSharpResolveUtil.isResolvingEnabled())
+		{
+			return;
+		}
+
 		highlightCall(referenceExpression, referenceExpression);
 	}
 
@@ -291,6 +297,11 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	public void visitArrayAccessExpression(CSharpArrayAccessExpressionImpl expression)
 	{
 		super.visitArrayAccessExpression(expression);
+
+		if(!CSharpResolveUtil.isResolvingEnabled())
+		{
+			return;
+		}
 
 		PsiElement resolve = expression.resolveToCallable();
 		if(resolve == null)

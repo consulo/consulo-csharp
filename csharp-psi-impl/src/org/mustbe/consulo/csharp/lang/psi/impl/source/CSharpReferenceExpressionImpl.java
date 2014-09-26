@@ -223,6 +223,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	public static <T extends CSharpQualifiedNonReference & PsiElement> ResolveResultWithWeight[] multiResolve0(ResolveToKind kind,
 			final CSharpCallArgumentListOwner parameters, final T e)
 	{
+		if(!CSharpResolveUtil.isResolvingEnabled())
+		{
+			return ResolveResultWithWeight.EMPTY_ARRAY;
+		}
 		Condition<PsiNamedElement> namedElementCondition;
 		@SuppressWarnings("unchecked") WeightProcessor<PsiNamedElement> weightProcessor = WeightProcessor.MAXIMUM;
 		switch(kind)
@@ -1083,6 +1087,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@Override
 	public boolean isSoft()
 	{
+		if(!CSharpResolveUtil.isResolvingEnabled())
+		{
+			return true;
+		}
 		return kind() == ResolveToKind.SOFT_NAMESPACE;
 	}
 

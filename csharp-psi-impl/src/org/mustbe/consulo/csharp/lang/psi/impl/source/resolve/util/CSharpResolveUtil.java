@@ -21,6 +21,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.consulo.ide.eap.EarlyAccessProgramDescriptor;
+import org.consulo.ide.eap.EarlyAccessProgramManager;
+import org.consulo.lombok.annotations.LazyInstance;
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -82,6 +85,35 @@ public class CSharpResolveUtil
 			return DotNetGenericExtractor.EMPTY;
 		}
 	};
+
+	public static class CSharpResolvingEapDescriptor extends EarlyAccessProgramDescriptor
+	{
+		@NotNull
+		@Override
+		public String getName()
+		{
+			return "C# Resolving";
+		}
+
+		@Override
+		public boolean isRestartRequired()
+		{
+			return true;
+		}
+
+		@Override
+		public boolean getDefaultState()
+		{
+			return false;
+		}
+
+		@NotNull
+		@Override
+		public String getDescription()
+		{
+			return "Currently C# Resolving is in progress and be slow(and bugged).";
+		}
+	}
 
 	public static final Key<Boolean> ACCESSOR_VALUE_VARIABLE = Key.create("accessor.value.variable");
 	public static final Key<Boolean> EXTENSION_METHOD_WRAPPER = Key.create("extension.method.wrapper");
@@ -411,5 +443,12 @@ public class CSharpResolveUtil
 	{
 		Condition<PsiElement> hint = processor.getHint(CONDITION_KEY);
 		return hint == null || hint.value(element);
+	}
+
+	@LazyInstance
+	@NotNull
+	public static Boolean isResolvingEnabled()
+	{
+		return EarlyAccessProgramManager.is(CSharpResolvingEapDescriptor.class);
 	}
 }

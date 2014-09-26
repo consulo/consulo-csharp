@@ -147,6 +147,10 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
 	private Object resolve0(@Nullable Ref<PsiElement> last)
 	{
+		if(!CSharpResolveUtil.isResolvingEnabled())
+		{
+			return null;
+		}
 		PsiElement parent = getParent();
 		if(parent instanceof CSharpExpressionWithOperatorImpl)
 		{
@@ -328,6 +332,10 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@Override
 	public boolean isSoft()
 	{
+		if(!CSharpResolveUtil.isResolvingEnabled())
+		{
+			return true;
+		}
 		return resolve0(null) instanceof DotNetTypeRef;
 	}
 
