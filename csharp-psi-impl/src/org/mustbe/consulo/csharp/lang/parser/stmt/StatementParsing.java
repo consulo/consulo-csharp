@@ -240,13 +240,17 @@ public class StatementParsing extends SharedParsingHelpers
 				return false;
 			}
 
+			IElementType tokenType = builder.getTokenType();
+			if(tokenType == LPAR)
+			{
+				return false;
+			}
 			// binary expression cant be at statement
 			if(typeInfo.isParameterized)
 			{
 				return true;
 			}
-
-			if(builder.getTokenType() == IDENTIFIER)
+			if(tokenType == IDENTIFIER)
 			{
 				IElementType lookAhead = builder.lookAhead(1);
 				if(lookAhead == SEMICOLON || lookAhead == EQ || lookAhead == COMMA)
