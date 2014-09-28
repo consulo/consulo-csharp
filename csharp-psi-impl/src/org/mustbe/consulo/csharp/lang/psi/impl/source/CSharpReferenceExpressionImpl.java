@@ -22,7 +22,9 @@ import java.util.List;
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.lang.psi.*;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CallWeightProcessor;
@@ -1030,9 +1032,11 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@Override
 	public Object[] getVariants()
 	{
-		//TODO [VISTALL] uncomment it
-		return ArrayUtil.EMPTY_OBJECT_ARRAY;
-		/*ResolveToKind kind = kind();
+		if(!CSharpResolveUtil.isReferenceCompletionEnabled())
+		{
+			return ArrayUtil.EMPTY_OBJECT_ARRAY;
+		}
+		ResolveToKind kind = kind();
 		if(kind != ResolveToKind.LABEL && kind != ResolveToKind.NAMESPACE && kind != ResolveToKind.SOFT_NAMESPACE)
 		{
 			kind = ResolveToKind.ANY_MEMBER;
@@ -1081,7 +1085,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			}
 		};
 		ResolveResult[] psiElements = collectResults(kind, condition, WeightProcessor.MAXIMUM, this, true);
-		return CSharpLookupElementBuilder.getInstance(getProject()).buildToLookupElements(this, psiElements);    */
+		return CSharpLookupElementBuilder.getInstance(getProject()).buildToLookupElements(this, psiElements);
 	}
 
 	@Override
