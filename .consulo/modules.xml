@@ -4,8 +4,8 @@
     <modules>
       <module name="consulo-csharp" dirurl="file://$PROJECT_DIR$" current-layer="Default">
         <module-layer name="Default">
-          <extension id="consulo-plugin" sdk-module-name="" sdk-name="Consulo 1.SNAPSHOT" />
-          <extension id="java" sdk-module-name="" sdk-name="1.6" language-level-module-name="" language-level-name="JDK_1_6" special-dir-location="SOURCE_DIR" />
+          <extension id="consulo-plugin" sdk-module-name="" sdk-name="Consulo SNAPSHOT" />
+          <extension id="java" sdk-module-name="" sdk-name="1.7" language-level-module-name="" language-level-name="JDK_1_7" special-dir-location="SOURCE_DIR" />
           <content url="file://$MODULE_DIR$" />
           <orderEntry type="module-extension-sdk" extension-id="java" />
           <orderEntry type="module-extension-sdk" extension-id="consulo-plugin" />
@@ -141,7 +141,7 @@
       </module>
       <module name="consulo-microsoft-dotnet" dirurl="file://$PROJECT_DIR$/extract/consulo-microsoft-dotnet" current-layer="Default">
         <module-layer name="Default">
-          <extension id="consulo-plugin" sdk-module-name="" sdk-name="Consulo 1.SNAPSHOT" custom-plugin-dir-url="file://$MODULE_DIR$/../../dep" />
+          <extension id="consulo-plugin" sdk-module-name="consulo-csharp" sdk-name="" custom-plugin-dir-url="file://$MODULE_DIR$/../../dep" />
           <extension id="java" sdk-module-name="consulo-csharp" sdk-name="" language-level-module-name="consulo-csharp" language-level-name="" special-dir-location="SOURCE_DIR" />
           <content url="file://$MODULE_DIR$">
             <content-folder type="PRODUCTION_RESOURCE" url="file://$MODULE_DIR$/resources" />
@@ -172,7 +172,7 @@
       </module>
       <module name="consulo-mono-dotnet" dirurl="file://$PROJECT_DIR$/extract/consulo-mono-dotnet" current-layer="Default">
         <module-layer name="Default">
-          <extension id="consulo-plugin" sdk-module-name="" sdk-name="Consulo 1.SNAPSHOT" custom-plugin-dir-url="file://$MODULE_DIR$/../../dep" />
+          <extension id="consulo-plugin" sdk-module-name="consulo-csharp" sdk-name="" custom-plugin-dir-url="file://$MODULE_DIR$/../../dep" />
           <extension id="java" sdk-module-name="consulo-csharp" sdk-name="" language-level-module-name="consulo-csharp" language-level-name="" special-dir-location="SOURCE_DIR" />
           <content url="file://$MODULE_DIR$">
             <content-folder type="PRODUCTION_RESOURCE" url="file://$MODULE_DIR$/resources" />
