@@ -115,6 +115,35 @@ public class CSharpResolveUtil
 		}
 	}
 
+	public static class CSharpReferenceCompletionEapDescriptor extends EarlyAccessProgramDescriptor
+	{
+		@NotNull
+		@Override
+		public String getName()
+		{
+			return "C# Reference Completion";
+		}
+
+		@Override
+		public boolean isRestartRequired()
+		{
+			return true;
+		}
+
+		@Override
+		public boolean getDefaultState()
+		{
+			return false;
+		}
+
+		@NotNull
+		@Override
+		public String getDescription()
+		{
+			return "Currently C# Reference Completion is in progress and be slow(and bugged).";
+		}
+	}
+
 	public static final Key<Boolean> ACCESSOR_VALUE_VARIABLE = Key.create("accessor.value.variable");
 	public static final Key<Boolean> EXTENSION_METHOD_WRAPPER = Key.create("extension.method.wrapper");
 	public static final Key<Boolean> NO_USING_LIST = new KeyWithDefaultValue<Boolean>("no.using.list")
@@ -450,5 +479,12 @@ public class CSharpResolveUtil
 	public static Boolean isResolvingEnabled()
 	{
 		return EarlyAccessProgramManager.is(CSharpResolvingEapDescriptor.class);
+	}
+
+	@LazyInstance
+	@NotNull
+	public static Boolean isReferenceCompletionEnabled()
+	{
+		return EarlyAccessProgramManager.is(CSharpReferenceCompletionEapDescriptor.class);
 	}
 }

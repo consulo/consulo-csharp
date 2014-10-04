@@ -1032,6 +1032,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@Override
 	public Object[] getVariants()
 	{
+		if(!CSharpResolveUtil.isReferenceCompletionEnabled())
+		{
+			return ArrayUtil.EMPTY_OBJECT_ARRAY;
+		}
 		ResolveToKind kind = kind();
 		if(kind != ResolveToKind.LABEL && kind != ResolveToKind.NAMESPACE && kind != ResolveToKind.SOFT_NAMESPACE)
 		{

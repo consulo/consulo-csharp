@@ -26,11 +26,11 @@
 	<depends config-file="mono-csharp.xml" optional="true">org.mustbe.consulo.dotnet.mono</depends>
 
 	<xi:include href="/META-INF/CSharpInspections.xml" xpointer="xpointer(/idea-plugin/*)">
-		<xi:fallback />
+		<xi:fallback/>
 	</xi:include>
 
 	<xi:include href="/META-INF/CSharpIntentions.xml" xpointer="xpointer(/idea-plugin/*)">
-		<xi:fallback />
+		<xi:fallback/>
 	</xi:include>
 
 	<actions>
@@ -45,15 +45,15 @@
 	</actions>
 
 	<extensionPoints>
-		<extensionPoint name="unusedElementPolicy" interface="org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.UnusedElementPolicy" />
+		<extensionPoint name="unusedElementPolicy" interface="org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.UnusedElementPolicy"/>
 	</extensionPoints>
 
 	<extensions defaultExtensionNs="org.mustbe.consulo.csharp">
-		<unusedElementPolicy implementation="org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.impl.DefaultUnusedElementPolicy" />
+		<unusedElementPolicy implementation="org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.impl.DefaultUnusedElementPolicy"/>
 	</extensions>
 
 	<extensions defaultExtensionNs="com.intellij.xml">
-		<elementDescriptorProvider implementation="org.mustbe.consulo.csharp.lang.doc.CSharpXmlElementDescriptorProvider" />
+		<elementDescriptorProvider implementation="org.mustbe.consulo.csharp.lang.doc.CSharpXmlElementDescriptorProvider"/>
 	</extensions>
 
 	<extensions defaultExtensionNs="org.mustbe.consulo.dotnet.core">
@@ -64,12 +64,13 @@
 		<stubIndexer implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMsilStubIndexer"/>
 
 		<msilFileRepresentation implementation="org.mustbe.consulo.csharp.ide.msil.representation.CSharpMsilFileRepresentationProvider"/>
-		<injectionByAttributeHelper implementation="org.mustbe.consulo.csharp.lang.CSharpMultiHostInjectorByAttributeHelper" />
+		<injectionByAttributeHelper implementation="org.mustbe.consulo.csharp.lang.CSharpMultiHostInjectorByAttributeHelper"/>
 	</extensions>
 
 	<extensions defaultExtensionNs="com.intellij">
-		<eapDescriptor implementation="org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil$CSharpResolvingEapDescriptor"
-				/>
+		<eapDescriptor implementation="org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil$CSharpResolvingEapDescriptor"/>
+		<eapDescriptor
+				implementation="org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil$CSharpReferenceCompletionEapDescriptor"/>
 
 		<internalFileTemplate name="CSharpClass"/>
 		<internalFileTemplate name="CSharpInterface"/>
@@ -79,7 +80,7 @@
 		<internalFileTemplate name="CSharpFile"/>
 		<internalFileTemplate name="CSharpAssemblyFile"/>
 
-		<errorHandler implementation="com.intellij.diagnostic.ITNReporter" />
+		<errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
 
 		<additionalTextAttributes scheme="Darcula" file="/colorScheme/CSharpDarcula.xml"/>
 		<additionalTextAttributes scheme="Default" file="/colorScheme/CSharpDefault.xml"/>
@@ -94,7 +95,7 @@
 
 		<fileTypeFactory implementation="org.mustbe.consulo.csharp.lang.CSharpFileTypeFactory"/>
 
-		<projectService serviceImplementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher" />
+		<projectService serviceImplementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher"/>
 		<syntaxHighlighter key="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpSyntaxHighlighter"/>
 		<syntaxHighlighter key="C#Macro" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpMacroSyntaxHighlighter"/>
 		<copyright.updater filetype="C#" implementationClass="org.mustbe.consulo.csharp.ide.copyright.CSharpUpdateCopyrightsProvider"/>
@@ -181,15 +182,15 @@
 		<codeInsight.template.postfixTemplateProvider language="C#"
 													  implementationClass="org.mustbe.consulo.csharp.ide.codeInsight.template.postfix.CSharpPostfixTemplateProvider"/>
 
-		<bundleLiveTemplateSet path="liveTemplates/output" />
-		<bundleLiveTemplateSet path="liveTemplates/main" />
-		<bundleLiveTemplateSet path="liveTemplates/foreach" />
+		<bundleLiveTemplateSet path="liveTemplates/output"/>
+		<bundleLiveTemplateSet path="liveTemplates/main"/>
+		<bundleLiveTemplateSet path="liveTemplates/foreach"/>
 
-		<liveTemplateContext implementation="org.mustbe.consulo.csharp.ide.liveTemplates.context.CSharpStatementContextType" />
-		<liveTemplateContext implementation="org.mustbe.consulo.csharp.ide.liveTemplates.context.CSharpClassBodyContextType" />
-		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.SuggestVariableNameMacro" />
-		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.ForeachVariableMacro" />
-		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.ForeachComponentTypeMacro" />
+		<liveTemplateContext implementation="org.mustbe.consulo.csharp.ide.liveTemplates.context.CSharpStatementContextType"/>
+		<liveTemplateContext implementation="org.mustbe.consulo.csharp.ide.liveTemplates.context.CSharpClassBodyContextType"/>
+		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.SuggestVariableNameMacro"/>
+		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.ForeachVariableMacro"/>
+		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.ForeachComponentTypeMacro"/>
 
 		<!--<codeStyleSettingsProvider implementation="org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettingsProvider" />  -->
 
@@ -211,16 +212,16 @@
 									   implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpMacroSyntaxHighlighterFactory"/>
 		<lang.refactoringSupport language="C#" implementationClass="org.mustbe.consulo.csharp.ide.reflactoring.CSharpRefactoringSupportProvider"/>
 		<refactoring.changeSignatureUsageProcessor
-				implementation="org.mustbe.consulo.csharp.ide.reflactoring.changeSignature.CSharpChangeSignatureUsageProcessor" />
-		<inlineActionHandler implementation="org.mustbe.consulo.csharp.ide.reflactoring.inlineAction.CSharpLocalVariableInlineActionHandler" />
+				implementation="org.mustbe.consulo.csharp.ide.reflactoring.changeSignature.CSharpChangeSignatureUsageProcessor"/>
+		<inlineActionHandler implementation="org.mustbe.consulo.csharp.ide.reflactoring.inlineAction.CSharpLocalVariableInlineActionHandler"/>
 		<lang.parserDefinition language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpParserDefinition"/>
 		<lang.parserDefinition language="C#Macro" implementationClass="org.mustbe.consulo.csharp.lang.CSharpMacroParserDefinition"/>
 		<lang.fileViewProviderFactory language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpFileViewProviderFactory"/>
 		<lang.versionResolver language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpLanguageVersionResolver"/>
 		<lang.documentationProvider language="C#" implementationClass="org.mustbe.consulo.dotnet.documentation.DotNetDocumentationProvider"/>
 
-		<psi.referenceContributor language="C#" implementation="org.mustbe.consulo.csharp.ide.resolve.CSharpPsiReferenceContributor" />
+		<psi.referenceContributor language="C#" implementation="org.mustbe.consulo.csharp.ide.resolve.CSharpPsiReferenceContributor"/>
 
-		<newModuleBuilder implementation="org.mustbe.consulo.csharp.ide.newProjectOrModule.CSharpNewModuleBuilder" />
+		<newModuleBuilder implementation="org.mustbe.consulo.csharp.ide.newProjectOrModule.CSharpNewModuleBuilder"/>
 	</extensions>
 </idea-plugin>
