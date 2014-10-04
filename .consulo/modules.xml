@@ -5,7 +5,7 @@
       <module name="consulo-csharp" dirurl="file://$PROJECT_DIR$" current-layer="Default">
         <module-layer name="Default">
           <extension id="consulo-plugin" sdk-module-name="" sdk-name="Consulo 1.SNAPSHOT" />
-          <extension id="java" sdk-module-name="" sdk-name="1.6" language-level-module-name="" language-level-name="JDK_1_7" special-dir-location="SOURCE_DIR" />
+          <extension id="java" sdk-module-name="" sdk-name="1.6" language-level-module-name="" language-level-name="JDK_1_6" special-dir-location="SOURCE_DIR" />
           <content url="file://$MODULE_DIR$" />
           <orderEntry type="module-extension-sdk" extension-id="java" />
           <orderEntry type="module-extension-sdk" extension-id="consulo-plugin" />
