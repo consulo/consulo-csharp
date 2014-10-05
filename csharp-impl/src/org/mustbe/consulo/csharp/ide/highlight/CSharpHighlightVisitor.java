@@ -40,7 +40,6 @@ import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
@@ -235,7 +234,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
-	public void visitFieldDeclaration(DotNetFieldDeclaration declaration)
+	public void visitFieldDeclaration(CSharpFieldDeclaration declaration)
 	{
 		super.visitFieldDeclaration(declaration);
 

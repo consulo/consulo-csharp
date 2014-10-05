@@ -38,6 +38,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpTypeResolveContext;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.debugger.DotNetVirtualMachineUtil;
 import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
@@ -66,6 +67,7 @@ import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.util.NullableFunction;
 import com.intellij.util.SmartList;
 import lombok.val;
 
@@ -85,6 +87,8 @@ public class CSharpResolveUtil
 			return DotNetGenericExtractor.EMPTY;
 		}
 	};
+
+	public static final Key<NullableFunction<CSharpTypeResolveContext, PsiElement>> ELEMENT_SELECTOR = Key.create("element-selector");
 
 	public static class CSharpResolvingEapDescriptor extends EarlyAccessProgramDescriptor
 	{

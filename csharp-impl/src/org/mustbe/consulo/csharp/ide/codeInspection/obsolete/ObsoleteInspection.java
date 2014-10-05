@@ -61,7 +61,7 @@ public class ObsoleteInspection extends LocalInspectionTool
 			}
 
 			@Override
-			public void visitFieldDeclaration(DotNetFieldDeclaration declaration)
+			public void visitFieldDeclaration(CSharpFieldDeclaration declaration)
 			{
 				process(holder, declaration.getNameIdentifier(), declaration);
 			}

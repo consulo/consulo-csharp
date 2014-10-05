@@ -78,7 +78,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	}
 
 	@Override
-	public void visitFieldDeclaration(DotNetFieldDeclaration declaration)
+	public void visitFieldDeclaration(CSharpFieldDeclaration declaration)
 	{
 		StringBuilder builder = new StringBuilder();
 		processAttributeListAsLine(declaration);

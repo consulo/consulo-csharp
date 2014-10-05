@@ -19,9 +19,12 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpTypeResolveContextImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpTypeResolveContext;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
@@ -30,7 +33,12 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.CachedValue;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.Processor;
 
 /**
@@ -39,6 +47,30 @@ import com.intellij.util.Processor;
  */
 public class CSharpTypeDeclarationImplUtil
 {
+	private static final Key<CachedValue<CSharpTypeResolveContext>> TYPE_RESOLVE_CONTEXT = Key.create("type-resolve-context");
+
+	@NotNull
+	public static CSharpTypeResolveContext getOrCreateResolveContext(@NotNull final CSharpTypeDeclaration typeDeclaration)
+	{
+		CachedValue<CSharpTypeResolveContext> provider = typeDeclaration.getUserData(TYPE_RESOLVE_CONTEXT);
+		if(provider != null)
+		{
+			return provider.getValue();
+		}
+
+		CachedValuesManager.getManager(typeDeclaration.getProject()).createCachedValue(new CachedValueProvider<CSharpTypeResolveContext>()
+		{
+			@Nullable
+			@Override
+			public Result<CSharpTypeResolveContext> compute()
+			{
+				return Result.<CSharpTypeResolveContext>create(new CSharpTypeResolveContextImpl(typeDeclaration),
+						PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+			}
+		});
+		return new CSharpTypeResolveContextImpl(typeDeclaration);
+	}
+
 	public static boolean hasExtensions(@NotNull DotNetTypeDeclaration typeDeclaration)
 	{
 		for(DotNetNamedElement qualifiedElement : typeDeclaration.getMembers())
@@ -68,7 +100,7 @@ public class CSharpTypeDeclarationImplUtil
 			{
 				return DotNetTypeRef.EMPTY_ARRAY;
 			}
-			typeRefs = new DotNetTypeRef[] {new DotNetTypeRefByQName(defaultSuperType, CSharpTransform.INSTANCE)};
+			typeRefs = new DotNetTypeRef[]{new DotNetTypeRefByQName(defaultSuperType, CSharpTransform.INSTANCE)};
 		}
 		return typeRefs;
 	}
