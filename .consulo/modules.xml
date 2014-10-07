@@ -101,9 +101,6 @@
                 <root url="jar://$MODULE_DIR$/../dep/dotnet/lib/joou-0.9.2-SNAPSHOT.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/dotnet/lib/mono-soft-debugging.jar!/" />
               </binaries>
-              <sources>
-                <root url="file://F:/consulo-dotnet/dotnet-psi-impl/src" />
-              </sources>
             </library>
           </orderEntry>
           <orderEntry type="module-library">
@@ -141,7 +138,7 @@
       </module>
       <module name="consulo-microsoft-dotnet" dirurl="file://$PROJECT_DIR$/extract/consulo-microsoft-dotnet" current-layer="Default">
         <module-layer name="Default">
-          <extension id="consulo-plugin" sdk-module-name="" sdk-name="Consulo 1.SNAPSHOT" custom-plugin-dir-url="file://$MODULE_DIR$/../../dep" />
+          <extension id="consulo-plugin" sdk-module-name="consulo-csharp" sdk-name="" custom-plugin-dir-url="file://$MODULE_DIR$/../../dep" />
           <extension id="java" sdk-module-name="consulo-csharp" sdk-name="" language-level-module-name="consulo-csharp" language-level-name="" special-dir-location="SOURCE_DIR" />
           <content url="file://$MODULE_DIR$">
             <content-folder type="PRODUCTION_RESOURCE" url="file://$MODULE_DIR$/resources" />
@@ -172,7 +169,7 @@
       </module>
       <module name="consulo-mono-dotnet" dirurl="file://$PROJECT_DIR$/extract/consulo-mono-dotnet" current-layer="Default">
         <module-layer name="Default">
-          <extension id="consulo-plugin" sdk-module-name="" sdk-name="Consulo 1.SNAPSHOT" custom-plugin-dir-url="file://$MODULE_DIR$/../../dep" />
+          <extension id="consulo-plugin" sdk-module-name="consulo-csharp" sdk-name="" custom-plugin-dir-url="file://$MODULE_DIR$/../../dep" />
           <extension id="java" sdk-module-name="consulo-csharp" sdk-name="" language-level-module-name="consulo-csharp" language-level-name="" special-dir-location="SOURCE_DIR" />
           <content url="file://$MODULE_DIR$">
             <content-folder type="PRODUCTION_RESOURCE" url="file://$MODULE_DIR$/resources" />

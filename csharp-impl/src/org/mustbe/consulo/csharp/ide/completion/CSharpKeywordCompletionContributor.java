@@ -84,9 +84,9 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 							prevSibling.getNode().getElementType() == CSharpTokens.RBRACE ||
 							CSharpTokenSets.MODIFIERS.contains(prevSibling.getNode().getElementType()))
 					{
-						val tokeVal = TokenSet.orSet(CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START);
+						val tokenVal = TokenSet.orSet(CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START);
 
-						CSharpCompletionUtil.tokenSetToLookup(completionResultSet, tokeVal, null, createCondForFilterModifierOrTypeStart(parent1));
+						CSharpCompletionUtil.tokenSetToLookup(completionResultSet, tokenVal, null, createCondForFilterModifierOrTypeStart(parent1));
 					}
 				}
 			}

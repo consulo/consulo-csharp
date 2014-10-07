@@ -17,9 +17,9 @@
 package org.mustbe.consulo.csharp.ide.reflactoring.rename;
 
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
+import org.mustbe.consulo.msil.representation.MsilFileRepresentationVirtualFile;
 import com.intellij.openapi.util.Condition;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -33,11 +33,8 @@ public class CSharpVetoRenameCondition implements Condition<PsiElement>
 	{
 		if(psiElement instanceof CSharpFileImpl)
 		{
-			Module moduleForPsiElement = ModuleUtilCore.findModuleForPsiElement(psiElement);
-			if(moduleForPsiElement != null)
-			{
-				return true;
-			}
+			VirtualFile virtualFile = ((CSharpFileImpl) psiElement).getVirtualFile();
+			return virtualFile instanceof MsilFileRepresentationVirtualFile;
 		}
 		return false;
 	}
