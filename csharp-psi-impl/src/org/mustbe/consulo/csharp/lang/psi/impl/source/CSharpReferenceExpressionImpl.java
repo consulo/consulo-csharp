@@ -39,6 +39,10 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRef
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromNamespace;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import org.mustbe.consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
+import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
+import org.mustbe.consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
 import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -74,7 +78,8 @@ import lombok.val;
  * @since 28.11.13.
  */
 @Logger
-public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements CSharpReferenceExpression, PsiPolyVariantReference, CSharpQualifiedNonReference
+public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements CSharpReferenceExpression, PsiPolyVariantReference,
+		CSharpQualifiedNonReference
 {
 	private static class OurResolver implements ResolveCache.PolyVariantResolver<CSharpReferenceExpressionImpl>
 	{
@@ -221,13 +226,15 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	}
 
 	public static <T extends CSharpQualifiedNonReference & PsiElement> ResolveResultWithWeight[] multiResolve0(ResolveToKind kind,
-			final CSharpCallArgumentListOwner parameters, final T e)
+			final CSharpCallArgumentListOwner parameters,
+			final T e)
 	{
 		if(!CSharpResolveUtil.isResolvingEnabled())
 		{
 			return ResolveResultWithWeight.EMPTY_ARRAY;
 		}
-		Condition<PsiNamedElement> namedElementCondition;
+		CSharpResolveSelector selector = StaticResolveSelectors.NONE;
+		Condition<PsiNamedElement> namedElementCondition = Conditions.alwaysFalse();
 		@SuppressWarnings("unchecked") WeightProcessor<PsiNamedElement> weightProcessor = WeightProcessor.MAXIMUM;
 		switch(kind)
 		{
@@ -237,47 +244,18 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				{
 					return ResolveResultWithWeight.EMPTY_ARRAY;
 				}
-				namedElementCondition = new Condition<PsiNamedElement>()
-				{
-					@Override
-					public boolean value(PsiNamedElement netNamedElement)
-					{
-						if(!(netNamedElement instanceof DotNetTypeDeclaration))
-						{
-							return false;
-						}
-						String candinateName = netNamedElement.getName();
-						if(candinateName == null)
-						{
-							return false;
-						}
-						if(Comparing.equal(referenceName, candinateName))
-						{
-							return true;
-						}
-
-						if(candinateName.endsWith(CSharpReferenceExpressionImplUtil.AttributeSuffix) && Comparing.equal(referenceName +
-								CSharpReferenceExpressionImplUtil.AttributeSuffix, netNamedElement.getName()))
-						{
-							return true;
-						}
-						return false;
-					}
-				};
+				selector = new AttributeByNameSelector(referenceName);
 				kind = ResolveToKind.TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD; //remap to type search
 				break;
 			case NATIVE_TYPE_WRAPPER:
 			case THIS:
 			case BASE:
+				break;
 			case ARRAY_METHOD:
-				namedElementCondition = new Condition<PsiNamedElement>()
-				{
-					@Override
-					public boolean value(PsiNamedElement psiNamedElement)
-					{
-						return psiNamedElement instanceof CSharpArrayMethodDeclaration;
-					}
-				};
+				selector = StaticResolveSelectors.INDEX_METHOD_GROUP;
+				break;
+			case CONSTRUCTOR:
+				selector = StaticResolveSelectors.CONSTRUCTOR_GROUP;
 				break;
 			default:
 				val referenceName2 = e.getReferenceName();
@@ -286,14 +264,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					return ResolveResultWithWeight.EMPTY_ARRAY;
 				}
 				val text2 = StringUtil.strip(referenceName2, CharFilter.NOT_WHITESPACE_FILTER);
-				namedElementCondition = new Condition<PsiNamedElement>()
-				{
-					@Override
-					public boolean value(PsiNamedElement netNamedElement)
-					{
-						return Comparing.equal(text2, netNamedElement.getName());
-					}
-				};
+				selector = new MemberByNameSelector(text2);
 				break;
 		}
 
@@ -336,8 +307,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 						{
 							return 0;
 						}
-						return MethodAcceptorImpl.calcAcceptableWeight(e, parameters,
-								(CSharpArrayMethodDeclaration) psiNamedElement);
+						return MethodAcceptorImpl.calcAcceptableWeight(e, parameters, (CSharpArrayMethodDeclaration) psiNamedElement);
 					}
 				};
 				break;
@@ -376,11 +346,14 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				break;
 		}
 
-		return collectResults(kind, namedElementCondition, weightProcessor, e, false);
+		return collectResults(kind, namedElementCondition, selector, weightProcessor, e, false);
 	}
 
 	private static <T extends CSharpQualifiedNonReference & PsiElement> ResolveResultWithWeight[] collectResults(@NotNull ResolveToKind kind,
-			@NotNull Condition<PsiNamedElement> condition, @NotNull WeightProcessor<PsiNamedElement> weightProcessor, final T element,
+			@Deprecated @NotNull Condition<PsiNamedElement> condition,
+			@Nullable CSharpResolveSelector selector,
+			@NotNull WeightProcessor<PsiNamedElement> weightProcessor,
+			final T element,
 			final boolean completion)
 	{
 		if(!element.isValid())
@@ -507,10 +480,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				CSharpResolveUtil.treeWalkUp(p, element, element, parentOfType);
 				return p.toResolveResults();
 			case TYPE_OR_NAMESPACE:
-				ResolveResultWithWeight[] typeResults = collectResults(ResolveToKind.TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD,
-						condition, weightProcessor, element, completion);
-				ResolveResultWithWeight[] namespaceResults = collectResults(ResolveToKind.NAMESPACE,
-						condition, weightProcessor, element, completion);
+				ResolveResultWithWeight[] typeResults = collectResults(ResolveToKind.TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD, condition,
+						selector, weightProcessor, element, completion);
+				ResolveResultWithWeight[] namespaceResults = collectResults(ResolveToKind.NAMESPACE, condition, selector, weightProcessor, element,
+						completion);
 				return ArrayUtil.mergeArrays(typeResults, namespaceResults);
 			case NAMESPACE:
 			case SOFT_NAMESPACE:
@@ -520,8 +493,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 				if(!completion)
 				{
-					namespace = DotNetPsiSearcher.getInstance(element.getProject()).findNamespace(qName,
-							element.getResolveScope());
+					namespace = DotNetPsiSearcher.getInstance(element.getProject()).findNamespace(qName, element.getResolveScope());
 
 					if(namespace == null)
 					{
@@ -551,7 +523,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 						{
 							if(element instanceof DotNetNamespaceAsElement)
 							{
-								if(StringUtil.equals(((DotNetNamespaceAsElement) element).getPresentableQName(), DotNetNamespaceUtil.ROOT_FOR_INDEXING))
+								if(StringUtil.equals(((DotNetNamespaceAsElement) element).getPresentableQName(),
+										DotNetNamespaceUtil.ROOT_FOR_INDEXING))
 								{
 									return true;
 								}
@@ -658,13 +631,18 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					}
 				}
 
-				return processAnyMember(qualifier, condition, weightProcessor, element, kind, completion);
+				return processAnyMember(qualifier, condition, selector, weightProcessor, element, kind, completion);
 		}
 		return ResolveResultWithWeight.EMPTY_ARRAY;
 	}
 
-	public static ResolveResultWithWeight[] processAnyMember(PsiElement qualifier, Condition<PsiNamedElement> condition,
-			WeightProcessor<PsiNamedElement> weightProcessor, PsiElement element, ResolveToKind kind, boolean с)
+	public static ResolveResultWithWeight[] processAnyMember(@Nullable PsiElement qualifier,
+			@NotNull Condition<PsiNamedElement> condition,
+			@Nullable CSharpResolveSelector selector,
+			@NotNull WeightProcessor<PsiNamedElement> weightProcessor,
+			@NotNull PsiElement element,
+			ResolveToKind kind,
+			 boolean с)
 	{
 		PsiElement target = element;
 		DotNetGenericExtractor extractor = DotNetGenericExtractor.EMPTY;
@@ -699,6 +677,11 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			p.putUserData(CSharpResolveUtil.NO_USING_LIST, Boolean.TRUE);
 		}
 
+		if(selector != null)
+		{
+			p.putUserData(CSharpResolveUtil.SELECTOR, selector);
+		}
+
 		ResolveState resolveState = ResolveState.initial();
 		resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR_KEY, extractor);
 
@@ -722,7 +705,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			{
 				// walk for extensions
 				ExtensionResolveScopeProcessor p2 = new ExtensionResolveScopeProcessor(qualifierTypeRef, (CSharpReferenceExpression) element,
-					condition, !с);
+						condition, !с);
 				p2.merge(p);
 
 				resolveState = ResolveState.initial();
@@ -1069,7 +1052,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					return false;
 				}
 
-				if(e instanceof DotNetVirtualImplementOwner && ((DotNetVirtualImplementOwner) e).getTypeRefForImplement() != DotNetTypeRef.ERROR_TYPE)
+				if(e instanceof DotNetVirtualImplementOwner && ((DotNetVirtualImplementOwner) e).getTypeRefForImplement() != DotNetTypeRef
+						.ERROR_TYPE)
 				{
 					return false;
 				}
@@ -1084,7 +1068,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				return true;
 			}
 		};
-		ResolveResult[] psiElements = collectResults(kind, condition, WeightProcessor.MAXIMUM, this, true);
+		ResolveResult[] psiElements = collectResults(kind, condition, null, WeightProcessor.MAXIMUM, this, true);
 		return CSharpLookupElementBuilder.getInstance(getProject()).buildToLookupElements(this, psiElements);
 	}
 

@@ -16,10 +16,12 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
-import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpTypeResolveContext;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -33,19 +35,21 @@ import lombok.val;
  * @author VISTALL
  * @since 29.09.14
  */
-public class CSharpTypeResolveContextImpl implements CSharpTypeResolveContext
+public class CSharpTypeResolveContext implements CSharpResolveContext
 {
 	private static class Collector extends CSharpElementVisitor
 	{
+		private final DotNetGenericExtractor myGenericExtractor;
 		private List<CSharpConstructorDeclaration> myDeConstructors;
 		private List<CSharpConstructorDeclaration> myConstructors;
 		private MultiMap<IElementType, CSharpMethodDeclaration> myOperatorsMap;
 		private MultiMap<String, CSharpMethodDeclaration> myExtensionMap;
 		private List<CSharpArrayMethodDeclaration> myIndexMethods;
-		private THashMap<String, PsiElement> myBaseMap = new THashMap<String, PsiElement>();
+		private MultiMap<String, PsiElement> myOtherElements = new MultiMap<String, PsiElement>();
 
-		public Collector()
+		public Collector(DotNetGenericExtractor genericExtractor)
 		{
+			myGenericExtractor = genericExtractor;
 		}
 
 		@Override
@@ -109,7 +113,7 @@ public class CSharpTypeResolveContextImpl implements CSharpTypeResolveContext
 				{
 					return;
 				}
-				//TODO [VISTALL]
+				putIfAbsentAndNotNull(declaration.getName(), declaration, myOtherElements);
 			}
 		}
 
@@ -126,31 +130,43 @@ public class CSharpTypeResolveContextImpl implements CSharpTypeResolveContext
 			{
 				myIndexMethods = new SmartList<CSharpArrayMethodDeclaration>();
 			}
-			myIndexMethods.add(declaration);
+			myIndexMethods.add(GenericUnwrapTool.extract(declaration, myGenericExtractor, false));
 		}
 
 		@Override
 		public void visitFieldDeclaration(CSharpFieldDeclaration declaration)
 		{
-			putIfAbsentAndNotNull(declaration.getName(), declaration, myBaseMap);
+			putIfAbsentAndNotNull(declaration.getName(), declaration, myOtherElements);
 		}
 
 		@Override
 		public void visitEventDeclaration(CSharpEventDeclaration declaration)
 		{
-			putIfAbsentAndNotNull(declaration.getName(), declaration, myBaseMap);
+			putIfAbsentAndNotNull(declaration.getName(), declaration, myOtherElements);
 		}
 
 		@Override
 		public void visitPropertyDeclaration(CSharpPropertyDeclaration declaration)
 		{
-			putIfAbsentAndNotNull(declaration.getName(), declaration, myBaseMap);
+			putIfAbsentAndNotNull(declaration.getName(), declaration, myOtherElements);
 		}
 
 		@Override
 		public void visitTypeDeclaration(CSharpTypeDeclaration declaration)
 		{
-			putIfAbsentAndNotNull(declaration.getName(), declaration, myBaseMap);
+			putIfAbsentAndNotNull(declaration.getName(), declaration, myOtherElements);
+		}
+
+		private <K, V extends DotNetNamedElement> void putIfAbsentAndNotNull(@Nullable K key, @NotNull V value, @NotNull MultiMap<K, PsiElement> map)
+		{
+			if(key == null)
+			{
+				return;
+			}
+			if(!map.containsKey(key))
+			{
+				map.putValue(key, GenericUnwrapTool.extract(value, myGenericExtractor, false));
+			}
 		}
 	}
 
@@ -164,12 +180,13 @@ public class CSharpTypeResolveContextImpl implements CSharpTypeResolveContext
 	@Nullable
 	private final Map<IElementType, CSharpElementGroup> myOperatorMap;
 	private final Map<String, CSharpElementGroup> myExtensionMap;
+	private final Map<String, CSharpElementGroup> myOtherElements;
 
-	public CSharpTypeResolveContextImpl(CSharpTypeDeclaration typeDeclaration)
+	public CSharpTypeResolveContext(@NotNull CSharpTypeDeclaration typeDeclaration, @NotNull DotNetGenericExtractor genericExtractor)
 	{
 		val project = typeDeclaration.getProject();
 
-		Collector collector = new Collector();
+		val collector = new Collector(genericExtractor);
 
 		DotNetNamedElement[] members = typeDeclaration.getMembers();
 		for(DotNetNamedElement member : members)
@@ -177,6 +194,8 @@ public class CSharpTypeResolveContextImpl implements CSharpTypeResolveContext
 			member.accept(collector);
 		}
 
+		myOtherElements = convertToGroup(project, collector.myOtherElements);
+		myIndexMethodGroup = toGroup(project, collector.myIndexMethods);
 		myConstructorGroup = toGroup(project, collector.myConstructors);
 		myDeConstructorGroup = toGroup(project, collector.myDeConstructors);
 		myOperatorMap = convertToGroup(project, collector.myOperatorsMap);
@@ -208,23 +227,11 @@ public class CSharpTypeResolveContextImpl implements CSharpTypeResolveContext
 		return map;
 	}
 
-	private static <K, V> void putIfAbsentAndNotNull(@Nullable K key, @NotNull V value, @NotNull Map<K, V> map)
-	{
-		if(key == null)
-		{
-			return;
-		}
-		if(!map.containsKey(key))
-		{
-			map.put(key, value);
-		}
-	}
-
 	@Nullable
 	@Override
 	public CSharpElementGroup indexMethodGroup()
 	{
-		return null;
+		return myIndexMethodGroup;
 	}
 
 	@Nullable
@@ -265,8 +272,12 @@ public class CSharpTypeResolveContextImpl implements CSharpTypeResolveContext
 
 	@Override
 	@Nullable
-	public PsiElement findByName(@NotNull String name, boolean deep)
+	public PsiElement findByName(@NotNull String name)
 	{
-		return null;
+		if(myOtherElements == null)
+		{
+			return null;
+		}
+		return myOtherElements.get(name);
 	}
 }

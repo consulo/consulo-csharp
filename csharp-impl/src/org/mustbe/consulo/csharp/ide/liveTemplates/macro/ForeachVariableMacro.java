@@ -65,7 +65,7 @@ public class ForeachVariableMacro extends VariableTypeMacroBase
 					return false;
 				}
 			}
-		}, WeightProcessor.MAXIMUM, psiElementAtStartOffset, CSharpReferenceExpressionImpl.ResolveToKind.ANY_MEMBER, true);
+		}, null, WeightProcessor.MAXIMUM, psiElementAtStartOffset, CSharpReferenceExpressionImpl.ResolveToKind.ANY_MEMBER, true);
 
 		List<PsiElement> list = new ArrayList<PsiElement>(resolveResultWithWeights.length);
 		for(ResolveResultWithWeight resolveResultWithWeight : resolveResultWithWeights)
