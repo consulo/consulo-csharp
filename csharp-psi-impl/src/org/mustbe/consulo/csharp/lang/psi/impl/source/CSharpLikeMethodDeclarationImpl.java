@@ -128,25 +128,11 @@ public abstract class CSharpLikeMethodDeclarationImpl<T extends CSharpMethodStub
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement
-			place)
+	public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
+			@NotNull ResolveState state,
+			PsiElement lastParent,
+			@NotNull PsiElement place)
 	{
-		for(DotNetGenericParameter dotNetGenericParameter : getGenericParameters())
-		{
-			if(!processor.execute(dotNetGenericParameter, state))
-			{
-				return false;
-			}
-		}
-
-		for(DotNetParameter parameter : getParameters())
-		{
-			if(!processor.execute(parameter, state))
-			{
-				return false;
-			}
-		}
-
-		return super.processDeclarations(processor, state, lastParent, place);
+		return CSharpLikeMethodDeclarationImplUtil.processDeclarations(this, processor, state, lastParent, place);
 	}
 }

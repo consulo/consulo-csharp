@@ -26,21 +26,15 @@ import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CallWeightProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ConstructorProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExtensionResolveScopeProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromNamespace;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
@@ -60,6 +54,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.CharFilter;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReference;
@@ -452,45 +447,23 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				{
 					return ResolveResultWithWeight.EMPTY_ARRAY;
 				}
-				ResolveState resolveState = ResolveState.initial();
+
+				DotNetGenericExtractor genericExtractor = resolvedTypeRef.getGenericExtractor(typeElement, element);
+				CSharpResolveContext context = CSharpResolveContextUtil.createContext(genericExtractor, element.getResolveScope(), typeElement);
+
 				if(selector != null)
 				{
-					resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, selector);
-				}
-				resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR_KEY, resolvedTypeRef.getGenericExtractor(typeElement, element));
-
-				scopeProcessor = new SimpleNamedScopeProcessor()
-				{
-					@Nullable
-					@Override
-					public PsiNamedElement getNamedElementOf(@NotNull PsiElement element)
+					PsiElement selectElement = selector.doSelectElement(context);
+					if(selectElement != null)
 					{
-						if(element instanceof CSharpFieldDeclaration || element instanceof CSharpPropertyDeclaration)
-						{
-							return (PsiNamedElement) element;
-						}
-						return null;
+						return new ResolveResult[] {new PsiElementResolveResult(selectElement, true)};
 					}
-				};
-
-				CSharpResolveUtil.walkChildren(scopeProcessor, typeElement, false, null, resolveState);
-				return scopeProcessor.toResolveResults();
+				}
+				break;
 			case LABEL:
 				DotNetQualifiedElement parentOfType = PsiTreeUtil.getParentOfType(element, DotNetQualifiedElement.class);
 				assert parentOfType != null;
-				scopeProcessor = new SimpleNamedScopeProcessor()
-				{
-					@Nullable
-					@Override
-					public PsiNamedElement getNamedElementOf(@NotNull PsiElement element)
-					{
-						if(element instanceof CSharpLabeledStatementImpl)
-						{
-							return (PsiNamedElement) element;
-						}
-						return null;
-					}
-				};
+				scopeProcessor = new SimpleNamedScopeProcessor(ExecuteTarget.LABEL);
 				CSharpResolveUtil.treeWalkUp(scopeProcessor, element, element, parentOfType);
 				return scopeProcessor.toResolveResults();
 			case TYPE_OR_NAMESPACE:
@@ -738,23 +711,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			PsiElement targetToWalkChildren = resolveLayers.getSecond();
 
 			ResolveResult[] elements = ResolveResult.EMPTY_ARRAY;
+			// if resolving is any member, first we need process locals and then go to fields and other
 			if(kind == ResolveToKind.ANY_MEMBER)
 			{
-				SimpleNamedScopeProcessor localProcessor = new SimpleNamedScopeProcessor()
-				{
-					@Nullable
-					@Override
-					public PsiNamedElement getNamedElementOf(@NotNull PsiElement element)
-					{
-						if(element instanceof CSharpLocalVariable ||
-								element instanceof CSharpLambdaParameter ||
-								element instanceof DotNetParameter)
-						{
-							return (PsiNamedElement) element;
-						}
-						return super.getNamedElementOf(element);
-					}
-				};
+				SimpleNamedScopeProcessor localProcessor = new SimpleNamedScopeProcessor(ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
 				if(!CSharpResolveUtil.treeWalkUp(localProcessor, target, element, last, resolveState))
 				{
 					return localProcessor.toResolveResults();

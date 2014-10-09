@@ -1,7 +1,6 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpNamedResolveSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
@@ -15,15 +14,20 @@ import com.intellij.psi.ResolveState;
  */
 public class SimpleNamedScopeProcessor extends AbstractScopeProcessor
 {
+	public SimpleNamedScopeProcessor(ExecuteTarget... targets)
+	{
+		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, targets);
+	}
+
 	@Override
 	public boolean executeImpl(@NotNull PsiElement element, ResolveState state)
 	{
-		PsiNamedElement namedElementOf = getNamedElementOf(element);
-		if(namedElementOf == null)
+		if(!(element instanceof PsiNamedElement) || !ExecuteTargetUtil.isMyElement(this, element))
 		{
 			return true;
 		}
-		String name = namedElementOf.getName();
+
+		String name = ((PsiNamedElement) element).getName();
 		if(name == null)
 		{
 			return true;
@@ -37,15 +41,9 @@ public class SimpleNamedScopeProcessor extends AbstractScopeProcessor
 
 		if(((CSharpNamedResolveSelector) selector).isNameEqual(name))
 		{
-			addElement(namedElementOf);
+			addElement(element);
 			return false;
 		}
 		return true;
-	}
-
-	@Nullable
-	public PsiNamedElement getNamedElementOf(@NotNull PsiElement element)
-	{
-		return null;
 	}
 }
