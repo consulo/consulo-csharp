@@ -16,12 +16,11 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
+import java.util.Collections;
+
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
-import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 
 /**
@@ -30,42 +29,15 @@ import com.intellij.psi.ResolveState;
  */
 public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 {
-	private final Condition<PsiNamedElement> myNameCondition;
-	private final WeightProcessor<PsiNamedElement> myWeightProcessor;
-	private final boolean myNamed;
-
-	public MemberResolveScopeProcessor(Condition<PsiNamedElement> condition, WeightProcessor<PsiNamedElement> weightProcessor, boolean named)
+	public MemberResolveScopeProcessor(ResolveResult[] elements)
 	{
-		myNameCondition = condition;
-		myWeightProcessor = weightProcessor;
-		myNamed = named;
-
-		//noinspection unchecked
-		putUserData(CSharpResolveUtil.CONDITION_KEY, (Condition) condition);
+		Collections.addAll(myElements, elements);
 	}
 
 	@Override
 	public boolean executeImpl(@NotNull PsiElement element, ResolveState state)
 	{
-		if(element instanceof DotNetNamedElement)
-		{
-			PsiNamedElement namedElement = (PsiNamedElement) element;
-			if(myNameCondition.value(namedElement))
-			{
-				PsiNamedElement temp = namedElement;
-				if(myWeightProcessor instanceof PreProcessor)
-				{
-					temp = ((PreProcessor<PsiNamedElement>) myWeightProcessor).transform(namedElement);
-				}
 
-				int weight = myWeightProcessor.getWeight(temp);
-				addElement(temp, weight);
-				if(weight == WeightProcessor.MAX_WEIGHT && myNamed)
-				{
-					return false;
-				}
-			}
-		}
 		return true;
 	}
 }

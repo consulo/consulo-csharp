@@ -19,10 +19,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.DeprecationInfo;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
 import org.mustbe.consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
 
 /**
  * @author VISTALL
@@ -43,7 +43,7 @@ public class CSharpReferenceExpressionImplUtil
 		{
 			kind = CSharpReferenceExpressionImpl.ResolveToKind.ATTRIBUTE;
 		}
-		ResolveResultWithWeight[] resultWithWeights = ((CSharpReferenceExpressionImpl) referenceExpression).multiResolveImpl(kind);
+		ResolveResult[] resultWithWeights = ((CSharpReferenceExpressionImpl) referenceExpression).multiResolveImpl(kind);
 		if(resultWithWeights.length == 0)
 		{
 			return null;

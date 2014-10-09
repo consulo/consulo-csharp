@@ -60,7 +60,7 @@ public class ConstructorProcessor extends AbstractScopeProcessor implements Proc
 	{
 		if(element instanceof DotNetConstructorDeclaration && !((DotNetConstructorDeclaration) element).isDeConstructor())
 		{
-			addElement(element, myWeightProcessor.getWeight(element));
+			addElement(element);
 		}
 		return true;
 	}

@@ -32,7 +32,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpression
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -359,8 +358,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 			resolveResults = ((CSharpOperatorReferenceImpl) callElement).multiResolve(false);
 		}
 
-		ResolveResult goodResult = resolveResults.length > 0 && ((ResolveResultWithWeight) resolveResults[0]).isGoodResult() ? resolveResults[0] :
-				null;
+		ResolveResult goodResult = resolveResults.length > 0 && resolveResults[0].isValidResult() ? resolveResults[0] : null;
 
 		if(goodResult != null)
 		{

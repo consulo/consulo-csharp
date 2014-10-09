@@ -189,8 +189,8 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
 		CSharpResolveUtil.walkChildren(processor, resolveLayers.getSecond(), true, null, ResolveState.initial());
 
-		final ResolveResultWithWeight[] resultWithWeights = processor.toResolveResults();
-		if(resultWithWeights.length > 0 && resultWithWeights[0].isGoodResult())
+		final ResolveResult[] resultWithWeights = processor.toResolveResults();
+		if(resultWithWeights.length > 0 && resultWithWeights[0].isValidResult())
 		{
 			return resultWithWeights[0].getElement();
 		}
