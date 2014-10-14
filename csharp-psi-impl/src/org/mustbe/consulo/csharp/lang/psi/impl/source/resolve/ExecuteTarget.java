@@ -4,6 +4,7 @@ import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
@@ -22,6 +23,14 @@ public enum ExecuteTarget
 				public boolean isMyElement(@NotNull PsiElement element)
 				{
 					return element instanceof CSharpLabeledStatementImpl;
+				}
+			},
+	TYPE
+			{
+				@Override
+				public boolean isMyElement(@NotNull PsiElement element)
+				{
+					return element instanceof CSharpTypeDeclaration;
 				}
 			},
 	MEMBER

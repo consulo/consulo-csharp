@@ -35,7 +35,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
-import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
@@ -336,8 +335,7 @@ public class CSharpResolveUtil
 			state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, resolveScope);
 			state = state.put(BaseDotNetNamespaceAsElement.WITH_CHILD_NAMESPACES, Boolean.TRUE);
 
-			CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, resolveScope, entrance);
-			if(!processContext(processor, context, state))
+			if(!processor.execute(entrance, state))
 			{
 				return false;
 			}
@@ -422,23 +420,6 @@ public class CSharpResolveUtil
 		return true;
 	}
 
-	private static boolean processContext(@NotNull PsiScopeProcessor processor, CSharpResolveContext context, ResolveState state)
-	{
-		CSharpResolveSelector hint = processor.getHint(SELECTOR);
-		if(hint != null)
-		{
-			PsiElement element = hint.doSelectElement(context);
-
-			if(element != null)
-			{
-				if(!processor.execute(element, state))
-				{
-					return false;
-				}
-			}
-		}
-		return true;
-	}
 
 	@NotNull
 	public static DotNetTypeRef resolveIterableType(@NotNull CSharpForeachStatementImpl foreachStatement)
