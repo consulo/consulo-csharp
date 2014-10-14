@@ -87,7 +87,7 @@ public class CSharpUsingListImpl extends CSharpStubElementImpl<CSharpUsingListSt
 		{
 			return true;
 		}
-		PsiFile psiFile = state.get(CSharpResolveUtil.CONTAINS_FILE_KEY);
+		PsiFile psiFile = state.get(CSharpResolveUtil.CONTAINS_FILE);
 		if(psiFile == null)
 		{
 			return true;

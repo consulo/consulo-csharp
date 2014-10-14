@@ -32,11 +32,9 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintOwnerUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
-import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
@@ -77,7 +75,7 @@ import lombok.val;
 @Logger
 public class CSharpResolveUtil
 {
-	public static final KeyWithDefaultValue<DotNetGenericExtractor> EXTRACTOR_KEY = new KeyWithDefaultValue<DotNetGenericExtractor>
+	public static final KeyWithDefaultValue<DotNetGenericExtractor> EXTRACTOR = new KeyWithDefaultValue<DotNetGenericExtractor>
 			("dot-net-extractor")
 	{
 		@Override
@@ -159,7 +157,8 @@ public class CSharpResolveUtil
 		}
 	};
 
-	public static final Key<PsiFile> CONTAINS_FILE_KEY = Key.create("contains.file");
+	public static final Key<PsiFile> CONTAINS_FILE = Key.create("contains.file");
+	@Deprecated
 	public static final Key<Condition<PsiElement>> CONDITION_KEY = Key.create("condition");
 
 	public static boolean treeWalkUp(@NotNull PsiScopeProcessor processor,
@@ -244,7 +243,7 @@ public class CSharpResolveUtil
 		GlobalSearchScope resolveScope = entrance.getResolveScope();
 		if(entrance instanceof CSharpTypeDeclaration)
 		{
-			DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR_KEY);
+			DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
 
 			val typeDeclaration = (CSharpTypeDeclaration) entrance;
 
@@ -262,7 +261,7 @@ public class CSharpResolveUtil
 				if(resolve != null && !resolve.isEquivalentTo(entrance))
 				{
 					DotNetGenericExtractor genericExtractor = dotNetTypeRef.getGenericExtractor(resolve, entrance);
-					ResolveState newState = ResolveState.initial().put(EXTRACTOR_KEY, genericExtractor);
+					ResolveState newState = ResolveState.initial().put(EXTRACTOR, genericExtractor);
 
 					if(!walkChildrenImpl(processor, resolve, false, maxScope, newState, typeVisited))
 					{
@@ -323,7 +322,7 @@ public class CSharpResolveUtil
 				if(resolve != null && resolve != entrance)
 				{
 					DotNetGenericExtractor genericExtractor = dotNetTypeRef.getGenericExtractor(resolve, entrance);
-					ResolveState newState = ResolveState.initial().put(EXTRACTOR_KEY, genericExtractor);
+					ResolveState newState = ResolveState.initial().put(EXTRACTOR, genericExtractor);
 
 					if(!walkChildrenImpl(processor, resolve, false, maxScope, newState, typeVisited))
 					{
@@ -389,7 +388,7 @@ public class CSharpResolveUtil
 			return namespace != null && walkChildrenImpl(processor, namespace, walkParent, maxScope, state, typeVisited);
 		}
 
-		PsiFile psiFile = state.get(CONTAINS_FILE_KEY);
+		PsiFile psiFile = state.get(CONTAINS_FILE);
 		return psiFile == null || walkChildrenImpl(processor, psiFile, walkParent, maxScope, state, typeVisited);
 	}
 
@@ -414,21 +413,8 @@ public class CSharpResolveUtil
 			}
 		}
 
-		CSharpResolveContext context;
-		if(typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
-		{
-			String vmQName = typeDeclaration.getVmQName();
-			val types = CSharpPsiSearcher.getInstance(typeDeclaration.getProject()).findTypes(vmQName, resolveScope);
 
-			context = CSharpResolveContextUtil.createContext(genericExtractor, resolveScope, types);
-		}
-		else
-		{
-			context = CSharpResolveContextUtil.createContext(genericExtractor, resolveScope, typeDeclaration);
-		}
-
-
-		if(!processContext(processor, context, state))
+		if(!processor.execute(typeDeclaration, state))
 		{
 			return false;
 		}

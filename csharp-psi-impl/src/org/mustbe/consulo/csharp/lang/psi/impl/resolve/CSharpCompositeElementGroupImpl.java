@@ -1,6 +1,8 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
@@ -13,23 +15,23 @@ import com.intellij.psi.impl.light.LightElement;
 
 /**
  * @author VISTALL
- * @since 29.09.14
+ * @since 07.10.14
  */
-public class CSharpElementGroupImpl extends LightElement implements CSharpElementGroup
+public class CSharpCompositeElementGroupImpl extends LightElement implements CSharpElementGroup
 {
-	private final Collection<? extends PsiElement> myElements;
+	@NotNull
+	private final List<CSharpElementGroup> myGroups;
 
-	public CSharpElementGroupImpl(Project project, Collection<? extends PsiElement> elements)
+	public CSharpCompositeElementGroupImpl(@NotNull Project project, @NotNull List<CSharpElementGroup> groups)
 	{
 		super(PsiManager.getInstance(project), CSharpLanguage.INSTANCE);
-		myElements = elements;
+		myGroups = groups;
 	}
 
-	@NotNull
 	@Override
-	public Collection<? extends PsiElement> getElements()
+	public String toString()
 	{
-		return myElements;
+		return "CSharpCompositeElementGroup";
 	}
 
 	@Override
@@ -45,9 +47,16 @@ public class CSharpElementGroupImpl extends LightElement implements CSharpElemen
 		}
 	}
 
+	@NotNull
 	@Override
-	public String toString()
+	@SuppressWarnings("unchecked")
+	public Collection<? extends PsiElement> getElements()
 	{
-		return "CSharpElementGroup";
+		List list = new ArrayList<PsiElement>();
+		for(CSharpElementGroup group : myGroups)
+		{
+			list.addAll(group.getElements());
+		}
+		return list;
 	}
 }

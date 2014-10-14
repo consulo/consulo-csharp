@@ -1,5 +1,8 @@
 package org.mustbe.consulo.csharp.lang.psi.resolve;
 
+import java.util.Collection;
+
+import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -8,4 +11,6 @@ import com.intellij.psi.PsiElement;
  */
 public interface CSharpElementGroup extends PsiElement
 {
+	@NotNull
+	Collection<? extends PsiElement> getElements();
 }

@@ -205,7 +205,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@Override
 	public ResolveResult[] multiResolve(final boolean incompleteCode)
 	{
-		return ResolveCache.getInstance(getProject()).resolveWithCaching(this, OurResolver.INSTANCE, false, incompleteCode);
+		return OurResolver.INSTANCE.resolve(this, incompleteCode);
 	}
 
 	@NotNull
@@ -659,7 +659,11 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		}
 
 		ResolveState resolveState = ResolveState.initial();
-		resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR_KEY, extractor);
+		resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR, extractor);
+		if(selector != null)
+		{
+			resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, selector);
+		}
 
 		if(target != element)
 		{
@@ -670,7 +674,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				return memberProcessor.toResolveResults();
 			}
 
-			Couple<PsiElement> resolveLayers = getResolveLayers(element, false);
+			return memberProcessor.toResolveResults();
+		/*	Couple<PsiElement> resolveLayers = getResolveLayers(element, false);
 
 			PsiElement targetToWalkChildren = resolveLayers.getSecond();
 			if(targetToWalkChildren == null)
@@ -686,8 +691,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				p2.merge(memberProcessor);
 
 				resolveState = ResolveState.initial();
-				resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR_KEY, extractor);
-				resolveState = resolveState.put(CSharpResolveUtil.CONTAINS_FILE_KEY, element.getContainingFile());
+				resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR, extractor);
+				resolveState = resolveState.put(CSharpResolveUtil.CONTAINS_FILE, element.getContainingFile());
 
 				CSharpResolveUtil.walkChildren(p2, targetToWalkChildren, true, null, resolveState);
 				return p2.toResolveResults();
@@ -695,15 +700,11 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			else
 			{
 				return memberProcessor.toResolveResults();
-			}
+			}*/
 		}
 		else
 		{
-			resolveState = resolveState.put(CSharpResolveUtil.CONTAINS_FILE_KEY, element.getContainingFile());
-			if(selector != null)
-			{
-				resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, selector);
-			}
+			resolveState = resolveState.put(CSharpResolveUtil.CONTAINS_FILE, element.getContainingFile());
 
 			Couple<PsiElement> resolveLayers = getResolveLayers(element, false);
 
@@ -736,7 +737,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 	private static MemberResolveScopeProcessor createMemberProcessor(@NotNull PsiElement element, ResolveResult[] elements)
 	{
-		MemberResolveScopeProcessor p = new MemberResolveScopeProcessor(elements);
+		MemberResolveScopeProcessor p = new MemberResolveScopeProcessor(element.getResolveScope(), elements, ExecuteTarget.MEMBER);
 
 		if(PsiTreeUtil.getParentOfType(element, CSharpUsingListImpl.class) != null)
 		{

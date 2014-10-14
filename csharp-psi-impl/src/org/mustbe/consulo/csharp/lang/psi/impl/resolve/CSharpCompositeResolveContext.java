@@ -39,7 +39,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 				groups.add(elementGroup);
 			}
 		}
-		return groups.isEmpty() ? null : new CSharpCompositeElementGroup(myProject, groups);
+		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl(myProject, groups);
 	}
 
 	@Nullable
@@ -55,7 +55,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 				groups.add(elementGroup);
 			}
 		}
-		return groups.isEmpty() ? null : new CSharpCompositeElementGroup(myProject, groups);
+		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl(myProject, groups);
 	}
 
 	@Nullable
@@ -71,7 +71,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 				groups.add(elementGroup);
 			}
 		}
-		return groups.isEmpty() ? null : new CSharpCompositeElementGroup(myProject, groups);
+		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl(myProject, groups);
 	}
 
 	@Nullable
@@ -87,7 +87,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 				groups.add(elementGroup);
 			}
 		}
-		return groups.isEmpty() ? null : new CSharpCompositeElementGroup(myProject, groups);
+		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl(myProject, groups);
 	}
 
 	@Nullable
@@ -103,7 +103,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 				groups.add(elementGroup);
 			}
 		}
-		return groups.isEmpty() ? null : new CSharpCompositeElementGroup(myProject, groups);
+		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl(myProject, groups);
 	}
 
 	@Nullable

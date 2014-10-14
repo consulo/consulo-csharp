@@ -68,7 +68,7 @@ public class CSharpSearchUtil
 		};
 
 		ResolveState state = ResolveState.initial();
-		state = state.put(CSharpResolveUtil.EXTRACTOR_KEY, extractor);
+		state = state.put(CSharpResolveUtil.EXTRACTOR, extractor);
 
 		CSharpResolveUtil.walkChildren(processor, owner, false, null, state);
 		return processor.get();
@@ -114,7 +114,7 @@ public class CSharpSearchUtil
 		};
 
 		ResolveState state = ResolveState.initial();
-		state = state.put(CSharpResolveUtil.EXTRACTOR_KEY, extractor);
+		state = state.put(CSharpResolveUtil.EXTRACTOR, extractor);
 
 		CSharpResolveUtil.walkChildren(processor, owner, false, null, state);
 		return processor.get();

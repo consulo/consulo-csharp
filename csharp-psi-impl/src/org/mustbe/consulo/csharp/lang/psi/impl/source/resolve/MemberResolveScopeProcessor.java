@@ -16,12 +16,22 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
+import java.util.Collection;
 import java.util.Collections;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -29,15 +39,58 @@ import com.intellij.psi.ResolveState;
  */
 public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 {
-	public MemberResolveScopeProcessor(ResolveResult[] elements)
+	private final GlobalSearchScope myScope;
+
+	public MemberResolveScopeProcessor(GlobalSearchScope scope, ResolveResult[] elements, ExecuteTarget... targets)
 	{
 		Collections.addAll(myElements, elements);
+		myScope = scope;
+		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, targets);
 	}
 
 	@Override
 	public boolean executeImpl(@NotNull PsiElement element, ResolveState state)
 	{
+		if(!ExecuteTargetUtil.isMyElement(this, element))
+		{
+			return true;
+		}
 
+		CSharpResolveSelector selector = state.get(CSharpResolveUtil.SELECTOR);
+		if(selector == null)
+		{
+			return true;
+		}
+
+		DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
+		assert extractor != null;
+
+		CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myScope, element);
+
+
+		PsiElement psiElement = selector.doSelectElement(context);
+		if(psiElement != null)
+		{
+			addElement(normalize(psiElement));
+			return false;
+		}
 		return true;
+	}
+
+	private static PsiElement normalize(PsiElement element)
+	{
+		if(element instanceof CSharpElementGroup)
+		{
+			Collection<? extends PsiElement> elements = ((CSharpElementGroup) element).getElements();
+			if(elements.size() == 1)
+			{
+				PsiElement firstItem = ContainerUtil.getFirstItem(elements);
+				if(!(firstItem instanceof DotNetLikeMethodDeclaration))
+				{
+					return firstItem;
+				}
+			}
+		}
+		return element;
 	}
 }
