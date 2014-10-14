@@ -53,7 +53,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
-import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.KeyWithDefaultValue;
 import com.intellij.openapi.util.text.StringUtil;
@@ -157,8 +156,6 @@ public class CSharpResolveUtil
 	};
 
 	public static final Key<PsiFile> CONTAINS_FILE = Key.create("contains.file");
-	@Deprecated
-	public static final Key<Condition<PsiElement>> CONDITION_KEY = Key.create("condition");
 
 	public static boolean treeWalkUp(@NotNull PsiScopeProcessor processor,
 			@NotNull PsiElement entrance,
@@ -449,12 +446,6 @@ public class CSharpResolveUtil
 		}
 
 		return current.toTypeRef(false);
-	}
-
-	public static boolean checkConditionKey(@NotNull PsiScopeProcessor processor, @NotNull PsiElement element)
-	{
-		Condition<PsiElement> hint = processor.getHint(CONDITION_KEY);
-		return hint == null || hint.value(element);
 	}
 
 	@LazyInstance
