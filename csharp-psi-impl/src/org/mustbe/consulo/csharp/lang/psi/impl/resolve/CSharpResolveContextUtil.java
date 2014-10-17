@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -9,6 +10,9 @@ import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.CachedValue;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 
 /**
  * @author VISTALL
@@ -59,25 +63,25 @@ public class CSharpResolveContextUtil
 	{
 		if(genericExtractor == DotNetGenericExtractor.EMPTY)
 		{
-			//TODO [VISTALL] caching
-			/*CachedValue<CSharpResolveContext> provider = typeDeclaration.getUserData(TYPE_RESOLVE_CONTEXT);
+			CachedValue<CSharpResolveContext> provider = typeDeclaration.getUserData(TYPE_RESOLVE_CONTEXT);
 			if(provider != null)
 			{
 				return provider.getValue();
 			}
 
-			CachedValuesManager.getManager(typeDeclaration.getProject()).createCachedValue(new CachedValueProvider<CSharpResolveContext>()
+			CachedValue<CSharpResolveContext> cachedValue = CachedValuesManager.getManager(typeDeclaration.getProject()).createCachedValue(new
+																																				   CachedValueProvider<CSharpResolveContext>()
 			{
 				@Nullable
 				@Override
 				public Result<CSharpResolveContext> compute()
 				{
-					return Result.<CSharpResolveContext>create(new CSharpTypeResolveContextImpl(typeDeclaration),
-							PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
-
+					return Result.<CSharpResolveContext>create(new CSharpTypeResolveContext(typeDeclaration, DotNetGenericExtractor.EMPTY),
+							typeDeclaration, PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
 				}
-			}); */
-			return new CSharpTypeResolveContext(typeDeclaration, genericExtractor);
+			}, false);
+			typeDeclaration.putUserData(TYPE_RESOLVE_CONTEXT, cachedValue);
+			return cachedValue.getValue();
 		}
 		else
 		{
