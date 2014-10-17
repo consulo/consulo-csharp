@@ -134,7 +134,7 @@ public class CSharpAttributeImpl extends CSharpElementImpl implements CSharpAttr
 		CSharpReferenceExpression ref = getReferenceExpression();
 		if(ref == null)
 		{
-			return null;
+			return ResolveResult.EMPTY_ARRAY;
 		}
 
 		return ref.multiResolve(incompleteCode);
