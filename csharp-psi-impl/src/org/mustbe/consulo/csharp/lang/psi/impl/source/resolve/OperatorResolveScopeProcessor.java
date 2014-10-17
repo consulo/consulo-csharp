@@ -18,7 +18,6 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
@@ -37,7 +36,7 @@ public class OperatorResolveScopeProcessor extends AbstractScopeProcessor
 	{
 		myCond = cond;
 		myWeightProcessor = weightProcessor;
-		putUserData(CSharpResolveUtil.CONDITION_KEY, new Condition<PsiElement>()
+		/*putUserData(CSharpResolveUtil.CONDITION_KEY, new Condition<PsiElement>()
 		{
 			@Override
 			public boolean value(PsiElement element)
@@ -45,7 +44,7 @@ public class OperatorResolveScopeProcessor extends AbstractScopeProcessor
 				//fixme [vistall] check for operators?
 				return element instanceof CSharpTypeDeclaration;
 			}
-		});
+		});   */
 	}
 
 	@Override

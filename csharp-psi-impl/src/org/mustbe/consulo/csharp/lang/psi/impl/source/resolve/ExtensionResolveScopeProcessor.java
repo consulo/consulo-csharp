@@ -59,14 +59,14 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 		myCond = condition;
 		myNamed = named;
 
-		putUserData(CSharpResolveUtil.CONDITION_KEY, new Condition<PsiElement>()
+	/*	putUserData(CSharpResolveUtil.CONDITION_KEY, new Condition<PsiElement>()
 		{
 			@Override
 			public boolean value(PsiElement element)
 			{
 				return element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).hasExtensions();
 			}
-		});
+		});  */
 	}
 
 	@Override
