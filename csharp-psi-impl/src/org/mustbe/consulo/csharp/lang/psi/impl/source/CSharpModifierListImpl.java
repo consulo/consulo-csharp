@@ -24,19 +24,11 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpModifierListStub;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiParserFacade;
@@ -48,7 +40,7 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpModifierListImpl extends CSharpStubElementImpl<CSharpModifierListStub> implements DotNetModifierList
+public class CSharpModifierListImpl extends CSharpStubElementImpl<CSharpModifierListStub> implements CSharpModifierList
 {
 	private static final Map<CSharpModifier, IElementType> ourModifiers = new LinkedHashMap<CSharpModifier, IElementType>()
 	{
@@ -94,7 +86,7 @@ public class CSharpModifierListImpl extends CSharpStubElementImpl<CSharpModifier
 	@Override
 	public DotNetAttribute[] getAttributes()
 	{
-		DotNetAttributeList[] childrenByClass = findChildrenByClass(DotNetAttributeList.class);
+		DotNetAttributeList[] childrenByClass = getAttributeLists();
 		if(childrenByClass.length == 0)
 		{
 			return DotNetAttribute.EMPTY_ARRAY;
@@ -209,5 +201,12 @@ public class CSharpModifierListImpl extends CSharpStubElementImpl<CSharpModifier
 	{
 		IElementType iElementType = ourModifiers.get(CSharpModifier.as(modifier));
 		return findChildrenByType(iElementType);
+	}
+
+	@NotNull
+	@Override
+	public CSharpAttributeList[] getAttributeLists()
+	{
+		return getStubOrPsiChildren(CSharpStubElements.ATTRIBUTE_LIST, CSharpAttributeList.ARRAY_FACTORY);
 	}
 }

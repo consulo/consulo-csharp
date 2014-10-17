@@ -50,6 +50,7 @@ public interface CSharpStubElements
 	CSharpGenericConstraintListStubElementType GENERIC_CONSTRAINT_LIST = new CSharpGenericConstraintListStubElementType();
 	CSharpGenericConstraintStubElementType GENERIC_CONSTRAINT = new CSharpGenericConstraintStubElementType();
 	CSharpModifierListStubElementType MODIFIER_LIST = new CSharpModifierListStubElementType();
+	CSharpAttributeListStubElementType ATTRIBUTE_LIST = new CSharpAttributeListStubElementType();
 
 	TokenSet USING_CHILDREN = TokenSet.create(USING_NAMESPACE_STATEMENT, TYPE_DEF_STATEMENT);
 

@@ -250,7 +250,7 @@ public interface CSharpElements
 
 	IElementType CONTINUE_STATEMENT = new ElementTypeAsPsiFactory("CONTINUE_STATEMENT", CSharpLanguage.INSTANCE, CSharpContinueStatementImpl.class);
 
-	IElementType ATTRIBUTE_LIST = new ElementTypeAsPsiFactory("ATTRIBUTE_LIST", CSharpLanguage.INSTANCE, CSharpAttributeListImpl.class);
+	IElementType ATTRIBUTE_LIST = CSharpStubElements.ATTRIBUTE_LIST;
 
 	IElementType ATTRIBUTE = new ElementTypeAsPsiFactory("ATTRIBUTE", CSharpLanguage.INSTANCE, CSharpAttributeImpl.class);
 }
