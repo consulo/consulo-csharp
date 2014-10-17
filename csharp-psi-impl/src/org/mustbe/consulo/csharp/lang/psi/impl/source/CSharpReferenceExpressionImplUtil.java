@@ -18,8 +18,6 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.DeprecationInfo;
-import org.mustbe.consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -30,10 +28,6 @@ import com.intellij.psi.ResolveResult;
  */
 public class CSharpReferenceExpressionImplUtil
 {
-	@Deprecated
-	@DeprecationInfo("Use AttributeNameSelector.AttributeSuffix")
-	public static final String AttributeSuffix = AttributeByNameSelector.AttributeSuffix;
-
 	@Nullable
 	public static PsiElement resolveByTypeKind(@NotNull DotNetReferenceExpression referenceExpression, boolean attributeSuffix)
 	{

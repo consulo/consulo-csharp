@@ -28,7 +28,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
@@ -36,6 +35,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodIndex;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MethodIndex;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeIndex;
+import org.mustbe.consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
 import org.mustbe.consulo.dotnet.DotNetBundle;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
@@ -147,7 +147,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 				}
 			};
 			// if attribute endwith Attribute - collect only with
-			if(referenceName.endsWith(CSharpReferenceExpressionImplUtil.AttributeSuffix))
+			if(referenceName.endsWith(AttributeByNameSelector.AttributeSuffix))
 			{
 				tempTypes = getTypesWithGeneric(referenceName);
 
@@ -159,7 +159,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 
 				collect(set, tempTypes, cond);
 
-				tempTypes = getTypesWithGeneric(referenceName + CSharpReferenceExpressionImplUtil.AttributeSuffix);
+				tempTypes = getTypesWithGeneric(referenceName + AttributeByNameSelector.AttributeSuffix);
 
 				collect(set, tempTypes, cond);
 			}
