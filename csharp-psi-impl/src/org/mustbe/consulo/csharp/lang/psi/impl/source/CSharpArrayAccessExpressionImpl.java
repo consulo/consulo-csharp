@@ -25,7 +25,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -121,8 +120,8 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 		{
 			return null;
 		}
-		ResolveResultWithWeight resolveResult = (ResolveResultWithWeight) resolveResults[0];
-		if(!resolveResult.isGoodResult())
+		ResolveResult resolveResult = resolveResults[0];
+		if(!resolveResult.isValidResult())
 		{
 			return null;
 		}
@@ -139,15 +138,14 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 		{
 			return resolveResults;
 		}
-		List<ResolveResultWithWeight> filter = new ArrayList<ResolveResultWithWeight>();
+		List<ResolveResult> filter = new ArrayList<ResolveResult>();
 		for(ResolveResult resolveResult : resolveResults)
 		{
-			ResolveResultWithWeight resolveResultWithWeight = (ResolveResultWithWeight) resolveResult;
-			if(resolveResultWithWeight.isGoodResult())
+			if(resolveResult.isValidResult())
 			{
-				filter.add(resolveResultWithWeight);
+				filter.add(resolveResult);
 			}
 		}
-		return ContainerUtil.toArray(filter, ResolveResultWithWeight.ARRAY_FACTORY);
+		return ContainerUtil.toArray(filter, ResolveResult.EMPTY_ARRAY);
 	}
 }

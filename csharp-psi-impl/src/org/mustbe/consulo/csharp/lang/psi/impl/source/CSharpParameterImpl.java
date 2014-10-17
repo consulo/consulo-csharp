@@ -111,7 +111,7 @@ public class CSharpParameterImpl extends CSharpStubElementImpl<CSharpVariableStu
 	@Nullable
 	public DotNetModifierList getModifierList()
 	{
-		return findChildByClass(DotNetModifierList.class);
+		return getStubOrPsiChild(CSharpStubElements.MODIFIER_LIST);
 	}
 
 	@Override
