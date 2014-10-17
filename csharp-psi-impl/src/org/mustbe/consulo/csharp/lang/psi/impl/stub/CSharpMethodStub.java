@@ -42,19 +42,30 @@ public class CSharpMethodStub extends MemberStub<CSharpMethodDeclaration>
 	private final CSharpStubTypeInfo myImplementType;
 	private final int myOperatorIndex;
 
-	public CSharpMethodStub(StubElement parent, @Nullable StringRef name, @Nullable StringRef qname, int modifierMask, int otherModifierMask,
-			CSharpStubTypeInfo returnType, CSharpStubTypeInfo implementType,int operatorIndex)
+	public CSharpMethodStub(StubElement parent,
+			@Nullable StringRef name,
+			@Nullable StringRef qname,
+			int otherModifierMask,
+			CSharpStubTypeInfo returnType,
+			CSharpStubTypeInfo implementType,
+			int operatorIndex)
 	{
-		super(parent, CSharpStubElements.METHOD_DECLARATION, name, qname, modifierMask, otherModifierMask);
+		super(parent, CSharpStubElements.METHOD_DECLARATION, name, qname, otherModifierMask);
 		myReturnType = returnType;
 		myImplementType = implementType;
 		myOperatorIndex = operatorIndex;
 	}
 
-	public CSharpMethodStub(StubElement parent, IStubElementType elementType, @Nullable StringRef name, StringRef qname, int modifierMask,
-			int otherModifierMask, CSharpStubTypeInfo returnType, CSharpStubTypeInfo implementType, int operatorIndex)
+	public CSharpMethodStub(StubElement parent,
+			IStubElementType elementType,
+			@Nullable StringRef name,
+			StringRef qname,
+			int otherModifierMask,
+			CSharpStubTypeInfo returnType,
+			CSharpStubTypeInfo implementType,
+			int operatorIndex)
 	{
-		super(parent, elementType, name, qname, modifierMask, otherModifierMask);
+		super(parent, elementType, name, qname, otherModifierMask);
 		myReturnType = returnType;
 		myImplementType = implementType;
 		myOperatorIndex = operatorIndex;

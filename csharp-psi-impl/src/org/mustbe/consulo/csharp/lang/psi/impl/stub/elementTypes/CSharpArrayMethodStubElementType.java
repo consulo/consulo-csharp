@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayMethodDeclarationImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpArrayMethodStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.MemberStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
@@ -59,10 +58,9 @@ public class CSharpArrayMethodStubElementType extends CSharpAbstractStubElementT
 	{
 		StringRef name = StringRef.fromNullableString(declaration.getName());
 		StringRef parentQName = StringRef.fromNullableString(declaration.getPresentableParentQName());
-		int modifierMask = MemberStub.getModifierMask(declaration);
 		val typeInfo = CSharpStubTypeInfoUtil.toStub(declaration.getReturnType());
 		val implementInfo = CSharpStubTypeInfoUtil.toStub(declaration.getTypeForImplement());
-		return new CSharpArrayMethodStub(stubElement, name, parentQName, modifierMask, typeInfo, implementInfo);
+		return new CSharpArrayMethodStub(stubElement, name, parentQName, typeInfo, implementInfo);
 	}
 
 	@Override
@@ -70,7 +68,6 @@ public class CSharpArrayMethodStubElementType extends CSharpAbstractStubElementT
 	{
 		stubOutputStream.writeName(methodStub.getName());
 		stubOutputStream.writeName(methodStub.getParentQName());
-		stubOutputStream.writeInt(methodStub.getModifierMask());
 		methodStub.getReturnType().writeTo(stubOutputStream);
 		methodStub.getImplementType().writeTo(stubOutputStream);
 	}
@@ -81,9 +78,8 @@ public class CSharpArrayMethodStubElementType extends CSharpAbstractStubElementT
 	{
 		StringRef name = inputStream.readName();
 		StringRef qname = inputStream.readName();
-		int modifierMask = inputStream.readInt();
 		val typeInfo = CSharpStubTypeInfoUtil.read(inputStream);
 		val implementInfo = CSharpStubTypeInfoUtil.read(inputStream);
-		return new CSharpArrayMethodStub(stubElement, name, qname, modifierMask, typeInfo, implementInfo);
+		return new CSharpArrayMethodStub(stubElement, name, qname, typeInfo, implementInfo);
 	}
 }

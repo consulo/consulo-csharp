@@ -72,7 +72,7 @@ public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 	@Override
 	public DotNetModifierList getModifierList()
 	{
-		DotNetModifierList childByClass = findChildByClass(DotNetModifierList.class);
+		DotNetModifierList childByClass = super.getModifierList();
 		if(childByClass == null && getNameIdentifier() != null)
 		{
 			CSharpFieldDeclaration fieldDeclaration = PsiTreeUtil.getPrevSiblingOfType(this, CSharpFieldDeclaration.class);

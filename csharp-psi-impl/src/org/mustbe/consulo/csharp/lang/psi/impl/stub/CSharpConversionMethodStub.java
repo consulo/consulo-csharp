@@ -30,12 +30,14 @@ public class CSharpConversionMethodStub extends CSharpMethodStub
 {
 	private final CSharpStubTypeInfo myConversionTypeInfo;
 
-	public CSharpConversionMethodStub(StubElement parent, @Nullable StringRef name, @Nullable StringRef qname, int modifierMask,
+	public CSharpConversionMethodStub(StubElement parent,
+			@Nullable StringRef name,
+			@Nullable StringRef qname,
 			int otherModifierMask,
 			CSharpStubTypeInfo typeInfo,
 			CSharpStubTypeInfo conversionTypeInfo)
 	{
-		super(parent, CSharpStubElements.CONVERSION_METHOD_DECLARATION, name, qname, modifierMask, otherModifierMask, typeInfo, null, -1);
+		super(parent, CSharpStubElements.CONVERSION_METHOD_DECLARATION, name, qname, otherModifierMask, typeInfo, null, -1);
 		myConversionTypeInfo = conversionTypeInfo;
 	}
 

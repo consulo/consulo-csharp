@@ -28,6 +28,6 @@ public class CSharpDummyDefStub extends MemberStub<CSharpDummyDeclarationImpl>
 {
 	public CSharpDummyDefStub(StubElement parent, IStubElementType elementType)
 	{
-		super(parent, elementType, (String) null, null, 0, 0);
+		super(parent, elementType, (String) null, null, 0);
 	}
 }

@@ -59,9 +59,9 @@ public class CSharpTypeStub extends MemberStub<CSharpTypeDeclaration>
 
 	private StringRef myVmQName;
 
-	public CSharpTypeStub(StubElement parent, @Nullable StringRef name, @Nullable StringRef parentQName, StringRef vmQName, int modifierMask, int otherMask)
+	public CSharpTypeStub(StubElement parent, @Nullable StringRef name, @Nullable StringRef parentQName, StringRef vmQName, int otherMask)
 	{
-		super(parent, CSharpStubElements.TYPE_DECLARATION, name, parentQName, modifierMask, otherMask);
+		super(parent, CSharpStubElements.TYPE_DECLARATION, name, parentQName, otherMask);
 		myVmQName = vmQName;
 	}
 

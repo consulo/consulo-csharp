@@ -21,7 +21,6 @@ import java.io.IOException;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.MemberStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -49,11 +48,10 @@ public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & 
 	{
 		StringRef name = StringRef.fromNullableString(declaration.getName());
 		StringRef namespaceQName = StringRef.fromNullableString(declaration.getPresentableParentQName());
-		int modifierMask = MemberStub.getModifierMask(declaration);
 		boolean constant = declaration.isConstant();
 		val typeInfo = CSharpStubTypeInfoUtil.toStub(declaration.getType());
 		val typeImplementInfo = CSharpStubTypeInfoUtil.toStub(declaration instanceof DotNetVirtualImplementOwner ? null : declaration.getType());
-		return new CSharpVariableStub<P>(stubElement, this, name, namespaceQName, modifierMask, constant, typeInfo, typeImplementInfo);
+		return new CSharpVariableStub<P>(stubElement, this, name, namespaceQName, constant, typeInfo, typeImplementInfo);
 	}
 
 	@Override
@@ -61,7 +59,6 @@ public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & 
 	{
 		stubOutputStream.writeName(variableStub.getName());
 		stubOutputStream.writeName(variableStub.getParentQName());
-		stubOutputStream.writeInt(variableStub.getModifierMask());
 		stubOutputStream.writeBoolean(variableStub.isConstant());
 		variableStub.getTypeInfo().writeTo(stubOutputStream);
 		variableStub.getImplementType().writeTo(stubOutputStream);
@@ -73,10 +70,9 @@ public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & 
 	{
 		StringRef name = stubInputStream.readName();
 		StringRef parentQName = stubInputStream.readName();
-		int modifierMask = stubInputStream.readInt();
 		boolean constant = stubInputStream.readBoolean();
 		val typeInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
 		val typeImplementInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
-		return new CSharpVariableStub<P>(stubElement, this, name, parentQName, modifierMask, constant, typeInfo, typeImplementInfo);
+		return new CSharpVariableStub<P>(stubElement, this, name, parentQName, constant, typeInfo, typeImplementInfo);
 	}
 }

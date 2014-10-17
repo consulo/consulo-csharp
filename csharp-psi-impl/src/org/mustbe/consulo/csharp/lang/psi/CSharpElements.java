@@ -90,7 +90,7 @@ public interface CSharpElements
 	IElementType TYPE_WRAPPER_WITH_TYPE_ARGUMENTS = new ElementTypeAsPsiFactory("TYPE_WRAPPER_WITH_TYPE_ARGUMENTS", CSharpLanguage.INSTANCE,
 			CSharpTypeWithTypeArgumentsImpl.class);
 
-	IElementType MODIFIER_LIST = new ElementTypeAsPsiFactory("MODIFIER_LIST", CSharpLanguage.INSTANCE, CSharpModifierListImpl.class);
+	IElementType MODIFIER_LIST = CSharpStubElements.MODIFIER_LIST;
 
 	IElementType EXTENDS_LIST = CSharpStubElements.EXTENDS_LIST;
 

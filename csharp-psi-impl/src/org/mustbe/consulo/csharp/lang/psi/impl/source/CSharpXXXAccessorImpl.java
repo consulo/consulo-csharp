@@ -91,11 +91,6 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		CSharpXXXAccessorStub stub = getStub();
-		if(stub != null)
-		{
-			return stub.hasModifier(modifier);
-		}
 		DotNetModifierList modifierList = getModifierList();
 		return modifierList != null && modifierList.hasModifier(modifier);
 	}

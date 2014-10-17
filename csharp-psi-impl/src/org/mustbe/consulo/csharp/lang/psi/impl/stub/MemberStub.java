@@ -16,17 +16,11 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.NamedStubBase;
 import com.intellij.psi.stubs.StubElement;
-import com.intellij.util.BitUtil;
 import com.intellij.util.io.StringRef;
 
 /**
@@ -36,23 +30,20 @@ import com.intellij.util.io.StringRef;
 public class MemberStub<T extends DotNetNamedElement> extends NamedStubBase<T>
 {
 	private final StringRef myParentQName;
-	private final int myModifierMask;
 	private final int myOtherModifierMask;
 
-	public MemberStub(StubElement parent, IStubElementType elementType, @Nullable StringRef name, @Nullable StringRef namespaceQName, int modifierMask, int otherModifierMask)
+	public MemberStub(StubElement parent, IStubElementType elementType, @Nullable StringRef name, @Nullable StringRef namespaceQName, int otherModifierMask)
 	{
 		super(parent, elementType, name);
 		myParentQName = namespaceQName;
-		myModifierMask = modifierMask;
 		myOtherModifierMask = otherModifierMask;
 	}
 
-	public MemberStub(StubElement parent, IStubElementType elementType, @Nullable String name, @Nullable StringRef namespaceQName, int modifierMask,
+	public MemberStub(StubElement parent, IStubElementType elementType, @Nullable String name, @Nullable StringRef namespaceQName,
 			int otherModifierMask)
 	{
 		super(parent, elementType, name);
 		myParentQName = namespaceQName;
-		myModifierMask = modifierMask;
 		myOtherModifierMask = otherModifierMask;
 	}
 
@@ -62,36 +53,8 @@ public class MemberStub<T extends DotNetNamedElement> extends NamedStubBase<T>
 		return StringRef.toString(myParentQName);
 	}
 
-	public boolean hasModifier(DotNetModifier modifier)
-	{
-		CSharpModifier as = CSharpModifier.as(modifier);
-		return BitUtil.isSet(myModifierMask, as.mask());
-	}
-
-	public int getModifierMask()
-	{
-		return myModifierMask;
-	}
-
 	public int getOtherModifierMask()
 	{
 		return myOtherModifierMask;
-	}
-
-	public static int getModifierMask(@NotNull DotNetModifierListOwner list)
-	{
-		DotNetModifierList modifierList = list.getModifierList();
-		if(modifierList == null)
-		{
-			return 0;
-		}
-		int val = 0;
-		DotNetModifier[] modifierElementTypes = modifierList.getModifiers();
-		for(DotNetModifier netModifier : modifierElementTypes)
-		{
-			CSharpModifier modifier = CSharpModifier.as(netModifier);
-			val |= modifier.mask();
-		}
-		return val;
 	}
 }

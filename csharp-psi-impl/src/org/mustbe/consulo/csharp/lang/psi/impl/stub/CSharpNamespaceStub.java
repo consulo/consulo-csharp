@@ -31,6 +31,6 @@ public class CSharpNamespaceStub extends MemberStub<CSharpNamespaceDeclarationIm
 {
 	public CSharpNamespaceStub(StubElement parent, @Nullable StringRef name, @NotNull StringRef parentQName)
 	{
-		super(parent, CSharpStubElements.NAMESPACE_DECLARATION, name, parentQName, 0, 0);
+		super(parent, CSharpStubElements.NAMESPACE_DECLARATION, name, parentQName, 0);
 	}
 }

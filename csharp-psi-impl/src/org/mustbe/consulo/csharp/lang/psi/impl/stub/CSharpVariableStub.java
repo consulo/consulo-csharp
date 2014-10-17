@@ -34,9 +34,9 @@ public class CSharpVariableStub<V extends DotNetVariable> extends MemberStub<V>
 	private final CSharpStubTypeInfo myImplementType;
 
 	public CSharpVariableStub(StubElement parent, CSharpAbstractStubElementType<?, ?> elementType, @Nullable StringRef name,
-			@Nullable StringRef namespaceQName, int modifierMask, boolean constant, CSharpStubTypeInfo typeInfo, CSharpStubTypeInfo implementType)
+			@Nullable StringRef namespaceQName, boolean constant, CSharpStubTypeInfo typeInfo, CSharpStubTypeInfo implementType)
 	{
-		super(parent, elementType, name, namespaceQName, modifierMask, 0);
+		super(parent, elementType, name, namespaceQName, 0);
 		myConstant = constant;
 		myTypeInfo = typeInfo;
 		myImplementType = implementType;

@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodDeclarationImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.MemberStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import com.intellij.lang.ASTNode;
@@ -63,12 +62,11 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 	{
 		StringRef name = StringRef.fromNullableString(methodDeclaration.getName());
 		StringRef parentQName = StringRef.fromNullableString(methodDeclaration.getPresentableParentQName());
-		int modifierMask = MemberStub.getModifierMask(methodDeclaration);
 		int otherModifierMask = CSharpMethodStub.getOtherModifierMask(methodDeclaration);
 		val typeInfo = CSharpStubTypeInfoUtil.toStub(methodDeclaration.getReturnType());
 		int operatorIndex = CSharpMethodStub.getOperatorIndex(methodDeclaration);
 		val typeForImplement = CSharpStubTypeInfoUtil.toStub(methodDeclaration.getTypeForImplement());
-		return new CSharpMethodStub(stubElement, name, parentQName, modifierMask, otherModifierMask, typeInfo, typeForImplement, operatorIndex);
+		return new CSharpMethodStub(stubElement, name, parentQName, otherModifierMask, typeInfo, typeForImplement, operatorIndex);
 	}
 
 	@Override
@@ -76,7 +74,6 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 	{
 		stubOutputStream.writeName(stub.getName());
 		stubOutputStream.writeName(stub.getParentQName());
-		stubOutputStream.writeInt(stub.getModifierMask());
 		stubOutputStream.writeInt(stub.getOtherModifierMask());
 		stub.getReturnType().writeTo(stubOutputStream);
 		stub.getImplementType().writeTo(stubOutputStream);
@@ -89,12 +86,11 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 	{
 		StringRef name = stubInputStream.readName();
 		StringRef qname = stubInputStream.readName();
-		int modifierMask = stubInputStream.readInt();
 		int otherModifierMask = stubInputStream.readInt();
 		val typeInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
 		val typeImplementInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
 		int operatorIndex = stubInputStream.readInt();
-		return new CSharpMethodStub(stubElement, name, qname, modifierMask, otherModifierMask, typeInfo, typeImplementInfo, operatorIndex);
+		return new CSharpMethodStub(stubElement, name, qname, otherModifierMask, typeInfo, typeImplementInfo, operatorIndex);
 	}
 
 	@Override

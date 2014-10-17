@@ -23,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.MemberStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceUtil;
 import com.intellij.lang.ASTNode;
@@ -65,9 +64,8 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 		StringRef name = StringRef.fromNullableString(typeDeclaration.getName());
 		StringRef parentQName = StringRef.fromNullableString(typeDeclaration.getPresentableParentQName());
 		StringRef vmQName = StringRef.fromNullableString(typeDeclaration.getVmQName());
-		int modifierMask = MemberStub.getModifierMask(typeDeclaration);
 		int otherModifierMask = CSharpTypeStub.getOtherModifiers(typeDeclaration);
-		return new CSharpTypeStub(stubElement, name, parentQName, vmQName, modifierMask, otherModifierMask);
+		return new CSharpTypeStub(stubElement, name, parentQName, vmQName, otherModifierMask);
 	}
 
 	@Override
@@ -76,7 +74,6 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 		stubOutputStream.writeName(stub.getName());
 		stubOutputStream.writeName(stub.getParentQName());
 		stubOutputStream.writeName(stub.getVmQName());
-		stubOutputStream.writeInt(stub.getModifierMask());
 		stubOutputStream.writeInt(stub.getOtherModifierMask());
 	}
 
@@ -87,9 +84,8 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 		StringRef name = stubInputStream.readName();
 		StringRef parentQName = stubInputStream.readName();
 		StringRef vmQName = stubInputStream.readName();
-		int modifierMask = stubInputStream.readInt();
 		int otherModifierMask = stubInputStream.readInt();
-		return new CSharpTypeStub(stubElement, name, parentQName, vmQName, modifierMask, otherModifierMask);
+		return new CSharpTypeStub(stubElement, name, parentQName, vmQName, otherModifierMask);
 	}
 
 	@Override

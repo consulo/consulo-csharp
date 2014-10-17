@@ -21,7 +21,6 @@ import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpXXXAccessorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpXXXAccessorStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.MemberStub;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
@@ -40,6 +39,7 @@ public class CSharpXXXAccessorStubElementType extends CSharpAbstractStubElementT
 		super("XXX_ACCESSOR");
 	}
 
+	@NotNull
 	@Override
 	public CSharpXXXAccessorImpl createElement(@NotNull ASTNode astNode)
 	{
@@ -56,16 +56,14 @@ public class CSharpXXXAccessorStubElementType extends CSharpAbstractStubElementT
 	public CSharpXXXAccessorStub createStub(@NotNull DotNetXXXAccessor accessor, StubElement stubElement)
 	{
 		String name = accessor.getName();
-		int modifierMask = MemberStub.getModifierMask(accessor);
 		int otherModifiers = CSharpXXXAccessorStub.getOtherModifiers(accessor);
-		return new CSharpXXXAccessorStub(stubElement, name, modifierMask, otherModifiers);
+		return new CSharpXXXAccessorStub(stubElement, name, otherModifiers);
 	}
 
 	@Override
 	public void serialize(@NotNull CSharpXXXAccessorStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(stub.getName());
-		stubOutputStream.writeInt(stub.getModifierMask());
 		stubOutputStream.writeInt(stub.getOtherModifierMask());
 	}
 
@@ -74,8 +72,7 @@ public class CSharpXXXAccessorStubElementType extends CSharpAbstractStubElementT
 	public CSharpXXXAccessorStub deserialize(@NotNull StubInputStream inputStream, StubElement stubElement) throws IOException
 	{
 		StringRef name = inputStream.readName();
-		int modifiers = inputStream.readInt();
 		int otherModifiers = inputStream.readInt();
-		return new CSharpXXXAccessorStub(stubElement, name, modifiers, otherModifiers);
+		return new CSharpXXXAccessorStub(stubElement, name, otherModifiers);
 	}
 }

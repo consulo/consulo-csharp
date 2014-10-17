@@ -21,7 +21,6 @@ import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConversionMethodDeclarationImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpConversionMethodStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.MemberStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
@@ -59,10 +58,9 @@ public class CSharpConversionMethodStubElementType extends CSharpAbstractStubEle
 	{
 		StringRef name = StringRef.fromNullableString(methodDeclaration.getName());
 		StringRef qname = StringRef.fromNullableString(methodDeclaration.getPresentableParentQName());
-		int modifierMask = MemberStub.getModifierMask(methodDeclaration);
 		val typeInfo = CSharpStubTypeInfoUtil.toStub(methodDeclaration.getReturnType());
 		val conversionType = CSharpStubTypeInfoUtil.toStub(methodDeclaration.getConversionType());
-		return new CSharpConversionMethodStub(stubElement, name, qname, modifierMask, 0, typeInfo, conversionType);
+		return new CSharpConversionMethodStub(stubElement, name, qname, 0, typeInfo, conversionType);
 	}
 
 	@Override
@@ -70,7 +68,6 @@ public class CSharpConversionMethodStubElementType extends CSharpAbstractStubEle
 	{
 		stubOutputStream.writeName(cSharpTypeStub.getName());
 		stubOutputStream.writeName(cSharpTypeStub.getParentQName());
-		stubOutputStream.writeInt(cSharpTypeStub.getModifierMask());
 		cSharpTypeStub.getReturnType().writeTo(stubOutputStream);
 		cSharpTypeStub.getConversionTypeInfo().writeTo(stubOutputStream);
 	}
@@ -81,9 +78,8 @@ public class CSharpConversionMethodStubElementType extends CSharpAbstractStubEle
 	{
 		StringRef name = stubInputStream.readName();
 		StringRef qname = stubInputStream.readName();
-		int modifierMask = stubInputStream.readInt();
 		val typeInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
 		val conversionTypeInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
-		return new CSharpConversionMethodStub(stubElement, name, qname, modifierMask, 0, typeInfo, conversionTypeInfo);
+		return new CSharpConversionMethodStub(stubElement, name, qname,  0, typeInfo, conversionTypeInfo);
 	}
 }

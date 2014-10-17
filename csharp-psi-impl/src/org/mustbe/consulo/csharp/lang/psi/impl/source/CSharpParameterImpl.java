@@ -117,11 +117,6 @@ public class CSharpParameterImpl extends CSharpStubElementImpl<CSharpVariableStu
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		CSharpVariableStub<?> stub = getStub();
-		if(stub != null)
-		{
-			return stub.hasModifier(modifier);
-		}
 		DotNetModifierList modifierList = getModifierList();
 		return modifierList != null && modifierList.hasModifier(modifier);
 	}

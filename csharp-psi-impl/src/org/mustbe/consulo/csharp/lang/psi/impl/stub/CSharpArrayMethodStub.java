@@ -33,10 +33,13 @@ public class CSharpArrayMethodStub extends MemberStub<CSharpArrayMethodDeclarati
 	private final CSharpStubTypeInfo myReturnType;
 	private final CSharpStubTypeInfo myImplementType;
 
-	public CSharpArrayMethodStub(StubElement parent, @Nullable StringRef name, @Nullable StringRef qname, int modifierMask,
-			CSharpStubTypeInfo returnType, CSharpStubTypeInfo implementType)
+	public CSharpArrayMethodStub(StubElement parent,
+			@Nullable StringRef name,
+			@Nullable StringRef qname,
+			CSharpStubTypeInfo returnType,
+			CSharpStubTypeInfo implementType)
 	{
-		super(parent, CSharpStubElements.ARRAY_METHOD_DECLARATION, name, qname, modifierMask, 0);
+		super(parent, CSharpStubElements.ARRAY_METHOD_DECLARATION, name, qname, 0);
 		myReturnType = returnType;
 		myImplementType = implementType;
 	}

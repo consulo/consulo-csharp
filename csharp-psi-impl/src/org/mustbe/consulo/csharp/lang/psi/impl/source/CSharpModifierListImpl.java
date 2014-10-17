@@ -32,6 +32,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpModifierListStub;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
@@ -40,13 +41,14 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpModifierListImpl extends CSharpElementImpl implements DotNetModifierList
+public class CSharpModifierListImpl extends CSharpStubElementImpl<CSharpModifierListStub> implements DotNetModifierList
 {
 	private static final Map<CSharpModifier, IElementType> ourModifiers = new LinkedHashMap<CSharpModifier, IElementType>()
 	{
@@ -75,6 +77,11 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements DotNetM
 	public CSharpModifierListImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	public CSharpModifierListImpl(@NotNull CSharpModifierListStub stub, @NotNull IStubElementType<? extends CSharpModifierListStub, ?> nodeType)
+	{
+		super(stub, nodeType);
 	}
 
 	@Override
