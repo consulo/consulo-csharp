@@ -153,6 +153,12 @@ public class CSharpModifierListImpl extends CSharpStubElementImpl<CSharpModifier
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
+		CSharpModifierListStub stub = getStub();
+		if(stub != null)
+		{
+			return stub.hasModifier(modifier);
+		}
+
 		if(hasModifierInTree(modifier))
 		{
 			return true;
