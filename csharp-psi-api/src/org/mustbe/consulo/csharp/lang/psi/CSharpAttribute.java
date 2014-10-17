@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
+import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 
@@ -23,6 +24,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
  * @author VISTALL
  * @since 19.08.14
  */
+@ArrayFactoryFields
 public interface CSharpAttribute extends DotNetAttribute, CSharpCallArgumentListOwner
 {
 	@Nullable

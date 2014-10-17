@@ -252,5 +252,5 @@ public interface CSharpElements
 
 	IElementType ATTRIBUTE_LIST = CSharpStubElements.ATTRIBUTE_LIST;
 
-	IElementType ATTRIBUTE = new ElementTypeAsPsiFactory("ATTRIBUTE", CSharpLanguage.INSTANCE, CSharpAttributeImpl.class);
+	IElementType ATTRIBUTE = CSharpStubElements.ATTRIBUTE;
 }

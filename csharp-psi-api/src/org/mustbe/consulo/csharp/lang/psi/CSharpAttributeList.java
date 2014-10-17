@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.consulo.lombok.annotations.ArrayFactoryFields;
+import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeList;
 
 /**
@@ -10,4 +11,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetAttributeList;
 @ArrayFactoryFields
 public interface CSharpAttributeList extends DotNetAttributeList
 {
+	@NotNull
+	@Override
+	CSharpAttribute[] getAttributes();
 }

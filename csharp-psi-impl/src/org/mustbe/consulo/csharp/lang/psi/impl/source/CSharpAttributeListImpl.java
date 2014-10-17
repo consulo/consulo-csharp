@@ -18,10 +18,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpAttributeListStub;
-import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.IStubElementType;
@@ -57,8 +58,8 @@ public class CSharpAttributeListImpl extends CSharpStubElementImpl<CSharpAttribu
 
 	@NotNull
 	@Override
-	public DotNetAttribute[] getAttributes()
+	public CSharpAttribute[] getAttributes()
 	{
-		return findChildrenByClass(DotNetAttribute.class);
+		return getStubOrPsiChildren(CSharpStubElements.ATTRIBUTE, CSharpAttribute.ARRAY_FACTORY);
 	}
 }
