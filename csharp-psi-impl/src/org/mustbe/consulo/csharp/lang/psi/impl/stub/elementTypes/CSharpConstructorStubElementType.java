@@ -38,6 +38,7 @@ public class CSharpConstructorStubElementType extends CSharpAbstractStubElementT
 		super("CONSTRUCTOR_DECLARATION");
 	}
 
+	@NotNull
 	@Override
 	public CSharpConstructorDeclarationImpl createElement(@NotNull ASTNode astNode)
 	{
@@ -55,7 +56,8 @@ public class CSharpConstructorStubElementType extends CSharpAbstractStubElementT
 	{
 		StringRef name = StringRef.fromNullableString(methodDeclaration.getName());
 		StringRef qname = StringRef.fromNullableString(methodDeclaration.getPresentableParentQName());
-		return new CSharpConstructorStub(stubElement, name, qname, 0);
+		int otherModifierMask = CSharpConstructorStub.getOtherModifierMask(methodDeclaration);
+		return new CSharpConstructorStub(stubElement, name, qname, otherModifierMask);
 	}
 
 	@Override
@@ -63,6 +65,7 @@ public class CSharpConstructorStubElementType extends CSharpAbstractStubElementT
 	{
 		stubOutputStream.writeName(cSharpTypeStub.getName());
 		stubOutputStream.writeName(cSharpTypeStub.getParentQName());
+		stubOutputStream.writeVarInt(cSharpTypeStub.getOtherModifierMask());
 	}
 
 	@NotNull
@@ -71,6 +74,7 @@ public class CSharpConstructorStubElementType extends CSharpAbstractStubElementT
 	{
 		StringRef name = stubInputStream.readName();
 		StringRef qname = stubInputStream.readName();
-		return new CSharpConstructorStub(stubElement, name, qname, 0);
+		int otherModifierMask = stubInputStream.readVarInt();
+		return new CSharpConstructorStub(stubElement, name, qname, otherModifierMask);
 	}
 }

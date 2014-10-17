@@ -17,8 +17,10 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import com.intellij.psi.stubs.StubElement;
+import com.intellij.util.BitUtil;
 import com.intellij.util.io.StringRef;
 
 /**
@@ -27,8 +29,22 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpConstructorStub extends CSharpMethodStub
 {
+	private static final int DE_CONSTRUCTOR = 1 << 0;
+
 	public CSharpConstructorStub(StubElement parent, @Nullable StringRef name, @Nullable StringRef qname, int otherModifierMask)
 	{
 		super(parent, CSharpStubElements.CONSTRUCTOR_DECLARATION, name, qname, otherModifierMask, null, null, -1);
+	}
+
+	public boolean isDeConstructor()
+	{
+		return BitUtil.isSet(getOtherModifierMask(), DE_CONSTRUCTOR);
+	}
+
+	public static int getOtherModifierMask(CSharpConstructorDeclaration declaration)
+	{
+		int i = 0;
+		i = BitUtil.set(i, DE_CONSTRUCTOR, declaration.isDeConstructor());
+		return i;
 	}
 }
