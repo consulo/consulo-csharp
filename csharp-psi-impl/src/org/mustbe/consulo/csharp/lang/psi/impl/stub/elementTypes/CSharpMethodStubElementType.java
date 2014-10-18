@@ -47,6 +47,7 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 		super("METHOD_DECLARATION");
 	}
 
+	@NotNull
 	@Override
 	public CSharpMethodDeclaration createElement(@NotNull ASTNode astNode)
 	{
