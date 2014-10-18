@@ -23,16 +23,15 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeDefStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.util.IncorrectOperationException;
@@ -42,8 +41,7 @@ import com.intellij.util.IncorrectOperationException;
  * @since 11.02.14
  */
 @ArrayFactoryFields
-public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<CSharpTypeDefStub> implements DotNetNamedElement, PsiNameIdentifierOwner,
-		CSharpUsingListChild
+public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<CSharpTypeDefStub> implements CSharpTypeDefStatement
 {
 	public CSharpTypeDefStatementImpl(@NotNull ASTNode node)
 	{
@@ -79,12 +77,14 @@ public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<CSharpType
 		return null;
 	}
 
+	@Override
 	@Nullable
 	public DotNetType getType()
 	{
 		return findChildByClass(DotNetType.class);
 	}
 
+	@Override
 	@NotNull
 	public DotNetTypeRef toTypeRef()
 	{

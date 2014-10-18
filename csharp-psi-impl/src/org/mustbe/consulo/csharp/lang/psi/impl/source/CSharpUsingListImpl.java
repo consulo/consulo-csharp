@@ -20,6 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpUsingListStub;
 import com.intellij.lang.ASTNode;
@@ -34,7 +36,7 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpUsingListImpl extends CSharpStubElementImpl<CSharpUsingListStub>
+public class CSharpUsingListImpl extends CSharpStubElementImpl<CSharpUsingListStub> implements CSharpUsingList
 {
 	public CSharpUsingListImpl(@NotNull ASTNode node)
 	{
@@ -46,24 +48,28 @@ public class CSharpUsingListImpl extends CSharpStubElementImpl<CSharpUsingListSt
 		super(stub, CSharpStubElements.USING_LIST);
 	}
 
+	@Override
 	@NotNull
 	public CSharpTypeDefStatementImpl[] getTypeDefs()
 	{
 		return getStubOrPsiChildren(CSharpStubElements.TYPE_DEF_STATEMENT, CSharpTypeDefStatementImpl.ARRAY_FACTORY);
 	}
 
+	@Override
 	@NotNull
 	public CSharpUsingNamespaceStatementImpl[] getUsingDirectives()
 	{
 		return getStubOrPsiChildren(CSharpStubElements.USING_NAMESPACE_STATEMENT, CSharpUsingNamespaceStatementImpl.ARRAY_FACTORY);
 	}
 
+	@Override
 	@NotNull
 	public CSharpUsingListChild[] getStatements()
 	{
 		return getStubOrPsiChildren(CSharpStubElements.USING_CHILDREN, CSharpUsingListChild.ARRAY_FACTORY);
 	}
 
+	@Override
 	public void addUsing(@NotNull String qName)
 	{
 		CSharpUsingNamespaceStatementImpl newStatement = CSharpFileFactory.createUsingStatement(getProject(), qName);

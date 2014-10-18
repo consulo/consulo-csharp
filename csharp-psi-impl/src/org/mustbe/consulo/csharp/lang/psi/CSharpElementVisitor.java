@@ -87,7 +87,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(type);
 	}
 
-	public void visitUsingNamespaceStatement(CSharpUsingNamespaceStatementImpl statement)
+	public void visitUsingNamespaceStatement(CSharpUsingNamespaceStatement statement)
 	{
 		visitElement(statement);
 	}

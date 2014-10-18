@@ -701,8 +701,6 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		}
 		else
 		{
-			resolveState = resolveState.put(CSharpResolveUtil.CONTAINS_FILE, element.getContainingFile());
-
 			Couple<PsiElement> resolveLayers = getResolveLayers(element, false);
 
 			PsiElement last = resolveLayers.getFirst();
@@ -913,7 +911,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			}
 			return ResolveToKind.TYPE_LIKE;
 		}
-		else if(tempElement instanceof CSharpUsingNamespaceStatementImpl)
+		else if(tempElement instanceof CSharpUsingNamespaceStatement)
 		{
 			return ResolveToKind.NAMESPACE;
 		}

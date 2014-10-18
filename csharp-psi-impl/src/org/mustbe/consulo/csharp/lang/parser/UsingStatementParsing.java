@@ -43,7 +43,7 @@ public class UsingStatementParsing extends SharedParsingHelpers
 		}
 		else
 		{
-			marker.done(USING_NAMESPACE_LIST);
+			marker.done(USING_LIST);
 		}
 	}
 

@@ -35,7 +35,9 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -384,6 +386,11 @@ public class CSharpResolveUtil
 		}
 
 		PsiFile psiFile = state.get(CONTAINS_FILE);
+		if(psiFile instanceof CSharpFileImpl)
+		{
+			CSharpUsingListImpl usingList = ((CSharpFileImpl) psiFile).getUsingList();
+			System.out.println("go using");
+		}
 		return psiFile == null || walkChildrenImpl(processor, psiFile, walkParent, maxScope, state, typeVisited);
 	}
 

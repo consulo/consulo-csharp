@@ -44,6 +44,7 @@ public class CSharpUsingListStubElementType extends CSharpAbstractStubElementTyp
 		super("USING_LIST");
 	}
 
+	@NotNull
 	@Override
 	public CSharpUsingListImpl createElement(@NotNull ASTNode astNode)
 	{
