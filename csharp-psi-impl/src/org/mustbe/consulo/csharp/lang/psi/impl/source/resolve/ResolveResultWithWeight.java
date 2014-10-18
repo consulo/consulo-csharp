@@ -26,6 +26,7 @@ import com.intellij.psi.PsiElementResolveResult;
  * @since 05.05.14
  */
 @ArrayFactoryFields
+@Deprecated
 public class ResolveResultWithWeight extends PsiElementResolveResult
 {
 	private final int myWeight;
