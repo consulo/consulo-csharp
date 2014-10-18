@@ -66,7 +66,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 	@Override
 	public PsiElement findByName(@NotNull String name)
 	{
-		PsiElement[] children = myNamespaceAsElement.findChildren(name, myResolveScope, true);
+		PsiElement[] children = myNamespaceAsElement.findChildren(name, myResolveScope, DotNetNamespaceAsElement.ChildrenFilter.NONE);
 		if(children.length > 0)
 		{
 
