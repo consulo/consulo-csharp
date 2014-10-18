@@ -246,7 +246,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					return ResolveResult.EMPTY_ARRAY;
 				}
 				selector = new AttributeByNameSelector(referenceName);
-				kind = ResolveToKind.TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD; //remap to type search
+				kind = ResolveToKind.TYPE_LIKE; //remap to type search
 				break;
 			case NATIVE_TYPE_WRAPPER:
 			case THIS:
@@ -312,7 +312,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					}
 				};
 				break;
-			case TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD:
+			case TYPE_LIKE:
 				weightProcessor = new WeightProcessor<PsiNamedElement>()
 				{
 					@Override
@@ -470,7 +470,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				CSharpResolveUtil.treeWalkUp(scopeProcessor, element, element, parentOfType);
 				return scopeProcessor.toResolveResults();
 			case TYPE_OR_NAMESPACE:
-				ResolveResult[] typeResults = collectResults(ResolveToKind.TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD, condition, selector,
+				ResolveResult[] typeResults = collectResults(ResolveToKind.TYPE_LIKE, condition, selector,
 						weightProcessor, element, completion);
 				ResolveResult[] namespaceResults = collectResults(ResolveToKind.NAMESPACE, condition, selector, weightProcessor, element,
 						completion);
@@ -534,7 +534,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				CSharpReferenceExpressionImpl referenceExpression = (CSharpReferenceExpressionImpl) element;
 				CSharpCallArgumentListOwner parent = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
 
-				ResolveToKind typeResolveKind = ResolveToKind.TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD;
+				ResolveToKind typeResolveKind = ResolveToKind.TYPE_LIKE;
 				PsiElement referenceElement = referenceExpression.getReferenceElement();
 				assert referenceElement != null;
 				if(referenceElement.getNode().getElementType() == CSharpTokens.BASE_KEYWORD)
@@ -594,14 +594,14 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				scopeProcessor = new SimpleNamedScopeProcessor(ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
 				maybeParameterListOwner.processDeclarations(scopeProcessor, state, null, element);
 				return scopeProcessor.toResolveResults();
-			case TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD:
+			case TYPE_LIKE:
 			case METHOD:
 			case ARRAY_METHOD:
 			case ANY_MEMBER:
 				condition = Conditions.and(condition, ourNotConstructorCondition);
 				if(!completion)
 				{
-					if(kind == ResolveToKind.TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD)
+					if(kind == ResolveToKind.TYPE_LIKE)
 					{
 						condition = Conditions.and(condition, ourTypeOrMethodOrGenericCondition);
 					}
@@ -664,7 +664,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 		if(target != element)
 		{
-			MemberResolveScopeProcessor memberProcessor = createMemberProcessor(element, ResolveResult.EMPTY_ARRAY);
+			MemberResolveScopeProcessor memberProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY);
 
 			if(!CSharpResolveUtil.walkChildren(memberProcessor, target, false, null, resolveState))
 			{
@@ -720,7 +720,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				elements = localProcessor.toResolveResults();
 			}
 
-			MemberResolveScopeProcessor p = createMemberProcessor(element, elements);
+			MemberResolveScopeProcessor p = createMemberProcessor(element, kind, elements);
 			if(last == null)
 			{
 				return p.toResolveResults();
@@ -732,15 +732,27 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		}
 	}
 
-	private static MemberResolveScopeProcessor createMemberProcessor(@NotNull PsiElement element, ResolveResult[] elements)
+	private static MemberResolveScopeProcessor createMemberProcessor(@NotNull PsiElement element, ResolveToKind kind, ResolveResult[] elements)
 	{
-		MemberResolveScopeProcessor p = new MemberResolveScopeProcessor(element.getResolveScope(), elements, ExecuteTarget.MEMBER);
+		ExecuteTarget[] targets;
+		switch(kind)
+		{
+			case TYPE_LIKE:
+				targets = new ExecuteTarget[] {ExecuteTarget.GENERIC_PARAMETER, ExecuteTarget.TYPE, ExecuteTarget.DELEGATE_METHOD};
+				break;
+			case NAMESPACE:
+				targets = new ExecuteTarget[] {ExecuteTarget.NAMESPACE};
+				break;
+			default:
+				targets = new ExecuteTarget[] {ExecuteTarget.MEMBER};
+				break;
+		}
+		MemberResolveScopeProcessor p = new MemberResolveScopeProcessor(element.getResolveScope(), elements, targets);
 
 		if(PsiTreeUtil.getParentOfType(element, CSharpUsingListImpl.class) != null)
 		{
 			p.putUserData(CSharpResolveUtil.NO_USING_LIST, Boolean.TRUE);
 		}
-
 
 		return p;
 	}
@@ -870,6 +882,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@NotNull
 	public ResolveToKind kind()
 	{
+		String text = getText();
+
 		PsiElement tempElement = getParent();
 		if(tempElement instanceof CSharpGenericConstraintImpl)
 		{
@@ -897,7 +911,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			{
 				return ResolveToKind.CONSTRUCTOR;
 			}
-			return ResolveToKind.TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD;
+			return ResolveToKind.TYPE_LIKE;
 		}
 		else if(tempElement instanceof CSharpUsingNamespaceStatementImpl)
 		{

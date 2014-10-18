@@ -37,7 +37,7 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression
 		ATTRIBUTE,  // return type declaration but ref can find without Attribute sufix
 		NATIVE_TYPE_WRAPPER, // return type declaration of native type
 		ARRAY_METHOD,
-		TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD, // return generic parameter or delegated method or type declaration
+		TYPE_LIKE, // return generic parameter or delegated method or type declaration
 		CONSTRUCTOR,
 		ANY_MEMBER,
 		FIELD_OR_PROPERTY,

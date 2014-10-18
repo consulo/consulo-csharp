@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
@@ -41,7 +42,7 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 {
 	private final GlobalSearchScope myScope;
 
-	public MemberResolveScopeProcessor(GlobalSearchScope scope, ResolveResult[] elements, ExecuteTarget... targets)
+	public MemberResolveScopeProcessor(GlobalSearchScope scope, ResolveResult[] elements, ExecuteTarget[] targets)
 	{
 		Collections.addAll(myElements, elements);
 		myScope = scope;
@@ -51,11 +52,6 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 	@Override
 	public boolean executeImpl(@NotNull PsiElement element, ResolveState state)
 	{
-		if(!ExecuteTargetUtil.isMyElement(this, element))
-		{
-			return true;
-		}
-
 		CSharpResolveSelector selector = state.get(CSharpResolveUtil.SELECTOR);
 		if(selector == null)
 		{
@@ -71,7 +67,13 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 		PsiElement psiElement = selector.doSelectElement(context);
 		if(psiElement != null)
 		{
-			addElement(normalize(psiElement));
+			PsiElement normalize = normalize(psiElement);
+			if(!ExecuteTargetUtil.isMyElement(this, normalize))
+			{
+				return true;
+			}
+
+			addElement(normalize);
 			return false;
 		}
 		return true;
@@ -85,7 +87,8 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 			if(elements.size() == 1)
 			{
 				PsiElement firstItem = ContainerUtil.getFirstItem(elements);
-				if(!(firstItem instanceof DotNetLikeMethodDeclaration))
+				if(firstItem instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) firstItem).isDelegate() || !(firstItem instanceof
+						DotNetLikeMethodDeclaration))
 				{
 					return firstItem;
 				}

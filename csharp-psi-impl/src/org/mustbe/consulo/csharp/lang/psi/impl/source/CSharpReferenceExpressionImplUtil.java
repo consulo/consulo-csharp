@@ -32,7 +32,7 @@ public class CSharpReferenceExpressionImplUtil
 	public static PsiElement resolveByTypeKind(@NotNull DotNetReferenceExpression referenceExpression, boolean attributeSuffix)
 	{
 		assert referenceExpression instanceof CSharpReferenceExpressionImpl;
-		CSharpReferenceExpressionImpl.ResolveToKind kind = CSharpReferenceExpressionImpl.ResolveToKind.TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD;
+		CSharpReferenceExpressionImpl.ResolveToKind kind = CSharpReferenceExpressionImpl.ResolveToKind.TYPE_LIKE;
 		if(attributeSuffix)
 		{
 			kind = CSharpReferenceExpressionImpl.ResolveToKind.ATTRIBUTE;

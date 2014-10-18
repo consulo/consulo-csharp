@@ -24,12 +24,14 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodDeclarationImp
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetNamespaceUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.stubs.IndexSink;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
+import com.intellij.psi.util.QualifiedName;
 import com.intellij.util.BitUtil;
 import com.intellij.util.io.StringRef;
 import lombok.val;
@@ -94,18 +96,31 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 	}
 
 	@Override
-	public void indexStub(@NotNull CSharpMethodStub cSharpTypeStub, @NotNull IndexSink indexSink)
+	public void indexStub(@NotNull CSharpMethodStub stub, @NotNull IndexSink indexSink)
 	{
-		String name = cSharpTypeStub.getName();
+		String name = stub.getName();
 		if(!StringUtil.isEmpty(name))
 		{
 			indexSink.occurrence(CSharpIndexKeys.METHOD_INDEX, name);
 
-			val parentQName = cSharpTypeStub.getParentQName();
+			if(BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodStub.DELEGATE_MASK))
+			{
+				val parentQName = stub.getParentQName();
 
-			//indexSink.occurrence(CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, CSharpNamespaceHelper.getNamespaceForIndexing(parentQName));
+				indexSink.occurrence(CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, DotNetNamespaceUtil.getIndexableNamespace(parentQName));
 
-			if(BitUtil.isSet(cSharpTypeStub.getOtherModifierMask(), CSharpMethodStub.EXTENSION_MASK))
+				if(!StringUtil.isEmpty(parentQName))
+				{
+					QualifiedName parent = QualifiedName.fromDottedString(parentQName);
+					do
+					{
+						indexSink.occurrence(CSharpIndexKeys.MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX, DotNetNamespaceUtil.getIndexableNamespace(parent));
+					}
+					while((parent = parent.getParent()) != null);
+				}
+			}
+
+			if(BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodStub.EXTENSION_MASK))
 			{
 				indexSink.occurrence(CSharpIndexKeys.EXTENSION_METHOD_INDEX, name);
 			}
