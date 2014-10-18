@@ -87,7 +87,7 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 		DotNetNamespaceAsElement resolve = resolve();
 
 		ResolveState newState = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, getResolveScope());
-		newState = newState.put(BaseDotNetNamespaceAsElement.WITH_CHILD_NAMESPACES, Boolean.TRUE);
+		newState = newState.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
 
 		return resolve == null || resolve.processDeclarations(processor, newState, lastParent, place);
 	}

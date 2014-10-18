@@ -341,7 +341,7 @@ public class CSharpResolveUtil
 		else if(entrance instanceof DotNetNamespaceAsElement)
 		{
 			state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, resolveScope);
-			state = state.put(BaseDotNetNamespaceAsElement.WITH_CHILD_NAMESPACES, Boolean.TRUE);
+			state = state.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
 			if(!entrance.processDeclarations(processor, state, maxScope, entrance))
 			{
 				return false;
@@ -374,7 +374,7 @@ public class CSharpResolveUtil
 			if(walkParent)
 			{
 				state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, resolveScope);
-				state = state.put(BaseDotNetNamespaceAsElement.WITH_CHILD_NAMESPACES, Boolean.TRUE);
+				state = state.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
 
 				DotNetNamespaceAsElement parentNamespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace(presentableQName,
 						resolveScope);
@@ -387,7 +387,7 @@ public class CSharpResolveUtil
 		else if(entrance instanceof PsiFile)
 		{
 			state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, resolveScope);
-			state = state.put(BaseDotNetNamespaceAsElement.WITH_CHILD_NAMESPACES, Boolean.TRUE);
+			state = state.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
 
 			DotNetNamespaceAsElement namespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace("", resolveScope);
 			return namespace != null && walkChildrenImpl(processor, namespace, walkParent, maxScope, state, typeVisited);

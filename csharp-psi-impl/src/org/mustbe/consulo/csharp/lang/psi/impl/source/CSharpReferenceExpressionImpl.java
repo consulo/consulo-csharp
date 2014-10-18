@@ -562,7 +562,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					};
 
 					ResolveState state = ResolveState.initial();
-					state = state.put(BaseDotNetNamespaceAsElement.WITH_CHILD_NAMESPACES, Boolean.TRUE);
+					state = state.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
 					state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, element.getResolveScope());
 					namespace.processDeclarations(p, state, null, element);
 					return p.toResolveResults();
