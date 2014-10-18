@@ -22,7 +22,7 @@ public class MemberByNameSelector implements CSharpNamedResolveSelector
 	@Override
 	public PsiElement doSelectElement(@NotNull CSharpResolveContext context)
 	{
-		return context.findByName(myName);
+		return context.findByName(myName, CSharpResolveContext.EMPTY_USER_DATA);
 	}
 
 	@Override

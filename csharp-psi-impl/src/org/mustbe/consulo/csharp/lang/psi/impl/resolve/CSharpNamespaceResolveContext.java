@@ -5,9 +5,11 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
+import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
+import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.IElementType;
@@ -64,9 +66,15 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public PsiElement findByName(@NotNull String name)
+	public PsiElement findByName(@NotNull String name, @NotNull UserDataHolder holder)
 	{
-		PsiElement[] children = myNamespaceAsElement.findChildren(name, myResolveScope, DotNetNamespaceAsElement.ChildrenFilter.NONE);
+		DotNetNamespaceAsElement.ChildrenFilter filter = holder.getUserData(BaseDotNetNamespaceAsElement.FILTER);
+		if(filter == null)
+		{
+			filter = DotNetNamespaceAsElement.ChildrenFilter.NONE;
+		}
+
+		PsiElement[] children = myNamespaceAsElement.findChildren(name, myResolveScope, filter);
 		if(children.length > 0)
 		{
 

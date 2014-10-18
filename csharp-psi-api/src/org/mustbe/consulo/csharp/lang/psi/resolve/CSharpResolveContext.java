@@ -2,6 +2,8 @@ package org.mustbe.consulo.csharp.lang.psi.resolve;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 
@@ -50,9 +52,25 @@ public interface CSharpResolveContext
 
 		@Nullable
 		@Override
-		public PsiElement findByName(@NotNull String name)
+		public PsiElement findByName(@NotNull String name, @NotNull UserDataHolder holder)
 		{
 			return null;
+		}
+	};
+
+	UserDataHolder EMPTY_USER_DATA = new UserDataHolder()
+	{
+		@Nullable
+		@Override
+		public <T> T getUserData(@NotNull Key<T> key)
+		{
+			return null;
+		}
+
+		@Override
+		public <T> void putUserData(@NotNull Key<T> key, @Nullable T value)
+		{
+
 		}
 	};
 
@@ -72,5 +90,5 @@ public interface CSharpResolveContext
 	CSharpElementGroup findExtensionMethodByName(@NotNull String name);
 
 	@Nullable
-	PsiElement findByName(@NotNull String name);
+	PsiElement findByName(@NotNull String name, @NotNull UserDataHolder holder);
 }

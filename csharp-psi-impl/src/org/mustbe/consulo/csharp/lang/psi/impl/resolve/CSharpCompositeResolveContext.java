@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.SmartList;
@@ -108,7 +109,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public PsiElement findByName(@NotNull String name)
+	public PsiElement findByName(@NotNull String name, @NotNull UserDataHolder holder)
 	{
 		return null;
 	}
