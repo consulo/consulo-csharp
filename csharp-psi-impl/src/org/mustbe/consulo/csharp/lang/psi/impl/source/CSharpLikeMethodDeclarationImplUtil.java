@@ -3,7 +3,6 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
@@ -23,7 +22,7 @@ public class CSharpLikeMethodDeclarationImplUtil
 			PsiElement lastParent,
 			@NotNull PsiElement place)
 	{
-		if(processor instanceof MemberResolveScopeProcessor)
+		if(ExecuteTargetUtil.canProcess(processor, ExecuteTarget.GENERIC_PARAMETER))
 		{
 			for(DotNetGenericParameter dotNetGenericParameter : methodDeclaration.getGenericParameters())
 			{

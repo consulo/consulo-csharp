@@ -27,7 +27,14 @@ import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.*;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CallWeightProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ConstructorProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
@@ -65,7 +72,6 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import lombok.val;
 
@@ -370,6 +376,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		}
 
 		AbstractScopeProcessor scopeProcessor = null;
+		ResolveState state = null;
 		PsiElement qualifier = element.getQualifier();
 		switch(kind)
 		{
@@ -395,16 +402,12 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					return ResolveResult.EMPTY_ARRAY;
 				}
 
-				DotNetGenericParameter[] genericParameters = parameterListOwner.getGenericParameters();
-				val list = new ArrayList<ResolveResult>(genericParameters.length);
-				for(val o : genericParameters)
-				{
-					if(condition.value(o))
-					{
-						list.add(new PsiElementResolveResult(o, true));
-					}
-				}
-				return list.isEmpty() ? ResolveResult.EMPTY_ARRAY : list.toArray(new ResolveResult[list.size()]);
+				scopeProcessor = new SimpleNamedScopeProcessor(ExecuteTarget.GENERIC_PARAMETER);
+				state = ResolveState.initial();
+				state = state.put(CSharpResolveUtil.SELECTOR, selector);
+
+				parameterListOwner.processDeclarations(scopeProcessor, state, null, element);
+				return scopeProcessor.toResolveResults();
 			case NATIVE_TYPE_WRAPPER:
 				PsiElement nativeElement = ((CSharpReferenceExpressionImpl) element).findChildByType(CSharpTokenSets.NATIVE_TYPES);
 				assert nativeElement != null;
@@ -456,7 +459,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					PsiElement selectElement = selector.doSelectElement(context);
 					if(selectElement != null)
 					{
-						return new ResolveResult[] {new PsiElementResolveResult(selectElement, true)};
+						return new ResolveResult[]{new PsiElementResolveResult(selectElement, true)};
 					}
 				}
 				break;
@@ -467,8 +470,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				CSharpResolveUtil.treeWalkUp(scopeProcessor, element, element, parentOfType);
 				return scopeProcessor.toResolveResults();
 			case TYPE_OR_NAMESPACE:
-				ResolveResult[] typeResults = collectResults(ResolveToKind.TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD, condition,
-						selector, weightProcessor, element, completion);
+				ResolveResult[] typeResults = collectResults(ResolveToKind.TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD, condition, selector,
+						weightProcessor, element, completion);
 				ResolveResult[] namespaceResults = collectResults(ResolveToKind.NAMESPACE, condition, selector, weightProcessor, element,
 						completion);
 				return ArrayUtil.mergeArrays(typeResults, namespaceResults);
@@ -521,7 +524,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 						}
 					};
 
-					ResolveState state = ResolveState.initial();
+					state = ResolveState.initial();
 					state = state.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
 					state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, element.getResolveScope());
 					namespace.processDeclarations(scopeProcessor, state, null, element);
@@ -580,22 +583,17 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					return ResolveResult.EMPTY_ARRAY;
 				}
 
-				PsiElement element1 = firstItem.getElement();
-				if(!(element1 instanceof DotNetParameterListOwner))
+				PsiElement maybeParameterListOwner = firstItem.getElement();
+				if(!(maybeParameterListOwner instanceof DotNetParameterListOwner))
 				{
 					return ResolveResult.EMPTY_ARRAY;
 				}
+				state = ResolveState.initial();
+				state = state.put(CSharpResolveUtil.SELECTOR, selector);
 
-				DotNetParameter[] parameters = ((DotNetParameterListOwner) element1).getParameters();
-				List<ResolveResult> res = new SmartList<ResolveResult>();
-				for(DotNetParameter parameter : parameters)
-				{
-					if(condition.value(parameter))
-					{
-						res.add(new PsiElementResolveResult(parameter, true));
-					}
-				}
-				return ContainerUtil.toArray(res, ResolveResult.EMPTY_ARRAY);
+				scopeProcessor = new SimpleNamedScopeProcessor(ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
+				maybeParameterListOwner.processDeclarations(scopeProcessor, state, null, element);
+				return scopeProcessor.toResolveResults();
 			case TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD:
 			case METHOD:
 			case ARRAY_METHOD:
@@ -628,7 +626,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			@NotNull WeightProcessor<PsiNamedElement> weightProcessor,
 			@NotNull PsiElement element,
 			ResolveToKind kind,
-			 boolean с)
+			boolean с)
 	{
 		PsiElement target = element;
 		DotNetGenericExtractor extractor = DotNetGenericExtractor.EMPTY;

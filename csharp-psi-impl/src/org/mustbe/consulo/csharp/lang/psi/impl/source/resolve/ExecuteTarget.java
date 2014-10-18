@@ -6,6 +6,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.psi.PsiElement;
@@ -39,6 +40,14 @@ public enum ExecuteTarget
 				public boolean isMyElement(@NotNull PsiElement element)
 				{
 					return element instanceof DotNetQualifiedElement;
+				}
+			},
+	GENERIC_PARAMETER
+			{
+				@Override
+				public boolean isMyElement(@NotNull PsiElement element)
+				{
+					return element instanceof DotNetGenericParameter;
 				}
 			},
 	LOCAL_VARIABLE_OR_PARAMETER

@@ -25,6 +25,8 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeStub;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
@@ -177,11 +179,14 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeSt
 	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent,
 			@NotNull PsiElement place)
 	{
-		for(DotNetGenericParameter dotNetGenericParameter : getGenericParameters())
+		if(ExecuteTargetUtil.canProcess(processor, ExecuteTarget.GENERIC_PARAMETER))
 		{
-			if(!processor.execute(dotNetGenericParameter, state))
+			for(DotNetGenericParameter dotNetGenericParameter : getGenericParameters())
 			{
-				return false;
+				if(!processor.execute(dotNetGenericParameter, state))
+				{
+					return false;
+				}
 			}
 		}
 		return true;
