@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAttributeImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpAttributeStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeWithStringValueStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.StubElement;
@@ -18,7 +18,7 @@ import com.intellij.util.io.StringRef;
  * @author VISTALL
  * @since 17.10.14
  */
-public class CSharpAttributeStubElementType extends CSharpAbstractStubElementType<CSharpAttributeStub, CSharpAttribute>
+public class CSharpAttributeStubElementType extends CSharpAbstractStubElementType<CSharpTypeWithStringValueStub<CSharpAttribute>, CSharpAttribute>
 {
 	public CSharpAttributeStubElementType()
 	{
@@ -33,30 +33,31 @@ public class CSharpAttributeStubElementType extends CSharpAbstractStubElementTyp
 	}
 
 	@Override
-	public CSharpAttribute createPsi(@NotNull CSharpAttributeStub stub)
+	public CSharpAttribute createPsi(@NotNull CSharpTypeWithStringValueStub<CSharpAttribute> stub)
 	{
 		return new CSharpAttributeImpl(stub, this);
 	}
 
 	@Override
-	public CSharpAttributeStub createStub(@NotNull CSharpAttribute attribute, StubElement stubElement)
+	public CSharpTypeWithStringValueStub<CSharpAttribute> createStub(@NotNull CSharpAttribute attribute, StubElement stubElement)
 	{
 		CSharpReferenceExpression referenceExpression = attribute.getReferenceExpression();
 		String referenceText = referenceExpression == null ? null : referenceExpression.getText();
-		return new CSharpAttributeStub(stubElement, this, referenceText);
+		return new CSharpTypeWithStringValueStub<CSharpAttribute>(stubElement, this, referenceText);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpAttributeStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@NotNull CSharpTypeWithStringValueStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(stub.getReferenceText());
 	}
 
 	@NotNull
 	@Override
-	public CSharpAttributeStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpTypeWithStringValueStub<CSharpAttribute> deserialize(@NotNull StubInputStream stubInputStream,
+			StubElement stubElement) throws IOException
 	{
 		StringRef referenceText = stubInputStream.readName();
-		return new CSharpAttributeStub(stubElement, this, referenceText);
+		return new CSharpTypeWithStringValueStub<CSharpAttribute>(stubElement, this, referenceText);
 	}
 }

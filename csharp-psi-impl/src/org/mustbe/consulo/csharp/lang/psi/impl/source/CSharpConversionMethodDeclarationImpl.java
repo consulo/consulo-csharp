@@ -22,26 +22,23 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpConversionMethodDeclStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
  * @since 09.01.14
  */
-public class CSharpConversionMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl<CSharpConversionMethodDeclStub> implements CSharpConversionMethodDeclaration
+public class CSharpConversionMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl<CSharpMethodDeclStub> implements CSharpConversionMethodDeclaration
 {
 	public CSharpConversionMethodDeclarationImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpConversionMethodDeclarationImpl(@NotNull CSharpConversionMethodDeclStub stub)
+	public CSharpConversionMethodDeclarationImpl(@NotNull CSharpMethodDeclStub stub)
 	{
 		super(stub, CSharpStubElements.CONVERSION_METHOD_DECLARATION);
 	}
@@ -62,12 +59,6 @@ public class CSharpConversionMethodDeclarationImpl extends CSharpLikeMethodDecla
 	@Override
 	public DotNetTypeRef getConversionTypeRef()
 	{
-		CSharpConversionMethodDeclStub stub = getStub();
-		if(stub != null)
-		{
-			return CSharpStubTypeInfoUtil.toTypeRef(stub.getConversionTypeInfo(), this);
-		}
-
 		DotNetType conversionType = getConversionType();
 		return conversionType == null ? DotNetTypeRef.ERROR_TYPE : conversionType.toTypeRef();
 	}
@@ -76,8 +67,7 @@ public class CSharpConversionMethodDeclarationImpl extends CSharpLikeMethodDecla
 	@Override
 	public DotNetType getConversionType()
 	{
-		DotNetType[] childrenOfType = PsiTreeUtil.getChildrenOfType(this, DotNetType.class);
-		return ArrayUtil2.safeGet(childrenOfType, 1);
+		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 1);
 	}
 
 	@Override

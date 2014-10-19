@@ -18,11 +18,12 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfo;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.tree.IElementType;
@@ -37,22 +38,17 @@ public class CSharpMethodDeclStub extends MemberStub<CSharpMethodDeclaration>
 {
 	public static final int DELEGATE_MASK = 1 << 0;
 	public static final int EXTENSION_MASK = 1 << 1;
+	public static final int DE_CONSTRUCTOR_MASK = 1 << 2;
 
-	private final CSharpStubTypeInfo myReturnType;
-	private final CSharpStubTypeInfo myImplementType;
 	private final int myOperatorIndex;
 
 	public CSharpMethodDeclStub(StubElement parent,
 			@Nullable StringRef name,
 			@Nullable StringRef qname,
 			int otherModifierMask,
-			CSharpStubTypeInfo returnType,
-			CSharpStubTypeInfo implementType,
 			int operatorIndex)
 	{
 		super(parent, CSharpStubElements.METHOD_DECLARATION, name, qname, otherModifierMask);
-		myReturnType = returnType;
-		myImplementType = implementType;
 		myOperatorIndex = operatorIndex;
 	}
 
@@ -61,26 +57,10 @@ public class CSharpMethodDeclStub extends MemberStub<CSharpMethodDeclaration>
 			@Nullable StringRef name,
 			StringRef qname,
 			int otherModifierMask,
-			CSharpStubTypeInfo returnType,
-			CSharpStubTypeInfo implementType,
 			int operatorIndex)
 	{
 		super(parent, elementType, name, qname, otherModifierMask);
-		myReturnType = returnType;
-		myImplementType = implementType;
 		myOperatorIndex = operatorIndex;
-	}
-
-	@NotNull
-	public CSharpStubTypeInfo getImplementType()
-	{
-		return myImplementType;
-	}
-
-	@NotNull
-	public CSharpStubTypeInfo getReturnType()
-	{
-		return myReturnType;
 	}
 
 	public int getOperatorIndex()
@@ -100,16 +80,20 @@ public class CSharpMethodDeclStub extends MemberStub<CSharpMethodDeclaration>
 		return operatorElementType == null ? -1 : ArrayUtil.indexOf(CSharpTokenSets.OVERLOADING_OPERATORS_AS_ARRAY, operatorElementType);
 	}
 
-	public static int getOtherModifierMask(@NotNull CSharpMethodDeclaration methodDeclaration)
+	public static int getOtherModifierMask(@NotNull DotNetLikeMethodDeclaration methodDeclaration)
 	{
 		int i = 0;
-		if(methodDeclaration.isDelegate())
+		if(methodDeclaration instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) methodDeclaration).isDelegate())
 		{
 			i |= DELEGATE_MASK;
 		}
 		if(CSharpMethodImplUtil.isExtensionMethod(methodDeclaration))
 		{
 			i |= EXTENSION_MASK;
+		}
+		if(methodDeclaration instanceof CSharpConstructorDeclaration && ((CSharpConstructorDeclaration) methodDeclaration).isDeConstructor())
+		{
+			i |= DE_CONSTRUCTOR_MASK;
 		}
 		return i;
 	}

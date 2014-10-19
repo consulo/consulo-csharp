@@ -26,10 +26,33 @@ import com.intellij.psi.tree.TokenSet;
  */
 public interface CSharpTokenSets extends CSharpSoftTokens, CSharpTokensImpl
 {
-	TokenSet NATIVE_TYPES = TokenSet.create(STRING_KEYWORD, VOID_KEYWORD, INT_KEYWORD, BOOL_KEYWORD, BYTE_KEYWORD, CHAR_KEYWORD, DECIMAL_KEYWORD,
-			DOUBLE_KEYWORD, FLOAT_KEYWORD, LONG_KEYWORD, OBJECT_KEYWORD, SBYTE_KEYWORD, SHORT_KEYWORD, UINT_KEYWORD, ULONG_KEYWORD, USHORT_KEYWORD,
-			DYNAMIC_KEYWORD, VAR_KEYWORD, EXPLICIT_KEYWORD, IMPLICIT_KEYWORD);
+	// please be care with changing position of elements, because it ill broke stub tree
+	IElementType[] NATIVE_TYPES_AS_ARRAY = new IElementType[]{
+			STRING_KEYWORD,
+			VOID_KEYWORD,
+			INT_KEYWORD,
+			BOOL_KEYWORD,
+			BYTE_KEYWORD,
+			CHAR_KEYWORD,
+			DECIMAL_KEYWORD,
+			DOUBLE_KEYWORD,
+			FLOAT_KEYWORD,
+			LONG_KEYWORD,
+			OBJECT_KEYWORD,
+			SBYTE_KEYWORD,
+			SHORT_KEYWORD,
+			UINT_KEYWORD,
+			ULONG_KEYWORD,
+			USHORT_KEYWORD,
+			DYNAMIC_KEYWORD,
+			VAR_KEYWORD,
+			EXPLICIT_KEYWORD,
+			IMPLICIT_KEYWORD
+	};
 
+	TokenSet NATIVE_TYPES = TokenSet.create(NATIVE_TYPES_AS_ARRAY);
+
+	// please be care with changing position of elements, because it ill broke stub tree
 	IElementType[] OVERLOADING_OPERATORS_AS_ARRAY = new IElementType[]{
 			LTEQ,
 			GTEQ,

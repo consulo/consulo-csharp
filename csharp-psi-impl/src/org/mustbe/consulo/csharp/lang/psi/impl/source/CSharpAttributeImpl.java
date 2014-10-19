@@ -25,7 +25,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpAttributeStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeWithStringValueStub;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -42,14 +42,15 @@ import com.intellij.psi.util.PsiTreeUtil;
  * @author VISTALL
  * @since 19.12.13.
  */
-public class CSharpAttributeImpl extends CSharpStubElementImpl<CSharpAttributeStub> implements CSharpAttribute
+public class CSharpAttributeImpl extends CSharpStubElementImpl<CSharpTypeWithStringValueStub<CSharpAttribute>> implements CSharpAttribute
 {
 	public CSharpAttributeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpAttributeImpl(@NotNull CSharpAttributeStub stub, @NotNull IStubElementType<? extends CSharpAttributeStub, ?> nodeType)
+	public CSharpAttributeImpl(@NotNull CSharpTypeWithStringValueStub<CSharpAttribute> stub,
+			@NotNull IStubElementType<? extends CSharpTypeWithStringValueStub<CSharpAttribute>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -155,7 +156,7 @@ public class CSharpAttributeImpl extends CSharpStubElementImpl<CSharpAttributeSt
 	@Nullable
 	private CSharpReferenceExpression getReferenceExpressionByStub()
 	{
-		CSharpAttributeStub stub = getStub();
+		CSharpTypeWithStringValueStub<CSharpAttribute> stub = getStub();
 		if(stub != null)
 		{
 			String referenceText = stub.getReferenceText();

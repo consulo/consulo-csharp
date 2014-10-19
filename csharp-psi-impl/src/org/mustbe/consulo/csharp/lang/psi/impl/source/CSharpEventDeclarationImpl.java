@@ -23,14 +23,12 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetEventDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 
@@ -63,13 +61,6 @@ public class CSharpEventDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 		return getStubOrPsiChildren(CSharpStubElements.XXX_ACCESSOR, DotNetXXXAccessor.ARRAY_FACTORY);
 	}
 
-	@Override
-	@Nullable
-	public DotNetType getType()
-	{
-		return findChildByClass(DotNetType.class);
-	}
-
 	@Nullable
 	@Override
 	public DotNetExpression getInitializer()
@@ -100,19 +91,13 @@ public class CSharpEventDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 	@Override
 	public DotNetType getTypeForImplement()
 	{
-		DotNetType[] types = findChildrenByClass(DotNetType.class);
-		return ArrayUtil2.safeGet(types, 1);
+		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 1);
 	}
 
 	@NotNull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{
-		CSharpVariableDeclStub<?> stub = getStub();
-		if(stub != null)
-		{
-			return CSharpStubTypeInfoUtil.toTypeRef(stub.getImplementType(), this);
-		}
 		DotNetType typeForImplement = getTypeForImplement();
 		if(typeForImplement == null)
 		{

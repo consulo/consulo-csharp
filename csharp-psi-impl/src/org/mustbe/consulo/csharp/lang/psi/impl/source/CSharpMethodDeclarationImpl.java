@@ -27,10 +27,8 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorHelper;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
@@ -134,19 +132,13 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 	@Override
 	public DotNetType getTypeForImplement()
 	{
-		DotNetType[] types = findChildrenByClass(DotNetType.class);
-		return ArrayUtil2.safeGet(types, 1);
+		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 1);
 	}
 
 	@NotNull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{
-		CSharpMethodDeclStub stub = getStub();
-		if(stub != null)
-		{
-			return CSharpStubTypeInfoUtil.toTypeRef(stub.getImplementType(), this);
-		}
 		DotNetType typeForImplement = getTypeForImplement();
 		if(typeForImplement == null)
 		{

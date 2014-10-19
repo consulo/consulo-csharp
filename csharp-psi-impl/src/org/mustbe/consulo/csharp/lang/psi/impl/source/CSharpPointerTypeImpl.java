@@ -19,23 +19,32 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.stubs.IStubElementType;
 
 /**
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpPointerTypeImpl extends CSharpElementImpl implements DotNetPointerType
+public class CSharpPointerTypeImpl extends CSharpStubElementImpl<CSharpEmptyStub<CSharpPointerTypeImpl>> implements DotNetPointerType
 {
 	public CSharpPointerTypeImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	public CSharpPointerTypeImpl(@NotNull CSharpEmptyStub<CSharpPointerTypeImpl> stub,
+			@NotNull IStubElementType<? extends CSharpEmptyStub<CSharpPointerTypeImpl>, ?> nodeType)
+	{
+		super(stub, nodeType);
 	}
 
 	@Override
@@ -60,7 +69,7 @@ public class CSharpPointerTypeImpl extends CSharpElementImpl implements DotNetPo
 	@Override
 	public DotNetType getInnerType()
 	{
-		return findChildByClass(DotNetType.class);
+		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
 	}
 
 	@NotNull

@@ -60,7 +60,7 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 	@Override
 	public DotNetTypeList getTypeArgumentList()
 	{
-		return (DotNetTypeList) findChildByType(CSharpElements.TYPE_ARGUMENTS);
+		return (DotNetTypeList) findChildByType(CSharpElements.TYPE_CALL_ARGUMENTS);
 	}
 
 	@NotNull

@@ -22,13 +22,11 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayMethodDeclarationImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpArrayMethodDeclStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.io.StringRef;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -58,9 +56,7 @@ public class CSharpArrayMethodStubElementType extends CSharpAbstractStubElementT
 	{
 		StringRef name = StringRef.fromNullableString(declaration.getName());
 		StringRef parentQName = StringRef.fromNullableString(declaration.getPresentableParentQName());
-		val typeInfo = CSharpStubTypeInfoUtil.toStub(declaration.getReturnType());
-		val implementInfo = CSharpStubTypeInfoUtil.toStub(declaration.getTypeForImplement());
-		return new CSharpArrayMethodDeclStub(stubElement, name, parentQName, typeInfo, implementInfo);
+		return new CSharpArrayMethodDeclStub(stubElement, name, parentQName);
 	}
 
 	@Override
@@ -68,8 +64,6 @@ public class CSharpArrayMethodStubElementType extends CSharpAbstractStubElementT
 	{
 		stubOutputStream.writeName(methodStub.getName());
 		stubOutputStream.writeName(methodStub.getParentQName());
-		methodStub.getReturnType().writeTo(stubOutputStream);
-		methodStub.getImplementType().writeTo(stubOutputStream);
 	}
 
 	@NotNull
@@ -78,8 +72,6 @@ public class CSharpArrayMethodStubElementType extends CSharpAbstractStubElementT
 	{
 		StringRef name = inputStream.readName();
 		StringRef qname = inputStream.readName();
-		val typeInfo = CSharpStubTypeInfoUtil.read(inputStream);
-		val implementInfo = CSharpStubTypeInfoUtil.read(inputStream);
-		return new CSharpArrayMethodDeclStub(stubElement, name, qname, typeInfo, implementInfo);
+		return new CSharpArrayMethodDeclStub(stubElement, name, qname);
 	}
 }

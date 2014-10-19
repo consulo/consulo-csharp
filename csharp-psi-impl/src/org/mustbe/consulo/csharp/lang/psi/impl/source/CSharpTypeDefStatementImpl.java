@@ -26,7 +26,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeDefStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -81,18 +80,13 @@ public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<CSharpType
 	@Nullable
 	public DotNetType getType()
 	{
-		return findChildByClass(DotNetType.class);
+		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
 	}
 
 	@Override
 	@NotNull
 	public DotNetTypeRef toTypeRef()
 	{
-		CSharpTypeDefStub stub = getStub();
-		if(stub != null)
-		{
-			return CSharpStubTypeInfoUtil.toTypeRef(stub.getTypeInfo(), this);
-		}
 		DotNetType type = getType();
 		return type == null ? DotNetTypeRef.ERROR_TYPE : type.toTypeRef();
 	}

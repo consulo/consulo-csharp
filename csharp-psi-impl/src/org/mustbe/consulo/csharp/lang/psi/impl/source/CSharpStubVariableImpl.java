@@ -17,8 +17,9 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -48,16 +49,17 @@ public abstract class CSharpStubVariableImpl<S extends CSharpVariableDeclStub<?>
 		return stub != null && stub.isConstant();
 	}
 
+	@Override
+	@Nullable
+	public DotNetType getType()
+	{
+		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
+	}
+
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
-		S stub = getStub();
-		if(stub != null)
-		{
-			return CSharpStubTypeInfoUtil.toTypeRef(stub.getTypeInfo(), this);
-		}
-
 		DotNetType type = getType();
 		return type == null ? DotNetTypeRef.ERROR_TYPE : type.toTypeRef();
 	}

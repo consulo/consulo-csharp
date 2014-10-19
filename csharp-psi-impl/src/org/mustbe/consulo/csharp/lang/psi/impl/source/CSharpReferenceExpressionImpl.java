@@ -1064,8 +1064,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					return false;
 				}
 
-				if(e instanceof DotNetVirtualImplementOwner && ((DotNetVirtualImplementOwner) e).getTypeRefForImplement() != DotNetTypeRef
-						.ERROR_TYPE)
+				if(e instanceof DotNetVirtualImplementOwner && ((DotNetVirtualImplementOwner) e).getTypeForImplement() != null)
 				{
 					return false;
 				}

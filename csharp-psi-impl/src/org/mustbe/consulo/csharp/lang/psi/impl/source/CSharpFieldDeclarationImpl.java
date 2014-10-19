@@ -57,7 +57,7 @@ public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 	@Override
 	public DotNetType getType()
 	{
-		DotNetType type = findChildByClass(DotNetType.class);
+		DotNetType type = super.getType();
 		// int a, b
 		if(type == null && getNameIdentifier() != null)
 		{

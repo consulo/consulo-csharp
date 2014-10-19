@@ -16,11 +16,9 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfo;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.io.StringRef;
 
@@ -30,29 +28,10 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpArrayMethodDeclStub extends MemberStub<CSharpArrayMethodDeclaration>
 {
-	private final CSharpStubTypeInfo myReturnType;
-	private final CSharpStubTypeInfo myImplementType;
-
 	public CSharpArrayMethodDeclStub(StubElement parent,
 			@Nullable StringRef name,
-			@Nullable StringRef qname,
-			CSharpStubTypeInfo returnType,
-			CSharpStubTypeInfo implementType)
+			@Nullable StringRef qname)
 	{
 		super(parent, CSharpStubElements.ARRAY_METHOD_DECLARATION, name, qname, 0);
-		myReturnType = returnType;
-		myImplementType = implementType;
-	}
-
-	@NotNull
-	public CSharpStubTypeInfo getReturnType()
-	{
-		return myReturnType;
-	}
-
-	@NotNull
-	public CSharpStubTypeInfo getImplementType()
-	{
-		return myImplementType;
 	}
 }

@@ -478,7 +478,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				builder.advanceLexer();
 				parseTypeList(builder, false);
 				expect(builder, GT, "'>' expected");
-				argumentMark.done(TYPE_ARGUMENTS);
+				argumentMark.done(TYPE_CALL_ARGUMENTS);
 
 				if(builder.getTokenType() == LPAR)
 				{

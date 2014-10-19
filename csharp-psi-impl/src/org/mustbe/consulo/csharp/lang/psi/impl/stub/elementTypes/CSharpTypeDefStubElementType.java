@@ -21,8 +21,6 @@ import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeDefStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfo;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
@@ -55,15 +53,13 @@ public class CSharpTypeDefStubElementType extends CSharpAbstractStubElementType<
 	@Override
 	public CSharpTypeDefStub createStub(@NotNull CSharpTypeDefStatementImpl cSharpTypeDefStatement, StubElement stubElement)
 	{
-		return new CSharpTypeDefStub(stubElement, this, cSharpTypeDefStatement.getName(), CSharpStubTypeInfoUtil.toStub(cSharpTypeDefStatement
-				.getType()));
+		return new CSharpTypeDefStub(stubElement, this, cSharpTypeDefStatement.getName());
 	}
 
 	@Override
 	public void serialize(@NotNull CSharpTypeDefStub cSharpTypeDefStub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(cSharpTypeDefStub.getName());
-		cSharpTypeDefStub.getTypeInfo().writeTo(stubOutputStream);
 	}
 
 	@NotNull
@@ -71,7 +67,6 @@ public class CSharpTypeDefStubElementType extends CSharpAbstractStubElementType<
 	public CSharpTypeDefStub deserialize(@NotNull StubInputStream inputStream, StubElement stubElement) throws IOException
 	{
 		StringRef ref = inputStream.readName();
-		CSharpStubTypeInfo typeInfo = CSharpStubTypeInfoUtil.read(inputStream);
-		return new CSharpTypeDefStub(stubElement, this, ref, typeInfo);
+		return new CSharpTypeDefStub(stubElement, this, ref);
 	}
 }

@@ -26,7 +26,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
@@ -74,12 +73,6 @@ public class CSharpParameterImpl extends CSharpStubElementImpl<CSharpVariableDec
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
-		CSharpVariableDeclStub<?> stub = getStub();
-		if(stub != null)
-		{
-			return CSharpStubTypeInfoUtil.toTypeRef(stub.getTypeInfo(), this);
-		}
-
 		DotNetType type = getType();
 		DotNetTypeRef typeRef = type.toTypeRef();
 		if(hasModifier(CSharpModifier.REF))
@@ -97,7 +90,7 @@ public class CSharpParameterImpl extends CSharpStubElementImpl<CSharpVariableDec
 	@Override
 	public DotNetType getType()
 	{
-		return findNotNullChildByClass(DotNetType.class);
+		return getRequiredStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
 	}
 
 	@Nullable

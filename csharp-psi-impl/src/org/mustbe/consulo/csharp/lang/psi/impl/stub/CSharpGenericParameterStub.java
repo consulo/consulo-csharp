@@ -28,7 +28,6 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpGenericParameterStub extends MemberStub<DotNetGenericParameter>
 {
-
 	public CSharpGenericParameterStub(StubElement parent, @Nullable StringRef name)
 	{
 		super(parent, CSharpStubElements.GENERIC_PARAMETER, name, null, 0);

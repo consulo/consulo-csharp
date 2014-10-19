@@ -21,13 +21,11 @@ import java.io.IOException;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.io.StringRef;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -46,8 +44,7 @@ public abstract class CSharpVariableStubElementType<P extends DotNetVariable> ex
 	{
 		StringRef name = StringRef.fromNullableString(dotNetPropertyDeclaration.getName());
 		boolean constant = dotNetPropertyDeclaration.isConstant();
-		val typeInfo = CSharpStubTypeInfoUtil.toStub(dotNetPropertyDeclaration.getType());
-		return new CSharpVariableDeclStub<P>(stubElement, this, name, null, constant, typeInfo, null);
+		return new CSharpVariableDeclStub<P>(stubElement, this, name, null, constant);
 	}
 
 	@Override
@@ -55,7 +52,6 @@ public abstract class CSharpVariableStubElementType<P extends DotNetVariable> ex
 	{
 		stubOutputStream.writeName(cSharpPropertyStub.getName());
 		stubOutputStream.writeBoolean(cSharpPropertyStub.isConstant());
-		cSharpPropertyStub.getTypeInfo().writeTo(stubOutputStream);
 	}
 
 	@NotNull
@@ -64,7 +60,6 @@ public abstract class CSharpVariableStubElementType<P extends DotNetVariable> ex
 	{
 		StringRef name = stubInputStream.readName();
 		boolean constant = stubInputStream.readBoolean();
-		val typeInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
-		return new CSharpVariableDeclStub<P>(stubElement, this, name, null, constant, typeInfo, null);
+		return new CSharpVariableDeclStub<P>(stubElement, this, name, null, constant);
 	}
 }

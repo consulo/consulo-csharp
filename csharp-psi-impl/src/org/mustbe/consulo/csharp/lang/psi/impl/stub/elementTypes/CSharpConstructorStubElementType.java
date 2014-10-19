@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstructorDeclarationImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpConstructorDeclStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
@@ -31,7 +31,7 @@ import com.intellij.util.io.StringRef;
  * @author VISTALL
  * @since 18.12.13.
  */
-public class CSharpConstructorStubElementType extends CSharpAbstractStubElementType<CSharpConstructorDeclStub, CSharpConstructorDeclarationImpl>
+public class CSharpConstructorStubElementType extends CSharpAbstractStubElementType<CSharpMethodDeclStub, CSharpConstructorDeclarationImpl>
 {
 	public CSharpConstructorStubElementType()
 	{
@@ -46,22 +46,22 @@ public class CSharpConstructorStubElementType extends CSharpAbstractStubElementT
 	}
 
 	@Override
-	public CSharpConstructorDeclarationImpl createPsi(@NotNull CSharpConstructorDeclStub cSharpTypeStub)
+	public CSharpConstructorDeclarationImpl createPsi(@NotNull CSharpMethodDeclStub cSharpTypeStub)
 	{
 		return new CSharpConstructorDeclarationImpl(cSharpTypeStub, this);
 	}
 
 	@Override
-	public CSharpConstructorDeclStub createStub(@NotNull CSharpConstructorDeclarationImpl methodDeclaration, StubElement stubElement)
+	public CSharpMethodDeclStub createStub(@NotNull CSharpConstructorDeclarationImpl methodDeclaration, StubElement stubElement)
 	{
 		StringRef name = StringRef.fromNullableString(methodDeclaration.getName());
 		StringRef qname = StringRef.fromNullableString(methodDeclaration.getPresentableParentQName());
-		int otherModifierMask = CSharpConstructorDeclStub.getOtherModifierMask(methodDeclaration);
-		return new CSharpConstructorDeclStub(stubElement, name, qname, otherModifierMask);
+		int otherModifierMask = CSharpMethodDeclStub.getOtherModifierMask(methodDeclaration);
+		return new CSharpMethodDeclStub(stubElement, this, name, qname, otherModifierMask, -1);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpConstructorDeclStub cSharpTypeStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@NotNull CSharpMethodDeclStub cSharpTypeStub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(cSharpTypeStub.getName());
 		stubOutputStream.writeName(cSharpTypeStub.getParentQName());
@@ -70,11 +70,11 @@ public class CSharpConstructorStubElementType extends CSharpAbstractStubElementT
 
 	@NotNull
 	@Override
-	public CSharpConstructorDeclStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpMethodDeclStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef name = stubInputStream.readName();
 		StringRef qname = stubInputStream.readName();
 		int otherModifierMask = stubInputStream.readVarInt();
-		return new CSharpConstructorDeclStub(stubElement, name, qname, otherModifierMask);
+		return new CSharpMethodDeclStub(stubElement, this, name, qname, otherModifierMask, -1);
 	}
 }

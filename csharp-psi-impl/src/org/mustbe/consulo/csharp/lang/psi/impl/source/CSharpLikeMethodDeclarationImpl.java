@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -29,7 +28,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
@@ -87,20 +85,13 @@ public abstract class CSharpLikeMethodDeclarationImpl<T extends CSharpMethodDecl
 	@Override
 	public DotNetType getReturnType()
 	{
-		DotNetType[] types = findChildrenByClass(DotNetType.class);
-		return ArrayUtil2.safeGet(types, 0);
+		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
 	}
 
 	@NotNull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
-		T stub = getStub();
-		if(stub != null)
-		{
-			return CSharpStubTypeInfoUtil.toTypeRef(stub.getReturnType(), this);
-		}
-
 		DotNetType type = getReturnType();
 		return type == null ? DotNetTypeRef.ERROR_TYPE : type.toTypeRef();
 	}

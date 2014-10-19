@@ -21,15 +21,12 @@ import java.io.IOException;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
-import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.io.StringRef;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -49,9 +46,7 @@ public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & 
 		StringRef name = StringRef.fromNullableString(declaration.getName());
 		StringRef namespaceQName = StringRef.fromNullableString(declaration.getPresentableParentQName());
 		boolean constant = declaration.isConstant();
-		val typeInfo = CSharpStubTypeInfoUtil.toStub(declaration.getType());
-		val typeImplementInfo = CSharpStubTypeInfoUtil.toStub(declaration instanceof DotNetVirtualImplementOwner ? null : declaration.getType());
-		return new CSharpVariableDeclStub<P>(stubElement, this, name, namespaceQName, constant, typeInfo, typeImplementInfo);
+		return new CSharpVariableDeclStub<P>(stubElement, this, name, namespaceQName, constant);
 	}
 
 	@Override
@@ -60,8 +55,6 @@ public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & 
 		stubOutputStream.writeName(variableStub.getName());
 		stubOutputStream.writeName(variableStub.getParentQName());
 		stubOutputStream.writeBoolean(variableStub.isConstant());
-		variableStub.getTypeInfo().writeTo(stubOutputStream);
-		variableStub.getImplementType().writeTo(stubOutputStream);
 	}
 
 	@NotNull
@@ -71,8 +64,6 @@ public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & 
 		StringRef name = stubInputStream.readName();
 		StringRef parentQName = stubInputStream.readName();
 		boolean constant = stubInputStream.readBoolean();
-		val typeInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
-		val typeImplementInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
-		return new CSharpVariableDeclStub<P>(stubElement, this, name, parentQName, constant, typeInfo, typeImplementInfo);
+		return new CSharpVariableDeclStub<P>(stubElement, this, name, parentQName, constant);
 	}
 }

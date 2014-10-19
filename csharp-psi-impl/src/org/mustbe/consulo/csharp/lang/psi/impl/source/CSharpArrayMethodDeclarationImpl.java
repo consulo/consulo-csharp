@@ -23,7 +23,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpArrayMethodDeclStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -32,7 +31,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -70,20 +68,13 @@ public class CSharpArrayMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 	@Override
 	public DotNetType getReturnType()
 	{
-		DotNetType[] types = findChildrenByClass(DotNetType.class);
-		return ArrayUtil2.safeGet(types, 0);
+		return getRequiredStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
 	}
 
 	@NotNull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
-		CSharpArrayMethodDeclStub stub = getStub();
-		if(stub != null)
-		{
-			return CSharpStubTypeInfoUtil.toTypeRef(stub.getReturnType(), this);
-		}
-
 		DotNetType type = getReturnType();
 		return type.toTypeRef();
 	}
@@ -164,19 +155,13 @@ public class CSharpArrayMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 	@Override
 	public DotNetType getTypeForImplement()
 	{
-		DotNetType[] types = findChildrenByClass(DotNetType.class);
-		return ArrayUtil2.safeGet(types, 1);
+		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 1);
 	}
 
 	@NotNull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{
-		CSharpArrayMethodDeclStub stub = getStub();
-		if(stub != null)
-		{
-			return CSharpStubTypeInfoUtil.toTypeRef(stub.getImplementType(), this);
-		}
 		DotNetType typeForImplement = getTypeForImplement();
 		if(typeForImplement == null)
 		{

@@ -20,8 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNativeTypeImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import org.mustbe.consulo.dotnet.psi.DotNetNativeType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import com.intellij.psi.PsiElement;
@@ -30,16 +30,16 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 11.06.14
  */
-public class CS0518 extends CompilerCheck<DotNetNativeType>
+public class CS0518 extends CompilerCheck<CSharpNativeTypeImpl>
 {
 	private static final String ourCheckType = "Microsoft.CSharp.RuntimeBinder.Binder";
 
 	@Nullable
 	@Override
-	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetNativeType element)
+	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpNativeTypeImpl element)
 	{
 		PsiElement typeElement = element.getTypeElement();
-		if(typeElement.getNode().getElementType() == CSharpTokens.DYNAMIC_KEYWORD)
+		if(element.getTypeElementType() == CSharpTokens.DYNAMIC_KEYWORD)
 		{
 			DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(element.getProject()).findType(ourCheckType, element.getResolveScope());
 			if(type == null)

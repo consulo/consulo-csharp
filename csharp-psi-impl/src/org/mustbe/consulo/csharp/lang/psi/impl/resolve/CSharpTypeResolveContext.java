@@ -22,7 +22,6 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
@@ -110,7 +109,7 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 			else
 			{
 				// we dont interest in impl methods
-				if(declaration.getTypeRefForImplement() != DotNetTypeRef.ERROR_TYPE)
+				if(declaration.getTypeForImplement() != null)
 				{
 					return;
 				}
@@ -122,7 +121,7 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 		public void visitArrayMethodDeclaration(CSharpArrayMethodDeclaration declaration)
 		{
 			// we dont interest in impl methods
-			if(declaration.getTypeRefForImplement() != DotNetTypeRef.ERROR_TYPE)
+			if(declaration.getTypeForImplement() != null)
 			{
 				return;
 			}

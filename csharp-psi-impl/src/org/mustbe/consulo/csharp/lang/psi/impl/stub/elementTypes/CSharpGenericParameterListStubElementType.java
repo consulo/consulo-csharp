@@ -16,29 +16,24 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import java.io.IOException;
-
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpGenericParameterListImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpGenericParameterListStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
 
 /**
  * @author VISTALL
  * @since 15.01.14
  */
-public class CSharpGenericParameterListStubElementType extends CSharpAbstractStubElementType<CSharpGenericParameterListStub,
-		DotNetGenericParameterList>
+public class CSharpGenericParameterListStubElementType extends CSharpEmptyStubElementType<DotNetGenericParameterList>
 {
 	public CSharpGenericParameterListStubElementType()
 	{
 		super("GENERIC_PARAMETER_LIST");
 	}
 
+	@NotNull
 	@Override
 	public DotNetGenericParameterList createElement(@NotNull ASTNode astNode)
 	{
@@ -46,28 +41,8 @@ public class CSharpGenericParameterListStubElementType extends CSharpAbstractStu
 	}
 
 	@Override
-	public DotNetGenericParameterList createPsi(@NotNull CSharpGenericParameterListStub cSharpGenericParameterListStub)
+	public DotNetGenericParameterList createPsi(@NotNull CSharpEmptyStub<DotNetGenericParameterList> cSharpGenericParameterListStub)
 	{
 		return new CSharpGenericParameterListImpl(cSharpGenericParameterListStub);
-	}
-
-	@Override
-	public CSharpGenericParameterListStub createStub(@NotNull DotNetGenericParameterList dotNetGenericParameterList, StubElement stubElement)
-	{
-		return new CSharpGenericParameterListStub(stubElement, this);
-	}
-
-	@Override
-	public void serialize(@NotNull CSharpGenericParameterListStub cSharpGenericParameterListStub, @NotNull StubOutputStream stubOutputStream) throws
-			IOException
-	{
-
-	}
-
-	@NotNull
-	@Override
-	public CSharpGenericParameterListStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
-	{
-		return new CSharpGenericParameterListStub(stubElement, this);
 	}
 }
