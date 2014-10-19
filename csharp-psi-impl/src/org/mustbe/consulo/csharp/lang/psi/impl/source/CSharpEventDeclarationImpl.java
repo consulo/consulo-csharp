@@ -22,7 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetEventDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -38,14 +38,14 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 04.12.13.
  */
-public class CSharpEventDeclarationImpl extends CSharpStubVariableImpl<CSharpVariableStub<DotNetEventDeclaration>> implements CSharpEventDeclaration
+public class CSharpEventDeclarationImpl extends CSharpStubVariableImpl<CSharpVariableDeclStub<DotNetEventDeclaration>> implements CSharpEventDeclaration
 {
 	public CSharpEventDeclarationImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpEventDeclarationImpl(@NotNull CSharpVariableStub<DotNetEventDeclaration> stub)
+	public CSharpEventDeclarationImpl(@NotNull CSharpVariableDeclStub<DotNetEventDeclaration> stub)
 	{
 		super(stub, CSharpStubElements.EVENT_DECLARATION);
 	}
@@ -108,7 +108,7 @@ public class CSharpEventDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{
-		CSharpVariableStub<?> stub = getStub();
+		CSharpVariableDeclStub<?> stub = getStub();
 		if(stub != null)
 		{
 			return CSharpStubTypeInfoUtil.toTypeRef(stub.getImplementType(), this);

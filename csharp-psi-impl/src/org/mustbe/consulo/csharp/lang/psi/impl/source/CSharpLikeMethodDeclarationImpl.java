@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
@@ -40,7 +40,7 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 28.11.13.
  */
-public abstract class CSharpLikeMethodDeclarationImpl<T extends CSharpMethodStub> extends CSharpStubMemberImpl<T> implements
+public abstract class CSharpLikeMethodDeclarationImpl<T extends CSharpMethodDeclStub> extends CSharpStubMemberImpl<T> implements
 		DotNetLikeMethodDeclaration
 {
 	public CSharpLikeMethodDeclarationImpl(@NotNull ASTNode node)

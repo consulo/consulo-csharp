@@ -25,7 +25,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -46,14 +46,14 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpParameterImpl extends CSharpStubElementImpl<CSharpVariableStub<DotNetParameter>> implements DotNetParameter
+public class CSharpParameterImpl extends CSharpStubElementImpl<CSharpVariableDeclStub<DotNetParameter>> implements DotNetParameter
 {
 	public CSharpParameterImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpParameterImpl(@NotNull CSharpVariableStub<DotNetParameter> stub)
+	public CSharpParameterImpl(@NotNull CSharpVariableDeclStub<DotNetParameter> stub)
 	{
 		super(stub, CSharpStubElements.PARAMETER);
 	}
@@ -74,7 +74,7 @@ public class CSharpParameterImpl extends CSharpStubElementImpl<CSharpVariableStu
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
-		CSharpVariableStub<?> stub = getStub();
+		CSharpVariableDeclStub<?> stub = getStub();
 		if(stub != null)
 		{
 			return CSharpStubTypeInfoUtil.toTypeRef(stub.getTypeInfo(), this);
@@ -138,7 +138,7 @@ public class CSharpParameterImpl extends CSharpStubElementImpl<CSharpVariableStu
 	@Override
 	public String getName()
 	{
-		CSharpVariableStub<?> stub = getStub();
+		CSharpVariableDeclStub<?> stub = getStub();
 		if(stub != null)
 		{
 			return stub.getName();

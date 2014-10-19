@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -29,7 +29,7 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 06.01.14.
  */
-public abstract class CSharpStubVariableImpl<S extends CSharpVariableStub<?>> extends CSharpStubMemberImpl<S> implements DotNetVariable
+public abstract class CSharpStubVariableImpl<S extends CSharpVariableDeclStub<?>> extends CSharpStubMemberImpl<S> implements DotNetVariable
 {
 	public CSharpStubVariableImpl(@NotNull ASTNode node)
 	{

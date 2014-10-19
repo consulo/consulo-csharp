@@ -17,34 +17,32 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfo;
 import com.intellij.psi.stubs.StubElement;
-import com.intellij.util.BitUtil;
 import com.intellij.util.io.StringRef;
 
 /**
  * @author VISTALL
- * @since 18.12.13.
+ * @since 09.01.14
  */
-public class CSharpConstructorStub extends CSharpMethodStub
+public class CSharpConversionMethodDeclStub extends CSharpMethodDeclStub
 {
-	private static final int DE_CONSTRUCTOR = 1 << 0;
+	private final CSharpStubTypeInfo myConversionTypeInfo;
 
-	public CSharpConstructorStub(StubElement parent, @Nullable StringRef name, @Nullable StringRef qname, int otherModifierMask)
+	public CSharpConversionMethodDeclStub(StubElement parent,
+			@Nullable StringRef name,
+			@Nullable StringRef qname,
+			int otherModifierMask,
+			CSharpStubTypeInfo typeInfo,
+			CSharpStubTypeInfo conversionTypeInfo)
 	{
-		super(parent, CSharpStubElements.CONSTRUCTOR_DECLARATION, name, qname, otherModifierMask, null, null, -1);
+		super(parent, CSharpStubElements.CONVERSION_METHOD_DECLARATION, name, qname, otherModifierMask, typeInfo, null, -1);
+		myConversionTypeInfo = conversionTypeInfo;
 	}
 
-	public boolean isDeConstructor()
+	public CSharpStubTypeInfo getConversionTypeInfo()
 	{
-		return BitUtil.isSet(getOtherModifierMask(), DE_CONSTRUCTOR);
-	}
-
-	public static int getOtherModifierMask(CSharpConstructorDeclaration declaration)
-	{
-		int i = 0;
-		i = BitUtil.set(i, DE_CONSTRUCTOR, declaration.isDeConstructor());
-		return i;
+		return myConversionTypeInfo;
 	}
 }

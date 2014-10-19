@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeDeclStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceUtil;
 import com.intellij.lang.ASTNode;
@@ -39,7 +39,7 @@ import lombok.val;
  * @author VISTALL
  * @since 15.12.13.
  */
-public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSharpTypeStub, CSharpTypeDeclaration>
+public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSharpTypeDeclStub, CSharpTypeDeclaration>
 {
 	public CSharpTypeStubElementType()
 	{
@@ -54,23 +54,23 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 	}
 
 	@Override
-	public CSharpTypeDeclaration createPsi(@NotNull CSharpTypeStub stub)
+	public CSharpTypeDeclaration createPsi(@NotNull CSharpTypeDeclStub stub)
 	{
 		return new CSharpTypeDeclarationImpl(stub);
 	}
 
 	@Override
-	public CSharpTypeStub createStub(@NotNull CSharpTypeDeclaration typeDeclaration, StubElement stubElement)
+	public CSharpTypeDeclStub createStub(@NotNull CSharpTypeDeclaration typeDeclaration, StubElement stubElement)
 	{
 		StringRef name = StringRef.fromNullableString(typeDeclaration.getName());
 		StringRef parentQName = StringRef.fromNullableString(typeDeclaration.getPresentableParentQName());
 		StringRef vmQName = StringRef.fromNullableString(typeDeclaration.getVmQName());
-		int otherModifierMask = CSharpTypeStub.getOtherModifiers(typeDeclaration);
-		return new CSharpTypeStub(stubElement, name, parentQName, vmQName, otherModifierMask);
+		int otherModifierMask = CSharpTypeDeclStub.getOtherModifiers(typeDeclaration);
+		return new CSharpTypeDeclStub(stubElement, name, parentQName, vmQName, otherModifierMask);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpTypeStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@NotNull CSharpTypeDeclStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(stub.getName());
 		stubOutputStream.writeName(stub.getParentQName());
@@ -80,17 +80,17 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 
 	@NotNull
 	@Override
-	public CSharpTypeStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpTypeDeclStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef name = stubInputStream.readName();
 		StringRef parentQName = stubInputStream.readName();
 		StringRef vmQName = stubInputStream.readName();
 		int otherModifierMask = stubInputStream.readInt();
-		return new CSharpTypeStub(stubElement, name, parentQName, vmQName, otherModifierMask);
+		return new CSharpTypeDeclStub(stubElement, name, parentQName, vmQName, otherModifierMask);
 	}
 
 	@Override
-	public void indexStub(@NotNull CSharpTypeStub stub, @NotNull IndexSink indexSink)
+	public void indexStub(@NotNull CSharpTypeDeclStub stub, @NotNull IndexSink indexSink)
 	{
 		String name = stub.getName();
 		if(!StringUtil.isEmpty(name))

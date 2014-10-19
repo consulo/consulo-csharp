@@ -33,7 +33,7 @@ import com.intellij.util.io.StringRef;
  * @author VISTALL
  * @since 18.12.13.
  */
-public class CSharpMethodStub extends MemberStub<CSharpMethodDeclaration>
+public class CSharpMethodDeclStub extends MemberStub<CSharpMethodDeclaration>
 {
 	public static final int DELEGATE_MASK = 1 << 0;
 	public static final int EXTENSION_MASK = 1 << 1;
@@ -42,7 +42,7 @@ public class CSharpMethodStub extends MemberStub<CSharpMethodDeclaration>
 	private final CSharpStubTypeInfo myImplementType;
 	private final int myOperatorIndex;
 
-	public CSharpMethodStub(StubElement parent,
+	public CSharpMethodDeclStub(StubElement parent,
 			@Nullable StringRef name,
 			@Nullable StringRef qname,
 			int otherModifierMask,
@@ -56,7 +56,7 @@ public class CSharpMethodStub extends MemberStub<CSharpMethodDeclaration>
 		myOperatorIndex = operatorIndex;
 	}
 
-	public CSharpMethodStub(StubElement parent,
+	public CSharpMethodDeclStub(StubElement parent,
 			IStubElementType elementType,
 			@Nullable StringRef name,
 			StringRef qname,

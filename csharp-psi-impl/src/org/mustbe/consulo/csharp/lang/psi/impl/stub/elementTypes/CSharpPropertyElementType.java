@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPropertyDeclarationImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
@@ -42,13 +42,13 @@ public class CSharpPropertyElementType extends CSharpQVariableStubElementType<CS
 	}
 
 	@Override
-	public CSharpPropertyDeclarationImpl createPsi(@NotNull CSharpVariableStub<CSharpPropertyDeclarationImpl> cSharpPropertyStub)
+	public CSharpPropertyDeclarationImpl createPsi(@NotNull CSharpVariableDeclStub<CSharpPropertyDeclarationImpl> cSharpPropertyStub)
 	{
 		return new CSharpPropertyDeclarationImpl(cSharpPropertyStub);
 	}
 
 	@Override
-	public void indexStub(@NotNull CSharpVariableStub cSharpPropertyStub, @NotNull IndexSink indexSink)
+	public void indexStub(@NotNull CSharpVariableDeclStub cSharpPropertyStub, @NotNull IndexSink indexSink)
 	{
 		String name = cSharpPropertyStub.getName();
 		if(!StringUtil.isEmpty(name))

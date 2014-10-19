@@ -69,12 +69,6 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 	}
 
 	@Override
-	public boolean hasExtensions()
-	{
-		return CSharpTypeDeclarationImplUtil.hasExtensions(this);
-	}
-
-	@Override
 	public PsiElement getLeftBrace()
 	{
 		return null;

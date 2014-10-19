@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFieldDeclarationImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
 import com.intellij.lang.ASTNode;
@@ -43,13 +43,13 @@ public class CSharpFieldStubElementType extends CSharpQVariableStubElementType<D
 	}
 
 	@Override
-	public DotNetFieldDeclaration createPsi(@NotNull CSharpVariableStub<DotNetFieldDeclaration> fieldStub)
+	public DotNetFieldDeclaration createPsi(@NotNull CSharpVariableDeclStub<DotNetFieldDeclaration> fieldStub)
 	{
 		return new CSharpFieldDeclarationImpl(fieldStub);
 	}
 
 	@Override
-	public void indexStub(@NotNull CSharpVariableStub<DotNetFieldDeclaration> cSharpFieldStub, @NotNull IndexSink indexSink)
+	public void indexStub(@NotNull CSharpVariableDeclStub<DotNetFieldDeclaration> cSharpFieldStub, @NotNull IndexSink indexSink)
 	{
 		String name = cSharpFieldStub.getName();
 		if(!StringUtil.isEmpty(name))

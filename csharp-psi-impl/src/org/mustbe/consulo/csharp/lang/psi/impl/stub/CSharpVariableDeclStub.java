@@ -27,14 +27,19 @@ import com.intellij.util.io.StringRef;
  * @author VISTALL
  * @since 21.12.13.
  */
-public class CSharpVariableStub<V extends DotNetVariable> extends MemberStub<V>
+public class CSharpVariableDeclStub<V extends DotNetVariable> extends MemberStub<V>
 {
 	private final boolean myConstant;
 	private final CSharpStubTypeInfo myTypeInfo;
 	private final CSharpStubTypeInfo myImplementType;
 
-	public CSharpVariableStub(StubElement parent, CSharpAbstractStubElementType<?, ?> elementType, @Nullable StringRef name,
-			@Nullable StringRef namespaceQName, boolean constant, CSharpStubTypeInfo typeInfo, CSharpStubTypeInfo implementType)
+	public CSharpVariableDeclStub(StubElement parent,
+			CSharpAbstractStubElementType<?, ?> elementType,
+			@Nullable StringRef name,
+			@Nullable StringRef namespaceQName,
+			boolean constant,
+			CSharpStubTypeInfo typeInfo,
+			CSharpStubTypeInfo implementType)
 	{
 		super(parent, elementType, name, namespaceQName, 0);
 		myConstant = constant;

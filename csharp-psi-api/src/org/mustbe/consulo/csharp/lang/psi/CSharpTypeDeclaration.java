@@ -24,5 +24,4 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
  */
 public interface CSharpTypeDeclaration extends DotNetTypeDeclaration, CSharpGenericConstraintOwner, CSharpBodyWithBraces
 {
-	boolean hasExtensions();
 }

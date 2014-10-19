@@ -27,13 +27,12 @@ import com.intellij.util.io.StringRef;
  * @author VISTALL
  * @since 15.12.13.
  */
-public class CSharpTypeStub extends MemberStub<CSharpTypeDeclaration>
+public class CSharpTypeDeclStub extends MemberStub<CSharpTypeDeclaration>
 {
-	public static final int HAS_EXTENSIONS = 1 << 0;
-	public static final int INTERFACE = 1 << 1;
-	public static final int STRUCT = 1 << 2;
-	public static final int ENUM = 1 << 3;
-	public static final int NESTED = 1 << 4;
+	public static final int INTERFACE = 1 << 0;
+	public static final int STRUCT = 1 << 1;
+	public static final int ENUM = 1 << 2;
+	public static final int NESTED = 1 << 3;
 
 	public static int getOtherModifiers(CSharpTypeDeclaration typeDeclaration)
 	{
@@ -50,16 +49,17 @@ public class CSharpTypeStub extends MemberStub<CSharpTypeDeclaration>
 		{
 			mask |= STRUCT;
 		}
-		else if(typeDeclaration.hasExtensions())
+
+		if(typeDeclaration.isNested())
 		{
-			mask |= HAS_EXTENSIONS;
+			mask |= NESTED;
 		}
 		return mask;
 	}
 
 	private StringRef myVmQName;
 
-	public CSharpTypeStub(StubElement parent, @Nullable StringRef name, @Nullable StringRef parentQName, StringRef vmQName, int otherMask)
+	public CSharpTypeDeclStub(StubElement parent, @Nullable StringRef name, @Nullable StringRef parentQName, StringRef vmQName, int otherMask)
 	{
 		super(parent, CSharpStubElements.TYPE_DECLARATION, name, parentQName, otherMask);
 		myVmQName = vmQName;
@@ -88,10 +88,5 @@ public class CSharpTypeStub extends MemberStub<CSharpTypeDeclaration>
 	public boolean isNested()
 	{
 		return BitUtil.isSet(getOtherModifierMask(), NESTED);
-	}
-
-	public boolean hasExtensions()
-	{
-		return BitUtil.isSet(getOtherModifierMask(), HAS_EXTENSIONS);
 	}
 }

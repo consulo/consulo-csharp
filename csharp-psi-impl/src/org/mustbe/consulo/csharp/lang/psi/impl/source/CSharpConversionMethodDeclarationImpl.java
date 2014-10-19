@@ -22,7 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpConversionMethodStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpConversionMethodDeclStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -34,14 +34,14 @@ import com.intellij.psi.util.PsiTreeUtil;
  * @author VISTALL
  * @since 09.01.14
  */
-public class CSharpConversionMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl<CSharpConversionMethodStub> implements CSharpConversionMethodDeclaration
+public class CSharpConversionMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl<CSharpConversionMethodDeclStub> implements CSharpConversionMethodDeclaration
 {
 	public CSharpConversionMethodDeclarationImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpConversionMethodDeclarationImpl(@NotNull CSharpConversionMethodStub stub)
+	public CSharpConversionMethodDeclarationImpl(@NotNull CSharpConversionMethodDeclStub stub)
 	{
 		super(stub, CSharpStubElements.CONVERSION_METHOD_DECLARATION);
 	}
@@ -62,7 +62,7 @@ public class CSharpConversionMethodDeclarationImpl extends CSharpLikeMethodDecla
 	@Override
 	public DotNetTypeRef getConversionTypeRef()
 	{
-		CSharpConversionMethodStub stub = getStub();
+		CSharpConversionMethodDeclStub stub = getStub();
 		if(stub != null)
 		{
 			return CSharpStubTypeInfoUtil.toTypeRef(stub.getConversionTypeInfo(), this);

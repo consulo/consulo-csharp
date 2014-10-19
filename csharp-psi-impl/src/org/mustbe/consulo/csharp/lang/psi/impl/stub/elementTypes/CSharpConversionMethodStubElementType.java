@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConversionMethodDeclarationImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpConversionMethodStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpConversionMethodDeclStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
@@ -33,7 +33,7 @@ import lombok.val;
  * @author VISTALL
  * @since 09.01.14
  */
-public class CSharpConversionMethodStubElementType extends CSharpAbstractStubElementType<CSharpConversionMethodStub,
+public class CSharpConversionMethodStubElementType extends CSharpAbstractStubElementType<CSharpConversionMethodDeclStub,
 		CSharpConversionMethodDeclarationImpl>
 {
 	public CSharpConversionMethodStubElementType()
@@ -48,23 +48,23 @@ public class CSharpConversionMethodStubElementType extends CSharpAbstractStubEle
 	}
 
 	@Override
-	public CSharpConversionMethodDeclarationImpl createPsi(@NotNull CSharpConversionMethodStub cSharpTypeStub)
+	public CSharpConversionMethodDeclarationImpl createPsi(@NotNull CSharpConversionMethodDeclStub cSharpTypeStub)
 	{
 		return new CSharpConversionMethodDeclarationImpl(cSharpTypeStub);
 	}
 
 	@Override
-	public CSharpConversionMethodStub createStub(@NotNull CSharpConversionMethodDeclarationImpl methodDeclaration, StubElement stubElement)
+	public CSharpConversionMethodDeclStub createStub(@NotNull CSharpConversionMethodDeclarationImpl methodDeclaration, StubElement stubElement)
 	{
 		StringRef name = StringRef.fromNullableString(methodDeclaration.getName());
 		StringRef qname = StringRef.fromNullableString(methodDeclaration.getPresentableParentQName());
 		val typeInfo = CSharpStubTypeInfoUtil.toStub(methodDeclaration.getReturnType());
 		val conversionType = CSharpStubTypeInfoUtil.toStub(methodDeclaration.getConversionType());
-		return new CSharpConversionMethodStub(stubElement, name, qname, 0, typeInfo, conversionType);
+		return new CSharpConversionMethodDeclStub(stubElement, name, qname, 0, typeInfo, conversionType);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpConversionMethodStub cSharpTypeStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@NotNull CSharpConversionMethodDeclStub cSharpTypeStub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(cSharpTypeStub.getName());
 		stubOutputStream.writeName(cSharpTypeStub.getParentQName());
@@ -74,12 +74,12 @@ public class CSharpConversionMethodStubElementType extends CSharpAbstractStubEle
 
 	@NotNull
 	@Override
-	public CSharpConversionMethodStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpConversionMethodDeclStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef name = stubInputStream.readName();
 		StringRef qname = stubInputStream.readName();
 		val typeInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
 		val conversionTypeInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
-		return new CSharpConversionMethodStub(stubElement, name, qname,  0, typeInfo, conversionTypeInfo);
+		return new CSharpConversionMethodDeclStub(stubElement, name, qname,  0, typeInfo, conversionTypeInfo);
 	}
 }

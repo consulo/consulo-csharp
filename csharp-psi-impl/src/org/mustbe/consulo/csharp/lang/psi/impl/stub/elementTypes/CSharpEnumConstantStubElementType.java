@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpEnumConstantDeclarationImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
@@ -42,13 +42,13 @@ public class CSharpEnumConstantStubElementType extends CSharpQVariableStubElemen
 	}
 
 	@Override
-	public CSharpEnumConstantDeclarationImpl createPsi(@NotNull CSharpVariableStub<CSharpEnumConstantDeclarationImpl> fieldStub)
+	public CSharpEnumConstantDeclarationImpl createPsi(@NotNull CSharpVariableDeclStub<CSharpEnumConstantDeclarationImpl> fieldStub)
 	{
 		return new CSharpEnumConstantDeclarationImpl(fieldStub);
 	}
 
 	@Override
-	public void indexStub(@NotNull CSharpVariableStub<CSharpEnumConstantDeclarationImpl> cSharpFieldStub, @NotNull IndexSink indexSink)
+	public void indexStub(@NotNull CSharpVariableDeclStub<CSharpEnumConstantDeclarationImpl> cSharpFieldStub, @NotNull IndexSink indexSink)
 	{
 		String name = cSharpFieldStub.getName();
 		if(!StringUtil.isEmpty(name))

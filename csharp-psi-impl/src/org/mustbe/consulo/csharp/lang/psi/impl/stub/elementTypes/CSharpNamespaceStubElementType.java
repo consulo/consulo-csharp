@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNamespaceDeclarationImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpNamespaceStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpNamespaceDeclStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
@@ -31,7 +31,7 @@ import com.intellij.util.io.StringRef;
  * @author VISTALL
  * @since 15.12.13.
  */
-public class CSharpNamespaceStubElementType extends CSharpAbstractStubElementType<CSharpNamespaceStub, CSharpNamespaceDeclarationImpl>
+public class CSharpNamespaceStubElementType extends CSharpAbstractStubElementType<CSharpNamespaceDeclStub, CSharpNamespaceDeclarationImpl>
 {
 	public CSharpNamespaceStubElementType()
 	{
@@ -39,7 +39,7 @@ public class CSharpNamespaceStubElementType extends CSharpAbstractStubElementTyp
 	}
 
 	@Override
-	public CSharpNamespaceDeclarationImpl createPsi(@NotNull CSharpNamespaceStub cSharpNamespaceStub)
+	public CSharpNamespaceDeclarationImpl createPsi(@NotNull CSharpNamespaceDeclStub cSharpNamespaceStub)
 	{
 		return new CSharpNamespaceDeclarationImpl(cSharpNamespaceStub);
 	}
@@ -52,15 +52,15 @@ public class CSharpNamespaceStubElementType extends CSharpAbstractStubElementTyp
 	}
 
 	@Override
-	public CSharpNamespaceStub createStub(@NotNull CSharpNamespaceDeclarationImpl cSharpNamespaceDeclaration, StubElement stubElement)
+	public CSharpNamespaceDeclStub createStub(@NotNull CSharpNamespaceDeclarationImpl cSharpNamespaceDeclaration, StubElement stubElement)
 	{
 		StringRef name = StringRef.fromNullableString(cSharpNamespaceDeclaration.getName());
 		StringRef parentQName = StringRef.fromNullableString(cSharpNamespaceDeclaration.getPresentableParentQName());
-		return new CSharpNamespaceStub(stubElement, name, parentQName);
+		return new CSharpNamespaceDeclStub(stubElement, name, parentQName);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpNamespaceStub cSharpNamespaceStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@NotNull CSharpNamespaceDeclStub cSharpNamespaceStub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(cSharpNamespaceStub.getName());
 		stubOutputStream.writeName(cSharpNamespaceStub.getParentQName());
@@ -68,10 +68,10 @@ public class CSharpNamespaceStubElementType extends CSharpAbstractStubElementTyp
 
 	@NotNull
 	@Override
-	public CSharpNamespaceStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpNamespaceDeclStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef qname = stubInputStream.readName();
 		StringRef parentQName = stubInputStream.readName();
-		return new CSharpNamespaceStub(stubElement, qname, parentQName);
+		return new CSharpNamespaceDeclStub(stubElement, qname, parentQName);
 	}
 }

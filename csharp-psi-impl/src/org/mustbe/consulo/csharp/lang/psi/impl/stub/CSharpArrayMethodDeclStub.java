@@ -28,12 +28,12 @@ import com.intellij.util.io.StringRef;
  * @author VISTALL
  * @since 01.03.14
  */
-public class CSharpArrayMethodStub extends MemberStub<CSharpArrayMethodDeclaration>
+public class CSharpArrayMethodDeclStub extends MemberStub<CSharpArrayMethodDeclaration>
 {
 	private final CSharpStubTypeInfo myReturnType;
 	private final CSharpStubTypeInfo myImplementType;
 
-	public CSharpArrayMethodStub(StubElement parent,
+	public CSharpArrayMethodDeclStub(StubElement parent,
 			@Nullable StringRef name,
 			@Nullable StringRef qname,
 			CSharpStubTypeInfo returnType,

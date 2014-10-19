@@ -22,7 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -37,14 +37,14 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 04.12.13.
  */
-public class CSharpPropertyDeclarationImpl extends CSharpStubVariableImpl<CSharpVariableStub<CSharpPropertyDeclarationImpl>> implements CSharpPropertyDeclaration
+public class CSharpPropertyDeclarationImpl extends CSharpStubVariableImpl<CSharpVariableDeclStub<CSharpPropertyDeclarationImpl>> implements CSharpPropertyDeclaration
 {
 	public CSharpPropertyDeclarationImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpPropertyDeclarationImpl(@NotNull CSharpVariableStub<CSharpPropertyDeclarationImpl> stub)
+	public CSharpPropertyDeclarationImpl(@NotNull CSharpVariableDeclStub<CSharpPropertyDeclarationImpl> stub)
 	{
 		super(stub, CSharpStubElements.PROPERTY_DECLARATION);
 	}
@@ -107,7 +107,7 @@ public class CSharpPropertyDeclarationImpl extends CSharpStubVariableImpl<CSharp
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{
-		CSharpVariableStub<?> stub = getStub();
+		CSharpVariableDeclStub<?> stub = getStub();
 		if(stub != null)
 		{
 			return CSharpStubTypeInfoUtil.toTypeRef(stub.getImplementType(), this);

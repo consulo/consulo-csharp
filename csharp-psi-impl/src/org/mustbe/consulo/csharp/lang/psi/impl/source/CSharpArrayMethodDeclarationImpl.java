@@ -22,7 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpArrayMethodStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpArrayMethodDeclStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
@@ -41,14 +41,14 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 01.03.14
  */
-public class CSharpArrayMethodDeclarationImpl extends CSharpStubMemberImpl<CSharpArrayMethodStub> implements CSharpArrayMethodDeclaration
+public class CSharpArrayMethodDeclarationImpl extends CSharpStubMemberImpl<CSharpArrayMethodDeclStub> implements CSharpArrayMethodDeclaration
 {
 	public CSharpArrayMethodDeclarationImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpArrayMethodDeclarationImpl(@NotNull CSharpArrayMethodStub stub)
+	public CSharpArrayMethodDeclarationImpl(@NotNull CSharpArrayMethodDeclStub stub)
 	{
 		super(stub, CSharpStubElements.ARRAY_METHOD_DECLARATION);
 	}
@@ -78,7 +78,7 @@ public class CSharpArrayMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
-		CSharpArrayMethodStub stub = getStub();
+		CSharpArrayMethodDeclStub stub = getStub();
 		if(stub != null)
 		{
 			return CSharpStubTypeInfoUtil.toTypeRef(stub.getReturnType(), this);
@@ -172,7 +172,7 @@ public class CSharpArrayMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{
-		CSharpArrayMethodStub stub = getStub();
+		CSharpArrayMethodDeclStub stub = getStub();
 		if(stub != null)
 		{
 			return CSharpStubTypeInfoUtil.toTypeRef(stub.getImplementType(), this);

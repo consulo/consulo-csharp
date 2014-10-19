@@ -21,7 +21,7 @@ import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayMethodDeclarationImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpArrayMethodStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpArrayMethodDeclStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
@@ -34,7 +34,7 @@ import lombok.val;
  * @author VISTALL
  * @since 01.03.14
  */
-public class CSharpArrayMethodStubElementType extends CSharpAbstractStubElementType<CSharpArrayMethodStub, CSharpArrayMethodDeclaration>
+public class CSharpArrayMethodStubElementType extends CSharpAbstractStubElementType<CSharpArrayMethodDeclStub, CSharpArrayMethodDeclaration>
 {
 	public CSharpArrayMethodStubElementType()
 	{
@@ -48,23 +48,23 @@ public class CSharpArrayMethodStubElementType extends CSharpAbstractStubElementT
 	}
 
 	@Override
-	public CSharpArrayMethodDeclaration createPsi(@NotNull CSharpArrayMethodStub methodStub)
+	public CSharpArrayMethodDeclaration createPsi(@NotNull CSharpArrayMethodDeclStub methodStub)
 	{
 		return new CSharpArrayMethodDeclarationImpl(methodStub);
 	}
 
 	@Override
-	public CSharpArrayMethodStub createStub(@NotNull CSharpArrayMethodDeclaration declaration, StubElement stubElement)
+	public CSharpArrayMethodDeclStub createStub(@NotNull CSharpArrayMethodDeclaration declaration, StubElement stubElement)
 	{
 		StringRef name = StringRef.fromNullableString(declaration.getName());
 		StringRef parentQName = StringRef.fromNullableString(declaration.getPresentableParentQName());
 		val typeInfo = CSharpStubTypeInfoUtil.toStub(declaration.getReturnType());
 		val implementInfo = CSharpStubTypeInfoUtil.toStub(declaration.getTypeForImplement());
-		return new CSharpArrayMethodStub(stubElement, name, parentQName, typeInfo, implementInfo);
+		return new CSharpArrayMethodDeclStub(stubElement, name, parentQName, typeInfo, implementInfo);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpArrayMethodStub methodStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@NotNull CSharpArrayMethodDeclStub methodStub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(methodStub.getName());
 		stubOutputStream.writeName(methodStub.getParentQName());
@@ -74,12 +74,12 @@ public class CSharpArrayMethodStubElementType extends CSharpAbstractStubElementT
 
 	@NotNull
 	@Override
-	public CSharpArrayMethodStub deserialize(@NotNull StubInputStream inputStream, StubElement stubElement) throws IOException
+	public CSharpArrayMethodDeclStub deserialize(@NotNull StubInputStream inputStream, StubElement stubElement) throws IOException
 	{
 		StringRef name = inputStream.readName();
 		StringRef qname = inputStream.readName();
 		val typeInfo = CSharpStubTypeInfoUtil.read(inputStream);
 		val implementInfo = CSharpStubTypeInfoUtil.read(inputStream);
-		return new CSharpArrayMethodStub(stubElement, name, qname, typeInfo, implementInfo);
+		return new CSharpArrayMethodDeclStub(stubElement, name, qname, typeInfo, implementInfo);
 	}
 }

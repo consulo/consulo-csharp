@@ -22,7 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpConstructorStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpConstructorDeclStub;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -34,14 +34,14 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpConstructorDeclarationImpl extends CSharpLikeMethodDeclarationImpl<CSharpConstructorStub> implements CSharpConstructorDeclaration
+public class CSharpConstructorDeclarationImpl extends CSharpLikeMethodDeclarationImpl<CSharpConstructorDeclStub> implements CSharpConstructorDeclaration
 {
 	public CSharpConstructorDeclarationImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpConstructorDeclarationImpl(@NotNull CSharpConstructorStub stub, @NotNull IStubElementType<? extends CSharpConstructorStub, ?> nodeType)
+	public CSharpConstructorDeclarationImpl(@NotNull CSharpConstructorDeclStub stub, @NotNull IStubElementType<? extends CSharpConstructorDeclStub, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -69,7 +69,7 @@ public class CSharpConstructorDeclarationImpl extends CSharpLikeMethodDeclaratio
 	@Override
 	public boolean isDeConstructor()
 	{
-		CSharpConstructorStub stub = getStub();
+		CSharpConstructorDeclStub stub = getStub();
 		if(stub != null)
 		{
 			return stub.isDeConstructor();

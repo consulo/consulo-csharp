@@ -27,7 +27,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeDeclStub;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
@@ -54,14 +54,14 @@ import com.intellij.util.Processor;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeStub> implements CSharpTypeDeclaration
+public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDeclStub> implements CSharpTypeDeclaration
 {
 	public CSharpTypeDeclarationImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpTypeDeclarationImpl(@NotNull CSharpTypeStub stub)
+	public CSharpTypeDeclarationImpl(@NotNull CSharpTypeDeclStub stub)
 	{
 		super(stub, CSharpStubElements.TYPE_DECLARATION);
 	}
@@ -138,7 +138,7 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeSt
 	@Override
 	public boolean isInterface()
 	{
-		CSharpTypeStub stub = getStub();
+		CSharpTypeDeclStub stub = getStub();
 		if(stub != null)
 		{
 			return stub.isInterface();
@@ -149,7 +149,7 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeSt
 	@Override
 	public boolean isStruct()
 	{
-		CSharpTypeStub stub = getStub();
+		CSharpTypeDeclStub stub = getStub();
 		if(stub != null)
 		{
 			return stub.isStruct();
@@ -160,7 +160,7 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeSt
 	@Override
 	public boolean isEnum()
 	{
-		CSharpTypeStub stub = getStub();
+		CSharpTypeDeclStub stub = getStub();
 		if(stub != null)
 		{
 			return stub.isEnum();
@@ -234,18 +234,6 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeSt
 		}
 		DotNetTypeRef[] typeRefs = extendList.getTypeRefs();
 		return typeRefs.length == 0 ? new DotNetTypeRefByQName(DotNetTypes.System.Int32, CSharpTransform.INSTANCE, false) : typeRefs[0];
-	}
-
-	@Override
-	public boolean hasExtensions()
-	{
-		CSharpTypeStub stub = getStub();
-		if(stub != null)
-		{
-			return stub.hasExtensions();
-		}
-
-		return CSharpTypeDeclarationImplUtil.hasExtensions(this);
 	}
 
 	@Nullable

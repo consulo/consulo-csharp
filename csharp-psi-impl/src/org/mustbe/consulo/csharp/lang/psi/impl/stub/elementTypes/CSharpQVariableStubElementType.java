@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -36,7 +36,7 @@ import lombok.val;
  * @since 07.01.14.
  */
 public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & DotNetQualifiedElement> extends
-		CSharpAbstractStubElementType<CSharpVariableStub<P>, P>
+		CSharpAbstractStubElementType<CSharpVariableDeclStub<P>, P>
 {
 	public CSharpQVariableStubElementType(@NotNull @NonNls String debugName)
 	{
@@ -44,18 +44,18 @@ public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & 
 	}
 
 	@Override
-	public CSharpVariableStub<P> createStub(@NotNull P declaration, StubElement stubElement)
+	public CSharpVariableDeclStub<P> createStub(@NotNull P declaration, StubElement stubElement)
 	{
 		StringRef name = StringRef.fromNullableString(declaration.getName());
 		StringRef namespaceQName = StringRef.fromNullableString(declaration.getPresentableParentQName());
 		boolean constant = declaration.isConstant();
 		val typeInfo = CSharpStubTypeInfoUtil.toStub(declaration.getType());
 		val typeImplementInfo = CSharpStubTypeInfoUtil.toStub(declaration instanceof DotNetVirtualImplementOwner ? null : declaration.getType());
-		return new CSharpVariableStub<P>(stubElement, this, name, namespaceQName, constant, typeInfo, typeImplementInfo);
+		return new CSharpVariableDeclStub<P>(stubElement, this, name, namespaceQName, constant, typeInfo, typeImplementInfo);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpVariableStub<P> variableStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@NotNull CSharpVariableDeclStub<P> variableStub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(variableStub.getName());
 		stubOutputStream.writeName(variableStub.getParentQName());
@@ -66,13 +66,13 @@ public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & 
 
 	@NotNull
 	@Override
-	public CSharpVariableStub<P> deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpVariableDeclStub<P> deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef name = stubInputStream.readName();
 		StringRef parentQName = stubInputStream.readName();
 		boolean constant = stubInputStream.readBoolean();
 		val typeInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
 		val typeImplementInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
-		return new CSharpVariableStub<P>(stubElement, this, name, parentQName, constant, typeInfo, typeImplementInfo);
+		return new CSharpVariableDeclStub<P>(stubElement, this, name, parentQName, constant, typeInfo, typeImplementInfo);
 	}
 }
