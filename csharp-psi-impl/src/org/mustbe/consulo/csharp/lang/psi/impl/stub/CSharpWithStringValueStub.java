@@ -11,17 +11,17 @@ import com.intellij.util.io.StringRef;
  * @author VISTALL
  * @since 17.10.14
  */
-public class CSharpTypeWithStringValueStub<T extends PsiElement> extends StubBase<T>
+public class CSharpWithStringValueStub<T extends PsiElement> extends StubBase<T>
 {
 	private StringRef myReferenceText;
 
-	public CSharpTypeWithStringValueStub(StubElement parent, IStubElementType elementType, StringRef referenceText)
+	public CSharpWithStringValueStub(StubElement parent, IStubElementType elementType, StringRef referenceText)
 	{
 		super(parent, elementType);
 		myReferenceText = referenceText;
 	}
 
-	public CSharpTypeWithStringValueStub(StubElement parent, IStubElementType elementType, String referenceText)
+	public CSharpWithStringValueStub(StubElement parent, IStubElementType elementType, String referenceText)
 	{
 		super(parent, elementType);
 		myReferenceText = StringRef.fromNullableString(referenceText);

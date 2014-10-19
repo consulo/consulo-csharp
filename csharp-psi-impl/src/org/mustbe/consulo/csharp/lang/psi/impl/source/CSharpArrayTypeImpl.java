@@ -21,7 +21,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeWithIntValueStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithIntValueStub;
 import org.mustbe.consulo.dotnet.psi.DotNetArrayType;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -32,14 +32,14 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpArrayTypeImpl extends CSharpStubElementImpl<CSharpTypeWithIntValueStub> implements DotNetArrayType
+public class CSharpArrayTypeImpl extends CSharpStubElementImpl<CSharpWithIntValueStub> implements DotNetArrayType
 {
 	public CSharpArrayTypeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpArrayTypeImpl(@NotNull CSharpTypeWithIntValueStub stub, @NotNull IStubElementType<? extends CSharpTypeWithIntValueStub, ?> nodeType)
+	public CSharpArrayTypeImpl(@NotNull CSharpWithIntValueStub stub, @NotNull IStubElementType<? extends CSharpWithIntValueStub, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -55,7 +55,7 @@ public class CSharpArrayTypeImpl extends CSharpStubElementImpl<CSharpTypeWithInt
 
 	public int getDimensions()
 	{
-		CSharpTypeWithIntValueStub stub = getStub();
+		CSharpWithIntValueStub stub = getStub();
 		if(stub != null)
 		{
 			return stub.getValue();

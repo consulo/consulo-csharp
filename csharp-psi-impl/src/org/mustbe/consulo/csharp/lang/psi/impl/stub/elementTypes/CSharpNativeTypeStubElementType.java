@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNativeTypeImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeWithIntValueStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithIntValueStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.StubElement;
@@ -17,7 +17,7 @@ import com.intellij.util.ArrayUtil;
  * @author VISTALL
  * @since 19.10.14
  */
-public class CSharpNativeTypeStubElementType extends CSharpAbstractStubElementType<CSharpTypeWithIntValueStub, CSharpNativeTypeImpl>
+public class CSharpNativeTypeStubElementType extends CSharpAbstractStubElementType<CSharpWithIntValueStub, CSharpNativeTypeImpl>
 {
 	public CSharpNativeTypeStubElementType()
 	{
@@ -32,30 +32,30 @@ public class CSharpNativeTypeStubElementType extends CSharpAbstractStubElementTy
 	}
 
 	@Override
-	public CSharpNativeTypeImpl createPsi(@NotNull CSharpTypeWithIntValueStub cSharpTypeWithIntValueStub)
+	public CSharpNativeTypeImpl createPsi(@NotNull CSharpWithIntValueStub cSharpWithIntValueStub)
 	{
-		return new CSharpNativeTypeImpl(cSharpTypeWithIntValueStub, this);
+		return new CSharpNativeTypeImpl(cSharpWithIntValueStub, this);
 	}
 
 	@Override
-	public CSharpTypeWithIntValueStub createStub(@NotNull CSharpNativeTypeImpl cSharpNativeType, StubElement stubElement)
+	public CSharpWithIntValueStub createStub(@NotNull CSharpNativeTypeImpl cSharpNativeType, StubElement stubElement)
 	{
 		int index = ArrayUtil.indexOf(CSharpTokenSets.NATIVE_TYPES_AS_ARRAY, cSharpNativeType.getTypeElementType());
 		assert index != -1;
-		return new CSharpTypeWithIntValueStub(stubElement, this, index);
+		return new CSharpWithIntValueStub(stubElement, this, index);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpTypeWithIntValueStub cSharpTypeWithIntValueStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@NotNull CSharpWithIntValueStub cSharpWithIntValueStub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
-		stubOutputStream.writeVarInt(cSharpTypeWithIntValueStub.getValue());
+		stubOutputStream.writeVarInt(cSharpWithIntValueStub.getValue());
 	}
 
 	@NotNull
 	@Override
-	public CSharpTypeWithIntValueStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpWithIntValueStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		int index = stubInputStream.readVarInt();
-		return new CSharpTypeWithIntValueStub(stubElement, this, index);
+		return new CSharpWithIntValueStub(stubElement, this, index);
 	}
 }

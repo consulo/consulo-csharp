@@ -22,7 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeWithStringValueStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetUserType;
@@ -36,15 +36,15 @@ import com.intellij.psi.util.PsiTreeUtil;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpUserTypeImpl extends CSharpStubElementImpl<CSharpTypeWithStringValueStub<CSharpUserTypeImpl>> implements DotNetUserType
+public class CSharpUserTypeImpl extends CSharpStubElementImpl<CSharpWithStringValueStub<CSharpUserTypeImpl>> implements DotNetUserType
 {
 	public CSharpUserTypeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpUserTypeImpl(@NotNull CSharpTypeWithStringValueStub<CSharpUserTypeImpl> stub,
-			@NotNull IStubElementType<? extends CSharpTypeWithStringValueStub<CSharpUserTypeImpl>, ?> nodeType)
+	public CSharpUserTypeImpl(@NotNull CSharpWithStringValueStub<CSharpUserTypeImpl> stub,
+			@NotNull IStubElementType<? extends CSharpWithStringValueStub<CSharpUserTypeImpl>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -78,7 +78,7 @@ public class CSharpUserTypeImpl extends CSharpStubElementImpl<CSharpTypeWithStri
 	@Override
 	public String getReferenceText()
 	{
-		CSharpTypeWithStringValueStub<CSharpUserTypeImpl> stub = getStub();
+		CSharpWithStringValueStub<CSharpUserTypeImpl> stub = getStub();
 		if(stub != null)
 		{
 			//noinspection ConstantConditions
@@ -98,7 +98,7 @@ public class CSharpUserTypeImpl extends CSharpStubElementImpl<CSharpTypeWithStri
 	@Nullable
 	private CSharpReferenceExpression getReferenceExpressionByStub()
 	{
-		CSharpTypeWithStringValueStub<CSharpUserTypeImpl> stub = getStub();
+		CSharpWithStringValueStub<CSharpUserTypeImpl> stub = getStub();
 		if(stub != null)
 		{
 			String referenceText = stub.getReferenceText();

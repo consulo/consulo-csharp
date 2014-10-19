@@ -22,7 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeWithStringValueStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import com.intellij.lang.ASTNode;
@@ -35,7 +35,7 @@ import lombok.val;
  * @author VISTALL
  * @since 30.11.13.
  */
-public class CSharpGenericConstraintImpl extends CSharpStubElementImpl<CSharpTypeWithStringValueStub<CSharpGenericConstraint>> implements
+public class CSharpGenericConstraintImpl extends CSharpStubElementImpl<CSharpWithStringValueStub<CSharpGenericConstraint>> implements
 		CSharpGenericConstraint
 {
 	public CSharpGenericConstraintImpl(@NotNull ASTNode node)
@@ -43,8 +43,8 @@ public class CSharpGenericConstraintImpl extends CSharpStubElementImpl<CSharpTyp
 		super(node);
 	}
 
-	public CSharpGenericConstraintImpl(@NotNull CSharpTypeWithStringValueStub<CSharpGenericConstraint> stub,
-			@NotNull IStubElementType<? extends CSharpTypeWithStringValueStub<CSharpGenericConstraint>, ?> nodeType)
+	public CSharpGenericConstraintImpl(@NotNull CSharpWithStringValueStub<CSharpGenericConstraint> stub,
+			@NotNull IStubElementType<? extends CSharpWithStringValueStub<CSharpGenericConstraint>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -52,7 +52,7 @@ public class CSharpGenericConstraintImpl extends CSharpStubElementImpl<CSharpTyp
 	@Override
 	public DotNetGenericParameter resolve()
 	{
-		CSharpTypeWithStringValueStub<CSharpGenericConstraint> stub = getStub();
+		CSharpWithStringValueStub<CSharpGenericConstraint> stub = getStub();
 		if(stub != null)
 		{
 			DotNetGenericParameterListOwner parentOfType = getStubOrPsiParentOfType(DotNetGenericParameterListOwner.class);

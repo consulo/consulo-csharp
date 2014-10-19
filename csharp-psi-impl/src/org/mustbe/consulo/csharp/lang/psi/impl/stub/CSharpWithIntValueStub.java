@@ -9,11 +9,11 @@ import com.intellij.psi.stubs.StubElement;
  * @author VISTALL
  * @since 19.10.14
  */
-public class CSharpTypeWithIntValueStub extends StubBase<CSharpNativeTypeImpl>
+public class CSharpWithIntValueStub extends StubBase<CSharpNativeTypeImpl>
 {
 	private final int myValue;
 
-	public CSharpTypeWithIntValueStub(StubElement parent, IStubElementType elementType, int value)
+	public CSharpWithIntValueStub(StubElement parent, IStubElementType elementType, int value)
 	{
 		super(parent, elementType);
 		myValue = value;

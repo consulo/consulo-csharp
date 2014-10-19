@@ -26,7 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeWithIntValueStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithIntValueStub;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetNativeType;
@@ -40,7 +40,7 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpNativeTypeImpl extends CSharpStubElementImpl<CSharpTypeWithIntValueStub> implements DotNetNativeType
+public class CSharpNativeTypeImpl extends CSharpStubElementImpl<CSharpWithIntValueStub> implements DotNetNativeType
 {
 	public static final Map<IElementType, String> ourElementToQTypes = new HashMap<IElementType, String>()
 	{
@@ -69,7 +69,7 @@ public class CSharpNativeTypeImpl extends CSharpStubElementImpl<CSharpTypeWithIn
 		super(node);
 	}
 
-	public CSharpNativeTypeImpl(@NotNull CSharpTypeWithIntValueStub stub, @NotNull IStubElementType<? extends CSharpTypeWithIntValueStub, ?> nodeType)
+	public CSharpNativeTypeImpl(@NotNull CSharpWithIntValueStub stub, @NotNull IStubElementType<? extends CSharpWithIntValueStub, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -83,7 +83,7 @@ public class CSharpNativeTypeImpl extends CSharpStubElementImpl<CSharpTypeWithIn
 	@NotNull
 	public IElementType getTypeElementType()
 	{
-		CSharpTypeWithIntValueStub stub = getStub();
+		CSharpWithIntValueStub stub = getStub();
 		if(stub != null)
 		{
 			return CSharpTokenSets.NATIVE_TYPES_AS_ARRAY[stub.getValue()];

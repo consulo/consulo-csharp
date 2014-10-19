@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpGenericConstraintImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeWithStringValueStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
@@ -33,7 +33,7 @@ import com.intellij.util.io.StringRef;
  * @author VISTALL
  * @since 10.06.14
  */
-public class CSharpGenericConstraintStubElementType extends CSharpAbstractStubElementType<CSharpTypeWithStringValueStub<CSharpGenericConstraint>,
+public class CSharpGenericConstraintStubElementType extends CSharpAbstractStubElementType<CSharpWithStringValueStub<CSharpGenericConstraint>,
 		CSharpGenericConstraint>
 {
 	public CSharpGenericConstraintStubElementType()
@@ -49,21 +49,21 @@ public class CSharpGenericConstraintStubElementType extends CSharpAbstractStubEl
 	}
 
 	@Override
-	public CSharpGenericConstraint createPsi(@NotNull CSharpTypeWithStringValueStub<CSharpGenericConstraint> stub)
+	public CSharpGenericConstraint createPsi(@NotNull CSharpWithStringValueStub<CSharpGenericConstraint> stub)
 	{
 		return new CSharpGenericConstraintImpl(stub, this);
 	}
 
 	@Override
-	public CSharpTypeWithStringValueStub<CSharpGenericConstraint> createStub(@NotNull CSharpGenericConstraint constraint, StubElement stubElement)
+	public CSharpWithStringValueStub<CSharpGenericConstraint> createStub(@NotNull CSharpGenericConstraint constraint, StubElement stubElement)
 	{
 		CSharpReferenceExpression genericParameterReference = constraint.getGenericParameterReference();
 		String text = genericParameterReference == null ? null : genericParameterReference.getText();
-		return new CSharpTypeWithStringValueStub<CSharpGenericConstraint>(stubElement, this, text);
+		return new CSharpWithStringValueStub<CSharpGenericConstraint>(stubElement, this, text);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpTypeWithStringValueStub<CSharpGenericConstraint> stub,
+	public void serialize(@NotNull CSharpWithStringValueStub<CSharpGenericConstraint> stub,
 			@NotNull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(stub.getReferenceText());
@@ -71,10 +71,10 @@ public class CSharpGenericConstraintStubElementType extends CSharpAbstractStubEl
 
 	@NotNull
 	@Override
-	public CSharpTypeWithStringValueStub<CSharpGenericConstraint> deserialize(@NotNull StubInputStream inputStream,
+	public CSharpWithStringValueStub<CSharpGenericConstraint> deserialize(@NotNull StubInputStream inputStream,
 			StubElement stubElement) throws IOException
 	{
 		StringRef text = inputStream.readName();
-		return new CSharpTypeWithStringValueStub<CSharpGenericConstraint>(stubElement, this, text);
+		return new CSharpWithStringValueStub<CSharpGenericConstraint>(stubElement, this, text);
 	}
 }
