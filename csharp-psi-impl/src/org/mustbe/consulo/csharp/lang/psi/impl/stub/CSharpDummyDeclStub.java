@@ -24,9 +24,9 @@ import com.intellij.psi.stubs.StubElement;
  * @author VISTALL
  * @since 06.03.14
  */
-public class CSharpDummyDefStub extends MemberStub<CSharpDummyDeclarationImpl>
+public class CSharpDummyDeclStub extends MemberStub<CSharpDummyDeclarationImpl>
 {
-	public CSharpDummyDefStub(StubElement parent, IStubElementType elementType)
+	public CSharpDummyDeclStub(StubElement parent, IStubElementType elementType)
 	{
 		super(parent, elementType, (String) null, null, 0);
 	}
