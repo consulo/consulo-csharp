@@ -20,54 +20,49 @@ import java.util.Collection;
 
 import org.consulo.lombok.annotations.ProjectService;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceAsElementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MemberByAllNamespaceQNameIndex;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MemberByNamespaceQNameIndex;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeByVmQNameIndex;
-import org.mustbe.consulo.dotnet.psi.DotNetNamespaceUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
-import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
+import org.mustbe.consulo.dotnet.resolve.impl.IndexBasedDotNetPsiSearcher;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.stubs.StringStubIndexExtension;
 
 /**
  * @author VISTALL
  * @since 13.07.14
  */
 @ProjectService
-public class CSharpPsiSearcher extends DotNetPsiSearcher
+public class CSharpPsiSearcher extends IndexBasedDotNetPsiSearcher
 {
-	private Project myProject;
-
 	public CSharpPsiSearcher(Project project)
 	{
-		myProject = project;
+		super(project);
 	}
 
-	@Nullable
+	@NotNull
 	@Override
-	public DotNetNamespaceAsElement findNamespaceImpl(@NotNull String indexKey, @NotNull String qName, @NotNull GlobalSearchScope scope)
+	protected DotNetNamespaceAsElement createNamespace(@NotNull String indexKey, @NotNull String qName)
 	{
-		if(DotNetNamespaceUtil.ROOT_FOR_INDEXING.equals(indexKey))
-		{
-			return new CSharpNamespaceAsElementImpl(myProject, indexKey, qName);
-		}
+		return new CSharpNamespaceAsElementImpl(myProject, indexKey, qName, this);
+	}
 
-		Collection<PsiElement> temp = MemberByNamespaceQNameIndex.getInstance().get(indexKey, myProject, scope);
-		if(!temp.isEmpty())
-		{
-			return new CSharpNamespaceAsElementImpl(myProject, indexKey, qName);
-		}
+	@NotNull
+	@Override
+	public StringStubIndexExtension<? extends PsiElement> getHardIndexExtension()
+	{
+		return MemberByNamespaceQNameIndex.getInstance();
+	}
 
-		temp = MemberByAllNamespaceQNameIndex.getInstance().get(indexKey, myProject, scope);
-		if(!temp.isEmpty())
-		{
-			return new CSharpNamespaceAsElementImpl(myProject, indexKey, qName);
-		}
-		return null;
+	@NotNull
+	@Override
+	public StringStubIndexExtension<? extends PsiElement> getSoftIndexExtension()
+	{
+		return MemberByAllNamespaceQNameIndex.getInstance();
 	}
 
 	@NotNull

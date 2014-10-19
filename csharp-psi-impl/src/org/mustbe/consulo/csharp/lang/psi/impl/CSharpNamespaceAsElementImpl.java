@@ -2,12 +2,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MemberByAllNamespaceQNameIndex;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MemberByNamespaceQNameIndex;
 import org.mustbe.consulo.dotnet.lang.psi.impl.IndexBasedDotNetNamespaceAsElement;
+import org.mustbe.consulo.dotnet.resolve.impl.IndexBasedDotNetPsiSearcher;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.stubs.StringStubIndexExtension;
 
 /**
  * @author VISTALL
@@ -15,22 +12,11 @@ import com.intellij.psi.stubs.StringStubIndexExtension;
  */
 public class CSharpNamespaceAsElementImpl extends IndexBasedDotNetNamespaceAsElement
 {
-	public CSharpNamespaceAsElementImpl(@NotNull Project project, @NotNull String indexKey, @NotNull String qName)
+	public CSharpNamespaceAsElementImpl(@NotNull Project project,
+			@NotNull String indexKey,
+			@NotNull String qName,
+			@NotNull IndexBasedDotNetPsiSearcher searcher)
 	{
-		super(project, CSharpLanguage.INSTANCE, indexKey, qName);
-	}
-
-	@NotNull
-	@Override
-	public StringStubIndexExtension<? extends PsiElement> getHardIndexExtension()
-	{
-		return MemberByNamespaceQNameIndex.getInstance();
-	}
-
-	@NotNull
-	@Override
-	public StringStubIndexExtension<? extends PsiElement> getSoftIndexExtension()
-	{
-		return MemberByAllNamespaceQNameIndex.getInstance();
+		super(project, CSharpLanguage.INSTANCE, indexKey, qName, searcher);
 	}
 }
