@@ -19,8 +19,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingNamespaceStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpUsingNamespaceStatementStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
@@ -31,14 +32,15 @@ import com.intellij.util.io.StringRef;
  * @author VISTALL
  * @since 15.01.14
  */
-public class CSharpUsingNamespaceStatementStubElementType extends CSharpAbstractStubElementType<CSharpUsingNamespaceStatementStub,
-		CSharpUsingNamespaceStatementImpl>
+public class CSharpUsingNamespaceStatementStubElementType extends
+		CSharpAbstractStubElementType<CSharpWithStringValueStub<CSharpUsingNamespaceStatement>, CSharpUsingNamespaceStatementImpl>
 {
 	public CSharpUsingNamespaceStatementStubElementType()
 	{
 		super("USING_NAMESPACE_STATEMENT");
 	}
 
+	@NotNull
 	@Override
 	public CSharpUsingNamespaceStatementImpl createElement(@NotNull ASTNode astNode)
 	{
@@ -46,31 +48,32 @@ public class CSharpUsingNamespaceStatementStubElementType extends CSharpAbstract
 	}
 
 	@Override
-	public CSharpUsingNamespaceStatementImpl createPsi(@NotNull CSharpUsingNamespaceStatementStub cSharpUsingNamespaceStatementStub)
+	public CSharpUsingNamespaceStatementImpl createPsi(@NotNull CSharpWithStringValueStub<CSharpUsingNamespaceStatement> stub)
 	{
-		return new CSharpUsingNamespaceStatementImpl(cSharpUsingNamespaceStatementStub);
+		return new CSharpUsingNamespaceStatementImpl(stub);
 	}
 
 	@Override
-	public CSharpUsingNamespaceStatementStub createStub(@NotNull CSharpUsingNamespaceStatementImpl cSharpUsingNamespaceStatement,
+	public CSharpWithStringValueStub<CSharpUsingNamespaceStatement> createStub(@NotNull CSharpUsingNamespaceStatementImpl statement,
 			StubElement stubElement)
 	{
-		String referenceText = cSharpUsingNamespaceStatement.getReferenceText();
-		return new CSharpUsingNamespaceStatementStub(stubElement, this, StringRef.fromNullableString(referenceText));
+		String referenceText = statement.getReferenceText();
+		return new CSharpWithStringValueStub<CSharpUsingNamespaceStatement>(stubElement, this, StringRef.fromNullableString(referenceText));
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpUsingNamespaceStatementStub stub, @NotNull StubOutputStream stubOutputStream)
-			throws IOException
+	public void serialize(@NotNull CSharpWithStringValueStub<CSharpUsingNamespaceStatement> stub,
+			@NotNull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(stub.getReferenceText());
 	}
 
 	@NotNull
 	@Override
-	public CSharpUsingNamespaceStatementStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpWithStringValueStub<CSharpUsingNamespaceStatement> deserialize(@NotNull StubInputStream stubInputStream,
+			StubElement stubElement) throws IOException
 	{
 		StringRef referenceText = stubInputStream.readName();
-		return new CSharpUsingNamespaceStatementStub(stubElement, this, referenceText);
+		return new CSharpWithStringValueStub<CSharpUsingNamespaceStatement>(stubElement, this, referenceText);
 	}
 }

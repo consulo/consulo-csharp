@@ -24,7 +24,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
  * @author VISTALL
  * @since 30.11.13.
  */
-public interface CSharpNamespaceDeclaration extends DotNetNamespaceDeclaration, CSharpBodyWithBraces
+public interface CSharpNamespaceDeclaration extends DotNetNamespaceDeclaration, CSharpBodyWithBraces, CSharpUsingListOwner
 {
 	@Nullable
 	DotNetReferenceExpression getNamespaceReference();

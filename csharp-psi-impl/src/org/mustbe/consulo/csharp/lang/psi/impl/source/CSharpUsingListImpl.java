@@ -23,7 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpUsingListStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -36,14 +36,14 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpUsingListImpl extends CSharpStubElementImpl<CSharpUsingListStub> implements CSharpUsingList
+public class CSharpUsingListImpl extends CSharpStubElementImpl<CSharpEmptyStub<CSharpUsingList>> implements CSharpUsingList
 {
 	public CSharpUsingListImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpUsingListImpl(@NotNull CSharpUsingListStub stub)
+	public CSharpUsingListImpl(@NotNull CSharpEmptyStub<CSharpUsingList> stub)
 	{
 		super(stub, CSharpStubElements.USING_LIST);
 	}

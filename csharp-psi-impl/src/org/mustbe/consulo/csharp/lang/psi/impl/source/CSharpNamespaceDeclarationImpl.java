@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpNamespaceDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
@@ -177,5 +178,12 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 			@NotNull PsiElement place)
 	{
 		return CSharpResolveUtil.walkChildren(processor, this, false, place, state);
+	}
+
+	@Nullable
+	@Override
+	public CSharpUsingList getUsingList()
+	{
+		return getStubOrPsiChild(CSharpStubElements.USING_LIST);
 	}
 }
