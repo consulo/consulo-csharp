@@ -46,6 +46,7 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 		super(debugName);
 	}
 
+	@NotNull
 	@Override
 	public DotNetTypeList createElement(@NotNull ASTNode astNode)
 	{
