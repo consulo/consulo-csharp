@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -131,6 +132,12 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 				myIndexMethods = new SmartList<CSharpArrayMethodDeclaration>();
 			}
 			myIndexMethods.add(GenericUnwrapTool.extract(declaration, myGenericExtractor, false));
+		}
+
+		@Override
+		public void visitEnumConstantDeclaration(CSharpEnumConstantDeclaration declaration)
+		{
+			putIfAbsentAndNotNull(declaration.getName(), declaration, myOtherElements);
 		}
 
 		@Override
