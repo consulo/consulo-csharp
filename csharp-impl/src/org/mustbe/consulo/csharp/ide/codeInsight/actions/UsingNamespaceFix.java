@@ -26,9 +26,9 @@ import java.util.TreeSet;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
@@ -79,15 +79,20 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		SHOW_ACTION
 	}
 
-	private final CSharpReferenceExpressionImpl myRef;
+	private final CSharpReferenceExpression myRef;
 
-	public UsingNamespaceFix(CSharpReferenceExpressionImpl ref)
+	public UsingNamespaceFix(CSharpReferenceExpression ref)
 	{
 		myRef = ref;
 	}
 
 	public PopupResult doFix(Editor editor)
 	{
+		CSharpReferenceExpression.ResolveToKind kind = myRef.kind();
+		if(kind != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE)
+		{
+			return PopupResult.NOT_AVAILABLE;
+		}
 		PsiElement resolve = myRef.resolve();
 		if(resolve != null && resolve.isValid())
 		{
