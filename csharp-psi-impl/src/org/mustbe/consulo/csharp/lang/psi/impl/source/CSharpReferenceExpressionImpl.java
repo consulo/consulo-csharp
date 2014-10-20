@@ -725,7 +725,12 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			}
 
 			boolean typeResolving = kind != ResolveToKind.METHOD;
-			CSharpResolveUtil.walkChildren(p, targetToWalkChildren, typeResolving, null, resolveState);
+			if(!CSharpResolveUtil.walkChildren(p, targetToWalkChildren, typeResolving, null, resolveState))
+			{
+				return p.toResolveResults();
+			}
+
+			CSharpResolveUtil.walkUsing(p, target, element, null, resolveState);
 			return p.toResolveResults();
 		}
 	}

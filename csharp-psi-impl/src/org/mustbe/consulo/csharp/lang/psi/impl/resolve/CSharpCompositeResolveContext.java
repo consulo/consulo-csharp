@@ -111,6 +111,14 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 	@Override
 	public PsiElement findByName(@NotNull String name, @NotNull UserDataHolder holder)
 	{
+		for(CSharpResolveContext context : myContexts)
+		{
+			PsiElement byName = context.findByName(name, holder);
+			if(byName != null)
+			{
+				return byName;
+			}
+		}
 		return null;
 	}
 }

@@ -24,7 +24,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpNamespaceDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
@@ -34,8 +33,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.util.IncorrectOperationException;
 
 /**
@@ -171,13 +168,6 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 	{
 		CSharpReferenceExpressionImpl childByClass = findChildByClass(CSharpReferenceExpressionImpl.class);
 		return childByClass != null ? childByClass.getText() : null;
-	}
-
-	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent,
-			@NotNull PsiElement place)
-	{
-		return CSharpResolveUtil.walkChildren(processor, this, false, place, state);
 	}
 
 	@Nullable

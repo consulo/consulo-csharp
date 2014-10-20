@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
@@ -20,7 +21,7 @@ import com.intellij.psi.util.PsiModificationTracker;
  */
 public class CSharpResolveContextUtil
 {
-	private static final Key<CachedValue<CSharpResolveContext>> TYPE_RESOLVE_CONTEXT = Key.create("type-resolve-context");
+	private static final Key<CachedValue<CSharpResolveContext>> RESOLVE_CONTEXT = Key.create("resolve-context");
 
 	@NotNull
 	public static CSharpResolveContext createContext(@NotNull DotNetGenericExtractor genericExtractor,
@@ -48,22 +49,26 @@ public class CSharpResolveContextUtil
 	{
 		if(element instanceof CSharpTypeDeclaration)
 		{
-			return getOrCreateResolveContext(genericExtractor, (CSharpTypeDeclaration) element);
+			return cacheTypeContext(genericExtractor, (CSharpTypeDeclaration) element);
 		}
 		else if(element instanceof DotNetNamespaceAsElement)
 		{
 			return new CSharpNamespaceResolveContext((DotNetNamespaceAsElement) element, resolveScope);
 		}
+		else if(element instanceof CSharpUsingList)
+		{
+			return cacheUsingContext((CSharpUsingList) element);
+		}
 		return CSharpResolveContext.EMPTY;
 	}
 
 	@NotNull
-	private static CSharpResolveContext getOrCreateResolveContext(@NotNull DotNetGenericExtractor genericExtractor,
+	private static CSharpResolveContext cacheTypeContext(@NotNull DotNetGenericExtractor genericExtractor,
 			@NotNull final CSharpTypeDeclaration typeDeclaration)
 	{
 		if(genericExtractor == DotNetGenericExtractor.EMPTY)
 		{
-			CachedValue<CSharpResolveContext> provider = typeDeclaration.getUserData(TYPE_RESOLVE_CONTEXT);
+			CachedValue<CSharpResolveContext> provider = typeDeclaration.getUserData(RESOLVE_CONTEXT);
 			if(provider != null)
 			{
 				return provider.getValue();
@@ -80,7 +85,7 @@ public class CSharpResolveContextUtil
 							typeDeclaration, PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
 				}
 			}, false);
-			typeDeclaration.putUserData(TYPE_RESOLVE_CONTEXT, cachedValue);
+			typeDeclaration.putUserData(RESOLVE_CONTEXT, cachedValue);
 			return cachedValue.getValue();
 		}
 		else
@@ -89,4 +94,27 @@ public class CSharpResolveContextUtil
 		}
 	}
 
+	@NotNull
+	private static CSharpResolveContext cacheUsingContext(@NotNull final CSharpUsingList usingList)
+	{
+		CachedValue<CSharpResolveContext> provider = usingList.getUserData(RESOLVE_CONTEXT);
+		if(provider != null)
+		{
+			return provider.getValue();
+		}
+
+		CachedValue<CSharpResolveContext> cachedValue = CachedValuesManager.getManager(usingList.getProject()).createCachedValue(new
+																																		 CachedValueProvider<CSharpResolveContext>()
+		{
+			@Nullable
+			@Override
+			public Result<CSharpResolveContext> compute()
+			{
+				return Result.<CSharpResolveContext>create(new CSharpUsingListResolveContext(usingList), usingList,
+						PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+			}
+		}, false);
+		usingList.putUserData(RESOLVE_CONTEXT, cachedValue);
+		return cachedValue.getValue();
+	}
 }

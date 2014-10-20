@@ -34,10 +34,10 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListOwner;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -48,7 +48,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
@@ -157,8 +156,6 @@ public class CSharpResolveUtil
 		}
 	};
 
-	public static final Key<PsiFile> CONTAINS_FILE = Key.create("contains.file");
-
 	public static boolean treeWalkUp(@NotNull PsiScopeProcessor processor,
 			@NotNull PsiElement entrance,
 			@NotNull PsiElement sender,
@@ -198,6 +195,62 @@ public class CSharpResolveUtil
 			if(!scope.processDeclarations(processor, state, prevParent, entrance))
 			{
 				return false; // resolved
+			}
+
+			if(entrance != sender)
+			{
+				break;
+			}
+
+			if(scope == maxScope)
+			{
+				break;
+			}
+
+			prevParent = scope;
+			scope = prevParent.getContext();
+			if(scope != null && scope != prevParent.getParent() && !scope.isValid())
+			{
+				break;
+			}
+		}
+
+		return true;
+	}
+
+	public static boolean walkUsing(@NotNull final PsiScopeProcessor processor,
+			@NotNull final PsiElement entrance,
+			@NotNull final PsiElement sender,
+			@Nullable PsiElement maxScope,
+			@NotNull final ResolveState state)
+	{
+		if(!entrance.isValid())
+		{
+			CSharpResolveUtil.LOGGER.error(new PsiInvalidElementAccessException(entrance));
+		}
+
+		PsiElement prevParent = entrance;
+		PsiElement scope = entrance;
+
+		if(maxScope == null)
+		{
+			maxScope = sender.getContainingFile();
+		}
+
+		while(scope != null)
+		{
+			ProgressIndicatorProvider.checkCanceled();
+
+			if(scope instanceof CSharpUsingListOwner)
+			{
+				CSharpUsingList usingList = ((CSharpUsingListOwner) scope).getUsingList();
+				if(usingList != null)
+				{
+					if(!processor.execute(usingList, state))
+					{
+						return false;
+					}
+				}
 			}
 
 			if(entrance != sender)
@@ -340,6 +393,7 @@ public class CSharpResolveUtil
 			}
 
 			String parentQName = ((DotNetNamespaceAsElement) entrance).getPresentableParentQName();
+			// dont go to root namespace
 			if(StringUtil.isEmpty(parentQName))
 			{
 				return true;
@@ -355,43 +409,7 @@ public class CSharpResolveUtil
 				}
 			}
 		}
-		else if(entrance instanceof DotNetNamespaceDeclaration)
-		{
-			String presentableQName = ((DotNetNamespaceDeclaration) entrance).getPresentableQName();
-			if(presentableQName == null)
-			{
-				return true;
-			}
-
-			if(walkParent)
-			{
-				state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, resolveScope);
-				state = state.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
-
-				DotNetNamespaceAsElement parentNamespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace(presentableQName,
-						resolveScope);
-				if(parentNamespace != null && !walkChildrenImpl(processor, parentNamespace, walkParent, maxScope, state, typeVisited))
-				{
-					return false;
-				}
-			}
-		}
-		else if(entrance instanceof PsiFile)
-		{
-			state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, resolveScope);
-			state = state.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
-
-			DotNetNamespaceAsElement namespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace("", resolveScope);
-			return namespace != null && walkChildrenImpl(processor, namespace, walkParent, maxScope, state, typeVisited);
-		}
-
-		PsiFile psiFile = state.get(CONTAINS_FILE);
-		if(psiFile instanceof CSharpFileImpl)
-		{
-			CSharpUsingListImpl usingList = ((CSharpFileImpl) psiFile).getUsingList();
-			System.out.println("go using");
-		}
-		return psiFile == null || walkChildrenImpl(processor, psiFile, walkParent, maxScope, state, typeVisited);
+		return true;
 	}
 
 	private static boolean processTypeDeclaration(@NotNull final PsiScopeProcessor processor,

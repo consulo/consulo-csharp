@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.extapi.psi.PsiFileBase;
@@ -46,14 +47,14 @@ public class CSharpFileImpl extends PsiFileBase implements CSharpFile
 
 	@Override
 	@Nullable
-	public CSharpUsingListImpl getUsingList()
+	public CSharpUsingList getUsingList()
 	{
 		StubElement<?> stub = getStub();
 		if(stub != null)
 		{
-			return (CSharpUsingListImpl) stub.findChildStubByType(CSharpStubElements.USING_LIST);
+			return (CSharpUsingList) stub.findChildStubByType(CSharpStubElements.USING_LIST);
 		}
-		return findChildByClass(CSharpUsingListImpl.class);
+		return findChildByClass(CSharpUsingList.class);
 	}
 
 	@Override

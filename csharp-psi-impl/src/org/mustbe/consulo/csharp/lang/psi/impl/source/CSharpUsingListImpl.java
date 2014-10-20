@@ -16,21 +16,24 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
+import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.ResolveState;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -62,6 +65,29 @@ public class CSharpUsingListImpl extends CSharpStubElementImpl<CSharpEmptyStub<C
 		return getStubOrPsiChildren(CSharpStubElements.USING_NAMESPACE_STATEMENT, CSharpUsingNamespaceStatementImpl.ARRAY_FACTORY);
 	}
 
+	@NotNull
+	@Override
+	public DotNetNamespaceAsElement[] getUsingNamespaces()
+	{
+		CSharpUsingNamespaceStatementImpl[] usingDirectives = getUsingDirectives();
+		List<DotNetNamespaceAsElement> namespaceAsElements = new ArrayList<DotNetNamespaceAsElement>(usingDirectives.length + 1);
+		for(CSharpUsingNamespaceStatementImpl usingDirective : usingDirectives)
+		{
+			DotNetNamespaceAsElement resolve = usingDirective.resolve();
+			if(resolve != null)
+			{
+				namespaceAsElements.add(resolve);
+			}
+		}
+
+		PsiElement parent = getParent();
+		if(parent instanceof CSharpFile)
+		{
+			namespaceAsElements.add(DotNetPsiSearcher.getInstance(getProject()).findNamespace("", getResolveScope()));
+		}
+		return ContainerUtil.toArray(namespaceAsElements, DotNetNamespaceAsElement.ARRAY_FACTORY);
+	}
+
 	@Override
 	@NotNull
 	public CSharpUsingListChild[] getStatements()
@@ -83,42 +109,6 @@ public class CSharpUsingListImpl extends CSharpStubElementImpl<CSharpEmptyStub<C
 		getNode().addChild(leafPsiElement);
 
 		addAfter(newStatement, leafPsiElement);
-	}
-
-	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent,
-			@NotNull PsiElement place)
-	{
-		if(processor.getHint(CSharpResolveUtil.NO_USING_LIST) == Boolean.TRUE)
-		{
-			return true;
-		}
-		PsiFile psiFile = state.get(CSharpResolveUtil.CONTAINS_FILE);
-		if(psiFile == null)
-		{
-			return true;
-		}
-		PsiFile containingFile = getContainingFile();
-
-		if(psiFile.equals(containingFile) || psiFile.getOriginalFile().equals(containingFile))
-		{
-			for(CSharpTypeDefStatementImpl statement : getTypeDefs())
-			{
-				if(!statement.processDeclarations(processor, state, lastParent, place))
-				{
-					return false;
-				}
-			}
-			for(CSharpUsingNamespaceStatementImpl statement : getUsingDirectives())
-			{
-				if(!statement.processDeclarations(processor, state, lastParent, place))
-				{
-					return false;
-				}
-			}
-		}
-
-		return true;
 	}
 
 	@Override

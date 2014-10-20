@@ -23,7 +23,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
-import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
@@ -31,8 +30,6 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.CharFilter;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
 
 /**
  * @author VISTALL
@@ -83,18 +80,6 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 	public DotNetReferenceExpression getNamespaceReference()
 	{
 		return findChildByClass(DotNetReferenceExpression.class);
-	}
-
-	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement
-			place)
-	{
-		DotNetNamespaceAsElement resolve = resolve();
-
-		ResolveState newState = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, getResolveScope());
-		newState = newState.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
-
-		return resolve == null || resolve.processDeclarations(processor, newState, lastParent, place);
 	}
 
 	@Override
