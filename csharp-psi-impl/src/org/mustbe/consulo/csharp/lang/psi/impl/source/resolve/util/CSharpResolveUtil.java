@@ -48,6 +48,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
@@ -410,6 +411,24 @@ public class CSharpResolveUtil
 				{
 					return false;
 				}
+			}
+		}
+		else if(entrance instanceof DotNetNamespaceDeclaration)
+		{
+			String presentableQName = ((DotNetNamespaceDeclaration) entrance).getPresentableQName();
+			if(presentableQName == null)
+			{
+				return true;
+			}
+
+			state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, resolveScope);
+			state = state.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
+
+			DotNetNamespaceAsElement namespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace(presentableQName,
+					resolveScope);
+			if(namespace != null && !walkChildrenImpl(processor, namespace, walkParent, maxScope, state, typeVisited))
+			{
+				return false;
 			}
 		}
 		return true;
