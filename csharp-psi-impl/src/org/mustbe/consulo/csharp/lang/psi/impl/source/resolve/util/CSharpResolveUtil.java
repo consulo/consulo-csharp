@@ -53,6 +53,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.KeyWithDefaultValue;
@@ -307,11 +308,12 @@ public class CSharpResolveUtil
 
 			for(DotNetTypeRef dotNetTypeRef : superTypes)
 			{
-				PsiElement resolve = dotNetTypeRef.resolve(entrance);
+				DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(entrance);
+				PsiElement resolve = typeResolveResult.getElement();
 
 				if(resolve != null && !resolve.isEquivalentTo(entrance))
 				{
-					DotNetGenericExtractor genericExtractor = dotNetTypeRef.getGenericExtractor(resolve, entrance);
+					DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
 					ResolveState newState = ResolveState.initial().put(EXTRACTOR, genericExtractor);
 
 					if(!walkChildrenImpl(processor, resolve, false, maxScope, newState, typeVisited))
@@ -368,11 +370,12 @@ public class CSharpResolveUtil
 
 			for(DotNetTypeRef dotNetTypeRef : superTypes)
 			{
-				PsiElement resolve = dotNetTypeRef.resolve(entrance);
+				DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(entrance);
+				PsiElement resolve = typeResolveResult.getElement();
 
 				if(resolve != null && resolve != entrance)
 				{
-					DotNetGenericExtractor genericExtractor = dotNetTypeRef.getGenericExtractor(resolve, entrance);
+					DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
 					ResolveState newState = ResolveState.initial().put(EXTRACTOR, genericExtractor);
 
 					if(!walkChildrenImpl(processor, resolve, false, maxScope, newState, typeVisited))

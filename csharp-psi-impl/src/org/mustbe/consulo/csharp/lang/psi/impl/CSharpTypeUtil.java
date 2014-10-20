@@ -28,6 +28,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithInnerTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayUtil;
@@ -60,7 +61,8 @@ public class CSharpTypeUtil
 	public static Pair<DotNetTypeDeclaration, DotNetGenericExtractor> findTypeInSuper(@NotNull DotNetTypeRef typeRef, @NotNull String vmQName,
 			@NotNull PsiElement scope)
 	{
-		PsiElement resolve = typeRef.resolve(scope);
+		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+		PsiElement resolve = typeResolveResult.getElement();
 		if(!(resolve instanceof DotNetTypeDeclaration))
 		{
 			return null;
@@ -69,7 +71,7 @@ public class CSharpTypeUtil
 		String otherVQName = ((DotNetTypeDeclaration) resolve).getVmQName();
 		if(vmQName.equals(otherVQName))
 		{
-			return Pair.create((DotNetTypeDeclaration)resolve, typeRef.getGenericExtractor(resolve, scope));
+			return Pair.create((DotNetTypeDeclaration)resolve, typeResolveResult.getGenericExtractor());
 		}
 
 		for(DotNetTypeRef superType : ((DotNetTypeDeclaration) resolve).getExtendTypeRefs())
@@ -167,8 +169,8 @@ public class CSharpTypeUtil
 			return targetReturnType == DotNetTypeRef.AUTO_TYPE || isInheritable(topReturnType, targetReturnType, scope);
 		}
 
-		PsiElement topElement = top.resolve(scope);
-		PsiElement targetElement = target.resolve(scope);
+		PsiElement topElement = top.resolve(scope).getElement();
+		PsiElement targetElement = target.resolve(scope).getElement();
 		if(topElement != null && topElement.isEquivalentTo(targetElement))
 		{
 			return true;

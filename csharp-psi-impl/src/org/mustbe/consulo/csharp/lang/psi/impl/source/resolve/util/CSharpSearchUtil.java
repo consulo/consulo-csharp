@@ -24,6 +24,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 
@@ -36,12 +37,13 @@ public class CSharpSearchUtil
 	@Nullable
 	public static DotNetPropertyDeclaration findPropertyByName(@NotNull final String name, @NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
-		PsiElement resolve = typeRef.resolve(scope);
+		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+		PsiElement resolve = typeResolveResult.getElement();
 		if(resolve == null)
 		{
 			return null;
 		}
-		DotNetGenericExtractor genericExtractor = typeRef.getGenericExtractor(resolve, scope);
+		DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
 		return findPropertyByName(name, resolve, genericExtractor);
 	}
 
@@ -77,13 +79,13 @@ public class CSharpSearchUtil
 	@Nullable
 	public static DotNetMethodDeclaration findMethodByName(@NotNull final String name, @NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
-		PsiElement resolve = typeRef.resolve(scope);
+		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+		PsiElement resolve = typeResolveResult.getElement();
 		if(resolve == null)
 		{
 			return null;
 		}
-		DotNetGenericExtractor genericExtractor = typeRef.getGenericExtractor(resolve, scope);
-		return findMethodByName(name, resolve, genericExtractor);
+		return findMethodByName(name, resolve, typeResolveResult.getGenericExtractor());
 	}
 
 	@Nullable

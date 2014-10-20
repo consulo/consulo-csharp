@@ -24,15 +24,11 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeDefStub;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.util.IncorrectOperationException;
 
 /**
@@ -110,33 +106,5 @@ public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<CSharpType
 	{
 		PsiElement nameIdentifier = getNameIdentifier();
 		return nameIdentifier == null ? super.getTextOffset() : nameIdentifier.getTextOffset();
-	}
-
-	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent,
-			@NotNull PsiElement place)
-	{
-		// any type defs can enter to another type def
-		if(processor.getHint(CSharpResolveUtil.NO_USING_LIST) == Boolean.TRUE)
-		{
-			return true;
-		}
-
-		if(!processor.execute(this, state))
-		{
-			return false;
-		}
-
-		DotNetTypeRef dotNetTypeRef = toTypeRef();
-		PsiElement resolve = dotNetTypeRef.resolve(this);
-		if(resolve == null)
-		{
-			return true;
-		}
-
-		DotNetGenericExtractor extractor = dotNetTypeRef.getGenericExtractor(resolve, this);
-
-		ResolveState initial = ResolveState.initial();
-		return resolve.processDeclarations(processor, initial.put(CSharpResolveUtil.EXTRACTOR, extractor), lastParent, place);
 	}
 }

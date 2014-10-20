@@ -218,7 +218,7 @@ public class MsilToCSharpUtil
 			return new DotNetGenericWrapperTypeRef(inner, newArguments);
 		}
 
-		PsiElement resolve = typeRef.resolve(scope);
+		PsiElement resolve = typeRef.resolve(scope).getElement();
 		if(resolve instanceof DotNetTypeDeclaration)
 		{
 			CSharpMethodDeclaration delegateMethod = wrapToDelegateMethod((DotNetTypeDeclaration) resolve);

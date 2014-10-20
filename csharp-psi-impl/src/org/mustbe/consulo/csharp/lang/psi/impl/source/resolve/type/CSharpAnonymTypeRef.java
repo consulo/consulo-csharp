@@ -17,7 +17,6 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightFieldDeclarationBuilder;
@@ -28,6 +27,8 @@ import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRef
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -48,11 +49,11 @@ public class CSharpAnonymTypeRef extends DotNetTypeRef.Adapter
 		mySets = sets;
 	}
 
-	@Nullable
+	@NotNull
 	@Override
-	public PsiElement resolve(@NotNull PsiElement scope)
+	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 	{
-		return resolve(scope.getProject(), scope.getResolveScope());
+		return new SimpleTypeResolveResult(resolve(scope.getProject(), scope.getResolveScope()));
 	}
 
 	@NotNull

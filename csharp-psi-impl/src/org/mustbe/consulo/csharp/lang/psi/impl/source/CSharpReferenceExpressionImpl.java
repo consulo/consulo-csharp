@@ -51,6 +51,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.Comparing;
@@ -389,7 +390,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				break;
 			case BASE:
 				DotNetTypeRef baseDotNetTypeRef = ((CSharpReferenceExpressionImpl) element).resolveBaseTypeRef();
-				PsiElement baseElement = baseDotNetTypeRef.resolve(element);
+				PsiElement baseElement = baseDotNetTypeRef.resolve(element).getElement();
 				if(baseElement != null)
 				{
 					return new ResolveResult[]{new PsiElementResolveResult(baseElement, true)};
@@ -445,13 +446,16 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				{
 					return ResolveResult.EMPTY_ARRAY;
 				}
-				PsiElement typeElement = resolvedTypeRef.resolve(element);
+
+				DotNetTypeResolveResult typeResolveResult = resolvedTypeRef.resolve(element);
+
+				PsiElement typeElement = typeResolveResult.getElement();
 				if(typeElement == null)
 				{
 					return ResolveResult.EMPTY_ARRAY;
 				}
 
-				DotNetGenericExtractor genericExtractor = resolvedTypeRef.getGenericExtractor(typeElement, element);
+				DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
 				CSharpResolveContext context = CSharpResolveContextUtil.createContext(genericExtractor, element.getResolveScope(), typeElement);
 
 				if(selector != null)
@@ -637,12 +641,14 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		{
 			qualifierTypeRef = ((DotNetExpression) qualifier).toTypeRef(false);
 
-			PsiElement resolve = qualifierTypeRef.resolve(element);
+			DotNetTypeResolveResult typeResolveResult = qualifierTypeRef.resolve(element);
+
+			PsiElement resolve = typeResolveResult.getElement();
 
 			if(resolve != null)
 			{
 				target = resolve;
-				extractor = qualifierTypeRef.getGenericExtractor(resolve, element);
+				extractor = typeResolveResult.getGenericExtractor();
 			}
 			else
 			{

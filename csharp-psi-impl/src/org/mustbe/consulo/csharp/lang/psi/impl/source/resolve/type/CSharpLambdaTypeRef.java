@@ -24,9 +24,11 @@ import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -156,18 +158,16 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 		return true;
 	}
 
-	@Nullable
-	@Override
-	public PsiElement resolve(@NotNull PsiElement scope)
-	{
-		return DotNetPsiSearcher.getInstance(scope.getProject()).findType(DotNetTypes.System.MulticastDelegate, scope.getResolveScope(),
-				DotNetPsiSearcher.TypeResoleKind.UNKNOWN, CSharpTransform.INSTANCE);
-	}
-
 	@NotNull
 	@Override
-	public DotNetGenericExtractor getGenericExtractor(@NotNull PsiElement resolved, @NotNull PsiElement scope)
+	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 	{
-		return DotNetGenericExtractor.EMPTY;
+		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(scope.getProject()).findType(DotNetTypes.System.MulticastDelegate,
+				scope.getResolveScope(), DotNetPsiSearcher.TypeResoleKind.UNKNOWN, CSharpTransform.INSTANCE);
+		if(type == null)
+		{
+			return DotNetTypeResolveResult.EMPTY;
+		}
+		return new SimpleTypeResolveResult(type);
 	}
 }

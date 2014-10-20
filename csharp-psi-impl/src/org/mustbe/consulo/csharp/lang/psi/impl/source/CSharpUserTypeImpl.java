@@ -60,11 +60,11 @@ public class CSharpUserTypeImpl extends CSharpStubElementImpl<CSharpWithStringVa
 	public DotNetTypeRef toTypeRef()
 	{
 		CSharpReferenceExpression referenceExpression = getReferenceExpressionByStub();
-		if(referenceExpression == null)
-		{
+		//if(referenceExpression == null)
+		//{
 			return DotNetTypeRef.ERROR_TYPE;
-		}
-		return CSharpReferenceExpressionImpl.toTypeRef(referenceExpression.resolve());
+		/*}
+		return CSharpReferenceExpressionImpl.toTypeRef(referenceExpression.resolve());  */
 	}
 
 	@NotNull
