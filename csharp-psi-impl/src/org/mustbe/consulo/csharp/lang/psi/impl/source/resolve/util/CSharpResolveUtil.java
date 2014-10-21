@@ -27,15 +27,7 @@ import org.consulo.lombok.annotations.LazyInstance;
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintOwner;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintOwnerUtil;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
-import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListOwner;
+import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
@@ -248,6 +240,19 @@ public class CSharpResolveUtil
 				if(usingList != null)
 				{
 					if(!processor.execute(usingList, state))
+					{
+						return false;
+					}
+				}
+
+				if(scope instanceof CSharpFile)
+				{
+					DotNetNamespaceAsElement root = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace("",
+							entrance.getResolveScope());
+
+					assert root != null;
+
+					if(!processor.execute(root, state))
 					{
 						return false;
 					}

@@ -21,16 +21,13 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
-import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.util.containers.ContainerUtil;
@@ -80,11 +77,6 @@ public class CSharpUsingListImpl extends CSharpStubElementImpl<CSharpEmptyStub<C
 			}
 		}
 
-		PsiElement parent = getParent();
-		if(parent instanceof CSharpFile)
-		{
-			namespaceAsElements.add(DotNetPsiSearcher.getInstance(getProject()).findNamespace("", getResolveScope()));
-		}
 		return ContainerUtil.toArray(namespaceAsElements, DotNetNamespaceAsElement.ARRAY_FACTORY);
 	}
 
