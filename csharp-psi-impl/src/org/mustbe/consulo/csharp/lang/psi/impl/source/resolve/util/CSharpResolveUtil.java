@@ -315,7 +315,10 @@ public class CSharpResolveUtil
 				if(resolve != null && !resolve.isEquivalentTo(entrance))
 				{
 					DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
-					ResolveState newState = ResolveState.initial().put(EXTRACTOR, genericExtractor);
+
+					CSharpResolveSelector selector = state.get(SELECTOR);
+
+					ResolveState newState = ResolveState.initial().put(SELECTOR, selector).put(EXTRACTOR, genericExtractor);
 
 					if(!walkChildrenImpl(processor, resolve, false, maxScope, newState, typeVisited))
 					{
