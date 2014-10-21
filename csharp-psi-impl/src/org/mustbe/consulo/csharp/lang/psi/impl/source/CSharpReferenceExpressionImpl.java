@@ -820,6 +820,11 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			{
 				return ResolveToKind.TYPE_OR_NAMESPACE;
 			}
+
+			if(PsiTreeUtil.getParentOfType(this, CSharpAttribute.class) != null)
+			{
+				return ResolveToKind.TYPE_OR_NAMESPACE;
+			}
 		}
 		else if(tempElement instanceof CSharpMethodCallExpressionImpl)
 		{
