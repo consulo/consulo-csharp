@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.BitUtil;
 import com.intellij.util.io.StringRef;
@@ -32,7 +33,6 @@ public class CSharpTypeDeclStub extends MemberStub<CSharpTypeDeclaration>
 	public static final int INTERFACE = 1 << 0;
 	public static final int STRUCT = 1 << 1;
 	public static final int ENUM = 1 << 2;
-	public static final int NESTED = 1 << 3;
 
 	public static int getOtherModifiers(CSharpTypeDeclaration typeDeclaration)
 	{
@@ -50,10 +50,6 @@ public class CSharpTypeDeclStub extends MemberStub<CSharpTypeDeclaration>
 			mask |= STRUCT;
 		}
 
-		if(typeDeclaration.isNested())
-		{
-			mask |= NESTED;
-		}
 		return mask;
 	}
 
@@ -87,6 +83,6 @@ public class CSharpTypeDeclStub extends MemberStub<CSharpTypeDeclaration>
 
 	public boolean isNested()
 	{
-		return BitUtil.isSet(getOtherModifierMask(), NESTED);
+		return getParentStub() instanceof DotNetTypeDeclaration;
 	}
 }
