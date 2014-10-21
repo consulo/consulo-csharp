@@ -25,7 +25,6 @@ import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
-import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ConstructorProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
@@ -37,7 +36,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRef
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromNamespace;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
-import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
@@ -323,15 +321,17 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				}
 
 				DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
-				CSharpResolveContext context = CSharpResolveContextUtil.createContext(genericExtractor, element.getResolveScope(), typeElement);
 
 				if(selector != null)
 				{
-					PsiElement selectElement = selector.doSelectElement(context);
-					if(selectElement != null)
-					{
-						return new ResolveResult[]{new PsiElementResolveResult(selectElement, true)};
-					}
+					scopeProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY);
+
+					state = ResolveState.initial();
+					state = state.put(CSharpResolveUtil.EXTRACTOR, genericExtractor);
+					state = state.put(CSharpResolveUtil.SELECTOR, selector);
+					CSharpResolveUtil.walkChildren(scopeProcessor, typeElement, true, null, state);
+
+					return scopeProcessor.toResolveResults();
 				}
 				break;
 			case LABEL:
@@ -599,6 +599,9 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				break;
 			case NAMESPACE:
 				targets = new ExecuteTarget[]{ExecuteTarget.NAMESPACE};
+				break;
+			case FIELD_OR_PROPERTY:
+				targets = new ExecuteTarget[]{ExecuteTarget.FIELD, ExecuteTarget.PROPERTY};
 				break;
 			default:
 				targets = new ExecuteTarget[]{ExecuteTarget.MEMBER};

@@ -2,9 +2,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
 import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -66,6 +68,22 @@ public enum ExecuteTarget
 				public boolean isMyElement(@NotNull PsiElement element)
 				{
 					return element instanceof DotNetGenericParameter;
+				}
+			},
+	FIELD
+			{
+				@Override
+				public boolean isMyElement(@NotNull PsiElement element)
+				{
+					return element instanceof CSharpFieldDeclaration;
+				}
+			},
+	PROPERTY
+			{
+				@Override
+				public boolean isMyElement(@NotNull PsiElement element)
+				{
+					return element instanceof CSharpPropertyDeclaration;
 				}
 			},
 	LOCAL_VARIABLE_OR_PARAMETER
