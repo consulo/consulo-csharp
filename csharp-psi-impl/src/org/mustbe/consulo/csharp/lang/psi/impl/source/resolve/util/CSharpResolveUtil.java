@@ -76,8 +76,7 @@ import lombok.val;
 @Logger
 public class CSharpResolveUtil
 {
-	public static final KeyWithDefaultValue<DotNetGenericExtractor> EXTRACTOR = new KeyWithDefaultValue<DotNetGenericExtractor>
-			("dot-net-extractor")
+	public static final KeyWithDefaultValue<DotNetGenericExtractor> EXTRACTOR = new KeyWithDefaultValue<DotNetGenericExtractor>("dot-net-extractor")
 	{
 		@Override
 		public DotNetGenericExtractor getDefaultValue()
@@ -296,13 +295,11 @@ public class CSharpResolveUtil
 		GlobalSearchScope resolveScope = entrance.getResolveScope();
 		if(entrance instanceof CSharpTypeDeclaration)
 		{
-			DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
-
 			val typeDeclaration = (CSharpTypeDeclaration) entrance;
 
 			val superTypes = new SmartList<DotNetTypeRef>();
 
-			if(!processTypeDeclaration(processor, typeDeclaration, state, resolveScope, superTypes, extractor, typeVisited))
+			if(!processTypeDeclaration(processor, typeDeclaration, state, resolveScope, superTypes, typeVisited))
 			{
 				return false;
 			}
@@ -427,8 +424,7 @@ public class CSharpResolveUtil
 			state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, resolveScope);
 			state = state.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
 
-			DotNetNamespaceAsElement namespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace(presentableQName,
-					resolveScope);
+			DotNetNamespaceAsElement namespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace(presentableQName, resolveScope);
 			if(namespace != null && !walkChildrenImpl(processor, namespace, walkParent, maxScope, state, typeVisited))
 			{
 				return false;
@@ -442,7 +438,6 @@ public class CSharpResolveUtil
 			@NotNull ResolveState state,
 			@NotNull GlobalSearchScope resolveScope,
 			@NotNull List<DotNetTypeRef> supers,
-			@NotNull DotNetGenericExtractor genericExtractor,
 			@Nullable Set<String> typeVisited)
 	{
 		if(typeVisited != null)
