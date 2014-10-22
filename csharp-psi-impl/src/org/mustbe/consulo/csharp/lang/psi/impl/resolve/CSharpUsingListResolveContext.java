@@ -7,6 +7,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -77,7 +78,11 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 	@LazyInstance
 	public CSharpResolveContext getCachedNamespaceContext()
 	{
-		return CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, myUsingList.getResolveScope(),
-				myUsingList.getUsingNamespaces());
+		DotNetNamespaceAsElement[] usingNamespaces = myUsingList.getUsingNamespaces();
+		if(usingNamespaces.length == 0)
+		{
+			return EMPTY;
+		}
+		return CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, myUsingList.getResolveScope(), usingNamespaces);
 	}
 }
