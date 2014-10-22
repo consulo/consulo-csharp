@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
@@ -52,7 +53,8 @@ public class CSharpFileImpl extends PsiFileBase implements CSharpFile
 		StubElement<?> stub = getStub();
 		if(stub != null)
 		{
-			return (CSharpUsingList) stub.findChildStubByType(CSharpStubElements.USING_LIST);
+			PsiElement[] elements = stub.getChildrenByType(CSharpStubElements.USING_LIST, PsiElement.ARRAY_FACTORY);
+			return (CSharpUsingList) ArrayUtil2.safeGet(elements, 0);
 		}
 		return findChildByClass(CSharpUsingList.class);
 	}

@@ -549,6 +549,12 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			ResolveToKind kind,
 			boolean с)
 	{
+		CSharpCodeFragment codeFragment = PsiTreeUtil.getParentOfType(element, CSharpCodeFragment.class);
+		if(codeFragment != null)
+		{
+			element = codeFragment.getScopeElement();
+		}
+
 		PsiElement target = element;
 		DotNetGenericExtractor extractor = DotNetGenericExtractor.EMPTY;
 		DotNetTypeRef qualifierTypeRef;
@@ -758,16 +764,6 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				last = temp;
 				targetToWalkChildren = temp.getParent();
 				break;
-			}
-			else if(temp instanceof CSharpCodeFragment)
-			{
-				PsiElement scopeElement = ((CSharpCodeFragment) temp).getScopeElement();
-				if(scopeElement == null)
-				{
-					break;
-				}
-				temp = scopeElement;
-				continue;
 			}
 			temp = temp.getParent();
 		}
