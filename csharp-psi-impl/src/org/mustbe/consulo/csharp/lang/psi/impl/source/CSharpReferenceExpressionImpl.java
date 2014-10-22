@@ -685,7 +685,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					break;
 				}
 			}
-			else if(temp instanceof DotNetFieldDeclaration)
+			else if(temp instanceof DotNetFieldDeclaration ||
+					temp instanceof DotNetPropertyDeclaration ||
+					temp instanceof DotNetEventDeclaration ||
+					temp instanceof DotNetLikeMethodDeclaration)
 			{
 				last = temp.getParent();
 				targetToWalkChildren = temp.getParent();
@@ -695,12 +698,6 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			{
 				last = temp;
 				targetToWalkChildren = temp.getParent().getParent();
-				break;
-			}
-			else if(temp instanceof DotNetLikeMethodDeclaration)
-			{
-				last = temp.getParent();
-				targetToWalkChildren = temp.getParent();
 				break;
 			}
 			else if(temp instanceof DotNetTypeDeclaration)
