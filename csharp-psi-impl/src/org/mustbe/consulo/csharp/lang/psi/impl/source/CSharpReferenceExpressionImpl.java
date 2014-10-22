@@ -16,6 +16,9 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.consulo.lombok.annotations.Logger;
@@ -29,13 +32,16 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProce
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ConstructorProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromNamespace;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
@@ -54,6 +60,7 @@ import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Conditions;
 import com.intellij.openapi.util.Couple;
+import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.CharFilter;
 import com.intellij.openapi.util.text.StringUtil;
@@ -464,12 +471,12 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				constructorProcessor.executeDefault((PsiNamedElement) resolveElement);
 				return constructorProcessor.toResolveResults();
 			case PARAMETER:
-				CSharpCallArgumentListOwner argumentListOwner = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
-				if(argumentListOwner == null)
+				callArgumentListOwner = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
+				if(callArgumentListOwner == null)
 				{
 					return ResolveResult.EMPTY_ARRAY;
 				}
-				resolveResults = argumentListOwner.multiResolve(false);
+				resolveResults = callArgumentListOwner.multiResolve(false);
 				ResolveResult firstItem = ArrayUtil.getFirstElement(resolveResults);
 				if(firstItem == null)
 				{
@@ -493,7 +500,44 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			case METHOD:
 			case ARRAY_METHOD:
 				resolveResults = processAnyMember(qualifier, selector, element, kind, completion);
+				if(callArgumentListOwner == null || resolveResults.length == 0)
+				{
+					return resolveResults;
+				}
 
+				List<Pair<Integer, DotNetLikeMethodDeclaration>> list = new ArrayList<Pair<Integer, DotNetLikeMethodDeclaration>>();
+				for(ResolveResult result : resolveResults)
+				{
+					PsiElement maybeElementGroup = result.getElement();
+					if(maybeElementGroup instanceof CSharpElementGroup)
+					{
+						for(PsiElement psiElement : ((CSharpElementGroup) maybeElementGroup).getElements())
+						{
+							if(psiElement instanceof DotNetLikeMethodDeclaration)
+							{
+								int i = MethodAcceptorImpl.calcAcceptableWeight(element, callArgumentListOwner,
+										(DotNetLikeMethodDeclaration) psiElement);
+
+								list.add(Pair.create(i, (DotNetLikeMethodDeclaration)psiElement));
+							}
+						}
+					}
+				}
+
+				Collections.sort(list, new Comparator<Pair<Integer, DotNetLikeMethodDeclaration>>()
+				{
+					@Override
+					public int compare(Pair<Integer, DotNetLikeMethodDeclaration> o1, Pair<Integer, DotNetLikeMethodDeclaration> o2)
+					{
+						return o2.getFirst() - o1.getFirst();
+					}
+				});
+				resolveResults = new ResolveResult[list.size()];
+				int i = 0;
+				for(Pair<Integer, DotNetLikeMethodDeclaration> pair : list)
+				{
+					resolveResults[i ++] = new PsiElementResolveResult(pair.getSecond(), pair.getFirst() == WeightProcessor.MAX_WEIGHT);
+				}
 				return resolveResults;
 		}
 		return ResolveResult.EMPTY_ARRAY;

@@ -93,21 +93,6 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 
 				myOperatorsMap.putValue(operatorElementType, declaration);
 			}
-			else if(CSharpMethodImplUtil.isExtensionMethod(declaration))
-			{
-				String name = declaration.getName();
-				if(name == null)
-				{
-					return;
-				}
-
-				if(myExtensionMap == null)
-				{
-					myExtensionMap = new MultiMap<String, CSharpMethodDeclaration>();
-				}
-
-				myExtensionMap.putValue(name, declaration);
-			}
 			else
 			{
 				// we dont interest in impl methods
@@ -115,7 +100,24 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 				{
 					return;
 				}
-				putIfAbsentAndNotNull(declaration.getName(), declaration, myOtherElements);
+
+				if(CSharpMethodImplUtil.isExtensionMethod(declaration))
+				{
+					String name = declaration.getName();
+					if(name == null)
+					{
+						return;
+					}
+
+					if(myExtensionMap == null)
+					{
+						myExtensionMap = new MultiMap<String, CSharpMethodDeclaration>();
+					}
+
+					myExtensionMap.putValue(name, declaration);
+				}
+
+				putIfNotNull(declaration.getName(), declaration, myOtherElements);
 			}
 		}
 
@@ -138,49 +140,46 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 		@Override
 		public void visitGenericParameter(DotNetGenericParameter parameter)
 		{
-			putIfAbsentAndNotNull(parameter.getName(), parameter, myOtherElements);
+			putIfNotNull(parameter.getName(), parameter, myOtherElements);
 		}
 
 		@Override
 		public void visitEnumConstantDeclaration(CSharpEnumConstantDeclaration declaration)
 		{
-			putIfAbsentAndNotNull(declaration.getName(), declaration, myOtherElements);
+			putIfNotNull(declaration.getName(), declaration, myOtherElements);
 		}
 
 		@Override
 		public void visitFieldDeclaration(CSharpFieldDeclaration declaration)
 		{
-			putIfAbsentAndNotNull(declaration.getName(), declaration, myOtherElements);
+			putIfNotNull(declaration.getName(), declaration, myOtherElements);
 		}
 
 		@Override
 		public void visitEventDeclaration(CSharpEventDeclaration declaration)
 		{
-			putIfAbsentAndNotNull(declaration.getName(), declaration, myOtherElements);
+			putIfNotNull(declaration.getName(), declaration, myOtherElements);
 		}
 
 		@Override
 		public void visitPropertyDeclaration(CSharpPropertyDeclaration declaration)
 		{
-			putIfAbsentAndNotNull(declaration.getName(), declaration, myOtherElements);
+			putIfNotNull(declaration.getName(), declaration, myOtherElements);
 		}
 
 		@Override
 		public void visitTypeDeclaration(CSharpTypeDeclaration declaration)
 		{
-			putIfAbsentAndNotNull(declaration.getName(), declaration, myOtherElements);
+			putIfNotNull(declaration.getName(), declaration, myOtherElements);
 		}
 
-		private <K, V extends DotNetNamedElement> void putIfAbsentAndNotNull(@Nullable K key, @NotNull V value, @NotNull MultiMap<K, PsiElement> map)
+		private <K, V extends DotNetNamedElement> void putIfNotNull(@Nullable K key, @NotNull V value, @NotNull MultiMap<K, PsiElement> map)
 		{
 			if(key == null)
 			{
 				return;
 			}
-			if(!map.containsKey(key))
-			{
-				map.putValue(key, GenericUnwrapTool.extract(value, myGenericExtractor, false));
-			}
+			map.putValue(key, GenericUnwrapTool.extract(value, myGenericExtractor, false));
 		}
 	}
 
