@@ -5,9 +5,11 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.CachedValue;
@@ -116,5 +118,26 @@ public class CSharpResolveContextUtil
 		}, false);
 		usingList.putUserData(RESOLVE_CONTEXT, cachedValue);
 		return cachedValue.getValue();
+	}
+
+	@Nullable
+	public static PsiElement findValidWithGeneric(UserDataHolder holder, PsiElement[] elements)
+	{
+		Integer expectedGenericCount = holder.getUserData(CSharpResolveContext.GENERIC_COUNT);
+		if(expectedGenericCount != null)
+		{
+			for(PsiElement element : elements)
+			{
+				if(element instanceof DotNetGenericParameterListOwner)
+				{
+					int genericParametersCount = ((DotNetGenericParameterListOwner) element).getGenericParametersCount();
+					if(genericParametersCount == expectedGenericCount)
+					{
+						return element;
+					}
+				}
+			}
+		}
+		return null;
 	}
 }

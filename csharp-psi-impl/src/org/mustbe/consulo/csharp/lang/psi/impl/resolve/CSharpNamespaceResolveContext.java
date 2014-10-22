@@ -77,6 +77,15 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		PsiElement[] children = myNamespaceAsElement.findChildren(name, myResolveScope, filter);
 		if(children.length > 0)
 		{
+			PsiElement validWithGeneric = CSharpResolveContextUtil.findValidWithGeneric(holder, children);
+			if(validWithGeneric != null)
+			{
+				if(validWithGeneric instanceof MsilClassEntry)
+				{
+					return CSharpTransform.INSTANCE.fun((DotNetTypeDeclaration) validWithGeneric);
+				}
+				return validWithGeneric;
+			}
 
 			PsiElement child = children[0];
 			if(child instanceof MsilClassEntry)

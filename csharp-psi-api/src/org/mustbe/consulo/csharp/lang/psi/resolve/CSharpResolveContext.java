@@ -74,6 +74,8 @@ public interface CSharpResolveContext
 		}
 	};
 
+	Key<Integer> GENERIC_COUNT = Key.create("csharp.generic.count");
+
 	@Nullable
 	CSharpElementGroup indexMethodGroup();
 

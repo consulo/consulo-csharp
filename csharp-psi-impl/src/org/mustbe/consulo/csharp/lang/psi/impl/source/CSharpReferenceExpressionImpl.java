@@ -36,6 +36,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRef
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromNamespace;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
@@ -225,11 +226,31 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					return ResolveResult.EMPTY_ARRAY;
 				}
 				val text2 = StringUtil.strip(referenceName2, CharFilter.NOT_WHITESPACE_FILTER);
-				selector = new MemberByNameSelector(text2);
+				MemberByNameSelector selector2 = new MemberByNameSelector(text2);
+				int expectGenericCount = findExpectGenericCount(element);
+				if(expectGenericCount > 0)
+				{
+					selector2.putUserData(CSharpResolveContext.GENERIC_COUNT, expectGenericCount);
+				}
+				selector = selector2;
 				break;
 		}
 
 		return collectResults(kind, selector, element, false);
+	}
+
+	private static int findExpectGenericCount(@NotNull PsiElement element)
+	{
+		PsiElement parent = element.getParent();
+		if(parent instanceof DotNetUserType)
+		{
+			PsiElement userTypeParent = parent.getParent();
+			if(userTypeParent instanceof DotNetTypeWithTypeArguments)
+			{
+				return ((DotNetTypeWithTypeArguments) userTypeParent).getArguments().length;
+			}
+		}
+		return 0;
 	}
 
 	private static <T extends CSharpQualifiedNonReference & PsiElement> ResolveResult[] collectResults(@NotNull ResolveToKind kind,
