@@ -114,7 +114,7 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 		{
 			return ((CSharpReferenceExpressionImpl) callExpression).multiResolve(incompleteCode);
 		}
-		return null;
+		return ResolveResult.EMPTY_ARRAY;
 	}
 
 	@NotNull
