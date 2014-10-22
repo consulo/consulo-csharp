@@ -118,6 +118,12 @@ public class MsilToCSharpUtil
 	@Nullable
 	public static PsiElement wrap(PsiElement element)
 	{
+		return wrap(element, null);
+	}
+
+	@Nullable
+	public static PsiElement wrap(PsiElement element, @Nullable PsiElement parent)
+	{
 		if(element instanceof MsilClassEntry)
 		{
 			PsiElement cache = ourCache.get(element);
@@ -126,10 +132,10 @@ public class MsilToCSharpUtil
 				return cache;
 			}
 
-			cache = wrapToDelegateMethod((DotNetTypeDeclaration) element);
+			cache = wrapToDelegateMethod((DotNetTypeDeclaration) element, parent);
 			if(cache == null)
 			{
-				cache = new MsilClassAsCSharpTypeDefinition(null, (MsilClassEntry) element);
+				cache = new MsilClassAsCSharpTypeDefinition(parent, (MsilClassEntry) element);
 			}
 			ourCache.put((MsilClassEntry) element, cache);
 			return cache;
@@ -138,7 +144,7 @@ public class MsilToCSharpUtil
 	}
 
 	@Nullable
-	public static CSharpMethodDeclaration wrapToDelegateMethod(@NotNull DotNetTypeDeclaration typeDeclaration)
+	public static CSharpMethodDeclaration wrapToDelegateMethod(@NotNull DotNetTypeDeclaration typeDeclaration, @Nullable PsiElement parent)
 	{
 		if(DotNetInheritUtil.isInheritor(typeDeclaration, DotNetTypes.System.MulticastDelegate, true))
 		{
@@ -153,7 +159,7 @@ public class MsilToCSharpUtil
 
 			assert msilMethodEntry != null : typeDeclaration.getPresentableQName();
 
-			return new MsilMethodAsCSharpMethodDeclaration(null, typeDeclaration, msilMethodEntry);
+			return new MsilMethodAsCSharpMethodDeclaration(parent, typeDeclaration, msilMethodEntry);
 		}
 		else
 		{
@@ -221,7 +227,7 @@ public class MsilToCSharpUtil
 		PsiElement resolve = typeRef.resolve(scope).getElement();
 		if(resolve instanceof DotNetTypeDeclaration)
 		{
-			CSharpMethodDeclaration delegateMethod = wrapToDelegateMethod((DotNetTypeDeclaration) resolve);
+			CSharpMethodDeclaration delegateMethod = wrapToDelegateMethod((DotNetTypeDeclaration) resolve, null);
 			if(delegateMethod != null)
 			{
 				return new CSharpLambdaTypeRef(delegateMethod);

@@ -164,7 +164,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 				}
 				else if(element instanceof MsilClassEntry)
 				{
-					list.add(new MsilClassAsCSharpTypeDefinition(parentThis, (MsilClassEntry) element));
+					list.add((DotNetNamedElement) MsilToCSharpUtil.wrap(element, parentThis));
 				}
 			}
 
