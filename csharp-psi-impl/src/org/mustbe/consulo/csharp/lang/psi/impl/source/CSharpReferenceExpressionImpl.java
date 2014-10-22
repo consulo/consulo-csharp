@@ -514,7 +514,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 								int i = MethodAcceptorImpl.calcAcceptableWeight(element, callArgumentListOwner,
 										(DotNetLikeMethodDeclaration) psiElement);
 
-								list.add(Pair.create(i, (DotNetLikeMethodDeclaration)psiElement));
+								list.add(Pair.create(i, (DotNetLikeMethodDeclaration) psiElement));
 							}
 						}
 					}
@@ -532,7 +532,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				int i = 0;
 				for(Pair<Integer, DotNetLikeMethodDeclaration> pair : list)
 				{
-					resolveResults[i ++] = new PsiElementResolveResult(pair.getSecond(), pair.getFirst() == WeightProcessor.MAX_WEIGHT);
+					resolveResults[i++] = new PsiElementResolveResult(pair.getSecond(), pair.getFirst() == WeightProcessor.MAX_WEIGHT);
 				}
 				return resolveResults;
 		}
@@ -679,14 +679,20 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				targets = new ExecuteTarget[]{ExecuteTarget.NAMESPACE};
 				break;
 			case FIELD_OR_PROPERTY:
-				targets = new ExecuteTarget[]{ExecuteTarget.FIELD, ExecuteTarget.PROPERTY};
+				targets = new ExecuteTarget[]{
+						ExecuteTarget.FIELD,
+						ExecuteTarget.PROPERTY
+				};
 				break;
 			case ARRAY_METHOD:
 			case METHOD:
 				targets = new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP};
 				break;
 			default:
-				targets = new ExecuteTarget[]{ExecuteTarget.MEMBER};
+				targets = new ExecuteTarget[]{
+						ExecuteTarget.MEMBER,
+						ExecuteTarget.TYPE_DEF
+				};
 				break;
 		}
 
