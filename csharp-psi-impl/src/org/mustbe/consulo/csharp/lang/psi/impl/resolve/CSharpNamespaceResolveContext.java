@@ -1,5 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
@@ -11,6 +13,7 @@ import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.SmartList;
 
 /**
  * @author VISTALL
@@ -52,7 +55,20 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 	@Override
 	public CSharpElementGroup findOperatorGroupByTokenType(@NotNull IElementType type)
 	{
-		return null;
+		List<CSharpElementGroup> groups = new SmartList<CSharpElementGroup>();
+
+		/*for(PsiElement element : myNamespaceAsElement.getChildren(myResolveScope, DotNetNamespaceAsElement.ChildrenFilter.ONLY_ELEMENTS))
+		{
+			CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, myResolveScope, element);
+
+			CSharpElementGroup operatorGroupByTokenType = context.findOperatorGroupByTokenType(type);
+			if(operatorGroupByTokenType != null)
+			{
+				groups.add(operatorGroupByTokenType);
+			}
+		}   */
+
+		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl(myNamespaceAsElement.getProject(), groups);
 	}
 
 	@Nullable

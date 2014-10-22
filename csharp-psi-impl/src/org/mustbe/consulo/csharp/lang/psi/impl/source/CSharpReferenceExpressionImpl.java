@@ -260,7 +260,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		return 0;
 	}
 
-	private static <T extends CSharpQualifiedNonReference & PsiElement> ResolveResult[] collectResults(@NotNull ResolveToKind kind,
+	public static <T extends CSharpQualifiedNonReference & PsiElement> ResolveResult[] collectResults(@NotNull ResolveToKind kind,
 			@Nullable CSharpResolveSelector selector,
 			final T element,
 			CSharpCallArgumentListOwner callArgumentListOwner,

@@ -30,29 +30,26 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpEventUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.OperatorResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubElementResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorHelper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorHelperImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
+import org.mustbe.consulo.csharp.lang.psi.resolve.OperatorByTokenSelector;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetEventDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.TextRange;
@@ -61,7 +58,6 @@ import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.ResolveResult;
-import com.intellij.psi.ResolveState;
 import com.intellij.psi.impl.source.resolve.ResolveCache;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
@@ -74,7 +70,8 @@ import lombok.val;
  * @author VISTALL
  * @since 12.03.14
  */
-public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements PsiReference, PsiPolyVariantReference, CSharpCallArgumentListOwner
+public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements PsiReference, PsiPolyVariantReference, CSharpCallArgumentListOwner,
+		CSharpQualifiedNonReference
 {
 	private static final TokenSet ourMergeSet = TokenSet.orSet(CSharpTokenSets.OVERLOADING_OPERATORS, CSharpTokenSets.ASSIGNMENT_OPERATORS,
 			TokenSet.create(CSharpTokens.ANDAND, CSharpTokens.OROR));
@@ -154,10 +151,18 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
 	private Object resolveImpl(@Nullable Ref<PsiElement> last)
 	{
+		IElementType elementType = getOperatorElementType();
+		// normalize
+		IElementType normalized = ourAssignmentOperatorMap.get(elementType);
+		if(normalized != null)
+		{
+			elementType = normalized;
+		}
+
 		PsiElement parent = getParent();
 		if(parent instanceof CSharpExpressionWithOperatorImpl)
 		{
-			Object returnTypeInStubs = findInStubs(last);
+			Object returnTypeInStubs = findInStubs(last, elementType);
 			if(returnTypeInStubs != null)
 			{
 				return returnTypeInStubs;
@@ -170,32 +175,12 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			return eventDeclaration;
 		}
 
-		Couple<PsiElement> resolveLayers = CSharpReferenceExpressionImpl.getResolveLayers(this, false);
+		ResolveResult[] resolveResults = CSharpReferenceExpressionImpl.collectResults(CSharpReferenceExpression.ResolveToKind.METHOD,
+				new OperatorByTokenSelector(elementType), this, this, false);
 
-		OperatorResolveScopeProcessor processor = new OperatorResolveScopeProcessor(new Condition<DotNetNamedElement>()
+		if(resolveResults.length > 0 && resolveResults[0].isValidResult())
 		{
-			@Override
-			public boolean value(DotNetNamedElement dotNetNamedElement)
-			{
-				return isAccepted(CSharpOperatorReferenceImpl.this, dotNetNamedElement);
-			}
-		}, new WeightProcessor<DotNetNamedElement>()
-		{
-			@Override
-			public int getWeight(@NotNull DotNetNamedElement element)
-			{
-				return MethodAcceptorImpl.calcAcceptableWeight(CSharpOperatorReferenceImpl.this, CSharpOperatorReferenceImpl.this,
-						(CSharpMethodDeclaration) element);
-			}
-		}
-		);
-
-		CSharpResolveUtil.walkChildren(processor, resolveLayers.getSecond(), true, null, ResolveState.initial());
-
-		final ResolveResult[] resultWithWeights = processor.toResolveResults();
-		if(resultWithWeights.length > 0 && resultWithWeights[0].isValidResult())
-		{
-			return resultWithWeights[0].getElement();
+			return resolveResults[0].getElement();
 		}
 		return null;
 	}
@@ -233,16 +218,8 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		return CSharpOperatorHelper.mergeTwiceOperatorIfNeed(getFirstOperator());
 	}
 
-	private Object findInStubs(@Nullable Ref<PsiElement> last)
+	private Object findInStubs(@Nullable Ref<PsiElement> last, IElementType elementType)
 	{
-		IElementType elementType = getOperatorElementType();
-		// normalize
-		IElementType normalized = ourAssignmentOperatorMap.get(elementType);
-		if(normalized != null)
-		{
-			elementType = normalized;
-		}
-
 		if(elementType == CSharpTokenSets.OROR || elementType == CSharpTokens.ANDAND)
 		{
 			return new DotNetTypeRefByQName(DotNetTypes.System.Boolean, CSharpTransform.INSTANCE, false);
@@ -273,7 +250,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			{
 				int i = MethodAcceptorImpl.calcAcceptableWeight(this, this, (DotNetLikeMethodDeclaration) psiElement);
 
-				list.add(Pair.create(i, (DotNetLikeMethodDeclaration)psiElement));
+				list.add(Pair.create(i, (DotNetLikeMethodDeclaration) psiElement));
 			}
 		}
 		Collections.sort(list, new Comparator<Pair<Integer, DotNetLikeMethodDeclaration>>()
@@ -467,5 +444,19 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			return ((CSharpExpressionWithOperatorImpl) parent).getParameterExpressions();
 		}
 		return DotNetExpression.EMPTY_ARRAY;
+	}
+
+	@Nullable
+	@Override
+	public String getReferenceName()
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getQualifier()
+	{
+		return null;
 	}
 }
