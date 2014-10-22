@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub.index;
 
 import org.jetbrains.annotations.NotNull;
-import com.intellij.psi.PsiElement;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
@@ -26,7 +26,7 @@ import com.intellij.psi.stubs.StubIndexKey;
  * @author VISTALL
  * @since 18.12.13.
  */
-public class MemberByNamespaceQNameIndex extends StringStubIndexExtension<PsiElement>
+public class MemberByNamespaceQNameIndex extends StringStubIndexExtension<DotNetQualifiedElement>
 {
 	public static MemberByNamespaceQNameIndex getInstance()
 	{
@@ -35,7 +35,7 @@ public class MemberByNamespaceQNameIndex extends StringStubIndexExtension<PsiEle
 
 	@NotNull
 	@Override
-	public StubIndexKey<String, PsiElement> getKey()
+	public StubIndexKey<String, DotNetQualifiedElement> getKey()
 	{
 		return CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX;
 	}

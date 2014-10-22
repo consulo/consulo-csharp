@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
-import org.mustbe.consulo.msil.MsilHelper;
+import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
 import org.mustbe.consulo.msil.lang.psi.impl.elementType.stub.MsilClassEntryStub;
 import org.mustbe.consulo.msil.lang.psi.impl.elementType.stub.MsilStubIndexer;
 import com.intellij.openapi.util.text.StringUtil;

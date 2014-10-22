@@ -40,6 +40,7 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
 import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
+import org.mustbe.consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
@@ -383,7 +384,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 							if(element instanceof DotNetNamespaceAsElement)
 							{
 								if(StringUtil.equals(((DotNetNamespaceAsElement) element).getPresentableQName(),
-										DotNetNamespaceUtil.ROOT_FOR_INDEXING))
+										DotNetNamespaceStubUtil.ROOT_FOR_INDEXING))
 								{
 									return true;
 								}

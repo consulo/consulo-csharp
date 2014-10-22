@@ -21,16 +21,15 @@ import java.util.Collection;
 import org.consulo.lombok.annotations.ProjectService;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceAsElementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MemberByAllNamespaceQNameIndex;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MemberByNamespaceQNameIndex;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeByVmQNameIndex;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.impl.IndexBasedDotNetPsiSearcher;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.stubs.StringStubIndexExtension;
+import com.intellij.psi.stubs.StubIndexKey;
 
 /**
  * @author VISTALL
@@ -53,16 +52,16 @@ public class CSharpPsiSearcher extends IndexBasedDotNetPsiSearcher
 
 	@NotNull
 	@Override
-	public StringStubIndexExtension<? extends PsiElement> getHardIndexExtension()
+	public StubIndexKey<String, DotNetQualifiedElement> getElementByQNameIndexKey()
 	{
-		return MemberByNamespaceQNameIndex.getInstance();
+		return CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX;
 	}
 
 	@NotNull
 	@Override
-	public StringStubIndexExtension<? extends PsiElement> getSoftIndexExtension()
+	public StubIndexKey<String, DotNetQualifiedElement> getNamespaceIndexKey()
 	{
-		return MemberByAllNamespaceQNameIndex.getInstance();
+		return CSharpIndexKeys.MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX;
 	}
 
 	@NotNull

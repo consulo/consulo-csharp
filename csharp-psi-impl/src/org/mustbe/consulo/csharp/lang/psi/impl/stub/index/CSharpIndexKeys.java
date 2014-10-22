@@ -20,9 +20,9 @@ import org.mustbe.consulo.dotnet.psi.DotNetEventDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.StubIndexKey;
 
 /**
@@ -31,8 +31,8 @@ import com.intellij.psi.stubs.StubIndexKey;
  */
 public interface CSharpIndexKeys
 {
-	StubIndexKey<String, PsiElement> MEMBER_BY_NAMESPACE_QNAME_INDEX = StubIndexKey.createIndexKey("csharp.member.by.namespace.qname.index");
-	StubIndexKey<String, PsiElement> MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX = StubIndexKey.createIndexKey("csharp.member.by.all.namespace.qname.index");
+	StubIndexKey<String, DotNetQualifiedElement> MEMBER_BY_NAMESPACE_QNAME_INDEX = StubIndexKey.createIndexKey("csharp.member.by.namespace.qname.index");
+	StubIndexKey<String, DotNetQualifiedElement> MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX = StubIndexKey.createIndexKey("csharp.member.by.all.namespace.qname.index");
 
 	StubIndexKey<String, DotNetLikeMethodDeclaration> METHOD_INDEX = StubIndexKey.createIndexKey("csharp.method.index");
 	StubIndexKey<String, DotNetLikeMethodDeclaration> EXTENSION_METHOD_INDEX = StubIndexKey.createIndexKey("csharp.extension.method.index");
