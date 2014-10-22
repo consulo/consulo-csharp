@@ -173,7 +173,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		processGenericParameterList(builder, declaration);
 		processParameterList(declaration, builder, '(', ')');
 
-		boolean canHaveBody = !declaration.hasModifier(CSharpModifier.ABSTRACT);
+		boolean canHaveBody = !declaration.hasModifier(CSharpModifier.ABSTRACT) && !declaration.isDelegate();
 
 		if(canHaveBody)
 		{
