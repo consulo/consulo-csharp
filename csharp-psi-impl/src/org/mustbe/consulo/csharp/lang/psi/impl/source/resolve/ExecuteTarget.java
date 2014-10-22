@@ -10,6 +10,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
@@ -93,6 +94,14 @@ public enum ExecuteTarget
 				public boolean isMyElement(@NotNull PsiElement element)
 				{
 					return element instanceof CSharpPropertyDeclaration;
+				}
+			},
+	ELEMENT_GROUP
+			{
+				@Override
+				public boolean isMyElement(@NotNull PsiElement element)
+				{
+					return element instanceof CSharpElementGroup;
 				}
 			},
 	LOCAL_VARIABLE_OR_PARAMETER

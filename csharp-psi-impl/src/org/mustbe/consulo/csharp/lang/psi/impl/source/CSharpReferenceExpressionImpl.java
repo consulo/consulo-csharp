@@ -190,7 +190,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	}
 
 	public static <T extends CSharpQualifiedNonReference & PsiElement> ResolveResult[] multiResolve0(ResolveToKind kind,
-			final CSharpCallArgumentListOwner parameters,
+			final CSharpCallArgumentListOwner callArgumentListOwner,
 			final T element)
 	{
 		if(!CSharpResolveUtil.isResolvingEnabled())
@@ -236,7 +236,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				break;
 		}
 
-		return collectResults(kind, selector, element, false);
+		return collectResults(kind, selector, element, callArgumentListOwner, false);
 	}
 
 	private static int findExpectGenericCount(@NotNull PsiElement element)
@@ -256,6 +256,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	private static <T extends CSharpQualifiedNonReference & PsiElement> ResolveResult[] collectResults(@NotNull ResolveToKind kind,
 			@Nullable CSharpResolveSelector selector,
 			final T element,
+			CSharpCallArgumentListOwner callArgumentListOwner,
 			final boolean completion)
 	{
 		if(!element.isValid())
@@ -265,6 +266,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 		AbstractScopeProcessor scopeProcessor = null;
 		ResolveState state = null;
+		ResolveResult[] resolveResults = null;
 		PsiElement qualifier = element.getQualifier();
 		switch(kind)
 		{
@@ -314,7 +316,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				return new ResolveResult[]{new PsiElementResolveResult(resolve, true)};
 			case FIELD_OR_PROPERTY:
 				DotNetTypeRef resolvedTypeRef;
-				CSharpCallArgumentListOwner callArgumentListOwner = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
+				callArgumentListOwner = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
 
 				if(callArgumentListOwner instanceof CSharpNewExpression)
 				{
@@ -363,8 +365,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				CSharpResolveUtil.treeWalkUp(scopeProcessor, element, element, parentOfType);
 				return scopeProcessor.toResolveResults();
 			case TYPE_OR_NAMESPACE:
-				ResolveResult[] typeResults = collectResults(ResolveToKind.TYPE_LIKE, selector, element, completion);
-				ResolveResult[] namespaceResults = collectResults(ResolveToKind.NAMESPACE, selector, element, completion);
+				ResolveResult[] typeResults = collectResults(ResolveToKind.TYPE_LIKE, selector, element, callArgumentListOwner, completion);
+				ResolveResult[] namespaceResults = collectResults(ResolveToKind.NAMESPACE, selector, element, callArgumentListOwner, completion);
 				return ArrayUtil.mergeArrays(typeResults, namespaceResults);
 			case NAMESPACE:
 			case SOFT_NAMESPACE:
@@ -467,7 +469,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				{
 					return ResolveResult.EMPTY_ARRAY;
 				}
-				ResolveResult[] resolveResults = argumentListOwner.multiResolve(false);
+				resolveResults = argumentListOwner.multiResolve(false);
 				ResolveResult firstItem = ArrayUtil.getFirstElement(resolveResults);
 				if(firstItem == null)
 				{
@@ -486,10 +488,13 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				maybeParameterListOwner.processDeclarations(scopeProcessor, state, null, element);
 				return scopeProcessor.toResolveResults();
 			case TYPE_LIKE:
-			case METHOD:
-			case ARRAY_METHOD:
 			case ANY_MEMBER:
 				return processAnyMember(qualifier, selector, element, kind, completion);
+			case METHOD:
+			case ARRAY_METHOD:
+				resolveResults = processAnyMember(qualifier, selector, element, kind, completion);
+
+				return resolveResults;
 		}
 		return ResolveResult.EMPTY_ARRAY;
 	}
@@ -629,6 +634,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				break;
 			case FIELD_OR_PROPERTY:
 				targets = new ExecuteTarget[]{ExecuteTarget.FIELD, ExecuteTarget.PROPERTY};
+				break;
+			case ARRAY_METHOD:
+			case METHOD:
+				targets = new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP};
 				break;
 			default:
 				targets = new ExecuteTarget[]{ExecuteTarget.MEMBER};
@@ -964,7 +973,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				return true;
 			}
 		};
-		ResolveResult[] psiElements = collectResults(kind, null, this, true);
+		ResolveResult[] psiElements = collectResults(kind, null, this, null, true);
 		return CSharpLookupElementBuilder.getInstance(getProject()).buildToLookupElements(this, psiElements);
 	}
 
