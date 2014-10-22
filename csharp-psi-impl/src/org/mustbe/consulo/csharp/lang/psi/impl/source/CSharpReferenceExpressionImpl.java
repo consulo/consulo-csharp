@@ -602,7 +602,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				return p.toResolveResults();
 			}
 
-			if(PsiTreeUtil.getParentOfType(element, CSharpUsingListImpl.class) == null)
+			if(PsiTreeUtil.getParentOfType(element, CSharpUsingList.class) == null)
 			{
 				CSharpResolveUtil.walkUsing(p, target, element, null, resolveState);
 			}
