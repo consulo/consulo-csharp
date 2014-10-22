@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -34,12 +35,6 @@ public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRef.Adapter
 	public CSharpTypeRefByTypeDeclaration(@NotNull DotNetTypeDeclaration element)
 	{
 		myElement = element;
-	}
-
-	@Override
-	public boolean isNullable()
-	{
-		return !myElement.isStruct() && !myElement.isEnum();
 	}
 
 	@NotNull
@@ -60,6 +55,6 @@ public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRef.Adapter
 	@Override
 	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 	{
-		return new SimpleTypeResolveResult(myElement);
+		return new SimpleTypeResolveResult(myElement, CSharpTypeUtil.isElementIsNullable(myElement));
 	}
 }

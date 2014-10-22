@@ -152,12 +152,6 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 		return myTarget;
 	}
 
-	@Override
-	public boolean isNullable()
-	{
-		return true;
-	}
-
 	@NotNull
 	@Override
 	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
@@ -168,6 +162,6 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 		{
 			return DotNetTypeResolveResult.EMPTY;
 		}
-		return new SimpleTypeResolveResult(type);
+		return new SimpleTypeResolveResult(type, true);
 	}
 }

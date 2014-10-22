@@ -8,6 +8,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNullableTypeImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -90,7 +91,10 @@ public class CS0453 extends CompilerCheck<CSharpNullableTypeImpl>
 			return null;
 		}
 		DotNetTypeRef dotNetTypeRef = innerType.toTypeRef();
-		if(!dotNetTypeRef.isNullable())
+
+		DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(element);
+
+		if(!typeResolveResult.isNullable())
 		{
 			return null;
 		}

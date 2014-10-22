@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpCatchStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullType;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
@@ -115,7 +116,7 @@ public class UnnecessaryTypeInspection extends LocalInspectionTool
 				if(initializer != null)
 				{
 					DotNetTypeRef typeRef = initializer.toTypeRef(false);
-					if(typeRef instanceof CSharpLambdaTypeRef || typeRef == DotNetTypeRef.NULL_TYPE)
+					if(typeRef instanceof CSharpLambdaTypeRef || typeRef == CSharpNullType.INSTANCE)
 					{
 						return;
 					}

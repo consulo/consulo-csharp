@@ -23,10 +23,13 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -62,10 +65,33 @@ public class CSharpNullableTypeImpl extends CSharpStubElementImpl<CSharpEmptyStu
 		}
 		return new DotNetTypeRef.Delegate(innerType.toTypeRef())
 		{
+			@NotNull
 			@Override
-			public boolean isNullable()
+			public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 			{
-				return true;
+				val resolve = super.resolve(scope);
+				return new DotNetTypeResolveResult()
+				{
+					@Nullable
+					@Override
+					public PsiElement getElement()
+					{
+						return resolve.getElement();
+					}
+
+					@NotNull
+					@Override
+					public DotNetGenericExtractor getGenericExtractor()
+					{
+						return resolve.getGenericExtractor();
+					}
+
+					@Override
+					public boolean isNullable()
+					{
+						return true;
+					}
+				};
 			}
 		};
 	}

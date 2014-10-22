@@ -43,12 +43,6 @@ public class CSharpTypeRefFromGenericParameter extends DotNetTypeRef.Adapter
 		return new SimpleTypeResolveResult(myGenericParameter);
 	}
 
-	@Override
-	public boolean isNullable()
-	{
-		return false;
-	}
-
 	@NotNull
 	@Override
 	public String getPresentableText()

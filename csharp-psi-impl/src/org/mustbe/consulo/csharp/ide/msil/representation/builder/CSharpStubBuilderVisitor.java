@@ -296,7 +296,9 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		}
 		else
 		{
-			builder.append(CSharpPresentationUtil.getPresentableText(typeRef.getQualifiedText(), typeRef.isNullable()));
+			//TODO [VISTALL] isNullable use
+			//builder.append(CSharpPresentationUtil.getPresentableText(typeRef.getQualifiedText(), false));
+			builder.append(typeRef.getQualifiedText());
 		}
 	}
 

@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -36,6 +37,13 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 		{
 			return DotNetGenericExtractor.EMPTY;
 		}
+
+		@Override
+		public boolean isNullable()
+		{
+			PsiElement element = getElement();
+			return element == null || CSharpTypeUtil.isElementIsNullable(element);
+		}
 	}
 
 	private final CSharpReferenceExpression myReferenceExpression;
@@ -57,12 +65,6 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 	public String getQualifiedText()
 	{
 		return getPresentableText();
-	}
-
-	@Override
-	public boolean isNullable()
-	{
-		return false;
 	}
 
 	@NotNull

@@ -22,6 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpChameleonTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullType;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
@@ -52,6 +53,15 @@ public class CSharpTypeUtil
 			DotNetTypes.System.Single,
 			DotNetTypes.System.Double,
 	};
+
+	public static boolean isElementIsNullable(@NotNull PsiElement element)
+	{
+		if(element instanceof DotNetTypeDeclaration)
+		{
+			return !((DotNetTypeDeclaration) element).isStruct() && !((DotNetTypeDeclaration) element).isEnum();
+		}
+		return true;
+	}
 
 	public static int getNumberRank(DotNetTypeRef typeRef)
 	{
@@ -98,11 +108,6 @@ public class CSharpTypeUtil
 		if(top == DotNetTypeRef.ERROR_TYPE || target == DotNetTypeRef.ERROR_TYPE)
 		{
 			return false;
-		}
-
-		if(top.isNullable() && target == DotNetTypeRef.NULL_TYPE)
-		{
-			return true;
 		}
 
 		if(top.equals(target))
@@ -170,8 +175,22 @@ public class CSharpTypeUtil
 			return targetReturnType == DotNetTypeRef.AUTO_TYPE || isInheritable(topReturnType, targetReturnType, scope);
 		}
 
-		PsiElement topElement = top.resolve(scope).getElement();
-		PsiElement targetElement = target.resolve(scope).getElement();
+		DotNetTypeResolveResult topTypeResolveResult = top.resolve(scope);
+		DotNetTypeResolveResult targetTypeResolveResult = target.resolve(scope);
+
+		PsiElement topElement = topTypeResolveResult.getElement();
+		PsiElement targetElement = targetTypeResolveResult.getElement();
+
+		if(topTypeResolveResult.isNullable() && target == CSharpNullType.INSTANCE)
+		{
+			return true;
+		}
+
+		if(!topTypeResolveResult.isNullable() && target == CSharpNullType.INSTANCE)
+		{
+			return false;
+		}
+
 		if(topElement != null && topElement.isEquivalentTo(targetElement))
 		{
 			return true;

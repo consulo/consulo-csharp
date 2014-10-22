@@ -59,12 +59,6 @@ public class CSharpStaticTypeRef extends DotNetTypeRef.Adapter
 		return myWrapperQualifiedClass;
 	}
 
-	@Override
-	public boolean isNullable()
-	{
-		return false;
-	}
-
 	@NotNull
 	@Override
 	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
@@ -75,6 +69,6 @@ public class CSharpStaticTypeRef extends DotNetTypeRef.Adapter
 		{
 			return DotNetTypeResolveResult.EMPTY;
 		}
-		return new SimpleTypeResolveResult(type, DotNetGenericExtractor.EMPTY);
+		return new SimpleTypeResolveResult(type, DotNetGenericExtractor.EMPTY, true);
 	}
 }
