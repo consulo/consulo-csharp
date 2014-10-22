@@ -809,8 +809,6 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@NotNull
 	public ResolveToKind kind()
 	{
-		String text = getText();
-
 		PsiElement tempElement = getParent();
 		if(tempElement instanceof CSharpGenericConstraintImpl)
 		{
