@@ -200,10 +200,6 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			final CSharpCallArgumentListOwner callArgumentListOwner,
 			final T element)
 	{
-		if(!CSharpResolveUtil.isResolvingEnabled())
-		{
-			return ResolveResult.EMPTY_ARRAY;
-		}
 		CSharpResolveSelector selector = StaticResolveSelectors.NONE;
 		switch(kind)
 		{
@@ -959,10 +955,6 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@Override
 	public Object[] getVariants()
 	{
-		if(!CSharpResolveUtil.isReferenceCompletionEnabled())
-		{
-			return ArrayUtil.EMPTY_OBJECT_ARRAY;
-		}
 		ResolveToKind kind = kind();
 		if(kind != ResolveToKind.LABEL && kind != ResolveToKind.NAMESPACE && kind != ResolveToKind.SOFT_NAMESPACE)
 		{
@@ -1018,10 +1010,6 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@Override
 	public boolean isSoft()
 	{
-		if(!CSharpResolveUtil.isResolvingEnabled())
-		{
-			return true;
-		}
 		return kind() == ResolveToKind.SOFT_NAMESPACE;
 	}
 
