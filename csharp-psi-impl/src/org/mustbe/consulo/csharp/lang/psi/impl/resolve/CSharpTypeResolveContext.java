@@ -235,7 +235,7 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 	}
 
 	@Nullable
-	private static <K, V extends PsiElement> Map<K, CSharpElementGroup> convertToGroup(@NotNull Project project, @Nullable MultiMap<K, V> multiMap)
+	public static <K, V extends PsiElement> Map<K, CSharpElementGroup> convertToGroup(@NotNull Project project, @Nullable MultiMap<K, V> multiMap)
 	{
 		if(multiMap == null || multiMap.isEmpty())
 		{

@@ -516,6 +516,7 @@ public class CSharpResolveUtil
 
 	@LazyInstance
 	@NotNull
+	@Deprecated
 	public static Boolean isResolvingEnabled()
 	{
 		return EarlyAccessProgramManager.is(CSharpResolvingEapDescriptor.class);

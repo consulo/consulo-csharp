@@ -37,15 +37,20 @@ import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightGenericC
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightGenericParameterBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpTypeResolveContext;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.containers.MultiMap;
 
 /**
  * @author VISTALL
@@ -53,6 +58,68 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 {
+	private static class Context implements CSharpResolveContext
+	{
+		private final Map<IElementType, CSharpElementGroup> myGroups;
+
+		public Context(Project project, List<DotNetNamedElement> dotNetNamedElements)
+		{
+			MultiMap<IElementType, CSharpMethodDeclaration> map = new MultiMap<IElementType, CSharpMethodDeclaration>();
+			for(DotNetNamedElement dotNetNamedElement : dotNetNamedElements)
+			{
+				if(dotNetNamedElement instanceof CSharpMethodDeclaration)
+				{
+					IElementType operatorElementType = ((CSharpMethodDeclaration) dotNetNamedElement).getOperatorElementType();
+					assert operatorElementType != null;
+					map.putValue(operatorElementType, (CSharpMethodDeclaration) dotNetNamedElement);
+				}
+			}
+			myGroups = CSharpTypeResolveContext.convertToGroup(project, map);
+		}
+
+		@Nullable
+		@Override
+		public CSharpElementGroup indexMethodGroup()
+		{
+			return null;
+		}
+
+		@Nullable
+		@Override
+		public CSharpElementGroup constructorGroup()
+		{
+			return null;
+		}
+
+		@Nullable
+		@Override
+		public CSharpElementGroup deConstructorGroup()
+		{
+			return null;
+		}
+
+		@Nullable
+		@Override
+		public CSharpElementGroup findOperatorGroupByTokenType(@NotNull IElementType type)
+		{
+			return myGroups.get(type);
+		}
+
+		@Nullable
+		@Override
+		public CSharpElementGroup findExtensionMethodByName(@NotNull String name)
+		{
+			return null;
+		}
+
+		@Nullable
+		@Override
+		public PsiElement findByName(@NotNull String name, @NotNull UserDataHolder holder)
+		{
+			return null;
+		}
+	}
+
 	private static String[] ourStubs = new String[]{
 			"/stub/ObjectStubs.cs",
 			"/stub/EnumStubs.cs",
@@ -109,7 +176,14 @@ public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 	@NotNull
 	@Override
 	@LazyInstance
-	public List<DotNetNamedElement> getStubMembers()
+	public CSharpResolveContext getContext()
+	{
+		List<DotNetNamedElement> dotNetNamedElements = loadStubMembers();
+		return new Context(myProject, dotNetNamedElements);
+	}
+
+	@NotNull
+	private List<DotNetNamedElement> loadStubMembers()
 	{
 		List<DotNetNamedElement> list = new ArrayList<DotNetNamedElement>();
 		for(String stub : ourStubs)
