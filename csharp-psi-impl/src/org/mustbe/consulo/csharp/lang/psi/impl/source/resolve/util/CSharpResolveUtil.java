@@ -337,6 +337,22 @@ public class CSharpResolveUtil
 				}
 			}
 		}
+		else if(entrance instanceof CSharpTypeDefStatement)
+		{
+			DotNetTypeRef dotNetTypeRef = ((CSharpTypeDefStatement) entrance).toTypeRef();
+
+			DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(entrance);
+
+			PsiElement element = typeResolveResult.getElement();
+			if(element == null)
+			{
+				return true;
+			}
+
+			CSharpResolveSelector selector = state.get(SELECTOR);
+			ResolveState newState = ResolveState.initial().put(SELECTOR, selector).put(EXTRACTOR, typeResolveResult.getGenericExtractor());
+			return walkChildren(processor, element, walkParent, maxScope, newState);
+		}
 		else if(entrance instanceof DotNetGenericParameter)
 		{
 			DotNetGenericParameterList parameterList = (DotNetGenericParameterList) entrance.getParent();

@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpChameleonTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
@@ -174,6 +175,11 @@ public class CSharpTypeUtil
 		if(topElement != null && topElement.isEquivalentTo(targetElement))
 		{
 			return true;
+		}
+
+		if(topElement instanceof CSharpTypeDefStatement)
+		{
+			return isInheritable(((CSharpTypeDefStatement) topElement).toTypeRef(), target, scope);
 		}
 
 		if(topElement instanceof DotNetTypeDeclaration && targetElement instanceof DotNetTypeDeclaration)

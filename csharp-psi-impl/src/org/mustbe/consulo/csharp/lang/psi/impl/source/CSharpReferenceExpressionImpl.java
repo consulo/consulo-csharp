@@ -616,7 +616,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				targets = new ExecuteTarget[]{
 						ExecuteTarget.GENERIC_PARAMETER,
 						ExecuteTarget.TYPE,
-						ExecuteTarget.DELEGATE_METHOD
+						ExecuteTarget.DELEGATE_METHOD,
+						ExecuteTarget.TYPE_DEF
 				};
 				break;
 			case NAMESPACE:
@@ -1023,9 +1024,9 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		{
 			return new CSharpTypeRefByTypeDeclaration((DotNetTypeDeclaration) resolve);
 		}
-		else if(resolve instanceof CSharpTypeDefStatementImpl)
+		else if(resolve instanceof CSharpTypeDefStatement)
 		{
-			return ((CSharpTypeDefStatementImpl) resolve).toTypeRef();
+			return ((CSharpTypeDefStatement) resolve).toTypeRef();
 		}
 		else if(resolve instanceof DotNetGenericParameter)
 		{
