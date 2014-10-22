@@ -28,27 +28,28 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
-import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpEventUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubElementResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorHelper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorHelperImpl;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
-import org.mustbe.consulo.csharp.lang.psi.resolve.OperatorByTokenSelector;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetEventDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.Ref;
@@ -64,7 +65,6 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -167,6 +167,25 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			{
 				return returnTypeInStubs;
 			}
+
+			for(DotNetExpression dotNetExpression : ((CSharpExpressionWithOperatorImpl) parent).getParameterExpressions())
+			{
+				DotNetTypeRef dotNetTypeRef = dotNetExpression.toTypeRef(false);
+				DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(this);
+
+				PsiElement element = typeResolveResult.getElement();
+
+				if(element != null)
+				{
+					CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, getResolveScope(), element);
+
+					PsiElement resolvedElement = resolveByContext(elementType, context, last);
+					if(resolvedElement != null)
+					{
+						return resolvedElement;
+					}
+				}
+			}
 		}
 
 		DotNetEventDeclaration eventDeclaration = CSharpEventUtil.resolveEvent(parent);
@@ -175,13 +194,6 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			return eventDeclaration;
 		}
 
-		ResolveResult[] resolveResults = CSharpReferenceExpressionImpl.collectResults(CSharpReferenceExpression.ResolveToKind.METHOD,
-				new OperatorByTokenSelector(elementType), this, this, false);
-
-		if(resolveResults.length > 0 && resolveResults[0].isValidResult())
-		{
-			return resolveResults[0].getElement();
-		}
 		return null;
 	}
 
@@ -237,7 +249,13 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
 		CSharpOperatorHelper operatorHelper = CSharpOperatorHelper.getInstance(getProject());
 
-		CSharpElementGroup operatorGroupByTokenType = operatorHelper.getContext().findOperatorGroupByTokenType(elementType);
+		return resolveByContext(elementType, operatorHelper.getContext(), last);
+	}
+
+	@Nullable
+	public PsiElement resolveByContext(IElementType elementType, CSharpResolveContext context, Ref<PsiElement> last)
+	{
+		CSharpElementGroup operatorGroupByTokenType = context.findOperatorGroupByTokenType(elementType);
 		if(operatorGroupByTokenType == null)
 		{
 			return null;
@@ -280,30 +298,6 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			return pair.getSecond();
 		}
 		return null;
-	}
-
-	private static boolean isAccepted(CSharpOperatorReferenceImpl reference, PsiElement element)
-	{
-		if(!(element instanceof CSharpMethodDeclaration))
-		{
-			return false;
-		}
-		val methodDeclaration = (CSharpMethodDeclaration) element;
-		if(!methodDeclaration.isOperator())
-		{
-			return false;
-		}
-
-		IElementType elementType = reference.getOperatorElementType();
-
-		// normalize
-		IElementType normalized = ourAssignmentOperatorMap.get(elementType);
-		if(normalized != null)
-		{
-			elementType = normalized;
-		}
-
-		return methodDeclaration.getOperatorElementType() == elementType;
 	}
 
 	@NotNull
