@@ -602,7 +602,11 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				return p.toResolveResults();
 			}
 
-			CSharpResolveUtil.walkUsing(p, target, element, null, resolveState);
+			if(PsiTreeUtil.getParentOfType(element, CSharpUsingListImpl.class) == null)
+			{
+				CSharpResolveUtil.walkUsing(p, target, element, null, resolveState);
+			}
+
 			return p.toResolveResults();
 		}
 	}
@@ -630,14 +634,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				targets = new ExecuteTarget[]{ExecuteTarget.MEMBER};
 				break;
 		}
-		MemberResolveScopeProcessor p = new MemberResolveScopeProcessor(element.getResolveScope(), elements, targets);
 
-		if(PsiTreeUtil.getParentOfType(element, CSharpUsingListImpl.class) != null)
-		{
-			p.putUserData(CSharpResolveUtil.NO_USING_LIST, Boolean.TRUE);
-		}
-
-		return p;
+		return new MemberResolveScopeProcessor(element.getResolveScope(), elements, targets);
 	}
 
 	@NotNull
