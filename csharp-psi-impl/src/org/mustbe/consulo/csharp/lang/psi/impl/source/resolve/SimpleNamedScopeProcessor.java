@@ -16,7 +16,7 @@ public class SimpleNamedScopeProcessor extends AbstractScopeProcessor
 {
 	public SimpleNamedScopeProcessor(ExecuteTarget... targets)
 	{
-		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, targets);
+		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
 	}
 
 	@Override

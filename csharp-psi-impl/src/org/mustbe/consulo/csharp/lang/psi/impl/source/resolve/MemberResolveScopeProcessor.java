@@ -46,7 +46,7 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 	{
 		Collections.addAll(myElements, elements);
 		myScope = scope;
-		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, targets);
+		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
 	}
 
 	@Override

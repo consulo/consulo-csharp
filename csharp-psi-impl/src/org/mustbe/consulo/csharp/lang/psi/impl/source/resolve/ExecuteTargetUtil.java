@@ -1,11 +1,12 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
+import java.util.EnumSet;
+
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.KeyWithDefaultValue;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.util.ArrayUtil;
 
 /**
  * @author VISTALL
@@ -13,18 +14,18 @@ import com.intellij.util.ArrayUtil;
  */
 public class ExecuteTargetUtil
 {
-	public static final Key<ExecuteTarget[]> EXECUTE_TARGETS = new KeyWithDefaultValue<ExecuteTarget[]>("execute.targets")
+	public static final Key<EnumSet<ExecuteTarget>> EXECUTE_TARGETS = new KeyWithDefaultValue<EnumSet<ExecuteTarget>>("execute.targets")
 	{
 		@Override
-		public ExecuteTarget[] getDefaultValue()
+		public EnumSet<ExecuteTarget> getDefaultValue()
 		{
-			return ExecuteTarget.EMPTY_ARRAY;
+			return EnumSet.noneOf(ExecuteTarget.class);
 		}
 	};
 
 	public static boolean isMyElement(@NotNull PsiScopeProcessor psiScopeProcessor, @NotNull PsiElement element)
 	{
-		ExecuteTarget[] hint = psiScopeProcessor.getHint(EXECUTE_TARGETS);
+		EnumSet<ExecuteTarget> hint = psiScopeProcessor.getHint(EXECUTE_TARGETS);
 		if(hint == null)
 		{
 			return false;
@@ -39,9 +40,27 @@ public class ExecuteTargetUtil
 		return false;
 	}
 
+	public static <E extends Enum<E>> EnumSet<E> of(E[] c)
+	{
+		if(c.length == 0)
+		{
+			throw new IllegalArgumentException("Collection is empty");
+		}
+
+		EnumSet<E> result = EnumSet.of(c[0]);
+		if(c.length > 1)
+		{
+			for(int i = 1; i < c.length; i++)
+			{
+				result.add(c[i]);
+			}
+		}
+		return result;
+	}
+
 	public static boolean canProcess(@NotNull PsiScopeProcessor psiScopeProcessor, @NotNull ExecuteTarget target)
 	{
-		ExecuteTarget[] hint = psiScopeProcessor.getHint(EXECUTE_TARGETS);
-		return hint != null && ArrayUtil.contains(target, hint);
+		EnumSet<ExecuteTarget> hint = psiScopeProcessor.getHint(EXECUTE_TARGETS);
+		return hint != null && hint.contains(target);
 	}
 }
