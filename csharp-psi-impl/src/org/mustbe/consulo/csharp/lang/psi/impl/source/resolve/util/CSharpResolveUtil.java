@@ -153,7 +153,6 @@ public class CSharpResolveUtil
 
 	public static boolean walkUsing(@NotNull final PsiScopeProcessor processor,
 			@NotNull final PsiElement entrance,
-			@NotNull final PsiElement sender,
 			@Nullable PsiElement maxScope,
 			@NotNull final ResolveState state)
 	{
@@ -167,7 +166,7 @@ public class CSharpResolveUtil
 
 		if(maxScope == null)
 		{
-			maxScope = sender.getContainingFile();
+			maxScope = entrance.getContainingFile();
 		}
 
 		while(scope != null)
@@ -199,11 +198,6 @@ public class CSharpResolveUtil
 				}
 			}
 
-			if(entrance != sender)
-			{
-				break;
-			}
-
 			if(scope == maxScope)
 			{
 				break;
@@ -222,7 +216,6 @@ public class CSharpResolveUtil
 
 	public static boolean walkGenericParameterList(@NotNull final PsiScopeProcessor processor,
 			@NotNull final PsiElement entrance,
-			@NotNull final PsiElement sender,
 			@Nullable PsiElement maxScope,
 			@NotNull final ResolveState state)
 	{
@@ -241,7 +234,7 @@ public class CSharpResolveUtil
 
 		if(maxScope == null)
 		{
-			maxScope = sender.getContainingFile();
+			maxScope = entrance.getContainingFile();
 		}
 
 		while(scope != null)
@@ -276,11 +269,6 @@ public class CSharpResolveUtil
 						}
 					}
 				}
-			}
-
-			if(entrance != sender)
-			{
-				break;
 			}
 
 			if(scope == maxScope)
