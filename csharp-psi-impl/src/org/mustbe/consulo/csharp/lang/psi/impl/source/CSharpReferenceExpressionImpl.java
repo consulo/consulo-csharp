@@ -39,6 +39,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaT
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromNamespace;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
@@ -498,6 +499,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					return resolveResults;
 				}
 
+				DotNetTypeRef[] typeArgumentListRefs = callArgumentListOwner.getTypeArgumentListRefs();
+
 				List<Pair<Integer, DotNetLikeMethodDeclaration>> list = new ArrayList<Pair<Integer, DotNetLikeMethodDeclaration>>();
 				for(ResolveResult result : resolveResults)
 				{
@@ -508,6 +511,11 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 						{
 							if(psiElement instanceof DotNetLikeMethodDeclaration)
 							{
+								DotNetGenericExtractor extractorFromCall = MethodAcceptorImpl.createExtractorFromCall(typeArgumentListRefs,
+										(DotNetGenericParameterListOwner) psiElement);
+
+								psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, extractorFromCall, true);
+
 								int i = MethodAcceptorImpl.calcAcceptableWeight(element, callArgumentListOwner,
 										(DotNetLikeMethodDeclaration) psiElement);
 

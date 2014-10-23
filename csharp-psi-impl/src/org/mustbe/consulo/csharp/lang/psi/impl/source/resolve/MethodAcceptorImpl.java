@@ -204,8 +204,13 @@ public class MethodAcceptorImpl
 	@NotNull
 	public static DotNetGenericExtractor createExtractorFromCall(CSharpCallArgumentListOwner owner, DotNetGenericParameterListOwner genericOwner)
 	{
+		return createExtractorFromCall(owner.getTypeArgumentListRefs(), genericOwner);
+	}
+
+	@NotNull
+	public static DotNetGenericExtractor createExtractorFromCall(DotNetTypeRef[] typeArguments, DotNetGenericParameterListOwner genericOwner)
+	{
 		DotNetGenericParameter[] genericParameters = genericOwner.getGenericParameters();
-		DotNetTypeRef[] typeArguments = owner.getTypeArgumentListRefs();
 		if(typeArguments.length > 0 && genericParameters.length == typeArguments.length)
 		{
 			return new SimpleGenericExtractorImpl(genericParameters, typeArguments);
