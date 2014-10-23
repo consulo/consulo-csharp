@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayTypeImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
@@ -47,6 +48,12 @@ public class CS0305 extends CompilerCheck<DotNetType>
 		{
 			return null;
 		}
+
+		if(resolvedElement instanceof CSharpConstructorDeclaration)
+		{
+			resolvedElement = resolvedElement.getParent();
+		}
+
 		if(resolvedElement instanceof DotNetGenericParameterListOwner)
 		{
 			expectedCount = ((DotNetGenericParameterListOwner) resolvedElement).getGenericParametersCount();
