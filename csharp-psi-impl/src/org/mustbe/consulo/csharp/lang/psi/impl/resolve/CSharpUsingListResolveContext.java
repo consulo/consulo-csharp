@@ -92,6 +92,7 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 
 	@NotNull
 	@Override
+	@LazyInstance
 	public Collection<? extends PsiElement> getElements()
 	{
 		Map<String, CSharpTypeDefStatement> defStatements = getDefStatements();

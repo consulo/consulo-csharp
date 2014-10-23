@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransformer;
@@ -91,6 +92,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 
 	@NotNull
 	@Override
+	@LazyInstance
 	public Collection<? extends PsiElement> getElements()
 	{
 		return Arrays.asList(myNamespaceAsElement.getChildren(myResolveScope, CSharpTransformer.INSTANCE,
