@@ -13,4 +13,7 @@ public interface CSharpElementGroup extends PsiElement
 {
 	@NotNull
 	Collection<? extends PsiElement> getElements();
+
+	@NotNull
+	String getName();
 }

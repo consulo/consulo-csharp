@@ -29,9 +29,16 @@ public class CSharpCompositeElementGroupImpl extends LightElement implements CSh
 	}
 
 	@Override
+	@NotNull
+	public String getName()
+	{
+		return myGroups.get(0).getName();
+	}
+
+	@Override
 	public String toString()
 	{
-		return "CSharpCompositeElementGroup";
+		return "CSharpCompositeElementGroup: " + getName();
 	}
 
 	@Override

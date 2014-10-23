@@ -21,6 +21,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.Gener
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
+import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.project.Project;
@@ -201,21 +202,21 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 		}
 
 		myOtherElements = convertToGroup(project, collector.myOtherElements);
-		myIndexMethodGroup = toGroup(project, collector.myIndexMethods);
-		myConstructorGroup = toGroup(project, collector.myConstructors);
-		myDeConstructorGroup = toGroup(project, collector.myDeConstructors);
+		myIndexMethodGroup = toGroup(project, "[]", collector.myIndexMethods);
+		myConstructorGroup = toGroup(project, MsilHelper.CONSTRUCTOR_NAME, collector.myConstructors);
+		myDeConstructorGroup = toGroup(project, "~" + MsilHelper.CONSTRUCTOR_NAME, collector.myDeConstructors);
 		myOperatorMap = convertToGroup(project, collector.myOperatorsMap);
 		myExtensionMap = convertToGroup(project, collector.myExtensionMap);
 	}
 
 	@Nullable
-	private static CSharpElementGroup toGroup(@NotNull Project project, @Nullable List<? extends PsiElement> elements)
+	private static CSharpElementGroup toGroup(@NotNull Project project, @NotNull String key, @Nullable List<? extends PsiElement> elements)
 	{
 		if(ContainerUtil.isEmpty(elements))
 		{
 			return null;
 		}
-		return new CSharpElementGroupImpl(project, elements);
+		return new CSharpElementGroupImpl(project, key, elements);
 	}
 
 	@Nullable
@@ -228,7 +229,7 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 		Map<K, CSharpElementGroup> map = new THashMap<K, CSharpElementGroup>(multiMap.size());
 		for(Map.Entry<K, Collection<V>> entry : multiMap.entrySet())
 		{
-			map.put(entry.getKey(), new CSharpElementGroupImpl(project, entry.getValue()));
+			map.put(entry.getKey(), new CSharpElementGroupImpl(project, entry.getKey(), entry.getValue()));
 		}
 		return map;
 	}
