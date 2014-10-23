@@ -28,6 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
@@ -189,6 +190,14 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 			builder = LookupElementBuilder.create(namespaceAsElement.getName());
 
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
+		}
+		else if(element instanceof CSharpTypeDefStatement)
+		{
+			CSharpTypeDefStatement typeDefStatement = (CSharpTypeDefStatement) element;
+			builder = LookupElementBuilder.create(typeDefStatement.getName());
+
+			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
+			builder = builder.withTypeText(typeDefStatement.toTypeRef().getPresentableText());
 		}
 		else if(element instanceof DotNetVariable)
 		{

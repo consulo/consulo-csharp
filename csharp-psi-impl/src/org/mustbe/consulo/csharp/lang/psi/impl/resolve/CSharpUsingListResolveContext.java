@@ -2,8 +2,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
 import gnu.trove.THashMap;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.consulo.lombok.annotations.LazyInstance;
@@ -92,7 +94,18 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 	@Override
 	public Collection<? extends PsiElement> getElements()
 	{
-		return getCachedNamespaceContext().getElements();
+		Map<String, CSharpTypeDefStatement> defStatements = getDefStatements();
+		CSharpResolveContext cachedNamespaceContext = getCachedNamespaceContext();
+		if(defStatements.isEmpty())
+		{
+			return cachedNamespaceContext.getElements();
+		}
+		Collection<? extends PsiElement> elements1 = cachedNamespaceContext.getElements();
+
+		List<PsiElement> merge = new ArrayList<PsiElement>(defStatements.size() + elements1.size());
+		merge.addAll(defStatements.values());
+		merge.addAll(elements1);
+		return merge;
 	}
 
 	@NotNull
