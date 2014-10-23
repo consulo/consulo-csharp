@@ -272,10 +272,7 @@ public class CSharpResolveUtil
 					{
 						for(DotNetGenericParameter genericParameter : genericParameters)
 						{
-							if(!processor.execute(genericParameter, state))
-							{
-								return false;
-							}
+							((AbstractScopeProcessor) processor).addElement(genericParameter);
 						}
 					}
 				}

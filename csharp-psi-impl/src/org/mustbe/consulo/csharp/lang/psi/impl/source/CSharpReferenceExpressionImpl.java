@@ -26,9 +26,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.lang.psi.*;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CompletionResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ConstructorProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
@@ -58,8 +58,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.Conditions;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
@@ -349,7 +347,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 				if(selector != null)
 				{
-					scopeProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY);
+					scopeProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY, completion);
 
 					state = ResolveState.initial();
 					state = state.put(CSharpResolveUtil.EXTRACTOR, genericExtractor);
@@ -548,7 +546,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			@Nullable CSharpResolveSelector selector,
 			@NotNull PsiElement element,
 			ResolveToKind kind,
-			boolean с)
+			boolean completion)
 	{
 		CSharpCodeFragment codeFragment = PsiTreeUtil.getParentOfType(element, CSharpCodeFragment.class);
 		if(codeFragment != null)
@@ -593,7 +591,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 		if(target != element)
 		{
-			MemberResolveScopeProcessor memberProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY);
+			AbstractScopeProcessor memberProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY, completion);
 
 			if(!CSharpResolveUtil.walkChildren(memberProcessor, target, false, null, resolveState))
 			{
@@ -639,7 +637,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			// if resolving is any member, first we need process locals and then go to fields and other
 			if(kind == ResolveToKind.ANY_MEMBER)
 			{
-				SimpleNamedScopeProcessor localProcessor = new SimpleNamedScopeProcessor(ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
+				SimpleNamedScopeProcessor localProcessor = new SimpleNamedScopeProcessor(completion, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
 				if(!CSharpResolveUtil.treeWalkUp(localProcessor, target, element, last, resolveState))
 				{
 					return localProcessor.toResolveResults();
@@ -647,7 +645,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				elements = localProcessor.toResolveResults();
 			}
 
-			MemberResolveScopeProcessor p = createMemberProcessor(element, kind, elements);
+			AbstractScopeProcessor p = createMemberProcessor(element, kind, elements, completion);
 			if(last == null)
 			{
 				return p.toResolveResults();
@@ -672,7 +670,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		}
 	}
 
-	private static MemberResolveScopeProcessor createMemberProcessor(@NotNull PsiElement element, ResolveToKind kind, ResolveResult[] elements)
+	private static AbstractScopeProcessor createMemberProcessor(@NotNull PsiElement element,
+			ResolveToKind kind,
+			ResolveResult[] elements,
+			boolean completion)
 	{
 		ExecuteTarget[] targets;
 		switch(kind)
@@ -706,7 +707,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				break;
 		}
 
-		return new MemberResolveScopeProcessor(element.getResolveScope(), elements, targets);
+		return completion ? new CompletionResolveScopeProcessor(element.getResolveScope(), elements, targets) : new MemberResolveScopeProcessor
+				(element.getResolveScope(), elements, targets);
 	}
 
 	@NotNull
@@ -976,49 +978,6 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		{
 			kind = ResolveToKind.ANY_MEMBER;
 		}
-		Condition<PsiNamedElement> condition = kind == ResolveToKind.LABEL ? Conditions.<PsiNamedElement>alwaysTrue() : new
-				Condition<PsiNamedElement>()
-		{
-			@Override
-			public boolean value(PsiNamedElement e)
-			{
-				if(e.getName() == null)
-				{
-					return false;
-				}
-
-				if(e instanceof CSharpLocalVariable || e instanceof DotNetParameter || e instanceof CSharpLambdaParameter)
-				{
-					return true;
-				}
-				if(e instanceof CSharpConstructorDeclaration)
-				{
-					return false;
-				}
-				if(e instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) e).isOperator())
-				{
-					return false;
-				}
-				if(e instanceof CSharpArrayMethodDeclarationImpl)
-				{
-					return false;
-				}
-
-				if(e instanceof DotNetVirtualImplementOwner && ((DotNetVirtualImplementOwner) e).getTypeForImplement() != null)
-				{
-					return false;
-				}
-
-				if(e instanceof DotNetModifierListOwner)
-				{
-					if(!CSharpVisibilityUtil.isVisibleForCompletion((DotNetModifierListOwner) e, CSharpReferenceExpressionImpl.this))
-					{
-						return false;
-					}
-				}
-				return true;
-			}
-		};
 		ResolveResult[] psiElements = collectResults(kind, null, this, null, true);
 		return CSharpLookupElementBuilder.getInstance(getProject()).buildToLookupElements(this, psiElements);
 	}

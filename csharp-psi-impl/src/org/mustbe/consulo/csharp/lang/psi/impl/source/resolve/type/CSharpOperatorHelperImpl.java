@@ -19,6 +19,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,6 +119,13 @@ public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 		public PsiElement findByName(@NotNull String name, @NotNull UserDataHolder holder)
 		{
 			return null;
+		}
+
+		@NotNull
+		@Override
+		public Collection<? extends PsiElement> getElements()
+		{
+			return Collections.emptyList();
 		}
 	}
 

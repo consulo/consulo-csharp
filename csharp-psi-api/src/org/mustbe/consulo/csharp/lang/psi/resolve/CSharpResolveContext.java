@@ -1,5 +1,8 @@
 package org.mustbe.consulo.csharp.lang.psi.resolve;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.util.Key;
@@ -56,6 +59,14 @@ public interface CSharpResolveContext
 		{
 			return null;
 		}
+
+		@NotNull
+		@Override
+		public Collection<? extends PsiElement> getElements()
+		{
+			return Collections.emptyList();
+		}
+
 	};
 
 	UserDataHolder EMPTY_USER_DATA = new UserDataHolder()
@@ -93,4 +104,7 @@ public interface CSharpResolveContext
 
 	@Nullable
 	PsiElement findByName(@NotNull String name, @NotNull UserDataHolder holder);
+
+	@NotNull
+	Collection<? extends PsiElement> getElements();
 }

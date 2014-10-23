@@ -287,4 +287,11 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 		}
 		return myOtherElements.get(name);
 	}
+
+	@NotNull
+	@Override
+	public Collection<? extends PsiElement> getElements()
+	{
+		return myOtherElements.values();
+	}
 }

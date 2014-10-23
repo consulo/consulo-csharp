@@ -1,8 +1,11 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransformer;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
@@ -72,17 +75,25 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 			filter = DotNetNamespaceAsElement.ChildrenFilter.NONE;
 		}
 
-		PsiElement[] children = myNamespaceAsElement.findChildren(name, myResolveScope, filter);
+		PsiElement[] children = myNamespaceAsElement.findChildren(name, myResolveScope, CSharpTransformer.INSTANCE, filter);
 		if(children.length > 0)
 		{
 			PsiElement validWithGeneric = CSharpResolveContextUtil.findValidWithGeneric(holder, children);
 			if(validWithGeneric != null)
 			{
-				return MsilToCSharpUtil.wrap(validWithGeneric);
+				return validWithGeneric;
 			}
 
-			return MsilToCSharpUtil.wrap(children[0]);
+			return children[0];
 		}
 		return null;
+	}
+
+	@NotNull
+	@Override
+	public Collection<? extends PsiElement> getElements()
+	{
+		return Arrays.asList(myNamespaceAsElement.getChildren(myResolveScope, CSharpTransformer.INSTANCE,
+				DotNetNamespaceAsElement.ChildrenFilter.NONE));
 	}
 }

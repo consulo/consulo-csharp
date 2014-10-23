@@ -1,5 +1,6 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -120,5 +121,18 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 			}
 		}
 		return null;
+	}
+
+	@NotNull
+	@Override
+	@SuppressWarnings("unchecked")
+	public Collection<? extends PsiElement> getElements()
+	{
+		List groups = new SmartList();
+		for(CSharpResolveContext context : myContexts)
+		{
+			groups.addAll(context.getElements());
+		}
+		return groups;
 	}
 }

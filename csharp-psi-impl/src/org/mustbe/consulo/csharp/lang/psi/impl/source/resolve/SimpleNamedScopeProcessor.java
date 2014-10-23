@@ -14,8 +14,16 @@ import com.intellij.psi.ResolveState;
  */
 public class SimpleNamedScopeProcessor extends AbstractScopeProcessor
 {
+	private final boolean myCompletion;
+
 	public SimpleNamedScopeProcessor(ExecuteTarget... targets)
 	{
+		this(false, targets);
+	}
+
+	public SimpleNamedScopeProcessor(boolean completion, ExecuteTarget... targets)
+	{
+		myCompletion = completion;
 		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
 	}
 
@@ -33,16 +41,23 @@ public class SimpleNamedScopeProcessor extends AbstractScopeProcessor
 			return true;
 		}
 
-		CSharpResolveSelector selector = state.get(CSharpResolveUtil.SELECTOR);
-		if(!(selector instanceof CSharpNamedResolveSelector))
-		{
-			return true;
-		}
-
-		if(((CSharpNamedResolveSelector) selector).isNameEqual(name))
+		if(myCompletion)
 		{
 			addElement(element);
-			return false;
+		}
+		else
+		{
+			CSharpResolveSelector selector = state.get(CSharpResolveUtil.SELECTOR);
+			if(!(selector instanceof CSharpNamedResolveSelector))
+			{
+				return true;
+			}
+
+			if(((CSharpNamedResolveSelector) selector).isNameEqual(name))
+			{
+				addElement(element);
+				return false;
+			}
 		}
 		return true;
 	}

@@ -42,7 +42,7 @@ public abstract class AbstractScopeProcessor extends MsilWrapperScopeProcessor i
 		myElements.add(resolveResult);
 	}
 
-	public void addElement(PsiElement element)
+	public void addElement(@NotNull PsiElement element)
 	{
 		if(element instanceof DotNetNamespaceDeclaration)
 		{

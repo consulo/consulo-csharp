@@ -115,13 +115,13 @@ public class MsilToCSharpUtil
 		return false;
 	}
 
-	@Nullable
+	@NotNull
 	public static PsiElement wrap(PsiElement element)
 	{
 		return wrap(element, null);
 	}
 
-	@Nullable
+	@NotNull
 	public static PsiElement wrap(PsiElement element, @Nullable PsiElement parent)
 	{
 		if(element instanceof MsilClassEntry)

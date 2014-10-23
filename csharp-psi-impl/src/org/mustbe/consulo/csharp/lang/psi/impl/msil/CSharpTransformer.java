@@ -17,28 +17,21 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.NotNullFunction;
 
 /**
  * @author VISTALL
- * @since 13.07.14
+ * @since 23.10.14
  */
-@Deprecated
-public class CSharpTransform implements NotNullFunction<DotNetTypeDeclaration, DotNetTypeDeclaration>
+public class CSharpTransformer implements NotNullFunction<PsiElement, PsiElement>
 {
-	public static final CSharpTransform INSTANCE = new CSharpTransform();
+	public static final CSharpTransformer INSTANCE = new CSharpTransformer();
 
 	@NotNull
 	@Override
-	public DotNetTypeDeclaration fun(DotNetTypeDeclaration typeDeclaration)
+	public PsiElement fun(PsiElement element)
 	{
-		PsiElement wrap = MsilToCSharpUtil.wrap(typeDeclaration);
-		if(wrap instanceof DotNetTypeDeclaration)
-		{
-			return (DotNetTypeDeclaration) wrap;
-		}
-		return typeDeclaration;
+		return MsilToCSharpUtil.wrap(element);
 	}
 }

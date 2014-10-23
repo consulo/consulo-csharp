@@ -2,6 +2,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
 import gnu.trove.THashMap;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
@@ -85,6 +86,13 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 			return byName;
 		}
 		return null;
+	}
+
+	@NotNull
+	@Override
+	public Collection<? extends PsiElement> getElements()
+	{
+		return getCachedNamespaceContext().getElements();
 	}
 
 	@NotNull
