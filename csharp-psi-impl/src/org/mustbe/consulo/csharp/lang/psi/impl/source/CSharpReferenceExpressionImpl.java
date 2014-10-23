@@ -231,10 +231,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				val text2 = StringUtil.strip(referenceName2, CharFilter.NOT_WHITESPACE_FILTER);
 				MemberByNameSelector selector2 = new MemberByNameSelector(text2);
 				int expectGenericCount = findExpectGenericCount(element);
-				if(expectGenericCount > 0)
-				{
-					selector2.putUserData(CSharpResolveContext.GENERIC_COUNT, expectGenericCount);
-				}
+				selector2.putUserData(CSharpResolveContext.GENERIC_COUNT, expectGenericCount);
 				selector = selector2;
 				break;
 		}
