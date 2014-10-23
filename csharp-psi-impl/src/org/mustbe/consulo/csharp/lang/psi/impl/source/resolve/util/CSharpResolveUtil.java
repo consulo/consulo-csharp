@@ -27,6 +27,10 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpNamedResolveSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -36,6 +40,7 @@ import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRef
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
@@ -194,6 +199,88 @@ public class CSharpResolveUtil
 					if(!processor.execute(root, state))
 					{
 						return false;
+					}
+				}
+			}
+
+			if(entrance != sender)
+			{
+				break;
+			}
+
+			if(scope == maxScope)
+			{
+				break;
+			}
+
+			prevParent = scope;
+			scope = prevParent.getContext();
+			if(scope != null && scope != prevParent.getParent() && !scope.isValid())
+			{
+				break;
+			}
+		}
+
+		return true;
+	}
+
+	public static boolean walkGenericParameterList(@NotNull final PsiScopeProcessor processor,
+			@NotNull final PsiElement entrance,
+			@NotNull final PsiElement sender,
+			@Nullable PsiElement maxScope,
+			@NotNull final ResolveState state)
+	{
+		if(!ExecuteTargetUtil.canProcess(processor, ExecuteTarget.GENERIC_PARAMETER))
+		{
+			return true;
+		}
+
+		if(!entrance.isValid())
+		{
+			CSharpResolveUtil.LOGGER.error(new PsiInvalidElementAccessException(entrance));
+		}
+
+		PsiElement prevParent = entrance;
+		PsiElement scope = entrance;
+
+		if(maxScope == null)
+		{
+			maxScope = sender.getContainingFile();
+		}
+
+		while(scope != null)
+		{
+			ProgressIndicatorProvider.checkCanceled();
+
+			if(scope instanceof DotNetGenericParameterListOwner)
+			{
+				DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) scope).getGenericParameters();
+				if(genericParameters.length > 0)
+				{
+					CSharpResolveSelector selector = state.get(SELECTOR);
+					if(selector != null)
+					{
+						assert processor instanceof AbstractScopeProcessor;
+						assert selector instanceof CSharpNamedResolveSelector;
+
+						for(DotNetGenericParameter genericParameter : genericParameters)
+						{
+							if(((CSharpNamedResolveSelector) selector).isNameEqual(genericParameter.getName()))
+							{
+								((AbstractScopeProcessor) processor).addElement(genericParameter);
+								return false;
+							}
+						}
+					}
+					else
+					{
+						for(DotNetGenericParameter genericParameter : genericParameters)
+						{
+							if(!processor.execute(genericParameter, state))
+							{
+								return false;
+							}
+						}
 					}
 				}
 			}

@@ -650,6 +650,11 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				return p.toResolveResults();
 			}
 
+			if(!CSharpResolveUtil.walkGenericParameterList(p, target, element, null, resolveState))
+			{
+				return p.toResolveResults();
+			}
+
 			if(PsiTreeUtil.getParentOfType(element, CSharpUsingList.class) == null)
 			{
 				CSharpResolveUtil.walkUsing(p, target, element, null, resolveState);

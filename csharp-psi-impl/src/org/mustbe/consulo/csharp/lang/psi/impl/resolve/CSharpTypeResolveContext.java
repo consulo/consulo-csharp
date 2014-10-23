@@ -21,7 +21,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.Gener
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.project.Project;
@@ -138,12 +137,6 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 		}
 
 		@Override
-		public void visitGenericParameter(DotNetGenericParameter parameter)
-		{
-			putIfNotNull(parameter.getName(), parameter, myOtherElements);
-		}
-
-		@Override
 		public void visitEnumConstantDeclaration(CSharpEnumConstantDeclaration declaration)
 		{
 			putIfNotNull(declaration.getName(), declaration, myOtherElements);
@@ -205,15 +198,6 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 		for(DotNetNamedElement member : members)
 		{
 			member.accept(collector);
-		}
-
-		if(genericExtractor == DotNetGenericExtractor.EMPTY)
-		{
-			DotNetGenericParameter[] genericParameters = typeDeclaration.getGenericParameters();
-			for(DotNetGenericParameter genericParameter : genericParameters)
-			{
-				genericParameter.accept(collector);
-			}
 		}
 
 		myOtherElements = convertToGroup(project, collector.myOtherElements);
