@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.dll.vfs.builder.block.LineStubBlock;
 import org.mustbe.consulo.dotnet.dll.vfs.builder.block.StubBlock;
 import org.mustbe.consulo.dotnet.dll.vfs.builder.block.StubBlockUtil;
@@ -226,7 +227,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 				@Override
 				public boolean value(DotNetTypeRef typeRef)
 				{
-					return !DotNetTypeRefUtil.isObject(typeRef);
+					return !DotNetTypeRefUtil.isObject(typeRef) && !DotNetTypes.System.ValueType.equals(typeRef.getQualifiedText());
 				}
 			});
 

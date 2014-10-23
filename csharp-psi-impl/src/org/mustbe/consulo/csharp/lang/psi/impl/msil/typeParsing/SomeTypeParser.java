@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromText;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
@@ -42,17 +43,16 @@ public class SomeTypeParser
 	@NotNull
 	public static DotNetTypeRef toDotNetTypeRef(String text, String nameFromBytecode, PsiElement scope)
 	{
-		if(StringUtil.isEmpty(text))
+		SomeType someType = parseType(text, nameFromBytecode);
+
+		if(someType == null)
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
-
-		SomeType someType = parseType(text, nameFromBytecode);
-
 		return convert(someType, scope);
 	}
 
-	private static DotNetTypeRef convert(SomeType type, final PsiElement scope)
+	public static DotNetTypeRef convert(@NotNull SomeType type, @NotNull final PsiElement scope)
 	{
 		final Ref<DotNetTypeRef> typeRefRef = new Ref<DotNetTypeRef>();
 		type.accept(new SomeTypeVisitor()
@@ -80,8 +80,14 @@ public class SomeTypeParser
 		return typeRefRef.get();
 	}
 
+	@Nullable
 	public static SomeType parseType(String text, final String nameFromBytecode)
 	{
+		if(StringUtil.isEmpty(text))
+		{
+			return null;
+		}
+
 		try
 		{
 			int i = text.indexOf("<");

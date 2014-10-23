@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightAttributeBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.typeParsing.SomeType;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.typeParsing.SomeTypeParser;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.*;
@@ -225,8 +226,16 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 
 	@Nullable
 	@Override
+	@LazyInstance(notNull = false)
 	public DotNetType getTypeForImplement()
 	{
+		String nameFromBytecode = myMsilElement.getNameFromBytecode();
+		String typeBeforeDot = StringUtil.getPackageName(nameFromBytecode);
+		SomeType someType = SomeTypeParser.parseType(typeBeforeDot, nameFromBytecode);
+		if(someType != null)
+		{
+			return new DummyType(getProject(), myMsilElement, someType);
+		}
 		return null;
 	}
 
@@ -235,8 +244,7 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 	@LazyInstance
 	public DotNetTypeRef getTypeRefForImplement()
 	{
-		String nameFromBytecode = myMsilElement.getNameFromBytecode();
-		String typeBeforeDot = StringUtil.getPackageName(nameFromBytecode);
-		return SomeTypeParser.toDotNetTypeRef(typeBeforeDot, nameFromBytecode, myMsilElement);
+		DotNetType typeForImplement = getTypeForImplement();
+		return typeForImplement != null ? typeForImplement.toTypeRef() : DotNetTypeRef.ERROR_TYPE;
 	}
 }

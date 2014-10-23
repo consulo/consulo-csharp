@@ -28,6 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.typeParsing.SomeType;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.typeParsing.SomeTypeParser;
 import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -199,8 +200,16 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 
 	@Nullable
 	@Override
+	@LazyInstance(notNull = false)
 	public DotNetType getTypeForImplement()
 	{
+		String nameFromBytecode = myMsilElement.getNameFromBytecode();
+		String typeBeforeDot = StringUtil.getPackageName(nameFromBytecode);
+		SomeType someType = SomeTypeParser.parseType(typeBeforeDot, nameFromBytecode);
+		if(someType != null)
+		{
+			return new DummyType(getProject(), myMsilElement, someType);
+		}
 		return null;
 	}
 
@@ -209,8 +218,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 	@LazyInstance
 	public DotNetTypeRef getTypeRefForImplement()
 	{
-		String nameFromBytecode = myMsilElement.getNameFromBytecode();
-		String typeBeforeDot = StringUtil.getPackageName(nameFromBytecode);
-		return SomeTypeParser.toDotNetTypeRef(typeBeforeDot, nameFromBytecode, myMsilElement);
+		DotNetType typeForImplement = getTypeForImplement();
+		return typeForImplement != null ? typeForImplement.toTypeRef() : DotNetTypeRef.ERROR_TYPE;
 	}
 }
