@@ -7,7 +7,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -58,7 +57,7 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 	@Override
 	public String getPresentableText()
 	{
-		return StringUtil.getShortName(myReferenceExpression.getText());
+		return myReferenceExpression.getReferenceName();
 	}
 
 	@NotNull
