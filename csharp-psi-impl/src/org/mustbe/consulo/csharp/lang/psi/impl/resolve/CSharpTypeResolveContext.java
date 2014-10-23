@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 import gnu.trove.THashMap;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -292,6 +293,6 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 	@Override
 	public Collection<? extends PsiElement> getElements()
 	{
-		return myOtherElements.values();
+		return myOtherElements == null ? Collections.<PsiElement>emptyList() : myOtherElements.values();
 	}
 }
