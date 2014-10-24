@@ -64,6 +64,12 @@ public interface CSharpStubElements
 
 	CSharpEmptyStubElementType<CSharpNullableTypeImpl> NULLABLE_TYPE = new CSharpEmptyStubElementType<CSharpNullableTypeImpl>("NULLABLE_TYPE")
 	{
+		@Override
+		public boolean shouldCreateStub(ASTNode node)
+		{
+			return CSharpStubTypeUtil.shouldCreateStub(node);
+		}
+
 		@NotNull
 		@Override
 		public PsiElement createElement(@NotNull ASTNode astNode)
@@ -80,6 +86,12 @@ public interface CSharpStubElements
 
 	CSharpEmptyStubElementType<CSharpPointerTypeImpl> POINTER_TYPE = new CSharpEmptyStubElementType<CSharpPointerTypeImpl>("POINTER_TYPE")
 	{
+		@Override
+		public boolean shouldCreateStub(ASTNode node)
+		{
+			return CSharpStubTypeUtil.shouldCreateStub(node);
+		}
+
 		@NotNull
 		@Override
 		public PsiElement createElement(@NotNull ASTNode astNode)
@@ -97,6 +109,12 @@ public interface CSharpStubElements
 	CSharpEmptyStubElementType<CSharpTypeWithTypeArgumentsImpl> TYPE_WRAPPER_WITH_TYPE_ARGUMENTS = new
 			CSharpEmptyStubElementType<CSharpTypeWithTypeArgumentsImpl>("TYPE_WRAPPER_WITH_TYPE_ARGUMENTS")
 	{
+		@Override
+		public boolean shouldCreateStub(ASTNode node)
+		{
+			return CSharpStubTypeUtil.shouldCreateStub(node);
+		}
+
 		@NotNull
 		@Override
 		public PsiElement createElement(@NotNull ASTNode astNode)

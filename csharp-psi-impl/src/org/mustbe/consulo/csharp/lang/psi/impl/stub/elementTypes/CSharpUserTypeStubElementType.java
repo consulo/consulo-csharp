@@ -24,6 +24,12 @@ public class CSharpUserTypeStubElementType extends CSharpAbstractStubElementType
 		super("USER_TYPE");
 	}
 
+	@Override
+	public boolean shouldCreateStub(ASTNode node)
+	{
+		return CSharpStubTypeUtil.shouldCreateStub(node);
+	}
+
 	@NotNull
 	@Override
 	public PsiElement createElement(@NotNull ASTNode astNode)

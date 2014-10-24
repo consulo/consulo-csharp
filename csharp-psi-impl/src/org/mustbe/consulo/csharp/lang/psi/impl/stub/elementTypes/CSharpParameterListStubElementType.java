@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpParameterListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
@@ -31,6 +32,13 @@ public class CSharpParameterListStubElementType extends CSharpEmptyStubElementTy
 	public CSharpParameterListStubElementType()
 	{
 		super("PARAMETER_LIST");
+	}
+
+	@Override
+	public boolean shouldCreateStub(ASTNode node)
+	{
+		ASTNode treeParent = node.getTreeParent();
+		return !(treeParent != null && treeParent.getElementType() == CSharpElements.ANONYM_METHOD_EXPRESSION) && super.shouldCreateStub(node);
 	}
 
 	@NotNull

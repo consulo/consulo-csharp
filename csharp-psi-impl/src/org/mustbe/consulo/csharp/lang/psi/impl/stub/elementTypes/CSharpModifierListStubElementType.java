@@ -23,6 +23,12 @@ public class CSharpModifierListStubElementType extends CSharpAbstractStubElement
 		super("MODIFIER_LIST");
 	}
 
+	@Override
+	public boolean shouldCreateStub(ASTNode node)
+	{
+		return CSharpStubTypeUtil.shouldCreateStub(node);
+	}
+
 	@NotNull
 	@Override
 	public PsiElement createElement(@NotNull ASTNode astNode)
