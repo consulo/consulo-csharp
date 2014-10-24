@@ -17,8 +17,6 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.consulo.lombok.annotations.Logger;
@@ -27,15 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CompletionResolveScopeProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ConstructorProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExtensionResolveScopeProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
@@ -270,6 +260,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		ResolveState state = null;
 		ResolveResult[] resolveResults = null;
 		PsiElement qualifier = element.getQualifier();
+		List<Pair<Integer, PsiElement>> elementWithWeightList = null;
 		switch(kind)
 		{
 			case THIS:
@@ -490,19 +481,52 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				maybeParameterListOwner.processDeclarations(scopeProcessor, state, null, element);
 				return scopeProcessor.toResolveResults();
 			case TYPE_LIKE:
-			case ANY_MEMBER:
 				return processAnyMember(qualifier, selector, element, kind, completion);
+			case ANY_MEMBER:
+				resolveResults = processAnyMember(qualifier, selector, element, kind, completion);
+				if(resolveResults.length == 0)
+				{
+					return ResolveResult.EMPTY_ARRAY;
+				}
+
+				elementWithWeightList = new ArrayList<Pair<Integer, PsiElement>>();
+
+				for(ResolveResult result : resolveResults)
+				{
+					PsiElement resolvedElement = result.getElement();
+					if(resolvedElement instanceof CSharpElementGroup)
+					{
+						CSharpLambdaResolveResult lambdaResolveResult = CSharpLambdaExpressionImplUtil.resolveLeftLambdaTypeRef(element);
+						if(lambdaResolveResult != null)
+						{
+							for(PsiElement psiElement : ((CSharpElementGroup) resolvedElement).getElements())
+							{
+								if(psiElement instanceof DotNetLikeMethodDeclaration)
+								{
+									elementWithWeightList.add(Pair.create(MethodAcceptorImpl.calcSimpleAcceptableWeight(element,
+											lambdaResolveResult.getParameterTypeRefs(), ((DotNetLikeMethodDeclaration) psiElement)
+											.getParameterTypeRefs()), psiElement));
+								}
+							}
+						}
+					}
+					else
+					{
+						elementWithWeightList.add(Pair.<Integer, PsiElement>create(WeightProcessor.MAX_WEIGHT, result.getElement()));
+					}
+				}
+				return WeightUtil.sortAndReturn(elementWithWeightList);
 			case METHOD:
 			case ARRAY_METHOD:
 				resolveResults = processAnyMember(qualifier, selector, element, kind, completion);
 				if(callArgumentListOwner == null || resolveResults.length == 0)
 				{
-					return resolveResults;
+					return ResolveResult.EMPTY_ARRAY;
 				}
 
 				DotNetTypeRef[] typeArgumentListRefs = callArgumentListOwner.getTypeArgumentListRefs();
 
-				List<Pair<Integer, PsiElement>> list = new ArrayList<Pair<Integer, PsiElement>>();
+				elementWithWeightList = new ArrayList<Pair<Integer, PsiElement>>();
 				for(ResolveResult result : resolveResults)
 				{
 					PsiElement maybeElementGroup = result.getElement();
@@ -520,7 +544,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 								int i = MethodAcceptorImpl.calcAcceptableWeight(element, callArgumentListOwner,
 										(DotNetLikeMethodDeclaration) psiElement);
 
-								list.add(Pair.create(i, psiElement));
+								elementWithWeightList.add(Pair.create(i, psiElement));
 							}
 						}
 					}
@@ -538,27 +562,14 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 							int i = MethodAcceptorImpl.calcSimpleAcceptableWeight(element, callArgumentListOwner.getParameterExpressions(),
 									parameterTypeRefs);
 
-							list.add(Pair.create(i, maybeElementGroup));
+							elementWithWeightList.add(Pair.create(i, maybeElementGroup));
 						}
 					}
 				}
 
-				Collections.sort(list, new Comparator<Pair<Integer, PsiElement>>()
-				{
-					@Override
-					public int compare(Pair<Integer, PsiElement> o1, Pair<Integer, PsiElement> o2)
-					{
-						return o2.getFirst() - o1.getFirst();
-					}
-				});
-				resolveResults = new ResolveResult[list.size()];
-				int i = 0;
-				for(Pair<Integer, PsiElement> pair : list)
-				{
-					resolveResults[i++] = new PsiElementResolveResult(pair.getSecond(), pair.getFirst() == WeightProcessor.MAX_WEIGHT);
-				}
-				return resolveResults;
-		} return ResolveResult.EMPTY_ARRAY;
+				return WeightUtil.sortAndReturn(elementWithWeightList);
+		}
+		return ResolveResult.EMPTY_ARRAY;
 	}
 
 	public static ResolveResult[] processAnyMember(@Nullable PsiElement qualifier,
@@ -727,7 +738,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			default:
 				targets = new ExecuteTarget[]{
 						ExecuteTarget.MEMBER,
-						ExecuteTarget.TYPE_DEF
+						ExecuteTarget.TYPE_DEF,
+						ExecuteTarget.ELEMENT_GROUP
 				};
 				break;
 		}

@@ -61,20 +61,28 @@ public class MethodAcceptorImpl
 
 	public static int calcSimpleAcceptableWeight(@NotNull PsiElement scope, DotNetExpression[] expressions, DotNetTypeRef[] parameters)
 	{
-		int weight = 0;
+		DotNetTypeRef[] expressionTypeRefs = new DotNetTypeRef[expressions.length];
 		for(int i = 0; i < expressions.length; i++)
 		{
 			DotNetExpression expression = expressions[i];
-			DotNetTypeRef parameter = ArrayUtil2.safeGet(parameters, i);
-			if(parameter == null)
+			expressionTypeRefs[i] = expression.toTypeRef(false);
+		}
+		return calcSimpleAcceptableWeight(scope, expressionTypeRefs, parameters);
+	}
+
+	public static int calcSimpleAcceptableWeight(@NotNull PsiElement scope, DotNetTypeRef[] expressions, DotNetTypeRef[] parameters)
+	{
+		int weight = 0;
+		for(int i = 0; i < expressions.length; i++)
+		{
+			DotNetTypeRef expressionTypeRef = expressions[i];
+			DotNetTypeRef parameterTypeRef = ArrayUtil2.safeGet(parameters, i);
+			if(parameterTypeRef == null)
 			{
 				return weight;
 			}
 
-			DotNetTypeRef expressionType = expression.toTypeRef(false);
-			DotNetTypeRef parameterType = parameter;
-
-			if(CSharpTypeUtil.isInheritable(parameterType, expressionType, scope))
+			if(CSharpTypeUtil.isInheritable(parameterTypeRef, expressionTypeRef, scope))
 			{
 				weight++;
 			}
