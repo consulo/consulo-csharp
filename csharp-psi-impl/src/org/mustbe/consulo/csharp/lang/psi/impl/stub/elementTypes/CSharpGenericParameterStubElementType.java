@@ -21,7 +21,6 @@ import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpGenericParameterImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpGenericParameterStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.MemberStub;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
@@ -40,6 +39,7 @@ public class CSharpGenericParameterStubElementType extends CSharpAbstractStubEle
 		super("GENERIC_PARAMETER");
 	}
 
+	@NotNull
 	@Override
 	public DotNetGenericParameter createElement(@NotNull ASTNode astNode)
 	{
@@ -56,16 +56,13 @@ public class CSharpGenericParameterStubElementType extends CSharpAbstractStubEle
 	public CSharpGenericParameterStub createStub(@NotNull DotNetGenericParameter genericParameter, StubElement stubElement)
 	{
 		StringRef name = StringRef.fromNullableString(genericParameter.getName());
-		int modifierMask = MemberStub.getModifierMask(genericParameter);
-
-		return new CSharpGenericParameterStub(stubElement, name, modifierMask);
+		return new CSharpGenericParameterStub(stubElement, name);
 	}
 
 	@Override
 	public void serialize(@NotNull CSharpGenericParameterStub cSharpGenericParameterStub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(cSharpGenericParameterStub.getName());
-		stubOutputStream.writeInt(cSharpGenericParameterStub.getModifierMask());
 	}
 
 	@NotNull
@@ -73,7 +70,6 @@ public class CSharpGenericParameterStubElementType extends CSharpAbstractStubEle
 	public CSharpGenericParameterStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef name = stubInputStream.readName();
-		int modifierMask = stubInputStream.readInt();
-		return new CSharpGenericParameterStub(stubElement, name,  modifierMask);
+		return new CSharpGenericParameterStub(stubElement, name);
 	}
 }

@@ -16,28 +16,24 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import java.io.IOException;
-
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpGenericConstraintListImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpGenericConstraintListStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
 
 /**
  * @author VISTALL
  * @since 10.06.14
  */
-public class CSharpGenericConstraintListStubElementType extends CSharpAbstractStubElementType<CSharpGenericConstraintListStub, CSharpGenericConstraintList>
+public class CSharpGenericConstraintListStubElementType extends CSharpEmptyStubElementType<CSharpGenericConstraintList>
 {
 	public CSharpGenericConstraintListStubElementType()
 	{
 		super("GENERIC_CONSTRAINT_LIST");
 	}
 
+	@NotNull
 	@Override
 	public CSharpGenericConstraintList createElement(@NotNull ASTNode astNode)
 	{
@@ -45,30 +41,8 @@ public class CSharpGenericConstraintListStubElementType extends CSharpAbstractSt
 	}
 
 	@Override
-	public CSharpGenericConstraintList createPsi(@NotNull CSharpGenericConstraintListStub cSharpGenericConstraintListStub)
+	public CSharpGenericConstraintList createPsi(@NotNull CSharpEmptyStub<CSharpGenericConstraintList> cSharpGenericConstraintListStub)
 	{
 		return new CSharpGenericConstraintListImpl(cSharpGenericConstraintListStub, this);
-	}
-
-	@Override
-	public CSharpGenericConstraintListStub createStub(
-			@NotNull CSharpGenericConstraintList cSharpGenericConstraintList, StubElement stubElement)
-	{
-		return new CSharpGenericConstraintListStub(stubElement, this);
-	}
-
-	@Override
-	public void serialize(
-			@NotNull CSharpGenericConstraintListStub cSharpGenericConstraintListStub, @NotNull StubOutputStream stubOutputStream) throws IOException
-	{
-
-	}
-
-	@NotNull
-	@Override
-	public CSharpGenericConstraintListStub deserialize(
-			@NotNull StubInputStream inputStream, StubElement stubElement) throws IOException
-	{
-		return new CSharpGenericConstraintListStub(stubElement, this);
 	}
 }

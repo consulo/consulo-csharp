@@ -22,14 +22,12 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 
@@ -37,14 +35,14 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 04.12.13.
  */
-public class CSharpPropertyDeclarationImpl extends CSharpStubVariableImpl<CSharpVariableStub<CSharpPropertyDeclarationImpl>> implements CSharpPropertyDeclaration
+public class CSharpPropertyDeclarationImpl extends CSharpStubVariableImpl<CSharpVariableDeclStub<CSharpPropertyDeclarationImpl>> implements CSharpPropertyDeclaration
 {
 	public CSharpPropertyDeclarationImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpPropertyDeclarationImpl(@NotNull CSharpVariableStub<CSharpPropertyDeclarationImpl> stub)
+	public CSharpPropertyDeclarationImpl(@NotNull CSharpVariableDeclStub<CSharpPropertyDeclarationImpl> stub)
 	{
 		super(stub, CSharpStubElements.PROPERTY_DECLARATION);
 	}
@@ -60,13 +58,6 @@ public class CSharpPropertyDeclarationImpl extends CSharpStubVariableImpl<CSharp
 	public DotNetXXXAccessor[] getAccessors()
 	{
 		return getStubOrPsiChildren(CSharpStubElements.XXX_ACCESSOR, DotNetXXXAccessor.ARRAY_FACTORY);
-	}
-
-	@NotNull
-	@Override
-	public DotNetType getType()
-	{
-		return findNotNullChildByClass(DotNetType.class);
 	}
 
 	@Nullable
@@ -99,19 +90,13 @@ public class CSharpPropertyDeclarationImpl extends CSharpStubVariableImpl<CSharp
 	@Override
 	public DotNetType getTypeForImplement()
 	{
-		DotNetType[] types = findChildrenByClass(DotNetType.class);
-		return ArrayUtil2.safeGet(types, 1);
+		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 1);
 	}
 
 	@NotNull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{
-		CSharpVariableStub<?> stub = getStub();
-		if(stub != null)
-		{
-			return CSharpStubTypeInfoUtil.toTypeRef(stub.getImplementType(), this);
-		}
 		DotNetType typeForImplement = getTypeForImplement();
 		if(typeForImplement == null)
 		{

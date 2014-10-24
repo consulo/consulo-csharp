@@ -26,25 +26,24 @@ import java.util.TreeSet;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodIndex;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MethodIndex;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeIndex;
+import org.mustbe.consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
 import org.mustbe.consulo.dotnet.DotNetBundle;
+import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
-import org.mustbe.consulo.msil.MsilHelper;
 import com.intellij.codeInsight.daemon.impl.ShowAutoImportPass;
 import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.codeInsight.intention.HighPriorityAction;
@@ -79,22 +78,27 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		SHOW_ACTION
 	}
 
-	private final CSharpReferenceExpressionImpl myRef;
+	private final CSharpReferenceExpression myRef;
 
-	public UsingNamespaceFix(CSharpReferenceExpressionImpl ref)
+	public UsingNamespaceFix(CSharpReferenceExpression ref)
 	{
 		myRef = ref;
 	}
 
 	public PopupResult doFix(Editor editor)
 	{
+		CSharpReferenceExpression.ResolveToKind kind = myRef.kind();
+		if(kind != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE && kind != CSharpReferenceExpression.ResolveToKind.METHOD)
+		{
+			return PopupResult.NOT_AVAILABLE;
+		}
 		PsiElement resolve = myRef.resolve();
 		if(resolve != null && resolve.isValid())
 		{
 			return PopupResult.NOT_AVAILABLE;
 		}
 
-		Set<Couple<String>> q = collectAllAvailableNamespaces();
+		Set<Couple<String>> q = collectAllAvailableNamespaces(kind);
 		if(q.isEmpty())
 		{
 			return PopupResult.NOT_AVAILABLE;
@@ -108,7 +112,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		return PopupResult.SHOW_HIT;
 	}
 
-	private Set<Couple<String>> collectAllAvailableNamespaces()
+	private Set<Couple<String>> collectAllAvailableNamespaces(CSharpReferenceExpression.ResolveToKind kind)
 	{
 		if(PsiTreeUtil.getParentOfType(myRef, CSharpUsingListChild.class) != null || !myRef.isValid())
 		{
@@ -120,8 +124,14 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 			return Collections.emptySet();
 		}
 		Set<Couple<String>> q = new ArrayListSet<Couple<String>>();
-		collectAvailableNamespaces(q, referenceName);
-		collectAvailableNamespacesForMethodExtensions(q, referenceName);
+		if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE)
+		{
+			collectAvailableNamespaces(q, referenceName);
+		}
+		if(kind == CSharpReferenceExpression.ResolveToKind.METHOD)
+		{
+			collectAvailableNamespacesForMethodExtensions(q, referenceName);
+		}
 		//q.addAll(LibrariesSearcher.getInstance().searchInSystemLibraries(myRef, referenceName));
 		return q;
 	}
@@ -147,7 +157,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 				}
 			};
 			// if attribute endwith Attribute - collect only with
-			if(referenceName.endsWith(CSharpReferenceExpressionImplUtil.AttributeSuffix))
+			if(referenceName.endsWith(AttributeByNameSelector.AttributeSuffix))
 			{
 				tempTypes = getTypesWithGeneric(referenceName);
 
@@ -159,7 +169,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 
 				collect(set, tempTypes, cond);
 
-				tempTypes = getTypesWithGeneric(referenceName + CSharpReferenceExpressionImplUtil.AttributeSuffix);
+				tempTypes = getTypesWithGeneric(referenceName + AttributeByNameSelector.AttributeSuffix);
 
 				collect(set, tempTypes, cond);
 			}
@@ -239,8 +249,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 
 		for(DotNetLikeMethodDeclaration possibleMethod : list)
 		{
-			if(MethodAcceptorImpl.calcAcceptableWeight(myRef, newExpressions, DotNetGenericExtractor.EMPTY,
-					possibleMethod) == WeightProcessor.MAX_WEIGHT)
+			if(MethodAcceptorImpl.calcAcceptableWeight(myRef, newExpressions, possibleMethod) == WeightProcessor.MAX_WEIGHT)
 			{
 				PsiElement parentOfMethod = possibleMethod.getParent();
 				if(parentOfMethod instanceof DotNetQualifiedElement)
@@ -292,7 +301,8 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile psiFile)
 	{
-		return !collectAllAvailableNamespaces().isEmpty();
+		CSharpReferenceExpression.ResolveToKind kind = myRef.kind();
+		return !collectAllAvailableNamespaces(kind).isEmpty();
 	}
 
 	@Override

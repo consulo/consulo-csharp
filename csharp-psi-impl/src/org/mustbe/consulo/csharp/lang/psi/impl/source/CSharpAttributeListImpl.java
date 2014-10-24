@@ -18,21 +18,29 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
-import org.mustbe.consulo.dotnet.psi.DotNetAttributeList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpAttributeListStub;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.stubs.IStubElementType;
 
 /**
  * @author VISTALL
  * @since 19.12.13.
  */
-public class CSharpAttributeListImpl extends CSharpElementImpl implements DotNetAttributeList
+public class CSharpAttributeListImpl extends CSharpStubElementImpl<CSharpAttributeListStub> implements CSharpAttributeList
 {
 	public CSharpAttributeListImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	public CSharpAttributeListImpl(@NotNull CSharpAttributeListStub stub, @NotNull IStubElementType<? extends CSharpAttributeListStub, ?> nodeType)
+	{
+		super(stub, nodeType);
 	}
 
 	@Override
@@ -50,8 +58,8 @@ public class CSharpAttributeListImpl extends CSharpElementImpl implements DotNet
 
 	@NotNull
 	@Override
-	public DotNetAttribute[] getAttributes()
+	public CSharpAttribute[] getAttributes()
 	{
-		return findChildrenByClass(DotNetAttribute.class);
+		return getStubOrPsiChildren(CSharpStubElements.ATTRIBUTE, CSharpAttribute.ARRAY_FACTORY);
 	}
 }

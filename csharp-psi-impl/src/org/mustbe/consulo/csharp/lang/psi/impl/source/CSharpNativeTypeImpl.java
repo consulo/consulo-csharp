@@ -26,19 +26,21 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithIntValueStub;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetNativeType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpNativeTypeImpl extends CSharpElementImpl implements DotNetNativeType
+public class CSharpNativeTypeImpl extends CSharpStubElementImpl<CSharpWithIntValueStub> implements DotNetNativeType
 {
 	public static final Map<IElementType, String> ourElementToQTypes = new HashMap<IElementType, String>()
 	{
@@ -67,6 +69,11 @@ public class CSharpNativeTypeImpl extends CSharpElementImpl implements DotNetNat
 		super(node);
 	}
 
+	public CSharpNativeTypeImpl(@NotNull CSharpWithIntValueStub stub, @NotNull IStubElementType<? extends CSharpWithIntValueStub, ?> nodeType)
+	{
+		super(stub, nodeType);
+	}
+
 	@Override
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
@@ -74,10 +81,21 @@ public class CSharpNativeTypeImpl extends CSharpElementImpl implements DotNetNat
 	}
 
 	@NotNull
+	public IElementType getTypeElementType()
+	{
+		CSharpWithIntValueStub stub = getStub();
+		if(stub != null)
+		{
+			return CSharpTokenSets.NATIVE_TYPES_AS_ARRAY[stub.getValue()];
+		}
+		return getTypeElement().getNode().getElementType();
+	}
+
+	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef()
 	{
-		IElementType elementType = getTypeElement().getNode().getElementType();
+		IElementType elementType = getTypeElementType();
 		if(elementType == CSharpSoftTokens.VAR_KEYWORD)
 		{
 			return DotNetTypeRef.AUTO_TYPE;

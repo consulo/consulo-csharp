@@ -25,6 +25,7 @@ import com.intellij.util.NotNullFunction;
  * @author VISTALL
  * @since 13.07.14
  */
+@Deprecated
 public class CSharpTransform implements NotNullFunction<DotNetTypeDeclaration, DotNetTypeDeclaration>
 {
 	public static final CSharpTransform INSTANCE = new CSharpTransform();

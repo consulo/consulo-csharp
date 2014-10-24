@@ -23,8 +23,8 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpNamespaceStub;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpNamespaceDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
@@ -33,22 +33,20 @@ import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharpNamespaceStub> implements CSharpNamespaceDeclaration
+public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharpNamespaceDeclStub> implements CSharpNamespaceDeclaration
 {
 	public CSharpNamespaceDeclarationImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpNamespaceDeclarationImpl(@NotNull CSharpNamespaceStub stub)
+	public CSharpNamespaceDeclarationImpl(@NotNull CSharpNamespaceDeclStub stub)
 	{
 		super(stub, CSharpStubElements.NAMESPACE_DECLARATION);
 	}
@@ -76,7 +74,7 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 	@Override
 	public String getName()
 	{
-		CSharpNamespaceStub stub = getStub();
+		CSharpNamespaceDeclStub stub = getStub();
 		if(stub != null)
 		{
 			return stub.getName();
@@ -128,7 +126,7 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 	@Override
 	public String getPresentableParentQName()
 	{
-		CSharpNamespaceStub stub = getStub();
+		CSharpNamespaceDeclStub stub = getStub();
 		if(stub != null)
 		{
 			return stub.getParentQName();
@@ -172,10 +170,10 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 		return childByClass != null ? childByClass.getText() : null;
 	}
 
+	@Nullable
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent,
-			@NotNull PsiElement place)
+	public CSharpUsingList getUsingList()
 	{
-		return CSharpResolveUtil.walkChildren(processor, this, false, place, state);
+		return getStubOrPsiChild(CSharpStubElements.USING_LIST);
 	}
 }

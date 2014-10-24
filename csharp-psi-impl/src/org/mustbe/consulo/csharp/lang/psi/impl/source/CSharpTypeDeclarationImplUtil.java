@@ -68,7 +68,7 @@ public class CSharpTypeDeclarationImplUtil
 			{
 				return DotNetTypeRef.EMPTY_ARRAY;
 			}
-			typeRefs = new DotNetTypeRef[] {new DotNetTypeRefByQName(defaultSuperType, CSharpTransform.INSTANCE)};
+			typeRefs = new DotNetTypeRef[]{new DotNetTypeRefByQName(defaultSuperType, CSharpTransform.INSTANCE)};
 		}
 		return typeRefs;
 	}
@@ -85,7 +85,7 @@ public class CSharpTypeDeclarationImplUtil
 		{
 			for(DotNetTypeRef anExtend : anExtends)
 			{
-				PsiElement resolve = anExtend.resolve(scope);
+				PsiElement resolve = anExtend.resolve(scope).getElement();
 				if(resolve instanceof DotNetTypeDeclaration && !((DotNetTypeDeclaration) resolve).isInterface())
 				{
 					return anExtend;

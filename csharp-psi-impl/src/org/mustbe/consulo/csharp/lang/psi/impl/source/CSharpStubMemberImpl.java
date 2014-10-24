@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.reflactoring.CSharpRefactoringUtil;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.MemberStub;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
@@ -54,17 +55,12 @@ public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSha
 	@Nullable
 	public DotNetModifierList getModifierList()
 	{
-		return findChildByClass(DotNetModifierList.class);
+		return getStubOrPsiChild(CSharpStubElements.MODIFIER_LIST);
 	}
 
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		S stub = getStub();
-		if(stub != null)
-		{
-			return stub.hasModifier(modifier);
-		}
 		DotNetModifierList modifierList = getModifierList();
 		return modifierList != null && modifierList.hasModifier(modifier);
 	}

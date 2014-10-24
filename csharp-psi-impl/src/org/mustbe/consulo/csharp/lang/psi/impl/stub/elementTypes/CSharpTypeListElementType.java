@@ -24,15 +24,13 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubTypeListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeListStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfo;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.IndexSink;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.util.io.StringRef;
 
 /**
@@ -46,6 +44,7 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 		super(debugName);
 	}
 
+	@NotNull
 	@Override
 	public DotNetTypeList createElement(@NotNull ASTNode astNode)
 	{
@@ -68,14 +67,7 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 			String typeText = typeTexts[i];
 			refs[i] = StringRef.fromString(typeText);
 		}
-
-		DotNetType[] typeRefs = dotNetTypeList.getTypes();
-		CSharpStubTypeInfo[] typeInfos = new CSharpStubTypeInfo[typeRefs.length];
-		for(int i = 0; i < typeRefs.length; i++)
-		{
-			typeInfos[i] = CSharpStubTypeInfoUtil.toStub(typeRefs[i]);
-		}
-		return new CSharpTypeListStub(stubElement, this, refs, typeInfos);
+		return new CSharpTypeListStub(stubElement, this, refs);
 	}
 
 	@Override
@@ -86,12 +78,6 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 		for(String reference : references)
 		{
 			stubOutputStream.writeName(reference);
-		}
-		CSharpStubTypeInfo[] infos = cSharpTypeListStub.getTypeRefs();
-		stubOutputStream.writeByte(references.length);
-		for(CSharpStubTypeInfo typeRef : infos)
-		{
-			typeRef.writeTo(stubOutputStream);
 		}
 	}
 
@@ -105,13 +91,7 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 		{
 			refs[i] = stubInputStream.readName();
 		}
-		byte types = stubInputStream.readByte();
-		CSharpStubTypeInfo[] infos = new CSharpStubTypeInfo[types];
-		for(int i = 0; i < infos.length; i++)
-		{
-			infos[i] = CSharpStubTypeInfoUtil.read(stubInputStream);
-		}
-		return new CSharpTypeListStub(stubElement, this, refs, infos);
+		return new CSharpTypeListStub(stubElement, this, refs);
 	}
 
 	@Override
@@ -126,6 +106,13 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 				indexSink.occurrence(CSharpIndexKeys.EXTENDS_LIST_INDEX, shortClassName);
 			}
 		}
+	}
+
+	@Override
+	public boolean shouldCreateStub(ASTNode node)
+	{
+		IElementType elementType = node.getElementType();
+		return super.shouldCreateStub(node);
 	}
 
 	@NotNull

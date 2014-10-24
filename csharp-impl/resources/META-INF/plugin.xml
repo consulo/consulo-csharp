@@ -68,10 +68,6 @@
 	</extensions>
 
 	<extensions defaultExtensionNs="com.intellij">
-		<eapDescriptor implementation="org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil$CSharpResolvingEapDescriptor"/>
-		<eapDescriptor
-				implementation="org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil$CSharpReferenceCompletionEapDescriptor"/>
-
 		<internalFileTemplate name="CSharpClass"/>
 		<internalFileTemplate name="CSharpInterface"/>
 		<internalFileTemplate name="CSharpEnum"/>
@@ -159,6 +155,7 @@
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeByQNameIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeByVmQNameIndex"/>
+		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeWithExtensionMethodsIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MethodIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MemberByNamespaceQNameIndex"/>
@@ -167,7 +164,6 @@
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.PropertyIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.EventIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.ExtendsListIndex"/>
-		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.UsingListIndex"/>
 
 		<resolveScopeEnlarger implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveScopeEnlarger"/>
 

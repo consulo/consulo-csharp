@@ -17,13 +17,16 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.dotnet.psi.DotNetFile;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
@@ -36,11 +39,24 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpFileImpl extends PsiFileBase implements DotNetFile
+public class CSharpFileImpl extends PsiFileBase implements CSharpFile
 {
 	public CSharpFileImpl(@NotNull FileViewProvider viewProvider)
 	{
 		super(viewProvider, CSharpLanguage.INSTANCE);
+	}
+
+	@Override
+	@Nullable
+	public CSharpUsingList getUsingList()
+	{
+		StubElement<?> stub = getStub();
+		if(stub != null)
+		{
+			PsiElement[] elements = stub.getChildrenByType(CSharpStubElements.USING_LIST, PsiElement.ARRAY_FACTORY);
+			return (CSharpUsingList) ArrayUtil2.safeGet(elements, 0);
+		}
+		return findChildByClass(CSharpUsingList.class);
 	}
 
 	@Override

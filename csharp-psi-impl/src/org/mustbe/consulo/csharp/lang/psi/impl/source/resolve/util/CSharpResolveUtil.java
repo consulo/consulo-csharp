@@ -17,46 +17,35 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util;
 
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
-import org.consulo.ide.eap.EarlyAccessProgramDescriptor;
-import org.consulo.ide.eap.EarlyAccessProgramManager;
-import org.consulo.lombok.annotations.LazyInstance;
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintOwner;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintOwnerUtil;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
-import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpNamedResolveSelector;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.debugger.DotNetVirtualMachineUtil;
 import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
-import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.KeyWithDefaultValue;
 import com.intellij.openapi.util.text.StringUtil;
@@ -66,6 +55,7 @@ import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.util.NullableFunction;
 import com.intellij.util.SmartList;
 import lombok.val;
 
@@ -76,8 +66,7 @@ import lombok.val;
 @Logger
 public class CSharpResolveUtil
 {
-	public static final KeyWithDefaultValue<DotNetGenericExtractor> EXTRACTOR_KEY = new KeyWithDefaultValue<DotNetGenericExtractor>
-			("dot-net-extractor")
+	public static final KeyWithDefaultValue<DotNetGenericExtractor> EXTRACTOR = new KeyWithDefaultValue<DotNetGenericExtractor>("dot-net-extractor")
 	{
 		@Override
 		public DotNetGenericExtractor getDefaultValue()
@@ -86,66 +75,11 @@ public class CSharpResolveUtil
 		}
 	};
 
-	public static class CSharpResolvingEapDescriptor extends EarlyAccessProgramDescriptor
-	{
-		@NotNull
-		@Override
-		public String getName()
-		{
-			return "C# Resolving";
-		}
-
-		@Override
-		public boolean isRestartRequired()
-		{
-			return true;
-		}
-
-		@Override
-		public boolean getDefaultState()
-		{
-			return false;
-		}
-
-		@NotNull
-		@Override
-		public String getDescription()
-		{
-			return "Currently C# Resolving is in progress and be slow(and bugged).";
-		}
-	}
-
-	public static class CSharpReferenceCompletionEapDescriptor extends EarlyAccessProgramDescriptor
-	{
-		@NotNull
-		@Override
-		public String getName()
-		{
-			return "C# Reference Completion";
-		}
-
-		@Override
-		public boolean isRestartRequired()
-		{
-			return true;
-		}
-
-		@Override
-		public boolean getDefaultState()
-		{
-			return false;
-		}
-
-		@NotNull
-		@Override
-		public String getDescription()
-		{
-			return "Currently C# Reference Completion is in progress and be slow(and bugged).";
-		}
-	}
+	public static final Key<NullableFunction<CSharpResolveContext, PsiElement>> ELEMENT_SELECTOR = Key.create("element-selector");
 
 	public static final Key<Boolean> ACCESSOR_VALUE_VARIABLE = Key.create("accessor.value.variable");
-	public static final Key<Boolean> EXTENSION_METHOD_WRAPPER = Key.create("extension.method.wrapper");
+	public static final Key<CSharpMethodDeclaration> EXTENSION_METHOD_WRAPPER = Key.create("extension.method.wrapper");
+	public static final Key<CSharpResolveSelector> SELECTOR = Key.create("resolve.selector");
 	public static final Key<Boolean> NO_USING_LIST = new KeyWithDefaultValue<Boolean>("no.using.list")
 	{
 		@Override
@@ -155,17 +89,19 @@ public class CSharpResolveUtil
 		}
 	};
 
-	public static final Key<PsiFile> CONTAINS_FILE_KEY = Key.create("contains.file");
-	public static final Key<Condition<PsiElement>> CONDITION_KEY = Key.create("condition");
-
-	public static boolean treeWalkUp(@NotNull PsiScopeProcessor processor, @NotNull PsiElement entrance, @NotNull PsiElement sender,
+	public static boolean treeWalkUp(@NotNull PsiScopeProcessor processor,
+			@NotNull PsiElement entrance,
+			@NotNull PsiElement sender,
 			@Nullable PsiElement maxScope)
 	{
 		return treeWalkUp(processor, entrance, sender, maxScope, ResolveState.initial());
 	}
 
-	public static boolean treeWalkUp(@NotNull final PsiScopeProcessor processor, @NotNull final PsiElement entrance,
-			@NotNull final PsiElement sender, @Nullable PsiElement maxScope, @NotNull final ResolveState state)
+	public static boolean treeWalkUp(@NotNull final PsiScopeProcessor processor,
+			@NotNull final PsiElement entrance,
+			@NotNull final PsiElement sender,
+			@Nullable PsiElement maxScope,
+			@NotNull final ResolveState state)
 	{
 		if(!entrance.isValid())
 		{
@@ -215,62 +151,176 @@ public class CSharpResolveUtil
 		return true;
 	}
 
-	public static boolean walkChildren(@NotNull final PsiScopeProcessor processor, @NotNull final PsiElement entrance, boolean gotoParent,
-			@Nullable PsiElement maxScope, @NotNull ResolveState state)
+	public static boolean walkUsing(@NotNull final PsiScopeProcessor processor,
+			@NotNull final PsiElement entrance,
+			@Nullable PsiElement maxScope,
+			@NotNull final ResolveState state)
 	{
-		return walkChildrenImpl(processor, entrance, gotoParent, maxScope, state, new HashSet<String>());
-	}
-
-	private static boolean walkChildrenImpl(@NotNull final PsiScopeProcessor processor, @NotNull final PsiElement entrance, boolean walkParent,
-			@Nullable PsiElement maxScope, @NotNull ResolveState state, @NotNull Set<String> typeVisited)
-	{
-		ProgressIndicatorProvider.checkCanceled();
-		GlobalSearchScope resolveScope = entrance.getResolveScope();
-		if(entrance instanceof DotNetTypeDeclaration)
+		if(!entrance.isValid())
 		{
-			DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR_KEY);
+			CSharpResolveUtil.LOGGER.error(new PsiInvalidElementAccessException(entrance));
+		}
 
-			val typeDeclaration = (DotNetTypeDeclaration) entrance;
+		PsiElement prevParent = entrance;
+		PsiElement scope = entrance;
 
-			val superTypes = new SmartList<DotNetTypeRef>();
+		if(maxScope == null)
+		{
+			maxScope = entrance.getContainingFile();
+		}
 
-			if(typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
+		while(scope != null)
+		{
+			ProgressIndicatorProvider.checkCanceled();
+
+			if(scope instanceof CSharpUsingListOwner)
 			{
-				String vmQName = typeDeclaration.getVmQName();
-				val types = CSharpPsiSearcher.getInstance(entrance.getProject()).findTypes(vmQName, resolveScope);
-
-				for(val type : types)
+				CSharpUsingList usingList = ((CSharpUsingListOwner) scope).getUsingList();
+				if(usingList != null)
 				{
-					if(!type.hasModifier(CSharpModifier.PARTIAL))
-					{
-						continue;
-					}
-
-					if(!processTypeDeclaration(processor, type, state, superTypes, extractor, null))
+					if(!processor.execute(usingList, state))
 					{
 						return false;
 					}
 				}
-				typeVisited.add(vmQName);
-			}
-			else
-			{
-				if(!processTypeDeclaration(processor, typeDeclaration, state, superTypes, extractor, typeVisited))
+
+				if(scope instanceof CSharpFile)
 				{
-					return false;
+					DotNetNamespaceAsElement root = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace("",
+							entrance.getResolveScope());
+
+					assert root != null;
+
+					if(!processor.execute(root, state))
+					{
+						return false;
+					}
 				}
 			}
 
+			if(scope == maxScope)
+			{
+				break;
+			}
+
+			prevParent = scope;
+			scope = prevParent.getContext();
+			if(scope != null && scope != prevParent.getParent() && !scope.isValid())
+			{
+				break;
+			}
+		}
+
+		return true;
+	}
+
+	public static boolean walkGenericParameterList(@NotNull final PsiScopeProcessor processor,
+			@NotNull final PsiElement entrance,
+			@Nullable PsiElement maxScope,
+			@NotNull final ResolveState state)
+	{
+		if(!ExecuteTargetUtil.canProcess(processor, ExecuteTarget.GENERIC_PARAMETER))
+		{
+			return true;
+		}
+
+		if(!entrance.isValid())
+		{
+			CSharpResolveUtil.LOGGER.error(new PsiInvalidElementAccessException(entrance));
+		}
+
+		PsiElement prevParent = entrance;
+		PsiElement scope = entrance;
+
+		if(maxScope == null)
+		{
+			maxScope = entrance.getContainingFile();
+		}
+
+		while(scope != null)
+		{
+			ProgressIndicatorProvider.checkCanceled();
+
+			if(scope instanceof DotNetGenericParameterListOwner)
+			{
+				DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) scope).getGenericParameters();
+				if(genericParameters.length > 0)
+				{
+					CSharpResolveSelector selector = state.get(SELECTOR);
+					if(selector != null)
+					{
+						assert processor instanceof AbstractScopeProcessor;
+						assert selector instanceof CSharpNamedResolveSelector;
+
+						for(DotNetGenericParameter genericParameter : genericParameters)
+						{
+							if(((CSharpNamedResolveSelector) selector).isNameEqual(genericParameter.getName()))
+							{
+								((AbstractScopeProcessor) processor).addElement(genericParameter);
+								return false;
+							}
+						}
+					}
+					else
+					{
+						for(DotNetGenericParameter genericParameter : genericParameters)
+						{
+							((AbstractScopeProcessor) processor).addElement(genericParameter);
+						}
+					}
+				}
+			}
+
+			if(scope == maxScope)
+			{
+				break;
+			}
+
+			prevParent = scope;
+			scope = prevParent.getContext();
+			if(scope != null && scope != prevParent.getParent() && !scope.isValid())
+			{
+				break;
+			}
+		}
+
+		return true;
+	}
+
+	public static boolean walkChildren(@NotNull final PsiScopeProcessor processor,
+			@NotNull final PsiElement entrance,
+			boolean walkParent,
+			@Nullable PsiElement maxScope,
+			@NotNull ResolveState state)
+	{
+		ProgressIndicatorProvider.checkCanceled();
+		GlobalSearchScope resolveScope = entrance.getResolveScope();
+		if(entrance instanceof CSharpTypeDeclaration)
+		{
+			val typeDeclaration = (CSharpTypeDeclaration) entrance;
+
+			val superTypes = new SmartList<DotNetTypeRef>();
+
+			if(!processor.execute(typeDeclaration, state))
+			{
+				return false;
+			}
+			Collections.addAll(superTypes, typeDeclaration.getExtendTypeRefs());
+
 			for(DotNetTypeRef dotNetTypeRef : superTypes)
 			{
-				PsiElement resolve = dotNetTypeRef.resolve(entrance);
+				DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(entrance);
+				PsiElement resolve = typeResolveResult.getElement();
 
 				if(resolve != null && !resolve.isEquivalentTo(entrance))
 				{
-					DotNetGenericExtractor genericExtractor = dotNetTypeRef.getGenericExtractor(resolve, entrance);
-					ResolveState newState = ResolveState.initial().put(EXTRACTOR_KEY, genericExtractor);
+					DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
 
-					if(!walkChildrenImpl(processor, resolve, false, maxScope, newState, typeVisited))
+					CSharpResolveSelector selector = state.get(SELECTOR);
+
+					ResolveState newState = ResolveState.initial().put(SELECTOR, selector).put(EXTRACTOR, genericExtractor);
+
+					if(!walkChildren(processor, resolve, false, maxScope, newState))
 					{
 						return false;
 					}
@@ -279,11 +329,27 @@ public class CSharpResolveUtil
 
 			if(walkParent)
 			{
-				if(!walkChildrenImpl(processor, entrance.getParent(), walkParent, maxScope, state, typeVisited))
+				if(!walkChildren(processor, entrance.getParent(), walkParent, maxScope, state))
 				{
 					return false;
 				}
 			}
+		}
+		else if(entrance instanceof CSharpTypeDefStatement)
+		{
+			DotNetTypeRef dotNetTypeRef = ((CSharpTypeDefStatement) entrance).toTypeRef();
+
+			DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(entrance);
+
+			PsiElement element = typeResolveResult.getElement();
+			if(element == null)
+			{
+				return true;
+			}
+
+			CSharpResolveSelector selector = state.get(SELECTOR);
+			ResolveState newState = ResolveState.initial().put(SELECTOR, selector).put(EXTRACTOR, typeResolveResult.getGenericExtractor());
+			return walkChildren(processor, element, walkParent, maxScope, newState);
 		}
 		else if(entrance instanceof DotNetGenericParameter)
 		{
@@ -324,14 +390,15 @@ public class CSharpResolveUtil
 
 			for(DotNetTypeRef dotNetTypeRef : superTypes)
 			{
-				PsiElement resolve = dotNetTypeRef.resolve(entrance);
+				DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(entrance);
+				PsiElement resolve = typeResolveResult.getElement();
 
 				if(resolve != null && resolve != entrance)
 				{
-					DotNetGenericExtractor genericExtractor = dotNetTypeRef.getGenericExtractor(resolve, entrance);
-					ResolveState newState = ResolveState.initial().put(EXTRACTOR_KEY, genericExtractor);
+					DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
+					ResolveState newState = ResolveState.initial().put(EXTRACTOR, genericExtractor);
 
-					if(!walkChildrenImpl(processor, resolve, false, maxScope, newState, typeVisited))
+					if(!walkChildren(processor, resolve, false, maxScope, newState))
 					{
 						return false;
 					}
@@ -342,12 +409,14 @@ public class CSharpResolveUtil
 		{
 			state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, resolveScope);
 			state = state.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
-			if(!entrance.processDeclarations(processor, state, maxScope, entrance))
+
+			if(!processor.execute(entrance, state))
 			{
 				return false;
 			}
 
 			String parentQName = ((DotNetNamespaceAsElement) entrance).getPresentableParentQName();
+			// dont go to root namespace
 			if(StringUtil.isEmpty(parentQName))
 			{
 				return true;
@@ -357,7 +426,7 @@ public class CSharpResolveUtil
 			{
 				DotNetNamespaceAsElement parentNamespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace(parentQName,
 						resolveScope);
-				if(parentNamespace != null && !walkChildrenImpl(processor, parentNamespace, walkParent, maxScope, state, typeVisited))
+				if(parentNamespace != null && !walkChildren(processor, parentNamespace, walkParent, maxScope, state))
 				{
 					return false;
 				}
@@ -371,70 +440,15 @@ public class CSharpResolveUtil
 				return true;
 			}
 
-			if(walkParent)
-			{
-				state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, resolveScope);
-				state = state.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
-
-				DotNetNamespaceAsElement parentNamespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace(presentableQName,
-						resolveScope);
-				if(parentNamespace != null && !walkChildrenImpl(processor, parentNamespace, walkParent, maxScope, state, typeVisited))
-				{
-					return false;
-				}
-			}
-		}
-		else if(entrance instanceof PsiFile)
-		{
 			state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, resolveScope);
 			state = state.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
 
-			DotNetNamespaceAsElement namespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace("", resolveScope);
-			return namespace != null && walkChildrenImpl(processor, namespace, walkParent, maxScope, state, typeVisited);
-		}
-
-		PsiFile psiFile = state.get(CONTAINS_FILE_KEY);
-		return psiFile == null || walkChildrenImpl(processor, psiFile, walkParent, maxScope, state, typeVisited);
-	}
-
-	private static boolean processTypeDeclaration(@NotNull final PsiScopeProcessor processor, DotNetTypeDeclaration typeDeclaration,
-			ResolveState state, List<DotNetTypeRef> supers, DotNetGenericExtractor genericExtractor, @Nullable Set<String> typeVisited)
-	{
-		if(typeVisited != null)
-		{
-			String vmName = DotNetVirtualMachineUtil.toVMQualifiedName(typeDeclaration);
-			if(typeVisited.contains(vmName))
-			{
-				return true;
-			}
-			else
-			{
-				typeVisited.add(vmName);
-			}
-		}
-
-		for(DotNetNamedElement namedElement : typeDeclaration.getMembers())
-		{
-			if(!checkConditionKey(processor, namedElement))
-			{
-				continue;
-			}
-
-			if(namedElement instanceof DotNetVirtualImplementOwner && ((DotNetVirtualImplementOwner) namedElement).getTypeRefForImplement() !=
-					DotNetTypeRef.ERROR_TYPE)
-			{
-				continue;
-			}
-
-			DotNetNamedElement extracted = GenericUnwrapTool.extract(namedElement, genericExtractor, false);
-
-			if(!processor.execute(extracted, state))
+			DotNetNamespaceAsElement namespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace(presentableQName, resolveScope);
+			if(namespace != null && !walkChildren(processor, namespace, walkParent, maxScope, state))
 			{
 				return false;
 			}
 		}
-
-		Collections.addAll(supers, typeDeclaration.getExtendTypeRefs());
 		return true;
 	}
 
@@ -466,25 +480,5 @@ public class CSharpResolveUtil
 		}
 
 		return current.toTypeRef(false);
-	}
-
-	public static boolean checkConditionKey(@NotNull PsiScopeProcessor processor, @NotNull PsiElement element)
-	{
-		Condition<PsiElement> hint = processor.getHint(CONDITION_KEY);
-		return hint == null || hint.value(element);
-	}
-
-	@LazyInstance
-	@NotNull
-	public static Boolean isResolvingEnabled()
-	{
-		return EarlyAccessProgramManager.is(CSharpResolvingEapDescriptor.class);
-	}
-
-	@LazyInstance
-	@NotNull
-	public static Boolean isReferenceCompletionEnabled()
-	{
-		return EarlyAccessProgramManager.is(CSharpReferenceCompletionEapDescriptor.class);
 	}
 }

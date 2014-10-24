@@ -16,28 +16,24 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import java.io.IOException;
-
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpParameterListImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpParameterListStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
 
 /**
  * @author VISTALL
  * @since 15.01.14
  */
-public class CSharpParameterListStubElementType extends CSharpAbstractStubElementType<CSharpParameterListStub, DotNetParameterList>
+public class CSharpParameterListStubElementType extends CSharpEmptyStubElementType<DotNetParameterList>
 {
 	public CSharpParameterListStubElementType()
 	{
 		super("PARAMETER_LIST");
 	}
 
+	@NotNull
 	@Override
 	public DotNetParameterList createElement(@NotNull ASTNode astNode)
 	{
@@ -45,26 +41,8 @@ public class CSharpParameterListStubElementType extends CSharpAbstractStubElemen
 	}
 
 	@Override
-	public DotNetParameterList createPsi(@NotNull CSharpParameterListStub cSharpParameterListStub)
+	public DotNetParameterList createPsi(@NotNull CSharpEmptyStub<DotNetParameterList> cSharpParameterListStub)
 	{
 		return new CSharpParameterListImpl(cSharpParameterListStub);
-	}
-
-	@Override
-	public CSharpParameterListStub createStub(@NotNull DotNetParameterList dotNetParameterList, StubElement stubElement)
-	{
-		return new CSharpParameterListStub(stubElement, this);
-	}
-
-	@Override
-	public void serialize(@NotNull CSharpParameterListStub cSharpParameterListStub, @NotNull StubOutputStream stubOutputStream) throws IOException
-	{
-	}
-
-	@NotNull
-	@Override
-	public CSharpParameterListStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
-	{
-		return new CSharpParameterListStub(stubElement, this);
 	}
 }

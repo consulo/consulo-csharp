@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.ide.parameterInfo;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -43,10 +43,10 @@ public class CSharpParametersInfo
 			parameters = ((DotNetLikeMethodDeclaration) callable).getParameters();
 			returnType = ((DotNetLikeMethodDeclaration) callable).getReturnTypeRef();
 		}
-		else if(callable instanceof CSharpLambdaTypeRef)
+		else if(callable instanceof CSharpLambdaResolveResult)
 		{
-			parameters = ((CSharpLambdaTypeRef) callable).getParameterTypes();
-			returnType = ((CSharpLambdaTypeRef) callable).getReturnType();
+			parameters = ((CSharpLambdaResolveResult) callable).getParameterTypeRefs();
+			returnType = ((CSharpLambdaResolveResult) callable).getReturnTypeRef();
 		}
 
 		if(parameters == null)

@@ -37,6 +37,7 @@ import com.intellij.icons.AllIcons;
 import com.intellij.ide.IconDescriptor;
 import com.intellij.ide.IconDescriptorUpdater;
 import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.Iconable;
@@ -89,17 +90,17 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 			Icon main = null;
 
 			CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) element;
-			/*if(!DumbService.getInstance(element.getProject()).isDumb())
+			if(!DumbService.getInstance(element.getProject()).isDumb())
 			{
 				if(DotNetInheritUtil.isAttribute(typeDeclaration))
 				{
-					main = CSharpIcons.Nodes.AnnotationClass;
+					main = typeDeclaration.hasModifier(CSharpModifier.ABSTRACT) ? AllIcons.Nodes.AbstractAttribute : AllIcons.Nodes.Attribute;
 				}
 				else if(DotNetInheritUtil.isException(typeDeclaration))
 				{
 					main = typeDeclaration.hasModifier(CSharpModifier.ABSTRACT) ? AllIcons.Nodes.AbstractException : AllIcons.Nodes.ExceptionClass;
 				}
-			}       */
+			}
 
 			if(main == null)
 			{

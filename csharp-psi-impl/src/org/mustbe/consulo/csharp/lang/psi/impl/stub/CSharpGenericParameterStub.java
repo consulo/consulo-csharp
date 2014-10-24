@@ -28,14 +28,13 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpGenericParameterStub extends MemberStub<DotNetGenericParameter>
 {
-
-	public CSharpGenericParameterStub(StubElement parent, @Nullable StringRef name, int modifierMask)
+	public CSharpGenericParameterStub(StubElement parent, @Nullable StringRef name)
 	{
-		super(parent, CSharpStubElements.GENERIC_PARAMETER, name, null, modifierMask, 0);
+		super(parent, CSharpStubElements.GENERIC_PARAMETER, name, null, 0);
 	}
 
-	public CSharpGenericParameterStub(StubElement parent, @Nullable String name, int modifierMask)
+	public CSharpGenericParameterStub(StubElement parent, @Nullable String name)
 	{
-		super(parent, CSharpStubElements.GENERIC_PARAMETER, name, null, modifierMask, 0);
+		super(parent, CSharpStubElements.GENERIC_PARAMETER, name, null, 0);
 	}
 }

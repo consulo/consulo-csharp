@@ -19,22 +19,32 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.stubs.IStubElementType;
 
 /**
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpTypeWithTypeArgumentsImpl extends CSharpElementImpl implements DotNetTypeWithTypeArguments
+public class CSharpTypeWithTypeArgumentsImpl extends CSharpStubElementImpl<CSharpEmptyStub<CSharpTypeWithTypeArgumentsImpl>> implements
+		DotNetTypeWithTypeArguments
 {
 	public CSharpTypeWithTypeArgumentsImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	public CSharpTypeWithTypeArgumentsImpl(@NotNull CSharpEmptyStub<CSharpTypeWithTypeArgumentsImpl> stub,
+			@NotNull IStubElementType<? extends CSharpEmptyStub<CSharpTypeWithTypeArgumentsImpl>, ?> nodeType)
+	{
+		super(stub, nodeType);
 	}
 
 	@NotNull
@@ -55,7 +65,7 @@ public class CSharpTypeWithTypeArgumentsImpl extends CSharpElementImpl implement
 			rArguments[i] = argument.toTypeRef();
 		}
 
-		return new DotNetGenericWrapperTypeRef(innerType.toTypeRef(), rArguments);
+		return new CSharpGenericWrapperTypeRef(innerType.toTypeRef(), rArguments);
 	}
 
 	@Override
@@ -68,14 +78,14 @@ public class CSharpTypeWithTypeArgumentsImpl extends CSharpElementImpl implement
 	@Override
 	public DotNetType getInnerType()
 	{
-		return findNotNullChildByClass(DotNetType.class);
+		return getRequiredStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
 	}
 
 	@Nullable
 	@Override
 	public DotNetTypeList getArgumentsList()
 	{
-		return findChildByClass(DotNetTypeList.class);
+		return getStubOrPsiChild(CSharpStubElements.TYPE_ARGUMENTS);
 	}
 
 	@NotNull

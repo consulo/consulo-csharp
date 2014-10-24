@@ -22,7 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
@@ -35,14 +35,14 @@ import com.intellij.psi.util.PsiTreeUtil;
  * @author VISTALL
  * @since 04.12.13.
  */
-public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVariableStub<DotNetFieldDeclaration>> implements CSharpFieldDeclaration
+public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVariableDeclStub<DotNetFieldDeclaration>> implements CSharpFieldDeclaration
 {
 	public CSharpFieldDeclarationImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpFieldDeclarationImpl(@NotNull CSharpVariableStub<DotNetFieldDeclaration> stub)
+	public CSharpFieldDeclarationImpl(@NotNull CSharpVariableDeclStub<DotNetFieldDeclaration> stub)
 	{
 		super(stub, CSharpStubElements.FIELD_DECLARATION);
 	}
@@ -57,7 +57,7 @@ public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 	@Override
 	public DotNetType getType()
 	{
-		DotNetType type = findChildByClass(DotNetType.class);
+		DotNetType type = super.getType();
 		// int a, b
 		if(type == null && getNameIdentifier() != null)
 		{
@@ -72,7 +72,7 @@ public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 	@Override
 	public DotNetModifierList getModifierList()
 	{
-		DotNetModifierList childByClass = findChildByClass(DotNetModifierList.class);
+		DotNetModifierList childByClass = super.getModifierList();
 		if(childByClass == null && getNameIdentifier() != null)
 		{
 			CSharpFieldDeclaration fieldDeclaration = PsiTreeUtil.getPrevSiblingOfType(this, CSharpFieldDeclaration.class);

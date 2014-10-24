@@ -57,7 +57,7 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 
 		final DotNetTypeRef baseType = CSharpTypeDeclarationImplUtil.resolveBaseTypeRef(typeDeclaration, typeDeclaration);
 
-		final PsiElement resolve = baseType.resolve(typeDeclaration);
+		final PsiElement resolve = baseType.resolve(typeDeclaration).getElement();
 		if(!(resolve instanceof CSharpTypeDeclaration))
 		{
 			return;

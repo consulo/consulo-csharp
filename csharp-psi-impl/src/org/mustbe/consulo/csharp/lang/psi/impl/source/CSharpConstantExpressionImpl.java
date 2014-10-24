@@ -24,6 +24,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.injection.CSharpStringLiteralEscaper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpConstantTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullType;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetConstantExpression;
@@ -94,7 +95,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 		}
 		else if(elementType == CSharpTokens.NULL_LITERAL)
 		{
-			return DotNetTypeRef.NULL_TYPE;
+			return CSharpNullType.INSTANCE;
 		}
 		else if(elementType == CSharpTokens.BOOL_LITERAL)
 		{

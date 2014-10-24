@@ -20,22 +20,19 @@ import java.io.IOException;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.MemberStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.io.StringRef;
-import lombok.val;
 
 /**
  * @author VISTALL
  * @since 15.01.14.
  */
 public abstract class CSharpVariableStubElementType<P extends DotNetVariable> extends
-		CSharpAbstractStubElementType<CSharpVariableStub<P>, P>
+		CSharpAbstractStubElementType<CSharpVariableDeclStub<P>, P>
 {
 	public CSharpVariableStubElementType(@NotNull @NonNls String debugName)
 	{
@@ -43,32 +40,26 @@ public abstract class CSharpVariableStubElementType<P extends DotNetVariable> ex
 	}
 
 	@Override
-	public CSharpVariableStub<P> createStub(@NotNull P dotNetPropertyDeclaration, StubElement stubElement)
+	public CSharpVariableDeclStub<P> createStub(@NotNull P dotNetPropertyDeclaration, StubElement stubElement)
 	{
 		StringRef name = StringRef.fromNullableString(dotNetPropertyDeclaration.getName());
-		int modifierMask = MemberStub.getModifierMask(dotNetPropertyDeclaration);
 		boolean constant = dotNetPropertyDeclaration.isConstant();
-		val typeInfo = CSharpStubTypeInfoUtil.toStub(dotNetPropertyDeclaration.getType());
-		return new CSharpVariableStub<P>(stubElement, this, name, null, modifierMask, constant, typeInfo, null);
+		return new CSharpVariableDeclStub<P>(stubElement, this, name, null, constant);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpVariableStub<P> cSharpPropertyStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@NotNull CSharpVariableDeclStub<P> cSharpPropertyStub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(cSharpPropertyStub.getName());
-		stubOutputStream.writeInt(cSharpPropertyStub.getModifierMask());
 		stubOutputStream.writeBoolean(cSharpPropertyStub.isConstant());
-		cSharpPropertyStub.getTypeInfo().writeTo(stubOutputStream);
 	}
 
 	@NotNull
 	@Override
-	public CSharpVariableStub<P> deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpVariableDeclStub<P> deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef name = stubInputStream.readName();
-		int modifierMask = stubInputStream.readInt();
 		boolean constant = stubInputStream.readBoolean();
-		val typeInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
-		return new CSharpVariableStub<P>(stubElement, this, name, null, modifierMask, constant, typeInfo, null);
+		return new CSharpVariableDeclStub<P>(stubElement, this, name, null, constant);
 	}
 }

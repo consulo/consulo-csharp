@@ -30,9 +30,9 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.msil.MsilHelper;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilEventEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilFieldEntry;
@@ -164,7 +164,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 				}
 				else if(element instanceof MsilClassEntry)
 				{
-					list.add(new MsilClassAsCSharpTypeDefinition(parentThis, (MsilClassEntry) element));
+					list.add((DotNetNamedElement) MsilToCSharpUtil.wrap(element, parentThis));
 				}
 			}
 
@@ -260,12 +260,6 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 			return Comparing.equal(getPresentableQName(), ((DotNetTypeDeclaration) another).getPresentableQName());
 		}
 		return super.isEquivalentTo(another);
-	}
-
-	@Override
-	public boolean hasExtensions()
-	{
-		return CSharpTypeDeclarationImplUtil.hasExtensions(this);
 	}
 
 	@Override

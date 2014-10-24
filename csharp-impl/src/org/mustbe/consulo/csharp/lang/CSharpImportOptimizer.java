@@ -24,11 +24,11 @@ import java.util.TreeSet;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingNamespaceStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import com.intellij.lang.ImportOptimizer;
@@ -74,9 +74,9 @@ public class CSharpImportOptimizer implements ImportOptimizer
 		List<Pair<String, String>> typeDef = new ArrayList<Pair<String, String>>();
 		for(CSharpUsingListChild statement : usingList.getStatements())
 		{
-			if(statement instanceof CSharpUsingNamespaceStatementImpl)
+			if(statement instanceof CSharpUsingNamespaceStatement)
 			{
-				DotNetReferenceExpression namespaceReference = ((CSharpUsingNamespaceStatementImpl) statement).getNamespaceReference();
+				DotNetReferenceExpression namespaceReference = ((CSharpUsingNamespaceStatement) statement).getNamespaceReference();
 				if(namespaceReference == null)  // if using dont have reference - dont format it
 				{
 					return;

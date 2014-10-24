@@ -17,7 +17,6 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfo;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubBase;
@@ -31,13 +30,11 @@ import com.intellij.util.io.StringRef;
 public class CSharpTypeListStub extends StubBase<DotNetTypeList>
 {
 	private final StringRef[] myReferences;
-	private final CSharpStubTypeInfo[] myTypeRefs;
 
-	public CSharpTypeListStub(StubElement parent, IStubElementType elementType, StringRef[] references, CSharpStubTypeInfo[] typeRefs)
+	public CSharpTypeListStub(StubElement parent, IStubElementType elementType, StringRef[] references)
 	{
 		super(parent, elementType);
 		myReferences = references;
-		myTypeRefs = typeRefs;
 	}
 
 	@NotNull
@@ -50,10 +47,5 @@ public class CSharpTypeListStub extends StubBase<DotNetTypeList>
 			ar[i] = StringRef.toString(reference);
 		}
 		return ar;
-	}
-
-	public CSharpStubTypeInfo[] getTypeRefs()
-	{
-		return myTypeRefs;
 	}
 }

@@ -21,8 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpUsingNamespaceStatementStub;
-import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
@@ -30,30 +30,30 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.CharFilter;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
 
 /**
  * @author VISTALL
  * @since 28.11.13.
  */
 @ArrayFactoryFields
-public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSharpUsingNamespaceStatementStub> implements CSharpUsingListChild
+public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSharpWithStringValueStub<CSharpUsingNamespaceStatement>> implements
+		CSharpUsingNamespaceStatement
 {
 	public CSharpUsingNamespaceStatementImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpUsingNamespaceStatementImpl(@NotNull CSharpUsingNamespaceStatementStub stub)
+	public CSharpUsingNamespaceStatementImpl(@NotNull CSharpWithStringValueStub<CSharpUsingNamespaceStatement> stub)
 	{
 		super(stub, CSharpStubElements.USING_NAMESPACE_STATEMENT);
 	}
 
+	@Override
 	@Nullable
 	public String getReferenceText()
 	{
-		CSharpUsingNamespaceStatementStub stub = getStub();
+		CSharpWithStringValueStub<CSharpUsingNamespaceStatement> stub = getStub();
 		if(stub != null)
 		{
 			return stub.getReferenceText();
@@ -63,6 +63,7 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 		return namespaceReference == null ? null : namespaceReference.getText();
 	}
 
+	@Override
 	@Nullable
 	public DotNetNamespaceAsElement resolve()
 	{
@@ -75,21 +76,10 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 		return DotNetPsiSearcher.getInstance(getProject()).findNamespace(qName, getResolveScope());
 	}
 
+	@Override
 	public DotNetReferenceExpression getNamespaceReference()
 	{
 		return findChildByClass(DotNetReferenceExpression.class);
-	}
-
-	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement
-			place)
-	{
-		DotNetNamespaceAsElement resolve = resolve();
-
-		ResolveState newState = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, getResolveScope());
-		newState = newState.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
-
-		return resolve == null || resolve.processDeclarations(processor, newState, lastParent, place);
 	}
 
 	@Override

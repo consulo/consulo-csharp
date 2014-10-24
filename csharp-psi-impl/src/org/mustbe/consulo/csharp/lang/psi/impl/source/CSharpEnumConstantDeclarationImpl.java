@@ -23,7 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
@@ -36,7 +36,7 @@ import com.intellij.psi.util.PsiTreeUtil;
  * @author VISTALL
  * @since 08.01.14.
  */
-public class CSharpEnumConstantDeclarationImpl extends CSharpStubVariableImpl<CSharpVariableStub<CSharpEnumConstantDeclarationImpl>> implements
+public class CSharpEnumConstantDeclarationImpl extends CSharpStubVariableImpl<CSharpVariableDeclStub<CSharpEnumConstantDeclarationImpl>> implements
 		CSharpEnumConstantDeclaration
 {
 	public CSharpEnumConstantDeclarationImpl(@NotNull ASTNode node)
@@ -44,7 +44,7 @@ public class CSharpEnumConstantDeclarationImpl extends CSharpStubVariableImpl<CS
 		super(node);
 	}
 
-	public CSharpEnumConstantDeclarationImpl(@NotNull CSharpVariableStub<CSharpEnumConstantDeclarationImpl> stub)
+	public CSharpEnumConstantDeclarationImpl(@NotNull CSharpVariableDeclStub<CSharpEnumConstantDeclarationImpl> stub)
 	{
 		super(stub, CSharpStubElements.ENUM_CONSTANT_DECLARATION);
 	}

@@ -17,9 +17,10 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -33,11 +34,15 @@ public class MsilToCSharpTypeRef extends DotNetTypeRef.Delegate
 		super(typeRef);
 	}
 
-	@Nullable
+	@NotNull
 	@Override
-	public final PsiElement resolve(@NotNull PsiElement scope)
+	public final DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 	{
-		PsiElement resolve = super.resolve(scope);
-		return MsilToCSharpUtil.wrap(resolve);
+		PsiElement resolve = super.resolve(scope).getElement();
+		if(resolve == null)
+		{
+			return DotNetTypeResolveResult.EMPTY;
+		}
+		return new SimpleTypeResolveResult(MsilToCSharpUtil.wrap(resolve));
 	}
 }

@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpEventDeclarationImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.dotnet.psi.DotNetEventDeclaration;
 import com.intellij.lang.ASTNode;
@@ -43,13 +43,13 @@ public class CSharpEventElementType extends CSharpQVariableStubElementType<DotNe
 	}
 
 	@Override
-	public DotNetEventDeclaration createPsi(@NotNull CSharpVariableStub<DotNetEventDeclaration> cSharpEventStub)
+	public DotNetEventDeclaration createPsi(@NotNull CSharpVariableDeclStub<DotNetEventDeclaration> cSharpEventStub)
 	{
 		return new CSharpEventDeclarationImpl(cSharpEventStub);
 	}
 
 	@Override
-	public void indexStub(@NotNull CSharpVariableStub<DotNetEventDeclaration> cSharpEventStub, @NotNull IndexSink indexSink)
+	public void indexStub(@NotNull CSharpVariableDeclStub<DotNetEventDeclaration> cSharpEventStub, @NotNull IndexSink indexSink)
 	{
 		String name = cSharpEventStub.getName();
 		if(!StringUtil.isEmpty(name))

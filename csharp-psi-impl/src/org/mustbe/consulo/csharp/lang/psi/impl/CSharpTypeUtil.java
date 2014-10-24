@@ -18,9 +18,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpChameleonTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullType;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
@@ -28,6 +30,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithInnerTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayUtil;
@@ -51,6 +54,15 @@ public class CSharpTypeUtil
 			DotNetTypes.System.Double,
 	};
 
+	public static boolean isElementIsNullable(@NotNull PsiElement element)
+	{
+		if(element instanceof DotNetTypeDeclaration)
+		{
+			return !((DotNetTypeDeclaration) element).isStruct() && !((DotNetTypeDeclaration) element).isEnum();
+		}
+		return true;
+	}
+
 	public static int getNumberRank(DotNetTypeRef typeRef)
 	{
 		return ArrayUtil.find(ourNumberRanks, typeRef.getQualifiedText());
@@ -60,7 +72,8 @@ public class CSharpTypeUtil
 	public static Pair<DotNetTypeDeclaration, DotNetGenericExtractor> findTypeInSuper(@NotNull DotNetTypeRef typeRef, @NotNull String vmQName,
 			@NotNull PsiElement scope)
 	{
-		PsiElement resolve = typeRef.resolve(scope);
+		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+		PsiElement resolve = typeResolveResult.getElement();
 		if(!(resolve instanceof DotNetTypeDeclaration))
 		{
 			return null;
@@ -69,7 +82,7 @@ public class CSharpTypeUtil
 		String otherVQName = ((DotNetTypeDeclaration) resolve).getVmQName();
 		if(vmQName.equals(otherVQName))
 		{
-			return Pair.create((DotNetTypeDeclaration)resolve, typeRef.getGenericExtractor(resolve, scope));
+			return Pair.create((DotNetTypeDeclaration)resolve, typeResolveResult.getGenericExtractor());
 		}
 
 		for(DotNetTypeRef superType : ((DotNetTypeDeclaration) resolve).getExtendTypeRefs())
@@ -95,11 +108,6 @@ public class CSharpTypeUtil
 		if(top == DotNetTypeRef.ERROR_TYPE || target == DotNetTypeRef.ERROR_TYPE)
 		{
 			return false;
-		}
-
-		if(top.isNullable() && target == DotNetTypeRef.NULL_TYPE)
-		{
-			return true;
 		}
 
 		if(top.equals(target))
@@ -141,10 +149,12 @@ public class CSharpTypeUtil
 			return isInheritable(((CSharpArrayTypeRef) top).getInnerTypeRef(), ((CSharpArrayTypeRef) target).getInnerTypeRef(), scope);
 		}
 
-		if(top instanceof CSharpLambdaTypeRef && target instanceof CSharpLambdaTypeRef)
+		DotNetTypeResolveResult topTypeResolveResult = top.resolve(scope);
+		DotNetTypeResolveResult targetTypeResolveResult = target.resolve(scope);
+		if(topTypeResolveResult instanceof CSharpLambdaResolveResult && targetTypeResolveResult instanceof CSharpLambdaResolveResult)
 		{
-			DotNetTypeRef[] targetParameters = ((CSharpLambdaTypeRef) target).getParameterTypes();
-			DotNetTypeRef[] topParameters = ((CSharpLambdaTypeRef) top).getParameterTypes();
+			DotNetTypeRef[] targetParameters = ((CSharpLambdaResolveResult) targetTypeResolveResult).getParameterTypeRefs();
+			DotNetTypeRef[] topParameters = ((CSharpLambdaResolveResult) topTypeResolveResult).getParameterTypeRefs();
 			if(topParameters.length != targetParameters.length)
 			{
 				return false;
@@ -162,16 +172,32 @@ public class CSharpTypeUtil
 					return false;
 				}
 			}
-			DotNetTypeRef targetReturnType = ((CSharpLambdaTypeRef) target).getReturnType();
-			DotNetTypeRef topReturnType = ((CSharpLambdaTypeRef) top).getReturnType();
+			DotNetTypeRef targetReturnType = ((CSharpLambdaResolveResult) targetTypeResolveResult).getReturnTypeRef();
+			DotNetTypeRef topReturnType = ((CSharpLambdaResolveResult) topTypeResolveResult).getReturnTypeRef();
 			return targetReturnType == DotNetTypeRef.AUTO_TYPE || isInheritable(topReturnType, targetReturnType, scope);
 		}
 
-		PsiElement topElement = top.resolve(scope);
-		PsiElement targetElement = target.resolve(scope);
+		PsiElement topElement = topTypeResolveResult.getElement();
+		PsiElement targetElement = targetTypeResolveResult.getElement();
+
+		if(topTypeResolveResult.isNullable() && target == CSharpNullType.INSTANCE)
+		{
+			return true;
+		}
+
+		if(!topTypeResolveResult.isNullable() && target == CSharpNullType.INSTANCE)
+		{
+			return false;
+		}
+
 		if(topElement != null && topElement.isEquivalentTo(targetElement))
 		{
 			return true;
+		}
+
+		if(topElement instanceof CSharpTypeDefStatement)
+		{
+			return isInheritable(((CSharpTypeDefStatement) topElement).toTypeRef(), target, scope);
 		}
 
 		if(topElement instanceof DotNetTypeDeclaration && targetElement instanceof DotNetTypeDeclaration)

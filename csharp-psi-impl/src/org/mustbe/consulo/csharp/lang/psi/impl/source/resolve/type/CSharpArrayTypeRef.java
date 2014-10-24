@@ -23,8 +23,10 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetArrayTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.util.NullableLazyValue;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -33,6 +35,62 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpArrayTypeRef extends DotNetTypeRef.Adapter implements DotNetArrayTypeRef
 {
+	public static class Result implements DotNetTypeResolveResult
+	{
+		private final PsiElement myScope;
+		private final int myDimensions;
+		private final DotNetTypeRef myInnerType;
+
+		private NullableLazyValue<PsiElement> myValue = new NullableLazyValue<PsiElement>()
+		{
+			@Nullable
+			@Override
+			protected PsiElement compute()
+			{
+				Module moduleForPsiElement = ModuleUtilCore.findModuleForPsiElement(myScope);
+				if(moduleForPsiElement == null)
+				{
+					return null;
+				}
+				return CSharpModuleTypeHelper.getInstance(moduleForPsiElement).getArrayType(myDimensions);
+			}
+		};
+
+		public Result(PsiElement scope, int dimensions, DotNetTypeRef innerType)
+		{
+			myScope = scope;
+			myDimensions = dimensions;
+			myInnerType = innerType;
+		}
+
+		@Nullable
+		@Override
+		public PsiElement getElement()
+		{
+			return myValue.getValue();
+		}
+
+		@NotNull
+		@Override
+		public DotNetGenericExtractor getGenericExtractor()
+		{
+			PsiElement element = getElement();
+
+			if(!(element instanceof DotNetGenericParameterListOwner))
+			{
+				return DotNetGenericExtractor.EMPTY;
+			}
+			return new SimpleGenericExtractorImpl(((DotNetGenericParameterListOwner) element).getGenericParameters(),
+					new DotNetTypeRef[]{myInnerType});
+		}
+
+		@Override
+		public boolean isNullable()
+		{
+			return true;
+		}
+	}
+
 	private final DotNetTypeRef myInnerType;
 	private final int myDimensions;
 
@@ -72,27 +130,11 @@ public class CSharpArrayTypeRef extends DotNetTypeRef.Adapter implements DotNetA
 		return builder.toString();
 	}
 
-	@Nullable
-	@Override
-	public PsiElement resolve(@NotNull PsiElement scope)
-	{
-		Module moduleForPsiElement = ModuleUtilCore.findModuleForPsiElement(scope);
-		if(moduleForPsiElement == null)
-		{
-			return null;
-		}
-		return CSharpModuleTypeHelper.getInstance(moduleForPsiElement).getArrayType(myDimensions);
-	}
-
 	@NotNull
 	@Override
-	public DotNetGenericExtractor getGenericExtractor(@NotNull PsiElement resolved, @NotNull PsiElement scope)
+	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 	{
-		if(!(resolved instanceof DotNetGenericParameterListOwner))
-		{
-			return DotNetGenericExtractor.EMPTY;
-		}
-		return new SimpleGenericExtractorImpl(((DotNetGenericParameterListOwner) resolved).getGenericParameters(), new DotNetTypeRef[]{getInnerTypeRef()});
+		return new Result(scope, myDimensions, myInnerType);
 	}
 
 	@Override

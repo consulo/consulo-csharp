@@ -22,6 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameterList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -106,11 +107,11 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements Dot
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
-		CSharpLambdaTypeRef type = CSharpLambdaExpressionImplUtil.resolveLeftLambdaTypeRef(this);
+		CSharpLambdaResolveResult type = CSharpLambdaExpressionImplUtil.resolveLeftLambdaTypeRef(this);
 		if(type == null)
 		{
 			return DotNetTypeRef.UNKNOWN_TYPE;
 		}
-		return type.getReturnType();
+		return type.getReturnTypeRef();
 	}
 }

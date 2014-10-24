@@ -23,18 +23,12 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeDefStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.util.IncorrectOperationException;
 
 /**
@@ -42,8 +36,7 @@ import com.intellij.util.IncorrectOperationException;
  * @since 11.02.14
  */
 @ArrayFactoryFields
-public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<CSharpTypeDefStub> implements DotNetNamedElement, PsiNameIdentifierOwner,
-		CSharpUsingListChild
+public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<CSharpTypeDefStub> implements CSharpTypeDefStatement
 {
 	public CSharpTypeDefStatementImpl(@NotNull ASTNode node)
 	{
@@ -79,20 +72,17 @@ public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<CSharpType
 		return null;
 	}
 
+	@Override
 	@Nullable
 	public DotNetType getType()
 	{
-		return findChildByClass(DotNetType.class);
+		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
 	}
 
+	@Override
 	@NotNull
 	public DotNetTypeRef toTypeRef()
 	{
-		CSharpTypeDefStub stub = getStub();
-		if(stub != null)
-		{
-			return CSharpStubTypeInfoUtil.toTypeRef(stub.getTypeInfo(), this);
-		}
 		DotNetType type = getType();
 		return type == null ? DotNetTypeRef.ERROR_TYPE : type.toTypeRef();
 	}
@@ -116,33 +106,5 @@ public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<CSharpType
 	{
 		PsiElement nameIdentifier = getNameIdentifier();
 		return nameIdentifier == null ? super.getTextOffset() : nameIdentifier.getTextOffset();
-	}
-
-	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent,
-			@NotNull PsiElement place)
-	{
-		// any type defs can enter to another type def
-		if(processor.getHint(CSharpResolveUtil.NO_USING_LIST) == Boolean.TRUE)
-		{
-			return true;
-		}
-
-		if(!processor.execute(this, state))
-		{
-			return false;
-		}
-
-		DotNetTypeRef dotNetTypeRef = toTypeRef();
-		PsiElement resolve = dotNetTypeRef.resolve(this);
-		if(resolve == null)
-		{
-			return true;
-		}
-
-		DotNetGenericExtractor extractor = dotNetTypeRef.getGenericExtractor(resolve, this);
-
-		ResolveState initial = ResolveState.initial();
-		return resolve.processDeclarations(processor, initial.put(CSharpResolveUtil.EXTRACTOR_KEY, extractor), lastParent, place);
 	}
 }

@@ -45,7 +45,7 @@ public class CSharpLightAttributeBuilder extends CSharpAbstractLightAttributeBui
 	@Override
 	public DotNetTypeDeclaration resolveToType()
 	{
-		return (DotNetTypeDeclaration) toTypeRef().resolve(myScope);
+		return (DotNetTypeDeclaration) toTypeRef().resolve(myScope).getElement();
 	}
 
 	@NotNull

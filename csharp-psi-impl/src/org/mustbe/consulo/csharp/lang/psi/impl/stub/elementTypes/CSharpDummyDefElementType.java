@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDummyDeclarationImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpDummyDefStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpDummyDeclStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
@@ -30,13 +30,14 @@ import com.intellij.psi.stubs.StubOutputStream;
  * @author VISTALL
  * @since 06.03.14
  */
-public class CSharpDummyDefElementType extends CSharpAbstractStubElementType<CSharpDummyDefStub, CSharpDummyDeclarationImpl>
+public class CSharpDummyDefElementType extends CSharpAbstractStubElementType<CSharpDummyDeclStub, CSharpDummyDeclarationImpl>
 {
 	public CSharpDummyDefElementType()
 	{
 		super("DUMMY_DECLARATION");
 	}
 
+	@NotNull
 	@Override
 	public CSharpDummyDeclarationImpl createElement(@NotNull ASTNode astNode)
 	{
@@ -44,27 +45,27 @@ public class CSharpDummyDefElementType extends CSharpAbstractStubElementType<CSh
 	}
 
 	@Override
-	public CSharpDummyDeclarationImpl createPsi(@NotNull CSharpDummyDefStub cSharpDummyDefStub)
+	public CSharpDummyDeclarationImpl createPsi(@NotNull CSharpDummyDeclStub cSharpDummyDeclStub)
 	{
-		return new CSharpDummyDeclarationImpl(cSharpDummyDefStub, this);
+		return new CSharpDummyDeclarationImpl(cSharpDummyDeclStub, this);
 	}
 
 	@Override
-	public CSharpDummyDefStub createStub(@NotNull CSharpDummyDeclarationImpl cSharpDummyDeclaration, StubElement stubElement)
+	public CSharpDummyDeclStub createStub(@NotNull CSharpDummyDeclarationImpl cSharpDummyDeclaration, StubElement stubElement)
 	{
-		return new CSharpDummyDefStub(stubElement, this);
+		return new CSharpDummyDeclStub(stubElement, this);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpDummyDefStub cSharpDummyDefStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@NotNull CSharpDummyDeclStub cSharpDummyDeclStub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
 
 	}
 
 	@NotNull
 	@Override
-	public CSharpDummyDefStub deserialize(@NotNull StubInputStream inputStream, StubElement stubElement) throws IOException
+	public CSharpDummyDeclStub deserialize(@NotNull StubInputStream inputStream, StubElement stubElement) throws IOException
 	{
-		return new CSharpDummyDefStub(stubElement, this);
+		return new CSharpDummyDeclStub(stubElement, this);
 	}
 }

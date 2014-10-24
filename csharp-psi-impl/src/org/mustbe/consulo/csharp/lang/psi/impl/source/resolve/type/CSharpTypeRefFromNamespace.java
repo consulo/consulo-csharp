@@ -17,9 +17,11 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 
@@ -50,10 +52,16 @@ public class CSharpTypeRefFromNamespace extends DotNetTypeRef.Adapter
 		return myQualifiedName;
 	}
 
-	@Nullable
+	@NotNull
 	@Override
-	public PsiElement resolve(@NotNull PsiElement element)
+	public DotNetTypeResolveResult resolve(@NotNull PsiElement element)
 	{
-		return DotNetPsiSearcher.getInstance(element.getProject()).findNamespace(myQualifiedName, element.getResolveScope());
+		DotNetNamespaceAsElement namespace = DotNetPsiSearcher.getInstance(element.getProject()).findNamespace(myQualifiedName,
+				element.getResolveScope());
+		if(namespace == null)
+		{
+			return DotNetTypeResolveResult.EMPTY;
+		}
+		return new SimpleTypeResolveResult(namespace);
 	}
 }

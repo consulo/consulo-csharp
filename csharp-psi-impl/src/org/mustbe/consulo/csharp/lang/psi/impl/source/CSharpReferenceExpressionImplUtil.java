@@ -18,9 +18,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
 
 /**
  * @author VISTALL
@@ -28,18 +28,16 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpReferenceExpressionImplUtil
 {
-	public static final String AttributeSuffix = "Attribute";
-
 	@Nullable
 	public static PsiElement resolveByTypeKind(@NotNull DotNetReferenceExpression referenceExpression, boolean attributeSuffix)
 	{
 		assert referenceExpression instanceof CSharpReferenceExpressionImpl;
-		CSharpReferenceExpressionImpl.ResolveToKind kind = CSharpReferenceExpressionImpl.ResolveToKind.TYPE_OR_GENERIC_PARAMETER_OR_DELEGATE_METHOD;
+		CSharpReferenceExpressionImpl.ResolveToKind kind = CSharpReferenceExpressionImpl.ResolveToKind.TYPE_LIKE;
 		if(attributeSuffix)
 		{
 			kind = CSharpReferenceExpressionImpl.ResolveToKind.ATTRIBUTE;
 		}
-		ResolveResultWithWeight[] resultWithWeights = ((CSharpReferenceExpressionImpl) referenceExpression).multiResolveImpl(kind);
+		ResolveResult[] resultWithWeights = ((CSharpReferenceExpressionImpl) referenceExpression).multiResolveImpl(kind);
 		if(resultWithWeights.length == 0)
 		{
 			return null;

@@ -16,7 +16,14 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
+import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNullableTypeImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPointerTypeImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeWithTypeArgumentsImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.*;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
 
 /**
@@ -49,11 +56,72 @@ public interface CSharpStubElements
 	CSharpXXXAccessorStubElementType XXX_ACCESSOR = new CSharpXXXAccessorStubElementType();
 	CSharpGenericConstraintListStubElementType GENERIC_CONSTRAINT_LIST = new CSharpGenericConstraintListStubElementType();
 	CSharpGenericConstraintStubElementType GENERIC_CONSTRAINT = new CSharpGenericConstraintStubElementType();
+	CSharpModifierListStubElementType MODIFIER_LIST = new CSharpModifierListStubElementType();
+	CSharpAttributeListStubElementType ATTRIBUTE_LIST = new CSharpAttributeListStubElementType();
+	CSharpAttributeStubElementType ATTRIBUTE = new CSharpAttributeStubElementType();
 
 	TokenSet USING_CHILDREN = TokenSet.create(USING_NAMESPACE_STATEMENT, TYPE_DEF_STATEMENT);
 
-	TokenSet QUALIFIED_MEMBERS = TokenSet.create(NAMESPACE_DECLARATION, TYPE_DECLARATION,
-			METHOD_DECLARATION, CONSTRUCTOR_DECLARATION, PROPERTY_DECLARATION,
-			EVENT_DECLARATION, FIELD_DECLARATION, ENUM_CONSTANT_DECLARATION, CONVERSION_METHOD_DECLARATION,
+	CSharpEmptyStubElementType<CSharpNullableTypeImpl> NULLABLE_TYPE = new CSharpEmptyStubElementType<CSharpNullableTypeImpl>("NULLABLE_TYPE")
+	{
+		@NotNull
+		@Override
+		public PsiElement createElement(@NotNull ASTNode astNode)
+		{
+			return new CSharpNullableTypeImpl(astNode);
+		}
+
+		@Override
+		public CSharpNullableTypeImpl createPsi(@NotNull CSharpEmptyStub<CSharpNullableTypeImpl> stub)
+		{
+			return new CSharpNullableTypeImpl(stub, this);
+		}
+	};
+
+	CSharpEmptyStubElementType<CSharpPointerTypeImpl> POINTER_TYPE = new CSharpEmptyStubElementType<CSharpPointerTypeImpl>("POINTER_TYPE")
+	{
+		@NotNull
+		@Override
+		public PsiElement createElement(@NotNull ASTNode astNode)
+		{
+			return new CSharpPointerTypeImpl(astNode);
+		}
+
+		@Override
+		public CSharpPointerTypeImpl createPsi(@NotNull CSharpEmptyStub<CSharpPointerTypeImpl> stub)
+		{
+			return new CSharpPointerTypeImpl(stub, this);
+		}
+	};
+
+	CSharpEmptyStubElementType<CSharpTypeWithTypeArgumentsImpl> TYPE_WRAPPER_WITH_TYPE_ARGUMENTS = new
+			CSharpEmptyStubElementType<CSharpTypeWithTypeArgumentsImpl>("TYPE_WRAPPER_WITH_TYPE_ARGUMENTS")
+	{
+		@NotNull
+		@Override
+		public PsiElement createElement(@NotNull ASTNode astNode)
+		{
+			return new CSharpTypeWithTypeArgumentsImpl(astNode);
+		}
+
+		@Override
+		public CSharpTypeWithTypeArgumentsImpl createPsi(@NotNull CSharpEmptyStub<CSharpTypeWithTypeArgumentsImpl> stub)
+		{
+			return new CSharpTypeWithTypeArgumentsImpl(stub, this);
+		}
+	};
+
+	CSharpNativeTypeStubElementType NATIVE_TYPE = new CSharpNativeTypeStubElementType();
+
+	CSharpArrayTypeStubElementType ARRAY_TYPE = new CSharpArrayTypeStubElementType();
+
+	CSharpUserTypeStubElementType USER_TYPE = new CSharpUserTypeStubElementType();
+
+	CSharpTypeListElementType TYPE_ARGUMENTS = new CSharpTypeListElementType("TYPE_ARGUMENTS");
+
+	TokenSet TYPE_SET = TokenSet.create(NULLABLE_TYPE, POINTER_TYPE, NATIVE_TYPE, TYPE_WRAPPER_WITH_TYPE_ARGUMENTS, ARRAY_TYPE, USER_TYPE);
+
+	TokenSet QUALIFIED_MEMBERS = TokenSet.create(NAMESPACE_DECLARATION, TYPE_DECLARATION, METHOD_DECLARATION, CONSTRUCTOR_DECLARATION,
+			PROPERTY_DECLARATION, EVENT_DECLARATION, FIELD_DECLARATION, ENUM_CONSTANT_DECLARATION, CONVERSION_METHOD_DECLARATION,
 			ARRAY_METHOD_DECLARATION);
 }

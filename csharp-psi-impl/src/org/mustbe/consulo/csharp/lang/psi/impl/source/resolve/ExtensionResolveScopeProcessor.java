@@ -16,27 +16,33 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameterList;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpElementGroupImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.PsiElementResolveResult;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
+import com.intellij.util.ArrayUtil;
+import com.intellij.util.SmartList;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -45,65 +51,95 @@ import com.intellij.psi.ResolveState;
 public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 {
 	private final CSharpReferenceExpression myExpression;
-	private final Condition<PsiNamedElement> myCond;
-	private final boolean myNamed;
-	private final DotNetExpression[] myNewExpression;
+	private final boolean myCompletion;
 	private final DotNetTypeRef myQualifierTypeRef;
 
-	public ExtensionResolveScopeProcessor(@NotNull DotNetTypeRef qualifierTypeRef, @NotNull CSharpReferenceExpression expression,
-			@NotNull Condition<PsiNamedElement> condition, boolean named)
+	private final List<CSharpMethodDeclaration> myResolvedElements = new SmartList<CSharpMethodDeclaration>();
+
+	public ExtensionResolveScopeProcessor(@NotNull DotNetTypeRef qualifierTypeRef, @NotNull CSharpReferenceExpression expression, boolean completion)
 	{
 		myQualifierTypeRef = qualifierTypeRef;
-		myNewExpression = getNewExpressions(expression, qualifierTypeRef);
 		myExpression = expression;
-		myCond = condition;
-		myNamed = named;
-
-		putUserData(CSharpResolveUtil.CONDITION_KEY, new Condition<PsiElement>()
-		{
-			@Override
-			public boolean value(PsiElement element)
-			{
-				return element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).hasExtensions();
-			}
-		});
+		myCompletion = completion;
 	}
 
 	@Override
 	public boolean executeImpl(@NotNull PsiElement element, ResolveState state)
 	{
-		if(!(element instanceof CSharpTypeDeclaration))
+		if(myCompletion)
 		{
-			return true;
-		}
+			DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
+			assert extractor != null;
 
-		for(DotNetNamedElement dotNetNamedElement : ((CSharpTypeDeclaration) element).getMembers())
-		{
-			if(!myCond.value(dotNetNamedElement) || !CSharpMethodImplUtil.isExtensionMethod(dotNetNamedElement))
+			CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myExpression.getResolveScope(), element);
+
+			for(CSharpElementGroup elementGroup : context.getExtensionMethodGroups())
 			{
-				continue;
-			}
+				Collection<? extends PsiElement> elements = elementGroup.getElements();
+				for(PsiElement psiElement : elements)
+				{
+					CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) psiElement;
 
+					DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(methodDeclaration);
 
-			CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) dotNetNamedElement;
+					if(!CSharpTypeUtil.isInheritable(firstParameterTypeRef, myQualifierTypeRef, myExpression))
+					{
+						continue;
+					}
 
-			DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(methodDeclaration);
-
-			if(!CSharpTypeUtil.isInheritable(firstParameterTypeRef, myQualifierTypeRef, myExpression))
-			{
-				continue;
-			}
-
-			int weight = MethodAcceptorImpl.calcAcceptableWeight(myExpression, myNewExpression, DotNetGenericExtractor.EMPTY, methodDeclaration);
-
-			add(new ResolveResultWithWeight(transform((CSharpMethodDeclaration) dotNetNamedElement), weight));
-
-			if(weight == WeightProcessor.MAX_WEIGHT && myNamed)
-			{
-				return false;
+					addElement(transform(methodDeclaration));
+				}
 			}
 		}
+		else
+		{
+			CSharpResolveSelector selector = state.get(CSharpResolveUtil.SELECTOR);
+			if(selector == null)
+			{
+				return true;
+			}
+
+			DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
+			assert extractor != null;
+
+			CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myExpression.getResolveScope(), element);
+
+			CSharpElementGroup elementGroup = (CSharpElementGroup) selector.doSelectElement(context);
+			if(elementGroup == null)
+			{
+				return true;
+			}
+
+			for(PsiElement psiElement : elementGroup.getElements())
+			{
+				CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) psiElement;
+
+				DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(methodDeclaration);
+
+				if(!CSharpTypeUtil.isInheritable(firstParameterTypeRef, myQualifierTypeRef, myExpression))
+				{
+					continue;
+				}
+
+				myResolvedElements.add(transform(methodDeclaration));
+			}
+		}
+
 		return true;
+	}
+
+	@NotNull
+	@Override
+	public ResolveResult[] toResolveResults()
+	{
+		ResolveResult[] resolveResults = super.toResolveResults();
+		if(myResolvedElements.isEmpty())
+		{
+			return resolveResults;
+		}
+
+		val element = new CSharpElementGroupImpl(myExpression.getProject(), myResolvedElements.get(0).getName(), myResolvedElements);
+		return ArrayUtil.mergeArrays(resolveResults, new ResolveResult[]{new PsiElementResolveResult(element)});
 	}
 
 	@NotNull
@@ -114,7 +150,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 		return parameters[0].toTypeRef(false);
 	}
 
-	private static DotNetExpression[] getNewExpressions(CSharpReferenceExpression ex, DotNetTypeRef qType)
+	/*private static DotNetExpression[] getNewExpressions(CSharpReferenceExpression ex, DotNetTypeRef qType)
 	{
 		PsiElement parent = ex.getParent();
 		if(parent instanceof CSharpCallArgumentListOwner)
@@ -132,7 +168,8 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 		{
 			return DotNetExpression.EMPTY_ARRAY;
 		}
-	}
+	}    */
+
 	private static CSharpLightMethodDeclaration transform(CSharpMethodDeclaration methodDeclaration)
 	{
 		DotNetParameterList parameterList = methodDeclaration.getParameterList();
@@ -144,7 +181,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 
 		CSharpLightParameterList lightParameterList = new CSharpLightParameterList(parameterList, parameters);
 		CSharpLightMethodDeclaration declaration = new CSharpLightMethodDeclaration(methodDeclaration, lightParameterList);
-		declaration.putUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER, Boolean.TRUE);
+		declaration.putUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER, methodDeclaration);
 		return declaration;
 	}
 }

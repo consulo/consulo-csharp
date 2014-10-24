@@ -21,16 +21,12 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ResolveResultWithWeight;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.template.Expression;
 import com.intellij.codeInsight.template.ExpressionContext;
-import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.ResolveResult;
 import lombok.val;
 
 /**
@@ -49,28 +45,22 @@ public class ForeachVariableMacro extends VariableTypeMacroBase
 			return PsiElement.EMPTY_ARRAY;
 		}
 
-		ResolveResultWithWeight[] resolveResultWithWeights = CSharpReferenceExpressionImpl.processAnyMember(null, new Condition<PsiNamedElement>()
-		{
-			@Override
-			public boolean value(PsiNamedElement psiNamedElement)
-			{
-				if(psiNamedElement instanceof DotNetVariable)
-				{
-					DotNetTypeRef typeRef = CSharpResolveUtil.resolveIterableType(psiElementAtStartOffset, ((DotNetVariable) psiNamedElement)
-							.toTypeRef(true));
-					return typeRef != DotNetTypeRef.ERROR_TYPE;
-				}
-				else
-				{
-					return false;
-				}
-			}
-		}, WeightProcessor.MAXIMUM, psiElementAtStartOffset, CSharpReferenceExpressionImpl.ResolveToKind.ANY_MEMBER, true);
+		ResolveResult[] resolveResultWithWeights = CSharpReferenceExpressionImpl.processAnyMember(null, null, psiElementAtStartOffset, CSharpReferenceExpressionImpl.ResolveToKind.ANY_MEMBER, true);
 
 		List<PsiElement> list = new ArrayList<PsiElement>(resolveResultWithWeights.length);
-		for(ResolveResultWithWeight resolveResultWithWeight : resolveResultWithWeights)
+		for(ResolveResult resolveResultWithWeight : resolveResultWithWeights)
 		{
-			list.add(resolveResultWithWeight.getElement());
+			PsiElement element = resolveResultWithWeight.getElement();
+
+			DotNetTypeRef elementTypeRef = CSharpReferenceExpressionImpl.toTypeRef(element);
+
+			DotNetTypeRef iterableTypeRef = CSharpResolveUtil.resolveIterableType(psiElementAtStartOffset, elementTypeRef);
+
+			if(iterableTypeRef == DotNetTypeRef.ERROR_TYPE)
+			{
+				continue;
+			}
+			list.add(element);
 		}
 		return list.toArray(new PsiElement[list.size()]);
 	}

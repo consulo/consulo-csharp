@@ -22,31 +22,30 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.MemberStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeDeclStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
-import org.mustbe.consulo.dotnet.psi.DotNetNamespaceUtil;
+import org.mustbe.consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.stubs.IndexSink;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
-import com.intellij.psi.util.QualifiedName;
+import com.intellij.util.BitUtil;
 import com.intellij.util.io.StringRef;
-import lombok.val;
 
 /**
  * @author VISTALL
  * @since 15.12.13.
  */
-public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSharpTypeStub, CSharpTypeDeclaration>
+public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSharpTypeDeclStub, CSharpTypeDeclaration>
 {
 	public CSharpTypeStubElementType()
 	{
 		super("TYPE_DECLARATION");
 	}
 
+	@NotNull
 	@Override
 	public CSharpTypeDeclaration createElement(@NotNull ASTNode astNode)
 	{
@@ -54,64 +53,60 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 	}
 
 	@Override
-	public CSharpTypeDeclaration createPsi(@NotNull CSharpTypeStub stub)
+	public CSharpTypeDeclaration createPsi(@NotNull CSharpTypeDeclStub stub)
 	{
 		return new CSharpTypeDeclarationImpl(stub);
 	}
 
 	@Override
-	public CSharpTypeStub createStub(@NotNull CSharpTypeDeclaration typeDeclaration, StubElement stubElement)
+	public CSharpTypeDeclStub createStub(@NotNull CSharpTypeDeclaration typeDeclaration, StubElement stubElement)
 	{
 		StringRef name = StringRef.fromNullableString(typeDeclaration.getName());
 		StringRef parentQName = StringRef.fromNullableString(typeDeclaration.getPresentableParentQName());
 		StringRef vmQName = StringRef.fromNullableString(typeDeclaration.getVmQName());
-		int modifierMask = MemberStub.getModifierMask(typeDeclaration);
-		int otherModifierMask = CSharpTypeStub.getOtherModifiers(typeDeclaration);
-		return new CSharpTypeStub(stubElement, name, parentQName, vmQName, modifierMask, otherModifierMask);
+		int otherModifierMask = CSharpTypeDeclStub.getOtherModifiers(typeDeclaration);
+		return new CSharpTypeDeclStub(stubElement, name, parentQName, vmQName, otherModifierMask);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpTypeStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@NotNull CSharpTypeDeclStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(stub.getName());
 		stubOutputStream.writeName(stub.getParentQName());
 		stubOutputStream.writeName(stub.getVmQName());
-		stubOutputStream.writeInt(stub.getModifierMask());
 		stubOutputStream.writeInt(stub.getOtherModifierMask());
 	}
 
 	@NotNull
 	@Override
-	public CSharpTypeStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpTypeDeclStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef name = stubInputStream.readName();
 		StringRef parentQName = stubInputStream.readName();
 		StringRef vmQName = stubInputStream.readName();
-		int modifierMask = stubInputStream.readInt();
 		int otherModifierMask = stubInputStream.readInt();
-		return new CSharpTypeStub(stubElement, name, parentQName, vmQName, modifierMask, otherModifierMask);
+		return new CSharpTypeDeclStub(stubElement, name, parentQName, vmQName, otherModifierMask);
 	}
 
 	@Override
-	public void indexStub(@NotNull CSharpTypeStub stub, @NotNull IndexSink indexSink)
+	public void indexStub(@NotNull CSharpTypeDeclStub stub, @NotNull IndexSink indexSink)
 	{
 		String name = stub.getName();
 		if(!StringUtil.isEmpty(name))
 		{
 			indexSink.occurrence(CSharpIndexKeys.TYPE_INDEX, name);
 
-			val parentQName = stub.getParentQName();
-
-			indexSink.occurrence(CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, DotNetNamespaceUtil.getIndexableNamespace(parentQName));
-
-			if(!StringUtil.isEmpty(parentQName) && !stub.isNested())
+			String parentQName = stub.getParentQName();
+			if(!stub.isNested())
 			{
-				QualifiedName parent = QualifiedName.fromDottedString(parentQName);
-				do
+				DotNetNamespaceStubUtil.indexStub(indexSink, CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX,
+						CSharpIndexKeys.MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX, parentQName, name);
+
+				if(BitUtil.isSet(stub.getOtherModifierMask(), CSharpTypeDeclStub.HAVE_EXTENSIONS))
 				{
-					indexSink.occurrence(CSharpIndexKeys.MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX, DotNetNamespaceUtil.getIndexableNamespace(parent));
+					indexSink.occurrence(CSharpIndexKeys.TYPE_WITH_EXTENSION_METHODS_INDEX, DotNetNamespaceStubUtil.getIndexableNamespace
+							(parentQName));
 				}
-				while((parent = parent.getParent()) != null);
 			}
 
 			indexSink.occurrence(CSharpIndexKeys.TYPE_BY_QNAME_INDEX, getNameWithNamespaceForIndexing(parentQName, name));

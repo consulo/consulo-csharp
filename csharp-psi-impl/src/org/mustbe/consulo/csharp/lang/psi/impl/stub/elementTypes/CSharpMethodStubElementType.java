@@ -21,10 +21,9 @@ import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodDeclarationImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.MemberStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
+import org.mustbe.consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.stubs.IndexSink;
@@ -39,13 +38,14 @@ import lombok.val;
  * @author VISTALL
  * @since 18.12.13.
  */
-public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<CSharpMethodStub, CSharpMethodDeclaration>
+public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<CSharpMethodDeclStub, CSharpMethodDeclaration>
 {
 	public CSharpMethodStubElementType()
 	{
 		super("METHOD_DECLARATION");
 	}
 
+	@NotNull
 	@Override
 	public CSharpMethodDeclaration createElement(@NotNull ASTNode astNode)
 	{
@@ -53,65 +53,60 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 	}
 
 	@Override
-	public CSharpMethodDeclaration createPsi(@NotNull CSharpMethodStub cSharpTypeStub)
+	public CSharpMethodDeclaration createPsi(@NotNull CSharpMethodDeclStub cSharpTypeStub)
 	{
 		return new CSharpMethodDeclarationImpl(cSharpTypeStub, this);
 	}
 
 	@Override
-	public CSharpMethodStub createStub(@NotNull CSharpMethodDeclaration methodDeclaration, StubElement stubElement)
+	public CSharpMethodDeclStub createStub(@NotNull CSharpMethodDeclaration methodDeclaration, StubElement stubElement)
 	{
 		StringRef name = StringRef.fromNullableString(methodDeclaration.getName());
 		StringRef parentQName = StringRef.fromNullableString(methodDeclaration.getPresentableParentQName());
-		int modifierMask = MemberStub.getModifierMask(methodDeclaration);
-		int otherModifierMask = CSharpMethodStub.getOtherModifierMask(methodDeclaration);
-		val typeInfo = CSharpStubTypeInfoUtil.toStub(methodDeclaration.getReturnType());
-		int operatorIndex = CSharpMethodStub.getOperatorIndex(methodDeclaration);
-		val typeForImplement = CSharpStubTypeInfoUtil.toStub(methodDeclaration.getTypeForImplement());
-		return new CSharpMethodStub(stubElement, name, parentQName, modifierMask, otherModifierMask, typeInfo, typeForImplement, operatorIndex);
+		int otherModifierMask = CSharpMethodDeclStub.getOtherModifierMask(methodDeclaration);
+		int operatorIndex = CSharpMethodDeclStub.getOperatorIndex(methodDeclaration);
+		return new CSharpMethodDeclStub(stubElement, name, parentQName, otherModifierMask, operatorIndex);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpMethodStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@NotNull CSharpMethodDeclStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(stub.getName());
 		stubOutputStream.writeName(stub.getParentQName());
-		stubOutputStream.writeInt(stub.getModifierMask());
 		stubOutputStream.writeInt(stub.getOtherModifierMask());
-		stub.getReturnType().writeTo(stubOutputStream);
-		stub.getImplementType().writeTo(stubOutputStream);
 		stubOutputStream.writeInt(stub.getOperatorIndex());
 	}
 
 	@NotNull
 	@Override
-	public CSharpMethodStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpMethodDeclStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef name = stubInputStream.readName();
 		StringRef qname = stubInputStream.readName();
-		int modifierMask = stubInputStream.readInt();
 		int otherModifierMask = stubInputStream.readInt();
-		val typeInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
-		val typeImplementInfo = CSharpStubTypeInfoUtil.read(stubInputStream);
 		int operatorIndex = stubInputStream.readInt();
-		return new CSharpMethodStub(stubElement, name, qname, modifierMask, otherModifierMask, typeInfo, typeImplementInfo, operatorIndex);
+		return new CSharpMethodDeclStub(stubElement, name, qname, otherModifierMask, operatorIndex);
 	}
 
 	@Override
-	public void indexStub(@NotNull CSharpMethodStub cSharpTypeStub, @NotNull IndexSink indexSink)
+	public void indexStub(@NotNull CSharpMethodDeclStub stub, @NotNull IndexSink indexSink)
 	{
-		String name = cSharpTypeStub.getName();
+		String name = stub.getName();
 		if(!StringUtil.isEmpty(name))
 		{
 			indexSink.occurrence(CSharpIndexKeys.METHOD_INDEX, name);
 
-			val parentQName = cSharpTypeStub.getParentQName();
-
-			//indexSink.occurrence(CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, CSharpNamespaceHelper.getNamespaceForIndexing(parentQName));
-
-			if(BitUtil.isSet(cSharpTypeStub.getOtherModifierMask(), CSharpMethodStub.EXTENSION_MASK))
+			if(BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodDeclStub.DELEGATE_MASK))
 			{
-				indexSink.occurrence(CSharpIndexKeys.EXTENSION_METHOD_INDEX, name);
+				val parentQName = stub.getParentQName();
+
+				DotNetNamespaceStubUtil.indexStub(indexSink, CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX,
+						CSharpIndexKeys.MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX, parentQName, name);
+			}
+
+			if(BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodDeclStub.EXTENSION_MASK))
+			{
+				indexSink.occurrence(CSharpIndexKeys.EXTENSION_METHOD_BY_NAME_INDEX, name);
 			}
 		}
 	}

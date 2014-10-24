@@ -19,21 +19,33 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.stubs.IStubElementType;
+import lombok.val;
 
 /**
  * @author VISTALL
  * @since 17.04.14
  */
-public class CSharpNullableTypeImpl extends CSharpElementImpl implements DotNetType
+public class CSharpNullableTypeImpl extends CSharpStubElementImpl<CSharpEmptyStub<CSharpNullableTypeImpl>> implements DotNetType
 {
 	public CSharpNullableTypeImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	public CSharpNullableTypeImpl(@NotNull CSharpEmptyStub<CSharpNullableTypeImpl> stub,
+			@NotNull IStubElementType<? extends CSharpEmptyStub<CSharpNullableTypeImpl>, ?> nodeType)
+	{
+		super(stub, nodeType);
 	}
 
 	@Override
@@ -53,10 +65,33 @@ public class CSharpNullableTypeImpl extends CSharpElementImpl implements DotNetT
 		}
 		return new DotNetTypeRef.Delegate(innerType.toTypeRef())
 		{
+			@NotNull
 			@Override
-			public boolean isNullable()
+			public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 			{
-				return true;
+				val resolve = super.resolve(scope);
+				return new DotNetTypeResolveResult()
+				{
+					@Nullable
+					@Override
+					public PsiElement getElement()
+					{
+						return resolve.getElement();
+					}
+
+					@NotNull
+					@Override
+					public DotNetGenericExtractor getGenericExtractor()
+					{
+						return resolve.getGenericExtractor();
+					}
+
+					@Override
+					public boolean isNullable()
+					{
+						return true;
+					}
+				};
 			}
 		};
 	}
@@ -64,7 +99,7 @@ public class CSharpNullableTypeImpl extends CSharpElementImpl implements DotNetT
 	@Nullable
 	public DotNetType getInnerType()
 	{
-		return findChildByClass(DotNetType.class);
+		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
 	}
 
 	@NotNull

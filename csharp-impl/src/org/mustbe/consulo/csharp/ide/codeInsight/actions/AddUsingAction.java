@@ -25,8 +25,8 @@ import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.codeInsight.CSharpCodeInsightSettings;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeByQNameIndex;
 import org.mustbe.consulo.dotnet.DotNetBundle;
@@ -69,10 +69,10 @@ public class AddUsingAction implements QuestionAction
 {
 	private final Editor myEditor;
 	private final Project myProject;
-	private final CSharpReferenceExpressionImpl myRef;
+	private final CSharpReferenceExpression myRef;
 	private final Set<Couple<String>> myElements;
 
-	public AddUsingAction(Editor editor, CSharpReferenceExpressionImpl ref, Set<Couple<String>> q)
+	public AddUsingAction(Editor editor, CSharpReferenceExpression ref, Set<Couple<String>> q)
 	{
 		myEditor = editor;
 		myRef = ref;

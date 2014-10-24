@@ -17,9 +17,10 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -35,17 +36,11 @@ public class CSharpTypeRefFromGenericParameter extends DotNetTypeRef.Adapter
 		myGenericParameter = genericParameter;
 	}
 
-	@Nullable
+	@NotNull
 	@Override
-	public PsiElement resolve(@NotNull PsiElement scope)
+	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 	{
-		return myGenericParameter;
-	}
-
-	@Override
-	public boolean isNullable()
-	{
-		return false;
+		return new SimpleTypeResolveResult(myGenericParameter);
 	}
 
 	@NotNull

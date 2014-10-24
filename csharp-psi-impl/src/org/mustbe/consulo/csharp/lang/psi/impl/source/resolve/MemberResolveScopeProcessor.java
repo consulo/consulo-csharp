@@ -16,13 +16,23 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
-import com.intellij.openapi.util.Condition;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -30,42 +40,60 @@ import com.intellij.psi.ResolveState;
  */
 public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 {
-	private final Condition<PsiNamedElement> myNameCondition;
-	private final WeightProcessor<PsiNamedElement> myWeightProcessor;
-	private final boolean myNamed;
+	private final GlobalSearchScope myScope;
 
-	public MemberResolveScopeProcessor(Condition<PsiNamedElement> condition, WeightProcessor<PsiNamedElement> weightProcessor, boolean named)
+	public MemberResolveScopeProcessor(GlobalSearchScope scope, ResolveResult[] elements, ExecuteTarget[] targets)
 	{
-		myNameCondition = condition;
-		myWeightProcessor = weightProcessor;
-		myNamed = named;
-
-		//noinspection unchecked
-		putUserData(CSharpResolveUtil.CONDITION_KEY, (Condition) condition);
+		Collections.addAll(myElements, elements);
+		myScope = scope;
+		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
 	}
 
 	@Override
 	public boolean executeImpl(@NotNull PsiElement element, ResolveState state)
 	{
-		if(element instanceof DotNetNamedElement)
+		CSharpResolveSelector selector = state.get(CSharpResolveUtil.SELECTOR);
+		if(selector == null)
 		{
-			PsiNamedElement namedElement = (PsiNamedElement) element;
-			if(myNameCondition.value(namedElement))
-			{
-				PsiNamedElement temp = namedElement;
-				if(myWeightProcessor instanceof PreProcessor)
-				{
-					temp = ((PreProcessor<PsiNamedElement>) myWeightProcessor).transform(namedElement);
-				}
+			return true;
+		}
 
-				int weight = myWeightProcessor.getWeight(temp);
-				addElement(temp, weight);
-				if(weight == WeightProcessor.MAX_WEIGHT && myNamed)
+		DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
+		assert extractor != null;
+
+		CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myScope, element);
+
+
+		PsiElement psiElement = selector.doSelectElement(context);
+		if(psiElement != null)
+		{
+			PsiElement normalize = normalize(psiElement);
+			if(!ExecuteTargetUtil.isMyElement(this, normalize))
+			{
+				return true;
+			}
+
+			addElement(normalize);
+			return false;
+		}
+		return true;
+	}
+
+	private static PsiElement normalize(PsiElement element)
+	{
+		if(element instanceof CSharpElementGroup)
+		{
+			Collection<? extends PsiElement> elements = ((CSharpElementGroup) element).getElements();
+			if(elements.size() == 1)
+			{
+				PsiElement firstItem = ContainerUtil.getFirstItem(elements);
+				if(firstItem instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) firstItem).isDelegate() || !(firstItem instanceof
+						DotNetLikeMethodDeclaration))
 				{
-					return false;
+					return firstItem;
 				}
 			}
 		}
-		return true;
+		return element;
 	}
 }

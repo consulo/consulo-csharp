@@ -17,10 +17,13 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -56,17 +59,16 @@ public class CSharpStaticTypeRef extends DotNetTypeRef.Adapter
 		return myWrapperQualifiedClass;
 	}
 
+	@NotNull
 	@Override
-	public boolean isNullable()
+	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 	{
-		return false;
-	}
-
-	@Nullable
-	@Override
-	public PsiElement resolve(@NotNull PsiElement scope)
-	{
-		return DotNetPsiSearcher.getInstance(scope.getProject()).findType(myWrapperQualifiedClass, scope.getResolveScope(),
+		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(scope.getProject()).findType(myWrapperQualifiedClass, scope.getResolveScope(),
 				DotNetPsiSearcher.TypeResoleKind.UNKNOWN, CSharpTransform.INSTANCE);
+		if(type == null)
+		{
+			return DotNetTypeResolveResult.EMPTY;
+		}
+		return new SimpleTypeResolveResult(type, DotNetGenericExtractor.EMPTY, true);
 	}
 }

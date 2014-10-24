@@ -20,11 +20,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.lang.parameterInfo.CreateParameterInfoContext;
 import com.intellij.lang.parameterInfo.ParameterInfoContext;
@@ -55,8 +58,8 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	public Object[] getParametersForLookup(LookupElement item, ParameterInfoContext context)
 	{
 		Object object = item.getObject();
-		if(object instanceof DotNetLikeMethodDeclaration || object instanceof DotNetVariable && ((DotNetVariable) object).toTypeRef(false)
-				instanceof CSharpLambdaTypeRef)
+		if(object instanceof DotNetLikeMethodDeclaration || object instanceof DotNetVariable && ((DotNetVariable) object).toTypeRef(false).resolve(
+				(PsiElement) object) instanceof CSharpLambdaResolveResult)
 		{
 			return new Object[]{object};
 		}
@@ -102,16 +105,18 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 				if(callable instanceof DotNetVariable)
 				{
 					DotNetTypeRef typeRef = ((DotNetVariable) callable).toTypeRef(false);
-					if(typeRef instanceof CSharpLambdaTypeRef)
+
+					DotNetTypeResolveResult typeResolveResult = typeRef.resolve(element);
+					if(typeResolveResult instanceof CSharpLambdaResolveResult)
 					{
-						PsiElement resolve = ((CSharpLambdaTypeRef) typeRef).getTarget();
-						if(resolve instanceof DotNetLikeMethodDeclaration)
+						CSharpMethodDeclaration resolve = ((CSharpLambdaResolveResult) typeResolveResult).getTarget();
+						if(resolve != null)
 						{
-							callable = resolve;
+							callable = GenericUnwrapTool.extract(resolve, typeResolveResult.getGenericExtractor(), false);
 						}
 						else
 						{
-							callable = typeRef;
+							callable = typeResolveResult;
 						}
 					}
 				}

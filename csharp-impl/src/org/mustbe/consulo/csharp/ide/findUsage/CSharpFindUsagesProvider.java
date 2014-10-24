@@ -22,6 +22,7 @@ import org.mustbe.consulo.csharp.lang.lexer.CSharpLexer;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpEnumConstantDeclarationImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
@@ -29,7 +30,10 @@ import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
+import com.intellij.navigation.ItemPresentationProviders;
+import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.Function;
@@ -151,7 +155,15 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 	@Override
 	public String getNodeText(@NotNull PsiElement element, boolean b)
 	{
-
-		return "getNodeText " + element.getNode().getElementType();
+		CSharpMethodDeclaration original = element.getUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER);
+		if(original != null)
+		{
+			return getNodeText(original, b);
+		}
+		if(element instanceof Navigatable)
+		{
+			return ItemPresentationProviders.getItemPresentation((NavigationItem) element).getPresentableText();
+		}
+		return "getNodeText : " + element.getClass().getSimpleName();
 	}
 }

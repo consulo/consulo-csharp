@@ -22,7 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpGenericConstraintStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import com.intellij.lang.ASTNode;
@@ -35,15 +35,16 @@ import lombok.val;
  * @author VISTALL
  * @since 30.11.13.
  */
-public class CSharpGenericConstraintImpl extends CSharpStubElementImpl<CSharpGenericConstraintStub> implements CSharpGenericConstraint
+public class CSharpGenericConstraintImpl extends CSharpStubElementImpl<CSharpWithStringValueStub<CSharpGenericConstraint>> implements
+		CSharpGenericConstraint
 {
 	public CSharpGenericConstraintImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpGenericConstraintImpl(
-			@NotNull CSharpGenericConstraintStub stub, @NotNull IStubElementType<? extends CSharpGenericConstraintStub, ?> nodeType)
+	public CSharpGenericConstraintImpl(@NotNull CSharpWithStringValueStub<CSharpGenericConstraint> stub,
+			@NotNull IStubElementType<? extends CSharpWithStringValueStub<CSharpGenericConstraint>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -51,7 +52,7 @@ public class CSharpGenericConstraintImpl extends CSharpStubElementImpl<CSharpGen
 	@Override
 	public DotNetGenericParameter resolve()
 	{
-		CSharpGenericConstraintStub stub = getStub();
+		CSharpWithStringValueStub<CSharpGenericConstraint> stub = getStub();
 		if(stub != null)
 		{
 			DotNetGenericParameterListOwner parentOfType = getStubOrPsiParentOfType(DotNetGenericParameterListOwner.class);

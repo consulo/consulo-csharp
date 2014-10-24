@@ -18,7 +18,6 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfo;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.NamedStubBase;
 import com.intellij.psi.stubs.StubElement;
@@ -30,22 +29,13 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpTypeDefStub extends NamedStubBase<CSharpTypeDefStatementImpl>
 {
-	private final CSharpStubTypeInfo myTypeInfo;
-
-	public CSharpTypeDefStub(StubElement parent, IStubElementType elementType, @Nullable String name, CSharpStubTypeInfo typeInfo)
+	public CSharpTypeDefStub(StubElement parent, IStubElementType elementType, @Nullable String name)
 	{
 		super(parent, elementType, name);
-		myTypeInfo = typeInfo;
 	}
 
-	public CSharpTypeDefStub(StubElement parent, IStubElementType elementType, @Nullable StringRef name, CSharpStubTypeInfo typeInfo)
+	public CSharpTypeDefStub(StubElement parent, IStubElementType elementType, @Nullable StringRef name)
 	{
 		super(parent, elementType, name);
-		myTypeInfo = typeInfo;
-	}
-
-	public CSharpStubTypeInfo getTypeInfo()
-	{
-		return myTypeInfo;
 	}
 }

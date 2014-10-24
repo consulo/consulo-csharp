@@ -16,13 +16,11 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import java.util.List;
-
 import org.consulo.lombok.annotations.ProjectService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 
@@ -34,7 +32,7 @@ import com.intellij.psi.tree.IElementType;
 public abstract class CSharpOperatorHelper
 {
 	@NotNull
-	public abstract List<DotNetNamedElement> getStubMembers();
+	public abstract CSharpResolveContext getContext();
 
 	@NotNull
 	public static IElementType mergeTwiceOperatorIfNeed(PsiElement element)

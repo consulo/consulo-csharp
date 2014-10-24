@@ -58,7 +58,7 @@ public class MethodGenerateUtil
 			return "false";
 		}
 
-		PsiElement resolve = typeRef.resolve(scope);
+		PsiElement resolve = typeRef.resolve(scope).getElement();
 		if(resolve instanceof DotNetGenericParameter)
 		{
 			return "default(" + ((DotNetGenericParameter) resolve).getName() + ")";

@@ -19,10 +19,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilWrapperScopeProcessor;
-import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 
@@ -36,7 +34,7 @@ public abstract class SingleSearchProcessor<T> extends MsilWrapperScopeProcessor
 
 	public SingleSearchProcessor(@Nullable final String name)
 	{
-		if(name != null)
+		/*if(name != null)
 		{
 			putUserData(CSharpResolveUtil.CONDITION_KEY, new Condition<PsiElement>()
 			{
@@ -46,15 +44,15 @@ public abstract class SingleSearchProcessor<T> extends MsilWrapperScopeProcessor
 					return element instanceof PsiNamedElement && Comparing.equal(((PsiNamedElement) element).getName(), name);
 				}
 			});
-		}
+		} */
 	}
 
 	public SingleSearchProcessor(@Nullable Condition<PsiElement> elementCondition)
 	{
-		if(elementCondition != null)
+		/*if(elementCondition != null)
 		{
 			putUserData(CSharpResolveUtil.CONDITION_KEY, elementCondition);
-		}
+		} */
 	}
 
 	public abstract T isValidElement(@NotNull PsiElement element);

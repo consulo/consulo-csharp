@@ -21,7 +21,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.UsingNamespaceFix;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import com.intellij.codeInsight.daemon.ReferenceImporter;
 import com.intellij.codeInsight.daemon.impl.CollectHighlightsUtil;
 import com.intellij.openapi.editor.Document;
@@ -53,10 +53,10 @@ public class CSharpReferenceImporter implements ReferenceImporter
 		List<PsiElement> elements = CollectHighlightsUtil.getElementsInRange(file, startOffset, endOffset);
 		for(PsiElement element : elements)
 		{
-			if(element instanceof CSharpReferenceExpressionImpl)
+			if(element instanceof CSharpReferenceExpression)
 			{
-				CSharpReferenceExpressionImpl ref = (CSharpReferenceExpressionImpl) element;
-				if(ref.resolve() == null)
+				CSharpReferenceExpression ref = (CSharpReferenceExpression) element;
+				if(ref.kind() == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE && ref.resolve() == null)
 				{
 					new UsingNamespaceFix(ref).doFix(editor);
 					return true;
@@ -76,10 +76,10 @@ public class CSharpReferenceImporter implements ReferenceImporter
 		}
 
 		PsiReference element = file.findReferenceAt(offset);
-		if(element instanceof CSharpReferenceExpressionImpl)
+		if(element instanceof CSharpReferenceExpression)
 		{
-			CSharpReferenceExpressionImpl ref = (CSharpReferenceExpressionImpl) element;
-			if(ref.resolve() == null)
+			CSharpReferenceExpression ref = (CSharpReferenceExpression) element;
+			if(ref.kind() == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE && ref.resolve() == null)
 			{
 				new UsingNamespaceFix(ref).doFix(editor);
 				return true;

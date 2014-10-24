@@ -17,13 +17,14 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilWrapperScopeProcessor;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementResolveResult;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
@@ -34,22 +35,14 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public abstract class AbstractScopeProcessor extends MsilWrapperScopeProcessor implements PsiScopeProcessor
 {
-	private static final Comparator<ResolveResultWithWeight> ourWeightComparator = new Comparator<ResolveResultWithWeight>()
-	{
-		@Override
-		public int compare(ResolveResultWithWeight o1, ResolveResultWithWeight o2)
-		{
-			return o2.getWeight() - o1.getWeight();
-		}
-	};
-	protected final List<ResolveResultWithWeight> myElements = new ArrayList<ResolveResultWithWeight>();
+	protected final List<ResolveResult> myElements = new ArrayList<ResolveResult>();
 
-	public void add(ResolveResultWithWeight resolveResult)
+	public void add(ResolveResult resolveResult)
 	{
 		myElements.add(resolveResult);
 	}
 
-	public void addElement(PsiElement element, int weight)
+	public void addElement(@NotNull PsiElement element)
 	{
 		if(element instanceof DotNetNamespaceDeclaration)
 		{
@@ -57,11 +50,8 @@ public abstract class AbstractScopeProcessor extends MsilWrapperScopeProcessor i
 		}
 		else
 		{
-			ResolveResultWithWeight e = new ResolveResultWithWeight(element, weight);
-			if(myElements.contains(e))
-			{
-				return;
-			}
+			PsiElementResolveResult e = new PsiElementResolveResult(element, true);
+
 			myElements.add(e);
 		}
 	}
@@ -77,26 +67,24 @@ public abstract class AbstractScopeProcessor extends MsilWrapperScopeProcessor i
 	}
 
 	@NotNull
-	public ResolveResultWithWeight[] toResolveResults()
+	public ResolveResult[] toResolveResults()
 	{
 		if(myElements.isEmpty())
 		{
-			return ResolveResultWithWeight.EMPTY_ARRAY;
+			return ResolveResult.EMPTY_ARRAY;
 		}
 
-		ResolveResultWithWeight[] resultWithWeights = ContainerUtil.toArray(myElements, ResolveResultWithWeight.ARRAY_FACTORY);
-		ContainerUtil.sort(resultWithWeights, ourWeightComparator);
-		return resultWithWeights;
+		return ContainerUtil.toArray(myElements, ResolveResult.EMPTY_ARRAY);
 	}
 
 	@NotNull
 	public PsiElement[] toPsiElements()
 	{
-		final ResolveResultWithWeight[] resultWithWeights = toResolveResults();
-		return ContainerUtil.map(resultWithWeights, new Function<ResolveResultWithWeight, PsiElement>()
+		final ResolveResult[] resultWithWeights = toResolveResults();
+		return ContainerUtil.map(resultWithWeights, new Function<ResolveResult, PsiElement>()
 		{
 			@Override
-			public PsiElement fun(ResolveResultWithWeight resolveResultWithWeight)
+			public PsiElement fun(ResolveResult resolveResultWithWeight)
 			{
 				return resolveResultWithWeight.getElement();
 			}

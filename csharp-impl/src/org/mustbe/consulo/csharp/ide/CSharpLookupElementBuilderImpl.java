@@ -28,14 +28,15 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.AutoPopupController;
-import com.intellij.codeInsight.completion.CompletionData;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.completion.PrioritizedLookupElement;
@@ -183,6 +184,21 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 				});
 			}
 		}
+		else if(element instanceof DotNetNamespaceAsElement)
+		{
+			DotNetNamespaceAsElement namespaceAsElement = (DotNetNamespaceAsElement) element;
+			builder = LookupElementBuilder.create(namespaceAsElement.getName());
+
+			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
+		}
+		else if(element instanceof CSharpTypeDefStatement)
+		{
+			CSharpTypeDefStatement typeDefStatement = (CSharpTypeDefStatement) element;
+			builder = LookupElementBuilder.create(typeDefStatement.getName());
+
+			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
+			builder = builder.withTypeText(typeDefStatement.toTypeRef().getPresentableText());
+		}
 		else if(element instanceof DotNetVariable)
 		{
 			DotNetVariable dotNetVariable = (DotNetVariable) element;
@@ -190,7 +206,7 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 
-			builder = builder.withTypeText(((DotNetVariable) element).toTypeRef(true).getPresentableText());
+			builder = builder.withTypeText(dotNetVariable.toTypeRef(true).getPresentableText());
 		}
 		else if(element instanceof CSharpMacroDefine)
 		{
@@ -222,7 +238,7 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 		}
 		else
 		{
-			return CompletionData.objectToLookupItem(element);
+			throw new IllegalArgumentException("Element " + element.getClass().getSimpleName() + " is not handled");
 		}
 	}
 }

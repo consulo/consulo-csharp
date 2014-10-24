@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLikeMethodDeclarationImplUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -153,23 +154,7 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement
 			place)
 	{
-		for(DotNetGenericParameter dotNetGenericParameter : getGenericParameters())
-		{
-			if(!processor.execute(dotNetGenericParameter, state))
-			{
-				return false;
-			}
-		}
-
-		for(DotNetParameter parameter : getParameters())
-		{
-			if(!processor.execute(parameter, state))
-			{
-				return false;
-			}
-		}
-
-		return super.processDeclarations(processor, state, lastParent, place);
+		return CSharpLikeMethodDeclarationImplUtil.processDeclarations(this, processor, state, lastParent, place);
 	}
 
 	@NotNull

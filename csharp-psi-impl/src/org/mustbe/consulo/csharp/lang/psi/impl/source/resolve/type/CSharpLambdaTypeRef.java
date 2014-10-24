@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -27,7 +28,9 @@ import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -49,18 +52,6 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 		myTarget = target;
 		myParameterTypes = parameterTypes;
 		myReturnType = returnType;
-	}
-
-	@NotNull
-	public DotNetTypeRef getReturnType()
-	{
-		return myReturnType;
-	}
-
-	@NotNull
-	public DotNetTypeRef[] getParameterTypes()
-	{
-		return myParameterTypes;
 	}
 
 	@NotNull
@@ -150,24 +141,58 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 		return myTarget;
 	}
 
-	@Override
-	public boolean isNullable()
-	{
-		return true;
-	}
-
-	@Nullable
-	@Override
-	public PsiElement resolve(@NotNull PsiElement scope)
-	{
-		return DotNetPsiSearcher.getInstance(scope.getProject()).findType(DotNetTypes.System.MulticastDelegate, scope.getResolveScope(),
-				DotNetPsiSearcher.TypeResoleKind.UNKNOWN, CSharpTransform.INSTANCE);
-	}
-
 	@NotNull
 	@Override
-	public DotNetGenericExtractor getGenericExtractor(@NotNull PsiElement resolved, @NotNull PsiElement scope)
+	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 	{
-		return DotNetGenericExtractor.EMPTY;
+		val type = DotNetPsiSearcher.getInstance(scope.getProject()).findType(DotNetTypes.System.MulticastDelegate,
+				scope.getResolveScope(), DotNetPsiSearcher.TypeResoleKind.UNKNOWN, CSharpTransform.INSTANCE);
+		if(type == null)
+		{
+			return DotNetTypeResolveResult.EMPTY;
+		}
+		return new CSharpLambdaResolveResult()
+		{
+			@Nullable
+			@Override
+			public PsiElement getElement()
+			{
+				return type;
+			}
+
+			@NotNull
+			@Override
+			public DotNetGenericExtractor getGenericExtractor()
+			{
+				return DotNetGenericExtractor.EMPTY;
+			}
+
+			@Override
+			public boolean isNullable()
+			{
+				return true;
+			}
+
+			@NotNull
+			@Override
+			public DotNetTypeRef getReturnTypeRef()
+			{
+				return myReturnType;
+			}
+
+			@NotNull
+			@Override
+			public DotNetTypeRef[] getParameterTypeRefs()
+			{
+				return myParameterTypes;
+			}
+
+			@Nullable
+			@Override
+			public CSharpMethodDeclaration getTarget()
+			{
+				return null;
+			}
+		};
 	}
 }

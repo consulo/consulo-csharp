@@ -26,11 +26,9 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorHelper;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.typeStub.CSharpStubTypeInfoUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
@@ -41,14 +39,14 @@ import com.intellij.util.BitUtil;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl<CSharpMethodStub> implements CSharpMethodDeclaration
+public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl<CSharpMethodDeclStub> implements CSharpMethodDeclaration
 {
 	public CSharpMethodDeclarationImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpMethodDeclarationImpl(@NotNull CSharpMethodStub stub, @NotNull IStubElementType<? extends CSharpMethodStub, ?> nodeType)
+	public CSharpMethodDeclarationImpl(@NotNull CSharpMethodDeclStub stub, @NotNull IStubElementType<? extends CSharpMethodDeclStub, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -83,10 +81,10 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 	@Override
 	public boolean isDelegate()
 	{
-		CSharpMethodStub stub = getStub();
+		CSharpMethodDeclStub stub = getStub();
 		if(stub != null)
 		{
-			return BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodStub.DELEGATE_MASK);
+			return BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodDeclStub.DELEGATE_MASK);
 		}
 		return findChildByType(CSharpTokens.DELEGATE_KEYWORD) != null;
 	}
@@ -94,7 +92,7 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 	@Override
 	public boolean isOperator()
 	{
-		CSharpMethodStub stub = getStub();
+		CSharpMethodDeclStub stub = getStub();
 		if(stub != null)
 		{
 			return stub.getOperator() != null;
@@ -106,7 +104,7 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 	@Override
 	public IElementType getOperatorElementType()
 	{
-		CSharpMethodStub stub = getStub();
+		CSharpMethodDeclStub stub = getStub();
 		if(stub != null)
 		{
 			return  stub.getOperator();
@@ -134,19 +132,13 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 	@Override
 	public DotNetType getTypeForImplement()
 	{
-		DotNetType[] types = findChildrenByClass(DotNetType.class);
-		return ArrayUtil2.safeGet(types, 1);
+		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 1);
 	}
 
 	@NotNull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{
-		CSharpMethodStub stub = getStub();
-		if(stub != null)
-		{
-			return CSharpStubTypeInfoUtil.toTypeRef(stub.getImplementType(), this);
-		}
 		DotNetType typeForImplement = getTypeForImplement();
 		if(typeForImplement == null)
 		{

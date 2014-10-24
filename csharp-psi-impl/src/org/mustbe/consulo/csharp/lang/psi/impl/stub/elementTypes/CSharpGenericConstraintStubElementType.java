@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpGenericConstraintImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpGenericConstraintStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
@@ -33,13 +33,15 @@ import com.intellij.util.io.StringRef;
  * @author VISTALL
  * @since 10.06.14
  */
-public class CSharpGenericConstraintStubElementType extends CSharpAbstractStubElementType<CSharpGenericConstraintStub, CSharpGenericConstraint>
+public class CSharpGenericConstraintStubElementType extends CSharpAbstractStubElementType<CSharpWithStringValueStub<CSharpGenericConstraint>,
+		CSharpGenericConstraint>
 {
 	public CSharpGenericConstraintStubElementType()
 	{
 		super("GENERIC_CONSTRAINT");
 	}
 
+	@NotNull
 	@Override
 	public CSharpGenericConstraint createElement(@NotNull ASTNode astNode)
 	{
@@ -47,33 +49,32 @@ public class CSharpGenericConstraintStubElementType extends CSharpAbstractStubEl
 	}
 
 	@Override
-	public CSharpGenericConstraint createPsi(@NotNull CSharpGenericConstraintStub cSharpGenericConstraintStub)
+	public CSharpGenericConstraint createPsi(@NotNull CSharpWithStringValueStub<CSharpGenericConstraint> stub)
 	{
-		return new CSharpGenericConstraintImpl(cSharpGenericConstraintStub, this);
+		return new CSharpGenericConstraintImpl(stub, this);
 	}
 
 	@Override
-	public CSharpGenericConstraintStub createStub(
-			@NotNull CSharpGenericConstraint cSharpGenericConstraint, StubElement stubElement)
+	public CSharpWithStringValueStub<CSharpGenericConstraint> createStub(@NotNull CSharpGenericConstraint constraint, StubElement stubElement)
 	{
-		CSharpReferenceExpression genericParameterReference = cSharpGenericConstraint.getGenericParameterReference();
+		CSharpReferenceExpression genericParameterReference = constraint.getGenericParameterReference();
 		String text = genericParameterReference == null ? null : genericParameterReference.getText();
-		return new CSharpGenericConstraintStub(stubElement, this, text);
+		return new CSharpWithStringValueStub<CSharpGenericConstraint>(stubElement, this, text);
 	}
 
 	@Override
-	public void serialize(
-			@NotNull CSharpGenericConstraintStub cSharpGenericConstraintStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@NotNull CSharpWithStringValueStub<CSharpGenericConstraint> stub,
+			@NotNull StubOutputStream stubOutputStream) throws IOException
 	{
-		stubOutputStream.writeName(cSharpGenericConstraintStub.getReferenceText());
+		stubOutputStream.writeName(stub.getReferenceText());
 	}
 
 	@NotNull
 	@Override
-	public CSharpGenericConstraintStub deserialize(
-			@NotNull StubInputStream inputStream, StubElement stubElement) throws IOException
+	public CSharpWithStringValueStub<CSharpGenericConstraint> deserialize(@NotNull StubInputStream inputStream,
+			StubElement stubElement) throws IOException
 	{
 		StringRef text = inputStream.readName();
-		return new CSharpGenericConstraintStub(stubElement, this, text);
+		return new CSharpWithStringValueStub<CSharpGenericConstraint>(stubElement, this, text);
 	}
 }

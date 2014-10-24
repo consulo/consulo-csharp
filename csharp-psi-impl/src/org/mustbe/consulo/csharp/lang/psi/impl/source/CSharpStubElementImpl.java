@@ -17,8 +17,10 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
@@ -27,8 +29,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.StubBasedPsiElement;
+import com.intellij.psi.impl.PsiTreeDebugBuilder;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubElement;
+import com.intellij.psi.tree.TokenSet;
 
 /**
  * @author VISTALL
@@ -39,6 +43,28 @@ public abstract class CSharpStubElementImpl<S extends StubElement> extends StubB
 	public CSharpStubElementImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	@Nullable
+	@SuppressWarnings("unchecked")
+	public <T> T getStubOrPsiChildByIndex(@NotNull TokenSet set, int index)
+	{
+		PsiElement[] children = getStubOrPsiChildren(set, PsiElement.ARRAY_FACTORY);
+		return (T) ArrayUtil2.safeGet(children, index);
+	}
+
+	@NotNull
+	@SuppressWarnings("unchecked")
+	public <T> T getRequiredStubOrPsiChildByIndex(@NotNull TokenSet set, int index)
+	{
+		T element = getStubOrPsiChildByIndex(set, index);
+		if(element == null)
+		{
+			System.out.println(getStub());
+			throw new IllegalArgumentException("Element by set: " + set + " and index:" + index + " is not found. Tree:\n " + new
+					PsiTreeDebugBuilder().psiToString(this, false, false));
+		}
+		return element;
 	}
 
 	@Override
@@ -78,12 +104,18 @@ public abstract class CSharpStubElementImpl<S extends StubElement> extends StubB
 	{
 		if(visitor instanceof CSharpElementVisitor)
 		{
-			accept((CSharpElementVisitor)visitor);
+			accept((CSharpElementVisitor) visitor);
 		}
 		else
 		{
 			super.accept(visitor);
 		}
+	}
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " [" + getNode().getElementType() + "]";
 	}
 
 	public abstract void accept(@NotNull CSharpElementVisitor visitor);

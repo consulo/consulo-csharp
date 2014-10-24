@@ -18,14 +18,19 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
+import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
+import com.intellij.util.ArrayUtil;
 
 /**
  * @author VISTALL
@@ -36,87 +41,76 @@ public class CSharpSearchUtil
 	@Nullable
 	public static DotNetPropertyDeclaration findPropertyByName(@NotNull final String name, @NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
-		PsiElement resolve = typeRef.resolve(scope);
+		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+		PsiElement resolve = typeResolveResult.getElement();
 		if(resolve == null)
 		{
 			return null;
 		}
-		DotNetGenericExtractor genericExtractor = typeRef.getGenericExtractor(resolve, scope);
+		DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
 		return findPropertyByName(name, resolve, genericExtractor);
 	}
 
 	@Nullable
-	public static DotNetPropertyDeclaration findPropertyByName(@NotNull final String name, @NotNull PsiElement owner,
+	public static DotNetPropertyDeclaration findPropertyByName(@NotNull final String name,
+			@NotNull PsiElement owner,
 			@NotNull DotNetGenericExtractor extractor)
 	{
-		SingleSearchProcessor<DotNetPropertyDeclaration> processor = new SingleSearchProcessor<DotNetPropertyDeclaration>(name)
-		{
-			@Override
-			public DotNetPropertyDeclaration isValidElement(@NotNull PsiElement element)
-			{
-				if(element instanceof DotNetPropertyDeclaration)
-				{
-					//FIXME [VISTALL]  stupy hack until override ill supported
-					if(((DotNetPropertyDeclaration) element).hasModifier(CSharpModifier.PRIVATE))
-					{
-						return null;
-					}
-					return (DotNetPropertyDeclaration) element;
-				}
-				return null;
-			}
-		};
+		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner.getResolveScope(),
+				ResolveResult.EMPTY_ARRAY, new ExecuteTarget[]{ExecuteTarget.PROPERTY});
 
 		ResolveState state = ResolveState.initial();
-		state = state.put(CSharpResolveUtil.EXTRACTOR_KEY, extractor);
+		state = state.put(CSharpResolveUtil.EXTRACTOR, extractor);
+		state = state.put(CSharpResolveUtil.SELECTOR, new MemberByNameSelector(name));
 
-		CSharpResolveUtil.walkChildren(processor, owner, false, null, state);
-		return processor.get();
+		CSharpResolveUtil.walkChildren(memberResolveScopeProcessor, owner, false, null, state);
+
+		PsiElement[] psiElements = memberResolveScopeProcessor.toPsiElements();
+		return (DotNetPropertyDeclaration) ArrayUtil.getFirstElement(psiElements);
 	}
 
 	@Nullable
 	public static DotNetMethodDeclaration findMethodByName(@NotNull final String name, @NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
-		PsiElement resolve = typeRef.resolve(scope);
+		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+		PsiElement resolve = typeResolveResult.getElement();
 		if(resolve == null)
 		{
 			return null;
 		}
-		DotNetGenericExtractor genericExtractor = typeRef.getGenericExtractor(resolve, scope);
-		return findMethodByName(name, resolve, genericExtractor);
+		return findMethodByName(name, resolve, typeResolveResult.getGenericExtractor());
 	}
 
 	@Nullable
-	public static DotNetMethodDeclaration findMethodByName(@NotNull final String name, @NotNull PsiElement owner,
+	public static DotNetMethodDeclaration findMethodByName(@NotNull final String name,
+			@NotNull PsiElement owner,
 			@NotNull DotNetGenericExtractor extractor)
 	{
-		SingleSearchProcessor<DotNetMethodDeclaration> processor = new SingleSearchProcessor<DotNetMethodDeclaration>(name)
-		{
-			@Override
-			public DotNetMethodDeclaration isValidElement(@NotNull PsiElement element)
-			{
-				if(element instanceof DotNetMethodDeclaration)
-				{
-					//FIXME [VISTALL]  stupy hack until override ill supported
-					if(((DotNetMethodDeclaration) element).hasModifier(CSharpModifier.PRIVATE))
-					{
-						return null;
-					}
+		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner.getResolveScope(),
+				ResolveResult.EMPTY_ARRAY, new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
 
-					DotNetParameter[] parameters = ((DotNetMethodDeclaration) element).getParameters();
-					if(parameters.length == 0) //TODO [VISTALL] parameter handling
+		ResolveState state = ResolveState.initial();
+		state = state.put(CSharpResolveUtil.EXTRACTOR, extractor);
+		state = state.put(CSharpResolveUtil.SELECTOR, new MemberByNameSelector(name));
+
+		CSharpResolveUtil.walkChildren(memberResolveScopeProcessor, owner, false, null, state);
+
+		PsiElement[] psiElements = memberResolveScopeProcessor.toPsiElements();
+
+		for(PsiElement psiElement : psiElements)
+		{
+			if(psiElement instanceof CSharpElementGroup)
+			{
+				for(PsiElement element : ((CSharpElementGroup) psiElement).getElements())
+				{
+					//TODO [VISTALL] parameter handling
+					if(element instanceof DotNetMethodDeclaration && ((DotNetMethodDeclaration) element).getParameters().length == 0)
 					{
 						return (DotNetMethodDeclaration) element;
 					}
 				}
-				return null;
 			}
-		};
-
-		ResolveState state = ResolveState.initial();
-		state = state.put(CSharpResolveUtil.EXTRACTOR_KEY, extractor);
-
-		CSharpResolveUtil.walkChildren(processor, owner, false, null, state);
-		return processor.get();
+		}
+		return null;
 	}
 }
