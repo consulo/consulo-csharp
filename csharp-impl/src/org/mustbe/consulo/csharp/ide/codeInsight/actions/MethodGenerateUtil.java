@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -32,7 +33,9 @@ public class MethodGenerateUtil
 	@Nullable
 	public static String getDefaultValueForType(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
-		if(typeRef.isNullable())
+		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+
+		if(typeResolveResult.isNullable())
 		{
 			return "null";
 		}
@@ -58,7 +61,7 @@ public class MethodGenerateUtil
 			return "false";
 		}
 
-		PsiElement resolve = typeRef.resolve(scope).getElement();
+		PsiElement resolve = typeResolveResult.getElement();
 		if(resolve instanceof DotNetGenericParameter)
 		{
 			return "default(" + ((DotNetGenericParameter) resolve).getName() + ")";
