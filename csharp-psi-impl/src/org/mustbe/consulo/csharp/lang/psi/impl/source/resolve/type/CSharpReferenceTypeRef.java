@@ -59,7 +59,7 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 		private final PsiElement myScope;
 		private final DotNetGenericExtractor myExtractor;
 
-		public LambdaResult(PsiElement scope, CSharpMethodDeclaration element, DotNetGenericExtractor extractor)
+		public LambdaResult(@NotNull PsiElement scope, @NotNull CSharpMethodDeclaration element, @NotNull DotNetGenericExtractor extractor)
 		{
 			super(element);
 			myScope = scope;
