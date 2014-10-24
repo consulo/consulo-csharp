@@ -33,11 +33,6 @@ public class CSharpMsilStubIndexer extends MsilStubIndexer
 	@Override
 	public void indexClass(@NotNull MsilClassEntryStub stub, @NotNull IndexSink indexSink)
 	{
-		if(stub.isNested())
-		{
-			return;
-		}
-
 		String name = stub.getName();
 		if(StringUtil.isEmpty(name))
 		{
@@ -45,6 +40,11 @@ public class CSharpMsilStubIndexer extends MsilStubIndexer
 		}
 
 		indexSink.occurrence(CSharpIndexKeys.TYPE_INDEX, name);
+
+		if(stub.isNested())
+		{
+			return;
+		}
 
 		//indexSink.occurrence(CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX, namespaceForIndexing);
 
