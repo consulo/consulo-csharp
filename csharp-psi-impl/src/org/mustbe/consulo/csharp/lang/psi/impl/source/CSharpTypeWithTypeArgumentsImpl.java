@@ -20,8 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
@@ -65,7 +65,7 @@ public class CSharpTypeWithTypeArgumentsImpl extends CSharpStubElementImpl<CShar
 			rArguments[i] = argument.toTypeRef();
 		}
 
-		return new DotNetGenericWrapperTypeRef(innerType.toTypeRef(), rArguments);
+		return new CSharpGenericWrapperTypeRef(innerType.toTypeRef(), rArguments);
 	}
 
 	@Override

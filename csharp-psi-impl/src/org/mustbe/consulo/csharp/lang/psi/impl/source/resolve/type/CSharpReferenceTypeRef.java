@@ -1,5 +1,6 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
+import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -7,6 +8,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightTypeDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -54,9 +56,21 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 
 	public static class LambdaResult extends Result<CSharpMethodDeclaration> implements CSharpLambdaResolveResult
 	{
-		public LambdaResult(CSharpMethodDeclaration element)
+		private final PsiElement myScope;
+		private final DotNetGenericExtractor myExtractor;
+
+		public LambdaResult(PsiElement scope, CSharpMethodDeclaration element, DotNetGenericExtractor extractor)
 		{
 			super(element);
+			myScope = scope;
+			myExtractor = extractor;
+		}
+
+		@NotNull
+		@Override
+		public DotNetGenericExtractor getGenericExtractor()
+		{
+			return myExtractor;
 		}
 
 		@Nullable
@@ -78,21 +92,23 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 
 		@NotNull
 		@Override
+		@LazyInstance
 		public DotNetTypeRef getReturnTypeRef()
 		{
-			return myElement.getReturnTypeRef();
+			return GenericUnwrapTool.exchangeTypeRef(myElement.getReturnTypeRef(), getGenericExtractor(), myScope);
 		}
 
 		@NotNull
 		@Override
+		@LazyInstance
 		public DotNetTypeRef[] getParameterTypeRefs()
 		{
-			return myElement.getParameterTypeRefs();
+			return GenericUnwrapTool.exchangeTypeRefs(myElement.getParameterTypeRefs(), getGenericExtractor(), myScope);
 		}
 
 		@NotNull
 		@Override
-		public PsiElement getTarget()
+		public CSharpMethodDeclaration getTarget()
 		{
 			return myElement;
 		}
@@ -126,7 +142,7 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 		PsiElement resolve = myReferenceExpression.resolve();
 		if(resolve instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) resolve).isDelegate())
 		{
-			return new LambdaResult((CSharpMethodDeclaration) resolve);
+			return new LambdaResult(scope, (CSharpMethodDeclaration) resolve, DotNetGenericExtractor.EMPTY);
 		}
 		return new Result<PsiElement>(resolve);
 	}

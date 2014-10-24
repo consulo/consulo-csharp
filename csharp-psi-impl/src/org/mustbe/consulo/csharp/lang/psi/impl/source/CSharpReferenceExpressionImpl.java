@@ -532,8 +532,11 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 						if(maybeLambdaResolveResult instanceof CSharpLambdaResolveResult)
 						{
+							CSharpLambdaResolveResult lambdaTypeResolveResult = (CSharpLambdaResolveResult) maybeLambdaResolveResult;
+
+							val parameterTypeRefs = lambdaTypeResolveResult.getParameterTypeRefs();
 							int i = MethodAcceptorImpl.calcSimpleAcceptableWeight(element, callArgumentListOwner.getParameterExpressions(),
-									((CSharpLambdaResolveResult) maybeLambdaResolveResult).getParameterTypeRefs());
+									parameterTypeRefs);
 
 							list.add(Pair.create(i, maybeElementGroup));
 						}
@@ -555,8 +558,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					resolveResults[i++] = new PsiElementResolveResult(pair.getSecond(), pair.getFirst() == WeightProcessor.MAX_WEIGHT);
 				}
 				return resolveResults;
-		}
-		return ResolveResult.EMPTY_ARRAY;
+		} return ResolveResult.EMPTY_ARRAY;
 	}
 
 	public static ResolveResult[] processAnyMember(@Nullable PsiElement qualifier,

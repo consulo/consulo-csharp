@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -221,7 +222,7 @@ public class MsilToCSharpUtil
 				newArguments[i] = extractToCSharp(arguments[i], scope);
 			}
 
-			return new DotNetGenericWrapperTypeRef(inner, newArguments);
+			return new CSharpGenericWrapperTypeRef(inner, newArguments);
 		}
 
 		PsiElement resolve = typeRef.resolve(scope).getElement();

@@ -22,9 +22,9 @@ import java.util.List;
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromText;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.text.StringUtil;
@@ -73,7 +73,7 @@ public class SomeTypeParser
 					typeRefs.add(convert(argument, scope));
 				}
 
-				typeRefRef.set(new DotNetGenericWrapperTypeRef(convert(genericWrapperType.getTarget(), scope),
+				typeRefRef.set(new CSharpGenericWrapperTypeRef(convert(genericWrapperType.getTarget(), scope),
 						typeRefs.toArray(new DotNetTypeRef[typeRefs.size()])));
 			}
 		});

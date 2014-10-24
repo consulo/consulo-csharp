@@ -20,8 +20,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -107,10 +109,10 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 					DotNetTypeResolveResult typeResolveResult = typeRef.resolve(element);
 					if(typeResolveResult instanceof CSharpLambdaResolveResult)
 					{
-						PsiElement resolve = ((CSharpLambdaResolveResult) typeResolveResult).getTarget();
-						if(resolve instanceof DotNetLikeMethodDeclaration)
+						CSharpMethodDeclaration resolve = ((CSharpLambdaResolveResult) typeResolveResult).getTarget();
+						if(resolve != null)
 						{
-							callable = resolve;
+							callable = GenericUnwrapTool.extract(resolve, typeResolveResult.getGenericExtractor(), false);
 						}
 						else
 						{
