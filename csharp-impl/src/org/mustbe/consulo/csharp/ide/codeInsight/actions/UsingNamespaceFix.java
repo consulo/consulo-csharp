@@ -99,7 +99,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 			return PopupResult.NOT_AVAILABLE;
 		}
 
-		Set<Couple<String>> q = collectAllAvailableNamespaces();
+		Set<Couple<String>> q = collectAllAvailableNamespaces(kind);
 		if(q.isEmpty())
 		{
 			return PopupResult.NOT_AVAILABLE;
@@ -113,7 +113,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		return PopupResult.SHOW_HIT;
 	}
 
-	private Set<Couple<String>> collectAllAvailableNamespaces()
+	private Set<Couple<String>> collectAllAvailableNamespaces(CSharpReferenceExpression.ResolveToKind kind)
 	{
 		if(PsiTreeUtil.getParentOfType(myRef, CSharpUsingListChild.class) != null || !myRef.isValid())
 		{
@@ -125,8 +125,14 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 			return Collections.emptySet();
 		}
 		Set<Couple<String>> q = new ArrayListSet<Couple<String>>();
-		collectAvailableNamespaces(q, referenceName);
-		collectAvailableNamespacesForMethodExtensions(q, referenceName);
+		if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE)
+		{
+			collectAvailableNamespaces(q, referenceName);
+		}
+		if(kind == CSharpReferenceExpression.ResolveToKind.METHOD)
+		{
+			collectAvailableNamespacesForMethodExtensions(q, referenceName);
+		}
 		//q.addAll(LibrariesSearcher.getInstance().searchInSystemLibraries(myRef, referenceName));
 		return q;
 	}
@@ -297,7 +303,8 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile psiFile)
 	{
-		return !collectAllAvailableNamespaces().isEmpty();
+		CSharpReferenceExpression.ResolveToKind kind = myRef.kind();
+		return !collectAllAvailableNamespaces(kind).isEmpty();
 	}
 
 	@Override
