@@ -2,19 +2,27 @@ package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransformer;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeWithExtensionMethodsIndex;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
+import org.mustbe.consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.SmartList;
 
 /**
  * @author VISTALL
@@ -61,9 +69,56 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup findExtensionMethodByName(@NotNull String name)
+	public CSharpElementGroup findExtensionMethodGroupByName(@NotNull String name)
 	{
-		return null;
+		String presentableName = DotNetNamespaceStubUtil.getIndexableNamespace(myNamespaceAsElement.getPresentableQName());
+
+		Collection<DotNetTypeDeclaration> decls = TypeWithExtensionMethodsIndex.getInstance().get(presentableName,
+				myNamespaceAsElement.getProject(), myResolveScope);
+
+		if(decls.isEmpty())
+		{
+			return null;
+		}
+		List<CSharpElementGroup> list = new SmartList<CSharpElementGroup>();
+		for(DotNetTypeDeclaration decl : decls)
+		{
+			PsiElement wrappedDeclaration = MsilToCSharpUtil.wrap(decl);
+
+			CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, myResolveScope, wrappedDeclaration);
+
+			CSharpElementGroup extensionMethodByName = context.findExtensionMethodGroupByName(name);
+			if(extensionMethodByName != null)
+			{
+				list.add(extensionMethodByName);
+			}
+		}
+		return new CSharpCompositeElementGroupImpl(myNamespaceAsElement.getProject(), list);
+	}
+
+	@NotNull
+	@Override
+	public Collection<CSharpElementGroup> getExtensionMethodGroups()
+	{
+		String presentableName = DotNetNamespaceStubUtil.getIndexableNamespace(myNamespaceAsElement.getPresentableQName());
+
+		Collection<DotNetTypeDeclaration> decls = TypeWithExtensionMethodsIndex.getInstance().get(presentableName,
+				myNamespaceAsElement.getProject(), myResolveScope);
+
+		if(decls.isEmpty())
+		{
+			return Collections.emptyList();
+		}
+		List<CSharpElementGroup> list = new SmartList<CSharpElementGroup>();
+		for(DotNetTypeDeclaration decl : decls)
+		{
+			PsiElement wrappedDeclaration = MsilToCSharpUtil.wrap(decl);
+
+			CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, myResolveScope, wrappedDeclaration);
+
+			list.addAll(context.getExtensionMethodGroups());
+		}
+		return list;
 	}
 
 	@Nullable

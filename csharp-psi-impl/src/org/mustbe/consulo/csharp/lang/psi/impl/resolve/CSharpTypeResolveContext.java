@@ -269,13 +269,24 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup findExtensionMethodByName(@NotNull String name)
+	public CSharpElementGroup findExtensionMethodGroupByName(@NotNull String name)
 	{
 		if(myExtensionMap == null)
 		{
 			return null;
 		}
 		return myExtensionMap.get(name);
+	}
+
+	@NotNull
+	@Override
+	public Collection<CSharpElementGroup> getExtensionMethodGroups()
+	{
+		if(myExtensionMap == null)
+		{
+			return Collections.emptyList();
+		}
+		return myExtensionMap.values();
 	}
 
 	@Override

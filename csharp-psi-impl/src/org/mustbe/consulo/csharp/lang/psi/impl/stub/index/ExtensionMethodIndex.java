@@ -37,6 +37,6 @@ public class ExtensionMethodIndex extends StringStubIndexExtension<DotNetLikeMet
 	@Override
 	public StubIndexKey<String, DotNetLikeMethodDeclaration> getKey()
 	{
-		return CSharpIndexKeys.EXTENSION_METHOD_INDEX;
+		return CSharpIndexKeys.EXTENSION_METHOD_BY_NAME_INDEX;
 	}
 }

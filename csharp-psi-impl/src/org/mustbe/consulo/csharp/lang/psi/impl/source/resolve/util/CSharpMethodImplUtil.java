@@ -41,6 +41,6 @@ public class CSharpMethodImplUtil
 
 	public static boolean isExtensionWrapper(@Nullable PsiElement element)
 	{
-		return element instanceof CSharpMethodDeclaration && element.getUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER) == Boolean.TRUE;
+		return element instanceof CSharpMethodDeclaration && element.getUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER) != null;
 	}
 }

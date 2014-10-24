@@ -22,9 +22,9 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 
@@ -42,6 +42,16 @@ public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclarati
 	public CSharpLightMethodDeclaration(CSharpMethodDeclaration original, @Nullable DotNetParameterList parameterList)
 	{
 		super(original, parameterList);
+	}
+
+	@Override
+	public boolean isEquivalentTo(PsiElement another)
+	{
+		if(getUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER) == another)
+		{
+			return true;
+		}
+		return super.isEquivalentTo(another);
 	}
 
 	@Override

@@ -31,6 +31,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProce
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CompletionResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ConstructorProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExtensionResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
@@ -45,6 +46,7 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
+import org.mustbe.consulo.csharp.lang.psi.resolve.ExtensionMethodByNameSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
 import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
@@ -556,7 +558,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 		PsiElement target = element;
 		DotNetGenericExtractor extractor = DotNetGenericExtractor.EMPTY;
-		DotNetTypeRef qualifierTypeRef;
+		DotNetTypeRef qualifierTypeRef = DotNetTypeRef.ERROR_TYPE;
 
 		if(qualifier instanceof DotNetExpression)
 		{
@@ -598,33 +600,31 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				return memberProcessor.toResolveResults();
 			}
 
-			return memberProcessor.toResolveResults();
-		/*	Couple<PsiElement> resolveLayers = getResolveLayers(element, false);
-
-			PsiElement targetToWalkChildren = resolveLayers.getSecond();
-			if(targetToWalkChildren == null)
-			{
-				return memberProcessor.toResolveResults();
-			}
-
-			if(element instanceof CSharpReferenceExpression)
+			if((kind == ResolveToKind.METHOD || kind == ResolveToKind.ANY_MEMBER && completion) && element instanceof CSharpReferenceExpression)
 			{
 				// walk for extensions
-				ExtensionResolveScopeProcessor p2 = new ExtensionResolveScopeProcessor(qualifierTypeRef, (CSharpReferenceExpression) element,
-						condition, !с);
-				p2.merge(memberProcessor);
+				val p = new ExtensionResolveScopeProcessor(qualifierTypeRef, (CSharpReferenceExpression) element, completion);
+				p.merge(memberProcessor);
 
-				resolveState = ResolveState.initial();
 				resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR, extractor);
-				resolveState = resolveState.put(CSharpResolveUtil.CONTAINS_FILE, element.getContainingFile());
+				resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, new ExtensionMethodByNameSelector(((CSharpReferenceExpression) element)
+						.getReferenceName()));
 
-				CSharpResolveUtil.walkChildren(p2, targetToWalkChildren, true, null, resolveState);
-				return p2.toResolveResults();
+				Couple<PsiElement> resolveLayers = getResolveLayers(element, false);
+
+				//PsiElement last = resolveLayers.getFirst();
+				PsiElement targetToWalkChildren = resolveLayers.getSecond();
+
+				if(!CSharpResolveUtil.walkChildren(p, targetToWalkChildren, true, null, resolveState))
+				{
+					return p.toResolveResults();
+				}
+
+				CSharpResolveUtil.walkUsing(p, targetToWalkChildren, null, resolveState);
+
+				return p.toResolveResults();
 			}
-			else
-			{
-				return memberProcessor.toResolveResults();
-			}*/
+			return memberProcessor.toResolveResults();
 		}
 		else
 		{

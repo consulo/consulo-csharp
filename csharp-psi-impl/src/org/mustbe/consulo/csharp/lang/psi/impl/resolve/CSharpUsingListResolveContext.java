@@ -64,9 +64,16 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup findExtensionMethodByName(@NotNull String name)
+	public CSharpElementGroup findExtensionMethodGroupByName(@NotNull String name)
 	{
-		return null;
+		return getCachedNamespaceContext().findExtensionMethodGroupByName(name);
+	}
+
+	@NotNull
+	@Override
+	public Collection<CSharpElementGroup> getExtensionMethodGroups()
+	{
+		return getCachedNamespaceContext().getExtensionMethodGroups();
 	}
 
 	@Nullable

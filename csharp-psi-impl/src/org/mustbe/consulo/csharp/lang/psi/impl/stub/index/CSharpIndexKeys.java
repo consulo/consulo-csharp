@@ -31,11 +31,18 @@ import com.intellij.psi.stubs.StubIndexKey;
  */
 public interface CSharpIndexKeys
 {
-	StubIndexKey<String, DotNetQualifiedElement> MEMBER_BY_NAMESPACE_QNAME_INDEX = StubIndexKey.createIndexKey("csharp.member.by.namespace.qname.index");
-	StubIndexKey<String, DotNetQualifiedElement> MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX = StubIndexKey.createIndexKey("csharp.member.by.all.namespace.qname.index");
+	StubIndexKey<String, DotNetQualifiedElement> MEMBER_BY_NAMESPACE_QNAME_INDEX =
+			StubIndexKey.createIndexKey("csharp.member.by.namespace.qname.index");
+	StubIndexKey<String, DotNetQualifiedElement> MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX =
+			StubIndexKey.createIndexKey("csharp.member.by.all.namespace.qname.index");
 
 	StubIndexKey<String, DotNetLikeMethodDeclaration> METHOD_INDEX = StubIndexKey.createIndexKey("csharp.method.index");
-	StubIndexKey<String, DotNetLikeMethodDeclaration> EXTENSION_METHOD_INDEX = StubIndexKey.createIndexKey("csharp.extension.method.index");
+	StubIndexKey<String, DotNetLikeMethodDeclaration> EXTENSION_METHOD_BY_NAME_INDEX =
+			StubIndexKey.createIndexKey("csharp.extension.method.by.name.index");
+
+	StubIndexKey<String, DotNetTypeDeclaration> TYPE_WITH_EXTENSION_METHODS_INDEX =
+			StubIndexKey.createIndexKey("csharp.type.with.extensions.index");
+
 	StubIndexKey<String, DotNetTypeDeclaration> TYPE_INDEX = StubIndexKey.createIndexKey("csharp.type.index");
 	StubIndexKey<String, DotNetTypeDeclaration> TYPE_BY_QNAME_INDEX = StubIndexKey.createIndexKey("csharp.type.by.qname.index");
 	StubIndexKey<String, DotNetTypeDeclaration> TYPE_BY_VMQNAME_INDEX = StubIndexKey.createIndexKey("csharp.type.by.vm.qname.index");

@@ -94,18 +94,31 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup findExtensionMethodByName(@NotNull String name)
+	public CSharpElementGroup findExtensionMethodGroupByName(@NotNull String name)
 	{
 		List<CSharpElementGroup> groups = new SmartList<CSharpElementGroup>();
 		for(CSharpResolveContext context : myContexts)
 		{
-			CSharpElementGroup elementGroup = context.findExtensionMethodByName(name);
+			CSharpElementGroup elementGroup = context.findExtensionMethodGroupByName(name);
 			if(elementGroup != null)
 			{
 				groups.add(elementGroup);
 			}
 		}
 		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl(myProject, groups);
+	}
+
+	@NotNull
+	@Override
+	@SuppressWarnings("unchecked")
+	public Collection<CSharpElementGroup> getExtensionMethodGroups()
+	{
+		List groups = new SmartList();
+		for(CSharpResolveContext context : myContexts)
+		{
+			groups.addAll(context.getExtensionMethodGroups());
+		}
+		return groups;
 	}
 
 	@Nullable

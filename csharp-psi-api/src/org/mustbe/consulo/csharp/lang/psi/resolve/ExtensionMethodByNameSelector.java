@@ -21,6 +21,6 @@ public class ExtensionMethodByNameSelector implements CSharpResolveSelector
 	@Override
 	public PsiElement doSelectElement(@NotNull CSharpResolveContext context)
 	{
-		return context.findExtensionMethodByName(myName);
+		return context.findExtensionMethodGroupByName(myName);
 	}
 }

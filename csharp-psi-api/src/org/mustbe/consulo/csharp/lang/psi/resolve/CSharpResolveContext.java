@@ -48,9 +48,16 @@ public interface CSharpResolveContext
 
 		@Nullable
 		@Override
-		public CSharpElementGroup findExtensionMethodByName(@NotNull String name)
+		public CSharpElementGroup findExtensionMethodGroupByName(@NotNull String name)
 		{
 			return null;
+		}
+
+		@NotNull
+		@Override
+		public Collection<CSharpElementGroup> getExtensionMethodGroups()
+		{
+			return Collections.emptyList();
 		}
 
 		@Nullable
@@ -100,7 +107,10 @@ public interface CSharpResolveContext
 	CSharpElementGroup findOperatorGroupByTokenType(@NotNull IElementType type);
 
 	@Nullable
-	CSharpElementGroup findExtensionMethodByName(@NotNull String name);
+	CSharpElementGroup findExtensionMethodGroupByName(@NotNull String name);
+
+	@NotNull
+	Collection<CSharpElementGroup> getExtensionMethodGroups();
 
 	@Nullable
 	PsiElement findByName(@NotNull String name, @NotNull UserDataHolder holder);
