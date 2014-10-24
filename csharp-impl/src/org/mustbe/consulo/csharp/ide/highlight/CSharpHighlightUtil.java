@@ -67,7 +67,9 @@ public class CSharpHighlightUtil
 	}
 
 	@Nullable
-	public static HighlightInfo highlightNamed(@NotNull HighlightInfoHolder holder, @Nullable PsiElement element, @Nullable PsiElement target,
+	public static HighlightInfo highlightNamed(@NotNull HighlightInfoHolder holder,
+			@Nullable PsiElement element,
+			@Nullable PsiElement target,
 			@Nullable PsiElement owner)
 	{
 		if(target == null || element == null)
@@ -90,15 +92,14 @@ public class CSharpHighlightUtil
 		HighlightInfo info = HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes(defaultTextAttributeKey)
 				.create();
 		holder.add(info);
-		if(element instanceof DotNetModifierListOwner && DotNetAttributeUtil.hasAttribute((DotNetModifierListOwner) element,
-				DotNetTypes.System.ObsoleteAttribute))
+		if(element instanceof DotNetModifierListOwner && DotNetAttributeUtil.hasAttribute(element, DotNetTypes.System.ObsoleteAttribute))
 		{
 			holder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes(CodeInsightColors
 					.DEPRECATED_ATTRIBUTES).create());
 		}
 
 		if(owner instanceof CSharpReferenceExpression && ((CSharpReferenceExpression) owner).kind() == CSharpReferenceExpression.ResolveToKind
-				.ANY_MEMBER && element instanceof CSharpMethodDeclaration)
+				.ANY_MEMBER && element instanceof CSharpMethodDeclaration && !((CSharpMethodDeclaration) element).isDelegate())
 		{
 			holder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes(CSharpHighlightKey.METHOD_REF)
 					.create());
