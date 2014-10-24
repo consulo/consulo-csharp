@@ -89,7 +89,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 	public PopupResult doFix(Editor editor)
 	{
 		CSharpReferenceExpression.ResolveToKind kind = myRef.kind();
-		if(kind != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE)
+		if(kind != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE && kind != CSharpReferenceExpression.ResolveToKind.METHOD)
 		{
 			return PopupResult.NOT_AVAILABLE;
 		}
