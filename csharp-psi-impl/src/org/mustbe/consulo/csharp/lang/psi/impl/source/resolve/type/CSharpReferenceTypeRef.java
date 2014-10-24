@@ -5,10 +5,12 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightTypeDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
-import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
@@ -19,11 +21,11 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpReferenceTypeRef implements DotNetTypeRef
 {
-	public static class Result implements DotNetTypeResolveResult
+	public static class Result<T extends PsiElement> implements DotNetTypeResolveResult
 	{
-		protected final PsiElement myElement;
+		protected final T myElement;
 
-		public Result(PsiElement element)
+		public Result(T element)
 		{
 			myElement = element;
 		}
@@ -50,36 +52,42 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 		}
 	}
 
-	public static class LambdaResult extends Result implements CSharpLambdaResolveResult
+	public static class LambdaResult extends Result<CSharpMethodDeclaration> implements CSharpLambdaResolveResult
 	{
-		private final PsiElement myScope;
-
-		public LambdaResult(PsiElement scope, PsiElement element)
+		public LambdaResult(CSharpMethodDeclaration element)
 		{
 			super(element);
-			myScope = scope;
 		}
 
 		@Nullable
 		@Override
 		public PsiElement getElement()
 		{
-			return DotNetPsiSearcher.getInstance(myScope.getProject()).findType(DotNetTypes.System.MulticastDelegate,
-					myScope.getResolveScope(), DotNetPsiSearcher.TypeResoleKind.UNKNOWN, CSharpTransform.INSTANCE);
+			CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(myElement.getProject());
+			builder.withParentQName(myElement.getPresentableParentQName());
+			builder.withName(myElement.getName());
+
+			builder.addExtendType(new DotNetTypeRefByQName(DotNetTypes.System.MulticastDelegate, CSharpTransform.INSTANCE));
+
+			for(DotNetGenericParameter parameter : myElement.getGenericParameters())
+			{
+				builder.addGenericParameter(parameter);
+			}
+			return builder;
 		}
 
 		@NotNull
 		@Override
 		public DotNetTypeRef getReturnTypeRef()
 		{
-			return ((CSharpMethodDeclaration)myElement).getReturnTypeRef();
+			return myElement.getReturnTypeRef();
 		}
 
 		@NotNull
 		@Override
 		public DotNetTypeRef[] getParameterTypeRefs()
 		{
-			return ((CSharpMethodDeclaration)myElement).getParameterTypeRefs();
+			return myElement.getParameterTypeRefs();
 		}
 
 		@NotNull
@@ -118,8 +126,8 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 		PsiElement resolve = myReferenceExpression.resolve();
 		if(resolve instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) resolve).isDelegate())
 		{
-			return new LambdaResult(scope, resolve);
+			return new LambdaResult((CSharpMethodDeclaration) resolve);
 		}
-		return new Result(resolve);
+		return new Result<PsiElement>(resolve);
 	}
 }

@@ -16,7 +16,6 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.light.builder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +35,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.Processor;
+import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
@@ -53,8 +53,10 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 		INTERFACE
 	}
 
-	private List<DotNetQualifiedElement> myMembers = new ArrayList<DotNetQualifiedElement>();
-	private List<DotNetModifier> myModifiers = new ArrayList<DotNetModifier>();
+	private List<DotNetQualifiedElement> myMembers = new SmartList<DotNetQualifiedElement>();
+	private List<DotNetModifier> myModifiers = new SmartList<DotNetModifier>();
+	private List<DotNetTypeRef> myExtendTypes = new SmartList<DotNetTypeRef>();
+	private List<DotNetGenericParameter> myGenericParameters = new SmartList<DotNetGenericParameter>();
 	private Type myType = Type.DEFAULT;
 	private String myParentQName;
 
@@ -115,7 +117,7 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 	@Override
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{
-		return new DotNetTypeRef[0];
+		return ContainerUtil.toArray(myExtendTypes, DotNetTypeRef.ARRAY_FACTORY);
 	}
 
 	@Override
@@ -141,7 +143,7 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
-		return new DotNetGenericParameter[0];
+		return ContainerUtil.toArray(myGenericParameters, DotNetGenericParameter.ARRAY_FACTORY);
 	}
 
 	@Override
@@ -153,7 +155,7 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 	@Override
 	public int getGenericParametersCount()
 	{
-		return 0;
+		return getGenericParameters().length;
 	}
 
 	@NotNull
@@ -253,24 +255,42 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 		return CSharpGenericConstraint.EMPTY_ARRAY;
 	}
 
+	@NotNull
 	public CSharpLightTypeDeclarationBuilder withParentQName(String parentQName)
 	{
 		myParentQName = parentQName;
 		return this;
 	}
 
+	@NotNull
 	public CSharpLightTypeDeclarationBuilder addModifier(DotNetModifier modifierWithMask)
 	{
 		myModifiers.add(modifierWithMask);
 		return this;
 	}
 
+	@NotNull
+	public CSharpLightTypeDeclarationBuilder addExtendType(DotNetTypeRef typeRef)
+	{
+		myExtendTypes.add(typeRef);
+		return this;
+	}
+
+	@NotNull
+	public CSharpLightTypeDeclarationBuilder addGenericParameter(DotNetGenericParameter parameter)
+	{
+		myGenericParameters.add(parameter);
+		return this;
+	}
+
+	@NotNull
 	public CSharpLightTypeDeclarationBuilder withType(Type type)
 	{
 		myType = type;
 		return this;
 	}
 
+	@NotNull
 	public CSharpLightTypeDeclarationBuilder addMember(@NotNull DotNetQualifiedElement element)
 	{
 		if(element instanceof CSharpLightElementBuilder)
