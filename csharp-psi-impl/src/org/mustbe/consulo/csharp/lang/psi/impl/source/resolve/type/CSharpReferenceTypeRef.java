@@ -106,6 +106,12 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 			return GenericUnwrapTool.exchangeTypeRefs(myElement.getParameterTypeRefs(), getGenericExtractor(), myScope);
 		}
 
+		@Override
+		public boolean isNullable()
+		{
+			return true;
+		}
+
 		@NotNull
 		@Override
 		public CSharpMethodDeclaration getTarget()

@@ -302,7 +302,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
 
 			PsiElement element = typeResolveResult.getElement();
-			boolean isNullable = element != null && CSharpTypeUtil.isElementIsNullable(element);
+			boolean isNullable = element == null || CSharpTypeUtil.isElementIsNullable(element);
 			boolean isExpectedNullable = typeResolveResult.isNullable();
 
 			builder.append(CSharpPresentationUtil.getPresentableText(typeRef.getQualifiedText(), false));
