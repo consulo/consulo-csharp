@@ -109,9 +109,16 @@ public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 
 		@Nullable
 		@Override
-		public CSharpElementGroup findExtensionMethodByName(@NotNull String name)
+		public CSharpElementGroup findExtensionMethodGroupByName(@NotNull String name)
 		{
 			return null;
+		}
+
+		@NotNull
+		@Override
+		public Collection<CSharpElementGroup> getExtensionMethodGroups()
+		{
+			return Collections.emptyList();
 		}
 
 		@Nullable
@@ -172,6 +179,8 @@ public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 			put(CSharpTokens.XOR, "^");
 			put(CSharpTokens.XOREQ, "^");
 			put(CSharpTokens.TILDE, "~");
+			put(CSharpTokens.PERC, "%");
+			put(CSharpTokens.PERCEQ, "%");
 		}
 	};
 
