@@ -505,6 +505,10 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	@Nullable
 	public HighlightInfo highlightNamed(@Nullable PsiElement element, @Nullable PsiElement target, @Nullable PsiElement owner)
 	{
+		if(owner instanceof CSharpOperatorReferenceImpl)
+		{
+			return null;
+		}
 		return CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, element, target, owner);
 	}
 
