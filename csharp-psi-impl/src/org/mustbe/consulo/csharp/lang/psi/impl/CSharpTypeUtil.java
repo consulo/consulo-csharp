@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpChameleonTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullType;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -149,10 +149,12 @@ public class CSharpTypeUtil
 			return isInheritable(((CSharpArrayTypeRef) top).getInnerTypeRef(), ((CSharpArrayTypeRef) target).getInnerTypeRef(), scope);
 		}
 
-		if(top instanceof CSharpLambdaTypeRef && target instanceof CSharpLambdaTypeRef)
+		DotNetTypeResolveResult topTypeResolveResult = top.resolve(scope);
+		DotNetTypeResolveResult targetTypeResolveResult = target.resolve(scope);
+		if(topTypeResolveResult instanceof CSharpLambdaResolveResult && targetTypeResolveResult instanceof CSharpLambdaResolveResult)
 		{
-			DotNetTypeRef[] targetParameters = ((CSharpLambdaTypeRef) target).getParameterTypes();
-			DotNetTypeRef[] topParameters = ((CSharpLambdaTypeRef) top).getParameterTypes();
+			DotNetTypeRef[] targetParameters = ((CSharpLambdaResolveResult) targetTypeResolveResult).getParameterTypeRefs();
+			DotNetTypeRef[] topParameters = ((CSharpLambdaResolveResult) topTypeResolveResult).getParameterTypeRefs();
 			if(topParameters.length != targetParameters.length)
 			{
 				return false;
@@ -170,13 +172,10 @@ public class CSharpTypeUtil
 					return false;
 				}
 			}
-			DotNetTypeRef targetReturnType = ((CSharpLambdaTypeRef) target).getReturnType();
-			DotNetTypeRef topReturnType = ((CSharpLambdaTypeRef) top).getReturnType();
+			DotNetTypeRef targetReturnType = ((CSharpLambdaResolveResult) targetTypeResolveResult).getReturnTypeRef();
+			DotNetTypeRef topReturnType = ((CSharpLambdaResolveResult) topTypeResolveResult).getReturnTypeRef();
 			return targetReturnType == DotNetTypeRef.AUTO_TYPE || isInheritable(topReturnType, targetReturnType, scope);
 		}
-
-		DotNetTypeResolveResult topTypeResolveResult = top.resolve(scope);
-		DotNetTypeResolveResult targetTypeResolveResult = target.resolve(scope);
 
 		PsiElement topElement = topTypeResolveResult.getElement();
 		PsiElement targetElement = targetTypeResolveResult.getElement();

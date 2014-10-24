@@ -2,6 +2,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -17,18 +18,18 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 {
 	public static class Result implements DotNetTypeResolveResult
 	{
-		private final CSharpReferenceExpression myReferenceExpression;
+		protected final PsiElement myElement;
 
-		public Result(CSharpReferenceExpression referenceExpression)
+		public Result(PsiElement element)
 		{
-			myReferenceExpression = referenceExpression;
+			myElement = element;
 		}
 
 		@Nullable
 		@Override
 		public PsiElement getElement()
 		{
-			return myReferenceExpression.resolve();
+			return myElement;
 		}
 
 		@NotNull
@@ -43,6 +44,35 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 		{
 			PsiElement element = getElement();
 			return element == null || CSharpTypeUtil.isElementIsNullable(element);
+		}
+	}
+
+	public static class LambdaResult extends Result implements CSharpLambdaResolveResult
+	{
+		public LambdaResult(PsiElement element)
+		{
+			super(element);
+		}
+
+		@NotNull
+		@Override
+		public DotNetTypeRef getReturnTypeRef()
+		{
+			return ((CSharpMethodDeclaration)myElement).getReturnTypeRef();
+		}
+
+		@NotNull
+		@Override
+		public DotNetTypeRef[] getParameterTypeRefs()
+		{
+			return ((CSharpMethodDeclaration)myElement).getParameterTypeRefs();
+		}
+
+		@NotNull
+		@Override
+		public PsiElement getTarget()
+		{
+			return myElement;
 		}
 	}
 
@@ -71,6 +101,11 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 	@Override
 	public DotNetTypeResolveResult resolve(@NotNull PsiElement element)
 	{
-		return new Result(myReferenceExpression);
+		PsiElement resolve = myReferenceExpression.resolve();
+		if(resolve instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) resolve).isDelegate())
+		{
+			return new LambdaResult(resolve);
+		}
+		return new Result(resolve);
 	}
 }

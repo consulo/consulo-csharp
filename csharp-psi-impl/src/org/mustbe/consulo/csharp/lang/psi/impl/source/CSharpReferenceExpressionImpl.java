@@ -36,6 +36,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScope
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
@@ -501,7 +502,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 				DotNetTypeRef[] typeArgumentListRefs = callArgumentListOwner.getTypeArgumentListRefs();
 
-				List<Pair<Integer, DotNetLikeMethodDeclaration>> list = new ArrayList<Pair<Integer, DotNetLikeMethodDeclaration>>();
+				List<Pair<Integer, PsiElement>> list = new ArrayList<Pair<Integer, PsiElement>>();
 				for(ResolveResult result : resolveResults)
 				{
 					PsiElement maybeElementGroup = result.getElement();
@@ -519,23 +520,37 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 								int i = MethodAcceptorImpl.calcAcceptableWeight(element, callArgumentListOwner,
 										(DotNetLikeMethodDeclaration) psiElement);
 
-								list.add(Pair.create(i, (DotNetLikeMethodDeclaration) psiElement));
+								list.add(Pair.create(i, psiElement));
 							}
+						}
+					}
+					else if(maybeElementGroup instanceof DotNetVariable)
+					{
+						DotNetTypeRef dotNetTypeRef = ((DotNetVariable) maybeElementGroup).toTypeRef(true);
+
+						DotNetTypeResolveResult maybeLambdaResolveResult = dotNetTypeRef.resolve(element);
+
+						if(maybeLambdaResolveResult instanceof CSharpLambdaResolveResult)
+						{
+							int i = MethodAcceptorImpl.calcSimpleAcceptableWeight(element, callArgumentListOwner.getParameterExpressions(),
+									((CSharpLambdaResolveResult) maybeLambdaResolveResult).getParameterTypeRefs());
+
+							list.add(Pair.create(i, maybeElementGroup));
 						}
 					}
 				}
 
-				Collections.sort(list, new Comparator<Pair<Integer, DotNetLikeMethodDeclaration>>()
+				Collections.sort(list, new Comparator<Pair<Integer, PsiElement>>()
 				{
 					@Override
-					public int compare(Pair<Integer, DotNetLikeMethodDeclaration> o1, Pair<Integer, DotNetLikeMethodDeclaration> o2)
+					public int compare(Pair<Integer, PsiElement> o1, Pair<Integer, PsiElement> o2)
 					{
 						return o2.getFirst() - o1.getFirst();
 					}
 				});
 				resolveResults = new ResolveResult[list.size()];
 				int i = 0;
-				for(Pair<Integer, DotNetLikeMethodDeclaration> pair : list)
+				for(Pair<Integer, PsiElement> pair : list)
 				{
 					resolveResults[i++] = new PsiElementResolveResult(pair.getSecond(), pair.getFirst() == WeightProcessor.MAX_WEIGHT);
 				}
@@ -635,7 +650,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 			ResolveResult[] elements = ResolveResult.EMPTY_ARRAY;
 			// if resolving is any member, first we need process locals and then go to fields and other
-			if(kind == ResolveToKind.ANY_MEMBER)
+			if(kind == ResolveToKind.ANY_MEMBER || kind == ResolveToKind.METHOD)
 			{
 				SimpleNamedScopeProcessor localProcessor = new SimpleNamedScopeProcessor(completion, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
 				if(!CSharpResolveUtil.treeWalkUp(localProcessor, target, element, last, resolveState))
@@ -696,8 +711,16 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				};
 				break;
 			case ARRAY_METHOD:
-			case METHOD:
 				targets = new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP};
+				break;
+			case METHOD:
+				targets = new ExecuteTarget[]{
+						ExecuteTarget.ELEMENT_GROUP,
+						ExecuteTarget.FIELD,
+						ExecuteTarget.PROPERTY,
+						ExecuteTarget.EVENT,
+						ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER
+				};
 				break;
 			default:
 				targets = new ExecuteTarget[]{

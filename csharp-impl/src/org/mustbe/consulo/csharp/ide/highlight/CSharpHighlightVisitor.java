@@ -32,7 +32,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpression
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
@@ -44,6 +44,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
@@ -342,10 +343,6 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 		{
 			resolveResults = ((PsiPolyVariantReference) callElement).multiResolve(false);
 		}
-		else if(callElement instanceof CSharpOperatorReferenceImpl)
-		{
-			resolveResults = ((CSharpOperatorReferenceImpl) callElement).multiResolve(false);
-		}
 
 		ResolveResult goodResult = resolveResults.length > 0 && resolveResults[0].isValidResult() ? resolveResults[0] : null;
 
@@ -410,11 +407,12 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 			if(resolveElement instanceof DotNetVariable)
 			{
 				DotNetTypeRef typeRef = ((DotNetVariable) resolveElement).toTypeRef(false);
-				if(!(typeRef instanceof CSharpLambdaTypeRef))
+				DotNetTypeResolveResult typeResolveResult = typeRef.resolve(element);
+				if(!(typeResolveResult instanceof CSharpLambdaResolveResult))
 				{
 					return null;
 				}
-				DotNetTypeRef[] parameterTypes = ((CSharpLambdaTypeRef) typeRef).getParameterTypes();
+				DotNetTypeRef[] parameterTypes = ((CSharpLambdaResolveResult) typeResolveResult).getParameterTypeRefs();
 				for(int i = 0; i < parameterTypes.length; i++)
 				{
 					if(i != 0)

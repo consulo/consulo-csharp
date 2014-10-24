@@ -21,12 +21,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpEventUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.dotnet.psi.DotNetEventDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayUtil;
@@ -41,30 +42,18 @@ public class CSharpLambdaExpressionImplUtil
 	@NotNull
 	public static DotNetTypeRef resolveTypeForParameter(PsiElement target, int parameterIndex)
 	{
-		CSharpLambdaTypeRef leftTypeRef = resolveLeftLambdaTypeRef(target);
+		CSharpLambdaResolveResult leftTypeRef = resolveLeftLambdaTypeRef(target);
 		if(leftTypeRef == null)
 		{
 			return DotNetTypeRef.UNKNOWN_TYPE;
 		}
-		DotNetTypeRef[] leftTypeParameters = leftTypeRef.getParameterTypes();
+		DotNetTypeRef[] leftTypeParameters = leftTypeRef.getParameterTypeRefs();
 		DotNetTypeRef typeRef = ArrayUtil2.safeGet(leftTypeParameters, parameterIndex);
 		return ObjectUtils.notNull(typeRef, DotNetTypeRef.UNKNOWN_TYPE);
 	}
 
 	@Nullable
-	public static DotNetTypeRef fromVariable(DotNetVariable variable, int parameterIndex)
-	{
-		DotNetTypeRef leftTypeRef = variable.toTypeRef(false);
-		if(!(leftTypeRef instanceof CSharpLambdaTypeRef))
-		{
-			return DotNetTypeRef.UNKNOWN_TYPE;
-		}
-		DotNetTypeRef[] leftTypeParameters = ((CSharpLambdaTypeRef) leftTypeRef).getParameterTypes();
-		return ArrayUtil2.safeGet(leftTypeParameters, parameterIndex);
-	}
-
-	@Nullable
-	public static CSharpLambdaTypeRef resolveLeftLambdaTypeRef(PsiElement target)
+	public static CSharpLambdaResolveResult resolveLeftLambdaTypeRef(PsiElement target)
 	{
 		PsiElement parent = target.getParent();
 		if(parent instanceof DotNetVariable)
@@ -109,13 +98,10 @@ public class CSharpLambdaExpressionImplUtil
 	}
 
 	@Nullable
-	public static CSharpLambdaTypeRef resolveLeftLambdaTypeRefForVariable(DotNetVariable variable)
+	public static CSharpLambdaResolveResult resolveLeftLambdaTypeRefForVariable(DotNetVariable variable)
 	{
 		DotNetTypeRef leftTypeRef = variable.toTypeRef(false);
-		if(!(leftTypeRef instanceof CSharpLambdaTypeRef))
-		{
-			return null;
-		}
-		return (CSharpLambdaTypeRef) leftTypeRef;
+		DotNetTypeResolveResult typeResolveResult = leftTypeRef.resolve(variable);
+		return typeResolveResult instanceof CSharpLambdaResolveResult ? (CSharpLambdaResolveResult) typeResolveResult : null;
 	}
 }

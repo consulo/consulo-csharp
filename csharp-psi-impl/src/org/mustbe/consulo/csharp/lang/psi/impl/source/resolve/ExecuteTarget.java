@@ -2,6 +2,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
 import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
@@ -94,6 +95,14 @@ public enum ExecuteTarget
 				public boolean isMyElement(@NotNull PsiElement element)
 				{
 					return element instanceof CSharpPropertyDeclaration;
+				}
+			},
+	EVENT
+			{
+				@Override
+				public boolean isMyElement(@NotNull PsiElement element)
+				{
+					return element instanceof CSharpEventDeclaration;
 				}
 			},
 	ELEMENT_GROUP

@@ -44,7 +44,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.codeInsight.daemon.impl.ShowAutoImportPass;
 import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.codeInsight.intention.HighPriorityAction;
@@ -250,8 +249,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 
 		for(DotNetLikeMethodDeclaration possibleMethod : list)
 		{
-			if(MethodAcceptorImpl.calcAcceptableWeight(myRef, newExpressions, DotNetGenericExtractor.EMPTY,
-					possibleMethod) == WeightProcessor.MAX_WEIGHT)
+			if(MethodAcceptorImpl.calcAcceptableWeight(myRef, newExpressions, possibleMethod) == WeightProcessor.MAX_WEIGHT)
 			{
 				PsiElement parentOfMethod = possibleMethod.getParent();
 				if(parentOfMethod instanceof DotNetQualifiedElement)

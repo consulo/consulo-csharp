@@ -24,12 +24,12 @@ import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
-import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
 import com.intellij.psi.PsiElement;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -51,18 +51,6 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 		myTarget = target;
 		myParameterTypes = parameterTypes;
 		myReturnType = returnType;
-	}
-
-	@NotNull
-	public DotNetTypeRef getReturnType()
-	{
-		return myReturnType;
-	}
-
-	@NotNull
-	public DotNetTypeRef[] getParameterTypes()
-	{
-		return myParameterTypes;
 	}
 
 	@NotNull
@@ -156,12 +144,54 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 	@Override
 	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 	{
-		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(scope.getProject()).findType(DotNetTypes.System.MulticastDelegate,
+		val type = DotNetPsiSearcher.getInstance(scope.getProject()).findType(DotNetTypes.System.MulticastDelegate,
 				scope.getResolveScope(), DotNetPsiSearcher.TypeResoleKind.UNKNOWN, CSharpTransform.INSTANCE);
 		if(type == null)
 		{
 			return DotNetTypeResolveResult.EMPTY;
 		}
-		return new SimpleTypeResolveResult(type, true);
+		return new CSharpLambdaResolveResult()
+		{
+			@Nullable
+			@Override
+			public PsiElement getElement()
+			{
+				return type;
+			}
+
+			@NotNull
+			@Override
+			public DotNetGenericExtractor getGenericExtractor()
+			{
+				return DotNetGenericExtractor.EMPTY;
+			}
+
+			@Override
+			public boolean isNullable()
+			{
+				return true;
+			}
+
+			@NotNull
+			@Override
+			public DotNetTypeRef getReturnTypeRef()
+			{
+				return myReturnType;
+			}
+
+			@NotNull
+			@Override
+			public DotNetTypeRef[] getParameterTypeRefs()
+			{
+				return myParameterTypes;
+			}
+
+			@Nullable
+			@Override
+			public PsiElement getTarget()
+			{
+				return null;
+			}
+		};
 	}
 }
