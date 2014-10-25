@@ -1,13 +1,19 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
@@ -16,6 +22,7 @@ import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -51,7 +58,7 @@ public class CSharpResolveContextUtil
 	{
 		if(element instanceof CSharpTypeDeclaration)
 		{
-			return cacheTypeContext(genericExtractor, (CSharpTypeDeclaration) element);
+			return cacheTypeContext(genericExtractor, resolveScope, (CSharpTypeDeclaration) element);
 		}
 		else if(element instanceof DotNetNamespaceAsElement)
 		{
@@ -66,7 +73,31 @@ public class CSharpResolveContextUtil
 
 	@NotNull
 	private static CSharpResolveContext cacheTypeContext(@NotNull DotNetGenericExtractor genericExtractor,
+			GlobalSearchScope resolveScope,
 			@NotNull final CSharpTypeDeclaration typeDeclaration)
+	{
+		if(typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
+		{
+			DotNetTypeDeclaration[] types = DotNetPsiSearcher.getInstance(typeDeclaration.getProject()).findTypes(typeDeclaration.getVmQName(),
+					resolveScope);
+
+			List<CSharpResolveContext> list = new ArrayList<CSharpResolveContext>(types.length);
+			for(DotNetTypeDeclaration element : types)
+			{
+				if(!(element instanceof CSharpTypeDeclaration))
+				{
+					continue;
+				}
+				list.add(cacheTypeContextImpl(genericExtractor, (CSharpTypeDeclaration) element));
+			}
+			return new CSharpCompositeResolveContext(types[0].getProject(), ContainerUtil.toArray(list, CSharpResolveContext.ARRAY_FACTORY));
+		}
+
+		return cacheTypeContextImpl(genericExtractor, typeDeclaration);
+	}
+
+	@NotNull
+	private static CSharpResolveContext cacheTypeContextImpl(@NotNull DotNetGenericExtractor genericExtractor, @NotNull final CSharpTypeDeclaration typeDeclaration)
 	{
 		if(genericExtractor == DotNetGenericExtractor.EMPTY)
 		{

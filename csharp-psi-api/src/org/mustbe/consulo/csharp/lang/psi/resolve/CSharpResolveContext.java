@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.resolve;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.util.Key;
@@ -14,6 +15,7 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 29.09.14
  */
+@ArrayFactoryFields
 public interface CSharpResolveContext
 {
 	CSharpResolveContext EMPTY = new CSharpResolveContext()
