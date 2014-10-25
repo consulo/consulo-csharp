@@ -237,6 +237,20 @@ public class CSharpResolveUtil
 			maxScope = entrance.getContainingFile();
 		}
 
+		CSharpResolveSelector selector = state.get(SELECTOR);
+		if(selector != null)
+		{
+			if(!(selector instanceof CSharpNamedResolveSelector))
+			{
+				return true;
+			}
+		}
+
+		if(!(processor instanceof AbstractScopeProcessor))
+		{
+			return true;
+		}
+
 		while(scope != null)
 		{
 			ProgressIndicatorProvider.checkCanceled();
@@ -246,12 +260,8 @@ public class CSharpResolveUtil
 				DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) scope).getGenericParameters();
 				if(genericParameters.length > 0)
 				{
-					CSharpResolveSelector selector = state.get(SELECTOR);
 					if(selector != null)
 					{
-						assert processor instanceof AbstractScopeProcessor;
-						assert selector instanceof CSharpNamedResolveSelector;
-
 						for(DotNetGenericParameter genericParameter : genericParameters)
 						{
 							if(((CSharpNamedResolveSelector) selector).isNameEqual(genericParameter.getName()))
