@@ -20,9 +20,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpEventUtil;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
-import org.mustbe.consulo.dotnet.psi.DotNetEventDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -30,6 +30,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.ObjectUtils;
 
@@ -88,12 +89,39 @@ public class CSharpLambdaExpressionImplUtil
 			return resolveLeftLambdaTypeRefForVariable(((DotNetLikeMethodDeclaration) resolve).getParameters()[index]);
 		}
 
-		DotNetEventDeclaration eventDeclaration = CSharpEventUtil.resolveEvent(parent);
-		if(eventDeclaration != null)
+		DotNetVariable variable = resolveLambdaVariableInsideAssignmentExpression(parent);
+		if(variable != null)
 		{
-			return resolveLeftLambdaTypeRefForVariable(eventDeclaration);
+			return resolveLeftLambdaTypeRefForVariable(variable);
 		}
 
+		return null;
+	}
+
+	@Nullable
+	public static DotNetVariable resolveLambdaVariableInsideAssignmentExpression(@NotNull PsiElement parent)
+	{
+		if(parent instanceof CSharpAssignmentExpressionImpl)
+		{
+			IElementType operatorElementType = ((CSharpAssignmentExpressionImpl) parent).getOperatorElement().getOperatorElementType();
+
+			if(operatorElementType == CSharpTokens.PLUSEQ || operatorElementType == CSharpTokens.MINUSEQ)
+			{
+				DotNetExpression expression = ((CSharpAssignmentExpressionImpl) parent).getParameterExpressions()[0];
+				if(expression instanceof CSharpReferenceExpression)
+				{
+					PsiElement resolve = ((CSharpReferenceExpression) expression).resolve();
+					if(resolve instanceof DotNetVariable)
+					{
+						DotNetTypeResolveResult typeResolveResult = ((DotNetVariable) resolve).toTypeRef(true).resolve(parent);
+						if(typeResolveResult instanceof CSharpLambdaResolveResult)
+						{
+							return (DotNetVariable) resolve;
+						}
+					}
+				}
+			}
+		}
 		return null;
 	}
 

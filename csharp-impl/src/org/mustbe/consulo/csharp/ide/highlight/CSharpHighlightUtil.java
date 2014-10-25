@@ -83,6 +83,15 @@ public class CSharpHighlightUtil
 			return null;
 		}
 
+		if(owner instanceof CSharpReferenceExpression && ((CSharpReferenceExpression) owner).kind() == CSharpReferenceExpression.ResolveToKind
+				.ANY_MEMBER && element instanceof CSharpMethodDeclaration && !((CSharpMethodDeclaration) element).isDelegate())
+		{
+			HighlightInfo highlightInfo = HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes
+					(CSharpHighlightKey.METHOD_REF).create();
+			holder.add(highlightInfo);
+			return highlightInfo;
+		}
+
 		TextAttributesKey defaultTextAttributeKey = getDefaultTextAttributeKey(element);
 		if(defaultTextAttributeKey == null)
 		{
@@ -96,13 +105,6 @@ public class CSharpHighlightUtil
 		{
 			holder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes(CodeInsightColors
 					.DEPRECATED_ATTRIBUTES).create());
-		}
-
-		if(owner instanceof CSharpReferenceExpression && ((CSharpReferenceExpression) owner).kind() == CSharpReferenceExpression.ResolveToKind
-				.ANY_MEMBER && element instanceof CSharpMethodDeclaration && !((CSharpMethodDeclaration) element).isDelegate())
-		{
-			holder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes(CSharpHighlightKey.METHOD_REF)
-					.create());
 		}
 
 		if(CSharpHighlightUtil.isGeneratedElement(element))
