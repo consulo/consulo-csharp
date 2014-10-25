@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpression
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpXXXAccessorImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpYieldStatementImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
@@ -98,6 +99,11 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		}
 		else if(element instanceof CSharpReturnStatementImpl)
 		{
+			// disable for yield statement
+			if(element.getParent() instanceof CSharpYieldStatementImpl)
+			{
+				return null;
+			}
 			DotNetModifierListOwner modifierListOwner = PsiTreeUtil.getParentOfType(element, DotNetModifierListOwner.class);
 			if(modifierListOwner == null)
 			{
