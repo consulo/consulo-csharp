@@ -16,7 +16,10 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util;
 
+import gnu.trove.THashSet;
+
 import java.util.Collections;
+import java.util.Set;
 
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
@@ -40,6 +44,8 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
@@ -315,7 +321,44 @@ public class CSharpResolveUtil
 			{
 				return false;
 			}
-			Collections.addAll(superTypes, typeDeclaration.getExtendTypeRefs());
+
+			if(typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
+			{
+				DotNetTypeDeclaration[] types = DotNetPsiSearcher.getInstance(typeDeclaration.getProject()).findTypes(typeDeclaration.getVmQName(),
+						typeDeclaration.getResolveScope());
+
+				for(DotNetTypeDeclaration type : types)
+				{
+					DotNetTypeList extendList = type.getExtendList();
+					if(extendList != null)
+					{
+						DotNetTypeRef[] typeRefs = extendList.getTypeRefs();
+						Collections.addAll(superTypes, typeRefs);
+					}
+				}
+
+				if(superTypes.isEmpty())
+				{
+					Set<String> set = new THashSet<String>();
+					for(DotNetTypeDeclaration type : types)
+					{
+						set.add(CSharpTypeDeclarationImplUtil.getDefaultSuperType(type));
+					}
+
+					if(set.contains(DotNetTypes.System.ValueType))
+					{
+						superTypes.add(new DotNetTypeRefByQName(DotNetTypes.System.ValueType, CSharpTransform.INSTANCE));
+					}
+					else
+					{
+						superTypes.add(new DotNetTypeRefByQName(DotNetTypes.System.Object, CSharpTransform.INSTANCE));
+					}
+				}
+			}
+			else
+			{
+				Collections.addAll(superTypes, typeDeclaration.getExtendTypeRefs());
+			}
 
 			for(DotNetTypeRef dotNetTypeRef : superTypes)
 			{
