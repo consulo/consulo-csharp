@@ -748,6 +748,11 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 						ExecuteTarget.TYPE_DEF,
 						ExecuteTarget.ELEMENT_GROUP
 				};
+				if(completion)
+				{
+					// append generic when completion due at ANY_MEMBER it dont resolved
+					targets = ArrayUtil.append(targets, ExecuteTarget.GENERIC_PARAMETER);
+				}
 				break;
 		}
 

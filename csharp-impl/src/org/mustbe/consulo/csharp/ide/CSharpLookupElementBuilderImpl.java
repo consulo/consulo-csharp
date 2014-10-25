@@ -33,6 +33,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodI
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -198,6 +199,13 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 			builder = builder.withTypeText(typeDefStatement.toTypeRef().getPresentableText());
+		}
+		else if(element instanceof DotNetGenericParameter)
+		{
+			DotNetGenericParameter typeDefStatement = (DotNetGenericParameter) element;
+			builder = LookupElementBuilder.create(typeDefStatement.getName());
+
+			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 		}
 		else if(element instanceof DotNetVariable)
 		{
