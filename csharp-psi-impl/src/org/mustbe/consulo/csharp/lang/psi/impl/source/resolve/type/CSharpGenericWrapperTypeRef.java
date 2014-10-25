@@ -97,7 +97,7 @@ public class CSharpGenericWrapperTypeRef implements DotNetGenericWrapperTypeRef
 			{
 				return new SimpleTypeResolveResult(element, getGenericExtractor(typeResolveResult.getElement()));
 			}
-			return new CSharpReferenceTypeRef.LambdaResult(scope, target, getGenericExtractor(element));
+			return new CSharpReferenceTypeRef.LambdaResult(scope, target, getGenericExtractor(target));
 		}
 		return new SimpleTypeResolveResult(element, getGenericExtractor(typeResolveResult.getElement()));
 	}
