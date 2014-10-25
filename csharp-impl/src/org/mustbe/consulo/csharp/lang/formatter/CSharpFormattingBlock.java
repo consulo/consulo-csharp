@@ -27,7 +27,9 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializationExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import com.intellij.formatting.Indent;
 import com.intellij.formatting.Wrap;
 import com.intellij.formatting.WrapType;
@@ -78,8 +80,9 @@ public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSha
 	@Override
 	public Indent getIndent()
 	{
-		PsiElement psiElement = getNode().getPsi().getParent();
-		if(psiElement instanceof PsiFile)
+		PsiElement element = getNode().getPsi();
+		PsiElement parent = element.getParent();
+		if(parent instanceof PsiFile)
 		{
 			return Indent.getNoneIndent();
 		}
@@ -97,7 +100,8 @@ public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSha
 				elementType == EVENT_DECLARATION ||
 				elementType == ENUM_CONSTANT_DECLARATION ||
 				elementType == USING_LIST ||
-				elementType == CONSTRUCTOR_DECLARATION)
+				elementType == CONSTRUCTOR_DECLARATION ||
+				element instanceof DotNetExpression && parent instanceof CSharpArrayInitializationExpressionImpl)
 		{
 			return Indent.getNormalIndent();
 		}
@@ -132,8 +136,6 @@ public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSha
 		} */
 		else
 		{
-			PsiElement psi = getNode().getPsi();
-			PsiElement parent = psi.getParent();
 			if(parent instanceof CSharpBlockStatementImpl)
 			{
 				return Indent.getNormalIndent();
