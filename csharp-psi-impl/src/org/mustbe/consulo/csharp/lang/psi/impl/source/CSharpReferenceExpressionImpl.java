@@ -536,15 +536,22 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 						{
 							if(psiElement instanceof DotNetLikeMethodDeclaration)
 							{
-								DotNetGenericExtractor extractorFromCall = MethodAcceptorImpl.createExtractorFromCall(typeArgumentListRefs,
-										(DotNetGenericParameterListOwner) psiElement);
+								if(typeArgumentListRefs.length != ((DotNetGenericParameterListOwner) psiElement).getGenericParametersCount())
+								{
+									elementWithWeightList.add(Pair.create(0, psiElement));
+								}
+								else
+								{
+									DotNetGenericExtractor extractorFromCall = MethodAcceptorImpl.createExtractorFromCall(typeArgumentListRefs,
+											(DotNetGenericParameterListOwner) psiElement);
 
-								psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, extractorFromCall, true);
+									psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, extractorFromCall, true);
 
-								int i = MethodAcceptorImpl.calcAcceptableWeight(element, callArgumentListOwner,
-										(DotNetLikeMethodDeclaration) psiElement);
+									int i = MethodAcceptorImpl.calcAcceptableWeight(element, callArgumentListOwner,
+											(DotNetLikeMethodDeclaration) psiElement);
 
-								elementWithWeightList.add(Pair.create(i, psiElement));
+									elementWithWeightList.add(Pair.create(i, psiElement));
+								}
 							}
 						}
 					}

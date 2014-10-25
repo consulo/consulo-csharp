@@ -141,6 +141,11 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 			}
 		}
 
+		if(o1.getGenericParametersCount() != o2.getGenericParametersCount())
+		{
+			return false;
+		}
+
 		if(!Comparing.equal(o1.getName(), o2.getName()))
 		{
 			return false;
