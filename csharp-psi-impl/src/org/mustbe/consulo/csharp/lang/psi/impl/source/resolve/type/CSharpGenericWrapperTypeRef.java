@@ -22,8 +22,8 @@ import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.SimpleGeneric
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithInnerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
 import com.intellij.psi.PsiElement;
@@ -32,7 +32,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpGenericWrapperTypeRef implements DotNetTypeRef, DotNetTypeRefWithInnerTypeRef
+public class CSharpGenericWrapperTypeRef implements DotNetGenericWrapperTypeRef
 {
 	private final DotNetTypeRef myInnerTypeRef;
 	private final DotNetTypeRef[] myArguments;
@@ -125,6 +125,7 @@ public class CSharpGenericWrapperTypeRef implements DotNetTypeRef, DotNetTypeRef
 		return myInnerTypeRef;
 	}
 
+	@Override
 	@NotNull
 	public DotNetTypeRef[] getArgumentTypeRefs()
 	{
