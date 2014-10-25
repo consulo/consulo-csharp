@@ -127,21 +127,30 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 	public boolean processDeclarations(
 			@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place)
 	{
-		if(getAccessorKind() == Kind.SET && ExecuteTargetUtil.canProcess(processor, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER))
+		if(ExecuteTargetUtil.canProcess(processor, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER))
 		{
-			Pair<DotNetTypeRef, ? extends PsiElement> pair = getTypeRefOfParent();
-			if(pair.getSecond() == null)
-			{
-				return true;
-			}
-
-			CSharpLightLocalVariableBuilder builder = new CSharpLightLocalVariableBuilder(pair.getSecond()).withName(VALUE).withParent(this)
-					.withTypeRef(pair.getFirst());
-			builder.putUserData(CSharpResolveUtil.ACCESSOR_VALUE_VARIABLE, Boolean.TRUE);
-
-			if(!processor.execute(builder, state))
+			PsiElement parent = getParent();
+			if(!parent.processDeclarations(processor, state, lastParent, place))
 			{
 				return false;
+			}
+
+			if(getAccessorKind() == Kind.SET)
+			{
+				Pair<DotNetTypeRef, ? extends PsiElement> pair = getTypeRefOfParent();
+				if(pair.getSecond() == null)
+				{
+					return true;
+				}
+
+				CSharpLightLocalVariableBuilder builder = new CSharpLightLocalVariableBuilder(pair.getSecond()).withName(VALUE).withParent(this).withTypeRef(pair.getFirst());
+
+				builder.putUserData(CSharpResolveUtil.ACCESSOR_VALUE_VARIABLE, Boolean.TRUE);
+
+				if(!processor.execute(builder, state))
+				{
+					return false;
+				}
 			}
 		}
 		return true;
