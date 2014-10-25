@@ -44,6 +44,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 
@@ -165,9 +166,9 @@ public class GenericUnwrapTool
 	@NotNull
 	public static DotNetTypeRef exchangeTypeRef(DotNetTypeRef typeRef, DotNetGenericExtractor extractor, PsiElement element)
 	{
-		if(typeRef instanceof CSharpGenericWrapperTypeRef)
+		if(typeRef instanceof DotNetGenericWrapperTypeRef)
 		{
-			CSharpGenericWrapperTypeRef wrapperTypeRef = (CSharpGenericWrapperTypeRef) typeRef;
+			DotNetGenericWrapperTypeRef wrapperTypeRef = (DotNetGenericWrapperTypeRef) typeRef;
 
 			DotNetTypeRef inner = exchangeTypeRef(wrapperTypeRef.getInnerTypeRef(), extractor, element);
 			DotNetTypeRef[] oldArguments = wrapperTypeRef.getArgumentTypeRefs();

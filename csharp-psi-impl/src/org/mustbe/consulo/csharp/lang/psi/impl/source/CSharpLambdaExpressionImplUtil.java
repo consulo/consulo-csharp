@@ -19,7 +19,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
@@ -66,27 +68,27 @@ public class CSharpLambdaExpressionImplUtil
 			}
 			return resolveLeftLambdaTypeRefForVariable(variable);
 		}
-		else if(parent instanceof CSharpCallArgumentList)
+		else if(parent instanceof CSharpCallArgument)
 		{
-			CSharpMethodCallExpressionImpl methodCallExpression = (CSharpMethodCallExpressionImpl) parent.getParent();
-			DotNetExpression callExpression = methodCallExpression.getCallExpression();
-			if(!(callExpression instanceof CSharpReferenceExpressionImpl))
+			if(parent instanceof CSharpNamedCallArgument)
 			{
 				return null;
 			}
-			PsiElement resolve = ((CSharpReferenceExpressionImpl) callExpression).resolve();
-			if(!(resolve instanceof DotNetLikeMethodDeclaration))
+			CSharpCallArgumentListOwner argumentListOwner = (CSharpCallArgumentListOwner) parent.getParent().getParent();
+
+			PsiElement callable = argumentListOwner.resolveToCallable();
+			if(!(callable instanceof DotNetLikeMethodDeclaration))
 			{
 				return null;
 			}
-			DotNetExpression[] parameterExpressions = methodCallExpression.getParameterExpressions();
+			DotNetExpression[] parameterExpressions = argumentListOwner.getParameterExpressions();
 			int index = ArrayUtil.indexOf(parameterExpressions, target);
 			if(index == -1)
 			{
 				return null;
 			}
 
-			return resolveLeftLambdaTypeRefForVariable(((DotNetLikeMethodDeclaration) resolve).getParameters()[index]);
+			return resolveLeftLambdaTypeRefForVariable(((DotNetLikeMethodDeclaration) callable).getParameters()[index]);
 		}
 
 		DotNetVariable variable = resolveLambdaVariableInsideAssignmentExpression(parent);
