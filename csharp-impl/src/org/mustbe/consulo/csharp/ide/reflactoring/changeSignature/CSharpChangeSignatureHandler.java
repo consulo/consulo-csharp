@@ -48,6 +48,10 @@ public class CSharpChangeSignatureHandler implements ChangeSignatureHandler
 	@Override
 	public PsiElement findTargetMember(PsiElement element)
 	{
+		if(element == null)
+		{
+			return null;
+		}
 		if(element.getLanguage() != CSharpLanguage.INSTANCE)
 		{
 			return null;
