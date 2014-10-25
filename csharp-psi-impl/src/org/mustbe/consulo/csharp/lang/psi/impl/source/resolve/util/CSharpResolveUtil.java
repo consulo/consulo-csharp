@@ -398,6 +398,8 @@ public class CSharpResolveUtil
 				}
 			}
 
+			CSharpResolveSelector selector = state.get(SELECTOR);
+
 			for(DotNetTypeRef dotNetTypeRef : superTypes)
 			{
 				DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(entrance);
@@ -406,9 +408,9 @@ public class CSharpResolveUtil
 				if(resolve != null && resolve != entrance)
 				{
 					DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
-					ResolveState newState = ResolveState.initial().put(EXTRACTOR, genericExtractor);
+					ResolveState newState = ResolveState.initial().put(SELECTOR, selector).put(EXTRACTOR, genericExtractor);
 
-					if(!walkChildren(processor, resolve, false, maxScope, newState))
+					if(!walkChildren(processor, resolve, walkParent, maxScope, newState))
 					{
 						return false;
 					}
