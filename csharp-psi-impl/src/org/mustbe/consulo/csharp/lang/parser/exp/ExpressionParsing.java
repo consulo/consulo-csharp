@@ -1220,6 +1220,11 @@ public class ExpressionParsing extends SharedParsingHelpers
 		{
 			while(!builder.eof())
 			{
+				if(builder.getTokenType() == RBRACE)
+				{
+					break;
+				}
+
 				if(parseFieldOrPropertySet(builder) == null)
 				{
 					break;
