@@ -22,6 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
@@ -97,7 +98,7 @@ public class CSharpGenericConstraintImpl extends CSharpStubElementImpl<CSharpWit
 	@Override
 	public CSharpGenericConstraintValue[] getGenericConstraintValues()
 	{
-		return findChildrenByClass(CSharpGenericConstraintValue.class);
+		return getStubOrPsiChildren(CSharpStubElements.GENERIC_CONSTRAINT_VALUES, CSharpGenericConstraintValue.ARRAY_FACTORY);
 	}
 
 	@Override

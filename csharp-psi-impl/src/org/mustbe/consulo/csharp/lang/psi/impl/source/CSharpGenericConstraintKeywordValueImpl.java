@@ -19,23 +19,28 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithIntValueStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
 
 /**
  * @author VISTALL
  * @since 30.11.13.
  */
-public class CSharpGenericConstraintKeywordValueImpl extends CSharpElementImpl implements CSharpGenericConstraintKeywordValue
+public class CSharpGenericConstraintKeywordValueImpl extends CSharpStubElementImpl<CSharpWithIntValueStub<CSharpGenericConstraintKeywordValue>>
+		implements CSharpGenericConstraintKeywordValue
 {
-	private static final TokenSet ourSet = TokenSet.create(CSharpTokens.NEW_KEYWORD, CSharpTokens.CLASS_KEYWORD, CSharpTokens.STRUCT_KEYWORD);
-
 	public CSharpGenericConstraintKeywordValueImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	public CSharpGenericConstraintKeywordValueImpl(@NotNull CSharpWithIntValueStub<CSharpGenericConstraintKeywordValue> stub,
+			@NotNull IStubElementType<? extends CSharpWithIntValueStub<CSharpGenericConstraintKeywordValue>, ?> nodeType)
+	{
+		super(stub, nodeType);
 	}
 
 	@Override
@@ -48,7 +53,12 @@ public class CSharpGenericConstraintKeywordValueImpl extends CSharpElementImpl i
 	@Override
 	public IElementType getKeywordElementType()
 	{
-		PsiElement element = findNotNullChildByType(ourSet);
+		CSharpWithIntValueStub<CSharpGenericConstraintKeywordValue> stub = getStub();
+		if(stub != null)
+		{
+			return KEYWORDS_AS_ARRAY[stub.getValue()];
+		}
+		PsiElement element = findNotNullChildByType(KEYWORDS);
 		return element.getNode().getElementType();
 	}
 }

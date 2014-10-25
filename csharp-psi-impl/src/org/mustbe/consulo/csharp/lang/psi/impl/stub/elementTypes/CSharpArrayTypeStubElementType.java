@@ -15,7 +15,7 @@ import com.intellij.psi.stubs.StubOutputStream;
  * @author VISTALL
  * @since 19.10.14
  */
-public class CSharpArrayTypeStubElementType extends CSharpAbstractStubElementType<CSharpWithIntValueStub, CSharpArrayTypeImpl>
+public class CSharpArrayTypeStubElementType extends CSharpAbstractStubElementType<CSharpWithIntValueStub<CSharpArrayTypeImpl>, CSharpArrayTypeImpl>
 {
 	public CSharpArrayTypeStubElementType()
 	{
@@ -36,15 +36,15 @@ public class CSharpArrayTypeStubElementType extends CSharpAbstractStubElementTyp
 	}
 
 	@Override
-	public CSharpArrayTypeImpl createPsi(@NotNull CSharpWithIntValueStub stub)
+	public CSharpArrayTypeImpl createPsi(@NotNull CSharpWithIntValueStub<CSharpArrayTypeImpl> stub)
 	{
 		return new CSharpArrayTypeImpl(stub, this);
 	}
 
 	@Override
-	public CSharpWithIntValueStub createStub(@NotNull CSharpArrayTypeImpl cSharpArrayType, StubElement stubElement)
+	public CSharpWithIntValueStub<CSharpArrayTypeImpl> createStub(@NotNull CSharpArrayTypeImpl cSharpArrayType, StubElement stubElement)
 	{
-		return new CSharpWithIntValueStub(stubElement, this, cSharpArrayType.getDimensions());
+		return new CSharpWithIntValueStub<CSharpArrayTypeImpl>(stubElement, this, cSharpArrayType.getDimensions());
 	}
 
 	@Override
@@ -55,9 +55,9 @@ public class CSharpArrayTypeStubElementType extends CSharpAbstractStubElementTyp
 
 	@NotNull
 	@Override
-	public CSharpWithIntValueStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpWithIntValueStub<CSharpArrayTypeImpl> deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		int i = stubInputStream.readVarInt();
-		return new CSharpWithIntValueStub(stubElement, this, i);
+		return new CSharpWithIntValueStub<CSharpArrayTypeImpl>(stubElement, this, i);
 	}
 }

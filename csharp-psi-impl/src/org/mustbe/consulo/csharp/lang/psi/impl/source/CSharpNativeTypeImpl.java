@@ -40,7 +40,7 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpNativeTypeImpl extends CSharpStubElementImpl<CSharpWithIntValueStub> implements DotNetNativeType
+public class CSharpNativeTypeImpl extends CSharpStubElementImpl<CSharpWithIntValueStub<CSharpNativeTypeImpl>> implements DotNetNativeType
 {
 	public static final Map<IElementType, String> ourElementToQTypes = new HashMap<IElementType, String>()
 	{
@@ -69,7 +69,7 @@ public class CSharpNativeTypeImpl extends CSharpStubElementImpl<CSharpWithIntVal
 		super(node);
 	}
 
-	public CSharpNativeTypeImpl(@NotNull CSharpWithIntValueStub stub, @NotNull IStubElementType<? extends CSharpWithIntValueStub, ?> nodeType)
+	public CSharpNativeTypeImpl(@NotNull CSharpWithIntValueStub<CSharpNativeTypeImpl> stub, @NotNull IStubElementType<? extends CSharpWithIntValueStub<CSharpNativeTypeImpl>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -83,7 +83,7 @@ public class CSharpNativeTypeImpl extends CSharpStubElementImpl<CSharpWithIntVal
 	@NotNull
 	public IElementType getTypeElementType()
 	{
-		CSharpWithIntValueStub stub = getStub();
+		CSharpWithIntValueStub<CSharpNativeTypeImpl> stub = getStub();
 		if(stub != null)
 		{
 			return CSharpTokenSets.NATIVE_TYPES_AS_ARRAY[stub.getValue()];

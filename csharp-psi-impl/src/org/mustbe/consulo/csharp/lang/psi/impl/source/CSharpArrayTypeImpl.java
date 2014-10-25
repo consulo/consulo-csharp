@@ -32,14 +32,14 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpArrayTypeImpl extends CSharpStubElementImpl<CSharpWithIntValueStub> implements DotNetArrayType
+public class CSharpArrayTypeImpl extends CSharpStubElementImpl<CSharpWithIntValueStub<CSharpArrayTypeImpl>> implements DotNetArrayType
 {
 	public CSharpArrayTypeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpArrayTypeImpl(@NotNull CSharpWithIntValueStub stub, @NotNull IStubElementType<? extends CSharpWithIntValueStub, ?> nodeType)
+	public CSharpArrayTypeImpl(@NotNull CSharpWithIntValueStub<CSharpArrayTypeImpl> stub, @NotNull IStubElementType<? extends CSharpWithIntValueStub<CSharpArrayTypeImpl>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -55,7 +55,7 @@ public class CSharpArrayTypeImpl extends CSharpStubElementImpl<CSharpWithIntValu
 
 	public int getDimensions()
 	{
-		CSharpWithIntValueStub stub = getStub();
+		CSharpWithIntValueStub<CSharpArrayTypeImpl> stub = getStub();
 		if(stub != null)
 		{
 			return stub.getValue();

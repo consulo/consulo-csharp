@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
 
 /**
  * @author VISTALL
@@ -25,6 +26,14 @@ import com.intellij.psi.tree.IElementType;
  */
 public interface CSharpGenericConstraintKeywordValue extends CSharpGenericConstraintValue
 {
+	IElementType[] KEYWORDS_AS_ARRAY = new IElementType[]{
+			CSharpTokens.NEW_KEYWORD,
+			CSharpTokens.CLASS_KEYWORD,
+			CSharpTokens.STRUCT_KEYWORD
+	};
+
+	TokenSet KEYWORDS = TokenSet.create(KEYWORDS_AS_ARRAY);
+
 	@NotNull
 	IElementType getKeywordElementType();
 }

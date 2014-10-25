@@ -56,6 +56,8 @@ public interface CSharpStubElements
 	CSharpXXXAccessorStubElementType XXX_ACCESSOR = new CSharpXXXAccessorStubElementType();
 	CSharpGenericConstraintListStubElementType GENERIC_CONSTRAINT_LIST = new CSharpGenericConstraintListStubElementType();
 	CSharpGenericConstraintStubElementType GENERIC_CONSTRAINT = new CSharpGenericConstraintStubElementType();
+	CSharpGenericConstraintKeywordValueStubElementType GENERIC_CONSTRAINT_KEYWORD_VALUE = new CSharpGenericConstraintKeywordValueStubElementType();
+	CSharpGenericConstraintTypeValueStubElementType GENERIC_CONSTRAINT_TYPE_VALUE = new CSharpGenericConstraintTypeValueStubElementType();
 	CSharpModifierListStubElementType MODIFIER_LIST = new CSharpModifierListStubElementType();
 	CSharpAttributeListStubElementType ATTRIBUTE_LIST = new CSharpAttributeListStubElementType();
 	CSharpAttributeStubElementType ATTRIBUTE = new CSharpAttributeStubElementType();
@@ -136,6 +138,8 @@ public interface CSharpStubElements
 	CSharpUserTypeStubElementType USER_TYPE = new CSharpUserTypeStubElementType();
 
 	CSharpTypeListElementType TYPE_ARGUMENTS = new CSharpTypeListElementType("TYPE_ARGUMENTS");
+
+	TokenSet GENERIC_CONSTRAINT_VALUES = TokenSet.create(GENERIC_CONSTRAINT_KEYWORD_VALUE, GENERIC_CONSTRAINT_TYPE_VALUE);
 
 	TokenSet TYPE_SET = TokenSet.create(NULLABLE_TYPE, POINTER_TYPE, NATIVE_TYPE, TYPE_WRAPPER_WITH_TYPE_ARGUMENTS, ARRAY_TYPE, USER_TYPE);
 
