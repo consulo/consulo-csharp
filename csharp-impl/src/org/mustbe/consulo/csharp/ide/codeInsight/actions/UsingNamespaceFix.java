@@ -88,7 +88,9 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 	public PopupResult doFix(Editor editor)
 	{
 		CSharpReferenceExpression.ResolveToKind kind = myRef.kind();
-		if(kind != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE && kind != CSharpReferenceExpression.ResolveToKind.METHOD)
+		if(kind != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE &&
+				kind != CSharpReferenceExpression.ResolveToKind.METHOD &&
+				myRef.getQualifier() != null)
 		{
 			return PopupResult.NOT_AVAILABLE;
 		}
@@ -124,7 +126,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 			return Collections.emptySet();
 		}
 		Set<Couple<String>> q = new ArrayListSet<Couple<String>>();
-		if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE)
+		if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || myRef.getQualifier() == null)
 		{
 			collectAvailableNamespaces(q, referenceName);
 		}
