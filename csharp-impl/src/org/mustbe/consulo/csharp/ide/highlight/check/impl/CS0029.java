@@ -19,21 +19,18 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpXXXAccessorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpYieldStatementImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
-import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Trinity;
@@ -104,27 +101,14 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				return null;
 			}
-			DotNetModifierListOwner modifierListOwner = PsiTreeUtil.getParentOfType(element, DotNetModifierListOwner.class);
-			if(modifierListOwner == null)
+			CSharpPseudoMethod pseudoMethod = PsiTreeUtil.getParentOfType(element, CSharpPseudoMethod.class);
+			if(pseudoMethod == null)
 			{
 				return null;
 			}
 
-			DotNetTypeRef expected = null;
-			if(modifierListOwner instanceof DotNetConstructorDeclaration)
-			{
-				expected = new DotNetTypeRefByQName(DotNetTypes.System.Void, CSharpTransform.INSTANCE, false);
-			}
-			else if(modifierListOwner instanceof DotNetMethodDeclaration)
-			{
-				expected = ((DotNetMethodDeclaration) modifierListOwner).getReturnTypeRef();
-			}
-			else if(modifierListOwner instanceof CSharpXXXAccessorImpl)
-			{
-				expected = ((CSharpXXXAccessorImpl) modifierListOwner).getReturnTypeRef();
-			}
-
-			if(expected == null)
+			DotNetTypeRef expected = pseudoMethod.getReturnTypeRef();
+			if(expected == DotNetTypeRef.UNKNOWN_TYPE)
 			{
 				return null;
 			}
