@@ -75,9 +75,19 @@ public class MsilToCSharpUtil
 				elementType = MsilTokens.PROTECTED_KEYWORD;
 				break;
 			case STATIC:
+				// all members with extension attribute are static
+				if(hasAttribute(modifierList, DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute))
+				{
+					return true;
+				}
 				elementType = MsilTokens.STATIC_KEYWORD;
 				break;
 			case SEALED:
+				// hide sealed attribute
+				if(hasAttribute(modifierList, DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute))
+				{
+					return false;
+				}
 				elementType = MsilTokens.SEALED_KEYWORD;
 				break;
 			case INTERNAL:
@@ -97,6 +107,11 @@ public class MsilToCSharpUtil
 			case PARAMS:
 				return hasAttribute(modifierList, DotNetTypes.System.ParamArrayAttribute);
 			case ABSTRACT:
+				// hide abstract attribute
+				if(hasAttribute(modifierList, DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute))
+				{
+					return false;
+				}
 				elementType = MsilTokens.ABSTRACT_KEYWORD;
 				break;
 		}
