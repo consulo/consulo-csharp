@@ -69,6 +69,17 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 		DotNetType type = getNewType();
 		if(type == null)
 		{
+			if(arrayLengths.length == 1)
+			{
+				CSharpArrayInitializationExpressionImpl arrayInitializationExpression = getArrayInitializationExpression();
+				if(arrayInitializationExpression == null)
+				{
+					return DotNetTypeRef.ERROR_TYPE;
+				}
+
+				return arrayInitializationExpression.toTypeRef(resolveFromParent);
+			}
+
 			CSharpFieldOrPropertySetBlock fieldOrPropertySetBlock = getFieldOrPropertySetBlock();
 			if(fieldOrPropertySetBlock == null)
 			{
@@ -115,6 +126,12 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 			}
 			return typeRef;
 		}
+	}
+
+	@Nullable
+	public CSharpArrayInitializationExpressionImpl getArrayInitializationExpression()
+	{
+		return findChildByClass(CSharpArrayInitializationExpressionImpl.class);
 	}
 
 	public CSharpNewArrayLengthImpl[] getNewArrayLengths()

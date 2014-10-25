@@ -16,11 +16,18 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -40,9 +47,41 @@ public class CSharpArrayInitializationExpressionImpl extends CSharpElementImpl i
 	}
 
 	@NotNull
+	public DotNetExpression[] getExpressions()
+	{
+		return findChildrenByClass(DotNetExpression.class);
+	}
+
+	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
-		return DotNetTypeRef.ERROR_TYPE;
+		DotNetExpression[] expressions = getExpressions();
+		if(expressions.length == 0)
+		{
+			return DotNetTypeRef.ERROR_TYPE;
+		}
+		List<DotNetTypeRef> typeRefs = new ArrayList<DotNetTypeRef>(expressions.length);
+		for(DotNetExpression expression : expressions)
+		{
+			typeRefs.add(expression.toTypeRef(resolveFromParent));
+		}
+
+		ContainerUtil.sort(typeRefs, new Comparator<DotNetTypeRef>()
+		{
+			@Override
+			public int compare(DotNetTypeRef o1, DotNetTypeRef o2)
+			{
+				int rank1 = CSharpTypeUtil.getNumberRank(o1);
+				int rank2 = CSharpTypeUtil.getNumberRank(o2);
+				if(rank1 == -1 || rank2 == -1)
+				{
+					return 0;
+				}
+
+				return rank2 - rank1;
+			}
+		});
+		return new CSharpArrayTypeRef(typeRefs.get(0), 0);
 	}
 }
