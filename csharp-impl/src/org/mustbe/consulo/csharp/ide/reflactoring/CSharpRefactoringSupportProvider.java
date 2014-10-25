@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpParameterImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.lang.refactoring.RefactoringSupportProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -68,7 +69,7 @@ public class CSharpRefactoringSupportProvider extends RefactoringSupportProvider
 	@Override
 	public boolean isMemberInplaceRenameAvailable(PsiElement element, PsiElement context)
 	{
-		return element instanceof DotNetQualifiedElement;
+		return element instanceof DotNetQualifiedElement && !(element instanceof DotNetNamespaceAsElement);
 	}
 
 	public static boolean mayRenameInplace(PsiElement elementToRename, final PsiElement nameSuggestionContext)
@@ -76,6 +77,10 @@ public class CSharpRefactoringSupportProvider extends RefactoringSupportProvider
 		if(nameSuggestionContext != null && nameSuggestionContext.getContainingFile() != elementToRename.getContainingFile())
 		{
 			return false;
+		}
+		if(elementToRename instanceof DotNetNamespaceAsElement)
+		{
+			return true;
 		}
 		if(!(elementToRename instanceof CSharpLocalVariable) && !(elementToRename instanceof CSharpParameterImpl) && !(elementToRename instanceof
 				CSharpLambdaParameter))
