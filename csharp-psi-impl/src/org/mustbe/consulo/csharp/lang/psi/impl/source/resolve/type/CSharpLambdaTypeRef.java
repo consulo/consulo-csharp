@@ -20,11 +20,8 @@ import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -38,16 +35,16 @@ import lombok.val;
  */
 public class CSharpLambdaTypeRef implements DotNetTypeRef
 {
-	private final PsiElement myTarget;
+	private final CSharpMethodDeclaration myTarget;
 	private final DotNetTypeRef[] myParameterTypes;
 	private final DotNetTypeRef myReturnType;
 
-	public CSharpLambdaTypeRef(@NotNull CSharpPseudoMethod method)
+	public CSharpLambdaTypeRef(@NotNull CSharpMethodDeclaration method)
 	{
 		this(method, method.getParameterTypeRefs(), method.getReturnTypeRef());
 	}
 
-	public CSharpLambdaTypeRef(@Nullable PsiElement target, @NotNull DotNetTypeRef[] parameterTypes, @NotNull DotNetTypeRef returnType)
+	public CSharpLambdaTypeRef(@Nullable CSharpMethodDeclaration target, @NotNull DotNetTypeRef[] parameterTypes, @NotNull DotNetTypeRef returnType)
 	{
 		myTarget = target;
 		myParameterTypes = parameterTypes;
@@ -59,9 +56,9 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 	@LazyInstance
 	public String getPresentableText()
 	{
-		if(myTarget instanceof DotNetNamedElement)
+		if(myTarget != null)
 		{
-			return ((DotNetNamedElement) myTarget).getName();
+			return myTarget.getName();
 		}
 		StringBuilder builder = new StringBuilder();
 		builder.append("{(");
@@ -100,9 +97,9 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 	@LazyInstance
 	public String getQualifiedText()
 	{
-		if(myTarget instanceof DotNetQualifiedElement)
+		if(myTarget != null)
 		{
-			return ((DotNetQualifiedElement) myTarget).getPresentableQName();
+			return myTarget.getPresentableQName();
 		}
 		StringBuilder builder = new StringBuilder();
 		builder.append("{(");
@@ -191,7 +188,7 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 			@Override
 			public CSharpMethodDeclaration getTarget()
 			{
-				return null;
+				return myTarget;
 			}
 		};
 	}

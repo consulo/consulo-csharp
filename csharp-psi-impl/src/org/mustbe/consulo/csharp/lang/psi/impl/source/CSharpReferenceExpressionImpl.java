@@ -1074,9 +1074,9 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		{
 			return new CSharpTypeRefFromGenericParameter((DotNetGenericParameter) resolve);
 		}
-		else if(resolve instanceof CSharpPseudoMethod)
+		else if(resolve instanceof CSharpMethodDeclaration)
 		{
-			return new CSharpLambdaTypeRef((CSharpPseudoMethod) resolve);
+			return new CSharpLambdaTypeRef((CSharpMethodDeclaration) resolve);
 		}
 		else if(resolve instanceof DotNetVariable)
 		{
