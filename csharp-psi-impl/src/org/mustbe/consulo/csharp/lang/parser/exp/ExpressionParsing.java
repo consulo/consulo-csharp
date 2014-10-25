@@ -655,7 +655,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		CSharpLanguageVersion version = builder.getVersion();
 		if(version.isAtLeast(CSharpLanguageVersion._3_0))
 		{
-			builder.enableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
+			//builder.enableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
 		}
 		if(version.isAtLeast(CSharpLanguageVersion._4_0))
 		{
@@ -664,7 +664,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		IElementType tokenType = builder.getTokenType();
 		if(version.isAtLeast(CSharpLanguageVersion._3_0))
 		{
-			builder.disableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
+			//builder.disableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
 		}
 		if(version.isAtLeast(CSharpLanguageVersion._4_0))
 		{
