@@ -19,6 +19,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
@@ -33,7 +37,7 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  * @author VISTALL
  * @since 19.01.14
  */
-public class CSharpAnonymMethodExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public class CSharpAnonymMethodExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpPseudoMethod
 {
 	public CSharpAnonymMethodExpressionImpl(@NotNull ASTNode node)
 	{
@@ -63,11 +67,14 @@ public class CSharpAnonymMethodExpressionImpl extends CSharpElementImpl implemen
 	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement
 			place)
 	{
-		for(DotNetParameter parameter : getParameters())
+		if(ExecuteTargetUtil.canProcess(processor, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER))
 		{
-			if(!processor.execute(parameter, state))
+			for(DotNetParameter parameter : getParameters())
 			{
-				return false;
+				if(!processor.execute(parameter, state))
+				{
+					return false;
+				}
 			}
 		}
 		return true;
@@ -85,5 +92,31 @@ public class CSharpAnonymMethodExpressionImpl extends CSharpElementImpl implemen
 			typeRefs[i] = parameter.toTypeRef(false);
 		}
 		return new CSharpLambdaTypeRef(null, typeRefs, DotNetTypeRef.AUTO_TYPE);
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef[] getParameterTypeRefs()
+	{
+		DotNetParameter[] parameters = getParameters();
+		DotNetTypeRef[] typeRefs = new DotNetTypeRef[parameters.length];
+		for(int i = 0; i < parameters.length; i++)
+		{
+			DotNetParameter parameter = parameters[i];
+			typeRefs[i] = parameter.toTypeRef(false);
+		}
+		return typeRefs;
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef getReturnTypeRef()
+	{
+		CSharpLambdaResolveResult type = CSharpLambdaExpressionImplUtil.resolveLeftLambdaTypeRef(this);
+		if(type == null)
+		{
+			return DotNetTypeRef.UNKNOWN_TYPE;
+		}
+		return type.getReturnTypeRef();
 	}
 }
