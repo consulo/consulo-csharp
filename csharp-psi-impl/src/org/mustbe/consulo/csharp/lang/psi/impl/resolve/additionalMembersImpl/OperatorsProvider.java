@@ -8,14 +8,17 @@ import java.util.List;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalMemberProvider;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -126,7 +129,16 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 		{
 			CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) element;
 
-			CSharpTypeRefByTypeDeclaration selfTypeRef = new CSharpTypeRefByTypeDeclaration(typeDeclaration);
+			CSharpMethodDeclaration methodDeclaration = typeDeclaration.getUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE);
+			DotNetTypeRef selfTypeRef;
+			if(methodDeclaration != null)
+			{
+				selfTypeRef = new CSharpLambdaTypeRef(methodDeclaration);
+			}
+			else
+			{
+				selfTypeRef = new CSharpTypeRefByTypeDeclaration(typeDeclaration);
+			}
 
 			buildOperators(project, selfTypeRef, element, myTypeOperators.get(typeDeclaration.getVmQName()), elements);
 			if(typeDeclaration.isEnum())
