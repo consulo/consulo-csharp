@@ -28,7 +28,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
 import org.mustbe.consulo.dotnet.psi.*;
@@ -51,7 +50,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.Processor;
 
 /**
  * @author VISTALL
@@ -360,12 +358,6 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	public DotNetTypeRef getTypeRefForEnumConstants()
 	{
 		return MsilToCSharpUtil.extractToCSharp(myMsilElement.getTypeRefForEnumConstants(), myMsilElement);
-	}
-
-	@Override
-	public void processConstructors(@NotNull Processor<DotNetConstructorDeclaration> processor)
-	{
-		CSharpTypeDeclarationImplUtil.processConstructors(this, processor);
 	}
 
 	@Nullable

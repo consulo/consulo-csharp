@@ -9,6 +9,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -22,6 +23,7 @@ import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
+import com.intellij.util.NotNullFunction;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
@@ -66,7 +68,27 @@ public class CSharpResolveContextUtil
 		}
 		else if(element instanceof CSharpUsingList)
 		{
-			return cacheUsingContext((CSharpUsingList) element);
+			return cacheSimple((CSharpUsingList) element, new NotNullFunction<CSharpUsingList, CSharpResolveContext>()
+			{
+				@NotNull
+				@Override
+				public CSharpResolveContext fun(CSharpUsingList usingList)
+				{
+					return new CSharpUsingListResolveContext(usingList);
+				}
+			});
+		}
+		else if(element instanceof DotNetGenericParameter)
+		{
+			return cacheSimple((DotNetGenericParameter)element, new NotNullFunction<DotNetGenericParameter, CSharpResolveContext>()
+			{
+				@NotNull
+				@Override
+				public CSharpResolveContext fun(DotNetGenericParameter element)
+				{
+					return new CSharpGenericParameterResolveContext(element);
+				}
+			});
 		}
 		return CSharpResolveContext.EMPTY;
 	}
@@ -97,7 +119,8 @@ public class CSharpResolveContextUtil
 	}
 
 	@NotNull
-	private static CSharpResolveContext cacheTypeContextImpl(@NotNull DotNetGenericExtractor genericExtractor, @NotNull final CSharpTypeDeclaration typeDeclaration)
+	private static CSharpResolveContext cacheTypeContextImpl(@NotNull DotNetGenericExtractor genericExtractor,
+			@NotNull final CSharpTypeDeclaration typeDeclaration)
 	{
 		if(genericExtractor == DotNetGenericExtractor.EMPTY)
 		{
@@ -128,28 +151,29 @@ public class CSharpResolveContextUtil
 	}
 
 	@NotNull
-	private static CSharpResolveContext cacheUsingContext(@NotNull final CSharpUsingList usingList)
+	private static <T extends PsiElement> CSharpResolveContext cacheSimple(@NotNull final T element,
+			final NotNullFunction<T, CSharpResolveContext> fun)
 	{
-		CachedValue<CSharpResolveContext> provider = usingList.getUserData(RESOLVE_CONTEXT);
+		CachedValue<CSharpResolveContext> provider = element.getUserData(RESOLVE_CONTEXT);
 		if(provider != null)
 		{
 			return provider.getValue();
 		}
 
-		CachedValue<CSharpResolveContext> cachedValue = CachedValuesManager.getManager(usingList.getProject()).createCachedValue(new
-																																		 CachedValueProvider<CSharpResolveContext>()
+		CachedValue<CSharpResolveContext> cachedValue = CachedValuesManager.getManager(element.getProject()).createCachedValue(new
+																																	   CachedValueProvider<CSharpResolveContext>()
 		{
 			@Nullable
 			@Override
 			public Result<CSharpResolveContext> compute()
 			{
-				return Result.<CSharpResolveContext>create(new CSharpUsingListResolveContext(usingList), usingList,
-						PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+				return Result.create(fun.fun(element), element, PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
 			}
 		}, false);
-		usingList.putUserData(RESOLVE_CONTEXT, cachedValue);
+		element.putUserData(RESOLVE_CONTEXT, cachedValue);
 		return cachedValue.getValue();
 	}
+
 
 	@Nullable
 	public static PsiElement findValidWithGeneric(UserDataHolder holder, PsiElement[] elements)

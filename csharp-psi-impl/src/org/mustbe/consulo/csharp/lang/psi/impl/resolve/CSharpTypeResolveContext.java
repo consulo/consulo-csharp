@@ -10,6 +10,7 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.*;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
@@ -223,7 +224,16 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 			member.accept(collector);
 		}
 
-		String vmQName = typeDeclaration.getVmQName();
+		if(typeDeclaration.isStruct())
+		{
+			CSharpLightConstructorDeclarationBuilder builder = new CSharpLightConstructorDeclarationBuilder(typeDeclaration.getProject());
+			builder.addModifier(CSharpModifier.PUBLIC);
+			builder.setNavigationElement(typeDeclaration);
+			builder.withParent(typeDeclaration);
+			builder.withName(typeDeclaration.getName());
+
+			builder.accept(collector);
+		}
 
 		myOtherElements = convertToGroup(project, collector.myOtherElements);
 		myIndexMethodGroup = toGroup(project, "[]", collector.myIndexMethods);
