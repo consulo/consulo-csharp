@@ -47,6 +47,31 @@ import com.intellij.util.ArrayUtil;
  */
 public class CSharpTypeUtil
 {
+	public static class InheritResult
+	{
+		private final boolean mySuccess;
+		private final CSharpConversionMethodDeclaration myConversionMethod;
+
+		public InheritResult(boolean success, CSharpConversionMethodDeclaration conversionMethod)
+		{
+			mySuccess = success;
+			myConversionMethod = conversionMethod;
+		}
+
+		public CSharpConversionMethodDeclaration getConversionMethod()
+		{
+			return myConversionMethod;
+		}
+
+		public boolean isSuccess()
+		{
+			return mySuccess;
+		}
+	}
+
+	public static final InheritResult FAIL = new InheritResult(false, null);
+	public static final InheritResult SIMPLE_SUCCESS = new InheritResult(true, null);
+
 	private static final String[] ourNumberRanks = new String[]{
 			DotNetTypes.System.Byte,
 			DotNetTypes.System.SByte,
@@ -75,7 +100,8 @@ public class CSharpTypeUtil
 	}
 
 	@Nullable
-	public static Pair<DotNetTypeDeclaration, DotNetGenericExtractor> findTypeInSuper(@NotNull DotNetTypeRef typeRef, @NotNull String vmQName,
+	public static Pair<DotNetTypeDeclaration, DotNetGenericExtractor> findTypeInSuper(@NotNull DotNetTypeRef typeRef,
+			@NotNull String vmQName,
 			@NotNull PsiElement scope)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
@@ -88,7 +114,7 @@ public class CSharpTypeUtil
 		String otherVQName = ((DotNetTypeDeclaration) resolve).getVmQName();
 		if(vmQName.equals(otherVQName))
 		{
-			return Pair.create((DotNetTypeDeclaration)resolve, typeResolveResult.getGenericExtractor());
+			return Pair.create((DotNetTypeDeclaration) resolve, typeResolveResult.getGenericExtractor());
 		}
 
 		for(DotNetTypeRef superType : ((DotNetTypeDeclaration) resolve).getExtendTypeRefs())
@@ -104,7 +130,12 @@ public class CSharpTypeUtil
 
 	public static boolean isInheritableWithImplicit(@NotNull DotNetTypeRef top, @NotNull DotNetTypeRef target, @NotNull PsiElement scope)
 	{
-		return isInheritable(top, target, scope, true);
+		return isInheritable(top, target, scope, CSharpStaticTypeRef.IMPLICIT).isSuccess();
+	}
+
+	public static boolean isInheritableWithExplicit(@NotNull DotNetTypeRef top, @NotNull DotNetTypeRef target, @NotNull PsiElement scope)
+	{
+		return isInheritable(top, target, scope, CSharpStaticTypeRef.EXPLICIT).isSuccess();
 	}
 
 	/**
@@ -117,19 +148,23 @@ public class CSharpTypeUtil
 	 */
 	public static boolean isInheritable(@NotNull DotNetTypeRef top, @NotNull DotNetTypeRef target, @NotNull PsiElement scope)
 	{
-		return isInheritable(top, target, scope, false);
+		return isInheritable(top, target, scope, null).isSuccess();
 	}
 
-	private static boolean isInheritable(@NotNull DotNetTypeRef top, @NotNull DotNetTypeRef target, @NotNull PsiElement scope, boolean implicit)
+	@NotNull
+	private static InheritResult isInheritable(@NotNull DotNetTypeRef top,
+			@NotNull DotNetTypeRef target,
+			@NotNull PsiElement scope,
+			@Nullable DotNetTypeRef explicitOrImplicit)
 	{
 		if(top == DotNetTypeRef.ERROR_TYPE || target == DotNetTypeRef.ERROR_TYPE)
 		{
-			return false;
+			return FAIL;
 		}
 
 		if(top.equals(target))
 		{
-			return true;
+			return SIMPLE_SUCCESS;
 		}
 
 		if(target instanceof CSharpChameleonTypeRef)
@@ -144,7 +179,7 @@ public class CSharpTypeUtil
 		{
 			if(targetRank <= topRank)
 			{
-				return true;
+				return SIMPLE_SUCCESS;
 			}
 		}
 
@@ -152,18 +187,20 @@ public class CSharpTypeUtil
 		{
 			if(((CSharpRefTypeRef) target).getType() != ((CSharpRefTypeRef) top).getType())
 			{
-				return false;
+				return FAIL;
 			}
-			return isInheritable(((CSharpRefTypeRef) top).getInnerTypeRef(), ((CSharpRefTypeRef) target).getInnerTypeRef(), scope, implicit);
+			return isInheritable(((CSharpRefTypeRef) top).getInnerTypeRef(), ((CSharpRefTypeRef) target).getInnerTypeRef(), scope,
+					explicitOrImplicit);
 		}
 
 		if(target instanceof CSharpArrayTypeRef && top instanceof CSharpArrayTypeRef)
 		{
 			if(((CSharpArrayTypeRef) target).getDimensions() != ((CSharpArrayTypeRef) top).getDimensions())
 			{
-				return false;
+				return FAIL;
 			}
-			return isInheritable(((CSharpArrayTypeRef) top).getInnerTypeRef(), ((CSharpArrayTypeRef) target).getInnerTypeRef(), scope, implicit);
+			return isInheritable(((CSharpArrayTypeRef) top).getInnerTypeRef(), ((CSharpArrayTypeRef) target).getInnerTypeRef(), scope,
+					explicitOrImplicit);
 		}
 
 		DotNetTypeResolveResult topTypeResolveResult = top.resolve(scope);
@@ -174,7 +211,7 @@ public class CSharpTypeUtil
 			DotNetTypeRef[] topParameters = ((CSharpLambdaResolveResult) topTypeResolveResult).getParameterTypeRefs();
 			if(topParameters.length != targetParameters.length)
 			{
-				return false;
+				return FAIL;
 			}
 			for(int i = 0; i < targetParameters.length; i++)
 			{
@@ -184,14 +221,17 @@ public class CSharpTypeUtil
 				{
 					continue;
 				}
-				if(!isInheritable(topParameter, targetParameter, scope, implicit))
+				if(!isInheritable(topParameter, targetParameter, scope, explicitOrImplicit).isSuccess())
 				{
-					return false;
+					return FAIL;
 				}
 			}
 			DotNetTypeRef targetReturnType = ((CSharpLambdaResolveResult) targetTypeResolveResult).getReturnTypeRef();
 			DotNetTypeRef topReturnType = ((CSharpLambdaResolveResult) topTypeResolveResult).getReturnTypeRef();
-			return targetReturnType == DotNetTypeRef.AUTO_TYPE || isInheritable(topReturnType, targetReturnType, scope, implicit);
+
+			boolean result = targetReturnType == DotNetTypeRef.AUTO_TYPE || isInheritable(topReturnType, targetReturnType, scope,
+					explicitOrImplicit).isSuccess();
+			return result ? SIMPLE_SUCCESS : FAIL;
 		}
 
 		PsiElement topElement = topTypeResolveResult.getElement();
@@ -199,58 +239,73 @@ public class CSharpTypeUtil
 
 		if(topTypeResolveResult.isNullable() && target == CSharpNullType.INSTANCE)
 		{
-			return true;
+			return SIMPLE_SUCCESS;
 		}
 
 		if(!topTypeResolveResult.isNullable() && target == CSharpNullType.INSTANCE)
 		{
-			return false;
+			return FAIL;
 		}
 
 		if(topElement != null && topElement.isEquivalentTo(targetElement))
 		{
-			return true;
+			return SIMPLE_SUCCESS;
 		}
 
 		if(topElement instanceof CSharpTypeDefStatement)
 		{
-			return isInheritable(((CSharpTypeDefStatement) topElement).toTypeRef(), target, scope, implicit);
+			return isInheritable(((CSharpTypeDefStatement) topElement).toTypeRef(), target, scope, explicitOrImplicit);
 		}
 
 		if(topElement instanceof DotNetTypeDeclaration && targetElement instanceof DotNetTypeDeclaration)
 		{
 			if(((DotNetTypeDeclaration) targetElement).isInheritor((DotNetTypeDeclaration) topElement, true))
 			{
-				return true;
+				return SIMPLE_SUCCESS;
 			}
 		}
 
-		if(implicit)
+		if(explicitOrImplicit != null)
 		{
-			if(topElement instanceof DotNetTypeDeclaration && haveImplicitOperatorTo(top, target, (DotNetTypeDeclaration) topElement, scope))
+			if(topElement instanceof DotNetTypeDeclaration)
 			{
-				return true;
+				InheritResult inheritResult = haveImplicitOrExplicitOperatorTo(top, target, (DotNetTypeDeclaration) topElement, scope,
+						explicitOrImplicit);
+				if(inheritResult.isSuccess())
+				{
+					return inheritResult;
+				}
 			}
 
-			if(targetElement instanceof DotNetTypeDeclaration && haveImplicitOperatorTo(top, target, (DotNetTypeDeclaration) targetElement, scope))
+			if(targetElement instanceof DotNetTypeDeclaration)
 			{
-				return true;
+				InheritResult inheritResult = haveImplicitOrExplicitOperatorTo(top, target, (DotNetTypeDeclaration) targetElement, scope,
+						explicitOrImplicit);
+
+				if(inheritResult.isSuccess())
+				{
+					return inheritResult;
+				}
 			}
 		}
 
-		return false;
+		return FAIL;
 	}
 
-	private static boolean haveImplicitOperatorTo(@NotNull DotNetTypeRef to, @NotNull DotNetTypeRef from, @NotNull DotNetTypeDeclaration
-			typeDeclaration, PsiElement scope)
+	@NotNull
+	private static InheritResult haveImplicitOrExplicitOperatorTo(@NotNull DotNetTypeRef to,
+			@NotNull DotNetTypeRef from,
+			@NotNull DotNetTypeDeclaration typeDeclaration,
+			PsiElement scope,
+			DotNetTypeRef explicitOrImplicit)
 	{
 		CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, scope.getResolveScope(),
 				typeDeclaration);
 
-		CSharpElementGroup<CSharpConversionMethodDeclaration> conversionMethodGroup = context.findConversionMethodGroup(CSharpStaticTypeRef.IMPLICIT);
+		CSharpElementGroup<CSharpConversionMethodDeclaration> conversionMethodGroup = context.findConversionMethodGroup(explicitOrImplicit);
 		if(conversionMethodGroup == null)
 		{
-			return false;
+			return FAIL;
 		}
 
 		for(CSharpConversionMethodDeclaration declaration : conversionMethodGroup.getElements())
@@ -269,10 +324,10 @@ public class CSharpTypeUtil
 
 			if(isInheritable(parameterTypeRef, from, scope))
 			{
-				return true;
+				return new InheritResult(true, declaration);
 			}
 		}
-		return false;
+		return FAIL;
 	}
 
 	public static boolean haveErrorType(DotNetTypeRef typeRef)
