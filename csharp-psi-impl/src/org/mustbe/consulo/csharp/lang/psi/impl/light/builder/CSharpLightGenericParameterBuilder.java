@@ -19,13 +19,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.light.builder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.Processor;
 
 /**
  * @author VISTALL
@@ -43,22 +40,6 @@ public class CSharpLightGenericParameterBuilder extends CSharpLightNamedElementW
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
 		visitor.visitGenericParameter(this);
-	}
-
-	@Override
-	public void processConstructors(@NotNull Processor<DotNetConstructorDeclaration> processor)
-	{
-		processor.process(getDefaultConstructor());
-	}
-
-	@NotNull
-	public CSharpLightConstructorDeclarationBuilder getDefaultConstructor()
-	{
-		CSharpLightConstructorDeclarationBuilder builder = new CSharpLightConstructorDeclarationBuilder(getProject());
-		builder.addModifier(CSharpModifier.PUBLIC);
-		builder.setNavigationElement(this);
-		builder.withParent(this);
-		return builder;
 	}
 
 	@Nullable

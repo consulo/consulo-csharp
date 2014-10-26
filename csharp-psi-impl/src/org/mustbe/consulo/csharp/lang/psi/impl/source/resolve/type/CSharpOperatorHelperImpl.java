@@ -28,7 +28,10 @@ import java.util.Map;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
@@ -63,7 +66,7 @@ public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 {
 	private static class Context implements CSharpResolveContext
 	{
-		private final Map<IElementType, CSharpElementGroup> myGroups;
+		private final Map<IElementType, CSharpElementGroup<CSharpMethodDeclaration>> myGroups;
 
 		public Context(Project project, List<DotNetNamedElement> dotNetNamedElements)
 		{
@@ -82,49 +85,49 @@ public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 
 		@Nullable
 		@Override
-		public CSharpElementGroup indexMethodGroup()
+		public CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup()
 		{
 			return null;
 		}
 
 		@Nullable
 		@Override
-		public CSharpElementGroup constructorGroup()
+		public CSharpElementGroup<CSharpConstructorDeclaration> constructorGroup()
 		{
 			return null;
 		}
 
 		@Nullable
 		@Override
-		public CSharpElementGroup deConstructorGroup()
+		public CSharpElementGroup<CSharpConstructorDeclaration> deConstructorGroup()
 		{
 			return null;
 		}
 
 		@Nullable
 		@Override
-		public CSharpElementGroup findOperatorGroupByTokenType(@NotNull IElementType type)
+		public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type)
 		{
 			return myGroups.get(type);
 		}
 
 		@Nullable
 		@Override
-		public CSharpElementGroup findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
+		public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
 		{
 			return null;
 		}
 
 		@Nullable
 		@Override
-		public CSharpElementGroup findExtensionMethodGroupByName(@NotNull String name)
+		public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
 		{
 			return null;
 		}
 
 		@NotNull
 		@Override
-		public Collection<CSharpElementGroup> getExtensionMethodGroups()
+		public Collection<CSharpElementGroup<CSharpMethodDeclaration>> getExtensionMethodGroups()
 		{
 			return Collections.emptyList();
 		}

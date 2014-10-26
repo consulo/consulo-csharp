@@ -6,6 +6,8 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
@@ -49,34 +51,34 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup constructorGroup()
+	public CSharpElementGroup<CSharpConstructorDeclaration> constructorGroup()
 	{
-		List<CSharpElementGroup> groups = new SmartList<CSharpElementGroup>();
+		List<CSharpElementGroup<CSharpConstructorDeclaration>> groups = new SmartList<CSharpElementGroup<CSharpConstructorDeclaration>>();
 		for(CSharpResolveContext context : myContexts)
 		{
-			CSharpElementGroup elementGroup = context.constructorGroup();
+			CSharpElementGroup<CSharpConstructorDeclaration> elementGroup = context.constructorGroup();
 			if(elementGroup != null)
 			{
 				groups.add(elementGroup);
 			}
 		}
-		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl(myProject, groups);
+		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl<CSharpConstructorDeclaration>(myProject, groups);
 	}
 
 	@Nullable
 	@Override
-	public CSharpElementGroup deConstructorGroup()
+	public CSharpElementGroup<CSharpConstructorDeclaration> deConstructorGroup()
 	{
-		List<CSharpElementGroup> groups = new SmartList<CSharpElementGroup>();
+		List<CSharpElementGroup<CSharpConstructorDeclaration>> groups = new SmartList<CSharpElementGroup<CSharpConstructorDeclaration>>();
 		for(CSharpResolveContext context : myContexts)
 		{
-			CSharpElementGroup elementGroup = context.deConstructorGroup();
+			CSharpElementGroup<CSharpConstructorDeclaration> elementGroup = context.deConstructorGroup();
 			if(elementGroup != null)
 			{
 				groups.add(elementGroup);
 			}
 		}
-		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl(myProject, groups);
+		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl<CSharpConstructorDeclaration>(myProject, groups);
 	}
 
 	@Nullable
@@ -97,18 +99,18 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
+	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
 	{
-		List<CSharpElementGroup> groups = new SmartList<CSharpElementGroup>();
+		List<CSharpElementGroup<CSharpConversionMethodDeclaration>> groups = new SmartList<CSharpElementGroup<CSharpConversionMethodDeclaration>>();
 		for(CSharpResolveContext context : myContexts)
 		{
-			CSharpElementGroup elementGroup = context.findConversionMethodGroup(typeRef);
+			CSharpElementGroup<CSharpConversionMethodDeclaration> elementGroup = context.findConversionMethodGroup(typeRef);
 			if(elementGroup != null)
 			{
 				groups.add(elementGroup);
 			}
 		}
-		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl(myProject, groups);
+		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl<CSharpConversionMethodDeclaration>(myProject, groups);
 	}
 
 	@Nullable
@@ -129,10 +131,9 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 
 	@NotNull
 	@Override
-	@SuppressWarnings("unchecked")
-	public Collection<CSharpElementGroup> getExtensionMethodGroups()
+	public Collection<CSharpElementGroup<CSharpMethodDeclaration>> getExtensionMethodGroups()
 	{
-		List groups = new SmartList();
+		List<CSharpElementGroup<CSharpMethodDeclaration>> groups = new SmartList<CSharpElementGroup<CSharpMethodDeclaration>>();
 		for(CSharpResolveContext context : myContexts)
 		{
 			groups.addAll(context.getExtensionMethodGroups());

@@ -73,21 +73,19 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 
 			CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myExpression.getResolveScope(), element);
 
-			for(CSharpElementGroup elementGroup : context.getExtensionMethodGroups())
+			for(CSharpElementGroup<CSharpMethodDeclaration> elementGroup : context.getExtensionMethodGroups())
 			{
-				Collection<? extends PsiElement> elements = elementGroup.getElements();
-				for(PsiElement psiElement : elements)
+				Collection<CSharpMethodDeclaration> elements = elementGroup.getElements();
+				for(CSharpMethodDeclaration psiElement : elements)
 				{
-					CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) psiElement;
-
-					DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(methodDeclaration);
+					DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(psiElement);
 
 					if(!CSharpTypeUtil.isInheritableWithImplicit(firstParameterTypeRef, myQualifierTypeRef, myExpression))
 					{
 						continue;
 					}
 
-					addElement(transform(methodDeclaration));
+					addElement(transform(psiElement));
 				}
 			}
 		}

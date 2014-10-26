@@ -8,6 +8,9 @@ import java.util.List;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransformer;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
@@ -43,21 +46,21 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup indexMethodGroup()
+	public CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup()
 	{
 		return null;
 	}
 
 	@Nullable
 	@Override
-	public CSharpElementGroup constructorGroup()
+	public CSharpElementGroup<CSharpConstructorDeclaration> constructorGroup()
 	{
 		return null;
 	}
 
 	@Nullable
 	@Override
-	public CSharpElementGroup deConstructorGroup()
+	public CSharpElementGroup<CSharpConstructorDeclaration> deConstructorGroup()
 	{
 		return null;
 	}
@@ -71,7 +74,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
+	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
 	{
 		return null;
 	}
@@ -107,7 +110,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 
 	@NotNull
 	@Override
-	public Collection<CSharpElementGroup> getExtensionMethodGroups()
+	public Collection<CSharpElementGroup<CSharpMethodDeclaration>> getExtensionMethodGroups()
 	{
 		String presentableName = DotNetNamespaceStubUtil.getIndexableNamespace(myNamespaceAsElement.getPresentableQName());
 
@@ -118,7 +121,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		{
 			return Collections.emptyList();
 		}
-		List<CSharpElementGroup> list = new SmartList<CSharpElementGroup>();
+		List<CSharpElementGroup<CSharpMethodDeclaration>> list = new SmartList<CSharpElementGroup<CSharpMethodDeclaration>>();
 		for(DotNetTypeDeclaration decl : decls)
 		{
 			PsiElement wrappedDeclaration = MsilToCSharpUtil.wrap(decl);

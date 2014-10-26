@@ -86,7 +86,7 @@ public class CSharpGenericParameterResolveContext implements CSharpResolveContex
 
 	@NotNull
 	@Override
-	public Collection<CSharpElementGroup> getExtensionMethodGroups()
+	public Collection<CSharpElementGroup<CSharpMethodDeclaration>> getExtensionMethodGroups()
 	{
 		return Collections.emptyList();
 	}

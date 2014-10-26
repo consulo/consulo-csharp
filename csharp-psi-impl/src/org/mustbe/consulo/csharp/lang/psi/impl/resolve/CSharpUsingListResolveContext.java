@@ -11,6 +11,10 @@ import java.util.Map;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
@@ -37,49 +41,49 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup indexMethodGroup()
+	public CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup()
 	{
 		return null;
 	}
 
 	@Nullable
 	@Override
-	public CSharpElementGroup constructorGroup()
+	public CSharpElementGroup<CSharpConstructorDeclaration> constructorGroup()
 	{
 		return null;
 	}
 
 	@Nullable
 	@Override
-	public CSharpElementGroup deConstructorGroup()
+	public CSharpElementGroup<CSharpConstructorDeclaration> deConstructorGroup()
 	{
 		return null;
 	}
 
 	@Nullable
 	@Override
-	public CSharpElementGroup findOperatorGroupByTokenType(@NotNull IElementType type)
+	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type)
 	{
 		return null;
 	}
 
 	@Nullable
 	@Override
-	public CSharpElementGroup findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
+	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
 	{
 		return null;
 	}
 
 	@Nullable
 	@Override
-	public CSharpElementGroup findExtensionMethodGroupByName(@NotNull String name)
+	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
 	{
 		return getCachedNamespaceContext().findExtensionMethodGroupByName(name);
 	}
 
 	@NotNull
 	@Override
-	public Collection<CSharpElementGroup> getExtensionMethodGroups()
+	public Collection<CSharpElementGroup<CSharpMethodDeclaration>> getExtensionMethodGroups()
 	{
 		return getCachedNamespaceContext().getExtensionMethodGroups();
 	}

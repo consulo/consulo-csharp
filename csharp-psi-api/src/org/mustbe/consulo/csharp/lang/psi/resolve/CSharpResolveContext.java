@@ -69,7 +69,7 @@ public interface CSharpResolveContext
 
 		@NotNull
 		@Override
-		public Collection<CSharpElementGroup> getExtensionMethodGroups()
+		public Collection<CSharpElementGroup<CSharpMethodDeclaration>> getExtensionMethodGroups()
 		{
 			return Collections.emptyList();
 		}
@@ -130,7 +130,7 @@ public interface CSharpResolveContext
 	CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name);
 
 	@NotNull
-	Collection<CSharpElementGroup> getExtensionMethodGroups();
+	Collection<CSharpElementGroup<CSharpMethodDeclaration>> getExtensionMethodGroups();
 
 	@Nullable
 	PsiElement findByName(@NotNull String name, @NotNull UserDataHolder holder);

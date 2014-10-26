@@ -199,18 +199,18 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 	@Nullable
 	private CSharpElementGroup<CSharpArrayMethodDeclaration> myIndexMethodGroup;
 	@Nullable
-	private CSharpElementGroup myConstructorGroup;
+	private CSharpElementGroup<CSharpConstructorDeclaration> myConstructorGroup;
 	@Nullable
-	private CSharpElementGroup myDeConstructorGroup;
+	private CSharpElementGroup<CSharpConstructorDeclaration> myDeConstructorGroup;
 
 	@Nullable
-	private final Map<DotNetTypeRef, CSharpElementGroup> myConversionMap;
+	private final Map<DotNetTypeRef, CSharpElementGroup<CSharpConversionMethodDeclaration>> myConversionMap;
 	@Nullable
-	private final Map<IElementType, CSharpElementGroup> myOperatorMap;
+	private final Map<IElementType, CSharpElementGroup<CSharpMethodDeclaration>> myOperatorMap;
 	@Nullable
-	private final Map<String, CSharpElementGroup> myExtensionMap;
+	private final Map<String, CSharpElementGroup<CSharpMethodDeclaration>> myExtensionMap;
 	@Nullable
-	private final Map<String, CSharpElementGroup> myOtherElements;
+	private final Map<String, CSharpElementGroup<PsiElement>> myOtherElements;
 
 	public CSharpTypeResolveContext(@NotNull CSharpTypeDeclaration typeDeclaration, @NotNull DotNetGenericExtractor genericExtractor)
 	{
@@ -256,16 +256,16 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 	}
 
 	@Nullable
-	public static <K, V extends PsiElement> Map<K, CSharpElementGroup> convertToGroup(@NotNull Project project, @Nullable MultiMap<K, V> multiMap)
+	public static <K, V extends PsiElement> Map<K, CSharpElementGroup<V>> convertToGroup(@NotNull Project project, @Nullable MultiMap<K, V> multiMap)
 	{
 		if(multiMap == null || multiMap.isEmpty())
 		{
 			return null;
 		}
-		Map<K, CSharpElementGroup> map = new THashMap<K, CSharpElementGroup>(multiMap.size());
+		Map<K, CSharpElementGroup<V>> map = new THashMap<K, CSharpElementGroup<V>>(multiMap.size());
 		for(Map.Entry<K, Collection<V>> entry : multiMap.entrySet())
 		{
-			map.put(entry.getKey(), new CSharpElementGroupImpl(project, entry.getKey(), entry.getValue()));
+			map.put(entry.getKey(), new CSharpElementGroupImpl<V>(project, entry.getKey(), entry.getValue()));
 		}
 		return map;
 	}
@@ -279,21 +279,21 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup constructorGroup()
+	public CSharpElementGroup<CSharpConstructorDeclaration> constructorGroup()
 	{
 		return myConstructorGroup;
 	}
 
 	@Nullable
 	@Override
-	public CSharpElementGroup deConstructorGroup()
+	public CSharpElementGroup<CSharpConstructorDeclaration> deConstructorGroup()
 	{
 		return myDeConstructorGroup;
 	}
 
 	@Nullable
 	@Override
-	public CSharpElementGroup findOperatorGroupByTokenType(@NotNull IElementType type)
+	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type)
 	{
 		if(myOperatorMap == null)
 		{
@@ -304,7 +304,7 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
+	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
 	{
 		if(myConversionMap == null)
 		{
@@ -315,7 +315,7 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup findExtensionMethodGroupByName(@NotNull String name)
+	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
 	{
 		if(myExtensionMap == null)
 		{
@@ -326,7 +326,7 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 
 	@NotNull
 	@Override
-	public Collection<CSharpElementGroup> getExtensionMethodGroups()
+	public Collection<CSharpElementGroup<CSharpMethodDeclaration>> getExtensionMethodGroups()
 	{
 		if(myExtensionMap == null)
 		{
