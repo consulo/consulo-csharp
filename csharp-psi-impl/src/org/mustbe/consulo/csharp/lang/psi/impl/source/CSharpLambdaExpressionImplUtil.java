@@ -90,11 +90,19 @@ public class CSharpLambdaExpressionImplUtil
 
 			return resolveLeftLambdaTypeRefForVariable(((DotNetLikeMethodDeclaration) callable).getParameters()[index]);
 		}
-
-		DotNetVariable variable = resolveLambdaVariableInsideAssignmentExpression(parent);
-		if(variable != null)
+		else if(parent instanceof CSharpAssignmentExpressionImpl)
 		{
-			return resolveLeftLambdaTypeRefForVariable(variable);
+			IElementType operatorElementType = ((CSharpAssignmentExpressionImpl) parent).getOperatorElement().getOperatorElementType();
+
+			if(operatorElementType == CSharpTokens.PLUSEQ || operatorElementType == CSharpTokens.MINUSEQ || operatorElementType == CSharpTokens.EQ)
+			{
+				DotNetExpression expression = ((CSharpAssignmentExpressionImpl) parent).getParameterExpressions()[0];
+				DotNetTypeResolveResult typeResolveResult = expression.toTypeRef(true).resolve(parent);
+				if(typeResolveResult instanceof CSharpLambdaResolveResult)
+				{
+					return (CSharpLambdaResolveResult) typeResolveResult;
+				}
+			}
 		}
 
 		return null;
