@@ -177,7 +177,7 @@ public class CSharpDirectInheritorsSearcherExecutor implements QueryExecutor<Dot
 			@Override
 			public Boolean compute()
 			{
-				return !p.isCheckInheritance() || candidate.isInheritor(aClass, false);
+				return !p.isCheckInheritance() || candidate.isInheritor(aClass, true);
 			}
 		});
 	}
