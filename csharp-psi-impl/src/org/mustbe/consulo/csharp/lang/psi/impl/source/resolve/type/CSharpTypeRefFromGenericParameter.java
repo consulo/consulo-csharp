@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -40,7 +41,7 @@ public class CSharpTypeRefFromGenericParameter extends DotNetTypeRef.Adapter
 	@Override
 	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 	{
-		return new SimpleTypeResolveResult(myGenericParameter);
+		return new SimpleTypeResolveResult(myGenericParameter, CSharpTypeUtil.isElementIsNullable(myGenericParameter));
 	}
 
 	@NotNull

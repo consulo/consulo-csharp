@@ -19,6 +19,12 @@ package org.mustbe.consulo.csharp.lang.psi.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
@@ -30,6 +36,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticT
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericWrapperTypeRef;
@@ -39,6 +46,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
 
 /**
@@ -90,6 +98,42 @@ public class CSharpTypeUtil
 		if(element instanceof DotNetTypeDeclaration)
 		{
 			return !((DotNetTypeDeclaration) element).isStruct() && !((DotNetTypeDeclaration) element).isEnum();
+		}
+		else if(element instanceof DotNetGenericParameter)
+		{
+			PsiElement parent = element.getParent().getParent();
+			if(parent instanceof CSharpGenericConstraintOwner)
+			{
+				CSharpGenericConstraint[] genericConstraints = ((CSharpGenericConstraintOwner) parent).getGenericConstraints();
+
+				for(CSharpGenericConstraint genericConstraint : genericConstraints)
+				{
+					for(CSharpGenericConstraintValue genericConstraintValue : genericConstraint.getGenericConstraintValues())
+					{
+						if(genericConstraintValue instanceof CSharpGenericConstraintKeywordValue)
+						{
+							IElementType keywordElementType = ((CSharpGenericConstraintKeywordValue) genericConstraintValue).getKeywordElementType();
+							if(keywordElementType == CSharpTokens.STRUCT_KEYWORD)
+							{
+								return false;
+							}
+							else if(keywordElementType == CSharpTokens.CLASS_KEYWORD)
+							{
+								return true;
+							}
+						}
+						else if(genericConstraintValue instanceof CSharpGenericConstraintTypeValue)
+						{
+							DotNetTypeRef dotNetTypeRef = ((CSharpGenericConstraintTypeValue) genericConstraintValue).toTypeRef();
+							DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(element);
+							if(!typeResolveResult.isNullable())
+							{
+								return false;
+							}
+						}
+					}
+				}
+			}
 		}
 		return true;
 	}
