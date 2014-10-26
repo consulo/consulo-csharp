@@ -184,7 +184,7 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 	}
 
 	@Nullable
-	private CSharpElementGroup myIndexMethodGroup;
+	private CSharpElementGroup<CSharpArrayMethodDeclaration> myIndexMethodGroup;
 	@Nullable
 	private CSharpElementGroup myConstructorGroup;
 	@Nullable
@@ -221,13 +221,14 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 	}
 
 	@Nullable
-	private static CSharpElementGroup toGroup(@NotNull Project project, @NotNull String key, @Nullable List<? extends PsiElement> elements)
+	private static <T extends PsiElement> CSharpElementGroup<T> toGroup(@NotNull Project project, @NotNull String key,
+			@Nullable List<T> elements)
 	{
 		if(ContainerUtil.isEmpty(elements))
 		{
 			return null;
 		}
-		return new CSharpElementGroupImpl(project, key, elements);
+		return new CSharpElementGroupImpl<T>(project, key, elements);
 	}
 
 	@Nullable
@@ -247,7 +248,7 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup indexMethodGroup()
+	public CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup()
 	{
 		return myIndexMethodGroup;
 	}

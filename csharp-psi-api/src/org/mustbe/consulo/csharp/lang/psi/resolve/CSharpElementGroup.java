@@ -9,10 +9,10 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 29.09.14
  */
-public interface CSharpElementGroup extends PsiElement
+public interface CSharpElementGroup<T extends PsiElement> extends PsiElement
 {
 	@NotNull
-	Collection<? extends PsiElement> getElements();
+	Collection<T> getElements();
 
 	@NotNull
 	String getName();

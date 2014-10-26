@@ -6,6 +6,10 @@ import java.util.Collections;
 import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.UserDataHolder;
@@ -23,42 +27,42 @@ public interface CSharpResolveContext
 	{
 		@Nullable
 		@Override
-		public CSharpElementGroup indexMethodGroup()
+		public CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup()
 		{
 			return null;
 		}
 
 		@Nullable
 		@Override
-		public CSharpElementGroup constructorGroup()
+		public CSharpElementGroup<CSharpConstructorDeclaration> constructorGroup()
 		{
 			return null;
 		}
 
 		@Nullable
 		@Override
-		public CSharpElementGroup deConstructorGroup()
+		public CSharpElementGroup<CSharpConstructorDeclaration> deConstructorGroup()
 		{
 			return null;
 		}
 
 		@Nullable
 		@Override
-		public CSharpElementGroup findOperatorGroupByTokenType(@NotNull IElementType type)
+		public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type)
 		{
 			return null;
 		}
 
 		@Nullable
 		@Override
-		public CSharpElementGroup findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
+		public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
 		{
 			return null;
 		}
 
 		@Nullable
 		@Override
-		public CSharpElementGroup findExtensionMethodGroupByName(@NotNull String name)
+		public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
 		{
 			return null;
 		}
@@ -105,25 +109,25 @@ public interface CSharpResolveContext
 	Key<Integer> GENERIC_COUNT = Key.create("csharp.generic.count");
 
 	@Nullable
-	CSharpElementGroup indexMethodGroup();
+	CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup();
 
 	@Nullable
-	CSharpElementGroup constructorGroup();
+	CSharpElementGroup<CSharpConstructorDeclaration> constructorGroup();
 
 	@Nullable
-	CSharpElementGroup deConstructorGroup();
+	CSharpElementGroup<CSharpConstructorDeclaration> deConstructorGroup();
 
 	@Nullable
-	CSharpElementGroup findOperatorGroupByTokenType(@NotNull IElementType type);
+	CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type);
 
 	/**
 	 * @param typeRef is {@link CSharpStaticTypeRef#IMPLICIT} or {@link CSharpStaticTypeRef#EXPLICIT}
 	 */
 	@Nullable
-	CSharpElementGroup findConversionMethodGroup(@NotNull DotNetTypeRef typeRef);
+	CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef);
 
 	@Nullable
-	CSharpElementGroup findExtensionMethodGroupByName(@NotNull String name);
+	CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name);
 
 	@NotNull
 	Collection<CSharpElementGroup> getExtensionMethodGroups();

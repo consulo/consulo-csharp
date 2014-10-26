@@ -104,7 +104,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 
 			CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myExpression.getResolveScope(), element);
 
-			CSharpElementGroup elementGroup = (CSharpElementGroup) selector.doSelectElement(context);
+			CSharpElementGroup<?> elementGroup = selector.doSelectElement(context);
 			if(elementGroup == null)
 			{
 				return true;

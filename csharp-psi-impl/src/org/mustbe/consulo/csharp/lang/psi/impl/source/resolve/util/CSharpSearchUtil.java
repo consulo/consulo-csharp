@@ -101,7 +101,7 @@ public class CSharpSearchUtil
 		{
 			if(psiElement instanceof CSharpElementGroup)
 			{
-				for(PsiElement element : ((CSharpElementGroup) psiElement).getElements())
+				for(PsiElement element : ((CSharpElementGroup<?>) psiElement).getElements())
 				{
 					//TODO [VISTALL] parameter handling
 					if(element instanceof DotNetMethodDeclaration && ((DotNetMethodDeclaration) element).getParameters().length == 0)

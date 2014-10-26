@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -31,18 +33,18 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup indexMethodGroup()
+	public CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup()
 	{
-		List<CSharpElementGroup> groups = new SmartList<CSharpElementGroup>();
+		List<CSharpElementGroup<CSharpArrayMethodDeclaration>> groups = new SmartList<CSharpElementGroup<CSharpArrayMethodDeclaration>>();
 		for(CSharpResolveContext context : myContexts)
 		{
-			CSharpElementGroup elementGroup = context.indexMethodGroup();
+			CSharpElementGroup<CSharpArrayMethodDeclaration> elementGroup = context.indexMethodGroup();
 			if(elementGroup != null)
 			{
 				groups.add(elementGroup);
 			}
 		}
-		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl(myProject, groups);
+		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl<CSharpArrayMethodDeclaration>(myProject, groups);
 	}
 
 	@Nullable
@@ -79,18 +81,18 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup findOperatorGroupByTokenType(@NotNull IElementType type)
+	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type)
 	{
-		List<CSharpElementGroup> groups = new SmartList<CSharpElementGroup>();
+		List<CSharpElementGroup<CSharpMethodDeclaration>> groups = new SmartList<CSharpElementGroup<CSharpMethodDeclaration>>();
 		for(CSharpResolveContext context : myContexts)
 		{
-			CSharpElementGroup elementGroup = context.findOperatorGroupByTokenType(type);
+			CSharpElementGroup<CSharpMethodDeclaration> elementGroup = context.findOperatorGroupByTokenType(type);
 			if(elementGroup != null)
 			{
 				groups.add(elementGroup);
 			}
 		}
-		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl(myProject, groups);
+		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl<CSharpMethodDeclaration>(myProject, groups);
 	}
 
 	@Nullable
@@ -111,18 +113,18 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup findExtensionMethodGroupByName(@NotNull String name)
+	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
 	{
-		List<CSharpElementGroup> groups = new SmartList<CSharpElementGroup>();
+		List<CSharpElementGroup<CSharpMethodDeclaration>> groups = new SmartList<CSharpElementGroup<CSharpMethodDeclaration>>();
 		for(CSharpResolveContext context : myContexts)
 		{
-			CSharpElementGroup elementGroup = context.findExtensionMethodGroupByName(name);
+			CSharpElementGroup<CSharpMethodDeclaration> elementGroup = context.findExtensionMethodGroupByName(name);
 			if(elementGroup != null)
 			{
 				groups.add(elementGroup);
 			}
 		}
-		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl(myProject, groups);
+		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl<CSharpMethodDeclaration>(myProject, groups);
 	}
 
 	@NotNull

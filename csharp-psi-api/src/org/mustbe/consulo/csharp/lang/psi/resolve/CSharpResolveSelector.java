@@ -11,5 +11,5 @@ import com.intellij.psi.PsiElement;
 public interface CSharpResolveSelector
 {
 	@Nullable
-	PsiElement doSelectElement(@NotNull CSharpResolveContext context);
+	<T extends PsiElement> T doSelectElement(@NotNull CSharpResolveContext context);
 }

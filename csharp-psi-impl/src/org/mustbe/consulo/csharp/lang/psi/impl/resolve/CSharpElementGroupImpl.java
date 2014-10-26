@@ -17,12 +17,12 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 29.09.14
  */
-public class CSharpElementGroupImpl extends LightElement implements CSharpElementGroup
+public class CSharpElementGroupImpl<T extends PsiElement> extends LightElement implements CSharpElementGroup<T>
 {
 	private final Object myKey;
-	private final Collection<? extends PsiElement> myElements;
+	private final Collection<T> myElements;
 
-	public CSharpElementGroupImpl(Project project, @NotNull Object key, Collection<? extends PsiElement> elements)
+	public CSharpElementGroupImpl(Project project, @NotNull Object key, Collection<T> elements)
 	{
 		super(PsiManager.getInstance(project), CSharpLanguage.INSTANCE);
 		myKey = key;
@@ -42,7 +42,7 @@ public class CSharpElementGroupImpl extends LightElement implements CSharpElemen
 
 	@NotNull
 	@Override
-	public Collection<? extends PsiElement> getElements()
+	public Collection<T> getElements()
 	{
 		return myElements;
 	}

@@ -8,6 +8,7 @@ import java.util.List;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransformer;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeWithExtensionMethodsIndex;
@@ -63,7 +64,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup findOperatorGroupByTokenType(@NotNull IElementType type)
+	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type)
 	{
 		return null;
 	}
@@ -77,7 +78,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup findExtensionMethodGroupByName(@NotNull String name)
+	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
 	{
 		String presentableName = DotNetNamespaceStubUtil.getIndexableNamespace(myNamespaceAsElement.getPresentableQName());
 
@@ -88,20 +89,20 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		{
 			return null;
 		}
-		List<CSharpElementGroup> list = new SmartList<CSharpElementGroup>();
+		List<CSharpElementGroup<CSharpMethodDeclaration>> list = new SmartList<CSharpElementGroup<CSharpMethodDeclaration>>();
 		for(DotNetTypeDeclaration decl : decls)
 		{
 			PsiElement wrappedDeclaration = MsilToCSharpUtil.wrap(decl);
 
 			CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, myResolveScope, wrappedDeclaration);
 
-			CSharpElementGroup extensionMethodByName = context.findExtensionMethodGroupByName(name);
+			CSharpElementGroup<CSharpMethodDeclaration> extensionMethodByName = context.findExtensionMethodGroupByName(name);
 			if(extensionMethodByName != null)
 			{
 				list.add(extensionMethodByName);
 			}
 		}
-		return new CSharpCompositeElementGroupImpl(myNamespaceAsElement.getProject(), list);
+		return new CSharpCompositeElementGroupImpl<CSharpMethodDeclaration>(myNamespaceAsElement.getProject(), list);
 	}
 
 	@NotNull

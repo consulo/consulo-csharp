@@ -247,16 +247,14 @@ public class CSharpTypeUtil
 		CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, scope.getResolveScope(),
 				typeDeclaration);
 
-		CSharpElementGroup conversionMethodGroup = context.findConversionMethodGroup(CSharpStaticTypeRef.IMPLICIT);
+		CSharpElementGroup<CSharpConversionMethodDeclaration> conversionMethodGroup = context.findConversionMethodGroup(CSharpStaticTypeRef.IMPLICIT);
 		if(conversionMethodGroup == null)
 		{
 			return false;
 		}
 
-		for(PsiElement o : conversionMethodGroup.getElements())
+		for(CSharpConversionMethodDeclaration declaration : conversionMethodGroup.getElements())
 		{
-			CSharpConversionMethodDeclaration declaration = (CSharpConversionMethodDeclaration) o;
-
 			if(!isInheritable(declaration.getReturnTypeRef(), to, scope))
 			{
 				continue;

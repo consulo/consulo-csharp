@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -254,7 +255,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@Nullable
 	public PsiElement resolveByContext(IElementType elementType, CSharpResolveContext context, Ref<PsiElement> last)
 	{
-		CSharpElementGroup operatorGroupByTokenType = context.findOperatorGroupByTokenType(elementType);
+		CSharpElementGroup<CSharpMethodDeclaration> operatorGroupByTokenType = context.findOperatorGroupByTokenType(elementType);
 		if(operatorGroupByTokenType == null)
 		{
 			return null;

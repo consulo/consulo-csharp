@@ -499,7 +499,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 						CSharpLambdaResolveResult lambdaResolveResult = CSharpLambdaExpressionImplUtil.resolveLeftLambdaTypeRef(element);
 						if(lambdaResolveResult != null)
 						{
-							for(PsiElement psiElement : ((CSharpElementGroup) resolvedElement).getElements())
+							for(PsiElement psiElement : ((CSharpElementGroup<?>) resolvedElement).getElements())
 							{
 								if(psiElement instanceof DotNetLikeMethodDeclaration)
 								{
@@ -532,7 +532,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					PsiElement maybeElementGroup = result.getElement();
 					if(maybeElementGroup instanceof CSharpElementGroup)
 					{
-						for(PsiElement psiElement : ((CSharpElementGroup) maybeElementGroup).getElements())
+						for(PsiElement psiElement : ((CSharpElementGroup<?>) maybeElementGroup).getElements())
 						{
 							if(psiElement instanceof DotNetLikeMethodDeclaration)
 							{

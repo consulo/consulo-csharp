@@ -40,7 +40,7 @@ public class CompletionResolveScopeProcessor extends AbstractScopeProcessor
 		{
 			if(psiElement instanceof CSharpElementGroup)
 			{
-				for(PsiElement it : ((CSharpElementGroup) psiElement).getElements())
+				for(PsiElement it : ((CSharpElementGroup<?>) psiElement).getElements())
 				{
 					addElement(it);
 				}
