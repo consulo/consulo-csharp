@@ -101,7 +101,7 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 			}
 			else
 			{
-				// we dont interest in impl methods
+				// we dont interest in private impl
 				if(declaration.getTypeForImplement() != null)
 				{
 					return;
@@ -130,7 +130,7 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 		@Override
 		public void visitArrayMethodDeclaration(CSharpArrayMethodDeclaration declaration)
 		{
-			// we dont interest in impl methods
+			// we dont interest in private impl
 			if(declaration.getTypeForImplement() != null)
 			{
 				return;
@@ -158,12 +158,24 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 		@Override
 		public void visitEventDeclaration(CSharpEventDeclaration declaration)
 		{
+			// we dont interest in private impl
+			if(declaration.getTypeForImplement() != null)
+			{
+				return;
+			}
+
 			putIfNotNull(declaration.getName(), declaration, myOtherElements);
 		}
 
 		@Override
 		public void visitPropertyDeclaration(CSharpPropertyDeclaration declaration)
 		{
+			// we dont interest in private impl
+			if(declaration.getTypeForImplement() != null)
+			{
+				return;
+			}
+
 			putIfNotNull(declaration.getName(), declaration, myOtherElements);
 		}
 
@@ -210,6 +222,8 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 		{
 			member.accept(collector);
 		}
+
+		String vmQName = typeDeclaration.getVmQName();
 
 		myOtherElements = convertToGroup(project, collector.myOtherElements);
 		myIndexMethodGroup = toGroup(project, "[]", collector.myIndexMethods);
