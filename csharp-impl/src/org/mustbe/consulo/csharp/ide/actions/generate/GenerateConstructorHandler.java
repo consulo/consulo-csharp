@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.ide.actions.generate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +24,11 @@ import org.mustbe.consulo.csharp.ide.actions.generate.memberChoose.ConstructorCh
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ConstructorProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
+import org.mustbe.consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -36,7 +41,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiParserFacade;
-import com.intellij.util.Function;
+import com.intellij.psi.ResolveResult;
+import com.intellij.psi.ResolveState;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
@@ -63,21 +69,30 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 			return;
 		}
 
-		final CSharpTypeDeclaration baseTypeDeclaration = (CSharpTypeDeclaration) baseType;
 
-		ConstructorProcessor constructorProcessor = new ConstructorProcessor(null);
-		baseTypeDeclaration.processConstructors(constructorProcessor);
-		constructorProcessor.executeDefault(baseTypeDeclaration);
+		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(typeDeclaration.getResolveScope(),
+				ResolveResult.EMPTY_ARRAY, new ExecuteTarget[] {ExecuteTarget.ELEMENT_GROUP});
 
-		final PsiElement[] psiElements = constructorProcessor.toPsiElements();
-		final ConstructorChooseMember[] map = ContainerUtil.map(psiElements, new Function<PsiElement, ConstructorChooseMember>()
+		ResolveState resolveState = ResolveState.initial();
+		resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, StaticResolveSelectors.CONSTRUCTOR_GROUP);
+
+		CSharpResolveUtil.walkChildren(memberResolveScopeProcessor, baseType, false, null, resolveState);
+
+		PsiElement[] psiElements = memberResolveScopeProcessor.toPsiElements();
+
+		List<ConstructorChooseMember> members = new ArrayList<ConstructorChooseMember>();
+		for(PsiElement psiElement : psiElements)
 		{
-			@Override
-			public ConstructorChooseMember fun(PsiElement psiElement)
+			if(psiElement instanceof CSharpElementGroup)
 			{
-				return new ConstructorChooseMember((DotNetConstructorDeclaration) psiElement);
+				for(PsiElement element : ((CSharpElementGroup<?>) psiElement).getElements())
+				{
+					members.add(new ConstructorChooseMember((DotNetConstructorDeclaration) element));
+				}
 			}
-		}, ConstructorChooseMember.EMPTY_ARRAY);
+		}
+
+		final ConstructorChooseMember[] map = ContainerUtil.toArray(members, ConstructorChooseMember.ARRAY_FACTORY);
 
 		if(map.length == 1)
 		{
