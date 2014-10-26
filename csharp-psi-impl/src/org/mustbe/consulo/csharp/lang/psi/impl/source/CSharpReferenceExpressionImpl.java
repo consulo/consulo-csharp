@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.*;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpElementGroupTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
@@ -64,7 +65,6 @@ import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
-import com.intellij.psi.impl.source.resolve.ResolveCache;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtil;
@@ -81,22 +81,24 @@ import lombok.val;
 public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements CSharpReferenceExpression, PsiPolyVariantReference,
 		CSharpQualifiedNonReference
 {
-	private static class OurResolver implements ResolveCache.PolyVariantResolver<CSharpReferenceExpressionImpl>
+	private static class OurResolver implements CSharpResolveCache.PolyVariantResolver<CSharpReferenceExpressionImpl>
 	{
 		private static final OurResolver INSTANCE = new OurResolver();
 
 		@NotNull
 		@Override
-		public ResolveResult[] resolve(@NotNull CSharpReferenceExpressionImpl ref, boolean incompleteCode)
+		public ResolveResult[] resolve(@NotNull CSharpReferenceExpressionImpl ref, boolean incompleteCode, boolean resolveFromParent)
 		{
 			if(!incompleteCode)
 			{
-				return ref.multiResolveImpl(ref.kind(), true);
+				return ref.multiResolveImpl(ref.kind(), resolveFromParent);
 			}
 			else
 			{
+				ResolveResult[] resolveResults = ref.multiResolve(false, resolveFromParent);
+
 				List<ResolveResult> filter = new SmartList<ResolveResult>();
-				for(ResolveResult resolveResult : ref.multiResolve(true))
+				for(ResolveResult resolveResult : resolveResults)
 				{
 					if(resolveResult.isValidResult())
 					{
@@ -174,7 +176,13 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@Override
 	public ResolveResult[] multiResolve(final boolean incompleteCode)
 	{
-		return ResolveCache.getInstance(getProject()).resolveWithCaching(this, OurResolver.INSTANCE, true, incompleteCode);
+		return multiResolve(incompleteCode, true);
+	}
+
+	@NotNull
+	public ResolveResult[] multiResolve(final boolean incompleteCode, final boolean resolveFromParent)
+	{
+		return CSharpResolveCache.getInstance(getProject()).resolveWithCaching(this, OurResolver.INSTANCE, true, incompleteCode, resolveFromParent);
 	}
 
 	@NotNull
@@ -1039,17 +1047,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
-		if(resolveFromParent)
-		{
-			return toTypeRef(resolve());
-		}
-		return toTypeRef(kind(), false);
-	}
-
-	@NotNull
-	public DotNetTypeRef toTypeRef(ResolveToKind resolveToKind, boolean resolveFromParent)
-	{
-		ResolveResult[] resolveResults = multiResolveImpl(resolveToKind, resolveFromParent);
+		ResolveResult[] resolveResults = multiResolve(false, resolveFromParent);
 		if(resolveResults.length == 0)
 		{
 			return DotNetTypeRef.ERROR_TYPE;
