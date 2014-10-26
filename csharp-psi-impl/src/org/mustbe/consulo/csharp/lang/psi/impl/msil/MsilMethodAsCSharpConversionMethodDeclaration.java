@@ -43,7 +43,7 @@ public class MsilMethodAsCSharpConversionMethodDeclaration extends MsilMethodAsC
 	@Override
 	public String getName()
 	{
-		return super.getName();
+		return isImplicit() ? "<implicit>" : "<explicit>";
 	}
 
 	@Override
@@ -63,14 +63,7 @@ public class MsilMethodAsCSharpConversionMethodDeclaration extends MsilMethodAsC
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
-		if(isImplicit())
-		{
-			return CSharpStaticTypeRef.IMPLICIT;
-		}
-		else
-		{
-			return CSharpStaticTypeRef.EXPLICIT;
-		}
+		return MsilToCSharpUtil.extractToCSharp(myMsilElement.getReturnTypeRef(), myMsilElement);
 	}
 
 	@Override
@@ -78,11 +71,11 @@ public class MsilMethodAsCSharpConversionMethodDeclaration extends MsilMethodAsC
 	{
 		if(Comparing.equal(myMsilElement.getName(), "op_Explicit"))
 		{
-			return true;
+			return false;
 		}
 		else if(Comparing.equal(myMsilElement.getName(), "op_Implicit"))
 		{
-			return false;
+			return true;
 		}
 		else
 		{
@@ -94,7 +87,14 @@ public class MsilMethodAsCSharpConversionMethodDeclaration extends MsilMethodAsC
 	@Override
 	public DotNetTypeRef getConversionTypeRef()
 	{
-		return MsilToCSharpUtil.extractToCSharp(myMsilElement.getReturnTypeRef(), myMsilElement);
+		if(isImplicit())
+		{
+			return CSharpStaticTypeRef.IMPLICIT;
+		}
+		else
+		{
+			return CSharpStaticTypeRef.EXPLICIT;
+		}
 	}
 
 	@Nullable
