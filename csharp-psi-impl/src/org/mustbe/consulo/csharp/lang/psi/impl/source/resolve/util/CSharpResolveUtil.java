@@ -406,6 +406,11 @@ public class CSharpResolveUtil
 		}
 		else if(entrance instanceof DotNetGenericParameter)
 		{
+			if(!processor.execute(entrance, state))
+			{
+				return false;
+			}
+
 			val superTypes = CSharpGenericConstraintUtil.getExtendTypes((DotNetGenericParameter) entrance);
 
 			CSharpResolveSelector selector = state.get(SELECTOR);

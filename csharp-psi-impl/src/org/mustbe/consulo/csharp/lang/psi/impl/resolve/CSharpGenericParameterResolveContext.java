@@ -5,11 +5,7 @@ import java.util.Collections;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
@@ -33,13 +29,25 @@ public class CSharpGenericParameterResolveContext implements CSharpResolveContex
 	{
 		Project project = element.getProject();
 
-		CSharpLightConstructorDeclarationBuilder builder = new CSharpLightConstructorDeclarationBuilder(project);
-		builder.addModifier(CSharpModifier.PUBLIC);
-		builder.setNavigationElement(element);
-		builder.withParent(element);
+		CSharpGenericConstraint genericConstraint = CSharpGenericConstraintUtil.findGenericConstraint(element);
+		if(genericConstraint != null)
+		{
+			for(CSharpGenericConstraintValue constraintValue : genericConstraint.getGenericConstraintValues())
+			{
+				if(constraintValue instanceof CSharpGenericConstraintKeywordValue && ((CSharpGenericConstraintKeywordValue) constraintValue)
+						.getKeywordElementType() == CSharpTokens.NEW_KEYWORD)
+				{
+					CSharpLightConstructorDeclarationBuilder builder = new CSharpLightConstructorDeclarationBuilder(project);
+					builder.addModifier(CSharpModifier.PUBLIC);
+					builder.setNavigationElement(element);
+					builder.withParent(element);
 
-		myConstructorGroup = new CSharpElementGroupImpl<CSharpConstructorDeclaration>(project, MsilHelper.CONSTRUCTOR_NAME,
-				Collections.<CSharpConstructorDeclaration>singletonList(builder));
+					myConstructorGroup = new CSharpElementGroupImpl<CSharpConstructorDeclaration>(project, MsilHelper.CONSTRUCTOR_NAME,
+							Collections.<CSharpConstructorDeclaration>singletonList(builder));
+					break;
+				}
+			}
+		}
 	}
 
 	@Nullable
