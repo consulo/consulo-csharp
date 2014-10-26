@@ -470,9 +470,9 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				maybeParameterListOwner.processDeclarations(scopeProcessor, state, null, element);
 				return scopeProcessor.toResolveResults();
 			case TYPE_LIKE:
-				return processAnyMember(qualifier, selector, element, kind, completion);
+				return processAnyMember(qualifier, selector, element, callArgumentListOwner, kind, completion);
 			case ANY_MEMBER:
-				resolveResults = processAnyMember(qualifier, selector, element, kind, completion);
+				resolveResults = processAnyMember(qualifier, selector, element, callArgumentListOwner, kind, completion);
 				if(resolveResults.length == 0)
 				{
 					return ResolveResult.EMPTY_ARRAY;
@@ -508,7 +508,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			case METHOD:
 			case ARRAY_METHOD:
 			case CONSTRUCTOR:
-				resolveResults = processAnyMember(qualifier, selector, element, kind, completion);
+				resolveResults = processAnyMember(qualifier, selector, element, callArgumentListOwner, kind, completion);
 				if(callArgumentListOwner == null || resolveResults.length == 0)
 				{
 					return ResolveResult.EMPTY_ARRAY;
@@ -569,16 +569,17 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		return ResolveResult.EMPTY_ARRAY;
 	}
 
-	public static ResolveResult[] processAnyMember(@Nullable PsiElement qualifier,
+	public static ResolveResult[] processAnyMember(
+			@Nullable PsiElement qualifier,
 			@Nullable CSharpResolveSelector selector,
 			@NotNull PsiElement element,
-			ResolveToKind kind,
+			@Nullable CSharpCallArgumentListOwner callArgumentListOwner,
+			@NotNull ResolveToKind kind,
 			boolean completion)
 	{
 		if(kind == ResolveToKind.CONSTRUCTOR)
 		{
-			CSharpReferenceExpression referenceExpression = (CSharpReferenceExpression) element;
-			CSharpCallArgumentListOwner parent = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
+			CSharpReferenceExpressionImpl referenceExpression = (CSharpReferenceExpressionImpl) element;
 
 			DotNetTypeRef typeRef = DotNetTypeRef.ERROR_TYPE;
 
@@ -586,19 +587,19 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			assert referenceElement != null;
 			if(referenceElement.getNode().getElementType() == CSharpTokens.BASE_KEYWORD)
 			{
-				typeRef = referenceExpression.toTypeRef(true);
+				typeRef = referenceExpression.toTypeRefWithoutCaching(ResolveToKind.BASE, true);
 			}
 			else if(referenceElement.getNode().getElementType() == CSharpTokens.THIS_KEYWORD)
 			{
-				typeRef = referenceExpression.toTypeRef(true);
+				typeRef = referenceExpression.toTypeRefWithoutCaching(ResolveToKind.THIS, true);
 			}
-			else if(parent instanceof CSharpNewExpression)
+			else if(callArgumentListOwner instanceof CSharpNewExpression)
 			{
-				typeRef = ((CSharpNewExpression) parent).toTypeRef(true);
+				typeRef = ((CSharpNewExpression) callArgumentListOwner).toTypeRef(true);
 			}
-			else if(parent instanceof DotNetAttribute)
+			else if(callArgumentListOwner instanceof DotNetAttribute)
 			{
-				typeRef = ((DotNetAttribute) parent).toTypeRef();
+				typeRef = ((DotNetAttribute) callArgumentListOwner).toTypeRef();
 			}
 
 			DotNetTypeResolveResult typeResolveResult = typeRef.resolve(element);
@@ -1043,8 +1044,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		PsiElement resolve = resolve();
 		if(element instanceof DotNetNamespaceAsElement && resolve instanceof DotNetNamespaceAsElement)
 		{
-			return Comparing.equal(((DotNetNamespaceAsElement) resolve).getPresentableQName(), ((DotNetNamespaceAsElement) element)
-					.getPresentableQName());
+			return Comparing.equal(((DotNetNamespaceAsElement) resolve).getPresentableQName(), ((DotNetNamespaceAsElement) element).getPresentableQName());
 		}
 		return element.getManager().areElementsEquivalent(element, resolve);
 	}
@@ -1073,6 +1073,23 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
 		ResolveResult[] resolveResults = multiResolve(false, resolveFromParent);
+		if(resolveResults.length == 0)
+		{
+			return DotNetTypeRef.ERROR_TYPE;
+		}
+
+		ResolveResult resolveResult = resolveResults[0];
+		if(!resolveResult.isValidResult())
+		{
+			return DotNetTypeRef.ERROR_TYPE;
+		}
+		return toTypeRef(resolveResult.getElement());
+	}
+
+	@NotNull
+	public DotNetTypeRef toTypeRefWithoutCaching(ResolveToKind kind, boolean resolveFromParent)
+	{
+		ResolveResult[] resolveResults = multiResolveImpl(kind, resolveFromParent);
 		if(resolveResults.length == 0)
 		{
 			return DotNetTypeRef.ERROR_TYPE;

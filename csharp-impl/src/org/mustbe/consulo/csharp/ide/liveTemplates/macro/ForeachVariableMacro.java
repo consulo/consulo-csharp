@@ -46,7 +46,7 @@ public class ForeachVariableMacro extends VariableTypeMacroBase
 		}
 
 		ResolveResult[] resolveResultWithWeights = CSharpReferenceExpressionImpl.processAnyMember(null, null, psiElementAtStartOffset,
-				CSharpReferenceExpressionImpl.ResolveToKind.ANY_MEMBER, true);
+				null, CSharpReferenceExpressionImpl.ResolveToKind.ANY_MEMBER, true);
 
 		List<PsiElement> list = new ArrayList<PsiElement>(resolveResultWithWeights.length);
 		for(ResolveResult resolveResultWithWeight : resolveResultWithWeights)
