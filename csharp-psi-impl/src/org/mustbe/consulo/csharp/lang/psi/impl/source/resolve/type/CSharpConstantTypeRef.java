@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -33,7 +34,7 @@ public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSh
 
 	@NotNull
 	@Override
-	public DotNetTypeRef doMirror(@NotNull DotNetTypeRef another)
+	public DotNetTypeRef doMirror(@NotNull DotNetTypeRef another, PsiElement scope)
 	{
 		int topRank = CSharpTypeUtil.getNumberRank(getDelegate());
 		int targetRank = CSharpTypeUtil.getNumberRank(another);

@@ -218,7 +218,7 @@ public class CSharpTypeUtil
 
 		if(target instanceof CSharpChameleonTypeRef)
 		{
-			target = ((CSharpChameleonTypeRef) target).doMirror(top);
+			target = ((CSharpChameleonTypeRef) target).doMirror(top, scope);
 		}
 
 		int topRank = ArrayUtil.find(ourNumberRanks, top.getQualifiedText());
