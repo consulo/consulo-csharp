@@ -85,7 +85,7 @@ public class CSharpTypeUtil
 			DotNetTypes.System.Double,
 	};
 
-	public static boolean isElementIsNullable(@NotNull PsiElement element)
+	public static boolean isElementIsNullable(@Nullable PsiElement element)
 	{
 		if(element instanceof DotNetTypeDeclaration)
 		{

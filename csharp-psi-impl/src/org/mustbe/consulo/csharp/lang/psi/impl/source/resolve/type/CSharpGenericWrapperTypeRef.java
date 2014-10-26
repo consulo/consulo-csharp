@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.SimpleGenericExtractorImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
@@ -95,11 +96,11 @@ public class CSharpGenericWrapperTypeRef implements DotNetGenericWrapperTypeRef
 			CSharpMethodDeclaration target = ((CSharpLambdaResolveResult) typeResolveResult).getTarget();
 			if(target == null)
 			{
-				return new SimpleTypeResolveResult(element, getGenericExtractor(typeResolveResult.getElement()));
+				return new SimpleTypeResolveResult(element, getGenericExtractor(element), CSharpTypeUtil.isElementIsNullable(element));
 			}
 			return new CSharpReferenceTypeRef.LambdaResult(scope, target, getGenericExtractor(target));
 		}
-		return new SimpleTypeResolveResult(element, getGenericExtractor(typeResolveResult.getElement()));
+		return new SimpleTypeResolveResult(element, getGenericExtractor(element), CSharpTypeUtil.isElementIsNullable(element));
 	}
 
 	public DotNetGenericExtractor getGenericExtractor(PsiElement resolved)
@@ -116,7 +117,6 @@ public class CSharpGenericWrapperTypeRef implements DotNetGenericWrapperTypeRef
 		}
 		return new SimpleGenericExtractorImpl(genericParameters, getArgumentTypeRefs());
 	}
-
 
 	@Override
 	@NotNull
