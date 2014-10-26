@@ -16,11 +16,12 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.consulo.lombok.annotations.ProjectService;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 
@@ -28,11 +29,43 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 15.03.14
  */
-@ProjectService
-public abstract class CSharpOperatorHelper
+public class CSharpOperatorNameHelper
 {
-	@NotNull
-	public abstract CSharpResolveContext getContext();
+	private static final Map<IElementType, String> ourOperatorNames = new HashMap<IElementType, String>()
+	{
+		{
+			put(CSharpTokens.EQEQ, "==");
+			put(CSharpTokens.NTEQ, "!=");
+			put(CSharpTokens.LT, "<");
+			put(CSharpTokens.LTEQ, "<=");
+			put(CSharpTokens.GT, ">");
+			put(CSharpTokens.GTEQ, ">=");
+			put(CSharpTokens.MUL, "*");
+			put(CSharpTokens.MULEQ, "*");
+			put(CSharpTokens.DIV, "/");
+			put(CSharpTokens.DIVEQ, "/");
+			put(CSharpTokens.PLUS, "+");
+			put(CSharpTokens.PLUSEQ, "+");
+			put(CSharpTokens.PLUSPLUS, "++");
+			put(CSharpTokens.MINUS, "-");
+			put(CSharpTokens.MINUSEQ, "-");
+			put(CSharpTokens.MINUSMINUS, "--");
+			put(CSharpTokens.LTLT, "-<<");
+			put(CSharpTokens.LTLTEQ, "<<");
+			put(CSharpTokens.GTGT, ">>");
+			put(CSharpTokens.GTGTEQ, ">>");
+			put(CSharpTokens.EXCL, "!");
+			put(CSharpTokens.AND, "&");
+			put(CSharpTokens.ANDEQ, "&");
+			put(CSharpTokens.OR, "|");
+			put(CSharpTokens.OREQ, "|");
+			put(CSharpTokens.XOR, "^");
+			put(CSharpTokens.XOREQ, "^");
+			put(CSharpTokens.TILDE, "~");
+			put(CSharpTokens.PERC, "%");
+			put(CSharpTokens.PERCEQ, "%");
+		}
+	};
 
 	@NotNull
 	public static IElementType mergeTwiceOperatorIfNeed(PsiElement element)
@@ -59,5 +92,8 @@ public abstract class CSharpOperatorHelper
 	}
 
 	@Nullable
-	public abstract String getOperatorName(@NotNull IElementType elementType);
+	public static String getOperatorName(@NotNull IElementType elementType)
+	{
+		return ourOperatorNames.get(elementType);
+	}
 }

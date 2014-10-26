@@ -37,8 +37,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubElementResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorHelper;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorHelperImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -162,10 +161,19 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		PsiElement parent = getParent();
 		if(parent instanceof CSharpExpressionWithOperatorImpl)
 		{
-			Object returnTypeInStubs = findInStubs(last, elementType);
-			if(returnTypeInStubs != null)
+			if(elementType == CSharpTokenSets.OROR || elementType == CSharpTokens.ANDAND)
 			{
-				return returnTypeInStubs;
+				return new DotNetTypeRefByQName(DotNetTypes.System.Boolean, CSharpTransform.INSTANCE, false);
+			}
+
+			if(elementType == CSharpTokenSets.EQ)
+			{
+				DotNetExpression[] parameterExpressions = getParameterExpressions();
+				if(parameterExpressions.length > 0)
+				{
+					return parameterExpressions[0].toTypeRef(false);
+				}
+				return new DotNetTypeRefByQName(DotNetTypes.System.Void, CSharpTransform.INSTANCE, false);
 			}
 
 			for(DotNetExpression dotNetExpression : ((CSharpExpressionWithOperatorImpl) parent).getParameterExpressions())
@@ -227,29 +235,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@NotNull
 	public IElementType getOperatorElementType()
 	{
-		return CSharpOperatorHelper.mergeTwiceOperatorIfNeed(getFirstOperator());
-	}
-
-	private Object findInStubs(@Nullable Ref<PsiElement> last, IElementType elementType)
-	{
-		if(elementType == CSharpTokenSets.OROR || elementType == CSharpTokens.ANDAND)
-		{
-			return new DotNetTypeRefByQName(DotNetTypes.System.Boolean, CSharpTransform.INSTANCE, false);
-		}
-
-		if(elementType == CSharpTokenSets.EQ)
-		{
-			DotNetExpression[] parameterExpressions = getParameterExpressions();
-			if(parameterExpressions.length > 0)
-			{
-				return parameterExpressions[0].toTypeRef(false);
-			}
-			return new DotNetTypeRefByQName(DotNetTypes.System.Void, CSharpTransform.INSTANCE, false);
-		}
-
-		CSharpOperatorHelper operatorHelper = CSharpOperatorHelper.getInstance(getProject());
-
-		return resolveByContext(elementType, operatorHelper.getContext(), last);
+		return CSharpOperatorNameHelper.mergeTwiceOperatorIfNeed(getFirstOperator());
 	}
 
 	@Nullable
@@ -304,7 +290,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@Override
 	public String getCanonicalText()
 	{
-		String operatorName = CSharpOperatorHelperImpl.getInstance(getProject()).getOperatorName(getOperatorElementType());
+		String operatorName = CSharpOperatorNameHelper.getOperatorName(getOperatorElementType());
 		assert operatorName != null : getOperatorElementType();
 		return operatorName;
 	}

@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorHelper;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.pom.Navigatable;
@@ -35,7 +35,7 @@ public class CSharpElementGroupImpl<T extends PsiElement> extends LightElement i
 	{
 		if(myKey instanceof IElementType)
 		{
-			return CSharpOperatorHelper.getInstance(getProject()).getOperatorName((IElementType) myKey);
+			return CSharpOperatorNameHelper.getOperatorName((IElementType) myKey);
 		}
 		return myKey.toString();
 	}

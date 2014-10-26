@@ -26,7 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorHelper;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.project.Project;
@@ -113,7 +113,7 @@ public class CSharpLightMethodDeclarationBuilder extends CSharpLightLikeMethodDe
 	{
 		if(isOperator())
 		{
-			return CSharpOperatorHelper.getInstance(getProject()).getOperatorName(getOperatorElementType());
+			return CSharpOperatorNameHelper.getOperatorName(getOperatorElementType());
 		}
 		return super.getName();
 	}

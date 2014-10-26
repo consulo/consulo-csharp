@@ -51,6 +51,14 @@ public class CSharpLambdaResolveResultUtil
 		parameter = parameter.withTypeRef(new CSharpLambdaTypeRef(declaration, declaration.getParameterTypeRefs(), declaration.getReturnTypeRef()));
 		cBuilder.addParameter(parameter);
 
+		/*for(CSharpAdditionalTypeMemberProvider provider : CSharpAdditionalTypeMemberProvider.EP_NAME.getExtensions())
+		{
+			DotNetElement[] additionalMembers = provider.getAdditionalMembers(builder);
+			for(DotNetElement additionalMember : additionalMembers)
+			{
+				builder.addMember((DotNetQualifiedElement) additionalMember);
+			}
+		} */
 		return builder;
 	}
 }

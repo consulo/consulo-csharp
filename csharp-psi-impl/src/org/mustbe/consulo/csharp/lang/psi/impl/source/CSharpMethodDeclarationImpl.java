@@ -25,7 +25,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorHelper;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -73,7 +73,7 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 	{
 		if(isOperator())
 		{
-			return CSharpOperatorHelper.getInstance(getProject()).getOperatorName(getOperatorElementType());
+			return CSharpOperatorNameHelper.getOperatorName(getOperatorElementType());
 		}
 		return super.getName();
 	}
@@ -110,7 +110,7 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 			return  stub.getOperator();
 		}
 		PsiElement childByType = findChildByType(CSharpTokenSets.OVERLOADING_OPERATORS);
-		return childByType == null ? null : CSharpOperatorHelper.mergeTwiceOperatorIfNeed(childByType);
+		return childByType == null ? null : CSharpOperatorNameHelper.mergeTwiceOperatorIfNeed(childByType);
 	}
 
 	@Nullable
