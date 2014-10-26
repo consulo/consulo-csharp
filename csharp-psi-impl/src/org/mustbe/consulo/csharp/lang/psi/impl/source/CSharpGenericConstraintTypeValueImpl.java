@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
@@ -49,17 +50,22 @@ public class CSharpGenericConstraintTypeValueImpl extends CSharpStubElementImpl<
 		visitor.visitGenericConstraintTypeValue(this);
 	}
 
-	@NotNull
+	@Nullable
 	@Override
 	public DotNetType getType()
 	{
-		return getRequiredStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
+		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
 	}
 
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef()
 	{
+		DotNetType type = getType();
+		if(type == null)
+		{
+			return DotNetTypeRef.ERROR_TYPE;
+		}
 		return getType().toTypeRef();
 	}
 }
