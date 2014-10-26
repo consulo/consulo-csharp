@@ -30,8 +30,11 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilWrapperScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
+import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
@@ -40,7 +43,9 @@ import com.intellij.codeInsight.navigation.NavigationUtil;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.ui.popup.JBPopup;
+import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.Function;
@@ -143,6 +148,11 @@ public class HideOrOverrideMethodCollector implements LineMarkerCollector
 						}
 
 						CSharpMethodDeclaration[] inheritors = declarations.toArray(CSharpMethodDeclaration.EMPTY_ARRAY);
+						if(inheritors.length == 1)
+						{
+							((Navigatable)inheritors[0]).navigate(true);
+							return;
+						}
 
 						JBPopup popup = NavigationUtil.getPsiElementPopup(inheritors, "Open methods (" + inheritors.length + " items)");
 						popup.show(new RelativePoint(mouseEvent));
@@ -187,31 +197,35 @@ public class HideOrOverrideMethodCollector implements LineMarkerCollector
 	private static List<CSharpMethodDeclaration> findParentMethods(final CSharpTypeDeclaration owner, final CSharpMethodDeclaration target)
 	{
 		final List<CSharpMethodDeclaration> parents = new SmartList<CSharpMethodDeclaration>();
-		MsilWrapperScopeProcessor processor = new MsilWrapperScopeProcessor()
-		{
-			@Override
-			public boolean executeImpl(@NotNull PsiElement element, ResolveState state)
-			{
-				PsiElement parent = element.getParent();
-				if(parent == owner)
-				{
-					return true;
-				}
 
+		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(owner.getResolveScope(), ResolveResult.EMPTY_ARRAY,
+				new ExecuteTarget[] {ExecuteTarget.ELEMENT_GROUP}, false);
+
+		ResolveState state = ResolveState.initial();
+		state = state.put(CSharpResolveUtil.SELECTOR, new MemberByNameSelector(target.getName()));
+
+		CSharpResolveUtil.walkChildren(processor, owner, false, null, state);
+
+		PsiElement[] psiElements = processor.toPsiElements();
+		for(PsiElement psiElement : psiElements)
+		{
+			CSharpElementGroup<?> elementGroup = (CSharpElementGroup<?>) psiElement;
+
+			for(PsiElement element : elementGroup.getElements())
+			{
 				if(element instanceof CSharpMethodDeclaration)
 				{
+					if(element.getParent() == owner)
+					{
+						continue;
+					}
 					if(CS0102.checkMethod((CSharpMethodDeclaration) element, target, element))
 					{
 						parents.add((CSharpMethodDeclaration) element);
 					}
 				}
-				return true;
 			}
-		};
-
-		ResolveState state = ResolveState.initial();
-
-		CSharpResolveUtil.walkChildren(processor, owner, false, null, state);
+		}
 
 		return parents;
 	}

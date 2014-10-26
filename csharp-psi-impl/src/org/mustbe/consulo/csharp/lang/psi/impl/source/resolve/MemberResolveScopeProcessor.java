@@ -41,10 +41,17 @@ import com.intellij.util.containers.ContainerUtil;
 public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 {
 	private final GlobalSearchScope myScope;
+	private final boolean myBreakProcess;
 
 	public MemberResolveScopeProcessor(GlobalSearchScope scope, ResolveResult[] elements, ExecuteTarget[] targets)
 	{
+		this(scope, elements, targets, true);
+	}
+
+	public MemberResolveScopeProcessor(GlobalSearchScope scope, ResolveResult[] elements, ExecuteTarget[] targets, boolean breakProcess)
+	{
 		Collections.addAll(myElements, elements);
+		myBreakProcess = breakProcess;
 		myScope = scope;
 		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
 	}
@@ -74,7 +81,7 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 			}
 
 			addElement(normalize);
-			return false;
+			return !myBreakProcess;
 		}
 		return true;
 	}
