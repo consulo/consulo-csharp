@@ -82,7 +82,7 @@ public class MethodAcceptorImpl
 				return weight;
 			}
 
-			if(CSharpTypeUtil.isInheritable(parameterTypeRef, expressionTypeRef, scope))
+			if(CSharpTypeUtil.isInheritableWithImplicit(parameterTypeRef, expressionTypeRef, scope))
 			{
 				weight++;
 			}
@@ -124,7 +124,7 @@ public class MethodAcceptorImpl
 					parameterType = parameter.toTypeRef(false);
 				}
 
-				if(CSharpTypeUtil.isInheritable(parameterType, expressionType, scope))
+				if(CSharpTypeUtil.isInheritableWithImplicit(parameterType, expressionType, scope))
 				{
 					weight++;
 				}
@@ -133,7 +133,7 @@ public class MethodAcceptorImpl
 					if(parameter != null && parameter.hasModifier(CSharpModifier.PARAMS))
 					{
 						parameterType = CSharpResolveUtil.resolveIterableType(scope, parameterType);
-						if(CSharpTypeUtil.isInheritable(parameterType, expressionType, scope))
+						if(CSharpTypeUtil.isInheritableWithImplicit(parameterType, expressionType, scope))
 						{
 							weight++;
 							continue;
@@ -177,7 +177,7 @@ public class MethodAcceptorImpl
 				DotNetTypeRef expressionType = expression.toTypeRef(false);
 				DotNetTypeRef parameterType = parameter.toTypeRef(false);
 
-				if(!CSharpTypeUtil.isInheritable(parameterType, expressionType, scope))
+				if(!CSharpTypeUtil.isInheritableWithImplicit(parameterType, expressionType, scope))
 				{
 					return 0;
 				}

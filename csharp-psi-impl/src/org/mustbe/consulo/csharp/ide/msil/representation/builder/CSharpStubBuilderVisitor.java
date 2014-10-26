@@ -132,10 +132,10 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 		processAttributeListAsLine(declaration);
 		processModifierList(builder, declaration);
-		appendTypeRef(declaration, builder, declaration.getReturnTypeRef());
+		appendTypeRef(declaration, builder, declaration.getConversionTypeRef());
 		builder.append(" ");
 		builder.append("operator ");
-		appendTypeRef(declaration, builder, declaration.getConversionTypeRef());
+		appendTypeRef(declaration, builder, declaration.getReturnTypeRef());
 		processParameterList(declaration, builder, '(', ')');
 		builder.append(" { /* compiled code */ }\n");
 		myBlocks.add(new LineStubBlock(builder));

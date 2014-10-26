@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
@@ -84,6 +85,22 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 		for(CSharpResolveContext context : myContexts)
 		{
 			CSharpElementGroup elementGroup = context.findOperatorGroupByTokenType(type);
+			if(elementGroup != null)
+			{
+				groups.add(elementGroup);
+			}
+		}
+		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl(myProject, groups);
+	}
+
+	@Nullable
+	@Override
+	public CSharpElementGroup findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
+	{
+		List<CSharpElementGroup> groups = new SmartList<CSharpElementGroup>();
+		for(CSharpResolveContext context : myContexts)
+		{
+			CSharpElementGroup elementGroup = context.findConversionMethodGroup(typeRef);
 			if(elementGroup != null)
 			{
 				groups.add(elementGroup);

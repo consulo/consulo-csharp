@@ -121,7 +121,7 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 				return true;
 			}
 
-			return CSharpTypeUtil.isInheritable(t1, t2, e) && CSharpTypeUtil.isInheritable(t2, t1, e);
+			return CSharpTypeUtil.isInheritableWithImplicit(t1, t2, e) && CSharpTypeUtil.isInheritableWithImplicit(t2, t1, e);
 		}
 		return true;
 	}

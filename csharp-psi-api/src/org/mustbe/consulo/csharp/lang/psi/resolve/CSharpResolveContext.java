@@ -6,6 +6,7 @@ import java.util.Collections;
 import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
@@ -44,6 +45,13 @@ public interface CSharpResolveContext
 		@Nullable
 		@Override
 		public CSharpElementGroup findOperatorGroupByTokenType(@NotNull IElementType type)
+		{
+			return null;
+		}
+
+		@Nullable
+		@Override
+		public CSharpElementGroup findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
 		{
 			return null;
 		}
@@ -107,6 +115,12 @@ public interface CSharpResolveContext
 
 	@Nullable
 	CSharpElementGroup findOperatorGroupByTokenType(@NotNull IElementType type);
+
+	/**
+	 * @param typeRef is {@link CSharpStaticTypeRef#IMPLICIT} or {@link CSharpStaticTypeRef#EXPLICIT}
+	 */
+	@Nullable
+	CSharpElementGroup findConversionMethodGroup(@NotNull DotNetTypeRef typeRef);
 
 	@Nullable
 	CSharpElementGroup findExtensionMethodGroupByName(@NotNull String name);

@@ -17,6 +17,7 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -58,6 +59,13 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 	@Nullable
 	@Override
 	public CSharpElementGroup findOperatorGroupByTokenType(@NotNull IElementType type)
+	{
+		return null;
+	}
+
+	@Nullable
+	@Override
+	public CSharpElementGroup findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
 	{
 		return null;
 	}

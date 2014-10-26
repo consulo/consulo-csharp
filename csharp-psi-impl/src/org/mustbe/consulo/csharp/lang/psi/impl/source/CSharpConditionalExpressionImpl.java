@@ -87,7 +87,7 @@ public class CSharpConditionalExpressionImpl extends CSharpElementImpl implement
 
 		DotNetTypeRef trueType = trueExpression.toTypeRef(resolveFromParent);
 		DotNetTypeRef falseType = falseExpression.toTypeRef(resolveFromParent);
-		if(CSharpTypeUtil.isInheritable(falseType, trueType, this))
+		if(CSharpTypeUtil.isInheritableWithImplicit(falseType, trueType, this))
 		{
 			return trueType;
 		}

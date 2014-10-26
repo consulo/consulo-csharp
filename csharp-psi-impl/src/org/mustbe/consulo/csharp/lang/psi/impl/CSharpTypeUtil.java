@@ -18,12 +18,17 @@ package org.mustbe.consulo.csharp.lang.psi.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpChameleonTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullType;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -31,6 +36,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithInnerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayUtil;
@@ -95,6 +101,12 @@ public class CSharpTypeUtil
 		}
 		return null;
 	}
+
+	public static boolean isInheritableWithImplicit(@NotNull DotNetTypeRef top, @NotNull DotNetTypeRef target, @NotNull PsiElement scope)
+	{
+		return isInheritable(top, target, scope, true);
+	}
+
 	/**
 	 * We have expression
 	 * int a = "test";
@@ -104,6 +116,11 @@ public class CSharpTypeUtil
 	 * return false due it not be casted
 	 */
 	public static boolean isInheritable(@NotNull DotNetTypeRef top, @NotNull DotNetTypeRef target, @NotNull PsiElement scope)
+	{
+		return isInheritable(top, target, scope, false);
+	}
+
+	private static boolean isInheritable(@NotNull DotNetTypeRef top, @NotNull DotNetTypeRef target, @NotNull PsiElement scope, boolean implicit)
 	{
 		if(top == DotNetTypeRef.ERROR_TYPE || target == DotNetTypeRef.ERROR_TYPE)
 		{
@@ -137,7 +154,7 @@ public class CSharpTypeUtil
 			{
 				return false;
 			}
-			return isInheritable(((CSharpRefTypeRef) top).getInnerTypeRef(), ((CSharpRefTypeRef) target).getInnerTypeRef(), scope);
+			return isInheritable(((CSharpRefTypeRef) top).getInnerTypeRef(), ((CSharpRefTypeRef) target).getInnerTypeRef(), scope, implicit);
 		}
 
 		if(target instanceof CSharpArrayTypeRef && top instanceof CSharpArrayTypeRef)
@@ -146,7 +163,7 @@ public class CSharpTypeUtil
 			{
 				return false;
 			}
-			return isInheritable(((CSharpArrayTypeRef) top).getInnerTypeRef(), ((CSharpArrayTypeRef) target).getInnerTypeRef(), scope);
+			return isInheritable(((CSharpArrayTypeRef) top).getInnerTypeRef(), ((CSharpArrayTypeRef) target).getInnerTypeRef(), scope, implicit);
 		}
 
 		DotNetTypeResolveResult topTypeResolveResult = top.resolve(scope);
@@ -167,14 +184,14 @@ public class CSharpTypeUtil
 				{
 					continue;
 				}
-				if(!isInheritable(topParameter, targetParameter, scope))
+				if(!isInheritable(topParameter, targetParameter, scope, implicit))
 				{
 					return false;
 				}
 			}
 			DotNetTypeRef targetReturnType = ((CSharpLambdaResolveResult) targetTypeResolveResult).getReturnTypeRef();
 			DotNetTypeRef topReturnType = ((CSharpLambdaResolveResult) topTypeResolveResult).getReturnTypeRef();
-			return targetReturnType == DotNetTypeRef.AUTO_TYPE || isInheritable(topReturnType, targetReturnType, scope);
+			return targetReturnType == DotNetTypeRef.AUTO_TYPE || isInheritable(topReturnType, targetReturnType, scope, implicit);
 		}
 
 		PsiElement topElement = topTypeResolveResult.getElement();
@@ -197,14 +214,66 @@ public class CSharpTypeUtil
 
 		if(topElement instanceof CSharpTypeDefStatement)
 		{
-			return isInheritable(((CSharpTypeDefStatement) topElement).toTypeRef(), target, scope);
+			return isInheritable(((CSharpTypeDefStatement) topElement).toTypeRef(), target, scope, implicit);
 		}
 
 		if(topElement instanceof DotNetTypeDeclaration && targetElement instanceof DotNetTypeDeclaration)
 		{
-			return ((DotNetTypeDeclaration) targetElement).isInheritor((DotNetTypeDeclaration) topElement, true);
+			if(((DotNetTypeDeclaration) targetElement).isInheritor((DotNetTypeDeclaration) topElement, true))
+			{
+				return true;
+			}
 		}
 
+		if(implicit)
+		{
+			if(topElement instanceof DotNetTypeDeclaration && haveImplicitOperatorTo(top, target, (DotNetTypeDeclaration) topElement, scope))
+			{
+				return true;
+			}
+
+			if(targetElement instanceof DotNetTypeDeclaration && haveImplicitOperatorTo(top, target, (DotNetTypeDeclaration) targetElement, scope))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static boolean haveImplicitOperatorTo(@NotNull DotNetTypeRef to, @NotNull DotNetTypeRef from, @NotNull DotNetTypeDeclaration
+			typeDeclaration, PsiElement scope)
+	{
+		CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, scope.getResolveScope(),
+				typeDeclaration);
+
+		CSharpElementGroup conversionMethodGroup = context.findConversionMethodGroup(CSharpStaticTypeRef.IMPLICIT);
+		if(conversionMethodGroup == null)
+		{
+			return false;
+		}
+
+		for(PsiElement o : conversionMethodGroup.getElements())
+		{
+			CSharpConversionMethodDeclaration declaration = (CSharpConversionMethodDeclaration) o;
+
+			if(!isInheritable(declaration.getReturnTypeRef(), to, scope))
+			{
+				continue;
+			}
+
+			DotNetTypeRef[] parameters = declaration.getParameterTypeRefs();
+			DotNetTypeRef parameterTypeRef = ArrayUtil2.safeGet(parameters, 0);
+			if(parameterTypeRef == null)
+			{
+				continue;
+			}
+
+			if(isInheritable(parameterTypeRef, from, scope))
+			{
+				return true;
+			}
+		}
 		return false;
 	}
 

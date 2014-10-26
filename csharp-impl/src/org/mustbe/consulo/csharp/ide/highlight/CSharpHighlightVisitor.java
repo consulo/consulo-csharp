@@ -452,7 +452,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 				DotNetTypeRef requiredType = ArrayUtil2.safeGet(typeRefs, i);
 				DotNetTypeRef foundType = parameterExpressions[i].toTypeRef(false);
 
-				boolean isInvalid = requiredType == null || !CSharpTypeUtil.isInheritable(requiredType, foundType, callOwner);
+				boolean isInvalid = requiredType == null || !CSharpTypeUtil.isInheritableWithImplicit(requiredType, foundType, callOwner);
 
 				if(isInvalid)
 				{

@@ -82,7 +82,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 
 					DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(methodDeclaration);
 
-					if(!CSharpTypeUtil.isInheritable(firstParameterTypeRef, myQualifierTypeRef, myExpression))
+					if(!CSharpTypeUtil.isInheritableWithImplicit(firstParameterTypeRef, myQualifierTypeRef, myExpression))
 					{
 						continue;
 					}
@@ -116,7 +116,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 
 				DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(methodDeclaration);
 
-				if(!CSharpTypeUtil.isInheritable(firstParameterTypeRef, myQualifierTypeRef, myExpression))
+				if(!CSharpTypeUtil.isInheritableWithImplicit(firstParameterTypeRef, myQualifierTypeRef, myExpression))
 				{
 					continue;
 				}

@@ -9,15 +9,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
@@ -25,6 +17,7 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
@@ -47,6 +40,7 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 		private List<CSharpConstructorDeclaration> myConstructors;
 		private MultiMap<IElementType, CSharpMethodDeclaration> myOperatorsMap;
 		private MultiMap<String, CSharpMethodDeclaration> myExtensionMap;
+		private MultiMap<DotNetTypeRef, CSharpConversionMethodDeclaration> myConversionMap;
 		private List<CSharpArrayMethodDeclaration> myIndexMethods;
 		private MultiMap<String, PsiElement> myOtherElements = new MultiMap<String, PsiElement>();
 
@@ -74,6 +68,17 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 				}
 				myConstructors.add(declaration);
 			}
+		}
+
+		@Override
+		public void visitConversionMethodDeclaration(CSharpConversionMethodDeclaration element)
+		{
+			if(myConversionMap == null)
+			{
+				myConversionMap = new MultiMap<DotNetTypeRef, CSharpConversionMethodDeclaration>();
+			}
+
+			myConversionMap.putValue(element.getConversionTypeRef(), element);
 		}
 
 		@Override
@@ -186,8 +191,12 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 	private CSharpElementGroup myDeConstructorGroup;
 
 	@Nullable
+	private final Map<DotNetTypeRef, CSharpElementGroup> myConversionMap;
+	@Nullable
 	private final Map<IElementType, CSharpElementGroup> myOperatorMap;
+	@Nullable
 	private final Map<String, CSharpElementGroup> myExtensionMap;
+	@Nullable
 	private final Map<String, CSharpElementGroup> myOtherElements;
 
 	public CSharpTypeResolveContext(@NotNull CSharpTypeDeclaration typeDeclaration, @NotNull DotNetGenericExtractor genericExtractor)
@@ -208,6 +217,7 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 		myDeConstructorGroup = toGroup(project, "~" + MsilHelper.CONSTRUCTOR_NAME, collector.myDeConstructors);
 		myOperatorMap = convertToGroup(project, collector.myOperatorsMap);
 		myExtensionMap = convertToGroup(project, collector.myExtensionMap);
+		myConversionMap = convertToGroup(project, collector.myConversionMap);
 	}
 
 	@Nullable
@@ -265,6 +275,17 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 			return null;
 		}
 		return myOperatorMap.get(type);
+	}
+
+	@Nullable
+	@Override
+	public CSharpElementGroup findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
+	{
+		if(myConversionMap == null)
+		{
+			return null;
+		}
+		return myConversionMap.get(typeRef);
 	}
 
 	@Nullable

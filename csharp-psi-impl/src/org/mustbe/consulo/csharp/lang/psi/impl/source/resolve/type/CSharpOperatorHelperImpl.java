@@ -47,6 +47,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.openapi.util.io.FileUtil;
@@ -105,6 +106,13 @@ public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 		public CSharpElementGroup findOperatorGroupByTokenType(@NotNull IElementType type)
 		{
 			return myGroups.get(type);
+		}
+
+		@Nullable
+		@Override
+		public CSharpElementGroup findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
+		{
+			return null;
 		}
 
 		@Nullable
