@@ -207,8 +207,7 @@ public class CSharpOperatorHelperImpl extends CSharpOperatorHelper
 	@LazyInstance
 	public CSharpResolveContext getContext()
 	{
-		List<DotNetNamedElement> dotNetNamedElements = loadStubMembers();
-		return new Context(myProject, dotNetNamedElements);
+		return CSharpResolveContext.EMPTY;
 	}
 
 	@NotNull

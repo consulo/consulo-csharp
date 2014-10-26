@@ -56,6 +56,8 @@
 
 		<additionalTypeMemberProvider
 				implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl.StructConstructorProvider"/>
+		<additionalTypeMemberProvider
+				implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl.OperatorsProvider"/>
 	</extensions>
 
 	<extensions defaultExtensionNs="com.intellij.xml">
