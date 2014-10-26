@@ -46,10 +46,16 @@
 
 	<extensionPoints>
 		<extensionPoint name="unusedElementPolicy" interface="org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.UnusedElementPolicy"/>
+
+		<extensionPoint name="additionalTypeMemberProvider"
+						interface="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalTypeMemberProvider"/>
 	</extensionPoints>
 
 	<extensions defaultExtensionNs="org.mustbe.consulo.csharp">
 		<unusedElementPolicy implementation="org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.impl.DefaultUnusedElementPolicy"/>
+
+		<additionalTypeMemberProvider
+				implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl.StructConstructorProvider"/>
 	</extensions>
 
 	<extensions defaultExtensionNs="com.intellij.xml">

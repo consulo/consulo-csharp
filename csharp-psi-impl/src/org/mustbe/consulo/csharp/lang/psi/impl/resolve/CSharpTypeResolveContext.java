@@ -7,15 +7,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.*;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
+import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -224,15 +225,12 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 			member.accept(collector);
 		}
 
-		if(typeDeclaration.isStruct())
+		for(CSharpAdditionalTypeMemberProvider provider : getAdditionalTypeMemberProviders())
 		{
-			CSharpLightConstructorDeclarationBuilder builder = new CSharpLightConstructorDeclarationBuilder(typeDeclaration.getProject());
-			builder.addModifier(CSharpModifier.PUBLIC);
-			builder.setNavigationElement(typeDeclaration);
-			builder.withParent(typeDeclaration);
-			builder.withName(typeDeclaration.getName());
-
-			builder.accept(collector);
+			for(DotNetElement element : provider.getAdditionalMembers(typeDeclaration))
+			{
+				element.accept(collector);
+			}
 		}
 
 		myOtherElements = convertToGroup(project, collector.myOtherElements);
@@ -242,6 +240,13 @@ public class CSharpTypeResolveContext implements CSharpResolveContext
 		myOperatorMap = convertToGroup(project, collector.myOperatorsMap);
 		myExtensionMap = convertToGroup(project, collector.myExtensionMap);
 		myConversionMap = convertToGroup(project, collector.myConversionMap);
+	}
+
+	@NotNull
+	@LazyInstance
+	private static CSharpAdditionalTypeMemberProvider[] getAdditionalTypeMemberProviders()
+	{
+		return CSharpAdditionalTypeMemberProvider.EP_NAME.getExtensions();
 	}
 
 	@Nullable
