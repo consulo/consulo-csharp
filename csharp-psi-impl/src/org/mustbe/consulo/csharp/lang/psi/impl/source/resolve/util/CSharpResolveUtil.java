@@ -85,6 +85,7 @@ public class CSharpResolveUtil
 
 	public static final Key<Boolean> ACCESSOR_VALUE_VARIABLE = Key.create("accessor.value.variable");
 	public static final Key<CSharpMethodDeclaration> EXTENSION_METHOD_WRAPPER = Key.create("extension.method.wrapper");
+	public static final Key<CSharpMethodDeclaration> DELEGATE_METHOD_TYPE = Key.create("delegate.method.type");
 	public static final Key<CSharpResolveSelector> SELECTOR = Key.create("resolve.selector");
 	public static final Key<Boolean> NO_USING_LIST = new KeyWithDefaultValue<Boolean>("no.using.list")
 	{

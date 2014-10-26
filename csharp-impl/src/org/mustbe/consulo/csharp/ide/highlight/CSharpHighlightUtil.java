@@ -120,6 +120,11 @@ public class CSharpHighlightUtil
 		TextAttributesKey key = null;
 		if(element instanceof CSharpTypeDeclaration)
 		{
+			if(element.getUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE) != null)
+			{
+				return null;
+			}
+
 			if(DotNetInheritUtil.isAttribute((DotNetTypeDeclaration) element))
 			{
 				key = CSharpHighlightKey.ATTRIBUTE_NAME;
