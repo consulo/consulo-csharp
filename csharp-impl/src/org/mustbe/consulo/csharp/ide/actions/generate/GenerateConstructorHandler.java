@@ -26,7 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplU
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ConstructorProcessor;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.codeInsight.CodeInsightActionHandler;
 import com.intellij.ide.util.MemberChooser;
 import com.intellij.ide.util.MemberChooserBuilder;
@@ -55,15 +55,15 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 		}
 
 
-		final DotNetTypeRef baseType = CSharpTypeDeclarationImplUtil.resolveBaseTypeRef(typeDeclaration, typeDeclaration);
+		final DotNetTypeDeclaration baseType = CSharpTypeDeclarationImplUtil.resolveBaseType(typeDeclaration,
+				typeDeclaration);
 
-		final PsiElement resolve = baseType.resolve(typeDeclaration).getElement();
-		if(!(resolve instanceof CSharpTypeDeclaration))
+		if(!(baseType instanceof CSharpTypeDeclaration))
 		{
 			return;
 		}
 
-		final CSharpTypeDeclaration baseTypeDeclaration = (CSharpTypeDeclaration) resolve;
+		final CSharpTypeDeclaration baseTypeDeclaration = (CSharpTypeDeclaration) baseType;
 
 		ConstructorProcessor constructorProcessor = new ConstructorProcessor(null);
 		baseTypeDeclaration.processConstructors(constructorProcessor);

@@ -261,21 +261,25 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		ResolveResult[] resolveResults = null;
 		PsiElement qualifier = element.getQualifier();
 		List<Pair<Integer, PsiElement>> elementWithWeightList = null;
+		DotNetTypeDeclaration thisTypeDeclaration = null;
 		switch(kind)
 		{
 			case THIS:
-				DotNetTypeDeclaration typeDeclaration = PsiTreeUtil.getParentOfType(element, DotNetTypeDeclaration.class);
-				if(typeDeclaration != null)
+				thisTypeDeclaration = PsiTreeUtil.getParentOfType(element, DotNetTypeDeclaration.class);
+				if(thisTypeDeclaration != null)
 				{
-					return new ResolveResult[]{new PsiElementResolveResult(typeDeclaration, true)};
+					return new ResolveResult[]{new PsiElementResolveResult(thisTypeDeclaration, true)};
 				}
 				break;
 			case BASE:
-				DotNetTypeRef baseDotNetTypeRef = ((CSharpReferenceExpressionImpl) element).resolveBaseTypeRef();
-				PsiElement baseElement = baseDotNetTypeRef.resolve(element).getElement();
-				if(baseElement != null)
+				thisTypeDeclaration = PsiTreeUtil.getParentOfType(element, DotNetTypeDeclaration.class);
+				if(thisTypeDeclaration != null)
 				{
-					return new ResolveResult[]{new PsiElementResolveResult(baseElement, true)};
+					DotNetTypeDeclaration baseType = CSharpTypeDeclarationImplUtil.resolveBaseType(thisTypeDeclaration, element);
+					if(baseType != null)
+					{
+						return new ResolveResult[]{new PsiElementResolveResult(baseType, true)};
+					}
 				}
 				break;
 			case GENERIC_PARAMETER_FROM_PARENT:
@@ -839,17 +843,6 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		return Couple.of(last, targetToWalkChildren);
 	}
 
-	@NotNull
-	private DotNetTypeRef resolveBaseTypeRef()
-	{
-		DotNetTypeDeclaration typeDeclaration = PsiTreeUtil.getParentOfType(this, DotNetTypeDeclaration.class);
-		if(typeDeclaration == null)
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
-
-		return CSharpTypeDeclarationImplUtil.resolveBaseTypeRef(typeDeclaration, this);
-	}
 
 	@Nullable
 	@Override
@@ -1041,18 +1034,16 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
+		if(resolveFromParent)
+		{
+			return toTypeRef(resolve());
+		}
 		return toTypeRef(kind(), resolveFromParent);
 	}
 
 	@NotNull
 	public DotNetTypeRef toTypeRef(ResolveToKind resolveToKind, boolean resolveFromParent)
 	{
-		switch(resolveToKind)
-		{
-			case BASE:
-				return resolveBaseTypeRef();
-		}
-
 		ResolveResult[] resolveResults = multiResolveImpl(resolveToKind);
 		if(resolveResults.length == 0)
 		{

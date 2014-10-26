@@ -73,27 +73,22 @@ public class CSharpTypeDeclarationImplUtil
 		return typeRefs;
 	}
 
-	@NotNull
-	public static DotNetTypeRef resolveBaseTypeRef(@NotNull DotNetTypeDeclaration typeDeclaration, @NotNull PsiElement scope)
+	@Nullable
+	public static DotNetTypeDeclaration resolveBaseType(@NotNull DotNetTypeDeclaration typeDeclaration, @NotNull PsiElement scope)
 	{
 		DotNetTypeRef[] anExtends = typeDeclaration.getExtendTypeRefs();
-		if(anExtends.length == 0)
-		{
-			return new DotNetTypeRefByQName(DotNetTypes.System.Object, CSharpTransform.INSTANCE);
-		}
-		else
+		if(anExtends.length != 0)
 		{
 			for(DotNetTypeRef anExtend : anExtends)
 			{
 				PsiElement resolve = anExtend.resolve(scope).getElement();
 				if(resolve instanceof DotNetTypeDeclaration && !((DotNetTypeDeclaration) resolve).isInterface())
 				{
-					return anExtend;
+					return (DotNetTypeDeclaration) resolve;
 				}
 			}
-
-			return new DotNetTypeRefByQName(DotNetTypes.System.Object, CSharpTransform.INSTANCE);
 		}
+		return null;
 	}
 
 	@Nullable
