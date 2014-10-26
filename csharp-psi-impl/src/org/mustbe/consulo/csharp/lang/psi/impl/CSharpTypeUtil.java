@@ -16,6 +16,8 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
@@ -302,6 +304,34 @@ public class CSharpTypeUtil
 			if(((DotNetTypeDeclaration) targetElement).isInheritor((DotNetTypeDeclaration) topElement, true))
 			{
 				return SIMPLE_SUCCESS;
+			}
+		}
+
+		if(topElement instanceof DotNetGenericParameter)
+		{
+			List<DotNetTypeRef> extendTypes = CSharpGenericConstraintUtil.getExtendTypes((DotNetGenericParameter) topElement);
+
+			for(DotNetTypeRef extendType : extendTypes)
+			{
+				InheritResult inheritable = isInheritable(extendType, target, scope, explicitOrImplicit);
+				if(inheritable.isSuccess())
+				{
+					return inheritable;
+				}
+			}
+		}
+
+		if(targetElement instanceof DotNetGenericParameter)
+		{
+			List<DotNetTypeRef> extendTypes = CSharpGenericConstraintUtil.getExtendTypes((DotNetGenericParameter) targetElement);
+
+			for(DotNetTypeRef extendType : extendTypes)
+			{
+				InheritResult inheritable = isInheritable(top, extendType, scope, explicitOrImplicit);
+				if(inheritable.isSuccess())
+				{
+					return inheritable;
+				}
 			}
 		}
 
