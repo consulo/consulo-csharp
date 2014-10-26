@@ -101,7 +101,12 @@ public class CSharpTypeUtil
 		}
 		else if(element instanceof DotNetGenericParameter)
 		{
-			PsiElement parent = element.getParent().getParent();
+			PsiElement firstParent = element.getParent();
+			if(firstParent == null)
+			{
+				return true;
+			}
+			PsiElement parent = firstParent.getParent();
 			if(parent instanceof CSharpGenericConstraintOwner)
 			{
 				CSharpGenericConstraint[] genericConstraints = ((CSharpGenericConstraintOwner) parent).getGenericConstraints();
