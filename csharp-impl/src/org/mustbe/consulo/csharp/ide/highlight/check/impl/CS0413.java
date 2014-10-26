@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintOwner;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintOwnerUtil;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -63,7 +63,7 @@ public class CS0413 extends CompilerCheck<PsiElement>
 			}
 
 			boolean findReferenceOrClass = false;
-			val constraint = CSharpGenericConstraintOwnerUtil.forParameter((CSharpGenericConstraintOwner) parent, (DotNetGenericParameter) resolve);
+			val constraint = CSharpGenericConstraintUtil.forParameter((CSharpGenericConstraintOwner) parent, (DotNetGenericParameter) resolve);
 			if(constraint != null)
 			{
 				for(CSharpGenericConstraintValue value : constraint.getGenericConstraintValues())

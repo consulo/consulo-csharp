@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -101,40 +101,31 @@ public class CSharpTypeUtil
 		}
 		else if(element instanceof DotNetGenericParameter)
 		{
-			PsiElement firstParent = element.getParent();
-			if(firstParent == null)
-			{
-				return true;
-			}
-			PsiElement parent = firstParent.getParent();
-			if(parent instanceof CSharpGenericConstraintOwner)
-			{
-				CSharpGenericConstraint[] genericConstraints = ((CSharpGenericConstraintOwner) parent).getGenericConstraints();
+			CSharpGenericConstraint genericConstraint = CSharpGenericConstraintUtil.findGenericConstraint((DotNetGenericParameter) element);
 
-				for(CSharpGenericConstraint genericConstraint : genericConstraints)
+			if(genericConstraint != null)
+			{
+				for(CSharpGenericConstraintValue genericConstraintValue : genericConstraint.getGenericConstraintValues())
 				{
-					for(CSharpGenericConstraintValue genericConstraintValue : genericConstraint.getGenericConstraintValues())
+					if(genericConstraintValue instanceof CSharpGenericConstraintKeywordValue)
 					{
-						if(genericConstraintValue instanceof CSharpGenericConstraintKeywordValue)
+						IElementType keywordElementType = ((CSharpGenericConstraintKeywordValue) genericConstraintValue).getKeywordElementType();
+						if(keywordElementType == CSharpTokens.STRUCT_KEYWORD)
 						{
-							IElementType keywordElementType = ((CSharpGenericConstraintKeywordValue) genericConstraintValue).getKeywordElementType();
-							if(keywordElementType == CSharpTokens.STRUCT_KEYWORD)
-							{
-								return false;
-							}
-							else if(keywordElementType == CSharpTokens.CLASS_KEYWORD)
-							{
-								return true;
-							}
+							return false;
 						}
-						else if(genericConstraintValue instanceof CSharpGenericConstraintTypeValue)
+						else if(keywordElementType == CSharpTokens.CLASS_KEYWORD)
 						{
-							DotNetTypeRef dotNetTypeRef = ((CSharpGenericConstraintTypeValue) genericConstraintValue).toTypeRef();
-							DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(element);
-							if(!typeResolveResult.isNullable())
-							{
-								return false;
-							}
+							return true;
+						}
+					}
+					else if(genericConstraintValue instanceof CSharpGenericConstraintTypeValue)
+					{
+						DotNetTypeRef dotNetTypeRef = ((CSharpGenericConstraintTypeValue) genericConstraintValue).toTypeRef();
+						DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(element);
+						if(!typeResolveResult.isNullable())
+						{
+							return false;
 						}
 					}
 				}

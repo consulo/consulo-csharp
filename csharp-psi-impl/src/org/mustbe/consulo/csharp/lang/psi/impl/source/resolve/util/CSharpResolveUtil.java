@@ -39,7 +39,6 @@ import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
@@ -407,40 +406,7 @@ public class CSharpResolveUtil
 		}
 		else if(entrance instanceof DotNetGenericParameter)
 		{
-			DotNetGenericParameterList parameterList = (DotNetGenericParameterList) entrance.getParent();
-
-			PsiElement parent = parameterList.getParent();
-			if(!(parent instanceof CSharpGenericConstraintOwner))
-			{
-				return true;
-			}
-
-			val constraint = CSharpGenericConstraintOwnerUtil.forParameter((CSharpGenericConstraintOwner) parent, (DotNetGenericParameter) entrance);
-			if(constraint == null)
-			{
-				return true;
-			}
-
-			val superTypes = new SmartList<DotNetTypeRef>();
-			for(CSharpGenericConstraintValue value : constraint.getGenericConstraintValues())
-			{
-				if(value instanceof CSharpGenericConstraintTypeValue)
-				{
-					DotNetTypeRef typeRef = ((CSharpGenericConstraintTypeValue) value).toTypeRef();
-					superTypes.add(typeRef);
-				}
-				else if(value instanceof CSharpGenericConstraintKeywordValue)
-				{
-					if(((CSharpGenericConstraintKeywordValue) value).getKeywordElementType() == CSharpTokens.STRUCT_KEYWORD)
-					{
-						superTypes.add(new DotNetTypeRefByQName(DotNetTypes.System.ValueType, CSharpTransform.INSTANCE));
-					}
-					else if(((CSharpGenericConstraintKeywordValue) value).getKeywordElementType() == CSharpTokens.CLASS_KEYWORD)
-					{
-						superTypes.add(new DotNetTypeRefByQName(DotNetTypes.System.Object, CSharpTransform.INSTANCE));
-					}
-				}
-			}
+			val superTypes = CSharpGenericConstraintUtil.getExtendTypes((DotNetGenericParameter) entrance);
 
 			CSharpResolveSelector selector = state.get(SELECTOR);
 

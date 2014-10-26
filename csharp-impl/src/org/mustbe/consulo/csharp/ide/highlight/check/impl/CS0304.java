@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintOwner;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintOwnerUtil;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNewExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -52,7 +52,7 @@ public class CS0304 extends CompilerCheck<CSharpNewExpression>
 
 			boolean findNew = false;
 
-			val constraint = CSharpGenericConstraintOwnerUtil.forParameter((CSharpGenericConstraintOwner) parent, (DotNetGenericParameter) resolve);
+			val constraint = CSharpGenericConstraintUtil.forParameter((CSharpGenericConstraintOwner) parent, (DotNetGenericParameter) resolve);
 			if(constraint != null)
 			{
 				for(CSharpGenericConstraintValue value : constraint.getGenericConstraintValues())
