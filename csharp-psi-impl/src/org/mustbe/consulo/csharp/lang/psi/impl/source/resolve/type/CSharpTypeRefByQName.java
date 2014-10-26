@@ -8,6 +8,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -30,6 +31,20 @@ public class CSharpTypeRefByQName extends DotNetTypeRef.Adapter
 	{
 		myQualifiedName = qualifiedName;
 		myNullable = nullable;
+	}
+
+	@NotNull
+	@Override
+	public String getQualifiedText()
+	{
+		return myQualifiedName;
+	}
+
+	@NotNull
+	@Override
+	public String getPresentableText()
+	{
+		return StringUtil.getShortName(myQualifiedName);
 	}
 
 	@NotNull
