@@ -6,12 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightTypeDeclarationBuilder;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
-import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -77,17 +72,7 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 		@Override
 		public PsiElement getElement()
 		{
-			CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(myElement.getProject());
-			builder.withParentQName(myElement.getPresentableParentQName());
-			builder.withName(myElement.getName());
-
-			builder.addExtendType(new DotNetTypeRefByQName(DotNetTypes.System.MulticastDelegate, CSharpTransform.INSTANCE));
-
-			for(DotNetGenericParameter parameter : myElement.getGenericParameters())
-			{
-				builder.addGenericParameter(parameter);
-			}
-			return builder;
+			return CSharpLambdaResolveResultUtil.createTypeFromDelegate(myElement);
 		}
 
 		@NotNull

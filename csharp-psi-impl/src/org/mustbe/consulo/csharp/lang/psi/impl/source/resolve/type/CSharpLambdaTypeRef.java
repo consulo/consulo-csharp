@@ -27,7 +27,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -140,21 +139,20 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 
 	@NotNull
 	@Override
-	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
+	public DotNetTypeResolveResult resolve(@NotNull final PsiElement scope)
 	{
-		val type = DotNetPsiSearcher.getInstance(scope.getProject()).findType(DotNetTypes.System.MulticastDelegate,
-				scope.getResolveScope(), DotNetPsiSearcher.TypeResoleKind.UNKNOWN, CSharpTransform.INSTANCE);
-		if(type == null)
-		{
-			return DotNetTypeResolveResult.EMPTY;
-		}
 		return new CSharpLambdaResolveResult()
 		{
 			@Nullable
 			@Override
 			public PsiElement getElement()
 			{
-				return type;
+				if(myTarget == null)
+				{
+					return DotNetPsiSearcher.getInstance(scope.getProject()).findType(DotNetTypes.System.MulticastDelegate,
+							scope.getResolveScope(), DotNetPsiSearcher.TypeResoleKind.UNKNOWN, CSharpTransform.INSTANCE);
+				}
+				return CSharpLambdaResolveResultUtil.createTypeFromDelegate(myTarget);
 			}
 
 			@NotNull

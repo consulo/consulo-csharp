@@ -178,6 +178,19 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 	@Override
 	public PsiElement resolveToCallable()
 	{
+		if(!canResolve())
+		{
+			return null;
+		}
+		DotNetType newType = getNewType();
+		if(newType instanceof DotNetUserType)
+		{
+			DotNetReferenceExpression referenceExpression = ((DotNetUserType) newType).getReferenceExpression();
+			if(referenceExpression instanceof CSharpReferenceExpression)
+			{
+				return referenceExpression.resolve();
+			}
+		}
 		return null;
 	}
 
