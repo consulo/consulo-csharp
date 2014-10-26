@@ -16,6 +16,8 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class WeightUtil
 {
+	public static final int MAX_WEIGHT = Integer.MAX_VALUE;
+
 	private static final Comparator<Pair<Integer, PsiElement>> ourComparator = new Comparator<Pair<Integer, PsiElement>>()
 	{
 		@Override
@@ -38,7 +40,7 @@ public class WeightUtil
 		int i = 0;
 		for(Pair<Integer, PsiElement> pair : list)
 		{
-			resolveResults[i++] = new PsiElementResolveResult(pair.getSecond(), pair.getFirst() == WeightProcessor.MAX_WEIGHT);
+			resolveResults[i++] = new PsiElementResolveResult(pair.getSecond(), pair.getFirst() == MAX_WEIGHT);
 		}
 		return resolveResults;
 	}

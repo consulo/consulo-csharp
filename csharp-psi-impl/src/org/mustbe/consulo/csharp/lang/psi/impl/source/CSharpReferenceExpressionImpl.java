@@ -32,7 +32,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExtensionResolveSc
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpElementGroupTypeRef;
@@ -501,7 +500,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					}
 					else
 					{
-						elementWithWeightList.add(Pair.<Integer, PsiElement>create(WeightProcessor.MAX_WEIGHT, result.getElement()));
+						elementWithWeightList.add(Pair.<Integer, PsiElement>create(WeightUtil.MAX_WEIGHT, result.getElement()));
 					}
 				}
 				return WeightUtil.sortAndReturn(elementWithWeightList);

@@ -86,7 +86,7 @@ public class MethodAcceptorImpl
 			}
 		}
 
-		return weight == parameters.length ? WeightProcessor.MAX_WEIGHT : weight;
+		return weight == parameters.length ? WeightUtil.MAX_WEIGHT : weight;
 	}
 
 	private static class MethodAcceptorWithParams implements MethodAcceptor
@@ -136,7 +136,7 @@ public class MethodAcceptorImpl
 				}
 			}
 
-			return weight == expressionTypes.length ? WeightProcessor.MAX_WEIGHT : weight;
+			return weight == expressionTypes.length ? WeightUtil.MAX_WEIGHT : weight;
 		}
 	}
 
@@ -174,7 +174,7 @@ public class MethodAcceptorImpl
 				}
 			}
 
-			return WeightProcessor.MAX_WEIGHT;
+			return WeightUtil.MAX_WEIGHT;
 		}
 	}
 
@@ -199,9 +199,9 @@ public class MethodAcceptorImpl
 		for(MethodAcceptor ourAcceptor : ourAcceptors)
 		{
 			int calculatedWeight = ourAcceptor.calcAcceptableWeight(scope, expressionTypeRefs, parameters);
-			if(calculatedWeight == WeightProcessor.MAX_WEIGHT)
+			if(calculatedWeight == WeightUtil.MAX_WEIGHT)
 			{
-				return WeightProcessor.MAX_WEIGHT;
+				return WeightUtil.MAX_WEIGHT;
 			}
 			else
 			{

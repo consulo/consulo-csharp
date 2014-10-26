@@ -2,7 +2,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -53,7 +53,7 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRef.Adapter implements 
 
 					int weight = MethodAcceptorImpl.calcSimpleAcceptableWeight(scope, parameterTypeRefs, methodParameterTypeRef);
 
-					if(weight == WeightProcessor.MAX_WEIGHT)
+					if(weight == WeightUtil.MAX_WEIGHT)
 					{
 						return new CSharpLambdaTypeRef(null, methodParameterTypeRef, ((DotNetLikeMethodDeclaration) psiElement).getReturnTypeRef());
 					}

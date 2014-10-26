@@ -36,7 +36,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubElementResolveResult;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorHelper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorHelperImpl;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
@@ -286,7 +286,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			return null;
 		}
 
-		if(pair.getFirst() != WeightProcessor.MAX_WEIGHT)
+		if(pair.getFirst() != WeightUtil.MAX_WEIGHT)
 		{
 			if(last != null)
 			{
