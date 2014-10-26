@@ -1,0 +1,60 @@
+package org.mustbe.consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl;
+
+import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalMemberProvider;
+import org.mustbe.consulo.dotnet.psi.DotNetElement;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+
+/**
+ * @author VISTALL
+ * @since 26.10.14
+ */
+public class StructOrGenericParameterConstructorProvider implements CSharpAdditionalMemberProvider
+{
+	@NotNull
+	@Override
+	public DotNetElement[] getAdditionalMembers(@NotNull DotNetElement element)
+	{
+		if(element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).isStruct())
+		{
+			return new DotNetElement[]{buildDefaultConstructor((DotNetNamedElement) element)};
+		}
+		else if(element instanceof DotNetGenericParameter)
+		{
+			CSharpGenericConstraint genericConstraint = CSharpGenericConstraintUtil.findGenericConstraint((DotNetGenericParameter) element);
+			if(genericConstraint != null)
+			{
+				for(CSharpGenericConstraintValue constraintValue : genericConstraint.getGenericConstraintValues())
+				{
+					if(constraintValue instanceof CSharpGenericConstraintKeywordValue && ((CSharpGenericConstraintKeywordValue) constraintValue)
+							.getKeywordElementType() == CSharpTokens.NEW_KEYWORD)
+					{
+						return new DotNetElement[]{buildDefaultConstructor((DotNetNamedElement) element)};
+					}
+				}
+			}
+		}
+		return DotNetElement.EMPTY_ARRAY;
+	}
+
+	@NotNull
+	private static CSharpConstructorDeclaration buildDefaultConstructor(DotNetNamedElement element)
+	{
+		CSharpLightConstructorDeclarationBuilder builder = new CSharpLightConstructorDeclarationBuilder(element.getProject());
+		builder.addModifier(CSharpModifier.PUBLIC);
+		builder.setNavigationElement(element);
+		builder.withParent(element);
+		builder.withName(element.getName());
+		return builder;
+	}
+}

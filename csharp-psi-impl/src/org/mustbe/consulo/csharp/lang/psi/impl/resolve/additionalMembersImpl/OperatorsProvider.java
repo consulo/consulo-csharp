@@ -12,10 +12,12 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
-import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalTypeMemberProvider;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalMemberProvider;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.JDOMUtil;
@@ -29,7 +31,7 @@ import com.intellij.util.containers.MultiMap;
  * @author VISTALL
  * @since 26.10.14
  */
-public class OperatorsProvider implements CSharpAdditionalTypeMemberProvider
+public class OperatorsProvider implements CSharpAdditionalMemberProvider
 {
 	public static class Operator
 	{
@@ -115,22 +117,38 @@ public class OperatorsProvider implements CSharpAdditionalTypeMemberProvider
 
 	@NotNull
 	@Override
-	public DotNetElement[] getAdditionalMembers(@NotNull CSharpTypeDeclaration typeDeclaration)
+	public DotNetElement[] getAdditionalMembers(@NotNull DotNetElement element)
 	{
+		Project project = element.getProject();
+
 		List<DotNetElement> elements = new SmartList<DotNetElement>();
-
-		buildOperators(typeDeclaration, myTypeOperators.get(typeDeclaration.getVmQName()), elements);
-		if(typeDeclaration.isEnum())
+		if(element instanceof CSharpTypeDeclaration)
 		{
-			buildOperators(typeDeclaration, myEnumOperators, elements);
-		}
+			CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) element;
 
-		buildOperators(typeDeclaration, myObjectOperators, elements);
+			CSharpTypeRefByTypeDeclaration selfTypeRef = new CSharpTypeRefByTypeDeclaration(typeDeclaration);
+
+			buildOperators(project, selfTypeRef, element, myTypeOperators.get(typeDeclaration.getVmQName()), elements);
+			if(typeDeclaration.isEnum())
+			{
+				buildOperators(project, selfTypeRef, element, myEnumOperators, elements);
+			}
+
+			buildOperators(project, selfTypeRef, element, myObjectOperators, elements);
+		}
+		else if(element instanceof DotNetGenericParameter)
+		{
+			CSharpTypeRefFromGenericParameter selfTypeRef = new CSharpTypeRefFromGenericParameter((DotNetGenericParameter) element);
+
+			buildOperators(project, selfTypeRef, element, myObjectOperators, elements);
+		}
 
 		return ContainerUtil.toArray(elements, DotNetElement.ARRAY_FACTORY);
 	}
 
-	private static void buildOperators(@NotNull CSharpTypeDeclaration typeDeclaration,
+	private static void buildOperators(@NotNull Project project,
+			@NotNull DotNetTypeRef selfTypeRef,
+			@NotNull DotNetElement parent,
 			@NotNull Collection<Operator> operators,
 			@NotNull List<DotNetElement> list)
 	{
@@ -139,23 +157,20 @@ public class OperatorsProvider implements CSharpAdditionalTypeMemberProvider
 			return;
 		}
 
-		Project project = typeDeclaration.getProject();
-		CSharpTypeRefByTypeDeclaration selfType = new CSharpTypeRefByTypeDeclaration(typeDeclaration);
-
 		for(Operator operator : operators)
 		{
 			CSharpLightMethodDeclarationBuilder builder = new CSharpLightMethodDeclarationBuilder(project);
 			builder.setOperator(operator.myOperatorToken);
-			builder.withParent(typeDeclaration);
+			builder.withParent(parent);
 
-			builder.withReturnType(operator.myReturnTypeRef == null ? selfType : operator.myReturnTypeRef);
+			builder.withReturnType(operator.myReturnTypeRef == null ? selfTypeRef : operator.myReturnTypeRef);
 
 			int i = 0;
 			for(Operator.Parameter parameter : operator.myParameterTypes)
 			{
 				CSharpLightParameterBuilder parameterBuilder = new CSharpLightParameterBuilder(project);
 				parameterBuilder.withName("p" + i);
-				parameterBuilder.withTypeRef(parameter.myTypeRef == null ? selfType : parameter.myTypeRef);
+				parameterBuilder.withTypeRef(parameter.myTypeRef == null ? selfTypeRef : parameter.myTypeRef);
 
 				builder.addParameter(parameterBuilder);
 				i++;
