@@ -37,7 +37,7 @@ public class CSharpReferenceExpressionImplUtil
 		{
 			kind = CSharpReferenceExpressionImpl.ResolveToKind.ATTRIBUTE;
 		}
-		ResolveResult[] resultWithWeights = ((CSharpReferenceExpressionImpl) referenceExpression).multiResolveImpl(kind);
+		ResolveResult[] resultWithWeights = ((CSharpReferenceExpressionImpl) referenceExpression).multiResolveImpl(kind, true);
 		if(resultWithWeights.length == 0)
 		{
 			return null;

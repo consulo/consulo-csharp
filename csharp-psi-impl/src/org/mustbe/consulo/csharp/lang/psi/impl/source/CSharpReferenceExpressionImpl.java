@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.*;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpElementGroupTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
@@ -90,7 +91,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		{
 			if(!incompleteCode)
 			{
-				return ref.multiResolveImpl(ref.kind());
+				return ref.multiResolveImpl(ref.kind(), true);
 			}
 			else
 			{
@@ -177,7 +178,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	}
 
 	@NotNull
-	public ResolveResult[] multiResolveImpl(ResolveToKind kind)
+	public ResolveResult[] multiResolveImpl(ResolveToKind kind, boolean resolveFromParent)
 	{
 		CSharpCallArgumentListOwner p = null;
 		PsiElement parent = getParent();
@@ -185,12 +186,13 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		{
 			p = (CSharpCallArgumentListOwner) parent;
 		}
-		return multiResolve0(kind, p, this);
+		return multiResolve0(kind, p, this, resolveFromParent);
 	}
 
 	public static <T extends CSharpQualifiedNonReference & PsiElement> ResolveResult[] multiResolve0(ResolveToKind kind,
 			final CSharpCallArgumentListOwner callArgumentListOwner,
-			final T element)
+			final T element,
+			boolean resolveFromParent)
 	{
 		CSharpResolveSelector selector = StaticResolveSelectors.NONE;
 		switch(kind)
@@ -228,7 +230,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				break;
 		}
 
-		return collectResults(kind, selector, element, callArgumentListOwner, false);
+		return collectResults(kind, selector, element, callArgumentListOwner, false, resolveFromParent);
 	}
 
 	private static int findExpectGenericCount(@NotNull PsiElement element)
@@ -249,7 +251,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			@Nullable CSharpResolveSelector selector,
 			final T element,
 			CSharpCallArgumentListOwner callArgumentListOwner,
-			final boolean completion)
+			final boolean completion,
+			boolean resolveFromParent)
 	{
 		if(!element.isValid())
 		{
@@ -362,8 +365,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				CSharpResolveUtil.treeWalkUp(scopeProcessor, element, element, parentOfType);
 				return scopeProcessor.toResolveResults();
 			case TYPE_OR_NAMESPACE:
-				ResolveResult[] typeResults = collectResults(ResolveToKind.TYPE_LIKE, selector, element, callArgumentListOwner, completion);
-				ResolveResult[] namespaceResults = collectResults(ResolveToKind.NAMESPACE, selector, element, callArgumentListOwner, completion);
+				ResolveResult[] typeResults = collectResults(ResolveToKind.TYPE_LIKE, selector, element, callArgumentListOwner, completion,
+						resolveFromParent);
+				ResolveResult[] namespaceResults = collectResults(ResolveToKind.NAMESPACE, selector, element, callArgumentListOwner, completion,
+						resolveFromParent);
 				return ArrayUtil.mergeArrays(typeResults, namespaceResults);
 			case NAMESPACE:
 			case SOFT_NAMESPACE:
@@ -440,7 +445,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					typeResolveKind = ResolveToKind.ATTRIBUTE;
 				}
 
-				ResolveResult[] resolveResult = referenceExpression.multiResolveImpl(typeResolveKind);
+				ResolveResult[] resolveResult = referenceExpression.multiResolveImpl(typeResolveKind, resolveFromParent);
 				if(resolveResult.length == 0)
 				{
 					return ResolveResult.EMPTY_ARRAY;
@@ -498,7 +503,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				for(ResolveResult result : resolveResults)
 				{
 					PsiElement resolvedElement = result.getElement();
-					if(resolvedElement instanceof CSharpElementGroup)
+					if(resolvedElement instanceof CSharpElementGroup && resolveFromParent)
 					{
 						CSharpLambdaResolveResult lambdaResolveResult = CSharpLambdaExpressionImplUtil.resolveLeftLambdaTypeRef(element);
 						if(lambdaResolveResult != null)
@@ -1020,7 +1025,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		{
 			kind = ResolveToKind.ANY_MEMBER;
 		}
-		ResolveResult[] psiElements = collectResults(kind, null, this, null, true);
+		ResolveResult[] psiElements = collectResults(kind, null, this, null, true, true);
 		return CSharpLookupElementBuilder.getInstance(getProject()).buildToLookupElements(this, psiElements);
 	}
 
@@ -1038,13 +1043,13 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		{
 			return toTypeRef(resolve());
 		}
-		return toTypeRef(kind(), resolveFromParent);
+		return toTypeRef(kind(), false);
 	}
 
 	@NotNull
 	public DotNetTypeRef toTypeRef(ResolveToKind resolveToKind, boolean resolveFromParent)
 	{
-		ResolveResult[] resolveResults = multiResolveImpl(resolveToKind);
+		ResolveResult[] resolveResults = multiResolveImpl(resolveToKind, resolveFromParent);
 		if(resolveResults.length == 0)
 		{
 			return DotNetTypeRef.ERROR_TYPE;
@@ -1084,6 +1089,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		else if(resolve instanceof DotNetVariable)
 		{
 			return ((DotNetVariable) resolve).toTypeRef(true);
+		}
+		else if(resolve instanceof CSharpElementGroup)
+		{
+			return new CSharpElementGroupTypeRef((CSharpElementGroup<?>) resolve);
 		}
 		return DotNetTypeRef.ERROR_TYPE;
 	}

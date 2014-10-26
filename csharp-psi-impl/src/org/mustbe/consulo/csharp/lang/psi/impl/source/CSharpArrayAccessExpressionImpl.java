@@ -133,7 +133,7 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
 		ResolveResult[] resolveResults = CSharpReferenceExpressionImpl.multiResolve0(CSharpReferenceExpressionImpl.ResolveToKind.ARRAY_METHOD, this,
-				this);
+				this, true);
 		if(!incompleteCode)
 		{
 			return resolveResults;
