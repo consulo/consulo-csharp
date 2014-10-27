@@ -1,7 +1,6 @@
 package org.mustbe.consulo.csharp.lang.psi.resolve;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -10,6 +9,6 @@ import com.intellij.psi.PsiElement;
  */
 public interface CSharpResolveSelector
 {
-	@Nullable
-	<T extends PsiElement> T doSelectElement(@NotNull CSharpResolveContext context);
+	@NotNull
+	PsiElement[] doSelectElement(@NotNull CSharpResolveContext context);
 }

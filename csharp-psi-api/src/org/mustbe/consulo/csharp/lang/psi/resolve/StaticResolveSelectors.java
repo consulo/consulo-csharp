@@ -2,6 +2,8 @@ package org.mustbe.consulo.csharp.lang.psi.resolve;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -12,40 +14,55 @@ public enum StaticResolveSelectors implements CSharpResolveSelector
 {
 	NONE
 			{
-				@Nullable
+				@NotNull
 				@Override
-				public PsiElement doSelectElement(@NotNull CSharpResolveContext context)
+				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context)
 				{
 					return null;
 				}
 			},
 	INDEX_METHOD_GROUP
 			{
-				@Nullable
+				@NotNull
 				@Override
-				public PsiElement doSelectElement(@NotNull CSharpResolveContext context)
+				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context)
 				{
-					return context.indexMethodGroup();
+					CSharpElementGroup<CSharpArrayMethodDeclaration> group = context.indexMethodGroup();
+					if(group == null)
+					{
+						return PsiElement.EMPTY_ARRAY;
+					}
+					return new PsiElement[] {group};
 				}
 			},
 
 	CONSTRUCTOR_GROUP
 			{
-				@Nullable
+				@NotNull
 				@Override
-				public PsiElement doSelectElement(@NotNull CSharpResolveContext context)
+				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context)
 				{
-					return context.constructorGroup();
+					CSharpElementGroup<CSharpConstructorDeclaration> group = context.constructorGroup();
+					if(group == null)
+					{
+						return PsiElement.EMPTY_ARRAY;
+					}
+					return new PsiElement[] {group};
 				}
 			},
 
 	DE_CONSTRUCTOR_GROUP
 			{
-				@Nullable
+				@NotNull
 				@Override
-				public PsiElement doSelectElement(@NotNull CSharpResolveContext context)
+				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context)
 				{
-					return context.deConstructorGroup();
+					CSharpElementGroup<CSharpConstructorDeclaration> group = context.deConstructorGroup();
+					if(group == null)
+					{
+						return PsiElement.EMPTY_ARRAY;
+					}
+					return new PsiElement[] {group};
 				}
 			}
 }

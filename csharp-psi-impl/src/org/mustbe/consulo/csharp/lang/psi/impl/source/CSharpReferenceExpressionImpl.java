@@ -34,6 +34,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.ResolveResultSorter;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.TypeLikeSorter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpElementGroupTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
@@ -44,7 +46,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.Gener
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
-import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.ExtensionMethodByNameSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
@@ -216,15 +217,6 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		CSharpResolveSelector selector = StaticResolveSelectors.NONE;
 		switch(kind)
 		{
-			case ATTRIBUTE:
-				val referenceName = element.getReferenceName();
-				if(referenceName == null)
-				{
-					return ResolveResult.EMPTY_ARRAY;
-				}
-				selector = new AttributeByNameSelector(referenceName);
-				kind = ResolveToKind.TYPE_LIKE; //remap to type search
-				break;
 			case NATIVE_TYPE_WRAPPER:
 			case THIS:
 			case BASE:
@@ -236,34 +228,26 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				selector = StaticResolveSelectors.CONSTRUCTOR_GROUP;
 				break;
 			default:
-				val referenceName2 = element.getReferenceName();
-				if(referenceName2 == null)
+			case ATTRIBUTE:
+				val referenceName = element.getReferenceName();
+				if(referenceName == null)
 				{
 					return ResolveResult.EMPTY_ARRAY;
 				}
-				val text2 = StringUtil.strip(referenceName2, CharFilter.NOT_WHITESPACE_FILTER);
-				MemberByNameSelector selector2 = new MemberByNameSelector(text2);
-				int expectGenericCount = findExpectGenericCount(element);
-				selector2.putUserData(CSharpResolveContext.GENERIC_COUNT, expectGenericCount);
-				selector = selector2;
+
+				if(kind == ResolveToKind.ATTRIBUTE)
+				{
+					selector = new AttributeByNameSelector(referenceName);
+					kind = ResolveToKind.TYPE_LIKE; //remap to type search
+				}
+				else
+				{
+					selector = new MemberByNameSelector(referenceName);
+				}
 				break;
 		}
 
 		return collectResults(kind, selector, element, callArgumentListOwner, false, resolveFromParent);
-	}
-
-	private static int findExpectGenericCount(@NotNull PsiElement element)
-	{
-		PsiElement parent = element.getParent();
-		if(parent instanceof DotNetUserType)
-		{
-			PsiElement userTypeParent = parent.getParent();
-			if(userTypeParent instanceof DotNetTypeWithTypeArguments)
-			{
-				return ((DotNetTypeWithTypeArguments) userTypeParent).getArguments().length;
-			}
-		}
-		return 0;
 	}
 
 	public static <T extends CSharpQualifiedNonReference & PsiElement> ResolveResult[] collectResults(@NotNull ResolveToKind kind,
@@ -748,6 +732,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			boolean completion)
 	{
 		ExecuteTarget[] targets;
+		ResolveResultSorter sorter = ResolveResultSorter.EMPTY;
 		switch(kind)
 		{
 			case TYPE_LIKE:
@@ -757,6 +742,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 						ExecuteTarget.DELEGATE_METHOD,
 						ExecuteTarget.TYPE_DEF
 				};
+				sorter = TypeLikeSorter.createByReference(element);
 				break;
 			case NAMESPACE:
 				targets = new ExecuteTarget[]{ExecuteTarget.NAMESPACE};
@@ -790,6 +776,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 						ExecuteTarget.TYPE_DEF,
 						ExecuteTarget.ELEMENT_GROUP
 				};
+				sorter = TypeLikeSorter.createByReference(element);
 				if(completion)
 				{
 					// append generic when completion due at ANY_MEMBER it dont resolved
@@ -798,8 +785,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				break;
 		}
 
-		return completion ? new CompletionResolveScopeProcessor(element.getResolveScope(), elements, targets) : new MemberResolveScopeProcessor
-				(element.getResolveScope(), elements, targets);
+		AbstractScopeProcessor processor = completion ? new CompletionResolveScopeProcessor(element.getResolveScope(), elements,
+				targets) : new MemberResolveScopeProcessor(element.getResolveScope(), elements, targets);
+		processor.setSorter(sorter);
+		return processor;
 	}
 
 	@NotNull

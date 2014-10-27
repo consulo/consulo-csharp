@@ -133,9 +133,9 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		return list;
 	}
 
-	@Nullable
+	@NotNull
 	@Override
-	public PsiElement findByName(@NotNull String name, @NotNull UserDataHolder holder)
+	public PsiElement[] findByName(@NotNull String name, @NotNull UserDataHolder holder)
 	{
 		DotNetNamespaceAsElement.ChildrenFilter filter = holder.getUserData(BaseDotNetNamespaceAsElement.FILTER);
 		if(filter == null)
@@ -143,18 +143,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 			filter = DotNetNamespaceAsElement.ChildrenFilter.NONE;
 		}
 
-		PsiElement[] children = myNamespaceAsElement.findChildren(name, myResolveScope, CSharpTransformer.INSTANCE, filter);
-		if(children.length > 0)
-		{
-			PsiElement validWithGeneric = CSharpResolveContextUtil.findValidWithGeneric(holder, children);
-			if(validWithGeneric != null)
-			{
-				return validWithGeneric;
-			}
-
-			return children[0];
-		}
-		return null;
+		return myNamespaceAsElement.findChildren(name, myResolveScope, CSharpTransformer.INSTANCE, filter);
 	}
 
 	@NotNull

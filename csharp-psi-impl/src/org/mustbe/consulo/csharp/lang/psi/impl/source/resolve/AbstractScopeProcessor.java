@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.ResolveResultSorter;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.UserDataHolderBase;
@@ -38,6 +39,7 @@ import com.intellij.util.containers.ContainerUtil;
 public abstract class AbstractScopeProcessor extends UserDataHolderBase implements PsiScopeProcessor
 {
 	protected final List<ResolveResult> myElements = new ArrayList<ResolveResult>();
+	private ResolveResultSorter mySorter = ResolveResultSorter.EMPTY;
 
 	public void add(ResolveResult resolveResult)
 	{
@@ -58,7 +60,7 @@ public abstract class AbstractScopeProcessor extends UserDataHolderBase implemen
 		}
 	}
 
-	public void merge(AbstractScopeProcessor processor)
+	public void merge(@NotNull AbstractScopeProcessor processor)
 	{
 		myElements.addAll(processor.myElements);
 	}
@@ -76,7 +78,9 @@ public abstract class AbstractScopeProcessor extends UserDataHolderBase implemen
 			return ResolveResult.EMPTY_ARRAY;
 		}
 
-		return ContainerUtil.toArray(myElements, ResolveResult.EMPTY_ARRAY);
+		ResolveResult[] resolveResults = ContainerUtil.toArray(myElements, ResolveResult.EMPTY_ARRAY);
+		mySorter.sort(resolveResults);
+		return resolveResults;
 	}
 
 	@NotNull
@@ -104,5 +108,10 @@ public abstract class AbstractScopeProcessor extends UserDataHolderBase implemen
 	public void handleEvent(Event event, @Nullable Object o)
 	{
 
+	}
+
+	public void setSorter(@NotNull ResolveResultSorter sorter)
+	{
+		mySorter = sorter;
 	}
 }

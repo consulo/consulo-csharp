@@ -41,17 +41,10 @@ import com.intellij.util.containers.ContainerUtil;
 public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 {
 	private final GlobalSearchScope myScope;
-	private final boolean myBreakProcess;
 
 	public MemberResolveScopeProcessor(GlobalSearchScope scope, ResolveResult[] elements, ExecuteTarget[] targets)
 	{
-		this(scope, elements, targets, true);
-	}
-
-	public MemberResolveScopeProcessor(GlobalSearchScope scope, ResolveResult[] elements, ExecuteTarget[] targets, boolean breakProcess)
-	{
 		Collections.addAll(myElements, elements);
-		myBreakProcess = breakProcess;
 		myScope = scope;
 		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
 	}
@@ -70,18 +63,16 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 
 		CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myScope, element);
 
-
-		PsiElement psiElement = selector.doSelectElement(context);
-		if(psiElement != null)
+		PsiElement[] psiElements = selector.doSelectElement(context);
+		for(PsiElement psiElement : psiElements)
 		{
 			PsiElement normalize = normalize(psiElement);
 			if(!ExecuteTargetUtil.isMyElement(this, normalize))
 			{
-				return true;
+				continue;
 			}
 
 			addElement(normalize);
-			return !myBreakProcess;
 		}
 		return true;
 	}

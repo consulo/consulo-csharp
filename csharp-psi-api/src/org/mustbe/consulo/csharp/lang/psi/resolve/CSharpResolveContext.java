@@ -74,11 +74,11 @@ public interface CSharpResolveContext
 			return Collections.emptyList();
 		}
 
-		@Nullable
+		@NotNull
 		@Override
-		public PsiElement findByName(@NotNull String name, @NotNull UserDataHolder holder)
+		public PsiElement[] findByName(@NotNull String name, @NotNull UserDataHolder holder)
 		{
-			return null;
+			return PsiElement.EMPTY_ARRAY;
 		}
 
 		@NotNull
@@ -106,8 +106,6 @@ public interface CSharpResolveContext
 		}
 	};
 
-	Key<Integer> GENERIC_COUNT = Key.create("csharp.generic.count");
-
 	@Nullable
 	CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup();
 
@@ -132,8 +130,8 @@ public interface CSharpResolveContext
 	@NotNull
 	Collection<CSharpElementGroup<CSharpMethodDeclaration>> getExtensionMethodGroups();
 
-	@Nullable
-	PsiElement findByName(@NotNull String name, @NotNull UserDataHolder holder);
+	@NotNull
+	PsiElement[] findByName(@NotNull String name, @NotNull UserDataHolder holder);
 
 	@NotNull
 	Collection<? extends PsiElement> getElements();

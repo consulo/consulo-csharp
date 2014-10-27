@@ -88,25 +88,20 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 		return getCachedNamespaceContext().getExtensionMethodGroups();
 	}
 
-	@Nullable
+	@NotNull
 	@Override
-	public PsiElement findByName(@NotNull String name, @NotNull UserDataHolder holder)
+	public PsiElement[] findByName(@NotNull String name, @NotNull UserDataHolder holder)
 	{
 		Map<String, CSharpTypeDefStatement> defStatements = getDefStatements();
 
 		CSharpTypeDefStatement typeDefStatement = defStatements.get(name);
 		if(typeDefStatement != null)
 		{
-			return typeDefStatement;
+			return new PsiElement[] {typeDefStatement};
 		}
 		CSharpResolveContext cachedNamespaceContext = getCachedNamespaceContext();
 
-		PsiElement byName = cachedNamespaceContext.findByName(name, holder);
-		if(byName != null)
-		{
-			return byName;
-		}
-		return null;
+		return cachedNamespaceContext.findByName(name, holder);
 	}
 
 	@NotNull

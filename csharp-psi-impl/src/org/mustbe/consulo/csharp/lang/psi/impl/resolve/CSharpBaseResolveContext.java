@@ -340,14 +340,19 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement> implemen
 	}
 
 	@Override
-	@Nullable
-	public PsiElement findByName(@NotNull String name, @NotNull UserDataHolder holder)
+	@NotNull
+	public PsiElement[] findByName(@NotNull String name, @NotNull UserDataHolder holder)
 	{
 		if(myOtherElements == null)
 		{
-			return null;
+			return PsiElement.EMPTY_ARRAY;
 		}
-		return myOtherElements.get(name);
+		CSharpElementGroup<PsiElement> group = myOtherElements.get(name);
+		if(group == null)
+		{
+			return PsiElement.EMPTY_ARRAY;
+		}
+		return new PsiElement[] {group};
 	}
 
 	@NotNull

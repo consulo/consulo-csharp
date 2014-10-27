@@ -1,7 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.resolve;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 
@@ -18,10 +18,15 @@ public class OperatorByTokenSelector implements CSharpResolveSelector
 		myToken = token;
 	}
 
-	@Nullable
+	@NotNull
 	@Override
-	public PsiElement doSelectElement(@NotNull CSharpResolveContext context)
+	public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context)
 	{
-		return context.findOperatorGroupByTokenType(myToken);
+		CSharpElementGroup<CSharpMethodDeclaration> groupByTokenType = context.findOperatorGroupByTokenType(myToken);
+		if(groupByTokenType == null)
+		{
+			return PsiElement.EMPTY_ARRAY;
+		}
+		return new PsiElement[] {groupByTokenType};
 	}
 }

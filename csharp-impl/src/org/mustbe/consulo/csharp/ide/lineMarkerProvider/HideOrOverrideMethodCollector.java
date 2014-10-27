@@ -199,7 +199,7 @@ public class HideOrOverrideMethodCollector implements LineMarkerCollector
 		final List<CSharpMethodDeclaration> parents = new SmartList<CSharpMethodDeclaration>();
 
 		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(owner.getResolveScope(), ResolveResult.EMPTY_ARRAY,
-				new ExecuteTarget[] {ExecuteTarget.ELEMENT_GROUP}, false);
+				new ExecuteTarget[] {ExecuteTarget.ELEMENT_GROUP});
 
 		ResolveState state = ResolveState.initial();
 		state = state.put(CSharpResolveUtil.SELECTOR, new MemberByNameSelector(target.getName()));
