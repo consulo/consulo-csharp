@@ -875,8 +875,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 		if(targetToWalkChildren == null)
 		{
-			return Couple.of(last, last);
-			//LOGGER.error(element.getText() + " " + last + " " + kind + " " + element.getParent() + " " + element.getContainingFile().getName());
+			targetToWalkChildren = element.getContainingFile();
 		}
 		return Couple.of(last, targetToWalkChildren);
 	}
