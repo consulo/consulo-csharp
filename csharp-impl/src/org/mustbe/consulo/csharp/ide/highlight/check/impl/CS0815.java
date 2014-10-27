@@ -19,9 +19,10 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.highlight.check.AbstractCompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 
 /**
  * @author VISTALL
@@ -30,18 +31,22 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 public class CS0815 extends AbstractCompilerCheck<CSharpLocalVariable>
 {
 	@Override
-	public boolean accept(@NotNull CSharpLocalVariable cSharpLocalVariable)
+	public boolean accept(@NotNull CSharpLocalVariable localVariable)
 	{
-		DotNetTypeRef dotNetTypeRef = cSharpLocalVariable.toTypeRef(false);
+		DotNetTypeRef dotNetTypeRef = localVariable.toTypeRef(false);
 		if(dotNetTypeRef == DotNetTypeRef.AUTO_TYPE)
 		{
-			DotNetExpression initializer = cSharpLocalVariable.getInitializer();
+			DotNetExpression initializer = localVariable.getInitializer();
 			if(initializer == null)
 			{
 				return false;
 			}
 			DotNetTypeRef initializerType = initializer.toTypeRef(false);
-			return initializerType instanceof CSharpLambdaTypeRef;
+			DotNetTypeResolveResult typeResolveResult = initializerType.resolve(localVariable);
+			if(typeResolveResult instanceof CSharpLambdaResolveResult)
+			{
+				return ((CSharpLambdaResolveResult) typeResolveResult).getTarget() == null;
+			}
 		}
 		return false;
 	}
