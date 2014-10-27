@@ -18,19 +18,26 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util;
 
 import gnu.trove.THashSet;
 
-import java.util.Collections;
 import java.util.Set;
 
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.*;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListOwner;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpNamedResolveSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
@@ -322,6 +329,7 @@ public class CSharpResolveUtil
 				return false;
 			}
 
+			DotNetGenericExtractor thisExtractor = state.get(EXTRACTOR);
 			if(typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
 			{
 				DotNetTypeDeclaration[] types = DotNetPsiSearcher.getInstance(typeDeclaration.getProject()).findTypes(typeDeclaration.getVmQName(),
@@ -333,7 +341,10 @@ public class CSharpResolveUtil
 					if(extendList != null)
 					{
 						DotNetTypeRef[] typeRefs = extendList.getTypeRefs();
-						Collections.addAll(superTypes, typeRefs);
+						for(DotNetTypeRef typeRef : typeRefs)
+						{
+							superTypes.add(GenericUnwrapTool.exchangeTypeRef(typeRef, thisExtractor, type));
+						}
 					}
 				}
 
@@ -357,7 +368,10 @@ public class CSharpResolveUtil
 			}
 			else
 			{
-				Collections.addAll(superTypes, typeDeclaration.getExtendTypeRefs());
+				for(DotNetTypeRef typeRef : typeDeclaration.getExtendTypeRefs())
+				{
+					superTypes.add(GenericUnwrapTool.exchangeTypeRef(typeRef, thisExtractor, typeDeclaration));
+				}
 			}
 
 			for(DotNetTypeRef dotNetTypeRef : superTypes)
