@@ -27,6 +27,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
@@ -160,6 +161,24 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		{
 			return getNodeText(original, b);
 		}
+
+		if(element instanceof CSharpTypeDefStatement)
+		{
+			String name = ((CSharpTypeDefStatement) element).getName();
+
+			DotNetTypeRef dotNetTypeRef = ((CSharpTypeDefStatement) element).toTypeRef();
+
+			StringBuilder builder = new StringBuilder();
+			builder.append(name);
+
+			if(dotNetTypeRef != DotNetTypeRef.ERROR_TYPE)
+			{
+				builder.append(" = ");
+				builder.append(dotNetTypeRef.getPresentableText());
+			}
+			return builder.toString();
+		}
+
 		if(element instanceof Navigatable)
 		{
 			return ItemPresentationProviders.getItemPresentation((NavigationItem) element).getPresentableText();
