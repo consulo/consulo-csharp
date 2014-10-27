@@ -382,7 +382,13 @@ public class CSharpResolveUtil
 
 			if(walkParent)
 			{
-				if(!walkChildren(processor, entrance.getParent(), walkParent, maxScope, state))
+				PsiElement parent = entrance.getParent();
+				if(parent == null)
+				{
+					return true;
+				}
+
+				if(!walkChildren(processor, parent, walkParent, maxScope, state))
 				{
 					return false;
 				}
