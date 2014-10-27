@@ -20,8 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilWrapperScopeProcessor;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
+import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
@@ -33,7 +35,7 @@ import com.intellij.util.containers.ContainerUtil;
  * @author VISTALL
  * @since 17.12.13.
  */
-public abstract class AbstractScopeProcessor extends MsilWrapperScopeProcessor implements PsiScopeProcessor
+public abstract class AbstractScopeProcessor extends UserDataHolderBase implements PsiScopeProcessor
 {
 	protected final List<ResolveResult> myElements = new ArrayList<ResolveResult>();
 
@@ -89,5 +91,18 @@ public abstract class AbstractScopeProcessor extends MsilWrapperScopeProcessor i
 				return resolveResultWithWeight.getElement();
 			}
 		}, PsiElement.EMPTY_ARRAY);
+	}
+
+	@Nullable
+	@Override
+	public <T> T getHint(@NotNull Key<T> tKey)
+	{
+		return getUserData(tKey);
+	}
+
+	@Override
+	public void handleEvent(Event event, @Nullable Object o)
+	{
+
 	}
 }

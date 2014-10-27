@@ -29,7 +29,7 @@ public class CompletionResolveScopeProcessor extends AbstractScopeProcessor
 	}
 
 	@Override
-	public boolean executeImpl(@NotNull PsiElement element, ResolveState state)
+	public boolean execute(@NotNull PsiElement element, ResolveState state)
 	{
 		DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
 		assert extractor != null;

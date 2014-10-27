@@ -28,7 +28,7 @@ public class SimpleNamedScopeProcessor extends AbstractScopeProcessor
 	}
 
 	@Override
-	public boolean executeImpl(@NotNull PsiElement element, ResolveState state)
+	public boolean execute(@NotNull PsiElement element, ResolveState state)
 	{
 		if(!(element instanceof PsiNamedElement) || !ExecuteTargetUtil.isMyElement(this, element))
 		{

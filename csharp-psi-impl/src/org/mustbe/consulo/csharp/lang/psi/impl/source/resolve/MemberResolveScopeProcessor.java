@@ -57,7 +57,7 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 	}
 
 	@Override
-	public boolean executeImpl(@NotNull PsiElement element, ResolveState state)
+	public boolean execute(@NotNull PsiElement element, ResolveState state)
 	{
 		CSharpResolveSelector selector = state.get(CSharpResolveUtil.SELECTOR);
 		if(selector == null)

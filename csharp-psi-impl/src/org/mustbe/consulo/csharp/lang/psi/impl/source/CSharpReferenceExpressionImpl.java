@@ -423,7 +423,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					scopeProcessor = new AbstractScopeProcessor()
 					{
 						@Override
-						public boolean executeImpl(@NotNull PsiElement element, ResolveState state)
+						public boolean execute(@NotNull PsiElement element, ResolveState state)
 						{
 							if(element instanceof DotNetNamespaceAsElement)
 							{
