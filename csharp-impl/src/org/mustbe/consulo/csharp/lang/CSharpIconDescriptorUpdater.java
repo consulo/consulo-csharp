@@ -25,9 +25,9 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
 import org.mustbe.consulo.dotnet.DotNetRunUtil;
 import org.mustbe.consulo.dotnet.module.DotNetModuleUtil;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
@@ -126,7 +126,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 
 			processModifierListOwner(element, iconDescriptor, flags);
 		}
-		else if(element instanceof DotNetGenericParameter || element instanceof CSharpTypeDefStatementImpl)
+		else if(element instanceof DotNetGenericParameter || element instanceof CSharpTypeDefStatement)
 		{
 			iconDescriptor.setMainIcon(AllIcons.Nodes.TypeAlias);
 		}
