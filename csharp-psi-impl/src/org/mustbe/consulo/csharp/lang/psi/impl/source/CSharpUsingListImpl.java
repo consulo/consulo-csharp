@@ -23,8 +23,10 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.lang.ASTNode;
@@ -50,25 +52,25 @@ public class CSharpUsingListImpl extends CSharpStubElementImpl<CSharpEmptyStub<C
 
 	@Override
 	@NotNull
-	public CSharpTypeDefStatementImpl[] getTypeDefs()
+	public CSharpTypeDefStatement[] getTypeDefs()
 	{
-		return getStubOrPsiChildren(CSharpStubElements.TYPE_DEF_STATEMENT, CSharpTypeDefStatementImpl.ARRAY_FACTORY);
+		return getStubOrPsiChildren(CSharpStubElements.TYPE_DEF_STATEMENT, CSharpTypeDefStatement.ARRAY_FACTORY);
 	}
 
 	@Override
 	@NotNull
-	public CSharpUsingNamespaceStatementImpl[] getUsingDirectives()
+	public CSharpUsingNamespaceStatement[] getUsingDirectives()
 	{
-		return getStubOrPsiChildren(CSharpStubElements.USING_NAMESPACE_STATEMENT, CSharpUsingNamespaceStatementImpl.ARRAY_FACTORY);
+		return getStubOrPsiChildren(CSharpStubElements.USING_NAMESPACE_STATEMENT, CSharpUsingNamespaceStatement.ARRAY_FACTORY);
 	}
 
 	@NotNull
 	@Override
 	public DotNetNamespaceAsElement[] getUsingNamespaces()
 	{
-		CSharpUsingNamespaceStatementImpl[] usingDirectives = getUsingDirectives();
+		CSharpUsingNamespaceStatement[] usingDirectives = getUsingDirectives();
 		List<DotNetNamespaceAsElement> namespaceAsElements = new ArrayList<DotNetNamespaceAsElement>(usingDirectives.length + 1);
-		for(CSharpUsingNamespaceStatementImpl usingDirective : usingDirectives)
+		for(CSharpUsingNamespaceStatement usingDirective : usingDirectives)
 		{
 			DotNetNamespaceAsElement resolve = usingDirective.resolve();
 			if(resolve != null)
@@ -90,7 +92,7 @@ public class CSharpUsingListImpl extends CSharpStubElementImpl<CSharpEmptyStub<C
 	@Override
 	public void addUsing(@NotNull String qName)
 	{
-		CSharpUsingNamespaceStatementImpl newStatement = CSharpFileFactory.createUsingStatement(getProject(), qName);
+		CSharpUsingNamespaceStatement newStatement = CSharpFileFactory.createUsingStatement(getProject(), qName);
 
 		CSharpUsingListChild[] statements = getStatements();
 

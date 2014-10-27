@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.lexer.CSharpLexer;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpEnumConstantDeclarationImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -94,7 +93,7 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		{
 			return "event";
 		}
-		else if(element instanceof CSharpTypeDefStatementImpl)
+		else if(element instanceof CSharpTypeDefStatement)
 		{
 			return "type def";
 		}

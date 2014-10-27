@@ -33,7 +33,7 @@ import com.intellij.util.io.StringRef;
  * @since 15.01.14
  */
 public class CSharpUsingNamespaceStatementStubElementType extends
-		CSharpAbstractStubElementType<CSharpWithStringValueStub<CSharpUsingNamespaceStatement>, CSharpUsingNamespaceStatementImpl>
+		CSharpAbstractStubElementType<CSharpWithStringValueStub<CSharpUsingNamespaceStatement>, CSharpUsingNamespaceStatement>
 {
 	public CSharpUsingNamespaceStatementStubElementType()
 	{
@@ -42,19 +42,19 @@ public class CSharpUsingNamespaceStatementStubElementType extends
 
 	@NotNull
 	@Override
-	public CSharpUsingNamespaceStatementImpl createElement(@NotNull ASTNode astNode)
+	public CSharpUsingNamespaceStatement createElement(@NotNull ASTNode astNode)
 	{
 		return new CSharpUsingNamespaceStatementImpl(astNode);
 	}
 
 	@Override
-	public CSharpUsingNamespaceStatementImpl createPsi(@NotNull CSharpWithStringValueStub<CSharpUsingNamespaceStatement> stub)
+	public CSharpUsingNamespaceStatement createPsi(@NotNull CSharpWithStringValueStub<CSharpUsingNamespaceStatement> stub)
 	{
 		return new CSharpUsingNamespaceStatementImpl(stub);
 	}
 
 	@Override
-	public CSharpWithStringValueStub<CSharpUsingNamespaceStatement> createStub(@NotNull CSharpUsingNamespaceStatementImpl statement,
+	public CSharpWithStringValueStub<CSharpUsingNamespaceStatement> createStub(@NotNull CSharpUsingNamespaceStatement statement,
 			StubElement stubElement)
 	{
 		String referenceText = statement.getReferenceText();

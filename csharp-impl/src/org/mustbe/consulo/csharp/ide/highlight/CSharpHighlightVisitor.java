@@ -249,7 +249,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
-	public void visitTypeDefStatement(CSharpTypeDefStatementImpl statement)
+	public void visitTypeDefStatement(CSharpTypeDefStatement statement)
 	{
 		super.visitTypeDefStatement(statement);
 

@@ -57,13 +57,13 @@ public class CSharpFileFactory
 		return (CSharpUsingListImpl) fileFromText.getFirstChild();
 	}
 
-	public static CSharpUsingNamespaceStatementImpl createUsingStatement(@NotNull Project project, @NotNull String qName)
+	public static CSharpUsingNamespaceStatement createUsingStatement(@NotNull Project project, @NotNull String qName)
 	{
 		val fileFromText = (CSharpFileImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy.cs", CSharpFileType.INSTANCE,
 				"using " + qName + ";");
 
 		CSharpUsingListImpl firstChild = (CSharpUsingListImpl) fileFromText.getFirstChild();
-		return (CSharpUsingNamespaceStatementImpl) firstChild.getStatements()[0];
+		return (CSharpUsingNamespaceStatement) firstChild.getStatements()[0];
 	}
 
 	@NotNull

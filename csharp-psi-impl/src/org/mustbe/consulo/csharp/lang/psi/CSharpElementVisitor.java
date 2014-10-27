@@ -462,7 +462,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(expression);
 	}
 
-	public void visitTypeDefStatement(CSharpTypeDefStatementImpl statement)
+	public void visitTypeDefStatement(CSharpTypeDefStatement statement)
 	{
 		visitElement(statement);
 	}

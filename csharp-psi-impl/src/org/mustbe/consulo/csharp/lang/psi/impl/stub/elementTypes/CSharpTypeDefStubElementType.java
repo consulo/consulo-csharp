@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeDefStub;
 import com.intellij.lang.ASTNode;
@@ -31,7 +32,7 @@ import com.intellij.util.io.StringRef;
  * @author VISTALL
  * @since 11.02.14
  */
-public class CSharpTypeDefStubElementType extends CSharpAbstractStubElementType<CSharpTypeDefStub, CSharpTypeDefStatementImpl>
+public class CSharpTypeDefStubElementType extends CSharpAbstractStubElementType<CSharpTypeDefStub, CSharpTypeDefStatement>
 {
 	public CSharpTypeDefStubElementType()
 	{
@@ -39,21 +40,21 @@ public class CSharpTypeDefStubElementType extends CSharpAbstractStubElementType<
 	}
 
 	@Override
-	public CSharpTypeDefStatementImpl createElement(@NotNull ASTNode astNode)
+	public CSharpTypeDefStatement createElement(@NotNull ASTNode astNode)
 	{
 		return new CSharpTypeDefStatementImpl(astNode);
 	}
 
 	@Override
-	public CSharpTypeDefStatementImpl createPsi(@NotNull CSharpTypeDefStub cSharpTypeDefStub)
+	public CSharpTypeDefStatement createPsi(@NotNull CSharpTypeDefStub cSharpTypeDefStub)
 	{
 		return new CSharpTypeDefStatementImpl(cSharpTypeDefStub);
 	}
 
 	@Override
-	public CSharpTypeDefStub createStub(@NotNull CSharpTypeDefStatementImpl cSharpTypeDefStatement, StubElement stubElement)
+	public CSharpTypeDefStub createStub(@NotNull CSharpTypeDefStatement defStatement, StubElement stubElement)
 	{
-		return new CSharpTypeDefStub(stubElement, this, cSharpTypeDefStatement.getName());
+		return new CSharpTypeDefStub(stubElement, this, defStatement.getName());
 	}
 
 	@Override
