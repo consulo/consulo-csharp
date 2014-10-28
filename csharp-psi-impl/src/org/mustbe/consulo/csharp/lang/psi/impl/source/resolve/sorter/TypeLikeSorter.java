@@ -4,8 +4,10 @@ import java.util.Comparator;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
 import org.mustbe.consulo.dotnet.psi.DotNetUserType;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -48,6 +50,11 @@ public class TypeLikeSorter implements ResolveResultSorter
 			if(element instanceof DotNetNamespaceAsElement)
 			{
 				return -1;
+			}
+
+			if(element instanceof DotNetVariable && element instanceof DotNetQualifiedElement)
+			{
+				return 2;
 			}
 
 			if(element instanceof DotNetGenericParameterListOwner && ((DotNetGenericParameterListOwner) element).getGenericParametersCount() ==
