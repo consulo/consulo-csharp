@@ -67,6 +67,20 @@ public class CSharpNullableTypeImpl extends CSharpStubElementImpl<CSharpEmptyStu
 		{
 			@NotNull
 			@Override
+			public String getPresentableText()
+			{
+				return super.getPresentableText() + "?";
+			}
+
+			@NotNull
+			@Override
+			public String getQualifiedText()
+			{
+				return super.getQualifiedText() + "?";
+			}
+
+			@NotNull
+			@Override
 			public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 			{
 				val resolve = super.resolve(scope);
