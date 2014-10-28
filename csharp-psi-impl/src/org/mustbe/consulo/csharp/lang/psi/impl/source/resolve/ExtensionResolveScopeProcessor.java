@@ -150,26 +150,6 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 		return parameters[0].toTypeRef(false);
 	}
 
-	/*private static DotNetExpression[] getNewExpressions(CSharpReferenceExpression ex, DotNetTypeRef qType)
-	{
-		PsiElement parent = ex.getParent();
-		if(parent instanceof CSharpCallArgumentListOwner)
-		{
-			DotNetExpression[] parameterExpressions = ((CSharpCallArgumentListOwner) parent).getParameterExpressions();
-
-			DotNetExpression[] newParameters = new DotNetExpression[parameterExpressions.length + 1];
-			System.arraycopy(parameterExpressions, 0, newParameters, 1, parameterExpressions.length);
-
-			newParameters[0] = new DummyExpression(ex.getProject(), qType);
-
-			return newParameters;
-		}
-		else
-		{
-			return DotNetExpression.EMPTY_ARRAY;
-		}
-	}    */
-
 	private static CSharpLightMethodDeclaration transform(final CSharpMethodDeclaration methodDeclaration)
 	{
 		DotNetParameterList parameterList = methodDeclaration.getParameterList();
