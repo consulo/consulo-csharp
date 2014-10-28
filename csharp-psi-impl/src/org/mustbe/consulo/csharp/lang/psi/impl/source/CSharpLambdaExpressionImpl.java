@@ -16,20 +16,26 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
+import java.util.ArrayList;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameterList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
+import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -40,6 +46,18 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements Dot
 	public CSharpLambdaExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	@Nullable
+	public DotNetExpression getSingleExpression()
+	{
+		return findChildByClass(DotNetExpression.class);
+	}
+
+	@Nullable
+	public CSharpBlockStatementImpl getBlockStatement()
+	{
+		return findChildByClass(CSharpBlockStatementImpl.class);
 	}
 
 	@Override
@@ -86,7 +104,65 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements Dot
 			CSharpLambdaParameter parameter = parameters[i];
 			typeRefs[i] = parameter.toTypeRef(resolveFromParent);
 		}
-		return new CSharpLambdaTypeRef(null, typeRefs, resolveFromParent ? getReturnTypeRef() : DotNetTypeRef.AUTO_TYPE);
+		return new CSharpLambdaTypeRef(null, typeRefs, resolveFromParent ? getReturnTypeRef() : findPossibleReturnTypeRef());
+	}
+
+	@NotNull
+	private DotNetTypeRef findPossibleReturnTypeRef()
+	{
+		DotNetExpression singleExpression = getSingleExpression();
+		if(singleExpression != null)
+		{
+			return singleExpression.toTypeRef(false);
+		}
+
+		CSharpBlockStatementImpl blockStatement = getBlockStatement();
+		if(blockStatement == null)
+		{
+			return DotNetTypeRef.ERROR_TYPE;
+		}
+
+		val typeRefs = new ArrayList<DotNetTypeRef>();
+		blockStatement.accept(new CSharpRecursiveElementVisitor()
+		{
+			@Override
+			public void visitAnonymMethodExpression(CSharpAnonymMethodExpressionImpl method)
+			{
+				// dont need check return inside anonym
+			}
+
+			@Override
+			public void visitLambdaExpression(CSharpLambdaExpressionImpl expression)
+			{
+				// dont need check return inside lambda
+			}
+
+			@Override
+			public void visitYieldStatement(CSharpYieldStatementImpl statement)
+			{
+				//FIXME [VISTALL] what we need to do?
+			}
+
+			@Override
+			public void visitReturnStatement(CSharpReturnStatementImpl statement)
+			{
+				DotNetExpression expression = statement.getExpression();
+				if(expression == null)
+				{
+					typeRefs.add(new CSharpTypeRefByQName(DotNetTypes.System.Void));
+				}
+				else
+				{
+					typeRefs.add(expression.toTypeRef(false));
+				}
+			}
+		});
+
+		if(typeRefs.isEmpty())
+		{
+			return new CSharpTypeRefByQName(DotNetTypes.System.Void);
+		}
+		return typeRefs.get(0);
 	}
 
 	@NotNull
