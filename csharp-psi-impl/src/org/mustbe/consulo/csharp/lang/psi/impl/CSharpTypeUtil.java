@@ -373,6 +373,10 @@ public class CSharpTypeUtil
 			return isInheritable(((CSharpTypeDefStatement) topElement).toTypeRef(), target, scope, explicitOrImplicit);
 		}
 
+		if(targetElement instanceof CSharpTypeDefStatement)
+		{
+			return isInheritable(top, ((CSharpTypeDefStatement) targetElement).toTypeRef(), scope, explicitOrImplicit);
+		}
 
 		if(topElement instanceof DotNetTypeDeclaration && targetElement instanceof DotNetTypeDeclaration)
 		{
