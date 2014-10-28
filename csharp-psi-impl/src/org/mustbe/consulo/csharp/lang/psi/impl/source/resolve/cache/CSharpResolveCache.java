@@ -74,17 +74,17 @@ public class CSharpResolveCache
 		ResolveResult[] resolve(@NotNull T t, boolean incompleteCode, boolean resolveFromParent);
 	}
 
-	public static abstract class TypeResolver<TElement extends PsiElement> implements AbstractResolver<TElement, DotNetTypeRef>
+	public static abstract class TypeRefResolver<TElement extends PsiElement> implements AbstractResolver<TElement, DotNetTypeRef>
 	{
 		@Override
 		@NotNull
 		public final DotNetTypeRef resolve(@NotNull TElement ref, boolean incompleteCode, boolean resolveFromParent)
 		{
-			return resolveType(ref, resolveFromParent);
+			return resolveTypeRef(ref, resolveFromParent);
 		}
 
 		@NotNull
-		public abstract DotNetTypeRef resolveType(@NotNull TElement element, boolean resolveFromParent);
+		public abstract DotNetTypeRef resolveTypeRef(@NotNull TElement element, boolean resolveFromParent);
 	}
 
 	public interface Resolver extends AbstractResolver<PsiElement, PsiElement>
@@ -218,8 +218,9 @@ public class CSharpResolveCache
 	}
 
 	@NotNull
-	public <TElement extends PsiElement> DotNetTypeRef resolveType(@NotNull TElement ref,
-			@NotNull TypeResolver<TElement> resolver, boolean resolveFromParent)
+	public <TElement extends PsiElement> DotNetTypeRef resolveTypeRef(@NotNull TElement ref,
+			@NotNull TypeRefResolver<TElement> resolver,
+			boolean resolveFromParent)
 	{
 		DotNetTypeRef resolve = resolve(ref, resolver, false, false, resolveFromParent, false, ref.isPhysical());
 		assert resolve != null;

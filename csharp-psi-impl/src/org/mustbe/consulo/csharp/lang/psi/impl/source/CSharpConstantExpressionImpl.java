@@ -42,13 +42,13 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CSharpConstantExpressionImpl extends CSharpElementImpl implements DotNetConstantExpression, PsiLanguageInjectionHost
 {
-	private static class OurTypeResolver extends CSharpResolveCache.TypeResolver<CSharpConstantExpressionImpl>
+	private static class OurTypeRefResolver extends CSharpResolveCache.TypeRefResolver<CSharpConstantExpressionImpl>
 	{
-		public static final OurTypeResolver INSTANCE = new OurTypeResolver();
+		public static final OurTypeRefResolver INSTANCE = new OurTypeRefResolver();
 
 		@NotNull
 		@Override
-		public DotNetTypeRef resolveType(@NotNull CSharpConstantExpressionImpl element, boolean resolveFromParent)
+		public DotNetTypeRef resolveTypeRef(@NotNull CSharpConstantExpressionImpl element, boolean resolveFromParent)
 		{
 			PsiElement byType = element.getFirstChild();
 			assert byType != null;
@@ -119,7 +119,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
-		return CSharpResolveCache.getInstance(getProject()).resolveType(this, OurTypeResolver.INSTANCE, resolveFromParent);
+		return CSharpResolveCache.getInstance(getProject()).resolveTypeRef(this, OurTypeRefResolver.INSTANCE, resolveFromParent);
 	}
 
 	@Nullable
