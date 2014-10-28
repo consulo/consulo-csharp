@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -34,7 +35,6 @@ import com.intellij.openapi.util.StaticGetter;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiReference;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.impl.AnyPsiChangeListener;
 import com.intellij.psi.impl.PsiManagerImpl;
@@ -62,19 +62,32 @@ public class CSharpResolveCache
 		return ServiceManager.getService(project, CSharpResolveCache.class);
 	}
 
-	public interface AbstractResolver<TRef extends PsiReference, TResult>
+	public interface AbstractResolver<TRef extends PsiElement, TResult>
 	{
 		TResult resolve(@NotNull TRef ref, boolean incompleteCode, boolean resolveFromParent);
 	}
 
-	public interface PolyVariantResolver<T extends PsiPolyVariantReference> extends AbstractResolver<T, ResolveResult[]>
+	public interface PolyVariantResolver<T extends PsiPolyVariantReference & PsiElement> extends AbstractResolver<T, ResolveResult[]>
 	{
 		@Override
 		@NotNull
 		ResolveResult[] resolve(@NotNull T t, boolean incompleteCode, boolean resolveFromParent);
 	}
 
-	public interface Resolver extends AbstractResolver<PsiReference, PsiElement>
+	public static abstract class TypeResolver<TElement extends PsiElement> implements AbstractResolver<TElement, DotNetTypeRef>
+	{
+		@Override
+		@NotNull
+		public final DotNetTypeRef resolve(@NotNull TElement ref, boolean incompleteCode, boolean resolveFromParent)
+		{
+			return resolveType(ref, resolveFromParent);
+		}
+
+		@NotNull
+		public abstract DotNetTypeRef resolveType(@NotNull TElement element, boolean resolveFromParent);
+	}
+
+	public interface Resolver extends AbstractResolver<PsiElement, PsiElement>
 	{
 	}
 
@@ -120,7 +133,7 @@ public class CSharpResolveCache
 	}
 
 	@Nullable
-	private <TRef extends PsiReference, TResult> TResult resolve(@NotNull final TRef ref,
+	private <TRef extends PsiElement, TResult> TResult resolve(@NotNull final TRef ref,
 			@NotNull final AbstractResolver<TRef, TResult> resolver,
 			boolean needToPreventRecursion,
 			final boolean incompleteCode,
@@ -160,7 +173,7 @@ public class CSharpResolveCache
 	}
 
 	@NotNull
-	public <T extends PsiPolyVariantReference> ResolveResult[] resolveWithCaching(@NotNull T ref,
+	public <T extends PsiPolyVariantReference & PsiElement> ResolveResult[] resolveWithCaching(@NotNull T ref,
 			@NotNull PolyVariantResolver<T> resolver,
 			boolean needToPreventRecursion,
 			boolean incompleteCode,
@@ -170,7 +183,7 @@ public class CSharpResolveCache
 	}
 
 	@NotNull
-	public <T extends PsiPolyVariantReference> ResolveResult[] resolveWithCaching(@NotNull T ref,
+	public <T extends PsiPolyVariantReference & PsiElement> ResolveResult[] resolveWithCaching(@NotNull T ref,
 			@NotNull PolyVariantResolver<T> resolver,
 			boolean needToPreventRecursion,
 			boolean incompleteCode,
@@ -183,7 +196,7 @@ public class CSharpResolveCache
 	}
 
 	@Nullable
-	public <T extends PsiPolyVariantReference> ResolveResult[] getCachedResults(@NotNull T ref,
+	public <T extends PsiPolyVariantReference & PsiElement> ResolveResult[] getCachedResults(@NotNull T ref,
 			boolean physical,
 			boolean incompleteCode,
 			boolean resolveFromParent,
@@ -195,16 +208,25 @@ public class CSharpResolveCache
 	}
 
 	@Nullable
-	public <TRef extends PsiReference, TResult> TResult resolveWithCaching(@NotNull TRef ref,
+	public <TRef extends PsiElement, TResult> TResult resolveWithCaching(@NotNull TRef ref,
 			@NotNull AbstractResolver<TRef, TResult> resolver,
 			boolean needToPreventRecursion,
 			boolean incompleteCode,
 			boolean resolveFromParent)
 	{
-		return resolve(ref, resolver, needToPreventRecursion, incompleteCode, resolveFromParent, false, ref.getElement().isPhysical());
+		return resolve(ref, resolver, needToPreventRecursion, incompleteCode, resolveFromParent, false, ref.isPhysical());
 	}
 
-	private <TRef extends PsiReference, TResult> ConcurrentMap<TRef, Getter<TResult>> getMap(boolean physical,
+	@NotNull
+	public <TElement extends PsiElement> DotNetTypeRef resolveType(@NotNull TElement ref,
+			@NotNull TypeResolver<TElement> resolver, boolean resolveFromParent)
+	{
+		DotNetTypeRef resolve = resolve(ref, resolver, false, false, resolveFromParent, false, ref.isPhysical());
+		assert resolve != null;
+		return resolve;
+	}
+
+	private <TRef extends PsiElement, TResult> ConcurrentMap<TRef, Getter<TResult>> getMap(boolean physical,
 			boolean incompleteCode,
 			boolean resolveFromParent,
 			boolean isPoly)
@@ -224,7 +246,7 @@ public class CSharpResolveCache
 	private static final Getter<ResolveResult[]> EMPTY_POLY_RESULT = new StaticGetter<ResolveResult[]>(ResolveResult.EMPTY_ARRAY);
 	private static final Getter<Object> NULL_RESULT = new StaticGetter<Object>(null);
 
-	private static <TRef extends PsiReference, TResult> void cache(@NotNull TRef ref,
+	private static <TRef extends PsiElement, TResult> void cache(@NotNull TRef ref,
 			@NotNull ConcurrentMap<TRef, Getter<TResult>> map,
 			TResult result,
 			boolean isPoly)

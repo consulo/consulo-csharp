@@ -21,12 +21,11 @@ import org.jetbrains.annotations.Nullable;
 import org.joou.Unsigned;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.injection.CSharpStringLiteralEscaper;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpConstantTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLazyTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullType;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetConstantExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -43,6 +42,68 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CSharpConstantExpressionImpl extends CSharpElementImpl implements DotNetConstantExpression, PsiLanguageInjectionHost
 {
+	private static class OurTypeResolver extends CSharpResolveCache.TypeResolver<CSharpConstantExpressionImpl>
+	{
+		public static final OurTypeResolver INSTANCE = new OurTypeResolver();
+
+		@NotNull
+		@Override
+		public DotNetTypeRef resolveType(@NotNull CSharpConstantExpressionImpl element, boolean resolveFromParent)
+		{
+			PsiElement byType = element.getFirstChild();
+			assert byType != null;
+			IElementType elementType = byType.getNode().getElementType();
+
+			String qName = null;
+			if(elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL)
+			{
+				qName = DotNetTypes.System.String;
+			}
+			else if(elementType == CSharpTokens.CHARACTER_LITERAL)
+			{
+				qName = DotNetTypes.System.Char;
+			}
+			else if(elementType == CSharpTokens.UINTEGER_LITERAL)
+			{
+				qName = DotNetTypes.System.UInt32;
+			}
+			else if(elementType == CSharpTokens.ULONG_LITERAL)
+			{
+				qName = DotNetTypes.System.UInt64;
+			}
+			else if(elementType == CSharpTokens.INTEGER_LITERAL)
+			{
+				qName = DotNetTypes.System.Int32;
+			}
+			else if(elementType == CSharpTokens.LONG_LITERAL)
+			{
+				qName = DotNetTypes.System.Int64;
+			}
+			else if(elementType == CSharpTokens.FLOAT_LITERAL)
+			{
+				qName = DotNetTypes.System.Single;
+			}
+			else if(elementType == CSharpTokens.DOUBLE_LITERAL)
+			{
+				qName = DotNetTypes.System.Double;
+			}
+			else if(elementType == CSharpTokens.NULL_LITERAL)
+			{
+				return CSharpNullType.INSTANCE;
+			}
+			else if(elementType == CSharpTokens.BOOL_LITERAL)
+			{
+				qName = DotNetTypes.System.Boolean;
+			}
+
+			if(qName == null)
+			{
+				return DotNetTypeRef.ERROR_TYPE;
+			}
+			return new CSharpLazyTypeRefByQName(element.getProject(), element.getResolveScope(), qName);
+		}
+	}
+
 	public CSharpConstantExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
@@ -58,50 +119,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
-		PsiElement byType = getFirstChild();
-		assert byType != null;
-		IElementType elementType = byType.getNode().getElementType();
-		if(elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL)
-		{
-			return new DotNetTypeRefByQName(DotNetTypes.System.String, CSharpTransform.INSTANCE);
-		}
-		else if(elementType == CSharpTokens.CHARACTER_LITERAL)
-		{
-			return new DotNetTypeRefByQName(DotNetTypes.System.Char, CSharpTransform.INSTANCE, false);
-		}
-		else if(elementType == CSharpTokens.UINTEGER_LITERAL)
-		{
-			return new DotNetTypeRefByQName(DotNetTypes.System.UInt32, CSharpTransform.INSTANCE, false);
-		}
-		else if(elementType == CSharpTokens.ULONG_LITERAL)
-		{
-			return new DotNetTypeRefByQName(DotNetTypes.System.UInt64, CSharpTransform.INSTANCE, false);
-		}
-		else if(elementType == CSharpTokens.INTEGER_LITERAL)
-		{
-			return new CSharpConstantTypeRef(new DotNetTypeRefByQName(DotNetTypes.System.Int32, CSharpTransform.INSTANCE, false));
-		}
-		else if(elementType == CSharpTokens.LONG_LITERAL)
-		{
-			return new DotNetTypeRefByQName(DotNetTypes.System.Int64, CSharpTransform.INSTANCE, false);
-		}
-		else if(elementType == CSharpTokens.FLOAT_LITERAL)
-		{
-			return new DotNetTypeRefByQName(DotNetTypes.System.Single, CSharpTransform.INSTANCE, false);
-		}
-		else if(elementType == CSharpTokens.DOUBLE_LITERAL)
-		{
-			return new DotNetTypeRefByQName(DotNetTypes.System.Double, CSharpTransform.INSTANCE, false);
-		}
-		else if(elementType == CSharpTokens.NULL_LITERAL)
-		{
-			return CSharpNullType.INSTANCE;
-		}
-		else if(elementType == CSharpTokens.BOOL_LITERAL)
-		{
-			return new DotNetTypeRefByQName(DotNetTypes.System.Boolean, CSharpTransform.INSTANCE, false);
-		}
-		return DotNetTypeRef.ERROR_TYPE;
+		return CSharpResolveCache.getInstance(getProject()).resolveType(this, OurTypeResolver.INSTANCE, resolveFromParent);
 	}
 
 	@Nullable
