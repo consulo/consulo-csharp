@@ -31,15 +31,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.psi.*;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.daemon.impl.analysis.HighlightInfoHolder;
@@ -56,16 +48,6 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CSharpHighlightUtil
 {
-	public static boolean isGeneratedElement(@NotNull PsiElement element)
-	{
-		if(element instanceof CSharpLocalVariable)
-		{
-			return element.getUserData(CSharpResolveUtil.ACCESSOR_VALUE_VARIABLE) == Boolean.TRUE;
-		}
-
-		return false;
-	}
-
 	@Nullable
 	public static HighlightInfo highlightNamed(@NotNull HighlightInfoHolder holder,
 			@Nullable PsiElement element,
@@ -107,11 +89,6 @@ public class CSharpHighlightUtil
 					.DEPRECATED_ATTRIBUTES).create());
 		}
 
-		if(CSharpHighlightUtil.isGeneratedElement(element))
-		{
-			holder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes(EditorColors
-					.INJECTED_LANGUAGE_FRAGMENT).create());
-		}
 		return info;
 	}
 
@@ -170,7 +147,15 @@ public class CSharpHighlightUtil
 		}
 		else if(element instanceof CSharpLocalVariable)
 		{
-			key = DefaultLanguageHighlighterColors.LOCAL_VARIABLE;
+			DotNetQualifiedElement owner = element.getUserData(CSharpResolveUtil.ACCESSOR_VALUE_VARIABLE_OWNER);
+			if(owner != null)
+			{
+				key = EditorColors.INJECTED_LANGUAGE_FRAGMENT;
+			}
+			else
+			{
+				key = DefaultLanguageHighlighterColors.LOCAL_VARIABLE;
+			}
 		}
 		else if(element instanceof DotNetVariable)
 		{

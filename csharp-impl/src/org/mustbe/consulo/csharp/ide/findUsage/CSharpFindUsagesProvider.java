@@ -25,6 +25,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolve
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
@@ -159,6 +160,12 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		if(original != null)
 		{
 			return getNodeText(original, b);
+		}
+
+		DotNetQualifiedElement accessorValueVariableOwner = element.getUserData(CSharpResolveUtil.ACCESSOR_VALUE_VARIABLE_OWNER);
+		if(accessorValueVariableOwner != null)
+		{
+			return getNodeText(accessorValueVariableOwner, b);
 		}
 
 		if(element instanceof CSharpTypeDefStatement)

@@ -35,6 +35,7 @@ import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -103,7 +104,7 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 	}
 
 	@NotNull
-	private Pair<DotNetTypeRef, ? extends PsiElement> getTypeRefOfParent()
+	private Pair<DotNetTypeRef, DotNetQualifiedElement> getTypeRefOfParent()
 	{
 		PsiElement element = PsiTreeUtil.getParentOfType(this, CSharpPropertyDeclaration.class, CSharpArrayMethodDeclaration.class);
 		if(element == null)
@@ -120,7 +121,7 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 		{
 			typeRef = ((CSharpArrayMethodDeclaration) element).getReturnTypeRef();
 		}
-		return Pair.create(typeRef, element);
+		return Pair.create(typeRef, (DotNetQualifiedElement)element);
 	}
 
 	@Override
@@ -137,7 +138,7 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 
 			if(getAccessorKind() == Kind.SET)
 			{
-				Pair<DotNetTypeRef, ? extends PsiElement> pair = getTypeRefOfParent();
+				Pair<DotNetTypeRef, DotNetQualifiedElement> pair = getTypeRefOfParent();
 				if(pair.getSecond() == null)
 				{
 					return true;
@@ -145,7 +146,7 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 
 				CSharpLightLocalVariableBuilder builder = new CSharpLightLocalVariableBuilder(pair.getSecond()).withName(VALUE).withParent(this).withTypeRef(pair.getFirst());
 
-				builder.putUserData(CSharpResolveUtil.ACCESSOR_VALUE_VARIABLE, Boolean.TRUE);
+				builder.putUserData(CSharpResolveUtil.ACCESSOR_VALUE_VARIABLE_OWNER, pair.getSecond());
 
 				if(!processor.execute(builder, state))
 				{
