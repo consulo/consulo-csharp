@@ -28,8 +28,11 @@ import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.Processor;
 
@@ -74,17 +77,18 @@ public class CSharpTypeDeclarationImplUtil
 	}
 
 	@Nullable
-	public static DotNetTypeDeclaration resolveBaseType(@NotNull DotNetTypeDeclaration typeDeclaration, @NotNull PsiElement scope)
+	public static Pair<DotNetTypeDeclaration, DotNetGenericExtractor> resolveBaseType(@NotNull DotNetTypeDeclaration typeDeclaration, @NotNull PsiElement scope)
 	{
 		DotNetTypeRef[] anExtends = typeDeclaration.getExtendTypeRefs();
 		if(anExtends.length != 0)
 		{
 			for(DotNetTypeRef anExtend : anExtends)
 			{
-				PsiElement resolve = anExtend.resolve(scope).getElement();
+				DotNetTypeResolveResult resolveResult = anExtend.resolve(scope);
+				PsiElement resolve = resolveResult.getElement();
 				if(resolve instanceof DotNetTypeDeclaration && !((DotNetTypeDeclaration) resolve).isInterface())
 				{
-					return (DotNetTypeDeclaration) resolve;
+					return Pair.create((DotNetTypeDeclaration) resolve, resolveResult.getGenericExtractor());
 				}
 			}
 		}

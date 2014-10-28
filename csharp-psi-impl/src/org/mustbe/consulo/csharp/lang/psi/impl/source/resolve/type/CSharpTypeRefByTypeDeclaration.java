@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
@@ -31,10 +32,18 @@ import com.intellij.psi.PsiElement;
 public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRef.Adapter
 {
 	private DotNetTypeDeclaration myElement;
+	@NotNull
+	private final DotNetGenericExtractor myExtractor;
 
 	public CSharpTypeRefByTypeDeclaration(@NotNull DotNetTypeDeclaration element)
 	{
+		this(element, DotNetGenericExtractor.EMPTY);
+	}
+
+	public CSharpTypeRefByTypeDeclaration(@NotNull DotNetTypeDeclaration element, @NotNull DotNetGenericExtractor extractor)
+	{
 		myElement = element;
+		myExtractor = extractor;
 	}
 
 	@NotNull
@@ -55,6 +64,6 @@ public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRef.Adapter
 	@Override
 	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 	{
-		return new SimpleTypeResolveResult(myElement, CSharpTypeUtil.isElementIsNullable(myElement));
+		return new SimpleTypeResolveResult(myElement, myExtractor, CSharpTypeUtil.isElementIsNullable(myElement));
 	}
 }

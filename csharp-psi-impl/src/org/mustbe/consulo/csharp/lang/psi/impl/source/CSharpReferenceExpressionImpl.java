@@ -31,6 +31,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExtensionResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.PsiElementResolveResultWithExtractor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
@@ -281,10 +282,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				thisTypeDeclaration = PsiTreeUtil.getParentOfType(element, DotNetTypeDeclaration.class);
 				if(thisTypeDeclaration != null)
 				{
-					DotNetTypeDeclaration baseType = CSharpTypeDeclarationImplUtil.resolveBaseType(thisTypeDeclaration, element);
-					if(baseType != null)
+					val pair = CSharpTypeDeclarationImplUtil.resolveBaseType(thisTypeDeclaration, element);
+					if(pair != null)
 					{
-						return new ResolveResult[]{new PsiElementResolveResult(baseType, true)};
+						return new ResolveResult[]{new PsiElementResolveResultWithExtractor(pair.getFirst(), pair.getSecond(), true)};
 					}
 				}
 				break;
@@ -552,8 +553,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		return ResolveResult.EMPTY_ARRAY;
 	}
 
-	public static ResolveResult[] processAnyMember(
-			@Nullable PsiElement qualifier,
+	public static ResolveResult[] processAnyMember(@Nullable PsiElement qualifier,
 			@Nullable CSharpResolveSelector selector,
 			@NotNull PsiElement element,
 			@Nullable CSharpCallArgumentListOwner callArgumentListOwner,
@@ -1031,7 +1031,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		PsiElement resolve = resolve();
 		if(element instanceof DotNetNamespaceAsElement && resolve instanceof DotNetNamespaceAsElement)
 		{
-			return Comparing.equal(((DotNetNamespaceAsElement) resolve).getPresentableQName(), ((DotNetNamespaceAsElement) element).getPresentableQName());
+			return Comparing.equal(((DotNetNamespaceAsElement) resolve).getPresentableQName(), ((DotNetNamespaceAsElement) element)
+					.getPresentableQName());
 		}
 		return element.getManager().areElementsEquivalent(element, resolve);
 	}
@@ -1070,7 +1071,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
-		return toTypeRef(resolveResult.getElement());
+		return toTypeRef(resolveResult);
 	}
 
 	@NotNull
@@ -1087,11 +1088,29 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
-		return toTypeRef(resolveResult.getElement());
+		return toTypeRef(resolveResult);
 	}
 
 	@NotNull
 	public static DotNetTypeRef toTypeRef(@Nullable PsiElement resolve)
+	{
+		return toTypeRef(resolve, DotNetGenericExtractor.EMPTY);
+	}
+
+	@NotNull
+	public static DotNetTypeRef toTypeRef(@NotNull ResolveResult resolveResult)
+	{
+		PsiElement element = resolveResult.getElement();
+		DotNetGenericExtractor extractor =  DotNetGenericExtractor.EMPTY;
+		if(resolveResult instanceof PsiElementResolveResultWithExtractor)
+		{
+			extractor = ((PsiElementResolveResultWithExtractor) resolveResult).getExtractor();
+		}
+		return toTypeRef(element, extractor);
+	}
+
+	@NotNull
+	public static DotNetTypeRef toTypeRef(@Nullable PsiElement resolve, @NotNull DotNetGenericExtractor extractor)
 	{
 		if(resolve instanceof DotNetNamespaceAsElement)
 		{
@@ -1099,7 +1118,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		}
 		else if(resolve instanceof DotNetTypeDeclaration)
 		{
-			return new CSharpTypeRefByTypeDeclaration((DotNetTypeDeclaration) resolve);
+			return new CSharpTypeRefByTypeDeclaration((DotNetTypeDeclaration) resolve, extractor);
 		}
 		else if(resolve instanceof CSharpTypeDefStatement)
 		{

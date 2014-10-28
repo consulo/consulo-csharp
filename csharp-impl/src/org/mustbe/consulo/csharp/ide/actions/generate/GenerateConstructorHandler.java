@@ -44,6 +44,7 @@ import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.util.containers.ContainerUtil;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -61,8 +62,12 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 		}
 
 
-		final DotNetTypeDeclaration baseType = CSharpTypeDeclarationImplUtil.resolveBaseType(typeDeclaration,
-				typeDeclaration);
+		val pair = CSharpTypeDeclarationImplUtil.resolveBaseType(typeDeclaration, typeDeclaration);
+		if(pair == null)
+		{
+			return;
+		}
+		final DotNetTypeDeclaration baseType = pair.getFirst();
 
 		if(!(baseType instanceof CSharpTypeDeclaration))
 		{
@@ -71,10 +76,11 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 
 
 		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(typeDeclaration.getResolveScope(),
-				ResolveResult.EMPTY_ARRAY, new ExecuteTarget[] {ExecuteTarget.ELEMENT_GROUP});
+				ResolveResult.EMPTY_ARRAY, new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
 
 		ResolveState resolveState = ResolveState.initial();
 		resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, StaticResolveSelectors.CONSTRUCTOR_GROUP);
+		resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR, pair.getSecond());
 
 		CSharpResolveUtil.walkChildren(memberResolveScopeProcessor, baseType, false, null, resolveState);
 
@@ -123,7 +129,8 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 		}
 	}
 
-	private static void generateConstructor(@NotNull final CSharpTypeDeclaration typeDeclaration, @NotNull Editor editor,
+	private static void generateConstructor(@NotNull final CSharpTypeDeclaration typeDeclaration,
+			@NotNull Editor editor,
 			@NotNull final PsiFile file,
 			@NotNull ConstructorChooseMember chooseMember)
 	{
