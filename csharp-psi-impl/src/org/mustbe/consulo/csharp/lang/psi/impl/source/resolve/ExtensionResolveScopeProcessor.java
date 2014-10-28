@@ -173,7 +173,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 	{
 		DotNetParameterList parameterList = methodDeclaration.getParameterList();
 		assert parameterList != null;
-		DotNetParameter[] oldParameters = parameterList.getParameters();
+		DotNetParameter[] oldParameters = methodDeclaration.getParameters();
 
 		DotNetParameter[] parameters = new DotNetParameter[oldParameters.length - 1];
 		System.arraycopy(oldParameters, 1, parameters, 0, parameters.length);
