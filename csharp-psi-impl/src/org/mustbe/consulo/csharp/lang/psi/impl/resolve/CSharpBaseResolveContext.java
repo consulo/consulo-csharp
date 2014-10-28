@@ -24,6 +24,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.Processor;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.MultiMap;
@@ -355,10 +356,9 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement> implemen
 		return new PsiElement[] {group};
 	}
 
-	@NotNull
 	@Override
-	public Collection<? extends PsiElement> getElements()
+	public boolean processElements(@NotNull Processor<PsiElement> processor)
 	{
-		return myOtherElements == null ? Collections.<PsiElement>emptyList() : myOtherElements.values();
+		return myOtherElements == null || ContainerUtil.process(myOtherElements.values(), processor);
 	}
 }

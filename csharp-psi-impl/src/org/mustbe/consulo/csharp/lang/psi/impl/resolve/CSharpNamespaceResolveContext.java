@@ -1,11 +1,9 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
@@ -27,6 +25,7 @@ import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.Processor;
 import com.intellij.util.SmartList;
 
 /**
@@ -146,12 +145,17 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		return myNamespaceAsElement.findChildren(name, myResolveScope, CSharpTransformer.INSTANCE, filter);
 	}
 
-	@NotNull
 	@Override
-	@LazyInstance
-	public Collection<? extends PsiElement> getElements()
+	public boolean processElements(@NotNull Processor<PsiElement> processor)
 	{
-		return Arrays.asList(myNamespaceAsElement.getChildren(myResolveScope, CSharpTransformer.INSTANCE,
-				DotNetNamespaceAsElement.ChildrenFilter.NONE));
+		for(PsiElement element : myNamespaceAsElement.getChildren(myResolveScope, CSharpTransformer.INSTANCE,
+				DotNetNamespaceAsElement.ChildrenFilter.NONE))
+		{
+			if(!processor.process(element))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 }

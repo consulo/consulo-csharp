@@ -15,6 +15,7 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.Processor;
 
 /**
  * @author VISTALL
@@ -81,13 +82,11 @@ public interface CSharpResolveContext
 			return PsiElement.EMPTY_ARRAY;
 		}
 
-		@NotNull
 		@Override
-		public Collection<? extends PsiElement> getElements()
+		public boolean processElements(@NotNull Processor<PsiElement> processor)
 		{
-			return Collections.emptyList();
+			return true;
 		}
-
 	};
 
 	UserDataHolder EMPTY_USER_DATA = new UserDataHolder()
@@ -133,6 +132,5 @@ public interface CSharpResolveContext
 	@NotNull
 	PsiElement[] findByName(@NotNull String name, @NotNull UserDataHolder holder);
 
-	@NotNull
-	Collection<? extends PsiElement> getElements();
+	boolean processElements(@NotNull Processor<PsiElement> processor);
 }

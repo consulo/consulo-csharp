@@ -6,18 +6,18 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
-import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.util.Processor;
 
 /**
  * @author VISTALL
  * @since 23.10.14
  */
-public class CompletionResolveScopeProcessor extends AbstractScopeProcessor
+public class CompletionResolveScopeProcessor extends AbstractScopeProcessor implements Processor<PsiElement>
 {
 	private final GlobalSearchScope myScope;
 
@@ -34,23 +34,23 @@ public class CompletionResolveScopeProcessor extends AbstractScopeProcessor
 		DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
 		assert extractor != null;
 
-		CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myScope, element);
+		return CSharpResolveContextUtil.createContext(extractor, myScope, element).processElements(this);
+	}
 
-		for(PsiElement psiElement : context.getElements())
+	@Override
+	public boolean process(PsiElement element)
+	{
+		if(element instanceof CSharpElementGroup)
 		{
-			if(psiElement instanceof CSharpElementGroup)
+			for(PsiElement it : ((CSharpElementGroup<?>) element).getElements())
 			{
-				for(PsiElement it : ((CSharpElementGroup<?>) psiElement).getElements())
-				{
-					addElement(it);
-				}
-			}
-			else
-			{
-				addElement(psiElement);
+				addElement(it);
 			}
 		}
-
+		else
+		{
+			addElement(element);
+		}
 		return true;
 	}
 }

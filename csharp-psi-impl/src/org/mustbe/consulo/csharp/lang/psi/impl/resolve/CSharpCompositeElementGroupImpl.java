@@ -11,8 +11,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.ResolveState;
 import com.intellij.psi.impl.light.LightElement;
+import com.intellij.psi.scope.PsiScopeProcessor;
 
 /**
  * @author VISTALL
@@ -54,6 +55,23 @@ public class CSharpCompositeElementGroupImpl<T extends PsiElement> extends Light
 			}
 		}
 	}
+
+	@Override
+	public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
+			@NotNull ResolveState state,
+			PsiElement lastParent,
+			@NotNull PsiElement place)
+	{
+		for(CSharpElementGroup<T> element : myGroups)
+		{
+			if(!processor.execute(element, state))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
 
 	@NotNull
 	@Override
