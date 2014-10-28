@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -23,11 +24,10 @@ public class CSharpTypeRefByQName extends DotNetTypeRef.Adapter
 
 	public CSharpTypeRefByQName(@NotNull String qualifiedName)
 	{
-		myQualifiedName = qualifiedName;
-		myNullable = null;
+		this(qualifiedName, null);
 	}
 
-	public CSharpTypeRefByQName(@NotNull String qualifiedName, boolean nullable)
+	public CSharpTypeRefByQName(@NotNull String qualifiedName, @Nullable Boolean nullable)
 	{
 		myQualifiedName = qualifiedName;
 		myNullable = nullable;
@@ -44,7 +44,12 @@ public class CSharpTypeRefByQName extends DotNetTypeRef.Adapter
 	@Override
 	public String getPresentableText()
 	{
-		return StringUtil.getShortName(myQualifiedName);
+		String shortName = StringUtil.getShortName(myQualifiedName);
+		if(myNullable == Boolean.TRUE)
+		{
+			shortName += "?";
+		}
+		return shortName;
 	}
 
 	@NotNull

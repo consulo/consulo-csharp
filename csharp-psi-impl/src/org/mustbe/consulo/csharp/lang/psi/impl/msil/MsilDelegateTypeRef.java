@@ -17,10 +17,12 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
-import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -29,16 +31,24 @@ import com.intellij.psi.PsiElement;
  */
 public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 {
-	public MsilDelegateTypeRef(DotNetTypeRef typeRef)
+	private final Boolean myNullability;
+
+	public MsilDelegateTypeRef(DotNetTypeRef typeRef, Boolean nullability)
 	{
 		super(typeRef);
+		myNullability = nullability;
 	}
 
 	@NotNull
 	@Override
 	public String getPresentableText()
 	{
-		return MsilHelper.cutGenericMarker(super.getPresentableText());
+		String s = MsilHelper.cutGenericMarker(super.getPresentableText());
+		if(myNullability == Boolean.TRUE)
+		{
+			s += "?";
+		}
+		return s;
 	}
 
 	@NotNull
@@ -50,13 +60,36 @@ public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 
 	@NotNull
 	@Override
-	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
+	public DotNetTypeResolveResult resolve(@NotNull final PsiElement scope)
 	{
-		PsiElement resolve = super.resolve(scope).getElement();
-		if(resolve == null)
+		return new DotNetTypeResolveResult()
 		{
-			return DotNetTypeResolveResult.EMPTY;
-		}
-		return new SimpleTypeResolveResult(MsilToCSharpUtil.wrap(resolve));
+			private DotNetTypeResolveResult cachedResult = MsilDelegateTypeRef.this.getDelegate().resolve(scope);
+
+			@Nullable
+			@Override
+			public PsiElement getElement()
+			{
+				PsiElement element = cachedResult.getElement();
+				if(element == null)
+				{
+					return null;
+				}
+				return MsilToCSharpUtil.wrap(cachedResult.getElement());
+			}
+
+			@NotNull
+			@Override
+			public DotNetGenericExtractor getGenericExtractor()
+			{
+				return cachedResult.getGenericExtractor();
+			}
+
+			@Override
+			public boolean isNullable()
+			{
+				return myNullability == Boolean.TRUE || CSharpTypeUtil.isElementIsNullable(getElement());
+			}
+		};
 	}
 }

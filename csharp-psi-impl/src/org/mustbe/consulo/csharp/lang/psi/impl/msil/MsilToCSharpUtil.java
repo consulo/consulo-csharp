@@ -27,9 +27,9 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTy
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -197,18 +197,7 @@ public class MsilToCSharpUtil
 
 		if(typeRef instanceof MsilNativeTypeRefImpl)
 		{
-			String qualifiedText = typeRef.getQualifiedText();
-			boolean nullable = false;
-			if(DotNetTypes.System.Object.equals(qualifiedText) || DotNetTypes.System.String.equals(qualifiedText))
-			{
-				nullable = true;
-			}
-
-			if(forceNullable != null)
-			{
-				nullable = forceNullable;
-			}
-			return new DotNetTypeRefByQName(typeRef.getQualifiedText(), CSharpTransform.INSTANCE, nullable);
+			return new CSharpTypeRefByQName(typeRef.getQualifiedText(), forceNullable);
 		}
 		else if(typeRef instanceof MsilArrayTypRefImpl)
 		{
@@ -249,6 +238,6 @@ public class MsilToCSharpUtil
 				return new CSharpLambdaTypeRef(delegateMethod);
 			}
 		}
-		return new MsilDelegateTypeRef(typeRef);
+		return new MsilDelegateTypeRef(typeRef, forceNullable);
 	}
 }
