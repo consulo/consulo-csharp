@@ -787,7 +787,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 		AbstractScopeProcessor processor = completion ? new CompletionResolveScopeProcessor(element.getResolveScope(), elements,
 				targets) : new MemberResolveScopeProcessor(element.getResolveScope(), elements, targets);
-		//processor.setSorter(sorter);
+		processor.setSorter(sorter);
 		return processor;
 	}
 
