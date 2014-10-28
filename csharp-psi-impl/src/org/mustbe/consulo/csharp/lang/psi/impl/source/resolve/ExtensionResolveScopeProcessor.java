@@ -36,6 +36,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
@@ -169,7 +170,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 		}
 	}    */
 
-	private static CSharpLightMethodDeclaration transform(CSharpMethodDeclaration methodDeclaration)
+	private static CSharpLightMethodDeclaration transform(final CSharpMethodDeclaration methodDeclaration)
 	{
 		DotNetParameterList parameterList = methodDeclaration.getParameterList();
 		assert parameterList != null;
@@ -179,7 +180,21 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 		System.arraycopy(oldParameters, 1, parameters, 0, parameters.length);
 
 		CSharpLightParameterList lightParameterList = new CSharpLightParameterList(parameterList, parameters);
-		CSharpLightMethodDeclaration declaration = new CSharpLightMethodDeclaration(methodDeclaration, lightParameterList);
+		CSharpLightMethodDeclaration declaration = new CSharpLightMethodDeclaration(methodDeclaration, lightParameterList)
+		{
+			@Override
+			public boolean canNavigate()
+			{
+				return true;
+			}
+
+			@Override
+			public void navigate(boolean requestFocus)
+			{
+				((Navigatable)methodDeclaration).navigate(requestFocus);
+			}
+		};
+
 		declaration.putUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER, methodDeclaration);
 		return declaration;
 	}
