@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -27,6 +28,7 @@ public class CSharpRecursiveElementVisitor extends CSharpElementVisitor
 	@Override
 	public void visitElement(PsiElement element)
 	{
+		ProgressManager.checkCanceled();
 		element.acceptChildren(this);
 	}
 }
