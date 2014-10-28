@@ -138,7 +138,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 			return resolveResults;
 		}
 
-		val element = new CSharpElementGroupImpl(myExpression.getProject(), myResolvedElements.get(0).getName(), myResolvedElements);
+		val element = new CSharpElementGroupImpl<CSharpMethodDeclaration>(myExpression.getProject(), myResolvedElements.get(0).getName(), myResolvedElements);
 		return ArrayUtil.mergeArrays(resolveResults, new ResolveResult[]{new PsiElementResolveResult(element)});
 	}
 
