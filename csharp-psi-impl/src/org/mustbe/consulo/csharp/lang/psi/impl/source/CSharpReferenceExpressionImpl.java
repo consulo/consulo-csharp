@@ -357,7 +357,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					state = ResolveState.initial();
 					state = state.put(CSharpResolveUtil.EXTRACTOR, genericExtractor);
 					state = state.put(CSharpResolveUtil.SELECTOR, selector);
-					CSharpResolveUtil.walkChildren(scopeProcessor, typeElement, true, null, state);
+					CSharpResolveUtil.walkChildren(scopeProcessor, typeElement, true, state);
 
 					return scopeProcessor.toResolveResults();
 				}
@@ -602,7 +602,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 			AbstractScopeProcessor memberProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY, completion);
 
-			CSharpResolveUtil.walkChildren(memberProcessor, resolveElement, true, null, resolveState);
+			CSharpResolveUtil.walkChildren(memberProcessor, resolveElement, true, resolveState);
 			return memberProcessor.toResolveResults();
 		}
 
@@ -651,7 +651,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		{
 			AbstractScopeProcessor memberProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY, completion);
 
-			if(!CSharpResolveUtil.walkChildren(memberProcessor, target, false, null, resolveState))
+			if(!CSharpResolveUtil.walkChildren(memberProcessor, target, false, resolveState))
 			{
 				return memberProcessor.toResolveResults();
 			}
@@ -671,7 +671,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				//PsiElement last = resolveLayers.getFirst();
 				PsiElement targetToWalkChildren = resolveLayers.getSecond();
 
-				if(!CSharpResolveUtil.walkChildren(p, targetToWalkChildren, true, null, resolveState))
+				if(!CSharpResolveUtil.walkChildren(p, targetToWalkChildren, true, resolveState))
 				{
 					return p.toResolveResults();
 				}
@@ -707,7 +707,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				return p.toResolveResults();
 			}
 
-			if(!CSharpResolveUtil.walkChildren(p, targetToWalkChildren, true, null, resolveState))
+			if(!CSharpResolveUtil.walkChildren(p, targetToWalkChildren, true, resolveState))
 			{
 				return p.toResolveResults();
 			}

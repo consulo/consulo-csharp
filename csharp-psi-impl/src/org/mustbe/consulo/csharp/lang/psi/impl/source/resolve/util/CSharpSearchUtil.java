@@ -63,7 +63,7 @@ public class CSharpSearchUtil
 		state = state.put(CSharpResolveUtil.EXTRACTOR, extractor);
 		state = state.put(CSharpResolveUtil.SELECTOR, new MemberByNameSelector(name));
 
-		CSharpResolveUtil.walkChildren(memberResolveScopeProcessor, owner, false, null, state);
+		CSharpResolveUtil.walkChildren(memberResolveScopeProcessor, owner, false, state);
 
 		PsiElement[] psiElements = memberResolveScopeProcessor.toPsiElements();
 		return (DotNetPropertyDeclaration) ArrayUtil.getFirstElement(psiElements);
@@ -93,7 +93,7 @@ public class CSharpSearchUtil
 		state = state.put(CSharpResolveUtil.EXTRACTOR, extractor);
 		state = state.put(CSharpResolveUtil.SELECTOR, new MemberByNameSelector(name));
 
-		CSharpResolveUtil.walkChildren(memberResolveScopeProcessor, owner, false, null, state);
+		CSharpResolveUtil.walkChildren(memberResolveScopeProcessor, owner, false, state);
 
 		PsiElement[] psiElements = memberResolveScopeProcessor.toPsiElements();
 

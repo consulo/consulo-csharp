@@ -314,7 +314,6 @@ public class CSharpResolveUtil
 	public static boolean walkChildren(@NotNull final PsiScopeProcessor processor,
 			@NotNull final PsiElement entrance,
 			boolean walkParent,
-			@Nullable PsiElement maxScope,
 			@NotNull ResolveState state)
 	{
 		ProgressIndicatorProvider.checkCanceled();
@@ -388,7 +387,7 @@ public class CSharpResolveUtil
 
 					ResolveState newState = ResolveState.initial().put(SELECTOR, selector).put(EXTRACTOR, genericExtractor);
 
-					if(!walkChildren(processor, resolve, false, maxScope, newState))
+					if(!walkChildren(processor, resolve, false, newState))
 					{
 						return false;
 					}
@@ -403,7 +402,7 @@ public class CSharpResolveUtil
 					return true;
 				}
 
-				if(!walkChildren(processor, parent, walkParent, maxScope, state))
+				if(!walkChildren(processor, parent, walkParent, state))
 				{
 					return false;
 				}
@@ -423,7 +422,7 @@ public class CSharpResolveUtil
 
 			CSharpResolveSelector selector = state.get(SELECTOR);
 			ResolveState newState = ResolveState.initial().put(SELECTOR, selector).put(EXTRACTOR, typeResolveResult.getGenericExtractor());
-			return walkChildren(processor, element, walkParent, maxScope, newState);
+			return walkChildren(processor, element, walkParent, newState);
 		}
 		else if(entrance instanceof DotNetGenericParameter)
 		{
@@ -446,7 +445,7 @@ public class CSharpResolveUtil
 					DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
 					ResolveState newState = ResolveState.initial().put(SELECTOR, selector).put(EXTRACTOR, genericExtractor);
 
-					if(!walkChildren(processor, resolve, walkParent, maxScope, newState))
+					if(!walkChildren(processor, resolve, walkParent, newState))
 					{
 						return false;
 					}
@@ -474,7 +473,7 @@ public class CSharpResolveUtil
 			{
 				DotNetNamespaceAsElement parentNamespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace(parentQName,
 						resolveScope);
-				if(parentNamespace != null && !walkChildren(processor, parentNamespace, walkParent, maxScope, state))
+				if(parentNamespace != null && !walkChildren(processor, parentNamespace, walkParent, state))
 				{
 					return false;
 				}
@@ -492,7 +491,7 @@ public class CSharpResolveUtil
 			state = state.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
 
 			DotNetNamespaceAsElement namespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace(presentableQName, resolveScope);
-			if(namespace != null && !walkChildren(processor, namespace, walkParent, maxScope, state))
+			if(namespace != null && !walkChildren(processor, namespace, walkParent, state))
 			{
 				return false;
 			}
