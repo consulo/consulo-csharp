@@ -11,6 +11,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalMemberProvider;
+import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -27,7 +28,29 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 	{
 		if(element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).isStruct())
 		{
-			return new DotNetElement[]{buildDefaultConstructor((DotNetNamedElement) element)};
+			return new DotNetElement[]{buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC)};
+		}
+		else if(element instanceof CSharpTypeDeclaration && !((CSharpTypeDeclaration) element).isInterface() && !((CSharpTypeDeclaration) element)
+				.isStruct())
+		{
+			CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) element;
+			DotNetNamedElement[] members = typeDeclaration.getMembers();
+			boolean foundConstructors = false;
+			for(DotNetNamedElement member : members)
+			{
+				if(member instanceof DotNetConstructorDeclaration && !((DotNetConstructorDeclaration) member).isDeConstructor())
+				{
+					foundConstructors = true;
+					break;
+				}
+			}
+
+			if(!foundConstructors)
+			{
+				CSharpModifier modifier = typeDeclaration.hasModifier(CSharpModifier.ABSTRACT) ? CSharpModifier.PROTECTED : CSharpModifier.PUBLIC;
+
+				return new DotNetElement[]{buildDefaultConstructor((DotNetNamedElement) element, modifier)};
+			}
 		}
 		else if(element instanceof DotNetGenericParameter)
 		{
@@ -39,7 +62,7 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 					if(constraintValue instanceof CSharpGenericConstraintKeywordValue && ((CSharpGenericConstraintKeywordValue) constraintValue)
 							.getKeywordElementType() == CSharpTokens.NEW_KEYWORD)
 					{
-						return new DotNetElement[]{buildDefaultConstructor((DotNetNamedElement) element)};
+						return new DotNetElement[]{buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC)};
 					}
 				}
 			}
@@ -48,10 +71,10 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 	}
 
 	@NotNull
-	private static CSharpConstructorDeclaration buildDefaultConstructor(DotNetNamedElement element)
+	private static CSharpConstructorDeclaration buildDefaultConstructor(DotNetNamedElement element, @NotNull CSharpModifier modifier)
 	{
 		CSharpLightConstructorDeclarationBuilder builder = new CSharpLightConstructorDeclarationBuilder(element.getProject());
-		builder.addModifier(CSharpModifier.PUBLIC);
+		builder.addModifier(modifier);
 		builder.setNavigationElement(element);
 		builder.withParent(element);
 		builder.withName(element.getName());
