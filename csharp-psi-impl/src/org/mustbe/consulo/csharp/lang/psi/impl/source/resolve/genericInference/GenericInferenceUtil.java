@@ -1,6 +1,5 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.genericInference;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -85,7 +84,7 @@ public class GenericInferenceUtil
 		Map<String, Couple<DotNetTypeRef>> genericInferenceContext = prepareParametersAndArguments(callArguments, methodDeclaration);
 		if(genericInferenceContext.isEmpty())
 		{
-			return new GenericInferenceResult(genericParameters.length == 0, DotNetGenericExtractor.EMPTY);
+			return new GenericInferenceResult(true, DotNetGenericExtractor.EMPTY);
 		}
 
 		val map = new HashMap<DotNetGenericParameter, DotNetTypeRef>();
@@ -221,12 +220,6 @@ public class GenericInferenceUtil
 	private static Map<String, Couple<DotNetTypeRef>> prepareParametersAndArguments(@NotNull CSharpCallArgument[] arguments,
 			@NotNull DotNetLikeMethodDeclaration methodDeclaration)
 	{
-		DotNetGenericParameter[] genericParameters = methodDeclaration.getGenericParameters();
-		if(genericParameters.length == 0)
-		{
-			return Collections.emptyMap();
-		}
-
 		Map<String, Couple<DotNetTypeRef>> types = new LinkedHashMap<String, Couple<DotNetTypeRef>>();
 
 		DotNetParameter[] parameters = methodDeclaration.getParameters();
