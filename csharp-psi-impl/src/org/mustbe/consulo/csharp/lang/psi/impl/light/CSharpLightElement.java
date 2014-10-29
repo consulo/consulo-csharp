@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.light;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
@@ -49,6 +50,32 @@ public abstract class CSharpLightElement<S extends PsiElement> extends LightElem
 	public PsiElement getNavigationElement()
 	{
 		return myOriginal;
+	}
+
+	@Override
+	public void navigate(boolean requestFocus)
+	{
+		if(myOriginal instanceof Navigatable)
+		{
+			((Navigatable) myOriginal).navigate(requestFocus);
+		}
+		else
+		{
+			super.navigate(requestFocus);
+		}
+	}
+
+	@Override
+	public boolean canNavigate()
+	{
+		if(myOriginal instanceof Navigatable)
+		{
+			return ((Navigatable) myOriginal).canNavigate();
+		}
+		else
+		{
+			return super.canNavigate();
+		}
 	}
 
 	@Override
