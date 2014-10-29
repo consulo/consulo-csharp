@@ -28,13 +28,13 @@ import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CompletionResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExtensionResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.PsiElementResolveResultWithExtractor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.extensionResolver.ExtensionResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.ResolveResultSorter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.TypeLikeSorter;
@@ -509,8 +509,18 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 						{
 							if(psiElement instanceof DotNetLikeMethodDeclaration)
 							{
-								GenericInferenceUtil.GenericInferenceResult inferenceResult = GenericInferenceUtil.inferenceGenericExtractor
-										(callArgumentListOwner,(DotNetLikeMethodDeclaration) psiElement);
+								CSharpMethodDeclaration wrapper = psiElement.getUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER);
+
+								GenericInferenceUtil.GenericInferenceResult inferenceResult = null;
+								if(wrapper == null)
+								{
+									inferenceResult = GenericInferenceUtil.inferenceGenericExtractor(callArgumentListOwner,
+											(DotNetLikeMethodDeclaration) psiElement);
+								}
+								else
+								{
+									inferenceResult = new GenericInferenceUtil.GenericInferenceResult(true, DotNetGenericExtractor.EMPTY);
+								}
 
 								psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, inferenceResult.getExtractor(), true);
 
@@ -658,7 +668,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			if((kind == ResolveToKind.METHOD || kind == ResolveToKind.ANY_MEMBER && completion) && element instanceof CSharpReferenceExpression)
 			{
 				// walk for extensions
-				val p = new ExtensionResolveScopeProcessor(qualifierTypeRef, (CSharpReferenceExpression) element, completion);
+				val p = new ExtensionResolveScopeProcessor(qualifierTypeRef, (CSharpReferenceExpression) element, completion, callArgumentListOwner);
 				p.merge(memberProcessor);
 
 				resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR, extractor);

@@ -59,11 +59,22 @@ public class GenericInferenceUtil
 	}
 
 	@NotNull
-	public static GenericInferenceResult inferenceGenericExtractor(@NotNull CSharpCallArgumentListOwner scope,
+	public static GenericInferenceResult inferenceGenericExtractor(@NotNull CSharpCallArgumentListOwner callArgumentListOwner,
 			@NotNull DotNetLikeMethodDeclaration methodDeclaration)
 	{
-		DotNetTypeRef[] typeArgumentListRefs = scope.getTypeArgumentListRefs();
+		CSharpCallArgumentList parameterList = callArgumentListOwner.getParameterList();
+		CSharpCallArgument[] arguments = parameterList == null ? CSharpCallArgument.EMPTY_ARRAY : parameterList.getArguments();
 
+		return inferenceGenericExtractor(arguments, callArgumentListOwner.getTypeArgumentListRefs(), callArgumentListOwner, methodDeclaration);
+	}
+
+	@NotNull
+	public static GenericInferenceResult inferenceGenericExtractor(
+			@NotNull CSharpCallArgument[] callArguments,
+			@NotNull DotNetTypeRef[] typeArgumentListRefs,
+			@NotNull PsiElement scope,
+			@NotNull DotNetLikeMethodDeclaration methodDeclaration)
+	{
 		DotNetGenericParameter[] genericParameters = methodDeclaration.getGenericParameters();
 		if(typeArgumentListRefs.length > 0)
 		{
@@ -71,7 +82,7 @@ public class GenericInferenceUtil
 					new SimpleGenericExtractorImpl(genericParameters, typeArgumentListRefs));
 		}
 
-		Map<String, Couple<DotNetTypeRef>> genericInferenceContext = prepareParameters(scope, methodDeclaration);
+		Map<String, Couple<DotNetTypeRef>> genericInferenceContext = prepareParametersAndArguments(callArguments, methodDeclaration);
 		if(genericInferenceContext.isEmpty())
 		{
 			return new GenericInferenceResult(genericParameters.length == 0, DotNetGenericExtractor.EMPTY);
@@ -207,7 +218,7 @@ public class GenericInferenceUtil
 	 * @return map of <parameterName, <ParameterTypeRef, ExpressionTypeRef>>
 	 */
 	@NotNull
-	public static Map<String, Couple<DotNetTypeRef>> prepareParameters(@NotNull CSharpCallArgumentListOwner callArgumentListOwner,
+	private static Map<String, Couple<DotNetTypeRef>> prepareParametersAndArguments(@NotNull CSharpCallArgument[] arguments,
 			@NotNull DotNetLikeMethodDeclaration methodDeclaration)
 	{
 		DotNetGenericParameter[] genericParameters = methodDeclaration.getGenericParameters();
@@ -217,19 +228,6 @@ public class GenericInferenceUtil
 		}
 
 		Map<String, Couple<DotNetTypeRef>> types = new LinkedHashMap<String, Couple<DotNetTypeRef>>();
-
-		CSharpCallArgumentList parameterList = callArgumentListOwner.getParameterList();
-
-		CSharpCallArgument[] arguments;
-
-		if(parameterList == null)
-		{
-			arguments = CSharpCallArgument.EMPTY_ARRAY;
-		}
-		else
-		{
-			arguments = parameterList.getArguments();
-		}
 
 		DotNetParameter[] parameters = methodDeclaration.getParameters();
 

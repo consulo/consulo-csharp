@@ -14,19 +14,26 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
+package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.extensionResolver;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameterList;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpElementGroupImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
@@ -53,15 +60,21 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 {
 	private final CSharpReferenceExpression myExpression;
 	private final boolean myCompletion;
+	@Nullable
+	private final CSharpCallArgumentListOwner myCallArgumentListOwner;
 	private final DotNetTypeRef myQualifierTypeRef;
 
 	private final List<CSharpMethodDeclaration> myResolvedElements = new SmartList<CSharpMethodDeclaration>();
 
-	public ExtensionResolveScopeProcessor(@NotNull DotNetTypeRef qualifierTypeRef, @NotNull CSharpReferenceExpression expression, boolean completion)
+	public ExtensionResolveScopeProcessor(@NotNull DotNetTypeRef qualifierTypeRef,
+			@NotNull CSharpReferenceExpression expression,
+			boolean completion,
+			@Nullable CSharpCallArgumentListOwner callArgumentListOwner)
 	{
 		myQualifierTypeRef = qualifierTypeRef;
 		myExpression = expression;
 		myCompletion = completion;
+		myCallArgumentListOwner = callArgumentListOwner;
 	}
 
 	@Override
@@ -69,7 +82,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 	{
 		if(myCompletion)
 		{
-			DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
+			/*DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
 			assert extractor != null;
 
 			CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myExpression.getResolveScope(), element);
@@ -79,16 +92,16 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 				Collection<CSharpMethodDeclaration> elements = elementGroup.getElements();
 				for(CSharpMethodDeclaration psiElement : elements)
 				{
-					DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(psiElement);
+					DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(psiElement, DotNetGenericExtractor.EMPTY);
 
 					if(!CSharpTypeUtil.isInheritableWithImplicit(firstParameterTypeRef, myQualifierTypeRef, myExpression))
 					{
 						continue;
 					}
 
-					addElement(transform(psiElement));
+					addElement(transform(psiElement, DotNetGenericExtractor.EMPTY));
 				}
-			}
+			}*/
 		}
 		else
 		{
@@ -113,19 +126,40 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 				{
 					CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) psiElement;
 
-					DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(methodDeclaration);
+					GenericInferenceUtil.GenericInferenceResult inferenceResult = inferenceGenericExtractor(methodDeclaration);
+
+					DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(methodDeclaration, inferenceResult.getExtractor());
 
 					if(!CSharpTypeUtil.isInheritableWithImplicit(firstParameterTypeRef, myQualifierTypeRef, myExpression))
 					{
 						continue;
 					}
 
-					myResolvedElements.add(transform(methodDeclaration));
+					myResolvedElements.add(transform(methodDeclaration, inferenceResult.getExtractor()));
 				}
 			}
 		}
 
 		return true;
+	}
+
+	@NotNull
+	public GenericInferenceUtil.GenericInferenceResult inferenceGenericExtractor(CSharpMethodDeclaration methodDeclaration)
+	{
+		if(myCallArgumentListOwner == null)
+		{
+			return new GenericInferenceUtil.GenericInferenceResult(true, DotNetGenericExtractor.EMPTY);
+		}
+
+		CSharpCallArgumentList parameterList = myCallArgumentListOwner.getParameterList();
+		CSharpCallArgument[] arguments = parameterList == null ? CSharpCallArgument.EMPTY_ARRAY : parameterList.getArguments();
+
+		CSharpCallArgument[] newArguments = new CSharpCallArgument[arguments.length + 1];
+		System.arraycopy(arguments, 0, newArguments, 1, arguments.length);
+
+		newArguments[0] = new ExtensionQualifierAsCallArgumentWrapper(myExpression.getProject(), myQualifierTypeRef);
+
+		return GenericInferenceUtil.inferenceGenericExtractor(newArguments, DotNetTypeRef.EMPTY_ARRAY, myExpression, methodDeclaration);
 	}
 
 	@NotNull
@@ -138,19 +172,21 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 			return resolveResults;
 		}
 
-		val element = new CSharpElementGroupImpl<CSharpMethodDeclaration>(myExpression.getProject(), myResolvedElements.get(0).getName(), myResolvedElements);
+		val element = new CSharpElementGroupImpl<CSharpMethodDeclaration>(myExpression.getProject(), myResolvedElements.get(0).getName(),
+				myResolvedElements);
 		return ArrayUtil.mergeArrays(resolveResults, new ResolveResult[]{new PsiElementResolveResult(element)});
 	}
 
 	@NotNull
-	private static DotNetTypeRef getFirstTypeRefOrParameter(DotNetParameterListOwner owner)
+	private DotNetTypeRef getFirstTypeRefOrParameter(DotNetParameterListOwner owner, DotNetGenericExtractor extractor)
 	{
 		DotNetParameter[] parameters = owner.getParameters();
 		assert parameters.length != 0;
-		return parameters[0].toTypeRef(false);
+		assert parameters[0].hasModifier(CSharpModifier.THIS);
+		return GenericUnwrapTool.exchangeTypeRef(parameters[0].toTypeRef(false), extractor, myExpression);
 	}
 
-	private static CSharpLightMethodDeclaration transform(final CSharpMethodDeclaration methodDeclaration)
+	private static CSharpMethodDeclaration transform(final CSharpMethodDeclaration methodDeclaration, @NotNull DotNetGenericExtractor extractor)
 	{
 		DotNetParameterList parameterList = methodDeclaration.getParameterList();
 		assert parameterList != null;
@@ -171,11 +207,12 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 			@Override
 			public void navigate(boolean requestFocus)
 			{
-				((Navigatable)methodDeclaration).navigate(requestFocus);
+				((Navigatable) methodDeclaration).navigate(requestFocus);
 			}
 		};
 
-		declaration.putUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER, methodDeclaration);
-		return declaration;
+		CSharpMethodDeclaration extractedMethod = GenericUnwrapTool.extract(declaration, extractor, true);
+		extractedMethod.putUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER, methodDeclaration);
+		return extractedMethod;
 	}
 }
