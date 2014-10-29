@@ -314,6 +314,7 @@ public class CSharpResolveUtil
 	public static boolean walkChildren(@NotNull final PsiScopeProcessor processor,
 			@NotNull final PsiElement entrance,
 			boolean walkParent,
+			boolean walkDeep,
 			@NotNull ResolveState state)
 	{
 		ProgressIndicatorProvider.checkCanceled();
@@ -329,67 +330,70 @@ public class CSharpResolveUtil
 				return false;
 			}
 
-			DotNetGenericExtractor thisExtractor = state.get(EXTRACTOR);
-			if(typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
+			if(walkDeep)
 			{
-				DotNetTypeDeclaration[] types = DotNetPsiSearcher.getInstance(typeDeclaration.getProject()).findTypes(typeDeclaration.getVmQName(),
-						typeDeclaration.getResolveScope());
-
-				for(DotNetTypeDeclaration type : types)
+				DotNetGenericExtractor thisExtractor = state.get(EXTRACTOR);
+				if(typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
 				{
-					DotNetTypeList extendList = type.getExtendList();
-					if(extendList != null)
+					DotNetTypeDeclaration[] types = DotNetPsiSearcher.getInstance(typeDeclaration.getProject()).findTypes(typeDeclaration.getVmQName(), typeDeclaration.getResolveScope());
+
+
+					for(DotNetTypeDeclaration type : types)
 					{
-						DotNetTypeRef[] typeRefs = extendList.getTypeRefs();
-						for(DotNetTypeRef typeRef : typeRefs)
+						DotNetTypeList extendList = type.getExtendList();
+						if(extendList != null)
 						{
-							superTypes.add(GenericUnwrapTool.exchangeTypeRef(typeRef, thisExtractor, type));
+							DotNetTypeRef[] typeRefs = extendList.getTypeRefs();
+							for(DotNetTypeRef typeRef : typeRefs)
+							{
+								superTypes.add(GenericUnwrapTool.exchangeTypeRef(typeRef, thisExtractor, type));
+							}
+						}
+					}
+
+					if(superTypes.isEmpty())
+					{
+						Set<String> set = new THashSet<String>();
+						for(DotNetTypeDeclaration type : types)
+						{
+							set.add(CSharpTypeDeclarationImplUtil.getDefaultSuperType(type));
+						}
+
+						if(set.contains(DotNetTypes.System.ValueType))
+						{
+							superTypes.add(new DotNetTypeRefByQName(DotNetTypes.System.ValueType, CSharpTransform.INSTANCE));
+						}
+						else
+						{
+							superTypes.add(new DotNetTypeRefByQName(DotNetTypes.System.Object, CSharpTransform.INSTANCE));
 						}
 					}
 				}
-
-				if(superTypes.isEmpty())
+				else
 				{
-					Set<String> set = new THashSet<String>();
-					for(DotNetTypeDeclaration type : types)
+					for(DotNetTypeRef typeRef : typeDeclaration.getExtendTypeRefs())
 					{
-						set.add(CSharpTypeDeclarationImplUtil.getDefaultSuperType(type));
-					}
-
-					if(set.contains(DotNetTypes.System.ValueType))
-					{
-						superTypes.add(new DotNetTypeRefByQName(DotNetTypes.System.ValueType, CSharpTransform.INSTANCE));
-					}
-					else
-					{
-						superTypes.add(new DotNetTypeRefByQName(DotNetTypes.System.Object, CSharpTransform.INSTANCE));
+						superTypes.add(GenericUnwrapTool.exchangeTypeRef(typeRef, thisExtractor, typeDeclaration));
 					}
 				}
-			}
-			else
-			{
-				for(DotNetTypeRef typeRef : typeDeclaration.getExtendTypeRefs())
+
+				for(DotNetTypeRef dotNetTypeRef : superTypes)
 				{
-					superTypes.add(GenericUnwrapTool.exchangeTypeRef(typeRef, thisExtractor, typeDeclaration));
-				}
-			}
+					DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(entrance);
+					PsiElement resolve = typeResolveResult.getElement();
 
-			for(DotNetTypeRef dotNetTypeRef : superTypes)
-			{
-				DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(entrance);
-				PsiElement resolve = typeResolveResult.getElement();
-
-				if(resolve != null && !resolve.isEquivalentTo(entrance))
-				{
-					DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
-
-					CSharpResolveSelector selector = state.get(SELECTOR);
-
-					ResolveState newState = ResolveState.initial().put(SELECTOR, selector).put(EXTRACTOR, genericExtractor);
-
-					if(!walkChildren(processor, resolve, false, newState))
+					if(resolve != null && !resolve.isEquivalentTo(entrance))
 					{
-						return false;
+						DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
+
+						CSharpResolveSelector selector = state.get(SELECTOR);
+
+						ResolveState newState = ResolveState.initial().put(SELECTOR, selector).put(EXTRACTOR, genericExtractor);
+
+						if(!walkChildren(processor, resolve, false, true, newState))
+						{
+							return false;
+						}
 					}
 				}
 			}
@@ -402,7 +406,7 @@ public class CSharpResolveUtil
 					return true;
 				}
 
-				if(!walkChildren(processor, parent, walkParent, state))
+				if(!walkChildren(processor, parent, walkParent, true, state))
 				{
 					return false;
 				}
@@ -422,7 +426,7 @@ public class CSharpResolveUtil
 
 			CSharpResolveSelector selector = state.get(SELECTOR);
 			ResolveState newState = ResolveState.initial().put(SELECTOR, selector).put(EXTRACTOR, typeResolveResult.getGenericExtractor());
-			return walkChildren(processor, element, walkParent, newState);
+			return walkChildren(processor, element, walkParent, true, newState);
 		}
 		else if(entrance instanceof DotNetGenericParameter)
 		{
@@ -445,7 +449,7 @@ public class CSharpResolveUtil
 					DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
 					ResolveState newState = ResolveState.initial().put(SELECTOR, selector).put(EXTRACTOR, genericExtractor);
 
-					if(!walkChildren(processor, resolve, walkParent, newState))
+					if(!walkChildren(processor, resolve, walkParent, true, newState))
 					{
 						return false;
 					}
@@ -473,7 +477,7 @@ public class CSharpResolveUtil
 			{
 				DotNetNamespaceAsElement parentNamespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace(parentQName,
 						resolveScope);
-				if(parentNamespace != null && !walkChildren(processor, parentNamespace, walkParent, state))
+				if(parentNamespace != null && !walkChildren(processor, parentNamespace, walkParent, true, state))
 				{
 					return false;
 				}
@@ -491,7 +495,7 @@ public class CSharpResolveUtil
 			state = state.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
 
 			DotNetNamespaceAsElement namespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace(presentableQName, resolveScope);
-			if(namespace != null && !walkChildren(processor, namespace, walkParent, state))
+			if(namespace != null && !walkChildren(processor, namespace, walkParent, true, state))
 			{
 				return false;
 			}

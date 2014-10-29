@@ -204,7 +204,7 @@ public class HideOrOverrideMethodCollector implements LineMarkerCollector
 		ResolveState state = ResolveState.initial();
 		state = state.put(CSharpResolveUtil.SELECTOR, new MemberByNameSelector(target.getName()));
 
-		CSharpResolveUtil.walkChildren(processor, owner, false, state);
+		CSharpResolveUtil.walkChildren(processor, owner, false, true, state);
 
 		PsiElement[] psiElements = processor.toPsiElements();
 		for(PsiElement psiElement : psiElements)

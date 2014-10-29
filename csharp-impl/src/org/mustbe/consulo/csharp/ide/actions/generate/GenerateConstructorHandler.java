@@ -82,7 +82,7 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 		resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, StaticResolveSelectors.CONSTRUCTOR_GROUP);
 		resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR, pair.getSecond());
 
-		CSharpResolveUtil.walkChildren(memberResolveScopeProcessor, baseType, false, resolveState);
+		CSharpResolveUtil.walkChildren(memberResolveScopeProcessor, baseType, false, false, resolveState);
 
 		PsiElement[] psiElements = memberResolveScopeProcessor.toPsiElements();
 
