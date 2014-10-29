@@ -76,7 +76,7 @@ public class GenericInferenceUtil
 			@NotNull DotNetLikeMethodDeclaration methodDeclaration)
 	{
 		DotNetGenericParameter[] genericParameters = methodDeclaration.getGenericParameters();
-		if(typeArgumentListRefs.length > 0)
+		if(genericParameters.length == 0 || typeArgumentListRefs.length > 0)
 		{
 			return new GenericInferenceResult(genericParameters.length == typeArgumentListRefs.length,
 					new SimpleGenericExtractorImpl(genericParameters, typeArgumentListRefs));
