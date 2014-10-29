@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.extensionResolver;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -82,7 +83,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 	{
 		if(myCompletion)
 		{
-			/*DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
+			DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
 			assert extractor != null;
 
 			CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myExpression.getResolveScope(), element);
@@ -92,16 +93,18 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 				Collection<CSharpMethodDeclaration> elements = elementGroup.getElements();
 				for(CSharpMethodDeclaration psiElement : elements)
 				{
-					DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(psiElement, DotNetGenericExtractor.EMPTY);
+					GenericInferenceUtil.GenericInferenceResult inferenceResult = inferenceGenericExtractor(psiElement);
+
+					DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(psiElement, inferenceResult.getExtractor());
 
 					if(!CSharpTypeUtil.isInheritableWithImplicit(firstParameterTypeRef, myQualifierTypeRef, myExpression))
 					{
 						continue;
 					}
 
-					addElement(transform(psiElement, DotNetGenericExtractor.EMPTY));
+					addElement(transform(psiElement, inferenceResult.getExtractor()));
 				}
-			}*/
+			}
 		}
 		else
 		{
