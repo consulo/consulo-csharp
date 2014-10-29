@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -24,6 +25,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
@@ -55,5 +57,19 @@ public class CSharpNamedCallArgumentImpl extends CSharpElementImpl implements CS
 	{
 		PsiElement lastChild = getLastChild();
 		return lastChild instanceof DotNetExpression ? (DotNetExpression) lastChild : null;
+	}
+
+	@Override
+	@NotNull
+	public String getName()
+	{
+		CSharpReferenceExpression argumentNameReference = getArgumentNameReference();
+		return argumentNameReference.getReferenceName();
+	}
+
+	@Override
+	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	{
+		return getArgumentNameReference().handleElementRename(name);
 	}
 }

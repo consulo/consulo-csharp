@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.DeprecationInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
@@ -27,6 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
@@ -145,6 +147,8 @@ public class CSharpTypeUtil
 	}
 
 	@Nullable
+	@Deprecated
+	@DeprecationInfo("Use #findTypeRefFromExtends")
 	public static Pair<DotNetTypeDeclaration, DotNetGenericExtractor> findTypeInSuper(@NotNull DotNetTypeRef typeRef,
 			@NotNull String vmQName,
 			@NotNull PsiElement scope)
@@ -171,6 +175,22 @@ public class CSharpTypeUtil
 			}
 		}
 		return null;
+	}
+
+	@Nullable
+	public static DotNetTypeResolveResult findTypeRefFromExtends(@NotNull DotNetTypeRef typeRef,
+			@NotNull DotNetTypeRef otherTypeRef,
+			@NotNull PsiElement scope)
+	{
+		DotNetTypeResolveResult typeResolveResult = otherTypeRef.resolve(scope);
+
+		PsiElement element = typeResolveResult.getElement();
+		if(!(element instanceof CSharpTypeDeclaration))
+		{
+			return null;
+		}
+
+		return findTypeRefFromExtends(typeRef, (DotNetTypeDeclaration) element, scope);
 	}
 
 	@Nullable

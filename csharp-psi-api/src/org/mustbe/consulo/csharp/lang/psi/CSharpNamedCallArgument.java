@@ -17,13 +17,18 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.PsiNamedElement;
 
 /**
  * @author VISTALL
  * @since 17.06.14
  */
-public interface CSharpNamedCallArgument extends CSharpCallArgument
+public interface CSharpNamedCallArgument extends CSharpCallArgument, PsiNamedElement
 {
+	@Override
+	@NotNull
+	String getName();
+
 	@NotNull
 	CSharpReferenceExpression getArgumentNameReference();
 }

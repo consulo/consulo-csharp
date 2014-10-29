@@ -35,6 +35,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.PsiElementResolveR
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.ResolveResultSorter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.TypeLikeSorter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpElementGroupTypeRef;
@@ -498,8 +499,6 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 					return ResolveResult.EMPTY_ARRAY;
 				}
 
-				DotNetTypeRef[] typeArgumentListRefs = callArgumentListOwner.getTypeArgumentListRefs();
-
 				elementWithWeightList = new ArrayList<Pair<Integer, PsiElement>>();
 				for(ResolveResult result : resolveResults)
 				{
@@ -510,21 +509,21 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 						{
 							if(psiElement instanceof DotNetLikeMethodDeclaration)
 							{
-								if(typeArgumentListRefs.length != ((DotNetGenericParameterListOwner) psiElement).getGenericParametersCount())
+								GenericInferenceUtil.GenericInferenceResult inferenceResult = GenericInferenceUtil.inferenceGenericExtractor
+										(callArgumentListOwner,(DotNetLikeMethodDeclaration) psiElement);
+
+								psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, inferenceResult.getExtractor(), true);
+
+								int i = MethodAcceptorImpl.calcAcceptableWeight(element, callArgumentListOwner,
+										(DotNetLikeMethodDeclaration) psiElement);
+
+								if(inferenceResult.isSuccess())
 								{
-									elementWithWeightList.add(Pair.create(0, psiElement));
+									elementWithWeightList.add(Pair.create(i, psiElement));
 								}
 								else
 								{
-									DotNetGenericExtractor extractorFromCall = MethodAcceptorImpl.createExtractorFromCall(typeArgumentListRefs,
-											(DotNetGenericParameterListOwner) psiElement);
-
-									psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, extractorFromCall, true);
-
-									int i = MethodAcceptorImpl.calcAcceptableWeight(element, callArgumentListOwner,
-											(DotNetLikeMethodDeclaration) psiElement);
-
-									elementWithWeightList.add(Pair.create(i, psiElement));
+									elementWithWeightList.add(Pair.create(i - 100, psiElement));
 								}
 							}
 						}
@@ -1101,7 +1100,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	public static DotNetTypeRef toTypeRef(@NotNull ResolveResult resolveResult)
 	{
 		PsiElement element = resolveResult.getElement();
-		DotNetGenericExtractor extractor =  DotNetGenericExtractor.EMPTY;
+		DotNetGenericExtractor extractor = DotNetGenericExtractor.EMPTY;
 		if(resolveResult instanceof PsiElementResolveResultWithExtractor)
 		{
 			extractor = ((PsiElementResolveResultWithExtractor) resolveResult).getExtractor();
