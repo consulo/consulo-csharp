@@ -80,7 +80,9 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements Dot
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent,
+	public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
+			@NotNull ResolveState state,
+			PsiElement lastParent,
 			@NotNull PsiElement place)
 	{
 		for(CSharpLambdaParameter parameter : getParameters())
@@ -113,13 +115,14 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements Dot
 		DotNetExpression singleExpression = getSingleExpression();
 		if(singleExpression != null)
 		{
-			return singleExpression.toTypeRef(false);
+			DotNetTypeRef dotNetTypeRef = singleExpression.toTypeRef(false);
+			return dotNetTypeRef == DotNetTypeRef.ERROR_TYPE ? DotNetTypeRef.AUTO_TYPE : dotNetTypeRef;
 		}
 
 		CSharpBlockStatementImpl blockStatement = getBlockStatement();
 		if(blockStatement == null)
 		{
-			return DotNetTypeRef.ERROR_TYPE;
+			return DotNetTypeRef.AUTO_TYPE;
 		}
 
 		val typeRefs = new ArrayList<DotNetTypeRef>();
@@ -153,14 +156,19 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements Dot
 				}
 				else
 				{
-					typeRefs.add(expression.toTypeRef(false));
+					DotNetTypeRef ref = expression.toTypeRef(false);
+					if(ref == DotNetTypeRef.ERROR_TYPE)
+					{
+						return;
+					}
+					typeRefs.add(ref);
 				}
 			}
 		});
 
 		if(typeRefs.isEmpty())
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.Void);
+			return DotNetTypeRef.AUTO_TYPE;
 		}
 		return typeRefs.get(0);
 	}
