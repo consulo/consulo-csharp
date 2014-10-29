@@ -883,17 +883,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@Override
 	public PsiElement resolve()
 	{
-		ResolveResult[] resolveResults = multiResolve(false);
-		if(resolveResults.length == 0)
-		{
-			return null;
-		}
-		ResolveResult resolveResult = resolveResults[0];
-		if(!resolveResult.isValidResult())
-		{
-			return null;
-		}
-		return resolveResult.getElement();
+		return CSharpResolveUtil.findFirstValidElement(multiResolve(false));
 	}
 
 	@Override
@@ -1075,8 +1065,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 
-		ResolveResult resolveResult = resolveResults[0];
-		if(!resolveResult.isValidResult())
+		ResolveResult resolveResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
+		if(resolveResult == null)
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
@@ -1092,12 +1082,12 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 
-		ResolveResult resolveResult = resolveResults[0];
-		if(!resolveResult.isValidResult())
+		ResolveResult firstValidResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
+		if(firstValidResult == null)
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
-		return toTypeRef(resolveResult);
+		return toTypeRef(firstValidResult);
 	}
 
 	@NotNull

@@ -38,6 +38,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubElementResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -141,11 +142,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	public PsiElement resolve()
 	{
 		ResolveResult[] resolveResults = multiResolve(true);
-		if(resolveResults.length > 0 && resolveResults[0].isValidResult())
-		{
-			return resolveResults[0].getElement();
-		}
-		return null;
+		return CSharpResolveUtil.findFirstValidElement(resolveResults);
 	}
 
 	private Object resolveImpl(@Nullable Ref<PsiElement> last)

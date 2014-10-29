@@ -25,6 +25,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -120,12 +121,7 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 		{
 			return null;
 		}
-		ResolveResult resolveResult = resolveResults[0];
-		if(!resolveResult.isValidResult())
-		{
-			return null;
-		}
-		return resolveResult.getElement();
+		return CSharpResolveUtil.findFirstValidElement(resolveResults);
 	}
 
 	@NotNull

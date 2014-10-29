@@ -31,9 +31,9 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
@@ -344,7 +344,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 			resolveResults = ((PsiPolyVariantReference) callElement).multiResolve(false);
 		}
 
-		ResolveResult goodResult = resolveResults.length > 0 && resolveResults[0].isValidResult() ? resolveResults[0] : null;
+		ResolveResult goodResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
 
 		if(goodResult != null)
 		{

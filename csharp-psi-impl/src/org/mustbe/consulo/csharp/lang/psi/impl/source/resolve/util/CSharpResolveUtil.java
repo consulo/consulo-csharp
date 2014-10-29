@@ -65,6 +65,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiInvalidElementAccessException;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -531,5 +532,29 @@ public class CSharpResolveUtil
 		}
 
 		return current.toTypeRef(false);
+	}
+
+	@Nullable
+	public static PsiElement findFirstValidElement(ResolveResult[] resolveResults)
+	{
+		ResolveResult firstValidResult = findFirstValidResult(resolveResults);
+		return firstValidResult == null ? null : firstValidResult.getElement();
+	}
+
+	@Nullable
+	public static ResolveResult findFirstValidResult(ResolveResult[] resolveResults)
+	{
+		if(resolveResults.length == 0)
+		{
+			return null;
+		}
+		for(ResolveResult resolveResult : resolveResults)
+		{
+			if(resolveResult.isValidResult())
+			{
+				return resolveResult;
+			}
+		}
+		return null;
 	}
 }
