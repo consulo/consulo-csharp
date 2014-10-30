@@ -73,6 +73,39 @@ import com.intellij.util.containers.ContainerUtil;
 public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements PsiReference, PsiPolyVariantReference, CSharpCallArgumentListOwner,
 		CSharpQualifiedNonReference
 {
+	private static class OurResolver implements ResolveCache.PolyVariantResolver<CSharpOperatorReferenceImpl>
+	{
+		private static final OurResolver INSTANCE = new OurResolver();
+
+		@NotNull
+		@Override
+		public ResolveResult[] resolve(@NotNull CSharpOperatorReferenceImpl reference, boolean incompleteCode)
+		{
+			Ref<PsiElement> psiElementRef = new Ref<PsiElement>();
+			Object o = reference.resolveImpl(psiElementRef);
+
+			List<ResolveResult> elements = new SmartList<ResolveResult>();
+			if(o instanceof PsiElement)
+			{
+				elements.add(new PsiElementResolveResult((PsiElement) o, true));
+			}
+			else if(o instanceof DotNetTypeRef)
+			{
+				elements.add(new StubElementResolveResult(reference, true, (DotNetTypeRef) o));
+			}
+
+			if(!incompleteCode)
+			{
+				PsiElement psiElement = psiElementRef.get();
+				if(psiElement != null)
+				{
+					elements.add(new PsiElementResolveResult(psiElement, false));
+				}
+			}
+			return ContainerUtil.toArray(elements, ResolveResult.EMPTY_ARRAY);
+		}
+	}
+
 	private static final TokenSet ourMergeSet = TokenSet.orSet(CSharpTokenSets.OVERLOADING_OPERATORS, CSharpTokenSets.ASSIGNMENT_OPERATORS,
 			TokenSet.create(CSharpTokens.ANDAND, CSharpTokens.OROR));
 
@@ -379,36 +412,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
-		return ResolveCache.getInstance(getProject()).resolveWithCaching(this, new ResolveCache.PolyVariantResolver<CSharpOperatorReferenceImpl>()
-		{
-			@NotNull
-			@Override
-			public ResolveResult[] resolve(@NotNull CSharpOperatorReferenceImpl reference, boolean incompleteCode)
-			{
-				Ref<PsiElement> psiElementRef = new Ref<PsiElement>();
-				Object o = resolveImpl(psiElementRef);
-
-				List<ResolveResult> elements = new SmartList<ResolveResult>();
-				if(o instanceof PsiElement)
-				{
-					elements.add(new PsiElementResolveResult((PsiElement) o, true));
-				}
-				else if(o instanceof DotNetTypeRef)
-				{
-					elements.add(new StubElementResolveResult(reference, true, (DotNetTypeRef) o));
-				}
-
-				if(!incompleteCode)
-				{
-					PsiElement psiElement = psiElementRef.get();
-					if(psiElement != null)
-					{
-						elements.add(new PsiElementResolveResult(psiElement, false));
-					}
-				}
-				return ContainerUtil.toArray(elements, ResolveResult.EMPTY_ARRAY);
-			}
-		}, false, incompleteCode);
+		return ResolveCache.getInstance(getProject()).resolveWithCaching(this, OurResolver.INSTANCE, false, incompleteCode);
 	}
 
 	@NotNull
