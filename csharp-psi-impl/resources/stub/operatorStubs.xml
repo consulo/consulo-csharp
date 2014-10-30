@@ -109,6 +109,31 @@
 			<parameter/>
 			<parameter/>
 		</operator>
+
+		<operator name="PERC">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="XOR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="AND">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="OR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="TILDE">
+			<parameter/>
+			<parameter/>
+		</operator>
 	</type>
 
 	<type name="System.SByte">
@@ -161,6 +186,31 @@
 		</operator>
 
 		<operator name="DIV">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="PERC">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="XOR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="AND">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="OR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="TILDE">
 			<parameter/>
 			<parameter/>
 		</operator>
@@ -219,6 +269,31 @@
 			<parameter/>
 			<parameter/>
 		</operator>
+
+		<operator name="PERC">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="XOR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="AND">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="OR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="TILDE">
+			<parameter/>
+			<parameter/>
+		</operator>
 	</type>
 
 	<type name="System.UInt16">
@@ -271,6 +346,31 @@
 		</operator>
 
 		<operator name="DIV">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="PERC">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="XOR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="AND">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="OR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="TILDE">
 			<parameter/>
 			<parameter/>
 		</operator>
@@ -329,6 +429,31 @@
 			<parameter/>
 			<parameter/>
 		</operator>
+
+		<operator name="PERC">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="XOR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="AND">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="OR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="TILDE">
+			<parameter/>
+			<parameter/>
+		</operator>
 	</type>
 
 	<type name="System.UInt32">
@@ -381,6 +506,31 @@
 		</operator>
 
 		<operator name="DIV">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="PERC">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="XOR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="AND">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="OR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="TILDE">
 			<parameter/>
 			<parameter/>
 		</operator>
@@ -439,6 +589,31 @@
 			<parameter/>
 			<parameter/>
 		</operator>
+
+		<operator name="PERC">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="XOR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="AND">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="OR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="TILDE">
+			<parameter/>
+			<parameter/>
+		</operator>
 	</type>
 
 	<type name="System.UInt64">
@@ -491,6 +666,31 @@
 		</operator>
 
 		<operator name="DIV">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="PERC">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="XOR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="AND">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="OR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="TILDE">
 			<parameter/>
 			<parameter/>
 		</operator>
@@ -549,6 +749,31 @@
 			<parameter/>
 			<parameter/>
 		</operator>
+
+		<operator name="PERC">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="XOR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="AND">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="OR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="TILDE">
+			<parameter/>
+			<parameter/>
+		</operator>
 	</type>
 
 	<type name="System.Double">
@@ -601,6 +826,31 @@
 		</operator>
 
 		<operator name="DIV">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="PERC">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="XOR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="AND">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="OR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="TILDE">
 			<parameter/>
 			<parameter/>
 		</operator>
