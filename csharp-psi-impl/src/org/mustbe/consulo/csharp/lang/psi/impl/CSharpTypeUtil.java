@@ -248,14 +248,14 @@ public class CSharpTypeUtil
 	}
 
 	@NotNull
-	private static InheritResult isInheritable(@NotNull DotNetTypeRef top,
+	public static InheritResult isInheritable(@NotNull DotNetTypeRef top,
 			@NotNull DotNetTypeRef target,
 			@NotNull PsiElement scope,
 			@Nullable DotNetTypeRef explicitOrImplicit)
 	{
 		if(top == DotNetTypeRef.ERROR_TYPE || target == DotNetTypeRef.ERROR_TYPE)
 		{
-			return FAIL;
+			return fail();
 		}
 
 		if(top.equals(target))
@@ -283,7 +283,7 @@ public class CSharpTypeUtil
 		{
 			if(((CSharpRefTypeRef) target).getType() != ((CSharpRefTypeRef) top).getType())
 			{
-				return FAIL;
+				return fail();
 			}
 			return isInheritable(((CSharpRefTypeRef) top).getInnerTypeRef(), ((CSharpRefTypeRef) target).getInnerTypeRef(), scope,
 					explicitOrImplicit);
@@ -293,7 +293,7 @@ public class CSharpTypeUtil
 		{
 			if(((CSharpArrayTypeRef) target).getDimensions() != ((CSharpArrayTypeRef) top).getDimensions())
 			{
-				return FAIL;
+				return fail();
 			}
 			return isInheritable(((CSharpArrayTypeRef) top).getInnerTypeRef(), ((CSharpArrayTypeRef) target).getInnerTypeRef(), scope,
 					explicitOrImplicit);
@@ -307,7 +307,7 @@ public class CSharpTypeUtil
 			DotNetTypeRef[] topParameters = ((CSharpLambdaResolveResult) topTypeResolveResult).getParameterTypeRefs();
 			if(topParameters.length != targetParameters.length)
 			{
-				return FAIL;
+				return fail();
 			}
 			for(int i = 0; i < targetParameters.length; i++)
 			{
@@ -319,7 +319,7 @@ public class CSharpTypeUtil
 				}
 				if(!isInheritable(topParameter, targetParameter, scope, explicitOrImplicit).isSuccess())
 				{
-					return FAIL;
+					return fail();
 				}
 			}
 			DotNetTypeRef targetReturnType = ((CSharpLambdaResolveResult) targetTypeResolveResult).getReturnTypeRef();
@@ -340,7 +340,7 @@ public class CSharpTypeUtil
 
 		if(!topTypeResolveResult.isNullable() && target == CSharpNullType.INSTANCE)
 		{
-			return FAIL;
+			return fail();
 		}
 
 		if(top instanceof DotNetGenericWrapperTypeRef && topElement instanceof DotNetTypeDeclaration)
@@ -350,14 +350,15 @@ public class CSharpTypeUtil
 
 			if(typeFromSuper == null)
 			{
-				return FAIL;
+				return fail();
 			}
 
 			CSharpTypeRefByTypeDeclaration topSelfTypeRef = new CSharpTypeRefByTypeDeclaration(topTypeDeclaration);
-			CSharpTypeRefByTypeDeclaration targetSelfTypeRef = new CSharpTypeRefByTypeDeclaration((DotNetTypeDeclaration) typeFromSuper.getElement());
+			CSharpTypeRefByTypeDeclaration targetSelfTypeRef = new CSharpTypeRefByTypeDeclaration((DotNetTypeDeclaration) typeFromSuper.getElement
+					());
 			if(isInheritable(topSelfTypeRef, targetSelfTypeRef, scope, explicitOrImplicit) == FAIL)
 			{
-				return FAIL;
+				return fail();
 			}
 
 			DotNetGenericExtractor targetExtractor = typeFromSuper.getGenericExtractor();
@@ -368,7 +369,7 @@ public class CSharpTypeUtil
 
 			if(topArguments.length != topGenericParameters.length)
 			{
-				return FAIL;
+				return fail();
 			}
 
 			for(int i = 0; i < topGenericParameters.length; i++)
@@ -377,7 +378,7 @@ public class CSharpTypeUtil
 				DotNetTypeRef targetExtractedTypeRef = targetExtractor.extract(topGenericParameter);
 				if(targetExtractedTypeRef == null || !isInheritable(topArguments[i], targetExtractedTypeRef, scope, explicitOrImplicit).isSuccess())
 				{
-					return FAIL;
+					return fail();
 				}
 			}
 			return SIMPLE_SUCCESS;
@@ -458,7 +459,13 @@ public class CSharpTypeUtil
 			}
 		}
 
+		return fail();
+	}
+
+	private static InheritResult fail()
+	{
 		return FAIL;
+		//return new InheritResult(false, null);
 	}
 
 	@NotNull
@@ -474,7 +481,7 @@ public class CSharpTypeUtil
 		CSharpElementGroup<CSharpConversionMethodDeclaration> conversionMethodGroup = context.findConversionMethodGroup(explicitOrImplicit);
 		if(conversionMethodGroup == null)
 		{
-			return FAIL;
+			return fail();
 		}
 
 		for(CSharpConversionMethodDeclaration declaration : conversionMethodGroup.getElements())
@@ -496,7 +503,7 @@ public class CSharpTypeUtil
 				return new InheritResult(true, declaration);
 			}
 		}
-		return FAIL;
+		return fail();
 	}
 
 	public static boolean haveErrorType(DotNetTypeRef typeRef)
