@@ -151,6 +151,11 @@ public class GenericInferenceUtil
 		PsiElement parameterElement = parameterTypeResolveResult.getElement();
 		for(DotNetGenericParameter genericParameter : methodGenericParameters)
 		{
+			if(map.containsKey(genericParameter))
+			{
+				continue;
+			}
+
 			if(genericParameter.isEquivalentTo(parameterElement))
 			{
 				map.put(genericParameter, expressionTypeRef);
@@ -173,6 +178,11 @@ public class GenericInferenceUtil
 
 			for(DotNetGenericParameter genericParameter : methodGenericParameters)
 			{
+				if(map.containsKey(genericParameter))
+				{
+					continue;
+				}
+
 				int indexOfGeneric = findIndexOfGeneric(parameterTypeRef, genericParameter, scope);
 				if(indexOfGeneric == -1)
 				{
