@@ -3,7 +3,6 @@ package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 import gnu.trove.THashMap;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -329,15 +328,10 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement> implemen
 		return myExtensionMap.get(name);
 	}
 
-	@NotNull
 	@Override
-	public Collection<CSharpElementGroup<CSharpMethodDeclaration>> getExtensionMethodGroups()
+	public boolean processExtensionMethodGroups(@NotNull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
 	{
-		if(myExtensionMap == null)
-		{
-			return Collections.emptyList();
-		}
-		return myExtensionMap.values();
+		return myExtensionMap == null || ContainerUtil.process(myExtensionMap.values(), processor);
 	}
 
 	@Override

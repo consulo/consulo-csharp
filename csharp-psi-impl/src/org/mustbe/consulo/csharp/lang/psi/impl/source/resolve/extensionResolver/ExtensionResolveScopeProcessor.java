@@ -16,7 +16,6 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.extensionResolver;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -91,23 +90,28 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 
 			CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myExpression.getResolveScope(), element);
 
-			for(CSharpElementGroup<CSharpMethodDeclaration> elementGroup : context.getExtensionMethodGroups())
+			/*context.processExtensionMethodGroups(new Processor<CSharpElementGroup<CSharpMethodDeclaration>>()
 			{
-				Collection<CSharpMethodDeclaration> elements = elementGroup.getElements();
-				for(CSharpMethodDeclaration psiElement : elements)
+				@Override
+				public boolean process(CSharpElementGroup<CSharpMethodDeclaration> elementGroup)
 				{
-					GenericInferenceUtil.GenericInferenceResult inferenceResult = inferenceGenericExtractor(psiElement);
-
-					DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(psiElement, inferenceResult.getExtractor());
-
-					if(!CSharpTypeUtil.isInheritableWithImplicit(firstParameterTypeRef, myQualifierTypeRef, myExpression))
+					Collection<CSharpMethodDeclaration> elements = elementGroup.getElements();
+					for(CSharpMethodDeclaration psiElement : elements)
 					{
-						continue;
-					}
+						GenericInferenceUtil.GenericInferenceResult inferenceResult = inferenceGenericExtractor(psiElement);
 
-					addElement(transform(psiElement, inferenceResult.getExtractor()));
+						DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(psiElement, inferenceResult.getExtractor());
+
+						if(!CSharpTypeUtil.isInheritableWithImplicit(firstParameterTypeRef, myQualifierTypeRef, myExpression))
+						{
+							continue;
+						}
+
+						addElement(transform(psiElement, inferenceResult.getExtractor()));
+					}
+					return true;
 				}
-			}
+			});   */
 		}
 		else
 		{

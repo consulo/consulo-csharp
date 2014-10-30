@@ -1,7 +1,6 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +11,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransformer;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeWithExtensionMethodsIndex;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
@@ -24,6 +24,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.Processor;
 import com.intellij.util.SmartList;
@@ -107,29 +108,28 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		return new CSharpCompositeElementGroupImpl<CSharpMethodDeclaration>(myNamespaceAsElement.getProject(), list);
 	}
 
-	@NotNull
 	@Override
-	public Collection<CSharpElementGroup<CSharpMethodDeclaration>> getExtensionMethodGroups()
+	public boolean processExtensionMethodGroups(@NotNull final Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
 	{
-		String presentableName = DotNetNamespaceStubUtil.getIndexableNamespace(myNamespaceAsElement.getPresentableQName());
+		String indexableName = DotNetNamespaceStubUtil.getIndexableNamespace(myNamespaceAsElement.getPresentableQName());
 
-		Collection<DotNetTypeDeclaration> decls = TypeWithExtensionMethodsIndex.getInstance().get(presentableName,
-				myNamespaceAsElement.getProject(), myResolveScope);
-
-		if(decls.isEmpty())
+		return StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_WITH_EXTENSION_METHODS_INDEX, indexableName,
+				myNamespaceAsElement.getProject(), myResolveScope, DotNetTypeDeclaration.class, new Processor<DotNetTypeDeclaration>()
 		{
-			return Collections.emptyList();
-		}
-		List<CSharpElementGroup<CSharpMethodDeclaration>> list = new SmartList<CSharpElementGroup<CSharpMethodDeclaration>>();
-		for(DotNetTypeDeclaration decl : decls)
-		{
-			PsiElement wrappedDeclaration = MsilToCSharpUtil.wrap(decl);
+			@Override
+			public boolean process(DotNetTypeDeclaration typeDeclaration)
+			{
+				PsiElement wrappedDeclaration = MsilToCSharpUtil.wrap(typeDeclaration);
 
-			CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, myResolveScope, wrappedDeclaration);
+				CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, myResolveScope, wrappedDeclaration);
 
-			list.addAll(context.getExtensionMethodGroups());
-		}
-		return list;
+				if(!context.processExtensionMethodGroups(processor))
+				{
+					return false;
+				}
+				return true;
+			}
+		});
 	}
 
 	@NotNull

@@ -1,6 +1,5 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -131,16 +130,17 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl<CSharpMethodDeclaration>(myProject, groups);
 	}
 
-	@NotNull
 	@Override
-	public Collection<CSharpElementGroup<CSharpMethodDeclaration>> getExtensionMethodGroups()
+	public boolean processExtensionMethodGroups(@NotNull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
 	{
-		List<CSharpElementGroup<CSharpMethodDeclaration>> groups = new SmartList<CSharpElementGroup<CSharpMethodDeclaration>>();
 		for(CSharpResolveContext context : myContexts)
 		{
-			groups.addAll(context.getExtensionMethodGroups());
+			if(!context.processExtensionMethodGroups(processor))
+			{
+				return false;
+			}
 		}
-		return groups;
+		return true;
 	}
 
 	@NotNull

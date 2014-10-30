@@ -1,8 +1,5 @@
 package org.mustbe.consulo.csharp.lang.psi.resolve;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -68,11 +65,10 @@ public interface CSharpResolveContext
 			return null;
 		}
 
-		@NotNull
 		@Override
-		public Collection<CSharpElementGroup<CSharpMethodDeclaration>> getExtensionMethodGroups()
+		public boolean processExtensionMethodGroups(@NotNull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
 		{
-			return Collections.emptyList();
+			return true;
 		}
 
 		@NotNull
@@ -126,8 +122,7 @@ public interface CSharpResolveContext
 	@Nullable
 	CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name);
 
-	@NotNull
-	Collection<CSharpElementGroup<CSharpMethodDeclaration>> getExtensionMethodGroups();
+	boolean processExtensionMethodGroups(@NotNull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor);
 
 	@NotNull
 	PsiElement[] findByName(@NotNull String name, @NotNull UserDataHolder holder);
