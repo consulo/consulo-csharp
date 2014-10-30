@@ -67,6 +67,8 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 
 	private final List<CSharpMethodDeclaration> myResolvedElements = new SmartList<CSharpMethodDeclaration>();
 
+	private ExtensionQualifierAsCallArgumentWrapper myArgumentWrapper;
+
 	public ExtensionResolveScopeProcessor(@NotNull DotNetTypeRef qualifierTypeRef,
 			@NotNull CSharpReferenceExpression expression,
 			boolean completion,
@@ -76,6 +78,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 		myExpression = expression;
 		myCompletion = completion;
 		myCallArgumentListOwner = callArgumentListOwner;
+		myArgumentWrapper = new ExtensionQualifierAsCallArgumentWrapper(expression.getProject(), qualifierTypeRef);
 	}
 
 	@Override
@@ -160,7 +163,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 		CSharpCallArgument[] newArguments = new CSharpCallArgument[arguments.length + 1];
 		System.arraycopy(arguments, 0, newArguments, 1, arguments.length);
 
-		newArguments[0] = new ExtensionQualifierAsCallArgumentWrapper(myExpression.getProject(), myQualifierTypeRef);
+		newArguments[0] = myArgumentWrapper;
 
 		return GenericInferenceUtil.inferenceGenericExtractor(newArguments, DotNetTypeRef.EMPTY_ARRAY, myExpression, methodDeclaration);
 	}
