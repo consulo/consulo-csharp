@@ -281,6 +281,16 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
+	public void visitMethodDeclaration(CSharpMethodDeclaration declaration)
+	{
+		super.visitMethodDeclaration(declaration);
+		if(declaration.isDelegate())
+		{
+			highlightNamed(declaration, declaration.getNameIdentifier(), null);
+		}
+	}
+
+	@Override
 	public void visitOperatorReference(CSharpOperatorReferenceImpl referenceExpression)
 	{
 		highlightCall(referenceExpression, referenceExpression);

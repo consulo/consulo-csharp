@@ -131,6 +131,11 @@ public class CSharpHighlightUtil
 				return null;
 			}
 
+			if(element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isDelegate())
+			{
+				return CSharpHighlightKey.DELEGATE_METHOD_NAME;
+			}
+
 			if(CSharpMethodImplUtil.isExtensionWrapper(element))
 			{
 				key = CSharpHighlightKey.EXTENSION_METHOD;
