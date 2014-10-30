@@ -18,6 +18,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util;
 
 import gnu.trove.THashSet;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.consulo.lombok.annotations.Logger;
@@ -38,6 +40,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProce
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpNamedResolveSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
@@ -532,6 +535,20 @@ public class CSharpResolveUtil
 		}
 
 		return current.toTypeRef(false);
+	}
+
+	@NotNull
+	public static <T extends PsiElement> List<T> mergeGroupsToIterable(@NotNull PsiElement[] elements)
+	{
+		List<T> list = new ArrayList<T>();
+		for(PsiElement element : elements)
+		{
+			if(element instanceof CSharpElementGroup)
+			{
+				list.addAll(((CSharpElementGroup) element).getElements());
+			}
+		}
+		return list;
 	}
 
 	@Nullable

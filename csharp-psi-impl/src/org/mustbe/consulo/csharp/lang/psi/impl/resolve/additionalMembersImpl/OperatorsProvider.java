@@ -17,10 +17,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalMemberPro
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.JDOMUtil;
@@ -70,7 +68,6 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 
 	private MultiMap<String, Operator> myTypeOperators = new MultiMap<String, Operator>();
 
-	private List<Operator> myObjectOperators = new ArrayList<Operator>();
 	private List<Operator> myEnumOperators = new ArrayList<Operator>();
 
 	private OperatorsProvider()
@@ -85,10 +82,6 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 				{
 					String className = e.getAttributeValue("name");
 					list = myTypeOperators.getModifiable(className);
-				}
-				else if("object".equals(e.getName()))
-				{
-					list = myObjectOperators;
 				}
 				else if("enum".equals(e.getName()))
 				{
@@ -146,13 +139,6 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 				buildOperators(project, selfTypeRef, element, myEnumOperators, elements);
 			}
 
-			buildOperators(project, selfTypeRef, element, myObjectOperators, elements);
-		}
-		else if(element instanceof DotNetGenericParameter)
-		{
-			CSharpTypeRefFromGenericParameter selfTypeRef = new CSharpTypeRefFromGenericParameter((DotNetGenericParameter) element);
-
-			buildOperators(project, selfTypeRef, element, myObjectOperators, elements);
 		}
 
 		return ContainerUtil.toArray(elements, DotNetElement.ARRAY_FACTORY);

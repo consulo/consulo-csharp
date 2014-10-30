@@ -18,7 +18,6 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,26 +27,24 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
-import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubElementResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
-import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
+import org.mustbe.consulo.csharp.lang.psi.resolve.OperatorByTokenSelector;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.lang.ASTNode;
@@ -59,6 +56,7 @@ import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.ResolveResult;
+import com.intellij.psi.ResolveState;
 import com.intellij.psi.impl.source.resolve.ResolveCache;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
@@ -215,9 +213,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
 				if(element != null)
 				{
-					CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, getResolveScope(), element);
-
-					PsiElement resolvedElement = resolveByContext(elementType, context, last);
+					PsiElement resolvedElement = resolveByElement(elementType, element, last);
 					if(resolvedElement != null)
 					{
 						return resolvedElement;
@@ -269,34 +265,33 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	}
 
 	@Nullable
-	public PsiElement resolveByContext(IElementType elementType, CSharpResolveContext context, Ref<PsiElement> last)
+	public PsiElement resolveByElement(@NotNull IElementType elementType, @NotNull PsiElement element, @Nullable Ref<PsiElement> last)
 	{
-		CSharpElementGroup<CSharpMethodDeclaration> operatorGroupByTokenType = context.findOperatorGroupByTokenType(elementType);
-		if(operatorGroupByTokenType == null)
+		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(getResolveScope(), ResolveResult.EMPTY_ARRAY,
+				new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
+
+		ResolveState state = ResolveState.initial();
+		state = state.put(CSharpResolveUtil.SELECTOR, new OperatorByTokenSelector(elementType));
+		CSharpResolveUtil.walkChildren(processor, element, false, true, state);
+
+		PsiElement[] psiElements = processor.toPsiElements();
+		if(psiElements.length == 0)
 		{
 			return null;
 		}
 
-		List<Pair<Integer, DotNetLikeMethodDeclaration>> list = new ArrayList<Pair<Integer, DotNetLikeMethodDeclaration>>();
-		for(PsiElement psiElement : operatorGroupByTokenType.getElements())
+		List<DotNetLikeMethodDeclaration> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
+		List<Pair<Integer, PsiElement>> list = new ArrayList<Pair<Integer, PsiElement>>();
+		for(DotNetLikeMethodDeclaration psiElement : elements)
 		{
-			if(psiElement instanceof DotNetLikeMethodDeclaration)
-			{
-				int i = MethodAcceptorImpl.calcAcceptableWeight(this, this, (DotNetLikeMethodDeclaration) psiElement);
+			int i = MethodAcceptorImpl.calcAcceptableWeight(this, this, psiElement);
 
-				list.add(Pair.create(i, (DotNetLikeMethodDeclaration) psiElement));
-			}
+			list.add(Pair.<Integer, PsiElement>create(i, psiElement));
+
 		}
-		Collections.sort(list, new Comparator<Pair<Integer, DotNetLikeMethodDeclaration>>()
-		{
-			@Override
-			public int compare(Pair<Integer, DotNetLikeMethodDeclaration> o1, Pair<Integer, DotNetLikeMethodDeclaration> o2)
-			{
-				return o2.getFirst() - o1.getFirst();
-			}
-		});
+		Collections.sort(list, WeightUtil.ourComparator);
 
-		Pair<Integer, DotNetLikeMethodDeclaration> pair = ContainerUtil.getFirstItem(list);
+		Pair<Integer, PsiElement> pair = ContainerUtil.getFirstItem(list);
 		if(pair == null)
 		{
 			return null;

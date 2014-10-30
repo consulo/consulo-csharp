@@ -18,7 +18,7 @@ public class WeightUtil
 {
 	public static final int MAX_WEIGHT = Integer.MAX_VALUE;
 
-	private static final Comparator<Pair<Integer, PsiElement>> ourComparator = new Comparator<Pair<Integer, PsiElement>>()
+	public static final Comparator<Pair<Integer, PsiElement>> ourComparator = new Comparator<Pair<Integer, PsiElement>>()
 	{
 		@Override
 		public int compare(Pair<Integer, PsiElement> o1, Pair<Integer, PsiElement> o2)

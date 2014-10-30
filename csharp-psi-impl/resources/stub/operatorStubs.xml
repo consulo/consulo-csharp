@@ -34,7 +34,7 @@
 		</operator>
 	</enum>
 
-	<object>
+	<type name="System.Object">
 		<operator name="EQEQ" type="System.Boolean">
 			<parameter/>
 			<parameter type="System.Object"/>
@@ -43,7 +43,7 @@
 			<parameter/>
 			<parameter type="System.Object"/>
 		</operator>
-	</object>
+	</type>
 
 	<type name="System.String">
 		<operator name="PLUS" type="System.String">
