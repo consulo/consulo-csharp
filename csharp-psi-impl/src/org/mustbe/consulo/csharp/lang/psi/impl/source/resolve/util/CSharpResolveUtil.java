@@ -282,7 +282,12 @@ public class CSharpResolveUtil
 					{
 						for(DotNetGenericParameter genericParameter : genericParameters)
 						{
-							if(((CSharpNamedResolveSelector) selector).isNameEqual(genericParameter.getName()))
+							String name = genericParameter.getName();
+							if(name == null)
+							{
+								continue;
+							}
+							if(((CSharpNamedResolveSelector) selector).isNameEqual(name))
 							{
 								((AbstractScopeProcessor) processor).addElement(genericParameter);
 								return false;
