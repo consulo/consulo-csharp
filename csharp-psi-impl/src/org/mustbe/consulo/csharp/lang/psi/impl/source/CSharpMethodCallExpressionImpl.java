@@ -100,7 +100,17 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 
 		if(callExpression instanceof CSharpReferenceExpressionImpl)
 		{
-			return ((CSharpReferenceExpressionImpl) callExpression).resolve();
+			PsiElement resolvedElement = ((CSharpReferenceExpressionImpl) callExpression).resolve();
+			if(resolvedElement != null)
+			{
+				return resolvedElement;
+			}
+
+			ResolveResult[] resolveResults = multiResolve(false);
+			if(resolveResults.length > 0)
+			{
+				return resolveResults[0].getElement();
+			}
 		}
 		return null;
 	}
@@ -122,20 +132,20 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
-		PsiElement resolve = resolveToCallable();
-		if(resolve instanceof DotNetVariable)
+		PsiElement resolvedElement = resolveToCallable();
+		if(resolvedElement instanceof DotNetVariable)
 		{
-			DotNetTypeRef dotNetTypeRef = ((DotNetVariable) resolve).toTypeRef(false);
+			DotNetTypeRef dotNetTypeRef = ((DotNetVariable) resolvedElement).toTypeRef(false);
 			DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(this);
 			if(typeResolveResult instanceof CSharpLambdaResolveResult)
 			{
 				return ((CSharpLambdaResolveResult) typeResolveResult).getReturnTypeRef();
 			}
 		}
-		if(resolve instanceof CSharpPseudoMethod)
+		if(resolvedElement instanceof CSharpPseudoMethod)
 		{
-			return ((CSharpPseudoMethod) resolve).getReturnTypeRef();
+			return ((CSharpPseudoMethod) resolvedElement).getReturnTypeRef();
 		}
-		return CSharpReferenceExpressionImpl.toTypeRef(resolve);
+		return CSharpReferenceExpressionImpl.toTypeRef(resolvedElement);
 	}
 }
