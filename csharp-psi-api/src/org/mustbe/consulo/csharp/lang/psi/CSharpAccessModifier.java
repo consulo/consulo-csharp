@@ -17,6 +17,10 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.consulo.annotations.Immutable;
+import org.consulo.lombok.annotations.LazyInstance;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 
 /**
  * @author VISTALL
@@ -24,27 +28,51 @@ import org.consulo.annotations.Immutable;
  */
 public enum CSharpAccessModifier
 {
-	PUBLIC,
-	INTERNAL,
-	PROTECTED,
-	PRIVATE;
+	PUBLIC(CSharpModifier.PUBLIC),
+	// protected internal need be first
+	PROTECTED_INTERNAL(CSharpModifier.PROTECTED, CSharpModifier.INTERNAL),
+	INTERNAL(CSharpModifier.INTERNAL),
+	PROTECTED(CSharpModifier.PROTECTED),
+	PRIVATE(CSharpModifier.PRIVATE);
 
 	@Immutable
 	public static final CSharpAccessModifier[] VALUES = values();
 
-	public CSharpModifier toModifier()
+	private final CSharpModifier[] myModifiers;
+
+	CSharpAccessModifier(CSharpModifier... modifiers)
 	{
-		switch(this)
+		myModifiers = modifiers;
+	}
+
+	@Nullable
+	public static CSharpAccessModifier findModifier(@NotNull DotNetModifierListOwner owner, @Nullable CSharpAccessModifier defaultValue)
+	{
+		loop: for(CSharpAccessModifier value : VALUES)
 		{
-			case PUBLIC:
-				return CSharpModifier.PUBLIC;
-			case INTERNAL:
-				return CSharpModifier.INTERNAL;
-			case PROTECTED:
-				return CSharpModifier.PROTECTED;
-			case PRIVATE:
-				return CSharpModifier.PRIVATE;
+			for(CSharpModifier modifier : value.myModifiers)
+			{
+				if(!owner.hasModifier(modifier))
+				{
+					continue loop;
+				}
+			}
+			return value;
 		}
-		return CSharpModifier.PUBLIC;
+		return defaultValue;
+	}
+
+	@NotNull
+	@Immutable
+	public CSharpModifier[] getModifiers()
+	{
+		return myModifiers;
+	}
+
+	@NotNull
+	@LazyInstance
+	public String getPresentableText()
+	{
+		return name().toLowerCase().replace("_", " ");
 	}
 }

@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 
@@ -74,6 +75,13 @@ public enum CSharpModifier implements DotNetModifier
 	}
 
 	@Override
+	public String toString()
+	{
+		return getPresentableText();
+	}
+
+	@Override
+	@LazyInstance
 	public String getPresentableText()
 	{
 		return name().toLowerCase();

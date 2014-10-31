@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
@@ -47,15 +48,10 @@ public class CS0107 extends CompilerCheck<DotNetModifierListOwner>
 			return Collections.emptyList();
 		}
 
-		Map<CSharpAccessModifier, PsiElement> map = new HashMap<CSharpAccessModifier, PsiElement>(4);
+		Map<CSharpAccessModifier, Map<CSharpModifier, PsiElement>> map = new LinkedHashMap<CSharpAccessModifier, Map<CSharpModifier, PsiElement>>(5);
 		for(CSharpAccessModifier value : CSharpAccessModifier.VALUES)
 		{
-			PsiElement modifierElement = modifierList.getModifierElement(value.toModifier());
-			if(modifierElement == null)
-			{
-				continue;
-			}
-			map.put(value, modifierElement);
+			collectModifierElements(value, modifierList, map);
 		}
 
 		if(map.size() <= 1)
@@ -63,10 +59,43 @@ public class CS0107 extends CompilerCheck<DotNetModifierListOwner>
 			return Collections.emptyList();
 		}
 		List<CompilerCheckResult> list = new ArrayList<CompilerCheckResult>(map.size());
-		for(Map.Entry<CSharpAccessModifier, PsiElement> entry : map.entrySet())
+		for(Map.Entry<CSharpAccessModifier, Map<CSharpModifier, PsiElement>> entry : map.entrySet())
 		{
-			list.add(result(entry.getValue()).addQuickFix(new RemoveModifierFix(entry.getKey().toModifier(), element)));
+			RemoveModifierFix modifierFix = new RemoveModifierFix(entry.getValue().keySet().toArray(CSharpModifier.EMPTY_ARRAY), element);
+
+			for(Map.Entry<CSharpModifier, PsiElement> psiElement : entry.getValue().entrySet())
+			{
+				list.add(result(psiElement.getValue()).addQuickFix(modifierFix));
+			}
 		}
 		return list;
+	}
+
+	private static void collectModifierElements(CSharpAccessModifier accessModifier,
+			DotNetModifierList modifierList,
+			Map<CSharpAccessModifier, Map<CSharpModifier, PsiElement>> result)
+	{
+		Map<CSharpModifier, PsiElement> map = new LinkedHashMap<CSharpModifier, PsiElement>();
+		CSharpModifier[] modifiers = accessModifier.getModifiers();
+		for(CSharpModifier modifier : modifiers)
+		{
+			if((modifier == CSharpModifier.INTERNAL || modifier == CSharpModifier.PROTECTED) && result.containsKey(CSharpAccessModifier
+					.PROTECTED_INTERNAL))
+			{
+				continue;
+			}
+			PsiElement modifierElement = modifierList.getModifierElement(modifier);
+			if(modifierElement != null)
+			{
+				map.put(modifier, modifierElement);
+			}
+		}
+		// dont return array if size of elements if not equal tokens
+		if(modifiers.length != map.size())
+		{
+			return;
+		}
+
+		result.put(accessModifier, map);
 	}
 }

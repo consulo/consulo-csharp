@@ -16,17 +16,22 @@
 
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.SmartList;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -34,31 +39,59 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class RemoveModifierFix extends BaseIntentionAction
 {
-	private final DotNetModifier myModifier;
+	private final DotNetModifier[] myModifiers;
 	private final DotNetModifierListOwner myModifierElementOwner;
 
-	public RemoveModifierFix(DotNetModifier modifier, DotNetModifierListOwner parent)
+	public RemoveModifierFix(DotNetModifier[] modifiers, DotNetModifierListOwner parent)
 	{
-		myModifier = modifier;
+		myModifiers = modifiers;
 		myModifierElementOwner = parent;
 	}
 
-	@Nullable
-	private PsiElement findModifier()
+	public RemoveModifierFix(DotNetModifier modifier, DotNetModifierListOwner parent)
+	{
+		this(new DotNetModifier[]{modifier}, parent);
+	}
+
+	@NotNull
+	private PsiElement[] findModifiers()
 	{
 		DotNetModifierList modifierList = myModifierElementOwner.getModifierList();
 		if(modifierList == null)
 		{
-			return null;
+			return PsiElement.EMPTY_ARRAY;
 		}
-		return modifierList.getModifierElement(myModifier);
+		List<PsiElement> elements = new SmartList<PsiElement>();
+		for(DotNetModifier modifier : myModifiers)
+		{
+			PsiElement modifierElement = modifierList.getModifierElement(modifier);
+			if(modifierElement != null)
+			{
+				elements.add(modifierElement);
+			}
+		}
+		return ContainerUtil.toArray(elements, PsiElement.ARRAY_FACTORY);
 	}
 
 	@NotNull
 	@Override
 	public String getText()
 	{
-		return "Remove '" + myModifier.getPresentableText() + "' modifier";
+		if(myModifiers.length == 1)
+		{
+			return "Remove '" + myModifiers[0].getPresentableText() + "' modifier";
+		}
+		else
+		{
+			return "Remove " + StringUtil.join(myModifiers, new Function<DotNetModifier, String>()
+			{
+				@Override
+				public String fun(DotNetModifier modifier)
+				{
+					return "'" + modifier.getPresentableText() + "'";
+				}
+			}, " & ") + " modifiers";
+		}
 	}
 
 	@NotNull
@@ -71,7 +104,7 @@ public class RemoveModifierFix extends BaseIntentionAction
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile psiFile)
 	{
-		return findModifier() != null;
+		return findModifiers().length != 0;
 	}
 
 	@Override
@@ -83,6 +116,9 @@ public class RemoveModifierFix extends BaseIntentionAction
 			return;
 		}
 
-		modifierList.removeModifier(myModifier);
+		for(DotNetModifier modifier : myModifiers)
+		{
+			modifierList.removeModifier(modifier);
+		}
 	}
 }

@@ -47,20 +47,17 @@ public class CSharpVisibilityUtil
 
 	public static boolean isVisible(@NotNull DotNetModifierListOwner target, @NotNull PsiElement place)
 	{
-		CSharpAccessModifier accessModifier = CSharpAccessModifier.PUBLIC;
-		for(CSharpAccessModifier value : CSharpAccessModifier.VALUES)
-		{
-			if(target.hasModifier(value.toModifier()))
-			{
-				accessModifier = value;
-				break;
-			}
-		}
+		return isVisible(target, place, CSharpAccessModifier.findModifier(target, CSharpAccessModifier.PUBLIC));
+	}
 
+	private static boolean isVisible(DotNetModifierListOwner target, PsiElement place, CSharpAccessModifier accessModifier)
+	{
 		switch(accessModifier)
 		{
 			case PUBLIC:
 				return true;
+			case PROTECTED_INTERNAL:
+				return isVisible(target, place, CSharpAccessModifier.PROTECTED) &&  isVisible(target, place, CSharpAccessModifier.INTERNAL);
 			case INTERNAL:
 				Module targetModule = ModuleUtilCore.findModuleForPsiElement(target);
 				Module placeModule = ModuleUtilCore.findModuleForPsiElement(place);
@@ -99,8 +96,7 @@ public class CSharpVisibilityUtil
 				}
 				break;
 			}
-		}
-		return false;
+		} return false;
 	}
 
 	private static List<DotNetTypeDeclaration> collectAllTypes(PsiElement place)

@@ -20,7 +20,6 @@ import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.codeInsight.generation.ClassMember;
@@ -44,25 +43,10 @@ public class ConstructorChooseMember extends CSharpMemberChooseObject<DotNetCons
 	{
 		StringBuilder builder = new StringBuilder();
 
-		final DotNetModifierList modifierList = myDeclaration.getModifierList();
-		if(modifierList != null)
+		CSharpAccessModifier accessModifier = CSharpAccessModifier.findModifier(myDeclaration, null);
+		if(accessModifier != null)
 		{
-			CSharpAccessModifier modifier = null;
-			for(CSharpAccessModifier value : CSharpAccessModifier.VALUES)
-			{
-				PsiElement modifierElement = modifierList.getModifierElement(value.toModifier());
-				if(modifierElement == null)
-				{
-					continue;
-				}
-				modifier = value;
-				break;
-			}
-
-			if(modifier != null)
-			{
-				builder.append(modifier.toModifier().getPresentableText()).append(" ");
-			}
+			builder.append(accessModifier.getPresentableText()).append(" ");
 		}
 
 		builder.append("$NAME$(");

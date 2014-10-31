@@ -38,6 +38,7 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -47,8 +48,9 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCSharpVariable implements CSharpPropertyDeclaration
 {
-	public MsilPropertyAsCSharpPropertyDeclaration(PsiElement parent, MsilPropertyEntry variable, List<Pair<DotNetXXXAccessor,
-			MsilMethodEntry>> pairs)
+	public MsilPropertyAsCSharpPropertyDeclaration(PsiElement parent,
+			MsilPropertyEntry variable,
+			List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
 	{
 		super(parent, getAdditionalModifiers(pairs), variable);
 	}
@@ -69,11 +71,8 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 		}
 		ContainerUtil.sort(modifiers);
 
-		CSharpModifier access = modifiers.isEmpty() ? CSharpModifier.PUBLIC : modifiers.get(0).toModifier();
-		return staticMod ? new CSharpModifier[]{
-				access,
-				CSharpModifier.STATIC
-		} : new CSharpModifier[]{access};
+		CSharpAccessModifier access = modifiers.isEmpty() ? CSharpAccessModifier.PUBLIC : modifiers.get(0);
+		return staticMod ? ArrayUtil.append(access.getModifiers(), CSharpModifier.STATIC) : access.getModifiers();
 	}
 
 	private static CSharpAccessModifier getAccessModifier(MsilMethodEntry second)
@@ -85,6 +84,10 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 		else if(second.hasModifier(MsilTokens.PUBLIC_KEYWORD))
 		{
 			return CSharpAccessModifier.PUBLIC;
+		}
+		else if(second.hasModifier(MsilTokens.ASSEMBLY_KEYWORD) && second.hasModifier(MsilTokens.PROTECTED_KEYWORD))
+		{
+			return CSharpAccessModifier.PROTECTED_INTERNAL;
 		}
 		else if(second.hasModifier(MsilTokens.ASSEMBLY_KEYWORD))
 		{
