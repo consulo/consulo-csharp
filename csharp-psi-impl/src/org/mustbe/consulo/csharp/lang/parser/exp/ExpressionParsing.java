@@ -496,7 +496,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			}
 			else if(tokenType == LPAR)
 			{
-				if(exprType(expr) != REFERENCE_EXPRESSION)
+				if(exprType(expr) != REFERENCE_EXPRESSION && exprType(expr) != ARRAY_ACCESS_EXPRESSION)
 				{
 					startMarker.drop();
 					return expr;
