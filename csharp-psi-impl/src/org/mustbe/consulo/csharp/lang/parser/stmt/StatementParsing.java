@@ -22,11 +22,9 @@ import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.decl.FieldOrPropertyParsing;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
-import org.mustbe.consulo.csharp.lang.parser.exp.LinqParsing;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
 import lombok.val;
 
 /**
@@ -35,8 +33,6 @@ import lombok.val;
  */
 public class StatementParsing extends SharedParsingHelpers
 {
-	private static final TokenSet BODY_SOFT_KEYWORDS = TokenSet.orSet(TokenSet.create(YIELD_KEYWORD), LinqParsing.LINQ_KEYWORDS);
-
 	public static PsiBuilder.Marker parse(CSharpBuilderWrapper wrapper)
 	{
 		return parseStatement(wrapper);
