@@ -234,7 +234,7 @@ public class StatementParsing extends SharedParsingHelpers
 
 		try
 		{
-			TypeInfo typeInfo = parseType(builder, BracketFailPolicy.NOTHING, true);
+			TypeInfo typeInfo = parseType(builder, BracketFailPolicy.RETURN_BEFORE, true);
 			if(typeInfo == null)
 			{
 				return false;
