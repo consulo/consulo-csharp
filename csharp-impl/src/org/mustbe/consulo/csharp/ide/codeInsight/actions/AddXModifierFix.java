@@ -24,7 +24,10 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.ArrayUtil;
+import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
 
 /**
@@ -33,11 +36,11 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class AddXModifierFix extends PsiElementBaseIntentionAction
 {
-	private CSharpModifier myModifier;
+	private CSharpModifier[] myModifiers;
 
-	public AddXModifierFix(CSharpModifier modifier)
+	public AddXModifierFix(CSharpModifier... modifiers)
 	{
-		myModifier = modifier;
+		myModifiers = modifiers;
 	}
 
 	@Override
@@ -57,7 +60,10 @@ public class AddXModifierFix extends PsiElementBaseIntentionAction
 
 		beforeAdd(modifierList);
 
-		modifierList.addModifier(myModifier);
+		for(CSharpModifier modifier : ArrayUtil.reverseArray(myModifiers))
+		{
+			modifierList.addModifier(modifier);
+		}
 	}
 
 	protected void beforeAdd(DotNetModifierList modifierList)
@@ -65,7 +71,7 @@ public class AddXModifierFix extends PsiElementBaseIntentionAction
 
 	}
 
-	public boolean isAllow(DotNetModifierListOwner owner, CSharpModifier modifier)
+	public boolean isAllow(DotNetModifierListOwner owner, CSharpModifier[] modifier)
 	{
 		return true;
 	}
@@ -74,7 +80,19 @@ public class AddXModifierFix extends PsiElementBaseIntentionAction
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element)
 	{
 		DotNetModifierListOwner owner = findOwner(element);
-		return owner != null && !owner.hasModifier(myModifier) && isAllow(owner, myModifier);
+		return owner != null && !hasModifiers(owner) && isAllow(owner, myModifiers);
+	}
+
+	protected boolean hasModifiers(DotNetModifierListOwner owner)
+	{
+		for(CSharpModifier modifier : myModifiers)
+		{
+			if(!owner.hasModifier(modifier))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Nullable
@@ -95,7 +113,14 @@ public class AddXModifierFix extends PsiElementBaseIntentionAction
 	@Override
 	public String getText()
 	{
-		return "Make " + myModifier.getPresentableText();
+		return "Make " + StringUtil.join(myModifiers, new Function<CSharpModifier, String>()
+		{
+			@Override
+			public String fun(CSharpModifier modifier)
+			{
+				return modifier.getPresentableText();
+			}
+		}, " ");
 	}
 
 	@NotNull

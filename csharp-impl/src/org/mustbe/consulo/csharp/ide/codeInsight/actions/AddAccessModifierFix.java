@@ -22,6 +22,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import com.intellij.openapi.util.Comparing;
 
 /**
  * @author VISTALL
@@ -29,21 +30,28 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
  */
 public class AddAccessModifierFix extends AddXModifierFix
 {
-	public AddAccessModifierFix(CSharpModifier modifier)
+	public AddAccessModifierFix(CSharpModifier... modifiers)
 	{
-		super(modifier);
+		super(modifiers);
 	}
 
 	@Override
-	public boolean isAllow(DotNetModifierListOwner owner, CSharpModifier modifier)
+	public boolean isAllow(DotNetModifierListOwner owner, CSharpModifier[] modifiers)
 	{
 		if(owner instanceof DotNetTypeDeclaration || owner instanceof DotNetMethodDeclaration && !(owner.getParent() instanceof
 				DotNetTypeDeclaration))
 		{
-			return modifier == CSharpModifier.INTERNAL || modifier == CSharpModifier.PUBLIC;
+			return equal(modifiers, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL) ||
+					equal(modifiers, CSharpModifier.INTERNAL) ||
+					equal(modifiers, CSharpModifier.PUBLIC);
 		}
 
 		return CSharpStubElements.QUALIFIED_MEMBERS.contains(owner.getNode().getElementType());
+	}
+
+	private static boolean equal(CSharpModifier[] modifiers, CSharpModifier... required)
+	{
+		return Comparing.equal(modifiers, required);
 	}
 
 	@Override

@@ -18,6 +18,9 @@
 	<extensions defaultExtensionNs="com.intellij">
 
 		<intentionAction>
+			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.AddProtectedInternalModifierFix</className>
+		</intentionAction>
+		<intentionAction>
 			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.AddProtectedModifierFix</className>
 		</intentionAction>
 		<intentionAction>

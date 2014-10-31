@@ -17,6 +17,8 @@
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 
 /**
  * @author VISTALL
@@ -27,5 +29,16 @@ public class AddInternalModifierFix extends AddAccessModifierFix
 	public AddInternalModifierFix()
 	{
 		super(CSharpModifier.INTERNAL);
+	}
+
+	@Override
+	protected boolean hasModifiers(DotNetModifierListOwner owner)
+	{
+		if(owner.hasModifier(CSharpModifier.PROTECTED) && owner.hasModifier(DotNetModifier.INTERNAL))
+		{
+			//if we have protected internal - it not our, return true
+			return false;
+		}
+		return super.hasModifiers(owner);
 	}
 }
