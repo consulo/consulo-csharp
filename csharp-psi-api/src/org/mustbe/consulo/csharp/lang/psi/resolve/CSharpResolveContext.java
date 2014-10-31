@@ -79,7 +79,7 @@ public interface CSharpResolveContext
 		}
 
 		@Override
-		public boolean processElements(@NotNull Processor<PsiElement> processor)
+		public boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
 		{
 			return true;
 		}
@@ -128,5 +128,5 @@ public interface CSharpResolveContext
 	@NotNull
 	PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder);
 
-	boolean processElements(@NotNull Processor<PsiElement> processor);
+	boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep);
 }

@@ -452,7 +452,12 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	}
 
 	@Override
-	public boolean processElements(@NotNull Processor<PsiElement> processor)
+	public boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
+	{
+		return processElementsImpl(processor) && (!deep || getSuperContext().processElements(processor, deep));
+	}
+
+	public boolean processElementsImpl(@NotNull Processor<PsiElement> processor)
 	{
 		return myOtherElements == null || ContainerUtil.process(myOtherElements.values(), processor);
 	}

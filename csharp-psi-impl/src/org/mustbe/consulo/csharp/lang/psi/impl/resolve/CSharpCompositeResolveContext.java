@@ -157,11 +157,11 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 	}
 
 	@Override
-	public boolean processElements(@NotNull Processor<PsiElement> processor)
+	public boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
 	{
 		for(CSharpResolveContext context : myContexts)
 		{
-			if(!context.processElements(processor))
+			if(!context.processElements(processor, deep))
 			{
 				return false;
 			}

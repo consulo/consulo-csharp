@@ -103,13 +103,13 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 	}
 
 	@Override
-	public boolean processElements(@NotNull Processor<PsiElement> processor)
+	public boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
 	{
 		if(!ContainerUtil.process(myUsingList.getTypeDefs(), processor))
 		{
 			return false;
 		}
-		return getCachedNamespaceContext().processElements(processor);
+		return getCachedNamespaceContext().processElements(processor, deep);
 	}
 
 	@NotNull

@@ -34,7 +34,7 @@ public class CompletionResolveScopeProcessor extends AbstractScopeProcessor impl
 		DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
 		assert extractor != null;
 
-		return CSharpResolveContextUtil.createContext(extractor, myScope, element).processElements(this);
+		return CSharpResolveContextUtil.createContext(extractor, myScope, element).processElements(this, true);
 	}
 
 	@Override

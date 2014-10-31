@@ -146,7 +146,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 	}
 
 	@Override
-	public boolean processElements(@NotNull Processor<PsiElement> processor)
+	public boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
 	{
 		for(PsiElement element : myNamespaceAsElement.getChildren(myResolveScope, CSharpTransformer.INSTANCE,
 				DotNetNamespaceAsElement.ChildrenFilter.NONE))
