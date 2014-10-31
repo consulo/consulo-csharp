@@ -1,7 +1,6 @@
 package org.mustbe.consulo.csharp.lang.psi.resolve;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import com.intellij.psi.PsiElement;
 
@@ -20,7 +19,7 @@ public class ExtensionMethodByNameSelector implements CSharpResolveSelector
 
 	@NotNull
 	@Override
-	public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context)
+	public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
 	{
 		CSharpElementGroup<CSharpMethodDeclaration> groupByName = context.findExtensionMethodGroupByName(myName);
 		if(groupByName == null)

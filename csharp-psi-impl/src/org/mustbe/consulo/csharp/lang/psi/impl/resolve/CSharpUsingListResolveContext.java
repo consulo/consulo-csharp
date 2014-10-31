@@ -40,7 +40,7 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup()
+	public CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup(boolean deep)
 	{
 		return null;
 	}
@@ -61,14 +61,14 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type)
+	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type, boolean deep)
 	{
 		return null;
 	}
 
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
+	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef, boolean deep)
 	{
 		return null;
 	}
@@ -88,7 +88,7 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 
 	@NotNull
 	@Override
-	public PsiElement[] findByName(@NotNull String name, @NotNull UserDataHolder holder)
+	public PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
 	{
 		Map<String, CSharpTypeDefStatement> defStatements = getDefStatements();
 
@@ -99,7 +99,7 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 		}
 		CSharpResolveContext cachedNamespaceContext = getCachedNamespaceContext();
 
-		return cachedNamespaceContext.findByName(name, holder);
+		return cachedNamespaceContext.findByName(name, deep, holder);
 	}
 
 	@Override

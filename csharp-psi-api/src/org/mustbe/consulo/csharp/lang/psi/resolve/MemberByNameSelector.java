@@ -21,9 +21,9 @@ public class MemberByNameSelector extends UserDataHolderBase implements CSharpNa
 	@NotNull
 	@Override
 	@SuppressWarnings("unchecked")
-	public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context)
+	public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
 	{
-		return context.findByName(myName, this);
+		return context.findByName(myName, deep, this);
 	}
 
 	@Override

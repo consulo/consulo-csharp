@@ -2,6 +2,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
 import gnu.trove.THashMap;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -16,13 +18,16 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.Processor;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
@@ -33,7 +38,7 @@ import lombok.val;
  * @author VISTALL
  * @since 26.10.14
  */
-public abstract class CSharpBaseResolveContext<T extends DotNetElement> implements CSharpResolveContext
+public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetModifierListOwner> implements CSharpResolveContext
 {
 	protected static class Collector extends CSharpElementVisitor
 	{
@@ -197,7 +202,10 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement> implemen
 		}
 	}
 
-
+	@NotNull
+	protected final T myElement;
+	@NotNull
+	protected final DotNetGenericExtractor myExtractor;
 	@Nullable
 	private CSharpElementGroup<CSharpArrayMethodDeclaration> myIndexMethodGroup;
 	@Nullable
@@ -214,11 +222,13 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement> implemen
 	@Nullable
 	private final Map<String, CSharpElementGroup<PsiElement>> myOtherElements;
 
-	public CSharpBaseResolveContext(@NotNull T element, @NotNull DotNetGenericExtractor genericExtractor)
+	public CSharpBaseResolveContext(@NotNull T element, @NotNull DotNetGenericExtractor extractor)
 	{
+		myElement = element;
+		myExtractor = extractor;
 		val project = element.getProject();
 
-		val collector = new Collector(genericExtractor);
+		val collector = new Collector(extractor);
 
 		processMembers(element, collector);
 
@@ -242,6 +252,41 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement> implemen
 	public abstract void processMembers(T element, Collector collector);
 
 	@NotNull
+	protected abstract List<DotNetTypeRef> getExtendTypeRefs();
+
+	@LazyInstance
+	@NotNull
+	protected CSharpResolveContext getSuperContext()
+	{
+		List<DotNetTypeRef> superTypes = getExtendTypeRefs();
+
+		if(superTypes.isEmpty())
+		{
+			return EMPTY;
+		}
+
+		List<CSharpResolveContext> contexts = new ArrayList<CSharpResolveContext>(superTypes.size());
+		for(DotNetTypeRef dotNetTypeRef : superTypes)
+		{
+			DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(myElement);
+			PsiElement resolve = typeResolveResult.getElement();
+
+			if(resolve != null && !resolve.isEquivalentTo(myElement))
+			{
+				DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
+
+				contexts.add(CSharpResolveContextUtil.createContext(genericExtractor, myElement.getResolveScope(), resolve));
+			}
+		}
+
+		if(contexts.isEmpty())
+		{
+			return EMPTY;
+		}
+		return new CSharpCompositeResolveContext(myElement.getProject(), contexts.toArray(new CSharpResolveContext[contexts.size()]));
+	}
+
+	@NotNull
 	@LazyInstance
 	private static CSharpAdditionalMemberProvider[] getAdditionalTypeMemberProviders()
 	{
@@ -249,8 +294,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement> implemen
 	}
 
 	@Nullable
-	private static <T extends PsiElement> CSharpElementGroup<T> toGroup(@NotNull Project project, @NotNull String key,
-			@Nullable List<T> elements)
+	private static <T extends PsiElement> CSharpElementGroup<T> toGroup(@NotNull Project project, @NotNull String key, @Nullable List<T> elements)
 	{
 		if(ContainerUtil.isEmpty(elements))
 		{
@@ -276,9 +320,23 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement> implemen
 
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup()
+	public CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup(boolean deep)
 	{
-		return myIndexMethodGroup;
+		if(myIndexMethodGroup == null)
+		{
+			return deep ? getSuperContext().indexMethodGroup(deep) : null;
+		}
+		else
+		{
+			CSharpElementGroup<CSharpArrayMethodDeclaration> deepGroup = deep ? getSuperContext().indexMethodGroup(deep) : null;
+
+			if(deepGroup == null)
+			{
+				return myIndexMethodGroup;
+			}
+			return new CSharpCompositeElementGroupImpl<CSharpArrayMethodDeclaration>(myElement.getProject(), Arrays.asList(myIndexMethodGroup,
+					deepGroup));
+		}
 	}
 
 	@Nullable
@@ -297,24 +355,54 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement> implemen
 
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type)
+	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type, boolean deep)
 	{
 		if(myOperatorMap == null)
 		{
-			return null;
+			return deep ? getSuperContext().findOperatorGroupByTokenType(type, deep) : null;
 		}
-		return myOperatorMap.get(type);
+		else
+		{
+			CSharpElementGroup<CSharpMethodDeclaration> deepGroup = deep ? getSuperContext().findOperatorGroupByTokenType(type, deep) : null;
+
+			if(deepGroup == null)
+			{
+				return myOperatorMap.get(type);
+			}
+
+			CSharpElementGroup<CSharpMethodDeclaration> thisGroup = myOperatorMap.get(type);
+			if(thisGroup == null)
+			{
+				return deepGroup;
+			}
+			return new CSharpCompositeElementGroupImpl<CSharpMethodDeclaration>(myElement.getProject(), Arrays.asList(thisGroup, deepGroup));
+		}
 	}
 
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
+	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef, boolean deep)
 	{
 		if(myConversionMap == null)
 		{
-			return null;
+			return deep ? getSuperContext().findConversionMethodGroup(typeRef, deep) : null;
 		}
-		return myConversionMap.get(typeRef);
+		else
+		{
+			CSharpElementGroup<CSharpConversionMethodDeclaration> deepGroup = deep ? getSuperContext().findConversionMethodGroup(typeRef, deep) : null;
+
+			if(deepGroup == null)
+			{
+				return myConversionMap.get(typeRef);
+			}
+
+			CSharpElementGroup<CSharpConversionMethodDeclaration> thisGroup = myConversionMap.get(typeRef);
+			if(thisGroup == null)
+			{
+				return deepGroup;
+			}
+			return new CSharpCompositeElementGroupImpl<CSharpConversionMethodDeclaration>(myElement.getProject(), Arrays.asList(thisGroup, deepGroup));
+		}
 	}
 
 	@Nullable
@@ -336,18 +424,31 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement> implemen
 
 	@Override
 	@NotNull
-	public PsiElement[] findByName(@NotNull String name, @NotNull UserDataHolder holder)
+	public PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
 	{
+		PsiElement[] selectedElements;
 		if(myOtherElements == null)
 		{
-			return PsiElement.EMPTY_ARRAY;
+			selectedElements = PsiElement.EMPTY_ARRAY;
 		}
-		CSharpElementGroup<PsiElement> group = myOtherElements.get(name);
-		if(group == null)
+		else
 		{
-			return PsiElement.EMPTY_ARRAY;
+			CSharpElementGroup<PsiElement> group = myOtherElements.get(name);
+			if(group == null)
+			{
+				selectedElements = PsiElement.EMPTY_ARRAY;
+			}
+			else
+			{
+				selectedElements = new PsiElement[]{group};
+			}
 		}
-		return new PsiElement[] {group};
+
+		if(deep)
+		{
+			selectedElements = ArrayUtil.mergeArrays(selectedElements, getSuperContext().findByName(name, deep, holder));
+		}
+		return selectedElements;
 	}
 
 	@Override

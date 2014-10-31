@@ -24,16 +24,16 @@ public class AttributeByNameSelector implements CSharpResolveSelector
 
 	@NotNull
 	@Override
-	public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context)
+	public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
 	{
 		UserDataHolderBase userDataHolderBase = new UserDataHolderBase();
 		userDataHolderBase.putUserData(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.ONLY_ELEMENTS);
 
-		PsiElement[] array = context.findByName(myName, userDataHolderBase);
+		PsiElement[] array = context.findByName(myName, deep, userDataHolderBase);
 
 		if(!myName.endsWith(AttributeSuffix))
 		{
-			array = ArrayUtil.mergeArrays(array, context.findByName(myName + AttributeSuffix, userDataHolderBase));
+			array = ArrayUtil.mergeArrays(array, context.findByName(myName + AttributeSuffix, deep, userDataHolderBase));
 		}
 		return array;
 	}

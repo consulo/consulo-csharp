@@ -20,9 +20,9 @@ public class OperatorByTokenSelector implements CSharpResolveSelector
 
 	@NotNull
 	@Override
-	public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context)
+	public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
 	{
-		CSharpElementGroup<CSharpMethodDeclaration> groupByTokenType = context.findOperatorGroupByTokenType(myToken);
+		CSharpElementGroup<CSharpMethodDeclaration> groupByTokenType = context.findOperatorGroupByTokenType(myToken, deep);
 		if(groupByTokenType == null)
 		{
 			return PsiElement.EMPTY_ARRAY;

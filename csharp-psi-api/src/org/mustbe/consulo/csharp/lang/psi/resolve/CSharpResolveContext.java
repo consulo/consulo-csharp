@@ -25,7 +25,7 @@ public interface CSharpResolveContext
 	{
 		@Nullable
 		@Override
-		public CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup()
+		public CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup(boolean deep)
 		{
 			return null;
 		}
@@ -46,14 +46,14 @@ public interface CSharpResolveContext
 
 		@Nullable
 		@Override
-		public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type)
+		public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type, boolean deep)
 		{
 			return null;
 		}
 
 		@Nullable
 		@Override
-		public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
+		public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef, boolean deep)
 		{
 			return null;
 		}
@@ -73,7 +73,7 @@ public interface CSharpResolveContext
 
 		@NotNull
 		@Override
-		public PsiElement[] findByName(@NotNull String name, @NotNull UserDataHolder holder)
+		public PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
 		{
 			return PsiElement.EMPTY_ARRAY;
 		}
@@ -102,7 +102,7 @@ public interface CSharpResolveContext
 	};
 
 	@Nullable
-	CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup();
+	CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup(boolean deep);
 
 	@Nullable
 	CSharpElementGroup<CSharpConstructorDeclaration> constructorGroup();
@@ -111,13 +111,14 @@ public interface CSharpResolveContext
 	CSharpElementGroup<CSharpConstructorDeclaration> deConstructorGroup();
 
 	@Nullable
-	CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type);
+	CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type, boolean deep);
 
 	/**
 	 * @param typeRef is {@link CSharpStaticTypeRef#IMPLICIT} or {@link CSharpStaticTypeRef#EXPLICIT}
+	 * @param deep
 	 */
 	@Nullable
-	CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef);
+	CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef, boolean deep);
 
 	@Nullable
 	CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name);
@@ -125,7 +126,7 @@ public interface CSharpResolveContext
 	boolean processExtensionMethodGroups(@NotNull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor);
 
 	@NotNull
-	PsiElement[] findByName(@NotNull String name, @NotNull UserDataHolder holder);
+	PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder);
 
 	boolean processElements(@NotNull Processor<PsiElement> processor);
 }

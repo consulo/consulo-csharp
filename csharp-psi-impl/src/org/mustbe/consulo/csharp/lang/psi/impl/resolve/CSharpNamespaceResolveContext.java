@@ -46,7 +46,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup()
+	public CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup(boolean deep)
 	{
 		return null;
 	}
@@ -67,14 +67,14 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type)
+	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type, boolean deep)
 	{
 		return null;
 	}
 
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
+	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef, boolean deep)
 	{
 		return null;
 	}
@@ -134,7 +134,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 
 	@NotNull
 	@Override
-	public PsiElement[] findByName(@NotNull String name, @NotNull UserDataHolder holder)
+	public PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
 	{
 		DotNetNamespaceAsElement.ChildrenFilter filter = holder.getUserData(BaseDotNetNamespaceAsElement.FILTER);
 		if(filter == null)

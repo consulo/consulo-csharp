@@ -10,5 +10,5 @@ import com.intellij.psi.PsiElement;
 public interface CSharpResolveSelector
 {
 	@NotNull
-	PsiElement[] doSelectElement(@NotNull CSharpResolveContext context);
+	PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep);
 }

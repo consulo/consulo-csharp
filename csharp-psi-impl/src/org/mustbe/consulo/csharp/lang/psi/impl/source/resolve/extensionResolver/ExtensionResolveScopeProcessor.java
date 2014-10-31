@@ -126,7 +126,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 
 			CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myExpression.getResolveScope(), element);
 
-			PsiElement[] psiElements = selector.doSelectElement(context);
+			PsiElement[] psiElements = selector.doSelectElement(context, false);
 
 			for(PsiElement e : psiElements)
 			{

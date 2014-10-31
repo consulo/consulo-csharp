@@ -682,7 +682,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				//PsiElement last = resolveLayers.getFirst();
 				PsiElement targetToWalkChildren = resolveLayers.getSecond();
 
-				if(!CSharpResolveUtil.walkChildren(p, targetToWalkChildren, true, true, resolveState))
+				if(!CSharpResolveUtil.walkChildren(p, targetToWalkChildren, true, false, resolveState))
 				{
 					return p.toResolveResults();
 				}

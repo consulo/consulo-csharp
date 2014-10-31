@@ -63,7 +63,7 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 
 		CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myScope, element);
 
-		PsiElement[] psiElements = selector.doSelectElement(context);
+		PsiElement[] psiElements = selector.doSelectElement(context, state.get(CSharpResolveUtil.WALK_DEEP) == Boolean.TRUE);
 		for(PsiElement psiElement : psiElements)
 		{
 			PsiElement normalize = normalize(psiElement);

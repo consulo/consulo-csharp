@@ -1,8 +1,12 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
  * @author VISTALL
@@ -19,5 +23,12 @@ public class CSharpGenericParameterResolveContext extends CSharpBaseResolveConte
 	public void processMembers(DotNetGenericParameter element, Collector collector)
 	{
 
+	}
+
+	@NotNull
+	@Override
+	protected List<DotNetTypeRef> getExtendTypeRefs()
+	{
+		return CSharpGenericConstraintUtil.getExtendTypes(myElement);
 	}
 }

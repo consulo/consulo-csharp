@@ -1,7 +1,6 @@
 package org.mustbe.consulo.csharp.lang.psi.resolve;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import com.intellij.psi.PsiElement;
@@ -16,7 +15,7 @@ public enum StaticResolveSelectors implements CSharpResolveSelector
 			{
 				@NotNull
 				@Override
-				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context)
+				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
 				{
 					return null;
 				}
@@ -25,9 +24,9 @@ public enum StaticResolveSelectors implements CSharpResolveSelector
 			{
 				@NotNull
 				@Override
-				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context)
+				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
 				{
-					CSharpElementGroup<CSharpArrayMethodDeclaration> group = context.indexMethodGroup();
+					CSharpElementGroup<CSharpArrayMethodDeclaration> group = context.indexMethodGroup(deep);
 					if(group == null)
 					{
 						return PsiElement.EMPTY_ARRAY;
@@ -40,7 +39,7 @@ public enum StaticResolveSelectors implements CSharpResolveSelector
 			{
 				@NotNull
 				@Override
-				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context)
+				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
 				{
 					CSharpElementGroup<CSharpConstructorDeclaration> group = context.constructorGroup();
 					if(group == null)
@@ -55,7 +54,7 @@ public enum StaticResolveSelectors implements CSharpResolveSelector
 			{
 				@NotNull
 				@Override
-				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context)
+				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
 				{
 					CSharpElementGroup<CSharpConstructorDeclaration> group = context.deConstructorGroup();
 					if(group == null)

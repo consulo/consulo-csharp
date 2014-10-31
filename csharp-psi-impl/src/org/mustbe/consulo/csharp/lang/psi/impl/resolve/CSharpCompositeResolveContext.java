@@ -36,12 +36,12 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup()
+	public CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup(boolean deep)
 	{
 		List<CSharpElementGroup<CSharpArrayMethodDeclaration>> groups = new SmartList<CSharpElementGroup<CSharpArrayMethodDeclaration>>();
 		for(CSharpResolveContext context : myContexts)
 		{
-			CSharpElementGroup<CSharpArrayMethodDeclaration> elementGroup = context.indexMethodGroup();
+			CSharpElementGroup<CSharpArrayMethodDeclaration> elementGroup = context.indexMethodGroup(deep);
 			if(elementGroup != null)
 			{
 				groups.add(elementGroup);
@@ -84,12 +84,12 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type)
+	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type, boolean deep)
 	{
 		List<CSharpElementGroup<CSharpMethodDeclaration>> groups = new SmartList<CSharpElementGroup<CSharpMethodDeclaration>>();
 		for(CSharpResolveContext context : myContexts)
 		{
-			CSharpElementGroup<CSharpMethodDeclaration> elementGroup = context.findOperatorGroupByTokenType(type);
+			CSharpElementGroup<CSharpMethodDeclaration> elementGroup = context.findOperatorGroupByTokenType(type, deep);
 			if(elementGroup != null)
 			{
 				groups.add(elementGroup);
@@ -100,12 +100,12 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef)
+	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef, boolean deep)
 	{
 		List<CSharpElementGroup<CSharpConversionMethodDeclaration>> groups = new SmartList<CSharpElementGroup<CSharpConversionMethodDeclaration>>();
 		for(CSharpResolveContext context : myContexts)
 		{
-			CSharpElementGroup<CSharpConversionMethodDeclaration> elementGroup = context.findConversionMethodGroup(typeRef);
+			CSharpElementGroup<CSharpConversionMethodDeclaration> elementGroup = context.findConversionMethodGroup(typeRef, deep);
 			if(elementGroup != null)
 			{
 				groups.add(elementGroup);
@@ -145,12 +145,12 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 
 	@NotNull
 	@Override
-	public PsiElement[] findByName(@NotNull String name, @NotNull UserDataHolder holder)
+	public PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
 	{
 		PsiElement[] array = PsiElement.EMPTY_ARRAY;
 		for(CSharpResolveContext context : myContexts)
 		{
-			PsiElement[] byName = context.findByName(name, holder);
+			PsiElement[] byName = context.findByName(name, deep, holder);
 			array = ArrayUtil.mergeArrays(array, byName);
 		}
 		return array;
