@@ -127,6 +127,22 @@ public class CSharpCodeBlockOwnerGroupRuleProvider implements FileStructureGroup
 				sink.put(UsageView.USAGE_INFO_KEY, new UsageInfo(myCodeBlockOwner));
 			}
 		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			if(obj instanceof CodeBlockOwnerGroupRuleGroup)
+			{
+				return compareTo((CodeBlockOwnerGroupRuleGroup) obj) == 0;
+			}
+			return super.equals(obj);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return myCodeBlockOwner.hashCode();
+		}
 	}
 
 	@Nullable
