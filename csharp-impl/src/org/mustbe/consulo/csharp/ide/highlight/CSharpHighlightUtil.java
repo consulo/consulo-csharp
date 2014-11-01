@@ -65,8 +65,7 @@ public class CSharpHighlightUtil
 			return null;
 		}
 
-		if(owner instanceof CSharpReferenceExpression && ((CSharpReferenceExpression) owner).kind() == CSharpReferenceExpression.ResolveToKind
-				.ANY_MEMBER && element instanceof CSharpMethodDeclaration && !((CSharpMethodDeclaration) element).isDelegate())
+		if(isMethodRef(owner, element))
 		{
 			HighlightInfo highlightInfo = HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes
 					(CSharpHighlightKey.METHOD_REF).create();
@@ -167,6 +166,23 @@ public class CSharpHighlightUtil
 					.INSTANCE_FIELD;
 		}
 		return key;
+	}
+
+	public static boolean isMethodRef(PsiElement owner, PsiElement element)
+	{
+		if(owner instanceof CSharpReferenceExpression && ((CSharpReferenceExpression) owner).kind() == CSharpReferenceExpression
+				.ResolveToKind.ANY_MEMBER )
+		{
+			if(element == null)
+			{
+				element = ((CSharpReferenceExpression) owner).resolve();
+			}
+			return element instanceof CSharpMethodDeclaration && !((CSharpMethodDeclaration) element).isDelegate();
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	@Nullable
