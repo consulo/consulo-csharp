@@ -117,6 +117,8 @@
 		<stubElementTypeHolder class="org.mustbe.consulo.csharp.lang.psi.CSharpStubElements"/>
 		<codeInsight.lineMarkerProvider language="C#" implementationClass="org.mustbe.consulo.csharp.ide.CSharpLineMarkerProvider"/>
 
+		<fileStructureGroupRuleProvider implementation="org.mustbe.consulo.csharp.ide.findUsage.groupingRule.CSharpTypeGroupRuleProvider" />
+		<fileStructureGroupRuleProvider implementation="org.mustbe.consulo.csharp.ide.findUsage.groupingRule.CSharpCodeBlockOwnerGroupRuleProvider" />
 		<usageTypeProvider implementation="org.mustbe.consulo.csharp.ide.findUsage.usageType.CSharpUsageTypeProvider" />
 		<lang.findUsagesProvider language="C#" implementationClass="org.mustbe.consulo.csharp.ide.findUsage.CSharpFindUsagesProvider"/>
 
