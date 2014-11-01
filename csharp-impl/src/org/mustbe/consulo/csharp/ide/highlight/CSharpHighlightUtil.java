@@ -71,7 +71,6 @@ public class CSharpHighlightUtil
 			HighlightInfo highlightInfo = HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes
 					(CSharpHighlightKey.METHOD_REF).create();
 			holder.add(highlightInfo);
-			return highlightInfo;
 		}
 
 		TextAttributesKey defaultTextAttributeKey = getDefaultTextAttributeKey(element);
