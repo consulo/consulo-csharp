@@ -12,6 +12,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.SimpleGenericExtractorImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -277,9 +278,19 @@ public class GenericInferenceUtil
 			{
 				continue;
 			}
-			types.put(name, Couple.of(parameterTypeRef, expressionTypeRef));
+			types.put(name, Couple.of(cleanTypeRef(parameterTypeRef), cleanTypeRef(expressionTypeRef)));
 		}
 
 		return types;
+	}
+
+	@NotNull
+	private static DotNetTypeRef cleanTypeRef(DotNetTypeRef typeRef)
+	{
+		if(typeRef instanceof CSharpRefTypeRef)
+		{
+			typeRef = ((CSharpRefTypeRef) typeRef).getInnerTypeRef();
+		}
+		return typeRef;
 	}
 }
