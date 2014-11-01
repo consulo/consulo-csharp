@@ -156,27 +156,20 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 	@NotNull
 	public GenericInferenceUtil.GenericInferenceResult inferenceGenericExtractor(CSharpMethodDeclaration methodDeclaration)
 	{
-		if(myCallArgumentListOwner == null)
+		if(myCallArgumentListOwner == null && myCompletion)
 		{
-			if(!myCompletion)
-			{
-				return new GenericInferenceUtil.GenericInferenceResult(true, DotNetGenericExtractor.EMPTY);
-			}
-			return GenericInferenceUtil.inferenceGenericExtractor(new CSharpCallArgument[]{myArgumentWrapper}, DotNetTypeRef.EMPTY_ARRAY,
-					myExpression, methodDeclaration);
+			return GenericInferenceUtil.SUCCESS;
 		}
-		else
-		{
-			CSharpCallArgumentList parameterList = myCallArgumentListOwner.getParameterList();
-			CSharpCallArgument[] arguments = parameterList == null ? CSharpCallArgument.EMPTY_ARRAY : parameterList.getArguments();
 
-			CSharpCallArgument[] newArguments = new CSharpCallArgument[arguments.length + 1];
-			System.arraycopy(arguments, 0, newArguments, 1, arguments.length);
+		CSharpCallArgumentList parameterList = myCallArgumentListOwner == null ? null : myCallArgumentListOwner.getParameterList();
+		CSharpCallArgument[] arguments = parameterList == null ? CSharpCallArgument.EMPTY_ARRAY : parameterList.getArguments();
 
-			newArguments[0] = myArgumentWrapper;
+		CSharpCallArgument[] newArguments = new CSharpCallArgument[arguments.length + 1];
+		System.arraycopy(arguments, 0, newArguments, 1, arguments.length);
 
-			return GenericInferenceUtil.inferenceGenericExtractor(newArguments, DotNetTypeRef.EMPTY_ARRAY, myExpression, methodDeclaration);
-		}
+		newArguments[0] = myArgumentWrapper;
+
+		return GenericInferenceUtil.inferenceGenericExtractor(newArguments, DotNetTypeRef.EMPTY_ARRAY, myExpression, methodDeclaration);
 	}
 
 	@NotNull

@@ -58,6 +58,9 @@ public class GenericInferenceUtil
 		}
 	}
 
+	public static final GenericInferenceResult FAIL = new GenericInferenceResult(false, DotNetGenericExtractor.EMPTY);
+	public static final GenericInferenceResult SUCCESS = new GenericInferenceResult(true, DotNetGenericExtractor.EMPTY);
+
 	@NotNull
 	public static GenericInferenceResult inferenceGenericExtractor(@NotNull CSharpCallArgumentListOwner callArgumentListOwner,
 			@NotNull DotNetLikeMethodDeclaration methodDeclaration)

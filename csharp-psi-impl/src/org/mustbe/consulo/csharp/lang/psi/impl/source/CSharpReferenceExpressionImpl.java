@@ -667,7 +667,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				return memberProcessor.toResolveResults();
 			}
 
-			if((kind == ResolveToKind.METHOD || kind == ResolveToKind.ANY_MEMBER && completion) && element instanceof CSharpReferenceExpression)
+			if((kind == ResolveToKind.METHOD || kind == ResolveToKind.ANY_MEMBER) && element instanceof CSharpReferenceExpression)
 			{
 				// walk for extensions
 				val p = new ExtensionResolveScopeProcessor(qualifierTypeRef, (CSharpReferenceExpression) element, completion, callArgumentListOwner);
