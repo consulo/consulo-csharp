@@ -32,5 +32,13 @@
 		<intentionAction>
 			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.AddPublicModifierFix</className>
 		</intentionAction>
+
+		<intentionAction>
+			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.expressionActions.lambda.AnonymToLambdaFix</className>
+		</intentionAction>
+
+		<intentionAction>
+			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.expressionActions.lambda.LambdaToAnonymFix</className>
+		</intentionAction>
 	</extensions>
 </idea-plugin>

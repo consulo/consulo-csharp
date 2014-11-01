@@ -45,6 +45,12 @@ public class CSharpAnonymMethodExpressionImpl extends CSharpElementImpl implemen
 	}
 
 	@Nullable
+	public CSharpBlockStatementImpl getBodyStatement()
+	{
+		return findChildByClass(CSharpBlockStatementImpl.class);
+	}
+
+	@Nullable
 	public DotNetParameterList getParameterList()
 	{
 		return findChildByClass(DotNetParameterList.class);
