@@ -26,6 +26,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
@@ -98,13 +99,17 @@ public class AddXModifierFix extends PsiElementBaseIntentionAction
 	@Nullable
 	public DotNetModifierListOwner findOwner(@NotNull PsiElement element)
 	{
-		if(element.getParent() instanceof DotNetModifierList)
+		PsiElement parent = element.getParent();
+		if(parent instanceof DotNetModifierList)
 		{
-			return (DotNetModifierListOwner) element.getParent().getParent();
+			return (DotNetModifierListOwner) parent.getParent();
 		}
-		if(element.getParent() instanceof DotNetModifierListOwner)
+		else if(parent instanceof DotNetModifierListOwner && parent instanceof PsiNameIdentifierOwner)
 		{
-			return (DotNetModifierListOwner) element.getParent();
+			if(((PsiNameIdentifierOwner) parent).getNameIdentifier() == element)
+			{
+				return (DotNetModifierListOwner) parent;
+			}
 		}
 		return null;
 	}
