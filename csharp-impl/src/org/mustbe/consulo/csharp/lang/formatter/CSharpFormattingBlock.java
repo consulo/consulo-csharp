@@ -30,6 +30,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializationExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.formatting.Indent;
 import com.intellij.formatting.Wrap;
 import com.intellij.formatting.WrapType;
@@ -70,7 +71,14 @@ public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSha
 		}
 
 		PsiElement psi = node.getPsi();
-		if(psi instanceof CSharpFieldOrPropertySet && !(psi.getParent() instanceof CSharpCallArgumentList))
+		PsiElement parent = psi.getParent();
+		if(psi instanceof CSharpFieldOrPropertySet && !(parent instanceof CSharpCallArgumentList))
+		{
+			return Wrap.createWrap(WrapType.ALWAYS, true);
+		}
+
+		if(psi instanceof DotNetStatement && parent instanceof CSharpBlockStatementImpl && ((CSharpBlockStatementImpl) parent).getStatements()[0]
+				== psi)
 		{
 			return Wrap.createWrap(WrapType.ALWAYS, true);
 		}
