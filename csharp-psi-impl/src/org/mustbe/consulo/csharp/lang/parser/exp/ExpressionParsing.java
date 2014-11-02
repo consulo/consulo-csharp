@@ -519,54 +519,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				PsiBuilder.Marker argumentListMarker = builder.mark();
 				builder.advanceLexer();
 
-				boolean empty = true;
-				while(!builder.eof())
-				{
-					if(builder.getTokenType() == IDENTIFIER && builder.lookAhead(1) == COLON)
-					{
-						PsiBuilder.Marker marker = builder.mark();
-						doneOneElement(builder, IDENTIFIER, REFERENCE_EXPRESSION, null);
-						builder.advanceLexer(); // eq
-						PsiBuilder.Marker expressionParser = ExpressionParsing.parse(builder);
-						if(expressionParser == null)
-						{
-							builder.error("Expression expected");
-						}
-						marker.done(NAMED_CALL_ARGUMENT);
-					}
-					else
-					{
-						PsiBuilder.Marker argumentMarker = builder.mark();
-						PsiBuilder.Marker marker = ExpressionParsing.parse(builder);
-						if(marker == null)
-						{
-							argumentMarker.drop();
-							if(!empty)
-							{
-								builder.error("Expression expected");
-							}
-							break;
-						}
-						else
-						{
-							argumentMarker.done(CALL_ARGUMENT);
-						}
-					}
-					empty = false;
-
-					if(builder.getTokenType() == COMMA)
-					{
-						builder.advanceLexer();
-					}
-					else if(builder.getTokenType() == RBRACKET)
-					{
-						break;
-					}
-					else
-					{
-						break;
-					}
-				}
+				parseArguments(builder, false);
 
 				if(builder.getTokenType() != RBRACKET)
 				{
@@ -609,6 +562,14 @@ public class ExpressionParsing extends SharedParsingHelpers
 			return;
 		}
 
+		parseArguments(builder, fieldSet);
+
+		expect(builder, RPAR, "')' expected");
+		mark.done(CALL_ARGUMENT_LIST);
+	}
+
+	private static void parseArguments(CSharpBuilderWrapper builder, boolean fieldSet)
+	{
 		boolean empty = true;
 		while(!builder.eof())
 		{
@@ -660,17 +621,11 @@ public class ExpressionParsing extends SharedParsingHelpers
 			{
 				builder.advanceLexer();
 			}
-			else if(builder.getTokenType() == RPAR)
-			{
-				break;
-			}
 			else
 			{
 				break;
 			}
 		}
-		expect(builder, RPAR, "')' expected");
-		mark.done(CALL_ARGUMENT_LIST);
 	}
 
 	@Nullable
