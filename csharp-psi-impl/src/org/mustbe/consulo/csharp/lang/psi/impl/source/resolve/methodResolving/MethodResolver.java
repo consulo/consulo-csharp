@@ -93,7 +93,7 @@ public class MethodResolver
 			}
 			else
 			{
-				Object parameter = context.getParameterByIndex(i);
+				Object parameter = context.getParameterByIndex(i ++);
 				if(parameter == null)
 				{
 					DotNetParameter paramsParameter = context.getParamsParameter();
