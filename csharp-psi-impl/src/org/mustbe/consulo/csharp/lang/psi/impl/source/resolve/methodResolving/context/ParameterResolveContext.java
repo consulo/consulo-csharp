@@ -25,7 +25,7 @@ public interface ParameterResolveContext<T>
 	void paramsParameterSpecified();
 
 	@NotNull
-	DotNetParameter[] getLikeParameters();
+	T[] getParameters();
 
 	@NotNull
 	DotNetTypeRef getParamsParameterTypeRef();

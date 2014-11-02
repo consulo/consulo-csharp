@@ -12,6 +12,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NErrorCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NParamsCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.context.MethodParameterResolveContext;
@@ -66,7 +67,7 @@ public class MethodResolver
 	@NotNull
 	private static List<NCallArgument> buildCallArguments(@NotNull CSharpCallArgument[] callArguments,
 			@NotNull PsiElement scope,
-			@NotNull ParameterResolveContext context)
+			@NotNull ParameterResolveContext<?> context)
 	{
 		List<NCallArgument> list = new ArrayList<NCallArgument>(context.getParametersSize());
 
@@ -175,17 +176,30 @@ public class MethodResolver
 			paramsArguments = null;
 		}
 
-		// need add optional arguments to list - if they dont specified
-		for(DotNetParameter parameter : context.getLikeParameters())
+		for(Object parameter : context.getParameters())
 		{
-			DotNetExpression initializer = parameter.getInitializer();
-			if(initializer != null)
+			NCallArgument nCallArgument = findByParameterObject(list, parameter);
+			if(nCallArgument != null)
 			{
-				NCallArgument nCallArgument = findByName(list, parameter.getName());
-				if(nCallArgument == null)
+				continue;
+			}
+
+			if(parameter instanceof DotNetParameter)
+			{
+				DotNetParameter asParameter = (DotNetParameter) parameter;
+				DotNetExpression initializer = asParameter.getInitializer();
+				if(initializer != null)
 				{
-					list.add(new NNamedCallArgument(parameter.toTypeRef(true), null, parameter, parameter.getName()));
+					list.add(new NNamedCallArgument(asParameter.toTypeRef(true), null, parameter, asParameter.getName()));
 				}
+				else
+				{
+					list.add(new NErrorCallArgument(parameter));
+				}
+			}
+			else
+			{
+				list.add(new NErrorCallArgument(parameter));
 			}
 		}
 
@@ -222,6 +236,19 @@ public class MethodResolver
 			DotNetParameter parameterObjectAsParameter = argument.getParameterObjectAsParameter();
 
 			if(parameterObjectAsParameter != null && Comparing.equal(parameterObjectAsParameter.getName(), name))
+			{
+				return argument;
+			}
+		}
+		return null;
+	}
+
+	@Nullable
+	private static NCallArgument findByParameterObject(List<NCallArgument> arguments, Object parameterObject)
+	{
+		for(NCallArgument argument : arguments)
+		{
+			if(argument.getParameterObject() == parameterObject)
 			{
 				return argument;
 			}

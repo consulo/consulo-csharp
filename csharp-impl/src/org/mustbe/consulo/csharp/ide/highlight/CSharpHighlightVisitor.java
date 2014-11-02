@@ -456,6 +456,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 					}
 					DotNetTypeRef typeRef = parameters[i].toTypeRef(false);
 					typeRefs.add(typeRef);
+					builder.append(parameters[i].getName()).append(" : ");
 					appendType(builder, typeRef);
 				}
 			}
@@ -476,6 +477,13 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 				{
 					builder.append("<font color=\"").append(ColorUtil.toHex(JBColor.RED)).append("\">");
 				}
+
+				DotNetParameter parameterObjectAsParameter = nCallArgument.getParameterObjectAsParameter();
+				if(parameterObjectAsParameter != null)
+				{
+					builder.append(parameterObjectAsParameter.getName()).append(" : ");
+				}
+
 				appendType(builder, nCallArgument.getTypeRef());
 				if(!nCallArgument.isValid())
 				{

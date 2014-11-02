@@ -54,9 +54,9 @@ public class OnlyTypeRefParameterResolveContext implements ParameterResolveConte
 
 	@NotNull
 	@Override
-	public DotNetParameter[] getLikeParameters()
+	public DotNetTypeRef[] getParameters()
 	{
-		return DotNetParameter.EMPTY_ARRAY;
+		return myParameterTypeRefs;
 	}
 
 	@NotNull

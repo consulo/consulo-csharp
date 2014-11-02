@@ -91,7 +91,7 @@ public class MethodParameterResolveContext implements ParameterResolveContext<Do
 
 	@NotNull
 	@Override
-	public DotNetParameter[] getLikeParameters()
+	public DotNetParameter[] getParameters()
 	{
 		return myParameters;
 	}
