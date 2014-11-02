@@ -1,30 +1,28 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.genericInference;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.SimpleGenericExtractorImpl;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.Couple;
 import com.intellij.psi.PsiElement;
 import lombok.val;
 
@@ -83,18 +81,25 @@ public class GenericInferenceUtil
 					new SimpleGenericExtractorImpl(genericParameters, typeArgumentListRefs));
 		}
 
-		Map<String, Couple<DotNetTypeRef>> genericInferenceContext = prepareParametersAndArguments(callArguments, methodDeclaration);
-		if(genericInferenceContext.isEmpty())
+		List<NCallArgument> methodCallArguments = MethodResolver.buildCallArguments(callArguments, methodDeclaration, scope);
+
+		if(methodCallArguments.isEmpty())
 		{
 			return new GenericInferenceResult(true, DotNetGenericExtractor.EMPTY);
 		}
 
 		val map = new HashMap<DotNetGenericParameter, DotNetTypeRef>();
 
-		for(Couple<DotNetTypeRef> typeRefCouple : genericInferenceContext.values())
+		for(NCallArgument nCallArgument : methodCallArguments)
 		{
-			DotNetTypeRef parameterTypeRef = typeRefCouple.getFirst();
-			DotNetTypeRef expressionTypeRef = typeRefCouple.getSecond();
+			DotNetTypeRef temp = nCallArgument.getParameterTypeRef();
+			if(temp == null)
+			{
+				continue;
+			}
+
+			DotNetTypeRef parameterTypeRef = cleanTypeRef(temp);
+			DotNetTypeRef expressionTypeRef = cleanTypeRef(nCallArgument.getTypeRef());
 
 			DotNetTypeResolveResult parameterTypeResolveResult = parameterTypeRef.resolve(scope);
 			DotNetTypeResolveResult expressionTypeResolveResult = expressionTypeRef.resolve(scope);
@@ -222,72 +227,19 @@ public class GenericInferenceUtil
 				}
 			}
 		}
+		else if(parameterTypeRef instanceof CSharpArrayTypeRef)
+		{
+			PsiElement element = ((CSharpArrayTypeRef) parameterTypeRef).getInnerTypeRef().resolve(scope).getElement();
+			if(parameter.isEquivalentTo(element))
+			{
+				return 0;
+			}
+		}
 		return -1;
 	}
 
-	/**
-	 * @return map of <parameterName, <ParameterTypeRef, ExpressionTypeRef>>
-	 */
 	@NotNull
-	@Deprecated
-	private static Map<String, Couple<DotNetTypeRef>> prepareParametersAndArguments(@NotNull CSharpCallArgument[] arguments,
-			@NotNull DotNetLikeMethodDeclaration methodDeclaration)
-	{
-		Map<String, Couple<DotNetTypeRef>> types = new LinkedHashMap<String, Couple<DotNetTypeRef>>();
-
-		DotNetParameter[] parameters = methodDeclaration.getParameters();
-
-		int i = 0;
-		for(CSharpCallArgument argument : arguments)
-		{
-			DotNetTypeRef expressionTypeRef = DotNetTypeRef.ERROR_TYPE;
-			String name;
-			DotNetTypeRef parameterTypeRef;
-
-			DotNetExpression argumentExpression = argument.getArgumentExpression();
-			if(argumentExpression != null)
-			{
-				expressionTypeRef = argumentExpression.toTypeRef(false);
-			}
-
-			if(argument instanceof CSharpNamedCallArgument)
-			{
-				name = ((CSharpNamedCallArgument) argument).getName();
-
-				parameterTypeRef = DotNetTypeRef.ERROR_TYPE;
-
-				for(DotNetParameter parameter : methodDeclaration.getParameters())
-				{
-					if(Comparing.equal(name, parameter.getName()))
-					{
-						parameterTypeRef = parameter.toTypeRef(false);
-						break;
-					}
-				}
-			}
-			else
-			{
-				DotNetParameter parameter = ArrayUtil2.safeGet(parameters, i++);
-				if(parameter == null)
-				{
-					continue;
-				}
-				parameterTypeRef = parameter.toTypeRef(false);
-				name = parameter.getName();
-			}
-
-			if(name == null)
-			{
-				continue;
-			}
-			types.put(name, Couple.of(cleanTypeRef(parameterTypeRef), cleanTypeRef(expressionTypeRef)));
-		}
-
-		return types;
-	}
-
-	@NotNull
-	private static DotNetTypeRef cleanTypeRef(DotNetTypeRef typeRef)
+	private static DotNetTypeRef cleanTypeRef(@NotNull DotNetTypeRef typeRef)
 	{
 		if(typeRef instanceof CSharpRefTypeRef)
 		{

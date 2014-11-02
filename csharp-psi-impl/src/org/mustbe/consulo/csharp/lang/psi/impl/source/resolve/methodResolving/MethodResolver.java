@@ -57,7 +57,7 @@ public class MethodResolver
 	}
 
 	@NotNull
-	private static List<NCallArgument> buildCallArguments(@NotNull CSharpCallArgument[] callArguments,
+	public static List<NCallArgument> buildCallArguments(@NotNull CSharpCallArgument[] callArguments,
 			@NotNull DotNetParameterListOwner parameterListOwner,
 			@NotNull PsiElement scope)
 	{
@@ -172,7 +172,7 @@ public class MethodResolver
 		// if we have params arguments add to list it
 		if(!paramsArguments.isEmpty())
 		{
-			list.add(new NParamsCallArgument(context.getParamsParameterTypeRef(), paramsArguments, context.getParamsParameter()));
+			list.add(new NParamsCallArgument(paramsArguments, context.getParamsParameter()));
 			paramsArguments = null;
 		}
 
@@ -214,8 +214,7 @@ public class MethodResolver
 				NCallArgument nCallArgument = findByName(list, paramsParameter.getName());
 				if(nCallArgument == null)
 				{
-					list.add(new NParamsCallArgument(context.getParamsParameterTypeRef(), Collections.<CSharpCallArgument>emptyList(),
-							paramsParameter));
+					list.add(new NParamsCallArgument(Collections.<CSharpCallArgument>emptyList(), paramsParameter));
 				}
 			}
 		}
