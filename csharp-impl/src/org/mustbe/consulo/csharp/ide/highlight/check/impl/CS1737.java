@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.highlight.check.AbstractCompilerCheck;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
@@ -44,6 +45,6 @@ public class CS1737 extends AbstractCompilerCheck<DotNetParameter>
 		int i = ArrayUtil.indexOf(parameters, dotNetParameter);
 
 		DotNetParameter nextParameter = ArrayUtil2.safeGet(parameters, i + 1);
-		return nextParameter != null && nextParameter.getInitializer() == null;
+		return nextParameter != null && !nextParameter.hasModifier(CSharpModifier.PARAMS) && nextParameter.getInitializer() == null;
 	}
 }
