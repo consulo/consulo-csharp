@@ -519,28 +519,52 @@ public class ExpressionParsing extends SharedParsingHelpers
 				PsiBuilder.Marker argumentListMarker = builder.mark();
 				builder.advanceLexer();
 
-				while(true)
+				boolean empty = true;
+				while(!builder.eof())
 				{
-					PsiBuilder.Marker argumentMarker = builder.mark();
-
-					final PsiBuilder.Marker index = parse(builder);
-					if(index == null)
+					if(builder.getTokenType() == IDENTIFIER && builder.lookAhead(1) == COLON)
 					{
-						argumentMarker.drop();
-						builder.error("Expression expected");
+						PsiBuilder.Marker marker = builder.mark();
+						doneOneElement(builder, IDENTIFIER, REFERENCE_EXPRESSION, null);
+						builder.advanceLexer(); // eq
+						PsiBuilder.Marker expressionParser = ExpressionParsing.parse(builder);
+						if(expressionParser == null)
+						{
+							builder.error("Expression expected");
+						}
+						marker.done(NAMED_CALL_ARGUMENT);
 					}
 					else
 					{
-						argumentMarker.done(CALL_ARGUMENT);
+						PsiBuilder.Marker argumentMarker = builder.mark();
+						PsiBuilder.Marker marker = ExpressionParsing.parse(builder);
+						if(marker == null)
+						{
+							argumentMarker.drop();
+							if(!empty)
+							{
+								builder.error("Expression expected");
+							}
+							break;
+						}
+						else
+						{
+							argumentMarker.done(CALL_ARGUMENT);
+						}
 					}
+					empty = false;
 
-					if(builder.getTokenType() != COMMA)
+					if(builder.getTokenType() == COMMA)
+					{
+						builder.advanceLexer();
+					}
+					else if(builder.getTokenType() == RBRACKET)
 					{
 						break;
 					}
 					else
 					{
-						builder.advanceLexer();
+						break;
 					}
 				}
 
