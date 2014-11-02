@@ -20,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.BitUtil;
 import com.intellij.util.io.StringRef;
@@ -90,6 +89,6 @@ public class CSharpTypeDeclStub extends MemberStub<CSharpTypeDeclaration>
 
 	public boolean isNested()
 	{
-		return getParentStub() instanceof DotNetTypeDeclaration;
+		return getParentStub() instanceof CSharpTypeDeclStub;
 	}
 }
