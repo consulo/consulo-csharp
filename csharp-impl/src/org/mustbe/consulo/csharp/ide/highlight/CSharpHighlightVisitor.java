@@ -24,20 +24,21 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.ConvertToNormalCallFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.*;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayAccessExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
@@ -45,7 +46,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
-import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.daemon.impl.HighlightVisitor;
@@ -176,8 +176,8 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 				{
 					List<TextRange> range = ReferenceRange.getAbsoluteRanges(reference);
 
-					myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.WRONG_REF).range(range.get(0))
-							.descriptionAndTooltip("Unknown tag").create());
+					myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.WRONG_REF).range(range.get(0)).descriptionAndTooltip
+							("Unknown tag").create());
 				}
 			}
 		}
@@ -191,8 +191,8 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 				{
 					List<TextRange> range = ReferenceRange.getAbsoluteRanges(reference);
 
-					myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.WRONG_REF).range(range.get(0))
-							.descriptionAndTooltip("Unknown attribute").create());
+					myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.WRONG_REF).range(range.get(0)).descriptionAndTooltip
+							("Unknown attribute").create());
 				}
 			}
 		}
@@ -382,7 +382,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 			}
 			else
 			{
-				ResolveError forError = createResolveError(callElement, resolveResults[0].getElement());
+				ResolveError forError = createResolveError(callElement, resolveResults[0]);
 				if(forError == null)
 				{
 					return;
@@ -393,8 +393,19 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 		}
 	}
 
-	private static ResolveError createResolveError(@NotNull PsiElement element, @NotNull PsiElement resolveElement)
+	private static ResolveError createResolveError(@NotNull PsiElement element, @NotNull ResolveResult resolveResult)
 	{
+		if(!(resolveResult instanceof MethodResolveResult))
+		{
+			return null;
+		}
+
+		PsiElement resolveElement = resolveResult.getElement();
+
+		MethodCalcResult calcResult = ((MethodResolveResult) resolveResult).getCalcResult();
+		List<NCallArgument> arguments = calcResult.getArguments();
+
+
 		CSharpCallArgumentListOwner callOwner = findCallOwner(element);
 		if(callOwner != null)
 		{
@@ -451,29 +462,27 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 			builder.append(")</b> cannot be applied<br>");
 
 			builder.append("to&#x9;<b>(");
-			DotNetExpression[] parameterExpressions = callOwner.getParameterExpressions();
-			for(int i = 0; i < parameterExpressions.length; i++)
+
+			for(int i = 0; i < arguments.size(); i++)
 			{
 				if(i != 0)
 				{
 					builder.append(", ");
 				}
 
-				DotNetTypeRef requiredType = ArrayUtil2.safeGet(typeRefs, i);
-				DotNetTypeRef foundType = parameterExpressions[i].toTypeRef(false);
+				NCallArgument nCallArgument = arguments.get(i);
 
-				boolean isInvalid = requiredType == null || !CSharpTypeUtil.isInheritableWithImplicit(requiredType, foundType, callOwner);
-
-				if(isInvalid)
+				if(!nCallArgument.isValid())
 				{
 					builder.append("<font color=\"").append(ColorUtil.toHex(JBColor.RED)).append("\">");
 				}
-				appendType(builder, foundType);
-				if(isInvalid)
+				appendType(builder, nCallArgument.getTypeRef());
+				if(!nCallArgument.isValid())
 				{
 					builder.append("</font>");
 				}
 			}
+
 			builder.append(")</b>");
 
 			PsiElement parameterList = callOwner.getParameterList();

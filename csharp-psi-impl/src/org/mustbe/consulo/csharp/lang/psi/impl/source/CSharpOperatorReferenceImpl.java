@@ -24,18 +24,21 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubElementResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.OperatorByTokenSelector;
@@ -281,23 +284,22 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		}
 
 		List<DotNetLikeMethodDeclaration> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
-		List<Pair<Integer, PsiElement>> list = new ArrayList<Pair<Integer, PsiElement>>();
+		List<Pair<MethodCalcResult, PsiElement>> list = new ArrayList<Pair<MethodCalcResult, PsiElement>>();
 		for(DotNetLikeMethodDeclaration psiElement : elements)
 		{
-			int i = MethodAcceptorImpl.calcAcceptableWeight(this, this, psiElement);
+			MethodCalcResult calc = MethodResolver.calc(this, psiElement, this);
 
-			list.add(Pair.<Integer, PsiElement>create(i, psiElement));
-
+			list.add(Pair.<MethodCalcResult, PsiElement>create(calc, psiElement));
 		}
 		Collections.sort(list, WeightUtil.ourComparator);
 
-		Pair<Integer, PsiElement> pair = ContainerUtil.getFirstItem(list);
+		Pair<MethodCalcResult, PsiElement> pair = ContainerUtil.getFirstItem(list);
 		if(pair == null)
 		{
 			return null;
 		}
 
-		if(pair.getFirst() != WeightUtil.MAX_WEIGHT)
+		if(!pair.getFirst().isValidResult())
 		{
 			if(last != null)
 			{
@@ -420,6 +422,20 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			return ((CSharpExpressionWithOperatorImpl) parent).getParameterExpressions();
 		}
 		return DotNetExpression.EMPTY_ARRAY;
+	}
+
+	@NotNull
+	@Override
+	public CSharpCallArgument[] getCallArguments()
+	{
+		DotNetExpression[] parameterExpressions = getParameterExpressions();
+		CSharpCallArgument[] array = new CSharpCallArgument[parameterExpressions.length];
+		for(int i = 0; i < parameterExpressions.length; i++)
+		{
+			DotNetExpression parameterExpression = parameterExpressions[i];
+			array[i] = new CSharpLightCallArgument(parameterExpression);
+		}
+		return array;
 	}
 
 	@Nullable

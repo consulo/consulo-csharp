@@ -22,6 +22,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -89,6 +90,14 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 	public boolean canResolve()
 	{
 		return true;
+	}
+
+	@NotNull
+	@Override
+	public CSharpCallArgument[] getCallArguments()
+	{
+		CSharpCallArgumentList parameterList = getParameterList();
+		return parameterList == null ? CSharpCallArgument.EMPTY_ARRAY : parameterList.getArguments();
 	}
 
 	@Nullable

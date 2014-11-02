@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -51,6 +52,13 @@ public abstract class CSharpExpressionWithOperatorImpl extends CSharpElementImpl
 		CSharpOperatorReferenceImpl operatorElement = getOperatorElement();
 
 		return operatorElement.resolveToTypeRef();
+	}
+
+	@NotNull
+	@Override
+	public CSharpCallArgument[] getCallArguments()
+	{
+		return getOperatorElement().getCallArguments();
 	}
 
 	@Override

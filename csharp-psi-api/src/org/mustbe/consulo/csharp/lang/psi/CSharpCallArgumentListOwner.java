@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.DeprecationInfo;
 import org.mustbe.consulo.dotnet.psi.DotNetCallArgumentListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -29,6 +30,15 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 public interface CSharpCallArgumentListOwner extends DotNetCallArgumentListOwner
 {
 	boolean canResolve();
+
+	@Override
+	@NotNull
+	@Deprecated
+	@DeprecationInfo("Use #getCallArguments() due we can have named arguments")
+	org.mustbe.consulo.dotnet.psi.DotNetExpression[] getParameterExpressions();
+
+	@NotNull
+	CSharpCallArgument[] getCallArguments();
 
 	@Override
 	@Nullable

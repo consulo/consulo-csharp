@@ -16,14 +16,17 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.light;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
+import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
@@ -43,7 +46,7 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public abstract class CSharpAbstractLightAttributeBuilder extends LightElement implements CSharpAttribute
 {
-	private final List<DotNetExpression> myParameterExpressions = new SmartList<DotNetExpression>();
+	private final List<CSharpCallArgument> myCallArguments = new SmartList<CSharpCallArgument>();
 
 	public CSharpAbstractLightAttributeBuilder(Project project)
 	{
@@ -57,7 +60,7 @@ public abstract class CSharpAbstractLightAttributeBuilder extends LightElement i
 			o = StringUtil.QUOTER.fun((String)o);
 		}
 
-		myParameterExpressions.add(CSharpFileFactory.createExpression(getProject(), String.valueOf(o)));
+		myCallArguments.add(new CSharpLightCallArgument(CSharpFileFactory.createExpression(getProject(), String.valueOf(o))));
 	}
 
 	@Nullable
@@ -84,7 +87,25 @@ public abstract class CSharpAbstractLightAttributeBuilder extends LightElement i
 	@Override
 	public DotNetExpression[] getParameterExpressions()
 	{
-		return ContainerUtil.toArray(myParameterExpressions, DotNetExpression.ARRAY_FACTORY);
+		CSharpCallArgument[] arguments = getCallArguments();
+		List<DotNetExpression> list = new ArrayList<DotNetExpression>(arguments.length);
+		for(CSharpCallArgument callArgument : arguments)
+		{
+			if(!(callArgument instanceof CSharpNamedCallArgument))
+			{
+				DotNetExpression argumentExpression = callArgument.getArgumentExpression();
+				assert argumentExpression != null;
+				list.add(argumentExpression);
+			}
+		}
+		return ContainerUtil.toArray(list, DotNetExpression.ARRAY_FACTORY);
+	}
+
+	@NotNull
+	@Override
+	public CSharpCallArgument[] getCallArguments()
+	{
+		return ContainerUtil.toArray(myCallArguments, CSharpCallArgument.ARRAY_FACTORY);
 	}
 
 	@Nullable

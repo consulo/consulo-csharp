@@ -7,7 +7,6 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
@@ -65,8 +64,7 @@ public class GenericInferenceUtil
 	public static GenericInferenceResult inferenceGenericExtractor(@NotNull CSharpCallArgumentListOwner callArgumentListOwner,
 			@NotNull DotNetLikeMethodDeclaration methodDeclaration)
 	{
-		CSharpCallArgumentList parameterList = callArgumentListOwner.getParameterList();
-		CSharpCallArgument[] arguments = parameterList == null ? CSharpCallArgument.EMPTY_ARRAY : parameterList.getArguments();
+		CSharpCallArgument[] arguments = callArgumentListOwner.getCallArguments();
 
 		return inferenceGenericExtractor(arguments, callArgumentListOwner.getTypeArgumentListRefs(), callArgumentListOwner, methodDeclaration);
 	}
@@ -231,6 +229,7 @@ public class GenericInferenceUtil
 	 * @return map of <parameterName, <ParameterTypeRef, ExpressionTypeRef>>
 	 */
 	@NotNull
+	@Deprecated
 	private static Map<String, Couple<DotNetTypeRef>> prepareParametersAndArguments(@NotNull CSharpCallArgument[] arguments,
 			@NotNull DotNetLikeMethodDeclaration methodDeclaration)
 	{

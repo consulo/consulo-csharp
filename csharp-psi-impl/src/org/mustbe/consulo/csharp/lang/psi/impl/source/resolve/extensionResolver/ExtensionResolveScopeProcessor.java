@@ -21,7 +21,6 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
@@ -161,8 +160,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 			return GenericInferenceUtil.SUCCESS;
 		}
 
-		CSharpCallArgumentList parameterList = myCallArgumentListOwner == null ? null : myCallArgumentListOwner.getParameterList();
-		CSharpCallArgument[] arguments = parameterList == null ? CSharpCallArgument.EMPTY_ARRAY : parameterList.getArguments();
+		val arguments = myCallArgumentListOwner == null ? CSharpCallArgument.EMPTY_ARRAY : myCallArgumentListOwner.getCallArguments();
 
 		CSharpCallArgument[] newArguments = new CSharpCallArgument[arguments.length + 1];
 		System.arraycopy(arguments, 0, newArguments, 1, arguments.length);

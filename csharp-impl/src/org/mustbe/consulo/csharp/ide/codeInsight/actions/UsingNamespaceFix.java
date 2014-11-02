@@ -25,12 +25,13 @@ import java.util.TreeSet;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodAcceptorImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodIndex;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MethodIndex;
@@ -240,18 +241,19 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 			return;
 		}
 
-		DotNetExpression[] parameterExpressions = ((CSharpMethodCallExpressionImpl) parent).getParameterExpressions();
+		CSharpCallArgument[] callArguments = ((CSharpMethodCallExpressionImpl) parent).getCallArguments();
 
-		DotNetExpression[] newExpressions = new DotNetExpression[parameterExpressions.length + 1];
-		newExpressions[0] = (DotNetExpression) qualifier;
-		System.arraycopy(parameterExpressions, 0, newExpressions, 1, parameterExpressions.length);
+
+		CSharpCallArgument[] newCallArguments = new CSharpCallArgument[callArguments.length + 1];
+		newCallArguments[0] = new CSharpLightCallArgument((DotNetExpression) qualifier);
+		System.arraycopy(callArguments, 0, newCallArguments, 1, callArguments.length);
 
 		Collection<DotNetLikeMethodDeclaration> list = ExtensionMethodIndex.getInstance().get(referenceName, myRef.getProject(),
 				myRef.getResolveScope());
 
 		for(DotNetLikeMethodDeclaration possibleMethod : list)
 		{
-			if(MethodAcceptorImpl.calcAcceptableWeight(myRef, newExpressions, possibleMethod) == WeightUtil.MAX_WEIGHT)
+			if(MethodResolver.calc(newCallArguments, possibleMethod, myRef).isValidResult())
 			{
 				PsiElement parentOfMethod = possibleMethod.getParent();
 				if(parentOfMethod instanceof DotNetQualifiedElement)

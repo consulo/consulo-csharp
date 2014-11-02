@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -78,6 +79,14 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 	{
 		CSharpCallArgumentList parameterList = getParameterList();
 		return parameterList == null ? DotNetExpression.EMPTY_ARRAY : parameterList.getExpressions();
+	}
+
+	@NotNull
+	@Override
+	public CSharpCallArgument[] getCallArguments()
+	{
+		CSharpCallArgumentList parameterList = getParameterList();
+		return parameterList == null ? CSharpCallArgument.EMPTY_ARRAY : parameterList.getArguments();
 	}
 
 	@NotNull
