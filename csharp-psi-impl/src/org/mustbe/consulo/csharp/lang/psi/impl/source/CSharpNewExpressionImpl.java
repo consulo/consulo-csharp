@@ -183,16 +183,8 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 		{
 			return null;
 		}
-		DotNetType newType = getNewType();
-		if(newType instanceof DotNetUserType)
-		{
-			DotNetReferenceExpression referenceExpression = ((DotNetUserType) newType).getReferenceExpression();
-			if(referenceExpression instanceof CSharpReferenceExpression)
-			{
-				return referenceExpression.resolve();
-			}
-		}
-		return null;
+		DotNetReferenceExpression expressionForResolving = getExpressionForResolving();
+		return expressionForResolving != null ? expressionForResolving.resolve() : null;
 	}
 
 	@NotNull
@@ -203,18 +195,35 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 		{
 			return ResolveResult.EMPTY_ARRAY;
 		}
+		DotNetReferenceExpression expressionForResolving = getExpressionForResolving();
+		return expressionForResolving != null ? expressionForResolving.multiResolve(incompleteCode) : ResolveResult.EMPTY_ARRAY;
+	}
+
+	private DotNetReferenceExpression getExpressionForResolving()
+	{
 		DotNetType newType = getNewType();
 		if(newType instanceof DotNetUserType)
 		{
 			DotNetReferenceExpression referenceExpression = ((DotNetUserType) newType).getReferenceExpression();
 			if(referenceExpression instanceof CSharpReferenceExpression)
 			{
-				return referenceExpression.multiResolve(incompleteCode);
+				return referenceExpression;
 			}
 		}
-		return ResolveResult.EMPTY_ARRAY;
+		else if(newType instanceof DotNetTypeWithTypeArguments)
+		{
+			DotNetType c = ((DotNetTypeWithTypeArguments) newType).getInnerType();
+			if(c instanceof DotNetUserType)
+			{
+				DotNetReferenceExpression referenceExpression = ((DotNetUserType) c).getReferenceExpression();
+				if(referenceExpression instanceof CSharpReferenceExpression)
+				{
+					return referenceExpression;
+				}
+			}
+		}
+		return null;
 	}
-
 	@NotNull
 	@Override
 	public DotNetExpression[] getParameterExpressions()
