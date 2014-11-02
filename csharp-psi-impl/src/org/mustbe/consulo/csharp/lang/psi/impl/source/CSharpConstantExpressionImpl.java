@@ -51,9 +51,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 		@Override
 		public DotNetTypeRef resolveTypeRef(@NotNull CSharpConstantExpressionImpl element, boolean resolveFromParent)
 		{
-			PsiElement byType = element.getFirstChild();
-			assert byType != null;
-			IElementType elementType = byType.getNode().getElementType();
+			IElementType elementType = element.getLiteralType();
 
 			String qName = null;
 			if(elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL)
@@ -129,7 +127,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 	{
 		PsiElement byType = getFirstChild();
 		assert byType != null;
-		IElementType elementType = byType.getNode().getElementType();
+		IElementType elementType = getLiteralType();
 		String text = getText();
 		if(elementType == CSharpTokens.STRING_LITERAL)
 		{
@@ -208,9 +206,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 	@Override
 	public LiteralTextEscaper<? extends PsiLanguageInjectionHost> createLiteralTextEscaper()
 	{
-		PsiElement byType = getFirstChild();
-		assert byType != null;
-		IElementType elementType = byType.getNode().getElementType();
+		IElementType elementType = getLiteralType();
 		if(elementType == CSharpTokens.STRING_LITERAL)
 		{
 			return new CSharpStringLiteralEscaper<CSharpConstantExpressionImpl>(this);
