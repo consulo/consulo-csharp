@@ -560,7 +560,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 								}
 								else
 								{
-									methodResolveResults.add(Pair.create(calcResult, psiElement));
+									methodResolveResults.add(Pair.create(calcResult.dup(Short.MIN_VALUE), psiElement));
 								}
 							}
 						}
