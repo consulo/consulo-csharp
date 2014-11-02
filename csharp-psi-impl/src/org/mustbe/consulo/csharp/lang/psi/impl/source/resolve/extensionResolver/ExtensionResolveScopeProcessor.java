@@ -144,7 +144,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 						continue;
 					}
 
-					myResolvedElements.add(transform(methodDeclaration, inferenceResult.getExtractor()));
+					myResolvedElements.add(transform(methodDeclaration, inferenceResult));
 				}
 			}
 		}
@@ -167,7 +167,8 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 
 		newArguments[0] = myArgumentWrapper;
 
-		return GenericInferenceUtil.inferenceGenericExtractor(newArguments, DotNetTypeRef.EMPTY_ARRAY, myExpression, methodDeclaration);
+		val typeArgumentRefs = myCallArgumentListOwner == null ? DotNetTypeRef.EMPTY_ARRAY : myCallArgumentListOwner.getTypeArgumentListRefs();
+		return GenericInferenceUtil.inferenceGenericExtractor(newArguments, typeArgumentRefs, myExpression, methodDeclaration);
 	}
 
 	@NotNull
@@ -194,7 +195,8 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 		return GenericUnwrapTool.exchangeTypeRef(parameters[0].toTypeRef(false), extractor, myExpression);
 	}
 
-	private static CSharpMethodDeclaration transform(final CSharpMethodDeclaration methodDeclaration, @NotNull DotNetGenericExtractor extractor)
+	private static CSharpMethodDeclaration transform(final CSharpMethodDeclaration methodDeclaration,
+			@NotNull GenericInferenceUtil.GenericInferenceResult inferenceResult)
 	{
 		DotNetParameterList parameterList = methodDeclaration.getParameterList();
 		assert parameterList != null;
@@ -219,8 +221,9 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 			}
 		};
 
-		CSharpMethodDeclaration extractedMethod = GenericUnwrapTool.extract(declaration, extractor, true);
+		CSharpMethodDeclaration extractedMethod = GenericUnwrapTool.extract(declaration, inferenceResult.getExtractor(), true);
 		extractedMethod.putUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER, methodDeclaration);
+		extractedMethod.putUserData(GenericInferenceUtil.INFERENCE_RESULT, inferenceResult);
 		return extractedMethod;
 	}
 }

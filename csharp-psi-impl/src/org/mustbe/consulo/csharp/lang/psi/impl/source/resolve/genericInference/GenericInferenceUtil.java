@@ -23,6 +23,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
+import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import lombok.val;
 
@@ -32,6 +33,8 @@ import lombok.val;
  */
 public class GenericInferenceUtil
 {
+	public static final Key<GenericInferenceUtil.GenericInferenceResult> INFERENCE_RESULT = Key.create("inference.result");
+
 	public static class GenericInferenceResult
 	{
 		private boolean mySuccess;

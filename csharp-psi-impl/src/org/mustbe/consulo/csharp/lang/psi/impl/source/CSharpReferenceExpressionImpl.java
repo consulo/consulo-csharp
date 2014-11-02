@@ -537,20 +537,14 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 						{
 							if(psiElement instanceof DotNetLikeMethodDeclaration)
 							{
-								CSharpMethodDeclaration wrapper = psiElement.getUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER);
+								GenericInferenceUtil.GenericInferenceResult inferenceResult = psiElement.getUserData(GenericInferenceUtil.INFERENCE_RESULT);
 
-								GenericInferenceUtil.GenericInferenceResult inferenceResult = null;
-								if(wrapper == null)
+								if(inferenceResult == null)
 								{
 									inferenceResult = GenericInferenceUtil.inferenceGenericExtractor(callArgumentListOwner,
 											(DotNetLikeMethodDeclaration) psiElement);
+									psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, inferenceResult.getExtractor(), true);
 								}
-								else
-								{
-									inferenceResult = new GenericInferenceUtil.GenericInferenceResult(true, DotNetGenericExtractor.EMPTY);
-								}
-
-								psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, inferenceResult.getExtractor(), true);
 
 								val calcResult = MethodResolver.calc(callArgumentListOwner, (DotNetLikeMethodDeclaration) psiElement, element);
 

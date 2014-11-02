@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving;
 import java.util.Collections;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 
@@ -21,6 +22,12 @@ public class MethodCalcResult
 	{
 		myWeight = weight;
 		myArguments = arguments;
+	}
+
+	@NotNull
+	public MethodCalcResult dup(int weight)
+	{
+		return new MethodCalcResult(getWeight() + weight, getArguments());
 	}
 
 	public boolean isValidResult()
