@@ -71,8 +71,7 @@ public class GenericInferenceUtil
 	}
 
 	@NotNull
-	public static GenericInferenceResult inferenceGenericExtractor(
-			@NotNull CSharpCallArgument[] callArguments,
+	public static GenericInferenceResult inferenceGenericExtractor(@NotNull CSharpCallArgument[] callArguments,
 			@NotNull DotNetTypeRef[] typeArgumentListRefs,
 			@NotNull PsiElement scope,
 			@NotNull DotNetLikeMethodDeclaration methodDeclaration)
@@ -80,8 +79,9 @@ public class GenericInferenceUtil
 		DotNetGenericParameter[] genericParameters = methodDeclaration.getGenericParameters();
 		if(genericParameters.length == 0 || typeArgumentListRefs.length > 0)
 		{
-			return new GenericInferenceResult(genericParameters.length == typeArgumentListRefs.length,
-					new SimpleGenericExtractorImpl(genericParameters, typeArgumentListRefs));
+			DotNetGenericExtractor extractor = genericParameters.length != typeArgumentListRefs.length ? DotNetGenericExtractor.EMPTY : new
+					SimpleGenericExtractorImpl(genericParameters, typeArgumentListRefs);
+			return new GenericInferenceResult(genericParameters.length == typeArgumentListRefs.length, extractor);
 		}
 
 		List<NCallArgument> methodCallArguments = MethodResolver.buildCallArguments(callArguments, methodDeclaration, scope);
