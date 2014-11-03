@@ -4,7 +4,6 @@ import java.util.Comparator;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
 import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -31,38 +30,32 @@ public class TypeLikeSorter implements ResolveResultSorter
 		@Override
 		public int compare(ResolveResult o1, ResolveResult o2)
 		{
-			int compare = compare(o1);
-			if(compare != 0)
-			{
-				return -compare;
-			}
-			compare = compare(o2);
-			if(compare != 0)
-			{
-				return compare;
-			}
-			return 0;
+			return getWeight(o2) - getWeight(o1);
 		}
 
-		private int compare(ResolveResult r)
+		private int getWeight(ResolveResult resolveResult)
 		{
-			PsiElement element = r.getElement();
+			PsiElement element = resolveResult.getElement();
+			if(element instanceof DotNetVariable)
+			{
+				return 1000;
+			}
+
+			if(element instanceof DotNetGenericParameterListOwner)
+			{
+				if(((DotNetGenericParameterListOwner) element).getGenericParametersCount() == myGenericCount)
+				{
+					return 500;
+				}
+				return 250;
+			}
+
 			if(element instanceof DotNetNamespaceAsElement)
 			{
-				return -1;
+				return 0;
 			}
 
-			if(element instanceof DotNetVariable && element instanceof DotNetQualifiedElement)
-			{
-				return 2;
-			}
-
-			if(element instanceof DotNetGenericParameterListOwner && ((DotNetGenericParameterListOwner) element).getGenericParametersCount() ==
-					myGenericCount)
-			{
-				return 1;
-			}
-			return 0;
+			return 50;
 		}
 	}
 
@@ -93,29 +86,6 @@ public class TypeLikeSorter implements ResolveResultSorter
 	@Override
 	public void sort(@NotNull ResolveResult[] resolveResults)
 	{
-	/*	System.out.println("before: ");
-		for(ResolveResult resolveResult : resolveResults)
-		{
-			PsiElement element = resolveResult.getElement();
-			System.out.println(" element: " + element.getClass().getSimpleName());
-			if(element instanceof DotNetGenericParameterListOwner)
-			{
-				System.out.println(" generic count: " + ((DotNetGenericParameterListOwner) element).getGenericParametersCount());
-			}
-		}
-		          */
 		ContainerUtil.sort(resolveResults, myComparator);
-
-	/*	System.out.println("after: ");
-		for(ResolveResult resolveResult : resolveResults)
-		{
-			PsiElement element = resolveResult.getElement();
-			System.out.println(" element: " + element.getClass().getSimpleName());
-			if(element instanceof DotNetGenericParameterListOwner)
-			{
-				System.out.println(" generic count: " + ((DotNetGenericParameterListOwner) element).getGenericParametersCount());
-			}
-		}
-               */
 	}
 }
