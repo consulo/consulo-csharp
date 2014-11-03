@@ -22,7 +22,6 @@ import java.util.List;
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
@@ -167,6 +166,16 @@ public class CSharpResolveUtil
 			maxScope = entrance.getContainingFile();
 		}
 
+		DotNetNamespaceAsElement root = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace("",
+				entrance.getResolveScope());
+
+		assert root != null;
+
+		if(!processor.execute(root, state))
+		{
+			return false;
+		}
+
 		while(scope != null)
 		{
 			ProgressIndicatorProvider.checkCanceled();
@@ -177,19 +186,6 @@ public class CSharpResolveUtil
 				if(usingList != null)
 				{
 					if(!processor.execute(usingList, state))
-					{
-						return false;
-					}
-				}
-
-				if(scope instanceof CSharpFile)
-				{
-					DotNetNamespaceAsElement root = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace("",
-							entrance.getResolveScope());
-
-					assert root != null;
-
-					if(!processor.execute(root, state))
 					{
 						return false;
 					}
