@@ -26,15 +26,16 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.Function;
@@ -185,10 +186,23 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 			return builder.toString();
 		}
 
-		if(element instanceof Navigatable)
+		ItemPresentation itemPresentation = ItemPresentationProviders.getItemPresentation((NavigationItem) element);
+		if(itemPresentation != null)
 		{
-			return ItemPresentationProviders.getItemPresentation((NavigationItem) element).getPresentableText();
+			return itemPresentation.getPresentableText();
 		}
+
+		if(element instanceof DotNetVariable)
+		{
+			String name = ((DotNetVariable) element).getName();
+
+			DotNetTypeRef dotNetTypeRef = ((DotNetVariable) element).toTypeRef(false);
+
+			StringBuilder builder = new StringBuilder();
+			builder.append(dotNetTypeRef.getPresentableText()).append(" ").append(name);
+			return builder.toString();
+		}
+
 		return "getNodeText : " + element.getClass().getSimpleName();
 	}
 }
