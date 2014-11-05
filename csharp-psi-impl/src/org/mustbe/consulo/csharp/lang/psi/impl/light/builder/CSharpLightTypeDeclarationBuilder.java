@@ -209,13 +209,6 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 
 	@Nullable
 	@Override
-	public DotNetFieldDeclaration findFieldByName(@NotNull String name, boolean dep)
-	{
-		return DotNetTypeDeclarationUtil.findFieldByName(this, name, dep);
-	}
-
-	@Nullable
-	@Override
 	public String getPresentableQName()
 	{
 		String parentQName = getPresentableParentQName();

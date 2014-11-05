@@ -30,7 +30,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeDeclStub;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
-import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
@@ -232,13 +231,6 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 		}
 		DotNetTypeRef[] typeRefs = extendList.getTypeRefs();
 		return typeRefs.length == 0 ? new DotNetTypeRefByQName(DotNetTypes.System.Int32, CSharpTransform.INSTANCE, false) : typeRefs[0];
-	}
-
-	@Nullable
-	@Override
-	public DotNetFieldDeclaration findFieldByName(@NotNull String name, boolean dep)
-	{
-		return DotNetTypeDeclarationUtil.findFieldByName(this, name, dep);
 	}
 
 	@Nullable

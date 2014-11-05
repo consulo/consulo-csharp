@@ -341,13 +341,6 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		return typeRefs;
 	}
 
-	@Nullable
-	@Override
-	public DotNetFieldDeclaration findFieldByName(@NotNull String name, boolean dep)
-	{
-		return DotNetTypeDeclarationUtil.findFieldByName(this, name, dep);
-	}
-
 	@Override
 	public boolean isInheritor(@NotNull DotNetTypeDeclaration other, boolean deep)
 	{
