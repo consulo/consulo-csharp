@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
@@ -175,7 +176,7 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 		}
 
 		StringBuilder builder = new StringBuilder();
-		CSharpModifier newVisibility = sharpChangeInfo.getNewVisibility();
+		CSharpAccessModifier newVisibility = sharpChangeInfo.getNewVisibility();
 		if(newVisibility != null)
 		{
 			builder.append(newVisibility.getPresentableText()).append(" ");
@@ -217,21 +218,17 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 			DotNetModifierList modifierList = method.getModifierList();
 			assert modifierList != null;
 
-			PsiElement modifier = null;
-			for(CSharpModifier accessModifier : CSharpMethodDescriptor.ourAccessModifiers)
+			for(CSharpAccessModifier value : CSharpAccessModifier.VALUES)
 			{
-				PsiElement modifierElement = modifierList.getModifierElement(accessModifier);
-				if(modifierElement != null)
+				for(CSharpModifier modifier : value.getModifiers())
 				{
-					modifier = modifierElement;
-					break;
+					modifierList.removeModifier(modifier);
 				}
 			}
 
-			if(modifier != null)
+			for(CSharpModifier modifier : newVisibility.getModifiers())
 			{
-				PsiElement modifierElement = newMethod.getModifierList().getModifierElement(newVisibility);
-				modifier.replace(modifierElement);
+				modifierList.addModifier(modifier);
 			}
 		}
 

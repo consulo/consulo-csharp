@@ -25,8 +25,8 @@ import javax.swing.JList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -60,7 +60,7 @@ import com.intellij.util.Function;
  * @author VISTALL
  * @since 20.05.14
  */
-public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CSharpParameterInfo, DotNetLikeMethodDeclaration, CSharpModifier,
+public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CSharpParameterInfo, DotNetLikeMethodDeclaration, CSharpAccessModifier,
 		CSharpMethodDescriptor, CSharpParameterTableModelItem, CSharpParameterTableModel>
 {
 	public CSharpChangeSignatureDialog(Project project, CSharpMethodDescriptor method, boolean allowDelegation, PsiElement defaultValueContext)
@@ -125,10 +125,10 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 			}
 		}
 
-		CSharpModifier newVisibility = null;
+		CSharpAccessModifier newVisibility = null;
 		if(myMethod.canChangeVisibility())
 		{
-			CSharpModifier visibility = getVisibility();
+			CSharpAccessModifier visibility = getVisibility();
 			if(myMethod.getVisibility() != visibility)
 			{
 				newVisibility = visibility;
@@ -208,7 +208,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	{
 		DotNetLikeMethodDeclaration methodDeclaration = getMethodDeclaration();
 		CSharpChangeInfo sharpChangeInfo = generateChangeInfo();
-		CSharpModifier newVisibility = sharpChangeInfo.getNewVisibility();
+		CSharpAccessModifier newVisibility = sharpChangeInfo.getNewVisibility();
 		StringBuilder builder = new StringBuilder();
 		if(newVisibility != null)
 		{
@@ -254,17 +254,17 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	}
 
 	@Override
-	protected VisibilityPanelBase<CSharpModifier> createVisibilityControl()
+	protected VisibilityPanelBase<CSharpAccessModifier> createVisibilityControl()
 	{
-		return new ComboBoxVisibilityPanel<CSharpModifier>(CSharpMethodDescriptor.ourAccessModifiers)
+		return new ComboBoxVisibilityPanel<CSharpAccessModifier>(CSharpAccessModifier.VALUES)
 		{
 			@Override
-			protected ListCellRendererWrapper<CSharpModifier> getRenderer()
+			protected ListCellRendererWrapper<CSharpAccessModifier> getRenderer()
 			{
-				return new ListCellRendererWrapper<CSharpModifier>()
+				return new ListCellRendererWrapper<CSharpAccessModifier>()
 				{
 					@Override
-					public void customize(JList list, CSharpModifier value, int index, boolean selected, boolean hasFocus)
+					public void customize(JList list, CSharpAccessModifier value, int index, boolean selected, boolean hasFocus)
 					{
 						setText(value.getPresentableText());
 					}

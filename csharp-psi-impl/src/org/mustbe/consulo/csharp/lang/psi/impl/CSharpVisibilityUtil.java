@@ -47,7 +47,7 @@ public class CSharpVisibilityUtil
 
 	public static boolean isVisible(@NotNull DotNetModifierListOwner target, @NotNull PsiElement place)
 	{
-		return isVisible(target, place, CSharpAccessModifier.findModifier(target, CSharpAccessModifier.PUBLIC));
+		return isVisible(target, place, CSharpAccessModifier.findModifier(target));
 	}
 
 	private static boolean isVisible(DotNetModifierListOwner target, PsiElement place, CSharpAccessModifier accessModifier)
@@ -55,6 +55,7 @@ public class CSharpVisibilityUtil
 		switch(accessModifier)
 		{
 			case PUBLIC:
+			case NONE:
 				return true;
 			case PROTECTED_INTERNAL:
 				return isVisible(target, place, CSharpAccessModifier.PROTECTED) &&  isVisible(target, place, CSharpAccessModifier.INTERNAL);

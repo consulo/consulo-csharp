@@ -19,7 +19,6 @@ package org.mustbe.consulo.csharp.lang.psi;
 import org.consulo.annotations.Immutable;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 
 /**
@@ -28,6 +27,15 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
  */
 public enum CSharpAccessModifier
 {
+	NONE()
+			{
+				@NotNull
+				@Override
+				public String getPresentableText()
+				{
+					return "";
+				}
+			},
 	PUBLIC(CSharpModifier.PUBLIC),
 	// protected internal need be first
 	PROTECTED_INTERNAL(CSharpModifier.PROTECTED, CSharpModifier.INTERNAL),
@@ -45,11 +53,16 @@ public enum CSharpAccessModifier
 		myModifiers = modifiers;
 	}
 
-	@Nullable
-	public static CSharpAccessModifier findModifier(@NotNull DotNetModifierListOwner owner, @Nullable CSharpAccessModifier defaultValue)
+	@NotNull
+	public static CSharpAccessModifier findModifier(@NotNull DotNetModifierListOwner owner)
 	{
 		loop: for(CSharpAccessModifier value : VALUES)
 		{
+			if(value == NONE)
+			{
+				continue;
+			}
+
 			for(CSharpModifier modifier : value.myModifiers)
 			{
 				if(!owner.hasModifier(modifier))
@@ -59,7 +72,7 @@ public enum CSharpAccessModifier
 			}
 			return value;
 		}
-		return defaultValue;
+		return NONE;
 	}
 
 	@NotNull

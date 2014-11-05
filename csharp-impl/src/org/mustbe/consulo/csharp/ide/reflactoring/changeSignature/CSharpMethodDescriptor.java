@@ -19,8 +19,8 @@ package org.mustbe.consulo.csharp.ide.reflactoring.changeSignature;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import com.intellij.refactoring.changeSignature.MethodDescriptor;
@@ -29,15 +29,8 @@ import com.intellij.refactoring.changeSignature.MethodDescriptor;
  * @author VISTALL
  * @since 20.05.14
  */
-public class CSharpMethodDescriptor implements MethodDescriptor<CSharpParameterInfo, CSharpModifier>
+public class CSharpMethodDescriptor implements MethodDescriptor<CSharpParameterInfo, CSharpAccessModifier>
 {
-	public static CSharpModifier[] ourAccessModifiers = new CSharpModifier[]{
-			CSharpModifier.PUBLIC,
-			CSharpModifier.PRIVATE,
-			CSharpModifier.PROTECTED,
-			CSharpModifier.INTERNAL
-	};
-
 	private List<CSharpParameterInfo> myParameters;
 	private DotNetLikeMethodDeclaration myMethod;
 
@@ -78,16 +71,9 @@ public class CSharpMethodDescriptor implements MethodDescriptor<CSharpParameterI
 	}
 
 	@Override
-	public CSharpModifier getVisibility()
+	public CSharpAccessModifier getVisibility()
 	{
-		for(CSharpModifier accessModifier : ourAccessModifiers)
-		{
-			if(myMethod.hasModifier(accessModifier))
-			{
-				return accessModifier;
-			}
-		}
-		return null;
+		return CSharpAccessModifier.findModifier(myMethod);
 	}
 
 	@Override

@@ -21,7 +21,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import com.intellij.lang.Language;
 import com.intellij.refactoring.changeSignature.ChangeInfo;
@@ -37,7 +37,7 @@ public class CSharpChangeInfo implements ChangeInfo
 	private final boolean myParametersChanged;
 	private final String myNewName;
 	private final String myNewReturnType;
-	private final CSharpModifier myNewVisibility;
+	private final CSharpAccessModifier myNewVisibility;
 
 	public CSharpChangeInfo(
 			DotNetLikeMethodDeclaration methodDeclaration,
@@ -45,7 +45,7 @@ public class CSharpChangeInfo implements ChangeInfo
 			boolean parametersChanged,
 			String newName,
 			String newReturnType,
-			CSharpModifier newVisibility)
+			CSharpAccessModifier newVisibility)
 	{
 		myMethodDeclaration = methodDeclaration;
 		myParameters = parameters;
@@ -122,7 +122,7 @@ public class CSharpChangeInfo implements ChangeInfo
 	}
 
 	@Nullable
-	public CSharpModifier getNewVisibility()
+	public CSharpAccessModifier getNewVisibility()
 	{
 		return myNewVisibility;
 	}

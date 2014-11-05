@@ -43,8 +43,8 @@ public class ConstructorChooseMember extends CSharpMemberChooseObject<DotNetCons
 	{
 		StringBuilder builder = new StringBuilder();
 
-		CSharpAccessModifier accessModifier = CSharpAccessModifier.findModifier(myDeclaration, null);
-		if(accessModifier != null)
+		CSharpAccessModifier accessModifier = CSharpAccessModifier.findModifier(myDeclaration);
+		if(accessModifier != CSharpAccessModifier.NONE)
 		{
 			builder.append(accessModifier.getPresentableText()).append(" ");
 		}

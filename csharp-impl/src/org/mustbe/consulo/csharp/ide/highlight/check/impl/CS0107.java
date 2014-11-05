@@ -75,6 +75,10 @@ public class CS0107 extends CompilerCheck<DotNetModifierListOwner>
 			DotNetModifierList modifierList,
 			Map<CSharpAccessModifier, Map<CSharpModifier, PsiElement>> result)
 	{
+		if(accessModifier == CSharpAccessModifier.NONE)
+		{
+			return;
+		}
 		Map<CSharpModifier, PsiElement> map = new LinkedHashMap<CSharpModifier, PsiElement>();
 		CSharpModifier[] modifiers = accessModifier.getModifiers();
 		for(CSharpModifier modifier : modifiers)
