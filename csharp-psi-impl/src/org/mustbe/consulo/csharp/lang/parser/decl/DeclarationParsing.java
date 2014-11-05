@@ -103,7 +103,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 			{
 				builder.advanceLexer();
 
-				MethodParsing.parseMethodStartAfterType(builder, marker, null, MethodParsing.Target.CONSTRUCTOR);
+				MethodParsing.parseMethodStartAfterType(builder, marker, null, MethodParsing.Target.DECONSTRUCTOR);
 			}
 			else
 			{

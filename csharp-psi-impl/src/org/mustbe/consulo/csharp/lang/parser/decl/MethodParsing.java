@@ -34,6 +34,7 @@ public class MethodParsing extends MemberWithBodyParsing
 	public static enum Target
 	{
 		CONSTRUCTOR,
+		DECONSTRUCTOR,
 		METHOD,
 		CONVERSION_METHOD
 	}
@@ -55,7 +56,7 @@ public class MethodParsing extends MemberWithBodyParsing
 	public static void parseMethodStartAfterType(@NotNull CSharpBuilderWrapper builder, @NotNull PsiBuilder.Marker marker,
 			@Nullable TypeInfo typeInfo, @NotNull Target target)
 	{
-		if(target == Target.CONSTRUCTOR)
+		if(target == Target.CONSTRUCTOR || target == Target.DECONSTRUCTOR)
 		{
 			expect(builder, IDENTIFIER, "Name expected");
 		}
@@ -103,7 +104,18 @@ public class MethodParsing extends MemberWithBodyParsing
 
 		if(builder.getTokenType() == LPAR)
 		{
-			parseParameterList(builder, RPAR);
+			// deconstructors dont process any parameters
+			if(target == Target.DECONSTRUCTOR)
+			{
+				PsiBuilder.Marker parameterMarker = builder.mark();
+				builder.advanceLexer();
+				expect(builder, RPAR, "')' expected");
+				parameterMarker.done(PARAMETER_LIST);
+			}
+			else
+			{
+				parseParameterList(builder, RPAR);
+			}
 		}
 		else
 		{
@@ -119,7 +131,7 @@ public class MethodParsing extends MemberWithBodyParsing
 				ExpressionParsing.parseConstructorSuperCall(builder);
 			}
 		}
-		else
+		else if(target != Target.DECONSTRUCTOR)
 		{
 			GenericParameterParsing.parseGenericConstraintList(builder);
 		}
@@ -138,6 +150,7 @@ public class MethodParsing extends MemberWithBodyParsing
 
 		switch(target)
 		{
+			case DECONSTRUCTOR:
 			case CONSTRUCTOR:
 				marker.done(CONSTRUCTOR_DECLARATION);
 				break;
