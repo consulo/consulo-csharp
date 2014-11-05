@@ -23,6 +23,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -40,6 +41,7 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 {
 	public static enum Owners
 	{
+		DesConstructor,
 		InterfaceMethod,
 		Unknown
 				{
@@ -104,6 +106,11 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 
 	public static Owners toOwners(DotNetModifierListOwner owner)
 	{
+		if(owner instanceof CSharpConstructorDeclaration && ((CSharpConstructorDeclaration) owner).isDeConstructor())
+		{
+			return Owners.DesConstructor;
+		}
+
 		if(owner instanceof CSharpMethodDeclaration)
 		{
 			PsiElement parent = owner.getParent();
