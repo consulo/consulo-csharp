@@ -51,7 +51,7 @@ public class CSharpRefactoringSupportProvider extends RefactoringSupportProvider
 	@Override
 	public RefactoringActionHandler getIntroduceVariableHandler()
 	{
-		return new CSharpIntroduceVariableHandler();
+		return new CSharpIntroduceVariableHandler("Introduce local variable");
 	}
 
 	@Override
