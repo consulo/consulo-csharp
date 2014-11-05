@@ -94,6 +94,10 @@ public class CSharpChangeSignatureHandler implements ChangeSignatureHandler
 			@NotNull Project project, @NotNull PsiElement[] elements, @Nullable DataContext dataContext)
 	{
 		PsiElement element = elements[0];
+		if(!(element instanceof DotNetLikeMethodDeclaration))
+		{
+			return;
+		}
 
 		DotNetLikeMethodDeclaration method = (DotNetLikeMethodDeclaration) element;
 		CSharpMethodDescriptor methodDescriptor = new CSharpMethodDescriptor(method);
