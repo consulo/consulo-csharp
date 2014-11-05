@@ -21,12 +21,18 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CompletionResolveScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.template.Expression;
 import com.intellij.codeInsight.template.ExpressionContext;
+import com.intellij.openapi.util.Couple;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
+import com.intellij.psi.ResolveState;
 import lombok.val;
 
 /**
@@ -45,11 +51,21 @@ public class ForeachVariableMacro extends VariableTypeMacroBase
 			return PsiElement.EMPTY_ARRAY;
 		}
 
-		ResolveResult[] resolveResultWithWeights = CSharpReferenceExpressionImpl.processAnyMember(null, null, psiElementAtStartOffset,
-				null, CSharpReferenceExpressionImpl.ResolveToKind.ANY_MEMBER, true);
+		Couple<PsiElement> resolveLayers = CSharpReferenceExpressionImpl.getResolveLayers(psiElementAtStartOffset, false);
 
-		List<PsiElement> list = new ArrayList<PsiElement>(resolveResultWithWeights.length);
-		for(ResolveResult resolveResultWithWeight : resolveResultWithWeights)
+		AbstractScopeProcessor processor = new SimpleNamedScopeProcessor(true, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
+		CSharpResolveUtil.treeWalkUp(processor, psiElementAtStartOffset, psiElementAtStartOffset, resolveLayers.getFirst());
+
+		processor = new CompletionResolveScopeProcessor(psiElementAtStartOffset.getResolveScope(), processor.toResolveResults(), new ExecuteTarget[]{
+				ExecuteTarget.FIELD,
+				ExecuteTarget.PROPERTY
+		});
+
+		CSharpResolveUtil.walkChildren(processor, resolveLayers.getSecond(), true, false, ResolveState.initial());
+
+		ResolveResult[] resolveResults = processor.toResolveResults();
+		List<PsiElement> list = new ArrayList<PsiElement>(resolveResults.length);
+		for(ResolveResult resolveResultWithWeight : resolveResults)
 		{
 			PsiElement element = resolveResultWithWeight.getElement();
 

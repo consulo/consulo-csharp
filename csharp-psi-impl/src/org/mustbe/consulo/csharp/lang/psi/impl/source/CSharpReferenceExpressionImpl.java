@@ -823,6 +823,9 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		return processor;
 	}
 
+	/**
+	 * @return couple of psieelement, first is the last element for walk, second is the stub member for walk
+	 */
 	@NotNull
 	public static Couple<PsiElement> getResolveLayers(PsiElement element, boolean strict)
 	{
