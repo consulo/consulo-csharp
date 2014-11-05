@@ -139,6 +139,11 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 			{
 				return false;
 			}
+
+			if(((CSharpConstructorDeclaration) o1).isDeConstructor() != ((CSharpConstructorDeclaration) o2).isDeConstructor())
+			{
+				return false;
+			}
 		}
 
 		if(o1.getGenericParametersCount() != o2.getGenericParametersCount())

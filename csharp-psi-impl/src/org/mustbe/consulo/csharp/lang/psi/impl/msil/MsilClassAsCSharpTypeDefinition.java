@@ -178,7 +178,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 					if(MsilHelper.CONSTRUCTOR_NAME.equals(nameFromBytecode))
 					{
 						list.add(new MsilMethodAsCSharpConstructorDeclaration(parentThis, MsilClassAsCSharpTypeDefinition.this,
-								(MsilMethodEntry) member));
+								(MsilMethodEntry) member, false));
 					}
 					else if(Comparing.equal(nameFromBytecode, "op_Implicit") || Comparing.equal(nameFromBytecode, "op_Explicit"))
 					{
@@ -186,7 +186,17 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 					}
 					else
 					{
-						list.add(new MsilMethodAsCSharpMethodDeclaration(parentThis, null, (MsilMethodEntry) member));
+						boolean isDeConstructor = Comparing.equal(nameFromBytecode, "Finalize") && ((MsilMethodEntry) member).hasModifier(MsilTokens
+								.PROTECTED_KEYWORD);
+						if(isDeConstructor)
+						{
+							list.add(new MsilMethodAsCSharpConstructorDeclaration(parentThis, MsilClassAsCSharpTypeDefinition.this,
+									(MsilMethodEntry) member, true));
+						}
+						else
+						{
+							list.add(new MsilMethodAsCSharpMethodDeclaration(parentThis, null, (MsilMethodEntry) member));
+						}
 					}
 				}
 			}

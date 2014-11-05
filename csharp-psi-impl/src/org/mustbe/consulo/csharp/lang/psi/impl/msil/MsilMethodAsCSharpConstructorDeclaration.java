@@ -36,12 +36,14 @@ import com.intellij.psi.PsiElementVisitor;
 public class MsilMethodAsCSharpConstructorDeclaration extends MsilMethodAsCSharpLikeMethodDeclaration implements CSharpConstructorDeclaration
 {
 	private final MsilClassAsCSharpTypeDefinition myTypeDefinition;
+	private final boolean myDeConstructor;
 
 	public MsilMethodAsCSharpConstructorDeclaration(
-			PsiElement parent, MsilClassAsCSharpTypeDefinition typeDefinition, MsilMethodEntry methodEntry)
+			PsiElement parent, MsilClassAsCSharpTypeDefinition typeDefinition, MsilMethodEntry methodEntry, boolean deConstructor)
 	{
 		super(parent, methodEntry);
 		myTypeDefinition = typeDefinition;
+		myDeConstructor = deConstructor;
 	}
 
 	@NotNull
@@ -93,7 +95,7 @@ public class MsilMethodAsCSharpConstructorDeclaration extends MsilMethodAsCSharp
 	@Override
 	public boolean isDeConstructor()
 	{
-		return false;
+		return myDeConstructor;
 	}
 
 	@Nullable

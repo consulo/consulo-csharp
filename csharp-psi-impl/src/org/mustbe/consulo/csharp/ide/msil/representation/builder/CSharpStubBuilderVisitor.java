@@ -146,8 +146,16 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	{
 		StringBuilder builder = new StringBuilder();
 
-		processAttributeListAsLine(declaration);
-		processModifierList(builder, declaration);
+		if(declaration.isDeConstructor())
+		{
+			builder.append("~");
+		}
+		else
+		{
+			processAttributeListAsLine(declaration);
+			processModifierList(builder, declaration);
+		}
+
 		builder.append(declaration.getName());
 		processParameterList(declaration, builder, '(', ')');
 		builder.append(" { /* compiled code */ }\n");
