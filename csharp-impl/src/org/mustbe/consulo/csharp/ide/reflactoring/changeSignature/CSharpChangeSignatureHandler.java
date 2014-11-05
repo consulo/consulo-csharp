@@ -86,7 +86,6 @@ public class CSharpChangeSignatureHandler implements ChangeSignatureHandler
 	public void invoke(
 			@NotNull Project project, Editor editor, PsiFile file, DataContext dataContext)
 	{
-		System.out.println("invoke");
 	}
 
 	@Override
