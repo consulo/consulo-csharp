@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +12,7 @@ import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.TokenType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.Function;
@@ -21,6 +23,38 @@ import com.intellij.util.SmartList;
  */
 public class UsefulPsiTreeUtil
 {
+	public static ASTNode[] findChildrenRange(ASTNode[] elements, int startOffset, int endOffset)
+	{
+		int i = findChildIndex(elements, startOffset);
+		int j = findChildIndex(elements, endOffset);
+		i = i == -1 ? 0 : i;
+		j = j == -1 ? elements.length : j;
+		// trim
+		while(0 < j && j < elements.length && elements[j].getElementType() == TokenType.WHITE_SPACE)
+		{
+			--j;
+		}
+		int to = j;
+		if(j < elements.length && elements[j].getElementType() != CSharpTokens.SEMICOLON)
+		{
+			// try eat until ';'
+			while(j + 1 < elements.length && (elements[j + 1].getElementType() == CSharpTokens.SEMICOLON || elements[j + 1].getElementType() ==
+					TokenType.WHITE_SPACE))
+			{
+				++j;
+				if(elements[j].getElementType() == CSharpTokens.SEMICOLON)
+				{
+					to = j;
+				}
+			}
+		}
+		to = Math.min(elements.length, to + 1);
+		if(to < i)
+		{
+			return ASTNode.EMPTY_ARRAY;
+		}
+		return Arrays.copyOfRange(elements, i, to);
+	}
 
 	private static int findChildIndex(ASTNode[] children, int offset)
 	{
@@ -42,8 +76,7 @@ public class UsefulPsiTreeUtil
 	}
 
 	@Nullable
-	public static List<PsiElement> getPathToParentOfType(
-			@Nullable PsiElement element, @NotNull Class<? extends PsiElement> aClass)
+	public static List<PsiElement> getPathToParentOfType(@Nullable PsiElement element, @NotNull Class<? extends PsiElement> aClass)
 	{
 		if(element == null)
 		{
@@ -131,8 +164,7 @@ public class UsefulPsiTreeUtil
 	}
 
 	@Nullable
-	public static PsiElement getPrevSiblingSkippingCondition(
-			@Nullable PsiElement sibling, Condition<PsiElement> condition, boolean strictly)
+	public static PsiElement getPrevSiblingSkippingCondition(@Nullable PsiElement sibling, Condition<PsiElement> condition, boolean strictly)
 	{
 		return getSiblingSkippingCondition(sibling, new Function<PsiElement, PsiElement>()
 		{
@@ -146,8 +178,10 @@ public class UsefulPsiTreeUtil
 	}
 
 	@Nullable
-	public static PsiElement getSiblingSkippingCondition(
-			@Nullable PsiElement sibling, Function<PsiElement, PsiElement> nextSibling, Condition<PsiElement> condition, boolean strictly)
+	public static PsiElement getSiblingSkippingCondition(@Nullable PsiElement sibling,
+			Function<PsiElement, PsiElement> nextSibling,
+			Condition<PsiElement> condition,
+			boolean strictly)
 	{
 		if(sibling == null)
 		{
@@ -166,8 +200,9 @@ public class UsefulPsiTreeUtil
 	}
 
 	@Nullable
-	public static <T extends PsiElement> T[] getChildrenOfType(
-			@Nullable PsiElement element, @NotNull Class<T> aClass, @Nullable PsiElement lastParent)
+	public static <T extends PsiElement> T[] getChildrenOfType(@Nullable PsiElement element,
+			@NotNull Class<T> aClass,
+			@Nullable PsiElement lastParent)
 	{
 		if(element == null)
 		{

@@ -74,7 +74,7 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 		for(int i = 0; i < arguments.length; i++)
 		{
 			PsiElement argument = arguments[i];
-			array[i] = buildLookupElement(argument);
+			array[i] = buildLookupElementImpl(argument);
 		}
 		return array;
 	}
@@ -94,7 +94,7 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 		for(int i = 0; i < arguments.length; i++)
 		{
 			ResolveResult argument = arguments[i];
-			array[i] = buildLookupElement(argument.getElement());
+			array[i] = buildLookupElementImpl(argument.getElement());
 		}
 		return array;
 	}
@@ -126,13 +126,33 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 		LookupElement[] array = new LookupElement[arguments.size()];
 		for(int i = 0; i < array.length; i++)
 		{
-			array[i] = buildLookupElement(elements.get(i));
+			array[i] = buildLookupElementImpl(elements.get(i));
 		}
 
 		return array;
 	}
 
-	private LookupElement buildLookupElement(PsiElement element)
+	@NotNull
+	public LookupElement buildLookupElementImpl(PsiElement element)
+	{
+		LookupElementBuilder builder = buildLookupElement(element);
+		if(builder == null)
+		{
+			throw new IllegalArgumentException("Element " + element.getClass().getSimpleName() + " is not handled");
+		}
+		if(DotNetAttributeUtil.hasAttribute(element, DotNetTypes.System.ObsoleteAttribute))
+		{
+			builder = builder.withStrikeoutness(true);
+
+			return PrioritizedLookupElement.withPriority(builder, -1.0);
+		}
+
+		return builder;
+	}
+
+	@Nullable
+	@Override
+	public LookupElementBuilder buildLookupElement(PsiElement element)
 	{
 		LookupElementBuilder builder = null;
 		if(element instanceof CSharpMethodDeclaration)
@@ -233,20 +253,6 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 			builder = builder.withTailText(DotNetElementPresentationUtil.formatGenericParameters(typeDeclaration), true);
 		}
 
-		if(builder != null)
-		{
-			if(DotNetAttributeUtil.hasAttribute(element, DotNetTypes.System.ObsoleteAttribute))
-			{
-				builder = builder.withStrikeoutness(true);
-
-				return PrioritizedLookupElement.withPriority(builder, -1.0);
-			}
-
-			return builder;
-		}
-		else
-		{
-			throw new IllegalArgumentException("Element " + element.getClass().getSimpleName() + " is not handled");
-		}
+		return builder;
 	}
 }

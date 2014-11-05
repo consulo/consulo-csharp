@@ -22,6 +22,7 @@ import org.consulo.lombok.annotations.ProjectService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 
@@ -40,4 +41,7 @@ public abstract class CSharpLookupElementBuilder
 
 	@NotNull
 	public abstract LookupElement[] buildToLookupElements(@Nullable PsiElement sender, @NotNull Collection<? extends PsiElement> arguments);
+
+	@Nullable
+	public abstract LookupElementBuilder buildLookupElement(PsiElement element);
 }
