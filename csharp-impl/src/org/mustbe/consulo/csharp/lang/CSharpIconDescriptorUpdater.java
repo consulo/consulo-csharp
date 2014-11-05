@@ -20,10 +20,13 @@ import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.assemblyInfo.CSharpAssemblyConstants;
+import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
@@ -85,7 +88,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 
 			processModifierListOwner(element, iconDescriptor, flags);
 		}
-		else if(element instanceof DotNetTypeDeclaration)
+		else if(element instanceof CSharpTypeDeclaration)
 		{
 			Icon main = null;
 
@@ -148,19 +151,19 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 
 			processModifierListOwner(element, iconDescriptor, flags);
 		}
-		else if(element instanceof DotNetPropertyDeclaration)
+		else if(element instanceof CSharpPropertyDeclaration)
 		{
 			iconDescriptor.setMainIcon(AllIcons.Nodes.Property);
 
 			processModifierListOwner(element, iconDescriptor, flags);
 		}
-		else if(element instanceof DotNetEventDeclaration)
+		else if(element instanceof CSharpEventDeclaration)
 		{
 			iconDescriptor.setMainIcon(AllIcons.Nodes.Event);
 
 			processModifierListOwner(element, iconDescriptor, flags);
 		}
-		else if(element instanceof DotNetNamespaceDeclaration)
+		else if(element instanceof CSharpNamespaceDeclaration)
 		{
 			iconDescriptor.setMainIcon(AllIcons.Nodes.Package);  //TODO [VISTALL] icon
 		}
