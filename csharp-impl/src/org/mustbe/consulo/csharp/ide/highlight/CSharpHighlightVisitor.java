@@ -429,7 +429,6 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 			}
 			builder.append("&#x9;(");
 
-			List<DotNetTypeRef> typeRefs = new ArrayList<DotNetTypeRef>();
 			if(resolveElement instanceof DotNetVariable)
 			{
 				DotNetTypeRef typeRef = ((DotNetVariable) resolveElement).toTypeRef(false);
@@ -445,9 +444,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 					{
 						builder.append(", ");
 					}
-					DotNetTypeRef parameterType = parameterTypes[i];
-					typeRefs.add(parameterType);
-					appendType(builder, parameterType);
+					appendType(builder, parameterTypes[i]);
 				}
 			}
 			else if(resolveElement instanceof DotNetLikeMethodDeclaration)
@@ -459,10 +456,8 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 					{
 						builder.append(", ");
 					}
-					DotNetTypeRef typeRef = parameters[i].toTypeRef(false);
-					typeRefs.add(typeRef);
 					builder.append(parameters[i].getName()).append(" : ");
-					appendType(builder, typeRef);
+					appendType(builder, parameters[i].toTypeRef(false));
 				}
 			}
 			builder.append(")</b> cannot be applied<br>");
