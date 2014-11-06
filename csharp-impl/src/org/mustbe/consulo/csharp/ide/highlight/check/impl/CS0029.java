@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
@@ -101,7 +101,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				return null;
 			}
-			CSharpPseudoMethod pseudoMethod = PsiTreeUtil.getParentOfType(element, CSharpPseudoMethod.class);
+			CSharpSimpleLikeMethodAsElement pseudoMethod = PsiTreeUtil.getParentOfType(element, CSharpSimpleLikeMethodAsElement.class);
 			if(pseudoMethod == null)
 			{
 				return null;

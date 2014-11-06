@@ -23,7 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
@@ -151,9 +151,9 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 				return ((CSharpLambdaResolveResult) typeResolveResult).getReturnTypeRef();
 			}
 		}
-		if(resolvedElement instanceof CSharpPseudoMethod)
+		if(resolvedElement instanceof CSharpSimpleLikeMethodAsElement)
 		{
-			return ((CSharpPseudoMethod) resolvedElement).getReturnTypeRef();
+			return ((CSharpSimpleLikeMethodAsElement) resolvedElement).getReturnTypeRef();
 		}
 		return CSharpReferenceExpressionImpl.toTypeRef(resolvedElement);
 	}

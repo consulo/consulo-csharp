@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -94,6 +95,12 @@ public abstract class CSharpLikeMethodDeclarationImpl<T extends CSharpMethodDecl
 	{
 		DotNetType type = getReturnType();
 		return type == null ? DotNetTypeRef.ERROR_TYPE : type.toTypeRef();
+	}
+
+	@NotNull
+	public CSharpSimpleParameterInfo[] getParameterInfos()
+	{
+		return CSharpLikeMethodDeclarationImplUtil.getParametersInfos(this);
 	}
 
 	@Nullable

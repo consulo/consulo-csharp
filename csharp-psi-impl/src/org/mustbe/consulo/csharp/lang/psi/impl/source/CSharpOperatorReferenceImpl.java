@@ -28,7 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightCallArgument;
@@ -251,9 +251,9 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
 		PsiElement element = resolveResult.getElement();
 
-		if(element instanceof CSharpPseudoMethod)
+		if(element instanceof CSharpSimpleLikeMethodAsElement)
 		{
-			return ((CSharpPseudoMethod) element).getReturnTypeRef();
+			return ((CSharpSimpleLikeMethodAsElement) element).getReturnTypeRef();
 		}
 		else
 		{

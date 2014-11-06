@@ -20,7 +20,7 @@ import static com.intellij.patterns.StandardPatterns.or;
 import static com.intellij.patterns.StandardPatterns.psiElement;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.UsefulPsiTreeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDoWhileStatementImpl;
@@ -82,7 +82,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 	private static final ElementPattern<? extends PsiElement> ourGotoPattern = psiElement().inside(psiElement().inside(CSharpLabeledStatementImpl
 			.class));
 
-	private static final ElementPattern<? extends PsiElement> ourReturnPattern = psiElement().inside(psiElement().inside(CSharpPseudoMethod.class));
+	private static final ElementPattern<? extends PsiElement> ourReturnPattern = psiElement().inside(psiElement().inside(CSharpSimpleLikeMethodAsElement.class));
 
 	public CSharpStatementCompletionContributor()
 	{
@@ -122,7 +122,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			protected void addCompletions(
 					@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
-				val pseudoMethod = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpPseudoMethod.class);
+				val pseudoMethod = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpSimpleLikeMethodAsElement.class);
 				assert pseudoMethod != null;
 				CSharpCompletionUtil.tokenSetToLookup(result, ourReturnKeywords, new NotNullPairFunction<LookupElementBuilder, IElementType,
 						LookupElementBuilder>()

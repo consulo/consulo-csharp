@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -16,6 +17,20 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  */
 public class CSharpLikeMethodDeclarationImplUtil
 {
+	@NotNull
+	public static CSharpSimpleParameterInfo[] getParametersInfos(@NotNull DotNetLikeMethodDeclaration methodDeclaration)
+	{
+		DotNetParameter[] parameters = methodDeclaration.getParameters();
+
+		CSharpSimpleParameterInfo[] parameterInfos = new CSharpSimpleParameterInfo[parameters.length];
+		for(int i = 0; i < parameters.length; i++)
+		{
+			DotNetParameter parameter = parameters[i];
+			parameterInfos[i] = new CSharpSimpleParameterInfo(i, parameter.getName(), parameter, parameter.toTypeRef(true));
+		}
+		return parameterInfos;
+	}
+
 	public static boolean processDeclarations(@NotNull DotNetLikeMethodDeclaration methodDeclaration,
 			@NotNull PsiScopeProcessor processor,
 			@NotNull ResolveState state,

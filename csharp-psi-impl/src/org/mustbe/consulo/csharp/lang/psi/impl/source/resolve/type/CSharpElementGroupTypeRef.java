@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLikeMethodDeclarationImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
@@ -55,7 +56,8 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRef.Adapter implements 
 
 					if(calc.isValidResult())
 					{
-						return new CSharpLambdaTypeRef(null, methodParameterTypeRef, ((DotNetLikeMethodDeclaration) psiElement).getReturnTypeRef());
+						return new CSharpLambdaTypeRef(null, CSharpLikeMethodDeclarationImplUtil.getParametersInfos((DotNetLikeMethodDeclaration)
+								psiElement), ((DotNetLikeMethodDeclaration) psiElement).getReturnTypeRef());
 					}
 				}
 			}

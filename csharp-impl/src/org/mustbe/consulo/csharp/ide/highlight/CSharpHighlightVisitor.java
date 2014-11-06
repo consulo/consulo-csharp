@@ -478,10 +478,10 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 					builder.append("<font color=\"").append(ColorUtil.toHex(JBColor.RED)).append("\">");
 				}
 
-				DotNetParameter parameterObjectAsParameter = nCallArgument.getParameterObjectAsParameter();
-				if(parameterObjectAsParameter != null)
+				String parameterName = nCallArgument.getParameterName();
+				if(parameterName != null)
 				{
-					builder.append(parameterObjectAsParameter.getName()).append(" : ");
+					builder.append(parameterName).append(" : ");
 				}
 
 				appendType(builder, nCallArgument.getTypeRef());

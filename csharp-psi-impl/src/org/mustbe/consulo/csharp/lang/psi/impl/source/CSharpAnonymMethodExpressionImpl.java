@@ -19,7 +19,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
@@ -37,7 +38,7 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  * @author VISTALL
  * @since 19.01.14
  */
-public class CSharpAnonymMethodExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpPseudoMethod
+public class CSharpAnonymMethodExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpSimpleLikeMethodAsElement
 {
 	public CSharpAnonymMethodExpressionImpl(@NotNull ASTNode node)
 	{
@@ -90,28 +91,21 @@ public class CSharpAnonymMethodExpressionImpl extends CSharpElementImpl implemen
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
-		DotNetParameter[] parameters = getParameters();
-		DotNetTypeRef[] typeRefs = new DotNetTypeRef[parameters.length];
-		for(int i = 0; i < parameters.length; i++)
-		{
-			DotNetParameter parameter = parameters[i];
-			typeRefs[i] = parameter.toTypeRef(false);
-		}
-		return new CSharpLambdaTypeRef(null, typeRefs, DotNetTypeRef.AUTO_TYPE);
+		return new CSharpLambdaTypeRef(null, getParameterInfos(), DotNetTypeRef.AUTO_TYPE);
 	}
 
 	@NotNull
 	@Override
-	public DotNetTypeRef[] getParameterTypeRefs()
+	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{
 		DotNetParameter[] parameters = getParameters();
-		DotNetTypeRef[] typeRefs = new DotNetTypeRef[parameters.length];
+		CSharpSimpleParameterInfo[] parameterInfos = new CSharpSimpleParameterInfo[parameters.length];
 		for(int i = 0; i < parameters.length; i++)
 		{
 			DotNetParameter parameter = parameters[i];
-			typeRefs[i] = parameter.toTypeRef(false);
+			parameterInfos[i] = new CSharpSimpleParameterInfo(i, parameter.getName(), parameter, parameter.toTypeRef(false));
 		}
-		return typeRefs;
+		return parameterInfos;
 	}
 
 	@NotNull

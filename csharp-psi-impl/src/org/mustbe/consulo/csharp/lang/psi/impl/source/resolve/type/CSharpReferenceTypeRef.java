@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -59,6 +60,25 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 			super(element);
 			myScope = scope;
 			myExtractor = extractor;
+		}
+
+		@NotNull
+		@Override
+		public CSharpSimpleParameterInfo[] getParameterInfos()
+		{
+			CSharpSimpleParameterInfo[] parameterInfos = myElement.getParameterInfos();
+			if(myExtractor == DotNetGenericExtractor.EMPTY)
+			{
+				return parameterInfos;
+			}
+			CSharpSimpleParameterInfo[] temp = new CSharpSimpleParameterInfo[parameterInfos.length];
+			for(int i = 0; i < parameterInfos.length; i++)
+			{
+				CSharpSimpleParameterInfo parameterInfo = parameterInfos[i];
+				DotNetTypeRef typeRef = GenericUnwrapTool.exchangeTypeRef(parameterInfo.getTypeRef(), getGenericExtractor(), myScope);
+				temp[i] = new CSharpSimpleParameterInfo(parameterInfo.getIndex(), parameterInfo.getName(), parameterInfo.getElement(), typeRef);
+			}
+			return temp;
 		}
 
 		@NotNull

@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLikeMethodDeclarationImplUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
@@ -55,6 +56,12 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 	public CSharpLightLikeMethodDeclarationBuilder(Project project)
 	{
 		super(project);
+	}
+
+	@NotNull
+	public CSharpSimpleParameterInfo[] getParameterInfos()
+	{
+		return CSharpLikeMethodDeclarationImplUtil.getParametersInfos(this);
 	}
 
 	@Nullable

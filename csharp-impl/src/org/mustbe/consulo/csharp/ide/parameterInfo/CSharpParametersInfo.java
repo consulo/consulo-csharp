@@ -17,9 +17,8 @@
 package org.mustbe.consulo.csharp.ide.parameterInfo;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.codeInsight.CodeInsightSettings;
@@ -34,25 +33,10 @@ public class CSharpParametersInfo
 {
 	private static final TextRange EMPTY = new UnfairTextRange(-1, -1);
 
-	public static CSharpParametersInfo build(Object callable)
+	public static CSharpParametersInfo build(@NotNull CSharpSimpleLikeMethod callable)
 	{
-		Object[] parameters = null;
-		DotNetTypeRef returnType = null;
-		if(callable instanceof DotNetLikeMethodDeclaration)
-		{
-			parameters = ((DotNetLikeMethodDeclaration) callable).getParameters();
-			returnType = ((DotNetLikeMethodDeclaration) callable).getReturnTypeRef();
-		}
-		else if(callable instanceof CSharpLambdaResolveResult)
-		{
-			parameters = ((CSharpLambdaResolveResult) callable).getParameterTypeRefs();
-			returnType = ((CSharpLambdaResolveResult) callable).getReturnTypeRef();
-		}
-
-		if(parameters == null)
-		{
-			return null;
-		}
+		CSharpSimpleParameterInfo[] parameters = callable.getParameterInfos();
+		DotNetTypeRef returnType = callable.getReturnTypeRef();
 
 		CSharpParametersInfo parametersInfo = new CSharpParametersInfo(parameters.length);
 		if(CodeInsightSettings.getInstance().SHOW_FULL_SIGNATURES_IN_PARAMETER_INFO)
@@ -70,10 +54,10 @@ public class CSharpParametersInfo
 					parametersInfo.appendComma();
 				}
 
-				Object parameter = parameters[i];
+				CSharpSimpleParameterInfo parameter = parameters[i];
 
 				int length = parametersInfo.length();
-				parametersInfo.buildParameter(parameter, i);
+				parametersInfo.buildParameter(parameter);
 				parametersInfo.myParameterRanges[i] = new TextRange(length, parametersInfo.length());
 			}
 		}
@@ -102,24 +86,11 @@ public class CSharpParametersInfo
 		myParameterRanges = new TextRange[myParameterCount == 0 ? 1 : myParameterCount];
 	}
 
-	private void buildParameter(Object o, int index)
+	private void buildParameter(@NotNull CSharpSimpleParameterInfo o)
 	{
-		DotNetTypeRef typeRef = DotNetTypeRef.UNKNOWN_TYPE;
-		String name = null;
-		if(o instanceof DotNetParameter)
-		{
-			typeRef = ((DotNetParameter) o).toTypeRef(false);
-			name = ((DotNetParameter) o).getName();
-		}
-		else if(o instanceof DotNetTypeRef)
-		{
-			typeRef = (DotNetTypeRef) o;
-			name = "p" + index;
-		}
-
-		myBuilder.append(typeRef.getPresentableText());
+		myBuilder.append(o.getTypeRef().getPresentableText());
 		myBuilder.append(" ");
-		myBuilder.append(name);
+		myBuilder.append(o.getNotNullName());
 	}
 
 	public int length()

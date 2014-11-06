@@ -21,7 +21,8 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
@@ -51,7 +52,7 @@ import com.intellij.psi.util.PsiTreeUtil;
  * @author VISTALL
  * @since 04.12.13.
  */
-public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccessorStub> implements DotNetXXXAccessor, CSharpPseudoMethod
+public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccessorStub> implements DotNetXXXAccessor, CSharpSimpleLikeMethodAsElement
 {
 	public CSharpXXXAccessorImpl(@NotNull ASTNode node)
 	{
@@ -63,11 +64,12 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 		super(stub, CSharpStubElements.XXX_ACCESSOR);
 	}
 
+
 	@NotNull
 	@Override
-	public DotNetTypeRef[] getParameterTypeRefs()
+	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{
-		return DotNetTypeRef.EMPTY_ARRAY;
+		return CSharpSimpleParameterInfo.EMPTY_ARRAY;
 	}
 
 	@NotNull

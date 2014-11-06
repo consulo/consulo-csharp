@@ -23,8 +23,9 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameterList;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPseudoMethod;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
@@ -41,7 +42,7 @@ import lombok.val;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpPseudoMethod
+public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpSimpleLikeMethodAsElement
 {
 	public CSharpLambdaExpressionImpl(@NotNull ASTNode node)
 	{
@@ -99,14 +100,7 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements Dot
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
-		CSharpLambdaParameter[] parameters = getParameters();
-		DotNetTypeRef[] typeRefs = new DotNetTypeRef[parameters.length];
-		for(int i = 0; i < parameters.length; i++)
-		{
-			CSharpLambdaParameter parameter = parameters[i];
-			typeRefs[i] = parameter.toTypeRef(resolveFromParent);
-		}
-		return new CSharpLambdaTypeRef(null, typeRefs, resolveFromParent ? getReturnTypeRef() : findPossibleReturnTypeRef());
+		return new CSharpLambdaTypeRef(null, getParameterInfos(), resolveFromParent ? getReturnTypeRef() : findPossibleReturnTypeRef());
 	}
 
 	@NotNull
@@ -175,16 +169,16 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements Dot
 
 	@NotNull
 	@Override
-	public DotNetTypeRef[] getParameterTypeRefs()
+	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{
 		CSharpLambdaParameter[] parameters = getParameters();
-		DotNetTypeRef[] typeRefs = new DotNetTypeRef[parameters.length];
+		CSharpSimpleParameterInfo[] parameterInfos = new CSharpSimpleParameterInfo[parameters.length];
 		for(int i = 0; i < parameters.length; i++)
 		{
 			CSharpLambdaParameter parameter = parameters[i];
-			typeRefs[i] = parameter.toTypeRef(false);
+			parameterInfos[i] = new CSharpSimpleParameterInfo(i, parameter.getName(), parameter, parameter.toTypeRef(false));
 		}
-		return typeRefs;
+		return parameterInfos;
 	}
 
 	@NotNull

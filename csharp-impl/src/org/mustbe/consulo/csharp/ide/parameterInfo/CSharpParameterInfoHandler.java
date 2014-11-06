@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
@@ -45,7 +46,7 @@ import com.intellij.util.ArrayUtil;
  * @author VISTALL
  * @since 11.05.14
  */
-public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiElement, Object>
+public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiElement, CSharpSimpleLikeMethod>
 {
 	@Override
 	public boolean couldShowInLookup()
@@ -68,7 +69,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 
 	@Nullable
 	@Override
-	public Object[] getParametersForDocumentation(Object p, ParameterInfoContext context)
+	public Object[] getParametersForDocumentation(CSharpSimpleLikeMethod p, ParameterInfoContext context)
 	{
 		return new Object[0];
 	}
@@ -176,7 +177,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	}
 
 	@Override
-	public void updateUI(Object p, ParameterInfoUIContext context)
+	public void updateUI(CSharpSimpleLikeMethod p, ParameterInfoUIContext context)
 	{
 		if(p == null)
 		{

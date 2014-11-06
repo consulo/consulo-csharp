@@ -20,6 +20,7 @@ import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -35,18 +36,18 @@ import com.intellij.psi.PsiElement;
 public class CSharpLambdaTypeRef implements DotNetTypeRef
 {
 	private final CSharpMethodDeclaration myTarget;
-	private final DotNetTypeRef[] myParameterTypes;
+	private final CSharpSimpleParameterInfo[] myParameterInfos;
 	private final DotNetTypeRef myReturnType;
 
 	public CSharpLambdaTypeRef(@NotNull CSharpMethodDeclaration method)
 	{
-		this(method, method.getParameterTypeRefs(), method.getReturnTypeRef());
+		this(method, method.getParameterInfos(), method.getReturnTypeRef());
 	}
 
-	public CSharpLambdaTypeRef(@Nullable CSharpMethodDeclaration target, @NotNull DotNetTypeRef[] parameterTypes, @NotNull DotNetTypeRef returnType)
+	public CSharpLambdaTypeRef(@Nullable CSharpMethodDeclaration target, @NotNull CSharpSimpleParameterInfo[] parameterInfos, @NotNull DotNetTypeRef returnType)
 	{
 		myTarget = target;
-		myParameterTypes = parameterTypes;
+		myParameterInfos = parameterInfos;
 		myReturnType = returnType;
 	}
 
@@ -61,21 +62,21 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 		}
 		StringBuilder builder = new StringBuilder();
 		builder.append("{(");
-		for(int i = 0; i < myParameterTypes.length; i++)
+		for(int i = 0; i < myParameterInfos.length; i++)
 		{
 			if(i != 0)
 			{
 				builder.append(", ");
 			}
 
-			DotNetTypeRef parameterType = myParameterTypes[i];
+			DotNetTypeRef parameterType = myParameterInfos[i].getTypeRef();
 			if(parameterType == AUTO_TYPE)
 			{
 				builder.append("?");
 			}
 			else
 			{
-				builder.append(myParameterTypes[i].getPresentableText());
+				builder.append(parameterType.getPresentableText());
 			}
 		}
 		builder.append(")");
@@ -102,20 +103,20 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 		}
 		StringBuilder builder = new StringBuilder();
 		builder.append("{(");
-		for(int i = 0; i < myParameterTypes.length; i++)
+		for(int i = 0; i < myParameterInfos.length; i++)
 		{
 			if(i != 0)
 			{
 				builder.append(", ");
 			}
-			DotNetTypeRef parameterType = myParameterTypes[i];
+			DotNetTypeRef parameterType = myParameterInfos[i].getTypeRef();
 			if(parameterType == AUTO_TYPE)
 			{
 				builder.append("?");
 			}
 			else
 			{
-				builder.append(myParameterTypes[i].getQualifiedText());
+				builder.append(parameterType.getQualifiedText());
 			}
 		}
 		builder.append(")");
@@ -170,6 +171,13 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 
 			@NotNull
 			@Override
+			public CSharpSimpleParameterInfo[] getParameterInfos()
+			{
+				return myParameterInfos;
+			}
+
+			@NotNull
+			@Override
 			public DotNetTypeRef getReturnTypeRef()
 			{
 				return myReturnType;
@@ -179,7 +187,7 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 			@Override
 			public DotNetTypeRef[] getParameterTypeRefs()
 			{
-				return myParameterTypes;
+				return CSharpSimpleParameterInfo.toTypeRefs(myParameterInfos);
 			}
 
 			@Nullable

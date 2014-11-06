@@ -462,20 +462,20 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				List<ResolveResult> newResults = new SmartList<ResolveResult>();
 				for(NCallArgument o : ourCalcResult.getArguments())
 				{
-					DotNetParameter parameterObjectAsParameter = o.getParameterObjectAsParameter();
-					if(parameterObjectAsParameter != null)
+					PsiElement parameterElement = o.getParameterElement();
+					if(parameterElement != null)
 					{
 						if(selector != null)
 						{
 							if(selector instanceof CSharpNamedResolveSelector && ((CSharpNamedResolveSelector) selector).isNameEqual
-									(parameterObjectAsParameter.getName()))
+									(o.getParameterName()))
 							{
-								newResults.add(new PsiElementResolveResult(parameterObjectAsParameter, true));
+								newResults.add(new PsiElementResolveResult(parameterElement, true));
 							}
 						}
 						else
 						{
-							newResults.add(new PsiElementResolveResult(parameterObjectAsParameter, true));
+							newResults.add(new PsiElementResolveResult(parameterElement, true));
 						}
 					}
 
@@ -537,7 +537,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 						{
 							if(psiElement instanceof DotNetLikeMethodDeclaration)
 							{
-								GenericInferenceUtil.GenericInferenceResult inferenceResult = psiElement.getUserData(GenericInferenceUtil.INFERENCE_RESULT);
+								GenericInferenceUtil.GenericInferenceResult inferenceResult = psiElement.getUserData(GenericInferenceUtil
+										.INFERENCE_RESULT);
 
 								if(inferenceResult == null)
 								{
@@ -569,8 +570,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 						{
 							CSharpLambdaResolveResult lambdaTypeResolveResult = (CSharpLambdaResolveResult) maybeLambdaResolveResult;
 
-							val parameterTypeRefs = lambdaTypeResolveResult.getParameterTypeRefs();
-							val calcResult = MethodResolver.calc(callArgumentListOwner, parameterTypeRefs, element);
+							val calcResult = MethodResolver.calc(callArgumentListOwner, lambdaTypeResolveResult.getParameterInfos(), element);
 
 							methodResolveResults.add(Pair.create(calcResult, maybeElementGroup));
 						}
@@ -637,7 +637,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, selector);
 			}
 
-			AbstractScopeProcessor memberProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY, completion, codeFragmentIsAvailable);
+			AbstractScopeProcessor memberProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY, completion,
+					codeFragmentIsAvailable);
 
 			CSharpResolveUtil.walkChildren(memberProcessor, resolveElement, true, false, resolveState);
 			return memberProcessor.toResolveResults();
@@ -680,7 +681,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 		if(target != element)
 		{
-			AbstractScopeProcessor memberProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY, completion, codeFragmentIsAvailable);
+			AbstractScopeProcessor memberProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY, completion,
+					codeFragmentIsAvailable);
 
 			if(!CSharpResolveUtil.walkChildren(memberProcessor, target, false, true, resolveState))
 			{

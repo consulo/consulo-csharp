@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
@@ -18,6 +19,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.ar
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.context.MethodParameterResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.context.OnlyTypeRefParameterResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.context.ParameterResolveContext;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.context.SimpleParameterResolveContext;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
@@ -232,9 +234,9 @@ public class MethodResolver
 				return argument;
 			}
 
-			DotNetParameter parameterObjectAsParameter = argument.getParameterObjectAsParameter();
+			String parameterName = argument.getParameterName();
 
-			if(parameterObjectAsParameter != null && Comparing.equal(parameterObjectAsParameter.getName(), name))
+			if(parameterName != null && Comparing.equal(parameterName, name))
 			{
 				return argument;
 			}
@@ -266,10 +268,10 @@ public class MethodResolver
 
 	@NotNull
 	public static MethodCalcResult calc(@NotNull CSharpCallArgumentListOwner callArgumentListOwner,
-			@NotNull DotNetTypeRef[] parameterTypeRefs,
+			@NotNull CSharpSimpleParameterInfo[] p,
 			@NotNull PsiElement scope)
 	{
-		List<NCallArgument> list = buildCallArguments(callArgumentListOwner.getCallArguments(), parameterTypeRefs, scope);
+		List<NCallArgument> list = buildCallArguments(callArgumentListOwner.getCallArguments(), scope, new SimpleParameterResolveContext(p));
 		return calc(list, scope);
 	}
 

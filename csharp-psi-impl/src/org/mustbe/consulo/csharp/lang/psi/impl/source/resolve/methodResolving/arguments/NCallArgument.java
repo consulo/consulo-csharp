@@ -6,6 +6,7 @@ import java.util.Collections;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -63,6 +64,10 @@ public class NCallArgument
 		{
 			return ((DotNetParameter) myParameterObject).toTypeRef(true);
 		}
+		else if(myParameterObject instanceof CSharpSimpleParameterInfo)
+		{
+			return ((CSharpSimpleParameterInfo) myParameterObject).getTypeRef();
+		}
 		return null;
 	}
 
@@ -83,9 +88,31 @@ public class NCallArgument
 	}
 
 	@Nullable
-	public DotNetParameter getParameterObjectAsParameter()
+	public String getParameterName()
 	{
-		return myParameterObject instanceof DotNetParameter ? (DotNetParameter) myParameterObject : null;
+		if(myParameterObject instanceof DotNetParameter)
+		{
+			return ((DotNetParameter) myParameterObject).getName();
+		}
+		else if(myParameterObject instanceof CSharpSimpleParameterInfo)
+		{
+			return ((CSharpSimpleParameterInfo) myParameterObject).getNotNullName();
+		}
+		return null;
+	}
+
+	@Nullable
+	public PsiElement getParameterElement()
+	{
+		if(myParameterObject instanceof DotNetParameter)
+		{
+			return (PsiElement) myParameterObject;
+		}
+		else if(myParameterObject instanceof CSharpSimpleParameterInfo)
+		{
+			return ((CSharpSimpleParameterInfo) myParameterObject).getElement();
+		}
+		return null;
 	}
 
 	@Nullable

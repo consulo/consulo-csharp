@@ -26,7 +26,7 @@ import com.intellij.psi.tree.IElementType;
  * @since 30.11.13.
  */
 @ArrayFactoryFields
-public interface CSharpMethodDeclaration extends DotNetMethodDeclaration, CSharpGenericConstraintOwner, CSharpPseudoMethod
+public interface CSharpMethodDeclaration extends DotNetMethodDeclaration, CSharpGenericConstraintOwner, CSharpSimpleLikeMethodAsElement
 {
 	boolean isDelegate();
 

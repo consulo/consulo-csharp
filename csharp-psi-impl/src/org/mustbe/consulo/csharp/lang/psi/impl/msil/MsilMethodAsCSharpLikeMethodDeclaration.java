@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLikeMethodDeclarationImplUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -55,6 +57,12 @@ public class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElementWrapper<
 	{
 		super(parent, methodEntry);
 		myModifierList = new MsilModifierListToCSharpModifierList(modifiers, (MsilModifierList) methodEntry.getModifierList());
+	}
+
+	@NotNull
+	public CSharpSimpleParameterInfo[] getParameterInfos()
+	{
+		return CSharpLikeMethodDeclarationImplUtil.getParametersInfos(this);
 	}
 
 	@Override

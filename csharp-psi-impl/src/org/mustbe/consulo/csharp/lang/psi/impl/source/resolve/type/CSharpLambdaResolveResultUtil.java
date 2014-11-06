@@ -48,7 +48,7 @@ public class CSharpLambdaResolveResultUtil
 
 		CSharpLightParameterBuilder parameter = new CSharpLightParameterBuilder(declaration.getProject());
 		parameter = parameter.withName("p");
-		parameter = parameter.withTypeRef(new CSharpLambdaTypeRef(declaration, declaration.getParameterTypeRefs(), declaration.getReturnTypeRef()));
+		parameter = parameter.withTypeRef(new CSharpLambdaTypeRef(declaration));
 		cBuilder.addParameter(parameter);
 
 		return builder;
