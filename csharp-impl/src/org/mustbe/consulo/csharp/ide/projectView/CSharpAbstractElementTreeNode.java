@@ -2,7 +2,6 @@ package org.mustbe.consulo.csharp.ide.projectView;
 
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.BasePsiNode;
 import com.intellij.openapi.project.Project;
@@ -42,8 +41,7 @@ public abstract class CSharpAbstractElementTreeNode<T extends PsiElement> extend
 	protected boolean isDeprecated()
 	{
 		T value = getValue();
-		return value instanceof DotNetModifierListOwner && DotNetAttributeUtil.hasAttribute((DotNetModifierListOwner) value,
-				DotNetTypes.System.ObsoleteAttribute);
+		return DotNetAttributeUtil.hasAttribute(value, DotNetTypes.System.ObsoleteAttribute);
 	}
 
 	private boolean canRepresent(final PsiElement psiElement, final Object element)

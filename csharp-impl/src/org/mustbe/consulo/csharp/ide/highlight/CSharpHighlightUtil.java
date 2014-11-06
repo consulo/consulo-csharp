@@ -81,7 +81,7 @@ public class CSharpHighlightUtil
 		HighlightInfo info = HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes(defaultTextAttributeKey)
 				.create();
 		holder.add(info);
-		if(element instanceof DotNetModifierListOwner && DotNetAttributeUtil.hasAttribute(element, DotNetTypes.System.ObsoleteAttribute))
+		if(DotNetAttributeUtil.hasAttribute(element, DotNetTypes.System.ObsoleteAttribute))
 		{
 			holder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes(CodeInsightColors
 					.DEPRECATED_ATTRIBUTES).create());
