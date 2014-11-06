@@ -63,6 +63,7 @@ public class CSharpModifierListImpl extends CSharpStubElementImpl<CSharpModifier
 			put(CSharpModifier.NEW, CSharpTokens.NEW_KEYWORD);
 			put(CSharpModifier.OVERRIDE, CSharpTokens.OVERRIDE_KEYWORD);
 			put(CSharpModifier.ASYNC, CSharpSoftTokens.ASYNC_KEYWORD);
+			put(CSharpModifier.IN, CSharpSoftTokens.IN_KEYWORD);
 		}
 	};
 

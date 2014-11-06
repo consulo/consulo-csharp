@@ -25,8 +25,10 @@ import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
@@ -43,6 +45,7 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 	{
 		DesConstructor,
 		InterfaceMethod,
+		GenericParameter(CSharpModifier.IN, CSharpModifier.OUT),
 		Unknown
 				{
 					@Override
@@ -122,6 +125,11 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 					return Owners.InterfaceMethod;
 				}
 			}
+		}
+
+		if(owner instanceof DotNetGenericParameter)
+		{
+			return Owners.GenericParameter;
 		}
 		return Owners.Unknown;
 	}

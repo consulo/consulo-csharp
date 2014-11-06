@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.ConvertToNormalCallFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.ide.highlight.util.GenericParameterHighlightUtil;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayAccessExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
@@ -202,6 +203,8 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	public void visitGenericParameter(DotNetGenericParameter parameter)
 	{
 		highlightNamed(parameter, parameter.getNameIdentifier(), null);
+
+		GenericParameterHighlightUtil.checkInAndOutModifiers(parameter, myHighlightInfoHolder);
 	}
 
 	@Override
