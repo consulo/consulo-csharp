@@ -31,4 +31,8 @@ public static class <class_name>StringExtensions</class_name> {
         // line comment
         <parameter>param</parameter>.<instance_call>toString</instance_call>();
     }
+
+    public void SomeMethod() {
+        <delegate_method_name>MyDelegateMethod</delegate_method_name> localVar = <method_ref>SomeMethod</method_ref>;
+    }
 }

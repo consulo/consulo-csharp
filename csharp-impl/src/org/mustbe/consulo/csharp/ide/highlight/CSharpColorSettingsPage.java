@@ -59,6 +59,7 @@ public class CSharpColorSettingsPage implements ColorSettingsPage, DisplayPriori
 				new AttributesDescriptor("Instance field or property", CSharpHighlightKey.INSTANCE_FIELD),
 				new AttributesDescriptor("Static field or property", CSharpHighlightKey.STATIC_FIELD),
 				new AttributesDescriptor("Parameter", CSharpHighlightKey.PARAMETER),
+				new AttributesDescriptor("Method Reference", CSharpHighlightKey.METHOD_REF),
 			};
 	private static final Map<String, TextAttributesKey> ourAdditionalTags = new HashMap<String, TextAttributesKey>()
 	{
@@ -77,6 +78,7 @@ public class CSharpColorSettingsPage implements ColorSettingsPage, DisplayPriori
 			put("static_field", CSharpHighlightKey.STATIC_FIELD);
 			put("instance_field", CSharpHighlightKey.INSTANCE_FIELD);
 			put("parameter", CSharpHighlightKey.PARAMETER);
+			put("method_ref", CSharpHighlightKey.METHOD_REF);
 		}
 	};
 

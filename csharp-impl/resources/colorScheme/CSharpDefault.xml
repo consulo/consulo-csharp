@@ -21,4 +21,16 @@
 			<option name="EFFECT_TYPE" value="-1" />
 		</value>
 	</option>
+	<option name="CSHARP_DELEGATE_METHOD_NAME">
+		<value>
+			<option name="FOREGROUND" value="729f4c" />
+			<option name="EFFECT_TYPE" value="-1" />
+		</value>
+	</option>
+	<option name="CSHARP_METHOD_REF">
+		<value>
+			<option name="BACKGROUND" value="ffe4a5" />
+			<option name="EFFECT_TYPE" value="-1" />
+		</value>
+	</option>
 </list>
