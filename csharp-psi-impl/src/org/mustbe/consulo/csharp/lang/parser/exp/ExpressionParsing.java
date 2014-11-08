@@ -263,7 +263,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 	@Nullable
 	private static PsiBuilder.Marker parsePostfix(final CSharpBuilderWrapper builder)
 	{
-		PsiBuilder.Marker operand = parsePrimary(builder, null, -1);
+		PsiBuilder.Marker operand = parsePrimary(builder);
 		if(operand == null)
 		{
 			return null;
@@ -385,13 +385,9 @@ public class ExpressionParsing extends SharedParsingHelpers
 		return left;
 	}
 
-	private static enum BreakPoint
-	{
-		P1, P2, P3, P4
-	}
 
 	@Nullable
-	private static PsiBuilder.Marker parsePrimary(final CSharpBuilderWrapper builder, @Nullable final BreakPoint breakPoint, final int breakOffset)
+	private static PsiBuilder.Marker parsePrimary(final CSharpBuilderWrapper builder)
 	{
 		PsiBuilder.Marker startMarker = builder.mark();
 
@@ -408,7 +404,6 @@ public class ExpressionParsing extends SharedParsingHelpers
 			if(tokenType == DOT)
 			{
 				final PsiBuilder.Marker dotPos = builder.mark();
-				final int dotOffset = builder.getCurrentOffset();
 				builder.advanceLexer();
 
 				IElementType dotTokenType = builder.getTokenType();
@@ -418,38 +413,6 @@ public class ExpressionParsing extends SharedParsingHelpers
 					dotPos.drop();
 					expr = parseNewExpression(builder, expr);
 				}
-			/*	else if(THIS_OR_SUPER.contains(dotTokenType) && exprType(expr) == REFERENCE_EXPRESSION)
-				{
-					if(breakPoint == BreakPoint.P2 && builder.getCurrentOffset() == breakOffset)
-					{
-						dotPos.rollbackTo();
-						startMarker.drop();
-						return expr;
-					}
-
-					final PsiBuilder.Marker copy = startMarker.precede();
-					final int offset = builder.getCurrentOffset();
-					startMarker.rollbackTo();
-
-					final PsiBuilder.Marker ref = myParser.getReferenceParser().parseJavaCodeReference(builder, false, true, false, false);
-					if(ref == null || builder.getTokenType() != DOT || builder.getCurrentOffset() != dotOffset)
-					{
-						copy.rollbackTo();
-						return parsePrimary(builder, BreakPoint.P2, offset);
-					}
-					builder.advanceLexer();
-
-					if(builder.getTokenType() != dotTokenType)
-					{
-						copy.rollbackTo();
-						return parsePrimary(builder, BreakPoint.P2, offset);
-					}
-					builder.advanceLexer();
-
-					startMarker = copy;
-					expr = ref.precede();
-					expr.done(dotTokenType == THIS_KEYWORD ? THIS_EXPRESSION : SUPER_EXPRESSION);
-				} */
 				else if(dotTokenType == BASE_KEYWORD)
 				{
 					dotPos.drop();
@@ -522,12 +485,6 @@ public class ExpressionParsing extends SharedParsingHelpers
 			}
 			else if(tokenType == LBRACKET)
 			{
-				if(breakPoint == BreakPoint.P4)
-				{
-					startMarker.drop();
-					return expr;
-				}
-
 				final PsiBuilder.Marker arrayAccess = expr.precede();
 				PsiBuilder.Marker argumentListMarker = builder.mark();
 				builder.advanceLexer();
