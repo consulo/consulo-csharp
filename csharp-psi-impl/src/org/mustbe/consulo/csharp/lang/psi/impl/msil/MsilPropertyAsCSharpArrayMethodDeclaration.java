@@ -57,7 +57,8 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 	{
 		super(parent, propertyEntry);
 
-		myModifierList = new MsilModifierListToCSharpModifierList(MsilPropertyAsCSharpPropertyDeclaration.getAdditionalModifiers(pairs),
+		myModifierList = new MsilModifierListToCSharpModifierList(MsilPropertyAsCSharpPropertyDeclaration.getAdditionalModifiers(propertyEntry,
+				pairs),
 				(MsilModifierList) propertyEntry.getModifierList());
 
 		String name = getName();

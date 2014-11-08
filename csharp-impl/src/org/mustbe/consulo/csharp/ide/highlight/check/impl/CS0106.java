@@ -23,9 +23,11 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -44,7 +46,7 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 	public static enum Owners
 	{
 		DesConstructor,
-		InterfaceMethod,
+		InterfaceMember,
 		GenericParameter(CSharpModifier.IN, CSharpModifier.OUT),
 		Unknown
 				{
@@ -104,7 +106,8 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 
 				list.add(result(modifierElement, modifier.getPresentableText()).addQuickFix(new RemoveModifierFix(modifier, element)));
 			}
-		} return list;
+		}
+		return list;
 	}
 
 	public static Owners toOwners(DotNetModifierListOwner owner)
@@ -114,7 +117,7 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 			return Owners.DesConstructor;
 		}
 
-		if(owner instanceof CSharpMethodDeclaration)
+		if(owner instanceof CSharpMethodDeclaration || owner instanceof CSharpPropertyDeclaration || owner instanceof CSharpArrayMethodDeclaration)
 		{
 			PsiElement parent = owner.getParent();
 
@@ -122,7 +125,7 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 			{
 				if(((CSharpTypeDeclaration) parent).isInterface())
 				{
-					return Owners.InterfaceMethod;
+					return Owners.InterfaceMember;
 				}
 			}
 		}

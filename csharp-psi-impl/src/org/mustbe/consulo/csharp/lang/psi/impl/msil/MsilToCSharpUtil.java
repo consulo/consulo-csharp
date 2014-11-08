@@ -32,6 +32,8 @@ import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericWrapperTypeRef;
@@ -66,6 +68,10 @@ public class MsilToCSharpUtil
 		switch(modifier)
 		{
 			case PUBLIC:
+				if(hasModifierInParentIfType(modifierList, MsilTokens.INTERFACE_KEYWORD))
+				{
+					return false;
+				}
 				elementType = MsilTokens.PUBLIC_KEYWORD;
 				break;
 			case PRIVATE:
@@ -97,6 +103,10 @@ public class MsilToCSharpUtil
 				elementType = MsilTokens.BRACKET_OUT_KEYWORD;
 				break;
 			case VIRTUAL:
+				if(hasModifierInParentIfType(modifierList, MsilTokens.INTERFACE_KEYWORD))
+				{
+					return false;
+				}
 				elementType = MsilTokens.VIRTUAL_KEYWORD;
 				break;
 			case READONLY:
@@ -107,6 +117,14 @@ public class MsilToCSharpUtil
 			case PARAMS:
 				return hasAttribute(modifierList, DotNetTypes.System.ParamArrayAttribute);
 			case ABSTRACT:
+				if(modifierList.hasModifier(MsilTokens.INTERFACE_KEYWORD))
+				{
+					return false;
+				}
+				if(hasModifierInParentIfType(modifierList, MsilTokens.INTERFACE_KEYWORD))
+				{
+					return false;
+				}
 				// hide abstract attribute
 				if(hasAttribute(modifierList, DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute))
 				{
@@ -116,6 +134,26 @@ public class MsilToCSharpUtil
 				break;
 		}
 		return elementType != null && modifierList.hasModifier(elementType);
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <T extends DotNetModifierListOwner> boolean hasModifierInParentIfType(MsilModifierList msilModifierList,
+			DotNetModifier modifier)
+	{
+		PsiElement parent = msilModifierList.getParent();
+		if(parent == null)
+		{
+			return false;
+		}
+
+		PsiElement parent1 = parent.getParent();
+		if(!(parent1 instanceof MsilClassEntry))
+		{
+			return false;
+		}
+
+		T modifierListOwner = (T) parent1;
+		return modifierListOwner.hasModifier(modifier);
 	}
 
 	private static boolean hasAttribute(MsilModifierList modifierList, String qName)

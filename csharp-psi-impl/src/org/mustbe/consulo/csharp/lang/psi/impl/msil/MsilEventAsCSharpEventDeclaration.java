@@ -44,7 +44,7 @@ public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVaria
 {
 	public MsilEventAsCSharpEventDeclaration(PsiElement parent, MsilEventEntry variable, List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
 	{
-		super(parent, MsilPropertyAsCSharpPropertyDeclaration.getAdditionalModifiers(pairs), variable);
+		super(parent, MsilPropertyAsCSharpPropertyDeclaration.getAdditionalModifiers(variable, pairs), variable);
 	}
 
 	@Override

@@ -31,6 +31,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilPropertyEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
@@ -52,11 +53,18 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 			MsilPropertyEntry variable,
 			List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
 	{
-		super(parent, getAdditionalModifiers(pairs), variable);
+		super(parent, getAdditionalModifiers(variable, pairs), variable);
 	}
 
-	public static CSharpModifier[] getAdditionalModifiers(List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
+	@NotNull
+	public static CSharpModifier[] getAdditionalModifiers(PsiElement parent, List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
 	{
+		PsiElement maybeTypeParent = parent.getParent();
+		if(maybeTypeParent instanceof MsilClassEntry && ((MsilClassEntry) maybeTypeParent).hasModifier(MsilTokens.INTERFACE_KEYWORD))
+		{
+			return CSharpModifier.EMPTY_ARRAY;
+		}
+
 		boolean staticMod = false;
 		List<CSharpAccessModifier> modifiers = new SmartList<CSharpAccessModifier>();
 		for(Pair<DotNetXXXAccessor, MsilMethodEntry> pair : pairs)
