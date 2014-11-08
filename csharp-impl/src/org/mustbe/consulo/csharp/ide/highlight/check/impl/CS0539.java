@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementCompareUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -12,6 +13,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
 
 /**
  * @author VISTALL
@@ -23,6 +25,11 @@ public class CS0539 extends CompilerCheck<DotNetVirtualImplementOwner>
 	@Override
 	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetVirtualImplementOwner element)
 	{
+		PsiElement nameIdentifier = ((PsiNameIdentifierOwner) element).getNameIdentifier();
+		if(nameIdentifier == null)
+		{
+			return null;
+		}
 		DotNetTypeRef typeRefForImplement = element.getTypeRefForImplement();
 
 		DotNetTypeResolveResult typeResolveResult = typeRefForImplement.resolve(element);
@@ -38,7 +45,12 @@ public class CS0539 extends CompilerCheck<DotNetVirtualImplementOwner>
 		{
 			namedElement = GenericUnwrapTool.extract(namedElement, genericExtractor, false);
 
+			if(CSharpElementCompareUtil.isEqual(namedElement, element, element))
+			{
+				return null;
+			}
 		}
-		return null;
+
+		return result(nameIdentifier, formatElement(element));
 	}
 }
