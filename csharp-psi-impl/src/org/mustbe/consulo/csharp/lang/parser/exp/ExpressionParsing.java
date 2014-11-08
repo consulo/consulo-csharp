@@ -485,11 +485,13 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 				final PsiBuilder.Marker callExpr = expr.precede();
 
-				PsiBuilder.Marker argumentMark = builder.mark();
-				builder.advanceLexer();
-				parseTypeList(builder, false);
-				expect(builder, GT, "'>' expected");
-				argumentMark.done(TYPE_CALL_ARGUMENTS);
+				PsiBuilder.Marker argumentMark = parseTypeCallArguments(builder);
+				if(argumentMark == null)
+				{
+					callExpr.drop();
+					startMarker.drop();
+					return expr;
+				}
 
 				if(builder.getTokenType() == LPAR)
 				{
@@ -553,6 +555,44 @@ public class ExpressionParsing extends SharedParsingHelpers
 			}
 		}
 	}
+
+	private static PsiBuilder.Marker parseTypeCallArguments(@NotNull CSharpBuilderWrapper builder)
+	{
+		PsiBuilder.Marker mark = builder.mark();
+		builder.advanceLexer();
+
+		while(!builder.eof())
+		{
+			val marker = parseType(builder, BracketFailPolicy.NOTHING, false, TokenSet.EMPTY);
+			if(marker == null)
+			{
+				mark.rollbackTo();
+				return null;
+			}
+
+			if(builder.getTokenType() == COMMA)
+			{
+				builder.advanceLexer();
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		if(builder.getTokenType() == GT)
+		{
+			builder.advanceLexer();
+		}
+		else
+		{
+			mark.rollbackTo();
+			return null;
+		}
+		mark.done(TYPE_CALL_ARGUMENTS);
+		return mark;
+	}
+
 
 	public static void parseArgumentList(CSharpBuilderWrapper builder, boolean fieldSet)
 	{
