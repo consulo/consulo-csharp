@@ -43,6 +43,7 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericWrapperTypeRef;
@@ -54,6 +55,7 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
+import com.intellij.util.ObjectUtils;
 import lombok.val;
 
 /**
@@ -504,6 +506,66 @@ public class CSharpTypeUtil
 			}
 		}
 		return fail();
+	}
+
+	public static boolean isTypeEqual(@NotNull DotNetTypeRef t1, @NotNull DotNetTypeRef t2, @NotNull PsiElement scope)
+	{
+		if(t1 == DotNetTypeRef.ERROR_TYPE || t2 == DotNetTypeRef.ERROR_TYPE)
+		{
+			return false;
+		}
+
+		DotNetTypeResolveResult resolveResult1 = t1.resolve(scope);
+		DotNetTypeResolveResult resolveResult2 = t2.resolve(scope);
+
+		if(resolveResult1.isNullable() != resolveResult2.isNullable())
+		{
+			return false;
+		}
+		PsiElement element1 = resolveResult1.getElement();
+		PsiElement element2 = resolveResult2.getElement();
+
+		if(element1 == null || element2 == null || !element1.isEquivalentTo(element2))
+		{
+			return false;
+		}
+
+		if(element1 instanceof DotNetGenericParameterListOwner)
+		{
+			assert element2 instanceof DotNetGenericParameterListOwner;
+
+			DotNetGenericParameter[] genericParameters1 = ((DotNetGenericParameterListOwner) element1).getGenericParameters();
+			DotNetGenericParameter[] genericParameters2 = ((DotNetGenericParameterListOwner) element2).getGenericParameters();
+
+			if(genericParameters1.length != genericParameters2.length)
+			{
+				return false;
+			}
+
+			DotNetGenericExtractor genericExtractor1 = resolveResult1.getGenericExtractor();
+			DotNetGenericExtractor genericExtractor2 = resolveResult2.getGenericExtractor();
+
+			for(int i = 0; i < genericParameters1.length; i++)
+			{
+				DotNetGenericParameter genericParameter1 = genericParameters1[i];
+				DotNetGenericParameter genericParameter2 = genericParameters2[i];
+
+				DotNetTypeRef extractedRef1 = genericExtractor1.extract(genericParameter1);
+				DotNetTypeRef extractedRef2 = genericExtractor2.extract(genericParameter2);
+
+				if(extractedRef1 == null && extractedRef2 == null)
+				{
+					continue;
+				}
+
+				if(!isTypeEqual(ObjectUtils.notNull(extractedRef1, DotNetTypeRef.ERROR_TYPE), ObjectUtils.notNull(extractedRef2,
+						DotNetTypeRef.ERROR_TYPE), scope))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	public static boolean haveErrorType(DotNetTypeRef typeRef)

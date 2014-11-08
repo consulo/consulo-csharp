@@ -25,7 +25,7 @@ import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.CSharpIcons;
-import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0102;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementCompareUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -219,7 +219,7 @@ public class HideOrOverrideMethodCollector implements LineMarkerCollector
 					{
 						continue;
 					}
-					if(CS0102.checkMethod((CSharpMethodDeclaration) element, target, element))
+					if(CSharpElementCompareUtil.isEqual(element, target, owner))
 					{
 						parents.add((CSharpMethodDeclaration) element);
 					}
