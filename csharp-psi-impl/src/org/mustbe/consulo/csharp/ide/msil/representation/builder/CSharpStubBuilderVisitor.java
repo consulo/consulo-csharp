@@ -212,6 +212,10 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		{
 			builder.append("struct ");
 		}
+		else if(declaration.isInterface())
+		{
+			builder.append("interface ");
+		}
 		else
 		{
 			builder.append("class ");
