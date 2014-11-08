@@ -23,8 +23,8 @@ public class NErrorCallArgument extends NCallArgument
 	}
 
 	@Override
-	public boolean calcValid(@NotNull PsiElement scope)
+	public int calcValid(@NotNull PsiElement scope)
 	{
-		return false;
+		return FAIL;
 	}
 }

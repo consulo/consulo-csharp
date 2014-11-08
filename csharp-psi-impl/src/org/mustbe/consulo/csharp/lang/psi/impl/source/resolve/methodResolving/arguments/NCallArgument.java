@@ -19,6 +19,11 @@ import lombok.val;
  */
 public class NCallArgument
 {
+	public static final int NOT_CALCULATED = -1;
+	public static final int FAIL = 0;
+	public static final int EQUAL = 1;
+	public static final int INSTANCE_OF = 2;
+
 	private final DotNetTypeRef myTypeRef;
 	@Nullable
 	private final CSharpCallArgument myCallArgument;
@@ -28,7 +33,7 @@ public class NCallArgument
 	 */
 	private final Object myParameterObject;
 
-	private Boolean myValid;
+	private int myValid = NOT_CALCULATED;
 
 	public NCallArgument(@NotNull DotNetTypeRef typeRef, @Nullable CSharpCallArgument callArgument, @Nullable Object parameterObject)
 	{
@@ -73,18 +78,31 @@ public class NCallArgument
 
 	public boolean isValid()
 	{
-		if(myValid == null)
+		if(myValid == NOT_CALCULATED)
 		{
 			throw new IllegalArgumentException("This parameter valid not calculated");
 		}
-		return myValid == Boolean.TRUE;
+		return myValid != FAIL;
 	}
 
-	public boolean calcValid(@NotNull PsiElement scope)
+	public int calcValid(@NotNull PsiElement scope)
 	{
 		val parameterTypeRef = getParameterTypeRef();
-		myValid = parameterTypeRef != null && CSharpTypeUtil.isInheritableWithImplicit(parameterTypeRef, getTypeRef(), scope);
-		return isValid();
+		int newVal = FAIL;
+		if(parameterTypeRef != null)
+		{
+			if(CSharpTypeUtil.isTypeEqual(parameterTypeRef, getTypeRef(), scope))
+			{
+				newVal = EQUAL;
+			}
+			else if(CSharpTypeUtil.isInheritableWithImplicit(parameterTypeRef, getTypeRef(), scope))
+			{
+				newVal = INSTANCE_OF;
+			}
+		}
+
+		myValid = newVal;
+		return myValid;
 	}
 
 	@Nullable

@@ -13,13 +13,15 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.ar
  */
 public class MethodCalcResult
 {
-	public static final MethodCalcResult VALID = new MethodCalcResult(WeightUtil.MAX_WEIGHT, Collections.<NCallArgument>emptyList());
+	public static final MethodCalcResult VALID = new MethodCalcResult(true, WeightUtil.MAX_WEIGHT, Collections.<NCallArgument>emptyList());
 
-	private int myWeight;
-	private List<NCallArgument> myArguments;
+	private final boolean myValid;
+	private final int myWeight;
+	private final List<NCallArgument> myArguments;
 
-	public MethodCalcResult(int weight, List<NCallArgument> arguments)
+	public MethodCalcResult(boolean valid, int weight, List<NCallArgument> arguments)
 	{
+		myValid = valid;
 		myWeight = weight;
 		myArguments = arguments;
 	}
@@ -27,12 +29,12 @@ public class MethodCalcResult
 	@NotNull
 	public MethodCalcResult dup(int weight)
 	{
-		return new MethodCalcResult(getWeight() + weight, getArguments());
+		return new MethodCalcResult(false, getWeight() + weight, getArguments());
 	}
 
 	public boolean isValidResult()
 	{
-		return myWeight == WeightUtil.MAX_WEIGHT;
+		return myValid;
 	}
 
 	public int getWeight()

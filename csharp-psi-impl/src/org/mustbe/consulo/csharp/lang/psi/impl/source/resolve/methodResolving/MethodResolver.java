@@ -11,7 +11,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NErrorCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NNamedCallArgument;
@@ -296,23 +295,25 @@ public class MethodResolver
 	@NotNull
 	public static MethodCalcResult calc(@NotNull List<NCallArgument> arguments, @NotNull PsiElement scope)
 	{
-		int processed = 0;
+		int weight = 0;
+		boolean valid = true;
 
 		for(NCallArgument argument : arguments)
 		{
-			if(argument.calcValid(scope))
+			switch(argument.calcValid(scope))
 			{
-				processed++;
+				case NCallArgument.EQUAL:
+					weight += 100000;
+					break;
+				case NCallArgument.INSTANCE_OF:
+					weight += 5000;
+					break;
+				default:
+					valid = false;
+					break;
 			}
 		}
 
-		if(processed == arguments.size())
-		{
-			return new MethodCalcResult(WeightUtil.MAX_WEIGHT, arguments);
-		}
-		else
-		{
-			return new MethodCalcResult(processed * 1000, arguments);
-		}
+		return new MethodCalcResult(valid, weight, arguments);
 	}
 }
