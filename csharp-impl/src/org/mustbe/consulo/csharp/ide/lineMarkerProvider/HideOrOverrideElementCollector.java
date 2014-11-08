@@ -25,17 +25,20 @@ import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.CSharpIcons;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementCompareUtil;
+import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CompletionResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
-import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
@@ -57,7 +60,7 @@ import lombok.val;
  * @author VISTALL
  * @since 10.06.14
  */
-public class HideOrOverrideMethodCollector implements LineMarkerCollector
+public class HideOrOverrideElementCollector implements LineMarkerCollector
 {
 	public static enum Category
 	{
@@ -90,31 +93,47 @@ public class HideOrOverrideMethodCollector implements LineMarkerCollector
 		public abstract Icon icon();
 	}
 
-	@Override
-	public void collect(
-			PsiElement psiElement, @NotNull Collection<LineMarkerInfo> lineMarkerInfos)
+	private boolean isAllowForOverride(PsiElement parent)
 	{
-		PsiElement parent = psiElement.getParent();
 		if(parent instanceof CSharpMethodDeclaration &&
-				psiElement.getNode().getElementType() == CSharpTokens.IDENTIFIER &&
 				!((CSharpMethodDeclaration) parent).isDelegate() && !((CSharpMethodDeclaration) parent).hasModifier(DotNetModifier.STATIC))
 		{
-			PsiElement methodParent = parent.getParent();
-			if(!(methodParent instanceof CSharpTypeDeclaration))
+			return true;
+		}
+		if(parent instanceof CSharpPropertyDeclaration || parent instanceof CSharpArrayMethodDeclaration || parent instanceof CSharpEventDeclaration)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void collect(PsiElement psiElement, @NotNull Collection<LineMarkerInfo> lineMarkerInfos)
+	{
+		PsiElement parent = psiElement.getParent();
+		if(psiElement.getNode().getElementType() == CSharpTokens.IDENTIFIER && isAllowForOverride(parent))
+		{
+			PsiElement parentParent = parent.getParent();
+			if(!(parentParent instanceof CSharpTypeDeclaration))
 			{
 				return;
 			}
 
-			MultiMap<Category, CSharpMethodDeclaration> parentMethods = split((CSharpTypeDeclaration) methodParent,
-					(CSharpMethodDeclaration) parent);
+			if(parent instanceof DotNetVirtualImplementOwner && ((DotNetVirtualImplementOwner) parent).getTypeForImplement() != null)
+			{
+				return;
+			}
+
+			MultiMap<Category, DotNetModifierListOwner> parentMethods = split((CSharpTypeDeclaration) parentParent,
+					(DotNetModifierListOwner) parent);
 
 
-			for(Map.Entry<Category, Collection<CSharpMethodDeclaration>> entry : parentMethods.entrySet())
+			for(Map.Entry<Category, Collection<DotNetModifierListOwner>> entry : parentMethods.entrySet())
 			{
 				val key = entry.getKey();
 
-				val lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), key.icon(), Pass.UPDATE_OVERRIDEN_MARKERS,
-						new Function<PsiElement, String>()
+				val lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), key.icon(),
+						Pass.UPDATE_OVERRIDEN_MARKERS, new Function<PsiElement, String>()
 
 				{
 					@Override
@@ -136,25 +155,25 @@ public class HideOrOverrideMethodCollector implements LineMarkerCollector
 					@Override
 					public void navigate(MouseEvent mouseEvent, PsiElement element)
 					{
-						CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) element.getParent();
-						CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) methodDeclaration.getParent();
+						DotNetModifierListOwner someElement = (DotNetModifierListOwner) element.getParent();
+						CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) someElement.getParent();
 
-						MultiMap<Category, CSharpMethodDeclaration> split = split(typeDeclaration, methodDeclaration);
+						MultiMap<Category, DotNetModifierListOwner> split = split(typeDeclaration, someElement);
 
-						Collection<CSharpMethodDeclaration> declarations = split.get(key);
+						Collection<DotNetModifierListOwner> declarations = split.get(key);
 						if(declarations.isEmpty())
 						{
 							return;
 						}
 
-						CSharpMethodDeclaration[] inheritors = declarations.toArray(CSharpMethodDeclaration.EMPTY_ARRAY);
+						PsiElement[] inheritors = declarations.toArray(PsiElement.EMPTY_ARRAY);
 						if(inheritors.length == 1)
 						{
-							((Navigatable)inheritors[0]).navigate(true);
+							((Navigatable) inheritors[0]).navigate(true);
 							return;
 						}
 
-						JBPopup popup = NavigationUtil.getPsiElementPopup(inheritors, "Open methods (" + inheritors.length + " items)");
+						JBPopup popup = NavigationUtil.getPsiElementPopup(inheritors, "Open elements (" + inheritors.length + " items)");
 						popup.show(new RelativePoint(mouseEvent));
 					}
 				}, GutterIconRenderer.Alignment.LEFT
@@ -165,65 +184,56 @@ public class HideOrOverrideMethodCollector implements LineMarkerCollector
 	}
 
 	@NotNull
-	private static MultiMap<Category, CSharpMethodDeclaration> split(final CSharpTypeDeclaration owner, final CSharpMethodDeclaration target)
+	private static MultiMap<Category, DotNetModifierListOwner> split(final CSharpTypeDeclaration owner, final DotNetModifierListOwner target)
 	{
-		List<CSharpMethodDeclaration> parentMethods = findParentMethods(owner, target);
-		if(parentMethods.isEmpty())
+		List<DotNetModifierListOwner> parentElements = findParentElements(owner, target);
+		if(parentElements.isEmpty())
 		{
 			return MultiMap.emptyInstance();
 		}
 
 
-		MultiMap<Category, CSharpMethodDeclaration> map = new MultiMap<Category, CSharpMethodDeclaration>();
-		for(CSharpMethodDeclaration parentMethod : parentMethods)
+		MultiMap<Category, DotNetModifierListOwner> map = new MultiMap<Category, DotNetModifierListOwner>();
+		for(DotNetModifierListOwner parentElement : parentElements)
 		{
-			CSharpTypeDeclaration parent = (CSharpTypeDeclaration) parentMethod.getParent();
+			CSharpTypeDeclaration parent = (CSharpTypeDeclaration) parentElement.getParent();
 			if(parent == null)
 			{
 				continue;
 			}
 			if(parent.isInterface())
 			{
-				map.putValue(Category.implement, parentMethod);
+				map.putValue(Category.implement, parentElement);
 			}
 			else
 			{
-				map.putValue(target.hasModifier(CSharpModifier.OVERRIDE) ? Category.override : Category.hide, parentMethod);
+				map.putValue(target.hasModifier(CSharpModifier.OVERRIDE) ? Category.override : Category.hide, parentElement);
 			}
 		}
 		return map;
 	}
 
-	private static List<CSharpMethodDeclaration> findParentMethods(final CSharpTypeDeclaration owner, final CSharpMethodDeclaration target)
+	private static List<DotNetModifierListOwner> findParentElements(final CSharpTypeDeclaration owner, final PsiElement target)
 	{
-		final List<CSharpMethodDeclaration> parents = new SmartList<CSharpMethodDeclaration>();
+		final List<DotNetModifierListOwner> parents = new SmartList<DotNetModifierListOwner>();
 
-		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(owner.getResolveScope(), ResolveResult.EMPTY_ARRAY,
-				new ExecuteTarget[] {ExecuteTarget.ELEMENT_GROUP});
+		CompletionResolveScopeProcessor processor = new CompletionResolveScopeProcessor(owner.getResolveScope(), ResolveResult.EMPTY_ARRAY,
+				new ExecuteTarget[]{ExecuteTarget.MEMBER});
 
 		ResolveState state = ResolveState.initial();
-		state = state.put(CSharpResolveUtil.SELECTOR, new MemberByNameSelector(target.getName()));
 
 		CSharpResolveUtil.walkChildren(processor, owner, false, true, state);
 
 		PsiElement[] psiElements = processor.toPsiElements();
 		for(PsiElement psiElement : psiElements)
 		{
-			CSharpElementGroup<?> elementGroup = (CSharpElementGroup<?>) psiElement;
-
-			for(PsiElement element : elementGroup.getElements())
+			if(psiElement.getParent() == owner)
 			{
-				if(element instanceof CSharpMethodDeclaration)
-				{
-					if(element.getParent() == owner)
-					{
-						continue;
-					}
-					if(CSharpElementCompareUtil.isEqual(element, target, owner))
-					{
-						parents.add((CSharpMethodDeclaration) element);
-					}
-				}
+				continue;
+			}
+			if(CSharpElementCompareUtil.isEqual(psiElement, target, owner))
+			{
+				parents.add((DotNetModifierListOwner) psiElement);
 			}
 		}
 

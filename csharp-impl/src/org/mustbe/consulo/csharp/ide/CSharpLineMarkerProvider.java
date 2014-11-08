@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.ide.lineMarkerProvider.HideOrOverrideMethodCollector;
+import org.mustbe.consulo.csharp.ide.lineMarkerProvider.HideOrOverrideElementCollector;
 import org.mustbe.consulo.csharp.ide.lineMarkerProvider.LineMarkerCollector;
 import org.mustbe.consulo.csharp.ide.lineMarkerProvider.OverrideTypeCollector;
 import org.mustbe.consulo.csharp.ide.lineMarkerProvider.PartialTypeCollector;
@@ -53,7 +53,7 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 			new OverrideTypeCollector(),
 			new PartialTypeCollector(),
 			new RecursiveCallCollector(),
-			new HideOrOverrideMethodCollector(),
+			new HideOrOverrideElementCollector(),
 	};
 
 	protected final DaemonCodeAnalyzerSettings daemonCodeAnalyzerSettings;
