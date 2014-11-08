@@ -7,7 +7,9 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpression
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
@@ -65,6 +67,11 @@ public class CSharpSmartCompletionContributor extends CompletionContributor
 					LookupElementBuilder builder = buildForTypeRef(typeRef, parentOfType);
 					if(builder != null)
 					{
+						DotNetTypeResolveResult resolve = typeRef.resolve(parentOfType);
+						if(resolve.getGenericExtractor() == DotNetGenericExtractor.EMPTY)
+						{
+							return;
+						}
 						builder = builder.withInsertHandler(new ParenthesesInsertHandler<LookupElement>()
 						{
 							@Override
