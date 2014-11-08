@@ -29,8 +29,11 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.ContributedReferenceHost;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.PsiReferenceService;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.util.IncorrectOperationException;
 
@@ -39,7 +42,7 @@ import com.intellij.util.IncorrectOperationException;
  * @since 15.12.13.
  */
 public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSharpStubElementImpl<S> implements PsiNameIdentifierOwner,
-		DotNetModifierListOwner, DotNetQualifiedElement
+		DotNetModifierListOwner, DotNetQualifiedElement, ContributedReferenceHost
 {
 	public CSharpStubMemberImpl(@NotNull ASTNode node)
 	{
@@ -49,6 +52,13 @@ public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSha
 	public CSharpStubMemberImpl(@NotNull S stub, @NotNull IStubElementType<? extends S, ?> nodeType)
 	{
 		super(stub, nodeType);
+	}
+
+	@NotNull
+	@Override
+	public PsiReference[] getReferences()
+	{
+		return PsiReferenceService.getService().getContributedReferences(this);
 	}
 
 	@Override
