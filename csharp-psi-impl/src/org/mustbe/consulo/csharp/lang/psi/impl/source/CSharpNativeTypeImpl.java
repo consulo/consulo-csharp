@@ -40,7 +40,7 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpNativeTypeImpl extends CSharpStubElementImpl<CSharpWithIntValueStub<CSharpNativeTypeImpl>> implements DotNetNativeType
+public class CSharpNativeTypeImpl extends CSharpStubTypeElementImpl<CSharpWithIntValueStub<CSharpNativeTypeImpl>> implements DotNetNativeType
 {
 	public static final Map<IElementType, String> ourElementToQTypes = new HashMap<IElementType, String>()
 	{
@@ -93,7 +93,7 @@ public class CSharpNativeTypeImpl extends CSharpStubElementImpl<CSharpWithIntVal
 
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef()
+	public DotNetTypeRef toTypeRefImpl()
 	{
 		IElementType elementType = getTypeElementType();
 		if(elementType == CSharpSoftTokens.VAR_KEYWORD)

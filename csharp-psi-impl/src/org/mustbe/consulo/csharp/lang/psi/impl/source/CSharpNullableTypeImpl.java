@@ -35,7 +35,7 @@ import lombok.val;
  * @author VISTALL
  * @since 17.04.14
  */
-public class CSharpNullableTypeImpl extends CSharpStubElementImpl<CSharpEmptyStub<CSharpNullableTypeImpl>> implements DotNetType
+public class CSharpNullableTypeImpl extends CSharpStubTypeElementImpl<CSharpEmptyStub<CSharpNullableTypeImpl>> implements DotNetType
 {
 	public CSharpNullableTypeImpl(@NotNull ASTNode node)
 	{
@@ -56,7 +56,7 @@ public class CSharpNullableTypeImpl extends CSharpStubElementImpl<CSharpEmptyStu
 
 	@Override
 	@NotNull
-	public DotNetTypeRef toTypeRef()
+	public DotNetTypeRef toTypeRefImpl()
 	{
 		DotNetType innerType = getInnerType();
 		if(innerType == null)

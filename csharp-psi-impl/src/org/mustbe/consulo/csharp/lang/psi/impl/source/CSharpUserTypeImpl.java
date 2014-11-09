@@ -37,7 +37,7 @@ import com.intellij.psi.util.PsiTreeUtil;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpUserTypeImpl extends CSharpStubElementImpl<CSharpWithStringValueStub<CSharpUserTypeImpl>> implements DotNetUserType
+public class CSharpUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWithStringValueStub<CSharpUserTypeImpl>> implements DotNetUserType
 {
 	public CSharpUserTypeImpl(@NotNull ASTNode node)
 	{
@@ -58,7 +58,7 @@ public class CSharpUserTypeImpl extends CSharpStubElementImpl<CSharpWithStringVa
 
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef()
+	public DotNetTypeRef toTypeRefImpl()
 	{
 		CSharpReferenceExpression referenceExpression = getReferenceExpressionByStub();
 		if(referenceExpression == null)

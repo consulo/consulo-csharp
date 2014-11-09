@@ -32,7 +32,7 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpArrayTypeImpl extends CSharpStubElementImpl<CSharpWithIntValueStub<CSharpArrayTypeImpl>> implements DotNetArrayType
+public class CSharpArrayTypeImpl extends CSharpStubTypeElementImpl<CSharpWithIntValueStub<CSharpArrayTypeImpl>> implements DotNetArrayType
 {
 	public CSharpArrayTypeImpl(@NotNull ASTNode node)
 	{
@@ -46,7 +46,7 @@ public class CSharpArrayTypeImpl extends CSharpStubElementImpl<CSharpWithIntValu
 
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef()
+	public DotNetTypeRef toTypeRefImpl()
 	{
 		DotNetType innerType = getInnerType();
 

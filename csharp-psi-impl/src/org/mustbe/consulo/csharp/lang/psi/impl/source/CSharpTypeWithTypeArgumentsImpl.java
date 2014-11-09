@@ -33,7 +33,7 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpTypeWithTypeArgumentsImpl extends CSharpStubElementImpl<CSharpEmptyStub<CSharpTypeWithTypeArgumentsImpl>> implements
+public class CSharpTypeWithTypeArgumentsImpl extends CSharpStubTypeElementImpl<CSharpEmptyStub<CSharpTypeWithTypeArgumentsImpl>> implements
 		DotNetTypeWithTypeArguments
 {
 	public CSharpTypeWithTypeArgumentsImpl(@NotNull ASTNode node)
@@ -49,7 +49,7 @@ public class CSharpTypeWithTypeArgumentsImpl extends CSharpStubElementImpl<CShar
 
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef()
+	public DotNetTypeRef toTypeRefImpl()
 	{
 		DotNetType innerType = getInnerType();
 		DotNetType[] arguments = getArguments();
