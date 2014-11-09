@@ -1,7 +1,6 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
@@ -28,7 +27,7 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 	{
 		if(element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).isStruct())
 		{
-			return new DotNetElement[]{buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC)};
+			return buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC);
 		}
 		else if(element instanceof CSharpTypeDeclaration && !((CSharpTypeDeclaration) element).isInterface() && !((CSharpTypeDeclaration) element)
 				.isStruct())
@@ -49,7 +48,7 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 			{
 				CSharpModifier modifier = typeDeclaration.hasModifier(CSharpModifier.ABSTRACT) ? CSharpModifier.PROTECTED : CSharpModifier.PUBLIC;
 
-				return new DotNetElement[]{buildDefaultConstructor((DotNetNamedElement) element, modifier)};
+				return buildDefaultConstructor((DotNetNamedElement) element, modifier);
 			}
 		}
 		else if(element instanceof DotNetGenericParameter)
@@ -62,7 +61,7 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 					if(constraintValue instanceof CSharpGenericConstraintKeywordValue && ((CSharpGenericConstraintKeywordValue) constraintValue)
 							.getKeywordElementType() == CSharpTokens.NEW_KEYWORD)
 					{
-						return new DotNetElement[]{buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC)};
+						return buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC);
 					}
 				}
 			}
@@ -71,13 +70,18 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 	}
 
 	@NotNull
-	private static CSharpConstructorDeclaration buildDefaultConstructor(DotNetNamedElement element, @NotNull CSharpModifier modifier)
+	private static DotNetElement[] buildDefaultConstructor(DotNetNamedElement element, @NotNull CSharpModifier modifier)
 	{
+		String name = element.getName();
+		if(name == null)
+		{
+			return DotNetElement.EMPTY_ARRAY;
+		}
 		CSharpLightConstructorDeclarationBuilder builder = new CSharpLightConstructorDeclarationBuilder(element.getProject());
 		builder.addModifier(modifier);
 		builder.setNavigationElement(element);
 		builder.withParent(element);
-		builder.withName(element.getName());
-		return builder;
+		builder.withName(name);
+		return new DotNetElement[] {builder};
 	}
 }
