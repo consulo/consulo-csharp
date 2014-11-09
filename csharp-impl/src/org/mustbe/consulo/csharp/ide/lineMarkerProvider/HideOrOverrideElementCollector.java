@@ -119,11 +119,6 @@ public class HideOrOverrideElementCollector implements LineMarkerCollector
 				return;
 			}
 
-			if(parent instanceof DotNetVirtualImplementOwner && ((DotNetVirtualImplementOwner) parent).getTypeForImplement() != null)
-			{
-				return;
-			}
-
 			MultiMap<Category, DotNetModifierListOwner> parentMethods = split((CSharpTypeDeclaration) parentParent,
 					(DotNetModifierListOwner) parent);
 
