@@ -24,11 +24,10 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithIntValueStub;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetNativeType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -115,12 +114,7 @@ public class CSharpNativeTypeImpl extends CSharpStubTypeElementImpl<CSharpWithIn
 
 		String q = ourElementToQTypes.get(elementType);
 		assert q != null : elementType.toString();
-		boolean nullable = false;
-		if(DotNetTypes.System.Object.equals(q) || DotNetTypes.System.String.equals(q))
-		{
-			nullable = true;
-		}
-		return new DotNetTypeRefByQName(q, CSharpTransform.INSTANCE, nullable);
+		return new CSharpTypeRefByQName(q);
 	}
 
 	@NotNull
