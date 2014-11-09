@@ -23,7 +23,12 @@ public abstract class CSharpStubTypeElementImpl<S extends StubElement> extends C
 		@Override
 		public DotNetTypeRef resolveTypeRef(@NotNull CSharpStubTypeElementImpl<?> element, boolean resolveFromParent)
 		{
-			return new CSharpLazyTypeRefWrapper(element, element.toTypeRefImpl());
+			DotNetTypeRef delegate = element.toTypeRefImpl();
+			if(delegate == DotNetTypeRef.AUTO_TYPE || delegate == DotNetTypeRef.UNKNOWN_TYPE || delegate == DotNetTypeRef.ERROR_TYPE)
+			{
+				return delegate;
+			}
+			return new CSharpLazyTypeRefWrapper(element, delegate);
 		}
 	}
 
