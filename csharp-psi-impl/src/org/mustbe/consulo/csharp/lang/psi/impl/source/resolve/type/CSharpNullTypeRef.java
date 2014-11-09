@@ -15,9 +15,9 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 23.10.14
  */
-public class CSharpNullType implements DotNetTypeRef
+public class CSharpNullTypeRef implements DotNetTypeRef
 {
-	public static final CSharpNullType INSTANCE = new CSharpNullType();
+	public static final CSharpNullTypeRef INSTANCE = new CSharpNullTypeRef();
 
 	@NotNull
 	@Override

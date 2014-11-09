@@ -144,6 +144,7 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 
 	@NotNull
 	@Override
+	@LazyInstance
 	public DotNetTypeRef getReturnTypeRef()
 	{
 		return MsilToCSharpUtil.extractToCSharp(myMsilElement.toTypeRef(false), myMsilElement);

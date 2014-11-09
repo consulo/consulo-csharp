@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
+import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
@@ -31,11 +32,14 @@ import com.intellij.psi.PsiElement;
  */
 public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 {
+	@NotNull
+	private final PsiElement myScope;
 	private final Boolean myNullability;
 
-	public MsilDelegateTypeRef(DotNetTypeRef typeRef, Boolean nullability)
+	public MsilDelegateTypeRef(@NotNull PsiElement scope, @NotNull DotNetTypeRef typeRef, @Nullable Boolean nullability)
 	{
 		super(typeRef);
+		myScope = scope;
 		myNullability = nullability;
 	}
 
@@ -62,9 +66,16 @@ public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 	@Override
 	public DotNetTypeResolveResult resolve(@NotNull final PsiElement scope)
 	{
+		return resolveImpl();
+	}
+
+	@NotNull
+	@LazyInstance
+	public DotNetTypeResolveResult resolveImpl()
+	{
 		return new DotNetTypeResolveResult()
 		{
-			private DotNetTypeResolveResult cachedResult = MsilDelegateTypeRef.this.getDelegate().resolve(scope);
+			private DotNetTypeResolveResult cachedResult = MsilDelegateTypeRef.this.getDelegate().resolve(myScope);
 
 			@Nullable
 			@Override

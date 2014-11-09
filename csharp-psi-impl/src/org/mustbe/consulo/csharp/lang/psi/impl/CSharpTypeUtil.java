@@ -34,7 +34,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpChameleonTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullType;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
@@ -335,12 +335,12 @@ public class CSharpTypeUtil
 		PsiElement topElement = topTypeResolveResult.getElement();
 		PsiElement targetElement = targetTypeResolveResult.getElement();
 
-		if(topTypeResolveResult.isNullable() && target == CSharpNullType.INSTANCE)
+		if(topTypeResolveResult.isNullable() && target == CSharpNullTypeRef.INSTANCE)
 		{
 			return SIMPLE_SUCCESS;
 		}
 
-		if(!topTypeResolveResult.isNullable() && target == CSharpNullType.INSTANCE)
+		if(!topTypeResolveResult.isNullable() && target == CSharpNullTypeRef.INSTANCE)
 		{
 			return fail();
 		}

@@ -20,7 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
@@ -33,9 +34,35 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpTypeWithTypeArgumentsImpl extends CSharpStubTypeElementImpl<CSharpEmptyStub<CSharpTypeWithTypeArgumentsImpl>> implements
+public class CSharpTypeWithTypeArgumentsImpl extends CSharpStubElementImpl<CSharpEmptyStub<CSharpTypeWithTypeArgumentsImpl>> implements
 		DotNetTypeWithTypeArguments
 {
+	private static class OurResolver extends CSharpResolveCache.TypeRefResolver<CSharpTypeWithTypeArgumentsImpl>
+	{
+		public static final OurResolver INSTANCE = new OurResolver();
+
+		@NotNull
+		@Override
+		public DotNetTypeRef resolveTypeRef(@NotNull CSharpTypeWithTypeArgumentsImpl element, boolean resolveFromParent)
+		{
+			DotNetType innerType = element.getInnerType();
+			DotNetType[] arguments = element.getArguments();
+			if(arguments.length == 0)
+			{
+				return innerType.toTypeRef();
+			}
+
+			DotNetTypeRef[] rArguments = new DotNetTypeRef[arguments.length];
+			for(int i = 0; i < arguments.length; i++)
+			{
+				DotNetType argument = arguments[i];
+				rArguments[i] = argument.toTypeRef();
+			}
+
+			return new CSharpLazyGenericWrapperTypeRef(element, innerType.toTypeRef(), rArguments);
+		}
+	}
+
 	public CSharpTypeWithTypeArgumentsImpl(@NotNull ASTNode node)
 	{
 		super(node);
@@ -49,23 +76,9 @@ public class CSharpTypeWithTypeArgumentsImpl extends CSharpStubTypeElementImpl<C
 
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRefImpl()
+	public DotNetTypeRef toTypeRef()
 	{
-		DotNetType innerType = getInnerType();
-		DotNetType[] arguments = getArguments();
-		if(arguments.length == 0)
-		{
-			return innerType.toTypeRef();
-		}
-
-		DotNetTypeRef[] rArguments = new DotNetTypeRef[arguments.length];
-		for(int i = 0; i < arguments.length; i++)
-		{
-			DotNetType argument = arguments[i];
-			rArguments[i] = argument.toTypeRef();
-		}
-
-		return new CSharpGenericWrapperTypeRef(innerType.toTypeRef(), rArguments);
+		return CSharpResolveCache.getInstance(getProject()).resolveTypeRef(this, OurResolver.INSTANCE, true);
 	}
 
 	@Override

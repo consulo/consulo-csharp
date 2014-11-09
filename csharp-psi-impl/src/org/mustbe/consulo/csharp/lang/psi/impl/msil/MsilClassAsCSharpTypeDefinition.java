@@ -358,6 +358,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	}
 
 	@Override
+	@LazyInstance
 	public DotNetTypeRef getTypeRefForEnumConstants()
 	{
 		return MsilToCSharpUtil.extractToCSharp(myMsilElement.getTypeRefForEnumConstants(), myMsilElement);

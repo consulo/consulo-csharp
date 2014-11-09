@@ -24,8 +24,8 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.injection.CSharpStringLiteralEscaper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpConstantTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLazyTypeRefByQName;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullType;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetConstantExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -88,7 +88,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 			}
 			else if(elementType == CSharpTokens.NULL_LITERAL)
 			{
-				return CSharpNullType.INSTANCE;
+				return CSharpNullTypeRef.INSTANCE;
 			}
 			else if(elementType == CSharpTokens.BOOL_LITERAL)
 			{
@@ -99,7 +99,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 			{
 				return DotNetTypeRef.ERROR_TYPE;
 			}
-			return new CSharpConstantTypeRef(new CSharpLazyTypeRefByQName(element.getProject(), element.getResolveScope(), qName));
+			return new CSharpConstantTypeRef(new CSharpLazyTypeRefByQName(element, qName));
 		}
 	}
 

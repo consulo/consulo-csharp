@@ -23,11 +23,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyArrayTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyGenericWrapperTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyLambdaTypeRef;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
@@ -137,8 +137,7 @@ public class MsilToCSharpUtil
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T extends DotNetModifierListOwner> boolean hasModifierInParentIfType(MsilModifierList msilModifierList,
-			DotNetModifier modifier)
+	private static <T extends DotNetModifierListOwner> boolean hasModifierInParentIfType(MsilModifierList msilModifierList, DotNetModifier modifier)
 	{
 		PsiElement parent = msilModifierList.getParent();
 		if(parent == null)
@@ -221,12 +220,14 @@ public class MsilToCSharpUtil
 		}
 	}
 
+	@NotNull
 	public static DotNetTypeRef extractToCSharp(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
 		return extractToCSharp(typeRef, scope, null);
 	}
 
-	public static DotNetTypeRef extractToCSharp(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope, @Nullable Boolean forceNullable)
+	@NotNull
+	private static DotNetTypeRef extractToCSharp(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope, @Nullable Boolean forceNullable)
 	{
 		if(typeRef == DotNetTypeRef.ERROR_TYPE)
 		{
@@ -235,11 +236,11 @@ public class MsilToCSharpUtil
 
 		if(typeRef instanceof MsilNativeTypeRefImpl)
 		{
-			return new CSharpTypeRefByQName(typeRef.getQualifiedText(), forceNullable);
+			return new CSharpLazyTypeRefByQName(scope, typeRef.getQualifiedText(), forceNullable == Boolean.TRUE);
 		}
 		else if(typeRef instanceof MsilArrayTypRefImpl)
 		{
-			return new CSharpArrayTypeRef(extractToCSharp(((MsilArrayTypRefImpl) typeRef).getInnerTypeRef(), scope), 0);
+			return new CSharpLazyArrayTypeRef(scope, extractToCSharp(((MsilArrayTypRefImpl) typeRef).getInnerTypeRef(), scope), 0);
 		}
 		else if(typeRef instanceof DotNetPointerTypeRef)
 		{
@@ -264,7 +265,7 @@ public class MsilToCSharpUtil
 				newArguments[i] = extractToCSharp(arguments[i], scope);
 			}
 
-			return new CSharpGenericWrapperTypeRef(inner, newArguments);
+			return new CSharpLazyGenericWrapperTypeRef(scope, inner, newArguments);
 		}
 
 		PsiElement resolve = typeRef.resolve(scope).getElement();
@@ -273,9 +274,9 @@ public class MsilToCSharpUtil
 			CSharpMethodDeclaration delegateMethod = wrapToDelegateMethod((DotNetTypeDeclaration) resolve, null);
 			if(delegateMethod != null)
 			{
-				return new CSharpLambdaTypeRef(delegateMethod);
+				return new CSharpLazyLambdaTypeRef(scope, delegateMethod);
 			}
 		}
-		return new MsilDelegateTypeRef(typeRef, forceNullable);
+		return new MsilDelegateTypeRef(scope, typeRef, forceNullable);
 	}
 }
