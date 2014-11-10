@@ -224,7 +224,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			final PsiBuilder.Marker typeCast = builder.mark();
 			builder.advanceLexer();
 
-			val typeInfo = parseType(builder, BracketFailPolicy.NOTHING, false);
+			val typeInfo = parseType(builder, BracketFailPolicy.NOTHING, true, false);
 			if(typeInfo == null || !expect(builder, RPAR, null))
 			{
 				typeCast.rollbackTo();
@@ -520,7 +520,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		while(!builder.eof())
 		{
-			val marker = parseType(builder, BracketFailPolicy.NOTHING, false, TokenSet.EMPTY);
+			val marker = parseType(builder, BracketFailPolicy.NOTHING, false, false, TokenSet.EMPTY);
 			if(marker == null)
 			{
 				mark.rollbackTo();

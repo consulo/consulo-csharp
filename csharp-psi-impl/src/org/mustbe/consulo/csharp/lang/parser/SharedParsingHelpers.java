@@ -59,10 +59,16 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 
 	protected static boolean parseTypeList(@NotNull CSharpBuilderWrapper builder, boolean varSupport, TokenSet nameStopperSet)
 	{
+		return parseTypeList(builder, varSupport, false, nameStopperSet);
+	}
+
+	protected static boolean parseTypeList(@NotNull CSharpBuilderWrapper builder, boolean varSupport, boolean hardRequiredGt,
+			@NotNull TokenSet nameStopperSet)
+	{
 		boolean empty = true;
 		while(!builder.eof())
 		{
-			val marker = parseType(builder, BracketFailPolicy.NOTHING, varSupport, nameStopperSet);
+			val marker = parseType(builder, BracketFailPolicy.NOTHING, varSupport, hardRequiredGt, nameStopperSet);
 			if(marker == null)
 			{
 				if(!empty)
@@ -86,13 +92,36 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		return empty;
 	}
 
-	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder, BracketFailPolicy bracketFailPolicy, boolean varSupport)
+	@Nullable
+	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder, @NotNull BracketFailPolicy bracketFailPolicy, boolean varSupport)
 	{
-		return parseType(builder, bracketFailPolicy, varSupport, TokenSet.EMPTY);
+		return parseType(builder, bracketFailPolicy, varSupport, false);
 	}
 
-	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder, BracketFailPolicy bracketFailPolicy, boolean varSupport,
+	@Nullable
+	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder,
+			@NotNull BracketFailPolicy bracketFailPolicy,
+			boolean varSupport,
 			TokenSet nameStopperSet)
+	{
+		return parseType(builder, bracketFailPolicy, varSupport, false, nameStopperSet);
+	}
+
+	@Nullable
+	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder,
+			@NotNull BracketFailPolicy bracketFailPolicy,
+			boolean hardRequiredGt,
+			boolean varSupport)
+	{
+		return parseType(builder, bracketFailPolicy, varSupport, hardRequiredGt, TokenSet.EMPTY);
+	}
+
+	@Nullable
+	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder,
+			@NotNull BracketFailPolicy bracketFailPolicy,
+			boolean varSupport,
+			boolean hardRequiredGt,
+			@NotNull TokenSet nameStopperSet)
 	{
 		TypeInfo typeInfo = parseInnerType(builder, varSupport, nameStopperSet);
 		if(typeInfo == null)
@@ -109,14 +138,22 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 			typeInfo = new TypeInfo();
 			typeInfo.isParameterized = true;
 
-			PsiBuilder.Marker mark = builder.mark();
+			PsiBuilder.Marker typeListMarker = builder.mark();
 			builder.advanceLexer();
 			if(parseTypeList(builder, varSupport, nameStopperSet))
 			{
 				builder.error("Type expected");
 			}
-			expect(builder, GT, "'>' expected");
-			mark.done(TYPE_ARGUMENTS);
+
+			if(!expect(builder, GT, "'>' expected") && hardRequiredGt)
+			{
+				typeListMarker.rollbackTo();
+				marker.rollbackTo();
+
+				return null;
+			}
+
+			typeListMarker.done(TYPE_ARGUMENTS);
 
 			marker.done(TYPE_WRAPPER_WITH_TYPE_ARGUMENTS);
 		}
@@ -381,15 +418,19 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 	}
 
 	@NotNull
-	protected static Pair<PsiBuilder.Marker, Boolean> parseWithSoftElements(NotNullFunction<CSharpBuilderWrapper, Pair<PsiBuilder.Marker, Boolean>> func,
-			CSharpBuilderWrapper builderWrapper, IElementType... softs)
+	protected static Pair<PsiBuilder.Marker, Boolean> parseWithSoftElements(NotNullFunction<CSharpBuilderWrapper, Pair<PsiBuilder.Marker,
+			Boolean>> func,
+			CSharpBuilderWrapper builderWrapper,
+			IElementType... softs)
 	{
 		return parseWithSoftElements(func, builderWrapper, TokenSet.create(softs));
 	}
 
 	@NotNull
-	protected static Pair<PsiBuilder.Marker, Boolean> parseWithSoftElements(NotNullFunction<CSharpBuilderWrapper, Pair<PsiBuilder.Marker, Boolean>> func,
-			CSharpBuilderWrapper builderWrapper, TokenSet softs)
+	protected static Pair<PsiBuilder.Marker, Boolean> parseWithSoftElements(NotNullFunction<CSharpBuilderWrapper, Pair<PsiBuilder.Marker,
+			Boolean>> func,
+			CSharpBuilderWrapper builderWrapper,
+			TokenSet softs)
 	{
 		builderWrapper.enableSoftKeywords(softs);
 		val fun = func.fun(builderWrapper);
