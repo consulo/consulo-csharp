@@ -202,7 +202,8 @@
 		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.ForeachVariableMacro"/>
 		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.ForeachComponentTypeMacro"/>
 
-		<!--<codeStyleSettingsProvider implementation="org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettingsProvider" />  -->
+		<codeStyleSettingsProvider implementation="org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettingsProvider" />
+		<langCodeStyleSettingsProvider implementation="org.mustbe.consulo.csharp.ide.codeStyle.CSharpLanguageCodeStyleSettingsProvider" />
 
 		<quoteHandler fileType="C#" className="org.mustbe.consulo.csharp.ide.CSharpQuoteHandler"/>
 		<colorSettingsPage implementation="org.mustbe.consulo.csharp.ide.highlight.CSharpColorSettingsPage"/>

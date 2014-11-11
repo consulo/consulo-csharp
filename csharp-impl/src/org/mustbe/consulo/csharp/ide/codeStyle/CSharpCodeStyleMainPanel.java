@@ -6,11 +6,11 @@ import com.intellij.psi.codeStyle.CodeStyleSettings;
 
 /**
  * @author VISTALL
- * @since 13.09.14
+ * @since 11.11.14
  */
-public class CSharpTabbedLanguageCodeStylePanel extends TabbedLanguageCodeStylePanel
+public class CSharpCodeStyleMainPanel extends TabbedLanguageCodeStylePanel
 {
-	public CSharpTabbedLanguageCodeStylePanel(CodeStyleSettings currentSettings, CodeStyleSettings settings)
+	public CSharpCodeStyleMainPanel(CodeStyleSettings currentSettings, CodeStyleSettings settings)
 	{
 		super(CSharpLanguage.INSTANCE, currentSettings, settings);
 	}
