@@ -20,29 +20,23 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
+import org.mustbe.consulo.csharp.lang.CSharpLanguage;
+import org.mustbe.consulo.csharp.lang.formatter.processors.CSharpIndentProcessor;
+import org.mustbe.consulo.csharp.lang.formatter.processors.CSharpSpacingProcessor;
+import org.mustbe.consulo.csharp.lang.formatter.processors.CSharpWrappingProcessor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
-import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializationExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetStatement;
+import com.intellij.formatting.Block;
 import com.intellij.formatting.Indent;
+import com.intellij.formatting.Spacing;
 import com.intellij.formatting.Wrap;
-import com.intellij.formatting.WrapType;
 import com.intellij.formatting.templateLanguages.DataLanguageBlockWrapper;
 import com.intellij.formatting.templateLanguages.TemplateLanguageBlock;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.util.codeInsight.CommentUtilCore;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -50,6 +44,10 @@ import lombok.val;
  */
 public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSharpElements, CSharpTokens, CSharpTokenSets
 {
+	private final CSharpWrappingProcessor myWrappingProcessor;
+	private final CSharpIndentProcessor myIndentProcessor;
+	private final CSharpSpacingProcessor mySpacingProcessor;
+
 	public CSharpFormattingBlock(
 			@NotNull CSharpFormattingModelBuilder blockFactory,
 			@NotNull CodeStyleSettings settings,
@@ -57,111 +55,36 @@ public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSha
 			@Nullable List<DataLanguageBlockWrapper> foreignChildren)
 	{
 		super(blockFactory, settings, node, foreignChildren);
+		myWrappingProcessor = new CSharpWrappingProcessor(node, settings.getCommonSettings(CSharpLanguage.INSTANCE));
+		myIndentProcessor = new CSharpIndentProcessor(node, settings.getCommonSettings(CSharpLanguage.INSTANCE));
+		mySpacingProcessor = new CSharpSpacingProcessor(node, settings.getCommonSettings(CSharpLanguage.INSTANCE));
+	}
+
+	@Nullable
+	@Override
+	public Spacing getSpacing(@Nullable Block child1, @NotNull Block child2)
+	{
+		return mySpacingProcessor.getSpacing(child1, child2);
 	}
 
 	@Nullable
 	@Override
 	public Wrap getWrap()
 	{
-		ASTNode node = getNode();
-		IElementType elementType = node.getElementType();
-		if(elementType == LBRACE || elementType == RBRACE || elementType == CSharpElements.XXX_ACCESSOR)
-		{
-			return Wrap.createWrap(WrapType.ALWAYS, true);
-		}
-
-		PsiElement psi = node.getPsi();
-		PsiElement parent = psi.getParent();
-		if(psi instanceof CSharpFieldOrPropertySet && !(parent instanceof CSharpCallArgumentList))
-		{
-			return Wrap.createWrap(WrapType.ALWAYS, true);
-		}
-
-		if(psi instanceof DotNetStatement && parent instanceof CSharpBlockStatementImpl && ((CSharpBlockStatementImpl) parent).getStatements()[0]
-				== psi)
-		{
-			return Wrap.createWrap(WrapType.ALWAYS, true);
-		}
-		return super.getWrap();
+		return myWrappingProcessor.getWrap();
 	}
 
 	@Override
 	public Indent getIndent()
 	{
-		PsiElement element = getNode().getPsi();
-		PsiElement parent = element.getParent();
-		if(parent instanceof PsiFile)
-		{
-			return Indent.getNoneIndent();
-		}
-
-		val elementType = getNode().getElementType();
-		if(elementType == NAMESPACE_DECLARATION ||
-				elementType == TYPE_DECLARATION ||
-				elementType == METHOD_DECLARATION ||
-				elementType == CONVERSION_METHOD_DECLARATION ||
-				elementType == FIELD_DECLARATION ||
-				elementType == FIELD_OR_PROPERTY_SET ||
-				elementType == ARRAY_METHOD_DECLARATION ||
-				elementType == PROPERTY_DECLARATION ||
-				elementType == XXX_ACCESSOR ||
-				elementType == EVENT_DECLARATION ||
-				elementType == ENUM_CONSTANT_DECLARATION ||
-				elementType == USING_LIST ||
-				elementType == CONSTRUCTOR_DECLARATION ||
-				element instanceof DotNetExpression && parent instanceof CSharpArrayInitializationExpressionImpl)
-		{
-			return Indent.getNormalIndent();
-		}
-		else if(elementType == LBRACE || elementType == RBRACE)
-		{
-			return Indent.getNoneIndent();
-		}
-		else if(CommentUtilCore.isComment(getNode()))
-		{
-			return Indent.getNormalIndent();
-		}
-		else if(elementType == MODIFIER_LIST)
-		{
-			return Indent.getNoneIndent();
-		}
-	/*	else if(elementType == CSharpParserDefinition.FILE_ELEMENT_TYPE)
-		{
-			return Indent.getNoneIndent();
-		}  */
-		else if(elementType == CSharpStubElements.FILE)
-		{
-			return Indent.getNoneIndent();
-		}
-		/*else if(elementType == MACRO_BLOCK_START || elementType == MACRO_BLOCK_STOP)
-		{
-			PsiElement psi = getNode().getPsi();
-			if(psi.getParent() instanceof CSharpMacroBlockImpl)
-			{
-				return Indent.getNoneIndent();
-			}
-			return Indent.getNormalIndent();
-		} */
-		else
-		{
-			if(parent instanceof CSharpBlockStatementImpl)
-			{
-				return Indent.getNormalIndent();
-			}
-			return Indent.getNoneIndent();
-		}
+		return myIndentProcessor.getIndent();
 	}
 
 	@Nullable
 	@Override
 	protected Indent getChildIndent()
 	{
-		val elementType = getNode().getElementType();
-		if(elementType == CSharpStubElements.FILE)
-		{
-			return Indent.getNoneIndent();
-		}
-		return Indent.getNormalIndent();
+		return myIndentProcessor.getChildIndent();
 	}
 
 	@Override
