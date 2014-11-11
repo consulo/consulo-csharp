@@ -4,7 +4,9 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.formatting.Wrap;
@@ -34,7 +36,34 @@ public class CSharpWrappingProcessor
 	{
 		IElementType elementType = myNode.getElementType();
 
-		if(elementType == CSharpTokens.LBRACE || elementType == CSharpTokens.RBRACE || elementType == CSharpElements.XXX_ACCESSOR)
+		if(elementType == CSharpTokens.LBRACE)
+		{
+			ASTNode treeParent = myNode.getTreeParent();
+
+			PsiElement psi = treeParent.getPsi();
+
+			int braceStyle = myCodeStyleSettings.BRACE_STYLE;
+			if(psi instanceof CSharpTypeDeclaration)
+			{
+				braceStyle = myCodeStyleSettings.CLASS_BRACE_STYLE;
+			}
+			else if(psi instanceof CSharpBlockStatementImpl && psi.getParent() instanceof CSharpMethodDeclaration)
+			{
+				braceStyle = myCodeStyleSettings.METHOD_BRACE_STYLE;
+			}
+
+			switch(braceStyle)
+			{
+				case CommonCodeStyleSettings.NEXT_LINE:
+					return Wrap.createWrap(WrapType.ALWAYS, true);
+				case CommonCodeStyleSettings.NEXT_LINE_IF_WRAPPED:
+					return Wrap.createWrap(WrapType.NORMAL, true);
+				default:
+					return Wrap.createWrap(WrapType.NONE, true);
+			}
+		}
+
+		if(elementType == CSharpTokens.RBRACE || elementType == CSharpElements.XXX_ACCESSOR)
 		{
 			return Wrap.createWrap(WrapType.ALWAYS, true);
 		}

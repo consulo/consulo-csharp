@@ -28,6 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import com.intellij.formatting.ASTBlock;
 import com.intellij.formatting.Block;
 import com.intellij.formatting.Indent;
 import com.intellij.formatting.Spacing;
@@ -64,7 +65,7 @@ public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSha
 	@Override
 	public Spacing getSpacing(@Nullable Block child1, @NotNull Block child2)
 	{
-		return mySpacingProcessor.getSpacing(child1, child2);
+		return mySpacingProcessor.getSpacing((ASTBlock)child1, (ASTBlock)child2);
 	}
 
 	@Nullable
