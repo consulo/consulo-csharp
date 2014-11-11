@@ -95,7 +95,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 	@Nullable
 	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder, @NotNull BracketFailPolicy bracketFailPolicy, boolean varSupport)
 	{
-		return parseType(builder, bracketFailPolicy, varSupport, false);
+		return parseType(builder, bracketFailPolicy, false, varSupport);
 	}
 
 	@Nullable
@@ -104,7 +104,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 			boolean varSupport,
 			TokenSet nameStopperSet)
 	{
-		return parseType(builder, bracketFailPolicy, varSupport, false, nameStopperSet);
+		return parseType(builder, bracketFailPolicy, false, varSupport, nameStopperSet);
 	}
 
 	@Nullable
