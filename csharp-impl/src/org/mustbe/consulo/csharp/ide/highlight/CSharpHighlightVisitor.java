@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.ConvertToNormalCallFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.ide.highlight.util.ConstructorHighlightUtil;
 import org.mustbe.consulo.csharp.ide.highlight.util.GenericParameterHighlightUtil;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayAccessExpressionImpl;
@@ -227,6 +228,14 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 		{
 			myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.WRONG_REF).range(reference).create());
 		}
+	}
+
+	@Override
+	public void visitConstructorDeclaration(CSharpConstructorDeclaration declaration)
+	{
+		super.visitConstructorDeclaration(declaration);
+
+		myHighlightInfoHolder.add(ConstructorHighlightUtil.checkConstructorDeclaration(declaration));
 	}
 
 	@Override
