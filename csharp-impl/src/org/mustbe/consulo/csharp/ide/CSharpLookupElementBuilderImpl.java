@@ -160,28 +160,23 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 		if(element instanceof CSharpMethodDeclaration)
 		{
 			final CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) element;
-			final DotNetTypeRef[] parameterTypes = methodDeclaration.getParameterTypeRefs();
-
-			String parameterText = "(" + StringUtil.join(parameterTypes, new Function<DotNetTypeRef, String>()
-			{
-				@Override
-				public String fun(DotNetTypeRef parameter)
-				{
-					return parameter.getPresentableText();
-				}
-			}, ", ") + ")";
 
 			builder = LookupElementBuilder.create(methodDeclaration);
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 
-			builder = builder.withTypeText(methodDeclaration.getReturnTypeRef().getPresentableText());
-			builder = builder.withTailText(parameterText, false);
-			if(CSharpMethodImplUtil.isExtensionWrapper(methodDeclaration))
-			{
-				builder = builder.withItemTextUnderlined(true);
-			}
 			if(!methodDeclaration.isDelegate())
 			{
+				final DotNetTypeRef[] parameterTypes = methodDeclaration.getParameterTypeRefs();
+
+				String parameterText = "(" + StringUtil.join(parameterTypes, new Function<DotNetTypeRef, String>()
+				{
+					@Override
+					public String fun(DotNetTypeRef parameter)
+					{
+						return parameter.getPresentableText();
+					}
+				}, ", ") + ")";
+
 				builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
 				{
 					@Override
@@ -205,9 +200,18 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 						}
 					}
 				});
+
+				if(CSharpMethodImplUtil.isExtensionWrapper(methodDeclaration))
+				{
+					builder = builder.withItemTextUnderlined(true);
+				}
+				builder = builder.withTypeText(methodDeclaration.getReturnTypeRef().getPresentableText());
+				builder = builder.withTailText(parameterText, false);
 			}
 			else
 			{
+				builder = builder.withTailText(DotNetElementPresentationUtil.formatGenericParameters((DotNetGenericParameterListOwner) element), true);
+
 				builder = withGenericInsertHandler(element, builder);
 			}
 		}
