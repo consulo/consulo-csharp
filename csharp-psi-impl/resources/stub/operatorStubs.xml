@@ -134,6 +134,16 @@
 			<parameter/>
 			<parameter/>
 		</operator>
+		
+		<operator name="GTGT">
+			<parameter/>
+			<parameter/>
+		</operator>
+		<operator name="LTLT">
+			<parameter/>
+			<parameter/>
+		</operator>
+		
 	</type>
 
 	<type name="System.SByte">
@@ -214,6 +224,16 @@
 			<parameter/>
 			<parameter/>
 		</operator>
+		
+		<operator name="GTGT">
+			<parameter/>
+			<parameter/>
+		</operator>
+		<operator name="LTLT">
+			<parameter/>
+			<parameter/>
+		</operator>
+		
 	</type>
 
 	<type name="System.Int16">
@@ -294,6 +314,16 @@
 			<parameter/>
 			<parameter/>
 		</operator>
+		
+		<operator name="GTGT">
+			<parameter/>
+			<parameter/>
+		</operator>
+		<operator name="LTLT">
+			<parameter/>
+			<parameter/>
+		</operator>
+		
 	</type>
 
 	<type name="System.UInt16">
@@ -374,6 +404,16 @@
 			<parameter/>
 			<parameter/>
 		</operator>
+		
+		<operator name="GTGT">
+			<parameter/>
+			<parameter/>
+		</operator>
+		<operator name="LTLT">
+			<parameter/>
+			<parameter/>
+		</operator>
+		
 	</type>
 
 	<type name="System.Int32">
@@ -454,6 +494,16 @@
 			<parameter/>
 			<parameter/>
 		</operator>
+		
+		<operator name="GTGT">
+			<parameter/>
+			<parameter/>
+		</operator>
+		<operator name="LTLT">
+			<parameter/>
+			<parameter/>
+		</operator>
+		
 	</type>
 
 	<type name="System.UInt32">
@@ -534,6 +584,16 @@
 			<parameter/>
 			<parameter/>
 		</operator>
+		
+		<operator name="GTGT">
+			<parameter/>
+			<parameter/>
+		</operator>
+		<operator name="LTLT">
+			<parameter/>
+			<parameter/>
+		</operator>
+		
 	</type>
 
 	<type name="System.Int64">
@@ -614,6 +674,16 @@
 			<parameter/>
 			<parameter/>
 		</operator>
+		
+		<operator name="GTGT">
+			<parameter/>
+			<parameter/>
+		</operator>
+		<operator name="LTLT">
+			<parameter/>
+			<parameter/>
+		</operator>
+		
 	</type>
 
 	<type name="System.UInt64">
@@ -694,6 +764,16 @@
 			<parameter/>
 			<parameter/>
 		</operator>
+		
+		<operator name="GTGT">
+			<parameter/>
+			<parameter/>
+		</operator>
+		<operator name="LTLT">
+			<parameter/>
+			<parameter/>
+		</operator>
+		
 	</type>
 
 	<type name="System.Single">
