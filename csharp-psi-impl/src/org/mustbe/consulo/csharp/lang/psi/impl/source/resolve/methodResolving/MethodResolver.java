@@ -16,7 +16,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.ar
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NParamsCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.context.MethodParameterResolveContext;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.context.OnlyTypeRefParameterResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.context.ParameterResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.context.SimpleParameterResolveContext;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -47,14 +46,6 @@ public class MethodResolver
 			list.add(new NCallArgument(callArgumentTypeRef, null, dotNetTypeRef));
 		}
 		return list;
-	}
-
-	@NotNull
-	private static List<NCallArgument> buildCallArguments(@NotNull CSharpCallArgument[] callArguments,
-			@NotNull DotNetTypeRef[] typeRefs,
-			@NotNull PsiElement scope)
-	{
-		return buildCallArguments(callArguments, scope, new OnlyTypeRefParameterResolveContext(typeRefs));
 	}
 
 	@NotNull
