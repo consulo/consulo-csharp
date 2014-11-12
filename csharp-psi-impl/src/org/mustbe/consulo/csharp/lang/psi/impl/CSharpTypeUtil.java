@@ -515,6 +515,12 @@ public class CSharpTypeUtil
 			return false;
 		}
 
+		if(t1 instanceof CSharpArrayTypeRef && t2 instanceof CSharpArrayTypeRef)
+		{
+			return ((CSharpArrayTypeRef) t1).getDimensions() == ((CSharpArrayTypeRef) t2).getDimensions() && isTypeEqual(((CSharpArrayTypeRef) t1)
+					.getInnerTypeRef(), ((CSharpArrayTypeRef) t2).getInnerTypeRef(), scope);
+		}
+
 		DotNetTypeResolveResult resolveResult1 = t1.resolve(scope);
 		DotNetTypeResolveResult resolveResult2 = t2.resolve(scope);
 
