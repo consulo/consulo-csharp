@@ -35,12 +35,6 @@ public class MethodParameterResolveContext implements ParameterResolveContext<Do
 	}
 
 	@Override
-	public void paramsParameterSpecified()
-	{
-		myParamsParameter = null;
-	}
-
-	@Override
 	@NotNull
 	@LazyInstance
 	public DotNetTypeRef getInnerParamsParameterTypeRef()

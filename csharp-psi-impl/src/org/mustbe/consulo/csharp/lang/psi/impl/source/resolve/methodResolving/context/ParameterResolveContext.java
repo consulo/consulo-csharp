@@ -22,8 +22,6 @@ public interface ParameterResolveContext<T>
 	@Nullable
 	DotNetParameter getParamsParameter();
 
-	void paramsParameterSpecified();
-
 	@NotNull
 	T[] getParameters();
 

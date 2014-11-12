@@ -1,7 +1,6 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +11,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NEmptyParamsCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NErrorCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NParamsCallArgument;
@@ -97,27 +97,22 @@ public class MethodResolver
 						{
 							list.add(new NCallArgument(expressionTypeRef, argument, null));
 						}
+						// if params type equal expression parameter pull it as argument of parameter
+						if(CSharpTypeUtil.isInheritableWithImplicit(context.getParamsParameterTypeRef(), expressionTypeRef, scope))
+						{
+							list.add(new NCallArgument(expressionTypeRef, argument, paramsParameter));
+						}
 						else
 						{
-							// if params type equal expression parameter pull it as argument of parameter and disable pulling another
-							if(CSharpTypeUtil.isInheritableWithImplicit(context.getParamsParameterTypeRef(), expressionTypeRef, scope))
+							// if expression is like inner params type
+							if(CSharpTypeUtil.isInheritableWithImplicit(context.getInnerParamsParameterTypeRef(), expressionTypeRef, scope))
 							{
-								list.add(new NCallArgument(expressionTypeRef, argument, paramsParameter));
-
-								context.paramsParameterSpecified();
+								// store to params list
+								paramsArguments.add(argument);
 							}
 							else
 							{
-								// if expression is like inner params type
-								if(CSharpTypeUtil.isInheritableWithImplicit(context.getInnerParamsParameterTypeRef(), expressionTypeRef, scope))
-								{
-									// store to params list
-									paramsArguments.add(argument);
-								}
-								else
-								{
-									list.add(new NCallArgument(expressionTypeRef, argument, null));
-								}
+								list.add(new NCallArgument(expressionTypeRef, argument, null));
 							}
 						}
 					}
@@ -132,12 +127,15 @@ public class MethodResolver
 
 					if(paramsParameter == parameter)
 					{
-						// if params type equal expression parameter pull it as argument of parameter and disable pulling another
-						if(CSharpTypeUtil.isInheritableWithImplicit(context.getParamsParameterTypeRef(), expressionTypeRef, scope))
+						NCallArgument paramsValue = findByName(list, paramsParameter.getName());
+						if(paramsValue != null)
+						{
+							list.add(new NCallArgument(expressionTypeRef, argument, null));
+						}
+						// if params type equal expression parameter pull it as argument of parameter
+						else if(CSharpTypeUtil.isInheritableWithImplicit(context.getParamsParameterTypeRef(), expressionTypeRef, scope))
 						{
 							list.add(new NCallArgument(expressionTypeRef, argument, paramsParameter));
-
-							context.paramsParameterSpecified();
 						}
 						else
 						{
@@ -165,7 +163,20 @@ public class MethodResolver
 		if(!paramsArguments.isEmpty())
 		{
 			list.add(new NParamsCallArgument(paramsArguments, context.getParamsParameter()));
-			paramsArguments = null;
+		}
+		else
+		{
+			// if we have params parameter
+			DotNetParameter paramsParameter = context.getParamsParameter();
+			if(paramsParameter != null)
+			{
+				// but - no arguments for it, add empty argument
+				NCallArgument nCallArgument = findByName(list, paramsParameter.getName());
+				if(nCallArgument == null)
+				{
+					list.add(new NEmptyParamsCallArgument(paramsParameter));
+				}
+			}
 		}
 
 		for(Object parameter : context.getParameters())
@@ -192,22 +203,6 @@ public class MethodResolver
 			else
 			{
 				list.add(new NErrorCallArgument(parameter));
-			}
-		}
-
-		// params arguments dont touched
-		if(paramsArguments != null)
-		{
-			// if we have params parameter
-			DotNetParameter paramsParameter = context.getParamsParameter();
-			if(paramsParameter != null)
-			{
-				// but - no arguments for it, add empty argument
-				NCallArgument nCallArgument = findByName(list, paramsParameter.getName());
-				if(nCallArgument == null)
-				{
-					list.add(new NParamsCallArgument(Collections.<CSharpCallArgument>emptyList(), paramsParameter));
-				}
 			}
 		}
 
@@ -305,6 +300,10 @@ public class MethodResolver
 			}
 		}
 
+		if(arguments.isEmpty())
+		{
+			weight = Integer.MAX_VALUE;
+		}
 		return new MethodCalcResult(valid, weight, arguments);
 	}
 }

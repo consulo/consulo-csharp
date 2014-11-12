@@ -56,12 +56,6 @@ public class SimpleParameterResolveContext implements ParameterResolveContext<CS
 		return null;
 	}
 
-	@Override
-	public void paramsParameterSpecified()
-	{
-
-	}
-
 	@NotNull
 	@Override
 	public CSharpSimpleParameterInfo[] getParameters()
