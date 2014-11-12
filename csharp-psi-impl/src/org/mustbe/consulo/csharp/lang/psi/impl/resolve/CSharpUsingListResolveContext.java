@@ -14,6 +14,8 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -83,7 +85,19 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 	@Override
 	public boolean processExtensionMethodGroups(@NotNull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
 	{
-		return getCachedNamespaceContext().processExtensionMethodGroups(processor);
+		CSharpUsingListChild[] statements = myUsingList.getStatements();
+		for(CSharpUsingListChild statement : statements)
+		{
+			if(statement instanceof CSharpUsingNamespaceStatement)
+			{
+				if(!CSharpNamespaceResolveContext.processExtensionMethodGroups(((CSharpUsingNamespaceStatement) statement).getReferenceText(),
+						myUsingList.getProject(), myUsingList.getResolveScope(), processor))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	@NotNull

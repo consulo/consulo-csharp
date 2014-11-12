@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.extensionResolver;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -48,6 +49,7 @@ import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.util.ArrayUtil;
+import com.intellij.util.Processor;
 import com.intellij.util.SmartList;
 import lombok.val;
 
@@ -89,7 +91,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 
 			CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myExpression.getResolveScope(), element);
 
-			/*context.processExtensionMethodGroups(new Processor<CSharpElementGroup<CSharpMethodDeclaration>>()
+			context.processExtensionMethodGroups(new Processor<CSharpElementGroup<CSharpMethodDeclaration>>()
 			{
 				@Override
 				public boolean process(CSharpElementGroup<CSharpMethodDeclaration> elementGroup)
@@ -99,18 +101,20 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 					{
 						GenericInferenceUtil.GenericInferenceResult inferenceResult = inferenceGenericExtractor(psiElement);
 
+						/*
+						FIXME [VISTALL] slow completion
 						DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(psiElement, inferenceResult.getExtractor());
 
 						if(!CSharpTypeUtil.isInheritableWithImplicit(firstParameterTypeRef, myQualifierTypeRef, myExpression))
 						{
 							continue;
-						}
+						}       */
 
-						addElement(transform(psiElement, inferenceResult.getExtractor()));
+						addElement(transform(psiElement, inferenceResult));
 					}
 					return true;
 				}
-			});   */
+			});
 		}
 		else
 		{
@@ -157,6 +161,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 	{
 		if(myCallArgumentListOwner == null && myCompletion)
 		{
+			//FIXME [VISTALL] inference make completion slow - disable it for now
 			return GenericInferenceUtil.SUCCESS;
 		}
 

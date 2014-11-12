@@ -21,6 +21,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -111,23 +112,27 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 	@Override
 	public boolean processExtensionMethodGroups(@NotNull final Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
 	{
-		String indexableName = DotNetNamespaceStubUtil.getIndexableNamespace(myNamespaceAsElement.getPresentableQName());
+		return processExtensionMethodGroups(myNamespaceAsElement.getPresentableQName(), myNamespaceAsElement.getProject(), myResolveScope, processor);
+	}
 
-		return StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_WITH_EXTENSION_METHODS_INDEX, indexableName,
-				myNamespaceAsElement.getProject(), myResolveScope, DotNetTypeDeclaration.class, new Processor<DotNetTypeDeclaration>()
+	public static boolean processExtensionMethodGroups(final String qName,
+			final Project project,
+			final GlobalSearchScope scope,
+			final Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
+	{
+		String indexableName = DotNetNamespaceStubUtil.getIndexableNamespace(qName);
+
+		return StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_WITH_EXTENSION_METHODS_INDEX, indexableName, project, scope,
+				DotNetTypeDeclaration.class, new Processor<DotNetTypeDeclaration>()
 		{
 			@Override
 			public boolean process(DotNetTypeDeclaration typeDeclaration)
 			{
 				PsiElement wrappedDeclaration = MsilToCSharpUtil.wrap(typeDeclaration);
 
-				CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, myResolveScope, wrappedDeclaration);
+				CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, scope, wrappedDeclaration);
 
-				if(!context.processExtensionMethodGroups(processor))
-				{
-					return false;
-				}
-				return true;
+				return context.processExtensionMethodGroups(processor);
 			}
 		});
 	}
