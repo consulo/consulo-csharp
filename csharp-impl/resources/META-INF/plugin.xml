@@ -187,6 +187,7 @@
 		<editorHighlighterProvider filetype="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpEditorHighlighterProvider"/>
 
 		<codeInsight.parameterInfo language="C#" implementationClass="org.mustbe.consulo.csharp.ide.parameterInfo.CSharpParameterInfoHandler"/>
+		<codeInsight.parameterInfo language="C#" implementationClass="org.mustbe.consulo.csharp.ide.parameterInfo.CSharpGenericParameterInfoHandler"/>
 		<codeInsight.template.postfixTemplateProvider language="C#"
 													  implementationClass="org.mustbe.consulo.csharp.ide.codeInsight.template.postfix.CSharpPostfixTemplateProvider"/>
 
