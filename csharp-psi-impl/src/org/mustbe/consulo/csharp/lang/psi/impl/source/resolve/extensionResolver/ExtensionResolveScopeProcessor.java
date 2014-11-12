@@ -101,14 +101,12 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 					{
 						GenericInferenceUtil.GenericInferenceResult inferenceResult = inferenceGenericExtractor(psiElement);
 
-						/*
-						FIXME [VISTALL] slow completion
 						DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(psiElement, inferenceResult.getExtractor());
 
 						if(!CSharpTypeUtil.isInheritableWithImplicit(firstParameterTypeRef, myQualifierTypeRef, myExpression))
 						{
 							continue;
-						}       */
+						}
 
 						addElement(transform(psiElement, inferenceResult));
 					}
@@ -159,12 +157,6 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 	@NotNull
 	public GenericInferenceUtil.GenericInferenceResult inferenceGenericExtractor(CSharpMethodDeclaration methodDeclaration)
 	{
-		if(myCallArgumentListOwner == null && myCompletion)
-		{
-			//FIXME [VISTALL] inference make completion slow - disable it for now
-			return GenericInferenceUtil.SUCCESS;
-		}
-
 		val arguments = myCallArgumentListOwner == null ? CSharpCallArgument.EMPTY_ARRAY : myCallArgumentListOwner.getCallArguments();
 
 		CSharpCallArgument[] newArguments = new CSharpCallArgument[arguments.length + 1];
