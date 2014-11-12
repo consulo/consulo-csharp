@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -34,6 +35,7 @@ import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -204,6 +206,10 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 					}
 				});
 			}
+			else
+			{
+				builder = withGenericInsertHandler(element, builder);
+			}
 		}
 		else if(element instanceof DotNetNamespaceAsElement)
 		{
@@ -251,8 +257,27 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 			builder = builder.withTypeText(typeDeclaration.getPresentableParentQName());
 
 			builder = builder.withTailText(DotNetElementPresentationUtil.formatGenericParameters(typeDeclaration), true);
+
+			builder = withGenericInsertHandler(element, builder);
 		}
 
+		return builder;
+	}
+
+	private static LookupElementBuilder withGenericInsertHandler(PsiElement element, LookupElementBuilder builder)
+	{
+		if(!(element instanceof DotNetGenericParameterListOwner))
+		{
+			return builder;
+		}
+
+		int genericParametersCount = ((DotNetGenericParameterListOwner) element).getGenericParametersCount();
+		if(genericParametersCount == 0)
+		{
+			return builder;
+		}
+
+		builder = builder.withInsertHandler(LtGtInsertHandler.getInstance(true));
 		return builder;
 	}
 }
