@@ -168,7 +168,9 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 			{
 				final DotNetTypeRef[] parameterTypes = methodDeclaration.getParameterTypeRefs();
 
-				String parameterText = "(" + StringUtil.join(parameterTypes, new Function<DotNetTypeRef, String>()
+				String genericText = DotNetElementPresentationUtil.formatGenericParameters((DotNetGenericParameterListOwner) element);
+
+				String parameterText = genericText + "(" + StringUtil.join(parameterTypes, new Function<DotNetTypeRef, String>()
 				{
 					@Override
 					public String fun(DotNetTypeRef parameter)
