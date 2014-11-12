@@ -27,9 +27,13 @@ public class ConstructorHighlightUtil
 			return null;
 		}
 
-		CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) declaration.getParent();
+		PsiElement parent = declaration.getParent();
+		if(!(parent instanceof CSharpTypeDeclaration))
+		{
+			return null;
+		}
 
-		String expectedTypeName = typeDeclaration.getName();
+		String expectedTypeName = ((CSharpTypeDeclaration) parent).getName();
 		if(expectedTypeName == null)
 		{
 			return null;
