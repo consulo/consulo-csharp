@@ -2,6 +2,7 @@ package org.mustbe.consulo.csharp.ide.completion;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -35,7 +36,8 @@ import lombok.val;
  */
 public class CSharpSmartCompletionContributor extends CompletionContributor
 {
-	private static final ElementPattern<? extends PsiElement> ourNewTypeContributor = StandardPatterns.psiElement().afterLeaf("new");
+	private static final ElementPattern<? extends PsiElement> ourNewTypeContributor = StandardPatterns.psiElement().afterLeaf(StandardPatterns
+			.psiElement().withElementType(CSharpTokens.NEW_KEYWORD));
 
 	public CSharpSmartCompletionContributor()
 	{
@@ -45,8 +47,7 @@ public class CSharpSmartCompletionContributor extends CompletionContributor
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				PsiElement position = parameters.getPosition();
-				PsiElement parentOfType = PsiTreeUtil.getParentOfType(position, CSharpAssignmentExpressionImpl.class,
-						CSharpLocalVariable.class);
+				PsiElement parentOfType = PsiTreeUtil.getParentOfType(position, CSharpAssignmentExpressionImpl.class, CSharpLocalVariable.class);
 
 				DotNetTypeRef typeRef = null;
 				if(parentOfType instanceof CSharpLocalVariable)
