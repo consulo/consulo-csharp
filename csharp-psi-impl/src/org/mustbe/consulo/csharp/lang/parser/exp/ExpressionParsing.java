@@ -425,7 +425,6 @@ public class ExpressionParsing extends SharedParsingHelpers
 				{
 					dotPos.drop();
 					final PsiBuilder.Marker refExpr = expr.precede();
-					//myParser.getReferenceParser().parseReferenceParameterList(builder, false, false);
 
 					if(!expect(builder, ID_OR_SUPER, "expected.identifier"))
 					{
@@ -434,6 +433,10 @@ public class ExpressionParsing extends SharedParsingHelpers
 						return refExpr;
 					}
 
+					if(builder.getTokenType() == LT)
+					{
+						parseReferenceTypeArgumentList(builder);
+					}
 					refExpr.done(REFERENCE_EXPRESSION);
 					expr = refExpr;
 				}
@@ -684,7 +687,13 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 			val refExpr = builder.mark();
 
+			String tokenText = builder.getTokenText();
+
 			builder.advanceLexer();
+			if(builder.getTokenType() == LT)
+			{
+				parseReferenceTypeArgumentList(builder);
+			}
 			refExpr.done(REFERENCE_EXPRESSION);
 			return refExpr;
 		}
