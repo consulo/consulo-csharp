@@ -27,6 +27,11 @@ public class CSharpReferenceExpressionStubElementType extends CSharpAbstractStub
 	@Override
 	public boolean shouldCreateStub(ASTNode node)
 	{
+		return shouldCreateStubImpl(node);
+	}
+
+	public static boolean shouldCreateStubImpl(ASTNode node)
+	{
 		ASTNode parent = node.getTreeParent();
 		if(parent != null)
 		{

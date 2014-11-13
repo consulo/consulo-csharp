@@ -567,7 +567,7 @@ public class CSharpReferenceExpressionImpl extends CSharpStubElementImpl<CSharpR
 
 								if(inferenceResult == null)
 								{
-									inferenceResult = GenericInferenceUtil.inferenceGenericExtractor(callArgumentListOwner,
+									inferenceResult = GenericInferenceUtil.inferenceGenericExtractor(element, callArgumentListOwner,
 											(DotNetLikeMethodDeclaration) psiElement);
 									psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, inferenceResult.getExtractor(), true);
 								}
@@ -1112,6 +1112,21 @@ public class CSharpReferenceExpressionImpl extends CSharpStubElementImpl<CSharpR
 	public boolean isSoft()
 	{
 		return kind() == ResolveToKind.SOFT_NAMESPACE;
+	}
+
+	@Nullable
+	@Override
+	public DotNetTypeList getTypeArgumentList()
+	{
+		return getStubOrPsiChild(CSharpStubElements.TYPE_ARGUMENTS);
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef[] getTypeArgumentListRefs()
+	{
+		DotNetTypeList typeArgumentList = getTypeArgumentList();
+		return typeArgumentList == null ? DotNetTypeRef.EMPTY_ARRAY : typeArgumentList.getTypeRefs();
 	}
 
 	@NotNull

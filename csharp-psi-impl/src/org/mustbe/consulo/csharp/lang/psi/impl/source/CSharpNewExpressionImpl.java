@@ -30,7 +30,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGeneric
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
 import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -159,20 +158,6 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 	public CSharpCallArgumentList getParameterList()
 	{
 		return findChildByClass(CSharpCallArgumentList.class);
-	}
-
-	@Nullable
-	@Override
-	public DotNetTypeList getTypeArgumentList()
-	{
-		return null;
-	}
-
-	@NotNull
-	@Override
-	public DotNetTypeRef[] getTypeArgumentListRefs()
-	{
-		return DotNetTypeRef.EMPTY_ARRAY;
 	}
 
 	@Nullable

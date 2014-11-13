@@ -48,6 +48,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 	public static class TypeInfo
 	{
 		public IElementType nativeElementType;
+		@Deprecated
 		public boolean isParameterized;
 		public PsiBuilder.Marker marker;
 	}
@@ -130,33 +131,6 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		}
 
 		PsiBuilder.Marker marker = typeInfo.marker;
-
-		if(builder.getTokenType() == LT)
-		{
-			marker = marker.precede();
-
-			typeInfo = new TypeInfo();
-			typeInfo.isParameterized = true;
-
-			PsiBuilder.Marker typeListMarker = builder.mark();
-			builder.advanceLexer();
-			if(parseTypeList(builder, varSupport, nameStopperSet))
-			{
-				builder.error("Type expected");
-			}
-
-			if(!expect(builder, GT, "'>' expected") && hardRequiredGt)
-			{
-				typeListMarker.rollbackTo();
-				marker.rollbackTo();
-
-				return null;
-			}
-
-			typeListMarker.done(TYPE_ARGUMENTS);
-
-			marker.done(TYPE_WRAPPER_WITH_TYPE_ARGUMENTS);
-		}
 
 		while(builder.getTokenType() == MUL)
 		{

@@ -19,6 +19,8 @@ package org.mustbe.consulo.csharp.lang.psi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -54,4 +56,10 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression
 
 	@NotNull
 	ResolveToKind kind();
+
+	@Nullable
+	DotNetTypeList getTypeArgumentList();
+
+	@NotNull
+	DotNetTypeRef[] getTypeArgumentListRefs();
 }

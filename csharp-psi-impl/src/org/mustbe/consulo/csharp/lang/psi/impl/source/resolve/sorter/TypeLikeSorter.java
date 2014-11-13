@@ -3,9 +3,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter;
 import java.util.Comparator;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
-import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.psi.PsiElement;
@@ -63,16 +62,11 @@ public class TypeLikeSorter implements ResolveResultSorter
 	public static TypeLikeSorter createByReference(@NotNull PsiElement element, boolean codeFragmentIsAvailable)
 	{
 		int size = 0;
-		// when we working from with codefragment we dont need go parent
-		PsiElement parent = codeFragmentIsAvailable ? element : element.getParent();
-		if(parent instanceof DotNetUserType)
+		if(element instanceof CSharpReferenceExpression)
 		{
-			PsiElement userTypeParent = parent.getParent();
-			if(userTypeParent instanceof DotNetTypeWithTypeArguments)
-			{
-				size = ((DotNetTypeWithTypeArguments) userTypeParent).getArguments().length;
-			}
+			size = ((CSharpReferenceExpression) element).getTypeArgumentListRefs().length;
 		}
+
 		return new TypeLikeSorter(size);
 	}
 
