@@ -565,7 +565,7 @@ public class CSharpReferenceExpressionImpl extends CSharpStubElementImpl<CSharpR
 								GenericInferenceUtil.GenericInferenceResult inferenceResult = psiElement.getUserData(GenericInferenceUtil
 										.INFERENCE_RESULT);
 
-								if(inferenceResult == null)
+								if(inferenceResult == null && kind != ResolveToKind.CONSTRUCTOR)
 								{
 									inferenceResult = GenericInferenceUtil.inferenceGenericExtractor(element, callArgumentListOwner,
 											(DotNetLikeMethodDeclaration) psiElement);
@@ -574,7 +574,7 @@ public class CSharpReferenceExpressionImpl extends CSharpStubElementImpl<CSharpR
 
 								val calcResult = MethodResolver.calc(callArgumentListOwner, (DotNetLikeMethodDeclaration) psiElement, element);
 
-								if(inferenceResult.isSuccess())
+								if(inferenceResult == null || inferenceResult.isSuccess())
 								{
 									methodResolveResults.add(Pair.create(calcResult, psiElement));
 								}
