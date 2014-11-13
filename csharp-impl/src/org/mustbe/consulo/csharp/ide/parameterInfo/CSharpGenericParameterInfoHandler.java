@@ -2,10 +2,10 @@ package org.mustbe.consulo.csharp.ide.parameterInfo;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.lang.parameterInfo.CreateParameterInfoContext;
@@ -50,7 +50,7 @@ public class CSharpGenericParameterInfoHandler implements ParameterInfoHandler<P
 	public PsiElement findElementForParameterInfo(CreateParameterInfoContext context)
 	{
 		final PsiElement at = context.getFile().findElementAt(context.getEditor().getCaretModel().getOffset());
-		return PsiTreeUtil.getParentOfType(at, DotNetTypeWithTypeArguments.class);
+		return PsiTreeUtil.getParentOfType(at, CSharpReferenceExpression.class);
 	}
 
 	@Nullable
@@ -68,15 +68,29 @@ public class CSharpGenericParameterInfoHandler implements ParameterInfoHandler<P
 		{
 			return null;
 		}
-		DotNetTypeWithTypeArguments typeWithTypeArguments = PsiTreeUtil.getParentOfType(at, DotNetTypeWithTypeArguments.class, false);
-		if(typeWithTypeArguments != null)
+
+		DotNetTypeList dotNetTypeList = PsiTreeUtil.getParentOfType(at, DotNetTypeList.class);
+		if(dotNetTypeList == null)
 		{
-			DotNetTypeRef typeRef = typeWithTypeArguments.getInnerType().toTypeRef();
-			PsiElement resolvedElement = typeRef.resolve(at).getElement();
-			if(resolvedElement instanceof DotNetGenericParameterListOwner)
-			{
-				return (DotNetGenericParameterListOwner) resolvedElement;
-			}
+			return null;
+		}
+
+		PsiElement parent = dotNetTypeList.getParent();
+		if(!(parent instanceof CSharpReferenceExpression))
+		{
+			return null;
+		}
+
+		CSharpReferenceExpression referenceExpression = (CSharpReferenceExpression) parent;
+		DotNetTypeRef[] typeArgumentListRefs = referenceExpression.getTypeArgumentListRefs();
+		if(typeArgumentListRefs.length == 0)
+		{
+			return null;
+		}
+		PsiElement resolvedElement = referenceExpression.resolve();
+		if(resolvedElement instanceof DotNetGenericParameterListOwner)
+		{
+			return (DotNetGenericParameterListOwner) resolvedElement;
 		}
 		return null;
 	}
@@ -104,7 +118,7 @@ public class CSharpGenericParameterInfoHandler implements ParameterInfoHandler<P
 			context.removeHint();
 			return;
 		}
-		if(!(typeList.getParent() instanceof DotNetTypeWithTypeArguments))
+		if(!(typeList.getParent() instanceof CSharpReferenceExpression))
 		{
 			context.removeHint();
 			return;
@@ -118,7 +132,7 @@ public class CSharpGenericParameterInfoHandler implements ParameterInfoHandler<P
 		{
 			context.setParameterOwner(place);
 		}
-		else if(context.getParameterOwner() != PsiTreeUtil.getParentOfType(place, DotNetTypeWithTypeArguments.class, false))
+		else if(context.getParameterOwner() != PsiTreeUtil.getParentOfType(place, CSharpReferenceExpression.class, false))
 		{
 			context.removeHint();
 			return;
