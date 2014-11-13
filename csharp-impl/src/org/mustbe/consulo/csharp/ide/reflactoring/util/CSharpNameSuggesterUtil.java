@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,6 +18,8 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithInnerTypeRef;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
@@ -40,11 +44,56 @@ public class CSharpNameSuggesterUtil
 		return matcher.replaceAll("_");
 	}
 
+	@NotNull
+	public static Collection<String> getSuggestedNames(final DotNetTypeRef typeRef, PsiElement scope)
+	{
+		Collection<String> candidates = new LinkedHashSet<String>();
+
+		if(typeRef instanceof DotNetTypeRefWithInnerTypeRef)
+		{
+			candidates.addAll(generateNames(((DotNetTypeRefWithInnerTypeRef) typeRef).getInnerTypeRef().getPresentableText()));
+		}
+		candidates.addAll(generateNames(typeRef.getPresentableText()));
+
+		final Set<String> usedNames = CSharpRefactoringUtil.collectUsedNames(scope);
+
+		final List<String> result = new ArrayList<String>();
+
+		for(String candidate : candidates)
+		{
+			int index = 0;
+			String suffix = "";
+			while(usedNames.contains(candidate + suffix))
+			{
+				suffix = Integer.toString(++index);
+			}
+			result.add(candidate + suffix);
+		}
+
+		if(result.isEmpty())
+		{
+			result.add("o"); // never empty
+		}
+
+		for(ListIterator<String> iterator = result.listIterator(); iterator.hasNext(); )
+		{
+			String next = iterator.next();
+
+			if(isKeyword(next))
+			{
+				iterator.set("@" + next);
+			}
+		}
+		return result;
+	}
+
+	@NotNull
 	public static Collection<String> getSuggestedNames(final DotNetExpression expression)
 	{
 		return getSuggestedNames(expression, null);
 	}
 
+	@NotNull
 	public static Collection<String> getSuggestedNames(final DotNetExpression expression, @Nullable Collection<String> additionalUsedNames)
 	{
 		Collection<String> candidates = new LinkedHashSet<String>();
