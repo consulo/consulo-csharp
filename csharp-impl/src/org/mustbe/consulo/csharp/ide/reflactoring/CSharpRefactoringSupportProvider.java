@@ -33,6 +33,7 @@ import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.refactoring.RefactoringActionHandler;
 import com.intellij.refactoring.changeSignature.ChangeSignatureHandler;
+import com.intellij.util.SandboxUtil;
 
 /**
  * @author VISTALL
@@ -51,7 +52,7 @@ public class CSharpRefactoringSupportProvider extends RefactoringSupportProvider
 	@Override
 	public RefactoringActionHandler getIntroduceVariableHandler()
 	{
-		return new CSharpIntroduceVariableHandler("Introduce local variable");
+		return SandboxUtil.isInsideSandbox() ? new CSharpIntroduceVariableHandler("Introduce local variable") : null;
 	}
 
 	@Override
