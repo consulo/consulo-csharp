@@ -1296,8 +1296,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				val marker = parseType(builder, BracketFailPolicy.NOTHING, false, TokenSet.EMPTY);
 				if(marker == null)
 				{
-					mark.rollbackTo();
-					return null;
+					builder.error("Expected type");
 				}
 
 				if(builder.getTokenType() == COMMA)
