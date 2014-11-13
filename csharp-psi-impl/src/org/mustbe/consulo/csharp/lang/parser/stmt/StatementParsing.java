@@ -246,13 +246,20 @@ public class StatementParsing extends SharedParsingHelpers
 			{
 				return true;
 			}
+
 			if(tokenType == IDENTIFIER)
 			{
+				// example 'int test' it only local variable
+				/*if(typeInfo.nativeElementType != null)
+				{
+					return true;
+				}
 				IElementType lookAhead = builder.lookAhead(1);
 				if(lookAhead == SEMICOLON || lookAhead == EQ || lookAhead == COMMA)
 				{
 					return true;
-				}
+				}      */
+				return true;
 			}
 			return false;
 		}
