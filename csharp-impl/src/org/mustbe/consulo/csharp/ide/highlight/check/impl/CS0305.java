@@ -4,13 +4,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayTypeImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUserTypeImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
-import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
 
@@ -31,12 +30,10 @@ public class CS0305 extends CompilerCheck<DotNetType>
 
 		int foundCount = 0;
 		PsiElement elementToHighlight = type;
-		if(type instanceof DotNetUserType)
+		if(type instanceof CSharpUserTypeImpl)
 		{
-			CSharpReferenceExpression referenceExpression = (CSharpReferenceExpression) ((DotNetUserType) type).getReferenceExpression();
-
-			elementToHighlight = referenceExpression.getReferenceElement();
-			foundCount = referenceExpression.getTypeArgumentListRefs().length;
+			elementToHighlight = ((CSharpUserTypeImpl) type).getReferenceExpression().getReferenceElement();
+			foundCount = ((CSharpUserTypeImpl)type).getArgumentTypeRefs().length;
 		}
 		else if(type instanceof CSharpArrayTypeImpl)
 		{

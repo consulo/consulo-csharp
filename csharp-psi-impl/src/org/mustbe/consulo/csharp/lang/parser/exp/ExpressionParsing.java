@@ -224,7 +224,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			final PsiBuilder.Marker typeCast = builder.mark();
 			builder.advanceLexer();
 
-			val typeInfo = parseType(builder, BracketFailPolicy.NOTHING, true, false);
+			val typeInfo = parseType(builder, BracketFailPolicy.NOTHING, false);
 			if(typeInfo == null || !expect(builder, RPAR, null))
 			{
 				typeCast.rollbackTo();
@@ -1219,12 +1219,26 @@ public class ExpressionParsing extends SharedParsingHelpers
 		return newMarker;
 	}
 
-	public static PsiBuilder.Marker parseQualifiedReference(@NotNull CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker prevMarker)
+	public static class ReferenceInfo
+	{
+		public boolean isParameterized;
+		public PsiBuilder.Marker marker;
+
+		public ReferenceInfo(boolean isParameterized, PsiBuilder.Marker marker)
+		{
+			this.isParameterized = isParameterized;
+			this.marker = marker;
+		}
+	}
+
+	@Nullable
+	public static ReferenceInfo parseQualifiedReference(@NotNull CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker prevMarker)
 	{
 		return parseQualifiedReference(builder, prevMarker, TokenSet.EMPTY);
 	}
 
-	public static PsiBuilder.Marker parseQualifiedReference(@NotNull CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker prevMarker,
+	@Nullable
+	public static ReferenceInfo parseQualifiedReference(@NotNull CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker prevMarker,
 			TokenSet nameStopperSet)
 	{
 		if(prevMarker != null)
@@ -1233,11 +1247,12 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 		PsiBuilder.Marker marker = prevMarker == null ? builder.mark() : prevMarker;
 
+		ReferenceInfo referenceInfo = new ReferenceInfo(false, marker);
 		if(expect(builder, IDENTIFIER, "Identifier expected"))
 		{
 			if(builder.getTokenType() == LT)
 			{
-				parseReferenceTypeArgumentList(builder);
+				referenceInfo.isParameterized = parseReferenceTypeArgumentList(builder) != null;
 			}
 			marker.done(REFERENCE_EXPRESSION);
 
@@ -1246,18 +1261,18 @@ public class ExpressionParsing extends SharedParsingHelpers
 				// if after dot we found stoppers, name expected - but we done
 				if(nameStopperSet.contains(builder.lookAhead(1)) || nameStopperSet.contains(builder.lookAhead(2)))
 				{
-					return marker;
+					return referenceInfo;
 				}
-				marker = parseQualifiedReference(builder, marker.precede(), nameStopperSet);
+				referenceInfo = parseQualifiedReference(builder, marker.precede(), nameStopperSet);
 			}
 		}
 		else
 		{
 			marker.drop();
-			marker = null;
+			return null;
 		}
 
-		return marker;
+		return referenceInfo;
 	}
 
 	@Nullable
@@ -1268,7 +1283,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		while(!builder.eof())
 		{
-			val marker = parseType(builder, BracketFailPolicy.NOTHING, false, false, TokenSet.EMPTY);
+			val marker = parseType(builder, BracketFailPolicy.NOTHING, false, TokenSet.EMPTY);
 			if(marker == null)
 			{
 				mark.rollbackTo();

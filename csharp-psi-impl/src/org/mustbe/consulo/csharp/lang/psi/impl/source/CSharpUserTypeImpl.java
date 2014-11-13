@@ -81,4 +81,11 @@ public class CSharpUserTypeImpl extends CSharpStubTypeElementImpl<CSharpEmptyStu
 	{
 		return getRequiredStubOrPsiChild(CSharpStubElements.REFERENCE_EXPRESSION);
 	}
+
+	@NotNull
+	public DotNetTypeRef[] getArgumentTypeRefs()
+	{
+		CSharpReferenceExpression referenceExpression = getReferenceExpression();
+		return referenceExpression.getTypeArgumentListRefs();
+	}
 }
