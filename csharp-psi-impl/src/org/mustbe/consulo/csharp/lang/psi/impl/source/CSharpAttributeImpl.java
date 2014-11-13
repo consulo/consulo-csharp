@@ -25,7 +25,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
@@ -39,15 +39,15 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 19.12.13.
  */
-public class CSharpAttributeImpl extends CSharpStubElementImpl<CSharpWithStringValueStub<CSharpAttribute>> implements CSharpAttribute
+public class CSharpAttributeImpl extends CSharpStubElementImpl<CSharpEmptyStub<CSharpAttribute>> implements CSharpAttribute
 {
 	public CSharpAttributeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpAttributeImpl(@NotNull CSharpWithStringValueStub<CSharpAttribute> stub,
-			@NotNull IStubElementType<? extends CSharpWithStringValueStub<CSharpAttribute>, ?> nodeType)
+	public CSharpAttributeImpl(@NotNull CSharpEmptyStub<CSharpAttribute> stub,
+			@NotNull IStubElementType<? extends CSharpEmptyStub<CSharpAttribute>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}

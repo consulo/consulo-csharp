@@ -21,7 +21,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpReferenceTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
@@ -33,15 +33,15 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWithStringValueStub<CSharpUserTypeImpl>> implements DotNetUserType
+public class CSharpUserTypeImpl extends CSharpStubTypeElementImpl<CSharpEmptyStub<CSharpUserTypeImpl>> implements DotNetUserType
 {
 	public CSharpUserTypeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpUserTypeImpl(@NotNull CSharpWithStringValueStub<CSharpUserTypeImpl> stub,
-			@NotNull IStubElementType<? extends CSharpWithStringValueStub<CSharpUserTypeImpl>, ?> nodeType)
+	public CSharpUserTypeImpl(@NotNull CSharpEmptyStub<CSharpUserTypeImpl> stub,
+			@NotNull IStubElementType<? extends CSharpEmptyStub<CSharpUserTypeImpl>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -71,14 +71,8 @@ public class CSharpUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWithStri
 	@Override
 	public String getReferenceText()
 	{
-		CSharpWithStringValueStub<CSharpUserTypeImpl> stub = getStub();
-		if(stub != null)
-		{
-			//noinspection ConstantConditions
-			return stub.getReferenceText();
-		}
 		DotNetReferenceExpression referenceExpression = getReferenceExpression();
-		return referenceExpression.getText();
+		return referenceExpression.getReferenceName();
 	}
 
 	@NotNull

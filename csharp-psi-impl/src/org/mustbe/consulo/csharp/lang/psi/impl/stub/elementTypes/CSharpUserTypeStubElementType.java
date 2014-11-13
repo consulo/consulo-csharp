@@ -3,7 +3,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUserTypeImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -16,8 +18,7 @@ import com.intellij.util.io.StringRef;
  * @author VISTALL
  * @since 19.10.14
  */
-public class CSharpUserTypeStubElementType extends CSharpAbstractStubElementType<CSharpWithStringValueStub<CSharpUserTypeImpl>,
-		CSharpUserTypeImpl>
+public class CSharpUserTypeStubElementType extends CSharpEmptyStubElementType<CSharpUserTypeImpl>
 {
 	public CSharpUserTypeStubElementType()
 	{
@@ -38,31 +39,9 @@ public class CSharpUserTypeStubElementType extends CSharpAbstractStubElementType
 	}
 
 	@Override
-	public CSharpUserTypeImpl createPsi(@NotNull CSharpWithStringValueStub<CSharpUserTypeImpl> stub)
+	public CSharpUserTypeImpl createPsi(@NotNull CSharpEmptyStub<CSharpUserTypeImpl> stub)
 	{
 		return new CSharpUserTypeImpl(stub, this);
 	}
 
-	@Override
-	public CSharpWithStringValueStub<CSharpUserTypeImpl> createStub(@NotNull CSharpUserTypeImpl cSharpUserType, StubElement stubElement)
-	{
-
-		return new CSharpWithStringValueStub<CSharpUserTypeImpl>(stubElement, this, cSharpUserType.getReferenceText());
-	}
-
-	@Override
-	public void serialize(@NotNull CSharpWithStringValueStub<CSharpUserTypeImpl> stub,
-			@NotNull StubOutputStream stubOutputStream) throws IOException
-	{
-		stubOutputStream.writeName(stub.getReferenceText());
-	}
-
-	@NotNull
-	@Override
-	public CSharpWithStringValueStub<CSharpUserTypeImpl> deserialize(@NotNull StubInputStream stubInputStream,
-			StubElement stubElement) throws IOException
-	{
-		StringRef ref = stubInputStream.readName();
-		return new CSharpWithStringValueStub<CSharpUserTypeImpl>(stubElement, this, ref);
-	}
 }
