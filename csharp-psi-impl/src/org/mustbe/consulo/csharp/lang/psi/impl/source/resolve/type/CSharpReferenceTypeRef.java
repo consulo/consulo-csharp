@@ -8,11 +8,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.SimpleGenericExtractorImpl;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
@@ -21,7 +17,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 20.10.14
  */
-public class CSharpReferenceTypeRef implements DotNetTypeRef, DotNetGenericWrapperTypeRef
+public class CSharpReferenceTypeRef implements DotNetTypeRef
 {
 	public static class Result<T extends PsiElement> implements DotNetTypeResolveResult
 	{
@@ -122,7 +118,7 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef, DotNetGenericWrapp
 		}
 	}
 
-	private final CSharpReferenceExpression myReferenceExpression;
+	protected final CSharpReferenceExpression myReferenceExpression;
 
 	public CSharpReferenceTypeRef(CSharpReferenceExpression referenceExpression)
 	{
@@ -133,50 +129,14 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef, DotNetGenericWrapp
 	@Override
 	public String getPresentableText()
 	{
-		StringBuilder builder = new StringBuilder();
-		builder.append(myReferenceExpression.getReferenceName());
-
-		DotNetTypeRef[] argumentTypeRefs = getArgumentTypeRefs();
-		if(argumentTypeRefs.length > 0)
-		{
-			builder.append("<");
-			for(int i = 0; i < argumentTypeRefs.length; i++)
-			{
-				if(i != 0)
-				{
-					builder.append(", ");
-				}
-				DotNetTypeRef argument = getArgumentTypeRefs()[i];
-				builder.append(argument.getPresentableText());
-			}
-			builder.append(">");
-		}
-		return builder.toString();
+		return myReferenceExpression.getReferenceName();
 	}
 
 	@NotNull
 	@Override
 	public String getQualifiedText()
 	{
-		StringBuilder builder = new StringBuilder();
-		builder.append(myReferenceExpression.getText());
-
-		DotNetTypeRef[] argumentTypeRefs = getArgumentTypeRefs();
-		if(argumentTypeRefs.length > 0)
-		{
-			builder.append("<");
-			for(int i = 0; i < argumentTypeRefs.length; i++)
-			{
-				if(i != 0)
-				{
-					builder.append(", ");
-				}
-				DotNetTypeRef argument = getArgumentTypeRefs()[i];
-				builder.append(argument.getQualifiedText());
-			}
-			builder.append(">");
-		}
-		return builder.toString();
+		return myReferenceExpression.getText();
 	}
 
 	@NotNull
@@ -188,36 +148,6 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef, DotNetGenericWrapp
 		{
 			return new LambdaResult(scope, (CSharpMethodDeclaration) resolve, DotNetGenericExtractor.EMPTY);
 		}
-		return new Result<PsiElement>(resolve, getGenericExtractor(resolve));
-	}
-
-	@NotNull
-	public DotNetGenericExtractor getGenericExtractor(PsiElement resolved)
-	{
-		if(!(resolved instanceof DotNetGenericParameterListOwner))
-		{
-			return DotNetGenericExtractor.EMPTY;
-		}
-
-		DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) resolved).getGenericParameters();
-		if(genericParameters.length != getArgumentTypeRefs().length)
-		{
-			return DotNetGenericExtractor.EMPTY;
-		}
-		return new SimpleGenericExtractorImpl(genericParameters, getArgumentTypeRefs());
-	}
-
-	@NotNull
-	@Override
-	public DotNetTypeRef[] getArgumentTypeRefs()
-	{
-		return myReferenceExpression.getTypeArgumentListRefs();
-	}
-
-	@NotNull
-	@Override
-	public DotNetTypeRef getInnerTypeRef()
-	{
-		return this;
+		return new Result<PsiElement>(resolve, DotNetGenericExtractor.EMPTY);
 	}
 }

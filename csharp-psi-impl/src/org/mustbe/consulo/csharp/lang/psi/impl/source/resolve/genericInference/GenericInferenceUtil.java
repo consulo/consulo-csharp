@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.genericInference;
 
-import java.util.HashMap;
+import gnu.trove.THashMap;
+
 import java.util.List;
 import java.util.Map;
 
@@ -100,7 +101,7 @@ public class GenericInferenceUtil
 			return new GenericInferenceResult(true, DotNetGenericExtractor.EMPTY);
 		}
 
-		val map = new HashMap<DotNetGenericParameter, DotNetTypeRef>();
+		val map = new THashMap<DotNetGenericParameter, DotNetTypeRef>();
 
 		for(NCallArgument nCallArgument : methodCallArguments)
 		{
