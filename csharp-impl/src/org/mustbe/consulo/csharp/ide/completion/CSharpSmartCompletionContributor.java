@@ -1,13 +1,21 @@
 package org.mustbe.consulo.csharp.ide.completion;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -28,7 +36,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Function;
 import com.intellij.util.ProcessingContext;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -63,36 +70,54 @@ public class CSharpSmartCompletionContributor extends CompletionContributor
 
 				if(typeRef != null)
 				{
-					LookupElementBuilder builder = buildForTypeRef(typeRef, parentOfType);
-					if(builder != null)
+					DotNetTypeResolveResult typeResolveResult = typeRef.resolve(parentOfType);
+
+					PsiElement element = typeResolveResult.getElement();
+					if(element == null)
 					{
-						DotNetTypeResolveResult resolve = typeRef.resolve(parentOfType);
-						if(resolve.getGenericExtractor() == DotNetGenericExtractor.EMPTY)
+						return;
+					}
+
+					DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
+					CSharpResolveContext cSharpResolveContext = CSharpResolveContextUtil.createContext(genericExtractor,
+							parentOfType.getResolveScope(), element);
+
+					CSharpElementGroup<CSharpConstructorDeclaration> group = cSharpResolveContext.constructorGroup();
+					Collection<CSharpConstructorDeclaration> objects = group == null ? Collections.<CSharpConstructorDeclaration>emptyList() : group
+							.getElements();
+
+					if(objects.isEmpty())
+					{
+						return;
+					}
+
+					for(CSharpConstructorDeclaration object : objects)
+					{
+						LookupElementBuilder builder = buildForConstructor(object, genericExtractor);
+						if(builder != null)
 						{
-							return;
+							result.addElement(PrioritizedLookupElement.withGrouping(builder, 101));
 						}
-						builder = builder.withInsertHandler(ParenthesesInsertHandler.getInstance(true));
-						result.addElement(PrioritizedLookupElement.withPriority(builder, 100));
 					}
 				}
 			}
 		});
 	}
 
-	private static LookupElementBuilder buildForTypeRef(DotNetTypeRef typeRef, PsiElement scope)
+	@Nullable
+	private static LookupElementBuilder buildForConstructor(CSharpConstructorDeclaration declaration, final DotNetGenericExtractor extractor)
 	{
-		if(typeRef == DotNetTypeRef.AUTO_TYPE || typeRef == DotNetTypeRef.ERROR_TYPE)
+		PsiElement parent = declaration.getParent();
+
+		if(!(parent instanceof DotNetNamedElement))
 		{
 			return null;
 		}
-		val typeResolveResult = typeRef.resolve(scope);
 
-		PsiElement element = typeResolveResult.getElement();
-		if(element instanceof CSharpTypeDeclaration)
+		String lookupString = ((DotNetNamedElement) parent).getName();
+		if(parent instanceof DotNetGenericParameterListOwner)
 		{
-			String lookupString = ((CSharpTypeDeclaration) element).getName();
-			DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) element).getGenericParameters();
-
+			DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) parent).getGenericParameters();
 			if(genericParameters.length > 0)
 			{
 				lookupString += "<" + StringUtil.join(genericParameters, new Function<DotNetGenericParameter, String>()
@@ -100,7 +125,7 @@ public class CSharpSmartCompletionContributor extends CompletionContributor
 					@Override
 					public String fun(DotNetGenericParameter parameter)
 					{
-						DotNetTypeRef extract = typeResolveResult.getGenericExtractor().extract(parameter);
+						DotNetTypeRef extract = extractor.extract(parameter);
 						if(extract != null)
 						{
 							return extract.getPresentableText();
@@ -109,11 +134,28 @@ public class CSharpSmartCompletionContributor extends CompletionContributor
 					}
 				}, ", ") + ">";
 			}
-			LookupElementBuilder builder = LookupElementBuilder.create(element, lookupString);
-			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
-
-			return builder;
 		}
-		return null;
+
+		if(lookupString == null)
+		{
+			return null;
+		}
+
+		DotNetTypeRef[] parameters = declaration.getParameterTypeRefs();
+
+		String parameterText = "(" + StringUtil.join(parameters, new Function<DotNetTypeRef, String>()
+		{
+			@Override
+			public String fun(DotNetTypeRef parameter)
+			{
+				return parameter.getPresentableText();
+			}
+		}, ", ") + ")";
+
+		LookupElementBuilder builder = LookupElementBuilder.create(parent, lookupString);
+		builder = builder.withIcon(IconDescriptorUpdaters.getIcon(parent, Iconable.ICON_FLAG_VISIBILITY));
+		builder = builder.withTailText(parameterText, true);
+		builder = builder.withInsertHandler(ParenthesesInsertHandler.getInstance(parameters.length > 0));
+		return builder;
 	}
 }
