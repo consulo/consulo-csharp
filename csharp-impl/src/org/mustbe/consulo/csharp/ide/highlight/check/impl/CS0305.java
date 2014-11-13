@@ -4,11 +4,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayTypeImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
+import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
 
@@ -28,16 +30,23 @@ public class CS0305 extends CompilerCheck<DotNetType>
 		}
 
 		int foundCount = 0;
-		DotNetType innerType = type;
-		if(type instanceof DotNetTypeWithTypeArguments)
+		PsiElement elementToHighlight = type;
+		if(type instanceof DotNetUserType)
 		{
-			innerType = ((DotNetTypeWithTypeArguments) type).getInnerType();
-			foundCount = ((DotNetTypeWithTypeArguments) type).getArguments().length;
+			CSharpReferenceExpression referenceExpression = (CSharpReferenceExpression) ((DotNetUserType) type).getReferenceExpression();
+
+			elementToHighlight = referenceExpression.getReferenceElement();
+			foundCount = referenceExpression.getTypeArgumentListRefs().length;
 		}
 		else if(type instanceof CSharpArrayTypeImpl)
 		{
-			innerType = ((CSharpArrayTypeImpl) type).getInnerType();
+			elementToHighlight = ((CSharpArrayTypeImpl) type).getInnerType();
 			foundCount = 1;
+		}
+
+		if(elementToHighlight == null)
+		{
+			return null;
 		}
 
 		DotNetTypeResolveResult typeResolveResult = type.toTypeRef().resolve(type);
@@ -61,7 +70,7 @@ public class CS0305 extends CompilerCheck<DotNetType>
 
 		if(expectedCount != foundCount)
 		{
-			return result(innerType, formatElement(resolvedElement), String.valueOf(expectedCount));
+			return result(elementToHighlight, formatElement(resolvedElement), String.valueOf(expectedCount));
 		}
 		return null;
 	}
