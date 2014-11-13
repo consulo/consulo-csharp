@@ -44,7 +44,9 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression
 		PARAMETER,
 		THIS, // return type declaration of parent
 		BASE,  // return type declaration super class of parent
-		LABEL
+		LABEL;
+
+		public static final ResolveToKind[] VALUES = values();
 	}
 
 	@Nullable

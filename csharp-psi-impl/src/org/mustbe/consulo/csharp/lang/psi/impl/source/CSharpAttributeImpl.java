@@ -23,21 +23,17 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
-import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
-import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
@@ -66,7 +62,7 @@ public class CSharpAttributeImpl extends CSharpStubElementImpl<CSharpWithStringV
 	@Override
 	public DotNetTypeDeclaration resolveToType()
 	{
-		CSharpReferenceExpression ref = getReferenceExpressionByStub();
+		CSharpReferenceExpression ref = getReferenceExpression();
 		if(ref == null)
 		{
 			return null;
@@ -162,30 +158,10 @@ public class CSharpAttributeImpl extends CSharpStubElementImpl<CSharpWithStringV
 		return ref.multiResolve(incompleteCode);
 	}
 
-	@Nullable
-	private CSharpReferenceExpression getReferenceExpressionByStub()
-	{
-		CSharpWithStringValueStub<CSharpAttribute> stub = getStub();
-		if(stub != null)
-		{
-			String referenceText = stub.getReferenceText();
-			if(referenceText == null)
-			{
-				return null;
-			}
-
-			CSharpFragmentFileImpl typeFragment = CSharpFragmentFactory.createTypeFragment(getProject(), referenceText, this);
-			DotNetUserType dotNetType = (DotNetUserType) PsiTreeUtil.getChildOfType(typeFragment, DotNetType.class);
-			assert dotNetType != null;
-			return (CSharpReferenceExpression) dotNetType.getReferenceExpression();
-		}
-		return getReferenceExpression();
-	}
-
 	@Override
 	@Nullable
 	public CSharpReferenceExpression getReferenceExpression()
 	{
-		return findChildByClass(CSharpReferenceExpression.class);
+		return getStubOrPsiChild(CSharpStubElements.REFERENCE_EXPRESSION);
 	}
 }

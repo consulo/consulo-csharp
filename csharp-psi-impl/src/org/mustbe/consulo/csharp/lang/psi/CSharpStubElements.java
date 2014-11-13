@@ -61,6 +61,7 @@ public interface CSharpStubElements
 	CSharpModifierListStubElementType MODIFIER_LIST = new CSharpModifierListStubElementType();
 	CSharpAttributeListStubElementType ATTRIBUTE_LIST = new CSharpAttributeListStubElementType();
 	CSharpAttributeStubElementType ATTRIBUTE = new CSharpAttributeStubElementType();
+	CSharpReferenceExpressionStubElementType REFERENCE_EXPRESSION = new CSharpReferenceExpressionStubElementType();
 
 	TokenSet USING_CHILDREN = TokenSet.create(USING_NAMESPACE_STATEMENT, TYPE_DEF_STATEMENT);
 
