@@ -433,10 +433,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 						return refExpr;
 					}
 
-					if(builder.getTokenType() == LT)
-					{
-						parseReferenceTypeArgumentList(builder);
-					}
+					parseReferenceTypeArgumentList(builder);
 					refExpr.done(REFERENCE_EXPRESSION);
 					expr = refExpr;
 				}
@@ -687,13 +684,8 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 			val refExpr = builder.mark();
 
-			String tokenText = builder.getTokenText();
-
 			builder.advanceLexer();
-			if(builder.getTokenType() == LT)
-			{
-				parseReferenceTypeArgumentList(builder);
-			}
+			parseReferenceTypeArgumentList(builder);
 			refExpr.done(REFERENCE_EXPRESSION);
 			return refExpr;
 		}
@@ -1259,10 +1251,8 @@ public class ExpressionParsing extends SharedParsingHelpers
 		ReferenceInfo referenceInfo = new ReferenceInfo(false, marker);
 		if(expect(builder, IDENTIFIER, "Identifier expected"))
 		{
-			if(builder.getTokenType() == LT)
-			{
-				referenceInfo.isParameterized = parseReferenceTypeArgumentList(builder) != null;
-			}
+			referenceInfo.isParameterized = parseReferenceTypeArgumentList(builder) != null;
+
 			marker.done(REFERENCE_EXPRESSION);
 
 			if(builder.getTokenType() == DOT)
@@ -1287,36 +1277,48 @@ public class ExpressionParsing extends SharedParsingHelpers
 	@Nullable
 	private static PsiBuilder.Marker parseReferenceTypeArgumentList(@NotNull CSharpBuilderWrapper builder)
 	{
+		if(builder.getTokenType() != LT)
+		{
+			return null;
+		}
 		PsiBuilder.Marker mark = builder.mark();
 		builder.advanceLexer();
 
-		while(!builder.eof())
+		if(builder.getTokenType() == GT)
 		{
-			val marker = parseType(builder, BracketFailPolicy.NOTHING, false, TokenSet.EMPTY);
-			if(marker == null)
+			builder.error("Expected type");
+			builder.advanceLexer();
+		}
+		else
+		{
+			while(!builder.eof())
 			{
-				mark.rollbackTo();
-				return null;
+				val marker = parseType(builder, BracketFailPolicy.NOTHING, false, TokenSet.EMPTY);
+				if(marker == null)
+				{
+					mark.rollbackTo();
+					return null;
+				}
+
+				if(builder.getTokenType() == COMMA)
+				{
+					builder.advanceLexer();
+				}
+				else
+				{
+					break;
+				}
 			}
 
-			if(builder.getTokenType() == COMMA)
+			if(builder.getTokenType() == GT)
 			{
 				builder.advanceLexer();
 			}
 			else
 			{
-				break;
+				mark.rollbackTo();
+				return null;
 			}
-		}
-
-		if(builder.getTokenType() == GT)
-		{
-			builder.advanceLexer();
-		}
-		else
-		{
-			mark.rollbackTo();
-			return null;
 		}
 		mark.done(TYPE_ARGUMENTS);
 		return mark;
