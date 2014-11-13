@@ -6,7 +6,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.lang.parameterInfo.CreateParameterInfoContext;
 import com.intellij.lang.parameterInfo.ParameterInfoContext;
@@ -82,11 +81,7 @@ public class CSharpGenericParameterInfoHandler implements ParameterInfoHandler<P
 		}
 
 		CSharpReferenceExpression referenceExpression = (CSharpReferenceExpression) parent;
-		DotNetTypeRef[] typeArgumentListRefs = referenceExpression.getTypeArgumentListRefs();
-		if(typeArgumentListRefs.length == 0)
-		{
-			return null;
-		}
+
 		PsiElement resolvedElement = referenceExpression.resolve();
 		if(resolvedElement instanceof DotNetGenericParameterListOwner)
 		{
