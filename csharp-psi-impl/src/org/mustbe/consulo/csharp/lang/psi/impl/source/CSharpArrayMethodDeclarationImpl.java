@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpArrayMethodDeclStub;
@@ -80,6 +81,14 @@ public class CSharpArrayMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 		DotNetType type = getReturnType();
 		return type.toTypeRef();
 	}
+
+	@NotNull
+	@Override
+	public CSharpSimpleParameterInfo[] getParameterInfos()
+	{
+		return CSharpLikeMethodDeclarationImplUtil.getParametersInfos(this);
+	}
+
 	@NotNull
 	@Override
 	public DotNetNamedElement[] getMembers()

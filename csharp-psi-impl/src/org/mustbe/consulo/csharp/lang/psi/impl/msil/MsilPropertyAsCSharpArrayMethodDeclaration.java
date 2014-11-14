@@ -24,9 +24,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightAttributeBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.typeParsing.SomeType;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.typeParsing.SomeTypeParser;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLikeMethodDeclarationImplUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -88,6 +90,13 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 		{
 			visitor.visitElement(this);
 		}
+	}
+
+	@NotNull
+	@Override
+	public CSharpSimpleParameterInfo[] getParameterInfos()
+	{
+		return CSharpLikeMethodDeclarationImplUtil.getParametersInfos(this);
 	}
 
 	@Nullable
