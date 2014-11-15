@@ -759,7 +759,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		}
 	}
 
-	private static AbstractScopeProcessor createMemberProcessor(@NotNull PsiElement element,
+	public static AbstractScopeProcessor createMemberProcessor(@NotNull PsiElement element,
 			ResolveToKind kind,
 			ResolveResult[] elements,
 			boolean completion,

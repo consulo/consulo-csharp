@@ -16,7 +16,6 @@
 
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
-import java.util.Collection;
 import java.util.Set;
 
 import javax.swing.Icon;
@@ -28,11 +27,9 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeByQNameIndex;
 import org.mustbe.consulo.dotnet.DotNetBundle;
 import org.mustbe.consulo.dotnet.module.roots.DotNetLibraryOrderEntryImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.codeInsight.actions.OptimizeImportsProcessor;
 import com.intellij.codeInsight.hint.QuestionAction;
 import com.intellij.icons.AllIcons;
@@ -69,21 +66,28 @@ public class AddUsingAction implements QuestionAction
 {
 	private final Editor myEditor;
 	private final Project myProject;
-	private final CSharpReferenceExpression myRef;
+	private final PsiFile myFile;
 	private final Set<Couple<String>> myElements;
+
+	public AddUsingAction(Editor editor, PsiFile file, Set<Couple<String>> q)
+	{
+		myEditor = editor;
+		myFile = file;
+		myProject = file.getProject();
+		myElements = q;
+	}
 
 	public AddUsingAction(Editor editor, CSharpReferenceExpression ref, Set<Couple<String>> q)
 	{
 		myEditor = editor;
-		myRef = ref;
+		myFile = ref.getContainingFile();
 		myProject = ref.getProject();
 		myElements = q;
 	}
 
 	private PsiElement getElementForBeforeAdd()
 	{
-		PsiFile containingFile = myRef.getContainingFile();
-		for(PsiElement psiElement : containingFile.getChildren())
+		for(PsiElement psiElement : myFile.getChildren())
 		{
 			if(psiElement instanceof CSharpUsingListImpl)
 			{
@@ -91,7 +95,7 @@ public class AddUsingAction implements QuestionAction
 			}
 		}
 
-		return containingFile;
+		return myFile;
 	}
 
 	@Override
@@ -149,7 +153,7 @@ public class AddUsingAction implements QuestionAction
 	{
 		PsiDocumentManager.getInstance(myProject).commitAllDocuments();
 
-		new WriteCommandAction<Object>(myRef.getProject(), myRef.getContainingFile())
+		new WriteCommandAction<Object>(myProject, myFile)
 		{
 			@Override
 			protected void run(Result<Object> objectResult) throws Throwable
@@ -159,7 +163,7 @@ public class AddUsingAction implements QuestionAction
 				String first = couple.getFirst();
 				if(first != null)
 				{
-					Module moduleForFile = ModuleUtilCore.findModuleForPsiElement(myRef);
+					Module moduleForFile = ModuleUtilCore.findModuleForPsiElement(myFile);
 					if(moduleForFile != null)
 					{
 						ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(moduleForFile);
@@ -218,8 +222,6 @@ public class AddUsingAction implements QuestionAction
 
 		try
 		{
-			bindToRef(qName);
-
 			if(CSharpCodeInsightSettings.getInstance().OPTIMIZE_IMPORTS_ON_THE_FLY)
 			{
 				Document document = myEditor.getDocument();
@@ -241,17 +243,6 @@ public class AddUsingAction implements QuestionAction
 			int newCol = pos2.column + virtualSpace;
 			myEditor.getCaretModel().moveToLogicalPosition(new LogicalPosition(pos2.line, newCol));
 			myEditor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
-		}
-	}
-
-	private void bindToRef(String qName)
-	{
-		Collection<DotNetTypeDeclaration> list = TypeByQNameIndex.getInstance().get(qName + "." + myRef.getReferenceName(), myProject,
-				myRef.getResolveScope());
-
-		if(!list.isEmpty())
-		{
-			myRef.bindToElement(list.iterator().next());
 		}
 	}
 }
