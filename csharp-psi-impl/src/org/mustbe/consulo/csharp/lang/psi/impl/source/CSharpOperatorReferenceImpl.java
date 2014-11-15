@@ -47,7 +47,6 @@ import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -386,25 +385,6 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	public CSharpCallArgumentList getParameterList()
 	{
 		return null;
-	}
-
-	@Nullable
-	@Override
-	public DotNetTypeList getTypeArgumentList()
-	{
-		return null;
-	}
-
-	@NotNull
-	@Override
-	public DotNetTypeRef[] getTypeArgumentListRefs()
-	{
-		DotNetExpression[] parameterExpressions = getParameterExpressions();
-		if(parameterExpressions.length == 0)
-		{
-			return DotNetTypeRef.EMPTY_ARRAY;
-		}
-		return new DotNetTypeRef[]{parameterExpressions[0].toTypeRef(false)};
 	}
 
 	@Nullable

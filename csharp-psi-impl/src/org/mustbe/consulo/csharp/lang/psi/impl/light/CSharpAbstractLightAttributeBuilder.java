@@ -29,8 +29,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -106,20 +104,6 @@ public abstract class CSharpAbstractLightAttributeBuilder extends LightElement i
 	public CSharpCallArgument[] getCallArguments()
 	{
 		return ContainerUtil.toArray(myCallArguments, CSharpCallArgument.ARRAY_FACTORY);
-	}
-
-	@Nullable
-	@Override
-	public DotNetTypeList getTypeArgumentList()
-	{
-		return null;
-	}
-
-	@NotNull
-	@Override
-	public DotNetTypeRef[] getTypeArgumentListRefs()
-	{
-		return new DotNetTypeRef[0];
 	}
 
 	@Nullable

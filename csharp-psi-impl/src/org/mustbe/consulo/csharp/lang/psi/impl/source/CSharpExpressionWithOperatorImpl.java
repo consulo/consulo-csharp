@@ -22,7 +22,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -79,20 +78,6 @@ public abstract class CSharpExpressionWithOperatorImpl extends CSharpElementImpl
 	public DotNetExpression[] getParameterExpressions()
 	{
 		return findChildrenByClass(DotNetExpression.class);
-	}
-
-	@Nullable
-	@Override
-	public DotNetTypeList getTypeArgumentList()
-	{
-		return getOperatorElement().getTypeArgumentList();
-	}
-
-	@NotNull
-	@Override
-	public DotNetTypeRef[] getTypeArgumentListRefs()
-	{
-		return getOperatorElement().getTypeArgumentListRefs();
 	}
 
 	@Nullable

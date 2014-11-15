@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayTypeImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUserTypeImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
@@ -28,16 +29,21 @@ public class CS0305 extends CompilerCheck<DotNetType>
 		}
 
 		int foundCount = 0;
-		DotNetType innerType = type;
-		if(type instanceof DotNetTypeWithTypeArguments)
+		PsiElement elementToHighlight = type;
+		if(type instanceof CSharpUserTypeImpl)
 		{
-			innerType = ((DotNetTypeWithTypeArguments) type).getInnerType();
-			foundCount = ((DotNetTypeWithTypeArguments) type).getArguments().length;
+			elementToHighlight = ((CSharpUserTypeImpl) type).getReferenceExpression().getReferenceElement();
+			foundCount = ((CSharpUserTypeImpl)type).getArgumentTypeRefs().length;
 		}
 		else if(type instanceof CSharpArrayTypeImpl)
 		{
-			innerType = ((CSharpArrayTypeImpl) type).getInnerType();
+			elementToHighlight = ((CSharpArrayTypeImpl) type).getInnerType();
 			foundCount = 1;
+		}
+
+		if(elementToHighlight == null)
+		{
+			return null;
 		}
 
 		DotNetTypeResolveResult typeResolveResult = type.toTypeRef().resolve(type);
@@ -61,7 +67,7 @@ public class CS0305 extends CompilerCheck<DotNetType>
 
 		if(expectedCount != foundCount)
 		{
-			return result(innerType, formatElement(resolvedElement), String.valueOf(expectedCount));
+			return result(elementToHighlight, formatElement(resolvedElement), String.valueOf(expectedCount));
 		}
 		return null;
 	}

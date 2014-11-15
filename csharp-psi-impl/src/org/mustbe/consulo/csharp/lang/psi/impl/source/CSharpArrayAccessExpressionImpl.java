@@ -28,7 +28,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -105,20 +104,6 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 	public CSharpCallArgumentList getParameterList()
 	{
 		return findChildByClass(CSharpCallArgumentList.class);
-	}
-
-	@Nullable
-	@Override
-	public DotNetTypeList getTypeArgumentList()
-	{
-		return null;
-	}
-
-	@NotNull
-	@Override
-	public DotNetTypeRef[] getTypeArgumentListRefs()
-	{
-		return DotNetTypeRef.EMPTY_ARRAY;
 	}
 
 	@Nullable
