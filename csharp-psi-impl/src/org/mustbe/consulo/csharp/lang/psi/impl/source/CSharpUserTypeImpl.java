@@ -48,7 +48,7 @@ public class CSharpUserTypeImpl extends CSharpStubElementImpl<CSharpEmptyStub<CS
 
 			DotNetTypeRef[] typeArgumentListRefs = referenceExpression.getTypeArgumentListRefs();
 
-			CSharpLazyReferenceTypeRef referenceTypeRef = new CSharpLazyReferenceTypeRef(element.getReferenceExpression());
+			CSharpLazyReferenceTypeRef referenceTypeRef = new CSharpLazyReferenceTypeRef(referenceExpression);
 			if(typeArgumentListRefs.length > 0)
 			{
 				return new CSharpLazyGenericWrapperTypeRef(element, referenceTypeRef, typeArgumentListRefs);

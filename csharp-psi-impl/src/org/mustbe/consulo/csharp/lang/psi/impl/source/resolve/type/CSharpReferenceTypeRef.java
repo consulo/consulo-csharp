@@ -140,6 +140,12 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 	}
 
 	@NotNull
+	public CSharpReferenceExpression getReferenceExpression()
+	{
+		return myReferenceExpression;
+	}
+
+	@NotNull
 	@Override
 	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 	{
