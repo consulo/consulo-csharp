@@ -27,7 +27,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
@@ -39,10 +38,8 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.codeInsight.AutoPopupController;
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.completion.PrioritizedLookupElement;
+import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.ide.IconDescriptorUpdaters;
@@ -179,29 +176,7 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 					}
 				}, ", ") + ")";
 
-				builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
-				{
-					@Override
-					public void handleInsert(InsertionContext insertionContext, LookupElement lookupElement)
-					{
-						int offset = insertionContext.getEditor().getCaretModel().getOffset();
-
-						PsiElement elementAt = insertionContext.getFile().findElementAt(offset);
-						// dont insert () if it inside method call
-						if(elementAt == null || elementAt.getNode().getElementType() != CSharpTokens.LPAR)
-						{
-							insertionContext.getDocument().insertString(offset, "();");
-							int step = 1; // step inside ()
-							if(parameterTypes.length == 0)
-							{
-								step = 3; // if no parameters step out ();
-							}
-							insertionContext.getEditor().getCaretModel().moveToOffset(offset + step);
-							AutoPopupController.getInstance(insertionContext.getProject()).autoPopupParameterInfo(insertionContext.getEditor(), null);
-
-						}
-					}
-				});
+				builder = builder.withInsertHandler(ParenthesesInsertHandler.getInstance(parameterTypes.length > 0));
 
 				if(CSharpMethodImplUtil.isExtensionWrapper(methodDeclaration))
 				{
