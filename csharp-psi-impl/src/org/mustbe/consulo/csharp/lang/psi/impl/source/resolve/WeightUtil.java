@@ -16,7 +16,7 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class WeightUtil
 {
-	public static final int MAX_WEIGHT = Integer.MAX_VALUE;
+	public static final int MAX_WEIGHT = Integer.MIN_VALUE;
 
 	public static final Comparator<Pair<MethodCalcResult, PsiElement>> ourComparator = new Comparator<Pair<MethodCalcResult, PsiElement>>()
 	{
