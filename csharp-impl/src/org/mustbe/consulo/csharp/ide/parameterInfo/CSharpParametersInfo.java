@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.ide.parameterInfo;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -31,6 +32,9 @@ import com.intellij.openapi.util.UnfairTextRange;
  */
 public class CSharpParametersInfo
 {
+	private static final char[] ourBrackets = {'[', ']'};
+	private static final char[] ourParentheses = {'(', ')'};
+
 	private static final TextRange EMPTY = new UnfairTextRange(-1, -1);
 
 	public static CSharpParametersInfo build(@NotNull CSharpSimpleLikeMethod callable)
@@ -38,11 +42,13 @@ public class CSharpParametersInfo
 		CSharpSimpleParameterInfo[] parameters = callable.getParameterInfos();
 		DotNetTypeRef returnType = callable.getReturnTypeRef();
 
+		char[] bounds = callable instanceof CSharpArrayMethodDeclaration ? ourBrackets : ourParentheses;
+
 		CSharpParametersInfo parametersInfo = new CSharpParametersInfo(parameters.length);
 		if(CodeInsightSettings.getInstance().SHOW_FULL_SIGNATURES_IN_PARAMETER_INFO)
 		{
 			parametersInfo.myBuilder.append(returnType.getPresentableText());
-			parametersInfo.myBuilder.append(" (");
+			parametersInfo.myBuilder.append(" ").append(bounds[0]);
 		}
 
 		if(parameters.length > 0)
@@ -70,12 +76,11 @@ public class CSharpParametersInfo
 
 		if(CodeInsightSettings.getInstance().SHOW_FULL_SIGNATURES_IN_PARAMETER_INFO)
 		{
-			parametersInfo.myBuilder.append(")");
+			parametersInfo.myBuilder.append(bounds[1]);
 		}
 
 		return parametersInfo;
 	}
-
 	private TextRange[] myParameterRanges;
 	private int myParameterCount;
 	private StringBuilder myBuilder = new StringBuilder();
