@@ -16,7 +16,6 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +51,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
@@ -82,15 +80,40 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		@Override
 		public ResolveResult[] resolve(@NotNull CSharpOperatorReferenceImpl reference, boolean incompleteCode)
 		{
-			Ref<Pair<MethodCalcResult, PsiElement>> psiElementRef = new Ref<Pair<MethodCalcResult, PsiElement>>();
-			Object o = reference.resolveImpl(psiElementRef);
+			if(!incompleteCode)
+			{
+				return multiResolveImpl(reference);
+			}
+			else
+			{
+				ResolveResult[] resolveResults = reference.multiResolve(false);
+
+				List<ResolveResult> filter = new SmartList<ResolveResult>();
+				for(ResolveResult resolveResult : resolveResults)
+				{
+					if(resolveResult.isValidResult())
+					{
+						filter.add(resolveResult);
+					}
+				}
+				return ContainerUtil.toArray(filter, ResolveResult.EMPTY_ARRAY);
+			}
+		}
+
+		@NotNull
+		private ResolveResult[] multiResolveImpl(CSharpOperatorReferenceImpl reference)
+		{
+			Object o = reference.resolveImpl();
 
 			List<ResolveResult> elements = new SmartList<ResolveResult>();
-			if(o instanceof Pair)
+			if(o instanceof List)
 			{
 				//noinspection unchecked
-				Pair<MethodCalcResult, PsiElement> pair = (Pair<MethodCalcResult, PsiElement>) o;
-				elements.add(new MethodResolveResult(pair.getSecond(), pair.getFirst()));
+				List<Pair<MethodCalcResult, PsiElement>> list = (List<Pair<MethodCalcResult, PsiElement>>) o;
+				for(Pair<MethodCalcResult, PsiElement> pair : list)
+				{
+					elements.add(new MethodResolveResult(pair.getSecond(), pair.getFirst()));
+				}
 			}
 			else if(o instanceof PsiElement)
 			{
@@ -101,14 +124,6 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 				elements.add(new StubElementResolveResult(reference, true, (DotNetTypeRef) o));
 			}
 
-			if(!incompleteCode)
-			{
-				Pair<MethodCalcResult, PsiElement> refForLastResult = psiElementRef.get();
-				if(refForLastResult != null)
-				{
-					elements.add(new MethodResolveResult(refForLastResult.getSecond(), refForLastResult.getFirst()));
-				}
-			}
 			return ContainerUtil.toArray(elements, ResolveResult.EMPTY_ARRAY);
 		}
 	}
@@ -185,7 +200,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		return CSharpResolveUtil.findFirstValidElement(resolveResults);
 	}
 
-	private Object resolveImpl(@Nullable Ref<Pair<MethodCalcResult, PsiElement>> last)
+	private Object resolveImpl()
 	{
 		IElementType elementType = getOperatorElementType();
 		// normalize
@@ -196,6 +211,12 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		}
 
 		PsiElement parent = getParent();
+		DotNetVariable variable = CSharpLambdaExpressionImplUtil.resolveLambdaVariableInsideAssignmentExpression(parent);
+		if(variable != null)
+		{
+			return variable;
+		}
+
 		if(parent instanceof CSharpExpressionWithOperatorImpl)
 		{
 			if(elementType == CSharpTokenSets.OROR || elementType == CSharpTokens.ANDAND)
@@ -213,6 +234,8 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 				return new DotNetTypeRefByQName(DotNetTypes.System.Void, CSharpTransform.INSTANCE, false);
 			}
 
+			List<Pair<MethodCalcResult, PsiElement>> pairs = new SmartList<Pair<MethodCalcResult, PsiElement>>();
+
 			for(DotNetExpression dotNetExpression : ((CSharpExpressionWithOperatorImpl) parent).getParameterExpressions())
 			{
 				DotNetTypeRef dotNetTypeRef = dotNetExpression.toTypeRef(false);
@@ -222,19 +245,12 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
 				if(element != null)
 				{
-					Pair<MethodCalcResult, PsiElement> resolvedPair = resolveByElement(elementType, element, last);
-					if(resolvedPair != null)
-					{
-						return resolvedPair;
-					}
+					resolveUserDefinedOperators(elementType, element, pairs);
 				}
 			}
-		}
 
-		DotNetVariable variable = CSharpLambdaExpressionImplUtil.resolveLambdaVariableInsideAssignmentExpression(parent);
-		if(variable != null)
-		{
-			return variable;
+			Collections.sort(pairs, WeightUtil.ourComparator);
+			return pairs;
 		}
 
 		return null;
@@ -249,7 +265,12 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 
-		ResolveResult resolveResult = resolveResults[0];
+		ResolveResult resolveResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
+		if(resolveResult == null)
+		{
+			resolveResult = resolveResults[0];
+		}
+
 		if(resolveResult instanceof StubElementResolveResult)
 		{
 			return ((StubElementResolveResult) resolveResult).getTypeRef();
@@ -273,10 +294,9 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		return CSharpOperatorNameHelper.mergeTwiceOperatorIfNeed(getFirstOperator());
 	}
 
-	@Nullable
-	public Pair<MethodCalcResult, PsiElement> resolveByElement(@NotNull IElementType elementType,
+	public void resolveUserDefinedOperators(@NotNull IElementType elementType,
 			@NotNull PsiElement element,
-			@Nullable Ref<Pair<MethodCalcResult, PsiElement>> last)
+			@NotNull List<Pair<MethodCalcResult, PsiElement>> last)
 	{
 		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(getResolveScope(), ResolveResult.EMPTY_ARRAY,
 				new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
@@ -288,37 +308,16 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		PsiElement[] psiElements = processor.toPsiElements();
 		if(psiElements.length == 0)
 		{
-			return null;
+			return;
 		}
 
 		List<DotNetLikeMethodDeclaration> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
-		List<Pair<MethodCalcResult, PsiElement>> list = new ArrayList<Pair<MethodCalcResult, PsiElement>>();
 		for(DotNetLikeMethodDeclaration psiElement : elements)
 		{
 			MethodCalcResult calc = MethodResolver.calc(this, psiElement, this);
 
-			list.add(Pair.<MethodCalcResult, PsiElement>create(calc, psiElement));
+			last.add(Pair.<MethodCalcResult, PsiElement>create(calc, psiElement));
 		}
-		Collections.sort(list, WeightUtil.ourComparator);
-
-		Pair<MethodCalcResult, PsiElement> pair = ContainerUtil.getFirstItem(list);
-		if(pair == null)
-		{
-			return null;
-		}
-
-		if(!pair.getFirst().isValidResult())
-		{
-			if(last != null)
-			{
-				last.setIfNull(pair);
-			}
-		}
-		else
-		{
-			return pair;
-		}
-		return null;
 	}
 
 	@NotNull
