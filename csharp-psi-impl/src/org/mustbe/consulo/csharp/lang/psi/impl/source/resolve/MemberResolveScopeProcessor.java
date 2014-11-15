@@ -28,6 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
@@ -40,6 +41,8 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 {
+	public static final Key<Boolean> BREAK_RULE = Key.create("break.rule");
+
 	private final GlobalSearchScope myScope;
 
 	public MemberResolveScopeProcessor(GlobalSearchScope scope, ResolveResult[] elements, ExecuteTarget[] targets)
@@ -73,6 +76,11 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 			}
 
 			addElement(normalize);
+
+			if(state.get(BREAK_RULE) == Boolean.TRUE)
+			{
+				return false;
+			}
 		}
 		return true;
 	}
