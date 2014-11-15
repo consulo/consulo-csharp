@@ -25,6 +25,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -100,9 +101,16 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 		if(element instanceof CSharpCallArgumentListOwner)
 		{
 			ResolveResult[] resolveResults = ((CSharpCallArgumentListOwner) element).multiResolve(false);
-			if(resolveResults.length > 0)
+			PsiElement firstValidElement = CSharpResolveUtil.findFirstValidElement(resolveResults);
+			// if we dont have valid result - get first
+			if(firstValidElement == null)
 			{
-				callable = resolveResults[0].getElement();
+				firstValidElement = resolveResults.length > 0 ? resolveResults[0].getElement() : null;
+			}
+
+			if(firstValidElement != null)
+			{
+				callable = firstValidElement;
 				if(callable instanceof DotNetVariable)
 				{
 					DotNetTypeRef typeRef = ((DotNetVariable) callable).toTypeRef(false);
