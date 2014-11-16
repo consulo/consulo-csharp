@@ -30,11 +30,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGeneric
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
 import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -93,17 +90,13 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 			DotNetTypeRef typeRef;
 			if(canResolve())
 			{
-				DotNetType[] arguments = DotNetType.EMPTY_ARRAY;
-				if(type instanceof DotNetTypeWithTypeArguments)
+				DotNetTypeRef[] arguments = DotNetTypeRef.EMPTY_ARRAY;
+				if(type instanceof CSharpUserTypeImpl)
 				{
-					arguments = ((DotNetTypeWithTypeArguments) type).getArguments();
-					type = ((DotNetTypeWithTypeArguments) type).getInnerType();
-				}
+					CSharpUserTypeImpl userType = (CSharpUserTypeImpl) type;
+					arguments = userType.getArgumentTypeRefs();
 
-				if(type instanceof DotNetUserType)
-				{
-					PsiElement psiElement = CSharpReferenceExpressionImplUtil.resolveByTypeKind(((DotNetUserType) type).getReferenceExpression(),
-							false);
+					PsiElement psiElement = CSharpReferenceExpressionImplUtil.resolveByTypeKind(userType.getReferenceExpression(), false);
 					typeRef = CSharpReferenceExpressionImpl.toTypeRef(psiElement);
 				}
 				else
@@ -113,7 +106,7 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 
 				if(arguments.length != 0)
 				{
-					typeRef = new CSharpGenericWrapperTypeRef(typeRef, DotNetTypeRefUtil.toArray(arguments));
+					typeRef = new CSharpGenericWrapperTypeRef(typeRef, arguments);
 				}
 			}
 			else
@@ -163,20 +156,6 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 
 	@Nullable
 	@Override
-	public DotNetTypeList getTypeArgumentList()
-	{
-		return null;
-	}
-
-	@NotNull
-	@Override
-	public DotNetTypeRef[] getTypeArgumentListRefs()
-	{
-		return DotNetTypeRef.EMPTY_ARRAY;
-	}
-
-	@Nullable
-	@Override
 	public PsiElement resolveToCallable()
 	{
 		if(!canResolve())
@@ -208,18 +187,6 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 			if(referenceExpression instanceof CSharpReferenceExpression)
 			{
 				return referenceExpression;
-			}
-		}
-		else if(newType instanceof DotNetTypeWithTypeArguments)
-		{
-			DotNetType c = ((DotNetTypeWithTypeArguments) newType).getInnerType();
-			if(c instanceof DotNetUserType)
-			{
-				DotNetReferenceExpression referenceExpression = ((DotNetUserType) c).getReferenceExpression();
-				if(referenceExpression instanceof CSharpReferenceExpression)
-				{
-					return referenceExpression;
-				}
 			}
 		}
 		return null;

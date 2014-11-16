@@ -17,35 +17,53 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
-import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpReferenceTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
-import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetType;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyGenericWrapperTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyReferenceTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWithStringValueStub<CSharpUserTypeImpl>> implements DotNetUserType
+public class CSharpUserTypeImpl extends CSharpStubElementImpl<CSharpEmptyStub<CSharpUserTypeImpl>> implements DotNetUserType
 {
+	public static class OurResolver extends CSharpResolveCache.TypeRefResolver<CSharpUserTypeImpl>
+	{
+		public static final OurResolver INSTANCE = new OurResolver();
+
+		@NotNull
+		@Override
+		public DotNetTypeRef resolveTypeRef(@NotNull CSharpUserTypeImpl element, boolean resolveFromParent)
+		{
+			CSharpReferenceExpression referenceExpression = element.getReferenceExpression();
+
+			DotNetTypeRef[] typeArgumentListRefs = referenceExpression.getTypeArgumentListRefs();
+
+			CSharpLazyReferenceTypeRef referenceTypeRef = new CSharpLazyReferenceTypeRef(referenceExpression);
+			if(typeArgumentListRefs.length > 0)
+			{
+				return new CSharpLazyGenericWrapperTypeRef(element, referenceTypeRef, typeArgumentListRefs);
+			}
+			return referenceTypeRef;
+		}
+	}
+
 	public CSharpUserTypeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpUserTypeImpl(@NotNull CSharpWithStringValueStub<CSharpUserTypeImpl> stub,
-			@NotNull IStubElementType<? extends CSharpWithStringValueStub<CSharpUserTypeImpl>, ?> nodeType)
+	public CSharpUserTypeImpl(@NotNull CSharpEmptyStub<CSharpUserTypeImpl> stub,
+			@NotNull IStubElementType<? extends CSharpEmptyStub<CSharpUserTypeImpl>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -58,14 +76,9 @@ public class CSharpUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWithStri
 
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRefImpl()
+	public DotNetTypeRef toTypeRef()
 	{
-		CSharpReferenceExpression referenceExpression = getReferenceExpressionByStub();
-		if(referenceExpression == null)
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
-		return new CSharpReferenceTypeRef(referenceExpression);
+		return CSharpResolveCache.getInstance(getProject()).resolveTypeRef(this, OurResolver.INSTANCE, true);
 	}
 
 	@NotNull
@@ -79,40 +92,21 @@ public class CSharpUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWithStri
 	@Override
 	public String getReferenceText()
 	{
-		CSharpWithStringValueStub<CSharpUserTypeImpl> stub = getStub();
-		if(stub != null)
-		{
-			//noinspection ConstantConditions
-			return stub.getReferenceText();
-		}
-		DotNetReferenceExpression referenceExpression = getReferenceExpression();
-		return referenceExpression.getText();
+		CSharpReferenceExpression referenceExpression = getReferenceExpression();
+		return referenceExpression.getReferenceName();
 	}
 
 	@NotNull
 	@Override
 	public CSharpReferenceExpression getReferenceExpression()
 	{
-		return findNotNullChildByClass(CSharpReferenceExpression.class);
+		return getRequiredStubOrPsiChild(CSharpStubElements.REFERENCE_EXPRESSION);
 	}
 
-	@Nullable
-	private CSharpReferenceExpression getReferenceExpressionByStub()
+	@NotNull
+	public DotNetTypeRef[] getArgumentTypeRefs()
 	{
-		CSharpWithStringValueStub<CSharpUserTypeImpl> stub = getStub();
-		if(stub != null)
-		{
-			String referenceText = stub.getReferenceText();
-			if(referenceText == null)
-			{
-				return null;
-			}
-
-			CSharpFragmentFileImpl typeFragment = CSharpFragmentFactory.createTypeFragment(getProject(), referenceText, this);
-			DotNetUserType dotNetType = (DotNetUserType) PsiTreeUtil.getChildOfType(typeFragment, DotNetType.class);
-			assert dotNetType != null;
-			return (CSharpReferenceExpression) dotNetType.getReferenceExpression();
-		}
-		return getReferenceExpression();
+		CSharpReferenceExpression referenceExpression = getReferenceExpression();
+		return referenceExpression.getTypeArgumentListRefs();
 	}
 }

@@ -34,7 +34,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameterList;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyGenericWrapperTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -45,6 +45,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericWrapperTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 
@@ -178,11 +179,11 @@ public class GenericUnwrapTool
 				DotNetTypeRef oldArgument = oldArguments[i];
 				arguments[i] = exchangeTypeRef(oldArgument, extractor, scope);
 			}
-			return new CSharpLazyGenericWrapperTypeRef(scope, inner, arguments);
+			return new CSharpGenericWrapperTypeRef(inner, arguments);
 		}
-		else if(typeRef instanceof DotNetPointerTypeRefImpl)
+		else if(typeRef instanceof DotNetPointerTypeRef)
 		{
-			return new DotNetPointerTypeRefImpl(exchangeTypeRef(((DotNetPointerTypeRefImpl) typeRef).getInnerTypeRef(), extractor, scope));
+			return new DotNetPointerTypeRefImpl(exchangeTypeRef(((DotNetPointerTypeRef) typeRef).getInnerTypeRef(), extractor, scope));
 		}
 		else if(typeRef instanceof CSharpArrayTypeRef)
 		{
