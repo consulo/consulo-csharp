@@ -19,7 +19,6 @@ package org.mustbe.consulo.csharp.lang.psi;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNullableTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPointerTypeImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeWithTypeArgumentsImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.*;
 import com.intellij.lang.ASTNode;
@@ -61,6 +60,7 @@ public interface CSharpStubElements
 	CSharpModifierListStubElementType MODIFIER_LIST = new CSharpModifierListStubElementType();
 	CSharpAttributeListStubElementType ATTRIBUTE_LIST = new CSharpAttributeListStubElementType();
 	CSharpAttributeStubElementType ATTRIBUTE = new CSharpAttributeStubElementType();
+	CSharpReferenceExpressionStubElementType REFERENCE_EXPRESSION = new CSharpReferenceExpressionStubElementType();
 
 	TokenSet USING_CHILDREN = TokenSet.create(USING_NAMESPACE_STATEMENT, TYPE_DEF_STATEMENT);
 
@@ -108,40 +108,25 @@ public interface CSharpStubElements
 		}
 	};
 
-	CSharpEmptyStubElementType<CSharpTypeWithTypeArgumentsImpl> TYPE_WRAPPER_WITH_TYPE_ARGUMENTS = new
-			CSharpEmptyStubElementType<CSharpTypeWithTypeArgumentsImpl>("TYPE_WRAPPER_WITH_TYPE_ARGUMENTS")
-	{
-		@Override
-		public boolean shouldCreateStub(ASTNode node)
-		{
-			return CSharpStubTypeUtil.shouldCreateStub(node);
-		}
-
-		@NotNull
-		@Override
-		public PsiElement createElement(@NotNull ASTNode astNode)
-		{
-			return new CSharpTypeWithTypeArgumentsImpl(astNode);
-		}
-
-		@Override
-		public CSharpTypeWithTypeArgumentsImpl createPsi(@NotNull CSharpEmptyStub<CSharpTypeWithTypeArgumentsImpl> stub)
-		{
-			return new CSharpTypeWithTypeArgumentsImpl(stub, this);
-		}
-	};
-
 	CSharpNativeTypeStubElementType NATIVE_TYPE = new CSharpNativeTypeStubElementType();
 
 	CSharpArrayTypeStubElementType ARRAY_TYPE = new CSharpArrayTypeStubElementType();
 
 	CSharpUserTypeStubElementType USER_TYPE = new CSharpUserTypeStubElementType();
 
-	CSharpTypeListElementType TYPE_ARGUMENTS = new CSharpTypeListElementType("TYPE_ARGUMENTS");
+	CSharpTypeListElementType TYPE_ARGUMENTS = new CSharpTypeListElementType("TYPE_ARGUMENTS")
+	{
+		@Override
+		public boolean shouldCreateStub(ASTNode node)
+		{
+			ASTNode treeParent = node.getTreeParent();
+			return treeParent != null && CSharpReferenceExpressionStubElementType.shouldCreateStubImpl(treeParent);
+		}
+	};
 
 	TokenSet GENERIC_CONSTRAINT_VALUES = TokenSet.create(GENERIC_CONSTRAINT_KEYWORD_VALUE, GENERIC_CONSTRAINT_TYPE_VALUE);
 
-	TokenSet TYPE_SET = TokenSet.create(NULLABLE_TYPE, POINTER_TYPE, NATIVE_TYPE, TYPE_WRAPPER_WITH_TYPE_ARGUMENTS, ARRAY_TYPE, USER_TYPE);
+	TokenSet TYPE_SET = TokenSet.create(NULLABLE_TYPE, POINTER_TYPE, NATIVE_TYPE, ARRAY_TYPE, USER_TYPE);
 
 	TokenSet QUALIFIED_MEMBERS = TokenSet.create(NAMESPACE_DECLARATION, TYPE_DECLARATION, METHOD_DECLARATION, CONSTRUCTOR_DECLARATION,
 			PROPERTY_DECLARATION, EVENT_DECLARATION, FIELD_DECLARATION, ENUM_CONSTANT_DECLARATION, CONVERSION_METHOD_DECLARATION,

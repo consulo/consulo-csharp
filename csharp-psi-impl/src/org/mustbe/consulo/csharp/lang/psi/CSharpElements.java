@@ -85,21 +85,16 @@ public interface CSharpElements
 
 	IElementType ARRAY_TYPE = CSharpStubElements.ARRAY_TYPE;
 
-	IElementType TYPE_WRAPPER_WITH_TYPE_ARGUMENTS = CSharpStubElements.TYPE_WRAPPER_WITH_TYPE_ARGUMENTS;
-
 	IElementType MODIFIER_LIST = CSharpStubElements.MODIFIER_LIST;
 
 	IElementType EXTENDS_LIST = CSharpStubElements.EXTENDS_LIST;
-
-	IElementType TYPE_CALL_ARGUMENTS = new ElementTypeAsPsiFactory("TYPE_CALL_ARGUMENTS", CSharpLanguage.INSTANCE, CSharpTypeListImpl.class);
 
 	IElementType TYPE_ARGUMENTS = CSharpStubElements.TYPE_ARGUMENTS;
 
 	IElementType CONSTANT_EXPRESSION = new ElementTypeAsPsiFactory("CONSTANT_EXPRESSION", CSharpLanguage.INSTANCE,
 			CSharpConstantExpressionImpl.class);
 
-	IElementType REFERENCE_EXPRESSION = new ElementTypeAsPsiFactory("REFERENCE_EXPRESSION", CSharpLanguage.INSTANCE,
-			CSharpReferenceExpressionImpl.class);
+	IElementType REFERENCE_EXPRESSION = CSharpStubElements.REFERENCE_EXPRESSION;
 
 	IElementType METHOD_CALL_EXPRESSION = new ElementTypeAsPsiFactory("METHOD_CALL_EXPRESSION", CSharpLanguage.INSTANCE,
 			CSharpMethodCallExpressionImpl.class);

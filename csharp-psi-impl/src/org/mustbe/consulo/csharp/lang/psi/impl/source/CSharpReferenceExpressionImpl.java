@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.consulo.lombok.annotations.Logger;
@@ -49,6 +50,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRef
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromNamespace;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpReferenceExpressionStub;
 import org.mustbe.consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpNamedResolveSelector;
@@ -78,6 +80,7 @@ import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
+import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtil;
@@ -91,7 +94,7 @@ import lombok.val;
  * @since 28.11.13.
  */
 @Logger
-public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements CSharpReferenceExpression, PsiPolyVariantReference,
+public class CSharpReferenceExpressionImpl extends CSharpStubElementImpl<CSharpReferenceExpressionStub> implements CSharpReferenceExpression, PsiPolyVariantReference,
 		CSharpQualifiedNonReference
 {
 	private static class OurResolver implements CSharpResolveCache.PolyVariantResolver<CSharpReferenceExpressionImpl>
@@ -131,6 +134,12 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		super(node);
 	}
 
+	public CSharpReferenceExpressionImpl(@NotNull CSharpReferenceExpressionStub stub,
+			@NotNull IStubElementType<? extends CSharpReferenceExpressionStub, ?> nodeType)
+	{
+		super(stub, nodeType);
+	}
+
 	@Override
 	public PsiReference getReference()
 	{
@@ -154,6 +163,11 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@Override
 	public PsiElement getQualifier()
 	{
+		CSharpReferenceExpressionStub stub = getStub();
+		if(stub != null)
+		{
+			return getStubOrPsiChild(CSharpStubElements.REFERENCE_EXPRESSION);
+		}
 		return findChildByClass(DotNetExpression.class);
 	}
 
@@ -161,6 +175,11 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@Override
 	public String getReferenceName()
 	{
+		CSharpReferenceExpressionStub stub = getStub();
+		if(stub != null)
+		{
+			return stub.getReferenceText();
+		}
 		PsiElement referenceElement = getReferenceElement();
 		return referenceElement == null ? null : CSharpPsiUtilImpl.getNameWithoutAt(referenceElement.getText());
 	}
@@ -201,18 +220,25 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@NotNull
 	public ResolveResult[] multiResolveImpl(ResolveToKind kind, boolean resolveFromParent)
 	{
-		CSharpCallArgumentListOwner p = null;
-		PsiElement parent = getParent();
+		CSharpCallArgumentListOwner callArgumentListOwner = null;
 
-		if(kind == ResolveToKind.CONSTRUCTOR || kind == ResolveToKind.PARAMETER)
+		// dont call tree if we with stub
+		CSharpReferenceExpressionStub stub = getStub();
+		if(stub == null)
 		{
-			p = PsiTreeUtil.getParentOfType(this, CSharpCallArgumentListOwner.class);
+			PsiElement parent = getParent();
+
+			if(kind == ResolveToKind.CONSTRUCTOR || kind == ResolveToKind.PARAMETER)
+			{
+				callArgumentListOwner = PsiTreeUtil.getParentOfType(this, CSharpCallArgumentListOwner.class);
+			}
+			else if(parent instanceof CSharpCallArgumentListOwner)
+			{
+				callArgumentListOwner = (CSharpCallArgumentListOwner) parent;
+			}
 		}
-		else if(parent instanceof CSharpCallArgumentListOwner)
-		{
-			p = (CSharpCallArgumentListOwner) parent;
-		}
-		return multiResolve0(kind, p, this, resolveFromParent);
+
+		return multiResolve0(kind, callArgumentListOwner, this, resolveFromParent);
 	}
 
 	public static <T extends CSharpQualifiedNonReference & PsiElement> ResolveResult[] multiResolve0(ResolveToKind kind,
@@ -492,32 +518,41 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 				methodResolveResults = new ArrayList<Pair<MethodCalcResult, PsiElement>>();
 
+				List<ResolveResult> newResolveResults = new ArrayList<ResolveResult>();
+
 				for(ResolveResult result : resolveResults)
 				{
 					PsiElement resolvedElement = result.getElement();
-					if(resolvedElement instanceof CSharpElementGroup && resolveFromParent)
+					if(resolvedElement instanceof CSharpElementGroup)
 					{
-						CSharpLambdaResolveResult lambdaResolveResult = CSharpLambdaExpressionImplUtil.resolveLeftLambdaTypeRef(element);
-						if(lambdaResolveResult != null)
+						if(resolveFromParent)
 						{
-							for(PsiElement psiElement : ((CSharpElementGroup<?>) resolvedElement).getElements())
+							CSharpLambdaResolveResult lambdaResolveResult = CSharpLambdaExpressionImplUtil.resolveLeftLambdaTypeRef(element);
+							if(lambdaResolveResult != null)
 							{
-								if(psiElement instanceof DotNetLikeMethodDeclaration)
+								for(PsiElement psiElement : ((CSharpElementGroup<?>) resolvedElement).getElements())
 								{
-									MethodCalcResult calc = MethodResolver.calc(lambdaResolveResult.getParameterTypeRefs(),
-											((DotNetLikeMethodDeclaration) psiElement).getParameterTypeRefs(), element);
+									if(psiElement instanceof DotNetLikeMethodDeclaration)
+									{
+										MethodCalcResult calc = MethodResolver.calc(lambdaResolveResult.getParameterTypeRefs(), ((DotNetLikeMethodDeclaration) psiElement).getParameterTypeRefs(), element);
 
-									methodResolveResults.add(Pair.create(calc, psiElement));
+										methodResolveResults.add(Pair.create(calc, psiElement));
+									}
 								}
 							}
+						}
+						else
+						{
+							methodResolveResults.add(Pair.<MethodCalcResult, PsiElement>create(MethodCalcResult.VALID, result.getElement()));
 						}
 					}
 					else
 					{
-						methodResolveResults.add(Pair.<MethodCalcResult, PsiElement>create(MethodCalcResult.VALID, result.getElement()));
+						newResolveResults.add(result);
 					}
 				}
-				return WeightUtil.sortAndReturn(methodResolveResults);
+				Collections.addAll(newResolveResults, WeightUtil.sortAndReturn(methodResolveResults));
+				return ContainerUtil.toArray(newResolveResults, ResolveResult.EMPTY_ARRAY);
 			case METHOD:
 			case ARRAY_METHOD:
 			case CONSTRUCTOR:
@@ -540,16 +575,16 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 								GenericInferenceUtil.GenericInferenceResult inferenceResult = psiElement.getUserData(GenericInferenceUtil
 										.INFERENCE_RESULT);
 
-								if(inferenceResult == null)
+								if(inferenceResult == null && kind != ResolveToKind.CONSTRUCTOR)
 								{
-									inferenceResult = GenericInferenceUtil.inferenceGenericExtractor(callArgumentListOwner,
+									inferenceResult = GenericInferenceUtil.inferenceGenericExtractor(element, callArgumentListOwner,
 											(DotNetLikeMethodDeclaration) psiElement);
-									psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, inferenceResult.getExtractor(), true);
+									psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, inferenceResult.getExtractor());
 								}
 
 								val calcResult = MethodResolver.calc(callArgumentListOwner, (DotNetLikeMethodDeclaration) psiElement, element);
 
-								if(inferenceResult.isSuccess())
+								if(inferenceResult == null || inferenceResult.isSuccess())
 								{
 									methodResolveResults.add(Pair.create(calcResult, psiElement));
 								}
@@ -918,6 +953,12 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@NotNull
 	public ResolveToKind kind()
 	{
+		CSharpReferenceExpressionStub stub = getStub();
+		if(stub != null)
+		{
+			return stub.getKind();
+		}
+
 		PsiElement tempElement = getParent();
 		if(tempElement instanceof CSharpGenericConstraintImpl)
 		{
@@ -1081,6 +1122,21 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	public boolean isSoft()
 	{
 		return kind() == ResolveToKind.SOFT_NAMESPACE;
+	}
+
+	@Nullable
+	@Override
+	public DotNetTypeList getTypeArgumentList()
+	{
+		return getStubOrPsiChild(CSharpStubElements.TYPE_ARGUMENTS);
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef[] getTypeArgumentListRefs()
+	{
+		DotNetTypeList typeArgumentList = getTypeArgumentList();
+		return typeArgumentList == null ? DotNetTypeRef.EMPTY_ARRAY : typeArgumentList.getTypeRefs();
 	}
 
 	@NotNull

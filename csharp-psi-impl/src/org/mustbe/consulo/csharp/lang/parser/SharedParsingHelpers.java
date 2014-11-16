@@ -57,18 +57,12 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		return parseTypeList(builder, varSupport, TokenSet.EMPTY);
 	}
 
-	protected static boolean parseTypeList(@NotNull CSharpBuilderWrapper builder, boolean varSupport, TokenSet nameStopperSet)
-	{
-		return parseTypeList(builder, varSupport, false, nameStopperSet);
-	}
-
-	protected static boolean parseTypeList(@NotNull CSharpBuilderWrapper builder, boolean varSupport, boolean hardRequiredGt,
-			@NotNull TokenSet nameStopperSet)
+	protected static boolean parseTypeList(@NotNull CSharpBuilderWrapper builder, boolean varSupport, @NotNull TokenSet nameStopperSet)
 	{
 		boolean empty = true;
 		while(!builder.eof())
 		{
-			val marker = parseType(builder, BracketFailPolicy.NOTHING, varSupport, hardRequiredGt, nameStopperSet);
+			val marker = parseType(builder, BracketFailPolicy.NOTHING, varSupport, nameStopperSet);
 			if(marker == null)
 			{
 				if(!empty)
@@ -95,32 +89,13 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 	@Nullable
 	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder, @NotNull BracketFailPolicy bracketFailPolicy, boolean varSupport)
 	{
-		return parseType(builder, bracketFailPolicy, false, varSupport);
+		return parseType(builder, bracketFailPolicy, varSupport, TokenSet.EMPTY);
 	}
 
 	@Nullable
 	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder,
 			@NotNull BracketFailPolicy bracketFailPolicy,
 			boolean varSupport,
-			TokenSet nameStopperSet)
-	{
-		return parseType(builder, bracketFailPolicy, false, varSupport, nameStopperSet);
-	}
-
-	@Nullable
-	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder,
-			@NotNull BracketFailPolicy bracketFailPolicy,
-			boolean hardRequiredGt,
-			boolean varSupport)
-	{
-		return parseType(builder, bracketFailPolicy, varSupport, hardRequiredGt, TokenSet.EMPTY);
-	}
-
-	@Nullable
-	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder,
-			@NotNull BracketFailPolicy bracketFailPolicy,
-			boolean varSupport,
-			boolean hardRequiredGt,
 			@NotNull TokenSet nameStopperSet)
 	{
 		TypeInfo typeInfo = parseInnerType(builder, varSupport, nameStopperSet);
@@ -130,33 +105,6 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		}
 
 		PsiBuilder.Marker marker = typeInfo.marker;
-
-		if(builder.getTokenType() == LT)
-		{
-			marker = marker.precede();
-
-			typeInfo = new TypeInfo();
-			typeInfo.isParameterized = true;
-
-			PsiBuilder.Marker typeListMarker = builder.mark();
-			builder.advanceLexer();
-			if(parseTypeList(builder, varSupport, nameStopperSet))
-			{
-				builder.error("Type expected");
-			}
-
-			if(!expect(builder, GT, "'>' expected") && hardRequiredGt)
-			{
-				typeListMarker.rollbackTo();
-				marker.rollbackTo();
-
-				return null;
-			}
-
-			typeListMarker.done(TYPE_ARGUMENTS);
-
-			marker.done(TYPE_WRAPPER_WITH_TYPE_ARGUMENTS);
-		}
 
 		while(builder.getTokenType() == MUL)
 		{
@@ -277,7 +225,8 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		}
 		else if(builder.getTokenType() == IDENTIFIER)
 		{
-			ExpressionParsing.parseQualifiedReference(builder, null, nameStopperSet);
+			ExpressionParsing.ReferenceInfo referenceInfo = ExpressionParsing.parseQualifiedReference(builder, null, nameStopperSet);
+			typeInfo.isParameterized = referenceInfo != null && referenceInfo.isParameterized;
 			marker.done(USER_TYPE);
 		}
 		else if(builder.getTokenType() == GLOBAL_KEYWORD)

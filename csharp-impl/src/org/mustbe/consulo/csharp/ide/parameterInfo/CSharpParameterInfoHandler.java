@@ -121,7 +121,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 						CSharpMethodDeclaration resolve = ((CSharpLambdaResolveResult) typeResolveResult).getTarget();
 						if(resolve != null)
 						{
-							callable = GenericUnwrapTool.extract(resolve, typeResolveResult.getGenericExtractor(), false);
+							callable = GenericUnwrapTool.extract(resolve, typeResolveResult.getGenericExtractor());
 						}
 						else
 						{

@@ -22,10 +22,19 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 	public static class Result<T extends PsiElement> implements DotNetTypeResolveResult
 	{
 		protected final T myElement;
+		protected final DotNetGenericExtractor myExtractor;
 
-		public Result(T element)
+		public Result(T element, DotNetGenericExtractor extractor)
 		{
 			myElement = element;
+			myExtractor = extractor;
+		}
+
+		@NotNull
+		@Override
+		public DotNetGenericExtractor getGenericExtractor()
+		{
+			return myExtractor;
 		}
 
 		@Nullable
@@ -33,13 +42,6 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 		public PsiElement getElement()
 		{
 			return myElement;
-		}
-
-		@NotNull
-		@Override
-		public DotNetGenericExtractor getGenericExtractor()
-		{
-			return DotNetGenericExtractor.EMPTY;
 		}
 
 		@Override
@@ -53,13 +55,11 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 	public static class LambdaResult extends Result<CSharpMethodDeclaration> implements CSharpLambdaResolveResult
 	{
 		private final PsiElement myScope;
-		private final DotNetGenericExtractor myExtractor;
 
 		public LambdaResult(@NotNull PsiElement scope, @NotNull CSharpMethodDeclaration element, @NotNull DotNetGenericExtractor extractor)
 		{
-			super(element);
+			super(element, extractor);
 			myScope = scope;
-			myExtractor = extractor;
 		}
 
 		@NotNull
@@ -79,13 +79,6 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 				temp[i] = new CSharpSimpleParameterInfo(parameterInfo.getIndex(), parameterInfo.getName(), parameterInfo.getElement(), typeRef);
 			}
 			return temp;
-		}
-
-		@NotNull
-		@Override
-		public DotNetGenericExtractor getGenericExtractor()
-		{
-			return myExtractor;
 		}
 
 		@Nullable
@@ -125,7 +118,7 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 		}
 	}
 
-	private final CSharpReferenceExpression myReferenceExpression;
+	protected final CSharpReferenceExpression myReferenceExpression;
 
 	public CSharpReferenceTypeRef(CSharpReferenceExpression referenceExpression)
 	{
@@ -147,6 +140,12 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 	}
 
 	@NotNull
+	public CSharpReferenceExpression getReferenceExpression()
+	{
+		return myReferenceExpression;
+	}
+
+	@NotNull
 	@Override
 	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 	{
@@ -155,6 +154,6 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 		{
 			return new LambdaResult(scope, (CSharpMethodDeclaration) resolve, DotNetGenericExtractor.EMPTY);
 		}
-		return new Result<PsiElement>(resolve);
+		return new Result<PsiElement>(resolve, DotNetGenericExtractor.EMPTY);
 	}
 }

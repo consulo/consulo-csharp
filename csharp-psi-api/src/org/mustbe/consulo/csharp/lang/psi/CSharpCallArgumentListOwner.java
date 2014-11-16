@@ -20,8 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.DeprecationInfo;
 import org.mustbe.consulo.dotnet.psi.DotNetCallArgumentListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
  * @author VISTALL
@@ -43,10 +41,4 @@ public interface CSharpCallArgumentListOwner extends DotNetCallArgumentListOwner
 	@Override
 	@Nullable
 	CSharpCallArgumentList getParameterList();
-
-	@Nullable
-	DotNetTypeList getTypeArgumentList();
-
-	@NotNull
-	DotNetTypeRef[] getTypeArgumentListRefs();
 }
