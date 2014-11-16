@@ -147,7 +147,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 			{
 				myIndexMethods = new SmartList<CSharpArrayMethodDeclaration>();
 			}
-			myIndexMethods.add(GenericUnwrapTool.extract(declaration, myGenericExtractor, false));
+			myIndexMethods.add(GenericUnwrapTool.extract(declaration, myGenericExtractor));
 		}
 
 		@Override
@@ -198,7 +198,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 			{
 				return;
 			}
-			map.putValue(key, GenericUnwrapTool.extract(value, myGenericExtractor, false));
+			map.putValue(key, GenericUnwrapTool.extract(value, myGenericExtractor));
 		}
 	}
 

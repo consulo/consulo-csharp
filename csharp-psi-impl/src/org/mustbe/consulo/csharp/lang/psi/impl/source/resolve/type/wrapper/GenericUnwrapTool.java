@@ -22,7 +22,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightConstructorDeclaration;
@@ -38,7 +37,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGeneric
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
@@ -56,14 +54,8 @@ import com.intellij.psi.PsiElement;
 public class GenericUnwrapTool
 {
 	@SuppressWarnings("unchecked")
-	public static <T extends DotNetNamedElement> T extract(T namedElement, DotNetGenericExtractor extractor, boolean allowStatic)
+	public static <T extends DotNetNamedElement> T extract(T namedElement, DotNetGenericExtractor extractor)
 	{
-		if(extractor == DotNetGenericExtractor.EMPTY || namedElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) namedElement)
-				.hasModifier(CSharpModifier.STATIC) && !allowStatic)
-		{
-			return namedElement;
-		}
-
 		if(namedElement instanceof CSharpMethodDeclaration)
 		{
 			CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) namedElement;

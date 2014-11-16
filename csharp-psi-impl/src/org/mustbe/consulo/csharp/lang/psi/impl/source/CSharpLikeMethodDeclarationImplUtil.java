@@ -57,7 +57,7 @@ public class CSharpLikeMethodDeclarationImplUtil
 
 		for(DotNetNamedElement namedElement : ((CSharpTypeDeclaration) resolvedElement).getMembers())
 		{
-			namedElement = GenericUnwrapTool.extract(namedElement, genericExtractor, false);
+			namedElement = GenericUnwrapTool.extract(namedElement, genericExtractor);
 
 			if(CSharpElementCompareUtil.isEqual(namedElement, owner, scope))
 			{

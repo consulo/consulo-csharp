@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.consulo.lombok.annotations.Logger;
@@ -517,32 +518,41 @@ public class CSharpReferenceExpressionImpl extends CSharpStubElementImpl<CSharpR
 
 				methodResolveResults = new ArrayList<Pair<MethodCalcResult, PsiElement>>();
 
+				List<ResolveResult> newResolveResults = new ArrayList<ResolveResult>();
+
 				for(ResolveResult result : resolveResults)
 				{
 					PsiElement resolvedElement = result.getElement();
-					if(resolvedElement instanceof CSharpElementGroup && resolveFromParent)
+					if(resolvedElement instanceof CSharpElementGroup)
 					{
-						CSharpLambdaResolveResult lambdaResolveResult = CSharpLambdaExpressionImplUtil.resolveLeftLambdaTypeRef(element);
-						if(lambdaResolveResult != null)
+						if(resolveFromParent)
 						{
-							for(PsiElement psiElement : ((CSharpElementGroup<?>) resolvedElement).getElements())
+							CSharpLambdaResolveResult lambdaResolveResult = CSharpLambdaExpressionImplUtil.resolveLeftLambdaTypeRef(element);
+							if(lambdaResolveResult != null)
 							{
-								if(psiElement instanceof DotNetLikeMethodDeclaration)
+								for(PsiElement psiElement : ((CSharpElementGroup<?>) resolvedElement).getElements())
 								{
-									MethodCalcResult calc = MethodResolver.calc(lambdaResolveResult.getParameterTypeRefs(),
-											((DotNetLikeMethodDeclaration) psiElement).getParameterTypeRefs(), element);
+									if(psiElement instanceof DotNetLikeMethodDeclaration)
+									{
+										MethodCalcResult calc = MethodResolver.calc(lambdaResolveResult.getParameterTypeRefs(), ((DotNetLikeMethodDeclaration) psiElement).getParameterTypeRefs(), element);
 
-									methodResolveResults.add(Pair.create(calc, psiElement));
+										methodResolveResults.add(Pair.create(calc, psiElement));
+									}
 								}
 							}
+						}
+						else
+						{
+							methodResolveResults.add(Pair.<MethodCalcResult, PsiElement>create(MethodCalcResult.VALID, result.getElement()));
 						}
 					}
 					else
 					{
-						methodResolveResults.add(Pair.<MethodCalcResult, PsiElement>create(MethodCalcResult.VALID, result.getElement()));
+						newResolveResults.add(result);
 					}
 				}
-				return WeightUtil.sortAndReturn(methodResolveResults);
+				Collections.addAll(newResolveResults, WeightUtil.sortAndReturn(methodResolveResults));
+				return ContainerUtil.toArray(newResolveResults, ResolveResult.EMPTY_ARRAY);
 			case METHOD:
 			case ARRAY_METHOD:
 			case CONSTRUCTOR:
@@ -569,7 +579,7 @@ public class CSharpReferenceExpressionImpl extends CSharpStubElementImpl<CSharpR
 								{
 									inferenceResult = GenericInferenceUtil.inferenceGenericExtractor(element, callArgumentListOwner,
 											(DotNetLikeMethodDeclaration) psiElement);
-									psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, inferenceResult.getExtractor(), true);
+									psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, inferenceResult.getExtractor());
 								}
 
 								val calcResult = MethodResolver.calc(callArgumentListOwner, (DotNetLikeMethodDeclaration) psiElement, element);
