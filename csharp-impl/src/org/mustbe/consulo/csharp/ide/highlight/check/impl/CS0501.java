@@ -54,7 +54,7 @@ public class CS0501 extends CompilerCheck<DotNetLikeMethodDeclaration>
 		@Override
 		public String getText()
 		{
-			return "Create empty body";
+			return "Create empty method body";
 		}
 
 		@Override
