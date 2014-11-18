@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.lexer.CSharpLexer;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -167,6 +168,21 @@ public class CSharpNameSuggesterUtil
 			CSharpLexer cSharpLexer = new CSharpLexer();
 			cSharpLexer.start(str);
 			return CSharpTokenSets.KEYWORDS.contains(cSharpLexer.getTokenType());
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public static boolean isIdentifier(String str)
+	{
+		try
+		{
+			CSharpLexer cSharpLexer = new CSharpLexer();
+			cSharpLexer.start(str);
+			return CSharpTokens.IDENTIFIER == cSharpLexer.getTokenType();
 		}
 		catch(Exception e)
 		{
