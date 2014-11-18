@@ -58,7 +58,7 @@ public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSha
 		super(blockFactory, settings, node, foreignChildren);
 		myWrappingProcessor = new CSharpWrappingProcessor(node, settings.getCommonSettings(CSharpLanguage.INSTANCE));
 		myIndentProcessor = new CSharpIndentProcessor(node, settings.getCommonSettings(CSharpLanguage.INSTANCE));
-		mySpacingProcessor = new CSharpSpacingProcessor(node, settings.getCommonSettings(CSharpLanguage.INSTANCE));
+		mySpacingProcessor = new CSharpSpacingProcessor(this, settings.getCommonSettings(CSharpLanguage.INSTANCE));
 	}
 
 	@Nullable
