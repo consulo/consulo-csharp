@@ -3,5 +3,30 @@ using System;
 public class Program {
   public static void Main(String[] args) {
     Console.WriteLine("test");
+    if(true) {
+       try {
+         for(;;) {
+            String[] array = new [] {};
+            foreach(var item in array) {
+               while(true) {
+                 Console.WriteLine(item);
+               }
+            }
+         }
+         int var = 1;
+         switch(var) {
+           case 1:
+              break;
+           default:
+              break;
+         }
+       }
+       catch {
+
+       }
+       finally {
+
+       }
+    }
   }
 }

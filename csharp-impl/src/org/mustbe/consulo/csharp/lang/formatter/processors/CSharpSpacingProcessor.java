@@ -28,6 +28,12 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myCodeStyleSettings = codeStyleSettings;
 
 		myBuilder = new SpacingBuilder(codeStyleSettings);
+		myBuilder.between(CSharpTokens.IF_KEYWORD, CSharpTokens.LPAR).spaces(codeStyleSettings.SPACE_BEFORE_IF_PARENTHESES ? 1 : 0);
+		myBuilder.between(CSharpTokens.FOR_KEYWORD, CSharpTokens.LPAR).spaces(codeStyleSettings.SPACE_BEFORE_FOR_PARENTHESES ? 1 : 0);
+		myBuilder.between(CSharpTokens.FOREACH_KEYWORD, CSharpTokens.LPAR).spaces(codeStyleSettings.SPACE_BEFORE_FOR_PARENTHESES ? 1 : 0);
+		myBuilder.between(CSharpTokens.WHILE_KEYWORD, CSharpTokens.LPAR).spaces(codeStyleSettings.SPACE_BEFORE_WHILE_PARENTHESES ? 1 : 0);
+		myBuilder.between(CSharpTokens.SWITCH_KEYWORD, CSharpTokens.LPAR).spaces(codeStyleSettings.SPACE_BEFORE_SWITCH_PARENTHESES ? 1 : 0);
+		myBuilder.between(CSharpTokens.CATCH_KEYWORD, CSharpTokens.LPAR).spaces(codeStyleSettings.SPACE_BEFORE_CATCH_PARENTHESES ? 1 : 0);
 	}
 
 	@Nullable
