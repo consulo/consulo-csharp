@@ -57,6 +57,7 @@ public enum CSharpCompilerChecks
 	CS0516(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // constructor cant call itself
 	CS0518(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // dynamic checks
 	CS0539(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // checks for private impl of abstract methods
+	CS0693(CSharpLanguageVersion._2_0, HighlightInfoType.WARNING), // check by generic
 	CS0721(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static classes in parameters
 	CS0722(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static classes in methods
 	CS0723(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static classes in variables

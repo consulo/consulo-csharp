@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
@@ -163,6 +164,10 @@ public abstract class CompilerCheck<T extends PsiElement>
 		if(e instanceof DotNetParameter)
 		{
 			return ((DotNetParameter) e).getName();
+		}
+		else if(e instanceof DotNetGenericParameter)
+		{
+			return ((DotNetGenericParameter) e).getName();
 		}
 		else if(e instanceof CSharpLocalVariable)
 		{
