@@ -22,7 +22,6 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.ConvertToNormalCallFix;
-import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.ide.highlight.util.ConstructorHighlightUtil;
 import org.mustbe.consulo.csharp.ide.highlight.util.GenericParameterHighlightUtil;
 import org.mustbe.consulo.csharp.lang.psi.*;
@@ -38,9 +37,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.ar
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
-import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
@@ -54,9 +50,8 @@ import com.intellij.codeInsight.daemon.impl.HighlightVisitor;
 import com.intellij.codeInsight.daemon.impl.analysis.HighlightInfoHolder;
 import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
 import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixActionRegistrarImpl;
-import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInsight.quickfix.UnresolvedReferenceQuickFixProvider;
-import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -115,6 +110,8 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	@Override
 	public void visitElement(PsiElement element)
 	{
+		ProgressIndicatorProvider.checkCanceled();
+
 		IElementType elementType = element.getNode().getElementType();
 		if(CSharpSoftTokens.ALL.contains(elementType))
 		{
@@ -127,45 +124,6 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 			PsiElement parent = element.getParent();
 
 			parent.accept(this);
-		}
-
-		if(element instanceof DotNetElement)
-		{
-			CSharpLanguageVersion languageVersion = CSharpLanguageVersion.HIGHEST;
-			CSharpModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpModuleExtension.class);
-			if(extension != null)
-			{
-				languageVersion = extension.getLanguageVersion();
-			}
-
-			for(CSharpCompilerChecks classEntry : CSharpCompilerChecks.VALUES)
-			{
-				if(languageVersion.ordinal() >= classEntry.getLanguageVersion().ordinal() && classEntry.getTargetClass().isAssignableFrom(element
-						.getClass()))
-				{
-					List<CompilerCheck.CompilerCheckResult> results = classEntry.check(languageVersion, element);
-					if(results.isEmpty())
-					{
-						continue;
-					}
-					for(CompilerCheck.CompilerCheckResult result : results)
-					{
-						HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(result.getHighlightInfoType());
-						builder = builder.descriptionAndTooltip(result.getText());
-						builder = builder.range(result.getTextRange());
-						HighlightInfo highlightInfo = builder.create();
-						if(highlightInfo != null)
-						{
-							myHighlightInfoHolder.add(highlightInfo);
-
-							for(IntentionAction intentionAction : result.getQuickFixes())
-							{
-								QuickFixAction.registerQuickFixAction(highlightInfo, intentionAction);
-							}
-						}
-					}
-				}
-			}
 		}
 
 		if(element instanceof XmlTag)
