@@ -9,7 +9,6 @@ import com.intellij.formatting.ASTBlock;
 import com.intellij.formatting.Spacing;
 import com.intellij.formatting.SpacingBuilder;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
@@ -18,60 +17,43 @@ import com.intellij.psi.tree.IElementType;
 public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 {
 	private final CSharpFormattingBlock myParent;
-	private final CommonCodeStyleSettings myCodeStyleSettings;
 
 	private SpacingBuilder myBuilder;
 
 	public CSharpSpacingProcessor(CSharpFormattingBlock parent, CommonCodeStyleSettings codeStyleSettings)
 	{
 		myParent = parent;
-		myCodeStyleSettings = codeStyleSettings;
 
 		myBuilder = new SpacingBuilder(codeStyleSettings);
-		myBuilder.between(CSharpTokens.IF_KEYWORD, CSharpTokens.LPAR).spaces(codeStyleSettings.SPACE_BEFORE_IF_PARENTHESES ? 1 : 0);
-		myBuilder.between(CSharpTokens.FOR_KEYWORD, CSharpTokens.LPAR).spaces(codeStyleSettings.SPACE_BEFORE_FOR_PARENTHESES ? 1 : 0);
-		myBuilder.between(CSharpTokens.FOREACH_KEYWORD, CSharpTokens.LPAR).spaces(codeStyleSettings.SPACE_BEFORE_FOR_PARENTHESES ? 1 : 0);
-		myBuilder.between(CSharpTokens.WHILE_KEYWORD, CSharpTokens.LPAR).spaces(codeStyleSettings.SPACE_BEFORE_WHILE_PARENTHESES ? 1 : 0);
-		myBuilder.between(CSharpTokens.SWITCH_KEYWORD, CSharpTokens.LPAR).spaces(codeStyleSettings.SPACE_BEFORE_SWITCH_PARENTHESES ? 1 : 0);
-		myBuilder.between(CSharpTokens.CATCH_KEYWORD, CSharpTokens.LPAR).spaces(codeStyleSettings.SPACE_BEFORE_CATCH_PARENTHESES ? 1 : 0);
+
+		myBuilder.between(CSharpTokens.IF_KEYWORD, CSharpTokens.LPAR).spaceIf(codeStyleSettings.SPACE_BEFORE_IF_PARENTHESES);
+		myBuilder.between(CSharpTokens.FOR_KEYWORD, CSharpTokens.LPAR).spaceIf(codeStyleSettings.SPACE_BEFORE_FOR_PARENTHESES);
+		myBuilder.between(CSharpTokens.FOREACH_KEYWORD, CSharpTokens.LPAR).spaceIf(codeStyleSettings.SPACE_BEFORE_FOR_PARENTHESES);
+		myBuilder.between(CSharpTokens.WHILE_KEYWORD, CSharpTokens.LPAR).spaceIf(codeStyleSettings.SPACE_BEFORE_WHILE_PARENTHESES);
+		myBuilder.between(CSharpTokens.SWITCH_KEYWORD, CSharpTokens.LPAR).spaceIf(codeStyleSettings.SPACE_BEFORE_SWITCH_PARENTHESES);
+		myBuilder.between(CSharpTokens.CATCH_KEYWORD, CSharpTokens.LPAR).spaceIf(codeStyleSettings.SPACE_BEFORE_CATCH_PARENTHESES);
+
+		myBuilder.beforeInside(LBRACE, TYPE_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_CLASS_LBRACE);
+
+		myBuilder.beforeInside(BLOCK_STATEMENT, METHOD_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_METHOD_LBRACE);
+		myBuilder.beforeInside(BLOCK_STATEMENT, CONSTRUCTOR_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_METHOD_LBRACE);
+		myBuilder.beforeInside(BLOCK_STATEMENT, ARRAY_METHOD_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_METHOD_LBRACE);
+		myBuilder.beforeInside(BLOCK_STATEMENT, PROPERTY_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_METHOD_LBRACE);
+		myBuilder.beforeInside(BLOCK_STATEMENT, EVENT_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_METHOD_LBRACE);
+
+		myBuilder.beforeInside(BLOCK_STATEMENT, IF_STATEMENT).spaceIf(codeStyleSettings.SPACE_BEFORE_IF_LBRACE);
+		myBuilder.beforeInside(BLOCK_STATEMENT, SWITCH_STATEMENT).spaceIf(codeStyleSettings.SPACE_BEFORE_SWITCH_LBRACE);
+		myBuilder.beforeInside(BLOCK_STATEMENT, FOR_STATEMENT).spaceIf(codeStyleSettings.SPACE_BEFORE_FOR_LBRACE);
+		myBuilder.beforeInside(BLOCK_STATEMENT, FOREACH_STATEMENT).spaceIf(codeStyleSettings.SPACE_BEFORE_FOR_LBRACE);
+		myBuilder.beforeInside(BLOCK_STATEMENT, WHILE_STATEMENT).spaceIf(codeStyleSettings.SPACE_BEFORE_WHILE_LBRACE);
+		myBuilder.beforeInside(BLOCK_STATEMENT, TRY_STATEMENT).spaceIf(codeStyleSettings.SPACE_BEFORE_TRY_LBRACE);
+		myBuilder.beforeInside(BLOCK_STATEMENT, CATCH_STATEMENT).spaceIf(codeStyleSettings.SPACE_BEFORE_CATCH_LBRACE);
+		myBuilder.beforeInside(BLOCK_STATEMENT, FINALLY_STATEMENT).spaceIf(codeStyleSettings.SPACE_BEFORE_FINALLY_LBRACE);
 	}
 
 	@Nullable
 	public Spacing getSpacing(@Nullable ASTBlock child1, @NotNull ASTBlock child2)
 	{
-		Spacing selfSpacingImpl = getSelfSpacingImpl(child1, child2);
-		if(selfSpacingImpl != null)
-		{
-			return selfSpacingImpl;
-		}
-
 		return myBuilder.getSpacing(myParent, child1, child2);
-	}
-
-	private Spacing getSelfSpacingImpl(@Nullable ASTBlock child1, @NotNull ASTBlock child2)
-	{
-		IElementType elementType = myParent.getNode().getElementType();
-		IElementType child2ElementType = child2.getNode().getElementType();
-		if(child2ElementType == LBRACE || child2ElementType == BLOCK_STATEMENT)
-		{
-			int braceStyle = myCodeStyleSettings.BRACE_STYLE;
-			if(elementType == TYPE_DECLARATION)
-			{
-				braceStyle = myCodeStyleSettings.CLASS_BRACE_STYLE;
-			}
-			else if(elementType == METHOD_DECLARATION ||
-					elementType == CONSTRUCTOR_DECLARATION ||
-					elementType == ARRAY_METHOD_DECLARATION)
-			{
-				braceStyle = myCodeStyleSettings.METHOD_BRACE_STYLE;
-			}
-
-			switch(braceStyle)
-			{
-				case CommonCodeStyleSettings.END_OF_LINE:
-					return Spacing.createSpacing(1, 1, 0, myCodeStyleSettings.KEEP_LINE_BREAKS, myCodeStyleSettings.KEEP_BLANK_LINES_BEFORE_RBRACE);
-			}
-		}
-		return null;
 	}
 }
