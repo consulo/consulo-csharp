@@ -47,7 +47,8 @@ public enum CSharpModifier implements DotNetModifier
 	VIRTUAL,
 	OUT,
 	ASYNC,
-	IN;
+	IN,
+	EXTERN; //TODO [VISTALL] support it
 
 	public static CSharpModifier[] EMPTY_ARRAY = new CSharpModifier[0];
 	private static Map<DotNetModifier, CSharpModifier> ourReplaceMap = new HashMap<DotNetModifier, CSharpModifier>()

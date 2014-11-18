@@ -25,14 +25,14 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
  * @author VISTALL
  * @since 10.06.14
  */
-public class RemoveModifierFix extends BaseModifierFix
+public class AddModifierFix extends BaseModifierFix
 {
-	public RemoveModifierFix(DotNetModifier[] modifiers, DotNetModifierListOwner parent)
+	public AddModifierFix(DotNetModifier[] modifiers, DotNetModifierListOwner parent)
 	{
 		super(modifiers, parent);
 	}
 
-	public RemoveModifierFix(DotNetModifier modifier, DotNetModifierListOwner parent)
+	public AddModifierFix(DotNetModifier modifier, DotNetModifierListOwner parent)
 	{
 		super(modifier, parent);
 	}
@@ -40,19 +40,19 @@ public class RemoveModifierFix extends BaseModifierFix
 	@Override
 	public boolean isValidCondition(@NotNull DotNetModifierList modifierList, @NotNull DotNetModifier modifier)
 	{
-		return modifierList.hasModifier(modifier);
+		return !modifierList.hasModifier(modifier);
 	}
 
 	@NotNull
 	@Override
 	public String getActionName()
 	{
-		return "Remove";
+		return "Add";
 	}
 
 	@Override
 	public void doAction(@NotNull DotNetModifierList modifierList, @NotNull DotNetModifier modifier)
 	{
-		modifierList.removeModifier(modifier);
+		modifierList.addModifier(modifier);
 	}
 }
