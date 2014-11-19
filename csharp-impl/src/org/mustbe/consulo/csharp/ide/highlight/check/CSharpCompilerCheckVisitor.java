@@ -3,12 +3,12 @@ package org.mustbe.consulo.csharp.ide.highlight.check;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.ide.highlight.CSharpCompilerChecks;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
+import org.mustbe.consulo.msil.representation.MsilFileRepresentationVirtualFile;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightVisitor;
 import com.intellij.codeInsight.daemon.impl.analysis.HighlightInfoHolder;
@@ -16,6 +16,7 @@ import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 
@@ -76,6 +77,11 @@ public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements 
 	@Override
 	public boolean suitableForFile(@NotNull PsiFile psiFile)
 	{
+		VirtualFile virtualFile = psiFile.getVirtualFile();
+		if(virtualFile instanceof MsilFileRepresentationVirtualFile)
+		{
+			return false;
+		}
 		return psiFile instanceof CSharpFileImpl;
 	}
 
