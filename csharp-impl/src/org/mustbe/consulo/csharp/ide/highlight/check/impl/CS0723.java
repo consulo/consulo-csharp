@@ -38,7 +38,7 @@ public class CS0723 extends CompilerCheck<DotNetVariable>
 {
 	@Nullable
 	@Override
-	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetVariable element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetVariable element)
 	{
 		if(element instanceof DotNetParameter)
 		{
@@ -49,7 +49,7 @@ public class CS0723 extends CompilerCheck<DotNetVariable>
 		PsiElement resolve = DotNetTypeRefUtil.resolve(type);
 		if(resolve instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) resolve).hasModifier(DotNetModifier.STATIC))
 		{
-			return result(type, formatElement(element)).addQuickFix(new RemoveModifierFix(DotNetModifier.STATIC, (DotNetModifierListOwner) resolve));
+			return newBuilder(type, formatElement(element)).addQuickFix(new RemoveModifierFix(DotNetModifier.STATIC, (DotNetModifierListOwner) resolve));
 		}
 		return null;
 	}

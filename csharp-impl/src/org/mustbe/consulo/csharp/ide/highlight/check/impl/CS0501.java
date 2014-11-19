@@ -95,7 +95,7 @@ public class CS0501 extends CompilerCheck<DotNetLikeMethodDeclaration>
 
 	@Nullable
 	@Override
-	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetLikeMethodDeclaration element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetLikeMethodDeclaration element)
 	{
 		if(element instanceof CSharpArrayMethodDeclaration)
 		{
@@ -120,7 +120,7 @@ public class CS0501 extends CompilerCheck<DotNetLikeMethodDeclaration>
 		PsiElement codeBlock = element.getCodeBlock();
 		if(codeBlock == null && !isAllowEmptyCodeBlock(element))
 		{
-			CompilerCheckResult result = result(highlight, formatElement(element));
+			CompilerCheckBuilder result = newBuilder(highlight, formatElement(element));
 			if(element instanceof CSharpConstructorDeclaration)
 			{
 				result.addQuickFix(new CreateEmptyBoxFix(element));

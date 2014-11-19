@@ -33,9 +33,11 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.util.NullableFactory;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -46,7 +48,16 @@ import com.intellij.psi.PsiElement;
  */
 public abstract class CompilerCheck<T extends PsiElement>
 {
-	public static class CompilerCheckResult
+	public static abstract class HighlightInfoFactory implements NullableFactory<HighlightInfo>
+	{
+		@NotNull
+		public List<IntentionAction> getQuickFixes()
+		{
+			return Collections.emptyList();
+		}
+	}
+
+	public static class CompilerCheckBuilder extends HighlightInfoFactory
 	{
 		private String myText;
 		private TextRange myTextRange;
@@ -59,7 +70,7 @@ public abstract class CompilerCheck<T extends PsiElement>
 			return myTextRange;
 		}
 
-		public CompilerCheckResult setTextRange(TextRange textRange)
+		public CompilerCheckBuilder setTextRange(TextRange textRange)
 		{
 			myTextRange = textRange;
 			return this;
@@ -70,7 +81,7 @@ public abstract class CompilerCheck<T extends PsiElement>
 			return myText;
 		}
 
-		public CompilerCheckResult setText(String text)
+		public CompilerCheckBuilder setText(String text)
 		{
 			myText = text;
 			return this;
@@ -81,13 +92,13 @@ public abstract class CompilerCheck<T extends PsiElement>
 			return myHighlightInfoType;
 		}
 
-		public CompilerCheckResult setHighlightInfoType(HighlightInfoType highlightInfoType)
+		public CompilerCheckBuilder setHighlightInfoType(HighlightInfoType highlightInfoType)
 		{
 			myHighlightInfoType = highlightInfoType;
 			return this;
 		}
 
-		public CompilerCheckResult addQuickFix(IntentionAction a)
+		public CompilerCheckBuilder addQuickFix(IntentionAction a)
 		{
 			if(myQuickFixes.isEmpty())
 			{
@@ -97,16 +108,27 @@ public abstract class CompilerCheck<T extends PsiElement>
 			return this;
 		}
 
+		@NotNull
 		public List<IntentionAction> getQuickFixes()
 		{
 			return myQuickFixes;
 		}
+
+		@Nullable
+		@Override
+		public HighlightInfo create()
+		{
+			HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(getHighlightInfoType());
+			builder = builder.descriptionAndTooltip(getText());
+			builder = builder.range(getTextRange());
+			return builder.create();
+		}
 	}
 
 	@NotNull
-	public List<CompilerCheckResult> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull T element)
+	public List<? extends HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull T element)
 	{
-		CompilerCheckResult check = checkImpl(languageVersion, element);
+		HighlightInfoFactory check = checkImpl(languageVersion, element);
 		if(check == null)
 		{
 			return Collections.emptyList();
@@ -115,33 +137,33 @@ public abstract class CompilerCheck<T extends PsiElement>
 	}
 
 	@Nullable
-	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull T element)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull T element)
 	{
 		return null;
 	}
 
 	@NotNull
-	public CompilerCheckResult result(@NotNull PsiElement range, String... args)
+	public CompilerCheckBuilder newBuilder(@NotNull PsiElement range, String... args)
 	{
-		return resultImpl(getClass(), range, args);
+		return newBuilderImpl(getClass(), range, args);
 	}
 
 	@NotNull
-	public CompilerCheckResult result(@NotNull TextRange range, String... args)
+	public CompilerCheckBuilder newBuilder(@NotNull TextRange range, String... args)
 	{
-		return resultImpl(getClass(), range, args);
+		return newBuilderImpl(getClass(), range, args);
 	}
 
 	@NotNull
-	public static CompilerCheckResult resultImpl(@NotNull Class<?> clazz, @NotNull PsiElement range, String... args)
+	public static CompilerCheckBuilder newBuilderImpl(@NotNull Class<?> clazz, @NotNull PsiElement range, String... args)
 	{
-		return resultImpl(clazz, range.getTextRange(), args);
+		return newBuilderImpl(clazz, range.getTextRange(), args);
 	}
 
 	@NotNull
-	public static CompilerCheckResult resultImpl(@NotNull Class<?> clazz, @NotNull TextRange range, String... args)
+	public static CompilerCheckBuilder newBuilderImpl(@NotNull Class<?> clazz, @NotNull TextRange range, String... args)
 	{
-		CompilerCheckResult result = new CompilerCheckResult();
+		CompilerCheckBuilder result = new CompilerCheckBuilder();
 		result.setText(message(clazz, args));
 		result.setTextRange(range);
 		return result;

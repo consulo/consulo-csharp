@@ -42,7 +42,7 @@ public class CS0413 extends CompilerCheck<PsiElement>
 {
 	@Nullable
 	@Override
-	public CompilerCheckResult checkImpl(
+	public CompilerCheckBuilder checkImpl(
 			@NotNull CSharpLanguageVersion languageVersion, @NotNull PsiElement element)
 	{
 		if(element instanceof CSharpAsExpressionImpl)
@@ -79,7 +79,7 @@ public class CS0413 extends CompilerCheck<PsiElement>
 
 			if(!findReferenceOrClass)
 			{
-				return result(asExpression.getAsKeyword(), "as", ((DotNetGenericParameter) resolve).getName());
+				return newBuilder(asExpression.getAsKeyword(), "as", ((DotNetGenericParameter) resolve).getName());
 			}
 		}
 		return null;

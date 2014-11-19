@@ -37,13 +37,13 @@ public class CS0721 extends CompilerCheck<DotNetParameter>
 {
 	@Nullable
 	@Override
-	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetParameter element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetParameter element)
 	{
 		DotNetType type = element.getType();
 		PsiElement resolve = DotNetTypeRefUtil.resolve(type);
 		if(resolve instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) resolve).hasModifier(DotNetModifier.STATIC))
 		{
-			return result(type, formatElement(resolve)).addQuickFix(new RemoveModifierFix(DotNetModifier.STATIC, (DotNetModifierListOwner) resolve));
+			return newBuilder(type, formatElement(resolve)).addQuickFix(new RemoveModifierFix(DotNetModifier.STATIC, (DotNetModifierListOwner) resolve));
 		}
 		return null;
 	}

@@ -46,7 +46,7 @@ public class CS0227 extends AbstractCompilerCheck<CSharpModifierListImpl>
 
 	@Override
 	public void checkImpl(
-			@NotNull CSharpModifierListImpl list, @NotNull CompilerCheckResult checkResult)
+			@NotNull CSharpModifierListImpl list, @NotNull CompilerCheckBuilder checkResult)
 	{
 		PsiElement modifier = list.getModifierElement(CSharpModifier.UNSAFE);
 		assert modifier != null;

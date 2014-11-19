@@ -40,7 +40,7 @@ public class CS0107 extends CompilerCheck<DotNetModifierListOwner>
 {
 	@NotNull
 	@Override
-	public List<CompilerCheckResult> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetModifierListOwner element)
+	public List<CompilerCheckBuilder> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetModifierListOwner element)
 	{
 		DotNetModifierList modifierList = element.getModifierList();
 		if(modifierList == null)
@@ -58,14 +58,14 @@ public class CS0107 extends CompilerCheck<DotNetModifierListOwner>
 		{
 			return Collections.emptyList();
 		}
-		List<CompilerCheckResult> list = new ArrayList<CompilerCheckResult>(map.size());
+		List<CompilerCheckBuilder> list = new ArrayList<CompilerCheckBuilder>(map.size());
 		for(Map.Entry<CSharpAccessModifier, Map<CSharpModifier, PsiElement>> entry : map.entrySet())
 		{
 			RemoveModifierFix modifierFix = new RemoveModifierFix(entry.getValue().keySet().toArray(CSharpModifier.EMPTY_ARRAY), element);
 
 			for(Map.Entry<CSharpModifier, PsiElement> psiElement : entry.getValue().entrySet())
 			{
-				list.add(result(psiElement.getValue()).addQuickFix(modifierFix));
+				list.add(newBuilder(psiElement.getValue()).addQuickFix(modifierFix));
 			}
 		}
 		return list;

@@ -45,7 +45,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 {
 	@Nullable
 	@Override
-	public CompilerCheckResult checkImpl(
+	public CompilerCheckBuilder checkImpl(
 			@NotNull CSharpLanguageVersion languageVersion, @NotNull PsiElement element)
 	{
 		Trinity<DotNetTypeRef, DotNetTypeRef, ? extends PsiElement> resolve = resolve(element);
@@ -63,7 +63,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 
 		if(!CSharpTypeUtil.isInheritableWithImplicit(resolve.getFirst(), resolve.getSecond(), element))
 		{
-			return result(resolve.getThird(), resolve.getSecond().getQualifiedText(), resolve.getFirst().getQualifiedText());
+			return newBuilder(resolve.getThird(), resolve.getSecond().getQualifiedText(), resolve.getFirst().getQualifiedText());
 		}
 
 		return null;

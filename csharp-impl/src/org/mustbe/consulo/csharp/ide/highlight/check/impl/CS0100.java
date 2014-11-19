@@ -38,7 +38,7 @@ public class CS0100 extends CompilerCheck<DotNetElement>
 {
 	@Nullable
 	@Override
-	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetElement element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetElement element)
 	{
 		DotNetVariable[] parameters = getParameters(element);
 		if(parameters == null)
@@ -54,7 +54,7 @@ public class CS0100 extends CompilerCheck<DotNetElement>
 			{
 				PsiElement nameIdentifier = parameter.getNameIdentifier();
 				assert nameIdentifier != null;
-				return result(nameIdentifier, name);
+				return newBuilder(nameIdentifier, name);
 			}
 			else
 			{

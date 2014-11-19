@@ -24,7 +24,7 @@ public class CS1960 extends CompilerCheck<DotNetGenericParameter>
 
 	@Nullable
 	@Override
-	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetGenericParameter element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetGenericParameter element)
 	{
 		DotNetModifierList modifierList = element.getModifierList();
 		if(modifierList == null)
@@ -46,7 +46,7 @@ public class CS1960 extends CompilerCheck<DotNetGenericParameter>
 					return null;
 				}
 
-				return result(modifierElement).addQuickFix(new RemoveModifierFix(ourModifier, element));
+				return newBuilder(modifierElement).addQuickFix(new RemoveModifierFix(ourModifier, element));
 			}
 		}
 		return null;

@@ -83,7 +83,7 @@ public class CS0453 extends CompilerCheck<CSharpNullableTypeImpl>
 
 	@Nullable
 	@Override
-	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpNullableTypeImpl element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpNullableTypeImpl element)
 	{
 		DotNetType innerType = element.getInnerType();
 		if(innerType == null)
@@ -99,6 +99,6 @@ public class CS0453 extends CompilerCheck<CSharpNullableTypeImpl>
 			return null;
 		}
 		PsiElement questElement = element.getQuestElement();
-		return result(questElement, dotNetTypeRef.getQualifiedText()).addQuickFix(new DeleteQuestMarkQuickFix(element, "?"));
+		return newBuilder(questElement, dotNetTypeRef.getQualifiedText()).addQuickFix(new DeleteQuestMarkQuickFix(element, "?"));
 	}
 }

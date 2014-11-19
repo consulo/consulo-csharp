@@ -241,7 +241,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 
 	@Nullable
 	@Override
-	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull PsiElement element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull PsiElement element)
 	{
 		for(Feature feature : myFeatures)
 		{
@@ -253,7 +253,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 					continue;
 				}
 
-				CompilerCheckResult result = result(fun, feature.myName, languageVersion.getPresentableName());
+				CompilerCheckBuilder result = newBuilder(fun, feature.myName, languageVersion.getPresentableName());
 
 				result.addQuickFix(new SetLanguageVersionFix(feature.myLanguageVersion));
 

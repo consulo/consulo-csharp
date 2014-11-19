@@ -36,7 +36,7 @@ public class CS0518 extends CompilerCheck<CSharpNativeTypeImpl>
 
 	@Nullable
 	@Override
-	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpNativeTypeImpl element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpNativeTypeImpl element)
 	{
 		PsiElement typeElement = element.getTypeElement();
 		if(element.getTypeElementType() == CSharpTokens.DYNAMIC_KEYWORD)
@@ -44,7 +44,7 @@ public class CS0518 extends CompilerCheck<CSharpNativeTypeImpl>
 			DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(element.getProject()).findType(ourCheckType, element.getResolveScope());
 			if(type == null)
 			{
-				return result(typeElement);
+				return newBuilder(typeElement);
 			}
 		}
 		return null;

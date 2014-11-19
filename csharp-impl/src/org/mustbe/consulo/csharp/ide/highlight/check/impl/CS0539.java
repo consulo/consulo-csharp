@@ -18,7 +18,7 @@ public class CS0539 extends CompilerCheck<DotNetVirtualImplementOwner>
 {
 	@Nullable
 	@Override
-	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetVirtualImplementOwner element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetVirtualImplementOwner element)
 	{
 		PsiElement nameIdentifier = ((PsiNameIdentifierOwner) element).getNameIdentifier();
 		if(nameIdentifier == null)
@@ -33,7 +33,7 @@ public class CS0539 extends CompilerCheck<DotNetVirtualImplementOwner>
 			default:
 				return null;
 			case NOT_FOUND:
-				return result(nameIdentifier, formatElement(element));
+				return newBuilder(nameIdentifier, formatElement(element));
 		}
 	}
 }

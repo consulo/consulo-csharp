@@ -42,16 +42,16 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 {
 	@NotNull
 	@Override
-	public List<CompilerCheckResult> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpTypeDeclaration element)
+	public List<CompilerCheckBuilder> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpTypeDeclaration element)
 	{
 		return doCheck(this, element);
 	}
 
 	@NotNull
-	public static <T extends DotNetMemberOwner & DotNetQualifiedElement> List<CompilerCheckResult> doCheck(@NotNull CompilerCheck<T> compilerCheck,
+	public static <T extends DotNetMemberOwner & DotNetQualifiedElement> List<CompilerCheckBuilder> doCheck(@NotNull CompilerCheck<T> compilerCheck,
 			@NotNull T element)
 	{
-		List<CompilerCheckResult> results = new SmartList<CompilerCheckResult>();
+		List<CompilerCheckBuilder> results = new SmartList<CompilerCheckBuilder>();
 
 		final DotNetNamedElement[] members = element.getMembers();
 
@@ -79,7 +79,7 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 					toHighlight = ObjectUtils.notNull(nameIdentifier, findTarget);
 				}
 
-				results.add(compilerCheck.result(toHighlight, element.getPresentableQName(), findTarget.getName()));
+				results.add(compilerCheck.newBuilder(toHighlight, element.getPresentableQName(), findTarget.getName()));
 			}
 		}
 		return results;

@@ -32,7 +32,7 @@ public class CS0409 extends CompilerCheck<CSharpGenericConstraint>
 {
 	@Nullable
 	@Override
-	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpGenericConstraint element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpGenericConstraint element)
 	{
 		CSharpGenericConstraintList parent = (CSharpGenericConstraintList) element.getParent();
 
@@ -60,7 +60,7 @@ public class CS0409 extends CompilerCheck<CSharpGenericConstraint>
 			if(constraint.resolve() == resolve)
 			{
 
-				return result(constraint, resolve.getName());
+				return newBuilder(constraint, resolve.getName());
 			}
 		}
 		return null;

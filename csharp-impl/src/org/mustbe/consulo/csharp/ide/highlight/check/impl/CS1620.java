@@ -41,7 +41,7 @@ public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 {
 	@NotNull
 	@Override
-	public List<CompilerCheckResult> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpMethodCallExpressionImpl element)
+	public List<CompilerCheckBuilder> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpMethodCallExpressionImpl element)
 	{
 		PsiElement psiElement = element.resolveToCallable();
 		if(psiElement instanceof DotNetLikeMethodDeclaration)
@@ -49,7 +49,7 @@ public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 			DotNetExpression[] parameterExpressions = element.getParameterExpressions();
 			DotNetParameter[] parameters = ((DotNetLikeMethodDeclaration) psiElement).getParameters();
 
-			List<CompilerCheckResult> results = new SmartList<CompilerCheckResult>();
+			List<CompilerCheckBuilder> results = new SmartList<CompilerCheckBuilder>();
 			for(int i = 0; i < parameters.length; i++)
 			{
 				DotNetExpression dotNetExpression = ArrayUtil2.safeGet(parameterExpressions, i);
@@ -75,7 +75,7 @@ public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 				DotNetTypeRef typeRef = dotNetExpression.toTypeRef(false);
 				if(!(typeRef instanceof CSharpRefTypeRef) || ((CSharpRefTypeRef) typeRef).getType() != type)
 				{
-					results.add(result(dotNetExpression, String.valueOf(i + 1), type.name()));
+					results.add(newBuilder(dotNetExpression, String.valueOf(i + 1), type.name()));
 				}
 			}
 			return results;

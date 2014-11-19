@@ -37,7 +37,7 @@ public class CS0516 extends AbstractCompilerCheck<CSharpConstructorSuperCallImpl
 	}
 
 	@Override
-	public void checkImpl(@NotNull CSharpConstructorSuperCallImpl element, @NotNull CompilerCheckResult checkResult)
+	public void checkImpl(@NotNull CSharpConstructorSuperCallImpl element, @NotNull CompilerCheckBuilder checkResult)
 	{
 		CSharpConstructorDeclaration parent = (CSharpConstructorDeclaration) element.getParent();
 

@@ -20,7 +20,7 @@ public class CS0305 extends CompilerCheck<DotNetType>
 {
 	@Nullable
 	@Override
-	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetType type)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetType type)
 	{
 		if(type.getParent() instanceof DotNetTypeWithTypeArguments)
 		{
@@ -61,7 +61,7 @@ public class CS0305 extends CompilerCheck<DotNetType>
 
 		if(expectedCount != foundCount)
 		{
-			return result(innerType, formatElement(resolvedElement), String.valueOf(expectedCount));
+			return newBuilder(innerType, formatElement(resolvedElement), String.valueOf(expectedCount));
 		}
 		return null;
 	}

@@ -52,14 +52,14 @@ public class CS0128 extends CompilerCheck<CSharpBlockStatementImpl>
 {
 	@NotNull
 	@Override
-	public List<CompilerCheckResult> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpBlockStatementImpl element)
+	public List<CompilerCheckBuilder> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpBlockStatementImpl element)
 	{
 		PsiElement parent = element.getParent();
 		if(!(parent instanceof DotNetModifierListOwner))
 		{
 			return Collections.emptyList();
 		}
-		val results = new ArrayList<CompilerCheckResult>();
+		val results = new ArrayList<CompilerCheckBuilder>();
 		val names = new THashSet<String>();
 		parent.accept(new CSharpRecursiveElementVisitor()
 		{
@@ -69,7 +69,7 @@ public class CS0128 extends CompilerCheck<CSharpBlockStatementImpl>
 				String name = variable.getName();
 				if(names.contains(name))
 				{
-					results.add(result(variable.getNameIdentifier(), name));
+					results.add(newBuilder(variable.getNameIdentifier(), name));
 				}
 				else
 				{
@@ -145,7 +145,7 @@ public class CS0128 extends CompilerCheck<CSharpBlockStatementImpl>
 				if(names.contains(name))
 				{
 
-					results.add(resultImpl(CS0136.class, parameter.getNameIdentifier(), name, name));
+					results.add(newBuilderImpl(CS0136.class, parameter.getNameIdentifier(), name, name));
 				}
 				else
 				{

@@ -75,7 +75,7 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration>
 
 	@Nullable
 	@Override
-	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpMethodDeclaration element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpMethodDeclaration element)
 	{
 		PsiElement nameIdentifier = element.getNameIdentifier();
 		if(nameIdentifier == null)
@@ -84,13 +84,13 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration>
 		}
 		if((element.hasModifier(CSharpModifier.ABSTRACT) || element.isDelegate()) && element.getCodeBlock() != null)
 		{
-			CompilerCheckResult compilerCheckResult = result(nameIdentifier, formatElement(element));
-			compilerCheckResult.addQuickFix(new RemoveMethodBody(element));
+			CompilerCheckBuilder compilerCheckBuilder = newBuilder(nameIdentifier, formatElement(element));
+			compilerCheckBuilder.addQuickFix(new RemoveMethodBody(element));
 			if(element.hasModifier(CSharpModifier.ABSTRACT))
 			{
-				compilerCheckResult.addQuickFix(new RemoveModifierFix(CSharpModifier.ABSTRACT, element));
+				compilerCheckBuilder.addQuickFix(new RemoveModifierFix(CSharpModifier.ABSTRACT, element));
 			}
-			return compilerCheckResult;
+			return compilerCheckBuilder;
 		}
 		return null;
 	}

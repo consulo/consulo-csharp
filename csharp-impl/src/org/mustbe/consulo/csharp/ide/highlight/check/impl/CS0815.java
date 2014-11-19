@@ -53,7 +53,7 @@ public class CS0815 extends AbstractCompilerCheck<CSharpLocalVariable>
 
 	@Override
 	public void checkImpl(
-			@NotNull CSharpLocalVariable element, @NotNull CompilerCheckResult checkResult)
+			@NotNull CSharpLocalVariable element, @NotNull CompilerCheckBuilder checkResult)
 	{
 		DotNetExpression initializer = element.getInitializer();
 		assert initializer != null;

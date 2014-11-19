@@ -39,18 +39,18 @@ public abstract class AbstractCompilerCheck<T extends PsiElement> extends Compil
 	}
 
 	@Override
-	public final CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull T element)
+	public final CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull T element)
 	{
 		if(accept(element))
 		{
-			CompilerCheckResult result = result(element.getTextRange());
+			CompilerCheckBuilder result = newBuilder(element.getTextRange());
 			checkImpl(element, result);
 			return result;
 		}
 		return null;
 	}
 
-	public void checkImpl(@NotNull T element, @NotNull CompilerCheckResult checkResult)
+	public void checkImpl(@NotNull T element, @NotNull CompilerCheckBuilder checkResult)
 	{
 
 	}

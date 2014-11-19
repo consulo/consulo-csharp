@@ -29,7 +29,7 @@ import com.intellij.psi.PsiNameIdentifierOwner;
 public class CompilerCheckForWithNameArgument<T extends DotNetNamedElement & PsiNameIdentifierOwner> extends AbstractCompilerCheck<T>
 {
 	@Override
-	public void checkImpl(@NotNull T element, @NotNull CompilerCheckResult result)
+	public void checkImpl(@NotNull T element, @NotNull CompilerCheckBuilder result)
 	{
 		result.setText(CSharpErrorBundle.message(myId, element.getName()));
 		PsiElement nameIdentifier = element.getNameIdentifier();

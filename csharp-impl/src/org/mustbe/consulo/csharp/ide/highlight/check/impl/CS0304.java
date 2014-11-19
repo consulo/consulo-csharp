@@ -39,7 +39,7 @@ import lombok.val;
 public class CS0304 extends CompilerCheck<CSharpNewExpression>
 {
 	@Override
-	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpNewExpression element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpNewExpression element)
 	{
 		PsiElement resolve = element.toTypeRef(false).resolve(element).getElement();
 		if(resolve instanceof DotNetGenericParameter)
@@ -70,7 +70,7 @@ public class CS0304 extends CompilerCheck<CSharpNewExpression>
 			{
 				DotNetType newType = element.getNewType();
 				assert newType != null;
-				return result(newType, ((DotNetGenericParameter) resolve).getName());
+				return newBuilder(newType, ((DotNetGenericParameter) resolve).getName());
 			}
 		}
 		return null;

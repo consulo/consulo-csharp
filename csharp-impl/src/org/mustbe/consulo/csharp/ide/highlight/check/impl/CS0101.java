@@ -31,7 +31,7 @@ public class CS0101 extends CompilerCheck<CSharpNamespaceDeclaration>
 {
 	@NotNull
 	@Override
-	public List<CompilerCheckResult> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpNamespaceDeclaration element)
+	public List<CompilerCheckBuilder> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpNamespaceDeclaration element)
 	{
 		return CS0102.doCheck(this, element);
 	}

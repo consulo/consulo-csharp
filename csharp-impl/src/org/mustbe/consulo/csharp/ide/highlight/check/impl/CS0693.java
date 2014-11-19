@@ -18,7 +18,7 @@ public class CS0693 extends CompilerCheck<DotNetGenericParameter>
 {
 	@Nullable
 	@Override
-	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetGenericParameter element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetGenericParameter element)
 	{
 		PsiElement nameIdentifier = element.getNameIdentifier();
 		if(nameIdentifier == null)
@@ -36,7 +36,7 @@ public class CS0693 extends CompilerCheck<DotNetGenericParameter>
 			{
 				if(Comparing.equal(genericParameter.getName(), nameIdentifier.getText()))
 				{
-					return result(nameIdentifier, formatElement(element), formatElement(secondParent));
+					return newBuilder(nameIdentifier, formatElement(element), formatElement(secondParent));
 				}
 			}
 		}

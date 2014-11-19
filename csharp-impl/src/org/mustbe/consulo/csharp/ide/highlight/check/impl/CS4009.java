@@ -22,7 +22,7 @@ public class CS4009 extends AbstractCompilerCheck<CSharpMethodDeclaration>
 	}
 
 	@Override
-	public void checkImpl(@NotNull CSharpMethodDeclaration element, @NotNull CompilerCheckResult checkResult)
+	public void checkImpl(@NotNull CSharpMethodDeclaration element, @NotNull CompilerCheckBuilder checkResult)
 	{
 		PsiElement modifierElement = element.getModifierList().getModifierElement(CSharpModifier.ASYNC);
 		assert modifierElement != null;

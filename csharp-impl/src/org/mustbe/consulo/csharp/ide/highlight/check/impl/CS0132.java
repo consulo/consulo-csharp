@@ -15,11 +15,11 @@ public class CS0132 extends CompilerCheck<CSharpConstructorDeclaration>
 {
 	@Nullable
 	@Override
-	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpConstructorDeclaration element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpConstructorDeclaration element)
 	{
 		if(element.hasModifier(CSharpModifier.STATIC) && element.getParameters().length > 0)
 		{
-			return result(element.getParameterList(), formatElement(element));
+			return newBuilder(element.getParameterList(), formatElement(element));
 		}
 		return null;
 	}

@@ -45,7 +45,7 @@ public class CS0214 extends AbstractCompilerCheck<CSharpFixedStatementImpl>
 
 	@Override
 	public void checkImpl(
-			@NotNull CSharpFixedStatementImpl statement, @NotNull CompilerCheckResult checkResult)
+			@NotNull CSharpFixedStatementImpl statement, @NotNull CompilerCheckBuilder checkResult)
 	{
 		PsiElement fixedElement = statement.getFixedElement();
 		checkResult.setTextRange(fixedElement.getTextRange());

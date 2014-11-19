@@ -43,7 +43,7 @@ public class CS1105 extends AbstractCompilerCheck<CSharpMethodDeclaration>
 	}
 
 	@Override
-	public void checkImpl(@NotNull CSharpMethodDeclaration element, @NotNull CompilerCheckResult checkResult)
+	public void checkImpl(@NotNull CSharpMethodDeclaration element, @NotNull CompilerCheckBuilder checkResult)
 	{
 		checkResult.setText(CSharpErrorBundle.message(myId,formatElement(element)));
 		PsiElement nameIdentifier = element.getNameIdentifier();

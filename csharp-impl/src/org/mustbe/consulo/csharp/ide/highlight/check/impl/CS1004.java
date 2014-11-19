@@ -37,7 +37,7 @@ public class CS1004 extends CompilerCheck<DotNetModifierListOwner>
 {
 	@NotNull
 	@Override
-	public List<CompilerCheckResult> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetModifierListOwner element)
+	public List<CompilerCheckBuilder> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetModifierListOwner element)
 	{
 		DotNetModifierList modifierList = element.getModifierList();
 		if(modifierList == null)
@@ -45,7 +45,7 @@ public class CS1004 extends CompilerCheck<DotNetModifierListOwner>
 			return Collections.emptyList();
 		}
 
-		List<CompilerCheckResult> results = new SmartList<CompilerCheckResult>();
+		List<CompilerCheckBuilder> results = new SmartList<CompilerCheckBuilder>();
 		for(CSharpModifier modifier : CSharpModifier.values())
 		{
 			List<PsiElement> modifierElements = modifierList.getModifierElements(modifier);
@@ -56,7 +56,7 @@ public class CS1004 extends CompilerCheck<DotNetModifierListOwner>
 
 			for(PsiElement modifierElement : modifierElements)
 			{
-				results.add(result(modifierElement, modifier.getPresentableText()).addQuickFix(new RemoveModifierFix(modifier, element)));
+				results.add(newBuilder(modifierElement, modifier.getPresentableText()).addQuickFix(new RemoveModifierFix(modifier, element)));
 			}
 		}
 		return results;

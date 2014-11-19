@@ -72,7 +72,7 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 
 	@NotNull
 	@Override
-	public List<CompilerCheckResult> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetModifierListOwner element)
+	public List<CompilerCheckBuilder> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetModifierListOwner element)
 	{
 		DotNetModifierList modifierList = element.getModifierList();
 		if(modifierList == null)
@@ -80,7 +80,7 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 			return Collections.emptyList();
 		}
 
-		List<CompilerCheckResult> list = Collections.emptyList();
+		List<CompilerCheckBuilder> list = Collections.emptyList();
 		Owners owners = toOwners(element);
 
 		DotNetModifier[] modifiers = modifierList.getModifiers();
@@ -101,10 +101,10 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 
 				if(list.isEmpty())
 				{
-					list = new ArrayList<CompilerCheckResult>(2);
+					list = new ArrayList<CompilerCheckBuilder>(2);
 				}
 
-				list.add(result(modifierElement, modifier.getPresentableText()).addQuickFix(new RemoveModifierFix(modifier, element)));
+				list.add(newBuilder(modifierElement, modifier.getPresentableText()).addQuickFix(new RemoveModifierFix(modifier, element)));
 			}
 		}
 		return list;

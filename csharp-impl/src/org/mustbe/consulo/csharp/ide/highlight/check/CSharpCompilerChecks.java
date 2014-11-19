@@ -72,7 +72,11 @@ public enum CSharpCompilerChecks
 	CS1644(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // features checks
 	CS1737(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // parameter default values check for order
 	CS1960(CSharpLanguageVersion._2_0, HighlightInfoType.WRONG_REF), // in and out modifiers can be only for interface(or delegate) generic parameter
-	CS4009(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF); // async modifier cant be at entry point
+	CS4009(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // async modifier cant be at entry point
+
+	CC0001(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //reference checks
+	CC0002(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //operator reference checks
+	CC0003(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF); //array access expression checks
 
 	public static final CSharpCompilerChecks[] VALUES = CSharpCompilerChecks.values();
 
@@ -101,18 +105,22 @@ public enum CSharpCompilerChecks
 	}
 
 	@NotNull
-	public List<CompilerCheck.CompilerCheckResult> check(CSharpLanguageVersion languageVersion, PsiElement element)
+	public List<? extends CompilerCheck.HighlightInfoFactory> check(CSharpLanguageVersion languageVersion, PsiElement element)
 	{
-		List<CompilerCheck.CompilerCheckResult> results = myCheck.check(languageVersion, element);
+		List<? extends CompilerCheck.HighlightInfoFactory> results = myCheck.check(languageVersion, element);
 		if(results.isEmpty())
 		{
 			return Collections.emptyList();
 		}
-		for(CompilerCheck.CompilerCheckResult result : results)
+		for(CompilerCheck.HighlightInfoFactory result : results)
 		{
-			if(result.getHighlightInfoType() == null)
+			if(result instanceof CompilerCheck.CompilerCheckBuilder)
 			{
-				result.setHighlightInfoType(myType);
+				CompilerCheck.CompilerCheckBuilder checkResult = (CompilerCheck.CompilerCheckBuilder) result;
+				if(checkResult.getHighlightInfoType() == null)
+				{
+					checkResult.setHighlightInfoType(myType);
+				}
 			}
 		}
 		return results;

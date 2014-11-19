@@ -37,13 +37,13 @@ public class CS0722 extends CompilerCheck<DotNetLikeMethodDeclaration>
 {
 	@Nullable
 	@Override
-	public CompilerCheckResult checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetLikeMethodDeclaration element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetLikeMethodDeclaration element)
 	{
 		DotNetType type = element.getReturnType();
 		PsiElement resolve = DotNetTypeRefUtil.resolve(type);
 		if(resolve instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) resolve).hasModifier(DotNetModifier.STATIC))
 		{
-			return result(type, formatElement(element)).addQuickFix(new RemoveModifierFix(DotNetModifier.STATIC, (DotNetModifierListOwner) resolve));
+			return newBuilder(type, formatElement(element)).addQuickFix(new RemoveModifierFix(DotNetModifier.STATIC, (DotNetModifierListOwner) resolve));
 		}
 		return null;
 	}

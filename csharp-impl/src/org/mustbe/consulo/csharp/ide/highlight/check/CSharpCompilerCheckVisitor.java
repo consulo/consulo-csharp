@@ -48,17 +48,14 @@ public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements 
 				if(languageVersion.ordinal() >= classEntry.getLanguageVersion().ordinal() && classEntry.getTargetClass().isAssignableFrom(element
 						.getClass()))
 				{
-					List<CompilerCheck.CompilerCheckResult> results = classEntry.check(languageVersion, element);
+					List<? extends CompilerCheck.HighlightInfoFactory> results = classEntry.check(languageVersion, element);
 					if(results.isEmpty())
 					{
 						continue;
 					}
-					for(CompilerCheck.CompilerCheckResult result : results)
+					for(CompilerCheck.HighlightInfoFactory result : results)
 					{
-						HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(result.getHighlightInfoType());
-						builder = builder.descriptionAndTooltip(result.getText());
-						builder = builder.range(result.getTextRange());
-						HighlightInfo highlightInfo = builder.create();
+						HighlightInfo highlightInfo = result.create();
 						if(highlightInfo != null)
 						{
 							myHighlightInfoHolder.add(highlightInfo);
