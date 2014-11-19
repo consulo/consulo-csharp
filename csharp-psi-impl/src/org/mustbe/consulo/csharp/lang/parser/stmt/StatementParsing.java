@@ -250,7 +250,7 @@ public class StatementParsing extends SharedParsingHelpers
 			if(tokenType == IDENTIFIER)
 			{
 				// example 'int test' it only local variable
-				/*if(typeInfo.nativeElementType != null)
+				if(typeInfo.nativeElementType != null)
 				{
 					return true;
 				}
@@ -258,8 +258,7 @@ public class StatementParsing extends SharedParsingHelpers
 				if(lookAhead == SEMICOLON || lookAhead == EQ || lookAhead == COMMA)
 				{
 					return true;
-				}      */
-				return true;
+				}
 			}
 			return false;
 		}
