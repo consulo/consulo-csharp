@@ -8,7 +8,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -82,22 +81,6 @@ public interface CSharpResolveContext
 		public boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
 		{
 			return true;
-		}
-	};
-
-	UserDataHolder EMPTY_USER_DATA = new UserDataHolder()
-	{
-		@Nullable
-		@Override
-		public <T> T getUserData(@NotNull Key<T> key)
-		{
-			return null;
-		}
-
-		@Override
-		public <T> void putUserData(@NotNull Key<T> key, @Nullable T value)
-		{
-
 		}
 	};
 
