@@ -389,6 +389,13 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 				appendTypeRef(declaration, t, v.toTypeRef(false));
 				t.append(" ");
 				appendValidName(t, v.getName());
+
+				DotNetExpression initializer = v.getInitializer();
+				if(initializer != null)
+				{
+					t.append(" = ");
+					t.append(initializer.getText());
+				}
 				return null;
 			}
 		}, ", ");

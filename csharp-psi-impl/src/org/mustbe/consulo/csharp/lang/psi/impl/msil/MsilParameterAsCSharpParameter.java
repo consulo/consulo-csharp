@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -28,6 +30,7 @@ import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeNode;
 import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeSimpleNode;
 import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeWithChildrenNode;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -36,7 +39,9 @@ import org.mustbe.consulo.dotnet.resolve.DotNetRefTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
+import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -48,11 +53,18 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 	private final DotNetLikeMethodDeclaration myMethodDeclaration;
 	private final int myIndex;
 
+	private DotNetExpression myInitializer;
+
 	public MsilParameterAsCSharpParameter(PsiElement parent, DotNetVariable variable, DotNetLikeMethodDeclaration methodDeclaration, int index)
 	{
 		super(parent, getAdditionalModifiers(index, methodDeclaration), variable);
 		myMethodDeclaration = methodDeclaration;
 		myIndex = index;
+
+		if(variable.hasModifier(MsilTokens.BRACKET_OPT_KEYWORD))
+		{
+			myInitializer = CSharpFileFactory.createExpression(getProject(), StringUtil.QUOTER.fun("not supported. See consulo-dotnet#47"));
+		}
 	}
 
 	private static CSharpModifier[] getAdditionalModifiers(int index, DotNetLikeMethodDeclaration parent)
@@ -146,6 +158,13 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 				}
 			}
 		};
+	}
+
+	@Nullable
+	@Override
+	public DotNetExpression getInitializer()
+	{
+		return myInitializer;
 	}
 
 	@NotNull
