@@ -34,6 +34,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.msil.lang.psi.MsilFile;
 import org.mustbe.consulo.msil.representation.MsilFileRepresentationProvider;
 import org.mustbe.consulo.msil.representation.MsilFileRepresentationVirtualFile;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
@@ -41,6 +42,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.SingleRootFileViewProvider;
+import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.impl.PsiManagerEx;
 import lombok.val;
 
@@ -120,12 +122,20 @@ public class CSharpMsilFileRepresentationProvider implements MsilFileRepresentat
 
 		SingleRootFileViewProvider viewProvider = new SingleRootFileViewProvider(PsiManager.getInstance(msilFile.getProject()), virtualFile, true);
 
-		CSharpFileImpl file = new CSharpFileImpl(viewProvider);
+		val file = new CSharpFileImpl(viewProvider);
 
 		viewProvider.forceCachedPsi(file);
 
 		((PsiManagerEx) PsiManager.getInstance(msilFile.getProject())).getFileManager().setViewProvider(virtualFile, viewProvider);
 
+		new WriteCommandAction.Simple<Object>(file.getProject(), file)
+		{
+			@Override
+			protected void run() throws Throwable
+			{
+				CodeStyleManager.getInstance(getProject()).reformat(file);
+			}
+		}.execute();
 		return file;
 	}
 }
