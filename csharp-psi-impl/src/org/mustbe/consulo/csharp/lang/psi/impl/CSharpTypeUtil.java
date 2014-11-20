@@ -37,7 +37,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaR
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
@@ -345,7 +344,8 @@ public class CSharpTypeUtil
 			return fail();
 		}
 
-		if(top instanceof DotNetGenericWrapperTypeRef && topElement instanceof DotNetTypeDeclaration)
+		DotNetGenericExtractor topGenericExtractor = topTypeResolveResult.getGenericExtractor();
+		if(topGenericExtractor != DotNetGenericExtractor.EMPTY && topElement instanceof DotNetTypeDeclaration)
 		{
 			DotNetTypeDeclaration topTypeDeclaration = (DotNetTypeDeclaration) topElement;
 			val typeFromSuper = findTypeRefFromExtends(target, topTypeDeclaration, scope);
@@ -355,40 +355,34 @@ public class CSharpTypeUtil
 				return fail();
 			}
 
-			CSharpTypeRefByTypeDeclaration topSelfTypeRef = new CSharpTypeRefByTypeDeclaration(topTypeDeclaration);
-			CSharpTypeRefByTypeDeclaration targetSelfTypeRef = new CSharpTypeRefByTypeDeclaration((DotNetTypeDeclaration) typeFromSuper.getElement
-					());
-			if(isInheritable(topSelfTypeRef, targetSelfTypeRef, scope, explicitOrImplicit) == FAIL)
+			DotNetGenericExtractor superGenericExtractor = typeFromSuper.getGenericExtractor();
+
+			if(targetElement instanceof DotNetTypeDeclaration)
 			{
-				return fail();
-			}
+				// we already check for equals inside findTypeRefFromExtends
 
-			DotNetGenericExtractor targetExtractor = typeFromSuper.getGenericExtractor();
+				DotNetGenericParameter[] genericParameters = ((DotNetTypeDeclaration) topElement).getGenericParameters();
 
-			DotNetTypeRef[] topArguments = ((DotNetGenericWrapperTypeRef) top).getArgumentTypeRefs();
-
-			DotNetGenericParameter[] topGenericParameters = topTypeDeclaration.getGenericParameters();
-
-			if(topArguments.length != topGenericParameters.length)
-			{
-				return fail();
-			}
-
-			for(int i = 0; i < topGenericParameters.length; i++)
-			{
-				DotNetGenericParameter topGenericParameter = topGenericParameters[i];
-				DotNetTypeRef targetExtractedTypeRef = targetExtractor.extract(topGenericParameter);
-				if(targetExtractedTypeRef == null || !isInheritable(topArguments[i], targetExtractedTypeRef, scope, explicitOrImplicit).isSuccess())
+				for(DotNetGenericParameter genericParameter : genericParameters)
 				{
-					return fail();
-				}
-			}
-			return SIMPLE_SUCCESS;
-		}
+					DotNetTypeRef topExtractedTypeRef = topGenericExtractor.extract(genericParameter);
+					DotNetTypeRef superExtractedTypeRef = superGenericExtractor.extract(genericParameter);
 
-		if(topElement != null && topElement.isEquivalentTo(targetElement))
+					if(topExtractedTypeRef == null || superExtractedTypeRef == null || !isTypeEqual(topExtractedTypeRef, superExtractedTypeRef, scope))
+					{
+						return fail();
+					}
+				}
+
+				return SIMPLE_SUCCESS;
+			}
+		}
+		else
 		{
-			return SIMPLE_SUCCESS;
+			if(topElement != null && topElement.isEquivalentTo(targetElement))
+			{
+				return SIMPLE_SUCCESS;
+			}
 		}
 
 		if(topElement instanceof CSharpTypeDefStatement)

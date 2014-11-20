@@ -27,12 +27,12 @@ import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.dll.vfs.builder.block.LineStubBlock;
 import org.mustbe.consulo.dotnet.dll.vfs.builder.block.StubBlock;
 import org.mustbe.consulo.dotnet.dll.vfs.builder.block.StubBlockUtil;
 import org.mustbe.consulo.dotnet.psi.*;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
@@ -41,6 +41,7 @@ import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.PairFunction;
 import com.intellij.util.containers.ContainerUtil;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -281,23 +282,6 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			appendTypeRef(scope, builder, ((CSharpArrayTypeRef) typeRef).getInnerTypeRef());
 			builder.append("[]");
 		}
-		else if(typeRef instanceof DotNetGenericWrapperTypeRef)
-		{
-			appendTypeRef(scope, builder, ((DotNetGenericWrapperTypeRef) typeRef).getInnerTypeRef());
-			DotNetTypeRef[] argumentTypeRefs = ((DotNetGenericWrapperTypeRef) typeRef).getArgumentTypeRefs();
-			builder.append("<");
-			StubBlockUtil.join(builder, argumentTypeRefs, new PairFunction<StringBuilder, DotNetTypeRef, Void>()
-			{
-				@Nullable
-				@Override
-				public Void fun(StringBuilder t, DotNetTypeRef v)
-				{
-					appendTypeRef(scope, t, v);
-					return null;
-				}
-			}, ", ");
-			builder.append(">");
-		}
 		else if(typeRef instanceof CSharpRefTypeRef)
 		{
 			builder.append(((CSharpRefTypeRef) typeRef).getType().name());
@@ -317,8 +301,40 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			boolean isNullable = element == null || CSharpTypeUtil.isElementIsNullable(element);
 			boolean isExpectedNullable = typeResolveResult.isNullable();
 
-			builder.append(CSharpPresentationUtil.getPresentableText(typeRef.getQualifiedText(), false));
+			if(element instanceof DotNetQualifiedElement)
+			{
+				builder.append(CSharpPresentationUtil.getPresentableText(((DotNetQualifiedElement) element).getPresentableQName(), false));
+			}
+			else
+			{
+				builder.append(typeRef.getPresentableText());
+			}
 
+			if(element instanceof DotNetGenericParameterListOwner)
+			{
+				DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) element).getGenericParameters();
+				if(genericParameters.length > 0)
+				{
+					val genericExtractor = typeResolveResult.getGenericExtractor();
+					builder.append("<");
+					StubBlockUtil.join(builder, genericParameters, new PairFunction<StringBuilder, DotNetGenericParameter, Void>()
+					{
+						@Nullable
+						@Override
+						public Void fun(StringBuilder t, DotNetGenericParameter v)
+						{
+							DotNetTypeRef extractedTypeRef = genericExtractor.extract(v);
+							if(extractedTypeRef == null)
+							{
+								extractedTypeRef = new CSharpTypeRefFromGenericParameter(v);
+							}
+							appendTypeRef(scope, t, extractedTypeRef);
+							return null;
+						}
+					}, ", ");
+					builder.append(">");
+				}
+			}
 			if(isExpectedNullable && !isNullable)
 			{
 				builder.append("?");
