@@ -218,7 +218,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 			}
 		};
 
-		CSharpMethodDeclaration extractedMethod = GenericUnwrapTool.extract(declaration, inferenceResult.getExtractor(), true);
+		CSharpMethodDeclaration extractedMethod = GenericUnwrapTool.extract(declaration, inferenceResult.getExtractor());
 		extractedMethod.putUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER, methodDeclaration);
 		extractedMethod.putUserData(GenericInferenceUtil.INFERENCE_RESULT, inferenceResult);
 		return extractedMethod;

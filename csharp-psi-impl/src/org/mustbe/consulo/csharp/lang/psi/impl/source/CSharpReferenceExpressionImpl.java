@@ -544,7 +544,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 								{
 									inferenceResult = GenericInferenceUtil.inferenceGenericExtractor(callArgumentListOwner,
 											(DotNetLikeMethodDeclaration) psiElement);
-									psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, inferenceResult.getExtractor(), true);
+									psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, inferenceResult.getExtractor());
 								}
 
 								val calcResult = MethodResolver.calc(callArgumentListOwner, (DotNetLikeMethodDeclaration) psiElement, element);

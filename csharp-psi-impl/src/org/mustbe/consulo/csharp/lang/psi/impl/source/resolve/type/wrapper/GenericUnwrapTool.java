@@ -22,7 +22,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightConstructorDeclaration;
@@ -34,17 +33,18 @@ import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameterList;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericWrapperTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 
@@ -55,10 +55,9 @@ import com.intellij.psi.PsiElement;
 public class GenericUnwrapTool
 {
 	@SuppressWarnings("unchecked")
-	public static <T extends DotNetNamedElement> T extract(T namedElement, DotNetGenericExtractor extractor, boolean allowStatic)
+	public static <T extends DotNetNamedElement> T extract(T namedElement, DotNetGenericExtractor extractor)
 	{
-		if(extractor == DotNetGenericExtractor.EMPTY || namedElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) namedElement)
-				.hasModifier(CSharpModifier.STATIC) && !allowStatic)
+		if(extractor == DotNetGenericExtractor.EMPTY)
 		{
 			return namedElement;
 		}
@@ -143,8 +142,10 @@ public class GenericUnwrapTool
 		return namedElement;
 	}
 
-	private static <S extends DotNetLikeMethodDeclaration & DotNetVirtualImplementOwner> void exchangeMethodTypeRefs
-			(CSharpLightLikeMethodDeclarationWithImplType<?> copy, S original, DotNetGenericExtractor extractor)
+	private static <S extends DotNetLikeMethodDeclaration & DotNetVirtualImplementOwner> void exchangeMethodTypeRefs(
+			CSharpLightLikeMethodDeclarationWithImplType<?> copy,
+			S original,
+			DotNetGenericExtractor extractor)
 	{
 		copy.withReturnTypeRef(exchangeTypeRef(original.getReturnTypeRef(), extractor, original));
 
@@ -180,9 +181,14 @@ public class GenericUnwrapTool
 			}
 			return new CSharpLazyGenericWrapperTypeRef(scope, inner, arguments);
 		}
-		else if(typeRef instanceof DotNetPointerTypeRefImpl)
+		else if(typeRef instanceof DotNetPointerTypeRef)
 		{
 			return new DotNetPointerTypeRefImpl(exchangeTypeRef(((DotNetPointerTypeRefImpl) typeRef).getInnerTypeRef(), extractor, scope));
+		}
+		else if(typeRef instanceof CSharpRefTypeRef)
+		{
+			return new CSharpRefTypeRef(((CSharpRefTypeRef) typeRef).getType(), exchangeTypeRef(((CSharpRefTypeRef) typeRef).getInnerTypeRef(),
+					extractor, scope));
 		}
 		else if(typeRef instanceof CSharpArrayTypeRef)
 		{
