@@ -45,7 +45,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithInnerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -368,7 +367,8 @@ public class CSharpTypeUtil
 					DotNetTypeRef topExtractedTypeRef = topGenericExtractor.extract(genericParameter);
 					DotNetTypeRef superExtractedTypeRef = superGenericExtractor.extract(genericParameter);
 
-					if(topExtractedTypeRef == null || superExtractedTypeRef == null || !isTypeEqual(topExtractedTypeRef, superExtractedTypeRef, scope))
+					if(topExtractedTypeRef == null || superExtractedTypeRef == null || !isTypeEqual(topExtractedTypeRef, superExtractedTypeRef,
+							scope))
 					{
 						return fail();
 					}
@@ -568,7 +568,7 @@ public class CSharpTypeUtil
 		return true;
 	}
 
-	public static boolean haveErrorType(DotNetTypeRef typeRef)
+	public static boolean haveErrorType(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
 		if(typeRef == DotNetTypeRef.ERROR_TYPE)
 		{
@@ -577,19 +577,25 @@ public class CSharpTypeUtil
 
 		if(typeRef instanceof DotNetTypeRefWithInnerTypeRef)
 		{
-			if(typeRef instanceof DotNetGenericWrapperTypeRef)
-			{
-				for(DotNetTypeRef dotNetTypeRef : ((DotNetGenericWrapperTypeRef) typeRef).getArgumentTypeRefs())
-				{
-					if(haveErrorType(dotNetTypeRef))
-					{
-						return true;
-					}
-				}
-			}
-			return haveErrorType(((DotNetTypeRefWithInnerTypeRef) typeRef).getInnerTypeRef());
+			return haveErrorType(((DotNetTypeRefWithInnerTypeRef) typeRef).getInnerTypeRef(), scope);
 		}
 
+		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+
+		PsiElement element = typeResolveResult.getElement();
+		DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
+		if(element instanceof DotNetGenericParameterListOwner)
+		{
+			DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) element).getGenericParameters();
+			for(DotNetGenericParameter genericParameter : genericParameters)
+			{
+				DotNetTypeRef extractedTypeRef = genericExtractor.extract(genericParameter);
+				if(extractedTypeRef != null && haveErrorType(extractedTypeRef, scope))
+				{
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 }
