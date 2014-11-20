@@ -3,7 +3,6 @@ package org.mustbe.consulo.csharp.ide.reflactoring.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
@@ -17,8 +16,10 @@ import org.mustbe.consulo.csharp.lang.lexer.CSharpLexer;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithInnerTypeRef;
 import com.intellij.openapi.util.text.StringUtil;
@@ -29,8 +30,8 @@ import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author Fedor.Korotkov
- *
- * from google-dart
+ *         <p/>
+ *         from google-dart
  */
 public class CSharpNameSuggesterUtil
 {
@@ -43,6 +44,23 @@ public class CSharpNameSuggesterUtil
 		Pattern pattern = Pattern.compile("[^a-zA-Z_]+");
 		Matcher matcher = pattern.matcher(string);
 		return matcher.replaceAll("_");
+	}
+
+	@NotNull
+	public static Collection<String> getSuggestedVariableNames(final DotNetVariable variable)
+	{
+		PsiElement parent = variable.getParent();
+
+		Collection<String> suggestedNames = getSuggestedNames(variable.toTypeRef(true), variable);
+		if(parent instanceof CSharpForeachStatementImpl)
+		{
+			DotNetExpression iterableExpression = ((CSharpForeachStatementImpl) parent).getIterableExpression();
+			if(iterableExpression != null)
+			{
+				suggestedNames = getSuggestedNames(iterableExpression, suggestedNames);
+			}
+		}
+		return suggestedNames;
 	}
 
 	@NotNull
@@ -100,7 +118,11 @@ public class CSharpNameSuggesterUtil
 		Collection<String> candidates = new LinkedHashSet<String>();
 
 		String text = expression.getText();
-		if(expression instanceof CSharpReferenceExpression)
+		if(expression.getParent() instanceof CSharpForeachStatementImpl)
+		{
+			text = StringUtil.unpluralize(expression.getText());
+		}
+		else if(expression instanceof CSharpReferenceExpression)
 		{
 			PsiElement resolvedElement = ((CSharpReferenceExpression) expression).resolve();
 			String name = null;
@@ -114,8 +136,7 @@ public class CSharpNameSuggesterUtil
 				candidates.add(StringUtil.decapitalize(name));
 			}
 		}
-
-		if(expression instanceof CSharpMethodCallExpressionImpl)
+		else if(expression instanceof CSharpMethodCallExpressionImpl)
 		{
 			final PsiElement callee = ((CSharpMethodCallExpressionImpl) expression).getCallExpression();
 			text = callee.getText();
@@ -131,7 +152,7 @@ public class CSharpNameSuggesterUtil
 		{
 			usedNames.addAll(additionalUsedNames);
 		}
-		final Collection<String> result = new ArrayList<String>();
+		final List<String> result = new ArrayList<String>();
 
 		for(String candidate : candidates)
 		{
@@ -149,13 +170,13 @@ public class CSharpNameSuggesterUtil
 			result.add("o"); // never empty
 		}
 
-		for(Iterator<String> iterator = result.iterator(); iterator.hasNext(); )
+		for(ListIterator<String> iterator = result.listIterator(); iterator.hasNext(); )
 		{
 			String next = iterator.next();
 
 			if(isKeyword(next))
 			{
-				iterator.remove();
+				iterator.set("@" + next);
 			}
 		}
 		return result;

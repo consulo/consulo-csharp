@@ -13,27 +13,33 @@ import com.intellij.psi.scope.PsiScopeProcessor;
 /**
  * @author: Fedor.Korotkov
  */
-public class ComponentNameScopeProcessor implements PsiScopeProcessor {
+public class ComponentNameScopeProcessor implements PsiScopeProcessor
+{
 	private final Set<PsiNamedElement> result;
 
-	public ComponentNameScopeProcessor(Set<PsiNamedElement> result) {
+	public ComponentNameScopeProcessor(Set<PsiNamedElement> result)
+	{
 		this.result = result;
 	}
 
 	@Override
-	public boolean execute(@NotNull PsiElement element, ResolveState state) {
-		if (element instanceof PsiNamedElement) {
-			result.add((PsiNamedElement)element);
+	public boolean execute(@NotNull PsiElement element, ResolveState state)
+	{
+		if(element instanceof PsiNamedElement)
+		{
+			result.add((PsiNamedElement) element);
 		}
 		return true;
 	}
 
 	@Override
-	public <T> T getHint(@NotNull Key<T> hintKey) {
+	public <T> T getHint(@NotNull Key<T> hintKey)
+	{
 		return null;
 	}
 
 	@Override
-	public void handleEvent(Event event, @Nullable Object associated) {
+	public void handleEvent(Event event, @Nullable Object associated)
+	{
 	}
 }
