@@ -11,7 +11,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.SimpleGenericExtractorImpl;
@@ -19,7 +18,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
@@ -216,26 +214,31 @@ public class GenericInferenceUtil
 
 	private static int findIndexOfGeneric(DotNetTypeRef parameterTypeRef, DotNetGenericParameter parameter, PsiElement scope)
 	{
-		if(parameterTypeRef instanceof DotNetGenericWrapperTypeRef)
-		{
-			DotNetTypeRef[] argumentTypeRefs = ((DotNetGenericWrapperTypeRef) parameterTypeRef).getArgumentTypeRefs();
+		DotNetTypeResolveResult typeResolveResult = parameterTypeRef.resolve(scope);
 
-			for(int i = 0; i < argumentTypeRefs.length; i++)
+		PsiElement element = typeResolveResult.getElement();
+		if(element instanceof DotNetGenericParameterListOwner)
+		{
+			DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) element).getGenericParameters();
+			if(genericParameters.length == 0)
 			{
-				DotNetTypeRef argumentTypeRef = argumentTypeRefs[i];
-				DotNetTypeResolveResult typeResolveResult = argumentTypeRef.resolve(scope);
-				if(parameter.isEquivalentTo(typeResolveResult.getElement()))
+				return -1;
+			}
+
+			DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
+
+			for(int i = 0; i < genericParameters.length; i++)
+			{
+				DotNetTypeRef extractedTypeRef = genericExtractor.extract(genericParameters[i]);
+				if(extractedTypeRef == null)
+				{
+					continue;
+				}
+				DotNetTypeResolveResult extractedTypeResolveResult = extractedTypeRef.resolve(scope);
+				if(parameter.isEquivalentTo(extractedTypeResolveResult.getElement()))
 				{
 					return i;
 				}
-			}
-		}
-		else if(parameterTypeRef instanceof CSharpArrayTypeRef)
-		{
-			PsiElement element = ((CSharpArrayTypeRef) parameterTypeRef).getInnerTypeRef().resolve(scope).getElement();
-			if(parameter.isEquivalentTo(element))
-			{
-				return 0;
 			}
 		}
 		return -1;
