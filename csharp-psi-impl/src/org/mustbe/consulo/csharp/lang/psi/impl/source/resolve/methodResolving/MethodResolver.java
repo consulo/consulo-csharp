@@ -289,10 +289,10 @@ public class MethodResolver
 			switch(argument.calcValid(scope))
 			{
 				case NCallArgument.EQUAL:
-					weight -= 100000;
+					weight -= 50000;
 					break;
 				case NCallArgument.INSTANCE_OF:
-					weight -= 5000;
+					weight -= 1000000;
 					break;
 				default:
 					valid = false;
