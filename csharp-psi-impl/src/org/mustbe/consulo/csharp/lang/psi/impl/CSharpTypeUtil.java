@@ -21,15 +21,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.DeprecationInfo;
-import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
+import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpChameleonTypeRef;
@@ -367,10 +359,24 @@ public class CSharpTypeUtil
 					DotNetTypeRef topExtractedTypeRef = topGenericExtractor.extract(genericParameter);
 					DotNetTypeRef superExtractedTypeRef = superGenericExtractor.extract(genericParameter);
 
-					if(topExtractedTypeRef == null || superExtractedTypeRef == null || !isTypeEqual(topExtractedTypeRef, superExtractedTypeRef,
-							scope))
+					if(topExtractedTypeRef == null || superExtractedTypeRef == null)
 					{
 						return fail();
+					}
+
+					if(genericParameter.hasModifier(CSharpModifier.OUT))
+					{
+						if(!isInheritable(topExtractedTypeRef, superExtractedTypeRef, scope, null).isSuccess())
+						{
+							return fail();
+						}
+					}
+					else
+					{
+						if(!isTypeEqual(topExtractedTypeRef, superExtractedTypeRef,scope))
+						{
+							return fail();
+						}
 					}
 				}
 
