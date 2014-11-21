@@ -18,6 +18,7 @@
     <ConfigurationWrapper RunnerId="Run" />
     <method>
       <option name="BuildArtifacts" enabled="true">
+        <artifact name="dist" />
         <artifact name="plugin" />
       </option>
     </method>

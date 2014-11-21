@@ -371,6 +371,13 @@ public class CSharpTypeUtil
 							return fail();
 						}
 					}
+					else if(genericParameter.hasModifier(CSharpModifier.IN))
+					{
+						if(!isInheritable(superExtractedTypeRef, topExtractedTypeRef, scope, null).isSuccess())
+						{
+							return fail();
+						}
+					}
 					else
 					{
 						if(!isTypeEqual(topExtractedTypeRef, superExtractedTypeRef,scope))
