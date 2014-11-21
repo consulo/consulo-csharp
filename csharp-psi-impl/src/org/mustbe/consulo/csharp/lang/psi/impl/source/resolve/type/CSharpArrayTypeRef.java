@@ -18,7 +18,6 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.SimpleGenericExtractorImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetArrayTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -80,7 +79,7 @@ public class CSharpArrayTypeRef extends DotNetTypeRef.Adapter implements DotNetA
 			{
 				return DotNetGenericExtractor.EMPTY;
 			}
-			return new SimpleGenericExtractorImpl(((DotNetGenericParameterListOwner) element).getGenericParameters(),
+			return new CSharpGenericExtractor(((DotNetGenericParameterListOwner) element).getGenericParameters(),
 					new DotNetTypeRef[]{myInnerType});
 		}
 

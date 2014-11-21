@@ -202,4 +202,9 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 		DotNetType typeForImplement = getTypeForImplement();
 		return typeForImplement != null ? typeForImplement.toTypeRef() : DotNetTypeRef.ERROR_TYPE;
 	}
+
+	public DotNetTypeDeclaration getDelegate()
+	{
+		return myDelegate;
+	}
 }

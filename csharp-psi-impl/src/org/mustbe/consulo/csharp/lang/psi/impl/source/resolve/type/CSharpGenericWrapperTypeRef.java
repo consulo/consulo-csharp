@@ -19,7 +19,6 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.SimpleGenericExtractorImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -115,7 +114,7 @@ public class CSharpGenericWrapperTypeRef implements DotNetGenericWrapperTypeRef
 		{
 			return DotNetGenericExtractor.EMPTY;
 		}
-		return new SimpleGenericExtractorImpl(genericParameters, getArgumentTypeRefs());
+		return new CSharpGenericExtractor(genericParameters, getArgumentTypeRefs());
 	}
 
 	@Override

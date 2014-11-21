@@ -5,15 +5,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.SimpleGenericExtractorImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -78,7 +77,7 @@ public class GenericInferenceUtil
 		if(genericParameters.length == 0 || typeArgumentListRefs.length > 0)
 		{
 			DotNetGenericExtractor extractor = genericParameters.length != typeArgumentListRefs.length ? DotNetGenericExtractor.EMPTY : new
-					SimpleGenericExtractorImpl(genericParameters, typeArgumentListRefs);
+					CSharpGenericExtractor(genericParameters, typeArgumentListRefs);
 			return new GenericInferenceResult(genericParameters.length == typeArgumentListRefs.length, extractor);
 		}
 
@@ -132,15 +131,7 @@ public class GenericInferenceUtil
 			inferenceGenericFromExpressionTypeRefAndParameterTypeRef(genericParameters, map, parameterTypeRef, expressionTypeRef, scope);
 		}
 
-		return new GenericInferenceResult(genericParameters.length == map.size(), new DotNetGenericExtractor()
-		{
-			@Nullable
-			@Override
-			public DotNetTypeRef extract(@NotNull DotNetGenericParameter parameter)
-			{
-				return map.get(parameter);
-			}
-		});
+		return new GenericInferenceResult(genericParameters.length == map.size(), new CSharpGenericExtractor(map));
 	}
 
 	private static void inferenceGenericFromExpressionTypeRefAndParameterTypeRef(DotNetGenericParameter[] methodGenericParameters,

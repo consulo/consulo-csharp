@@ -23,19 +23,19 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyLambdaTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -51,11 +51,12 @@ import org.mustbe.consulo.msil.lang.psi.MsilModifierElementType;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilArrayTypRefImpl;
+import org.mustbe.consulo.msil.lang.psi.impl.type.MsilClassGenericTypeRefImpl;
+import org.mustbe.consulo.msil.lang.psi.impl.type.MsilMethodGenericTypeRefImpl;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilNativeTypeRefImpl;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.ContainerUtil;
 import lombok.val;
 
@@ -255,6 +256,16 @@ public class MsilToCSharpUtil
 		{
 			return new CSharpRefTypeRef(CSharpRefTypeRef.Type.ref, extractToCSharp(((DotNetRefTypeRef) typeRef).getInnerTypeRef(), scope));
 		}
+		else if(typeRef instanceof MsilClassGenericTypeRefImpl)
+		{
+			MsilClassGenericTypeRefImpl methodGenericTypeRef = (MsilClassGenericTypeRefImpl) typeRef;
+			return toGenericParameterTypeRef(methodGenericTypeRef.getParent(), methodGenericTypeRef.getIndex());
+		}
+		else if(typeRef instanceof MsilMethodGenericTypeRefImpl)
+		{
+			MsilMethodGenericTypeRefImpl methodGenericTypeRef = (MsilMethodGenericTypeRefImpl) typeRef;
+			return toGenericParameterTypeRef(methodGenericTypeRef.getParent(), methodGenericTypeRef.getIndex());
+		}
 		else if(typeRef instanceof DotNetGenericWrapperTypeRef)
 		{
 			DotNetTypeRef innerTypeRef = ((DotNetGenericWrapperTypeRef) typeRef).getInnerTypeRef();
@@ -282,21 +293,77 @@ public class MsilToCSharpUtil
 				return new CSharpLazyLambdaTypeRef(scope, delegateMethod);
 			}
 		}
-		else if(resolve instanceof DotNetGenericParameter)
+		return new MsilDelegateTypeRef(scope, typeRef, forceNullable);
+	}
+
+	private static DotNetTypeRef toGenericParameterTypeRef(PsiElement msilParent, int index)
+	{
+		DotNetTypeDeclaration typeDeclarationNoNested = findTypeDeclarationNoNested(msilParent);
+
+		if(typeDeclarationNoNested == null)
 		{
-			DotNetGenericParameterList genericParameterList = (DotNetGenericParameterList) resolve.getParent();
-			DotNetGenericParameterListOwner genericParameterListOwner = (DotNetGenericParameterListOwner) genericParameterList.getParent();
+			return DotNetTypeRef.ERROR_TYPE;
+		}
 
-			int i = ArrayUtil.indexOf(genericParameterList.getParameters(), resolve);
-
-			assert i != -1;
-			PsiElement wrap = wrap(genericParameterListOwner, null);
-			if(wrap instanceof DotNetGenericParameterListOwner)
+		DotNetGenericParameterListOwner parameterListOwner = null;
+		PsiElement wrap = wrap(typeDeclarationNoNested);
+		if(wrap instanceof MsilMethodAsCSharpMethodDeclaration)
+		{
+			parameterListOwner = (DotNetGenericParameterListOwner) wrap;
+		}
+		else
+		{
+			PsiElement wrappedElementByMsilElement = findWrappedElementByMsilElement(wrap, msilParent);
+			if(!(wrappedElementByMsilElement instanceof DotNetGenericParameterListOwner))
 			{
-				DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) wrap).getGenericParameters();
-				return new CSharpTypeRefFromGenericParameter(genericParameters[i]);
+				return DotNetTypeRef.ERROR_TYPE;
+			}
+			parameterListOwner = (DotNetGenericParameterListOwner) wrappedElementByMsilElement;
+		}
+
+		DotNetGenericParameter[] genericParameters = parameterListOwner.getGenericParameters();
+
+		return new CSharpTypeRefFromGenericParameter(genericParameters[index]);
+	}
+
+	@Nullable
+	private static PsiElement findWrappedElementByMsilElement(final PsiElement wrappedElement, final PsiElement msilElement)
+	{
+		if(wrappedElement instanceof MsilElementWrapper)
+		{
+			if(((MsilElementWrapper) wrappedElement).getMsilElement() == msilElement)
+			{
+				return wrappedElement;
+			}
+
+			if(wrappedElement instanceof DotNetMemberOwner)
+			{
+				DotNetNamedElement[] members = ((DotNetMemberOwner) wrappedElement).getMembers();
+				for(DotNetNamedElement member : members)
+				{
+					PsiElement elementByMsilElement = findWrappedElementByMsilElement(member, msilElement);
+					if(elementByMsilElement != null)
+					{
+						return elementByMsilElement;
+					}
+				}
 			}
 		}
-		return new MsilDelegateTypeRef(scope, typeRef, forceNullable);
+		return null;
+	}
+
+	@Nullable
+	private static DotNetTypeDeclaration findTypeDeclarationNoNested(PsiElement element)
+	{
+		PsiElement temp = element;
+		while(temp != null)
+		{
+			if(temp instanceof DotNetTypeDeclaration && !((DotNetTypeDeclaration) temp).isNested())
+			{
+				return (DotNetTypeDeclaration) temp;
+			}
+			temp = temp.getParent();
+		}
+		return null;
 	}
 }
