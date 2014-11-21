@@ -29,6 +29,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
@@ -151,7 +152,7 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 
 	@Nullable
 	@Override
-	public LookupElementBuilder buildLookupElement(PsiElement element)
+	public LookupElementBuilder buildLookupElement(final PsiElement element)
 	{
 		LookupElementBuilder builder = null;
 		if(element instanceof CSharpMethodDeclaration)
@@ -172,7 +173,7 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 					@Override
 					public String fun(DotNetTypeRef parameter)
 					{
-						return parameter.getPresentableText();
+						return CSharpTypeRefPresentationUtil.buildShortText(parameter, element);
 					}
 				}, ", ") + ")";
 
@@ -182,7 +183,7 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 				{
 					builder = builder.withItemTextUnderlined(true);
 				}
-				builder = builder.withTypeText(methodDeclaration.getReturnTypeRef().getPresentableText());
+				builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(methodDeclaration.getReturnTypeRef(), element));
 				builder = builder.withTailText(parameterText, false);
 			}
 			else

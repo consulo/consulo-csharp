@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
@@ -105,7 +106,7 @@ public class CSharpSmartCompletionContributor extends CompletionContributor
 	}
 
 	@Nullable
-	private static LookupElementBuilder buildForConstructor(CSharpConstructorDeclaration declaration, final DotNetGenericExtractor extractor)
+	private static LookupElementBuilder buildForConstructor(final CSharpConstructorDeclaration declaration, final DotNetGenericExtractor extractor)
 	{
 		PsiElement parent = declaration.getParent();
 
@@ -128,7 +129,7 @@ public class CSharpSmartCompletionContributor extends CompletionContributor
 						DotNetTypeRef extract = extractor.extract(parameter);
 						if(extract != null)
 						{
-							return extract.getPresentableText();
+							return CSharpTypeRefPresentationUtil.buildShortText(extract, declaration);
 						}
 						return parameter.getName();
 					}
@@ -148,7 +149,7 @@ public class CSharpSmartCompletionContributor extends CompletionContributor
 			@Override
 			public String fun(DotNetTypeRef parameter)
 			{
-				return parameter.getPresentableText();
+				return CSharpTypeRefPresentationUtil.buildShortText(parameter, declaration);
 			}
 		}, ", ") + ")";
 
