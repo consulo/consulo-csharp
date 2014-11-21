@@ -27,6 +27,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -88,7 +89,13 @@ public class CSharpLambdaExpressionImplUtil
 				return null;
 			}
 
-			return resolveLeftLambdaTypeRefForVariable(((DotNetLikeMethodDeclaration) callable).getParameters()[index]);
+			DotNetParameter[] parameters = ((DotNetLikeMethodDeclaration) callable).getParameters();
+			DotNetParameter parameter = ArrayUtil2.safeGet(parameters, index);
+			if(parameter == null)
+			{
+				return null;
+			}
+			return resolveLeftLambdaTypeRefForVariable(parameter);
 		}
 		else if(parent instanceof CSharpAssignmentExpressionImpl)
 		{
