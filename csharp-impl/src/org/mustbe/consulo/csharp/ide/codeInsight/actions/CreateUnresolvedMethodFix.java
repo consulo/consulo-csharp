@@ -20,7 +20,9 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.reflactoring.CSharpGenerateUtil;
 import org.mustbe.consulo.csharp.ide.reflactoring.util.CSharpNameSuggesterUtil;
+import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
@@ -54,7 +56,6 @@ import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.impl.source.codeStyle.CodeEditUtil;
-import com.intellij.psi.impl.source.codeStyle.IndentHelper;
 import com.intellij.psi.impl.source.tree.TreeElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtil;
@@ -252,26 +253,35 @@ public class CreateUnresolvedMethodFix extends BaseIntentionAction
 				DotNetNamedElement[] members = targetForGenerate.getMembers();
 				if(members.length == 0)
 				{
+					assert targetForGenerate instanceof CSharpBodyWithBraces;
 
+					CSharpGenerateUtil.normalizeBraces((CSharpBodyWithBraces) targetForGenerate);
+
+					PsiElement leftBrace = ((CSharpBodyWithBraces) targetForGenerate).getLeftBrace();
+
+					add(targetForGenerate, newMethod, leftBrace);
 				}
 				else
 				{
 					DotNetNamedElement lastElement = ArrayUtil.getLastElement(members);
 					assert lastElement != null;
 
-					ASTNode node = lastElement.getNode();
-					ASTNode treeNext = node.getTreeNext();
-
-					targetForGenerate.getNode().addLeaf(CSharpTokens.WHITE_SPACE, "\n", treeNext);
-
-					int indent = IndentHelper.getInstance().getIndent(lastElement.getProject(), lastElement.getContainingFile().getFileType(),
-							lastElement.getNode());
-					CodeEditUtil.setOldIndentation((TreeElement) newMethod.getNode(), indent);
-					targetForGenerate.getNode().addChild(newMethod.getNode(), treeNext);
-
-					PsiDocumentManager.getInstance(getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
-					CodeStyleManager.getInstance(getProject()).reformat(newMethod);
+					add(targetForGenerate, newMethod, lastElement);
 				}
+			}
+
+			private void add(DotNetMemberOwner targetForGenerate, DotNetLikeMethodDeclaration newMethod, PsiElement lastElement)
+			{
+				ASTNode node = lastElement.getNode();
+				ASTNode treeNext = node.getTreeNext();
+
+				targetForGenerate.getNode().addLeaf(CSharpTokens.WHITE_SPACE, "\n", treeNext);
+
+				CodeEditUtil.setOldIndentation((TreeElement) newMethod.getNode(), 1);
+				targetForGenerate.getNode().addChild(newMethod.getNode(), treeNext);
+
+				PsiDocumentManager.getInstance(getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+				CodeStyleManager.getInstance(getProject()).reformat(newMethod);
 			}
 		}.execute();
 	}
