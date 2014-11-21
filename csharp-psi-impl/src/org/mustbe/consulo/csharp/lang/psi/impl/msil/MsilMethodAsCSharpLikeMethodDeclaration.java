@@ -25,6 +25,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLikeMethodDeclarationImplUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
@@ -47,7 +48,7 @@ import com.intellij.util.IncorrectOperationException;
 public class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElementWrapper<MsilMethodEntry> implements DotNetLikeMethodDeclaration
 {
 	private MsilModifierListToCSharpModifierList myModifierList;
-	private final MsilGenericParameterListAsCSharpGenericParameterList myGenericParameterList;
+	private MsilGenericParameterListAsCSharpGenericParameterList myGenericParameterList;
 
 	public MsilMethodAsCSharpLikeMethodDeclaration(PsiElement parent, MsilMethodEntry methodEntry)
 	{
@@ -58,14 +59,12 @@ public class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElementWrapper<
 	{
 		super(parent, methodEntry);
 		myModifierList = new MsilModifierListToCSharpModifierList(modifiers, (MsilModifierList) methodEntry.getModifierList());
-		myGenericParameterList = newGenericParameterList();
 	}
 
-	@Nullable
-	protected MsilGenericParameterListAsCSharpGenericParameterList newGenericParameterList()
+	protected void setGenericParameterList(@NotNull DotNetGenericParameterListOwner owner)
 	{
-		DotNetGenericParameterList genericParameterList = myMsilElement.getGenericParameterList();
-		return genericParameterList == null ? null : new MsilGenericParameterListAsCSharpGenericParameterList(this,
+		DotNetGenericParameterList genericParameterList = owner.getGenericParameterList();
+		myGenericParameterList = genericParameterList == null ? null : new MsilGenericParameterListAsCSharpGenericParameterList(this,
 				genericParameterList);
 	}
 

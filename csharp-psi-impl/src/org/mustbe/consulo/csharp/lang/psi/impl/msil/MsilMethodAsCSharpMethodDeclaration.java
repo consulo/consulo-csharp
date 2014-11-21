@@ -41,7 +41,6 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.tree.IElementType;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -96,22 +95,9 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 
 	public MsilMethodAsCSharpMethodDeclaration(PsiElement parent, @Nullable DotNetTypeDeclaration declaration, @NotNull MsilMethodEntry methodEntry)
 	{
-		super(parent, getAdditionModifiers(methodEntry), methodEntry);
+		super(parent, CSharpModifier.EMPTY_ARRAY, methodEntry);
 		myDelegate = declaration;
-	}
-
-	@Override
-	@Nullable
-	protected MsilGenericParameterListAsCSharpGenericParameterList newGenericParameterList()
-	{
-		val genericParameterList = myDelegate != null ? myDelegate.getGenericParameterList() : myMsilElement.getGenericParameterList();
-		return genericParameterList == null ? null : new MsilGenericParameterListAsCSharpGenericParameterList(this, genericParameterList);
-	}
-
-	@NotNull
-	private static CSharpModifier[] getAdditionModifiers(MsilMethodEntry methodEntry)
-	{
-		return CSharpModifier.EMPTY_ARRAY;
+		setGenericParameterList(declaration != null ? declaration : methodEntry);
 	}
 
 	@Override
