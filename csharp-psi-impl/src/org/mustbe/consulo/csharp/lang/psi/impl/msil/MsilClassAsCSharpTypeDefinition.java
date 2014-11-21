@@ -221,11 +221,15 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	};
 
 	private MsilModifierListToCSharpModifierList myModifierList;
+	private MsilGenericParameterListAsCSharpGenericParameterList myGenericParameterList;
 
 	public MsilClassAsCSharpTypeDefinition(@Nullable PsiElement parent, MsilClassEntry classEntry)
 	{
 		super(parent, classEntry);
 		myModifierList = new MsilModifierListToCSharpModifierList((MsilModifierList) classEntry.getModifierList());
+		DotNetGenericParameterList genericParameterList = classEntry.getGenericParameterList();
+		myGenericParameterList = genericParameterList == null ? null : new MsilGenericParameterListAsCSharpGenericParameterList(this,
+				genericParameterList);
 	}
 
 	@Override
@@ -368,20 +372,20 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	@Override
 	public DotNetGenericParameterList getGenericParameterList()
 	{
-		return myMsilElement.getGenericParameterList();
+		return myGenericParameterList;
 	}
 
 	@NotNull
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
-		return myMsilElement.getGenericParameters();
+		return myGenericParameterList == null ? DotNetGenericParameter.EMPTY_ARRAY : myGenericParameterList.getParameters();
 	}
 
 	@Override
 	public int getGenericParametersCount()
 	{
-		return myMsilElement.getGenericParametersCount();
+		return myGenericParameterList == null ? 0 : myGenericParameterList.getGenericParametersCount();
 	}
 
 	@NotNull

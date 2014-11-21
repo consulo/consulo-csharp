@@ -61,6 +61,8 @@ public enum CSharpModifier implements DotNetModifier
 			put(DotNetModifier.INTERNAL, CSharpModifier.INTERNAL);
 			put(DotNetModifier.ABSTRACT, CSharpModifier.ABSTRACT);
 			put(DotNetModifier.SEALED, CSharpModifier.SEALED);
+			put(DotNetModifier.COVARIANT, CSharpModifier.OUT);
+			put(DotNetModifier.CONTRAVARIANT, CSharpModifier.IN);
 		}
 	};
 

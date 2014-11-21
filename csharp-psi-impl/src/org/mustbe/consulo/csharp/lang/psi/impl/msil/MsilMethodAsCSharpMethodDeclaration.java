@@ -31,7 +31,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.typeParsing.SomeType;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.typeParsing.SomeTypeParser;
 import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -42,6 +41,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.tree.IElementType;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -100,6 +100,14 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 		myDelegate = declaration;
 	}
 
+	@Override
+	@Nullable
+	protected MsilGenericParameterListAsCSharpGenericParameterList newGenericParameterList()
+	{
+		val genericParameterList = myDelegate != null ? myDelegate.getGenericParameterList() : myMsilElement.getGenericParameterList();
+		return genericParameterList == null ? null : new MsilGenericParameterListAsCSharpGenericParameterList(this, genericParameterList);
+	}
+
 	@NotNull
 	private static CSharpModifier[] getAdditionModifiers(MsilMethodEntry methodEntry)
 	{
@@ -138,19 +146,6 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 	{
 		return myDelegate == null ? MsilHelper.append(getPresentableParentQName(), getName()) : MsilHelper.cutGenericMarker(myDelegate
 				.getPresentableQName());
-	}
-
-	@NotNull
-	@Override
-	public DotNetGenericParameter[] getGenericParameters()
-	{
-		return myDelegate == null ? super.getGenericParameters() : myDelegate.getGenericParameters();
-	}
-
-	@Override
-	public int getGenericParametersCount()
-	{
-		return getGenericParameters().length;
 	}
 
 	@Nullable

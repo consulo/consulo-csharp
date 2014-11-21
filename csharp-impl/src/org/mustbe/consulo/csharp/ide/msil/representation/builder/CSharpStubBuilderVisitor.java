@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.lexer.CSharpLexer;
+import org.mustbe.consulo.csharp.ide.reflactoring.util.CSharpNameSuggesterUtil;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.dll.vfs.builder.block.LineStubBlock;
@@ -311,6 +311,14 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			@Override
 			public Void fun(StringBuilder t, DotNetGenericParameter v)
 			{
+				if(v.hasModifier(CSharpModifier.OUT))
+				{
+					t.append("out ");
+				}
+				else if(v.hasModifier(CSharpModifier.IN))
+				{
+					t.append("in ");
+				}
 				t.append(v.getName());
 				return null;
 			}
@@ -408,26 +416,11 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 	public static void appendValidName(StringBuilder builder, String name)
 	{
-		if(isKeyword(name))
+		if(CSharpNameSuggesterUtil.isKeyword(name))
 		{
 			builder.append("@");
 		}
 		builder.append(name);
-	}
-
-	public static boolean isKeyword(String str)
-	{
-		try
-		{
-			CSharpLexer cSharpLexer = new CSharpLexer();
-			cSharpLexer.start(str);
-			return CSharpTokenSets.KEYWORDS.contains(cSharpLexer.getTokenType());
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			return false;
-		}
 	}
 
 	public List<StubBlock> getBlocks()

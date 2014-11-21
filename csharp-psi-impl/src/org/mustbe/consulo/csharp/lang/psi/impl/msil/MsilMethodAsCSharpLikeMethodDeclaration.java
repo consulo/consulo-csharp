@@ -47,6 +47,7 @@ import com.intellij.util.IncorrectOperationException;
 public class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElementWrapper<MsilMethodEntry> implements DotNetLikeMethodDeclaration
 {
 	private MsilModifierListToCSharpModifierList myModifierList;
+	private final MsilGenericParameterListAsCSharpGenericParameterList myGenericParameterList;
 
 	public MsilMethodAsCSharpLikeMethodDeclaration(PsiElement parent, MsilMethodEntry methodEntry)
 	{
@@ -57,6 +58,15 @@ public class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElementWrapper<
 	{
 		super(parent, methodEntry);
 		myModifierList = new MsilModifierListToCSharpModifierList(modifiers, (MsilModifierList) methodEntry.getModifierList());
+		myGenericParameterList = newGenericParameterList();
+	}
+
+	@Nullable
+	protected MsilGenericParameterListAsCSharpGenericParameterList newGenericParameterList()
+	{
+		DotNetGenericParameterList genericParameterList = myMsilElement.getGenericParameterList();
+		return genericParameterList == null ? null : new MsilGenericParameterListAsCSharpGenericParameterList(this,
+				genericParameterList);
 	}
 
 	@NotNull
@@ -97,20 +107,20 @@ public class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElementWrapper<
 	@Override
 	public DotNetGenericParameterList getGenericParameterList()
 	{
-		return myMsilElement.getGenericParameterList();
+		return myGenericParameterList;
 	}
 
 	@NotNull
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
-		return myMsilElement.getGenericParameters();
+		return myGenericParameterList == null ? DotNetGenericParameter.EMPTY_ARRAY : myGenericParameterList.getParameters();
 	}
 
 	@Override
 	public int getGenericParametersCount()
 	{
-		return myMsilElement.getGenericParametersCount();
+		return myGenericParameterList == null ? 0 : myGenericParameterList.getGenericParametersCount();
 	}
 
 	@Override
