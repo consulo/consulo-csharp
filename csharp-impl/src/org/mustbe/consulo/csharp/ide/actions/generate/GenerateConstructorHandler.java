@@ -38,11 +38,13 @@ import com.intellij.ide.util.MemberChooserBuilder;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
+import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.util.containers.ContainerUtil;
 import lombok.val;
 
@@ -130,7 +132,7 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 	}
 
 	private static void generateConstructor(@NotNull final CSharpTypeDeclaration typeDeclaration,
-			@NotNull Editor editor,
+			@NotNull final Editor editor,
 			@NotNull final PsiFile file,
 			@NotNull ConstructorChooseMember chooseMember)
 	{
@@ -150,6 +152,10 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 			{
 				final PsiElement psiElement = typeDeclaration.addAfter(method, elementAt);
 				typeDeclaration.addAfter(PsiParserFacade.SERVICE.getInstance(file.getProject()).createWhiteSpaceFromText("\n"), psiElement);
+
+				PsiDocumentManager.getInstance(getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+
+				CodeStyleManager.getInstance(getProject()).reformat(psiElement);
 			}
 		}.execute();
 	}
