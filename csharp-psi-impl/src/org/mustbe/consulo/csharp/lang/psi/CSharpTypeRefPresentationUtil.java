@@ -1,0 +1,180 @@
+/*
+ * Copyright 2013-2014 must-be.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.mustbe.consulo.csharp.lang.psi;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
+import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.dll.vfs.builder.block.StubBlockUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.PairFunction;
+import lombok.val;
+
+/**
+ * @author VISTALL
+ * @since 03.09.14
+ */
+public class CSharpTypeRefPresentationUtil
+{
+	public static Map<String, String> ourTypesAsKeywords = new HashMap<String, String>()
+	{
+		{
+			put(DotNetTypes.System.Object, "object");
+			put(DotNetTypes.System.String, "string");
+			put(DotNetTypes.System.SByte, "sbyte");
+			put(DotNetTypes.System.Byte, "byte");
+			put(DotNetTypes.System.Int16, "short");
+			put(DotNetTypes.System.UInt16, "ushort");
+			put(DotNetTypes.System.Int32, "int");
+			put(DotNetTypes.System.UInt32, "uint");
+			put(DotNetTypes.System.Int64, "long");
+			put(DotNetTypes.System.UInt64, "ulong");
+			put(DotNetTypes.System.Single, "float");
+			put(DotNetTypes.System.Double, "double");
+			put(DotNetTypes.System.Char, "char");
+			put(DotNetTypes.System.Void, "void");
+			put(DotNetTypes.System.Boolean, "bool");
+			put(DotNetTypes.System.Decimal, "decimal");
+		}
+	};
+
+	@NotNull
+	public static String buildShortText(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
+	{
+		StringBuilder builder = new StringBuilder();
+		appendTypeRef(scope, builder, typeRef, false);
+		return builder.toString();
+	}
+
+	@NotNull
+	public static String buildText(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
+	{
+		StringBuilder builder = new StringBuilder();
+		appendTypeRef(scope, builder, typeRef, true);
+		return builder.toString();
+	}
+
+	public static void appendTypeRef(@NotNull final PsiElement scope, @NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef,
+			final boolean defaultQualifiedText)
+	{
+		if(typeRef instanceof CSharpStaticTypeRef)
+		{
+			builder.append(typeRef.getPresentableText());
+		}
+		else if(typeRef instanceof CSharpArrayTypeRef)
+		{
+			appendTypeRef(scope, builder, ((CSharpArrayTypeRef) typeRef).getInnerTypeRef(), defaultQualifiedText);
+			builder.append("[]");
+		}
+		else if(typeRef instanceof CSharpRefTypeRef)
+		{
+			builder.append(((CSharpRefTypeRef) typeRef).getType().name());
+			builder.append(" ");
+			appendTypeRef(scope, builder, ((CSharpRefTypeRef) typeRef).getInnerTypeRef(), defaultQualifiedText);
+		}
+		else if(typeRef instanceof DotNetPointerTypeRef)
+		{
+			appendTypeRef(scope, builder, ((DotNetPointerTypeRef) typeRef).getInnerTypeRef(), defaultQualifiedText);
+			builder.append("*");
+		}
+		else
+		{
+			DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+
+			PsiElement element = typeResolveResult.getElement();
+			boolean isNullable = element == null || CSharpTypeUtil.isElementIsNullable(element);
+			boolean isExpectedNullable = typeResolveResult.isNullable();
+
+			if(element instanceof DotNetQualifiedElement)
+			{
+				String qName = ((DotNetQualifiedElement) element).getPresentableQName();
+
+				String typeAsKeyword = ourTypesAsKeywords.get(qName);
+				if(typeAsKeyword != null)
+				{
+					builder.append(typeAsKeyword);
+				}
+				else
+				{
+					if(defaultQualifiedText)
+					{
+						builder.append(qName);
+					}
+					else
+					{
+						builder.append(((DotNetQualifiedElement) element).getName());
+					}
+				}
+			}
+			else
+			{
+				if(defaultQualifiedText)
+				{
+					builder.append(typeRef.getQualifiedText());
+				}
+				else
+				{
+					builder.append(typeRef.getPresentableText());
+				}
+			}
+
+			if(element instanceof DotNetGenericParameterListOwner)
+			{
+				DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) element).getGenericParameters();
+				if(genericParameters.length > 0)
+				{
+					val genericExtractor = typeResolveResult.getGenericExtractor();
+					builder.append("<");
+					StubBlockUtil.join(builder, genericParameters, new PairFunction<StringBuilder, DotNetGenericParameter, Void>()
+					{
+						@Nullable
+						@Override
+						public Void fun(StringBuilder t, DotNetGenericParameter v)
+						{
+							DotNetTypeRef extractedTypeRef = genericExtractor.extract(v);
+							if(extractedTypeRef == null)
+							{
+								extractedTypeRef = new CSharpTypeRefFromGenericParameter(v);
+							}
+							appendTypeRef(scope, t, extractedTypeRef, defaultQualifiedText);
+							return null;
+						}
+					}, ", ");
+					builder.append(">");
+				}
+			}
+			if(isExpectedNullable && !isNullable)
+			{
+				builder.append("?");
+			}
+		}
+	}
+}
