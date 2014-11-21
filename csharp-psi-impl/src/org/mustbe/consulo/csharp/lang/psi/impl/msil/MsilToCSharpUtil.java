@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyArrayTypeRef;
@@ -31,6 +32,9 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLa
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
@@ -51,6 +55,7 @@ import org.mustbe.consulo.msil.lang.psi.impl.type.MsilNativeTypeRefImpl;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.ContainerUtil;
 import lombok.val;
 
@@ -275,6 +280,21 @@ public class MsilToCSharpUtil
 			if(delegateMethod != null)
 			{
 				return new CSharpLazyLambdaTypeRef(scope, delegateMethod);
+			}
+		}
+		else if(resolve instanceof DotNetGenericParameter)
+		{
+			DotNetGenericParameterList genericParameterList = (DotNetGenericParameterList) resolve.getParent();
+			DotNetGenericParameterListOwner genericParameterListOwner = (DotNetGenericParameterListOwner) genericParameterList.getParent();
+
+			int i = ArrayUtil.indexOf(genericParameterList.getParameters(), resolve);
+
+			assert i != -1;
+			PsiElement wrap = wrap(genericParameterListOwner, null);
+			if(wrap instanceof DotNetGenericParameterListOwner)
+			{
+				DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) wrap).getGenericParameters();
+				return new CSharpTypeRefFromGenericParameter(genericParameters[i]);
 			}
 		}
 		return new MsilDelegateTypeRef(scope, typeRef, forceNullable);
