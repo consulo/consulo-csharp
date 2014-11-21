@@ -192,12 +192,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 			context.setUIComponentEnabled(false);
 			return;
 		}
-		CSharpParametersInfo build = CSharpParametersInfo.build(p);
-		if(build == null)
-		{
-			context.setUIComponentEnabled(false);
-			return;
-		}
+		CSharpParametersInfo build = CSharpParametersInfo.build(p, context.getParameterOwner());
 
 		String text = build.getText();
 

@@ -20,11 +20,13 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.codeInsight.CodeInsightSettings;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.UnfairTextRange;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -37,7 +39,8 @@ public class CSharpParametersInfo
 
 	private static final TextRange EMPTY = new UnfairTextRange(-1, -1);
 
-	public static CSharpParametersInfo build(@NotNull CSharpSimpleLikeMethod callable)
+	@NotNull
+	public static CSharpParametersInfo build(@NotNull CSharpSimpleLikeMethod callable, @NotNull PsiElement scope)
 	{
 		CSharpSimpleParameterInfo[] parameters = callable.getParameterInfos();
 		DotNetTypeRef returnType = callable.getReturnTypeRef();
@@ -47,7 +50,7 @@ public class CSharpParametersInfo
 		CSharpParametersInfo parametersInfo = new CSharpParametersInfo(parameters.length);
 		if(CodeInsightSettings.getInstance().SHOW_FULL_SIGNATURES_IN_PARAMETER_INFO)
 		{
-			parametersInfo.myBuilder.append(returnType.getPresentableText());
+			parametersInfo.myBuilder.append(CSharpTypeRefPresentationUtil.buildShortText(returnType, scope));
 			parametersInfo.myBuilder.append(" ").append(bounds[0]);
 		}
 
@@ -63,7 +66,7 @@ public class CSharpParametersInfo
 				CSharpSimpleParameterInfo parameter = parameters[i];
 
 				int length = parametersInfo.length();
-				parametersInfo.buildParameter(parameter);
+				parametersInfo.buildParameter(parameter, scope);
 				parametersInfo.myParameterRanges[i] = new TextRange(length, parametersInfo.length());
 			}
 		}
@@ -91,9 +94,9 @@ public class CSharpParametersInfo
 		myParameterRanges = new TextRange[myParameterCount == 0 ? 1 : myParameterCount];
 	}
 
-	private void buildParameter(@NotNull CSharpSimpleParameterInfo o)
+	private void buildParameter(@NotNull CSharpSimpleParameterInfo o, @NotNull PsiElement scope)
 	{
-		myBuilder.append(o.getTypeRef().getPresentableText());
+		myBuilder.append(CSharpTypeRefPresentationUtil.buildShortText(o.getTypeRef(), scope));
 		myBuilder.append(" ");
 		myBuilder.append(o.getNotNullName());
 	}
