@@ -25,8 +25,10 @@ import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -34,6 +36,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayUtil;
 
@@ -48,6 +51,10 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 		DesConstructor,
 		InterfaceMember,
 		GenericParameter(CSharpModifier.IN, CSharpModifier.OUT),
+		NamespaceType(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT,
+				CSharpModifier.PARTIAL),
+		NestedType(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT,
+				CSharpModifier.PARTIAL),
 		Unknown
 				{
 					@Override
@@ -133,6 +140,19 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 		if(owner instanceof DotNetGenericParameter)
 		{
 			return Owners.GenericParameter;
+		}
+
+		if(owner instanceof DotNetTypeDeclaration)
+		{
+			PsiElement parent = owner.getParent();
+			if(parent instanceof CSharpNamespaceDeclaration || parent instanceof CSharpFile)
+			{
+				return Owners.NamespaceType;
+			}
+			else if(parent instanceof DotNetTypeDeclaration)
+			{
+				return Owners.NestedType;
+			}
 		}
 		return Owners.Unknown;
 	}
