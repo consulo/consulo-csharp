@@ -48,7 +48,8 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 {
 	public static enum Owners
 	{
-		DesConstructor,
+		Constructor(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL),
+		DeConstructor,
 		InterfaceMember,
 		GenericParameter(CSharpModifier.IN, CSharpModifier.OUT),
 		NamespaceType(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT,
@@ -119,9 +120,13 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 
 	public static Owners toOwners(DotNetModifierListOwner owner)
 	{
-		if(owner instanceof CSharpConstructorDeclaration && ((CSharpConstructorDeclaration) owner).isDeConstructor())
+		if(owner instanceof CSharpConstructorDeclaration)
 		{
-			return Owners.DesConstructor;
+			if(((CSharpConstructorDeclaration) owner).isDeConstructor())
+			{
+				return Owners.DeConstructor;
+			}
+			return Owners.Constructor;
 		}
 
 		if(owner instanceof CSharpMethodDeclaration || owner instanceof CSharpPropertyDeclaration || owner instanceof CSharpArrayMethodDeclaration)
