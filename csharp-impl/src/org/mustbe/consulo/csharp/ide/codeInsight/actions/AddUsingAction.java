@@ -23,9 +23,10 @@ import javax.swing.Icon;
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.codeInsight.CSharpCodeInsightSettings;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
 import org.mustbe.consulo.dotnet.DotNetBundle;
 import org.mustbe.consulo.dotnet.module.roots.DotNetLibraryOrderEntryImpl;
@@ -190,13 +191,13 @@ public class AddUsingAction implements QuestionAction
 	{
 		PsiElement elementForBeforeAdd = getElementForBeforeAdd();
 
-		if(elementForBeforeAdd instanceof CSharpUsingListImpl)
+		if(elementForBeforeAdd instanceof CSharpUsingList)
 		{
-			((CSharpUsingListImpl) elementForBeforeAdd).addUsing(qName);
+			((CSharpUsingList) elementForBeforeAdd).addUsing(qName);
 		}
-		else if(elementForBeforeAdd instanceof CSharpFileImpl)
+		else if(elementForBeforeAdd instanceof CSharpFile)
 		{
-			DotNetQualifiedElement[] members = ((CSharpFileImpl) elementForBeforeAdd).getMembers();
+			DotNetQualifiedElement[] members = ((CSharpFile) elementForBeforeAdd).getMembers();
 
 			PsiElement firstChild = members.length > 0 ? members[0] : elementForBeforeAdd.getFirstChild();
 
