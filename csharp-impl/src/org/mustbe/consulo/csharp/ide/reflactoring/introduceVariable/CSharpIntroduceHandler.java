@@ -222,9 +222,7 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 				if(elementAtCaret instanceof CSharpReferenceExpression)
 				{
 					CSharpReferenceExpression.ResolveToKind kind = ((CSharpReferenceExpression) elementAtCaret).kind();
-					if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE ||
-							kind == CSharpReferenceExpression.ResolveToKind.TYPE_OR_NAMESPACE || kind == CSharpReferenceExpression.ResolveToKind
-							.CONSTRUCTOR)
+					if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || kind == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR)
 					{
 						elementAtCaret = elementAtCaret.getParent();
 						continue;

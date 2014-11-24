@@ -32,8 +32,6 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression
 		GENERIC_PARAMETER_FROM_PARENT, // return generic parameter from parent
 		QUALIFIED_NAMESPACE,  // namespace by fully qualified like 'System.Reflection' system is not searching from context
 		SOFT_QUALIFIED_NAMESPACE, // same as QUALIFIED_NAMESPACE but - soft ref
-		TYPE_OR_NAMESPACE,
-		NAMESPACE_FROM_CONTEXT,
 		METHOD,
 		ATTRIBUTE,  // return type declaration but ref can find without Attribute sufix
 		NATIVE_TYPE_WRAPPER, // return type declaration of native type

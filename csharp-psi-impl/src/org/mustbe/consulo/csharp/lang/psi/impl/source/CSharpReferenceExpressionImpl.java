@@ -373,12 +373,6 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				scopeProcessor = new SimpleNamedScopeProcessor(ExecuteTarget.LABEL);
 				CSharpResolveUtil.treeWalkUp(scopeProcessor, element, element, parentOfType);
 				return scopeProcessor.toResolveResults();
-			case TYPE_OR_NAMESPACE:
-				ResolveResult[] typeResults = collectResults(ResolveToKind.TYPE_LIKE, selector, element, callArgumentListOwner, completion,
-						resolveFromParent);
-				ResolveResult[] namespaceResults = collectResults(ResolveToKind.NAMESPACE_FROM_CONTEXT, selector, element, callArgumentListOwner, completion,
-						resolveFromParent);
-				return ArrayUtil.mergeArrays(typeResults, namespaceResults);
 			case QUALIFIED_NAMESPACE:
 			case SOFT_QUALIFIED_NAMESPACE:
 				String qName = StringUtil.strip(element.getText(), CharFilter.NOT_WHITESPACE_FILTER);
@@ -484,7 +478,6 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			case TYPE_LIKE:
 				return processAnyMember(qualifier, selector, element, callArgumentListOwner, kind, completion);
 			case ANY_MEMBER:
-			case NAMESPACE_FROM_CONTEXT:
 				resolveResults = processAnyMember(qualifier, selector, element, callArgumentListOwner, kind, completion);
 				if(resolveResults.length == 0)
 				{
@@ -775,12 +768,12 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 						ExecuteTarget.GENERIC_PARAMETER,
 						ExecuteTarget.TYPE,
 						ExecuteTarget.DELEGATE_METHOD,
+						ExecuteTarget.NAMESPACE,
 						ExecuteTarget.TYPE_DEF
 				};
 				sorter = TypeLikeSorter.createByReference(element, codeFragmentIsAvailable);
 				break;
 			case QUALIFIED_NAMESPACE:
-			case NAMESPACE_FROM_CONTEXT:
 				targets = new ExecuteTarget[]{ExecuteTarget.NAMESPACE};
 				break;
 			case FIELD_OR_PROPERTY:
@@ -994,12 +987,12 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 
 			if(PsiTreeUtil.getParentOfType(this, DotNetUserType.class) != null)
 			{
-				return ResolveToKind.TYPE_OR_NAMESPACE;
+				return ResolveToKind.TYPE_LIKE;
 			}
 
 			if(PsiTreeUtil.getParentOfType(this, CSharpAttribute.class) != null)
 			{
-				return ResolveToKind.TYPE_OR_NAMESPACE;
+				return ResolveToKind.TYPE_LIKE;
 			}
 		}
 		else if(tempElement instanceof CSharpMethodCallExpressionImpl)
