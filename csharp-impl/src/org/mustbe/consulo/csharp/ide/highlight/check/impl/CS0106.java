@@ -52,7 +52,7 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 		DeConstructor,
 		InterfaceMember,
 		GenericParameter(CSharpModifier.IN, CSharpModifier.OUT),
-		NamespaceType(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT,
+		NamespaceType(CSharpModifier.STATIC, CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT,
 				CSharpModifier.PARTIAL),
 		NestedType(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT,
 				CSharpModifier.PARTIAL),
