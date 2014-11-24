@@ -63,7 +63,6 @@ public class CSharpQualifiedElementPresentationProvider implements ItemPresentat
 				}
 				return DotNetElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) myDeclaration, 0);
 			}
-			//FIXME [VISTALL] use org.mustbe.consulo.csharp.ide.projectView.CSharpQElementTreeNode.getPresentableText() ?
 			return myDeclaration.getName();
 		}
 
