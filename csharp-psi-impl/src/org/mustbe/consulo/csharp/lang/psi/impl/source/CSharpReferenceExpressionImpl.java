@@ -376,11 +376,11 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			case TYPE_OR_NAMESPACE:
 				ResolveResult[] typeResults = collectResults(ResolveToKind.TYPE_LIKE, selector, element, callArgumentListOwner, completion,
 						resolveFromParent);
-				ResolveResult[] namespaceResults = collectResults(ResolveToKind.NAMESPACE, selector, element, callArgumentListOwner, completion,
+				ResolveResult[] namespaceResults = collectResults(ResolveToKind.NAMESPACE_FROM_CONTEXT, selector, element, callArgumentListOwner, completion,
 						resolveFromParent);
 				return ArrayUtil.mergeArrays(typeResults, namespaceResults);
-			case NAMESPACE:
-			case SOFT_NAMESPACE:
+			case QUALIFIED_NAMESPACE:
+			case SOFT_QUALIFIED_NAMESPACE:
 				String qName = StringUtil.strip(element.getText(), CharFilter.NOT_WHITESPACE_FILTER);
 
 				DotNetNamespaceAsElement namespace = null;
@@ -484,6 +484,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			case TYPE_LIKE:
 				return processAnyMember(qualifier, selector, element, callArgumentListOwner, kind, completion);
 			case ANY_MEMBER:
+			case NAMESPACE_FROM_CONTEXT:
 				resolveResults = processAnyMember(qualifier, selector, element, callArgumentListOwner, kind, completion);
 				if(resolveResults.length == 0)
 				{
@@ -778,7 +779,8 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				};
 				sorter = TypeLikeSorter.createByReference(element, codeFragmentIsAvailable);
 				break;
-			case NAMESPACE:
+			case QUALIFIED_NAMESPACE:
+			case NAMESPACE_FROM_CONTEXT:
 				targets = new ExecuteTarget[]{ExecuteTarget.NAMESPACE};
 				break;
 			case FIELD_OR_PROPERTY:
@@ -931,7 +933,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		}
 		else if(tempElement instanceof CSharpNamespaceDeclarationImpl)
 		{
-			return ResolveToKind.SOFT_NAMESPACE;
+			return ResolveToKind.SOFT_QUALIFIED_NAMESPACE;
 		}
 		else if(tempElement instanceof DotNetUserType)
 		{
@@ -949,7 +951,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		}
 		else if(tempElement instanceof CSharpUsingNamespaceStatement)
 		{
-			return ResolveToKind.NAMESPACE;
+			return ResolveToKind.QUALIFIED_NAMESPACE;
 		}
 		else if(tempElement instanceof CSharpConstructorSuperCallImpl)
 		{
@@ -981,13 +983,13 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				DotNetReferenceExpression namespaceReference = netNamespaceDeclaration.getNamespaceReference();
 				if(namespaceReference != null && PsiTreeUtil.isAncestor(namespaceReference, this, false))
 				{
-					return ResolveToKind.SOFT_NAMESPACE;
+					return ResolveToKind.SOFT_QUALIFIED_NAMESPACE;
 				}
 			}
 
 			if(PsiTreeUtil.getParentOfType(this, CSharpUsingNamespaceStatementImpl.class) != null)
 			{
-				return ResolveToKind.NAMESPACE;
+				return ResolveToKind.QUALIFIED_NAMESPACE;
 			}
 
 			if(PsiTreeUtil.getParentOfType(this, DotNetUserType.class) != null)
@@ -1069,7 +1071,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	public Object[] getVariants()
 	{
 		ResolveToKind kind = kind();
-		if(kind != ResolveToKind.LABEL && kind != ResolveToKind.NAMESPACE && kind != ResolveToKind.SOFT_NAMESPACE)
+		if(kind != ResolveToKind.LABEL && kind != ResolveToKind.QUALIFIED_NAMESPACE && kind != ResolveToKind.SOFT_QUALIFIED_NAMESPACE)
 		{
 			kind = ResolveToKind.ANY_MEMBER;
 		}
@@ -1080,7 +1082,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@Override
 	public boolean isSoft()
 	{
-		return kind() == ResolveToKind.SOFT_NAMESPACE;
+		return kind() == ResolveToKind.SOFT_QUALIFIED_NAMESPACE;
 	}
 
 	@NotNull

@@ -30,9 +30,10 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression
 	public static enum ResolveToKind
 	{
 		GENERIC_PARAMETER_FROM_PARENT, // return generic parameter from parent
-		NAMESPACE,
+		QUALIFIED_NAMESPACE,  // namespace by fully qualified like 'System.Reflection' system is not searching from context
+		SOFT_QUALIFIED_NAMESPACE, // same as QUALIFIED_NAMESPACE but - soft ref
 		TYPE_OR_NAMESPACE,
-		SOFT_NAMESPACE,
+		NAMESPACE_FROM_CONTEXT,
 		METHOD,
 		ATTRIBUTE,  // return type declaration but ref can find without Attribute sufix
 		NATIVE_TYPE_WRAPPER, // return type declaration of native type
