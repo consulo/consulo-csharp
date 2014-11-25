@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.highlight;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.PropertyKey;
+import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
@@ -160,18 +161,23 @@ public class CSharpHighlightUtil
 				key = DefaultLanguageHighlighterColors.LOCAL_VARIABLE;
 			}
 		}
+		else if(element instanceof CSharpEventDeclaration)
+		{
+			key = ((DotNetVariable) element).hasModifier(CSharpModifier.STATIC) ? CSharpHighlightKey.STATIC_EVENT : CSharpHighlightKey
+					.INSTANCE_EVENT;
+		}
 		else if(element instanceof DotNetVariable)
 		{
-			key = ((DotNetVariable) element).hasModifier(CSharpModifier.STATIC) ? CSharpHighlightKey.STATIC_FIELD : CSharpHighlightKey
-					.INSTANCE_FIELD;
+			key = ((DotNetVariable) element).hasModifier(CSharpModifier.STATIC) ? CSharpHighlightKey.STATIC_FIELD_OR_PROPERTY : CSharpHighlightKey
+					.INSTANCE_FIELD_OR_PROPERTY;
 		}
 		return key;
 	}
 
 	public static boolean isMethodRef(PsiElement owner, PsiElement element)
 	{
-		if(owner instanceof CSharpReferenceExpression && ((CSharpReferenceExpression) owner).kind() == CSharpReferenceExpression
-				.ResolveToKind.ANY_MEMBER )
+		if(owner instanceof CSharpReferenceExpression && ((CSharpReferenceExpression) owner).kind() == CSharpReferenceExpression.ResolveToKind
+				.ANY_MEMBER)
 		{
 			if(element == null)
 			{

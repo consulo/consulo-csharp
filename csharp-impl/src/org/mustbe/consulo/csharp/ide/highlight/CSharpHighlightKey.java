@@ -33,10 +33,12 @@ public interface CSharpHighlightKey
 			DefaultLanguageHighlighterColors.TYPE_ALIAS_NAME);
 	TextAttributesKey DELEGATE_METHOD_NAME = TextAttributesKey.createTextAttributesKey("CSHARP_DELEGATE_METHOD_NAME",
 			DefaultLanguageHighlighterColors.IDENTIFIER);
-	TextAttributesKey STATIC_FIELD = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
+	TextAttributesKey STATIC_FIELD_OR_PROPERTY = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
 			DefaultLanguageHighlighterColors.STATIC_FIELD);
-	TextAttributesKey INSTANCE_FIELD = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
+	TextAttributesKey STATIC_EVENT = TextAttributesKey.createTextAttributesKey("CSHARP_STATIC_EVENT", STATIC_FIELD_OR_PROPERTY);
+	TextAttributesKey INSTANCE_FIELD_OR_PROPERTY = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
 			DefaultLanguageHighlighterColors.INSTANCE_FIELD);
+	TextAttributesKey INSTANCE_EVENT = TextAttributesKey.createTextAttributesKey("CSHARP_INSTANCE_EVENT", INSTANCE_FIELD_OR_PROPERTY);
 	TextAttributesKey STATIC_METHOD = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
 			DefaultLanguageHighlighterColors.STATIC_METHOD);
 	TextAttributesKey EXTENSION_METHOD = TextAttributesKey.createTextAttributesKey("CSHARP_EXTENSION_METHOD",

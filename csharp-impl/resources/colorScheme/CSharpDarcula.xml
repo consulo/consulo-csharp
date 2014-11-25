@@ -32,4 +32,17 @@
 			<option name="EFFECT_TYPE" value="-1" />
 		</value>
 	</option>
+	<option name="CSHARP_INSTANCE_EVENT">
+		<value>
+			<option name="FOREGROUND" value="b0439e" />
+			<option name="EFFECT_TYPE" value="0" />
+		</value>
+	</option>
+	<option name="CSHARP_STATIC_EVENT">
+		<value>
+			<option name="FOREGROUND" value="b0439e" />
+			<option name="FONT_TYPE" value="2" />
+			<option name="EFFECT_TYPE" value="0" />
+		</value>
+	</option>
 </list>

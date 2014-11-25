@@ -56,8 +56,10 @@ public class CSharpColorSettingsPage implements ColorSettingsPage, DisplayPriori
 				new AttributesDescriptor("Extension method call", CSharpHighlightKey.EXTENSION_METHOD),
 				new AttributesDescriptor("Static method call", CSharpHighlightKey.STATIC_METHOD),
 				new AttributesDescriptor("Instance method call", CSharpHighlightKey.INSTANCE_METHOD),
-				new AttributesDescriptor("Instance field or property", CSharpHighlightKey.INSTANCE_FIELD),
-				new AttributesDescriptor("Static field or property", CSharpHighlightKey.STATIC_FIELD),
+				new AttributesDescriptor("Instance field or property", CSharpHighlightKey.INSTANCE_FIELD_OR_PROPERTY),
+				new AttributesDescriptor("Static field or property", CSharpHighlightKey.STATIC_FIELD_OR_PROPERTY),
+				new AttributesDescriptor("Static event", CSharpHighlightKey.STATIC_EVENT),
+				new AttributesDescriptor("Instance event", CSharpHighlightKey.INSTANCE_EVENT),
 				new AttributesDescriptor("Parameter", CSharpHighlightKey.PARAMETER),
 				new AttributesDescriptor("Method Reference", CSharpHighlightKey.METHOD_REF),
 			};
@@ -75,10 +77,12 @@ public class CSharpColorSettingsPage implements ColorSettingsPage, DisplayPriori
 			put("extension_call", CSharpHighlightKey.EXTENSION_METHOD);
 			put("static_call", CSharpHighlightKey.STATIC_METHOD);
 			put("instance_call", CSharpHighlightKey.INSTANCE_METHOD);
-			put("static_field", CSharpHighlightKey.STATIC_FIELD);
-			put("instance_field", CSharpHighlightKey.INSTANCE_FIELD);
+			put("static_field", CSharpHighlightKey.STATIC_FIELD_OR_PROPERTY);
+			put("instance_field", CSharpHighlightKey.INSTANCE_FIELD_OR_PROPERTY);
 			put("parameter", CSharpHighlightKey.PARAMETER);
 			put("method_ref", CSharpHighlightKey.METHOD_REF);
+			put("static_event_name", CSharpHighlightKey.STATIC_EVENT);
+			put("instance_event_name", CSharpHighlightKey.INSTANCE_EVENT);
 		}
 	};
 
