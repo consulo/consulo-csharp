@@ -23,10 +23,12 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.AddUsingAction;
+import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
@@ -150,21 +152,22 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 					{
 						DotNetQualifiedElement wrap = (DotNetQualifiedElement) MsilToCSharpUtil.wrap(dotNetTypeDeclaration);
 
-						String name = wrap.getName();
-						String presentationText = name;
+						boolean insideUsingList = PsiTreeUtil.getParentOfType(parent, CSharpUsingList.class) != null;
 
-						if(isAlreadyResolved(wrap, parent))
+						String presentationText = wrap.getName();
+
+						if(!insideUsingList && isAlreadyResolved(wrap, parent))
 						{
 							continue;
 						}
 
+						int genericCount = 0;
 						if(wrap instanceof DotNetGenericParameterListOwner)
 						{
 							DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) wrap).getGenericParameters();
-							if(genericParameters.length > 0)
+							if((genericCount = genericParameters.length) > 0)
 							{
-								name += "<>";
-								presentationText += StringUtil.join(genericParameters, new Function<DotNetGenericParameter, String>()
+								presentationText += "<" + StringUtil.join(genericParameters, new Function<DotNetGenericParameter, String>()
 								{
 									@Override
 									public String fun(DotNetGenericParameter parameter)
@@ -172,25 +175,38 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 										return parameter.getName();
 									}
 								}, ", ");
+								presentationText += ">";
 							}
 						}
 
-						LookupElementBuilder builder = LookupElementBuilder.create(name);
+						LookupElementBuilder builder = LookupElementBuilder.create(insideUsingList ? wrap.getPresentableQName() : wrap.getName());
 						builder = builder.withPresentableText(presentationText);
 						builder = builder.withIcon(IconDescriptorUpdaters.getIcon(wrap, Iconable.ICON_FLAG_VISIBILITY));
 
 						val parentQName = wrap.getPresentableParentQName();
 						builder = builder.withTypeText(parentQName, true);
-						builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
+						val ltGtInsertHandler = genericCount == 0 ? null : LtGtInsertHandler.getInstance(genericCount > 0);
+						if(insideUsingList)
 						{
-
-							@Override
-							public void handleInsert(InsertionContext context, LookupElement item)
+							builder = builder.withInsertHandler(ltGtInsertHandler);
+						}
+						else
+						{
+							builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
 							{
-								new AddUsingAction(completionParameters.getEditor(), context.getFile(), Collections.<Couple<String>>singleton(Couple
-										.of(null, parentQName))).execute();
-							}
-						});
+								@Override
+								public void handleInsert(InsertionContext context, LookupElement item)
+								{
+									if(ltGtInsertHandler != null)
+									{
+										ltGtInsertHandler.handleInsert(context, item);
+									}
+
+									new AddUsingAction(completionParameters.getEditor(), context.getFile(), Collections.<Couple<String>>singleton(Couple
+											.of(null, parentQName))).execute();
+								}
+							});
+						}
 						completionResultSet.addElement(builder);
 					}
 				}
