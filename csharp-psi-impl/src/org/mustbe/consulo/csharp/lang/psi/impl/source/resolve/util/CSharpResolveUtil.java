@@ -59,6 +59,7 @@ import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.NullableFunction;
 
 /**
@@ -155,7 +156,22 @@ public class CSharpResolveUtil
 	{
 		if(!entrance.isValid())
 		{
-			CSharpResolveUtil.LOGGER.error(new PsiInvalidElementAccessException(entrance));
+			LOGGER.error(new PsiInvalidElementAccessException(entrance));
+		}
+
+		DotNetNamespaceAsElement root = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace("", entrance.getResolveScope());
+
+		assert root != null;
+
+		if(!processor.execute(root, state))
+		{
+			return false;
+		}
+
+		// we cant go to use list
+		if(PsiTreeUtil.getParentOfType(entrance, CSharpUsingList.class) != null)
+		{
+			return true;
 		}
 
 		PsiElement prevParent = entrance;
@@ -164,16 +180,6 @@ public class CSharpResolveUtil
 		if(maxScope == null)
 		{
 			maxScope = entrance.getContainingFile();
-		}
-
-		DotNetNamespaceAsElement root = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace("",
-				entrance.getResolveScope());
-
-		assert root != null;
-
-		if(!processor.execute(root, state))
-		{
-			return false;
 		}
 
 		while(scope != null)

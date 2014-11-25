@@ -729,10 +729,6 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			}
 
 			AbstractScopeProcessor p = createMemberProcessor(element, kind, elements, completion, codeFragmentIsAvailable);
-			if(last == null)
-			{
-				return p.toResolveResults();
-			}
 
 			if(!CSharpResolveUtil.walkChildren(p, targetToWalkChildren, true, true, resolveState))
 			{
@@ -744,10 +740,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				return p.toResolveResults();
 			}
 
-			if(PsiTreeUtil.getParentOfType(element, CSharpUsingList.class) == null)
-			{
-				CSharpResolveUtil.walkUsing(p, target, null, resolveState);
-			}
+			CSharpResolveUtil.walkUsing(p, element, null, resolveState);
 
 			return p.toResolveResults();
 		}
@@ -913,6 +906,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@NotNull
 	public ResolveToKind kind()
 	{
+		String referenceName = getReferenceName();
 		PsiElement tempElement = getParent();
 		if(tempElement instanceof CSharpGenericConstraintImpl)
 		{
