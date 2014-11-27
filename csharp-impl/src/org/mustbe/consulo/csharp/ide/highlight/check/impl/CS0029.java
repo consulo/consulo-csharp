@@ -22,10 +22,10 @@ import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpAsyncUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAwaitExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpYieldStatementImpl;
@@ -34,11 +34,8 @@ import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.Trinity;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -71,22 +68,17 @@ public class CS0029 extends CompilerCheck<PsiElement>
 							DotNetTypeRef actual,
 							PsiElement element)
 					{
-						Pair<DotNetTypeDeclaration, DotNetGenericExtractor> typeInSuper = CSharpTypeUtil.findTypeInSuper(expected,
-								CSharpAwaitExpressionImpl.System_Threading_Tasks_Task$1, element);
-						if(typeInSuper != null)
+						DotNetTypeRef typeRef = CSharpAsyncUtil.extractAsyncTypeRef(expected, element);
+						if(typeRef != DotNetTypeRef.ERROR_TYPE)
 						{
-							DotNetTypeRef extract = typeInSuper.getSecond().extract(typeInSuper.getFirst().getGenericParameters()[0]);
-							if(extract != null)
-							{
-								expected = extract;
-							}
-							return Trinity.create(expected, actual, element);
+							expected = typeRef;
 						}
-						return null;
+						return Trinity.create(expected, actual, element);
 					}
 				},
 		DefaultReturn
 				{
+					@Override
 					@Nullable
 					public Trinity<DotNetTypeRef, DotNetTypeRef, ? extends PsiElement> create(DotNetTypeRef expected,
 							DotNetTypeRef actual,

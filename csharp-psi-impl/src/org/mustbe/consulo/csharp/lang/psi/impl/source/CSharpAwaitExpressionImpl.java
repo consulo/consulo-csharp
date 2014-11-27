@@ -3,16 +3,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
-import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpAsyncUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.Pair;
 
 /**
  * @author VISTALL
@@ -44,21 +38,7 @@ public class CSharpAwaitExpressionImpl extends CSharpElementImpl implements DotN
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 
-		DotNetTypeRef typeRef = innerExpression.toTypeRef(b);
-		Pair<DotNetTypeDeclaration, DotNetGenericExtractor> typeInSuper = CSharpTypeUtil.findTypeInSuper(typeRef, System_Threading_Tasks_Task$1, this);
-		if(typeInSuper != null)
-		{
-			DotNetTypeRef extract = typeInSuper.getSecond().extract(typeInSuper.getFirst().getGenericParameters()[0]);
-			assert extract != null;
-			return extract;
-		}
-
-		typeInSuper = CSharpTypeUtil.findTypeInSuper(typeRef, System_Threading_Tasks_Task, this);
-		if(typeInSuper != null)
-		{
-			return new DotNetTypeRefByQName(DotNetTypes.System.Void, CSharpTransform.INSTANCE, false);
-		}
-		return DotNetTypeRef.ERROR_TYPE;
+		return CSharpAsyncUtil.extractAsyncTypeRef(innerExpression.toTypeRef(true), this);
 	}
 
 	@Nullable
