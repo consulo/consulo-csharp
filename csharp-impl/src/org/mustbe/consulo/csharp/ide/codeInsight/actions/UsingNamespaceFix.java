@@ -58,6 +58,8 @@ import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.SmartPointerManager;
+import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
@@ -79,76 +81,83 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		SHOW_ACTION
 	}
 
-	private final CSharpReferenceExpression myRef;
+	private final SmartPsiElementPointer<CSharpReferenceExpression> myRefPointer;
 
-	public UsingNamespaceFix(CSharpReferenceExpression ref)
+	public UsingNamespaceFix(@NotNull CSharpReferenceExpression ref)
 	{
-		myRef = ref;
+		myRefPointer = SmartPointerManager.getInstance(ref.getProject()).createSmartPsiElementPointer(ref);
 	}
 
+	@NotNull
 	public PopupResult doFix(Editor editor)
 	{
-		CSharpReferenceExpression.ResolveToKind kind = myRef.kind();
-		if(kind != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE &&
-				kind != CSharpReferenceExpression.ResolveToKind.METHOD &&
-				myRef.getQualifier() != null)
+		CSharpReferenceExpression element = myRefPointer.getElement();
+		if(element == null)
 		{
 			return PopupResult.NOT_AVAILABLE;
 		}
-		PsiElement resolve = myRef.resolve();
+
+		CSharpReferenceExpression.ResolveToKind kind = element.kind();
+		if(kind != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE &&
+				kind != CSharpReferenceExpression.ResolveToKind.METHOD &&
+				element.getQualifier() != null)
+		{
+			return PopupResult.NOT_AVAILABLE;
+		}
+		PsiElement resolve = element.resolve();
 		if(resolve != null && resolve.isValid())
 		{
 			return PopupResult.NOT_AVAILABLE;
 		}
 
-		Set<Couple<String>> q = collectAllAvailableNamespaces(kind);
+		Set<Couple<String>> q = collectAllAvailableNamespaces(element, kind);
 		if(q.isEmpty())
 		{
 			return PopupResult.NOT_AVAILABLE;
 		}
 
-		AddUsingAction action = new AddUsingAction(editor, myRef, q);
+		AddUsingAction action = new AddUsingAction(editor, element, q);
 		String message = ShowAutoImportPass.getMessage(q.size() != 1, DotNetBundle.message("use.popup", q.iterator().next().getSecond()));
 
-		HintManager.getInstance().showQuestionHint(editor, message, myRef.getTextOffset(), myRef.getTextRange().getEndOffset(), action);
+		HintManager.getInstance().showQuestionHint(editor, message, element.getTextOffset(), element.getTextRange().getEndOffset(), action);
 
 		return PopupResult.SHOW_HIT;
 	}
 
-	private Set<Couple<String>> collectAllAvailableNamespaces(CSharpReferenceExpression.ResolveToKind kind)
+	private static Set<Couple<String>> collectAllAvailableNamespaces(CSharpReferenceExpression ref, CSharpReferenceExpression.ResolveToKind kind)
 	{
-		if(PsiTreeUtil.getParentOfType(myRef, CSharpUsingListChild.class) != null || !myRef.isValid())
+		if(PsiTreeUtil.getParentOfType(ref, CSharpUsingListChild.class) != null || !ref.isValid())
 		{
 			return Collections.emptySet();
 		}
-		String referenceName = myRef.getReferenceName();
+		String referenceName = ref.getReferenceName();
 		if(StringUtil.isEmpty(referenceName))
 		{
 			return Collections.emptySet();
 		}
 		Set<Couple<String>> q = new ArrayListSet<Couple<String>>();
-		if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || myRef.getQualifier() == null)
+		if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || ref.getQualifier() == null)
 		{
-			collectAvailableNamespaces(q, referenceName);
+			collectAvailableNamespaces(ref, q, referenceName);
 		}
 		if(kind == CSharpReferenceExpression.ResolveToKind.METHOD)
 		{
-			collectAvailableNamespacesForMethodExtensions(q, referenceName);
+			collectAvailableNamespacesForMethodExtensions(ref, q, referenceName);
 		}
 		//q.addAll(LibrariesSearcher.getInstance().searchInSystemLibraries(myRef, referenceName));
 		return q;
 	}
 
-	private void collectAvailableNamespaces(Set<Couple<String>> set, String referenceName)
+	private static void collectAvailableNamespaces(final CSharpReferenceExpression ref, Set<Couple<String>> set, String referenceName)
 	{
-		if(myRef.getQualifier() != null)
+		if(ref.getQualifier() != null)
 		{
 			return;
 		}
 		Collection<DotNetTypeDeclaration> tempTypes;
 		Collection<DotNetLikeMethodDeclaration> tempMethods;
 
-		PsiElement parent = myRef.getParent();
+		PsiElement parent = ref.getParent();
 		if(parent instanceof CSharpAttribute)
 		{
 			val cond = new Condition<DotNetTypeDeclaration>()
@@ -162,42 +171,42 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 			// if attribute endwith Attribute - collect only with
 			if(referenceName.endsWith(AttributeByNameSelector.AttributeSuffix))
 			{
-				tempTypes = getTypesWithGeneric(referenceName);
+				tempTypes = getTypesWithGeneric(ref, referenceName);
 
 				collect(set, tempTypes, cond);
 			}
 			else
 			{
-				tempTypes = getTypesWithGeneric(referenceName);
+				tempTypes = getTypesWithGeneric(ref, referenceName);
 
 				collect(set, tempTypes, cond);
 
-				tempTypes = getTypesWithGeneric(referenceName + AttributeByNameSelector.AttributeSuffix);
+				tempTypes = getTypesWithGeneric(ref, referenceName + AttributeByNameSelector.AttributeSuffix);
 
 				collect(set, tempTypes, cond);
 			}
 		}
 		else
 		{
-			tempTypes = getTypesWithGeneric(referenceName);
+			tempTypes = getTypesWithGeneric(ref, referenceName);
 
 			collect(set, tempTypes, Conditions.<DotNetTypeDeclaration>alwaysTrue());
 
-			tempMethods = MethodIndex.getInstance().get(referenceName, myRef.getProject(), myRef.getResolveScope());
+			tempMethods = MethodIndex.getInstance().get(referenceName, ref.getProject(), ref.getResolveScope());
 
 			collect(set, tempMethods, new Condition<DotNetLikeMethodDeclaration>()
 			{
 				@Override
 				public boolean value(DotNetLikeMethodDeclaration method)
 				{
-					return (method.getParent() instanceof DotNetNamespaceDeclaration || method.getParent() instanceof PsiFile) && method
-							instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) method).isDelegate();
+					return (method.getParent() instanceof DotNetNamespaceDeclaration || method.getParent() instanceof PsiFile) && method instanceof
+							CSharpMethodDeclaration && ((CSharpMethodDeclaration) method).isDelegate();
 				}
 			});
 		}
 	}
 
-	private List<DotNetTypeDeclaration> getTypesWithGeneric(final String ref)
+	private static List<DotNetTypeDeclaration> getTypesWithGeneric(CSharpReferenceExpression ref, final String refName)
 	{
 		final Set<String> set = new TreeSet<String>();
 		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.TYPE_INDEX, new Processor<String>()
@@ -206,13 +215,13 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 			public boolean process(String name)
 			{
 				String nameNoGeneric = MsilHelper.cutGenericMarker(name);
-				if(Comparing.equal(nameNoGeneric, ref))
+				if(Comparing.equal(nameNoGeneric, refName))
 				{
 					set.add(name);
 				}
 				return true;
 			}
-		}, myRef.getResolveScope(), IdFilter.getProjectIdFilter(myRef.getProject(), true));
+		}, ref.getResolveScope(), IdFilter.getProjectIdFilter(ref.getProject(), true));
 
 		if(set.isEmpty())
 		{
@@ -222,20 +231,20 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		List<DotNetTypeDeclaration> typeDeclarations = new ArrayList<DotNetTypeDeclaration>();
 		for(String t : set)
 		{
-			typeDeclarations.addAll(TypeIndex.getInstance().get(t, myRef.getProject(), myRef.getResolveScope()));
+			typeDeclarations.addAll(TypeIndex.getInstance().get(t, ref.getProject(), ref.getResolveScope()));
 		}
 		return typeDeclarations;
 	}
 
-	private void collectAvailableNamespacesForMethodExtensions(Set<Couple<String>> set, String referenceName)
+	private static void collectAvailableNamespacesForMethodExtensions(CSharpReferenceExpression ref, Set<Couple<String>> set, String referenceName)
 	{
-		PsiElement qualifier = myRef.getQualifier();
+		PsiElement qualifier = ref.getQualifier();
 		if(qualifier == null)
 		{
 			return;
 		}
 
-		PsiElement parent = myRef.getParent();
+		PsiElement parent = ref.getParent();
 		if(!(parent instanceof CSharpMethodCallExpressionImpl))
 		{
 			return;
@@ -248,12 +257,11 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		newCallArguments[0] = new CSharpLightCallArgument((DotNetExpression) qualifier);
 		System.arraycopy(callArguments, 0, newCallArguments, 1, callArguments.length);
 
-		Collection<DotNetLikeMethodDeclaration> list = ExtensionMethodIndex.getInstance().get(referenceName, myRef.getProject(),
-				myRef.getResolveScope());
+		val list = ExtensionMethodIndex.getInstance().get(referenceName, ref.getProject(), ref.getResolveScope());
 
 		for(DotNetLikeMethodDeclaration possibleMethod : list)
 		{
-			if(MethodResolver.calc(newCallArguments, possibleMethod, myRef).isValidResult())
+			if(MethodResolver.calc(newCallArguments, possibleMethod, ref).isValidResult())
 			{
 				PsiElement parentOfMethod = possibleMethod.getParent();
 				if(parentOfMethod instanceof DotNetQualifiedElement)
@@ -305,8 +313,13 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile psiFile)
 	{
-		CSharpReferenceExpression.ResolveToKind kind = myRef.kind();
-		return !collectAllAvailableNamespaces(kind).isEmpty();
+		CSharpReferenceExpression element = myRefPointer.getElement();
+		if(element == null)
+		{
+			return false;
+		}
+		CSharpReferenceExpression.ResolveToKind kind = element.kind();
+		return !collectAllAvailableNamespaces(element, kind).isEmpty();
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
@@ -9,6 +10,8 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.SmartPointerManager;
+import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
 
@@ -19,12 +22,12 @@ import com.intellij.util.IncorrectOperationException;
 public abstract class BaseModifierFix extends BaseIntentionAction
 {
 	private final DotNetModifier[] myModifiers;
-	private final DotNetModifierListOwner myModifierElementOwner;
+	private final SmartPsiElementPointer<DotNetModifierListOwner> myModifierElementOwnerPointer;
 
 	public BaseModifierFix(DotNetModifier[] modifiers, DotNetModifierListOwner parent)
 	{
 		myModifiers = modifiers;
-		myModifierElementOwner = parent;
+		myModifierElementOwnerPointer = SmartPointerManager.getInstance(parent.getProject()).createSmartPsiElementPointer(parent);
 	}
 
 	public BaseModifierFix(DotNetModifier modifier, DotNetModifierListOwner parent)
@@ -70,7 +73,7 @@ public abstract class BaseModifierFix extends BaseIntentionAction
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile psiFile)
 	{
-		DotNetModifierList modifierList = myModifierElementOwner.getModifierList();
+		DotNetModifierList modifierList = getModifierList();
 		if(modifierList == null)
 		{
 			return false;
@@ -90,7 +93,7 @@ public abstract class BaseModifierFix extends BaseIntentionAction
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException
 	{
-		DotNetModifierList modifierList = myModifierElementOwner.getModifierList();
+		DotNetModifierList modifierList = getModifierList();
 		if(modifierList == null)
 		{
 			return;
@@ -100,5 +103,16 @@ public abstract class BaseModifierFix extends BaseIntentionAction
 		{
 			doAction(modifierList, modifier);
 		}
+	}
+
+	@Nullable
+	private DotNetModifierList getModifierList()
+	{
+		DotNetModifierListOwner element = myModifierElementOwnerPointer.getElement();
+		if(element == null)
+		{
+			return null;
+		}
+		return element.getModifierList();
 	}
 }
