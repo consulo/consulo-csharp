@@ -104,11 +104,14 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 
 					for(DotNetXXXAccessor accessor : accessors)
 					{
-						MsilMethodEntry methodEntry = findMethodEntry(temp, (MsilXXXAcessor) accessor);
-						if(methodEntry != null)
+						if(accessor instanceof MsilXXXAcessor)
 						{
-							pairs.add(Pair.create(accessor, methodEntry));
-							copy.remove(methodEntry);
+							MsilMethodEntry methodEntry = ((MsilXXXAcessor) accessor).resolveToMethod();
+							if(methodEntry != null)
+							{
+								pairs.add(Pair.create(accessor, methodEntry));
+								copy.remove(methodEntry);
+							}
 						}
 					}
 
@@ -134,11 +137,14 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 
 					for(DotNetXXXAccessor accessor : accessors)
 					{
-						MsilMethodEntry methodEntry = findMethodEntry(temp, (MsilXXXAcessor) accessor);
-						if(methodEntry != null)
+						if(accessor instanceof MsilXXXAcessor)
 						{
-							pairs.add(Pair.create(accessor, methodEntry));
-							copy.remove(methodEntry);
+							MsilMethodEntry methodEntry = ((MsilXXXAcessor) accessor).resolveToMethod();
+							if(methodEntry != null)
+							{
+								pairs.add(Pair.create(accessor, methodEntry));
+								copy.remove(methodEntry);
+							}
 						}
 					}
 					list.add(new MsilEventAsCSharpEventDeclaration(parentThis, (MsilEventEntry) element, pairs));
@@ -201,22 +207,6 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 				}
 			}
 			return list.isEmpty() ? DotNetNamedElement.EMPTY_ARRAY : list.toArray(new DotNetNamedElement[list.size()]);
-		}
-
-		private MsilMethodEntry findMethodEntry(DotNetNamedElement[] dotNetNamedElements, MsilXXXAcessor accessor)
-		{
-			for(DotNetNamedElement element : dotNetNamedElements)
-			{
-				if(element instanceof MsilMethodEntry && ((MsilMethodEntry) element).hasModifier(MsilTokens.SPECIALNAME_KEYWORD))
-				{
-					String originalMethodName = StringUtil.unquoteString(((MsilMethodEntry) element).getNameFromBytecode());
-					if(Comparing.equal(originalMethodName, accessor.getMethodName()))
-					{
-						return (MsilMethodEntry) element;
-					}
-				}
-			}
-			return null;
 		}
 	};
 
