@@ -72,6 +72,7 @@ public enum CSharpCompilerChecks
 	CS1644(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // features checks
 	CS1737(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // parameter default values check for order
 	CS1960(CSharpLanguageVersion._2_0, HighlightInfoType.WRONG_REF), // in and out modifiers can be only for interface(or delegate) generic parameter
+	CS1998(CSharpLanguageVersion._4_0, HighlightInfoType.UNUSED_SYMBOL), // async modifer - then no await
 	CS4009(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // async modifier cant be at entry point
 
 	CC0001(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //reference checks
