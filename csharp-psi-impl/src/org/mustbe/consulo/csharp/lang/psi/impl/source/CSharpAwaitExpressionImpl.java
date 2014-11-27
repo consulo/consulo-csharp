@@ -20,6 +20,9 @@ import com.intellij.openapi.util.Pair;
  */
 public class CSharpAwaitExpressionImpl extends CSharpElementImpl implements DotNetExpression
 {
+	public static final String System_Threading_Tasks_Task = "System.Threading.Tasks.Task";
+	public static final String System_Threading_Tasks_Task$1 = "System.Threading.Tasks.Task`1";
+
 	public CSharpAwaitExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
@@ -42,7 +45,7 @@ public class CSharpAwaitExpressionImpl extends CSharpElementImpl implements DotN
 		}
 
 		DotNetTypeRef typeRef = innerExpression.toTypeRef(b);
-		Pair<DotNetTypeDeclaration, DotNetGenericExtractor> typeInSuper = CSharpTypeUtil.findTypeInSuper(typeRef, "System.Threading.Tasks.Task`1", this);
+		Pair<DotNetTypeDeclaration, DotNetGenericExtractor> typeInSuper = CSharpTypeUtil.findTypeInSuper(typeRef, System_Threading_Tasks_Task$1, this);
 		if(typeInSuper != null)
 		{
 			DotNetTypeRef extract = typeInSuper.getSecond().extract(typeInSuper.getFirst().getGenericParameters()[0]);
@@ -50,7 +53,7 @@ public class CSharpAwaitExpressionImpl extends CSharpElementImpl implements DotN
 			return extract;
 		}
 
-		typeInSuper = CSharpTypeUtil.findTypeInSuper(typeRef, "System.Threading.Tasks.Task", this);
+		typeInSuper = CSharpTypeUtil.findTypeInSuper(typeRef, System_Threading_Tasks_Task, this);
 		if(typeInSuper != null)
 		{
 			return new DotNetTypeRefByQName(DotNetTypes.System.Void, CSharpTransform.INSTANCE, false);

@@ -19,11 +19,13 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAwaitExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpYieldStatementImpl;
@@ -31,8 +33,12 @@ import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.Trinity;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -43,10 +49,62 @@ import com.intellij.psi.util.PsiTreeUtil;
  */
 public class CS0029 extends CompilerCheck<PsiElement>
 {
+	public static enum ReturnCheckRule
+	{
+		YieldReturn
+				{
+					@Nullable
+					@Override
+					public Trinity<DotNetTypeRef, DotNetTypeRef, ? extends PsiElement> create(DotNetTypeRef expected,
+							DotNetTypeRef actual,
+							PsiElement element)
+					{
+						//TODO [VISTALL] actually we dont check it. Need support it!
+						return null;
+					}
+				},
+		AsyncReturn
+				{
+					@Nullable
+					@Override
+					public Trinity<DotNetTypeRef, DotNetTypeRef, ? extends PsiElement> create(DotNetTypeRef expected,
+							DotNetTypeRef actual,
+							PsiElement element)
+					{
+						Pair<DotNetTypeDeclaration, DotNetGenericExtractor> typeInSuper = CSharpTypeUtil.findTypeInSuper(expected,
+								CSharpAwaitExpressionImpl.System_Threading_Tasks_Task$1, element);
+						if(typeInSuper != null)
+						{
+							DotNetTypeRef extract = typeInSuper.getSecond().extract(typeInSuper.getFirst().getGenericParameters()[0]);
+							if(extract != null)
+							{
+								expected = extract;
+							}
+							return Trinity.create(expected, actual, element);
+						}
+						return null;
+					}
+				},
+		DefaultReturn
+				{
+					@Nullable
+					public Trinity<DotNetTypeRef, DotNetTypeRef, ? extends PsiElement> create(DotNetTypeRef expected,
+							DotNetTypeRef actual,
+							PsiElement element)
+					{
+						return Trinity.create(expected, actual, element);
+					}
+				};
+
+		@Nullable
+		public abstract Trinity<DotNetTypeRef, DotNetTypeRef, ? extends PsiElement> create(DotNetTypeRef expected,
+				DotNetTypeRef actual,
+				PsiElement element);
+	}
+
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(
-			@NotNull CSharpLanguageVersion languageVersion, @NotNull PsiElement element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull PsiElement element)
 	{
 		Trinity<DotNetTypeRef, DotNetTypeRef, ? extends PsiElement> resolve = resolve(element);
 		if(resolve == null)
@@ -94,11 +152,6 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		}
 		else if(element instanceof CSharpReturnStatementImpl)
 		{
-			// disable for yield statement
-			if(element.getParent() instanceof CSharpYieldStatementImpl)
-			{
-				return null;
-			}
 			CSharpSimpleLikeMethodAsElement pseudoMethod = PsiTreeUtil.getParentOfType(element, CSharpSimpleLikeMethodAsElement.class);
 			if(pseudoMethod == null)
 			{
@@ -111,6 +164,8 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				return null;
 			}
 
+			ReturnCheckRule returnCheckRule = getReturnCheckRule(element, pseudoMethod);
+
 			DotNetTypeRef actual = null;
 			DotNetExpression expression = ((CSharpReturnStatementImpl) element).getExpression();
 			if(expression == null)
@@ -121,8 +176,24 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				actual = expression.toTypeRef(false);
 			}
-			return Trinity.create(expected, actual, expression == null ? element : expression);
+
+			return returnCheckRule.create(expected, actual, expression == null ? element : expression);
 		}
 		return null;
+	}
+
+	@NotNull
+	private static ReturnCheckRule getReturnCheckRule(PsiElement element, CSharpSimpleLikeMethodAsElement pseudoMethod)
+	{
+		if(element.getParent() instanceof CSharpYieldStatementImpl)
+		{
+			return ReturnCheckRule.YieldReturn;
+		}
+
+		if(pseudoMethod instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) pseudoMethod).hasModifier(CSharpModifier.ASYNC))
+		{
+			return ReturnCheckRule.AsyncReturn;
+		}
+		return ReturnCheckRule.DefaultReturn;
 	}
 }
