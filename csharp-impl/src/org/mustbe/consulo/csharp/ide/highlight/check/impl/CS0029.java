@@ -46,57 +46,6 @@ import com.intellij.psi.util.PsiTreeUtil;
  */
 public class CS0029 extends CompilerCheck<PsiElement>
 {
-	public static enum ReturnCheckRule
-	{
-		YieldReturn
-				{
-					@Nullable
-					@Override
-					public Trinity<DotNetTypeRef, DotNetTypeRef, ? extends PsiElement> create(DotNetTypeRef expected,
-							DotNetTypeRef actual,
-							PsiElement element)
-					{
-						DotNetTypeRef typeRef = CSharpImplicitReturnModel.Yield.extractTypeRef(expected, element);
-						if(typeRef != DotNetTypeRef.ERROR_TYPE)
-						{
-							expected = typeRef;
-						}
-						return Trinity.create(expected, actual, element);
-					}
-				},
-		AsyncReturn
-				{
-					@Nullable
-					@Override
-					public Trinity<DotNetTypeRef, DotNetTypeRef, ? extends PsiElement> create(DotNetTypeRef expected, DotNetTypeRef actual,
-							PsiElement element)
-					{
-						DotNetTypeRef typeRef = CSharpImplicitReturnModel.Async.extractTypeRef(expected, element);
-						if(typeRef != DotNetTypeRef.ERROR_TYPE)
-						{
-							expected = typeRef;
-						}
-						return Trinity.create(expected, actual, element);
-					}
-				},
-		DefaultReturn
-				{
-					@Override
-					@Nullable
-					public Trinity<DotNetTypeRef, DotNetTypeRef, ? extends PsiElement> create(DotNetTypeRef expected,
-							DotNetTypeRef actual,
-							PsiElement element)
-					{
-						return Trinity.create(expected, actual, element);
-					}
-				};
-
-		@Nullable
-		public abstract Trinity<DotNetTypeRef, DotNetTypeRef, ? extends PsiElement> create(DotNetTypeRef expected,
-				DotNetTypeRef actual,
-				PsiElement element);
-	}
-
 	@Nullable
 	@Override
 	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull PsiElement element)
@@ -159,8 +108,6 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				return null;
 			}
 
-			ReturnCheckRule returnCheckRule = getReturnCheckRule(element, pseudoMethod);
-
 			DotNetTypeRef actual = null;
 			DotNetExpression expression = ((CSharpReturnStatementImpl) element).getExpression();
 			if(expression == null)
@@ -172,23 +119,36 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				actual = expression.toTypeRef(false);
 			}
 
-			return returnCheckRule.create(expected, actual, expression == null ? element : expression);
+			CSharpImplicitReturnModel implicitReturnModel = getImplicitReturnModel(element, pseudoMethod);
+			if(implicitReturnModel == null)
+			{
+				return Trinity.create(expected, actual, element);
+			}
+			else
+			{
+				DotNetTypeRef typeRef = implicitReturnModel.extractTypeRef(expected, element);
+				if(typeRef != DotNetTypeRef.ERROR_TYPE)
+				{
+					expected = typeRef;
+				}
+				return Trinity.create(expected, actual, element);
+			}
 		}
 		return null;
 	}
 
-	@NotNull
-	private static ReturnCheckRule getReturnCheckRule(PsiElement element, CSharpSimpleLikeMethodAsElement pseudoMethod)
+	@Nullable
+	private static CSharpImplicitReturnModel getImplicitReturnModel(PsiElement element, CSharpSimpleLikeMethodAsElement pseudoMethod)
 	{
 		if(element.getParent() instanceof CSharpYieldStatementImpl)
 		{
-			return ReturnCheckRule.YieldReturn;
+			return CSharpImplicitReturnModel.Yield;
 		}
 
 		if(pseudoMethod instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) pseudoMethod).hasModifier(CSharpModifier.ASYNC))
 		{
-			return ReturnCheckRule.AsyncReturn;
+			return CSharpImplicitReturnModel.Async;
 		}
-		return ReturnCheckRule.DefaultReturn;
+		return null;
 	}
 }
