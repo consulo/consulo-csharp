@@ -3,7 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpAsyncUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -38,7 +38,7 @@ public class CSharpAwaitExpressionImpl extends CSharpElementImpl implements DotN
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 
-		return CSharpAsyncUtil.extractAsyncTypeRef(innerExpression.toTypeRef(true), this);
+		return CSharpImplicitReturnModel.Async.extractTypeRef(innerExpression.toTypeRef(true), this);
 	}
 
 	@Nullable

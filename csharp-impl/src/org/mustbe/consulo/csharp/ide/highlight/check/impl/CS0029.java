@@ -22,7 +22,7 @@ import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpAsyncUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
@@ -56,19 +56,22 @@ public class CS0029 extends CompilerCheck<PsiElement>
 							DotNetTypeRef actual,
 							PsiElement element)
 					{
-						//TODO [VISTALL] actually we dont check it. Need support it!
-						return null;
+						DotNetTypeRef typeRef = CSharpImplicitReturnModel.Yield.extractTypeRef(expected, element);
+						if(typeRef != DotNetTypeRef.ERROR_TYPE)
+						{
+							expected = typeRef;
+						}
+						return Trinity.create(expected, actual, element);
 					}
 				},
 		AsyncReturn
 				{
 					@Nullable
 					@Override
-					public Trinity<DotNetTypeRef, DotNetTypeRef, ? extends PsiElement> create(DotNetTypeRef expected,
-							DotNetTypeRef actual,
+					public Trinity<DotNetTypeRef, DotNetTypeRef, ? extends PsiElement> create(DotNetTypeRef expected, DotNetTypeRef actual,
 							PsiElement element)
 					{
-						DotNetTypeRef typeRef = CSharpAsyncUtil.extractAsyncTypeRef(expected, element);
+						DotNetTypeRef typeRef = CSharpImplicitReturnModel.Async.extractTypeRef(expected, element);
 						if(typeRef != DotNetTypeRef.ERROR_TYPE)
 						{
 							expected = typeRef;
