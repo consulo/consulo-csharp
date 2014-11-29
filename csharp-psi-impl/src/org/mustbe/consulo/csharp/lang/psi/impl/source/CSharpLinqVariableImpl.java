@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.ide.reflactoring.CSharpRefactoringUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLinqVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
@@ -57,14 +58,30 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef(boolean b)
+	public DotNetTypeRef toTypeRef(boolean resolve)
 	{
 		DotNetType type = getType();
 		if(type != null)
 		{
 			return type.toTypeRef();
 		}
-		return DotNetTypeRef.AUTO_TYPE;
+		return resolve ? resolveFromParent() : DotNetTypeRef.AUTO_TYPE;
+	}
+
+	@NotNull
+	private DotNetTypeRef resolveFromParent()
+	{
+		CSharpLinqFromClauseImpl parent = (CSharpLinqFromClauseImpl) getParent();
+
+		DotNetExpression inExpression = parent.getInExpression();
+		if(inExpression == null)
+		{
+			return DotNetTypeRef.ERROR_TYPE;
+		}
+
+		DotNetTypeRef typeRef = inExpression.toTypeRef(true);
+
+		return CSharpResolveUtil.resolveIterableType(this, typeRef);
 	}
 
 	@Nullable
