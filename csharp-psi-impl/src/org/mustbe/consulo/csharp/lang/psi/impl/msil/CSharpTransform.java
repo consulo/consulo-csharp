@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.DeprecationInfo;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.NotNullFunction;
@@ -26,6 +27,8 @@ import com.intellij.util.NotNullFunction;
  * @since 13.07.14
  */
 @Deprecated
+@DeprecationInfo("Class is deprecated, but it required to use with DotNetPsiSearcher, problem with it - that delegates are ignored. Need rework in " +
+		"DotNetPsiSearcher")
 public class CSharpTransform implements NotNullFunction<DotNetTypeDeclaration, DotNetTypeDeclaration>
 {
 	public static final CSharpTransform INSTANCE = new CSharpTransform();
