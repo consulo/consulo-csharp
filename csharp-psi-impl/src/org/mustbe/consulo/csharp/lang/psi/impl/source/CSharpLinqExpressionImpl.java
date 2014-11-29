@@ -19,7 +19,6 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
@@ -96,7 +95,7 @@ public class CSharpLinqExpressionImpl extends CSharpElementImpl implements DotNe
 		}
 
 		DotNetExpression expression = selectOrGroupClause.getExpression();
-		if(expression instanceof CSharpReferenceExpression)
+		if(expression != null)
 		{
 			DotNetTypeRef typeRef = expression.toTypeRef(resolveFromParent);
 			if(typeRef == DotNetTypeRef.ERROR_TYPE)
