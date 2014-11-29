@@ -88,6 +88,7 @@ public class CSharpAnonymTypeRef extends DotNetTypeRef.Adapter
 		builder.addModifier(CSharpModifier.PUBLIC);
 		builder.withParent(myContainingFile);
 		builder.withType(CSharpLightTypeDeclarationBuilder.Type.STRUCT);
+		builder.addExtendType(new CSharpTypeRefByQName(DotNetTypes.System.ValueType));
 
 		for(CSharpFieldOrPropertySet set : mySets)
 		{
