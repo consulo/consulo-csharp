@@ -39,9 +39,11 @@ public interface DotNetTypes2
 			interface Generic
 			{
 				String IEnumerable$1 = "System.Collections.Generic.IEnumerable`1";
+				String IEnumerator$1 = "System.Collections.Generic.IEnumerator`1";
 			}
 
 			String IEnumerable = "System.Collections.IEnumerable";
+			String IEnumerator = "System.Collections.IEnumerator";
 		}
 	}
 }

@@ -19,7 +19,6 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
@@ -28,12 +27,10 @@ import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpYieldStatementImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Trinity;
@@ -119,36 +116,27 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				actual = expression.toTypeRef(false);
 			}
 
-			CSharpImplicitReturnModel implicitReturnModel = getImplicitReturnModel(element, pseudoMethod);
-			if(implicitReturnModel == null)
+			CSharpImplicitReturnModel implicitReturnModel = getImplicitReturnModel((CSharpReturnStatementImpl) element, pseudoMethod);
+			DotNetTypeRef typeRef = implicitReturnModel.extractTypeRef(expected, element);
+			if(typeRef != DotNetTypeRef.ERROR_TYPE)
 			{
-				return Trinity.create(expected, actual, element);
+				expected = typeRef;
 			}
-			else
-			{
-				DotNetTypeRef typeRef = implicitReturnModel.extractTypeRef(expected, element);
-				if(typeRef != DotNetTypeRef.ERROR_TYPE)
-				{
-					expected = typeRef;
-				}
-				return Trinity.create(expected, actual, element);
-			}
+			return Trinity.create(expected, actual, element);
 		}
 		return null;
 	}
 
-	@Nullable
-	private static CSharpImplicitReturnModel getImplicitReturnModel(PsiElement element, CSharpSimpleLikeMethodAsElement pseudoMethod)
+	@NotNull
+	private static CSharpImplicitReturnModel getImplicitReturnModel(CSharpReturnStatementImpl element, CSharpSimpleLikeMethodAsElement pseudoMethod)
 	{
-		if(element.getParent() instanceof CSharpYieldStatementImpl)
+		for(CSharpImplicitReturnModel implicitReturnModel : CSharpImplicitReturnModel.values())
 		{
-			return CSharpImplicitReturnModel.Yield;
+			if(implicitReturnModel.canHandle(pseudoMethod, element))
+			{
+				return implicitReturnModel;
+			}
 		}
-
-		if(pseudoMethod instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) pseudoMethod).hasModifier(CSharpModifier.ASYNC))
-		{
-			return CSharpImplicitReturnModel.Async;
-		}
-		return null;
+		throw new IllegalArgumentException("CSharpImplicitReturnModel is broken");
 	}
 }
