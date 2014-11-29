@@ -88,6 +88,7 @@ public class CSharpAnonymTypeRef extends DotNetTypeRef.Adapter
 		return getPresentableText();
 	}
 
+	@NotNull
 	private DotNetTypeDeclaration createTypeDeclaration()
 	{
 		CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(myContainingFile.getProject());
