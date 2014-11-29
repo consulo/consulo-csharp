@@ -16,14 +16,11 @@
 
 package org.mustbe.consulo.csharp.lang.parser.exp;
 
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import com.intellij.lang.PsiBuilder;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.intellij.util.NotNullFunction;
 
 /**
  * @author VISTALL
@@ -31,98 +28,192 @@ import com.intellij.util.NotNullFunction;
  */
 public class LinqParsing extends SharedParsingHelpers
 {
-	public static final TokenSet LINQ_KEYWORDS = TokenSet.create(LET_KEYWORD, /*FROM_KEYWORD, */SELECT_KEYWORD, GROUP_KEYWORD, BY_KEYWORD,
-			INTO_KEYWORD, ORDERBY_KEYWORD, WHERE_KEYWORD);
+	public static final TokenSet LINQ_KEYWORDS = TokenSet.create(LET_KEYWORD, FROM_KEYWORD, SELECT_KEYWORD, GROUP_KEYWORD, BY_KEYWORD, INTO_KEYWORD,
+			ORDERBY_KEYWORD, WHERE_KEYWORD);
 
 	public static PsiBuilder.Marker parseLinqExpression(final CSharpBuilderWrapper builder)
 	{
-		return parseWithSoftElements(new NotNullFunction<CSharpBuilderWrapper, Pair<PsiBuilder.Marker, Boolean>>()
+		builder.enableSoftKeywords(LINQ_KEYWORDS);
+
+		try
 		{
-			@NotNull
-			@Override
-			public Pair<PsiBuilder.Marker, Boolean> fun(CSharpBuilderWrapper wrapper)
+			PsiBuilder.Marker linqExpressionMarker = builder.mark();
+
+			PsiBuilder.Marker marker = parseFromClause(builder, true);
+			if(marker == null)
 			{
-				return new Pair<PsiBuilder.Marker, Boolean>(parse0(builder), Boolean.TRUE);
+				linqExpressionMarker.rollbackTo();
+				return null;
 			}
-		}, builder, LINQ_KEYWORDS).getFirst();
+
+			PsiBuilder.Marker queryBody = builder.mark();
+			while(!builder.eof())
+			{
+				PsiBuilder.Marker qMarker = parseQueryBodyClause(builder);
+				if(qMarker == null)
+				{
+					break;
+				}
+			}
+			//TODO [VISTALL] QueryBodyClause*
+
+			parseSelectOrGroupClause(builder);
+
+			//TODO [VISTALL] QueryContinuation?
+
+			queryBody.done(LINQ_QUERY_BODY);
+
+			linqExpressionMarker.done(LINQ_EXPRESSION);
+			return linqExpressionMarker;
+		}
+		finally
+		{
+			builder.disableSoftKeywords(LINQ_KEYWORDS);
+		}
 	}
 
-	public static PsiBuilder.Marker parse0(final CSharpBuilderWrapper builder)
+	@Nullable
+	private static PsiBuilder.Marker parseFromClause(final CSharpBuilderWrapper builder, boolean rollback)
 	{
-		if(builder.getTokenType() != FROM_KEYWORD)
-		{
-			return null;
-		}
-
 		PsiBuilder.Marker mark = builder.mark();
 
-		doneFrom(builder);
+		builder.advanceLexer();
 
-		while(!builder.eof())
+		PsiBuilder.Marker variableMarker = builder.mark();
+
+		if(canParseType(builder))
 		{
-			if(builder.getTokenType() == FROM_KEYWORD)
-			{
-				doneFrom(builder);
-			}
-			else if(builder.getTokenType() == LET_KEYWORD)
-			{
-				doneElementWithOneExpression(builder, LINQ_LET);
-			}
-			else
-			{
-				break;
-			}
+			parseType(builder, BracketFailPolicy.RETURN_BEFORE, false);
 		}
 
-		if(builder.getTokenType() == WHERE_KEYWORD)
+		if(builder.getTokenType() == IDENTIFIER)
 		{
-			doneElementWithOneExpression(builder, LINQ_WHERE);
-		}
-
-		if(builder.getTokenType() == SELECT_KEYWORD)
-		{
-			doneElementWithOneExpression(builder, LINQ_SELECT);
+			builder.advanceLexer();
 		}
 		else
 		{
-			builder.error("'select' expected");
+			if(rollback)
+			{
+				variableMarker.rollbackTo();
+				mark.rollbackTo();
+				return null;
+			}
+			else
+			{
+				builder.error("Identifier expected");
+			}
 		}
-
-		mark.done(LINQ_EXPRESSION);
-		return mark;
-	}
-
-	// from <EXP> in <EXP>
-	private static void doneFrom(CSharpBuilderWrapper builder)
-	{
-		PsiBuilder.Marker mark = builder.mark();
-		builder.advanceLexer();
-
-		if(ExpressionParsing.parse(builder) == null)
-		{
-			builder.error("Expression expected");
-		}
+		variableMarker.done(LINQ_VARIABLE);
 
 		if(builder.getTokenType() == IN_KEYWORD)
 		{
-			doneElementWithOneExpression(builder, LINQ_IN);
+			builder.advanceLexer();
+
+			if(ExpressionParsing.parse(builder) == null)
+			{
+				builder.error("Expression expected");
+			}
 		}
 		else
 		{
 			builder.error("'in' expected");
 		}
-		mark.done(LINQ_FROM);
+
+		mark.done(LINQ_FROM_CLAUSE);
+
+		return mark;
 	}
 
-	private static void doneElementWithOneExpression(CSharpBuilderWrapper builder, IElementType elementType)
+	private static boolean canParseType(CSharpBuilderWrapper builder)
+	{
+		TypeInfo typeInfo = parseType(builder, BracketFailPolicy.RETURN_BEFORE, false);
+		if(typeInfo != null)
+		{
+			if(typeInfo.isParameterized || typeInfo.nativeElementType != null)
+			{
+				typeInfo.marker.rollbackTo();
+				return true;
+			}
+
+			if(builder.getTokenType() == IDENTIFIER)
+			{
+				typeInfo.marker.rollbackTo();
+				return true;
+			}
+			typeInfo.marker.rollbackTo();
+			return false;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	@Nullable
+	private static PsiBuilder.Marker parseQueryBodyClause(CSharpBuilderWrapper builder)
+	{
+		if(builder.getTokenType() == FROM_KEYWORD)
+		{
+			return parseFromClause(builder, false);
+		}
+		else if(builder.getTokenType() == WHERE_KEYWORD)
+		{
+			return parseWhereClause(builder);
+		}
+		return null;
+	}
+
+	private static PsiBuilder.Marker parseWhereClause(CSharpBuilderWrapper builder)
 	{
 		PsiBuilder.Marker mark = builder.mark();
+
 		builder.advanceLexer();
 
 		if(ExpressionParsing.parse(builder) == null)
 		{
 			builder.error("Expression expected");
 		}
-		mark.done(elementType);
+		mark.done(LINQ_WHERE_CLAUSE);
+		return mark;
+	}
+
+	private static void parseSelectOrGroupClause(CSharpBuilderWrapper builder)
+	{
+		PsiBuilder.Marker mark = builder.mark();
+
+		if(builder.getTokenType() == SELECT_KEYWORD)
+		{
+			builder.advanceLexer();
+
+			if(ExpressionParsing.parse(builder) == null)
+			{
+				builder.error("Expression expected");
+			}
+		}
+		else if(builder.getTokenType() == GROUP_KEYWORD)
+		{
+			builder.advanceLexer();
+			if(ExpressionParsing.parse(builder) == null)
+			{
+				builder.error("Expression expected");
+			}
+			if(builder.getTokenType() == BY_KEYWORD)
+			{
+				if(ExpressionParsing.parse(builder) == null)
+				{
+					builder.error("Expression expected");
+				}
+			}
+			else
+			{
+				builder.error("'by' expected");
+			}
+		}
+		else
+		{
+			mark.error("'select' or 'group' expected");
+			return;
+		}
+		mark.done(LINQ_SELECT_OR_GROUP_CLAUSE);
 	}
 }

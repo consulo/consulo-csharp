@@ -19,15 +19,7 @@ package org.mustbe.consulo.csharp.ide.highlight;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.PropertyKey;
-import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
-import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -160,6 +152,10 @@ public class CSharpHighlightUtil
 			{
 				key = DefaultLanguageHighlighterColors.LOCAL_VARIABLE;
 			}
+		}
+		else if(element instanceof CSharpLinqVariable)
+		{
+			key = EditorColors.INJECTED_LANGUAGE_FRAGMENT;
 		}
 		else if(element instanceof CSharpEventDeclaration)
 		{

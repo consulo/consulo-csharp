@@ -115,6 +115,10 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		{
 			return "local variable";
 		}
+		else if(element instanceof CSharpLinqVariable)
+		{
+			return "linq local variable";
+		}
 		else if(element instanceof DotNetGenericParameter)
 		{
 			return "generic parameter";

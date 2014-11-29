@@ -642,7 +642,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		CSharpLanguageVersion version = builder.getVersion();
 		if(version.isAtLeast(CSharpLanguageVersion._3_0))
 		{
-			//builder.enableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
+			builder.enableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
 		}
 		if(version.isAtLeast(CSharpLanguageVersion._4_0))
 		{
@@ -651,7 +651,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		IElementType tokenType = builder.getTokenType();
 		if(version.isAtLeast(CSharpLanguageVersion._3_0))
 		{
-			//builder.disableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
+			builder.disableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
 		}
 		if(version.isAtLeast(CSharpLanguageVersion._4_0))
 		{
@@ -742,7 +742,17 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(tokenType == FROM_KEYWORD)
 		{
-			return LinqParsing.parseLinqExpression(builder);
+			PsiBuilder.Marker marker = LinqParsing.parseLinqExpression(builder);
+			if(marker == null)
+			{
+				assert builder.getTokenType() == FROM_KEYWORD : builder.getTokenText() + ":" + builder.getTokenType();
+				builder.remapBackIfSoft();
+				tokenType = builder.getTokenType();
+			}
+			else
+			{
+				return marker;
+			}
 		}
 
 		if(tokenType == IDENTIFIER)

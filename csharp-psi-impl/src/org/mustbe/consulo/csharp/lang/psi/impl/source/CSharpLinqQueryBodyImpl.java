@@ -16,12 +16,31 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
-import org.mustbe.consulo.dotnet.psi.DotNetElement;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import com.intellij.lang.ASTNode;
 
 /**
  * @author VISTALL
- * @since 04.01.14.
+ * @since 29.11.14
  */
-public interface CSharpLinqPart extends DotNetElement
+public class CSharpLinqQueryBodyImpl extends CSharpElementImpl
 {
+	public CSharpLinqQueryBodyImpl(@NotNull ASTNode node)
+	{
+		super(node);
+	}
+
+	@Nullable
+	public CSharpLinqSelectOrGroupClauseImpl getSelectOrGroupClause()
+	{
+		return findChildByClass(CSharpLinqSelectOrGroupClauseImpl.class);
+	}
+
+	@Override
+	public void accept(@NotNull CSharpElementVisitor visitor)
+	{
+		visitor.visitLinqQueryBody(this);
+	}
 }

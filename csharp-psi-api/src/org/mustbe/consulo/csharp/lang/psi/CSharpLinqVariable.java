@@ -14,26 +14,14 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi.impl.source;
+package org.mustbe.consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import com.intellij.lang.ASTNode;
+import org.mustbe.consulo.dotnet.psi.DotNetLocalVariable;
 
 /**
  * @author VISTALL
- * @since 04.01.14.
+ * @since 29.11.14
  */
-public class CSharpLinqFromImpl extends CSharpElementImpl implements CSharpLinqPart
+public interface CSharpLinqVariable extends DotNetLocalVariable
 {
-	public CSharpLinqFromImpl(@NotNull ASTNode node)
-	{
-		super(node);
-	}
-
-	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
-	{
-		visitor.visitLinqFrom(this);
-	}
 }

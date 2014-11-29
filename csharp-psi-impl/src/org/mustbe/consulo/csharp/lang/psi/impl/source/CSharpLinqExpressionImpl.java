@@ -17,10 +17,19 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
@@ -34,9 +43,15 @@ public class CSharpLinqExpressionImpl extends CSharpElementImpl implements DotNe
 	}
 
 	@NotNull
-	public CSharpLinqPart[] getParts()
+	public CSharpLinqFromClauseImpl getFromClause()
 	{
-		return findChildrenByClass(CSharpLinqPart.class);
+		return findNotNullChildByClass(CSharpLinqFromClauseImpl.class);
+	}
+
+	@Nullable
+	public CSharpLinqQueryBodyImpl getQueryBody()
+	{
+		return findChildByClass(CSharpLinqQueryBodyImpl.class);
 	}
 
 	@Override
@@ -45,10 +60,53 @@ public class CSharpLinqExpressionImpl extends CSharpElementImpl implements DotNe
 		visitor.visitLinqExpression(this);
 	}
 
+	@Override
+	public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
+			@NotNull ResolveState state,
+			PsiElement lastParent,
+			@NotNull PsiElement place)
+	{
+		if(lastParent == null || !PsiTreeUtil.isAncestor(this, lastParent, false))
+		{
+			return true;
+		}
+
+		CSharpLinqFromClauseImpl fromClause = getFromClause();
+		if(!fromClause.processDeclarations(processor, state, lastParent, place))
+		{
+			return false;
+		}
+		return super.processDeclarations(processor, state, lastParent, place);
+	}
+
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
+		CSharpLinqQueryBodyImpl queryBody = getQueryBody();
+		if(queryBody == null)
+		{
+			return DotNetTypeRef.ERROR_TYPE;
+		}
+
+		CSharpLinqSelectOrGroupClauseImpl selectOrGroupClause = queryBody.getSelectOrGroupClause();
+		if(selectOrGroupClause == null)
+		{
+			return DotNetTypeRef.ERROR_TYPE;
+		}
+
+		DotNetExpression expression = selectOrGroupClause.getExpression();
+		if(expression instanceof CSharpReferenceExpression)
+		{
+			DotNetTypeRef typeRef = expression.toTypeRef(resolveFromParent);
+			if(typeRef == DotNetTypeRef.ERROR_TYPE)
+			{
+				return typeRef;
+			}
+
+			CSharpTypeRefByQName enumerableTypeRef = new CSharpTypeRefByQName(DotNetTypes2.System.Collections.Generic.IEnumerable$1);
+			return new CSharpGenericWrapperTypeRef(enumerableTypeRef, new DotNetTypeRef[] {typeRef});
+		}
 		return DotNetTypeRef.ERROR_TYPE;
 	}
 }

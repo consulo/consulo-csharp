@@ -22,11 +22,11 @@ import com.intellij.lang.ASTNode;
 
 /**
  * @author VISTALL
- * @since 04.01.14.
+ * @since 29.11.14
  */
-public class CSharpLinqLetImpl extends CSharpElementImpl implements CSharpLinqPart
+public class CSharpLinqWhereClauseImpl extends CSharpElementImpl
 {
-	public CSharpLinqLetImpl(@NotNull ASTNode node)
+	public CSharpLinqWhereClauseImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
@@ -34,6 +34,6 @@ public class CSharpLinqLetImpl extends CSharpElementImpl implements CSharpLinqPa
 	@Override
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		visitor.visitLinqLet(this);
+		visitor.visitLinqWhereClause(this);
 	}
 }
