@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
+import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
@@ -29,10 +30,8 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.search.GlobalSearchScope;
 
 /**
  * @author VISTALL
@@ -53,7 +52,14 @@ public class CSharpAnonymTypeRef extends DotNetTypeRef.Adapter
 	@Override
 	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 	{
-		return new SimpleTypeResolveResult(resolve(scope.getProject(), scope.getResolveScope()));
+		return resolve();
+	}
+
+	@LazyInstance
+	@NotNull
+	public DotNetTypeResolveResult resolve()
+	{
+		return new SimpleTypeResolveResult(createTypeDeclaration());
 	}
 
 	@NotNull
@@ -82,9 +88,9 @@ public class CSharpAnonymTypeRef extends DotNetTypeRef.Adapter
 		return getPresentableText();
 	}
 
-	private DotNetTypeDeclaration resolve(Project project, GlobalSearchScope resolveScope)
+	private DotNetTypeDeclaration createTypeDeclaration()
 	{
-		CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(project);
+		CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(myContainingFile.getProject());
 		builder.addModifier(CSharpModifier.PUBLIC);
 		builder.withParent(myContainingFile);
 		builder.withType(CSharpLightTypeDeclarationBuilder.Type.STRUCT);
@@ -95,7 +101,7 @@ public class CSharpAnonymTypeRef extends DotNetTypeRef.Adapter
 			DotNetExpression nameReferenceExpression = set.getNameReferenceExpression();
 			DotNetExpression valueReferenceExpression = set.getValueReferenceExpression();
 
-			CSharpLightFieldDeclarationBuilder fieldBuilder = new CSharpLightFieldDeclarationBuilder(project);
+			CSharpLightFieldDeclarationBuilder fieldBuilder = new CSharpLightFieldDeclarationBuilder(myContainingFile.getProject());
 
 			if(valueReferenceExpression == null)
 			{
