@@ -252,10 +252,7 @@ public class LinqParsing extends SharedParsingHelpers
 			PsiBuilder.Marker tempMarker = builder.mark();
 			builder.advanceLexer();
 
-			if(builder.getTokenType() == IDENTIFIER)
-			{
-				builder.advanceLexer();
-			}
+			doneOneElement(builder, IDENTIFIER, LINQ_VARIABLE, "Identifier expected");
 			tempMarker.done(LINQ_INTRO_CLAUSE);
 		}
 

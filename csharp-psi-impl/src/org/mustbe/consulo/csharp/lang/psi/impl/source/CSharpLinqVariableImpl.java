@@ -23,6 +23,9 @@ import org.mustbe.consulo.csharp.ide.reflactoring.CSharpRefactoringUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLinqVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
@@ -89,6 +92,31 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 		{
 			DotNetExpression initializer = getInitializer();
 			return initializer != null ? initializer.toTypeRef(false) : DotNetTypeRef.AUTO_TYPE;
+		}
+		else if(parent instanceof CSharpLinqJoinClauseImpl)
+		{
+			DotNetExpression inExpression = ((CSharpLinqJoinClauseImpl) parent).getInExpression();
+			if(inExpression == null)
+			{
+				return DotNetTypeRef.ERROR_TYPE;
+			}
+
+			DotNetTypeRef typeRef = inExpression.toTypeRef(true);
+
+			return CSharpResolveUtil.resolveIterableType(this, typeRef);
+		}
+		else if(parent instanceof CSharpLinqIntoClauseImpl)
+		{
+			PsiElement nextParent = parent.getParent();
+			if(nextParent instanceof CSharpLinqJoinClauseImpl)
+			{
+				CSharpLinqVariableImpl variable = ((CSharpLinqJoinClauseImpl) nextParent).getVariable();
+				if(variable != null)
+				{
+					return new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(DotNetTypes2.System.Collections.Generic.IEnumerable$1),
+							new DotNetTypeRef[]{variable.toTypeRef(true)});
+				}
+			}
 		}
 		return DotNetTypeRef.AUTO_TYPE;
 	}

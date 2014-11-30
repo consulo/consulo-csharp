@@ -17,7 +17,10 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
@@ -34,6 +37,39 @@ public class CSharpLinqJoinClauseImpl extends CSharpElementImpl
 		super(node);
 	}
 
+	@Nullable
+	public CSharpLinqVariableImpl getVariable()
+	{
+		return findChildByClass(CSharpLinqVariableImpl.class);
+	}
+
+	@Nullable
+	public DotNetExpression getInExpression()
+	{
+		DotNetExpression[] expressions = findChildrenByClass(DotNetExpression.class);
+		return ArrayUtil2.safeGet(expressions, 0);
+	}
+
+	@Nullable
+	public DotNetExpression getOnExpression()
+	{
+		DotNetExpression[] expressions = findChildrenByClass(DotNetExpression.class);
+		return ArrayUtil2.safeGet(expressions, 1);
+	}
+
+	@Nullable
+	public DotNetExpression getEqualsExpression()
+	{
+		DotNetExpression[] expressions = findChildrenByClass(DotNetExpression.class);
+		return ArrayUtil2.safeGet(expressions, 2);
+	}
+
+	@Nullable
+	public CSharpLinqIntoClauseImpl getIntoClause()
+	{
+		return findChildByClass(CSharpLinqIntoClauseImpl.class);
+	}
+
 	@Override
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
@@ -46,13 +82,23 @@ public class CSharpLinqJoinClauseImpl extends CSharpElementImpl
 			PsiElement lastParent,
 			@NotNull PsiElement place)
 	{
-		for(PsiElement psiElement : getChildren())
+		CSharpLinqVariableImpl variable = getVariable();
+		if(variable != null)
 		{
-			if(!psiElement.processDeclarations(processor, state, lastParent, place))
+			if(!processor.execute(variable, state))
 			{
 				return false;
 			}
 		}
-		return super.processDeclarations(processor, state, lastParent, place);
+
+		CSharpLinqIntoClauseImpl intoClause = getIntoClause();
+		if(intoClause != null)
+		{
+			if(!intoClause.processDeclarations(processor, state, lastParent, place))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 }
