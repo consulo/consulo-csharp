@@ -159,7 +159,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 	public String getName()
 	{
 		PsiElement nameIdentifier = getNameIdentifier();
-		return nameIdentifier == null ? null : nameIdentifier.getText();
+		return nameIdentifier == null ? null : CSharpPsiUtilImpl.getNameWithoutAt(nameIdentifier.getText());
 	}
 
 	@Override
