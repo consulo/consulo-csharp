@@ -55,7 +55,6 @@ public class LinqParsing extends SharedParsingHelpers
 					break;
 				}
 			}
-			//TODO [VISTALL] QueryBodyClause*
 
 			parseSelectOrGroupClause(builder);
 
