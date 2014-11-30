@@ -640,7 +640,8 @@ public class ExpressionParsing extends SharedParsingHelpers
 	private static PsiBuilder.Marker parsePrimaryExpressionStart(final CSharpBuilderWrapper builder)
 	{
 		CSharpLanguageVersion version = builder.getVersion();
-		if(version.isAtLeast(CSharpLanguageVersion._3_0))
+		boolean linqParsing = version.isAtLeast(CSharpLanguageVersion._3_0) && builder.isLinqParsingEnabled();
+		if(linqParsing)
 		{
 			builder.enableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
 		}
@@ -649,7 +650,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			builder.enableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);
 		}
 		IElementType tokenType = builder.getTokenType();
-		if(version.isAtLeast(CSharpLanguageVersion._3_0))
+		if(linqParsing)
 		{
 			builder.disableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
 		}
@@ -740,7 +741,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			return parenth;
 		}
 
-		if(tokenType == FROM_KEYWORD)
+		if(linqParsing && tokenType == FROM_KEYWORD)
 		{
 			PsiBuilder.Marker marker = LinqParsing.parseLinqExpression(builder);
 			if(marker == null)

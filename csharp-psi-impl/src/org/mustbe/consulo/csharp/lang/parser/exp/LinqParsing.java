@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import com.intellij.lang.PsiBuilder;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 
 /**
@@ -28,12 +29,13 @@ import com.intellij.psi.tree.TokenSet;
  */
 public class LinqParsing extends SharedParsingHelpers
 {
-	public static final TokenSet LINQ_KEYWORDS = TokenSet.create(LET_KEYWORD, FROM_KEYWORD, SELECT_KEYWORD, GROUP_KEYWORD, BY_KEYWORD, INTO_KEYWORD,
-			ORDERBY_KEYWORD, WHERE_KEYWORD, ASCENDING_KEYWORD, DESCENDING_KEYWORD);
+	public static final TokenSet LINQ_KEYWORDS = TokenSet.create(LET_KEYWORD, FROM_KEYWORD, SELECT_KEYWORD, GROUP_KEYWORD, BY_KEYWORD,
+	INTO_KEYWORD, ORDERBY_KEYWORD, WHERE_KEYWORD, ASCENDING_KEYWORD, DESCENDING_KEYWORD);
 
 	public static PsiBuilder.Marker parseLinqExpression(final CSharpBuilderWrapper builder)
 	{
 		builder.enableSoftKeywords(LINQ_KEYWORDS);
+		builder.disableLinqParsing();
 
 		try
 		{
@@ -67,6 +69,7 @@ public class LinqParsing extends SharedParsingHelpers
 		}
 		finally
 		{
+			builder.enableLinqParsing();
 			builder.disableSoftKeywords(LINQ_KEYWORDS);
 		}
 	}
@@ -151,19 +154,20 @@ public class LinqParsing extends SharedParsingHelpers
 	@Nullable
 	private static PsiBuilder.Marker parseQueryBodyClause(CSharpBuilderWrapper builder)
 	{
-		if(builder.getTokenType() == FROM_KEYWORD)
+		IElementType tokenType = builder.getTokenType();
+		if(tokenType == FROM_KEYWORD)
 		{
 			return parseFromClause(builder, false);
 		}
-		else if(builder.getTokenType() == WHERE_KEYWORD)
+		else if(tokenType == WHERE_KEYWORD)
 		{
 			return parseWhereClause(builder);
 		}
-		else if(builder.getTokenType() == ORDERBY_KEYWORD)
+		else if(tokenType == ORDERBY_KEYWORD)
 		{
 			return parseOrderByClause(builder);
 		}
-		else if(builder.getTokenType() == LET_KEYWORD)
+		else if(tokenType == LET_KEYWORD)
 		{
 			return parseLetClause(builder);
 		}

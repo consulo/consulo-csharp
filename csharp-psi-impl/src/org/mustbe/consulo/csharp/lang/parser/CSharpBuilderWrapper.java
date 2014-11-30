@@ -52,6 +52,7 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 
 	private TokenSet mySoftSet = TokenSet.EMPTY;
 	private LanguageVersion myLanguageVersion;
+	private boolean myLinqParsingEnabled = true;
 
 	public CSharpBuilderWrapper(PsiBuilder delegate, LanguageVersion languageVersion)
 	{
@@ -162,5 +163,20 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 		getTokenType();  // remap if getTokenType not called
 
 		super.advanceLexer();
+	}
+
+	public boolean isLinqParsingEnabled()
+	{
+		return myLinqParsingEnabled;
+	}
+
+	public void enableLinqParsing()
+	{
+		myLinqParsingEnabled = true;
+	}
+
+	public void disableLinqParsing()
+	{
+		myLinqParsingEnabled = false;
 	}
 }
