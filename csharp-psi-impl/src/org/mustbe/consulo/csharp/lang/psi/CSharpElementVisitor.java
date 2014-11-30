@@ -531,4 +531,14 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	{
 		visitElement(variable);
 	}
+
+	public void visitLinqOrderByClause(CSharpLinqOrderByClauseImpl clause)
+	{
+		visitElement(clause);
+	}
+
+	public void visitLinqOrderByOrdering(CSharpLinqOrderByOrderingImpl ordering)
+	{
+		visitElement(ordering);
+	}
 }

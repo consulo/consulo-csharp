@@ -29,7 +29,7 @@ import com.intellij.psi.tree.TokenSet;
 public class LinqParsing extends SharedParsingHelpers
 {
 	public static final TokenSet LINQ_KEYWORDS = TokenSet.create(LET_KEYWORD, FROM_KEYWORD, SELECT_KEYWORD, GROUP_KEYWORD, BY_KEYWORD, INTO_KEYWORD,
-			ORDERBY_KEYWORD, WHERE_KEYWORD);
+			ORDERBY_KEYWORD, WHERE_KEYWORD, ASCENDING_KEYWORD, DESCENDING_KEYWORD);
 
 	public static PsiBuilder.Marker parseLinqExpression(final CSharpBuilderWrapper builder)
 	{
@@ -160,6 +160,10 @@ public class LinqParsing extends SharedParsingHelpers
 		{
 			return parseWhereClause(builder);
 		}
+		else if(builder.getTokenType() == ORDERBY_KEYWORD)
+		{
+			return parseOrderByClause(builder);
+		}
 		return null;
 	}
 
@@ -174,6 +178,45 @@ public class LinqParsing extends SharedParsingHelpers
 			builder.error("Expression expected");
 		}
 		mark.done(LINQ_WHERE_CLAUSE);
+		return mark;
+	}
+
+	private static PsiBuilder.Marker parseOrderByClause(CSharpBuilderWrapper builder)
+	{
+		PsiBuilder.Marker mark = builder.mark();
+
+		builder.advanceLexer();
+
+		while(!builder.eof())
+		{
+			PsiBuilder.Marker subMarker = builder.mark();
+			if(ExpressionParsing.parse(builder) == null)
+			{
+				subMarker.drop();
+				subMarker = null;
+				builder.error("Expression expected");
+			}
+
+			if(builder.getTokenType() == ASCENDING_KEYWORD || builder.getTokenType() == DESCENDING_KEYWORD)
+			{
+				builder.advanceLexer();
+			}
+			if(subMarker != null)
+			{
+				subMarker.done(LINQ_ORDERBY_ORDERING);
+			}
+
+			if(builder.getTokenType() == COMMA)
+			{
+				builder.advanceLexer();
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		mark.done(LINQ_ORDERBY_CLAUSE);
 		return mark;
 	}
 
