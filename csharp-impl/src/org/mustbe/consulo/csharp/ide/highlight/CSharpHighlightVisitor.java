@@ -25,6 +25,7 @@ import org.mustbe.consulo.csharp.ide.highlight.util.GenericParameterHighlightUti
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayAccessExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLinqExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -34,6 +35,7 @@ import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.daemon.impl.HighlightVisitor;
 import com.intellij.codeInsight.daemon.impl.analysis.HighlightInfoHolder;
 import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
+import com.intellij.openapi.editor.colors.EditorColors;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -175,6 +177,15 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 		super.visitLocalVariable(variable);
 
 		CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, variable, variable.getNameIdentifier(), null);
+	}
+
+	@Override
+	public void visitLinqExpression(CSharpLinqExpressionImpl expression)
+	{
+		super.visitLinqExpression(expression);
+
+		myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(expression).textAttributes
+				(EditorColors.INJECTED_LANGUAGE_FRAGMENT).create());
 	}
 
 	@Override
