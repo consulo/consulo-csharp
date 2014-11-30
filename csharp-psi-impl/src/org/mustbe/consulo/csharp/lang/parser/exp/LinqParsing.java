@@ -30,7 +30,7 @@ import com.intellij.psi.tree.TokenSet;
 public class LinqParsing extends SharedParsingHelpers
 {
 	public static final TokenSet LINQ_KEYWORDS = TokenSet.create(LET_KEYWORD, FROM_KEYWORD, SELECT_KEYWORD, GROUP_KEYWORD, BY_KEYWORD,
-	INTO_KEYWORD, ORDERBY_KEYWORD, WHERE_KEYWORD, ASCENDING_KEYWORD, DESCENDING_KEYWORD);
+	INTO_KEYWORD, ORDERBY_KEYWORD, WHERE_KEYWORD, ASCENDING_KEYWORD, DESCENDING_KEYWORD, JOIN_KEYWORD, ON_KEYWORD, EQUALS_KEYWORD);
 
 	public static PsiBuilder.Marker parseLinqExpression(final CSharpBuilderWrapper builder)
 	{
@@ -171,7 +171,94 @@ public class LinqParsing extends SharedParsingHelpers
 		{
 			return parseLetClause(builder);
 		}
+		else if(tokenType == JOIN_KEYWORD)
+		{
+			return parseJoinClause(builder);
+		}
 		return null;
+	}
+
+	@Nullable
+	private static PsiBuilder.Marker parseJoinClause(final CSharpBuilderWrapper builder)
+	{
+		PsiBuilder.Marker mark = builder.mark();
+
+		builder.advanceLexer();
+
+		PsiBuilder.Marker variableMarker = builder.mark();
+
+		if(canParseType(builder))
+		{
+			parseType(builder, BracketFailPolicy.RETURN_BEFORE, false);
+		}
+
+		if(builder.getTokenType() == IDENTIFIER)
+		{
+			builder.advanceLexer();
+		}
+		else
+		{
+			builder.error("Identifier expected");
+		}
+		variableMarker.done(LINQ_VARIABLE);
+
+		if(builder.getTokenType() == IN_KEYWORD)
+		{
+			builder.advanceLexer();
+
+			if(ExpressionParsing.parse(builder) == null)
+			{
+				builder.error("Expression expected");
+			}
+		}
+		else
+		{
+			builder.error("'in' expected");
+		}
+
+		if(builder.getTokenType() == ON_KEYWORD)
+		{
+			builder.advanceLexer();
+
+			if(ExpressionParsing.parse(builder) == null)
+			{
+				builder.error("Expression expected");
+			}
+		}
+		else
+		{
+			builder.error("'on' expected");
+		}
+
+		if(builder.getTokenType() == EQUALS_KEYWORD)
+		{
+			builder.advanceLexer();
+
+			if(ExpressionParsing.parse(builder) == null)
+			{
+				builder.error("Expression expected");
+			}
+		}
+		else
+		{
+			builder.error("'equals' expected");
+		}
+
+		if(builder.getTokenType() == INTO_KEYWORD)
+		{
+			PsiBuilder.Marker tempMarker = builder.mark();
+			builder.advanceLexer();
+
+			if(builder.getTokenType() == IDENTIFIER)
+			{
+				builder.advanceLexer();
+			}
+			tempMarker.done(LINQ_INTRO_CLAUSE);
+		}
+
+		mark.done(LINQ_JOIN_CLAUSE);
+
+		return mark;
 	}
 
 	private static PsiBuilder.Marker parseWhereClause(CSharpBuilderWrapper builder)

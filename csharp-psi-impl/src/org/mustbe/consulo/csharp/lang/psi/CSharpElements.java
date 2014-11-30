@@ -170,9 +170,14 @@ public interface CSharpElements
 
 	IElementType LINQ_WHERE_CLAUSE = new ElementTypeAsPsiFactory("LINQ_WHERE_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqWhereClauseImpl.class);
 
-	IElementType LINQ_ORDERBY_CLAUSE = new ElementTypeAsPsiFactory("LINQ_ORDERBY_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqOrderByClauseImpl.class);
+	IElementType LINQ_ORDERBY_CLAUSE = new ElementTypeAsPsiFactory("LINQ_ORDERBY_CLAUSE", CSharpLanguage.INSTANCE,
+			CSharpLinqOrderByClauseImpl.class);
 
 	IElementType LINQ_LET_CLAUSE = new ElementTypeAsPsiFactory("LINQ_LET_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqLetClauseImpl.class);
+
+	IElementType LINQ_JOIN_CLAUSE = new ElementTypeAsPsiFactory("LINQ_JOIN_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqJoinClauseImpl.class);
+
+	IElementType LINQ_INTRO_CLAUSE = new ElementTypeAsPsiFactory("LINQ_INTRO_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqIntoClauseImpl.class);
 
 	IElementType LINQ_ORDERBY_ORDERING = new ElementTypeAsPsiFactory("LINQ_ORDERBY_ORDERING", CSharpLanguage.INSTANCE,
 			CSharpLinqOrderByOrderingImpl.class);

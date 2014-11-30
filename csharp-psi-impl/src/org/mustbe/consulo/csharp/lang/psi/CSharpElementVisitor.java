@@ -546,4 +546,14 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	{
 		visitElement(clause);
 	}
+
+	public void visitLinqJoinClause(CSharpLinqJoinClauseImpl clause)
+	{
+		visitElement(clause);
+	}
+
+	public void visitLinqIntroClause(CSharpLinqIntoClauseImpl clause)
+	{
+		visitElement(clause);
+	}
 }
