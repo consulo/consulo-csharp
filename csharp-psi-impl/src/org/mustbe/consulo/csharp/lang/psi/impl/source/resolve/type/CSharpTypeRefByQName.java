@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
+import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -37,14 +38,14 @@ public class CSharpTypeRefByQName extends DotNetTypeRef.Adapter
 	@Override
 	public String getQualifiedText()
 	{
-		return myQualifiedName;
+		return MsilHelper.cutGenericMarker(myQualifiedName);
 	}
 
 	@NotNull
 	@Override
 	public String getPresentableText()
 	{
-		String shortName = StringUtil.getShortName(myQualifiedName);
+		String shortName = StringUtil.getShortName(getQualifiedText());
 		if(myNullable == Boolean.TRUE)
 		{
 			shortName += "?";

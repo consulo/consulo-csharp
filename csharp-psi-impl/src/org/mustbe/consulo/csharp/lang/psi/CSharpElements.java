@@ -18,8 +18,8 @@ package org.mustbe.consulo.csharp.lang.psi;
 
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.*;
-import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.ElementTypeAsPsiFactory;
+import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
@@ -162,15 +162,28 @@ public interface CSharpElements
 
 	IElementType LINQ_EXPRESSION = new ElementTypeAsPsiFactory("LINQ_EXPRESSION", CSharpLanguage.INSTANCE, CSharpLinqExpressionImpl.class);
 
-	IElementType LINQ_FROM = new ElementTypeAsPsiFactory("LINQ_FROM", CSharpLanguage.INSTANCE, CSharpLinqFromImpl.class);
+	IElementType LINQ_VARIABLE = new ElementTypeAsPsiFactory("LINQ_VARIABLE", CSharpLanguage.INSTANCE, CSharpLinqVariableImpl.class);
 
-	IElementType LINQ_IN = new ElementTypeAsPsiFactory("LINQ_IN", CSharpLanguage.INSTANCE, CSharpLinqInImpl.class);
+	IElementType LINQ_QUERY_BODY = new ElementTypeAsPsiFactory("LINQ_QUERY_BODY", CSharpLanguage.INSTANCE, CSharpLinqQueryBodyImpl.class);
 
-	IElementType LINQ_LET = new ElementTypeAsPsiFactory("LINQ_LET", CSharpLanguage.INSTANCE, CSharpLinqLetImpl.class);
+	IElementType LINQ_FROM_CLAUSE = new ElementTypeAsPsiFactory("LINQ_FROM_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqFromClauseImpl.class);
 
-	IElementType LINQ_WHERE = new ElementTypeAsPsiFactory("LINQ_WHERE", CSharpLanguage.INSTANCE, CSharpLinqWhereImpl.class);
+	IElementType LINQ_WHERE_CLAUSE = new ElementTypeAsPsiFactory("LINQ_WHERE_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqWhereClauseImpl.class);
 
-	IElementType LINQ_SELECT = new ElementTypeAsPsiFactory("LINQ_SELECT", CSharpLanguage.INSTANCE, CSharpLinqSelectImpl.class);
+	IElementType LINQ_ORDERBY_CLAUSE = new ElementTypeAsPsiFactory("LINQ_ORDERBY_CLAUSE", CSharpLanguage.INSTANCE,
+			CSharpLinqOrderByClauseImpl.class);
+
+	IElementType LINQ_LET_CLAUSE = new ElementTypeAsPsiFactory("LINQ_LET_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqLetClauseImpl.class);
+
+	IElementType LINQ_JOIN_CLAUSE = new ElementTypeAsPsiFactory("LINQ_JOIN_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqJoinClauseImpl.class);
+
+	IElementType LINQ_INTRO_CLAUSE = new ElementTypeAsPsiFactory("LINQ_INTRO_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqIntoClauseImpl.class);
+
+	IElementType LINQ_ORDERBY_ORDERING = new ElementTypeAsPsiFactory("LINQ_ORDERBY_ORDERING", CSharpLanguage.INSTANCE,
+			CSharpLinqOrderByOrderingImpl.class);
+
+	IElementType LINQ_SELECT_OR_GROUP_CLAUSE = new ElementTypeAsPsiFactory("LINQ_SELECT_OR_GROUP_CLAUSE", CSharpLanguage.INSTANCE,
+			CSharpLinqSelectOrGroupClauseImpl.class);
 
 	IElementType LAMBDA_EXPRESSION = new ElementTypeAsPsiFactory("LAMBDA_EXPRESSION", CSharpLanguage.INSTANCE, CSharpLambdaExpressionImpl.class);
 
@@ -193,14 +206,13 @@ public interface CSharpElements
 
 	IElementType CALL_ARGUMENT_LIST = new ElementTypeAsPsiFactory("CALL_ARGUMENT_LIST", CSharpLanguage.INSTANCE, CSharpCallArgumentListImpl.class);
 
-	IElementType CALL_ARGUMENT = new ElementTypeAsPsiFactory("CALL_ARGUMENT", CSharpLanguage.INSTANCE,
-			CSharpCallArgumentImpl.class);
+	IElementType CALL_ARGUMENT = new ElementTypeAsPsiFactory("CALL_ARGUMENT", CSharpLanguage.INSTANCE, CSharpCallArgumentImpl.class);
 
 	IElementType NAMED_CALL_ARGUMENT = new ElementTypeAsPsiFactory("NAMED_CALL_ARGUMENT", CSharpLanguage.INSTANCE,
 			CSharpNamedCallArgumentImpl.class);
 
-	IElementType LOCAL_VARIABLE_DECLARATION_STATEMENT = new ElementTypeAsPsiFactory("LOCAL_VARIABLE_DECLARATION_STATEMENT",
-			CSharpLanguage.INSTANCE, CSharpLocalVariableDeclarationStatementImpl.class);
+	IElementType LOCAL_VARIABLE_DECLARATION_STATEMENT = new ElementTypeAsPsiFactory("LOCAL_VARIABLE_DECLARATION_STATEMENT", CSharpLanguage.INSTANCE,
+			CSharpLocalVariableDeclarationStatementImpl.class);
 
 	IElementType EXPRESSION_STATEMENT = new ElementTypeAsPsiFactory("EXPRESSION_STATEMENT", CSharpLanguage.INSTANCE,
 			CSharpExpressionStatementImpl.class);
@@ -232,8 +244,7 @@ public interface CSharpElements
 	IElementType SWITCH_LABEL_STATEMENT = new ElementTypeAsPsiFactory("SWITCH_LABEL_STATEMENT", CSharpLanguage.INSTANCE,
 			CSharpSwitchLabelStatementImpl.class);
 
-	IElementType THROW_STATEMENT = new ElementTypeAsPsiFactory("THROW_STATEMENT_STATEMENT", CSharpLanguage.INSTANCE,
-			CSharpThrowStatementImpl.class);
+	IElementType THROW_STATEMENT = new ElementTypeAsPsiFactory("THROW_STATEMENT_STATEMENT", CSharpLanguage.INSTANCE, CSharpThrowStatementImpl.class);
 
 	IElementType RETURN_STATEMENT = new ElementTypeAsPsiFactory("RETURN_STATEMENT", CSharpLanguage.INSTANCE, CSharpReturnStatementImpl.class);
 

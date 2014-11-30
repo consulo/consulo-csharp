@@ -25,7 +25,6 @@ import org.mustbe.consulo.csharp.lang.parser.stmt.StatementParsing;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.lang.PsiBuilder;
-import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import lombok.val;
@@ -50,11 +49,8 @@ public class ExpressionParsing extends SharedParsingHelpers
 	private static final TokenSet POSTFIX_OPS = TokenSet.create(PLUSPLUS, MINUSMINUS);
 	private static final TokenSet PREF_ARITHMETIC_OPS = TokenSet.orSet(POSTFIX_OPS, TokenSet.create(PLUS, MINUS));
 	private static final TokenSet PREFIX_OPS = TokenSet.orSet(PREF_ARITHMETIC_OPS, TokenSet.create(TILDE, EXCL));
-	private static final TokenSet ARGS_LIST_CONTINUE = TokenSet.create(IDENTIFIER, TokenType.BAD_CHARACTER, COMMA, INTEGER_LITERAL, STRING_LITERAL);
-	private static final TokenSet ARGS_LIST_END = TokenSet.create(RPAR, RBRACE, RBRACKET);
 	private static final TokenSet ID_OR_SUPER = TokenSet.create(IDENTIFIER, BASE_KEYWORD);
 	private static final TokenSet THIS_OR_BASE = TokenSet.create(THIS_KEYWORD, BASE_KEYWORD);
-
 
 	@Nullable
 	public static PsiBuilder.Marker parse(final CSharpBuilderWrapper builder)
@@ -93,7 +89,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 	}
 
 	@Nullable
-	public static PsiBuilder.Marker parseConditional(final CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseConditional(final CSharpBuilderWrapper builder)
 	{
 		final PsiBuilder.Marker condition = parseExpression(builder, ExprType.CONDITIONAL_OR);
 		if(condition == null)
@@ -586,7 +582,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				PsiBuilder.Marker marker = builder.mark();
 				doneOneElement(builder, IDENTIFIER, REFERENCE_EXPRESSION, null);
 				builder.advanceLexer(); // eq
-				PsiBuilder.Marker expressionParser = ExpressionParsing.parse(builder);
+				PsiBuilder.Marker expressionParser = parse(builder);
 				if(expressionParser == null)
 				{
 					builder.error("Expression expected");
@@ -598,7 +594,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				PsiBuilder.Marker marker = builder.mark();
 				doneOneElement(builder, IDENTIFIER, REFERENCE_EXPRESSION, null);
 				builder.advanceLexer(); // eq
-				PsiBuilder.Marker expressionParser = ExpressionParsing.parse(builder);
+				PsiBuilder.Marker expressionParser = parse(builder);
 				if(expressionParser == null)
 				{
 					builder.error("Expression expected");
@@ -608,7 +604,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			else
 			{
 				PsiBuilder.Marker argumentMarker = builder.mark();
-				PsiBuilder.Marker marker = ExpressionParsing.parse(builder);
+				PsiBuilder.Marker marker = parse(builder);
 				if(marker == null)
 				{
 					argumentMarker.drop();
@@ -640,18 +636,19 @@ public class ExpressionParsing extends SharedParsingHelpers
 	private static PsiBuilder.Marker parsePrimaryExpressionStart(final CSharpBuilderWrapper builder)
 	{
 		CSharpLanguageVersion version = builder.getVersion();
+		boolean linqState = false;
 		if(version.isAtLeast(CSharpLanguageVersion._3_0))
 		{
-			//builder.enableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
+			linqState = builder.enableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
 		}
 		if(version.isAtLeast(CSharpLanguageVersion._4_0))
 		{
 			builder.enableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);
 		}
 		IElementType tokenType = builder.getTokenType();
-		if(version.isAtLeast(CSharpLanguageVersion._3_0))
+		if(linqState)
 		{
-			//builder.disableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
+			builder.disableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
 		}
 		if(version.isAtLeast(CSharpLanguageVersion._4_0))
 		{
@@ -742,7 +739,17 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(tokenType == FROM_KEYWORD)
 		{
-			return LinqParsing.parseLinqExpression(builder);
+			PsiBuilder.Marker marker = LinqParsing.parseLinqExpression(builder);
+			if(marker == null)
+			{
+				assert builder.getTokenType() == FROM_KEYWORD : builder.getTokenText() + ":" + builder.getTokenType();
+				builder.remapBackIfSoft();
+				tokenType = builder.getTokenType();
+			}
+			else
+			{
+				return marker;
+			}
 		}
 
 		if(tokenType == IDENTIFIER)
@@ -1176,7 +1183,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				break;
 			}
 
-			PsiBuilder.Marker parse = ExpressionParsing.parse(builderWrapper);
+			PsiBuilder.Marker parse = parse(builderWrapper);
 			if(parse == null)
 			{
 				builderWrapper.error("Expression expected");
@@ -1240,7 +1247,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		{
 			if(expect(builder, EQ, "'=' expected"))
 			{
-				if(ExpressionParsing.parse(builder) == null)
+				if(parse(builder) == null)
 				{
 					builder.error("Expression expected");
 				}

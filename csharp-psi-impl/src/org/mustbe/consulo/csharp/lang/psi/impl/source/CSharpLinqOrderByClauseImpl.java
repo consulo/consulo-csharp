@@ -22,11 +22,11 @@ import com.intellij.lang.ASTNode;
 
 /**
  * @author VISTALL
- * @since 04.01.14.
+ * @since 30.11.14
  */
-public class CSharpLinqFromImpl extends CSharpElementImpl implements CSharpLinqPart
+public class CSharpLinqOrderByClauseImpl extends CSharpElementImpl
 {
-	public CSharpLinqFromImpl(@NotNull ASTNode node)
+	public CSharpLinqOrderByClauseImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
@@ -34,6 +34,6 @@ public class CSharpLinqFromImpl extends CSharpElementImpl implements CSharpLinqP
 	@Override
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		visitor.visitLinqFrom(this);
+		visitor.visitLinqOrderByClause(this);
 	}
 }

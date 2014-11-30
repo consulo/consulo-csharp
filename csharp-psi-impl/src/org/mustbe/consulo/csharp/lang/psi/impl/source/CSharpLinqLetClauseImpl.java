@@ -17,23 +17,48 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.scope.PsiScopeProcessor;
 
 /**
  * @author VISTALL
- * @since 04.01.14.
+ * @since 30.11.14
  */
-public class CSharpLinqWhereImpl extends CSharpElementImpl implements CSharpLinqPart
+public class CSharpLinqLetClauseImpl extends CSharpElementImpl
 {
-	public CSharpLinqWhereImpl(@NotNull ASTNode node)
+	public CSharpLinqLetClauseImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	@Nullable
+	public CSharpLinqVariableImpl getVariable()
+	{
+		return findChildByClass(CSharpLinqVariableImpl.class);
+	}
+
+	@Override
+	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent,
+			@NotNull PsiElement place)
+	{
+		CSharpLinqVariableImpl variable = getVariable();
+		if(variable != null)
+		{
+			if(!processor.execute(variable, state))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		visitor.visitLinqWhere(this);
+		visitor.visitLinqLetClause(this);
 	}
 }

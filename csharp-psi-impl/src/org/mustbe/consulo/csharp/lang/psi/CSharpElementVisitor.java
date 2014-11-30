@@ -322,31 +322,6 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(expression);
 	}
 
-	public void visitLinqFrom(CSharpLinqFromImpl select)
-	{
-		visitElement(select);
-	}
-
-	public void visitLinqIn(CSharpLinqInImpl in)
-	{
-		visitElement(in);
-	}
-
-	public void visitLinqLet(CSharpLinqLetImpl let)
-	{
-		visitElement(let);
-	}
-
-	public void visitLinqWhere(CSharpLinqWhereImpl where)
-	{
-		visitElement(where);
-	}
-
-	public void visitLinqSelect(CSharpLinqSelectImpl select)
-	{
-		visitElement(select);
-	}
-
 	public void visitForeachStatement(CSharpForeachStatementImpl statement)
 	{
 		visitElement(statement);
@@ -530,5 +505,55 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	public void visitAwaitExpression(CSharpAwaitExpressionImpl expression)
 	{
 		visitElement(expression);
+	}
+
+	public void visitLinqFromClause(CSharpLinqFromClauseImpl clause)
+	{
+		visitElement(clause);
+	}
+
+	public void visitLinqSelectOrGroupClause(CSharpLinqSelectOrGroupClauseImpl clause)
+	{
+		visitElement(clause);
+	}
+
+	public void visitLinqQueryBody(CSharpLinqQueryBodyImpl body)
+	{
+		visitElement(body);
+	}
+
+	public void visitLinqWhereClause(CSharpLinqWhereClauseImpl clause)
+	{
+		visitElement(clause);
+	}
+
+	public void visitLinqVariable(CSharpLinqVariable variable)
+	{
+		visitElement(variable);
+	}
+
+	public void visitLinqOrderByClause(CSharpLinqOrderByClauseImpl clause)
+	{
+		visitElement(clause);
+	}
+
+	public void visitLinqOrderByOrdering(CSharpLinqOrderByOrderingImpl ordering)
+	{
+		visitElement(ordering);
+	}
+
+	public void visitLinqLetClause(CSharpLinqLetClauseImpl clause)
+	{
+		visitElement(clause);
+	}
+
+	public void visitLinqJoinClause(CSharpLinqJoinClauseImpl clause)
+	{
+		visitElement(clause);
+	}
+
+	public void visitLinqIntroClause(CSharpLinqIntoClauseImpl clause)
+	{
+		visitElement(clause);
 	}
 }

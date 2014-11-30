@@ -170,6 +170,22 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
+	public void visitLocalVariable(CSharpLocalVariable variable)
+	{
+		super.visitLocalVariable(variable);
+
+		CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, variable, variable.getNameIdentifier(), null);
+	}
+
+	@Override
+	public void visitLinqVariable(CSharpLinqVariable variable)
+	{
+		super.visitLinqVariable(variable);
+
+		CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, variable, variable.getNameIdentifier(), null);
+	}
+
+	@Override
 	public void visitEnumConstantDeclaration(CSharpEnumConstantDeclaration declaration)
 	{
 		super.visitEnumConstantDeclaration(declaration);

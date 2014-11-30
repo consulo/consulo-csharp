@@ -20,15 +20,7 @@ import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.assemblyInfo.CSharpAssemblyConstants;
-import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
-import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
+import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import org.mustbe.consulo.dotnet.DotNetRunUtil;
@@ -137,7 +129,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 		{
 			iconDescriptor.setMainIcon(AllIcons.Nodes.Advice);
 		}
-		else if(element instanceof CSharpLocalVariable)
+		else if(element instanceof CSharpLocalVariable || element instanceof CSharpLinqVariable)
 		{
 			iconDescriptor.setMainIcon(AllIcons.Nodes.Variable);
 		}

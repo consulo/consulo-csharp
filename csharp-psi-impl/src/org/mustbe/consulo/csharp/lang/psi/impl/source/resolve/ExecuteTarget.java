@@ -2,15 +2,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
 import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
-import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
+import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -127,7 +119,10 @@ public enum ExecuteTarget
 				@Override
 				public boolean isMyElement(@NotNull PsiElement element)
 				{
-					return element instanceof CSharpLocalVariable || element instanceof DotNetParameter || element instanceof CSharpLambdaParameter;
+					return element instanceof CSharpLocalVariable ||
+							element instanceof DotNetParameter ||
+							element instanceof CSharpLinqVariable ||
+							element instanceof CSharpLambdaParameter;
 				}
 			};
 
