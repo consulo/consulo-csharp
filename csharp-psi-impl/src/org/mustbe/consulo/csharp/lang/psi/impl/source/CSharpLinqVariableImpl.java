@@ -24,6 +24,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLinqVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -42,6 +43,23 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpLinqVariable
 {
+	private static class OurResolver extends CSharpResolveCache.TypeRefResolver<CSharpLinqVariableImpl>
+	{
+		public static final OurResolver INSTANCE = new OurResolver();
+
+		@NotNull
+		@Override
+		public DotNetTypeRef resolveTypeRef(@NotNull CSharpLinqVariableImpl element, boolean resolveFromParent)
+		{
+			DotNetType type = element.getType();
+			if(type != null)
+			{
+				return type.toTypeRef();
+			}
+			return resolveFromParent ? element.resolveTypeRef() : DotNetTypeRef.AUTO_TYPE;
+		}
+	}
+
 	public CSharpLinqVariableImpl(@NotNull ASTNode node)
 	{
 		super(node);
@@ -63,12 +81,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolve)
 	{
-		DotNetType type = getType();
-		if(type != null)
-		{
-			return type.toTypeRef();
-		}
-		return resolve ? resolveTypeRef() : DotNetTypeRef.AUTO_TYPE;
+		return CSharpResolveCache.getInstance(getProject()).resolveTypeRef(this, OurResolver.INSTANCE, resolve);
 	}
 
 	@NotNull

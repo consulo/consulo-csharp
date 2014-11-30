@@ -222,8 +222,12 @@ public class CSharpResolveCache
 			@NotNull TypeRefResolver<TElement> resolver,
 			boolean resolveFromParent)
 	{
-		DotNetTypeRef resolve = resolve(ref, resolver, false, false, resolveFromParent, false, ref.isPhysical());
-		assert resolve != null;
+		DotNetTypeRef resolve = resolve(ref, resolver, true, false, resolveFromParent, false, ref.isPhysical());
+		if(resolve == null)
+		{
+			// if is recursive call - return error
+			return DotNetTypeRef.ERROR_TYPE;
+		}
 		return resolve;
 	}
 
