@@ -277,6 +277,7 @@ public class LinqParsing extends SharedParsingHelpers
 			}
 			if(builder.getTokenType() == BY_KEYWORD)
 			{
+				builder.advanceLexer();
 				if(ExpressionParsing.parse(builder) == null)
 				{
 					builder.error("Expression expected");
