@@ -155,7 +155,7 @@ public class CSharpHighlightUtil
 		}
 		else if(element instanceof CSharpLinqVariable)
 		{
-			key = EditorColors.INJECTED_LANGUAGE_FRAGMENT;
+			key = DefaultLanguageHighlighterColors.LOCAL_VARIABLE;
 		}
 		else if(element instanceof CSharpEventDeclaration)
 		{
