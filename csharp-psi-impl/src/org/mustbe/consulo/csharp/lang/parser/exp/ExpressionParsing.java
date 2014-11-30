@@ -25,7 +25,6 @@ import org.mustbe.consulo.csharp.lang.parser.stmt.StatementParsing;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.lang.PsiBuilder;
-import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import lombok.val;
@@ -50,22 +49,25 @@ public class ExpressionParsing extends SharedParsingHelpers
 	private static final TokenSet POSTFIX_OPS = TokenSet.create(PLUSPLUS, MINUSMINUS);
 	private static final TokenSet PREF_ARITHMETIC_OPS = TokenSet.orSet(POSTFIX_OPS, TokenSet.create(PLUS, MINUS));
 	private static final TokenSet PREFIX_OPS = TokenSet.orSet(PREF_ARITHMETIC_OPS, TokenSet.create(TILDE, EXCL));
-	private static final TokenSet ARGS_LIST_CONTINUE = TokenSet.create(IDENTIFIER, TokenType.BAD_CHARACTER, COMMA, INTEGER_LITERAL, STRING_LITERAL);
-	private static final TokenSet ARGS_LIST_END = TokenSet.create(RPAR, RBRACE, RBRACKET);
 	private static final TokenSet ID_OR_SUPER = TokenSet.create(IDENTIFIER, BASE_KEYWORD);
 	private static final TokenSet THIS_OR_BASE = TokenSet.create(THIS_KEYWORD, BASE_KEYWORD);
 
+	@Nullable
+	public static PsiBuilder.Marker parseNoLinq(final CSharpBuilderWrapper builder)
+	{
+		return parseAssignment(builder, false);
+	}
 
 	@Nullable
 	public static PsiBuilder.Marker parse(final CSharpBuilderWrapper builder)
 	{
-		return parseAssignment(builder);
+		return parseAssignment(builder, true);
 	}
 
 	@Nullable
-	private static PsiBuilder.Marker parseAssignment(final CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseAssignment(final CSharpBuilderWrapper builder, boolean linq)
 	{
-		final PsiBuilder.Marker left = parseConditional(builder);
+		final PsiBuilder.Marker left = parseConditional(builder, linq);
 		if(left == null)
 		{
 			return null;
@@ -93,9 +95,9 @@ public class ExpressionParsing extends SharedParsingHelpers
 	}
 
 	@Nullable
-	public static PsiBuilder.Marker parseConditional(final CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseConditional(final CSharpBuilderWrapper builder, boolean linq)
 	{
-		final PsiBuilder.Marker condition = parseExpression(builder, ExprType.CONDITIONAL_OR);
+		final PsiBuilder.Marker condition = parseExpression(builder, ExprType.CONDITIONAL_OR, linq);
 		if(condition == null)
 		{
 			return null;
@@ -122,7 +124,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			}
 			builder.advanceLexer();
 
-			final PsiBuilder.Marker falsePart = parseConditional(builder);
+			final PsiBuilder.Marker falsePart = parseConditional(builder, linq);
 			if(falsePart == null)
 			{
 				builder.error("Expression expected");
@@ -153,42 +155,42 @@ public class ExpressionParsing extends SharedParsingHelpers
 	}
 
 	@Nullable
-	private static PsiBuilder.Marker parseExpression(final CSharpBuilderWrapper builder, final ExprType type)
+	private static PsiBuilder.Marker parseExpression(final CSharpBuilderWrapper builder, final ExprType type, boolean linq)
 	{
 		switch(type)
 		{
 			case CONDITIONAL_OR:
-				return parseBinary(builder, ExprType.CONDITIONAL_AND, CONDITIONAL_OR_OPS);
+				return parseBinary(builder, ExprType.CONDITIONAL_AND, CONDITIONAL_OR_OPS, linq);
 
 			case CONDITIONAL_AND:
-				return parseBinary(builder, ExprType.OR, CONDITIONAL_AND_OPS);
+				return parseBinary(builder, ExprType.OR, CONDITIONAL_AND_OPS, linq);
 
 			case OR:
-				return parseBinary(builder, ExprType.XOR, OR_OPS);
+				return parseBinary(builder, ExprType.XOR, OR_OPS, linq);
 
 			case XOR:
-				return parseBinary(builder, ExprType.AND, XOR_OPS);
+				return parseBinary(builder, ExprType.AND, XOR_OPS, linq);
 
 			case AND:
-				return parseBinary(builder, ExprType.EQUALITY, AND_OPS);
+				return parseBinary(builder, ExprType.EQUALITY, AND_OPS, linq);
 
 			case EQUALITY:
-				return parseBinary(builder, ExprType.RELATIONAL, EQUALITY_OPS);
+				return parseBinary(builder, ExprType.RELATIONAL, EQUALITY_OPS, linq);
 
 			case RELATIONAL:
-				return parseRelational(builder);
+				return parseRelational(builder, linq);
 
 			case SHIFT:
-				return parseBinary(builder, ExprType.ADDITIVE, SHIFT_OPS);
+				return parseBinary(builder, ExprType.ADDITIVE, SHIFT_OPS, linq);
 
 			case ADDITIVE:
-				return parseBinary(builder, ExprType.MULTIPLICATIVE, ADDITIVE_OPS);
+				return parseBinary(builder, ExprType.MULTIPLICATIVE, ADDITIVE_OPS, linq);
 
 			case MULTIPLICATIVE:
-				return parseBinary(builder, ExprType.UNARY, MULTIPLICATIVE_OPS);
+				return parseBinary(builder, ExprType.UNARY, MULTIPLICATIVE_OPS, linq);
 
 			case UNARY:
-				return parseUnary(builder);
+				return parseUnary(builder, linq);
 
 			case TYPE:
 				TypeInfo typeInfo = parseType(builder, BracketFailPolicy.NOTHING, false);
@@ -200,7 +202,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 	}
 
 	@Nullable
-	private static PsiBuilder.Marker parseUnary(final CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseUnary(final CSharpBuilderWrapper builder, boolean linq)
 	{
 		final IElementType tokenType = builder.getTokenType();
 
@@ -210,7 +212,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 			doneOneElementGGLL(builder, tokenType, OPERATOR_REFERENCE, null);
 
-			final PsiBuilder.Marker operand = parseUnary(builder);
+			final PsiBuilder.Marker operand = parseUnary(builder, linq);
 			if(operand == null)
 			{
 				builder.error("Expression expected");
@@ -228,22 +230,22 @@ public class ExpressionParsing extends SharedParsingHelpers
 			if(typeInfo == null || !expect(builder, RPAR, null))
 			{
 				typeCast.rollbackTo();
-				return parsePostfix(builder);
+				return parsePostfix(builder, linq);
 			}
 
 			if(PREF_ARITHMETIC_OPS.contains(builder.getTokenType()) && typeInfo.nativeElementType == null)
 			{
 				typeCast.rollbackTo();
-				return parsePostfix(builder);
+				return parsePostfix(builder, linq);
 			}
 
-			final PsiBuilder.Marker expr = parseUnary(builder);
+			final PsiBuilder.Marker expr = parseUnary(builder, linq);
 			if(expr == null)
 			{
 				if(!typeInfo.isParameterized)
 				{  // cannot parse correct parenthesized expression after correct parameterized type
 					typeCast.rollbackTo();
-					return parsePostfix(builder);
+					return parsePostfix(builder, linq);
 				}
 				else
 				{
@@ -256,14 +258,14 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 		else
 		{
-			return parsePostfix(builder);
+			return parsePostfix(builder, linq);
 		}
 	}
 
 	@Nullable
-	private static PsiBuilder.Marker parsePostfix(final CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parsePostfix(final CSharpBuilderWrapper builder, boolean linq)
 	{
-		PsiBuilder.Marker operand = parsePrimary(builder);
+		PsiBuilder.Marker operand = parsePrimary(builder, linq);
 		if(operand == null)
 		{
 			return null;
@@ -283,9 +285,9 @@ public class ExpressionParsing extends SharedParsingHelpers
 	}
 
 	@Nullable
-	private static PsiBuilder.Marker parseBinary(final CSharpBuilderWrapper builder, final ExprType type, final TokenSet ops)
+	private static PsiBuilder.Marker parseBinary(final CSharpBuilderWrapper builder, final ExprType type, final TokenSet ops, boolean linq)
 	{
-		PsiBuilder.Marker result = parseExpression(builder, type);
+		PsiBuilder.Marker result = parseExpression(builder, type, linq);
 		if(result == null)
 		{
 			return null;
@@ -301,7 +303,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 			doneOneElementGGLL(builder, tokenType, OPERATOR_REFERENCE, null);
 
-			final PsiBuilder.Marker right = parseExpression(builder, type);
+			final PsiBuilder.Marker right = parseExpression(builder, type, linq);
 
 			tokenType = builder.getTokenType();
 			if(tokenType != null && ops.contains(tokenType) || tokenType == null || !ops.contains(tokenType) || tokenType != currentExprTokenType || right == null)
@@ -325,9 +327,9 @@ public class ExpressionParsing extends SharedParsingHelpers
 	}
 
 	@Nullable
-	private static PsiBuilder.Marker parseRelational(final CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseRelational(final CSharpBuilderWrapper builder, boolean linq)
 	{
-		PsiBuilder.Marker left = parseExpression(builder, ExprType.SHIFT);
+		PsiBuilder.Marker left = parseExpression(builder, ExprType.SHIFT, linq);
 		if(left == null)
 		{
 			return null;
@@ -370,7 +372,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				builder.advanceLexerGGLL();
 			}
 
-			final PsiBuilder.Marker right = parseExpression(builder, toParse);
+			final PsiBuilder.Marker right = parseExpression(builder, toParse, linq);
 			if(right == null)
 			{
 				builder.error(toParse == ExprType.TYPE ? "Type expected" : "Expression expected");
@@ -387,11 +389,11 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 
 	@Nullable
-	private static PsiBuilder.Marker parsePrimary(final CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parsePrimary(final CSharpBuilderWrapper builder, boolean linq)
 	{
 		PsiBuilder.Marker startMarker = builder.mark();
 
-		PsiBuilder.Marker expr = parsePrimaryExpressionStart(builder);
+		PsiBuilder.Marker expr = parsePrimaryExpressionStart(builder, linq);
 		if(expr == null)
 		{
 			startMarker.drop();
@@ -586,7 +588,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				PsiBuilder.Marker marker = builder.mark();
 				doneOneElement(builder, IDENTIFIER, REFERENCE_EXPRESSION, null);
 				builder.advanceLexer(); // eq
-				PsiBuilder.Marker expressionParser = ExpressionParsing.parse(builder);
+				PsiBuilder.Marker expressionParser = parse(builder);
 				if(expressionParser == null)
 				{
 					builder.error("Expression expected");
@@ -598,7 +600,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				PsiBuilder.Marker marker = builder.mark();
 				doneOneElement(builder, IDENTIFIER, REFERENCE_EXPRESSION, null);
 				builder.advanceLexer(); // eq
-				PsiBuilder.Marker expressionParser = ExpressionParsing.parse(builder);
+				PsiBuilder.Marker expressionParser = parse(builder);
 				if(expressionParser == null)
 				{
 					builder.error("Expression expected");
@@ -608,7 +610,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			else
 			{
 				PsiBuilder.Marker argumentMarker = builder.mark();
-				PsiBuilder.Marker marker = ExpressionParsing.parse(builder);
+				PsiBuilder.Marker marker = parse(builder);
 				if(marker == null)
 				{
 					argumentMarker.drop();
@@ -637,10 +639,10 @@ public class ExpressionParsing extends SharedParsingHelpers
 	}
 
 	@Nullable
-	private static PsiBuilder.Marker parsePrimaryExpressionStart(final CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parsePrimaryExpressionStart(final CSharpBuilderWrapper builder, boolean linq)
 	{
 		CSharpLanguageVersion version = builder.getVersion();
-		boolean linqParsing = version.isAtLeast(CSharpLanguageVersion._3_0) && builder.isLinqParsingEnabled();
+		boolean linqParsing = version.isAtLeast(CSharpLanguageVersion._3_0) && linq;
 		if(linqParsing)
 		{
 			builder.enableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
@@ -1187,7 +1189,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				break;
 			}
 
-			PsiBuilder.Marker parse = ExpressionParsing.parse(builderWrapper);
+			PsiBuilder.Marker parse = parse(builderWrapper);
 			if(parse == null)
 			{
 				builderWrapper.error("Expression expected");
@@ -1251,7 +1253,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		{
 			if(expect(builder, EQ, "'=' expected"))
 			{
-				if(ExpressionParsing.parse(builder) == null)
+				if(parse(builder) == null)
 				{
 					builder.error("Expression expected");
 				}

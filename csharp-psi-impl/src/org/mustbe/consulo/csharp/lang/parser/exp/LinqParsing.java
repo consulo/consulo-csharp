@@ -35,7 +35,6 @@ public class LinqParsing extends SharedParsingHelpers
 	public static PsiBuilder.Marker parseLinqExpression(final CSharpBuilderWrapper builder)
 	{
 		builder.enableSoftKeywords(LINQ_KEYWORDS);
-		builder.disableLinqParsing();
 
 		try
 		{
@@ -69,7 +68,6 @@ public class LinqParsing extends SharedParsingHelpers
 		}
 		finally
 		{
-			builder.enableLinqParsing();
 			builder.disableSoftKeywords(LINQ_KEYWORDS);
 		}
 	}
@@ -88,7 +86,8 @@ public class LinqParsing extends SharedParsingHelpers
 			parseType(builder, BracketFailPolicy.RETURN_BEFORE, false);
 		}
 
-		if(builder.getTokenType() == IDENTIFIER)
+		IElementType tokenType = builder.getTokenType();
+		if(tokenType == IDENTIFIER)
 		{
 			builder.advanceLexer();
 		}
@@ -102,16 +101,20 @@ public class LinqParsing extends SharedParsingHelpers
 			}
 			else
 			{
-				builder.error("Identifier expected");
+				variableMarker.error("Identifier expected");
+				variableMarker = null;
 			}
 		}
-		variableMarker.done(LINQ_VARIABLE);
+		if(variableMarker != null)
+		{
+			variableMarker.done(LINQ_VARIABLE);
+		}
 
 		if(builder.getTokenType() == IN_KEYWORD)
 		{
 			builder.advanceLexer();
 
-			if(ExpressionParsing.parse(builder) == null)
+			if(ExpressionParsing.parseNoLinq(builder) == null)
 			{
 				builder.error("Expression expected");
 			}
@@ -206,7 +209,7 @@ public class LinqParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 
-			if(ExpressionParsing.parse(builder) == null)
+			if(ExpressionParsing.parseNoLinq(builder) == null)
 			{
 				builder.error("Expression expected");
 			}
@@ -220,7 +223,7 @@ public class LinqParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 
-			if(ExpressionParsing.parse(builder) == null)
+			if(ExpressionParsing.parseNoLinq(builder) == null)
 			{
 				builder.error("Expression expected");
 			}
@@ -234,7 +237,7 @@ public class LinqParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 
-			if(ExpressionParsing.parse(builder) == null)
+			if(ExpressionParsing.parseNoLinq(builder) == null)
 			{
 				builder.error("Expression expected");
 			}
@@ -267,7 +270,7 @@ public class LinqParsing extends SharedParsingHelpers
 
 		builder.advanceLexer();
 
-		if(ExpressionParsing.parse(builder) == null)
+		if(ExpressionParsing.parseNoLinq(builder) == null)
 		{
 			builder.error("Expression expected");
 		}
@@ -287,7 +290,7 @@ public class LinqParsing extends SharedParsingHelpers
 			builder.advanceLexer();
 			if(expect(builder, EQ, "'=' expected"))
 			{
-				if(ExpressionParsing.parse(builder) == null)
+				if(ExpressionParsing.parseNoLinq(builder) == null)
 				{
 					builder.error("Expression expected");
 				}
@@ -312,7 +315,7 @@ public class LinqParsing extends SharedParsingHelpers
 		while(!builder.eof())
 		{
 			PsiBuilder.Marker subMarker = builder.mark();
-			if(ExpressionParsing.parse(builder) == null)
+			if(ExpressionParsing.parseNoLinq(builder) == null)
 			{
 				subMarker.drop();
 				subMarker = null;
@@ -350,7 +353,7 @@ public class LinqParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 
-			if(ExpressionParsing.parse(builder) == null)
+			if(ExpressionParsing.parseNoLinq(builder) == null)
 			{
 				builder.error("Expression expected");
 			}
@@ -358,14 +361,14 @@ public class LinqParsing extends SharedParsingHelpers
 		else if(builder.getTokenType() == GROUP_KEYWORD)
 		{
 			builder.advanceLexer();
-			if(ExpressionParsing.parse(builder) == null)
+			if(ExpressionParsing.parseNoLinq(builder) == null)
 			{
 				builder.error("Expression expected");
 			}
 			if(builder.getTokenType() == BY_KEYWORD)
 			{
 				builder.advanceLexer();
-				if(ExpressionParsing.parse(builder) == null)
+				if(ExpressionParsing.parseNoLinq(builder) == null)
 				{
 					builder.error("Expression expected");
 				}
