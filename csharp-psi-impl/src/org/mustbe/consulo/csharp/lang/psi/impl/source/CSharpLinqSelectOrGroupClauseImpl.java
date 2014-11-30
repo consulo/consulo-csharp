@@ -19,7 +19,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.lang.ASTNode;
 
 /**
@@ -33,10 +35,23 @@ public class CSharpLinqSelectOrGroupClauseImpl extends CSharpElementImpl
 		super(node);
 	}
 
-	@Nullable
-	public DotNetExpression getExpression()
+	public boolean isGroup()
 	{
-		return findChildByClass(DotNetExpression.class);
+		return findChildByType(CSharpSoftTokens.GROUP_KEYWORD) != null;
+	}
+
+	@Nullable
+	public DotNetExpression getFirstExpression()
+	{
+		DotNetExpression[] expressions = findChildrenByClass(DotNetExpression.class);
+		return ArrayUtil2.safeGet(expressions, 0);
+	}
+
+	@Nullable
+	public DotNetExpression getSecondExpression()
+	{
+		DotNetExpression[] expressions = findChildrenByClass(DotNetExpression.class);
+		return ArrayUtil2.safeGet(expressions, 1);
 	}
 
 	@Override

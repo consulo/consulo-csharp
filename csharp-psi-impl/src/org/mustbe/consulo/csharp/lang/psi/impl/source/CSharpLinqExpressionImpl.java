@@ -96,18 +96,29 @@ public class CSharpLinqExpressionImpl extends CSharpElementImpl implements DotNe
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 
-		DotNetExpression expression = selectOrGroupClause.getExpression();
-		if(expression != null)
+		DotNetTypeRef innerTypeRef;
+		if(selectOrGroupClause.isGroup())
 		{
-			DotNetTypeRef typeRef = expression.toTypeRef(resolveFromParent);
-			if(typeRef == DotNetTypeRef.ERROR_TYPE)
-			{
-				return typeRef;
-			}
+			DotNetTypeRef[] arguments = new DotNetTypeRef[] {typeRefOrError(selectOrGroupClause.getSecondExpression()),
+					typeRefOrError(selectOrGroupClause.getFirstExpression())};
+			innerTypeRef = new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(DotNetTypes2.System.Linq.IGrouping$2), arguments);
+		}
+		else
+		{
+			innerTypeRef = typeRefOrError(selectOrGroupClause.getFirstExpression());
+		}
 
+		if(innerTypeRef != DotNetTypeRef.ERROR_TYPE)
+		{
 			CSharpTypeRefByQName enumerableTypeRef = new CSharpTypeRefByQName(DotNetTypes2.System.Collections.Generic.IEnumerable$1);
-			return new CSharpGenericWrapperTypeRef(enumerableTypeRef, new DotNetTypeRef[] {typeRef});
+			return new CSharpGenericWrapperTypeRef(enumerableTypeRef, new DotNetTypeRef[] {innerTypeRef});
 		}
 		return DotNetTypeRef.ERROR_TYPE;
+	}
+
+	@NotNull
+	private static DotNetTypeRef typeRefOrError(@Nullable DotNetExpression expression)
+	{
+		return expression == null ? DotNetTypeRef.ERROR_TYPE : expression.toTypeRef(true);
 	}
 }
