@@ -79,9 +79,14 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 		mySoftSet = TokenSet.andNot(mySoftSet, tokenSet);
 	}
 
-	public void enableSoftKeyword(@NotNull IElementType elementType)
+	public boolean enableSoftKeyword(@NotNull IElementType elementType)
 	{
+		if(mySoftSet.contains(elementType))
+		{
+			return false;
+		}
 		mySoftSet = TokenSet.orSet(mySoftSet, TokenSet.create(elementType));
+		return true;
 	}
 
 	public void disableSoftKeyword(@NotNull IElementType elementType)

@@ -114,7 +114,7 @@ public class LinqParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 
-			if(ExpressionParsing.parseNoLinq(builder) == null)
+			if(ExpressionParsing.parse(builder) == null)
 			{
 				builder.error("Expression expected");
 			}
@@ -209,7 +209,7 @@ public class LinqParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 
-			if(ExpressionParsing.parseNoLinq(builder) == null)
+			if(ExpressionParsing.parse(builder) == null)
 			{
 				builder.error("Expression expected");
 			}
@@ -223,7 +223,7 @@ public class LinqParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 
-			if(ExpressionParsing.parseNoLinq(builder) == null)
+			if(ExpressionParsing.parse(builder) == null)
 			{
 				builder.error("Expression expected");
 			}
@@ -237,7 +237,7 @@ public class LinqParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 
-			if(ExpressionParsing.parseNoLinq(builder) == null)
+			if(ExpressionParsing.parse(builder) == null)
 			{
 				builder.error("Expression expected");
 			}
@@ -267,7 +267,7 @@ public class LinqParsing extends SharedParsingHelpers
 
 		builder.advanceLexer();
 
-		if(ExpressionParsing.parseNoLinq(builder) == null)
+		if(ExpressionParsing.parse(builder) == null)
 		{
 			builder.error("Expression expected");
 		}
@@ -287,7 +287,7 @@ public class LinqParsing extends SharedParsingHelpers
 			builder.advanceLexer();
 			if(expect(builder, EQ, "'=' expected"))
 			{
-				if(ExpressionParsing.parseNoLinq(builder) == null)
+				if(ExpressionParsing.parse(builder) == null)
 				{
 					builder.error("Expression expected");
 				}
@@ -312,7 +312,7 @@ public class LinqParsing extends SharedParsingHelpers
 		while(!builder.eof())
 		{
 			PsiBuilder.Marker subMarker = builder.mark();
-			if(ExpressionParsing.parseNoLinq(builder) == null)
+			if(ExpressionParsing.parse(builder) == null)
 			{
 				subMarker.drop();
 				subMarker = null;
@@ -350,7 +350,7 @@ public class LinqParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 
-			if(ExpressionParsing.parseNoLinq(builder) == null)
+			if(ExpressionParsing.parse(builder) == null)
 			{
 				builder.error("Expression expected");
 			}
@@ -358,14 +358,14 @@ public class LinqParsing extends SharedParsingHelpers
 		else if(builder.getTokenType() == GROUP_KEYWORD)
 		{
 			builder.advanceLexer();
-			if(ExpressionParsing.parseNoLinq(builder) == null)
+			if(ExpressionParsing.parse(builder) == null)
 			{
 				builder.error("Expression expected");
 			}
 			if(builder.getTokenType() == BY_KEYWORD)
 			{
 				builder.advanceLexer();
-				if(ExpressionParsing.parseNoLinq(builder) == null)
+				if(ExpressionParsing.parse(builder) == null)
 				{
 					builder.error("Expression expected");
 				}
