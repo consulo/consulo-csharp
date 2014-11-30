@@ -541,4 +541,9 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	{
 		visitElement(ordering);
 	}
+
+	public void visitLinqLetClause(CSharpLinqLetClauseImpl clause)
+	{
+		visitElement(clause);
+	}
 }

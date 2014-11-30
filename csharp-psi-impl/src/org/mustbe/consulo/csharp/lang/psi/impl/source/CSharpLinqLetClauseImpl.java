@@ -23,49 +23,42 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
- * @since 29.11.14
+ * @since 30.11.14
  */
-public class CSharpLinqQueryBodyImpl extends CSharpElementImpl
+public class CSharpLinqLetClauseImpl extends CSharpElementImpl
 {
-	public CSharpLinqQueryBodyImpl(@NotNull ASTNode node)
+	public CSharpLinqLetClauseImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Nullable
-	public CSharpLinqSelectOrGroupClauseImpl getSelectOrGroupClause()
+	public CSharpLinqVariableImpl getVariable()
 	{
-		return findChildByClass(CSharpLinqSelectOrGroupClauseImpl.class);
+		return findChildByClass(CSharpLinqVariableImpl.class);
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
-			@NotNull ResolveState state,
-			PsiElement lastParent,
+	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent,
 			@NotNull PsiElement place)
 	{
-		if(lastParent == null || !PsiTreeUtil.isAncestor(this, lastParent, false))
+		CSharpLinqVariableImpl variable = getVariable();
+		if(variable != null)
 		{
-			return true;
-		}
-
-		for(PsiElement psiElement : getChildren())
-		{
-			if(!psiElement.processDeclarations(processor, state, lastParent, place))
+			if(!processor.execute(variable, state))
 			{
 				return false;
 			}
 		}
-		return super.processDeclarations(processor, state, lastParent, place);
+		return true;
 	}
 
 	@Override
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		visitor.visitLinqQueryBody(this);
+		visitor.visitLinqLetClause(this);
 	}
 }

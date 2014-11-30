@@ -172,6 +172,8 @@ public interface CSharpElements
 
 	IElementType LINQ_ORDERBY_CLAUSE = new ElementTypeAsPsiFactory("LINQ_ORDERBY_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqOrderByClauseImpl.class);
 
+	IElementType LINQ_LET_CLAUSE = new ElementTypeAsPsiFactory("LINQ_LET_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqLetClauseImpl.class);
+
 	IElementType LINQ_ORDERBY_ORDERING = new ElementTypeAsPsiFactory("LINQ_ORDERBY_ORDERING", CSharpLanguage.INSTANCE,
 			CSharpLinqOrderByOrderingImpl.class);
 

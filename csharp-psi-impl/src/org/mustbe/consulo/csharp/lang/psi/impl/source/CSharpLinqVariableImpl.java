@@ -65,23 +65,32 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 		{
 			return type.toTypeRef();
 		}
-		return resolve ? resolveFromParent() : DotNetTypeRef.AUTO_TYPE;
+		return resolve ? resolveTypeRef() : DotNetTypeRef.AUTO_TYPE;
 	}
 
 	@NotNull
-	private DotNetTypeRef resolveFromParent()
+	private DotNetTypeRef resolveTypeRef()
 	{
-		CSharpLinqFromClauseImpl parent = (CSharpLinqFromClauseImpl) getParent();
+		PsiElement parent = getParent();
 
-		DotNetExpression inExpression = parent.getInExpression();
-		if(inExpression == null)
+		if(parent instanceof CSharpLinqFromClauseImpl)
 		{
-			return DotNetTypeRef.ERROR_TYPE;
+			DotNetExpression inExpression = ((CSharpLinqFromClauseImpl) parent).getInExpression();
+			if(inExpression == null)
+			{
+				return DotNetTypeRef.ERROR_TYPE;
+			}
+
+			DotNetTypeRef typeRef = inExpression.toTypeRef(true);
+
+			return CSharpResolveUtil.resolveIterableType(this, typeRef);
 		}
-
-		DotNetTypeRef typeRef = inExpression.toTypeRef(true);
-
-		return CSharpResolveUtil.resolveIterableType(this, typeRef);
+		else if(parent instanceof CSharpLinqLetClauseImpl)
+		{
+			DotNetExpression initializer = getInitializer();
+			return initializer != null ? initializer.toTypeRef(false) : DotNetTypeRef.AUTO_TYPE;
+		}
+		return DotNetTypeRef.AUTO_TYPE;
 	}
 
 	@Nullable
@@ -95,7 +104,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 	@Override
 	public DotNetExpression getInitializer()
 	{
-		return null;
+		return findChildByClass(DotNetExpression.class);
 	}
 
 	@Override

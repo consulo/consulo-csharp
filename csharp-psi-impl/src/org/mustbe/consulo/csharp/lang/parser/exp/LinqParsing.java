@@ -163,6 +163,10 @@ public class LinqParsing extends SharedParsingHelpers
 		{
 			return parseOrderByClause(builder);
 		}
+		else if(builder.getTokenType() == LET_KEYWORD)
+		{
+			return parseLetClause(builder);
+		}
 		return null;
 	}
 
@@ -177,6 +181,34 @@ public class LinqParsing extends SharedParsingHelpers
 			builder.error("Expression expected");
 		}
 		mark.done(LINQ_WHERE_CLAUSE);
+		return mark;
+	}
+
+	private static PsiBuilder.Marker parseLetClause(CSharpBuilderWrapper builder)
+	{
+		PsiBuilder.Marker mark = builder.mark();
+
+		builder.advanceLexer();
+
+		if(builder.getTokenType() == IDENTIFIER)
+		{
+			PsiBuilder.Marker varMarker = builder.mark();
+			builder.advanceLexer();
+			if(expect(builder, EQ, "'=' expected"))
+			{
+				if(ExpressionParsing.parse(builder) == null)
+				{
+					builder.error("Expression expected");
+				}
+			}
+			varMarker.done(LINQ_VARIABLE);
+		}
+		else
+		{
+			builder.error("Identifier expected");
+		}
+
+		mark.done(LINQ_LET_CLAUSE);
 		return mark;
 	}
 

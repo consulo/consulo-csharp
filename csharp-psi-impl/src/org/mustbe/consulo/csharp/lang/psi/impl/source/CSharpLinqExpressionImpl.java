@@ -70,10 +70,12 @@ public class CSharpLinqExpressionImpl extends CSharpElementImpl implements DotNe
 			return true;
 		}
 
-		CSharpLinqFromClauseImpl fromClause = getFromClause();
-		if(!fromClause.processDeclarations(processor, state, lastParent, place))
+		for(PsiElement psiElement : getChildren())
 		{
-			return false;
+			if(!psiElement.processDeclarations(processor, state, lastParent, place))
+			{
+				return false;
+			}
 		}
 		return super.processDeclarations(processor, state, lastParent, place);
 	}
