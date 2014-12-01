@@ -20,11 +20,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpYieldStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -126,7 +125,7 @@ public enum CSharpImplicitReturnModel
 		typeInSuper = CSharpTypeUtil.findTypeInSuper(expectedTypeRef, myVmQName, element);
 		if(typeInSuper != null)
 		{
-			return new DotNetTypeRefByQName(myNoGenericTypeVmQName, CSharpTransform.INSTANCE, false);
+			return new CSharpTypeRefByQName(myNoGenericTypeVmQName);
 		}
 		return null;
 	}
