@@ -20,6 +20,7 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -30,9 +31,14 @@ import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.codeInsight.navigation.NavigationUtil;
 import com.intellij.icons.AllIcons;
+import com.intellij.ide.util.PsiElementListCellRenderer;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.ui.popup.JBPopup;
+import com.intellij.openapi.util.Iconable;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.presentation.java.SymbolPresentationUtil;
+import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.Function;
@@ -44,6 +50,38 @@ import lombok.val;
  */
 public class PartialTypeCollector implements LineMarkerCollector
 {
+	private static class OurRender extends PsiElementListCellRenderer<PsiElement>
+	{
+		@Override
+		public String getElementText(PsiElement element)
+		{
+			VirtualFile virtualFile = PsiUtilCore.getVirtualFile(element);
+			return virtualFile == null ? SymbolPresentationUtil.getSymbolPresentableText(element) : virtualFile.getName();
+		}
+
+		@Nullable
+		@Override
+		protected String getContainerText(PsiElement element, String name)
+		{
+			VirtualFile virtualFile = PsiUtilCore.getVirtualFile(element);
+			if(virtualFile == null)
+			{
+				return SymbolPresentationUtil.getSymbolContainerText(element);
+			}
+			else
+			{
+				VirtualFile parent = virtualFile.getParent();
+				return parent == null ? null : parent.getPath();
+			}
+		}
+
+		@Override
+		protected int getIconFlags()
+		{
+			return Iconable.ICON_FLAG_VISIBILITY;
+		}
+	}
+
 	@Override
 	public void collect(PsiElement psiElement, @NotNull Collection<LineMarkerInfo> lineMarkerInfos)
 	{
@@ -83,7 +121,7 @@ public class PartialTypeCollector implements LineMarkerCollector
 
 						DotNetTypeDeclaration[] newArray = ArrayUtil.remove(types, typeDeclaration);
 
-						JBPopup popup = NavigationUtil.getPsiElementPopup(newArray, "Open types (" + newArray.length + " items)");
+						JBPopup popup = NavigationUtil.getPsiElementPopup(newArray, new OurRender(), "Open types (" + newArray.length + " items)");
 						popup.show(new RelativePoint(mouseEvent));
 					}
 				}, GutterIconRenderer.Alignment.LEFT
