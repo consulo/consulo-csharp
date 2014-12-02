@@ -58,12 +58,12 @@ public class CSharpLightParameter extends CSharpLightVariable<DotNetParameter> i
 	@Override
 	public DotNetLikeMethodDeclaration getMethod()
 	{
-		return null;
+		return myOriginal.getMethod();
 	}
 
 	@Override
 	public int getIndex()
 	{
-		return 0;
+		return myOriginal.getIndex();
 	}
 }

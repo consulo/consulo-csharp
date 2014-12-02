@@ -48,6 +48,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.KeyWithDefaultValue;
@@ -472,5 +473,16 @@ public class CSharpResolveUtil
 			}
 		}
 		return null;
+	}
+
+	@Nullable
+	public static ResolveResult findValidOrFirstMaybeResult(ResolveResult[] resolveResults)
+	{
+		ResolveResult firstValidResult = findFirstValidResult(resolveResults);
+		if(firstValidResult != null)
+		{
+			return firstValidResult;
+		}
+		return ArrayUtil2.safeGet(resolveResults, 0);
 	}
 }

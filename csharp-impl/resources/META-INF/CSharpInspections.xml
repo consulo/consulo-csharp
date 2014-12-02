@@ -17,12 +17,15 @@
 <idea-plugin>
 	<extensions defaultExtensionNs="com.intellij">
 		<localInspection implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.obsolete.ObsoleteInspection"
-						 displayName="Obsolete warnings" groupName="C#" enabledByDefault="true" />
+						 displayName="Obsolete warnings" groupName="C#" enabledByDefault="true"/>
 		<localInspection implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryCast.UnnecessaryCastInspection"
-						 displayName="Unnecessary Cast" groupName="C#" enabledByDefault="true" />
+						 displayName="Unnecessary Cast" groupName="C#" enabledByDefault="true"/>
 		<localInspection implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryType.UnnecessaryTypeInspection"
-						 displayName="Unnecessary Type" groupName="C#" enabledByDefault="true" />
+						 displayName="Unnecessary Type" groupName="C#" enabledByDefault="true"/>
+		<localInspection
+				implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryNamedArgument.UnnecessaryNamedArgumentInspection"
+				displayName="Unnecessary Named Argument" groupName="C#" enabledByDefault="true"/>
 		<localInspection implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.UnusedSymbolLocalInspection"
-						 displayName="Unused Symbol" groupName="C#" enabledByDefault="true" />
+						 displayName="Unused Symbol" groupName="C#" enabledByDefault="true"/>
 	</extensions>
 </idea-plugin>
