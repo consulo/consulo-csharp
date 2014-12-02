@@ -70,7 +70,7 @@ public class CSharpConfigurationPanel extends JPanel
 
 		for(Module module : ModuleManager.getInstance(ext.getProject()).getModules())
 		{
-			// dont add self e
+			// dont add self module
 			if(module == ext.getModule())
 			{
 				continue;
