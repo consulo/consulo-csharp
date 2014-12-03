@@ -368,10 +368,14 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				}
 				break;
 			case LABEL:
+				scopeProcessor = new SimpleNamedScopeProcessor(completion, ExecuteTarget.LABEL);
+
 				DotNetQualifiedElement parentOfType = PsiTreeUtil.getParentOfType(element, DotNetQualifiedElement.class);
 				assert parentOfType != null;
-				scopeProcessor = new SimpleNamedScopeProcessor(ExecuteTarget.LABEL);
-				CSharpResolveUtil.treeWalkUp(scopeProcessor, element, element, parentOfType);
+
+				state = ResolveState.initial();
+				state = state.put(CSharpResolveUtil.SELECTOR, selector);
+				CSharpResolveUtil.walkForLabel(scopeProcessor, parentOfType, state);
 				return scopeProcessor.toResolveResults();
 			case QUALIFIED_NAMESPACE:
 			case SOFT_QUALIFIED_NAMESPACE:

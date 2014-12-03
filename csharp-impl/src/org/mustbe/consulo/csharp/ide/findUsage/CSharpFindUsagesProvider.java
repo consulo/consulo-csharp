@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.lexer.CSharpLexer;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpEnumConstantDeclarationImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -130,6 +131,10 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		else if(element instanceof CSharpEnumConstantDeclarationImpl)
 		{
 			return "enum constant";
+		}
+		else if(element instanceof CSharpLabeledStatementImpl)
+		{
+			return "label";
 		}
 		return "getType " + element.getNode().getElementType();
 	}

@@ -407,6 +407,27 @@ public class CSharpResolveUtil
 		return true;
 	}
 
+	public static boolean walkForLabel(@NotNull final PsiScopeProcessor processor, @NotNull final PsiElement entrance, @NotNull ResolveState state)
+	{
+		PsiElement[] children = entrance.getChildren();
+		for(PsiElement child : children)
+		{
+			if(ExecuteTargetUtil.isMyElement(processor, child))
+			{
+				if(!processor.execute(child, state))
+				{
+					return false;
+				}
+			}
+
+			if(!walkForLabel(processor, child, state))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
 	@NotNull
 	public static DotNetTypeRef resolveIterableType(@NotNull CSharpForeachStatementImpl foreachStatement)
 	{
