@@ -616,4 +616,17 @@ public class CSharpTypeUtil
 		}
 		return false;
 	}
+
+	@Nullable
+	public static Pair<String, DotNetTypeDeclaration> resolveTypeElement(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
+	{
+		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+
+		PsiElement typeResolveResultElement = typeResolveResult.getElement();
+		if(typeResolveResultElement instanceof DotNetTypeDeclaration)
+		{
+			return Pair.create(((DotNetTypeDeclaration) typeResolveResultElement).getVmQName(), (DotNetTypeDeclaration)typeResolveResultElement);
+		}
+		return null;
+	}
 }
