@@ -20,6 +20,8 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.lang.ASTNode;
@@ -38,6 +40,12 @@ public class CSharpLabeledStatementImpl extends CSharpElementImpl implements Dot
 	public CSharpLabeledStatementImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	@NotNull
+	public DotNetStatement[] getStatements()
+	{
+		return findChildrenByClass(DotNetStatement.class);
 	}
 
 	@Override
@@ -70,6 +78,21 @@ public class CSharpLabeledStatementImpl extends CSharpElementImpl implements Dot
 	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement
 			place)
 	{
-		return processor.execute(this, state);
+		if(ExecuteTargetUtil.canProcess(processor, ExecuteTarget.LABEL))
+		{
+			if(!processor.execute(this, state))
+			{
+				return false;
+			}
+		}
+
+		for(DotNetStatement statement : getStatements())
+		{
+			if(!statement.processDeclarations(processor, state, lastParent, place))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 }

@@ -380,9 +380,17 @@ public class StatementParsing extends SharedParsingHelpers
 	{
 		builder.advanceLexer();
 		builder.advanceLexer();
-		if(parseStatement(builder) == null)
+
+		boolean empty = true;
+
+		while(parseStatement(builder) != null)
 		{
-			builder.error("Statement expected");
+			empty = false;
+		}
+
+		if(empty)
+		{
+			builder.error("Expected statement");
 		}
 		marker.done(LABELED_STATEMENT);
 	}
