@@ -36,8 +36,8 @@ public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSh
 	@Override
 	public DotNetTypeRef doMirror(@NotNull DotNetTypeRef another, PsiElement scope)
 	{
-		int topRank = CSharpTypeUtil.getNumberRank(getDelegate());
-		int targetRank = CSharpTypeUtil.getNumberRank(another);
+		int topRank = CSharpTypeUtil.getNumberRank(getDelegate(), scope);
+		int targetRank = CSharpTypeUtil.getNumberRank(another, scope);
 		if(targetRank != -1 && targetRank < topRank)
 		{
 			return another;

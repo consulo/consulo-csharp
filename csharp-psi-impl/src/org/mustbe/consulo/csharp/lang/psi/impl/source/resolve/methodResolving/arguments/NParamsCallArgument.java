@@ -53,8 +53,8 @@ public class NParamsCallArgument extends NCallArgument
 			@Override
 			public int compare(DotNetTypeRef o1, DotNetTypeRef o2)
 			{
-				int rank1 = CSharpTypeUtil.getNumberRank(o1);
-				int rank2 = CSharpTypeUtil.getNumberRank(o2);
+				int rank1 = CSharpTypeUtil.getNumberRank(o1, myCallArguments.get(0));
+				int rank2 = CSharpTypeUtil.getNumberRank(o2, myCallArguments.get(0));
 				if(rank1 == -1 || rank2 == -1)
 				{
 					return 0;

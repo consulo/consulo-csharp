@@ -72,8 +72,8 @@ public class CSharpArrayInitializationExpressionImpl extends CSharpElementImpl i
 			@Override
 			public int compare(DotNetTypeRef o1, DotNetTypeRef o2)
 			{
-				int rank1 = CSharpTypeUtil.getNumberRank(o1);
-				int rank2 = CSharpTypeUtil.getNumberRank(o2);
+				int rank1 = CSharpTypeUtil.getNumberRank(o1, CSharpArrayInitializationExpressionImpl.this);
+				int rank2 = CSharpTypeUtil.getNumberRank(o2, CSharpArrayInitializationExpressionImpl.this);
 				if(rank1 == -1 || rank2 == -1)
 				{
 					return 0;

@@ -34,6 +34,7 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -132,9 +133,17 @@ public class CSharpTypeUtil
 		return true;
 	}
 
-	public static int getNumberRank(DotNetTypeRef typeRef)
+	public static int getNumberRank(DotNetTypeRef typeRef, PsiElement scope)
 	{
-		return ArrayUtil.find(ourNumberRanks, typeRef.getQualifiedText());
+		PsiElement element = typeRef.resolve(scope).getElement();
+		if(element instanceof DotNetQualifiedElement)
+		{
+			return ArrayUtil.find(ourNumberRanks, ((DotNetQualifiedElement) element).getPresentableQName());
+		}
+		else
+		{
+			return -1;
+		}
 	}
 
 	@Nullable
@@ -256,8 +265,8 @@ public class CSharpTypeUtil
 			target = ((CSharpChameleonTypeRef) target).doMirror(top, scope);
 		}
 
-		int topRank = ArrayUtil.find(ourNumberRanks, top.getQualifiedText());
-		int targetRank = ArrayUtil.find(ourNumberRanks, target.getQualifiedText());
+		int topRank = getNumberRank(top, scope);
+		int targetRank = getNumberRank(target, scope);
 
 		if(topRank != -1 && targetRank != -1)
 		{
