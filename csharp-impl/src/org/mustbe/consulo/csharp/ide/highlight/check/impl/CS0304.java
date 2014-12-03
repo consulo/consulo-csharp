@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
@@ -29,8 +30,8 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -38,6 +39,8 @@ import lombok.val;
  */
 public class CS0304 extends CompilerCheck<CSharpNewExpression>
 {
+	private static final TokenSet ourGenericConstraintSet = TokenSet.create(CSharpTokens.NEW_KEYWORD, CSharpTokens.STRUCT_KEYWORD);
+
 	@Override
 	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpNewExpression element)
 	{
@@ -50,23 +53,22 @@ public class CS0304 extends CompilerCheck<CSharpNewExpression>
 				return null;
 			}
 
-			boolean findNew = false;
-
-			val constraint = CSharpGenericConstraintUtil.forParameter((CSharpGenericConstraintOwner) parent, (DotNetGenericParameter) resolve);
-			if(constraint != null)
+			boolean findNewOrStruct = false;
+			CSharpGenericConstraint genericConstraint = CSharpGenericConstraintUtil.findGenericConstraint((DotNetGenericParameter) resolve);
+			if(genericConstraint != null)
 			{
-				for(CSharpGenericConstraintValue value : constraint.getGenericConstraintValues())
+				for(CSharpGenericConstraintValue constraintValue : genericConstraint.getGenericConstraintValues())
 				{
-					if(value instanceof CSharpGenericConstraintKeywordValue && ((CSharpGenericConstraintKeywordValue) value).getKeywordElementType()
-							== CSharpTokens.NEW_KEYWORD)
+					if(constraintValue instanceof CSharpGenericConstraintKeywordValue && ourGenericConstraintSet.contains((
+							(CSharpGenericConstraintKeywordValue) constraintValue).getKeywordElementType()))
 					{
-						findNew = true;
+						findNewOrStruct = true;
 						break;
 					}
 				}
 			}
 
-			if(!findNew)
+			if(!findNewOrStruct)
 			{
 				DotNetType newType = element.getNewType();
 				assert newType != null;

@@ -1,12 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalMemberProvider;
@@ -53,18 +48,8 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 		}
 		else if(element instanceof DotNetGenericParameter)
 		{
-			CSharpGenericConstraint genericConstraint = CSharpGenericConstraintUtil.findGenericConstraint((DotNetGenericParameter) element);
-			if(genericConstraint != null)
-			{
-				for(CSharpGenericConstraintValue constraintValue : genericConstraint.getGenericConstraintValues())
-				{
-					if(constraintValue instanceof CSharpGenericConstraintKeywordValue && ((CSharpGenericConstraintKeywordValue) constraintValue)
-							.getKeywordElementType() == CSharpTokens.NEW_KEYWORD)
-					{
-						return buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC);
-					}
-				}
-			}
+			// we need always create contructor, it ill check in CS0304
+			return buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC);
 		}
 		return DotNetElement.EMPTY_ARRAY;
 	}
@@ -82,6 +67,6 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 		builder.setNavigationElement(element);
 		builder.withParent(element);
 		builder.withName(name);
-		return new DotNetElement[] {builder};
+		return new DotNetElement[]{builder};
 	}
 }
