@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -34,7 +35,12 @@ public class CS0409 extends CompilerCheck<CSharpGenericConstraint>
 	@Override
 	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpGenericConstraint element)
 	{
-		CSharpGenericConstraintList parent = (CSharpGenericConstraintList) element.getParent();
+		PsiElement maybeGenericConstraintList = element.getParent();
+		if(!(maybeGenericConstraintList instanceof CSharpGenericConstraintList))
+		{
+			return null;
+		}
+		CSharpGenericConstraintList parent = (CSharpGenericConstraintList) maybeGenericConstraintList;
 
 		DotNetGenericParameter resolve = element.resolve();
 		if(resolve == null)
