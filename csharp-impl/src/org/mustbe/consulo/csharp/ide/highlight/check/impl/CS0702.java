@@ -39,7 +39,7 @@ public class CS0702 extends CompilerCheck<CSharpGenericConstraintTypeValue>
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpGenericConstraintTypeValue element)
 	{
 		DotNetTypeRef typeRef = element.toTypeRef();
-		Pair<String,DotNetTypeDeclaration> pair = CSharpTypeUtil.resolveTypeElement(typeRef, element);
+		Pair<String, DotNetTypeDeclaration> pair = CSharpTypeUtil.resolveTypeElement(typeRef, element);
 		if(pair == null)
 		{
 			return null;
