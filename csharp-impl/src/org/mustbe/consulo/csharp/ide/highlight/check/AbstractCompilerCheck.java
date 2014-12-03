@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.ide.highlight.check;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.DeprecationInfo;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.psi.PsiElement;
 
@@ -24,6 +25,8 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 11.03.14
  */
+@Deprecated
+@DeprecationInfo(value = "Migrate to CompilerCheck", until = "2.0")
 public abstract class AbstractCompilerCheck<T extends PsiElement> extends CompilerCheck<T>
 {
 	protected final String myId;
