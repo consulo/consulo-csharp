@@ -71,7 +71,7 @@ public class CS0702 extends CompilerCheck<CSharpGenericConstraintTypeValue>
 		@Override
 		public String getText()
 		{
-			return "Replace '" + myKeywordForReplace + "' constraint";
+			return "Replace by '" + myKeywordForReplace + "' constraint";
 		}
 
 		@Override
