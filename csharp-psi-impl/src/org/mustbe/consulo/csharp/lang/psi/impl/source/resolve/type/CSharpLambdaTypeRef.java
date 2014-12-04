@@ -38,6 +38,7 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 	private final CSharpMethodDeclaration myTarget;
 	private final CSharpSimpleParameterInfo[] myParameterInfos;
 	private final DotNetTypeRef myReturnType;
+	private final boolean myInheritParameters;
 
 	public CSharpLambdaTypeRef(@NotNull CSharpMethodDeclaration method)
 	{
@@ -46,9 +47,16 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 
 	public CSharpLambdaTypeRef(@Nullable CSharpMethodDeclaration target, @NotNull CSharpSimpleParameterInfo[] parameterInfos, @NotNull DotNetTypeRef returnType)
 	{
+		this(target, parameterInfos, returnType, false);
+	}
+
+	public CSharpLambdaTypeRef(@Nullable CSharpMethodDeclaration target, @NotNull CSharpSimpleParameterInfo[] parameterInfos,
+			@NotNull DotNetTypeRef returnType, boolean inheritParameters)
+	{
 		myTarget = target;
 		myParameterInfos = parameterInfos;
 		myReturnType = returnType;
+		myInheritParameters = inheritParameters;
 	}
 
 	@NotNull
@@ -174,6 +182,12 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 			public CSharpSimpleParameterInfo[] getParameterInfos()
 			{
 				return myParameterInfos;
+			}
+
+			@Override
+			public boolean isInheritParameters()
+			{
+				return myInheritParameters;
 			}
 
 			@NotNull

@@ -300,23 +300,26 @@ public class CSharpTypeUtil
 		DotNetTypeResolveResult targetTypeResolveResult = target.resolve(scope);
 		if(topTypeResolveResult instanceof CSharpLambdaResolveResult && targetTypeResolveResult instanceof CSharpLambdaResolveResult)
 		{
-			DotNetTypeRef[] targetParameters = ((CSharpLambdaResolveResult) targetTypeResolveResult).getParameterTypeRefs();
-			DotNetTypeRef[] topParameters = ((CSharpLambdaResolveResult) topTypeResolveResult).getParameterTypeRefs();
-			if(topParameters.length != targetParameters.length)
+			if(!((CSharpLambdaResolveResult) targetTypeResolveResult).isInheritParameters())
 			{
-				return fail();
-			}
-			for(int i = 0; i < targetParameters.length; i++)
-			{
-				DotNetTypeRef targetParameter = targetParameters[i];
-				DotNetTypeRef topParameter = topParameters[i];
-				if(targetParameter == DotNetTypeRef.AUTO_TYPE)
-				{
-					continue;
-				}
-				if(!isInheritable(topParameter, targetParameter, scope, explicitOrImplicit).isSuccess())
+				DotNetTypeRef[] targetParameters = ((CSharpLambdaResolveResult) targetTypeResolveResult).getParameterTypeRefs();
+				DotNetTypeRef[] topParameters = ((CSharpLambdaResolveResult) topTypeResolveResult).getParameterTypeRefs();
+				if(topParameters.length != targetParameters.length)
 				{
 					return fail();
+				}
+				for(int i = 0; i < targetParameters.length; i++)
+				{
+					DotNetTypeRef targetParameter = targetParameters[i];
+					DotNetTypeRef topParameter = topParameters[i];
+					if(targetParameter == DotNetTypeRef.AUTO_TYPE)
+					{
+						continue;
+					}
+					if(!isInheritable(topParameter, targetParameter, scope, explicitOrImplicit).isSuccess())
+					{
+						return fail();
+					}
 				}
 			}
 			DotNetTypeRef targetReturnType = ((CSharpLambdaResolveResult) targetTypeResolveResult).getReturnTypeRef();

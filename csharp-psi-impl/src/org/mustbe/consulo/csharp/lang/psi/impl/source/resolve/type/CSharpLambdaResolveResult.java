@@ -13,6 +13,8 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
  */
 public interface CSharpLambdaResolveResult extends DotNetTypeResolveResult, CSharpSimpleLikeMethod
 {
+	boolean isInheritParameters();
+
 	@NotNull
 	DotNetTypeRef[] getParameterTypeRefs();
 

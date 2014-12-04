@@ -102,7 +102,7 @@ public class CSharpAnonymMethodExpressionImpl extends CSharpElementImpl implemen
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
-		return new CSharpLambdaTypeRef(null, getParameterInfos(), DotNetTypeRef.AUTO_TYPE);
+		return new CSharpLambdaTypeRef(null, getParameterInfos(), DotNetTypeRef.AUTO_TYPE, getParameterList() == null);
 	}
 
 	@NotNull

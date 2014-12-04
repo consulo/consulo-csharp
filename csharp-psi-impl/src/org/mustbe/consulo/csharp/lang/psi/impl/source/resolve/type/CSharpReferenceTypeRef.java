@@ -103,6 +103,12 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 			return GenericUnwrapTool.exchangeTypeRef(myElement.getReturnTypeRef(), getGenericExtractor(), myScope);
 		}
 
+		@Override
+		public boolean isInheritParameters()
+		{
+			return false;
+		}
+
 		@NotNull
 		@Override
 		@LazyInstance
