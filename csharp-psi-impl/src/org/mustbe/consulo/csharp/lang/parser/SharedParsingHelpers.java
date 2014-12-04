@@ -43,8 +43,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 	public static final int VAR_SUPPORT = 1 << 0;
 	public static final int STUB_SUPPORT = 1 << 1;
 	public static final int LT_GT_HARD_REQUIRE = 1 << 2;
-	public static final int BRACKET_DROP = 1 << 3;
-	public static final int BRACKET_RETURN_BEFORE = 1 << 4;
+	public static final int BRACKET_RETURN_BEFORE = 1 << 3;
 
 	public static class TypeInfo
 	{
@@ -182,12 +181,6 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 					newMarker.drop();
 					typeInfo.marker = marker;
 					return typeInfo;
-				}
-				else if(BitUtil.isSet(flags, BRACKET_DROP))
-				{
-					newMarker.drop();
-					marker.drop();
-					return null;
 				}
 				else
 				{
