@@ -42,6 +42,11 @@ import com.intellij.util.Processor;
  */
 public class CSharpTypeDeclarationImplUtil
 {
+	public static boolean isEquivalentTo(@NotNull DotNetTypeDeclaration thisType, @NotNull PsiElement another)
+	{
+		return another instanceof DotNetTypeDeclaration && Comparing.equal(thisType.getVmQName(), ((DotNetTypeDeclaration) another).getVmQName());
+	}
+
 	public static boolean hasExtensions(@NotNull DotNetTypeDeclaration typeDeclaration)
 	{
 		for(DotNetNamedElement qualifiedElement : typeDeclaration.getMembers())
@@ -77,7 +82,8 @@ public class CSharpTypeDeclarationImplUtil
 	}
 
 	@Nullable
-	public static Pair<DotNetTypeDeclaration, DotNetGenericExtractor> resolveBaseType(@NotNull DotNetTypeDeclaration typeDeclaration, @NotNull PsiElement scope)
+	public static Pair<DotNetTypeDeclaration, DotNetGenericExtractor> resolveBaseType(@NotNull DotNetTypeDeclaration typeDeclaration,
+			@NotNull PsiElement scope)
 	{
 		DotNetTypeRef[] anExtends = typeDeclaration.getExtendTypeRefs();
 		if(anExtends.length != 0)

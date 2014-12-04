@@ -39,7 +39,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclarationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
@@ -192,14 +191,7 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 	@Override
 	public boolean isEquivalentTo(PsiElement another)
 	{
-		if(another instanceof DotNetTypeDeclaration)
-		{
-			return Comparing.equal(getVmQName(), ((DotNetTypeDeclaration) another).getVmQName());
-		}
-		else
-		{
-			return false;
-		}
+		return CSharpTypeDeclarationImplUtil.isEquivalentTo(this, another);
 	}
 
 	@Override
