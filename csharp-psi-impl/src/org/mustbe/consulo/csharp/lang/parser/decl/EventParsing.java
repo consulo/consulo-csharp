@@ -29,7 +29,7 @@ public class EventParsing extends MemberWithBodyParsing
 {
 	public static void parse(CSharpBuilderWrapper builder, PsiBuilder.Marker marker)
 	{
-		if(parseType(builder, BracketFailPolicy.NOTHING, false) == null)
+		if(parseType(builder, BracketFailPolicy.NOTHING, NONE) == null)
 		{
 			builder.error("Type expected");
 		}

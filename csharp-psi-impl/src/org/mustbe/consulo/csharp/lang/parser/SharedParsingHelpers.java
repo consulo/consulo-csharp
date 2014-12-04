@@ -29,6 +29,7 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import com.intellij.util.BitUtil;
 import com.intellij.util.NotNullFunction;
 import lombok.val;
 
@@ -38,6 +39,11 @@ import lombok.val;
  */
 public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSharpElements
 {
+	public static final int NONE = 0;
+	public static final int VAR_SUPPORT = 1 << 0;
+	public static final int STUB_SUPPORT = 1 << 1;
+	public static final int LT_GT_HARD_REQUIRE = 1 << 2;
+
 	public static enum BracketFailPolicy
 	{
 		NOTHING,
@@ -52,23 +58,17 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		public PsiBuilder.Marker marker;
 	}
 
-	protected static boolean parseTypeList(@NotNull CSharpBuilderWrapper builder, boolean varSupport)
+	protected static boolean parseTypeList(@NotNull CSharpBuilderWrapper builder, int flags)
 	{
-		return parseTypeList(builder, varSupport, TokenSet.EMPTY);
+		return parseTypeList(builder, flags, TokenSet.EMPTY);
 	}
 
-	protected static boolean parseTypeList(@NotNull CSharpBuilderWrapper builder, boolean varSupport, TokenSet nameStopperSet)
-	{
-		return parseTypeList(builder, varSupport, false, nameStopperSet);
-	}
-
-	protected static boolean parseTypeList(@NotNull CSharpBuilderWrapper builder, boolean varSupport, boolean hardRequiredGt,
-			@NotNull TokenSet nameStopperSet)
+	protected static boolean parseTypeList(@NotNull CSharpBuilderWrapper builder, int flags, @NotNull TokenSet nameStopperSet)
 	{
 		boolean empty = true;
 		while(!builder.eof())
 		{
-			val marker = parseType(builder, BracketFailPolicy.NOTHING, varSupport, hardRequiredGt, nameStopperSet);
+			val marker = parseType(builder, BracketFailPolicy.NOTHING, flags, nameStopperSet);
 			if(marker == null)
 			{
 				if(!empty)
@@ -93,37 +93,18 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 	}
 
 	@Nullable
-	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder, @NotNull BracketFailPolicy bracketFailPolicy, boolean varSupport)
+	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder, @NotNull BracketFailPolicy bracketFailPolicy, int flags)
 	{
-		return parseType(builder, bracketFailPolicy, false, varSupport);
+		return parseType(builder, bracketFailPolicy, flags, TokenSet.EMPTY);
 	}
 
 	@Nullable
 	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder,
 			@NotNull BracketFailPolicy bracketFailPolicy,
-			boolean varSupport,
-			TokenSet nameStopperSet)
-	{
-		return parseType(builder, bracketFailPolicy, false, varSupport, nameStopperSet);
-	}
-
-	@Nullable
-	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder,
-			@NotNull BracketFailPolicy bracketFailPolicy,
-			boolean hardRequiredGt,
-			boolean varSupport)
-	{
-		return parseType(builder, bracketFailPolicy, varSupport, hardRequiredGt, TokenSet.EMPTY);
-	}
-
-	@Nullable
-	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder,
-			@NotNull BracketFailPolicy bracketFailPolicy,
-			boolean varSupport,
-			boolean hardRequiredGt,
+			int flags,
 			@NotNull TokenSet nameStopperSet)
 	{
-		TypeInfo typeInfo = parseInnerType(builder, varSupport, nameStopperSet);
+		TypeInfo typeInfo = parseInnerType(builder, flags, nameStopperSet);
 		if(typeInfo == null)
 		{
 			return null;
@@ -140,12 +121,12 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 
 			PsiBuilder.Marker typeListMarker = builder.mark();
 			builder.advanceLexer();
-			if(parseTypeList(builder, varSupport, nameStopperSet))
+			if(parseTypeList(builder, flags, nameStopperSet))
 			{
 				builder.error("Type expected");
 			}
 
-			if(!expect(builder, GT, "'>' expected") && hardRequiredGt)
+			if(!expect(builder, GT, "'>' expected") && BitUtil.isSet(flags, LT_GT_HARD_REQUIRE))
 			{
 				typeListMarker.rollbackTo();
 				marker.rollbackTo();
@@ -251,12 +232,12 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		return typeInfo;
 	}
 
-	private static TypeInfo parseInnerType(@NotNull CSharpBuilderWrapper builder, boolean varSupport, TokenSet nameStopperSet)
+	private static TypeInfo parseInnerType(@NotNull CSharpBuilderWrapper builder, int flags, TokenSet nameStopperSet)
 	{
 		TypeInfo typeInfo = new TypeInfo();
 
 		PsiBuilder.Marker marker = builder.mark();
-		varSupport = varSupport && builder.getVersion().isAtLeast(CSharpLanguageVersion._2_0);
+		boolean varSupport = BitUtil.isSet(flags, LT_GT_HARD_REQUIRE) && builder.getVersion().isAtLeast(CSharpLanguageVersion._2_0);
 		if(varSupport)
 		{
 			builder.enableSoftKeyword(CSharpSoftTokens.VAR_KEYWORD);

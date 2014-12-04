@@ -107,7 +107,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 			}
 			else
 			{
-				TypeInfo typeInfo = parseType(builder, BracketFailPolicy.NOTHING, false);
+				TypeInfo typeInfo = parseType(builder, BracketFailPolicy.NOTHING, NONE);
 				if(typeInfo == null)
 				{
 					if(!modifierListPair.getSecond())
@@ -187,6 +187,6 @@ public class DeclarationParsing extends SharedParsingHelpers
 		{
 			return new TypeInfo();
 		}
-		return parseType(builder, BracketFailPolicy.NOTHING, false, NAME_STOPPERS);
+		return parseType(builder, BracketFailPolicy.NOTHING, NONE, NAME_STOPPERS);
 	}
 }

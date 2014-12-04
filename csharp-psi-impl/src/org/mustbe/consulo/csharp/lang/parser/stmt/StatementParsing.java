@@ -230,7 +230,7 @@ public class StatementParsing extends SharedParsingHelpers
 
 		try
 		{
-			TypeInfo typeInfo = parseType(builder, BracketFailPolicy.RETURN_BEFORE, true);
+			TypeInfo typeInfo = parseType(builder, BracketFailPolicy.RETURN_BEFORE, VAR_SUPPORT);
 			if(typeInfo == null)
 			{
 				return false;
@@ -322,7 +322,7 @@ public class StatementParsing extends SharedParsingHelpers
 
 			PsiBuilder.Marker varMarker = builder.mark();
 
-			if(parseType(builder, BracketFailPolicy.NOTHING, false) == null)
+			if(parseType(builder, BracketFailPolicy.NOTHING, NONE) == null)
 			{
 				builder.error("Type expected");
 				varMarker.drop();
@@ -574,7 +574,7 @@ public class StatementParsing extends SharedParsingHelpers
 		{
 			PsiBuilder.Marker varMarker = builder.mark();
 
-			if(parseType(builder, BracketFailPolicy.NOTHING, true) != null)
+			if(parseType(builder, BracketFailPolicy.NOTHING, VAR_SUPPORT) != null)
 			{
 				expect(builder, IDENTIFIER, "Identifier expected");
 			}

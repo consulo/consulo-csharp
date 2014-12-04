@@ -59,7 +59,7 @@ public class UsingStatementParsing extends SharedParsingHelpers
 			builder.advanceLexer();
 			builder.advanceLexer();
 
-			if(parseType(builder, BracketFailPolicy.NOTHING, false) == null)
+			if(parseType(builder, BracketFailPolicy.NOTHING, NONE) == null)
 			{
 				builder.error("Type expected");
 			}

@@ -68,7 +68,8 @@ public class CSharpFragmentFactory
 		public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
 		{
 			PsiBuilder.Marker mark = builder.mark();
-			SharedParsingHelpers.parseType(new CSharpBuilderWrapper(builder, languageVersion), SharedParsingHelpers.BracketFailPolicy.NOTHING, true);
+			SharedParsingHelpers.parseType(new CSharpBuilderWrapper(builder, languageVersion), SharedParsingHelpers.BracketFailPolicy.NOTHING,
+					SharedParsingHelpers.VAR_SUPPORT);
 			if(!builder.eof())
 			{
 				builder.advanceLexer();
@@ -116,8 +117,7 @@ public class CSharpFragmentFactory
 		val virtualFile = new LightVirtualFile("dummy.cs", CSharpFileType.INSTANCE, text, System.currentTimeMillis());
 		val viewProvider = new SingleRootFileViewProvider(PsiManager.getInstance(project), virtualFile, true);
 
-		CSharpFragmentFileImpl file = new CSharpFragmentFileImpl(ourExpressionFileElementType, ourExpressionFileElementType,
-				viewProvider, context);
+		CSharpFragmentFileImpl file = new CSharpFragmentFileImpl(ourExpressionFileElementType, ourExpressionFileElementType, viewProvider, context);
 		viewProvider.forceCachedPsi(file);
 		file.getNode();
 		return file;
@@ -129,8 +129,7 @@ public class CSharpFragmentFactory
 		val virtualFile = new LightVirtualFile("dummy.cs", CSharpFileType.INSTANCE, text, System.currentTimeMillis());
 		val viewProvider = new SingleRootFileViewProvider(PsiManager.getInstance(project), virtualFile, true);
 
-		CSharpFragmentFileImpl file = new CSharpFragmentFileImpl(ourTypeFileElementType, ourTypeFileElementType,
-				viewProvider, context);
+		CSharpFragmentFileImpl file = new CSharpFragmentFileImpl(ourTypeFileElementType, ourTypeFileElementType, viewProvider, context);
 		viewProvider.forceCachedPsi(file);
 		file.getNode();
 		return file;

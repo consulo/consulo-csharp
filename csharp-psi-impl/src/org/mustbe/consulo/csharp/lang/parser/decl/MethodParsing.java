@@ -41,7 +41,7 @@ public class MethodParsing extends MemberWithBodyParsing
 
 	public static void parseMethodStartAtType(@NotNull CSharpBuilderWrapper builder, @NotNull PsiBuilder.Marker marker)
 	{
-		TypeInfo typeInfo = parseType(builder, BracketFailPolicy.NOTHING, false);
+		TypeInfo typeInfo = parseType(builder, BracketFailPolicy.NOTHING, NONE);
 		if(typeInfo != null)
 		{
 			parseMethodStartAfterType(builder, marker, typeInfo, Target.METHOD);
@@ -70,7 +70,7 @@ public class MethodParsing extends MemberWithBodyParsing
 
 				if(typeInfo != null && (typeInfo.nativeElementType == EXPLICIT_KEYWORD || typeInfo.nativeElementType == IMPLICIT_KEYWORD))
 				{
-					if(parseType(builder, BracketFailPolicy.NOTHING, false) == null)
+					if(parseType(builder, BracketFailPolicy.NOTHING, NONE) == null)
 					{
 						builder.error("Type expected");
 					}
@@ -196,7 +196,7 @@ public class MethodParsing extends MemberWithBodyParsing
 
 		parseModifierListWithAttributes(builder);
 
-		if(parseType(builder, BracketFailPolicy.NOTHING, false) == null)
+		if(parseType(builder, BracketFailPolicy.NOTHING, NONE) == null)
 		{
 			mark.error("Type expected");
 		}
