@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.impl;
 import org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.UnusedElementPolicy;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAnonymMethodExpressionImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 
@@ -31,6 +32,11 @@ public class DefaultUnusedElementPolicy extends UnusedElementPolicy
 	@Override
 	public boolean canMarkAsUnused(DotNetParameter parameter)
 	{
+		//FIXME [VISTALL] temp fix until getMethod() ill return nullable object
+		if(parameter.getParent().getParent() instanceof CSharpAnonymMethodExpressionImpl)
+		{
+			return false;
+		}
 		DotNetLikeMethodDeclaration method = parameter.getMethod();
 
 		if(method instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) method).isDelegate())
