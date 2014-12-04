@@ -6,6 +6,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializationExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.formatting.Indent;
@@ -92,6 +93,11 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 			if(element instanceof CSharpBlockStatementImpl)
 			{
 				return Indent.getNoneIndent();
+			}
+
+			if(element instanceof DotNetStatement && parent instanceof CSharpIfStatementImpl)
+			{
+				return Indent.getNormalIndent();
 			}
 
 			if(element instanceof DotNetStatement && parent instanceof CSharpStatementListOwner)
