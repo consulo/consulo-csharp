@@ -5,7 +5,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightGenericParameterBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightTypeDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
@@ -29,19 +28,6 @@ public class CSharpLambdaResolveResultUtil
 		CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(project);
 		builder.withParentQName(declaration.getPresentableParentQName());
 		builder.withName(declaration.getName());
-
-		for(DotNetGenericParameter genericParameter : declaration.getGenericParameters())
-		{
-			CSharpLightGenericParameterBuilder parameter = new CSharpLightGenericParameterBuilder(project);
-			String name = genericParameter.getName();
-			if(name == null)
-			{
-				continue;
-			}
-			parameter.withName(name);
-
-			builder.addGenericParameter(parameter);
-		}
 
 		builder.putUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE, declaration);
 
