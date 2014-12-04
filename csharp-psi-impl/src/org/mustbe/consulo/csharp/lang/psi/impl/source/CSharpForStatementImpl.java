@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStatementListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import com.intellij.lang.ASTNode;
@@ -30,11 +31,18 @@ import com.intellij.psi.util.PsiTreeUtil;
  * @author VISTALL
  * @since 17.01.14
  */
-public class CSharpForStatementImpl extends CSharpElementImpl implements DotNetStatement
+public class CSharpForStatementImpl extends CSharpElementImpl implements DotNetStatement, CSharpStatementListOwner
 {
 	public CSharpForStatementImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	@NotNull
+	@Override
+	public DotNetStatement[] getStatements()
+	{
+		return findChildrenByClass(DotNetStatement.class);
 	}
 
 	@NotNull

@@ -1,11 +1,13 @@
 package org.mustbe.consulo.csharp.lang.formatter.processors;
 
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStatementListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializationExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.formatting.Indent;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -87,10 +89,25 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 		} */
 		else
 		{
+			if(element instanceof CSharpBlockStatementImpl)
+			{
+				return Indent.getNoneIndent();
+			}
+
+			if(element instanceof DotNetStatement && parent instanceof CSharpStatementListOwner)
+			{
+				DotNetStatement[] statements = ((CSharpStatementListOwner) parent).getStatements();
+				if(statements.length == 1 && statements[0] == element)
+				{
+					return Indent.getNormalIndent();
+				}
+			}
+
 			if(parent instanceof CSharpBlockStatementImpl)
 			{
 				return Indent.getNormalIndent();
 			}
+
 			return Indent.getNoneIndent();
 		}
 	}

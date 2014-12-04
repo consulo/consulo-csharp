@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStatementListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.lang.ASTNode;
 
@@ -25,7 +26,7 @@ import com.intellij.lang.ASTNode;
  * @author VISTALL
  * @since 16.01.14
  */
-public class CSharpDoWhileStatementImpl extends CSharpElementImpl implements DotNetStatement
+public class CSharpDoWhileStatementImpl extends CSharpElementImpl implements DotNetStatement, CSharpStatementListOwner
 {
 	public CSharpDoWhileStatementImpl(@NotNull ASTNode node)
 	{
@@ -36,5 +37,12 @@ public class CSharpDoWhileStatementImpl extends CSharpElementImpl implements Dot
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
 		visitor.visitDoWhileStatement(this);
+	}
+
+	@NotNull
+	@Override
+	public DotNetStatement[] getStatements()
+	{
+		return findChildrenByClass(DotNetStatement.class);
 	}
 }

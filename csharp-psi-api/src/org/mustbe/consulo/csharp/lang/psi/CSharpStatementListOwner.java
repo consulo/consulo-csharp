@@ -14,35 +14,18 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi.impl.source;
+package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpStatementListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
-import com.intellij.lang.ASTNode;
 
 /**
  * @author VISTALL
- * @since 30.12.13.
+ * @since 04.12.14
  */
-public class CSharpWhileStatementImpl extends CSharpElementImpl implements DotNetStatement, CSharpStatementListOwner
+public interface CSharpStatementListOwner extends DotNetElement
 {
-	public CSharpWhileStatementImpl(@NotNull ASTNode node)
-	{
-		super(node);
-	}
-
-	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
-	{
-		visitor.visitWhileStatement(this);
-	}
-
 	@NotNull
-	@Override
-	public DotNetStatement[] getStatements()
-	{
-		return findChildrenByClass(DotNetStatement.class);
-	}
+	DotNetStatement[] getStatements();
 }
