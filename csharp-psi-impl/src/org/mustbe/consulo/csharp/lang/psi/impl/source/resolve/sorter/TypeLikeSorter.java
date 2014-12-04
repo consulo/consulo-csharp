@@ -86,35 +86,6 @@ public class TypeLikeSorter implements ResolveResultSorter
 	@Override
 	public void sort(@NotNull ResolveResult[] resolveResults)
 	{
-		if(myComparator.myGenericCount  == 1)
-		{
-			System.out.println("before: ");
-			for(ResolveResult resolveResult : resolveResults)
-			{
-				PsiElement element = resolveResult.getElement();
-				System.out.println(" element: " + element.getClass().getSimpleName());
-				if(element instanceof DotNetGenericParameterListOwner)
-				{
-					System.out.println(" generic count: " + ((DotNetGenericParameterListOwner) element).getGenericParametersCount());
-				}
-			}
-		}
-
 		ContainerUtil.sort(resolveResults, myComparator);
-
-		if(myComparator.myGenericCount  == 1)
-		{
-			System.out.println("after: ");
-			for(ResolveResult resolveResult : resolveResults)
-			{
-				PsiElement element = resolveResult.getElement();
-				System.out.println(" element: " + element.getClass().getSimpleName());
-				if(element instanceof DotNetGenericParameterListOwner)
-				{
-					System.out.println(" generic count: " + ((DotNetGenericParameterListOwner) element).getGenericParametersCount());
-				}
-			}
-		}
-
 	}
 }
