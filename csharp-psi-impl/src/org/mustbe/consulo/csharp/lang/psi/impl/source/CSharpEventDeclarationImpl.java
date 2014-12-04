@@ -65,7 +65,7 @@ public class CSharpEventDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 	@Override
 	public DotNetExpression getInitializer()
 	{
-		return null;
+		return findChildByClass(DotNetExpression.class);
 	}
 
 	@NotNull

@@ -28,6 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaT
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
+import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -38,7 +39,7 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  * @author VISTALL
  * @since 19.01.14
  */
-public class CSharpAnonymMethodExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpSimpleLikeMethodAsElement
+public class CSharpAnonymMethodExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpSimpleLikeMethodAsElement, DotNetParameterListOwner
 {
 	public CSharpAnonymMethodExpressionImpl(@NotNull ASTNode node)
 	{
@@ -51,12 +52,22 @@ public class CSharpAnonymMethodExpressionImpl extends CSharpElementImpl implemen
 		return findChildByClass(CSharpBlockStatementImpl.class);
 	}
 
+	@NotNull
+	@Override
+	public DotNetTypeRef[] getParameterTypeRefs()
+	{
+		DotNetParameterList parameterList = getParameterList();
+		return parameterList == null ? DotNetTypeRef.EMPTY_ARRAY : parameterList.getParameterTypeRefs();
+	}
+
+	@Override
 	@Nullable
 	public DotNetParameterList getParameterList()
 	{
 		return findChildByClass(DotNetParameterList.class);
 	}
 
+	@Override
 	@NotNull
 	public DotNetParameter[] getParameters()
 	{

@@ -11,6 +11,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -68,9 +69,9 @@ public class CSharpLikeMethodDeclarationImplUtil
 	}
 
 	@NotNull
-	public static CSharpSimpleParameterInfo[] getParametersInfos(@NotNull DotNetLikeMethodDeclaration methodDeclaration)
+	public static CSharpSimpleParameterInfo[] getParametersInfos(@NotNull DotNetParameterListOwner parameterListOwner)
 	{
-		DotNetParameter[] parameters = methodDeclaration.getParameters();
+		DotNetParameter[] parameters = parameterListOwner.getParameters();
 
 		CSharpSimpleParameterInfo[] parameterInfos = new CSharpSimpleParameterInfo[parameters.length];
 		for(int i = 0; i < parameters.length; i++)
