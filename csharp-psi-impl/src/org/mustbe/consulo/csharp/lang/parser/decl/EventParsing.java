@@ -17,7 +17,9 @@
 package org.mustbe.consulo.csharp.lang.parser.decl;
 
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
+import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import com.intellij.lang.PsiBuilder;
+import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
@@ -33,12 +35,24 @@ public class EventParsing extends MemberWithBodyParsing
 		}
 		else
 		{
-			if(expect(builder, IDENTIFIER, "Name expected"))
+			expect(builder, IDENTIFIER, "Identifier expected");
+			IElementType tokenType = builder.getTokenType();
+			if(tokenType == SEMICOLON)
 			{
-				if(!expect(builder, SEMICOLON, null))
+				builder.advanceLexer();
+			}
+			else if(tokenType == EQ)
+			{
+				builder.advanceLexer();
+				if(ExpressionParsing.parse(builder) == null)
 				{
-					parseAccessors(builder, XXX_ACCESSOR, EVENT_ACCESSOR_START);
+					builder.error("Expression expected");
 				}
+				expect(builder, SEMICOLON, "';' expected");
+			}
+			else
+			{
+				parseAccessors(builder, XXX_ACCESSOR, EVENT_ACCESSOR_START);
 			}
 		}
 
