@@ -42,7 +42,7 @@ import com.intellij.util.Processor;
  */
 public class CSharpTypeDeclarationImplUtil
 {
-	public static boolean isEquivalentTo(@NotNull DotNetTypeDeclaration thisType, @NotNull PsiElement another)
+	public static boolean isEquivalentTo(@NotNull DotNetTypeDeclaration thisType, @Nullable PsiElement another)
 	{
 		return another instanceof DotNetTypeDeclaration && Comparing.equal(thisType.getVmQName(), ((DotNetTypeDeclaration) another).getVmQName());
 	}
