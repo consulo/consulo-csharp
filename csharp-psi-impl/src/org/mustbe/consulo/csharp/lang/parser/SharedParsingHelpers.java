@@ -237,7 +237,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		TypeInfo typeInfo = new TypeInfo();
 
 		PsiBuilder.Marker marker = builder.mark();
-		boolean varSupport = BitUtil.isSet(flags, LT_GT_HARD_REQUIRE) && builder.getVersion().isAtLeast(CSharpLanguageVersion._2_0);
+		boolean varSupport = BitUtil.isSet(flags, VAR_SUPPORT) && builder.getVersion().isAtLeast(CSharpLanguageVersion._2_0);
 		if(varSupport)
 		{
 			builder.enableSoftKeyword(CSharpSoftTokens.VAR_KEYWORD);
