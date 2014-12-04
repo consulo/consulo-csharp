@@ -187,7 +187,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				return parseUnary(builder);
 
 			case TYPE:
-				TypeInfo typeInfo = parseType(builder, BracketFailPolicy.NOTHING, NONE);
+				TypeInfo typeInfo = parseType(builder, NONE);
 				return typeInfo == null ? null : typeInfo.marker;
 			default:
 				assert false : "Unexpected type: " + type;
@@ -220,7 +220,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			final PsiBuilder.Marker typeCast = builder.mark();
 			builder.advanceLexer();
 
-			val typeInfo = parseType(builder, BracketFailPolicy.NOTHING, LT_GT_HARD_REQUIRE);
+			val typeInfo = parseType(builder, LT_GT_HARD_REQUIRE);
 			if(typeInfo == null || !expect(builder, RPAR, null))
 			{
 				typeCast.rollbackTo();
@@ -516,7 +516,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		while(!builder.eof())
 		{
-			val marker = parseType(builder, BracketFailPolicy.NOTHING, NONE, TokenSet.EMPTY);
+			val marker = parseType(builder, NONE);
 			if(marker == null)
 			{
 				mark.rollbackTo();
@@ -967,7 +967,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		{
 			parseModifierList(builder);
 
-			if(parseType(builder, BracketFailPolicy.NOTHING, NONE) == null)
+			if(parseType(builder, NONE) == null)
 			{
 				builder.error("Type expected");
 			}
@@ -986,7 +986,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			}
 			else
 			{
-				if(parseType(builder, BracketFailPolicy.NOTHING, NONE) == null)
+				if(parseType(builder, NONE) == null)
 				{
 					builder.error("Type expected");
 				}
@@ -1088,7 +1088,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		builder.advanceLexer();
 
-		val typeMarker = parseType(builder, BracketFailPolicy.RETURN_BEFORE, NONE);
+		val typeMarker = parseType(builder, BRACKET_RETURN_BEFORE);
 
 		boolean forceArray = false;
 		while(builder.getTokenType() == LBRACKET)
@@ -1269,7 +1269,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(expect(builder, LPAR, "'(' expected"))
 		{
-			if(parseType(builder, BracketFailPolicy.NOTHING, NONE) == null)
+			if(parseType(builder, NONE) == null)
 			{
 				builder.error("Type expected");
 			}

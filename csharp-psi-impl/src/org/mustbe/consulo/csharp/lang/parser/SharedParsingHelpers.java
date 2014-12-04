@@ -43,13 +43,8 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 	public static final int VAR_SUPPORT = 1 << 0;
 	public static final int STUB_SUPPORT = 1 << 1;
 	public static final int LT_GT_HARD_REQUIRE = 1 << 2;
-
-	public static enum BracketFailPolicy
-	{
-		NOTHING,
-		DROP,
-		RETURN_BEFORE
-	}
+	public static final int BRACKET_DROP = 1 << 3;
+	public static final int BRACKET_RETURN_BEFORE = 1 << 4;
 
 	public static class TypeInfo
 	{
@@ -68,7 +63,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		boolean empty = true;
 		while(!builder.eof())
 		{
-			val marker = parseType(builder, BracketFailPolicy.NOTHING, flags, nameStopperSet);
+			val marker = parseType(builder, flags, nameStopperSet);
 			if(marker == null)
 			{
 				if(!empty)
@@ -93,14 +88,13 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 	}
 
 	@Nullable
-	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder, @NotNull BracketFailPolicy bracketFailPolicy, int flags)
+	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder, int flags)
 	{
-		return parseType(builder, bracketFailPolicy, flags, TokenSet.EMPTY);
+		return parseType(builder, flags, TokenSet.EMPTY);
 	}
 
 	@Nullable
 	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder,
-			@NotNull BracketFailPolicy bracketFailPolicy,
 			int flags,
 			@NotNull TokenSet nameStopperSet)
 	{
@@ -183,25 +177,27 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 			}
 			else
 			{
-				switch(bracketFailPolicy)
+				if(BitUtil.isSet(flags, BRACKET_RETURN_BEFORE))
 				{
-					case NOTHING:
-						builder.advanceLexer();  // advance [
+					newMarker.drop();
+					typeInfo.marker = marker;
+					return typeInfo;
+				}
+				else if(BitUtil.isSet(flags, BRACKET_DROP))
+				{
+					newMarker.drop();
+					marker.drop();
+					return null;
+				}
+				else
+				{
+					builder.advanceLexer();  // advance [
 
-						builder.error("']' expected");
-						typeInfo = new TypeInfo();
-						newMarker.done(ARRAY_TYPE);
+					builder.error("']' expected");
+					typeInfo = new TypeInfo();
+					newMarker.done(ARRAY_TYPE);
 
-						marker = newMarker;
-						break;
-					case DROP:
-						newMarker.drop();
-						marker.drop();
-						return null;
-					case RETURN_BEFORE:
-						newMarker.drop();
-						typeInfo.marker = marker;
-						return typeInfo;
+					marker = newMarker;
 				}
 			}
 		}

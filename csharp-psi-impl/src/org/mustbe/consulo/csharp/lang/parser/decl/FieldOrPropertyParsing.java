@@ -30,7 +30,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 	public static void parseFieldOrLocalVariableAtTypeWithDone(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, IElementType to,
 			boolean semicolonEat)
 	{
-		if(parseType(builder, BracketFailPolicy.NOTHING, to == LOCAL_VARIABLE ? VAR_SUPPORT : NONE) == null)
+		if(parseType(builder, to == LOCAL_VARIABLE ? VAR_SUPPORT : NONE) == null)
 		{
 			builder.error("Type expected");
 

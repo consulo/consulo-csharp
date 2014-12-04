@@ -83,7 +83,7 @@ public class LinqParsing extends SharedParsingHelpers
 
 		if(canParseType(builder))
 		{
-			parseType(builder, BracketFailPolicy.RETURN_BEFORE, NONE);
+			parseType(builder, BRACKET_RETURN_BEFORE);
 		}
 
 		IElementType tokenType = builder.getTokenType();
@@ -131,7 +131,7 @@ public class LinqParsing extends SharedParsingHelpers
 
 	private static boolean canParseType(CSharpBuilderWrapper builder)
 	{
-		TypeInfo typeInfo = parseType(builder, BracketFailPolicy.RETURN_BEFORE, NONE);
+		TypeInfo typeInfo = parseType(builder, BRACKET_RETURN_BEFORE);
 		if(typeInfo != null)
 		{
 			if(typeInfo.isParameterized || typeInfo.nativeElementType != null)
@@ -192,7 +192,7 @@ public class LinqParsing extends SharedParsingHelpers
 
 		if(canParseType(builder))
 		{
-			parseType(builder, BracketFailPolicy.RETURN_BEFORE, NONE);
+			parseType(builder, BRACKET_RETURN_BEFORE);
 		}
 
 		if(builder.getTokenType() == IDENTIFIER)
