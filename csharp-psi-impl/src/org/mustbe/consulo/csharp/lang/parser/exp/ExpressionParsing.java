@@ -433,40 +433,9 @@ public class ExpressionParsing extends SharedParsingHelpers
 						return refExpr;
 					}
 
+					parseReferenceTypeArgumentList(builder, NONE);
 					refExpr.done(REFERENCE_EXPRESSION);
 					expr = refExpr;
-				}
-			}
-			else if(tokenType == LT)
-			{
-				if(exprType(expr) != REFERENCE_EXPRESSION)
-				{
-					startMarker.drop();
-					return expr;
-				}
-
-				final PsiBuilder.Marker callExpr = expr.precede();
-
-				PsiBuilder.Marker argumentMark = parseTypeCallArguments(builder);
-				if(argumentMark == null)
-				{
-					callExpr.drop();
-					startMarker.drop();
-					return expr;
-				}
-
-				if(builder.getTokenType() == LPAR)
-				{
-					parseArgumentList(builder, false);
-					callExpr.done(METHOD_CALL_EXPRESSION);
-					expr = callExpr;
-				}
-				else
-				{
-					argumentMark.rollbackTo();
-					callExpr.drop();
-					startMarker.drop();
-					return expr;
 				}
 			}
 			else if(tokenType == LPAR)
@@ -511,44 +480,6 @@ public class ExpressionParsing extends SharedParsingHelpers
 			}
 		}
 	}
-
-	private static PsiBuilder.Marker parseTypeCallArguments(@NotNull CSharpBuilderWrapper builder)
-	{
-		PsiBuilder.Marker mark = builder.mark();
-		builder.advanceLexer();
-
-		while(!builder.eof())
-		{
-			val marker = parseType(builder);
-			if(marker == null)
-			{
-				mark.rollbackTo();
-				return null;
-			}
-
-			if(builder.getTokenType() == COMMA)
-			{
-				builder.advanceLexer();
-			}
-			else
-			{
-				break;
-			}
-		}
-
-		if(builder.getTokenType() == GT)
-		{
-			builder.advanceLexer();
-		}
-		else
-		{
-			mark.rollbackTo();
-			return null;
-		}
-		mark.done(TYPE_CALL_ARGUMENTS);
-		return mark;
-	}
-
 
 	public static void parseArgumentList(CSharpBuilderWrapper builder, boolean fieldSet)
 	{
@@ -765,6 +696,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			val refExpr = builder.mark();
 
 			builder.advanceLexer();
+			parseReferenceTypeArgumentList(builder, NONE);
 			refExpr.done(REFERENCE_EXPRESSION);
 			return refExpr;
 		}
@@ -1299,12 +1231,24 @@ public class ExpressionParsing extends SharedParsingHelpers
 		return newMarker;
 	}
 
-	public static PsiBuilder.Marker parseQualifiedReference(@NotNull PsiBuilder builder, @Nullable PsiBuilder.Marker prevMarker)
+	public static class ReferenceInfo
+	{
+		public boolean isParameterized;
+		public PsiBuilder.Marker marker;
+
+		public ReferenceInfo(boolean isParameterized, PsiBuilder.Marker marker)
+		{
+			this.isParameterized = isParameterized;
+			this.marker = marker;
+		}
+	}
+
+	public static ReferenceInfo parseQualifiedReference(@NotNull CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker prevMarker)
 	{
 		return parseQualifiedReference(builder, prevMarker, NONE, TokenSet.EMPTY);
 	}
 
-	public static PsiBuilder.Marker parseQualifiedReference(@NotNull PsiBuilder builder, @Nullable PsiBuilder.Marker prevMarker,
+	public static ReferenceInfo parseQualifiedReference(@NotNull CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker prevMarker,
 			int flags, @NotNull TokenSet nameStopperSet)
 	{
 		if(prevMarker != null)
@@ -1313,8 +1257,12 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 		PsiBuilder.Marker marker = prevMarker == null ? builder.mark() : prevMarker;
 
+		ReferenceInfo referenceInfo = new ReferenceInfo(false, marker);
+
 		if(expect(builder, IDENTIFIER, "Identifier expected"))
 		{
+			referenceInfo.isParameterized = parseReferenceTypeArgumentList(builder, flags) != null;
+
 			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.REFERENCE_EXPRESSION : CSharpElements.REFERENCE_EXPRESSION);
 
 			if(builder.getTokenType() == DOT)
@@ -1322,17 +1270,66 @@ public class ExpressionParsing extends SharedParsingHelpers
 				// if after dot we found stoppers, name expected - but we done
 				if(nameStopperSet.contains(builder.lookAhead(1)) || nameStopperSet.contains(builder.lookAhead(2)))
 				{
-					return marker;
+					return referenceInfo;
 				}
-				marker = parseQualifiedReference(builder, marker.precede(), flags, nameStopperSet);
+				referenceInfo = parseQualifiedReference(builder, marker.precede(), flags, nameStopperSet);
 			}
 		}
 		else
 		{
 			marker.drop();
-			marker = null;
+			return null;
 		}
 
-		return marker;
+		return referenceInfo;
+	}
+
+	@Nullable
+	private static PsiBuilder.Marker parseReferenceTypeArgumentList(@NotNull CSharpBuilderWrapper builder, int flags)
+	{
+		if(builder.getTokenType() != LT)
+		{
+			return null;
+		}
+		PsiBuilder.Marker mark = builder.mark();
+		builder.advanceLexer();
+
+		if(builder.getTokenType() == GT)
+		{
+			builder.error("Expected type");
+			builder.advanceLexer();
+		}
+		else
+		{
+			while(!builder.eof())
+			{
+				val marker = parseType(builder, flags);
+				if(marker == null)
+				{
+					builder.error("Expected type");
+				}
+
+				if(builder.getTokenType() == COMMA)
+				{
+					builder.advanceLexer();
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			if(builder.getTokenType() == GT)
+			{
+				builder.advanceLexer();
+			}
+			else
+			{
+				mark.rollbackTo();
+				return null;
+			}
+		}
+		mark.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.TYPE_ARGUMENTS : CSharpElements.TYPE_ARGUMENTS);
+		return mark;
 	}
 }

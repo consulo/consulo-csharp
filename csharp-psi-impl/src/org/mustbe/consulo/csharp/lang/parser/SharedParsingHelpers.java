@@ -110,34 +110,6 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 
 		PsiBuilder.Marker marker = typeInfo.marker;
 
-		if(builder.getTokenType() == LT)
-		{
-			marker = marker.precede();
-
-			typeInfo = new TypeInfo();
-			typeInfo.isParameterized = true;
-
-			PsiBuilder.Marker typeListMarker = builder.mark();
-			builder.advanceLexer();
-			if(parseTypeList(builder, flags, nameStopperSet))
-			{
-				builder.error("Type expected");
-			}
-
-			if(!expect(builder, GT, "'>' expected") && BitUtil.isSet(flags, LT_GT_HARD_REQUIRE))
-			{
-				typeListMarker.rollbackTo();
-				marker.rollbackTo();
-
-				return null;
-			}
-
-			typeListMarker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.TYPE_ARGUMENTS : CSharpElements.TYPE_ARGUMENTS);
-
-			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.TYPE_WRAPPER_WITH_TYPE_ARGUMENTS : CSharpElements
-					.TYPE_WRAPPER_WITH_TYPE_ARGUMENTS);
-		}
-
 		while(builder.getTokenType() == MUL)
 		{
 			typeInfo = new TypeInfo();
@@ -253,7 +225,9 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		}
 		else if(builder.getTokenType() == IDENTIFIER)
 		{
-			ExpressionParsing.parseQualifiedReference(builder, null, flags, nameStopperSet);
+			ExpressionParsing.ReferenceInfo referenceInfo = ExpressionParsing.parseQualifiedReference(builder, null, flags, nameStopperSet);
+			typeInfo.isParameterized = referenceInfo != null && referenceInfo.isParameterized;
+
 			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.USER_TYPE : CSharpElements.USER_TYPE);
 		}
 		else if(builder.getTokenType() == GLOBAL_KEYWORD)

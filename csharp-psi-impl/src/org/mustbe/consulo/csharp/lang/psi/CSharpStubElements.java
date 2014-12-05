@@ -19,11 +19,9 @@ package org.mustbe.consulo.csharp.lang.psi;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubNullableTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubPointerTypeImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubTypeWithTypeArgumentsImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.*;
 import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
@@ -98,23 +96,6 @@ public interface CSharpStubElements
 		}
 	};
 
-	CSharpEmptyStubElementType<DotNetTypeWithTypeArguments> TYPE_WRAPPER_WITH_TYPE_ARGUMENTS = new
-			CSharpEmptyStubElementType<DotNetTypeWithTypeArguments>("TYPE_WRAPPER_WITH_TYPE_ARGUMENTS")
-	{
-		@NotNull
-		@Override
-		public PsiElement createElement(@NotNull ASTNode astNode)
-		{
-			return new CSharpStubTypeWithTypeArgumentsImpl(astNode);
-		}
-
-		@Override
-		public DotNetTypeWithTypeArguments createPsi(@NotNull CSharpEmptyStub<DotNetTypeWithTypeArguments> stub)
-		{
-			return new CSharpStubTypeWithTypeArgumentsImpl(stub, this);
-		}
-	};
-
 	CSharpNativeTypeStubElementType NATIVE_TYPE = new CSharpNativeTypeStubElementType();
 
 	CSharpArrayTypeStubElementType ARRAY_TYPE = new CSharpArrayTypeStubElementType();
@@ -127,7 +108,7 @@ public interface CSharpStubElements
 
 	TokenSet GENERIC_CONSTRAINT_VALUES = TokenSet.create(GENERIC_CONSTRAINT_KEYWORD_VALUE, GENERIC_CONSTRAINT_TYPE_VALUE);
 
-	TokenSet TYPE_SET = TokenSet.create(NULLABLE_TYPE, POINTER_TYPE, NATIVE_TYPE, TYPE_WRAPPER_WITH_TYPE_ARGUMENTS, ARRAY_TYPE, USER_TYPE);
+	TokenSet TYPE_SET = TokenSet.create(NULLABLE_TYPE, POINTER_TYPE, NATIVE_TYPE, ARRAY_TYPE, USER_TYPE);
 
 	TokenSet QUALIFIED_MEMBERS = TokenSet.create(NAMESPACE_DECLARATION, TYPE_DECLARATION, METHOD_DECLARATION, CONSTRUCTOR_DECLARATION,
 			PROPERTY_DECLARATION, EVENT_DECLARATION, FIELD_DECLARATION, ENUM_CONSTANT_DECLARATION, CONVERSION_METHOD_DECLARATION,
