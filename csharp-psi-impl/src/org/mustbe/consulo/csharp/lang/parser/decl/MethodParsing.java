@@ -21,8 +21,11 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import org.mustbe.consulo.csharp.lang.parser.stmt.StatementParsing;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.BitUtil;
 import lombok.val;
 
 /**
@@ -187,7 +190,7 @@ public class MethodParsing extends MemberWithBodyParsing
 		}
 
 		expect(builder, end, "')' expected");
-		mark.done(PARAMETER_LIST);
+		mark.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.PARAMETER_LIST : CSharpElements.PARAMETER_LIST);
 	}
 
 	private static void parseParameter(CSharpBuilderWrapper builder, int flags)
@@ -211,7 +214,7 @@ public class MethodParsing extends MemberWithBodyParsing
 					builder.error("Expression expected.");
 				}
 			}
-			mark.done(PARAMETER);
+			mark.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.PARAMETER : CSharpElements.PARAMETER);
 		}
 	}
 }
