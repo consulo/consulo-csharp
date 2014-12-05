@@ -1030,7 +1030,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 	}
 
-	public static void parseParameterList(CSharpBuilderWrapper builder)
+	public static void parseTypeParameterList(CSharpBuilderWrapper builder)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
