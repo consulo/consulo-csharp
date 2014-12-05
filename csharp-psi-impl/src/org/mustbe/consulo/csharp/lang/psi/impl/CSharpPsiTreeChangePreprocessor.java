@@ -69,11 +69,11 @@ public class CSharpPsiTreeChangePreprocessor implements PsiTreeChangePreprocesso
 					return;
 				}
 				DotNetStatement statement = PsiTreeUtil.getParentOfType(element, DotNetStatement.class);
-				if(statement == null)
+				if(statement != null)
 				{
 					return;
 				}
-				myTracker.incCounter();
+				myTracker.incOutOfCodeBlockModificationCounter();
 				break;
 		}
 	}
