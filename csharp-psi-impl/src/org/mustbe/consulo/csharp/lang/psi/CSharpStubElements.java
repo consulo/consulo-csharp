@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubTypeWithTypeArgu
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.*;
 import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
@@ -109,8 +110,8 @@ public interface CSharpStubElements
 		}
 	};
 
-	CSharpEmptyStubElementType<CSharpStubTypeWithTypeArgumentsImpl> TYPE_WRAPPER_WITH_TYPE_ARGUMENTS = new
-			CSharpEmptyStubElementType<CSharpStubTypeWithTypeArgumentsImpl>("TYPE_WRAPPER_WITH_TYPE_ARGUMENTS")
+	CSharpEmptyStubElementType<DotNetTypeWithTypeArguments> TYPE_WRAPPER_WITH_TYPE_ARGUMENTS = new
+			CSharpEmptyStubElementType<DotNetTypeWithTypeArguments>("TYPE_WRAPPER_WITH_TYPE_ARGUMENTS")
 	{
 		@Override
 		public boolean shouldCreateStub(ASTNode node)
@@ -126,7 +127,7 @@ public interface CSharpStubElements
 		}
 
 		@Override
-		public CSharpStubTypeWithTypeArgumentsImpl createPsi(@NotNull CSharpEmptyStub<CSharpStubTypeWithTypeArgumentsImpl> stub)
+		public DotNetTypeWithTypeArguments createPsi(@NotNull CSharpEmptyStub<DotNetTypeWithTypeArguments> stub)
 		{
 			return new CSharpStubTypeWithTypeArgumentsImpl(stub, this);
 		}

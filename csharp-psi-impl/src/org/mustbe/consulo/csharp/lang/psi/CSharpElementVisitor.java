@@ -22,6 +22,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
 import com.intellij.psi.PsiElementVisitor;
 
 /**
@@ -162,7 +163,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(type);
 	}
 
-	public void visitTypeWrapperWithTypeArguments(CSharpStubTypeWithTypeArgumentsImpl typeArguments)
+	public void visitTypeWrapperWithTypeArguments(DotNetTypeWithTypeArguments typeArguments)
 	{
 		visitElement(typeArguments);
 	}

@@ -34,16 +34,16 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpStubTypeWithTypeArgumentsImpl extends CSharpStubElementImpl<CSharpEmptyStub<CSharpStubTypeWithTypeArgumentsImpl>> implements
+public class CSharpStubTypeWithTypeArgumentsImpl extends CSharpStubElementImpl<CSharpEmptyStub<DotNetTypeWithTypeArguments>> implements
 		DotNetTypeWithTypeArguments
 {
-	private static class OurResolver extends CSharpResolveCache.TypeRefResolver<CSharpStubTypeWithTypeArgumentsImpl>
+	private static class OurResolver extends CSharpResolveCache.TypeRefResolver<DotNetTypeWithTypeArguments>
 	{
 		public static final OurResolver INSTANCE = new OurResolver();
 
 		@NotNull
 		@Override
-		public DotNetTypeRef resolveTypeRef(@NotNull CSharpStubTypeWithTypeArgumentsImpl element, boolean resolveFromParent)
+		public DotNetTypeRef resolveTypeRef(@NotNull DotNetTypeWithTypeArguments element, boolean resolveFromParent)
 		{
 			DotNetType innerType = element.getInnerType();
 			DotNetType[] arguments = element.getArguments();
@@ -68,8 +68,8 @@ public class CSharpStubTypeWithTypeArgumentsImpl extends CSharpStubElementImpl<C
 		super(node);
 	}
 
-	public CSharpStubTypeWithTypeArgumentsImpl(@NotNull CSharpEmptyStub<CSharpStubTypeWithTypeArgumentsImpl> stub,
-			@NotNull IStubElementType<? extends CSharpEmptyStub<CSharpStubTypeWithTypeArgumentsImpl>, ?> nodeType)
+	public CSharpStubTypeWithTypeArgumentsImpl(@NotNull CSharpEmptyStub<DotNetTypeWithTypeArguments> stub,
+			@NotNull IStubElementType<? extends CSharpEmptyStub<DotNetTypeWithTypeArguments>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
