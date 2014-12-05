@@ -202,7 +202,7 @@ public class CSharpReferenceExpressionImplUtil
 		{
 			return ResolveToKind.THIS;
 		}
-		else if(elementType == CSharpTokens.THIS_KEYWORD)
+		else if(elementType == CSharpTokens.BASE_KEYWORD)
 		{
 			return ResolveToKind.BASE;
 		}
