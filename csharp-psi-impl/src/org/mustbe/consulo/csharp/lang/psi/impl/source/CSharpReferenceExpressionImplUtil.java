@@ -560,7 +560,7 @@ public class CSharpReferenceExpressionImplUtil
 								GenericInferenceUtil.GenericInferenceResult inferenceResult = psiElement.getUserData(GenericInferenceUtil
 										.INFERENCE_RESULT);
 
-								if(inferenceResult == null)
+								if(inferenceResult == null && kind != ResolveToKind.CONSTRUCTOR)
 								{
 									inferenceResult = GenericInferenceUtil.inferenceGenericExtractor(element, callArgumentListOwner,
 											(DotNetLikeMethodDeclaration) psiElement);
@@ -569,7 +569,7 @@ public class CSharpReferenceExpressionImplUtil
 
 								val calcResult = MethodResolver.calc(callArgumentListOwner, (DotNetLikeMethodDeclaration) psiElement, element);
 
-								if(inferenceResult.isSuccess())
+								if(inferenceResult == null || inferenceResult.isSuccess())
 								{
 									methodResolveResults.add(Pair.create(calcResult, psiElement));
 								}
