@@ -53,7 +53,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(declaration);
 	}
 
-	public void visitModifierList(CSharpStubModifierListImpl list)
+	public void visitModifierList(CSharpModifierList list)
 	{
 		visitElement(list);
 	}

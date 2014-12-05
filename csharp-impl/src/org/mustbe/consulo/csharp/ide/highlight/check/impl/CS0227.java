@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.highlight.check.AbstractCompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubModifierListImpl;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifierList;
 import org.mustbe.consulo.csharp.module.extension.BaseCSharpModuleExtension;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.psi.PsiElement;
@@ -28,10 +28,10 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 15.05.14
  */
-public class CS0227 extends AbstractCompilerCheck<CSharpStubModifierListImpl>
+public class CS0227 extends AbstractCompilerCheck<CSharpModifierList>
 {
 	@Override
-	public boolean accept(@NotNull CSharpStubModifierListImpl list)
+	public boolean accept(@NotNull CSharpModifierList list)
 	{
 		PsiElement modifier = list.getModifierElement(CSharpModifier.UNSAFE);
 		if(modifier == null)
@@ -45,8 +45,7 @@ public class CS0227 extends AbstractCompilerCheck<CSharpStubModifierListImpl>
 	}
 
 	@Override
-	public void checkImpl(
-			@NotNull CSharpStubModifierListImpl list, @NotNull CompilerCheckBuilder checkResult)
+	public void checkImpl(@NotNull CSharpModifierList list, @NotNull CompilerCheckBuilder checkResult)
 	{
 		PsiElement modifier = list.getModifierElement(CSharpModifier.UNSAFE);
 		assert modifier != null;
