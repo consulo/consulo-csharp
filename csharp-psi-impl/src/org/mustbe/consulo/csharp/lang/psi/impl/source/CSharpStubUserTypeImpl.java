@@ -17,21 +17,17 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUserType;
-import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
-import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpReferenceTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
@@ -60,12 +56,7 @@ public class CSharpStubUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWith
 	@Override
 	public DotNetTypeRef toTypeRefImpl()
 	{
-		CSharpReferenceExpression referenceExpression = getReferenceExpressionByStub();
-		if(referenceExpression == null)
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
-		return new CSharpReferenceTypeRef(referenceExpression);
+		return new CSharpReferenceTypeRef(getReferenceExpression());
 	}
 
 	@NotNull
@@ -93,26 +84,6 @@ public class CSharpStubUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWith
 	@Override
 	public CSharpReferenceExpression getReferenceExpression()
 	{
-		return findNotNullChildByClass(CSharpReferenceExpression.class);
-	}
-
-	@Nullable
-	private CSharpReferenceExpression getReferenceExpressionByStub()
-	{
-		CSharpWithStringValueStub<CSharpUserType> stub = getStub();
-		if(stub != null)
-		{
-			String referenceText = stub.getReferenceText();
-			if(referenceText == null)
-			{
-				return null;
-			}
-
-			CSharpFragmentFileImpl typeFragment = CSharpFragmentFactory.createTypeFragment(getProject(), referenceText, this);
-			CSharpUserType dotNetType = (CSharpUserType) PsiTreeUtil.getChildOfType(typeFragment, DotNetType.class);
-			assert dotNetType != null;
-			return dotNetType.getReferenceExpression();
-		}
-		return getReferenceExpression();
+		return getRequiredStubOrPsiChild(CSharpStubElements.REFERENCE_EXPRESSION);
 	}
 }

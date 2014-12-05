@@ -112,7 +112,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	@Override
 	public PsiElement getQualifier()
 	{
-		return getStubOrPsiChild(CSharpStubElements._REFERENCE_EXPRESSION);
+		return getStubOrPsiChild(CSharpStubElements.REFERENCE_EXPRESSION);
 	}
 
 	@Nullable

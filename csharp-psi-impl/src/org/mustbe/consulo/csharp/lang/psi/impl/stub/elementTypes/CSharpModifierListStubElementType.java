@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpModifierListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpModifierListStub;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
@@ -26,7 +27,8 @@ public class CSharpModifierListStubElementType extends CSharpAbstractStubElement
 	@Override
 	public boolean shouldCreateStub(ASTNode node)
 	{
-		return CSharpStubTypeUtil.shouldCreateStub(node);
+		ASTNode treeParent = node.getTreeParent();
+		return !(treeParent != null && treeParent.getElementType() == CSharpElements.PARAMETER);
 	}
 
 	@NotNull

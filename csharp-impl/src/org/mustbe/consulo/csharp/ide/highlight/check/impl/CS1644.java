@@ -29,6 +29,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpGenericParameterListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
@@ -155,7 +156,8 @@ public class CS1644 extends CompilerCheck<PsiElement>
 					{
 						return element;
 					}
-					else if(element.getNode() != null && element.getNode().getElementType() == CSharpElements.TYPE_ARGUMENTS)
+					else if(element.getNode() != null && (element.getNode().getElementType() == CSharpElements.TYPE_ARGUMENTS || element.getNode()
+							.getElementType() == CSharpStubElements.TYPE_ARGUMENTS))
 					{
 						return element;
 					}

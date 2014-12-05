@@ -26,7 +26,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 
 /**
@@ -69,12 +68,6 @@ public interface CSharpStubElements
 
 	CSharpEmptyStubElementType<CSharpNullableType> NULLABLE_TYPE = new CSharpEmptyStubElementType<CSharpNullableType>("NULLABLE_TYPE")
 	{
-		@Override
-		public boolean shouldCreateStub(ASTNode node)
-		{
-			return CSharpStubTypeUtil.shouldCreateStub(node);
-		}
-
 		@NotNull
 		@Override
 		public PsiElement createElement(@NotNull ASTNode astNode)
@@ -91,12 +84,6 @@ public interface CSharpStubElements
 
 	CSharpEmptyStubElementType<DotNetPointerType> POINTER_TYPE = new CSharpEmptyStubElementType<DotNetPointerType>("POINTER_TYPE")
 	{
-		@Override
-		public boolean shouldCreateStub(ASTNode node)
-		{
-			return CSharpStubTypeUtil.shouldCreateStub(node);
-		}
-
 		@NotNull
 		@Override
 		public PsiElement createElement(@NotNull ASTNode astNode)
@@ -114,12 +101,6 @@ public interface CSharpStubElements
 	CSharpEmptyStubElementType<DotNetTypeWithTypeArguments> TYPE_WRAPPER_WITH_TYPE_ARGUMENTS = new
 			CSharpEmptyStubElementType<DotNetTypeWithTypeArguments>("TYPE_WRAPPER_WITH_TYPE_ARGUMENTS")
 	{
-		@Override
-		public boolean shouldCreateStub(ASTNode node)
-		{
-			return CSharpStubTypeUtil.shouldCreateStub(node);
-		}
-
 		@NotNull
 		@Override
 		public PsiElement createElement(@NotNull ASTNode astNode)
@@ -142,9 +123,7 @@ public interface CSharpStubElements
 
 	CSharpTypeListElementType TYPE_ARGUMENTS = new CSharpTypeListElementType("TYPE_ARGUMENTS");
 
-	IElementType REFERENCE_EXPRESSION = CSharpElements.REFERENCE_EXPRESSION;
-
-	CSharpReferenceExpressionStubElementType _REFERENCE_EXPRESSION = new CSharpReferenceExpressionStubElementType();
+	CSharpReferenceExpressionStubElementType REFERENCE_EXPRESSION = new CSharpReferenceExpressionStubElementType();
 
 	TokenSet GENERIC_CONSTRAINT_VALUES = TokenSet.create(GENERIC_CONSTRAINT_KEYWORD_VALUE, GENERIC_CONSTRAINT_TYPE_VALUE);
 

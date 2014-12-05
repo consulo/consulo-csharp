@@ -132,7 +132,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 				return null;
 			}
 
-			typeListMarker.done(TYPE_ARGUMENTS);
+			typeListMarker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.TYPE_ARGUMENTS : CSharpElements.TYPE_ARGUMENTS);
 
 			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.TYPE_WRAPPER_WITH_TYPE_ARGUMENTS : CSharpElements
 					.TYPE_WRAPPER_WITH_TYPE_ARGUMENTS);

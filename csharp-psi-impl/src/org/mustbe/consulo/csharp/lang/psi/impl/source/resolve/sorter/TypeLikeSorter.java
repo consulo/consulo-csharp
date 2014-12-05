@@ -63,8 +63,7 @@ public class TypeLikeSorter implements ResolveResultSorter
 	public static TypeLikeSorter createByReference(@NotNull PsiElement element, boolean codeFragmentIsAvailable)
 	{
 		int size = 0;
-		// when we working from with codefragment we dont need go parent
-		PsiElement parent = codeFragmentIsAvailable ? element : element.getParent();
+		PsiElement parent = element.getParent();
 		if(parent instanceof DotNetUserType)
 		{
 			PsiElement userTypeParent = parent.getParent();

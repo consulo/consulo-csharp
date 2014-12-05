@@ -113,7 +113,7 @@ public class MethodParsing extends MemberWithBodyParsing
 				PsiBuilder.Marker parameterMarker = builder.mark();
 				builder.advanceLexer();
 				expect(builder, RPAR, "')' expected");
-				parameterMarker.done(PARAMETER_LIST);
+				parameterMarker.done(CSharpStubElements.PARAMETER_LIST);
 			}
 			else
 			{

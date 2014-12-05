@@ -39,9 +39,9 @@ public interface CSharpElements
 
 	IElementType CONSTRUCTOR_DECLARATION = CSharpStubElements.CONSTRUCTOR_DECLARATION;
 
-	IElementType PARAMETER_LIST = CSharpStubElements.PARAMETER_LIST;
+	IElementType PARAMETER_LIST = new ElementTypeAsPsiFactory("PARAMETER_LIST", CSharpLanguage.INSTANCE, CSharpParameterListImpl.class);
 
-	IElementType PARAMETER = CSharpStubElements.PARAMETER;
+	IElementType PARAMETER = new ElementTypeAsPsiFactory("PARAMETER", CSharpLanguage.INSTANCE, CSharpParameterImpl.class);
 
 	IElementType TYPE_DECLARATION = CSharpStubElements.TYPE_DECLARATION;
 
@@ -75,17 +75,18 @@ public interface CSharpElements
 
 	IElementType GENERIC_CONSTRAINT_TYPE_VALUE = CSharpStubElements.GENERIC_CONSTRAINT_TYPE_VALUE;
 
-	IElementType USER_TYPE = CSharpStubElements.USER_TYPE;//new ElementTypeAsPsiFactory("USER_TYPE", CSharpLanguage.INSTANCE, CSharpUserTypeImpl.class);
+	IElementType USER_TYPE = new ElementTypeAsPsiFactory("USER_TYPE", CSharpLanguage.INSTANCE, CSharpUserTypeImpl.class);
 
-	IElementType POINTER_TYPE = CSharpStubElements.POINTER_TYPE; //new ElementTypeAsPsiFactory("POINTER_TYPE", CSharpLanguage.INSTANCE, CSharpPointerTypeImpl.class);
+	IElementType POINTER_TYPE = new ElementTypeAsPsiFactory("POINTER_TYPE", CSharpLanguage.INSTANCE, CSharpPointerTypeImpl.class);
 
-	IElementType NULLABLE_TYPE = CSharpStubElements.NULLABLE_TYPE;  //new ElementTypeAsPsiFactory("NULLABLE_TYPE", CSharpLanguage.INSTANCE, CSharpNullableTypeImpl.class);
+	IElementType NULLABLE_TYPE = new ElementTypeAsPsiFactory("NULLABLE_TYPE", CSharpLanguage.INSTANCE, CSharpNullableTypeImpl.class);
 
-	IElementType NATIVE_TYPE = CSharpStubElements.NATIVE_TYPE; //new ElementTypeAsPsiFactory("NATIVE_TYPE", CSharpLanguage.INSTANCE, CSharpNativeTypeImpl.class);
+	IElementType NATIVE_TYPE = new ElementTypeAsPsiFactory("NATIVE_TYPE", CSharpLanguage.INSTANCE, CSharpNativeTypeImpl.class);
 
-	IElementType ARRAY_TYPE = CSharpStubElements.ARRAY_TYPE;//new ElementTypeAsPsiFactory("ARRAY_TYPE", CSharpLanguage.INSTANCE, CSharpArrayTypeImpl.class);
+	IElementType ARRAY_TYPE = new ElementTypeAsPsiFactory("ARRAY_TYPE", CSharpLanguage.INSTANCE, CSharpArrayTypeImpl.class);
 
-	IElementType TYPE_WRAPPER_WITH_TYPE_ARGUMENTS = CSharpStubElements.TYPE_WRAPPER_WITH_TYPE_ARGUMENTS; //new ElementTypeAsPsiFactory("TYPE_WRAPPER_WITH_TYPE_ARGUMENTS", CSharpLanguage.INSTANCE, CSharpStubTypeWithTypeArgumentsImpl.class);
+	IElementType TYPE_WRAPPER_WITH_TYPE_ARGUMENTS = new ElementTypeAsPsiFactory("TYPE_WRAPPER_WITH_TYPE_ARGUMENTS", CSharpLanguage.INSTANCE,
+			CSharpTypeWithTypeArgumentsImpl.class);
 
 	IElementType MODIFIER_LIST = CSharpStubElements.MODIFIER_LIST;
 
@@ -93,7 +94,7 @@ public interface CSharpElements
 
 	IElementType TYPE_CALL_ARGUMENTS = new ElementTypeAsPsiFactory("TYPE_CALL_ARGUMENTS", CSharpLanguage.INSTANCE, CSharpTypeListImpl.class);
 
-	IElementType TYPE_ARGUMENTS = CSharpStubElements.TYPE_ARGUMENTS;
+	IElementType TYPE_ARGUMENTS = new ElementTypeAsPsiFactory("TYPE_ARGUMENTS", CSharpLanguage.INSTANCE, CSharpTypeListImpl.class);
 
 	IElementType CONSTANT_EXPRESSION = new ElementTypeAsPsiFactory("CONSTANT_EXPRESSION", CSharpLanguage.INSTANCE,
 			CSharpConstantExpressionImpl.class);

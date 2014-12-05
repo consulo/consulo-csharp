@@ -23,12 +23,6 @@ public class CSharpArrayTypeStubElementType extends CSharpAbstractStubElementTyp
 		super("ARRAY_TYPE");
 	}
 
-	@Override
-	public boolean shouldCreateStub(ASTNode node)
-	{
-		return CSharpStubTypeUtil.shouldCreateStub(node);
-	}
-
 	@NotNull
 	@Override
 	public PsiElement createElement(@NotNull ASTNode astNode)
