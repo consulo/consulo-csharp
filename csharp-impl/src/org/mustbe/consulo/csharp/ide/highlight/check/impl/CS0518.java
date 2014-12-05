@@ -19,8 +19,8 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.lang.psi.CSharpNativeType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNativeTypeImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
@@ -30,13 +30,13 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 11.06.14
  */
-public class CS0518 extends CompilerCheck<CSharpNativeTypeImpl>
+public class CS0518 extends CompilerCheck<CSharpNativeType>
 {
 	private static final String ourCheckType = "Microsoft.CSharp.RuntimeBinder.Binder";
 
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpNativeTypeImpl element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpNativeType element)
 	{
 		PsiElement typeElement = element.getTypeElement();
 		if(element.getTypeElementType() == CSharpTokens.DYNAMIC_KEYWORD)

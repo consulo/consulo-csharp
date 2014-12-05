@@ -310,7 +310,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 			case NATIVE_TYPE_WRAPPER:
 				PsiElement nativeElement = ((CSharpReferenceExpressionImpl) element).findChildByType(CSharpTokenSets.NATIVE_TYPES);
 				assert nativeElement != null;
-				String nativeRuntimeType = CSharpNativeTypeImpl.ourElementToQTypes.get(nativeElement.getNode().getElementType());
+				String nativeRuntimeType = CSharpNativeTypeImplUtil.ourElementToQTypes.get(nativeElement.getNode().getElementType());
 				if(nativeRuntimeType == null)
 				{
 					return ResolveResult.EMPTY_ARRAY;

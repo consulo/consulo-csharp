@@ -16,19 +16,11 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpNativeType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithIntValueStub;
-import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.psi.DotNetNativeType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -39,36 +31,15 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpNativeTypeImpl extends CSharpStubTypeElementImpl<CSharpWithIntValueStub<CSharpNativeTypeImpl>> implements DotNetNativeType
+public class CSharpNativeTypeImpl extends CSharpStubTypeElementImpl<CSharpWithIntValueStub<CSharpNativeType>> implements CSharpNativeType
 {
-	public static final Map<IElementType, String> ourElementToQTypes = new HashMap<IElementType, String>()
-	{
-		{
-			put(CSharpTokens.BOOL_KEYWORD, DotNetTypes.System.Boolean);
-			put(CSharpTokens.DOUBLE_KEYWORD, DotNetTypes.System.Double);
-			put(CSharpTokens.FLOAT_KEYWORD, DotNetTypes.System.Single);
-			put(CSharpTokens.CHAR_KEYWORD, DotNetTypes.System.Char);
-			put(CSharpTokens.OBJECT_KEYWORD, DotNetTypes.System.Object);
-			put(CSharpTokens.STRING_KEYWORD, DotNetTypes.System.String);
-			put(CSharpTokens.SBYTE_KEYWORD, DotNetTypes.System.SByte);
-			put(CSharpTokens.BYTE_KEYWORD, DotNetTypes.System.Byte);
-			put(CSharpTokens.INT_KEYWORD, DotNetTypes.System.Int32);
-			put(CSharpTokens.UINT_KEYWORD, DotNetTypes.System.UInt32);
-			put(CSharpTokens.LONG_KEYWORD, DotNetTypes.System.Int64);
-			put(CSharpTokens.ULONG_KEYWORD, DotNetTypes.System.UInt64);
-			put(CSharpTokens.VOID_KEYWORD, DotNetTypes.System.Void);
-			put(CSharpTokens.SHORT_KEYWORD, DotNetTypes.System.Int16);
-			put(CSharpTokens.USHORT_KEYWORD, DotNetTypes.System.UInt16);
-			put(CSharpTokens.DECIMAL_KEYWORD, DotNetTypes.System.Decimal);
-		}
-	};
-
 	public CSharpNativeTypeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpNativeTypeImpl(@NotNull CSharpWithIntValueStub<CSharpNativeTypeImpl> stub, @NotNull IStubElementType<? extends CSharpWithIntValueStub<CSharpNativeTypeImpl>, ?> nodeType)
+	public CSharpNativeTypeImpl(@NotNull CSharpWithIntValueStub<CSharpNativeType> stub,
+			@NotNull IStubElementType<? extends CSharpWithIntValueStub<CSharpNativeType>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -79,10 +50,11 @@ public class CSharpNativeTypeImpl extends CSharpStubTypeElementImpl<CSharpWithIn
 		visitor.visitNativeType(this);
 	}
 
+	@Override
 	@NotNull
 	public IElementType getTypeElementType()
 	{
-		CSharpWithIntValueStub<CSharpNativeTypeImpl> stub = getStub();
+		CSharpWithIntValueStub<CSharpNativeType> stub = getStub();
 		if(stub != null)
 		{
 			return CSharpTokenSets.NATIVE_TYPES_AS_ARRAY[stub.getValue()];
@@ -94,27 +66,7 @@ public class CSharpNativeTypeImpl extends CSharpStubTypeElementImpl<CSharpWithIn
 	@Override
 	public DotNetTypeRef toTypeRefImpl()
 	{
-		IElementType elementType = getTypeElementType();
-		if(elementType == CSharpSoftTokens.VAR_KEYWORD)
-		{
-			return DotNetTypeRef.AUTO_TYPE;
-		}
-		else if(elementType == CSharpTokens.IMPLICIT_KEYWORD)
-		{
-			return CSharpStaticTypeRef.IMPLICIT;
-		}
-		else if(elementType == CSharpTokens.EXPLICIT_KEYWORD)
-		{
-			return CSharpStaticTypeRef.EXPLICIT;
-		}
-		else if(elementType == CSharpTokens.DYNAMIC_KEYWORD)
-		{
-			return CSharpStaticTypeRef.DYNAMIC;
-		}
-
-		String q = ourElementToQTypes.get(elementType);
-		assert q != null : elementType.toString();
-		return new CSharpTypeRefByQName(q);
+		return CSharpNativeTypeImplUtil.toTypeRef(this);
 	}
 
 	@NotNull

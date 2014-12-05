@@ -158,7 +158,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(type);
 	}
 
-	public void visitNativeType(CSharpNativeTypeImpl type)
+	public void visitNativeType(CSharpNativeType type)
 	{
 		visitElement(type);
 	}
