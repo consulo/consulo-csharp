@@ -82,7 +82,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(declaration);
 	}
 
-	public void visitReferenceType(CSharpUserType type)
+	public void visitUserType(CSharpUserType type)
 	{
 		visitElement(type);
 	}

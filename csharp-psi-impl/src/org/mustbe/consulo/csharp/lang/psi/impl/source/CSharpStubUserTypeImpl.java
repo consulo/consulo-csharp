@@ -53,7 +53,7 @@ public class CSharpStubUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWith
 	@Override
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		visitor.visitReferenceType(this);
+		visitor.visitUserType(this);
 	}
 
 	@NotNull

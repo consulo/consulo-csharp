@@ -75,15 +75,15 @@ public interface CSharpElements
 
 	IElementType GENERIC_CONSTRAINT_TYPE_VALUE = CSharpStubElements.GENERIC_CONSTRAINT_TYPE_VALUE;
 
-	IElementType USER_TYPE = CSharpStubElements.USER_TYPE;
+	IElementType USER_TYPE = CSharpStubElements.USER_TYPE;//new ElementTypeAsPsiFactory("USER_TYPE", CSharpLanguage.INSTANCE, CSharpUserTypeImpl.class);
 
-	IElementType POINTER_TYPE = CSharpStubElements.POINTER_TYPE;
+	IElementType POINTER_TYPE = CSharpStubElements.POINTER_TYPE; //new ElementTypeAsPsiFactory("POINTER_TYPE", CSharpLanguage.INSTANCE, CSharpPointerTypeImpl.class);
 
-	IElementType NULLABLE_TYPE = CSharpStubElements.NULLABLE_TYPE;
+	IElementType NULLABLE_TYPE = CSharpStubElements.NULLABLE_TYPE;  //new ElementTypeAsPsiFactory("NULLABLE_TYPE", CSharpLanguage.INSTANCE, CSharpNullableTypeImpl.class);
 
-	IElementType NATIVE_TYPE = CSharpStubElements.NATIVE_TYPE;
+	IElementType NATIVE_TYPE = CSharpStubElements.NATIVE_TYPE; //new ElementTypeAsPsiFactory("NATIVE_TYPE", CSharpLanguage.INSTANCE, CSharpNativeTypeImpl.class);
 
-	IElementType ARRAY_TYPE = CSharpStubElements.ARRAY_TYPE;
+	IElementType ARRAY_TYPE = CSharpStubElements.ARRAY_TYPE;//new ElementTypeAsPsiFactory("ARRAY_TYPE", CSharpLanguage.INSTANCE, CSharpArrayTypeImpl.class);
 
 	IElementType TYPE_WRAPPER_WITH_TYPE_ARGUMENTS = CSharpStubElements.TYPE_WRAPPER_WITH_TYPE_ARGUMENTS;
 
