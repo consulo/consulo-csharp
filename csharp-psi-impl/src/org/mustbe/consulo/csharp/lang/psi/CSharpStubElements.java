@@ -22,6 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPointerTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeWithTypeArgumentsImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.*;
+import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
@@ -86,7 +87,7 @@ public interface CSharpStubElements
 		}
 	};
 
-	CSharpEmptyStubElementType<CSharpPointerTypeImpl> POINTER_TYPE = new CSharpEmptyStubElementType<CSharpPointerTypeImpl>("POINTER_TYPE")
+	CSharpEmptyStubElementType<DotNetPointerType> POINTER_TYPE = new CSharpEmptyStubElementType<DotNetPointerType>("POINTER_TYPE")
 	{
 		@Override
 		public boolean shouldCreateStub(ASTNode node)
@@ -102,7 +103,7 @@ public interface CSharpStubElements
 		}
 
 		@Override
-		public CSharpPointerTypeImpl createPsi(@NotNull CSharpEmptyStub<CSharpPointerTypeImpl> stub)
+		public CSharpPointerTypeImpl createPsi(@NotNull CSharpEmptyStub<DotNetPointerType> stub)
 		{
 			return new CSharpPointerTypeImpl(stub, this);
 		}

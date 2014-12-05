@@ -34,15 +34,15 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpPointerTypeImpl extends CSharpStubTypeElementImpl<CSharpEmptyStub<CSharpPointerTypeImpl>> implements DotNetPointerType
+public class CSharpPointerTypeImpl extends CSharpStubTypeElementImpl<CSharpEmptyStub<DotNetPointerType>> implements DotNetPointerType
 {
 	public CSharpPointerTypeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpPointerTypeImpl(@NotNull CSharpEmptyStub<CSharpPointerTypeImpl> stub,
-			@NotNull IStubElementType<? extends CSharpEmptyStub<CSharpPointerTypeImpl>, ?> nodeType)
+	public CSharpPointerTypeImpl(@NotNull CSharpEmptyStub<DotNetPointerType> stub,
+			@NotNull IStubElementType<? extends CSharpEmptyStub<DotNetPointerType>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
