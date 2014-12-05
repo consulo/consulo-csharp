@@ -7,6 +7,8 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpQualifiedNonReference;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
@@ -59,12 +61,19 @@ public class GenericInferenceUtil
 	public static final GenericInferenceResult SUCCESS = new GenericInferenceResult(true, DotNetGenericExtractor.EMPTY);
 
 	@NotNull
-	public static GenericInferenceResult inferenceGenericExtractor(@NotNull CSharpCallArgumentListOwner callArgumentListOwner,
+	public static GenericInferenceResult inferenceGenericExtractor(
+			@NotNull CSharpQualifiedNonReference referenceElement,
+			@NotNull CSharpCallArgumentListOwner callArgumentListOwner,
 			@NotNull DotNetLikeMethodDeclaration methodDeclaration)
 	{
 		CSharpCallArgument[] arguments = callArgumentListOwner.getCallArguments();
 
-		return inferenceGenericExtractor(arguments, callArgumentListOwner.getTypeArgumentListRefs(), callArgumentListOwner, methodDeclaration);
+		DotNetTypeRef[] typeArgumentListRef = DotNetTypeRef.EMPTY_ARRAY;
+		if(referenceElement instanceof CSharpReferenceExpression)
+		{
+			typeArgumentListRef = ((CSharpReferenceExpression) referenceElement).getTypeArgumentListRefs();
+		}
+		return inferenceGenericExtractor(arguments, typeArgumentListRef, callArgumentListOwner, methodDeclaration);
 	}
 
 	@NotNull

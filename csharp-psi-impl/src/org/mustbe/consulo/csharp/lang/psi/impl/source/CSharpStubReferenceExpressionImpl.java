@@ -30,6 +30,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpReferenceExpressionStub;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -251,6 +252,21 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	public boolean isSoft()
 	{
 		return kind() == ResolveToKind.SOFT_QUALIFIED_NAMESPACE;
+	}
+
+	@Nullable
+	@Override
+	public DotNetTypeList getTypeArgumentList()
+	{
+		return getStubOrPsiChild(CSharpStubElements.TYPE_ARGUMENTS);
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef[] getTypeArgumentListRefs()
+	{
+		DotNetTypeList typeArgumentList = getTypeArgumentList();
+		return typeArgumentList == null ? DotNetTypeRef.EMPTY_ARRAY : typeArgumentList.getTypeRefs();
 	}
 
 	@NotNull

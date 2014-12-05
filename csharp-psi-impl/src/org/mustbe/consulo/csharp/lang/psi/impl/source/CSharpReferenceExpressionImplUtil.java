@@ -90,6 +90,16 @@ public class CSharpReferenceExpressionImplUtil
 	public static final TokenSet ourReferenceElements = TokenSet.orSet(CSharpTokenSets.NATIVE_TYPES, TokenSet.create(CSharpTokens.THIS_KEYWORD,
 			CSharpTokens.BASE_KEYWORD, CSharpTokens.IDENTIFIER));
 
+	public static int getTypeArgumentListSize(@NotNull CSharpReferenceExpression referenceExpression)
+	{
+		DotNetTypeList typeArgumentList = referenceExpression.getTypeArgumentList();
+		if(typeArgumentList == null)
+		{
+			return 0;
+		}
+		return typeArgumentList.getTypes().length;
+	}
+
 	@NotNull
 	public static ResolveToKind kind(@NotNull CSharpReferenceExpression referenceExpression)
 	{
@@ -268,10 +278,10 @@ public class CSharpReferenceExpressionImplUtil
 		return collectResults(kind, selector, element, callArgumentListOwner, false, resolveFromParent);
 	}
 
-	public static <T extends CSharpQualifiedNonReference & PsiElement> ResolveResult[] collectResults(@NotNull ResolveToKind kind,
+	public static ResolveResult[] collectResults(@NotNull ResolveToKind kind,
 			@Nullable CSharpResolveSelector selector,
-			final T element,
-			CSharpCallArgumentListOwner callArgumentListOwner,
+			@NotNull CSharpQualifiedNonReference element,
+			@Nullable CSharpCallArgumentListOwner callArgumentListOwner,
 			final boolean completion,
 			boolean resolveFromParent)
 	{
@@ -552,7 +562,7 @@ public class CSharpReferenceExpressionImplUtil
 
 								if(inferenceResult == null)
 								{
-									inferenceResult = GenericInferenceUtil.inferenceGenericExtractor(callArgumentListOwner,
+									inferenceResult = GenericInferenceUtil.inferenceGenericExtractor(element, callArgumentListOwner,
 											(DotNetLikeMethodDeclaration) psiElement);
 									psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, inferenceResult.getExtractor());
 								}
@@ -609,7 +619,7 @@ public class CSharpReferenceExpressionImplUtil
 
 		if(kind == ResolveToKind.CONSTRUCTOR)
 		{
-			CSharpReferenceExpression referenceExpression = (CSharpReferenceExpression) element;
+			CSharpReferenceExpressionEx referenceExpression = (CSharpReferenceExpressionEx) element;
 
 			DotNetTypeRef typeRef = DotNetTypeRef.ERROR_TYPE;
 

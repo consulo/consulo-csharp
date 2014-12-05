@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.ResolveResult;
 
 /**
@@ -25,6 +26,9 @@ import com.intellij.psi.ResolveResult;
  */
 public interface CSharpReferenceExpressionEx extends CSharpReferenceExpression
 {
+	@NotNull
+	DotNetTypeRef toTypeRefWithoutCaching(ResolveToKind kind, boolean resolveFromParent);
+
 	@NotNull
 	ResolveResult[] multiResolveImpl(ResolveToKind kind, boolean resolveFromParent);
 }

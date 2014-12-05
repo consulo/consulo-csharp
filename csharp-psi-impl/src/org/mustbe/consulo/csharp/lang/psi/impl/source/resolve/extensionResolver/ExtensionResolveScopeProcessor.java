@@ -164,7 +164,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 
 		newArguments[0] = myArgumentWrapper;
 
-		val typeArgumentRefs = myCallArgumentListOwner == null ? DotNetTypeRef.EMPTY_ARRAY : myCallArgumentListOwner.getTypeArgumentListRefs();
+		val typeArgumentRefs = myExpression.getTypeArgumentListRefs();
 		return GenericInferenceUtil.inferenceGenericExtractor(newArguments, typeArgumentRefs, myExpression, methodDeclaration);
 	}
 
