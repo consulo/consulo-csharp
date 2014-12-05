@@ -168,7 +168,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(typeArguments);
 	}
 
-	public void visitArrayType(CSharpArrayTypeImpl type)
+	public void visitArrayType(CSharpArrayType type)
 	{
 		visitElement(type);
 	}

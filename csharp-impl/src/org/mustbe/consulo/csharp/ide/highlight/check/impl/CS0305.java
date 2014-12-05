@@ -19,8 +19,8 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayTypeImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
@@ -50,9 +50,9 @@ public class CS0305 extends CompilerCheck<DotNetType>
 			innerType = ((DotNetTypeWithTypeArguments) type).getInnerType();
 			foundCount = ((DotNetTypeWithTypeArguments) type).getArguments().length;
 		}
-		else if(type instanceof CSharpArrayTypeImpl)
+		else if(type instanceof CSharpArrayType)
 		{
-			innerType = ((CSharpArrayTypeImpl) type).getInnerType();
+			innerType = ((CSharpArrayType) type).getInnerType();
 			foundCount = 1;
 		}
 

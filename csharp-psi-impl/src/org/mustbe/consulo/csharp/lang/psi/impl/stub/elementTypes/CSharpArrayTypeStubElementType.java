@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayType;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithIntValueStub;
 import com.intellij.lang.ASTNode;
@@ -15,7 +16,7 @@ import com.intellij.psi.stubs.StubOutputStream;
  * @author VISTALL
  * @since 19.10.14
  */
-public class CSharpArrayTypeStubElementType extends CSharpAbstractStubElementType<CSharpWithIntValueStub<CSharpArrayTypeImpl>, CSharpArrayTypeImpl>
+public class CSharpArrayTypeStubElementType extends CSharpAbstractStubElementType<CSharpWithIntValueStub<CSharpArrayType>, CSharpArrayType>
 {
 	public CSharpArrayTypeStubElementType()
 	{
@@ -36,15 +37,15 @@ public class CSharpArrayTypeStubElementType extends CSharpAbstractStubElementTyp
 	}
 
 	@Override
-	public CSharpArrayTypeImpl createPsi(@NotNull CSharpWithIntValueStub<CSharpArrayTypeImpl> stub)
+	public CSharpArrayType createPsi(@NotNull CSharpWithIntValueStub<CSharpArrayType> stub)
 	{
 		return new CSharpArrayTypeImpl(stub, this);
 	}
 
 	@Override
-	public CSharpWithIntValueStub<CSharpArrayTypeImpl> createStub(@NotNull CSharpArrayTypeImpl cSharpArrayType, StubElement stubElement)
+	public CSharpWithIntValueStub<CSharpArrayType> createStub(@NotNull CSharpArrayType cSharpArrayType, StubElement stubElement)
 	{
-		return new CSharpWithIntValueStub<CSharpArrayTypeImpl>(stubElement, this, cSharpArrayType.getDimensions());
+		return new CSharpWithIntValueStub<CSharpArrayType>(stubElement, this, cSharpArrayType.getDimensions());
 	}
 
 	@Override
@@ -55,9 +56,9 @@ public class CSharpArrayTypeStubElementType extends CSharpAbstractStubElementTyp
 
 	@NotNull
 	@Override
-	public CSharpWithIntValueStub<CSharpArrayTypeImpl> deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
+	public CSharpWithIntValueStub<CSharpArrayType> deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		int i = stubInputStream.readVarInt();
-		return new CSharpWithIntValueStub<CSharpArrayTypeImpl>(stubElement, this, i);
+		return new CSharpWithIntValueStub<CSharpArrayType>(stubElement, this, i);
 	}
 }
