@@ -7,7 +7,7 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
@@ -40,7 +40,7 @@ public class UnusedSymbolVisitor extends CSharpElementVisitor
 	}
 
 	@Override
-	public void visitReferenceExpression(CSharpReferenceExpressionImpl expression)
+	public void visitReferenceExpression(CSharpReferenceExpression expression)
 	{
 		PsiElement resolve = expression.resolve();
 		if(!(resolve instanceof PsiNameIdentifierOwner))

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CompletionResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
@@ -51,7 +51,7 @@ public class ForeachVariableMacro extends VariableTypeMacroBase
 			return PsiElement.EMPTY_ARRAY;
 		}
 
-		Couple<PsiElement> resolveLayers = CSharpReferenceExpressionImpl.getResolveLayers(psiElementAtStartOffset, false);
+		Couple<PsiElement> resolveLayers = CSharpReferenceExpressionImplUtil.getResolveLayers(psiElementAtStartOffset, false);
 
 		AbstractScopeProcessor processor = new SimpleNamedScopeProcessor(true, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
 		CSharpResolveUtil.treeWalkUp(processor, psiElementAtStartOffset, psiElementAtStartOffset, resolveLayers.getFirst());
@@ -69,7 +69,7 @@ public class ForeachVariableMacro extends VariableTypeMacroBase
 		{
 			PsiElement element = resolveResultWithWeight.getElement();
 
-			DotNetTypeRef elementTypeRef = CSharpReferenceExpressionImpl.toTypeRef(element);
+			DotNetTypeRef elementTypeRef = CSharpReferenceExpressionImplUtil.toTypeRef(element);
 
 			DotNetTypeRef iterableTypeRef = CSharpResolveUtil.resolveIterableType(psiElementAtStartOffset, elementTypeRef);
 

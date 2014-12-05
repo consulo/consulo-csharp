@@ -22,10 +22,10 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
@@ -58,7 +58,7 @@ public class ConvertToNormalCallFix extends PsiElementBaseIntentionAction
 	{
 		final CSharpMethodCallExpressionImpl callExpression = PsiTreeUtil.getParentOfType(element, CSharpMethodCallExpressionImpl.class);
 		assert callExpression != null;
-		CSharpReferenceExpressionImpl referenceExpression = (CSharpReferenceExpressionImpl) callExpression.getCallExpression();
+		CSharpReferenceExpression referenceExpression = (CSharpReferenceExpression) callExpression.getCallExpression();
 
 		PsiElement qualifier = referenceExpression.getQualifier();
 		assert qualifier != null;

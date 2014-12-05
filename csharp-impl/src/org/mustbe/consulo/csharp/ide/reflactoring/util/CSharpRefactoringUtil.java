@@ -13,7 +13,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.UsefulPsiTreeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.lang.ASTNode;
@@ -84,7 +83,7 @@ public class CSharpRefactoringUtil
 		context.acceptChildren(new CSharpRecursiveElementVisitor()
 		{
 			@Override
-			public void visitReferenceExpression(CSharpReferenceExpressionImpl expression)
+			public void visitReferenceExpression(CSharpReferenceExpression expression)
 			{
 				if(expression.resolve() == pattern)
 				{

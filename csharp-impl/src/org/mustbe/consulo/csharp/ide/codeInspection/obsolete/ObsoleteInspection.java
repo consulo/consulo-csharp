@@ -91,7 +91,7 @@ public class ObsoleteInspection extends LocalInspectionTool
 			}
 
 			@Override
-			public void visitReferenceExpression(CSharpReferenceExpressionImpl expression)
+			public void visitReferenceExpression(CSharpReferenceExpression expression)
 			{
 				PsiElement resolve = expression.resolve();
 				if(resolve == null)

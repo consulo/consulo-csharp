@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.ide.debugger;
 
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
 import mono.debugger.LocalVariableMirror;
@@ -41,7 +41,7 @@ public class ExpressionEvaluator extends CSharpElementVisitor
 	}
 
 	@Override
-	public void visitReferenceExpression(CSharpReferenceExpressionImpl expression)
+	public void visitReferenceExpression(CSharpReferenceExpression expression)
 	{
 		PsiElement qualifier = expression.getQualifier();
 		if(qualifier != null)

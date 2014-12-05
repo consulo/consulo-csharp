@@ -105,7 +105,7 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 				{
 					PsiElement psiElement = CSharpReferenceExpressionImplUtil.resolveByTypeKind(((CSharpUserType) type).getReferenceExpression(),
 							false);
-					typeRef = CSharpReferenceExpressionImpl.toTypeRef(psiElement);
+					typeRef = CSharpReferenceExpressionImplUtil.toTypeRef(psiElement);
 				}
 				else
 				{

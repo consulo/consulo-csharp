@@ -30,7 +30,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -226,11 +226,11 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 		resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, new MemberByNameSelector(element.getName()));
 		resolveState = resolveState.put(MemberResolveScopeProcessor.BREAK_RULE, Boolean.TRUE);
 
-		Couple<PsiElement> resolveLayers = CSharpReferenceExpressionImpl.getResolveLayers(parent, false);
+		Couple<PsiElement> resolveLayers = CSharpReferenceExpressionImplUtil.getResolveLayers(parent, false);
 		//PsiElement last = resolveLayers.getFirst();
 		PsiElement targetToWalkChildren = resolveLayers.getSecond();
 
-		AbstractScopeProcessor p = CSharpReferenceExpressionImpl.createMemberProcessor(element, CSharpReferenceExpression.ResolveToKind.TYPE_LIKE,
+		AbstractScopeProcessor p = CSharpReferenceExpressionImplUtil.createMemberProcessor(element, CSharpReferenceExpression.ResolveToKind.TYPE_LIKE,
 				ResolveResult.EMPTY_ARRAY, false, false);
 
 		if(!CSharpResolveUtil.walkChildren(p, targetToWalkChildren, true, true, resolveState))

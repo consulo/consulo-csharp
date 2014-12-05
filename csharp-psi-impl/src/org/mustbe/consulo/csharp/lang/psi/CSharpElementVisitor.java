@@ -73,7 +73,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(list);
 	}
 
-	public void visitReferenceExpression(CSharpReferenceExpressionImpl expression)
+	public void visitReferenceExpression(CSharpReferenceExpression expression)
 	{
 		visitElement(expression);
 	}

@@ -285,7 +285,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		}
 		else
 		{
-			return CSharpReferenceExpressionImpl.toTypeRef(element);
+			return CSharpReferenceExpressionImplUtil.toTypeRef(element);
 		}
 	}
 

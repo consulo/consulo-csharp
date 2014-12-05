@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
@@ -166,7 +167,7 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 	@Nullable
 	public String getQNameFromDecl()
 	{
-		CSharpReferenceExpressionImpl childByClass = findChildByClass(CSharpReferenceExpressionImpl.class);
+		CSharpReferenceExpression childByClass = findChildByClass(CSharpReferenceExpression.class);
 		return childByClass != null ? childByClass.getText() : null;
 	}
 

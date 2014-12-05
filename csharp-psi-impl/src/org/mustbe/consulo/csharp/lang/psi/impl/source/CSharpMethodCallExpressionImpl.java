@@ -155,6 +155,6 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 		{
 			return ((CSharpSimpleLikeMethodAsElement) resolvedElement).getReturnTypeRef();
 		}
-		return CSharpReferenceExpressionImpl.toTypeRef(resolvedElement);
+		return CSharpReferenceExpressionImplUtil.toTypeRef(resolvedElement);
 	}
 }
