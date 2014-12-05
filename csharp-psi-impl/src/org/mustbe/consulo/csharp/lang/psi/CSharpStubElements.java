@@ -26,6 +26,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 
 /**
@@ -140,6 +141,8 @@ public interface CSharpStubElements
 	CSharpUserTypeStubElementType USER_TYPE = new CSharpUserTypeStubElementType();
 
 	CSharpTypeListElementType TYPE_ARGUMENTS = new CSharpTypeListElementType("TYPE_ARGUMENTS");
+
+	IElementType REFERENCE_EXPRESSION = CSharpElements.REFERENCE_EXPRESSION;
 
 	CSharpReferenceExpressionStubElementType _REFERENCE_EXPRESSION = new CSharpReferenceExpressionStubElementType();
 

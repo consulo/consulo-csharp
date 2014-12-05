@@ -253,7 +253,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		}
 		else if(builder.getTokenType() == IDENTIFIER)
 		{
-			ExpressionParsing.parseQualifiedReference(builder, null, nameStopperSet);
+			ExpressionParsing.parseQualifiedReference(builder, null, flags, nameStopperSet);
 			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.USER_TYPE : CSharpElements.USER_TYPE);
 		}
 		else if(builder.getTokenType() == GLOBAL_KEYWORD)
@@ -265,7 +265,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 			{
 				expect(builder, IDENTIFIER, "Identifier expected");
 			}
-			mark.done(REFERENCE_EXPRESSION);
+			mark.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.REFERENCE_EXPRESSION : CSharpElements.REFERENCE_EXPRESSION);
 			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.USER_TYPE : CSharpElements.USER_TYPE);
 		}
 		else

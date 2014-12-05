@@ -22,11 +22,14 @@ import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.decl.MethodParsing;
 import org.mustbe.consulo.csharp.lang.parser.stmt.StatementParsing;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import com.intellij.util.BitUtil;
 import lombok.val;
 
 public class ExpressionParsing extends SharedParsingHelpers
@@ -1298,11 +1301,11 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 	public static PsiBuilder.Marker parseQualifiedReference(@NotNull PsiBuilder builder, @Nullable PsiBuilder.Marker prevMarker)
 	{
-		return parseQualifiedReference(builder, prevMarker, TokenSet.EMPTY);
+		return parseQualifiedReference(builder, prevMarker, NONE, TokenSet.EMPTY);
 	}
 
 	public static PsiBuilder.Marker parseQualifiedReference(@NotNull PsiBuilder builder, @Nullable PsiBuilder.Marker prevMarker,
-			TokenSet nameStopperSet)
+			int flags, @NotNull TokenSet nameStopperSet)
 	{
 		if(prevMarker != null)
 		{
@@ -1312,7 +1315,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(expect(builder, IDENTIFIER, "Identifier expected"))
 		{
-			marker.done(REFERENCE_EXPRESSION);
+			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.REFERENCE_EXPRESSION : CSharpElements.REFERENCE_EXPRESSION);
 
 			if(builder.getTokenType() == DOT)
 			{
@@ -1321,7 +1324,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				{
 					return marker;
 				}
-				marker = parseQualifiedReference(builder, marker.precede(), nameStopperSet);
+				marker = parseQualifiedReference(builder, marker.precede(), flags, nameStopperSet);
 			}
 		}
 		else
