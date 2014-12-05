@@ -141,6 +141,8 @@ public interface CSharpStubElements
 
 	CSharpTypeListElementType TYPE_ARGUMENTS = new CSharpTypeListElementType("TYPE_ARGUMENTS");
 
+	CSharpReferenceExpressionStubElementType _REFERENCE_EXPRESSION = new CSharpReferenceExpressionStubElementType();
+
 	TokenSet GENERIC_CONSTRAINT_VALUES = TokenSet.create(GENERIC_CONSTRAINT_KEYWORD_VALUE, GENERIC_CONSTRAINT_TYPE_VALUE);
 
 	TokenSet TYPE_SET = TokenSet.create(NULLABLE_TYPE, POINTER_TYPE, NATIVE_TYPE, TYPE_WRAPPER_WITH_TYPE_ARGUMENTS, ARRAY_TYPE, USER_TYPE);

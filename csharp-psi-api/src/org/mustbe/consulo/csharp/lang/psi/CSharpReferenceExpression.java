@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
+import org.consulo.annotations.Immutable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
@@ -46,7 +47,11 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 		PARAMETER,
 		THIS, // return type declaration of parent
 		BASE,  // return type declaration super class of parent
-		LABEL
+		LABEL;
+
+		@NotNull
+		@Immutable
+		public static final ResolveToKind[] VALUES = values();
 	}
 
 	@Nullable
