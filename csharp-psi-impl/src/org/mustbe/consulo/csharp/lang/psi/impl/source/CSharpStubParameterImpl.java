@@ -45,14 +45,14 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpParameterImpl extends CSharpStubElementImpl<CSharpVariableDeclStub<DotNetParameter>> implements DotNetParameter
+public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariableDeclStub<DotNetParameter>> implements DotNetParameter
 {
-	public CSharpParameterImpl(@NotNull ASTNode node)
+	public CSharpStubParameterImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpParameterImpl(@NotNull CSharpVariableDeclStub<DotNetParameter> stub)
+	public CSharpStubParameterImpl(@NotNull CSharpVariableDeclStub<DotNetParameter> stub)
 	{
 		super(stub, CSharpStubElements.PARAMETER);
 	}

@@ -29,14 +29,14 @@ import com.intellij.lang.ASTNode;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpParameterListImpl extends CSharpStubElementImpl<CSharpEmptyStub<DotNetParameterList>> implements DotNetParameterList
+public class CSharpStubParameterListImpl extends CSharpStubElementImpl<CSharpEmptyStub<DotNetParameterList>> implements DotNetParameterList
 {
-	public CSharpParameterListImpl(@NotNull ASTNode node)
+	public CSharpStubParameterListImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpParameterListImpl(@NotNull CSharpEmptyStub<DotNetParameterList> stub)
+	public CSharpStubParameterListImpl(@NotNull CSharpEmptyStub<DotNetParameterList> stub)
 	{
 		super(stub, CSharpStubElements.PARAMETER_LIST);
 	}

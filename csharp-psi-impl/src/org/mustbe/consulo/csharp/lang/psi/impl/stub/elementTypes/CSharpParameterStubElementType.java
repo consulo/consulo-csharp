@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpParameterImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubParameterImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import com.intellij.lang.ASTNode;
@@ -37,12 +37,12 @@ public class CSharpParameterStubElementType extends CSharpVariableStubElementTyp
 	@Override
 	public DotNetParameter createElement(@NotNull ASTNode astNode)
 	{
-		return new CSharpParameterImpl(astNode);
+		return new CSharpStubParameterImpl(astNode);
 	}
 
 	@Override
 	public DotNetParameter createPsi(@NotNull CSharpVariableDeclStub<DotNetParameter> stub)
 	{
-		return new CSharpParameterImpl(stub);
+		return new CSharpStubParameterImpl(stub);
 	}
 }
