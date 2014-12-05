@@ -55,7 +55,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 			@Override
 			public Pair<PsiBuilder.Marker, Boolean> fun(CSharpBuilderWrapper builderWrapper)
 			{
-				return parseModifierListWithAttributes(builderWrapper);
+				return parseModifierListWithAttributes(builderWrapper, STUB_SUPPORT);
 			}
 		}, builder, PARTIAL_KEYWORD, ASYNC_KEYWORD);
 

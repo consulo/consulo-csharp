@@ -968,7 +968,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		// typed
 		if(MODIFIERS.contains(builder.getTokenType()))
 		{
-			parseModifierList(builder);
+			parseModifierList(builder, NONE);
 
 			if(parseType(builder) == null)
 			{

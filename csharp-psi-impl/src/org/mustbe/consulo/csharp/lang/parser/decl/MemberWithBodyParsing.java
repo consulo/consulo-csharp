@@ -50,7 +50,7 @@ public class MemberWithBodyParsing extends SharedParsingHelpers
 	{
 		PsiBuilder.Marker marker = builder.mark();
 
-		val p  = parseModifierListWithAttributes(builder);
+		val p  = parseModifierListWithAttributes(builder, STUB_SUPPORT);
 
 		builder.enableSoftKeywords(tokenSet);
 		boolean contains = tokenSet.contains(builder.getTokenType());

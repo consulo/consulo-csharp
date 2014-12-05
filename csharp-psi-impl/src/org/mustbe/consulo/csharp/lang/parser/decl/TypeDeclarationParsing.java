@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.Pair;
 import com.intellij.util.NotNullFunction;
@@ -95,8 +96,8 @@ public class TypeDeclarationParsing extends SharedParsingHelpers
 		if(builder.getTokenType() == LBRACKET)
 		{
 			PsiBuilder.Marker modMark = builder.mark();
-			parseAttributeList(builder);
-			modMark.done(MODIFIER_LIST);
+			parseAttributeList(builder, STUB_SUPPORT);
+			modMark.done(CSharpStubElements.MODIFIER_LIST);
 
 			nameExpected = true;
 		}

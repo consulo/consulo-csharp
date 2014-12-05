@@ -277,7 +277,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		return typeInfo;
 	}
 
-	protected static boolean parseAttributeList(CSharpBuilderWrapper builder)
+	protected static boolean parseAttributeList(CSharpBuilderWrapper builder, int flags)
 	{
 		boolean empty = true;
 		while(builder.getTokenType() == LBRACKET)
@@ -306,7 +306,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 
 			while(!builder.eof())
 			{
-				PsiBuilder.Marker attMark = parseAttribute(builder);
+				PsiBuilder.Marker attMark = parseAttribute(builder, flags);
 				if(attMark == null)
 				{
 					builder.error("Attribute name expected");
@@ -324,15 +324,15 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 			}
 
 			expect(builder, RBRACKET, "']' expected");
-			mark.done(ATTRIBUTE_LIST);
+			mark.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.ATTRIBUTE_LIST : CSharpElements.ATTRIBUTE_LIST);
 		}
 		return empty;
 	}
 
-	private static PsiBuilder.Marker parseAttribute(CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseAttribute(CSharpBuilderWrapper builder, int flags)
 	{
 		PsiBuilder.Marker mark = builder.mark();
-		if(ExpressionParsing.parseQualifiedReference(builder, null) == null)
+		if(ExpressionParsing.parseQualifiedReference(builder, null, flags, TokenSet.EMPTY) == null)
 		{
 			mark.drop();
 			return null;
@@ -340,11 +340,11 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 
 		ExpressionParsing.parseArgumentList(builder, true);
 
-		mark.done(ATTRIBUTE);
+		mark.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.ATTRIBUTE : CSharpElements.ATTRIBUTE);
 		return mark;
 	}
 
-	protected static Pair<PsiBuilder.Marker, Boolean> parseModifierList(CSharpBuilderWrapper builder)
+	protected static Pair<PsiBuilder.Marker, Boolean> parseModifierList(CSharpBuilderWrapper builder, int flags)
 	{
 		val marker = builder.mark();
 
@@ -361,21 +361,21 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 				break;
 			}
 		}
-		marker.done(MODIFIER_LIST);
+		marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.MODIFIER_LIST : CSharpElements.MODIFIER_LIST);
 		return new Pair<PsiBuilder.Marker, Boolean>(marker, empty);
 	}
 
-	protected static Pair<PsiBuilder.Marker, Boolean> parseModifierListWithAttributes(CSharpBuilderWrapper builder)
+	protected static Pair<PsiBuilder.Marker, Boolean> parseModifierListWithAttributes(CSharpBuilderWrapper builder, int flags)
 	{
 		if(MODIFIERS.contains(builder.getTokenType()))
 		{
-			return parseModifierList(builder);
+			return parseModifierList(builder, flags);
 		}
 		else
 		{
 			boolean empty = true;
 			val marker = builder.mark();
-			empty = parseAttributeList(builder);
+			empty = parseAttributeList(builder, flags);
 			while(!builder.eof())
 			{
 				if(MODIFIERS.contains(builder.getTokenType()))
@@ -388,7 +388,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 					break;
 				}
 			}
-			marker.done(MODIFIER_LIST);
+			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.MODIFIER_LIST : CSharpElements.MODIFIER_LIST);
 			return new Pair<PsiBuilder.Marker, Boolean>(marker, empty);
 		}
 	}
