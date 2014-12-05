@@ -67,4 +67,5 @@ public class CSharpUserTypeImpl extends CSharpTypeElementImpl implements CSharpU
 	public CSharpReferenceExpression getReferenceExpression()
 	{
 		return findNotNullChildByClass(CSharpReferenceExpression.class);
-	}}
+	}
+}
