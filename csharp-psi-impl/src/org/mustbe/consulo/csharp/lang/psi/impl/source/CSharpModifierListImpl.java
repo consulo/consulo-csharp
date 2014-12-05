@@ -26,30 +26,22 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifierList;
-import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpModifierListStub;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
- * @since 28.11.13.
+ * @since 05.12.14
  */
-public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModifierListStub> implements CSharpModifierList
+public class CSharpModifierListImpl extends CSharpElementImpl implements CSharpModifierList
 {
-	public CSharpStubModifierListImpl(@NotNull ASTNode node)
+	public CSharpModifierListImpl(@NotNull ASTNode node)
 	{
 		super(node);
-	}
-
-	public CSharpStubModifierListImpl(@NotNull CSharpModifierListStub stub, @NotNull IStubElementType<? extends CSharpModifierListStub, ?> nodeType)
-	{
-		super(stub, nodeType);
 	}
 
 	@Override
@@ -105,12 +97,6 @@ public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModi
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		CSharpModifierListStub stub = getStub();
-		if(stub != null)
-		{
-			return stub.hasModifier(modifier);
-		}
-
 		return CSharpModifierListImplUtil.hasModifier(this, modifier);
 	}
 
@@ -141,6 +127,6 @@ public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModi
 	@Override
 	public CSharpAttributeList[] getAttributeLists()
 	{
-		return getStubOrPsiChildren(CSharpStubElements.ATTRIBUTE_LIST, CSharpAttributeList.ARRAY_FACTORY);
+		return findChildrenByClass(CSharpAttributeList.class);
 	}
 }
