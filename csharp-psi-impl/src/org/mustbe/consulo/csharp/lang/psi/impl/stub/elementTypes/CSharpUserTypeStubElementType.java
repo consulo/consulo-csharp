@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUserType;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUserTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
 import com.intellij.lang.ASTNode;
@@ -16,8 +17,8 @@ import com.intellij.util.io.StringRef;
  * @author VISTALL
  * @since 19.10.14
  */
-public class CSharpUserTypeStubElementType extends CSharpAbstractStubElementType<CSharpWithStringValueStub<CSharpUserTypeImpl>,
-		CSharpUserTypeImpl>
+public class CSharpUserTypeStubElementType extends CSharpAbstractStubElementType<CSharpWithStringValueStub<CSharpUserType>,
+		CSharpUserType>
 {
 	public CSharpUserTypeStubElementType()
 	{
@@ -38,20 +39,20 @@ public class CSharpUserTypeStubElementType extends CSharpAbstractStubElementType
 	}
 
 	@Override
-	public CSharpUserTypeImpl createPsi(@NotNull CSharpWithStringValueStub<CSharpUserTypeImpl> stub)
+	public CSharpUserType createPsi(@NotNull CSharpWithStringValueStub<CSharpUserType> stub)
 	{
 		return new CSharpUserTypeImpl(stub, this);
 	}
 
 	@Override
-	public CSharpWithStringValueStub<CSharpUserTypeImpl> createStub(@NotNull CSharpUserTypeImpl cSharpUserType, StubElement stubElement)
+	public CSharpWithStringValueStub<CSharpUserType> createStub(@NotNull CSharpUserType cSharpUserType, StubElement stubElement)
 	{
 
-		return new CSharpWithStringValueStub<CSharpUserTypeImpl>(stubElement, this, cSharpUserType.getReferenceText());
+		return new CSharpWithStringValueStub<CSharpUserType>(stubElement, this, cSharpUserType.getReferenceText());
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpWithStringValueStub<CSharpUserTypeImpl> stub,
+	public void serialize(@NotNull CSharpWithStringValueStub<CSharpUserType> stub,
 			@NotNull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(stub.getReferenceText());
@@ -59,10 +60,10 @@ public class CSharpUserTypeStubElementType extends CSharpAbstractStubElementType
 
 	@NotNull
 	@Override
-	public CSharpWithStringValueStub<CSharpUserTypeImpl> deserialize(@NotNull StubInputStream stubInputStream,
+	public CSharpWithStringValueStub<CSharpUserType> deserialize(@NotNull StubInputStream stubInputStream,
 			StubElement stubElement) throws IOException
 	{
 		StringRef ref = stubInputStream.readName();
-		return new CSharpWithStringValueStub<CSharpUserTypeImpl>(stubElement, this, ref);
+		return new CSharpWithStringValueStub<CSharpUserType>(stubElement, this, ref);
 	}
 }

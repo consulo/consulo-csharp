@@ -983,7 +983,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 				return ResolveToKind.QUALIFIED_NAMESPACE;
 			}
 
-			if(PsiTreeUtil.getParentOfType(this, DotNetUserType.class) != null)
+			if(PsiTreeUtil.getParentOfType(this, CSharpUserType.class) != null)
 			{
 				return ResolveToKind.TYPE_LIKE;
 			}

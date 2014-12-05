@@ -20,13 +20,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUserType;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpReferenceTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
-import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -37,15 +37,15 @@ import com.intellij.psi.util.PsiTreeUtil;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWithStringValueStub<CSharpUserTypeImpl>> implements DotNetUserType
+public class CSharpUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWithStringValueStub<CSharpUserType>> implements CSharpUserType
 {
 	public CSharpUserTypeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpUserTypeImpl(@NotNull CSharpWithStringValueStub<CSharpUserTypeImpl> stub,
-			@NotNull IStubElementType<? extends CSharpWithStringValueStub<CSharpUserTypeImpl>, ?> nodeType)
+	public CSharpUserTypeImpl(@NotNull CSharpWithStringValueStub<CSharpUserType> stub,
+			@NotNull IStubElementType<? extends CSharpWithStringValueStub<CSharpUserType>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -79,7 +79,7 @@ public class CSharpUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWithStri
 	@Override
 	public String getReferenceText()
 	{
-		CSharpWithStringValueStub<CSharpUserTypeImpl> stub = getStub();
+		CSharpWithStringValueStub<CSharpUserType> stub = getStub();
 		if(stub != null)
 		{
 			//noinspection ConstantConditions
@@ -99,7 +99,7 @@ public class CSharpUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWithStri
 	@Nullable
 	private CSharpReferenceExpression getReferenceExpressionByStub()
 	{
-		CSharpWithStringValueStub<CSharpUserTypeImpl> stub = getStub();
+		CSharpWithStringValueStub<CSharpUserType> stub = getStub();
 		if(stub != null)
 		{
 			String referenceText = stub.getReferenceText();
@@ -109,9 +109,9 @@ public class CSharpUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWithStri
 			}
 
 			CSharpFragmentFileImpl typeFragment = CSharpFragmentFactory.createTypeFragment(getProject(), referenceText, this);
-			DotNetUserType dotNetType = (DotNetUserType) PsiTreeUtil.getChildOfType(typeFragment, DotNetType.class);
+			CSharpUserType dotNetType = (CSharpUserType) PsiTreeUtil.getChildOfType(typeFragment, DotNetType.class);
 			assert dotNetType != null;
-			return (CSharpReferenceExpression) dotNetType.getReferenceExpression();
+			return dotNetType.getReferenceExpression();
 		}
 		return getReferenceExpression();
 	}
