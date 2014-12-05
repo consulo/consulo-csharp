@@ -153,7 +153,7 @@ public class StatementParsing extends SharedParsingHelpers
 
 			wrapper.advanceLexer();
 
-			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(wrapper, varMark, LOCAL_VARIABLE, true);
+			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(wrapper, varMark, LOCAL_VARIABLE, NONE, true);
 
 			marker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
 		}
@@ -190,7 +190,7 @@ public class StatementParsing extends SharedParsingHelpers
 		if(canParseAsVariable(builder))
 		{
 			PsiBuilder.Marker mark = builder.mark();
-			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, mark, LOCAL_VARIABLE, someMarker != null);
+			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, mark, LOCAL_VARIABLE, VAR_SUPPORT, someMarker != null);
 			if(someMarker != null)
 			{
 				someMarker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
@@ -322,7 +322,7 @@ public class StatementParsing extends SharedParsingHelpers
 
 			PsiBuilder.Marker varMarker = builder.mark();
 
-			if(parseType(builder, NONE) == null)
+			if(parseType(builder) == null)
 			{
 				builder.error("Type expected");
 				varMarker.drop();

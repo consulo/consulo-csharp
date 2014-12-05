@@ -41,7 +41,7 @@ public class MethodParsing extends MemberWithBodyParsing
 
 	public static void parseMethodStartAtType(@NotNull CSharpBuilderWrapper builder, @NotNull PsiBuilder.Marker marker)
 	{
-		TypeInfo typeInfo = parseType(builder, NONE);
+		TypeInfo typeInfo = parseType(builder, STUB_SUPPORT);
 		if(typeInfo != null)
 		{
 			parseMethodStartAfterType(builder, marker, typeInfo, Target.METHOD);
@@ -70,7 +70,7 @@ public class MethodParsing extends MemberWithBodyParsing
 
 				if(typeInfo != null && (typeInfo.nativeElementType == EXPLICIT_KEYWORD || typeInfo.nativeElementType == IMPLICIT_KEYWORD))
 				{
-					if(parseType(builder, NONE) == null)
+					if(parseType(builder, STUB_SUPPORT) == null)
 					{
 						builder.error("Type expected");
 					}
@@ -114,7 +114,7 @@ public class MethodParsing extends MemberWithBodyParsing
 			}
 			else
 			{
-				parseParameterList(builder, RPAR);
+				parseParameterList(builder, STUB_SUPPORT, RPAR);
 			}
 		}
 		else
@@ -163,7 +163,7 @@ public class MethodParsing extends MemberWithBodyParsing
 		}
 	}
 
-	public static void parseParameterList(CSharpBuilderWrapper builder, IElementType end)
+	public static void parseParameterList(CSharpBuilderWrapper builder, int flags, IElementType end)
 	{
 		val mark = builder.mark();
 
@@ -173,7 +173,7 @@ public class MethodParsing extends MemberWithBodyParsing
 		{
 			while(!builder.eof())
 			{
-				parseParameter(builder);
+				parseParameter(builder, flags);
 
 				if(builder.getTokenType() == COMMA)
 				{
@@ -190,13 +190,13 @@ public class MethodParsing extends MemberWithBodyParsing
 		mark.done(PARAMETER_LIST);
 	}
 
-	private static void parseParameter(CSharpBuilderWrapper builder)
+	private static void parseParameter(CSharpBuilderWrapper builder, int flags)
 	{
 		val mark = builder.mark();
 
 		parseModifierListWithAttributes(builder);
 
-		if(parseType(builder, NONE) == null)
+		if(parseType(builder, flags) == null)
 		{
 			mark.error("Type expected");
 		}

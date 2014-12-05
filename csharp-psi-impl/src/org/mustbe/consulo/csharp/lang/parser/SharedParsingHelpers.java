@@ -87,6 +87,12 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 	}
 
 	@Nullable
+	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder)
+	{
+		return parseType(builder, NONE, TokenSet.EMPTY);
+	}
+
+	@Nullable
 	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder, int flags)
 	{
 		return parseType(builder, flags, TokenSet.EMPTY);

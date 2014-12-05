@@ -142,7 +142,7 @@ public class GenericParameterParsing extends SharedParsingHelpers
 				}
 				else
 				{
-					if(parseType(builder, NONE) == null)
+					if(parseType(builder, STUB_SUPPORT) == null)
 					{
 						builder.error("Type expected");
 					}

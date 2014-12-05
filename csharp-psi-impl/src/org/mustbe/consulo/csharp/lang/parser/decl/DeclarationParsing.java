@@ -90,7 +90,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 
-			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, marker, FIELD_DECLARATION, true);
+			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, marker, FIELD_DECLARATION, STUB_SUPPORT, true);
 		}
 		else
 		{
@@ -107,7 +107,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 			}
 			else
 			{
-				TypeInfo typeInfo = parseType(builder, NONE);
+				TypeInfo typeInfo = parseType(builder, STUB_SUPPORT);
 				if(typeInfo == null)
 				{
 					if(!modifierListPair.getSecond())
@@ -187,6 +187,6 @@ public class DeclarationParsing extends SharedParsingHelpers
 		{
 			return new TypeInfo();
 		}
-		return parseType(builder, NONE, NAME_STOPPERS);
+		return parseType(builder, STUB_SUPPORT, NAME_STOPPERS);
 	}
 }

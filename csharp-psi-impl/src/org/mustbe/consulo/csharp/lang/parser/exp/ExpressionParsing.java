@@ -516,7 +516,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		while(!builder.eof())
 		{
-			val marker = parseType(builder, NONE);
+			val marker = parseType(builder);
 			if(marker == null)
 			{
 				mark.rollbackTo();
@@ -824,7 +824,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(builder.getTokenType() == LPAR)
 		{
-			MethodParsing.parseParameterList(builder, RPAR);
+			MethodParsing.parseParameterList(builder, NONE, RPAR);
 		}
 
 		if(builder.getTokenType() == LBRACE)
@@ -967,7 +967,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		{
 			parseModifierList(builder);
 
-			if(parseType(builder, NONE) == null)
+			if(parseType(builder) == null)
 			{
 				builder.error("Type expected");
 			}
@@ -986,7 +986,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			}
 			else
 			{
-				if(parseType(builder, NONE) == null)
+				if(parseType(builder) == null)
 				{
 					builder.error("Type expected");
 				}
@@ -1269,7 +1269,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(expect(builder, LPAR, "'(' expected"))
 		{
-			if(parseType(builder, NONE) == null)
+			if(parseType(builder) == null)
 			{
 				builder.error("Type expected");
 			}

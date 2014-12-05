@@ -27,10 +27,13 @@ import com.intellij.psi.tree.IElementType;
  */
 public class FieldOrPropertyParsing extends MemberWithBodyParsing
 {
-	public static void parseFieldOrLocalVariableAtTypeWithDone(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, IElementType to,
+	public static void parseFieldOrLocalVariableAtTypeWithDone(CSharpBuilderWrapper builder,
+			PsiBuilder.Marker marker,
+			IElementType to,
+			int typeFlags,
 			boolean semicolonEat)
 	{
-		if(parseType(builder, to == LOCAL_VARIABLE ? VAR_SUPPORT : NONE) == null)
+		if(parseType(builder, typeFlags) == null)
 		{
 			builder.error("Type expected");
 
@@ -42,18 +45,21 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 		}
 		else
 		{
-			parseFieldOrLocalVariableAtNameWithDone(builder, marker, to, semicolonEat);
+			parseFieldOrLocalVariableAtNameWithDone(builder, marker, to, typeFlags, semicolonEat);
 		}
 	}
 
-	public static boolean parseFieldOrLocalVariableAtNameWithDone(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, IElementType to,
+	public static boolean parseFieldOrLocalVariableAtNameWithDone(CSharpBuilderWrapper builder,
+			PsiBuilder.Marker marker,
+			IElementType to,
+			int typeFlags,
 			boolean semicolonEat)
 	{
 		if(builder.getTokenType() == IDENTIFIER)
 		{
 			builder.advanceLexer();
 
-			parseFieldAfterName(builder, marker, to, semicolonEat);
+			parseFieldAfterName(builder, marker, to, typeFlags, semicolonEat);
 			return true;
 		}
 		else
@@ -70,7 +76,10 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 		}
 	}
 
-	private static PsiBuilder.Marker parseFieldAfterName(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, IElementType to,
+	private static PsiBuilder.Marker parseFieldAfterName(CSharpBuilderWrapper builder,
+			PsiBuilder.Marker marker,
+			IElementType to,
+			int typeFlags,
 			boolean semicolonEat)
 	{
 		if(builder.getTokenType() == EQ)
@@ -90,7 +99,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 
 			PsiBuilder.Marker newMarker = builder.mark();
 
-			parseFieldOrLocalVariableAtNameWithDone(builder, newMarker, to, semicolonEat);
+			parseFieldOrLocalVariableAtNameWithDone(builder, newMarker, to, typeFlags, semicolonEat);
 
 			return marker;
 		}
@@ -111,7 +120,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 	{
 		if(builderWrapper.getTokenType() == LBRACKET)
 		{
-			MethodParsing.parseParameterList(builderWrapper, RBRACKET);
+			MethodParsing.parseParameterList(builderWrapper, STUB_SUPPORT, RBRACKET);
 		}
 		else
 		{
@@ -143,7 +152,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 		}
 		else
 		{
-			parseFieldAfterName(builderWrapper, marker, FIELD_DECLARATION, true);
+			parseFieldAfterName(builderWrapper, marker, FIELD_DECLARATION, STUB_SUPPORT, true);
 		}
 	}
 }
