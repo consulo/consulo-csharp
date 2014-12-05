@@ -151,7 +151,7 @@ public class CSharpParameterImpl extends CSharpStubElementImpl<CSharpVariableDec
 	public SearchScope getUseScope()
 	{
 		PsiElement parent = getParent();
-		if(parent instanceof CSharpParameterListImpl)
+		if(parent instanceof DotNetParameterList)
 		{
 			return new LocalSearchScope(parent.getParent());
 		}

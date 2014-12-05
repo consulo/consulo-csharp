@@ -21,7 +21,7 @@ import org.mustbe.consulo.csharp.ide.reflactoring.changeSignature.CSharpChangeSi
 import org.mustbe.consulo.csharp.ide.reflactoring.introduceVariable.CSharpIntroduceVariableHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpParameterImpl;
+import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.lang.refactoring.RefactoringSupportProvider;
@@ -83,7 +83,7 @@ public class CSharpRefactoringSupportProvider extends RefactoringSupportProvider
 		{
 			return true;
 		}
-		if(!(elementToRename instanceof CSharpLocalVariable) && !(elementToRename instanceof CSharpParameterImpl) && !(elementToRename instanceof
+		if(!(elementToRename instanceof CSharpLocalVariable) && !(elementToRename instanceof DotNetParameter) && !(elementToRename instanceof
 				CSharpLambdaParameter))
 		{
 			return false;

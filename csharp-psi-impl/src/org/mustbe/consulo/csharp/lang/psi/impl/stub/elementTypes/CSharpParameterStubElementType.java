@@ -33,6 +33,7 @@ public class CSharpParameterStubElementType extends CSharpVariableStubElementTyp
 		super("PARAMETER");
 	}
 
+	@NotNull
 	@Override
 	public DotNetParameter createElement(@NotNull ASTNode astNode)
 	{
