@@ -19,11 +19,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpNullableType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullableTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
-import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -32,17 +32,17 @@ import com.intellij.psi.stubs.IStubElementType;
 
 /**
  * @author VISTALL
- * @since 13.12.13.
+ * @since 17.04.14
  */
-public class CSharpPointerTypeImpl extends CSharpStubTypeElementImpl<CSharpEmptyStub<DotNetPointerType>> implements DotNetPointerType
+public class CSharpStubNullableTypeImpl extends CSharpStubTypeElementImpl<CSharpEmptyStub<CSharpNullableType>> implements CSharpNullableType
 {
-	public CSharpPointerTypeImpl(@NotNull ASTNode node)
+	public CSharpStubNullableTypeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpPointerTypeImpl(@NotNull CSharpEmptyStub<DotNetPointerType> stub,
-			@NotNull IStubElementType<? extends CSharpEmptyStub<DotNetPointerType>, ?> nodeType)
+	public CSharpStubNullableTypeImpl(@NotNull CSharpEmptyStub<CSharpNullableType> stub,
+			@NotNull IStubElementType<? extends CSharpEmptyStub<CSharpNullableType>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -50,11 +50,11 @@ public class CSharpPointerTypeImpl extends CSharpStubTypeElementImpl<CSharpEmpty
 	@Override
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		visitor.visitPointerType(this);
+		visitor.visitNullableType(this);
 	}
 
-	@NotNull
 	@Override
+	@NotNull
 	public DotNetTypeRef toTypeRefImpl()
 	{
 		DotNetType innerType = getInnerType();
@@ -62,20 +62,20 @@ public class CSharpPointerTypeImpl extends CSharpStubTypeElementImpl<CSharpEmpty
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
-		return new DotNetPointerTypeRefImpl(innerType.toTypeRef());
+		return new CSharpNullableTypeRef(innerType.toTypeRef());
 	}
 
-	@Nullable
 	@Override
+	@Nullable
 	public DotNetType getInnerType()
 	{
 		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
 	}
 
-	@NotNull
 	@Override
-	public PsiElement getAsterisk()
+	@NotNull
+	public PsiElement getQuestElement()
 	{
-		return findNotNullChildByType(CSharpTokens.MUL);
+		return findNotNullChildByType(CSharpTokens.QUEST);
 	}
 }

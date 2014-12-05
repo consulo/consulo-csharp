@@ -17,9 +17,9 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNullableTypeImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPointerTypeImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeWithTypeArgumentsImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubNullableTypeImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubPointerTypeImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubTypeWithTypeArgumentsImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.*;
 import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
@@ -77,13 +77,13 @@ public interface CSharpStubElements
 		@Override
 		public PsiElement createElement(@NotNull ASTNode astNode)
 		{
-			return new CSharpNullableTypeImpl(astNode);
+			return new CSharpStubNullableTypeImpl(astNode);
 		}
 
 		@Override
-		public CSharpNullableTypeImpl createPsi(@NotNull CSharpEmptyStub<CSharpNullableType> stub)
+		public CSharpStubNullableTypeImpl createPsi(@NotNull CSharpEmptyStub<CSharpNullableType> stub)
 		{
-			return new CSharpNullableTypeImpl(stub, this);
+			return new CSharpStubNullableTypeImpl(stub, this);
 		}
 	};
 
@@ -99,18 +99,18 @@ public interface CSharpStubElements
 		@Override
 		public PsiElement createElement(@NotNull ASTNode astNode)
 		{
-			return new CSharpPointerTypeImpl(astNode);
+			return new CSharpStubPointerTypeImpl(astNode);
 		}
 
 		@Override
-		public CSharpPointerTypeImpl createPsi(@NotNull CSharpEmptyStub<DotNetPointerType> stub)
+		public CSharpStubPointerTypeImpl createPsi(@NotNull CSharpEmptyStub<DotNetPointerType> stub)
 		{
-			return new CSharpPointerTypeImpl(stub, this);
+			return new CSharpStubPointerTypeImpl(stub, this);
 		}
 	};
 
-	CSharpEmptyStubElementType<CSharpTypeWithTypeArgumentsImpl> TYPE_WRAPPER_WITH_TYPE_ARGUMENTS = new
-			CSharpEmptyStubElementType<CSharpTypeWithTypeArgumentsImpl>("TYPE_WRAPPER_WITH_TYPE_ARGUMENTS")
+	CSharpEmptyStubElementType<CSharpStubTypeWithTypeArgumentsImpl> TYPE_WRAPPER_WITH_TYPE_ARGUMENTS = new
+			CSharpEmptyStubElementType<CSharpStubTypeWithTypeArgumentsImpl>("TYPE_WRAPPER_WITH_TYPE_ARGUMENTS")
 	{
 		@Override
 		public boolean shouldCreateStub(ASTNode node)
@@ -122,13 +122,13 @@ public interface CSharpStubElements
 		@Override
 		public PsiElement createElement(@NotNull ASTNode astNode)
 		{
-			return new CSharpTypeWithTypeArgumentsImpl(astNode);
+			return new CSharpStubTypeWithTypeArgumentsImpl(astNode);
 		}
 
 		@Override
-		public CSharpTypeWithTypeArgumentsImpl createPsi(@NotNull CSharpEmptyStub<CSharpTypeWithTypeArgumentsImpl> stub)
+		public CSharpStubTypeWithTypeArgumentsImpl createPsi(@NotNull CSharpEmptyStub<CSharpStubTypeWithTypeArgumentsImpl> stub)
 		{
-			return new CSharpTypeWithTypeArgumentsImpl(stub, this);
+			return new CSharpStubTypeWithTypeArgumentsImpl(stub, this);
 		}
 	};
 

@@ -37,14 +37,14 @@ import com.intellij.psi.util.PsiTreeUtil;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWithStringValueStub<CSharpUserType>> implements CSharpUserType
+public class CSharpStubUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWithStringValueStub<CSharpUserType>> implements CSharpUserType
 {
-	public CSharpUserTypeImpl(@NotNull ASTNode node)
+	public CSharpStubUserTypeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpUserTypeImpl(@NotNull CSharpWithStringValueStub<CSharpUserType> stub,
+	public CSharpStubUserTypeImpl(@NotNull CSharpWithStringValueStub<CSharpUserType> stub,
 			@NotNull IStubElementType<? extends CSharpWithStringValueStub<CSharpUserType>, ?> nodeType)
 	{
 		super(stub, nodeType);

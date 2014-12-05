@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNativeType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNativeTypeImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubNativeTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithIntValueStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -35,13 +35,13 @@ public class CSharpNativeTypeStubElementType extends CSharpAbstractStubElementTy
 	@Override
 	public PsiElement createElement(@NotNull ASTNode astNode)
 	{
-		return new CSharpNativeTypeImpl(astNode);
+		return new CSharpStubNativeTypeImpl(astNode);
 	}
 
 	@Override
 	public CSharpNativeType createPsi(@NotNull CSharpWithIntValueStub<CSharpNativeType> stub)
 	{
-		return new CSharpNativeTypeImpl(stub, this);
+		return new CSharpStubNativeTypeImpl(stub, this);
 	}
 
 	@Override

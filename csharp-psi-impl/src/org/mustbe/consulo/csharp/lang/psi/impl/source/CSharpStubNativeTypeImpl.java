@@ -31,14 +31,14 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpNativeTypeImpl extends CSharpStubTypeElementImpl<CSharpWithIntValueStub<CSharpNativeType>> implements CSharpNativeType
+public class CSharpStubNativeTypeImpl extends CSharpStubTypeElementImpl<CSharpWithIntValueStub<CSharpNativeType>> implements CSharpNativeType
 {
-	public CSharpNativeTypeImpl(@NotNull ASTNode node)
+	public CSharpStubNativeTypeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpNativeTypeImpl(@NotNull CSharpWithIntValueStub<CSharpNativeType> stub,
+	public CSharpStubNativeTypeImpl(@NotNull CSharpWithIntValueStub<CSharpNativeType> stub,
 			@NotNull IStubElementType<? extends CSharpWithIntValueStub<CSharpNativeType>, ?> nodeType)
 	{
 		super(stub, nodeType);

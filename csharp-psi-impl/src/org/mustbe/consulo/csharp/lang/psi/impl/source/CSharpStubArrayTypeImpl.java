@@ -32,14 +32,14 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpArrayTypeImpl extends CSharpStubElementImpl<CSharpWithIntValueStub<CSharpArrayType>> implements CSharpArrayType
+public class CSharpStubArrayTypeImpl extends CSharpStubElementImpl<CSharpWithIntValueStub<CSharpArrayType>> implements CSharpArrayType
 {
-	public CSharpArrayTypeImpl(@NotNull ASTNode node)
+	public CSharpStubArrayTypeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpArrayTypeImpl(@NotNull CSharpWithIntValueStub<CSharpArrayType> stub,
+	public CSharpStubArrayTypeImpl(@NotNull CSharpWithIntValueStub<CSharpArrayType> stub,
 			@NotNull IStubElementType<? extends CSharpWithIntValueStub<CSharpArrayType>, ?> nodeType)
 	{
 		super(stub, nodeType);

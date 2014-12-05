@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayType;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayTypeImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubArrayTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithIntValueStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -33,13 +33,13 @@ public class CSharpArrayTypeStubElementType extends CSharpAbstractStubElementTyp
 	@Override
 	public PsiElement createElement(@NotNull ASTNode astNode)
 	{
-		return new CSharpArrayTypeImpl(astNode);
+		return new CSharpStubArrayTypeImpl(astNode);
 	}
 
 	@Override
 	public CSharpArrayType createPsi(@NotNull CSharpWithIntValueStub<CSharpArrayType> stub)
 	{
-		return new CSharpArrayTypeImpl(stub, this);
+		return new CSharpStubArrayTypeImpl(stub, this);
 	}
 
 	@Override

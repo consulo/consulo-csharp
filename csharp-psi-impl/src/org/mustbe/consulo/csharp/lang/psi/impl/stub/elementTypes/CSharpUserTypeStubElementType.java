@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUserType;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUserTypeImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubUserTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -35,13 +35,13 @@ public class CSharpUserTypeStubElementType extends CSharpAbstractStubElementType
 	@Override
 	public PsiElement createElement(@NotNull ASTNode astNode)
 	{
-		return new CSharpUserTypeImpl(astNode);
+		return new CSharpStubUserTypeImpl(astNode);
 	}
 
 	@Override
 	public CSharpUserType createPsi(@NotNull CSharpWithStringValueStub<CSharpUserType> stub)
 	{
-		return new CSharpUserTypeImpl(stub, this);
+		return new CSharpStubUserTypeImpl(stub, this);
 	}
 
 	@Override
