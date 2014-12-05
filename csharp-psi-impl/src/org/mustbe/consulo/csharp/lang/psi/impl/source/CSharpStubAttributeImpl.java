@@ -39,14 +39,14 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 19.12.13.
  */
-public class CSharpAttributeImpl extends CSharpStubElementImpl<CSharpWithStringValueStub<CSharpAttribute>> implements CSharpAttribute
+public class CSharpStubAttributeImpl extends CSharpStubElementImpl<CSharpWithStringValueStub<CSharpAttribute>> implements CSharpAttribute
 {
-	public CSharpAttributeImpl(@NotNull ASTNode node)
+	public CSharpStubAttributeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpAttributeImpl(@NotNull CSharpWithStringValueStub<CSharpAttribute> stub,
+	public CSharpStubAttributeImpl(@NotNull CSharpWithStringValueStub<CSharpAttribute> stub,
 			@NotNull IStubElementType<? extends CSharpWithStringValueStub<CSharpAttribute>, ?> nodeType)
 	{
 		super(stub, nodeType);

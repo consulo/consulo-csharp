@@ -40,7 +40,7 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpModifierListImpl extends CSharpStubElementImpl<CSharpModifierListStub> implements CSharpModifierList
+public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModifierListStub> implements CSharpModifierList
 {
 	private static final Map<CSharpModifier, IElementType> ourModifiers = new LinkedHashMap<CSharpModifier, IElementType>()
 	{
@@ -67,12 +67,12 @@ public class CSharpModifierListImpl extends CSharpStubElementImpl<CSharpModifier
 		}
 	};
 
-	public CSharpModifierListImpl(@NotNull ASTNode node)
+	public CSharpStubModifierListImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpModifierListImpl(@NotNull CSharpModifierListStub stub, @NotNull IStubElementType<? extends CSharpModifierListStub, ?> nodeType)
+	public CSharpStubModifierListImpl(@NotNull CSharpModifierListStub stub, @NotNull IStubElementType<? extends CSharpModifierListStub, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}

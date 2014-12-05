@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAttributeListImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubAttributeListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpAttributeListStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -27,13 +27,13 @@ public class CSharpAttributeListStubElementType extends CSharpAbstractStubElemen
 	@Override
 	public PsiElement createElement(@NotNull ASTNode astNode)
 	{
-		return new CSharpAttributeListImpl(astNode);
+		return new CSharpStubAttributeListImpl(astNode);
 	}
 
 	@Override
 	public CSharpAttributeList createPsi(@NotNull CSharpAttributeListStub stub)
 	{
-		return new CSharpAttributeListImpl(stub, this);
+		return new CSharpStubAttributeListImpl(stub, this);
 	}
 
 	@Override

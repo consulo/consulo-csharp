@@ -31,14 +31,15 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 19.12.13.
  */
-public class CSharpAttributeListImpl extends CSharpStubElementImpl<CSharpAttributeListStub> implements CSharpAttributeList
+public class CSharpStubAttributeListImpl extends CSharpStubElementImpl<CSharpAttributeListStub> implements CSharpAttributeList
 {
-	public CSharpAttributeListImpl(@NotNull ASTNode node)
+	public CSharpStubAttributeListImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpAttributeListImpl(@NotNull CSharpAttributeListStub stub, @NotNull IStubElementType<? extends CSharpAttributeListStub, ?> nodeType)
+	public CSharpStubAttributeListImpl(@NotNull CSharpAttributeListStub stub,
+			@NotNull IStubElementType<? extends CSharpAttributeListStub, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}

@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpModifierListImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubModifierListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpModifierListStub;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import com.intellij.lang.ASTNode;
@@ -35,13 +35,13 @@ public class CSharpModifierListStubElementType extends CSharpAbstractStubElement
 	@Override
 	public PsiElement createElement(@NotNull ASTNode astNode)
 	{
-		return new CSharpModifierListImpl(astNode);
+		return new CSharpStubModifierListImpl(astNode);
 	}
 
 	@Override
 	public DotNetModifierList createPsi(@NotNull CSharpModifierListStub stub)
 	{
-		return new CSharpModifierListImpl(stub, this);
+		return new CSharpStubModifierListImpl(stub, this);
 	}
 
 	@Override
