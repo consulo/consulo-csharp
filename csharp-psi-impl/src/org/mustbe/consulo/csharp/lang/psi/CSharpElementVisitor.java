@@ -152,7 +152,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(type);
 	}
 
-	public void visitNullableType(CSharpNullableTypeImpl type)
+	public void visitNullableType(CSharpNullableType type)
 	{
 		visitElement(type);
 	}

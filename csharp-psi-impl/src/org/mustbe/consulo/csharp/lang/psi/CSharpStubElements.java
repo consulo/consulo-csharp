@@ -64,7 +64,7 @@ public interface CSharpStubElements
 
 	TokenSet USING_CHILDREN = TokenSet.create(USING_NAMESPACE_STATEMENT, TYPE_DEF_STATEMENT);
 
-	CSharpEmptyStubElementType<CSharpNullableTypeImpl> NULLABLE_TYPE = new CSharpEmptyStubElementType<CSharpNullableTypeImpl>("NULLABLE_TYPE")
+	CSharpEmptyStubElementType<CSharpNullableType> NULLABLE_TYPE = new CSharpEmptyStubElementType<CSharpNullableType>("NULLABLE_TYPE")
 	{
 		@Override
 		public boolean shouldCreateStub(ASTNode node)
@@ -80,7 +80,7 @@ public interface CSharpStubElements
 		}
 
 		@Override
-		public CSharpNullableTypeImpl createPsi(@NotNull CSharpEmptyStub<CSharpNullableTypeImpl> stub)
+		public CSharpNullableTypeImpl createPsi(@NotNull CSharpEmptyStub<CSharpNullableType> stub)
 		{
 			return new CSharpNullableTypeImpl(stub, this);
 		}

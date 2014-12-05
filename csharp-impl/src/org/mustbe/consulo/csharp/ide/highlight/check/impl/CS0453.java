@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNullableTypeImpl;
+import org.mustbe.consulo.csharp.lang.psi.CSharpNullableType;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -38,14 +38,14 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 15.09.14
  */
-public class CS0453 extends CompilerCheck<CSharpNullableTypeImpl>
+public class CS0453 extends CompilerCheck<CSharpNullableType>
 {
 	public static class DeleteQuestMarkQuickFix extends BaseIntentionAction
 	{
-		private SmartPsiElementPointer<CSharpNullableTypeImpl> myPointer;
+		private SmartPsiElementPointer<CSharpNullableType> myPointer;
 		private String myText;
 
-		public DeleteQuestMarkQuickFix(CSharpNullableTypeImpl nullableType, String text)
+		public DeleteQuestMarkQuickFix(CSharpNullableType nullableType, String text)
 		{
 			myText = text;
 			myPointer = SmartPointerManager.getInstance(nullableType.getProject()).createSmartPsiElementPointer(nullableType);
@@ -80,7 +80,7 @@ public class CS0453 extends CompilerCheck<CSharpNullableTypeImpl>
 		@Override
 		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
-			CSharpNullableTypeImpl element = myPointer.getElement();
+			CSharpNullableType element = myPointer.getElement();
 			if(element == null)
 			{
 				return;
@@ -99,7 +99,7 @@ public class CS0453 extends CompilerCheck<CSharpNullableTypeImpl>
 
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpNullableTypeImpl element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpNullableType element)
 	{
 		DotNetType innerType = element.getInnerType();
 		if(innerType == null)

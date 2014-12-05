@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpNullableType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
@@ -35,15 +36,15 @@ import lombok.val;
  * @author VISTALL
  * @since 17.04.14
  */
-public class CSharpNullableTypeImpl extends CSharpStubTypeElementImpl<CSharpEmptyStub<CSharpNullableTypeImpl>> implements DotNetType
+public class CSharpNullableTypeImpl extends CSharpStubTypeElementImpl<CSharpEmptyStub<CSharpNullableType>> implements CSharpNullableType
 {
 	public CSharpNullableTypeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpNullableTypeImpl(@NotNull CSharpEmptyStub<CSharpNullableTypeImpl> stub,
-			@NotNull IStubElementType<? extends CSharpEmptyStub<CSharpNullableTypeImpl>, ?> nodeType)
+	public CSharpNullableTypeImpl(@NotNull CSharpEmptyStub<CSharpNullableType> stub,
+			@NotNull IStubElementType<? extends CSharpEmptyStub<CSharpNullableType>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -110,12 +111,14 @@ public class CSharpNullableTypeImpl extends CSharpStubTypeElementImpl<CSharpEmpt
 		};
 	}
 
+	@Override
 	@Nullable
 	public DotNetType getInnerType()
 	{
 		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
 	}
 
+	@Override
 	@NotNull
 	public PsiElement getQuestElement()
 	{
