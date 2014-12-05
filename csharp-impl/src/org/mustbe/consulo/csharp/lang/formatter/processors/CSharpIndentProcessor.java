@@ -67,7 +67,7 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 		{
 			return Indent.getNormalIndent();
 		}
-		else if(elementType == MODIFIER_LIST)
+		else if(elementType == CSharpElements.MODIFIER_LIST || elementType == CSharpStubElements.MODIFIER_LIST)
 		{
 			return Indent.getNoneIndent();
 		}

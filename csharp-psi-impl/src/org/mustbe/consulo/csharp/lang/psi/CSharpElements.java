@@ -88,7 +88,7 @@ public interface CSharpElements
 	IElementType TYPE_WRAPPER_WITH_TYPE_ARGUMENTS = new ElementTypeAsPsiFactory("TYPE_WRAPPER_WITH_TYPE_ARGUMENTS", CSharpLanguage.INSTANCE,
 			CSharpTypeWithTypeArgumentsImpl.class);
 
-	IElementType MODIFIER_LIST = CSharpStubElements.MODIFIER_LIST;
+	IElementType MODIFIER_LIST = new ElementTypeAsPsiFactory("MODIFIER_LIST", CSharpLanguage.INSTANCE, CSharpModifierListImpl.class);
 
 	IElementType EXTENDS_LIST = CSharpStubElements.EXTENDS_LIST;
 
@@ -261,7 +261,7 @@ public interface CSharpElements
 
 	IElementType CONTINUE_STATEMENT = new ElementTypeAsPsiFactory("CONTINUE_STATEMENT", CSharpLanguage.INSTANCE, CSharpContinueStatementImpl.class);
 
-	IElementType ATTRIBUTE_LIST = CSharpStubElements.ATTRIBUTE_LIST;
+	IElementType ATTRIBUTE_LIST = new ElementTypeAsPsiFactory("ATTRIBUTE_LIST", CSharpLanguage.INSTANCE, CSharpAttributeListImpl.class);
 
-	IElementType ATTRIBUTE = CSharpStubElements.ATTRIBUTE;
+	IElementType ATTRIBUTE = new ElementTypeAsPsiFactory("ATTRIBUTE", CSharpLanguage.INSTANCE, CSharpAttributeImpl.class);
 }

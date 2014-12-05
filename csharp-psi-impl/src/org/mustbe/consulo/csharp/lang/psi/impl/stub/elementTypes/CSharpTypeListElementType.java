@@ -30,7 +30,6 @@ import com.intellij.psi.stubs.IndexSink;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
-import com.intellij.psi.tree.IElementType;
 import com.intellij.util.io.StringRef;
 
 /**
@@ -106,13 +105,6 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 				indexSink.occurrence(CSharpIndexKeys.EXTENDS_LIST_INDEX, shortClassName);
 			}
 		}
-	}
-
-	@Override
-	public boolean shouldCreateStub(ASTNode node)
-	{
-		IElementType elementType = node.getElementType();
-		return super.shouldCreateStub(node);
 	}
 
 	@NotNull
