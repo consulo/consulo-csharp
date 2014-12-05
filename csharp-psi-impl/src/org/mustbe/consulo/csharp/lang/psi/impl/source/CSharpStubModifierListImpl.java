@@ -18,21 +18,21 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.*;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifierList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpModifierListStub;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiParserFacade;
-import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
 
@@ -42,31 +42,6 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModifierListStub> implements CSharpModifierList
 {
-	private static final Map<CSharpModifier, IElementType> ourModifiers = new LinkedHashMap<CSharpModifier, IElementType>()
-	{
-		{
-			put(CSharpModifier.PUBLIC, CSharpTokens.PUBLIC_KEYWORD);
-			put(CSharpModifier.PROTECTED, CSharpTokens.PROTECTED_KEYWORD);
-			put(CSharpModifier.PRIVATE, CSharpTokens.PRIVATE_KEYWORD);
-			put(CSharpModifier.STATIC, CSharpTokens.STATIC_KEYWORD);
-			put(CSharpModifier.SEALED, CSharpTokens.SEALED_KEYWORD);
-			put(CSharpModifier.ABSTRACT, CSharpTokens.ABSTRACT_KEYWORD);
-			put(CSharpModifier.READONLY, CSharpTokens.READONLY_KEYWORD);
-			put(CSharpModifier.UNSAFE, CSharpTokens.UNSAFE_KEYWORD);
-			put(CSharpModifier.PARAMS, CSharpTokens.PARAMS_KEYWORD);
-			put(CSharpModifier.THIS, CSharpTokens.THIS_KEYWORD);
-			put(CSharpModifier.PARTIAL, CSharpSoftTokens.PARTIAL_KEYWORD);
-			put(CSharpModifier.INTERNAL, CSharpTokens.INTERNAL_KEYWORD);
-			put(CSharpModifier.REF, CSharpTokens.REF_KEYWORD);
-			put(CSharpModifier.OUT, CSharpTokens.OUT_KEYWORD);
-			put(CSharpModifier.VIRTUAL, CSharpTokens.VIRTUAL_KEYWORD);
-			put(CSharpModifier.NEW, CSharpTokens.NEW_KEYWORD);
-			put(CSharpModifier.OVERRIDE, CSharpTokens.OVERRIDE_KEYWORD);
-			put(CSharpModifier.ASYNC, CSharpSoftTokens.ASYNC_KEYWORD);
-			put(CSharpModifier.IN, CSharpSoftTokens.IN_KEYWORD);
-		}
-	};
-
 	public CSharpStubModifierListImpl(@NotNull ASTNode node)
 	{
 		super(node);
@@ -103,29 +78,13 @@ public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModi
 	@Override
 	public void addModifier(@NotNull DotNetModifier modifier)
 	{
-		PsiElement firstChild = getFirstChild();
-
-		CSharpFieldDeclaration field = CSharpFileFactory.createField(getProject(), modifier.getPresentableText() + " int b");
-		PsiElement modifierElement = field.getModifierList().getModifierElement(modifier);
-
-		PsiElement psiElement = addBefore(modifierElement, firstChild);
-		addAfter(PsiParserFacade.SERVICE.getInstance(getProject()).createWhiteSpaceFromText(" "), psiElement);
+		CSharpModifierListImplUtil.addModifier(this, modifier);
 	}
 
 	@Override
 	public void removeModifier(@NotNull DotNetModifier modifier)
 	{
-		PsiElement modifierElement = getModifierElement(modifier);
-		if(modifierElement != null)
-		{
-			PsiElement next = modifierElement.getNextSibling();
-			if(next instanceof PsiWhiteSpace)
-			{
-				next.delete();
-			}
-
-			modifierElement.delete();
-		}
+		CSharpModifierListImplUtil.removeModifier(this, modifier);
 	}
 
 	@NotNull
@@ -133,7 +92,7 @@ public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModi
 	public CSharpModifier[] getModifiers()
 	{
 		List<CSharpModifier> list = new ArrayList<CSharpModifier>();
-		for(CSharpModifier CSharpModifier : ourModifiers.keySet())
+		for(CSharpModifier CSharpModifier : CSharpModifierListImplUtil.ourModifiers.keySet())
 		{
 			if(hasModifier(CSharpModifier))
 			{
@@ -152,39 +111,13 @@ public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModi
 			return stub.hasModifier(modifier);
 		}
 
-		if(hasModifierInTree(modifier))
-		{
-			return true;
-		}
-
-		CSharpModifier cSharpModifier = CSharpModifier.as(modifier);
-		PsiElement parent = getParent();
-		switch(cSharpModifier)
-		{
-			case STATIC:
-				if(parent instanceof CSharpFieldDeclaration)
-				{
-					if(((CSharpFieldDeclaration) parent).isConstant() && parent.getParent() instanceof CSharpTypeDeclaration)
-					{
-						return true;
-					}
-				}
-				break;
-			case ABSTRACT:
-				if(parent instanceof CSharpMethodDeclaration && parent.getParent() instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration)
-						parent.getParent()).isInterface())
-				{
-					return true;
-				}
-				break;
-		}
-		return false;
+		return CSharpModifierListImplUtil.hasModifier(this, modifier);
 	}
 
 	@Override
 	public boolean hasModifierInTree(@NotNull DotNetModifier modifier)
 	{
-		IElementType iElementType = ourModifiers.get(CSharpModifier.as(modifier));
+		IElementType iElementType = CSharpModifierListImplUtil.ourModifiers.get(CSharpModifier.as(modifier));
 		return findChildByType(iElementType) != null;
 	}
 
@@ -192,7 +125,7 @@ public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModi
 	@Override
 	public PsiElement getModifierElement(DotNetModifier modifier)
 	{
-		IElementType iElementType = ourModifiers.get(CSharpModifier.as(modifier));
+		IElementType iElementType = CSharpModifierListImplUtil.ourModifiers.get(CSharpModifier.as(modifier));
 		return findChildByType(iElementType);
 	}
 
@@ -200,7 +133,7 @@ public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModi
 	@Override
 	public List<PsiElement> getModifierElements(@NotNull DotNetModifier modifier)
 	{
-		IElementType iElementType = ourModifiers.get(CSharpModifier.as(modifier));
+		IElementType iElementType = CSharpModifierListImplUtil.ourModifiers.get(CSharpModifier.as(modifier));
 		return findChildrenByType(iElementType);
 	}
 
