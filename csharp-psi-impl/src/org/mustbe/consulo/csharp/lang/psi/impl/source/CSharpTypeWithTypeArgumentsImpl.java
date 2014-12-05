@@ -19,39 +19,56 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.stubs.IStubElementType;
 
 /**
  * @author VISTALL
- * @since 13.12.13.
+ * @since 05.12.2014
  */
-public class CSharpStubTypeWithTypeArgumentsImpl extends CSharpStubElementImpl<CSharpEmptyStub<DotNetTypeWithTypeArguments>> implements
-		DotNetTypeWithTypeArguments
+public class CSharpTypeWithTypeArgumentsImpl extends CSharpElementImpl implements DotNetTypeWithTypeArguments
 {
-	public CSharpStubTypeWithTypeArgumentsImpl(@NotNull ASTNode node)
+	public static class OurResolver extends CSharpResolveCache.TypeRefResolver<DotNetTypeWithTypeArguments>
 	{
-		super(node);
+		public static final OurResolver INSTANCE = new OurResolver();
+
+		@NotNull
+		@Override
+		public DotNetTypeRef resolveTypeRef(@NotNull DotNetTypeWithTypeArguments element, boolean resolveFromParent)
+		{
+			DotNetType innerType = element.getInnerType();
+			DotNetType[] arguments = element.getArguments();
+			if(arguments.length == 0)
+			{
+				return innerType.toTypeRef();
+			}
+
+			DotNetTypeRef[] rArguments = new DotNetTypeRef[arguments.length];
+			for(int i = 0; i < arguments.length; i++)
+			{
+				DotNetType argument = arguments[i];
+				rArguments[i] = argument.toTypeRef();
+			}
+
+			return new CSharpLazyGenericWrapperTypeRef(element, innerType.toTypeRef(), rArguments);
+		}
 	}
 
-	public CSharpStubTypeWithTypeArgumentsImpl(@NotNull CSharpEmptyStub<DotNetTypeWithTypeArguments> stub,
-			@NotNull IStubElementType<? extends CSharpEmptyStub<DotNetTypeWithTypeArguments>, ?> nodeType)
+	public CSharpTypeWithTypeArgumentsImpl(@NotNull ASTNode node)
 	{
-		super(stub, nodeType);
+		super(node);
 	}
 
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef()
 	{
-		return CSharpResolveCache.getInstance(getProject()).resolveTypeRef(this, CSharpTypeWithTypeArgumentsImpl.OurResolver.INSTANCE, true);
+		return CSharpResolveCache.getInstance(getProject()).resolveTypeRef(this, OurResolver.INSTANCE, true);
 	}
 
 	@Override
@@ -64,14 +81,14 @@ public class CSharpStubTypeWithTypeArgumentsImpl extends CSharpStubElementImpl<C
 	@Override
 	public DotNetType getInnerType()
 	{
-		return getRequiredStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
+		return findNotNullChildByClass(DotNetType.class);
 	}
 
 	@Nullable
 	@Override
 	public DotNetTypeList getArgumentsList()
 	{
-		return getStubOrPsiChild(CSharpStubElements.TYPE_ARGUMENTS);
+		return findChildByClass(DotNetTypeList.class);
 	}
 
 	@NotNull

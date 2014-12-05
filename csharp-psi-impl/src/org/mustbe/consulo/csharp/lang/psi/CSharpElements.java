@@ -85,7 +85,7 @@ public interface CSharpElements
 
 	IElementType ARRAY_TYPE = CSharpStubElements.ARRAY_TYPE;//new ElementTypeAsPsiFactory("ARRAY_TYPE", CSharpLanguage.INSTANCE, CSharpArrayTypeImpl.class);
 
-	IElementType TYPE_WRAPPER_WITH_TYPE_ARGUMENTS = CSharpStubElements.TYPE_WRAPPER_WITH_TYPE_ARGUMENTS;
+	IElementType TYPE_WRAPPER_WITH_TYPE_ARGUMENTS = CSharpStubElements.TYPE_WRAPPER_WITH_TYPE_ARGUMENTS; //new ElementTypeAsPsiFactory("TYPE_WRAPPER_WITH_TYPE_ARGUMENTS", CSharpLanguage.INSTANCE, CSharpStubTypeWithTypeArgumentsImpl.class);
 
 	IElementType MODIFIER_LIST = CSharpStubElements.MODIFIER_LIST;
 
