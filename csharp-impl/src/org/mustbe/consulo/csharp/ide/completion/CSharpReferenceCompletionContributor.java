@@ -231,7 +231,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 		PsiElement targetToWalkChildren = resolveLayers.getSecond();
 
 		AbstractScopeProcessor p = CSharpReferenceExpressionImplUtil.createMemberProcessor(element, CSharpReferenceExpression.ResolveToKind.TYPE_LIKE,
-				ResolveResult.EMPTY_ARRAY, false, false);
+				ResolveResult.EMPTY_ARRAY, false);
 
 		if(!CSharpResolveUtil.walkChildren(p, targetToWalkChildren, true, true, resolveState))
 		{

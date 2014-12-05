@@ -379,7 +379,7 @@ public class CSharpReferenceExpressionImplUtil
 
 				if(selector != null)
 				{
-					scopeProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY, completion, false);
+					scopeProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY, completion);
 
 					state = ResolveState.initial();
 					state = state.put(CSharpResolveUtil.EXTRACTOR, genericExtractor);
@@ -657,8 +657,7 @@ public class CSharpReferenceExpressionImplUtil
 				resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, selector);
 			}
 
-			AbstractScopeProcessor memberProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY, completion,
-					codeFragmentIsAvailable);
+			AbstractScopeProcessor memberProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY, completion);
 
 			CSharpResolveUtil.walkChildren(memberProcessor, resolveElement, true, false, resolveState);
 			return memberProcessor.toResolveResults();
@@ -701,8 +700,7 @@ public class CSharpReferenceExpressionImplUtil
 
 		if(target != element)
 		{
-			AbstractScopeProcessor memberProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY, completion,
-					codeFragmentIsAvailable);
+			AbstractScopeProcessor memberProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY, completion);
 
 			if(!CSharpResolveUtil.walkChildren(memberProcessor, target, false, true, resolveState))
 			{
@@ -754,7 +752,7 @@ public class CSharpReferenceExpressionImplUtil
 				elements = localProcessor.toResolveResults();
 			}
 
-			AbstractScopeProcessor p = createMemberProcessor(element, kind, elements, completion, codeFragmentIsAvailable);
+			AbstractScopeProcessor p = createMemberProcessor(element, kind, elements, completion);
 
 			if(!CSharpResolveUtil.walkChildren(p, targetToWalkChildren, true, true, resolveState))
 			{
@@ -775,8 +773,7 @@ public class CSharpReferenceExpressionImplUtil
 	public static AbstractScopeProcessor createMemberProcessor(@NotNull PsiElement element,
 			ResolveToKind kind,
 			ResolveResult[] elements,
-			boolean completion,
-			boolean codeFragmentIsAvailable)
+			boolean completion)
 	{
 		ExecuteTarget[] targets;
 		ResolveResultSorter sorter = ResolveResultSorter.EMPTY;
@@ -790,7 +787,7 @@ public class CSharpReferenceExpressionImplUtil
 						ExecuteTarget.NAMESPACE,
 						ExecuteTarget.TYPE_DEF
 				};
-				sorter = TypeLikeSorter.createByReference(element, codeFragmentIsAvailable);
+				sorter = TypeLikeSorter.createByReference(element);
 				break;
 			case QUALIFIED_NAMESPACE:
 				targets = new ExecuteTarget[]{ExecuteTarget.NAMESPACE};
@@ -824,7 +821,7 @@ public class CSharpReferenceExpressionImplUtil
 						ExecuteTarget.TYPE_DEF,
 						ExecuteTarget.ELEMENT_GROUP
 				};
-				sorter = TypeLikeSorter.createByReference(element, codeFragmentIsAvailable);
+				sorter = TypeLikeSorter.createByReference(element);
 				if(completion)
 				{
 					// append generic when completion due at ANY_MEMBER it dont resolved
