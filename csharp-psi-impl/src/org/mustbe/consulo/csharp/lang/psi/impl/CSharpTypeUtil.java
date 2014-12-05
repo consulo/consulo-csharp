@@ -223,8 +223,7 @@ public class CSharpTypeUtil
 
 	public static boolean isInheritableWithImplicit(@NotNull DotNetTypeRef top, @NotNull DotNetTypeRef target, @NotNull PsiElement scope)
 	{
-		InheritResult inheritable = isInheritable(top, target, scope, CSharpStaticTypeRef.IMPLICIT);
-		return inheritable.isSuccess();
+		return isInheritable(top, target, scope, CSharpStaticTypeRef.IMPLICIT).isSuccess();
 	}
 
 	public static boolean isInheritableWithExplicit(@NotNull DotNetTypeRef top, @NotNull DotNetTypeRef target, @NotNull PsiElement scope)
