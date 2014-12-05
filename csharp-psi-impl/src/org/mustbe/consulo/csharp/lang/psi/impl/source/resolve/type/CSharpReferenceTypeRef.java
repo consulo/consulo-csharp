@@ -142,14 +142,52 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 	@Override
 	public String getPresentableText()
 	{
-		return myReferenceExpression.getReferenceName();
+		DotNetTypeRef[] argumentTypeRefs = myReferenceExpression.getTypeArgumentListRefs();
+
+		StringBuilder builder = new StringBuilder();
+		builder.append(myReferenceExpression.getReferenceName());
+
+		if(argumentTypeRefs.length > 0)
+		{
+			builder.append("<");
+			for(int i = 0; i < argumentTypeRefs.length; i++)
+			{
+				if(i != 0)
+				{
+					builder.append(", ");
+				}
+				DotNetTypeRef argument = argumentTypeRefs[i];
+				builder.append(argument.getPresentableText());
+			}
+			builder.append(">");
+		}
+		return builder.toString();
 	}
 
 	@NotNull
 	@Override
 	public String getQualifiedText()
 	{
-		return myReferenceExpression.getText();
+		DotNetTypeRef[] argumentTypeRefs = myReferenceExpression.getTypeArgumentListRefs();
+
+		StringBuilder builder = new StringBuilder();
+		builder.append(myReferenceExpression.getText());
+
+		if(argumentTypeRefs.length > 0)
+		{
+			builder.append("<");
+			for(int i = 0; i < argumentTypeRefs.length; i++)
+			{
+				if(i != 0)
+				{
+					builder.append(", ");
+				}
+				DotNetTypeRef argument = argumentTypeRefs[i];
+				builder.append(argument.getQualifiedText());
+			}
+			builder.append(">");
+		}
+		return builder.toString();
 	}
 
 	@NotNull

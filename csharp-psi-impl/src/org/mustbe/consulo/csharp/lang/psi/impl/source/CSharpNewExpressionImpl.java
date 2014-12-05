@@ -31,10 +31,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGeneric
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
-import org.mustbe.consulo.dotnet.psi.DotNetUserType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -93,15 +90,11 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 			DotNetTypeRef typeRef;
 			if(canResolve())
 			{
-				DotNetType[] arguments = DotNetType.EMPTY_ARRAY;
-				if(type instanceof DotNetTypeWithTypeArguments)
-				{
-					arguments = ((DotNetTypeWithTypeArguments) type).getArguments();
-					type = ((DotNetTypeWithTypeArguments) type).getInnerType();
-				}
+				DotNetTypeRef[] arguments = DotNetTypeRef.EMPTY_ARRAY;
 
 				if(type instanceof CSharpUserType)
 				{
+					arguments = ((CSharpUserType) type).getReferenceExpression().getTypeArgumentListRefs();
 					PsiElement psiElement = CSharpReferenceExpressionImplUtil.resolveByTypeKind(((CSharpUserType) type).getReferenceExpression(),
 							false);
 					typeRef = CSharpReferenceExpressionImplUtil.toTypeRef(psiElement);
@@ -113,7 +106,7 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 
 				if(arguments.length != 0)
 				{
-					typeRef = new CSharpGenericWrapperTypeRef(typeRef, DotNetTypeRefUtil.toArray(arguments));
+					typeRef = new CSharpGenericWrapperTypeRef(typeRef, arguments);
 				}
 			}
 			else
@@ -189,17 +182,9 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 	private CSharpReferenceExpression getExpressionForResolving()
 	{
 		DotNetType newType = getNewType();
-		if(newType instanceof DotNetUserType)
+		if(newType instanceof CSharpUserType)
 		{
 			return ((CSharpUserType) newType).getReferenceExpression();
-		}
-		else if(newType instanceof DotNetTypeWithTypeArguments)
-		{
-			DotNetType c = ((DotNetTypeWithTypeArguments) newType).getInnerType();
-			if(c instanceof DotNetUserType)
-			{
-				return ((CSharpUserType) c).getReferenceExpression();
-			}
 		}
 		return null;
 	}
