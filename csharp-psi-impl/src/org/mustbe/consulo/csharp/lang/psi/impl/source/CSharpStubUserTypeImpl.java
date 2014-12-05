@@ -33,7 +33,7 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpStubUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWithStringValueStub<CSharpUserType>> implements CSharpUserType
+public class CSharpStubUserTypeImpl extends CSharpStubElementImpl<CSharpWithStringValueStub<CSharpUserType>> implements CSharpUserType
 {
 	public CSharpStubUserTypeImpl(@NotNull ASTNode node)
 	{
@@ -54,7 +54,7 @@ public class CSharpStubUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWith
 
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRefImpl()
+	public DotNetTypeRef toTypeRef()
 	{
 		return new CSharpReferenceTypeRef(getReferenceExpression());
 	}

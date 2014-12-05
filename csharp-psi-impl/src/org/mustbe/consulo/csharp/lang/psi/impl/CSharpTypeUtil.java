@@ -45,6 +45,7 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
+import com.intellij.util.ExceptionUtil;
 import com.intellij.util.ObjectUtils;
 import lombok.val;
 
@@ -58,6 +59,7 @@ public class CSharpTypeUtil
 	{
 		private final boolean mySuccess;
 		private final CSharpConversionMethodDeclaration myConversionMethod;
+		private final String myEx = ExceptionUtil.getThrowableText(new Exception());
 
 		public InheritResult(boolean success, CSharpConversionMethodDeclaration conversionMethod)
 		{
@@ -223,7 +225,8 @@ public class CSharpTypeUtil
 
 	public static boolean isInheritableWithImplicit(@NotNull DotNetTypeRef top, @NotNull DotNetTypeRef target, @NotNull PsiElement scope)
 	{
-		return isInheritable(top, target, scope, CSharpStaticTypeRef.IMPLICIT).isSuccess();
+		InheritResult inheritable = isInheritable(top, target, scope, CSharpStaticTypeRef.IMPLICIT);
+		return inheritable.isSuccess();
 	}
 
 	public static boolean isInheritableWithExplicit(@NotNull DotNetTypeRef top, @NotNull DotNetTypeRef target, @NotNull PsiElement scope)
@@ -481,8 +484,8 @@ public class CSharpTypeUtil
 
 	private static InheritResult fail()
 	{
-		return FAIL;
-		//return new InheritResult(false, null);
+		//return FAIL;
+		return new InheritResult(false, null);
 	}
 
 	@NotNull

@@ -166,7 +166,7 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 		DotNetTypeRef[] argumentTypeRefs = myReferenceExpression.getTypeArgumentListRefs();
 
 		StringBuilder builder = new StringBuilder();
-		builder.append(myReferenceExpression.getText());
+		builder.append(myReferenceExpression.getReferenceName());
 
 		if(argumentTypeRefs.length > 0)
 		{
@@ -195,6 +195,12 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 			return new LambdaResult(scope, (CSharpMethodDeclaration) resolve, createExtractor(resolve));
 		}
 		return new Result<PsiElement>(resolve, createExtractor(resolve));
+	}
+
+	@NotNull
+	public CSharpReferenceExpression getReferenceExpression()
+	{
+		return myReferenceExpression;
 	}
 
 	@NotNull

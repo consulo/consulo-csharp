@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightEventDeclaration;
@@ -32,8 +33,11 @@ import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightMethodDeclaratio
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameterList;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightPropertyDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpErrorTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpReferenceTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -46,7 +50,9 @@ import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.ObjectUtils;
 
 /**
  * @author VISTALL
@@ -195,18 +201,58 @@ public class GenericUnwrapTool
 			CSharpArrayTypeRef arrayType = (CSharpArrayTypeRef) typeRef;
 			return new CSharpArrayTypeRef(exchangeTypeRef(arrayType.getInnerTypeRef(), extractor, scope), arrayType.getDimensions());
 		}
+		else if(typeRef instanceof CSharpReferenceTypeRef)
+		{
+			CSharpReferenceExpression referenceExpression = ((CSharpReferenceTypeRef) typeRef).getReferenceExpression();
+			DotNetTypeRef[] typeArgumentListRefs = referenceExpression.getTypeArgumentListRefs();
+
+			Pair<DotNetTypeRef, PsiElement> pair = extractTypeRef(typeRef, extractor, scope);
+
+			if(typeArgumentListRefs.length == 0)
+			{
+				return ObjectUtils.notNull(pair.getFirst(), typeRef);
+			}
+
+			DotNetTypeRef innerTypeRef;
+			if(pair.getFirst() == null && pair.getSecond() == null)
+			{
+				innerTypeRef = new CSharpErrorTypeRef(referenceExpression.getReferenceName());
+			}
+			else if(pair.getFirst() != null)
+			{
+				innerTypeRef = pair.getFirst();
+			}
+			else // element is not null
+			{
+				innerTypeRef = CSharpReferenceExpressionImplUtil.toTypeRef(pair.getSecond());
+			}
+
+			DotNetTypeRef[] typeRefs = exchangeTypeRefs(typeArgumentListRefs, extractor, scope);
+			return new CSharpLazyGenericWrapperTypeRef(scope, innerTypeRef, typeRefs);
+		}
 		else
 		{
-			PsiElement resolve = typeRef.resolve(scope).getElement();
-			if(resolve instanceof DotNetGenericParameter)
+			Pair<DotNetTypeRef, PsiElement> pair = extractTypeRef(typeRef, extractor, scope);
+			if(pair.getFirst() != null)
 			{
-				DotNetTypeRef extractedTypeRef = extractor.extract((DotNetGenericParameter) resolve);
-				if(extractedTypeRef != null)
-				{
-					return extractedTypeRef;
-				}
+				return pair.getFirst();
 			}
 		}
 		return typeRef;
+	}
+
+	@NotNull
+	private static Pair<DotNetTypeRef, PsiElement> extractTypeRef(DotNetTypeRef typeRef, DotNetGenericExtractor extractor, PsiElement scope)
+	{
+		PsiElement resolve = typeRef.resolve(scope).getElement();
+		if(resolve instanceof DotNetGenericParameter)
+		{
+			DotNetTypeRef extractedTypeRef = extractor.extract((DotNetGenericParameter) resolve);
+			if(extractedTypeRef != null)
+			{
+				return Pair.create(extractedTypeRef, resolve);
+			}
+		}
+		return Pair.create(null, resolve);
 	}
 }
