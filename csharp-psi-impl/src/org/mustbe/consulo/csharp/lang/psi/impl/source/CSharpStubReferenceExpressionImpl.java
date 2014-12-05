@@ -186,7 +186,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 			return stub.getKind();
 		}
 		ResolveToKind kind = CSharpReferenceExpressionImplUtil.kind(this);
-		assert kind == ResolveToKind.TYPE_LIKE;
+		assert kind == ResolveToKind.TYPE_LIKE || kind == ResolveToKind.CONSTRUCTOR : "That kind is dont supported in stubs: " + kind;
 		return kind;
 	}
 
