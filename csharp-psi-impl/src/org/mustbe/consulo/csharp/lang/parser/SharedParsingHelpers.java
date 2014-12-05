@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -99,9 +100,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 	}
 
 	@Nullable
-	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder,
-			int flags,
-			@NotNull TokenSet nameStopperSet)
+	public static TypeInfo parseType(@NotNull CSharpBuilderWrapper builder, int flags, @NotNull TokenSet nameStopperSet)
 	{
 		TypeInfo typeInfo = parseInnerType(builder, flags, nameStopperSet);
 		if(typeInfo == null)
@@ -135,7 +134,8 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 
 			typeListMarker.done(TYPE_ARGUMENTS);
 
-			marker.done(TYPE_WRAPPER_WITH_TYPE_ARGUMENTS);
+			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.TYPE_WRAPPER_WITH_TYPE_ARGUMENTS : CSharpElements
+					.TYPE_WRAPPER_WITH_TYPE_ARGUMENTS);
 		}
 
 		while(builder.getTokenType() == MUL)
@@ -146,7 +146,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 
 			builder.advanceLexer();
 
-			marker.done(POINTER_TYPE);
+			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.POINTER_TYPE : CSharpElements.POINTER_TYPE);
 		}
 
 		while(builder.getTokenType() == LBRACKET)
@@ -163,7 +163,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 				}
 
 				expect(builder, RBRACKET, "']' expected");
-				newMarker.done(ARRAY_TYPE);
+				newMarker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.ARRAY_TYPE : CSharpElements.ARRAY_TYPE);
 
 				typeInfo = new TypeInfo();
 				marker = newMarker;
@@ -175,7 +175,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 				builder.advanceLexer();
 				builder.advanceLexer();
 
-				newMarker.done(ARRAY_TYPE);
+				newMarker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.ARRAY_TYPE : CSharpElements.ARRAY_TYPE);
 
 				typeInfo = new TypeInfo();
 				marker = newMarker;
@@ -194,7 +194,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 
 					builder.error("']' expected");
 					typeInfo = new TypeInfo();
-					newMarker.done(ARRAY_TYPE);
+					newMarker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.ARRAY_TYPE : CSharpElements.ARRAY_TYPE);
 
 					marker = newMarker;
 				}
@@ -209,7 +209,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 
 			builder.advanceLexer();
 
-			marker.done(POINTER_TYPE);
+			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.POINTER_TYPE : CSharpElements.POINTER_TYPE);
 		}
 
 		if(builder.getTokenType() == QUEST)
@@ -220,7 +220,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 
 			builder.advanceLexer();
 
-			marker.done(NULLABLE_TYPE);
+			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.NULLABLE_TYPE : CSharpElements.NULLABLE_TYPE);
 		}
 
 		typeInfo.marker = marker;
@@ -247,14 +247,14 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		if(CSharpTokenSets.NATIVE_TYPES.contains(tokenType))
 		{
 			builder.advanceLexer();
-			marker.done(NATIVE_TYPE);
+			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.NATIVE_TYPE : CSharpElements.NATIVE_TYPE);
 
 			typeInfo.nativeElementType = tokenType;
 		}
 		else if(builder.getTokenType() == IDENTIFIER)
 		{
 			ExpressionParsing.parseQualifiedReference(builder, null, nameStopperSet);
-			marker.done(USER_TYPE);
+			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.USER_TYPE : CSharpElements.USER_TYPE);
 		}
 		else if(builder.getTokenType() == GLOBAL_KEYWORD)
 		{
@@ -266,7 +266,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 				expect(builder, IDENTIFIER, "Identifier expected");
 			}
 			mark.done(REFERENCE_EXPRESSION);
-			marker.done(USER_TYPE);
+			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.USER_TYPE : CSharpElements.USER_TYPE);
 		}
 		else
 		{
