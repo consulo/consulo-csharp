@@ -97,7 +97,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 				public boolean process(CSharpElementGroup<CSharpMethodDeclaration> elementGroup)
 				{
 					Collection<CSharpMethodDeclaration> elements = elementGroup.getElements();
-					for(CSharpMethodDeclaration psiElement : elements)
+					groupIteration:for(CSharpMethodDeclaration psiElement : elements)
 					{
 						GenericInferenceUtil.GenericInferenceResult inferenceResult = inferenceGenericExtractor(psiElement);
 
@@ -133,9 +133,18 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 			{
 				CSharpElementGroup<?> elementGroup = (CSharpElementGroup<?>) e;
 
-				for(PsiElement psiElement : elementGroup.getElements())
+				groupIteration:for(PsiElement psiElement : elementGroup.getElements())
 				{
 					CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) psiElement;
+
+					// dont need add twice or more
+					for(CSharpMethodDeclaration resolvedElement : myResolvedElements)
+					{
+						if(resolvedElement.isEquivalentTo(methodDeclaration))
+						{
+							continue groupIteration;
+						}
+					}
 
 					GenericInferenceUtil.GenericInferenceResult inferenceResult = inferenceGenericExtractor(methodDeclaration);
 
