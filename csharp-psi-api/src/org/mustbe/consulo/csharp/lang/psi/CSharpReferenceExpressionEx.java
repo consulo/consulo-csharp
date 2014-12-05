@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi.impl.source;
+package org.mustbe.consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.Nullable;
-import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.ResolveResult;
 
 /**
  * @author VISTALL
- * @since 04.09.14
+ * @since 05.12.14
  */
-public interface CSharpQualifiedNonReference extends PsiElement
+public interface CSharpReferenceExpressionEx extends CSharpReferenceExpression
 {
-	@Nullable
-	String getReferenceName();
-
-	@Nullable
-	PsiElement getQualifier();
+	@NotNull
+	ResolveResult[] multiResolveImpl(ResolveToKind kind, boolean resolveFromParent);
 }

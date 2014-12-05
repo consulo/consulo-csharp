@@ -16,8 +16,8 @@
 
 package org.mustbe.consulo.csharp.ide.completion;
 
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
 import com.intellij.codeInsight.AutoPopupController;
 import com.intellij.codeInsight.editorActions.TypedHandlerDelegate;
 import com.intellij.openapi.editor.Editor;
@@ -101,7 +101,7 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 				{
 					parent = parent.getParent();
 				}
-				while(parent instanceof CSharpReferenceExpressionImpl);
+				while(parent instanceof CSharpReferenceExpression);
 
 				return true;
 			}

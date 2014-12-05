@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -107,9 +108,9 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 	{
 		DotNetExpression callExpression = getCallExpression();
 
-		if(callExpression instanceof CSharpReferenceExpressionImpl)
+		if(callExpression instanceof CSharpReferenceExpression)
 		{
-			PsiElement resolvedElement = ((CSharpReferenceExpressionImpl) callExpression).resolve();
+			PsiElement resolvedElement = ((CSharpReferenceExpression) callExpression).resolve();
 			if(resolvedElement != null)
 			{
 				return resolvedElement;
@@ -130,9 +131,9 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 	{
 		DotNetExpression callExpression = getCallExpression();
 
-		if(callExpression instanceof CSharpReferenceExpressionImpl)
+		if(callExpression instanceof CSharpReferenceExpression)
 		{
-			return ((CSharpReferenceExpressionImpl) callExpression).multiResolve(incompleteCode);
+			return ((CSharpReferenceExpression) callExpression).multiResolve(incompleteCode);
 		}
 		return ResolveResult.EMPTY_ARRAY;
 	}

@@ -19,13 +19,16 @@ package org.mustbe.consulo.csharp.lang.psi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiPolyVariantReference;
 
 /**
  * @author VISTALL
  * @since 17.05.14
  */
-public interface CSharpReferenceExpression extends DotNetReferenceExpression
+public interface CSharpReferenceExpression extends DotNetReferenceExpression, PsiPolyVariantReference,
+		CSharpQualifiedNonReference
 {
 	public static enum ResolveToKind
 	{
@@ -51,4 +54,7 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression
 
 	@NotNull
 	ResolveToKind kind();
+
+	@NotNull
+	DotNetTypeRef toTypeRefWithoutCaching(ResolveToKind kind, boolean resolveFromParent);
 }

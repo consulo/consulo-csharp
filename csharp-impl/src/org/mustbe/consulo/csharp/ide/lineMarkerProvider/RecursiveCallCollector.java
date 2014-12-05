@@ -21,9 +21,9 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
@@ -43,10 +43,10 @@ public class RecursiveCallCollector implements LineMarkerCollector
 	@Override
 	public void collect(PsiElement psiElement, @NotNull Collection<LineMarkerInfo> lineMarkerInfos)
 	{
-		if(psiElement.getNode().getElementType() == CSharpTokens.IDENTIFIER && psiElement.getParent() instanceof CSharpReferenceExpressionImpl &&
+		if(psiElement.getNode().getElementType() == CSharpTokens.IDENTIFIER && psiElement.getParent() instanceof CSharpReferenceExpression &&
 				psiElement.getParent().getParent() instanceof CSharpMethodCallExpressionImpl)
 		{
-			PsiElement resolve = ((CSharpReferenceExpressionImpl) psiElement.getParent()).resolve();
+			PsiElement resolve = ((CSharpReferenceExpression) psiElement.getParent()).resolve();
 			if(resolve instanceof CSharpMethodDeclaration)
 			{
 				CSharpMethodDeclaration parentOfType = PsiTreeUtil.getParentOfType(psiElement, CSharpMethodDeclaration.class);

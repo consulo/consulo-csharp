@@ -25,7 +25,7 @@ import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
-import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -35,7 +35,6 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -48,8 +47,7 @@ import com.intellij.util.containers.ContainerUtil;
  * @since 28.11.13.
  */
 @Logger
-public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements CSharpReferenceExpression, PsiPolyVariantReference,
-		CSharpQualifiedNonReference
+public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements CSharpReferenceExpressionEx
 {
 	private static class OurResolver implements CSharpResolveCache.PolyVariantResolver<CSharpReferenceExpressionImpl>
 	{
@@ -152,6 +150,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		return CSharpResolveCache.getInstance(getProject()).resolveWithCaching(this, OurResolver.INSTANCE, true, incompleteCode, resolveFromParent);
 	}
 
+	@Override
 	@NotNull
 	public ResolveResult[] multiResolveImpl(ResolveToKind kind, boolean resolveFromParent)
 	{
@@ -256,6 +255,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		return CSharpReferenceExpressionImplUtil.toTypeRef(resolveResult);
 	}
 
+	@Override
 	@NotNull
 	public DotNetTypeRef toTypeRefWithoutCaching(ResolveToKind kind, boolean resolveFromParent)
 	{
@@ -272,5 +272,4 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		}
 		return CSharpReferenceExpressionImplUtil.toTypeRef(firstValidResult);
 	}
-
 }

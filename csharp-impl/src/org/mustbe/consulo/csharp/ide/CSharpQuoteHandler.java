@@ -18,10 +18,10 @@
 package org.mustbe.consulo.csharp.ide;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImpl;
 import com.intellij.codeInsight.editorActions.JavaLikeQuoteHandler;
 import com.intellij.codeInsight.editorActions.SimpleTokenSetQuoteHandler;
 import com.intellij.openapi.editor.highlighter.HighlighterIterator;
@@ -119,8 +119,7 @@ public class CSharpQuoteHandler extends SimpleTokenSetQuoteHandler implements Ja
 	public boolean needParenthesesAroundConcatenation(final PsiElement element)
 	{
 		// example code: "some string".length() must become ("some" + " string").length()
-		return element.getParent() instanceof CSharpConstantExpressionImpl && element.getParent().getParent() instanceof
-				CSharpReferenceExpressionImpl;
+		return element.getParent() instanceof CSharpConstantExpressionImpl && element.getParent().getParent() instanceof CSharpReferenceExpression;
 	}
 
 	public static boolean isAppropriateElementTypeForLiteralStatic(final IElementType tokenType)

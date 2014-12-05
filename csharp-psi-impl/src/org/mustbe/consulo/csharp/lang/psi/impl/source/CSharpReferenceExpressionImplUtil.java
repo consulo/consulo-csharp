@@ -149,7 +149,7 @@ public class CSharpReferenceExpressionImplUtil
 				return ResolveToKind.FIELD_OR_PROPERTY;
 			}
 		}
-		else if(tempElement instanceof CSharpReferenceExpressionImpl)
+		else if(tempElement instanceof CSharpReferenceExpression)
 		{
 			CSharpNamespaceDeclarationImpl netNamespaceDeclaration = PsiTreeUtil.getParentOfType(referenceExpression,
 					CSharpNamespaceDeclarationImpl.class);
@@ -213,13 +213,13 @@ public class CSharpReferenceExpressionImplUtil
 	@Nullable
 	public static PsiElement resolveByTypeKind(@NotNull DotNetReferenceExpression referenceExpression, boolean attributeSuffix)
 	{
-		assert referenceExpression instanceof CSharpReferenceExpressionImpl;
+		assert referenceExpression instanceof CSharpReferenceExpressionEx;
 		ResolveToKind kind = ResolveToKind.TYPE_LIKE;
 		if(attributeSuffix)
 		{
 			kind = ResolveToKind.ATTRIBUTE;
 		}
-		ResolveResult[] resultWithWeights = ((CSharpReferenceExpressionImpl) referenceExpression).multiResolveImpl(kind, true);
+		ResolveResult[] resultWithWeights = ((CSharpReferenceExpressionEx) referenceExpression).multiResolveImpl(kind, true);
 		if(resultWithWeights.length == 0)
 		{
 			return null;
@@ -609,7 +609,7 @@ public class CSharpReferenceExpressionImplUtil
 
 		if(kind == ResolveToKind.CONSTRUCTOR)
 		{
-			CSharpReferenceExpressionImpl referenceExpression = (CSharpReferenceExpressionImpl) element;
+			CSharpReferenceExpression referenceExpression = (CSharpReferenceExpression) element;
 
 			DotNetTypeRef typeRef = DotNetTypeRef.ERROR_TYPE;
 

@@ -26,6 +26,8 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpQualifiedNonReference;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
@@ -137,7 +139,7 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
-		ResolveResult[] resolveResults = CSharpReferenceExpressionImplUtil.multiResolve0(CSharpReferenceExpressionImpl.ResolveToKind.ARRAY_METHOD, this,
+		ResolveResult[] resolveResults = CSharpReferenceExpressionImplUtil.multiResolve0(CSharpReferenceExpression.ResolveToKind.ARRAY_METHOD, this,
 				this, true);
 		if(!incompleteCode)
 		{
