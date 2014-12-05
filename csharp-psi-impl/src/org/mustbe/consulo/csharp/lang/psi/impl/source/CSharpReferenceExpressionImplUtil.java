@@ -609,12 +609,10 @@ public class CSharpReferenceExpressionImplUtil
 			@NotNull ResolveToKind kind,
 			boolean completion)
 	{
-		boolean codeFragmentIsAvailable = false;
 		CSharpCodeFragment codeFragment = PsiTreeUtil.getParentOfType(element, CSharpCodeFragment.class);
 		if(codeFragment != null)
 		{
 			element = codeFragment.getScopeElement();
-			codeFragmentIsAvailable = true;
 		}
 
 		if(kind == ResolveToKind.CONSTRUCTOR)
