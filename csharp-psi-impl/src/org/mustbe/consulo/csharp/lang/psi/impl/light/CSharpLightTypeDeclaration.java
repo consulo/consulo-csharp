@@ -228,4 +228,10 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
 	{
 		return CSharpTypeDeclarationImplUtil.isEquivalentTo(this, another);
 	}
+
+	@NotNull
+	public DotNetGenericExtractor getGenericExtractor()
+	{
+		return myExtractor;
+	}
 }
