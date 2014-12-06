@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -140,15 +141,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	@Override
 	public TextRange getRangeInElement()
 	{
-		String referenceName = getReferenceName();
-		if(referenceName == null)
-		{
-			return TextRange.EMPTY_RANGE;
-		}
-
-		PsiElement qualifier = getQualifier();
-		int startOffset = qualifier != null ? qualifier.getTextLength() + 1 : 0;
-		return new TextRange(startOffset, referenceName.length() + startOffset);
+		return CSharpReferenceExpressionImplUtil.getRangeInElement(this);
 	}
 
 	@NotNull
@@ -194,9 +187,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		{
 			return stub.getKind();
 		}
-		ResolveToKind kind = CSharpReferenceExpressionImplUtil.kind(this);
-		assert kind == ResolveToKind.TYPE_LIKE || kind == ResolveToKind.CONSTRUCTOR : "That kind is dont supported in stubs: " + kind;
-		return kind;
+		return CSharpReferenceExpressionImplUtil.kind(this);
 	}
 
 	@NotNull
@@ -267,6 +258,18 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	{
 		DotNetTypeList typeArgumentList = getTypeArgumentList();
 		return typeArgumentList == null ? DotNetTypeRef.EMPTY_ARRAY : typeArgumentList.getTypeRefs();
+	}
+
+	@Override
+	public boolean isGlobalElement()
+	{
+		CSharpReferenceExpressionStub stub = getStub();
+		if(stub != null)
+		{
+			return stub.isGlobal();
+		}
+		PsiElement referenceElement = getReferenceElement();
+		return referenceElement != null && referenceElement.getNode().getElementType() == CSharpSoftTokens.GLOBAL_KEYWORD;
 	}
 
 	@NotNull

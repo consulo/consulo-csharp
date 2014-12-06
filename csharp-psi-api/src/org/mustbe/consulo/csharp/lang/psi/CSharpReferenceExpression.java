@@ -48,6 +48,7 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 		PARAMETER,
 		THIS, // return type declaration of parent
 		BASE,  // return type declaration super class of parent
+		ROOT_NAMESPACE,  // root namespace - global keyword
 		LABEL;
 
 		@NotNull
@@ -66,4 +67,6 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 
 	@NotNull
 	DotNetTypeRef[] getTypeArgumentListRefs();
+
+	boolean isGlobalElement();
 }

@@ -67,6 +67,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.CharFilter;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -88,7 +89,7 @@ import lombok.val;
 public class CSharpReferenceExpressionImplUtil
 {
 	public static final TokenSet ourReferenceElements = TokenSet.orSet(CSharpTokenSets.NATIVE_TYPES, TokenSet.create(CSharpTokens.THIS_KEYWORD,
-			CSharpTokens.BASE_KEYWORD, CSharpTokens.IDENTIFIER));
+			CSharpTokens.BASE_KEYWORD, CSharpTokens.IDENTIFIER, CSharpSoftTokens.GLOBAL_KEYWORD));
 
 	public static int getTypeArgumentListSize(@NotNull CSharpReferenceExpression referenceExpression)
 	{
@@ -100,9 +101,31 @@ public class CSharpReferenceExpressionImplUtil
 		return typeArgumentList.getTypes().length;
 	}
 
+	public static TextRange getRangeInElement(@NotNull CSharpReferenceExpression referenceExpression)
+	{
+		PsiElement referenceElement = referenceExpression.getReferenceElement();
+		if(referenceElement == null)
+		{
+			return TextRange.EMPTY_RANGE;
+		}
+
+		PsiElement qualifier = referenceExpression.getQualifier();
+		int startOffset = qualifier != null ? qualifier.getTextLength() + 1 : 0;
+
+		if(qualifier instanceof CSharpReferenceExpression && ((CSharpReferenceExpression) qualifier).isGlobalElement())
+		{
+			startOffset ++; // coloncolon
+		}
+		return new TextRange(startOffset, referenceElement.getTextLength() + startOffset);
+	}
+
 	@NotNull
 	public static ResolveToKind kind(@NotNull CSharpReferenceExpression referenceExpression)
 	{
+		if(referenceExpression.isGlobalElement())
+		{
+			return ResolveToKind.ROOT_NAMESPACE;
+		}
 		PsiElement tempElement = referenceExpression.getParent();
 		if(tempElement instanceof CSharpGenericConstraintImpl)
 		{
@@ -216,7 +239,6 @@ public class CSharpReferenceExpressionImplUtil
 		{
 			return ResolveToKind.BASE;
 		}
-
 		return ResolveToKind.ANY_MEMBER;
 	}
 
@@ -237,9 +259,9 @@ public class CSharpReferenceExpressionImplUtil
 		return resultWithWeights[0].getElement();
 	}
 
-	public static <T extends CSharpQualifiedNonReference & PsiElement> ResolveResult[] multiResolve0(ResolveToKind kind,
+	public static ResolveResult[] multiResolve0(ResolveToKind kind,
 			final CSharpCallArgumentListOwner callArgumentListOwner,
-			final T element,
+			final CSharpQualifiedNonReference element,
 			boolean resolveFromParent)
 	{
 		CSharpResolveSelector selector = StaticResolveSelectors.NONE;
@@ -248,6 +270,7 @@ public class CSharpReferenceExpressionImplUtil
 			case NATIVE_TYPE_WRAPPER:
 			case THIS:
 			case BASE:
+			case ROOT_NAMESPACE:
 				break;
 			case ARRAY_METHOD:
 				selector = StaticResolveSelectors.INDEX_METHOD_GROUP;
@@ -255,6 +278,12 @@ public class CSharpReferenceExpressionImplUtil
 			case CONSTRUCTOR:
 				selector = StaticResolveSelectors.CONSTRUCTOR_GROUP;
 				break;
+			case TYPE_LIKE:
+				if(element instanceof CSharpReferenceExpression && ((CSharpReferenceExpression) element).isGlobalElement())
+				{
+					kind = ResolveToKind.ROOT_NAMESPACE;
+					break;
+				}
 			default:
 			case ATTRIBUTE:
 				val referenceName = element.getReferenceName();
@@ -316,6 +345,10 @@ public class CSharpReferenceExpressionImplUtil
 					}
 				}
 				break;
+			case ROOT_NAMESPACE:
+				val temp = DotNetPsiSearcher.getInstance(element.getProject()).findNamespace("", element.getResolveScope());
+				assert temp != null;
+				return new ResolveResult[]{new PsiElementResolveResult(temp, true)};
 			case GENERIC_PARAMETER_FROM_PARENT:
 				DotNetGenericParameterListOwner parameterListOwner = PsiTreeUtil.getParentOfType(element, DotNetGenericParameterListOwner.class);
 				if(parameterListOwner == null)

@@ -25,6 +25,7 @@ import org.mustbe.consulo.csharp.lang.parser.stmt.StatementParsing;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
@@ -424,7 +425,6 @@ public class ExpressionParsing extends SharedParsingHelpers
 				{
 					dotPos.drop();
 					final PsiBuilder.Marker refExpr = expr.precede();
-					//myParser.getReferenceParser().parseReferenceParameterList(builder, false, false);
 
 					if(!expect(builder, ID_OR_SUPER, "expected.identifier"))
 					{
@@ -437,6 +437,23 @@ public class ExpressionParsing extends SharedParsingHelpers
 					refExpr.done(REFERENCE_EXPRESSION);
 					expr = refExpr;
 				}
+			}
+			else if(tokenType == COLONCOLON)
+			{
+				builder.advanceLexer();
+
+				final PsiBuilder.Marker refExpr = expr.precede();
+
+				if(!expect(builder, IDENTIFIER, "expected.identifier"))
+				{
+					refExpr.done(REFERENCE_EXPRESSION);
+					startMarker.drop();
+					return refExpr;
+				}
+
+				parseReferenceTypeArgumentList(builder, NONE);
+				refExpr.done(REFERENCE_EXPRESSION);
+				expr = refExpr;
 			}
 			else if(tokenType == LPAR)
 			{
@@ -570,6 +587,8 @@ public class ExpressionParsing extends SharedParsingHelpers
 	private static PsiBuilder.Marker parsePrimaryExpressionStart(final CSharpBuilderWrapper builder)
 	{
 		CSharpLanguageVersion version = builder.getVersion();
+		builder.enableSoftKeyword(CSharpSoftTokens.GLOBAL_KEYWORD);
+
 		boolean linqState = false;
 		if(version.isAtLeast(CSharpLanguageVersion._3_0))
 		{
@@ -587,6 +606,15 @@ public class ExpressionParsing extends SharedParsingHelpers
 		if(version.isAtLeast(CSharpLanguageVersion._4_0))
 		{
 			builder.disableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);
+		}
+
+		builder.disableSoftKeyword(CSharpSoftTokens.GLOBAL_KEYWORD);
+
+		// if not coloncolon drop
+		if(tokenType == CSharpSoftTokens.GLOBAL_KEYWORD && builder.lookAhead(1) != CSharpTokens.COLONCOLON)
+		{
+			builder.remapBackIfSoft();
+			tokenType = builder.getTokenType();
 		}
 
 		if(LITERALS.contains(tokenType))
@@ -684,6 +712,14 @@ public class ExpressionParsing extends SharedParsingHelpers
 			{
 				return marker;
 			}
+		}
+
+		if(tokenType == GLOBAL_KEYWORD)
+		{
+			val refExpr = builder.mark();
+			builder.advanceLexer();
+			refExpr.done(REFERENCE_EXPRESSION);
+			return refExpr;
 		}
 
 		if(tokenType == IDENTIFIER)
@@ -1248,16 +1284,37 @@ public class ExpressionParsing extends SharedParsingHelpers
 		return parseQualifiedReference(builder, prevMarker, NONE, TokenSet.EMPTY);
 	}
 
-	public static ReferenceInfo parseQualifiedReference(@NotNull CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker prevMarker,
+	public static ReferenceInfo parseQualifiedReference(@NotNull CSharpBuilderWrapper builder, @Nullable final PsiBuilder.Marker prevMarker,
 			int flags, @NotNull TokenSet nameStopperSet)
 	{
 		if(prevMarker != null)
 		{
-			builder.advanceLexer(); // skip dot
+			builder.advanceLexer(); // skip dot or coloncolon
 		}
+
 		PsiBuilder.Marker marker = prevMarker == null ? builder.mark() : prevMarker;
 
 		ReferenceInfo referenceInfo = new ReferenceInfo(false, marker);
+
+		if(prevMarker == null)
+		{
+			builder.enableSoftKeyword(CSharpSoftTokens.GLOBAL_KEYWORD);
+			IElementType tokenType = builder.getTokenType();
+			builder.disableSoftKeyword(CSharpSoftTokens.GLOBAL_KEYWORD);
+
+			if(tokenType == CSharpSoftTokens.GLOBAL_KEYWORD && builder.lookAhead(1) == CSharpTokens.COLONCOLON)
+			{
+				builder.advanceLexer(); // global
+
+				marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.REFERENCE_EXPRESSION : CSharpElements.REFERENCE_EXPRESSION);
+
+				return parseQualifiedReference(builder, marker.precede(), flags, nameStopperSet);
+			}
+			else
+			{
+				builder.remapBackIfSoft();
+			}
+		}
 
 		if(expect(builder, IDENTIFIER, "Identifier expected"))
 		{

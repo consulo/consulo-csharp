@@ -31,24 +31,27 @@ public class CSharpReferenceExpressionStub extends StubBase<CSharpReferenceExpre
 {
 	private StringRef myReferenceText;
 	private int myKindIndex;
+	private boolean myGlobal;
 
-	public CSharpReferenceExpressionStub(StubElement parent, IStubElementType elementType, String referenceText, int kindIndex)
+	public CSharpReferenceExpressionStub(StubElement parent, IStubElementType elementType, String referenceText, int kindIndex, boolean global)
 	{
 		super(parent, elementType);
+		myGlobal = global;
 		myReferenceText = StringRef.fromNullableString(referenceText);
 		myKindIndex = kindIndex;
 	}
 
-	public CSharpReferenceExpressionStub(StubElement parent, IStubElementType elementType, StringRef referenceText, int kindIndex)
+	public CSharpReferenceExpressionStub(StubElement parent, IStubElementType elementType, StringRef referenceText, int kindIndex, boolean global)
 	{
 		super(parent, elementType);
 		myReferenceText = referenceText;
 		myKindIndex = kindIndex;
+		myGlobal = global;
 	}
 
-	public CSharpReferenceExpressionStub(StubElement parent, IStubElementType elementType)
+	public boolean isGlobal()
 	{
-		super(parent, elementType);
+		return myGlobal;
 	}
 
 	public String getReferenceText()

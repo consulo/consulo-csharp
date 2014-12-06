@@ -187,7 +187,11 @@ public class StatementParsing extends SharedParsingHelpers
 	@Nullable
 	private static ParseVariableOrExpressionResult parseVariableOrExpression(CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker someMarker)
 	{
-		if(canParseAsVariable(builder))
+		boolean canParseAsVariable = canParseAsVariable(builder);
+		// need for example remap global keyword to identifier when it try to parse
+		builder.remapBackIfSoft();
+
+		if(canParseAsVariable)
 		{
 			PsiBuilder.Marker mark = builder.mark();
 			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, mark, LOCAL_VARIABLE, VAR_SUPPORT, someMarker != null);

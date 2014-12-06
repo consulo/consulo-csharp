@@ -230,18 +230,6 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 
 			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.USER_TYPE : CSharpElements.USER_TYPE);
 		}
-		else if(builder.getTokenType() == GLOBAL_KEYWORD)
-		{
-			PsiBuilder.Marker mark = builder.mark();
-			builder.advanceLexer();
-
-			if(expect(builder, COLONCOLON, "'::' expected"))
-			{
-				expect(builder, IDENTIFIER, "Identifier expected");
-			}
-			mark.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.REFERENCE_EXPRESSION : CSharpElements.REFERENCE_EXPRESSION);
-			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.USER_TYPE : CSharpElements.USER_TYPE);
-		}
 		else
 		{
 			marker.drop();

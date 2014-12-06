@@ -236,4 +236,16 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 		}
 		return map.get(typeName);
 	}
+
+	@NotNull
+	@SuppressWarnings("unchecked")
+	public Collection<Couple<String>> getAll(@NotNull Module module)
+	{
+		MultiMap<String, Couple<String>> map = myCacheMap.get(module);
+		if(map == null)
+		{
+			return Collections.emptyList();
+		}
+		return (Collection<Couple<String>>) map.values();
+	}
 }

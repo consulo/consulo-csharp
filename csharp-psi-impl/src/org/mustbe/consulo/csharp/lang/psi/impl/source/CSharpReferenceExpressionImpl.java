@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -127,15 +128,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@Override
 	public TextRange getRangeInElement()
 	{
-		PsiElement referenceElement = getReferenceElement();
-		if(referenceElement == null)
-		{
-			return TextRange.EMPTY_RANGE;
-		}
-
-		PsiElement qualifier = getQualifier();
-		int startOffset = qualifier != null ? qualifier.getTextLength() + 1 : 0;
-		return new TextRange(startOffset, referenceElement.getTextLength() + startOffset);
+		return CSharpReferenceExpressionImplUtil.getRangeInElement(this);
 	}
 
 	@NotNull
@@ -251,6 +244,13 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	public boolean isSoft()
 	{
 		return kind() == ResolveToKind.SOFT_QUALIFIED_NAMESPACE;
+	}
+
+	@Override
+	public boolean isGlobalElement()
+	{
+		PsiElement referenceElement = getReferenceElement();
+		return referenceElement != null && referenceElement.getNode().getElementType() == CSharpSoftTokens.GLOBAL_KEYWORD;
 	}
 
 	@NotNull
