@@ -243,8 +243,6 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 			return true;
 		}
 
-		CSharpResolveUtil.walkUsing(p, parent, null, resolveState);
-
-		return false;
+		return !CSharpResolveUtil.walkUsing(p, parent, null, resolveState);
 	}
 }
