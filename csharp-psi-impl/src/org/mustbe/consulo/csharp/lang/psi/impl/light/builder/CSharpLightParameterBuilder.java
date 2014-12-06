@@ -17,9 +17,11 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.light.builder;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 
@@ -47,9 +49,9 @@ public class CSharpLightParameterBuilder extends CSharpLightVariableBuilder<CSha
 		visitor.visitParameter(this);
 	}
 
-	@NotNull
+	@Nullable
 	@Override
-	public DotNetLikeMethodDeclaration getMethod()
+	public DotNetParameterListOwner getOwner()
 	{
 		return myMethod;
 	}

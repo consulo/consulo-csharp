@@ -22,6 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAnonymMethodExpressionImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
 
 /**
  * @author VISTALL
@@ -32,21 +33,24 @@ public class DefaultUnusedElementPolicy extends UnusedElementPolicy
 	@Override
 	public boolean canMarkAsUnused(DotNetParameter parameter)
 	{
-		//FIXME [VISTALL] temp fix until getMethod() ill return nullable object
-		if(parameter.getParent().getParent() instanceof CSharpAnonymMethodExpressionImpl)
-		{
-			return false;
-		}
-		DotNetLikeMethodDeclaration method = parameter.getMethod();
-
-		if(method instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) method).isDelegate())
+		DotNetParameterListOwner parameterOwner = parameter.getOwner();
+		if(parameterOwner instanceof CSharpAnonymMethodExpressionImpl)
 		{
 			return false;
 		}
 
-		if(method.hasModifier(CSharpModifier.ABSTRACT) || method.hasModifier(CSharpModifier.OVERRIDE))
+		if(parameterOwner instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) parameterOwner).isDelegate())
 		{
 			return false;
+		}
+
+		if(parameterOwner instanceof DotNetLikeMethodDeclaration)
+		{
+			if(((DotNetLikeMethodDeclaration) parameterOwner).hasModifier(CSharpModifier.ABSTRACT) || ((DotNetLikeMethodDeclaration) parameterOwner)
+					.hasModifier(CSharpModifier.OVERRIDE))
+			{
+				return false;
+			}
 		}
 		return super.canMarkAsUnused(parameter);
 	}

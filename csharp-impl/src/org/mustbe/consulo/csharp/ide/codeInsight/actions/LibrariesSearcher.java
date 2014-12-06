@@ -17,7 +17,6 @@
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -128,7 +127,7 @@ public class LibrariesSearcher
 	{
 		try
 		{
-			ModuleParser parser = new ModuleParser(new FileInputStream(file));
+			ModuleParser parser = new ModuleParser(file);
 
 			MultiMap<String, String> map = new MultiMap<String, String>();
 			TypeDef[] typeDefs = parser.getTypeDefs();

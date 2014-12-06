@@ -32,6 +32,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
+import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -158,9 +159,9 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 		return super.getUseScope();
 	}
 
-	@NotNull
+	@Nullable
 	@Override
-	public DotNetLikeMethodDeclaration getMethod()
+	public DotNetParameterListOwner getOwner()
 	{
 		return getStubOrPsiParentOfType(DotNetLikeMethodDeclaration.class);
 	}

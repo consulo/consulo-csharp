@@ -33,6 +33,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetRefTypeRef;
@@ -192,9 +193,9 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 		return name == null ? "p" + myIndex : name;
 	}
 
-	@NotNull
+	@Nullable
 	@Override
-	public DotNetLikeMethodDeclaration getMethod()
+	public DotNetParameterListOwner getOwner()
 	{
 		return myMethodDeclaration;
 	}
