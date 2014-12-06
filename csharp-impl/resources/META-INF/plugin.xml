@@ -46,6 +46,12 @@
 		</group>
 	</actions>
 
+	<project-components>
+		<component>
+			<implementation-class>org.mustbe.consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent</implementation-class>
+		</component>
+	</project-components>
+
 	<extensionPoints>
 		<extensionPoint name="unusedElementPolicy" interface="org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.UnusedElementPolicy"/>
 
@@ -243,5 +249,7 @@
 		<psi.referenceContributor language="C#" implementation="org.mustbe.consulo.csharp.ide.resolve.CSharpPsiReferenceContributor"/>
 
 		<newModuleBuilder implementation="org.mustbe.consulo.csharp.ide.newProjectOrModule.CSharpNewModuleBuilder"/>
+
+		<eapDescriptor implementation="org.mustbe.consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent$EapDescriptor" />
 	</extensions>
 </idea-plugin>

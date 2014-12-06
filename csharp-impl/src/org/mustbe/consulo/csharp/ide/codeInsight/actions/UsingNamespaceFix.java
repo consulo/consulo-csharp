@@ -39,6 +39,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeIndex;
 import org.mustbe.consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
 import org.mustbe.consulo.dotnet.DotNetBundle;
 import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
+import org.mustbe.consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -50,6 +51,8 @@ import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.codeInsight.intention.HighPriorityAction;
 import com.intellij.codeInspection.HintAction;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Condition;
@@ -117,7 +120,8 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		}
 
 		AddUsingAction action = new AddUsingAction(editor, element, q);
-		String message = ShowAutoImportPass.getMessage(q.size() != 1, DotNetBundle.message("use.popup", q.iterator().next().getSecond()));
+		String message = ShowAutoImportPass.getMessage(q.size() != 1, DotNetBundle.message("use.popup", AddUsingAction.formatMessage(q.iterator()
+				.next())));
 
 		HintManager.getInstance().showQuestionHint(editor, message, element.getTextOffset(), element.getTextRange().getEndOffset(), action);
 
@@ -135,17 +139,22 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		{
 			return Collections.emptySet();
 		}
-		Set<Couple<String>> q = new ArrayListSet<Couple<String>>();
+		Set<Couple<String>> resultSet = new ArrayListSet<Couple<String>>();
 		if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || ref.getQualifier() == null)
 		{
-			collectAvailableNamespaces(ref, q, referenceName);
+			collectAvailableNamespaces(ref, resultSet, referenceName);
 		}
 		if(kind == CSharpReferenceExpression.ResolveToKind.METHOD)
 		{
-			collectAvailableNamespacesForMethodExtensions(ref, q, referenceName);
+			collectAvailableNamespacesForMethodExtensions(ref, resultSet, referenceName);
 		}
-		//q.addAll(LibrariesSearcher.getInstance().searchInSystemLibraries(myRef, referenceName));
-		return q;
+
+		Module moduleForPsiElement = ModuleUtilCore.findModuleForPsiElement(ref);
+		if(moduleForPsiElement != null)
+		{
+			resultSet.addAll(DotNetLibraryAnalyzerComponent.getInstance(moduleForPsiElement.getProject()).get(moduleForPsiElement, referenceName));
+		}
+		return resultSet;
 	}
 
 	private static void collectAvailableNamespaces(final CSharpReferenceExpression ref, Set<Couple<String>> set, String referenceName)

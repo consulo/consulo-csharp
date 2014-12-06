@@ -106,7 +106,7 @@ public class AddUsingAction implements QuestionAction
 
 		Couple<String> firstCount = myElements.size() == 1 ? ContainerUtil.getFirstItem(myElements) : null;
 
-		if(firstCount != null && firstCount.getFirst() == null)
+		if(firstCount != null)
 		{
 			execute0(ContainerUtil.getFirstItem(myElements));
 		}
@@ -125,15 +125,7 @@ public class AddUsingAction implements QuestionAction
 				@Override
 				public String getTextFor(Couple<String> value)
 				{
-					String first = value.getFirst();
-					if(first == null)
-					{
-						return value.getSecond();
-					}
-					else
-					{
-						return value.getSecond() + " in '" + value.getFirst() + "'";
-					}
+					return formatMessage(value);
 				}
 
 				@Override
@@ -148,6 +140,19 @@ public class AddUsingAction implements QuestionAction
 		}
 
 		return true;
+	}
+
+	@NotNull
+	public static String formatMessage(@NotNull Couple<String> couple)
+	{
+		String first = couple.getFirst();
+		String second = couple.getSecond();
+		if(first == null)
+		{
+			return second;
+		}
+
+		return second + " from '" + first + "'";
 	}
 
 	private void execute0(final Couple<String> couple)
