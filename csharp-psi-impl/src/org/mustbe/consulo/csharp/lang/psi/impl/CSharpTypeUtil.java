@@ -300,8 +300,14 @@ public class CSharpTypeUtil
 				return fail();
 			}
 
-			return isInheritable(((DotNetPointerTypeRef) top).getInnerTypeRef(), ((DotNetPointerTypeRef) target).getInnerTypeRef(), scope,
-					explicitOrImplicit);
+			DotNetTypeRef topInnerTypeRef = ((DotNetPointerTypeRef) top).getInnerTypeRef();
+			// void* is unknown type for all
+			if(isVmNameEqual(topInnerTypeRef, DotNetTypes.System.Void, scope))
+			{
+				return SIMPLE_SUCCESS;
+			}
+			return isTypeEqual(topInnerTypeRef, ((DotNetPointerTypeRef) target).getInnerTypeRef(),
+					scope) ? SIMPLE_SUCCESS : fail();
 		}
 
 		if(target instanceof CSharpArrayTypeRef && top instanceof CSharpArrayTypeRef)
