@@ -443,6 +443,22 @@ public class ExpressionParsing extends SharedParsingHelpers
 					expr = refExpr;
 				}
 			}
+			else if(tokenType == ARROW)
+			{
+				builder.advanceLexer();
+
+				final PsiBuilder.Marker refExpr = expr.precede();
+
+				if(!expect(builder, IDENTIFIER, "expected.identifier"))
+				{
+					refExpr.done(REFERENCE_EXPRESSION);
+					startMarker.drop();
+					return refExpr;
+				}
+
+				refExpr.done(REFERENCE_EXPRESSION);
+				expr = refExpr;
+			}
 			else if(tokenType == COLONCOLON)
 			{
 				builder.advanceLexer();

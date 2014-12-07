@@ -27,6 +27,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -39,6 +40,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.ResolveResult;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
@@ -251,6 +253,27 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	{
 		PsiElement referenceElement = getReferenceElement();
 		return referenceElement != null && referenceElement.getNode().getElementType() == CSharpSoftTokens.GLOBAL_KEYWORD;
+	}
+
+	@NotNull
+	@Override
+	public AccessType getMemberAccessType()
+	{
+		PsiElement childByType = findChildByType(CSharpReferenceExpressionImplUtil.ourAccessTokens);
+		if(childByType == null)
+		{
+			return AccessType.NONE;
+		}
+		IElementType elementType = childByType.getNode().getElementType();
+		if(elementType == CSharpTokens.ARROW)
+		{
+			return AccessType.ARROW;
+		}
+		else if(elementType == CSharpTokens.COLONCOLON)
+		{
+			return AccessType.COLONCOLON;
+		}
+		return AccessType.DOT;
 	}
 
 	@NotNull

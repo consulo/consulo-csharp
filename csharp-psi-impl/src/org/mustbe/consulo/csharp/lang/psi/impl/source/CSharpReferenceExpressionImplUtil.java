@@ -91,6 +91,8 @@ public class CSharpReferenceExpressionImplUtil
 	public static final TokenSet ourReferenceElements = TokenSet.orSet(CSharpTokenSets.NATIVE_TYPES, TokenSet.create(CSharpTokens.THIS_KEYWORD,
 			CSharpTokens.BASE_KEYWORD, CSharpTokens.IDENTIFIER, CSharpSoftTokens.GLOBAL_KEYWORD));
 
+	public static final TokenSet ourAccessTokens = TokenSet.create(CSharpTokens.ARROW, CSharpTokens.DOT, CSharpTokens.COLONCOLON);
+
 	public static int getTypeArgumentListSize(@NotNull CSharpReferenceExpression referenceExpression)
 	{
 		DotNetTypeList typeArgumentList = referenceExpression.getTypeArgumentList();
@@ -110,11 +112,17 @@ public class CSharpReferenceExpressionImplUtil
 		}
 
 		PsiElement qualifier = referenceExpression.getQualifier();
-		int startOffset = qualifier != null ? qualifier.getTextLength() + 1 : 0;
-
-		if(qualifier instanceof CSharpReferenceExpression && ((CSharpReferenceExpression) qualifier).isGlobalElement())
+		int startOffset = qualifier != null ? qualifier.getTextLength() : 0;
+		CSharpReferenceExpression.AccessType accessType = referenceExpression.getMemberAccessType();
+		switch(accessType)
 		{
-			startOffset ++; // coloncolon
+			case ARROW:
+			case COLONCOLON:
+				startOffset += 2;
+				break;
+			case DOT:
+				startOffset += 1;
+				break;
 		}
 		return new TextRange(startOffset, referenceElement.getTextLength() + startOffset);
 	}

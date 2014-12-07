@@ -56,6 +56,14 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 		public static final ResolveToKind[] VALUES = values();
 	}
 
+	public static enum AccessType
+	{
+		NONE,
+		DOT,
+		ARROW,
+		COLONCOLON
+	}
+
 	@Nullable
 	PsiElement getReferenceElement();
 
@@ -69,4 +77,7 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 	DotNetTypeRef[] getTypeArgumentListRefs();
 
 	boolean isGlobalElement();
+
+	@NotNull
+	AccessType getMemberAccessType();
 }

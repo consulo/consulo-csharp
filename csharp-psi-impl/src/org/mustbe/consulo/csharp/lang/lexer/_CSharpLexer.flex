@@ -290,6 +290,8 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	"=>"                      { return CSharpTokens.DARROW; }
 
+	"->"                      { return CSharpTokens.ARROW; }
+
 	"=="                      { return CSharpTokens.EQEQ; }
 
 	"++"                      { return CSharpTokens.PLUSPLUS; }

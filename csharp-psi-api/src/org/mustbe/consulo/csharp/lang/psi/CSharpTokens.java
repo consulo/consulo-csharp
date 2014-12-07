@@ -234,6 +234,8 @@ public interface CSharpTokens extends TokenType
 
 	IElementType MINUS = new IElementType("MINUS", CSharpLanguage.INSTANCE);
 
+	IElementType ARROW = new IElementType("ARROW", CSharpLanguage.INSTANCE);
+
 	IElementType DARROW = new IElementType("DARROW", CSharpLanguage.INSTANCE);
 
 	IElementType MINUSMINUS = new IElementType("MINUSMINUS", CSharpLanguage.INSTANCE);
