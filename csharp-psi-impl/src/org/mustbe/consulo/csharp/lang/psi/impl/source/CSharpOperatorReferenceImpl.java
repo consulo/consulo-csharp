@@ -49,6 +49,7 @@ import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRef
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
@@ -229,6 +230,23 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 					return DotNetTypeRef.ERROR_TYPE;
 				}
 				return new CSharpPointerTypeRef(dotNetExpression.toTypeRef(true));
+			}
+			else if(elementType == CSharpTokens.MUL)
+			{
+				DotNetExpression dotNetExpression = ArrayUtil2.safeGet(getParameterExpressions(), 0);
+				if(dotNetExpression == null)
+				{
+					return DotNetTypeRef.ERROR_TYPE;
+				}
+				DotNetTypeRef expressionTypeRef = dotNetExpression.toTypeRef(true);
+				if(expressionTypeRef instanceof DotNetPointerTypeRef)
+				{
+					return ((DotNetPointerTypeRef) expressionTypeRef).getInnerTypeRef();
+				}
+				else
+				{
+					return DotNetTypeRef.ERROR_TYPE;
+				}
 			}
 		}
 
