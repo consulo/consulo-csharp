@@ -17,12 +17,14 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 {
 	private final CSharpFormattingBlock myParent;
+	private final CommonCodeStyleSettings myCodeStyleSettings;
 
 	private SpacingBuilder myBuilder;
 
 	public CSharpSpacingProcessor(CSharpFormattingBlock parent, CommonCodeStyleSettings codeStyleSettings)
 	{
 		myParent = parent;
+		myCodeStyleSettings = codeStyleSettings;
 
 		myBuilder = new SpacingBuilder(codeStyleSettings);
 
@@ -41,7 +43,6 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.beforeInside(BLOCK_STATEMENT, PROPERTY_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_METHOD_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, EVENT_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_METHOD_LBRACE);
 
-		myBuilder.beforeInside(BLOCK_STATEMENT, IF_STATEMENT).spaceIf(codeStyleSettings.SPACE_BEFORE_IF_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, SWITCH_STATEMENT).spaceIf(codeStyleSettings.SPACE_BEFORE_SWITCH_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, FOR_STATEMENT).spaceIf(codeStyleSettings.SPACE_BEFORE_FOR_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, FOREACH_STATEMENT).spaceIf(codeStyleSettings.SPACE_BEFORE_FOR_LBRACE);
@@ -49,6 +50,12 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.beforeInside(BLOCK_STATEMENT, TRY_STATEMENT).spaceIf(codeStyleSettings.SPACE_BEFORE_TRY_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, CATCH_STATEMENT).spaceIf(codeStyleSettings.SPACE_BEFORE_CATCH_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, FINALLY_STATEMENT).spaceIf(codeStyleSettings.SPACE_BEFORE_FINALLY_LBRACE);
+		myBuilder.before(CSharpTokens.ELSE_KEYWORD).spaceIf(codeStyleSettings.SPACE_BEFORE_ELSE_KEYWORD);
+		myBuilder.betweenInside(CSharpTokens.ELSE_KEYWORD, CSharpElements.BLOCK_STATEMENT, CSharpElements.IF_STATEMENT).spaceIf(codeStyleSettings
+				.SPACE_BEFORE_ELSE_LBRACE);
+
+		// need be after else declaration
+		myBuilder.beforeInside(BLOCK_STATEMENT, IF_STATEMENT).spaceIf(codeStyleSettings.SPACE_BEFORE_IF_LBRACE);
 	}
 
 	@Nullable
