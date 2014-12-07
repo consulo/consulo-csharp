@@ -44,12 +44,14 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperato
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.OperatorByTokenSelector;
 import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
@@ -215,6 +217,19 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		if(variable != null)
 		{
 			return variable;
+		}
+
+		if(parent instanceof CSharpPrefixExpressionImpl)
+		{
+			if(elementType == CSharpTokens.AND)
+			{
+				DotNetExpression dotNetExpression = ArrayUtil2.safeGet(getParameterExpressions(), 0);
+				if(dotNetExpression == null)
+				{
+					return DotNetTypeRef.ERROR_TYPE;
+				}
+				return new DotNetPointerTypeRefImpl(dotNetExpression.toTypeRef(true));
+			}
 		}
 
 		if(parent instanceof CSharpExpressionWithOperatorImpl)
