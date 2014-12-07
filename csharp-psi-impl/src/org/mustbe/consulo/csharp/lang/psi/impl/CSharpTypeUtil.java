@@ -42,6 +42,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithInnerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
+import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -648,5 +649,11 @@ public class CSharpTypeUtil
 			return Pair.create(((DotNetTypeDeclaration) typeResolveResultElement).getVmQName(), (DotNetTypeDeclaration) typeResolveResultElement);
 		}
 		return null;
+	}
+
+	public static boolean isVmNameEqual(@NotNull DotNetTypeRef typeRef, @NotNull String qName, @NotNull PsiElement scope)
+	{
+		Pair<String, DotNetTypeDeclaration> pair = resolveTypeElement(typeRef, scope);
+		return pair != null && Comparing.equal(pair.getFirst(), qName);
 	}
 }

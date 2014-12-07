@@ -67,7 +67,7 @@ public class CSharpResolveCache
 		TResult resolve(@NotNull TRef ref, boolean incompleteCode, boolean resolveFromParent);
 	}
 
-	public interface PolyVariantResolver<T extends PsiPolyVariantReference & PsiElement> extends AbstractResolver<T, ResolveResult[]>
+	public interface PolyVariantResolver<T extends PsiElement> extends AbstractResolver<T, ResolveResult[]>
 	{
 		@Override
 		@NotNull
@@ -173,17 +173,17 @@ public class CSharpResolveCache
 	}
 
 	@NotNull
-	public <T extends PsiPolyVariantReference & PsiElement> ResolveResult[] resolveWithCaching(@NotNull T ref,
+	public <T extends PsiElement> ResolveResult[] resolveWithCaching(@NotNull T ref,
 			@NotNull PolyVariantResolver<T> resolver,
 			boolean needToPreventRecursion,
 			boolean incompleteCode,
 			boolean resolveFromParent)
 	{
-		return resolveWithCaching(ref, resolver, needToPreventRecursion, incompleteCode, resolveFromParent, ref.getElement().getContainingFile());
+		return resolveWithCaching(ref, resolver, needToPreventRecursion, incompleteCode, resolveFromParent, ref.getContainingFile());
 	}
 
 	@NotNull
-	public <T extends PsiPolyVariantReference & PsiElement> ResolveResult[] resolveWithCaching(@NotNull T ref,
+	public <T extends PsiElement> ResolveResult[] resolveWithCaching(@NotNull T ref,
 			@NotNull PolyVariantResolver<T> resolver,
 			boolean needToPreventRecursion,
 			boolean incompleteCode,
