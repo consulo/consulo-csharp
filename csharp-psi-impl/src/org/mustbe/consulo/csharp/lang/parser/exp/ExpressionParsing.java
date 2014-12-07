@@ -413,6 +413,11 @@ public class ExpressionParsing extends SharedParsingHelpers
 					dotPos.drop();
 					expr = parseNewExpression(builder, expr);
 				}
+				else if(dotTokenType == STACKALLOC_KEYWORD)
+				{
+					dotPos.drop();
+					expr = parseStackAllocExpression(builder, expr);
+				}
 				else if(dotTokenType == BASE_KEYWORD)
 				{
 					dotPos.drop();
@@ -633,6 +638,11 @@ public class ExpressionParsing extends SharedParsingHelpers
 		if(tokenType == NEW_KEYWORD)
 		{
 			return parseNewExpression(builder, null);
+		}
+
+		if(tokenType == STACKALLOC_KEYWORD)
+		{
+			return parseStackAllocExpression(builder, null);
 		}
 
 		if(tokenType == TYPEOF_KEYWORD)
@@ -1105,6 +1115,44 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 
 		newExpr.done(NEW_EXPRESSION);
+		return newExpr;
+	}
+
+	private static PsiBuilder.Marker parseStackAllocExpression(CSharpBuilderWrapper builder, PsiBuilder.Marker mark)
+	{
+		PsiBuilder.Marker newExpr = (mark != null ? mark.precede() : builder.mark());
+
+		builder.advanceLexer();
+
+		val typeMarker = parseType(builder, BRACKET_RETURN_BEFORE);
+		if(typeMarker == null)
+		{
+			builder.error("Expected type");
+		}
+
+		while(builder.getTokenType() == LBRACKET)
+		{
+			val arrayMarker = builder.mark();
+			builder.advanceLexer();
+
+			while(true)
+			{
+				parse(builder);
+				if(builder.getTokenType() != COMMA)
+				{
+					break;
+				}
+				else
+				{
+					builder.advanceLexer();
+				}
+			}
+
+			expect(builder, RBRACKET, "']' expected");
+			arrayMarker.done(NEW_ARRAY_LENGTH);
+		}
+
+		newExpr.done(STACKALLOC_EXPRESSION);
 		return newExpr;
 	}
 

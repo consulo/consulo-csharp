@@ -556,4 +556,9 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	{
 		visitElement(statement);
 	}
+
+	public void visitStackAllocExpression(CSharpStackAllocExpressionImpl expression)
+	{
+		visitElement(expression);
+	}
 }

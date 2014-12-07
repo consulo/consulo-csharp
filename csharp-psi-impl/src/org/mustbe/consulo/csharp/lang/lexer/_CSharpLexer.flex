@@ -4,6 +4,7 @@ import java.util.*;
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 
 %%
@@ -183,6 +184,8 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 // expression tokens
 	"new"                     { return CSharpTokens.NEW_KEYWORD; }
+
+	"stackalloc"              { return CSharpTokens.STACKALLOC_KEYWORD; }
 
 	"typeof"                  { return CSharpTokens.TYPEOF_KEYWORD; }
 

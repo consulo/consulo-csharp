@@ -92,6 +92,8 @@ public interface CSharpTokens extends TokenType
 
 	IElementType NEW_KEYWORD = new IElementType("NEW_KEYWORD", CSharpLanguage.INSTANCE);
 
+	IElementType STACKALLOC_KEYWORD = new IElementType("STACKALLOC_KEYWORD", CSharpLanguage.INSTANCE);
+
 	IElementType TYPEOF_KEYWORD = new IElementType("TYPEOF_KEYWORD", CSharpLanguage.INSTANCE);
 
 	IElementType SIZEOF_KEYWORD = new IElementType("SIZEOF_KEYWORD", CSharpLanguage.INSTANCE);
