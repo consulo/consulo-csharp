@@ -21,8 +21,8 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpPointerTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -34,7 +34,7 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpStubPointerTypeImpl extends CSharpStubTypeElementImpl<CSharpEmptyStub<DotNetPointerType>> implements DotNetPointerType
+public class CSharpStubPointerTypeImpl extends CSharpStubElementImpl<CSharpEmptyStub<DotNetPointerType>> implements DotNetPointerType
 {
 	public CSharpStubPointerTypeImpl(@NotNull ASTNode node)
 	{
@@ -55,14 +55,14 @@ public class CSharpStubPointerTypeImpl extends CSharpStubTypeElementImpl<CSharpE
 
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRefImpl()
+	public DotNetTypeRef toTypeRef()
 	{
 		DotNetType innerType = getInnerType();
 		if(innerType == null)
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
-		return new DotNetPointerTypeRefImpl(innerType.toTypeRef());
+		return new CSharpPointerTypeRef(innerType.toTypeRef());
 	}
 
 	@Nullable

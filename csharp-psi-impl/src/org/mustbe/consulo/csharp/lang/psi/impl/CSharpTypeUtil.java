@@ -37,6 +37,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithInnerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -286,6 +287,22 @@ public class CSharpTypeUtil
 					explicitOrImplicit);
 		}
 
+		if(target instanceof DotNetPointerTypeRef || top instanceof DotNetPointerTypeRef)
+		{
+			if(target instanceof DotNetPointerTypeRef && !(top instanceof DotNetPointerTypeRef))
+			{
+				return fail();
+			}
+
+			if(top instanceof DotNetPointerTypeRef && !(target instanceof DotNetPointerTypeRef))
+			{
+				return fail();
+			}
+
+			return isInheritable(((DotNetPointerTypeRef) top).getInnerTypeRef(), ((DotNetPointerTypeRef) target).getInnerTypeRef(), scope,
+					explicitOrImplicit);
+		}
+
 		if(target instanceof CSharpArrayTypeRef && top instanceof CSharpArrayTypeRef)
 		{
 			if(((CSharpArrayTypeRef) target).getDimensions() != ((CSharpArrayTypeRef) top).getDimensions())
@@ -388,7 +405,7 @@ public class CSharpTypeUtil
 					}
 					else
 					{
-						if(!isTypeEqual(topExtractedTypeRef, superExtractedTypeRef,scope))
+						if(!isTypeEqual(topExtractedTypeRef, superExtractedTypeRef, scope))
 						{
 							return fail();
 						}
@@ -628,7 +645,7 @@ public class CSharpTypeUtil
 		PsiElement typeResolveResultElement = typeResolveResult.getElement();
 		if(typeResolveResultElement instanceof DotNetTypeDeclaration)
 		{
-			return Pair.create(((DotNetTypeDeclaration) typeResolveResultElement).getVmQName(), (DotNetTypeDeclaration)typeResolveResultElement);
+			return Pair.create(((DotNetTypeDeclaration) typeResolveResultElement).getVmQName(), (DotNetTypeDeclaration) typeResolveResultElement);
 		}
 		return null;
 	}
