@@ -551,4 +551,9 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	{
 		visitElement(clause);
 	}
+
+	public void visitUnsafeStatement(CSharpUnsafeStatementImpl statement)
+	{
+		visitElement(statement);
+	}
 }

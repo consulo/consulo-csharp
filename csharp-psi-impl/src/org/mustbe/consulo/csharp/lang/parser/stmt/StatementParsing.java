@@ -114,6 +114,10 @@ public class StatementParsing extends SharedParsingHelpers
 		{
 			parseFinallyStatement(wrapper, marker);
 		}
+		else if(tokenType == UNSAFE_KEYWORD)
+		{
+			parseUnsafeStatement(wrapper, marker);
+		}
 		else if(tokenType == IF_KEYWORD)
 		{
 			parseIfStatement(wrapper, marker);
@@ -378,6 +382,22 @@ public class StatementParsing extends SharedParsingHelpers
 		}
 
 		mark.done(FINALLY_STATEMENT);
+	}
+
+	private static void parseUnsafeStatement(@NotNull CSharpBuilderWrapper builder, @NotNull PsiBuilder.Marker marker)
+	{
+		builder.advanceLexer();
+
+		if(builder.getTokenType() == LBRACE)
+		{
+			parseStatement(builder);
+		}
+		else
+		{
+			builder.error("'{' expected");
+		}
+
+		marker.done(UNSAFE_STATEMENT);
 	}
 
 	private static void parseLabeledStatement(@NotNull CSharpBuilderWrapper builder, final PsiBuilder.Marker marker)
