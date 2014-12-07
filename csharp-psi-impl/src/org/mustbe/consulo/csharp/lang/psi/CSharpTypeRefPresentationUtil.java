@@ -82,7 +82,9 @@ public class CSharpTypeRefPresentationUtil
 		return builder.toString();
 	}
 
-	public static void appendTypeRef(@NotNull final PsiElement scope, @NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef,
+	public static void appendTypeRef(@NotNull final PsiElement scope,
+			@NotNull StringBuilder builder,
+			@NotNull DotNetTypeRef typeRef,
 			final boolean defaultQualifiedText)
 	{
 		if(typeRef instanceof CSharpStaticTypeRef)
@@ -117,16 +119,16 @@ public class CSharpTypeRefPresentationUtil
 			{
 				String qName = ((DotNetQualifiedElement) element).getPresentableQName();
 
-				String typeAsKeyword = ourTypesAsKeywords.get(qName);
-				if(typeAsKeyword != null)
+				if(defaultQualifiedText)
 				{
-					builder.append(typeAsKeyword);
+					builder.append(qName);
 				}
 				else
 				{
-					if(defaultQualifiedText)
+					String typeAsKeyword = ourTypesAsKeywords.get(qName);
+					if(typeAsKeyword != null)
 					{
-						builder.append(qName);
+						builder.append(typeAsKeyword);
 					}
 					else
 					{
