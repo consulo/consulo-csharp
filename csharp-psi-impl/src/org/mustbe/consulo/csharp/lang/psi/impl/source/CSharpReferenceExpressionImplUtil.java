@@ -60,6 +60,7 @@ import org.mustbe.consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -709,6 +710,20 @@ public class CSharpReferenceExpressionImplUtil
 		if(qualifier instanceof DotNetExpression)
 		{
 			qualifierTypeRef = ((DotNetExpression) qualifier).toTypeRef(false);
+
+			if(element instanceof CSharpReferenceExpression)
+			{
+				CSharpReferenceExpression.AccessType memberAccessType = ((CSharpReferenceExpression) element).getMemberAccessType();
+				switch(memberAccessType)
+				{
+					case ARROW:
+						if(qualifierTypeRef instanceof DotNetPointerTypeRef)
+						{
+							qualifierTypeRef = ((DotNetPointerTypeRef) qualifierTypeRef).getInnerTypeRef();
+						}
+						break;
+				}
+			}
 
 			DotNetTypeResolveResult typeResolveResult = qualifierTypeRef.resolve(element);
 
