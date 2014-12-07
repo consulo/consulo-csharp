@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
@@ -53,14 +54,17 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			return null;
 		}
 
-		if(resolve.getFirst() == DotNetTypeRef.AUTO_TYPE)
+		DotNetTypeRef firstTypeRef = resolve.getFirst();
+		if(firstTypeRef == DotNetTypeRef.AUTO_TYPE)
 		{
 			return null;
 		}
 
-		if(!CSharpTypeUtil.isInheritableWithImplicit(resolve.getFirst(), resolve.getSecond(), element))
+		DotNetTypeRef secondTypeRef = resolve.getSecond();
+		if(!CSharpTypeUtil.isInheritableWithImplicit(firstTypeRef, secondTypeRef, element))
 		{
-			return newBuilder(resolve.getThird(), resolve.getSecond().getQualifiedText(), resolve.getFirst().getQualifiedText());
+			return newBuilder(resolve.getThird(), CSharpTypeRefPresentationUtil.buildText(secondTypeRef, element),
+					CSharpTypeRefPresentationUtil.buildText(firstTypeRef, element));
 		}
 
 		return null;
