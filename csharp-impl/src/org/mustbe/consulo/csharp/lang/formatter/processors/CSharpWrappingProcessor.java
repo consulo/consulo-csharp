@@ -80,6 +80,14 @@ public class CSharpWrappingProcessor
 		{
 			return Wrap.createWrap(WrapType.ALWAYS, true);
 		}
+
+		if(elementType == CSharpTokens.ELSE_KEYWORD)
+		{
+			if(myCodeStyleSettings.ELSE_ON_NEW_LINE)
+			{
+				return Wrap.createWrap(WrapType.ALWAYS, true);
+			}
+		}
 		return null;
 	}
 }
