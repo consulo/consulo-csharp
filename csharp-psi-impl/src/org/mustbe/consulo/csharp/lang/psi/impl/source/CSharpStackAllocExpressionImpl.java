@@ -18,7 +18,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 
@@ -43,6 +45,11 @@ public class CSharpStackAllocExpressionImpl extends CSharpElementImpl implements
 	@Override
 	public DotNetTypeRef toTypeRef(boolean b)
 	{
-		return DotNetTypeRef.ERROR_TYPE;
+		DotNetType childByType = findChildByClass(DotNetType.class);
+		if(childByType == null)
+		{
+			return DotNetTypeRef.ERROR_TYPE;
+		}
+		return new DotNetPointerTypeRefImpl(childByType.toTypeRef());
 	}
 }
