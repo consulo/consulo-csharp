@@ -28,6 +28,9 @@ public class Program {
 
        }
     }
+    else if(1 == 2) {
+       Console.WriteLine("else if");
+    }
     else {
        Console.WriteLine("bad");
     }
