@@ -51,7 +51,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 	private static final TokenSet ADDITIVE_OPS = TokenSet.create(PLUS, MINUS);
 	private static final TokenSet MULTIPLICATIVE_OPS = TokenSet.create(MUL, DIV, PERC);
 	private static final TokenSet POSTFIX_OPS = TokenSet.create(PLUSPLUS, MINUSMINUS);
-	private static final TokenSet PREF_ARITHMETIC_OPS = TokenSet.orSet(POSTFIX_OPS, TokenSet.create(PLUS, MINUS));
+	private static final TokenSet PREF_ARITHMETIC_OPS = TokenSet.orSet(POSTFIX_OPS, TokenSet.create(PLUS, MINUS, MUL, AND));
 	private static final TokenSet PREFIX_OPS = TokenSet.orSet(PREF_ARITHMETIC_OPS, TokenSet.create(TILDE, EXCL));
 	private static final TokenSet ID_OR_SUPER = TokenSet.create(IDENTIFIER, BASE_KEYWORD);
 	private static final TokenSet THIS_OR_BASE = TokenSet.create(THIS_KEYWORD, BASE_KEYWORD);
