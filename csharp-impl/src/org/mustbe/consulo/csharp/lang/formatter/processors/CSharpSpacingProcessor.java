@@ -36,6 +36,7 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.between(CSharpTokens.CATCH_KEYWORD, CSharpTokens.LPAR).spaceIf(codeStyleSettings.SPACE_BEFORE_CATCH_PARENTHESES);
 
 		myBuilder.beforeInside(LBRACE, TYPE_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_CLASS_LBRACE);
+		myBuilder.beforeInside(LBRACE, NAMESPACE_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_CLASS_LBRACE);
 
 		myBuilder.beforeInside(BLOCK_STATEMENT, METHOD_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_METHOD_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, CONSTRUCTOR_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_METHOD_LBRACE);
