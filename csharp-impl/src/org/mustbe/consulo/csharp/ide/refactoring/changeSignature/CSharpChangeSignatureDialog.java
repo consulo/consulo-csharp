@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -227,7 +228,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 			}
 			else
 			{
-				builder.append(methodDeclaration.getReturnTypeRef().getPresentableText()).append(" ");
+				builder.append(CSharpTypeRefPresentationUtil.buildShortText(methodDeclaration.getReturnTypeRef(), methodDeclaration)).append(" ");
 			}
 		}
 
