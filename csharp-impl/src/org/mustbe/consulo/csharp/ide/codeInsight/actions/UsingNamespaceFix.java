@@ -40,6 +40,7 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
 import org.mustbe.consulo.dotnet.DotNetBundle;
 import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
 import org.mustbe.consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent;
+import org.mustbe.consulo.dotnet.libraryAnalyzer.NamespaceReference;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -57,7 +58,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Conditions;
-import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -113,14 +113,14 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 			return PopupResult.NOT_AVAILABLE;
 		}
 
-		Set<Couple<String>> q = collectAllAvailableNamespaces(element, kind);
-		if(q.isEmpty())
+		Set<NamespaceReference> references = collectAllAvailableNamespaces(element, kind);
+		if(references.isEmpty())
 		{
 			return PopupResult.NOT_AVAILABLE;
 		}
 
-		AddUsingAction action = new AddUsingAction(editor, element, q);
-		String message = ShowAutoImportPass.getMessage(q.size() != 1, DotNetBundle.message("use.popup", AddUsingAction.formatMessage(q.iterator()
+		AddUsingAction action = new AddUsingAction(editor, element, references);
+		String message = ShowAutoImportPass.getMessage(references.size() != 1, DotNetBundle.message("use.popup", AddUsingAction.formatMessage(references.iterator()
 				.next())));
 
 		HintManager.getInstance().showQuestionHint(editor, message, element.getTextOffset(), element.getTextRange().getEndOffset(), action);
@@ -128,7 +128,8 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		return PopupResult.SHOW_HIT;
 	}
 
-	private static Set<Couple<String>> collectAllAvailableNamespaces(CSharpReferenceExpression ref, CSharpReferenceExpression.ResolveToKind kind)
+	@NotNull
+	private static Set<NamespaceReference> collectAllAvailableNamespaces(CSharpReferenceExpression ref, CSharpReferenceExpression.ResolveToKind kind)
 	{
 		if(PsiTreeUtil.getParentOfType(ref, CSharpUsingListChild.class) != null || !ref.isValid())
 		{
@@ -139,7 +140,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		{
 			return Collections.emptySet();
 		}
-		Set<Couple<String>> resultSet = new ArrayListSet<Couple<String>>();
+		Set<NamespaceReference> resultSet = new ArrayListSet<NamespaceReference>();
 		if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || ref.getQualifier() == null)
 		{
 			collectAvailableNamespaces(ref, resultSet, referenceName);
@@ -157,7 +158,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		return resultSet;
 	}
 
-	private static void collectAvailableNamespaces(final CSharpReferenceExpression ref, Set<Couple<String>> set, String referenceName)
+	private static void collectAvailableNamespaces(final CSharpReferenceExpression ref, Set<NamespaceReference> set, String referenceName)
 	{
 		if(ref.getQualifier() != null)
 		{
@@ -245,7 +246,9 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		return typeDeclarations;
 	}
 
-	private static void collectAvailableNamespacesForMethodExtensions(CSharpReferenceExpression ref, Set<Couple<String>> set, String referenceName)
+	private static void collectAvailableNamespacesForMethodExtensions(CSharpReferenceExpression ref,
+			Set<NamespaceReference> set,
+			String referenceName)
 	{
 		PsiElement qualifier = ref.getQualifier();
 		if(qualifier == null)
@@ -275,13 +278,13 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 				PsiElement parentOfMethod = possibleMethod.getParent();
 				if(parentOfMethod instanceof DotNetQualifiedElement)
 				{
-					set.add(Couple.of(null, ((DotNetQualifiedElement) parentOfMethod).getPresentableParentQName()));
+					set.add(new NamespaceReference(((DotNetQualifiedElement) parentOfMethod).getPresentableParentQName(), null));
 				}
 			}
 		}
 	}
 
-	private static <T extends DotNetQualifiedElement> void collect(Set<Couple<String>> result, Collection<T> element, Condition<T> condition)
+	private static <T extends DotNetQualifiedElement> void collect(Set<NamespaceReference> result, Collection<T> element, Condition<T> condition)
 	{
 		for(val type : element)
 		{
@@ -295,7 +298,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 			{
 				continue;
 			}
-			result.add(Couple.of(null, presentableParentQName));
+			result.add(new NamespaceReference(presentableParentQName, null));
 		}
 	}
 

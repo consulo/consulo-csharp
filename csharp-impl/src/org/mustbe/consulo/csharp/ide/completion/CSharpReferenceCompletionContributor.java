@@ -38,6 +38,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeIndex;
 import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
+import org.mustbe.consulo.dotnet.libraryAnalyzer.NamespaceReference;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
@@ -202,8 +203,8 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 										ltGtInsertHandler.handleInsert(context, item);
 									}
 
-									new AddUsingAction(completionParameters.getEditor(), context.getFile(), Collections.<Couple<String>>singleton(Couple
-											.of(null, parentQName))).execute();
+									new AddUsingAction(completionParameters.getEditor(), context.getFile(),
+											Collections.<NamespaceReference>singleton(new NamespaceReference(parentQName, null))).execute();
 								}
 							});
 						}
@@ -230,8 +231,8 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 		//PsiElement last = resolveLayers.getFirst();
 		PsiElement targetToWalkChildren = resolveLayers.getSecond();
 
-		AbstractScopeProcessor p = CSharpReferenceExpressionImplUtil.createMemberProcessor(element, CSharpReferenceExpression.ResolveToKind.TYPE_LIKE,
-				ResolveResult.EMPTY_ARRAY, false);
+		AbstractScopeProcessor p = CSharpReferenceExpressionImplUtil.createMemberProcessor(element, CSharpReferenceExpression.ResolveToKind
+				.TYPE_LIKE, ResolveResult.EMPTY_ARRAY, false);
 
 		if(!CSharpResolveUtil.walkChildren(p, targetToWalkChildren, true, true, resolveState))
 		{

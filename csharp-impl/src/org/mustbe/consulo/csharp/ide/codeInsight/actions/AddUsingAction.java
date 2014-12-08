@@ -29,6 +29,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
 import org.mustbe.consulo.dotnet.DotNetBundle;
+import org.mustbe.consulo.dotnet.libraryAnalyzer.NamespaceReference;
 import org.mustbe.consulo.dotnet.module.roots.DotNetLibraryOrderEntryImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.codeInsight.actions.OptimizeImportsProcessor;
@@ -49,7 +50,6 @@ import com.intellij.openapi.roots.impl.ModuleRootLayerImpl;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
-import com.intellij.openapi.util.Couple;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -68,22 +68,22 @@ public class AddUsingAction implements QuestionAction
 	private final Editor myEditor;
 	private final Project myProject;
 	private final PsiFile myFile;
-	private final Set<Couple<String>> myElements;
+	private final Set<NamespaceReference> myElements;
 
-	public AddUsingAction(Editor editor, PsiFile file, Set<Couple<String>> q)
+	public AddUsingAction(Editor editor, PsiFile file, Set<NamespaceReference> references)
 	{
 		myEditor = editor;
 		myFile = file;
 		myProject = file.getProject();
-		myElements = q;
+		myElements = references;
 	}
 
-	public AddUsingAction(Editor editor, CSharpReferenceExpression ref, Set<Couple<String>> q)
+	public AddUsingAction(Editor editor, CSharpReferenceExpression ref, Set<NamespaceReference> references)
 	{
 		myEditor = editor;
 		myFile = ref.getContainingFile();
 		myProject = ref.getProject();
-		myElements = q;
+		myElements = references;
 	}
 
 	private PsiElement getElementForBeforeAdd()
@@ -104,7 +104,7 @@ public class AddUsingAction implements QuestionAction
 	{
 		PsiDocumentManager.getInstance(myProject).commitAllDocuments();
 
-		Couple<String> firstCount = myElements.size() == 1 ? ContainerUtil.getFirstItem(myElements) : null;
+		NamespaceReference firstCount = myElements.size() == 1 ? ContainerUtil.getFirstItem(myElements) : null;
 
 		if(firstCount != null)
 		{
@@ -112,24 +112,24 @@ public class AddUsingAction implements QuestionAction
 		}
 		else
 		{
-			BaseListPopupStep<Couple<String>> step = new BaseListPopupStep<Couple<String>>(DotNetBundle.message("add.using"),
-					myElements.toArray(new Couple[myElements.size()]))
+			BaseListPopupStep<NamespaceReference> step = new BaseListPopupStep<NamespaceReference>(DotNetBundle.message("add.using"),
+					myElements.toArray(new NamespaceReference[myElements.size()]))
 			{
 				@Override
-				public Icon getIconFor(Couple<String> aValue)
+				public Icon getIconFor(NamespaceReference aValue)
 				{
 					return AllIcons.Nodes.Package;
 				}
 
 				@NotNull
 				@Override
-				public String getTextFor(Couple<String> value)
+				public String getTextFor(NamespaceReference value)
 				{
 					return formatMessage(value);
 				}
 
 				@Override
-				public PopupStep onChosen(final Couple<String> selectedValue, boolean finalChoice)
+				public PopupStep onChosen(final NamespaceReference selectedValue, boolean finalChoice)
 				{
 					execute0(selectedValue);
 					return FINAL_CHOICE;
@@ -143,19 +143,19 @@ public class AddUsingAction implements QuestionAction
 	}
 
 	@NotNull
-	public static String formatMessage(@NotNull Couple<String> couple)
+	public static String formatMessage(@NotNull NamespaceReference couple)
 	{
-		String first = couple.getFirst();
-		String second = couple.getSecond();
-		if(first == null)
+		String libraryName = couple.getLibraryName();
+		String namespace = couple.getNamespace();
+		if(libraryName == null)
 		{
-			return second;
+			return namespace;
 		}
 
-		return second + " from '" + first + "'";
+		return namespace + " from '" + libraryName + "'";
 	}
 
-	private void execute0(final Couple<String> couple)
+	private void execute0(final NamespaceReference namespaceReference)
 	{
 		PsiDocumentManager.getInstance(myProject).commitAllDocuments();
 
@@ -164,10 +164,10 @@ public class AddUsingAction implements QuestionAction
 			@Override
 			protected void run(Result<Object> objectResult) throws Throwable
 			{
-				addUsing(couple.getSecond());
+				addUsing(namespaceReference.getNamespace());
 
-				String first = couple.getFirst();
-				if(first != null)
+				String libraryName = namespaceReference.getLibraryName();
+				if(libraryName != null)
 				{
 					Module moduleForFile = ModuleUtilCore.findModuleForPsiElement(myFile);
 					if(moduleForFile != null)
@@ -176,7 +176,7 @@ public class AddUsingAction implements QuestionAction
 
 						val modifiableModel = moduleRootManager.getModifiableModel();
 
-						modifiableModel.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) moduleRootManager.getCurrentLayer(), first));
+						modifiableModel.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) moduleRootManager.getCurrentLayer(), libraryName));
 
 						new WriteCommandAction<Object>(moduleForFile.getProject())
 						{

@@ -42,7 +42,6 @@ import com.intellij.openapi.project.DumbModeAction;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.types.BinariesOrderRootType;
-import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.PathUtil;
 import com.intellij.util.containers.MultiMap;
@@ -57,7 +56,7 @@ import edu.arizona.cs.mbel.parse.MSILParseException;
  */
 public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 {
-	public static final class EapDescriptor extends EarlyAccessProgramDescriptor
+	public static class EapDescriptor extends EarlyAccessProgramDescriptor
 	{
 		@NotNull
 		@Override
@@ -91,8 +90,8 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 	 * - p1 - libraryName
 	 * - p2 - namespace
 	 */
-	private final Map<Module, MultiMap<String, Couple<String>>> myCacheMap = new ConcurrentWeakKeyHashMap<Module, MultiMap<String,
-			Couple<String>>>();
+	private final Map<Module, MultiMap<String, NamespaceReference>> myCacheMap = new ConcurrentWeakKeyHashMap<Module, MultiMap<String,
+			NamespaceReference>>();
 
 	public DotNetLibraryAnalyzerComponent(Project project)
 	{
@@ -169,7 +168,7 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 					return;
 				}
 
-				MultiMap<String, Couple<String>> map = new MultiMap<String, Couple<String>>();
+				MultiMap<String, NamespaceReference> map = new MultiMap<String, NamespaceReference>();
 				for(String libraryName : availableSystemLibraries.keySet())
 				{
 					String[] systemLibraryUrls = extension.getSystemLibraryUrls(libraryName, BinariesOrderRootType.getInstance());
@@ -194,13 +193,13 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 		}.queue();
 	}
 
-	private static MultiMap<String, Couple<String>> buildCache(File key, String libraryName)
+	private static MultiMap<String, NamespaceReference> buildCache(File key, String libraryName)
 	{
 		try
 		{
 			ModuleParser parser = DotNetLibraryOpenCache.acquireWithNext(key.getPath());
 
-			MultiMap<String, Couple<String>> map = new MultiMap<String, Couple<String>>();
+			MultiMap<String, NamespaceReference> map = new MultiMap<String, NamespaceReference>();
 			TypeDef[] typeDefs = parser.getTypeDefs();
 
 			for(TypeDef typeDef : typeDefs)
@@ -210,7 +209,7 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 				{
 					continue;
 				}
-				map.putValue(MsilHelper.cutGenericMarker(typeDef.getName()), Couple.of(libraryName, namespace));
+				map.putValue(MsilHelper.cutGenericMarker(typeDef.getName()), new NamespaceReference(namespace, libraryName));
 			}
 			return map;
 		}
@@ -227,9 +226,9 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 	 * @return couple library + namespace
 	 */
 	@NotNull
-	public Collection<Couple<String>> get(@NotNull Module module, @NotNull String typeName)
+	public Collection<NamespaceReference> get(@NotNull Module module, @NotNull String typeName)
 	{
-		MultiMap<String, Couple<String>> map = myCacheMap.get(module);
+		MultiMap<String, NamespaceReference> map = myCacheMap.get(module);
 		if(map == null)
 		{
 			return Collections.emptyList();
@@ -239,13 +238,13 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 
 	@NotNull
 	@SuppressWarnings("unchecked")
-	public Collection<Couple<String>> getAll(@NotNull Module module)
+	public Collection<NamespaceReference> getAll(@NotNull Module module)
 	{
-		MultiMap<String, Couple<String>> map = myCacheMap.get(module);
+		MultiMap<String, NamespaceReference> map = myCacheMap.get(module);
 		if(map == null)
 		{
 			return Collections.emptyList();
 		}
-		return (Collection<Couple<String>>) map.values();
+		return (Collection<NamespaceReference>) map.values();
 	}
 }
