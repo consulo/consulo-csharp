@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.ide.reflactoring.inlineAction;
+package org.mustbe.consulo.csharp.ide.refactoring.inlineAction;
 
 import java.util.ArrayList;
 

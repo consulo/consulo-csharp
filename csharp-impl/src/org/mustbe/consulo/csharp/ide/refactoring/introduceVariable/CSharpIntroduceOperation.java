@@ -1,4 +1,4 @@
-package org.mustbe.consulo.csharp.ide.reflactoring.introduceVariable;
+package org.mustbe.consulo.csharp.ide.refactoring.introduceVariable;
 
 import java.util.Collection;
 import java.util.Collections;

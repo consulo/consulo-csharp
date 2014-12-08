@@ -1,4 +1,4 @@
-package org.mustbe.consulo.csharp.ide.reflactoring;
+package org.mustbe.consulo.csharp.ide.refactoring;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;

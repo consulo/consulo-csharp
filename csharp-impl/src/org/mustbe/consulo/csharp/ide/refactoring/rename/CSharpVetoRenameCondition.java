@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.ide.reflactoring.rename;
+package org.mustbe.consulo.csharp.ide.refactoring.rename;
 
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.msil.representation.MsilFileRepresentationVirtualFile;

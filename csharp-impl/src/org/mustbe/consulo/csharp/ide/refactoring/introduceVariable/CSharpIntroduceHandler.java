@@ -1,4 +1,4 @@
-package org.mustbe.consulo.csharp.ide.reflactoring.introduceVariable;
+package org.mustbe.consulo.csharp.ide.refactoring.introduceVariable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,8 +9,8 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.ide.reflactoring.util.CSharpNameSuggesterUtil;
-import org.mustbe.consulo.csharp.ide.reflactoring.util.CSharpRefactoringUtil;
+import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
+import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpRefactoringUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;

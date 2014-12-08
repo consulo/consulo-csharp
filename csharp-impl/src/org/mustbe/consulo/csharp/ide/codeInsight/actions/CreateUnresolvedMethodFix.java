@@ -20,8 +20,8 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.ide.reflactoring.CSharpGenerateUtil;
-import org.mustbe.consulo.csharp.ide.reflactoring.util.CSharpNameSuggesterUtil;
+import org.mustbe.consulo.csharp.ide.refactoring.CSharpGenerateUtil;
+import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;

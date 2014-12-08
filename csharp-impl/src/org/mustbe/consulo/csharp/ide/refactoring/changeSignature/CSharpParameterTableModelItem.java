@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.ide.reflactoring.introduceVariable;
+package org.mustbe.consulo.csharp.ide.refactoring.changeSignature;
 
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.PsiCodeFragment;
+import com.intellij.refactoring.changeSignature.ParameterTableModelItemBase;
 
 /**
  * @author VISTALL
- * @since 26.03.14
+ * @since 20.05.14
  */
-public class CSharpIntroduceVariableHandler extends CSharpIntroduceHandler
+public class CSharpParameterTableModelItem extends ParameterTableModelItemBase<CSharpParameterInfo>
 {
-	public CSharpIntroduceVariableHandler(@NotNull String dialogTitle)
+	public CSharpParameterTableModelItem(CSharpParameterInfo parameter, PsiCodeFragment typeCodeFragment, PsiCodeFragment defaultValueCodeFragment)
 	{
-		super(dialogTitle);
+		super(parameter, typeCodeFragment, defaultValueCodeFragment);
 	}
 
 	@Override
-	protected String getDeclarationString(CSharpIntroduceOperation operation, String initExpression)
+	public boolean isEllipsisType()
 	{
-		return "var " + operation.getName() + " = " + initExpression + ";\n";
+		return false;
 	}
 }

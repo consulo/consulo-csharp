@@ -14,25 +14,28 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.ide.reflactoring.changeSignature;
+package org.mustbe.consulo.csharp.ide.refactoring;
 
-import com.intellij.psi.PsiCodeFragment;
-import com.intellij.refactoring.changeSignature.ParameterTableModelItemBase;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
 
 /**
  * @author VISTALL
- * @since 20.05.14
+ * @since 15.05.14
  */
-public class CSharpParameterTableModelItem extends ParameterTableModelItemBase<CSharpParameterInfo>
+public class CSharpRefactoringUtil
 {
-	public CSharpParameterTableModelItem(CSharpParameterInfo parameter, PsiCodeFragment typeCodeFragment, PsiCodeFragment defaultValueCodeFragment)
+	public static void replaceNameIdentifier(PsiNameIdentifierOwner owner, String newName)
 	{
-		super(parameter, typeCodeFragment, defaultValueCodeFragment);
-	}
+		PsiElement nameIdentifier = owner.getNameIdentifier();
+		if(nameIdentifier == null)
+		{
+			return;
+		}
 
-	@Override
-	public boolean isEllipsisType()
-	{
-		return false;
+		PsiElement newIdentifier = CSharpFileFactory.createIdentifier(owner.getProject(), newName);
+
+		nameIdentifier.replace(newIdentifier);
 	}
 }

@@ -22,7 +22,7 @@ import static com.intellij.patterns.StandardPatterns.psiElement;
 import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.ide.reflactoring.util.CSharpNameSuggesterUtil;
+import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;

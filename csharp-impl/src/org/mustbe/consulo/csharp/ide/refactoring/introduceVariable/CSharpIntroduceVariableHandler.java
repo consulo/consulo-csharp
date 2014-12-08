@@ -14,28 +14,24 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.ide.reflactoring;
+package org.mustbe.consulo.csharp.ide.refactoring.introduceVariable;
 
-import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author VISTALL
- * @since 15.05.14
+ * @since 26.03.14
  */
-public class CSharpRefactoringUtil
+public class CSharpIntroduceVariableHandler extends CSharpIntroduceHandler
 {
-	public static void replaceNameIdentifier(PsiNameIdentifierOwner owner, String newName)
+	public CSharpIntroduceVariableHandler(@NotNull String dialogTitle)
 	{
-		PsiElement nameIdentifier = owner.getNameIdentifier();
-		if(nameIdentifier == null)
-		{
-			return;
-		}
+		super(dialogTitle);
+	}
 
-		PsiElement newIdentifier = CSharpFileFactory.createIdentifier(owner.getProject(), newName);
-
-		nameIdentifier.replace(newIdentifier);
+	@Override
+	protected String getDeclarationString(CSharpIntroduceOperation operation, String initExpression)
+	{
+		return "var " + operation.getName() + " = " + initExpression + ";\n";
 	}
 }

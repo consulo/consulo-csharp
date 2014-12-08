@@ -191,7 +191,7 @@
 
 		<lang.surroundDescriptor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.surroundWith.CSharpExpressionSurroundDescriptor"/>
 
-		<vetoRenameCondition implementation="org.mustbe.consulo.csharp.ide.reflactoring.rename.CSharpVetoRenameCondition"/>
+		<vetoRenameCondition implementation="org.mustbe.consulo.csharp.ide.refactoring.rename.CSharpVetoRenameCondition"/>
 
 		<problemFileHighlightFilter implementation="org.mustbe.consulo.csharp.ide.codeInsight.problems.CSharpFileProblemHighlightFilter"/>
 		<editorHighlighterProvider filetype="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpEditorHighlighterProvider"/>
@@ -236,10 +236,10 @@
 		<lang.syntaxHighlighterFactory key="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpSyntaxHighlighterFactory"/>
 		<lang.syntaxHighlighterFactory key="C#Macro"
 									   implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpMacroSyntaxHighlighterFactory"/>
-		<lang.refactoringSupport language="C#" implementationClass="org.mustbe.consulo.csharp.ide.reflactoring.CSharpRefactoringSupportProvider"/>
+		<lang.refactoringSupport language="C#" implementationClass="org.mustbe.consulo.csharp.ide.refactoring.CSharpRefactoringSupportProvider"/>
 		<refactoring.changeSignatureUsageProcessor
-				implementation="org.mustbe.consulo.csharp.ide.reflactoring.changeSignature.CSharpChangeSignatureUsageProcessor"/>
-		<inlineActionHandler implementation="org.mustbe.consulo.csharp.ide.reflactoring.inlineAction.CSharpLocalVariableInlineActionHandler"/>
+				implementation="org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureUsageProcessor"/>
+		<inlineActionHandler implementation="org.mustbe.consulo.csharp.ide.refactoring.inlineAction.CSharpLocalVariableInlineActionHandler"/>
 		<lang.parserDefinition language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpParserDefinition"/>
 		<lang.parserDefinition language="C#Macro" implementationClass="org.mustbe.consulo.csharp.lang.CSharpMacroParserDefinition"/>
 		<lang.fileViewProviderFactory language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpFileViewProviderFactory"/>

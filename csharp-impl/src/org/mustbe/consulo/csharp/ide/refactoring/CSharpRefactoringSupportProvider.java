@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.ide.reflactoring;
+package org.mustbe.consulo.csharp.ide.refactoring;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.ide.reflactoring.changeSignature.CSharpChangeSignatureHandler;
-import org.mustbe.consulo.csharp.ide.reflactoring.introduceVariable.CSharpIntroduceVariableHandler;
+import org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureHandler;
+import org.mustbe.consulo.csharp.ide.refactoring.introduceVariable.CSharpIntroduceVariableHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;

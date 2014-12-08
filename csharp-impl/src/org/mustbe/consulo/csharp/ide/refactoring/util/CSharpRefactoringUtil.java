@@ -1,4 +1,4 @@
-package org.mustbe.consulo.csharp.ide.reflactoring.util;
+package org.mustbe.consulo.csharp.ide.refactoring.util;
 
 import gnu.trove.THashSet;
 

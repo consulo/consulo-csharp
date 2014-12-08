@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.ide.reflactoring.changeSignature;
+package org.mustbe.consulo.csharp.ide.refactoring.changeSignature;
 
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.util.text.StringUtil;

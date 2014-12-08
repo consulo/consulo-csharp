@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.ide.reflactoring.changeSignature;
+package org.mustbe.consulo.csharp.ide.refactoring.changeSignature;
 
 import java.util.ArrayList;
 import java.util.List;
