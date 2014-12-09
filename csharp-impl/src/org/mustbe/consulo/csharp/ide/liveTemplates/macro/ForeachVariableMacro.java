@@ -56,7 +56,7 @@ public class ForeachVariableMacro extends VariableTypeMacroBase
 		AbstractScopeProcessor processor = new SimpleNamedScopeProcessor(true, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
 		CSharpResolveUtil.treeWalkUp(processor, psiElementAtStartOffset, psiElementAtStartOffset, resolveLayers.getFirst());
 
-		processor = new CompletionResolveScopeProcessor(psiElementAtStartOffset.getResolveScope(), processor.toResolveResults(), new ExecuteTarget[]{
+		processor = new CompletionResolveScopeProcessor(psiElementAtStartOffset, processor.toResolveResults(), new ExecuteTarget[]{
 				ExecuteTarget.FIELD,
 				ExecuteTarget.PROPERTY
 		});

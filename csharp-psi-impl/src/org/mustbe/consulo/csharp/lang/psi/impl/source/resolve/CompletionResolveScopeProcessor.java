@@ -3,9 +3,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 import java.util.Collections;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -20,11 +22,14 @@ import com.intellij.util.Processor;
 public class CompletionResolveScopeProcessor extends AbstractScopeProcessor implements Processor<PsiElement>
 {
 	private final GlobalSearchScope myScope;
+	@NotNull
+	private final PsiElement myPlace;
 
-	public CompletionResolveScopeProcessor(GlobalSearchScope scope, ResolveResult[] elements, ExecuteTarget[] targets)
+	public CompletionResolveScopeProcessor(@NotNull PsiElement place, ResolveResult[] elements, ExecuteTarget[] targets)
 	{
+		myPlace = place;
 		Collections.addAll(myElements, elements);
-		myScope = scope;
+		myScope = place.getResolveScope();
 		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
 	}
 
@@ -52,5 +57,15 @@ public class CompletionResolveScopeProcessor extends AbstractScopeProcessor impl
 			addElement(element);
 		}
 		return true;
+	}
+
+	@Override
+	public void addElement(@NotNull PsiElement element)
+	{
+		if(element instanceof DotNetModifierListOwner && !CSharpVisibilityUtil.isVisibleForCompletion((DotNetModifierListOwner) element, myPlace))
+		{
+			return;
+		}
+		super.addElement(element);
 	}
 }

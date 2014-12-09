@@ -38,7 +38,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
@@ -212,7 +211,7 @@ public class HideOrOverrideElementCollector implements LineMarkerCollector
 	{
 		final List<DotNetModifierListOwner> parents = new SmartList<DotNetModifierListOwner>();
 
-		CompletionResolveScopeProcessor processor = new CompletionResolveScopeProcessor(owner.getResolveScope(), ResolveResult.EMPTY_ARRAY,
+		CompletionResolveScopeProcessor processor = new CompletionResolveScopeProcessor(owner, ResolveResult.EMPTY_ARRAY,
 				new ExecuteTarget[]{ExecuteTarget.MEMBER});
 
 		ResolveState state = ResolveState.initial();
