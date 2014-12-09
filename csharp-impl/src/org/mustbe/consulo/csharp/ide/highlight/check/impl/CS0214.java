@@ -17,11 +17,16 @@
 package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.ide.highlight.check.AbstractCompilerCheck;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.AddModifierFix;
+import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFixedStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUnsafeStatementImpl;
+import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 
@@ -29,25 +34,28 @@ import com.intellij.psi.util.PsiTreeUtil;
  * @author VISTALL
  * @since 15.05.14
  */
-public class CS0214 extends AbstractCompilerCheck<CSharpFixedStatementImpl>
+public class CS0214 extends CompilerCheck<DotNetStatement>
 {
+	@Nullable
 	@Override
-	public boolean accept(@NotNull CSharpFixedStatementImpl statement)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetStatement statement)
 	{
-		DotNetQualifiedElement qualifiedElement = PsiTreeUtil.getParentOfType(statement, DotNetQualifiedElement.class);
-		if(!(qualifiedElement instanceof DotNetModifierListOwner))
+		if(statement instanceof CSharpUnsafeStatementImpl || statement instanceof CSharpFixedStatementImpl)
 		{
-			return false;
+			DotNetQualifiedElement qualifiedElement = PsiTreeUtil.getParentOfType(statement, DotNetQualifiedElement.class);
+			if(!(qualifiedElement instanceof DotNetModifierListOwner))
+			{
+				return null;
+			}
+
+			if(!((DotNetModifierListOwner) qualifiedElement).hasModifier(CSharpModifier.UNSAFE))
+			{
+				PsiElement target = statement instanceof CSharpUnsafeStatementImpl ? ((CSharpUnsafeStatementImpl) statement).getUnsafeElement() :
+						((CSharpFixedStatementImpl)statement).getFixedElement();
+
+				return newBuilder(target).addQuickFix(new AddModifierFix(CSharpModifier.UNSAFE, (DotNetModifierListOwner) qualifiedElement));
+			}
 		}
-
-		return !((DotNetModifierListOwner) qualifiedElement).hasModifier(CSharpModifier.UNSAFE);
-	}
-
-	@Override
-	public void checkImpl(
-			@NotNull CSharpFixedStatementImpl statement, @NotNull CompilerCheckBuilder checkResult)
-	{
-		PsiElement fixedElement = statement.getFixedElement();
-		checkResult.setTextRange(fixedElement.getTextRange());
+		return null;
 	}
 }

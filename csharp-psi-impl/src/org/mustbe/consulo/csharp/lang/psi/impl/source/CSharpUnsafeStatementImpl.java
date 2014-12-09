@@ -18,8 +18,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -30,6 +32,12 @@ public class CSharpUnsafeStatementImpl extends CSharpElementImpl implements DotN
 	public CSharpUnsafeStatementImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	@NotNull
+	public PsiElement getUnsafeElement()
+	{
+		return findNotNullChildByType(CSharpTokens.UNSAFE_KEYWORD);
 	}
 
 	@Override
