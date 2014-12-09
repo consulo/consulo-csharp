@@ -74,7 +74,7 @@ public class CSharpTypeRefPresentationUtil
 	public static String buildShortText(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
 		StringBuilder builder = new StringBuilder();
-		appendTypeRef(scope, builder, typeRef, 0);
+		appendTypeRef(scope, builder, typeRef, TYPE_KEYWORD);
 		return builder.toString();
 	}
 
