@@ -62,7 +62,11 @@ public class CSharpVisibilityUtil
 			case INTERNAL:
 				Module targetModule = ModuleUtilCore.findModuleForPsiElement(target);
 				Module placeModule = ModuleUtilCore.findModuleForPsiElement(place);
-				return targetModule != null && targetModule.equals(placeModule);
+				if(targetModule != null && targetModule.equals(placeModule))
+				{
+					return true;
+				}
+				return false;
 			case PROTECTED:
 			{
 				List<DotNetTypeDeclaration> targetTypes = collectAllTypes(target);

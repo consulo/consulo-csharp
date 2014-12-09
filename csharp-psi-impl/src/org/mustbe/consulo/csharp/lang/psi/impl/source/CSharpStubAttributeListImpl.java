@@ -22,6 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpAttributeListStub;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
 import com.intellij.lang.ASTNode;
@@ -54,7 +55,12 @@ public class CSharpStubAttributeListImpl extends CSharpStubElementImpl<CSharpAtt
 	@Override
 	public DotNetAttributeTargetType getTargetType()
 	{
-		return null;
+		CSharpAttributeListStub stub = getStub();
+		if(stub != null)
+		{
+			return stub.getTarget();
+		}
+		return CSharpAttributeListImpl.getAttributeType(findChildByType(CSharpTokenSets.ATTRIBUTE_TARGETS));
 	}
 
 	@NotNull

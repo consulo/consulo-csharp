@@ -20,6 +20,7 @@ import org.consulo.ide.eap.EarlyAccessProgramDescriptor;
 import org.consulo.ide.eap.EarlyAccessProgramManager;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorPolicy;

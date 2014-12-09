@@ -186,6 +186,7 @@
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.PropertyIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.EventIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.ExtendsListIndex"/>
+		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.AttributeListIndex"/>
 
 		<lang.surroundDescriptor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.surroundWith.CSharpExpressionSurroundDescriptor"/>
 

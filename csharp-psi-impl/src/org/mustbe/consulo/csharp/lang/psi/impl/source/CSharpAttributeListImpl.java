@@ -16,13 +16,21 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
+import gnu.trove.THashMap;
+
+import java.util.Map;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
@@ -30,6 +38,21 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpAttributeListImpl extends CSharpElementImpl implements CSharpAttributeList
 {
+	private static final Map<IElementType, DotNetAttributeTargetType> ourMap = new THashMap<IElementType, DotNetAttributeTargetType>()
+	{
+		{
+			put(CSharpSoftTokens.ASSEMBLY_KEYWORD, DotNetAttributeTargetType.ASSEMBLY);
+			put(CSharpSoftTokens.MODULE_KEYWORD, DotNetAttributeTargetType.MODULE);
+			put(CSharpSoftTokens.FIELD_KEYWORD, DotNetAttributeTargetType.FIELD);
+			put(CSharpSoftTokens.EVENT_KEYWORD, DotNetAttributeTargetType.EVENT);
+			put(CSharpSoftTokens.METHOD_KEYWORD, DotNetAttributeTargetType.METHOD);
+			put(CSharpSoftTokens.PARAM_KEYWORD, DotNetAttributeTargetType.PARAMETER);
+			put(CSharpSoftTokens.PROPERTY_KEYWORD, DotNetAttributeTargetType.PROPERTY);
+			put(CSharpSoftTokens.RETURN_KEYWORD, DotNetAttributeTargetType.RETURN);
+			put(CSharpSoftTokens.TYPE_KEYWORD, DotNetAttributeTargetType.TYPE);
+		}
+	};
+
 	public CSharpAttributeListImpl(@NotNull ASTNode node)
 	{
 		super(node);
@@ -45,7 +68,19 @@ public class CSharpAttributeListImpl extends CSharpElementImpl implements CSharp
 	@Override
 	public DotNetAttributeTargetType getTargetType()
 	{
-		return null;
+		return getAttributeType(findChildByType(CSharpTokenSets.ATTRIBUTE_TARGETS));
+	}
+
+	@Nullable
+	public static DotNetAttributeTargetType getAttributeType(@Nullable PsiElement element)
+	{
+		if(element == null)
+		{
+			return null;
+		}
+
+		IElementType elementType = element.getNode().getElementType();
+		return ourMap.get(elementType);
 	}
 
 	@NotNull

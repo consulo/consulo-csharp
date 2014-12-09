@@ -6,8 +6,11 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubAttributeListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpAttributeListStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
+import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.stubs.IndexSink;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
@@ -37,21 +40,38 @@ public class CSharpAttributeListStubElementType extends CSharpAbstractStubElemen
 	}
 
 	@Override
-	public CSharpAttributeListStub createStub(@NotNull CSharpAttributeList attributeList, StubElement stubElement)
+	public boolean shouldCreateStub(ASTNode node)
 	{
-		return new CSharpAttributeListStub(stubElement, this);
+		PsiElement psi = node.getPsi();
+		return ((CSharpAttributeList) psi).getTargetType() != null;
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpAttributeListStub cSharpAttributeListStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public CSharpAttributeListStub createStub(@NotNull CSharpAttributeList attributeList, StubElement stubElement)
 	{
+		DotNetAttributeTargetType targetType = attributeList.getTargetType();
+		assert targetType != null;
+		int targetIndex = targetType.ordinal();
+		return new CSharpAttributeListStub(stubElement, this, targetIndex);
+	}
 
+	@Override
+	public void serialize(@NotNull CSharpAttributeListStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	{
+		stubOutputStream.writeVarInt(stub.getTargetIndex());
 	}
 
 	@NotNull
 	@Override
 	public CSharpAttributeListStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
-		return new CSharpAttributeListStub(stubElement, this);
+		int targetIndex = stubInputStream.readVarInt();
+		return new CSharpAttributeListStub(stubElement, this, targetIndex);
+	}
+
+	@Override
+	public void indexStub(@NotNull CSharpAttributeListStub stub, @NotNull IndexSink indexSink)
+	{
+		indexSink.occurrence(CSharpIndexKeys.ATTRIBUTE_LIST_INDEX, stub.getTarget());
 	}
 }

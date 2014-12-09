@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.ide.assemblyInfo;
+package org.mustbe.consulo.csharp.assemblyInfo;
 
 /**
  * @author VISTALL
