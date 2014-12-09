@@ -17,29 +17,32 @@
 package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.ide.highlight.check.AbstractCompilerCheck;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 
 /**
  * @author VISTALL
  * @since 17.05.14
  */
-public class CS0401 extends AbstractCompilerCheck<CSharpGenericConstraintKeywordValue>
+public class CS0401 extends CompilerCheck<CSharpGenericConstraintKeywordValue>
 {
+	@Nullable
 	@Override
-	public boolean accept(@NotNull CSharpGenericConstraintKeywordValue element)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpGenericConstraintKeywordValue element)
 	{
 		if(element.getKeywordElementType() != CSharpTokens.NEW_KEYWORD)
 		{
-			return false;
+			return null;
 		}
 
 		CSharpGenericConstraint parent = (CSharpGenericConstraint) element.getParent();
 
 		CSharpGenericConstraintValue[] genericConstraintValues = parent.getGenericConstraintValues();
-		return genericConstraintValues[genericConstraintValues.length - 1] != element;
+		return genericConstraintValues[genericConstraintValues.length - 1] != element ? newBuilder(element) : null;
 	}
 }

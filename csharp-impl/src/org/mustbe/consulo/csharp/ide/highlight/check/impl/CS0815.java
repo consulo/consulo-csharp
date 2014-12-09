@@ -17,9 +17,11 @@
 package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.ide.highlight.check.AbstractCompilerCheck;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
+import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -28,10 +30,11 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
  * @author VISTALL
  * @since 15.05.14
  */
-public class CS0815 extends AbstractCompilerCheck<CSharpLocalVariable>
+public class CS0815 extends CompilerCheck<CSharpLocalVariable>
 {
+	@Nullable
 	@Override
-	public boolean accept(@NotNull CSharpLocalVariable localVariable)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpLocalVariable localVariable)
 	{
 		DotNetTypeRef dotNetTypeRef = localVariable.toTypeRef(false);
 		if(dotNetTypeRef == DotNetTypeRef.AUTO_TYPE)
@@ -39,24 +42,15 @@ public class CS0815 extends AbstractCompilerCheck<CSharpLocalVariable>
 			DotNetExpression initializer = localVariable.getInitializer();
 			if(initializer == null)
 			{
-				return false;
+				return null;
 			}
 			DotNetTypeRef initializerType = initializer.toTypeRef(false);
 			DotNetTypeResolveResult typeResolveResult = initializerType.resolve(localVariable);
-			if(typeResolveResult instanceof CSharpLambdaResolveResult)
+			if(typeResolveResult instanceof CSharpLambdaResolveResult && ((CSharpLambdaResolveResult) typeResolveResult).getTarget() == null)
 			{
-				return ((CSharpLambdaResolveResult) typeResolveResult).getTarget() == null;
+				return newBuilder(localVariable.getInitializer());
 			}
 		}
-		return false;
-	}
-
-	@Override
-	public void checkImpl(
-			@NotNull CSharpLocalVariable element, @NotNull CompilerCheckBuilder checkResult)
-	{
-		DotNetExpression initializer = element.getInitializer();
-		assert initializer != null;
-		checkResult.setTextRange(initializer.getTextRange());
+		return null;
 	}
 }

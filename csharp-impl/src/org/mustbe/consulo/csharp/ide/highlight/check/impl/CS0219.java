@@ -16,14 +16,14 @@
 
 package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
-import org.mustbe.consulo.csharp.ide.highlight.check.AbstractCompilerCheck;
+import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 
 /**
  * @author VISTALL
  * @since 20.05.14
  */
-public class CS0219 extends AbstractCompilerCheck<CSharpLocalVariable>
+public class CS0219 extends CompilerCheck<CSharpLocalVariable>
 {
 	// dummy. see UnusedSymbolLocalInspection
 }

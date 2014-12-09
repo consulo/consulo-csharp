@@ -17,30 +17,24 @@
 package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
-import org.mustbe.consulo.csharp.ide.highlight.check.AbstractCompilerCheck;
-import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
+import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
  * @since 17.05.14
  */
-public class CS0516 extends AbstractCompilerCheck<CSharpConstructorSuperCallImpl>
+public class CS0516 extends CompilerCheck<CSharpConstructorSuperCallImpl>
 {
+	@Nullable
 	@Override
-	public boolean accept(@NotNull CSharpConstructorSuperCallImpl element)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpConstructorSuperCallImpl element)
 	{
 		PsiElement psiElement = element.resolveToCallable();
-		return psiElement != null && psiElement == element.getParent();
-	}
-
-	@Override
-	public void checkImpl(@NotNull CSharpConstructorSuperCallImpl element, @NotNull CompilerCheckBuilder checkResult)
-	{
-		CSharpConstructorDeclaration parent = (CSharpConstructorDeclaration) element.getParent();
-
-		checkResult.setText(CSharpErrorBundle.message(myId, formatElement(parent)));
+		PsiElement parent = element.getParent();
+		return psiElement != null && psiElement == parent ? newBuilder(element, formatElement(parent)) : null;
 	}
 }

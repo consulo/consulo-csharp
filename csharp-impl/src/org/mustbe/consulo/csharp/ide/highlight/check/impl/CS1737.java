@@ -17,8 +17,10 @@
 package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.ide.highlight.check.AbstractCompilerCheck;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
@@ -28,14 +30,15 @@ import com.intellij.util.ArrayUtil;
  * @author VISTALL
  * @since 15.05.14
  */
-public class CS1737 extends AbstractCompilerCheck<DotNetParameter>
+public class CS1737 extends CompilerCheck<DotNetParameter>
 {
+	@Nullable
 	@Override
-	public boolean accept(@NotNull DotNetParameter dotNetParameter)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetParameter dotNetParameter)
 	{
 		if(dotNetParameter.getInitializer() == null)
 		{
-			return false;
+			return null;
 		}
 
 		DotNetParameterList parent = (DotNetParameterList) dotNetParameter.getParent();
@@ -45,6 +48,10 @@ public class CS1737 extends AbstractCompilerCheck<DotNetParameter>
 		int i = ArrayUtil.indexOf(parameters, dotNetParameter);
 
 		DotNetParameter nextParameter = ArrayUtil2.safeGet(parameters, i + 1);
-		return nextParameter != null && !nextParameter.hasModifier(CSharpModifier.PARAMS) && nextParameter.getInitializer() == null;
+		if(nextParameter != null && !nextParameter.hasModifier(CSharpModifier.PARAMS) && nextParameter.getInitializer() == null)
+		{
+			return newBuilder(dotNetParameter);
+		}
+		return null;
 	}
 }

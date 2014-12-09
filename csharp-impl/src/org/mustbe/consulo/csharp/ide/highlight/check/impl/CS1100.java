@@ -17,19 +17,25 @@
 package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheckForWithNameArgument;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
+import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
  * @since 15.05.14
  */
-public class CS1100 extends CompilerCheckForWithNameArgument<CSharpMethodDeclaration>
+public class CS1100 extends CompilerCheck<CSharpMethodDeclaration>
 {
+	@Nullable
 	@Override
-	public boolean accept(@NotNull CSharpMethodDeclaration methodDeclaration)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpMethodDeclaration methodDeclaration)
 	{
 		DotNetParameter[] parameters = methodDeclaration.getParameters();
 		for(int i = 0; i < parameters.length; i++)
@@ -40,11 +46,19 @@ public class CS1100 extends CompilerCheckForWithNameArgument<CSharpMethodDeclara
 				continue;
 			}
 
-			if(parameter.hasModifier(CSharpModifier.THIS))
+			DotNetModifierList modifierList = parameter.getModifierList();
+			if(modifierList == null)
 			{
-				return true;
+				continue;
+			}
+			PsiElement modifierElement = modifierList.getModifierElement(CSharpModifier.THIS);
+			if(modifierElement != null)
+			{
+				return newBuilder(modifierElement, formatElement(methodDeclaration)).addQuickFix(new RemoveModifierFix(CSharpModifier.THIS,
+						parameter));
 			}
 		}
-		return false;
+
+		return null;
 	}
 }

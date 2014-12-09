@@ -17,23 +17,26 @@
 package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
-import org.mustbe.consulo.csharp.ide.highlight.check.AbstractCompilerCheck;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.ObjectUtils;
 
 /**
  * @author VISTALL
  * @since 22.07.14
  */
-public class CS1106 extends AbstractCompilerCheck<CSharpMethodDeclaration>
+public class CS1106 extends CompilerCheck<CSharpMethodDeclaration>
 {
+	@Nullable
 	@Override
-	public boolean accept(@NotNull CSharpMethodDeclaration element)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpMethodDeclaration element)
 	{
 		DotNetParameter[] parameters = element.getParameters();
 		if(parameters.length > 0 && parameters[0].hasModifier(CSharpModifier.THIS))
@@ -41,22 +44,13 @@ public class CS1106 extends AbstractCompilerCheck<CSharpMethodDeclaration>
 			PsiElement parent = element.getParent();
 			if(parent instanceof CSharpTypeDeclaration)
 			{
-				return ((CSharpTypeDeclaration) parent).getGenericParametersCount() > 0 || !((CSharpTypeDeclaration) parent).hasModifier
-						(DotNetModifier.STATIC);
-
+				if(((CSharpTypeDeclaration) parent).getGenericParametersCount() > 0 || !((CSharpTypeDeclaration) parent).hasModifier
+						(DotNetModifier.STATIC))
+				{
+					return newBuilder(ObjectUtils.notNull(element.getNameIdentifier(), element), formatElement(element));
+				}
 			}
 		}
-		return super.accept(element);
-	}
-
-	@Override
-	public void checkImpl(@NotNull CSharpMethodDeclaration element, @NotNull CompilerCheckBuilder checkResult)
-	{
-		checkResult.setText(CSharpErrorBundle.message(myId, formatElement(element)));
-		PsiElement nameIdentifier = element.getNameIdentifier();
-		if(nameIdentifier != null)
-		{
-			checkResult.setTextRange(nameIdentifier.getTextRange());
-		}
+		return super.checkImpl(languageVersion, element);
 	}
 }
