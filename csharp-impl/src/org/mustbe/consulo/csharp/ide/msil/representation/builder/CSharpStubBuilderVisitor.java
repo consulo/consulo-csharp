@@ -266,7 +266,8 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 	private static void appendTypeRef(@NotNull final PsiElement scope, @NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef)
 	{
-		CSharpTypeRefPresentationUtil.appendTypeRef(scope, builder, typeRef, true);
+		CSharpTypeRefPresentationUtil.appendTypeRef(scope, builder, typeRef, CSharpTypeRefPresentationUtil.QUALIFIED_NAME |
+				CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
 	}
 
 	private static <T extends DotNetVirtualImplementOwner & DotNetNamedElement> void appendName(T element, StringBuilder builder)

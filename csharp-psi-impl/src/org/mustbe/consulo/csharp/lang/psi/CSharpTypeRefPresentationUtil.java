@@ -35,6 +35,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.BitUtil;
 import com.intellij.util.PairFunction;
 import lombok.val;
 
@@ -66,11 +67,14 @@ public class CSharpTypeRefPresentationUtil
 		}
 	};
 
+	public static final int QUALIFIED_NAME = 1 << 0;
+	public static final int TYPE_KEYWORD = 1 << 1;
+
 	@NotNull
 	public static String buildShortText(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
 		StringBuilder builder = new StringBuilder();
-		appendTypeRef(scope, builder, typeRef, false);
+		appendTypeRef(scope, builder, typeRef, 0);
 		return builder.toString();
 	}
 
@@ -78,14 +82,14 @@ public class CSharpTypeRefPresentationUtil
 	public static String buildText(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
 		StringBuilder builder = new StringBuilder();
-		appendTypeRef(scope, builder, typeRef, true);
+		appendTypeRef(scope, builder, typeRef, QUALIFIED_NAME);
 		return builder.toString();
 	}
 
 	public static void appendTypeRef(@NotNull final PsiElement scope,
 			@NotNull StringBuilder builder,
 			@NotNull DotNetTypeRef typeRef,
-			final boolean defaultQualifiedText)
+			final int flags)
 	{
 		if(typeRef instanceof CSharpStaticTypeRef)
 		{
@@ -93,18 +97,18 @@ public class CSharpTypeRefPresentationUtil
 		}
 		else if(typeRef instanceof CSharpArrayTypeRef)
 		{
-			appendTypeRef(scope, builder, ((CSharpArrayTypeRef) typeRef).getInnerTypeRef(), defaultQualifiedText);
+			appendTypeRef(scope, builder, ((CSharpArrayTypeRef) typeRef).getInnerTypeRef(), flags);
 			builder.append("[]");
 		}
 		else if(typeRef instanceof CSharpRefTypeRef)
 		{
 			builder.append(((CSharpRefTypeRef) typeRef).getType().name());
 			builder.append(" ");
-			appendTypeRef(scope, builder, ((CSharpRefTypeRef) typeRef).getInnerTypeRef(), defaultQualifiedText);
+			appendTypeRef(scope, builder, ((CSharpRefTypeRef) typeRef).getInnerTypeRef(), flags);
 		}
 		else if(typeRef instanceof DotNetPointerTypeRef)
 		{
-			appendTypeRef(scope, builder, ((DotNetPointerTypeRef) typeRef).getInnerTypeRef(), defaultQualifiedText);
+			appendTypeRef(scope, builder, ((DotNetPointerTypeRef) typeRef).getInnerTypeRef(), flags);
 			builder.append("*");
 		}
 		else
@@ -118,27 +122,36 @@ public class CSharpTypeRefPresentationUtil
 			if(element instanceof DotNetQualifiedElement)
 			{
 				String qName = ((DotNetQualifiedElement) element).getPresentableQName();
+				String name = ((DotNetQualifiedElement) element).getName();
 
-				if(defaultQualifiedText)
+				String typeAsKeyword = ourTypesAsKeywords.get(qName);
+
+				if(BitUtil.isSet(flags, QUALIFIED_NAME))
 				{
-					builder.append(qName);
-				}
-				else
-				{
-					String typeAsKeyword = ourTypesAsKeywords.get(qName);
-					if(typeAsKeyword != null)
+					if(BitUtil.isSet(flags, TYPE_KEYWORD) && typeAsKeyword != null)
 					{
 						builder.append(typeAsKeyword);
 					}
 					else
 					{
-						builder.append(((DotNetQualifiedElement) element).getName());
+						builder.append(qName);
+					}
+				}
+				else
+				{
+					if(BitUtil.isSet(flags, TYPE_KEYWORD) && typeAsKeyword != null)
+					{
+						builder.append(typeAsKeyword);
+					}
+					else
+					{
+						builder.append(name);
 					}
 				}
 			}
 			else
 			{
-				if(defaultQualifiedText)
+				if(BitUtil.isSet(flags, QUALIFIED_NAME))
 				{
 					builder.append(typeRef.getQualifiedText());
 				}
@@ -166,7 +179,7 @@ public class CSharpTypeRefPresentationUtil
 							{
 								extractedTypeRef = new CSharpTypeRefFromGenericParameter(v);
 							}
-							appendTypeRef(scope, t, extractedTypeRef, defaultQualifiedText);
+							appendTypeRef(scope, t, extractedTypeRef, flags);
 							return null;
 						}
 					}, ", ");
