@@ -187,8 +187,6 @@
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.EventIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.ExtendsListIndex"/>
 
-		<resolveScopeEnlarger implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveScopeEnlarger"/>
-
 		<lang.surroundDescriptor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.surroundWith.CSharpExpressionSurroundDescriptor"/>
 
 		<vetoRenameCondition implementation="org.mustbe.consulo.csharp.ide.refactoring.rename.CSharpVetoRenameCondition"/>
