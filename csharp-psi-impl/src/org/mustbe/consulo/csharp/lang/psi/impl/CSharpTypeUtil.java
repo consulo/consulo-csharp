@@ -39,10 +39,10 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithInnerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
-import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -302,7 +302,7 @@ public class CSharpTypeUtil
 
 			DotNetTypeRef topInnerTypeRef = ((DotNetPointerTypeRef) top).getInnerTypeRef();
 			// void* is unknown type for all
-			if(isVmNameEqual(topInnerTypeRef, DotNetTypes.System.Void, scope))
+			if(DotNetTypeRefUtil.isVmQNameEqual(topInnerTypeRef, scope, DotNetTypes.System.Void))
 			{
 				return SIMPLE_SUCCESS;
 			}
@@ -655,11 +655,5 @@ public class CSharpTypeUtil
 			return Pair.create(((DotNetTypeDeclaration) typeResolveResultElement).getVmQName(), (DotNetTypeDeclaration) typeResolveResultElement);
 		}
 		return null;
-	}
-
-	public static boolean isVmNameEqual(@NotNull DotNetTypeRef typeRef, @NotNull String qName, @NotNull PsiElement scope)
-	{
-		Pair<String, DotNetTypeDeclaration> pair = resolveTypeElement(typeRef, scope);
-		return pair != null && Comparing.equal(pair.getFirst(), qName);
 	}
 }

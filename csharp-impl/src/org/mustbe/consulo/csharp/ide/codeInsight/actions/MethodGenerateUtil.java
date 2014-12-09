@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
@@ -40,23 +41,23 @@ public class MethodGenerateUtil
 			return "null";
 		}
 
-		if(DotNetTypeRefUtil.isInt32(typeRef))
+		if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Int32))
 		{
 			return "0";
 		}
-		else if(DotNetTypeRefUtil.isInt64(typeRef))
+		else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Int64))
 		{
 			return "0l";
 		}
-		else if(DotNetTypeRefUtil.isUInt32(typeRef))
+		else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.UInt32))
 		{
 			return "0u";
 		}
-		else if(DotNetTypeRefUtil.isUInt64(typeRef))
+		else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.UInt32))
 		{
 			return "0ul";
 		}
-		else if(DotNetTypeRefUtil.isBool(typeRef))
+		else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Boolean))
 		{
 			return "false";
 		}

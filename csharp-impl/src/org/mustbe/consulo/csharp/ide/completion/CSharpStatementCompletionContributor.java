@@ -35,6 +35,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpSwitchStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTryStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpWhileStatementImpl;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
@@ -144,7 +145,8 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 							public void handleInsert(InsertionContext insertionContext, LookupElement item)
 							{
 								int offset = insertionContext.getEditor().getCaretModel().getOffset();
-								boolean isVoidReturnType = DotNetTypeRefUtil.isVoid(pseudoMethod.getReturnTypeRef());
+								boolean isVoidReturnType = DotNetTypeRefUtil.isVmQNameEqual(pseudoMethod.getReturnTypeRef(), pseudoMethod,
+										DotNetTypes.System.Void);
 								if(!isVoidReturnType)
 								{
 									insertionContext.getDocument().insertString(offset, " ;");

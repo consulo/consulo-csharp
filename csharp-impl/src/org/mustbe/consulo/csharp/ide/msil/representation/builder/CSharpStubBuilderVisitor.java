@@ -220,7 +220,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		if(declaration.isEnum())
 		{
 			DotNetTypeRef typeRefForEnumConstants = declaration.getTypeRefForEnumConstants();
-			if(!DotNetTypeRefUtil.isInt32(typeRefForEnumConstants))
+			if(!DotNetTypeRefUtil.isVmQNameEqual(typeRefForEnumConstants, declaration, DotNetTypes.System.Int32))
 			{
 				builder.append(" : ");
 				appendTypeRef(declaration, builder, typeRefForEnumConstants);
@@ -234,7 +234,8 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 				@Override
 				public boolean value(DotNetTypeRef typeRef)
 				{
-					return !DotNetTypeRefUtil.isObject(typeRef) && !DotNetTypes.System.ValueType.equals(typeRef.getQualifiedText());
+					return !DotNetTypeRefUtil.isVmQNameEqual(typeRef, declaration, DotNetTypes.System.Object) && !DotNetTypeRefUtil.isVmQNameEqual
+							(typeRef, declaration, DotNetTypes.System.ValueType) ;
 				}
 			});
 
