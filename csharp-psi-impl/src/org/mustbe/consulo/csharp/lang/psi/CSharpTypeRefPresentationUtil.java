@@ -98,7 +98,12 @@ public class CSharpTypeRefPresentationUtil
 		else if(typeRef instanceof CSharpArrayTypeRef)
 		{
 			appendTypeRef(scope, builder, ((CSharpArrayTypeRef) typeRef).getInnerTypeRef(), flags);
-			builder.append("[]");
+			builder.append("[");
+			for(int i = 0; i < ((CSharpArrayTypeRef) typeRef).getDimensions(); i++)
+			{
+				builder.append(",");
+			}
+			builder.append("]");
 		}
 		else if(typeRef instanceof CSharpRefTypeRef)
 		{
