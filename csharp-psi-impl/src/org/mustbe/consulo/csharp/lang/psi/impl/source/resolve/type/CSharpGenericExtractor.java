@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
@@ -35,15 +36,22 @@ public class CSharpGenericExtractor implements DotNetGenericExtractor
 	@Override
 	public DotNetTypeRef extract(@NotNull DotNetGenericParameter parameter)
 	{
+		int index = -1;
 		for(int i = 0; i < myGenericParameters.length; i++)
 		{
 			DotNetGenericParameter genericParameter = myGenericParameters[i];
-			DotNetTypeRef typeRef = myTypeRefs[i];
 			if(genericParameter.isEquivalentTo(parameter))
 			{
-				return typeRef;
+				index = i;
+				break;
 			}
 		}
-		return null;
+
+		if(index == -1)
+		{
+			return null;
+		}
+
+		return ArrayUtil2.safeGet(myTypeRefs, index);
 	}
 }

@@ -11,11 +11,15 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpQualifiedNonReference;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -25,6 +29,8 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.util.PsiTreeUtil;
 import lombok.val;
 
 /**
@@ -62,8 +68,7 @@ public class GenericInferenceUtil
 	public static final GenericInferenceResult SUCCESS = new GenericInferenceResult(true, DotNetGenericExtractor.EMPTY);
 
 	@NotNull
-	public static GenericInferenceResult inferenceGenericExtractor(
-			@NotNull CSharpQualifiedNonReference referenceElement,
+	public static GenericInferenceResult inferenceGenericExtractor(@NotNull CSharpQualifiedNonReference referenceElement,
 			@NotNull CSharpCallArgumentListOwner callArgumentListOwner,
 			@NotNull DotNetLikeMethodDeclaration methodDeclaration)
 	{
@@ -102,14 +107,13 @@ public class GenericInferenceUtil
 
 		for(NCallArgument nCallArgument : methodCallArguments)
 		{
-			DotNetTypeRef temp = nCallArgument.getParameterTypeRef();
-			if(temp == null)
+			DotNetTypeRef parameterTypeRef = nCallArgument.getParameterTypeRef();
+			if(parameterTypeRef == null)
 			{
 				continue;
 			}
 
-			DotNetTypeRef parameterTypeRef = cleanTypeRef(temp);
-			DotNetTypeRef expressionTypeRef = cleanTypeRef(nCallArgument.getTypeRef());
+			DotNetTypeRef expressionTypeRef = unwrapPossibleGenericTypeRefs(nCallArgument, parameterTypeRef, map, scope);
 
 			DotNetTypeResolveResult parameterTypeResolveResult = parameterTypeRef.resolve(scope);
 			DotNetTypeResolveResult expressionTypeResolveResult = expressionTypeRef.resolve(scope);
@@ -246,12 +250,47 @@ public class GenericInferenceUtil
 	}
 
 	@NotNull
-	private static DotNetTypeRef cleanTypeRef(@NotNull DotNetTypeRef typeRef)
+	private static DotNetTypeRef unwrapPossibleGenericTypeRefs(@NotNull NCallArgument nCallArgument,
+			@NotNull DotNetTypeRef parameterTypeRef,
+			@NotNull THashMap<DotNetGenericParameter, DotNetTypeRef> map,
+			@NotNull PsiElement scope)
 	{
-		if(typeRef instanceof CSharpRefTypeRef)
+		DotNetTypeRef expressionTypeRef = nCallArgument.getTypeRef();
+		if(map.isEmpty())
 		{
-			typeRef = ((CSharpRefTypeRef) typeRef).getInnerTypeRef();
+			return expressionTypeRef;
 		}
-		return typeRef;
+
+		CSharpCallArgument callArgument = nCallArgument.getCallArgument();
+		if(callArgument == null)
+		{
+			return expressionTypeRef;
+		}
+
+		DotNetExpression argumentExpression = callArgument.getArgumentExpression();
+		if(!(argumentExpression instanceof CSharpLambdaExpressionImpl))
+		{
+			return expressionTypeRef;
+		}
+
+		CSharpLambdaTypeRef baseTypeRefOfLambda = new CSharpLambdaTypeRef(null, ((CSharpLambdaExpressionImpl) argumentExpression).getParameterInfos
+				(), DotNetTypeRef.AUTO_TYPE);
+		if(CSharpTypeUtil.isInheritable(parameterTypeRef, baseTypeRefOfLambda, scope))
+		{
+			//TODO [VISTALL] find another way to duplicate expression
+			final PsiFile fileCopy = (PsiFile) argumentExpression.getContainingFile().copy();
+
+			PsiElement elementAt = fileCopy.findElementAt(argumentExpression.getTextOffset());
+			CSharpLambdaExpressionImpl copy = PsiTreeUtil.getParentOfType(elementAt, CSharpLambdaExpressionImpl.class);
+
+			assert copy != null;
+
+			DotNetTypeRef newParameterTypeRef = GenericUnwrapTool.exchangeTypeRef(parameterTypeRef, new CSharpGenericExtractor(map), scope);
+			copy.putUserData(CSharpLambdaExpressionImplUtil.TYPE_REF_OF_LAMBDA, newParameterTypeRef);
+
+			return copy.toTypeRefForInference();
+		}
+
+		return expressionTypeRef;
 	}
 }

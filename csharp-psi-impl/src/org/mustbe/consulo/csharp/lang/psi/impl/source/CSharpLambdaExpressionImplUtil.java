@@ -32,6 +32,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
+import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
@@ -43,8 +44,10 @@ import com.intellij.util.ObjectUtils;
  */
 public class CSharpLambdaExpressionImplUtil
 {
+	public static final Key<DotNetTypeRef> TYPE_REF_OF_LAMBDA = Key.create("type.ref.of.lambda");
+
 	@NotNull
-	public static DotNetTypeRef resolveTypeForParameter(PsiElement target, int parameterIndex)
+	public static DotNetTypeRef resolveTypeForParameter(CSharpLambdaExpressionImpl target, int parameterIndex)
 	{
 		CSharpLambdaResolveResult leftTypeRef = resolveLeftLambdaTypeRef(target);
 		if(leftTypeRef == null)
@@ -59,6 +62,17 @@ public class CSharpLambdaExpressionImplUtil
 	@Nullable
 	public static CSharpLambdaResolveResult resolveLeftLambdaTypeRef(PsiElement target)
 	{
+		DotNetTypeRef typeRefOfLambda = target.getUserData(TYPE_REF_OF_LAMBDA);
+		if(typeRefOfLambda != null)
+		{
+			DotNetTypeResolveResult typeResolveResult = typeRefOfLambda.resolve(target);
+			if(typeResolveResult instanceof CSharpLambdaResolveResult)
+			{
+				return (CSharpLambdaResolveResult) typeResolveResult;
+			}
+			return null;
+		}
+
 		PsiElement parent = target.getParent();
 		if(parent instanceof DotNetVariable)
 		{
