@@ -256,10 +256,6 @@ public class GenericInferenceUtil
 			@NotNull PsiElement scope)
 	{
 		DotNetTypeRef expressionTypeRef = nCallArgument.getTypeRef();
-		if(map.isEmpty())
-		{
-			return expressionTypeRef;
-		}
 
 		CSharpCallArgument callArgument = nCallArgument.getCallArgument();
 		if(callArgument == null)
