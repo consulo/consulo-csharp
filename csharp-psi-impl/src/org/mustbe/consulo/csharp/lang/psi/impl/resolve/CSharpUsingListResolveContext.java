@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 import gnu.trove.THashMap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -82,7 +83,21 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 	@Override
 	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
 	{
-		return getCachedNamespaceContext().findExtensionMethodGroupByName(name);
+		CSharpElementGroup<CSharpMethodDeclaration> groupByName1 = getCachedNamespaceContext().findExtensionMethodGroupByName(name);
+		CSharpElementGroup<CSharpMethodDeclaration> groupByName2 = getCachedTypeContext().findExtensionMethodGroupByName(name);
+		if(groupByName1 == null && groupByName2 == null)
+		{
+			return null;
+		}
+		if(groupByName1 == null)
+		{
+			return groupByName2;
+		}
+		if(groupByName2 == null)
+		{
+			return groupByName1;
+		}
+		return new CSharpCompositeElementGroupImpl<CSharpMethodDeclaration>(myUsingList.getProject(), Arrays.asList(groupByName1, groupByName2));
 	}
 
 	@Override
@@ -100,7 +115,8 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 				}
 			}
 		}
-		return true;
+
+		return getCachedTypeContext().processExtensionMethodGroups(processor);
 	}
 
 	@NotNull
