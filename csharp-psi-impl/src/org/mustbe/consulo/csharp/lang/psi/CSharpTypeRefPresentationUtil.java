@@ -86,6 +86,14 @@ public class CSharpTypeRefPresentationUtil
 		return builder.toString();
 	}
 
+	@NotNull
+	public static String buildText(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope, int flags)
+	{
+		StringBuilder builder = new StringBuilder();
+		appendTypeRef(scope, builder, typeRef, flags);
+		return builder.toString();
+	}
+
 	public static void appendTypeRef(@NotNull final PsiElement scope,
 			@NotNull StringBuilder builder,
 			@NotNull DotNetTypeRef typeRef,

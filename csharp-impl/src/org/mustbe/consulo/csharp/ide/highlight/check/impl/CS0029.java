@@ -45,6 +45,8 @@ import com.intellij.psi.util.PsiTreeUtil;
  */
 public class CS0029 extends CompilerCheck<PsiElement>
 {
+	private static final int TYPE_FLAGS = CSharpTypeRefPresentationUtil.TYPE_KEYWORD | CSharpTypeRefPresentationUtil.QUALIFIED_NAME;
+
 	@Nullable
 	@Override
 	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull PsiElement element)
@@ -64,8 +66,8 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		DotNetTypeRef secondTypeRef = resolve.getSecond();
 		if(!CSharpTypeUtil.isInheritableWithImplicit(firstTypeRef, secondTypeRef, element))
 		{
-			return newBuilder(resolve.getThird(), CSharpTypeRefPresentationUtil.buildText(secondTypeRef, element),
-					CSharpTypeRefPresentationUtil.buildText(firstTypeRef, element));
+			return newBuilder(resolve.getThird(), CSharpTypeRefPresentationUtil.buildText(secondTypeRef, element, TYPE_FLAGS),
+					CSharpTypeRefPresentationUtil.buildText(firstTypeRef, element, TYPE_FLAGS));
 		}
 
 		return null;
