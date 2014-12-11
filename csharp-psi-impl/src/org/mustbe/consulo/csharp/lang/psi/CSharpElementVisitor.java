@@ -561,4 +561,9 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	{
 		visitElement(expression);
 	}
+
+	public void visitUsingTypeStatement(CSharpUsingTypeStatement statement)
+	{
+		visitElement(statement);
+	}
 }

@@ -22,15 +22,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
-import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
-import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
+import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpGenericParameterListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -198,6 +190,14 @@ public class CS1644 extends CompilerCheck<PsiElement>
 						}
 					}
 					return null;
+				}
+			}));
+			add(new Feature("using static", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
+			{
+				@Override
+				public PsiElement fun(PsiElement element)
+				{
+					return element instanceof CSharpUsingTypeStatement ? element : null;
 				}
 			}));
 			add(new Feature("property initializer", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()

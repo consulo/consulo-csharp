@@ -33,6 +33,8 @@ public interface CSharpElements
 
 	IElementType USING_NAMESPACE_STATEMENT = CSharpStubElements.USING_NAMESPACE_STATEMENT;
 
+	IElementType USING_TYPE_STATEMENT = CSharpStubElements.USING_TYPE_STATEMENT;
+
 	IElementType TYPE_DEF_STATEMENT = CSharpStubElements.TYPE_DEF_STATEMENT;
 
 	IElementType METHOD_DECLARATION = CSharpStubElements.METHOD_DECLARATION;
