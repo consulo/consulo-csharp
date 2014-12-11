@@ -132,11 +132,15 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 				processor);
 	}
 
-	public static boolean processExtensionMethodGroups(@NotNull final String qName,
+	public static boolean processExtensionMethodGroups(@Nullable final String qName,
 			@NotNull final Project project,
 			@NotNull final GlobalSearchScope scope,
 			@NotNull final Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
 	{
+		if(qName == null)
+		{
+			return true;
+		}
 		String indexableName = DotNetNamespaceStubUtil.getIndexableNamespace(qName);
 
 		val processed = new THashSet<String>();
