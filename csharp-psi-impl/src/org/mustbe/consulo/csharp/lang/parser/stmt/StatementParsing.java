@@ -345,6 +345,13 @@ public class StatementParsing extends SharedParsingHelpers
 			expect(builder, RPAR, "')' expected");
 		}
 
+		if(builder.getTokenType() == IF_KEYWORD)
+		{
+			builder.advanceLexer();
+
+			parseExpressionInParenth(builder);
+		}
+
 		if(builder.getTokenType() == LBRACE)
 		{
 			parseStatement(builder);

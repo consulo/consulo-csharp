@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -48,6 +49,12 @@ public class CSharpCatchStatementImpl extends CSharpElementImpl implements DotNe
 	public CSharpLocalVariable getVariable()
 	{
 		return findChildByClass(CSharpLocalVariable.class);
+	}
+
+	@Nullable
+	public DotNetExpression getFilterExpression()
+	{
+		return findChildByClass(DotNetExpression.class);
 	}
 
 	@Override
