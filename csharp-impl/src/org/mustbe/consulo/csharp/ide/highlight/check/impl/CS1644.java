@@ -193,7 +193,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 					return null;
 				}
 			}));
-			add(new Feature("using static", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
+			add(new Feature("using static members", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
 				public PsiElement fun(PsiElement element)
@@ -217,7 +217,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 					return null;
 				}
 			}));
-			add(new Feature("single line code block", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
+			add(new Feature("expression-bodied members", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
 				public PsiElement fun(PsiElement element)
@@ -233,7 +233,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 					return null;
 				}
 			}));
-			add(new Feature("nullable calls", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
+			add(new Feature("null propagation", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
 				public PsiElement fun(PsiElement element)
