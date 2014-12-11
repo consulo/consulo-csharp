@@ -23,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.*;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpCatchStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpGenericParameterListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
@@ -226,7 +225,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 					if(element instanceof CSharpMethodDeclaration)
 					{
 						PsiElement codeBlock = ((CSharpMethodDeclaration) element).getCodeBlock();
-						if(codeBlock != null && !(codeBlock instanceof CSharpBlockStatementImpl))
+						if(codeBlock instanceof DotNetExpression)
 						{
 							return codeBlock;
 						}

@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
@@ -80,6 +81,12 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				return null;
 			}
 			return Trinity.create(((DotNetVariable) element).toTypeRef(false), initializer.toTypeRef(false), initializer);
+		}
+		else if(element instanceof DotNetExpression && element.getParent() instanceof CSharpMethodDeclaration)
+		{
+			CSharpMethodDeclaration parent = (CSharpMethodDeclaration) element.getParent();
+			assert parent.getCodeBlock() == element;
+			return Trinity.create(parent.getReturnTypeRef(), ((DotNetExpression) element).toTypeRef(true), element);
 		}
 		else if(element instanceof CSharpAssignmentExpressionImpl)
 		{

@@ -148,7 +148,8 @@ public class MethodParsing extends MemberWithBodyParsing
 			else if(builder.getTokenType() == DARROW)
 			{
 				builder.advanceLexer();
-				StatementParsing.parse(builder);
+				ExpressionParsing.parse(builder);
+				expect(builder, SEMICOLON, "';' expected");
 			}
 			else
 			{
