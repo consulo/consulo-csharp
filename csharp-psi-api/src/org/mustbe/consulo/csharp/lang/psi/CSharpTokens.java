@@ -236,6 +236,8 @@ public interface CSharpTokens extends TokenType
 
 	IElementType ARROW = new IElementType("ARROW", CSharpLanguage.INSTANCE);
 
+	IElementType NULLABE_CALL = new IElementType("NULLABE_CALL", CSharpLanguage.INSTANCE);
+
 	IElementType DARROW = new IElementType("DARROW", CSharpLanguage.INSTANCE);
 
 	IElementType MINUSMINUS = new IElementType("MINUSMINUS", CSharpLanguage.INSTANCE);

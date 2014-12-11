@@ -401,7 +401,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		while(true)
 		{
 			final IElementType tokenType = builder.getTokenType();
-			if(tokenType == DOT)
+			if(tokenType == DOT || tokenType == NULLABE_CALL)
 			{
 				final PsiBuilder.Marker dotPos = builder.mark();
 				builder.advanceLexer();

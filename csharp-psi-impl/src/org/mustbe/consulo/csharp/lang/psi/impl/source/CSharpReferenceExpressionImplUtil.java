@@ -92,7 +92,8 @@ public class CSharpReferenceExpressionImplUtil
 	public static final TokenSet ourReferenceElements = TokenSet.orSet(CSharpTokenSets.NATIVE_TYPES, TokenSet.create(CSharpTokens.THIS_KEYWORD,
 			CSharpTokens.BASE_KEYWORD, CSharpTokens.IDENTIFIER, CSharpSoftTokens.GLOBAL_KEYWORD));
 
-	public static final TokenSet ourAccessTokens = TokenSet.create(CSharpTokens.ARROW, CSharpTokens.DOT, CSharpTokens.COLONCOLON);
+	public static final TokenSet ourAccessTokens = TokenSet.create(CSharpTokens.ARROW, CSharpTokens.DOT, CSharpTokens.COLONCOLON,
+			CSharpTokens.NULLABE_CALL);
 
 	public static int getTypeArgumentListSize(@NotNull CSharpReferenceExpression referenceExpression)
 	{
@@ -119,6 +120,7 @@ public class CSharpReferenceExpressionImplUtil
 		{
 			case ARROW:
 			case COLONCOLON:
+			case NULLABLE_CALL:
 				startOffset += 2;
 				break;
 			case DOT:

@@ -326,6 +326,8 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	","                       { return CSharpTokens.COMMA; }
 
+	"?."                      { return CSharpTokens.NULLABE_CALL; }
+
 	"??"                      { return CSharpTokens.NULL_COALESCING; }
 
 	"?"                       { return CSharpTokens.QUEST; }

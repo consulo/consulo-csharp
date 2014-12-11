@@ -61,7 +61,8 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 		NONE,
 		DOT,
 		ARROW,
-		COLONCOLON
+		COLONCOLON,
+		NULLABLE_CALL
 	}
 
 	@Nullable
@@ -77,6 +78,9 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 	DotNetTypeRef[] getTypeArgumentListRefs();
 
 	boolean isGlobalElement();
+
+	@Nullable
+	PsiElement getMemberAccessElement();
 
 	@NotNull
 	AccessType getMemberAccessType();

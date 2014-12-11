@@ -274,11 +274,18 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		return referenceElement != null && referenceElement.getNode().getElementType() == CSharpSoftTokens.GLOBAL_KEYWORD;
 	}
 
+	@Nullable
+	@Override
+	public PsiElement getMemberAccessElement()
+	{
+		return findChildByType(CSharpReferenceExpressionImplUtil.ourAccessTokens);
+	}
+
 	@NotNull
 	@Override
 	public AccessType getMemberAccessType()
 	{
-		PsiElement childByType = findChildByType(CSharpReferenceExpressionImplUtil.ourAccessTokens);
+		PsiElement childByType = getMemberAccessElement();
 		if(childByType == null)
 		{
 			return AccessType.NONE;
@@ -291,6 +298,10 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		else if(elementType == CSharpTokens.COLONCOLON)
 		{
 			return AccessType.COLONCOLON;
+		}
+		else if(elementType == CSharpTokens.NULLABE_CALL)
+		{
+			return AccessType.NULLABLE_CALL;
 		}
 		return AccessType.DOT;
 	}

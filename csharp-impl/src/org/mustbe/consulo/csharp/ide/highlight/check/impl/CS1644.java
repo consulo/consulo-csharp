@@ -233,6 +233,22 @@ public class CS1644 extends CompilerCheck<PsiElement>
 					return null;
 				}
 			}));
+			add(new Feature("nullable calls", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
+			{
+				@Override
+				public PsiElement fun(PsiElement element)
+				{
+					if(element instanceof CSharpReferenceExpression)
+					{
+						PsiElement memberAccessElement = ((CSharpReferenceExpression) element).getMemberAccessElement();
+						if(memberAccessElement != null && memberAccessElement.getNode().getElementType() == CSharpTokens.NULLABE_CALL)
+						{
+							return memberAccessElement;
+						}
+					}
+					return null;
+				}
+			}));
 			add(new Feature("asynchronous functions", CSharpLanguageVersion._4_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
