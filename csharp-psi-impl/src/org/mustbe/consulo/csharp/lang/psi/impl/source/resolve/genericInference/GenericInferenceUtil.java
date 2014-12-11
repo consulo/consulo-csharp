@@ -281,7 +281,8 @@ public class GenericInferenceUtil
 
 			assert copy != null;
 
-			DotNetTypeRef newParameterTypeRef = GenericUnwrapTool.exchangeTypeRef(parameterTypeRef, new CSharpGenericExtractor(map), scope);
+			DotNetGenericExtractor extractor = map.isEmpty() ? DotNetGenericExtractor.EMPTY : new CSharpGenericExtractor(map);
+			DotNetTypeRef newParameterTypeRef = GenericUnwrapTool.exchangeTypeRef(parameterTypeRef, extractor, scope);
 			copy.putUserData(CSharpLambdaExpressionImplUtil.TYPE_REF_OF_LAMBDA, newParameterTypeRef);
 
 			return copy.toTypeRefForInference();
