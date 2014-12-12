@@ -42,9 +42,12 @@ import com.intellij.psi.PsiElementVisitor;
  */
 public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVariable implements CSharpEventDeclaration
 {
+	private final DotNetXXXAccessor[] myAccessors;
+
 	public MsilEventAsCSharpEventDeclaration(PsiElement parent, MsilEventEntry variable, List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
 	{
 		super(parent, MsilPropertyAsCSharpPropertyDeclaration.getAdditionalModifiers(variable, pairs), variable);
+		myAccessors = MsilPropertyAsCSharpPropertyDeclaration.buildAccessors(this, pairs);
 	}
 
 	@Override
@@ -76,14 +79,14 @@ public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVaria
 	@Override
 	public DotNetXXXAccessor[] getAccessors()
 	{
-		return new DotNetXXXAccessor[0];
+		return myAccessors;
 	}
 
 	@NotNull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
-		return new DotNetNamedElement[0];
+		return getAccessors();
 	}
 
 	@Override

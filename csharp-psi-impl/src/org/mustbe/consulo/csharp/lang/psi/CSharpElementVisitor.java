@@ -22,6 +22,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
+import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.psi.PsiElementVisitor;
 
 /**
@@ -137,7 +138,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(declaration);
 	}
 
-	public void visitXXXAccessor(CSharpXXXAccessorImpl accessor)
+	public void visitXXXAccessor(DotNetXXXAccessor accessor)
 	{
 		visitElement(accessor);
 	}

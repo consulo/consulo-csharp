@@ -36,7 +36,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
@@ -53,17 +52,17 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 			DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute
 	};
 
-	private final MsilModifierList myModifierList;
+	private final DotNetModifierList myModifierList;
 
 	private final CSharpModifier[] myAdditional;
 	private List<DotNetAttribute> myAdditionalAttributes = Collections.emptyList();
 
-	public MsilModifierListToCSharpModifierList(MsilModifierList modifierList)
+	public MsilModifierListToCSharpModifierList(DotNetModifierList modifierList)
 	{
 		this(CSharpModifier.EMPTY_ARRAY, modifierList);
 	}
 
-	public MsilModifierListToCSharpModifierList(@NotNull CSharpModifier[] additional, MsilModifierList modifierList)
+	public MsilModifierListToCSharpModifierList(@NotNull CSharpModifier[] additional, DotNetModifierList modifierList)
 	{
 		super(PsiManager.getInstance(modifierList.getProject()), CSharpLanguage.INSTANCE);
 		myAdditional = additional;

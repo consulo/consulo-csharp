@@ -54,11 +54,14 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 
 	private final DotNetParameter[] myParameters;
 
+	private final DotNetXXXAccessor[] myAccessors;
+
 	public MsilPropertyAsCSharpArrayMethodDeclaration(PsiElement parent, MsilPropertyEntry propertyEntry, List<Pair<DotNetXXXAccessor,
 			MsilMethodEntry>> pairs)
 	{
 		super(parent, propertyEntry);
 
+		myAccessors = MsilPropertyAsCSharpPropertyDeclaration.buildAccessors(this, pairs);
 		myModifierList = new MsilModifierListToCSharpModifierList(MsilPropertyAsCSharpPropertyDeclaration.getAdditionalModifiers(propertyEntry,
 				pairs),
 				(MsilModifierList) propertyEntry.getModifierList());
@@ -141,7 +144,7 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 	@Override
 	public DotNetXXXAccessor[] getAccessors()
 	{
-		return new DotNetXXXAccessor[0];
+		return myAccessors;
 	}
 
 	@NotNull

@@ -35,6 +35,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -46,7 +47,6 @@ import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierElementType;
-import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilArrayTypRefImpl;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilNativeTypeRefImpl;
@@ -64,7 +64,7 @@ public class MsilToCSharpUtil
 {
 	private static Map<MsilEntry, PsiElement> ourCache = new ConcurrentWeakKeyHashMap<MsilEntry, PsiElement>();
 
-	public static boolean hasCSharpInMsilModifierList(CSharpModifier modifier, MsilModifierList modifierList)
+	public static boolean hasCSharpInMsilModifierList(CSharpModifier modifier, DotNetModifierList modifierList)
 	{
 		MsilModifierElementType elementType = null;
 		switch(modifier)
@@ -131,7 +131,7 @@ public class MsilToCSharpUtil
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T extends DotNetModifierListOwner> boolean hasModifierInParentIfType(MsilModifierList msilModifierList, DotNetModifier modifier)
+	private static <T extends DotNetModifierListOwner> boolean hasModifierInParentIfType(DotNetModifierList msilModifierList, DotNetModifier modifier)
 	{
 		PsiElement parent = msilModifierList.getParent();
 		if(parent == null)
@@ -149,7 +149,7 @@ public class MsilToCSharpUtil
 		return modifierListOwner.hasModifier(modifier);
 	}
 
-	private static boolean hasAttribute(MsilModifierList modifierList, String qName)
+	private static boolean hasAttribute(DotNetModifierList modifierList, String qName)
 	{
 		for(DotNetAttribute attribute : modifierList.getAttributes())
 		{
