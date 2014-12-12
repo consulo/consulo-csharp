@@ -235,7 +235,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 				public boolean value(DotNetTypeRef typeRef)
 				{
 					return !DotNetTypeRefUtil.isVmQNameEqual(typeRef, declaration, DotNetTypes.System.Object) && !DotNetTypeRefUtil.isVmQNameEqual
-							(typeRef, declaration, DotNetTypes.System.ValueType) ;
+							(typeRef, declaration, DotNetTypes.System.ValueType);
 				}
 			});
 
@@ -412,8 +412,18 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			{
 				continue;
 			}
+
+			if(dotNetModifier == CSharpModifier.ABSTRACT && (isInterface(owner) || isInterface(owner.getParent())))
+			{
+				continue;
+			}
 			builder.append(dotNetModifier.getPresentableText()).append(" ");
 		}
+	}
+
+	private static boolean isInterface(@Nullable PsiElement element)
+	{
+		return element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).isInterface();
 	}
 
 	public static void appendValidName(StringBuilder builder, String name)
