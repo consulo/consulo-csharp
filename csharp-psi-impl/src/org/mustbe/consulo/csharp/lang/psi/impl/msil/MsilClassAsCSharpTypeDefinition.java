@@ -82,7 +82,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 						continue;
 					}
 
-					if(StringUtil.contains(name, "<>") || Comparing.equal(name, "value__") && isEnum)
+					if(StringUtil.containsAnyChar(name, "<>") || Comparing.equal(name, "value__") && isEnum)
 					{
 						bannedFieldNames.add(name);
 					}
