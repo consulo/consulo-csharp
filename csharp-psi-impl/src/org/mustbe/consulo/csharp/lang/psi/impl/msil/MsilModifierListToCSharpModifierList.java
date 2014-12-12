@@ -23,8 +23,10 @@ import java.util.List;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.CSharpLanguage;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifierList;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightAttributeBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightAttributeWithSelfTypeBuilder;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -38,17 +40,15 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.impl.light.LightElement;
 import com.intellij.util.ArrayUtil;
 
 /**
  * @author VISTALL
  * @since 23.05.14
  */
-public class MsilModifierListToCSharpModifierList extends LightElement implements DotNetModifierList
+public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<DotNetModifierList> implements CSharpModifierList
 {
-	private static final String[] ourAttributeBans = new String[] {
+	private static final String[] ourAttributeBans = new String[]{
 			DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute
 	};
 
@@ -57,14 +57,16 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 	private final CSharpModifier[] myAdditional;
 	private List<DotNetAttribute> myAdditionalAttributes = Collections.emptyList();
 
-	public MsilModifierListToCSharpModifierList(DotNetModifierList modifierList)
+	public MsilModifierListToCSharpModifierList(@NotNull PsiElement parent, @NotNull DotNetModifierList modifierList)
 	{
-		this(CSharpModifier.EMPTY_ARRAY, modifierList);
+		this(CSharpModifier.EMPTY_ARRAY, parent, modifierList);
 	}
 
-	public MsilModifierListToCSharpModifierList(@NotNull CSharpModifier[] additional, DotNetModifierList modifierList)
+	public MsilModifierListToCSharpModifierList(@NotNull CSharpModifier[] additional,
+			@NotNull PsiElement parent,
+			@NotNull DotNetModifierList modifierList)
 	{
-		super(PsiManager.getInstance(modifierList.getProject()), CSharpLanguage.INSTANCE);
+		super(parent, modifierList);
 		myAdditional = additional;
 		myModifierList = modifierList;
 
@@ -87,6 +89,12 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 	public void addModifier(@NotNull DotNetModifier modifier)
 	{
 
+	}
+
+	@Override
+	public void accept(@NotNull CSharpElementVisitor visitor)
+	{
+		visitor.visitModifierList(this);
 	}
 
 	@Override
@@ -194,5 +202,12 @@ public class MsilModifierListToCSharpModifierList extends LightElement implement
 	public String toString()
 	{
 		return myModifierList.toString();
+	}
+
+	@NotNull
+	@Override
+	public CSharpAttributeList[] getAttributeLists()
+	{
+		return CSharpAttributeList.EMPTY_ARRAY;
 	}
 }

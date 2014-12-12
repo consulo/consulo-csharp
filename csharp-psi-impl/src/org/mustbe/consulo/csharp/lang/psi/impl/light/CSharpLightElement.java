@@ -91,7 +91,7 @@ public abstract class CSharpLightElement<S extends PsiElement> extends LightElem
 	}
 
 	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public final void accept(@NotNull PsiElementVisitor visitor)
 	{
 		if(visitor instanceof CSharpElementVisitor)
 		{

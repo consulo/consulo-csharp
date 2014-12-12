@@ -34,7 +34,6 @@ import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
 
 /**
  * @author VISTALL
@@ -51,16 +50,9 @@ public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVaria
 	}
 
 	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		if(visitor instanceof CSharpElementVisitor)
-		{
-			((CSharpElementVisitor) visitor).visitEventDeclaration(this);
-		}
-		else
-		{
-			visitor.visitElement(this);
-		}
+		visitor.visitEventDeclaration(this);
 	}
 
 	@Override
@@ -119,7 +111,7 @@ public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVaria
 		SomeType someType = SomeTypeParser.parseType(typeBeforeDot, nameFromBytecode);
 		if(someType != null)
 		{
-			return new DummyType(getProject(), myMsilElement, someType);
+			return new DummyType(getProject(), myOriginal, someType);
 		}
 		return null;
 	}

@@ -24,7 +24,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.msil.lang.psi.MsilFieldEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
 
 /**
  * @author VISTALL
@@ -38,16 +37,9 @@ public class MsilFieldAsCSharpFieldDeclaration extends MsilVariableAsCSharpVaria
 	}
 
 	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		if(visitor instanceof CSharpElementVisitor)
-		{
-			((CSharpElementVisitor) visitor).visitFieldDeclaration(this);
-		}
-		else
-		{
-			visitor.visitElement(this);
-		}
+		visitor.visitFieldDeclaration(this);
 	}
 
 	@Override

@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
@@ -39,7 +40,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetRefTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
-import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.text.StringUtil;
@@ -72,7 +72,7 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 	{
 		if(index == 0)
 		{
-			PsiElement msilElement = ((MsilElementWrapper) parent).getMsilElement();
+			PsiElement msilElement = parent.getOriginalElement();
 			// we can use mirror due ExtensionAttribute is in ban list
 			if(DotNetAttributeUtil.hasAttribute(msilElement, DotNetTypes.System.Runtime.CompilerServices
 					.ExtensionAttribute))
@@ -87,7 +87,7 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 	@Override
 	protected MsilModifierListToCSharpModifierList createModifierList(CSharpModifier[] modifiers, DotNetVariable variable)
 	{
-		return new MsilModifierListToCSharpModifierList(modifiers, (MsilModifierList) variable.getModifierList())
+		return new MsilModifierListToCSharpModifierList(modifiers, variable, variable.getModifierList())
 		{
 			@NotNull
 			@Override
@@ -204,5 +204,11 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 	public int getIndex()
 	{
 		return myIndex;
+	}
+
+	@Override
+	public void accept(@NotNull CSharpElementVisitor visitor)
+	{
+		visitor.visitParameter(this);
 	}
 }

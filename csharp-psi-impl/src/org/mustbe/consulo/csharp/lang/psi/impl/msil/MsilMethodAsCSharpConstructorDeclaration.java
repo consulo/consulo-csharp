@@ -27,7 +27,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
 
 /**
  * @author VISTALL
@@ -54,16 +53,9 @@ public class MsilMethodAsCSharpConstructorDeclaration extends MsilMethodAsCSharp
 	}
 
 	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		if(visitor instanceof CSharpElementVisitor)
-		{
-			((CSharpElementVisitor) visitor).visitConstructorDeclaration(this);
-		}
-		else
-		{
-			visitor.visitElement(this);
-		}
+		visitor.visitConstructorDeclaration(this);
 	}
 
 	@Nullable

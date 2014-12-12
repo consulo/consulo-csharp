@@ -25,7 +25,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
 import com.intellij.util.IncorrectOperationException;
 
 /**
@@ -43,7 +42,7 @@ public class MsilXXXAccessorAsCSharpXXXAccessor extends MsilElementWrapper<DotNe
 	{
 		super(parent, original);
 		myParent = parent;
-		myModifierList = new MsilModifierListToCSharpModifierList(resolvedMethod.getModifierList());
+		myModifierList = new MsilModifierListToCSharpModifierList(this, resolvedMethod.getModifierList());
 	}
 
 	@Override
@@ -59,16 +58,9 @@ public class MsilXXXAccessorAsCSharpXXXAccessor extends MsilElementWrapper<DotNe
 	}
 
 	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		if(visitor instanceof CSharpElementVisitor)
-		{
-			((CSharpElementVisitor) visitor).visitXXXAccessor(this);
-		}
-		else
-		{
-			visitor.visitElement(this);
-		}
+		visitor.visitXXXAccessor(this);
 	}
 
 	@Nullable
@@ -82,7 +74,7 @@ public class MsilXXXAccessorAsCSharpXXXAccessor extends MsilElementWrapper<DotNe
 	@Override
 	public Kind getAccessorKind()
 	{
-		return myMsilElement.getAccessorKind();
+		return myOriginal.getAccessorKind();
 	}
 
 	@Nullable

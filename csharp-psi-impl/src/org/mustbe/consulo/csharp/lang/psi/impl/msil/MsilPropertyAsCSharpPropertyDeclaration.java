@@ -39,7 +39,6 @@ import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
@@ -125,16 +124,9 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 	}
 
 	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		if(visitor instanceof CSharpElementVisitor)
-		{
-			((CSharpElementVisitor) visitor).visitPropertyDeclaration(this);
-		}
-		else
-		{
-			visitor.visitElement(this);
-		}
+		visitor.visitPropertyDeclaration(this);
 	}
 
 	@Override
@@ -193,7 +185,7 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 		SomeType someType = SomeTypeParser.parseType(typeBeforeDot, nameFromBytecode);
 		if(someType != null)
 		{
-			return new DummyType(getProject(), myMsilElement, someType);
+			return new DummyType(getProject(), myOriginal, someType);
 		}
 		return null;
 	}

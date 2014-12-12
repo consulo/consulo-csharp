@@ -34,7 +34,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
-import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.psi.PsiElement;
@@ -45,7 +44,7 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 23.05.14
  */
-public class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElementWrapper<MsilMethodEntry> implements DotNetLikeMethodDeclaration
+public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElementWrapper<MsilMethodEntry> implements DotNetLikeMethodDeclaration
 {
 	private MsilModifierListToCSharpModifierList myModifierList;
 	private MsilGenericParameterListAsCSharpGenericParameterList myGenericParameterList;
@@ -58,7 +57,7 @@ public class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElementWrapper<
 	public MsilMethodAsCSharpLikeMethodDeclaration(PsiElement parent, @NotNull CSharpModifier[] modifiers, MsilMethodEntry methodEntry)
 	{
 		super(parent, methodEntry);
-		myModifierList = new MsilModifierListToCSharpModifierList(modifiers, (MsilModifierList) methodEntry.getModifierList());
+		myModifierList = new MsilModifierListToCSharpModifierList(modifiers, this, methodEntry.getModifierList());
 	}
 
 	protected void setGenericParameterList(@NotNull DotNetGenericParameterListOwner owner)
@@ -77,7 +76,7 @@ public class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElementWrapper<
 	@Override
 	public PsiFile getContainingFile()
 	{
-		return myMsilElement.getContainingFile();
+		return myOriginal.getContainingFile();
 	}
 
 	@NotNull
@@ -92,7 +91,7 @@ public class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElementWrapper<
 	@LazyInstance
 	public DotNetTypeRef getReturnTypeRef()
 	{
-		return MsilToCSharpUtil.extractToCSharp(myMsilElement.getReturnTypeRef(), myMsilElement);
+		return MsilToCSharpUtil.extractToCSharp(myOriginal.getReturnTypeRef(), myOriginal);
 	}
 
 	@Nullable
@@ -140,11 +139,11 @@ public class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElementWrapper<
 	@LazyInstance
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
-		DotNetTypeRef[] parameters = myMsilElement.getParameterTypeRefs();
+		DotNetTypeRef[] parameters = myOriginal.getParameterTypeRefs();
 		DotNetTypeRef[] refs = new DotNetTypeRef[parameters.length];
 		for(int i = 0; i < parameters.length; i++)
 		{
-			refs[i] = MsilToCSharpUtil.extractToCSharp(parameters[i], myMsilElement);
+			refs[i] = MsilToCSharpUtil.extractToCSharp(parameters[i], myOriginal);
 		}
 		return refs;
 	}
@@ -153,14 +152,14 @@ public class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElementWrapper<
 	@Override
 	public DotNetParameterList getParameterList()
 	{
-		return myMsilElement.getParameterList();
+		return myOriginal.getParameterList();
 	}
 
 	@NotNull
 	@Override
 	public DotNetParameter[] getParameters()
 	{
-		DotNetParameter[] parameters = myMsilElement.getParameters();
+		DotNetParameter[] parameters = myOriginal.getParameters();
 		DotNetParameter[] newParameters = new DotNetParameter[parameters.length];
 		for(int i = 0; i < parameters.length; i++)
 		{
@@ -174,20 +173,20 @@ public class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElementWrapper<
 	@Override
 	public String getPresentableParentQName()
 	{
-		return myMsilElement.getPresentableParentQName();
+		return myOriginal.getPresentableParentQName();
 	}
 
 	@Nullable
 	@Override
 	public String getPresentableQName()
 	{
-		return myMsilElement.getPresentableQName();
+		return myOriginal.getPresentableQName();
 	}
 
 	@Override
 	public String getName()
 	{
-		return myMsilElement.getName();
+		return myOriginal.getName();
 	}
 
 	@Override

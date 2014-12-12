@@ -26,7 +26,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -36,7 +35,7 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 23.05.14
  */
-public class MsilVariableAsCSharpVariable extends MsilElementWrapper<DotNetVariable> implements DotNetVariable
+public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<DotNetVariable> implements DotNetVariable
 {
 	private MsilModifierListToCSharpModifierList myModifierList;
 	private NotNullLazyValue<DotNetTypeRef> myVariableTypRefValue = new NotNullLazyValue<DotNetTypeRef>()
@@ -64,18 +63,18 @@ public class MsilVariableAsCSharpVariable extends MsilElementWrapper<DotNetVaria
 	@NotNull
 	protected MsilModifierListToCSharpModifierList createModifierList(CSharpModifier[] modifiers, DotNetVariable variable)
 	{
-		return new MsilModifierListToCSharpModifierList(modifiers, (MsilModifierList) variable.getModifierList());
+		return new MsilModifierListToCSharpModifierList(modifiers, variable, variable.getModifierList());
 	}
 
 	@Override
 	public PsiFile getContainingFile()
 	{
-		return myMsilElement.getContainingFile();
+		return myOriginal.getContainingFile();
 	}
 
 	public DotNetVariable getVariable()
 	{
-		return myMsilElement;
+		return myOriginal;
 	}
 
 	@Override
@@ -94,7 +93,7 @@ public class MsilVariableAsCSharpVariable extends MsilElementWrapper<DotNetVaria
 	@NotNull
 	public DotNetTypeRef toTypeRefImpl()
 	{
-		return MsilToCSharpUtil.extractToCSharp(myMsilElement.toTypeRef(false), myMsilElement);
+		return MsilToCSharpUtil.extractToCSharp(myOriginal.toTypeRef(false), myOriginal);
 	}
 
 	@Nullable
@@ -133,7 +132,7 @@ public class MsilVariableAsCSharpVariable extends MsilElementWrapper<DotNetVaria
 	@Override
 	public String getName()
 	{
-		return myMsilElement.getName();
+		return myOriginal.getName();
 	}
 
 	@Nullable
