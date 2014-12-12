@@ -27,6 +27,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifierList;
+import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightAttributeBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightAttributeWithSelfTypeBuilder;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -49,7 +50,8 @@ import com.intellij.util.ArrayUtil;
 public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<DotNetModifierList> implements CSharpModifierList
 {
 	private static final String[] ourAttributeBans = new String[]{
-			DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute
+			DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute,
+			DotNetTypes2.System.Runtime.CompilerServices.AsyncStateMachineAttribute
 	};
 
 	private final DotNetModifierList myModifierList;

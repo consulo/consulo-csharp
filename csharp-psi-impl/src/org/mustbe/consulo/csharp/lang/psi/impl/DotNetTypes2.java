@@ -29,6 +29,7 @@ public interface DotNetTypes2
 			interface CompilerServices
 			{
 				String InternalsVisibleToAttribute = "System.Runtime.CompilerServices.InternalsVisibleToAttribute";
+				String AsyncStateMachineAttribute = "System.Runtime.CompilerServices.AsyncStateMachineAttribute";
 			}
 		}
 
