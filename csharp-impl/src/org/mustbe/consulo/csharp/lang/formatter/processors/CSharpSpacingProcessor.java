@@ -36,13 +36,15 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.between(CSharpTokens.CATCH_KEYWORD, CSharpTokens.LPAR).spaceIf(codeStyleSettings.SPACE_BEFORE_CATCH_PARENTHESES);
 
 		myBuilder.beforeInside(LBRACE, TYPE_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_CLASS_LBRACE);
+		myBuilder.beforeInside(LBRACE, PROPERTY_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_METHOD_LBRACE);
+		myBuilder.beforeInside(LBRACE, EVENT_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_METHOD_LBRACE);
+		myBuilder.beforeInside(LBRACE, ARRAY_METHOD_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_METHOD_LBRACE);
 		myBuilder.beforeInside(LBRACE, NAMESPACE_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_CLASS_LBRACE);
 
 		myBuilder.beforeInside(BLOCK_STATEMENT, METHOD_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_METHOD_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, CONSTRUCTOR_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_METHOD_LBRACE);
-		myBuilder.beforeInside(BLOCK_STATEMENT, ARRAY_METHOD_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_METHOD_LBRACE);
-		myBuilder.beforeInside(BLOCK_STATEMENT, PROPERTY_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_METHOD_LBRACE);
-		myBuilder.beforeInside(BLOCK_STATEMENT, EVENT_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_METHOD_LBRACE);
+		myBuilder.beforeInside(BLOCK_STATEMENT, CONVERSION_METHOD_DECLARATION).spaceIf(codeStyleSettings.SPACE_BEFORE_METHOD_LBRACE);
+		myBuilder.beforeInside(BLOCK_STATEMENT, XXX_ACCESSOR).spaceIf(codeStyleSettings.SPACE_BEFORE_METHOD_LBRACE);
 
 		myBuilder.beforeInside(BLOCK_STATEMENT, SWITCH_STATEMENT).spaceIf(codeStyleSettings.SPACE_BEFORE_SWITCH_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, FOR_STATEMENT).spaceIf(codeStyleSettings.SPACE_BEFORE_FOR_LBRACE);
