@@ -20,19 +20,19 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightElement;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
 import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
  * @since 12.12.14
  */
-public class MsilXXXAccessorAsCSharpXXXAccessor extends CSharpLightElement<DotNetXXXAccessor> implements DotNetXXXAccessor
+public class MsilXXXAccessorAsCSharpXXXAccessor extends MsilElementWrapper<DotNetXXXAccessor> implements DotNetXXXAccessor
 {
 	private final PsiElement myParent;
 	private final MsilModifierListToCSharpModifierList myModifierList;
@@ -41,7 +41,7 @@ public class MsilXXXAccessorAsCSharpXXXAccessor extends CSharpLightElement<DotNe
 			@NotNull DotNetXXXAccessor original,
 			@NotNull MsilMethodEntry resolvedMethod)
 	{
-		super(original);
+		super(parent, original);
 		myParent = parent;
 		myModifierList = new MsilModifierListToCSharpModifierList(resolvedMethod.getModifierList());
 	}
@@ -53,9 +53,22 @@ public class MsilXXXAccessorAsCSharpXXXAccessor extends CSharpLightElement<DotNe
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public String toString()
 	{
-		visitor.visitXXXAccessor(this);
+		return "DotNetXXXAccessor: " + getAccessorKind();
+	}
+
+	@Override
+	public void accept(@NotNull PsiElementVisitor visitor)
+	{
+		if(visitor instanceof CSharpElementVisitor)
+		{
+			((CSharpElementVisitor) visitor).visitXXXAccessor(this);
+		}
+		else
+		{
+			visitor.visitElement(this);
+		}
 	}
 
 	@Nullable
@@ -69,7 +82,7 @@ public class MsilXXXAccessorAsCSharpXXXAccessor extends CSharpLightElement<DotNe
 	@Override
 	public Kind getAccessorKind()
 	{
-		return myOriginal.getAccessorKind();
+		return myMsilElement.getAccessorKind();
 	}
 
 	@Nullable
