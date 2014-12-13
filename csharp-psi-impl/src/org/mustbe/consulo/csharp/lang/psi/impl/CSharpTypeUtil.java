@@ -372,6 +372,31 @@ public class CSharpTypeUtil
 		}
 
 		DotNetGenericExtractor topGenericExtractor = topTypeResolveResult.getGenericExtractor();
+
+		if(explicitOrImplicit != null)
+		{
+			if(topElement instanceof DotNetTypeDeclaration)
+			{
+				InheritResult inheritResult = haveImplicitOrExplicitOperatorTo(top, target, (DotNetTypeDeclaration) topElement, topGenericExtractor,
+						scope, explicitOrImplicit);
+				if(inheritResult.isSuccess())
+				{
+					return inheritResult;
+				}
+			}
+
+			if(targetElement instanceof DotNetTypeDeclaration)
+			{
+				InheritResult inheritResult = haveImplicitOrExplicitOperatorTo(top, target, (DotNetTypeDeclaration) targetElement,
+						targetTypeResolveResult.getGenericExtractor(), scope, explicitOrImplicit);
+
+				if(inheritResult.isSuccess())
+				{
+					return inheritResult;
+				}
+			}
+		}
+
 		if(topGenericExtractor != DotNetGenericExtractor.EMPTY && topElement instanceof DotNetTypeDeclaration)
 		{
 			DotNetTypeDeclaration topTypeDeclaration = (DotNetTypeDeclaration) topElement;
@@ -476,30 +501,6 @@ public class CSharpTypeUtil
 				if(inheritable.isSuccess())
 				{
 					return inheritable;
-				}
-			}
-		}
-
-		if(explicitOrImplicit != null)
-		{
-			if(topElement instanceof DotNetTypeDeclaration)
-			{
-				InheritResult inheritResult = haveImplicitOrExplicitOperatorTo(top, target, (DotNetTypeDeclaration) topElement, topGenericExtractor,
-						scope, explicitOrImplicit);
-				if(inheritResult.isSuccess())
-				{
-					return inheritResult;
-				}
-			}
-
-			if(targetElement instanceof DotNetTypeDeclaration)
-			{
-				InheritResult inheritResult = haveImplicitOrExplicitOperatorTo(top, target, (DotNetTypeDeclaration) targetElement,
-						targetTypeResolveResult.getGenericExtractor(), scope, explicitOrImplicit);
-
-				if(inheritResult.isSuccess())
-				{
-					return inheritResult;
 				}
 			}
 		}
