@@ -365,6 +365,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
 		ResolveState state = ResolveState.initial();
 		state = state.put(CSharpResolveUtil.SELECTOR, new OperatorByTokenSelector(elementType));
+		state = state.put(CSharpResolveUtil.EXTRACTOR, typeResolveResult.getGenericExtractor());
 		CSharpResolveUtil.walkChildren(processor, element, false, true, state);
 
 		PsiElement[] psiElements = processor.toPsiElements();

@@ -234,7 +234,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
 		for(CSharpAdditionalMemberProvider provider : getAdditionalTypeMemberProviders())
 		{
-			for(DotNetElement temp : provider.getAdditionalMembers(element))
+			for(DotNetElement temp : provider.getAdditionalMembers(element, extractor))
 			{
 				temp.accept(collector);
 			}

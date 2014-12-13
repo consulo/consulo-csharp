@@ -9,6 +9,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 
 /**
  * @author VISTALL
@@ -18,7 +19,7 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 {
 	@NotNull
 	@Override
-	public DotNetElement[] getAdditionalMembers(@NotNull DotNetElement element)
+	public DotNetElement[] getAdditionalMembers(@NotNull DotNetElement element, DotNetGenericExtractor extractor)
 	{
 		if(element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).isStruct())
 		{
