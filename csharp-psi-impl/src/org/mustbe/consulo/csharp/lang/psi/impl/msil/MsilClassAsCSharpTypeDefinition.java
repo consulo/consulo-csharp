@@ -28,6 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
@@ -211,6 +212,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 
 	private MsilModifierListToCSharpModifierList myModifierList;
 	private MsilGenericParameterListAsCSharpGenericParameterList myGenericParameterList;
+	private CSharpLightGenericConstraintList myGenericConstraintList;
 
 	public MsilClassAsCSharpTypeDefinition(@Nullable PsiElement parent, MsilClassEntry classEntry)
 	{
@@ -219,6 +221,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		DotNetGenericParameterList genericParameterList = classEntry.getGenericParameterList();
 		myGenericParameterList = genericParameterList == null ? null : new MsilGenericParameterListAsCSharpGenericParameterList(this,
 				genericParameterList);
+		myGenericConstraintList = MsilAsCSharpBuildUtil.buildConstraintList(myGenericParameterList);
 	}
 
 	@Override
@@ -268,14 +271,15 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	@Override
 	public CSharpGenericConstraintList getGenericConstraintList()
 	{
-		return null;
+		return myGenericConstraintList;
 	}
 
 	@NotNull
 	@Override
 	public CSharpGenericConstraint[] getGenericConstraints()
 	{
-		return new CSharpGenericConstraint[0];
+		CSharpGenericConstraintList genericConstraintList = getGenericConstraintList();
+		return genericConstraintList == null ? CSharpGenericConstraint.EMPTY_ARRAY : genericConstraintList.getGenericConstraints();
 	}
 
 	@Override

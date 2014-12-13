@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLikeMethodDeclarationImplUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
@@ -48,6 +49,7 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 {
 	private MsilModifierListToCSharpModifierList myModifierList;
 	private MsilGenericParameterListAsCSharpGenericParameterList myGenericParameterList;
+	protected CSharpLightGenericConstraintList myGenericConstraintList;
 
 	public MsilMethodAsCSharpLikeMethodDeclaration(PsiElement parent, MsilMethodEntry methodEntry)
 	{
@@ -65,6 +67,7 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 		DotNetGenericParameterList genericParameterList = owner.getGenericParameterList();
 		myGenericParameterList = genericParameterList == null ? null : new MsilGenericParameterListAsCSharpGenericParameterList(this,
 				genericParameterList);
+		myGenericConstraintList = MsilAsCSharpBuildUtil.buildConstraintList(myGenericParameterList);
 	}
 
 	@NotNull

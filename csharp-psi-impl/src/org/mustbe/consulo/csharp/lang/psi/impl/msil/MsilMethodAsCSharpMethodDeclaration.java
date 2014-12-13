@@ -130,14 +130,15 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 	@Override
 	public CSharpGenericConstraintList getGenericConstraintList()
 	{
-		return null;
+		return myGenericConstraintList;
 	}
 
 	@NotNull
 	@Override
 	public CSharpGenericConstraint[] getGenericConstraints()
 	{
-		return CSharpGenericConstraint.EMPTY_ARRAY;
+		CSharpGenericConstraintList genericConstraintList = getGenericConstraintList();
+		return genericConstraintList == null ? CSharpGenericConstraint.EMPTY_ARRAY : genericConstraintList.getGenericConstraints();
 	}
 
 	@Override

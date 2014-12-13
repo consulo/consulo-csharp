@@ -32,6 +32,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.util.PairFunction;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -220,6 +221,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		appendName(declaration, builder);
 		processGenericParameterList(builder, declaration);
 		processParameterList(declaration, builder, '(', ')');
+		processGenericConstraintList(builder, declaration);
 
 		boolean canHaveBody = !declaration.hasModifier(CSharpModifier.ABSTRACT) && !declaration.isDelegate();
 
@@ -299,6 +301,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 				}, ", ");
 			}
 		}
+		processGenericConstraintList(builder, declaration);
 		StubBlock e = new StubBlock(builder, null, StubBlock.BRACES);
 		myBlocks.add(e);
 
@@ -370,6 +373,60 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			}
 		}, ", ");
 		builder.append(">");
+	}
+
+	private static void processGenericConstraintList(final StringBuilder builder, final CSharpGenericConstraintOwner owner)
+	{
+		CSharpGenericConstraint[] genericConstraints = owner.getGenericConstraints();
+		if(genericConstraints.length == 0)
+		{
+			return;
+		}
+		StubBlockUtil.join(builder, genericConstraints, new PairFunction<StringBuilder, CSharpGenericConstraint, Void>()
+		{
+			@Nullable
+			@Override
+			public Void fun(final StringBuilder builder, CSharpGenericConstraint v)
+			{
+				builder.append(" where ");
+				DotNetGenericParameter resolve = v.resolve();
+				assert resolve != null;
+				builder.append(resolve.getName());
+				builder.append(" : ");
+
+				CSharpGenericConstraintValue[] genericConstraintValues = v.getGenericConstraintValues();
+				for(CSharpGenericConstraintValue genericConstraintValue : genericConstraintValues)
+				{
+					genericConstraintValue.accept(new CSharpElementVisitor()
+					{
+						@Override
+						public void visitGenericConstraintKeywordValue(CSharpGenericConstraintKeywordValue value)
+						{
+							IElementType keywordElementType = value.getKeywordElementType();
+							if(keywordElementType == CSharpTokens.STRUCT_KEYWORD)
+							{
+								builder.append("struct");
+							}
+							else if(keywordElementType == CSharpTokens.CLASS_KEYWORD)
+							{
+								builder.append("class");
+							}
+							else if(keywordElementType == CSharpTokens.NEW_KEYWORD)
+							{
+								builder.append("new()");
+							}
+						}
+
+						@Override
+						public void visitGenericConstraintTypeValue(CSharpGenericConstraintTypeValue value)
+						{
+							appendTypeRef(owner, builder, value.toTypeRef());
+						}
+					});
+				}
+				return null;
+			}
+		}, ", ");
 	}
 
 	private static void processParameterList(final DotNetParameterListOwner declaration, StringBuilder builder, char p1, char p2)
