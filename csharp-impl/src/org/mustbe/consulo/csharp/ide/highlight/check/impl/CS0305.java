@@ -21,12 +21,12 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpNullableType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUserType;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeWithTypeArguments;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
 
@@ -40,11 +40,6 @@ public class CS0305 extends CompilerCheck<DotNetType>
 	@Override
 	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetType type)
 	{
-		if(type.getParent() instanceof DotNetTypeWithTypeArguments)
-		{
-			return null;
-		}
-
 		int foundCount = 0;
 		PsiElement elementForHighlight = type;
 		if(type instanceof CSharpUserType)
@@ -55,6 +50,11 @@ public class CS0305 extends CompilerCheck<DotNetType>
 		else if(type instanceof CSharpArrayType)
 		{
 			elementForHighlight = ((CSharpArrayType) type).getInnerType();
+			foundCount = 1;
+		}
+		else if(type instanceof CSharpNullableType)
+		{
+			elementForHighlight = ((CSharpNullableType) type).getInnerType();
 			foundCount = 1;
 		}
 

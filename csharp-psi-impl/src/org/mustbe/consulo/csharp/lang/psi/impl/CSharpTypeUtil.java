@@ -98,6 +98,11 @@ public class CSharpTypeUtil
 	{
 		if(element instanceof DotNetTypeDeclaration)
 		{
+			if(DotNetTypes.System.Nullable$1.equals(((DotNetTypeDeclaration) element).getVmQName()))
+			{
+				// special case - compiler box element in new Nullable<int>(null);
+				return true;
+			}
 			return !((DotNetTypeDeclaration) element).isStruct() && !((DotNetTypeDeclaration) element).isEnum();
 		}
 		else if(element instanceof DotNetGenericParameter)

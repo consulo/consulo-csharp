@@ -27,7 +27,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.ExceptionUtil;
 
 /**
  * @author VISTALL
@@ -38,7 +37,7 @@ public class CSharpGenericWrapperTypeRef implements DotNetGenericWrapperTypeRef
 	private final DotNetTypeRef myInnerTypeRef;
 	private final DotNetTypeRef[] myArguments;
 
-	public CSharpGenericWrapperTypeRef(DotNetTypeRef innerTypeRef, DotNetTypeRef[] rArguments)
+	public CSharpGenericWrapperTypeRef(DotNetTypeRef innerTypeRef, DotNetTypeRef... rArguments)
 	{
 		myInnerTypeRef = innerTypeRef;
 		myArguments = rArguments;
