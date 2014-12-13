@@ -61,7 +61,8 @@ public class CSharpColorSettingsPage implements ColorSettingsPage, DisplayPriori
 				new AttributesDescriptor("Static event", CSharpHighlightKey.STATIC_EVENT),
 				new AttributesDescriptor("Instance event", CSharpHighlightKey.INSTANCE_EVENT),
 				new AttributesDescriptor("Parameter", CSharpHighlightKey.PARAMETER),
-				new AttributesDescriptor("Method Reference", CSharpHighlightKey.METHOD_REF),
+				new AttributesDescriptor("Method reference", CSharpHighlightKey.METHOD_REF),
+				new AttributesDescriptor("Implicit cast", CSharpHighlightKey.IMPLICIT_CAST),
 			};
 	private static final Map<String, TextAttributesKey> ourAdditionalTags = new HashMap<String, TextAttributesKey>()
 	{
@@ -83,6 +84,7 @@ public class CSharpColorSettingsPage implements ColorSettingsPage, DisplayPriori
 			put("method_ref", CSharpHighlightKey.METHOD_REF);
 			put("static_event_name", CSharpHighlightKey.STATIC_EVENT);
 			put("instance_event_name", CSharpHighlightKey.INSTANCE_EVENT);
+			put("implicit_cast", CSharpHighlightKey.IMPLICIT_CAST);
 		}
 	};
 

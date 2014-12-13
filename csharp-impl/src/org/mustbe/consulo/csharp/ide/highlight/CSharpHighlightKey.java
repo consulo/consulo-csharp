@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.ide.highlight;
 
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
+import com.intellij.openapi.editor.colors.EditorColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 
 /**
@@ -44,6 +45,7 @@ public interface CSharpHighlightKey
 	TextAttributesKey EXTENSION_METHOD = TextAttributesKey.createTextAttributesKey("CSHARP_EXTENSION_METHOD",
 			DefaultLanguageHighlighterColors.LABEL);
 	TextAttributesKey METHOD_REF = TextAttributesKey.createTextAttributesKey("CSHARP_METHOD_REF", DefaultLanguageHighlighterColors.IDENTIFIER);
+	TextAttributesKey IMPLICIT_CAST = TextAttributesKey.createTextAttributesKey("CSHARP_IMPLICIT_CAST", EditorColors.INJECTED_LANGUAGE_FRAGMENT);
 	TextAttributesKey INSTANCE_METHOD = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
 			DefaultLanguageHighlighterColors.INSTANCE_METHOD);
 	TextAttributesKey PARAMETER = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.PARAMETER);
