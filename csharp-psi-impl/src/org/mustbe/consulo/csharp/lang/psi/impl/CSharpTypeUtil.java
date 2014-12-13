@@ -588,11 +588,6 @@ public class CSharpTypeUtil
 			// extract here
 			declaration = GenericUnwrapTool.extract(declaration, extractor);
 
-			if(!isInheritable(declaration.getReturnTypeRef(), to, scope))
-			{
-				continue;
-			}
-
 			DotNetTypeRef[] parameters = declaration.getParameterTypeRefs();
 			DotNetTypeRef parameterTypeRef = ArrayUtil2.safeGet(parameters, 0);
 			if(parameterTypeRef == null)
@@ -600,7 +595,12 @@ public class CSharpTypeUtil
 				continue;
 			}
 
-			list.add(parameterTypeRef);
+			if(!isInheritable(parameterTypeRef, to, scope))
+			{
+				continue;
+			}
+
+			list.add(declaration.getReturnTypeRef());
 		}
 		return list;
 	}
