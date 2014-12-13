@@ -559,11 +559,13 @@ public class CSharpTypeUtil
 	}
 
 	@NotNull
-	public static List<DotNetTypeRef> getImplicitOrExplicitTypeRefs(@NotNull DotNetTypeRef to,
+	public static List<DotNetTypeRef> getImplicitOrExplicitTypeRefs(
+			@NotNull DotNetTypeRef fromTypeRef,
+			@NotNull DotNetTypeRef leftTypeRef,
 			@NotNull CSharpStaticTypeRef explicitOrImplicit,
 			@NotNull PsiElement scope)
 	{
-		DotNetTypeResolveResult typeResolveResult = to.resolve(scope);
+		DotNetTypeResolveResult typeResolveResult = fromTypeRef.resolve(scope);
 
 		PsiElement typeResolveResultElement = typeResolveResult.getElement();
 		if(!(typeResolveResultElement instanceof DotNetTypeDeclaration))
@@ -595,7 +597,7 @@ public class CSharpTypeUtil
 				continue;
 			}
 
-			if(!isInheritable(parameterTypeRef, to, scope))
+			if(!isInheritable(parameterTypeRef, leftTypeRef, scope))
 			{
 				continue;
 			}
