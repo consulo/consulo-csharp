@@ -73,7 +73,12 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 	{
 		if(isOperator())
 		{
-			return CSharpOperatorNameHelper.getOperatorName(getOperatorElementType());
+			IElementType operatorElementType = getOperatorElementType();
+			if(operatorElementType == null)
+			{
+				return "<error-operator>";
+			}
+			return CSharpOperatorNameHelper.getOperatorName(operatorElementType);
 		}
 		return super.getName();
 	}
