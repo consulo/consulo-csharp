@@ -37,6 +37,7 @@ import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.util.NullableFactory;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
@@ -62,6 +63,7 @@ public abstract class CompilerCheck<T extends PsiElement>
 		private String myText;
 		private TextRange myTextRange;
 		private HighlightInfoType myHighlightInfoType;
+		private TextAttributesKey myTextAttributesKey;
 
 		private List<IntentionAction> myQuickFixes = Collections.emptyList();
 
@@ -92,6 +94,17 @@ public abstract class CompilerCheck<T extends PsiElement>
 			return myHighlightInfoType;
 		}
 
+		public TextAttributesKey getTextAttributesKey()
+		{
+			return myTextAttributesKey;
+		}
+
+		public CompilerCheckBuilder setTextAttributesKey(TextAttributesKey textAttributesKey)
+		{
+			myTextAttributesKey = textAttributesKey;
+			return this;
+		}
+
 		public CompilerCheckBuilder setHighlightInfoType(HighlightInfoType highlightInfoType)
 		{
 			myHighlightInfoType = highlightInfoType;
@@ -108,6 +121,7 @@ public abstract class CompilerCheck<T extends PsiElement>
 			return this;
 		}
 
+		@Override
 		@NotNull
 		public List<IntentionAction> getQuickFixes()
 		{
@@ -121,6 +135,12 @@ public abstract class CompilerCheck<T extends PsiElement>
 			HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(getHighlightInfoType());
 			builder = builder.descriptionAndTooltip(getText());
 			builder = builder.range(getTextRange());
+
+			TextAttributesKey textAttributesKey = getTextAttributesKey();
+			if(textAttributesKey != null)
+			{
+				builder = builder.textAttributes(textAttributesKey);
+			}
 			return builder.create();
 		}
 	}

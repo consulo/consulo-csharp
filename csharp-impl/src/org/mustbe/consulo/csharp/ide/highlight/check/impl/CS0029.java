@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
@@ -29,12 +30,15 @@ import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
+import com.intellij.openapi.editor.colors.EditorColors;
 import com.intellij.openapi.util.Trinity;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -64,10 +68,21 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		}
 
 		DotNetTypeRef secondTypeRef = resolve.getSecond();
-		if(!CSharpTypeUtil.isInheritableWithImplicit(firstTypeRef, secondTypeRef, element))
+		PsiElement elementToHighlight = resolve.getThird();
+
+		CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(firstTypeRef, secondTypeRef, element, CSharpStaticTypeRef
+				.IMPLICIT);
+		if(!inheritResult.isSuccess())
 		{
-			return newBuilder(resolve.getThird(), CSharpTypeRefPresentationUtil.buildText(secondTypeRef, element, TYPE_FLAGS),
+			return newBuilder(elementToHighlight, CSharpTypeRefPresentationUtil.buildText(secondTypeRef, element, TYPE_FLAGS),
 					CSharpTypeRefPresentationUtil.buildText(firstTypeRef, element, TYPE_FLAGS));
+		}
+		else if(inheritResult.getConversionMethod() != null)
+		{
+			String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildText(secondTypeRef, element,
+					TYPE_FLAGS), CSharpTypeRefPresentationUtil.buildText(firstTypeRef, element, TYPE_FLAGS));
+			return newBuilder(elementToHighlight).setText(text).setHighlightInfoType(HighlightInfoType.INFORMATION).setTextAttributesKey(EditorColors
+					.INJECTED_LANGUAGE_FRAGMENT);
 		}
 
 		return null;
