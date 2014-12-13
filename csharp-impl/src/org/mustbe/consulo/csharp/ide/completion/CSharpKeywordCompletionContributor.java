@@ -77,11 +77,12 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 					if(prevSibling == null ||
 							prevSibling.getNode().getElementType() == CSharpTokens.LBRACE ||
 							prevSibling.getNode().getElementType() == CSharpTokens.RBRACE ||
+							prevSibling.getNode().getElementType() == CSharpTokens.SEMICOLON ||
 							CSharpTokenSets.MODIFIERS.contains(prevSibling.getNode().getElementType()))
 					{
 						val tokenVal = TokenSet.orSet(CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START);
 
-						CSharpCompletionUtil.tokenSetToLookup(completionResultSet, tokenVal, null, createCondForFilterModifierOrTypeStart(parent1));
+						CSharpCompletionUtil.tokenSetToLookup(completionResultSet, tokenVal, null, null);
 					}
 				}
 			}
