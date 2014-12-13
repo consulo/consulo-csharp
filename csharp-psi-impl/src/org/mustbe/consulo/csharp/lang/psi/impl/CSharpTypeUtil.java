@@ -306,8 +306,7 @@ public class CSharpTypeUtil
 			{
 				return SIMPLE_SUCCESS;
 			}
-			return isTypeEqual(topInnerTypeRef, ((DotNetPointerTypeRef) target).getInnerTypeRef(),
-					scope) ? SIMPLE_SUCCESS : fail();
+			return isTypeEqual(topInnerTypeRef, ((DotNetPointerTypeRef) target).getInnerTypeRef(), scope) ? SIMPLE_SUCCESS : fail();
 		}
 
 		if(target instanceof CSharpArrayTypeRef && top instanceof CSharpArrayTypeRef)
@@ -480,8 +479,8 @@ public class CSharpTypeUtil
 		{
 			if(topElement instanceof DotNetTypeDeclaration)
 			{
-				InheritResult inheritResult = haveImplicitOrExplicitOperatorTo(top, target, (DotNetTypeDeclaration) topElement, scope,
-						explicitOrImplicit);
+				InheritResult inheritResult = haveImplicitOrExplicitOperatorTo(top, target, (DotNetTypeDeclaration) topElement, topGenericExtractor,
+						scope, explicitOrImplicit);
 				if(inheritResult.isSuccess())
 				{
 					return inheritResult;
@@ -490,8 +489,8 @@ public class CSharpTypeUtil
 
 			if(targetElement instanceof DotNetTypeDeclaration)
 			{
-				InheritResult inheritResult = haveImplicitOrExplicitOperatorTo(top, target, (DotNetTypeDeclaration) targetElement, scope,
-						explicitOrImplicit);
+				InheritResult inheritResult = haveImplicitOrExplicitOperatorTo(top, target, (DotNetTypeDeclaration) targetElement,
+						targetTypeResolveResult.getGenericExtractor(), scope, explicitOrImplicit);
 
 				if(inheritResult.isSuccess())
 				{
@@ -513,11 +512,11 @@ public class CSharpTypeUtil
 	private static InheritResult haveImplicitOrExplicitOperatorTo(@NotNull DotNetTypeRef to,
 			@NotNull DotNetTypeRef from,
 			@NotNull DotNetTypeDeclaration typeDeclaration,
-			PsiElement scope,
-			DotNetTypeRef explicitOrImplicit)
+			@NotNull DotNetGenericExtractor extractor,
+			@NotNull PsiElement scope,
+			@NotNull DotNetTypeRef explicitOrImplicit)
 	{
-		CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, scope.getResolveScope(),
-				typeDeclaration);
+		CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, scope.getResolveScope(), typeDeclaration);
 
 		CSharpElementGroup<CSharpConversionMethodDeclaration> conversionMethodGroup = context.findConversionMethodGroup(explicitOrImplicit, true);
 		if(conversionMethodGroup == null)
@@ -527,6 +526,9 @@ public class CSharpTypeUtil
 
 		for(CSharpConversionMethodDeclaration declaration : conversionMethodGroup.getElements())
 		{
+			// extract here
+			declaration = GenericUnwrapTool.extract(declaration, extractor);
+
 			if(!isInheritable(declaration.getReturnTypeRef(), to, scope))
 			{
 				continue;

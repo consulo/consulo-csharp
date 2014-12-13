@@ -19,20 +19,13 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightArrayMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightConstructorDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightEventDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightFieldDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightLikeMethodDeclarationWithImplType;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameter;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameterList;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightPropertyDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpErrorTypeRef;
@@ -107,6 +100,28 @@ public class GenericUnwrapTool
 
 			CSharpLightArrayMethodDeclaration copy = new CSharpLightArrayMethodDeclaration(arrayMethodDeclaration, parameterList);
 			exchangeMethodTypeRefs(copy, arrayMethodDeclaration, extractor);
+			return (T) copy;
+		}
+		else if(namedElement instanceof CSharpConversionMethodDeclaration)
+		{
+			CSharpConversionMethodDeclaration conversionMethodDeclaration = (CSharpConversionMethodDeclaration) namedElement;
+
+			DotNetParameterList parameterList = conversionMethodDeclaration.getParameterList();
+
+			DotNetParameter[] parameters = conversionMethodDeclaration.getParameters();
+
+			DotNetParameter[] newParameters = new DotNetParameter[parameters.length];
+			for(int i = 0; i < parameters.length; i++)
+			{
+				DotNetParameter parameter = parameters[i];
+				newParameters[i] = new CSharpLightParameter(parameter, exchangeTypeRef(parameter.toTypeRef(true), extractor, parameter));
+			}
+
+			parameterList = new CSharpLightParameterList(parameterList == null ? namedElement : parameterList, newParameters);
+
+			DotNetTypeRef returnTypeRef = exchangeTypeRef(conversionMethodDeclaration.getReturnTypeRef(), extractor, namedElement);
+			CSharpLightConversionMethodDeclaration copy = new CSharpLightConversionMethodDeclaration(conversionMethodDeclaration, parameterList,
+					returnTypeRef);
 			return (T) copy;
 		}
 		else if(namedElement instanceof CSharpConstructorDeclaration)
