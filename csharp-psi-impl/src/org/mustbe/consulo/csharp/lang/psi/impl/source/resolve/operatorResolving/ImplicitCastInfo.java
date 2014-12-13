@@ -24,14 +24,14 @@ import com.intellij.openapi.util.Key;
  * @author VISTALL
  * @since 13.12.14
  */
-public class OperatorArgumentImplicitCastInfo
+public class ImplicitCastInfo
 {
-	public static final Key<OperatorArgumentImplicitCastInfo> IMPLICIT_CAST_INFO = Key.create("implicit.to_type.ref");
+	public static final Key<ImplicitCastInfo> IMPLICIT_CAST_INFO = Key.create("implicit.to_type.ref");
 
 	private final DotNetTypeRef myFromTypeRef;
 	private final DotNetTypeRef myToTypeRef;
 
-	public OperatorArgumentImplicitCastInfo(@NotNull DotNetTypeRef fromTypeRef, @NotNull DotNetTypeRef toTypeRef)
+	public ImplicitCastInfo(@NotNull DotNetTypeRef fromTypeRef, @NotNull DotNetTypeRef toTypeRef)
 	{
 		myFromTypeRef = fromTypeRef;
 		myToTypeRef = toTypeRef;

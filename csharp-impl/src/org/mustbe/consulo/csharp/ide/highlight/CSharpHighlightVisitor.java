@@ -33,7 +33,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImp
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.OperatorArgumentImplicitCastInfo;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.ImplicitCastInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -336,7 +336,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 			{
 				continue;
 			}
-			OperatorArgumentImplicitCastInfo implicitCastInfo = callArgument.getUserData(OperatorArgumentImplicitCastInfo.IMPLICIT_CAST_INFO);
+			ImplicitCastInfo implicitCastInfo = nCallArgument.getUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO);
 			if(implicitCastInfo != null)
 			{
 				String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildText(implicitCastInfo

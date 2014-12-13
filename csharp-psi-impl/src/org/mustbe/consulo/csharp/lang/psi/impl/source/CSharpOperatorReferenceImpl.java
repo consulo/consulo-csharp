@@ -41,8 +41,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubElementResolve
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.ImplicitCastInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.ImplicitOperatorArgumentAsCallArgumentWrapper;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.OperatorArgumentImplicitCastInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpPointerTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
@@ -494,7 +494,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			{
 				val wrapper = new ImplicitOperatorArgumentAsCallArgumentWrapper(wrapExpression, toTypeRef);
 
-				wrapper.putUserData(OperatorArgumentImplicitCastInfo.IMPLICIT_CAST_INFO, new OperatorArgumentImplicitCastInfo(originalTypeRef,
+				wrapper.putUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO, new ImplicitCastInfo(originalTypeRef,
 						toTypeRef));
 				array[i] = wrapper;
 			}
