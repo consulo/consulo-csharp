@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -48,6 +49,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.ObjectUtils;
+import com.intellij.util.SmartList;
 import lombok.val;
 
 /**
@@ -255,7 +257,7 @@ public class CSharpTypeUtil
 	public static InheritResult isInheritable(@NotNull DotNetTypeRef top,
 			@NotNull DotNetTypeRef target,
 			@NotNull PsiElement scope,
-			@Nullable DotNetTypeRef explicitOrImplicit)
+			@Nullable CSharpStaticTypeRef explicitOrImplicit)
 	{
 		if(top == DotNetTypeRef.ERROR_TYPE || target == DotNetTypeRef.ERROR_TYPE)
 		{
@@ -522,7 +524,8 @@ public class CSharpTypeUtil
 			@NotNull PsiElement scope,
 			@NotNull DotNetTypeRef explicitOrImplicit)
 	{
-		CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, scope.getResolveScope(), typeDeclaration);
+		CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, scope.getResolveScope(),
+				typeDeclaration);
 
 		CSharpElementGroup<CSharpConversionMethodDeclaration> conversionMethodGroup = context.findConversionMethodGroup(explicitOrImplicit, true);
 		if(conversionMethodGroup == null)
@@ -553,6 +556,53 @@ public class CSharpTypeUtil
 			}
 		}
 		return fail();
+	}
+
+	@NotNull
+	public static List<DotNetTypeRef> getImplicitOrExplicitTypeRefs(@NotNull DotNetTypeRef to,
+			@NotNull CSharpStaticTypeRef explicitOrImplicit,
+			@NotNull PsiElement scope)
+	{
+		DotNetTypeResolveResult typeResolveResult = to.resolve(scope);
+
+		PsiElement typeResolveResultElement = typeResolveResult.getElement();
+		if(!(typeResolveResultElement instanceof DotNetTypeDeclaration))
+		{
+			return Collections.emptyList();
+		}
+
+		CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, scope.getResolveScope(),
+				typeResolveResultElement);
+
+		CSharpElementGroup<CSharpConversionMethodDeclaration> conversionMethodGroup = context.findConversionMethodGroup(explicitOrImplicit, true);
+		if(conversionMethodGroup == null)
+		{
+			return Collections.emptyList();
+		}
+
+		DotNetGenericExtractor extractor = typeResolveResult.getGenericExtractor();
+
+		List<DotNetTypeRef> list = new SmartList<DotNetTypeRef>();
+		for(CSharpConversionMethodDeclaration declaration : conversionMethodGroup.getElements())
+		{
+			// extract here
+			declaration = GenericUnwrapTool.extract(declaration, extractor);
+
+			if(!isInheritable(declaration.getReturnTypeRef(), to, scope))
+			{
+				continue;
+			}
+
+			DotNetTypeRef[] parameters = declaration.getParameterTypeRefs();
+			DotNetTypeRef parameterTypeRef = ArrayUtil2.safeGet(parameters, 0);
+			if(parameterTypeRef == null)
+			{
+				continue;
+			}
+
+			list.add(parameterTypeRef);
+		}
+		return list;
 	}
 
 	public static boolean isTypeEqual(@NotNull DotNetTypeRef t1, @NotNull DotNetTypeRef t2, @NotNull PsiElement scope)

@@ -49,7 +49,7 @@ import com.intellij.psi.util.PsiTreeUtil;
  */
 public class CS0029 extends CompilerCheck<PsiElement>
 {
-	private static final int TYPE_FLAGS = CSharpTypeRefPresentationUtil.TYPE_KEYWORD | CSharpTypeRefPresentationUtil.QUALIFIED_NAME;
+	public static final int TYPE_FLAGS = CSharpTypeRefPresentationUtil.TYPE_KEYWORD | CSharpTypeRefPresentationUtil.QUALIFIED_NAME;
 
 	@Nullable
 	@Override
