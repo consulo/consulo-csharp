@@ -477,6 +477,25 @@ public class CSharpResolveUtil
 		return list;
 	}
 
+	@NotNull
+	@SuppressWarnings("unchecked")
+	public static <T extends PsiElement> List<T> mergeGroupsToIterable(@NotNull Iterable<PsiElement> elements)
+	{
+		List<T> list = new ArrayList<T>();
+		for(PsiElement element : elements)
+		{
+			if(element instanceof CSharpElementGroup)
+			{
+				list.addAll(((CSharpElementGroup) element).getElements());
+			}
+			else
+			{
+				list.add((T) element);
+			}
+		}
+		return list;
+	}
+
 	@Nullable
 	public static PsiElement findFirstValidElement(ResolveResult[] resolveResults)
 	{

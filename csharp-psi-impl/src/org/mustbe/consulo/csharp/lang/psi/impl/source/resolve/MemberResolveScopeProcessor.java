@@ -65,7 +65,7 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 		CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myResolveScope, element);
 
 		PsiElement[] psiElements = selector.doSelectElement(context, state.get(CSharpResolveUtil.WALK_DEEP) == Boolean.TRUE);
-		for(PsiElement psiElement : OverrideUtil.filterOverridedAndHiddedMethods(this, myScopeElement, psiElements))
+		for(PsiElement psiElement : OverrideUtil.fiterOverridedAndHiddedElements(this, myScopeElement, psiElements))
 		{
 			if(!ExecuteTargetUtil.isMyElement(this, psiElement))
 			{

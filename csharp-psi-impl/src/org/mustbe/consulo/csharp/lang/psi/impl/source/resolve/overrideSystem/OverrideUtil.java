@@ -1,8 +1,10 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementCompareUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpElementGroupImpl;
@@ -23,7 +25,9 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class OverrideUtil
 {
-	public static PsiElement[] filterOverridedAndHiddedMethods(AbstractScopeProcessor processor, PsiElement scopeElement, PsiElement[] psiElements)
+	@NotNull
+	public static PsiElement[] fiterOverridedAndHiddedElements(@NotNull AbstractScopeProcessor processor, @NotNull PsiElement scopeElement,
+			@NotNull PsiElement[] psiElements)
 	{
 		if(psiElements.length == 0)
 		{
@@ -37,6 +41,12 @@ public class OverrideUtil
 
 		List<PsiElement> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
 
+		return fiterOverridedAndHiddedElements(scopeElement, elements);
+	}
+
+	@NotNull
+	public static PsiElement[] fiterOverridedAndHiddedElements(@NotNull PsiElement scopeElement, @NotNull Collection<PsiElement> elements)
+	{
 		List<PsiElement> copyElements = new ArrayList<PsiElement>(elements);
 
 		for(PsiElement element : elements)
