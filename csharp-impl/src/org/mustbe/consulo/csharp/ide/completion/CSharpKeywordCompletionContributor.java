@@ -16,9 +16,6 @@
 
 package org.mustbe.consulo.csharp.ide.completion;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
@@ -37,10 +34,8 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.codeInsight.lookup.LookupElementPresentation;
 import com.intellij.codeInsight.lookup.LookupElementRenderer;
-import com.intellij.openapi.util.Condition;
 import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
@@ -143,56 +138,5 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 				resultSet.addElement(builder.withAutoCompletionPolicy(AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE));
 			}
 		});
-	}
-
-	private static Condition<IElementType> createCondForFilterModifierOrTypeStart(PsiElement parent1)
-	{
-		val elementTypes = new ArrayList<IElementType>();
-
-		PsiElement prevSibling = PsiTreeUtil.prevVisibleLeaf(parent1);
-		while(prevSibling != null)
-		{
-			IElementType elementType = prevSibling.getNode().getElementType();
-			if(CSharpTokenSets.MODIFIERS.contains(elementType))
-			{
-				elementTypes.add(elementType);
-
-				prevSibling = PsiTreeUtil.prevVisibleLeaf(prevSibling);
-			}
-			else
-			{
-				break;
-			}
-		}
-
-		PsiElement nextSibling = PsiTreeUtil.nextVisibleLeaf(parent1);
-		while(nextSibling != null)
-		{
-			IElementType elementType = nextSibling.getNode().getElementType();
-			if(CSharpTokenSets.MODIFIERS.contains(elementType))
-			{
-				elementTypes.add(elementType);
-
-				nextSibling = PsiTreeUtil.nextVisibleLeaf(nextSibling);
-			}
-			else if(CSharpTokenSets.TYPE_DECLARATION_START.contains(elementType))
-			{
-				elementTypes.addAll(Arrays.asList(CSharpTokenSets.TYPE_DECLARATION_START.getTypes()));
-				break;
-			}
-			else
-			{
-				break;
-			}
-		}
-
-		return new Condition<IElementType>()
-		{
-			@Override
-			public boolean value(IElementType elementType)
-			{
-				return !elementTypes.contains(elementType);
-			}
-		};
 	}
 }
