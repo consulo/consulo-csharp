@@ -31,7 +31,8 @@ import com.intellij.psi.PsiElement;
  */
 public enum CSharpCompilerChecks
 {
-	CS0029(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // assign type check
+	CS0029(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //  cant convert A to B with implicit
+	CS0030(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // cant convert A to B
 	CS0100(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // parameter is duplicate
 	CS0101(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // members duplicate in namespace declaration
 	CS0102(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // members duplicate in type declaration

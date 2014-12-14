@@ -38,6 +38,11 @@ public class Quaternary<A, B, C, D>
 		return third;
 	}
 
+	public D getFour()
+	{
+		return four;
+	}
+
 	public static <A, B, C, D> Quaternary<A, B, C, D> create(A first, B second, C third, D four)
 	{
 		return new Quaternary<A, B, C, D>(first, second, third, four);
@@ -81,6 +86,6 @@ public class Quaternary<A, B, C, D>
 	@Override
 	public String toString()
 	{
-		return "<" + first + "," + second + "," + third + ">";
+		return "<" + first + "," + second + "," + third + "," + four + ">";
 	}
 }
