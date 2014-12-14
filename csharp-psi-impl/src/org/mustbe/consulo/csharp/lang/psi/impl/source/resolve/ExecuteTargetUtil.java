@@ -58,9 +58,21 @@ public class ExecuteTargetUtil
 		return result;
 	}
 
-	public static boolean canProcess(@NotNull PsiScopeProcessor psiScopeProcessor, @NotNull ExecuteTarget target)
+	public static boolean canProcess(@NotNull PsiScopeProcessor psiScopeProcessor, @NotNull ExecuteTarget... executeTargets)
 	{
 		EnumSet<ExecuteTarget> hint = psiScopeProcessor.getHint(EXECUTE_TARGETS);
-		return hint != null && hint.contains(target);
+		if(hint == null)
+		{
+			return false;
+		}
+
+		for(ExecuteTarget executeTarget : executeTargets)
+		{
+			if(hint.contains(executeTarget))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }

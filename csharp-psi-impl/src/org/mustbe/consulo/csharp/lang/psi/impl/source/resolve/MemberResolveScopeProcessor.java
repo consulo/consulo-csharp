@@ -16,26 +16,20 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
-import java.util.Collection;
 import java.util.Collections;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
-import org.mustbe.consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -45,12 +39,14 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 {
 	public static final Key<Boolean> BREAK_RULE = Key.create("break.rule");
 
-	private final GlobalSearchScope myScope;
+	private final PsiElement myScopeElement;
+	private final GlobalSearchScope myResolveScope;
 
-	public MemberResolveScopeProcessor(GlobalSearchScope scope, ResolveResult[] elements, ExecuteTarget[] targets)
+	public MemberResolveScopeProcessor(PsiElement scopeElement, ResolveResult[] elements, ExecuteTarget[] targets)
 	{
 		Collections.addAll(myElements, elements);
-		myScope = scope;
+		myScopeElement = scopeElement;
+		myResolveScope = scopeElement.getResolveScope();
 		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
 	}
 
@@ -66,22 +62,17 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 		DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
 		assert extractor != null;
 
-		CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myScope, element);
+		CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myResolveScope, element);
 
 		PsiElement[] psiElements = selector.doSelectElement(context, state.get(CSharpResolveUtil.WALK_DEEP) == Boolean.TRUE);
-		for(PsiElement psiElement : psiElements)
+		for(PsiElement psiElement : OverrideUtil.filterOverridedAndHiddedMethods(this, myScopeElement, psiElements))
 		{
-			if(selector == StaticResolveSelectors.INDEX_METHOD_GROUP)
-			{
-				psiElement = OverrideUtil.filterOverridedAndHiddedMethods(psiElement);
-			}
-			PsiElement normalize = normalize(psiElement);
-			if(!ExecuteTargetUtil.isMyElement(this, normalize))
+			if(!ExecuteTargetUtil.isMyElement(this, psiElement))
 			{
 				continue;
 			}
 
-			addElement(normalize);
+			addElement(psiElement);
 
 			if(state.get(BREAK_RULE) == Boolean.TRUE)
 			{
@@ -89,23 +80,5 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 			}
 		}
 		return true;
-	}
-
-	private static PsiElement normalize(PsiElement element)
-	{
-		if(element instanceof CSharpElementGroup)
-		{
-			Collection<? extends PsiElement> elements = ((CSharpElementGroup) element).getElements();
-			if(elements.size() == 1)
-			{
-				PsiElement firstItem = ContainerUtil.getFirstItem(elements);
-				if(firstItem instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) firstItem).isDelegate() || !(firstItem instanceof
-						DotNetLikeMethodDeclaration))
-				{
-					return firstItem;
-				}
-			}
-		}
-		return element;
 	}
 }

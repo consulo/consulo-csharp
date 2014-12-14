@@ -459,6 +459,7 @@ public class CSharpResolveUtil
 	}
 
 	@NotNull
+	@SuppressWarnings("unchecked")
 	public static <T extends PsiElement> List<T> mergeGroupsToIterable(@NotNull PsiElement[] elements)
 	{
 		List<T> list = new ArrayList<T>();
@@ -467,6 +468,10 @@ public class CSharpResolveUtil
 			if(element instanceof CSharpElementGroup)
 			{
 				list.addAll(((CSharpElementGroup) element).getElements());
+			}
+			else
+			{
+				list.add((T) element);
 			}
 		}
 		return list;

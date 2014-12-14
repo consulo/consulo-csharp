@@ -77,7 +77,7 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 		}
 
 
-		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(typeDeclaration.getResolveScope(),
+		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(typeDeclaration,
 				ResolveResult.EMPTY_ARRAY, new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
 
 		ResolveState resolveState = ResolveState.initial();

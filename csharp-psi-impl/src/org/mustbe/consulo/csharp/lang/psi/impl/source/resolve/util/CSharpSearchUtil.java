@@ -56,7 +56,7 @@ public class CSharpSearchUtil
 			@NotNull PsiElement owner,
 			@NotNull DotNetGenericExtractor extractor)
 	{
-		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner.getResolveScope(),
+		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner,
 				ResolveResult.EMPTY_ARRAY, new ExecuteTarget[]{ExecuteTarget.PROPERTY});
 
 		ResolveState state = ResolveState.initial();
@@ -86,7 +86,7 @@ public class CSharpSearchUtil
 			@NotNull PsiElement owner,
 			@NotNull DotNetGenericExtractor extractor)
 	{
-		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner.getResolveScope(),
+		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner,
 				ResolveResult.EMPTY_ARRAY, new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
 
 		ResolveState state = ResolveState.initial();

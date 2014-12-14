@@ -887,7 +887,7 @@ public class CSharpReferenceExpressionImplUtil
 		}
 
 		AbstractScopeProcessor processor = completion ? new CompletionResolveScopeProcessor(element, elements,
-				targets) : new MemberResolveScopeProcessor(element.getResolveScope(), elements, targets);
+				targets) : new MemberResolveScopeProcessor(element, elements, targets);
 		processor.setSorter(sorter);
 		return processor;
 	}

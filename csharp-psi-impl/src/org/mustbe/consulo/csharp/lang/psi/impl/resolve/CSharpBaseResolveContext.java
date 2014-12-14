@@ -108,12 +108,6 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 			}
 			else
 			{
-				// we dont interest in private impl
-				if(declaration.getTypeForImplement() != null)
-				{
-					return;
-				}
-
 				if(CSharpMethodImplUtil.isExtensionMethod(declaration))
 				{
 					String name = declaration.getName();
@@ -137,12 +131,6 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		@Override
 		public void visitArrayMethodDeclaration(CSharpArrayMethodDeclaration declaration)
 		{
-			// we dont interest in private impl
-			if(declaration.getTypeForImplement() != null)
-			{
-				return;
-			}
-
 			if(myIndexMethods == null)
 			{
 				myIndexMethods = new SmartList<CSharpArrayMethodDeclaration>();
@@ -165,24 +153,12 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		@Override
 		public void visitEventDeclaration(CSharpEventDeclaration declaration)
 		{
-			// we dont interest in private impl
-			if(declaration.getTypeForImplement() != null)
-			{
-				return;
-			}
-
 			putIfNotNull(declaration.getName(), declaration, myOtherElements);
 		}
 
 		@Override
 		public void visitPropertyDeclaration(CSharpPropertyDeclaration declaration)
 		{
-			// we dont interest in private impl
-			if(declaration.getTypeForImplement() != null)
-			{
-				return;
-			}
-
 			putIfNotNull(declaration.getName(), declaration, myOtherElements);
 		}
 

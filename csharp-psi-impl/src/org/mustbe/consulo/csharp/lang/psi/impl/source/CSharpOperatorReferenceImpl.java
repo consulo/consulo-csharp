@@ -360,7 +360,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			return;
 		}
 
-		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(getResolveScope(), ResolveResult.EMPTY_ARRAY,
+		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(this, ResolveResult.EMPTY_ARRAY,
 				new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
 
 		ResolveState state = ResolveState.initial();
