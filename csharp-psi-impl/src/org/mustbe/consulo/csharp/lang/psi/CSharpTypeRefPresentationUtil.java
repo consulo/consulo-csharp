@@ -99,6 +99,12 @@ public class CSharpTypeRefPresentationUtil
 			@NotNull DotNetTypeRef typeRef,
 			final int flags)
 	{
+		if(typeRef == DotNetTypeRef.AUTO_TYPE)
+		{
+			builder.append("var");
+			return;
+		}
+
 		if(typeRef instanceof CSharpStaticTypeRef)
 		{
 			builder.append(typeRef.getPresentableText());
