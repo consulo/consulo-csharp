@@ -22,10 +22,12 @@ import java.util.Collections;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
+import org.mustbe.consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.util.Key;
@@ -69,6 +71,10 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 		PsiElement[] psiElements = selector.doSelectElement(context, state.get(CSharpResolveUtil.WALK_DEEP) == Boolean.TRUE);
 		for(PsiElement psiElement : psiElements)
 		{
+			if(selector == StaticResolveSelectors.INDEX_METHOD_GROUP)
+			{
+				psiElement = OverrideUtil.filterOverridedAndHiddedMethods(psiElement);
+			}
 			PsiElement normalize = normalize(psiElement);
 			if(!ExecuteTargetUtil.isMyElement(this, normalize))
 			{
