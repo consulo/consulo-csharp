@@ -382,13 +382,15 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		{
 			return;
 		}
+
+		builder.append(" ");
 		StubBlockUtil.join(builder, genericConstraints, new PairFunction<StringBuilder, CSharpGenericConstraint, Void>()
 		{
 			@Nullable
 			@Override
 			public Void fun(final StringBuilder builder, CSharpGenericConstraint v)
 			{
-				builder.append(" where ");
+				builder.append("where ");
 				DotNetGenericParameter resolve = v.resolve();
 				assert resolve != null;
 				builder.append(resolve.getName());
@@ -426,7 +428,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 				}
 				return null;
 			}
-		}, ", ");
+		}, " ");
 	}
 
 	private static void processParameterList(final DotNetParameterListOwner declaration, StringBuilder builder, char p1, char p2)
