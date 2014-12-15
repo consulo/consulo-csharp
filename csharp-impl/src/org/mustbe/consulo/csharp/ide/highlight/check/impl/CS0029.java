@@ -29,9 +29,11 @@ import org.mustbe.consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
@@ -42,6 +44,7 @@ import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.openapi.util.Trinity;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -55,7 +58,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 	@Override
 	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull PsiElement element)
 	{
-		Trinity<DotNetTypeRef, DotNetTypeRef, ? extends PsiElement> resolve = resolve(element);
+		val resolve = resolve(element);
 		if(resolve == null)
 		{
 			return null;
@@ -88,7 +91,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		return null;
 	}
 
-	private Trinity<DotNetTypeRef, DotNetTypeRef, ? extends PsiElement> resolve(PsiElement element)
+	private Trinity<? extends DotNetTypeRef, ? extends DotNetTypeRef, ? extends PsiElement> resolve(PsiElement element)
 	{
 		if(element instanceof DotNetVariable)
 		{
@@ -118,6 +121,15 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				return null;
 			}
 			return Trinity.create(expressions[0].toTypeRef(false), expressions[1].toTypeRef(false), expressions[1]);
+		}
+		else if(element instanceof CSharpIfStatementImpl)
+		{
+			DotNetExpression conditionExpression = ((CSharpIfStatementImpl) element).getConditionExpression();
+			if(conditionExpression == null)
+			{
+				return null;
+			}
+			return Trinity.create(new CSharpTypeRefByQName(DotNetTypes.System.Boolean), conditionExpression.toTypeRef(true), conditionExpression);
 		}
 		else if(element instanceof CSharpReturnStatementImpl)
 		{

@@ -17,7 +17,9 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.lang.ASTNode;
 
@@ -30,6 +32,12 @@ public class CSharpIfStatementImpl extends CSharpElementImpl implements DotNetSt
 	public CSharpIfStatementImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	@Nullable
+	public DotNetExpression getConditionExpression()
+	{
+		return findChildByClass(DotNetExpression.class);
 	}
 
 	@Override
