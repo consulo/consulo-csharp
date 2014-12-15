@@ -82,7 +82,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildText(secondTypeRef, element,
 					TYPE_FLAGS), CSharpTypeRefPresentationUtil.buildText(firstTypeRef, element, TYPE_FLAGS));
 			return newBuilder(elementToHighlight).setText(text).setHighlightInfoType(HighlightInfoType.INFORMATION).setTextAttributesKey(CSharpHighlightKey
-					.IMPLICIT_CAST);
+					.IMPLICIT_OR_EXPLICIT_CAST);
 		}
 
 		return null;

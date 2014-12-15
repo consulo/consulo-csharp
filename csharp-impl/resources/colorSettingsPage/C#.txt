@@ -32,7 +32,8 @@ public static class <class_name>StringExtensions</class_name> {
     public static void Call(this <class_name>String</class_name> <parameter>param</parameter>) {
         // line comment
         <parameter>param</parameter>.<instance_call>toString</instance_call>();
-        int? nulllableInt = <implicit_cast>1</implicit_cast>;
+        int? nulllableInt = <implicit_or_explicit>1</implicit_or_explicit>;
+        int b = (<implicit_or_explicit>int</implicit_or_explicit>) nullableInt;
     }
 
     public void SomeMethod() {

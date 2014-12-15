@@ -45,7 +45,8 @@ public interface CSharpHighlightKey
 	TextAttributesKey EXTENSION_METHOD = TextAttributesKey.createTextAttributesKey("CSHARP_EXTENSION_METHOD",
 			DefaultLanguageHighlighterColors.LABEL);
 	TextAttributesKey METHOD_REF = TextAttributesKey.createTextAttributesKey("CSHARP_METHOD_REF", DefaultLanguageHighlighterColors.IDENTIFIER);
-	TextAttributesKey IMPLICIT_CAST = TextAttributesKey.createTextAttributesKey("CSHARP_IMPLICIT_CAST", EditorColors.INJECTED_LANGUAGE_FRAGMENT);
+	TextAttributesKey IMPLICIT_OR_EXPLICIT_CAST = TextAttributesKey.createTextAttributesKey("CSHARP_IMPLICIT_OR_EXPLICIT_CAST",
+			EditorColors.INJECTED_LANGUAGE_FRAGMENT);
 	TextAttributesKey INSTANCE_METHOD = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
 			DefaultLanguageHighlighterColors.INSTANCE_METHOD);
 	TextAttributesKey PARAMETER = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.PARAMETER);

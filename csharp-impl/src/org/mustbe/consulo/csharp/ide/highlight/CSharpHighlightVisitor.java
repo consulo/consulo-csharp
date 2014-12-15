@@ -346,7 +346,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 				HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION);
 				builder = builder.range(argumentExpression.getTextRange());
 				builder = builder.descriptionAndTooltip(text);
-				builder = builder.textAttributes(CSharpHighlightKey.IMPLICIT_CAST);
+				builder = builder.textAttributes(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
 				myHighlightInfoHolder.add(builder.create());
 			}
 		}

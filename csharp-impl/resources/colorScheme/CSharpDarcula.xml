@@ -38,7 +38,7 @@
 			<option name="EFFECT_TYPE" value="0" />
 		</value>
 	</option>
-	<option name="CSHARP_IMPLICIT_CAST">
+	<option name="CSHARP_IMPLICIT_OR_EXPLICIT_CAST">
 		<value>
 			<option name="BACKGROUND" value="303e46" />
 			<option name="EFFECT_TYPE" value="-1" />
