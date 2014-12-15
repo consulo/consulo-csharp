@@ -533,6 +533,14 @@ public class CSharpTypeUtil
 			return fail();
 		}
 
+		// we need swap to vs from for explicit
+		if(explicitOrImplicit == CSharpStaticTypeRef.EXPLICIT)
+		{
+			DotNetTypeRef temp = to;
+			to = from;
+			from = temp;
+		}
+
 		for(CSharpConversionMethodDeclaration declaration : conversionMethodGroup.getElements())
 		{
 			// extract here
