@@ -19,11 +19,12 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpThrowStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
@@ -32,6 +33,8 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CS0155 extends CompilerCheck<CSharpThrowStatementImpl>
 {
+	private static final DotNetTypeRef ourExceptionTypeRef = new CSharpTypeRefByQName(DotNetTypes.System.Exception);
+
 	@Nullable
 	@Override
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpThrowStatementImpl statement)
@@ -42,11 +45,15 @@ public class CS0155 extends CompilerCheck<CSharpThrowStatementImpl>
 			return null;
 		}
 
-		DotNetTypeRef dotNetTypeRef = expression.toTypeRef(true);
-
-		if(!DotNetInheritUtil.isParentOrSelf(DotNetTypes.System.Exception, dotNetTypeRef, statement, true))
+		DotNetTypeRef expressionTypeRef = expression.toTypeRef(true);
+		if(expressionTypeRef == DotNetTypeRef.ERROR_TYPE)
 		{
-			return newBuilder(statement);
+			return null;
+		}
+
+		if(!CSharpTypeUtil.isInheritable(ourExceptionTypeRef, expressionTypeRef, statement))
+		{
+			return newBuilder(expression);
 		}
 		return null;
 	}
