@@ -243,7 +243,7 @@
 		<lang.parserDefinition language="C#Macro" implementationClass="org.mustbe.consulo.csharp.lang.CSharpMacroParserDefinition"/>
 		<lang.fileViewProviderFactory language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpFileViewProviderFactory"/>
 		<lang.versionResolver language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpLanguageVersionResolver"/>
-		<lang.documentationProvider language="C#" implementationClass="org.mustbe.consulo.dotnet.documentation.DotNetDocumentationProvider"/>
+		<lang.documentationProvider language="C#" implementationClass="org.mustbe.consulo.csharp.ide.documentation.CSharpDocumentationProvider"/>
 
 		<psi.referenceContributor language="C#" implementation="org.mustbe.consulo.csharp.ide.resolve.CSharpPsiReferenceContributor"/>
 
