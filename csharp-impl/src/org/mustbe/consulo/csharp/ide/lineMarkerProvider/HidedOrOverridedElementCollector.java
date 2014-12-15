@@ -143,12 +143,12 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 			}
 			else
 			{
-				icon = AllIcons.Gutter.ImplementedMethod;
+				icon = AllIcons.Gutter.OverridenMethod;
 				for(DotNetVirtualImplementOwner overrideElement : overrideElements)
 				{
 					if(!((DotNetModifierListOwner) overrideElement).hasModifier(DotNetModifier.ABSTRACT))
 					{
-						icon = AllIcons.Gutter.OverridenMethod;
+						icon = AllIcons.Gutter.ImplementedMethod;
 						break;
 					}
 				}
