@@ -43,6 +43,7 @@ import com.intellij.codeInsight.navigation.NavigationUtil;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.ui.popup.JBPopup;
+import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.ResolveState;
@@ -50,6 +51,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.ConstantFunction;
+import com.intellij.util.containers.ContainerUtil;
 import lombok.val;
 
 /**
@@ -80,10 +82,26 @@ public class HiddingOrOverridingElementCollector implements LineMarkerCollector
 			Collection<DotNetVirtualImplementOwner> members = findOverridingMembers((DotNetTypeDeclaration) maybeTypeDeclaration,
 					(DotNetVirtualImplementOwner) parent);
 
-			PsiElement[] elements = members.toArray(new PsiElement[members.size()]);
+			if(members.isEmpty())
+			{
+				return;
+			}
 
-			JBPopup popup = NavigationUtil.getPsiElementPopup(elements, "Open elements (" + elements.length + " items)");
-			popup.show(new RelativePoint(mouseEvent));
+			if(members.size() == 1)
+			{
+				DotNetVirtualImplementOwner firstItem = ContainerUtil.getFirstItem(members);
+				if(firstItem instanceof Navigatable)
+				{
+					((Navigatable) firstItem).navigate(true);
+				}
+			}
+			else
+			{
+				PsiElement[] elements = members.toArray(new PsiElement[members.size()]);
+
+				JBPopup popup = NavigationUtil.getPsiElementPopup(elements, "Open elements (" + elements.length + " items)");
+				popup.show(new RelativePoint(mouseEvent));
+			}
 		}
 	}
 
