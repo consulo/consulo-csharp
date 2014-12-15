@@ -132,6 +132,11 @@ public class CSharpElementCompareUtil
 			{
 				return false;
 			}
+			if(!CSharpTypeUtil.isTypeEqual(((CSharpConversionMethodDeclaration) element).getReturnTypeRef(),
+					((CSharpConversionMethodDeclaration) element2).getReturnTypeRef(), scope))
+			{
+				return false;
+			}
 			return compareParameterList(element, element2, scope);
 		}
 
