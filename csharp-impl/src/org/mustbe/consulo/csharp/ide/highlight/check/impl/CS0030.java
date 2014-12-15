@@ -118,23 +118,29 @@ public class CS0030 extends CompilerCheck<PsiElement>
 				DotNetTypeRef expressionTypeRef = innerExpression.toTypeRef(false);
 
 				CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(expressionTypeRef, castTypeRef, expression,
-						CSharpStaticTypeRef.IMPLICIT);
+						CSharpStaticTypeRef.EXPLICIT);
 
 				if(!inheritResult.isSuccess())
 				{
-					inheritResult = CSharpTypeUtil.isInheritable(expressionTypeRef, castTypeRef, expression, CSharpStaticTypeRef.EXPLICIT);
-				}
-				else
-				{
-					return;
-				}
+					inheritResult = CSharpTypeUtil.isInheritable(expressionTypeRef, castTypeRef, expression, CSharpStaticTypeRef.IMPLICIT);
 
-				if(!inheritResult.isSuccess())
-				{
-					CompilerCheckBuilder builder = newBuilder(type, CSharpTypeRefPresentationUtil.buildText(expressionTypeRef, expression,
-							CS0029.TYPE_FLAGS), CSharpTypeRefPresentationUtil.buildText(castTypeRef, expression, CS0029.TYPE_FLAGS));
+					if(!inheritResult.isSuccess())
+					{
+						CompilerCheckBuilder builder = newBuilder(type, CSharpTypeRefPresentationUtil.buildText(expressionTypeRef, expression,
+								CS0029.TYPE_FLAGS), CSharpTypeRefPresentationUtil.buildText(castTypeRef, expression, CS0029.TYPE_FLAGS));
 
-					ref.set(builder);
+						ref.set(builder);
+					}
+					else if(inheritResult.getConversionMethod() != null)
+					{
+						CompilerCheckBuilder builder = newBuilder(innerExpression);
+						builder.setTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
+						builder.setText(CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildText
+								(expressionTypeRef, expression, CS0029.TYPE_FLAGS), CSharpTypeRefPresentationUtil.buildText(castTypeRef, expression,
+								CS0029.TYPE_FLAGS)));
+						builder.setHighlightInfoType(HighlightInfoType.INFORMATION);
+						ref.set(builder);
+					}
 				}
 				else if(inheritResult.getConversionMethod() != null)
 				{
