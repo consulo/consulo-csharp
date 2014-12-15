@@ -110,6 +110,11 @@ public class CSharpResolveContextUtil
 				}
 				list.add(cacheTypeContextImpl(genericExtractor, (CSharpTypeDeclaration) element));
 			}
+
+			if(list.isEmpty())
+			{
+				return CSharpResolveContext.EMPTY;
+			}
 			return new CSharpCompositeResolveContext(types[0].getProject(), ContainerUtil.toArray(list, CSharpResolveContext.ARRAY_FACTORY));
 		}
 
