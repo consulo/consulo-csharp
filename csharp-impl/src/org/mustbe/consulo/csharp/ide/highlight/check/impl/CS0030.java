@@ -99,10 +99,6 @@ public class CS0030 extends CompilerCheck<PsiElement>
 			@Override
 			public void visitTypeCastExpression(CSharpTypeCastExpressionImpl expression)
 			{
-				if(!EarlyAccessProgramManager.is(CS0030TypeCast.class))
-				{
-					return;
-				}
 				DotNetType type = expression.getType();
 				DotNetTypeRef castTypeRef = type.toTypeRef();
 				if(castTypeRef == DotNetTypeRef.ERROR_TYPE)
@@ -129,7 +125,10 @@ public class CS0030 extends CompilerCheck<PsiElement>
 						CompilerCheckBuilder builder = newBuilder(type, CSharpTypeRefPresentationUtil.buildText(expressionTypeRef, expression,
 								CS0029.TYPE_FLAGS), CSharpTypeRefPresentationUtil.buildText(castTypeRef, expression, CS0029.TYPE_FLAGS));
 
-						ref.set(builder);
+						if(EarlyAccessProgramManager.is(CS0030TypeCast.class))
+						{
+							ref.set(builder);
+						}
 					}
 					else if(inheritResult.getConversionMethod() != null)
 					{
