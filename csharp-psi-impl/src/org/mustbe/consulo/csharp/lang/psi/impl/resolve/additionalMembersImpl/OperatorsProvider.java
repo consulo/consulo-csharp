@@ -12,10 +12,13 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightConversionMethodDeclarationBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightLikeMethodDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalMemberProvider;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -204,8 +207,24 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 
 		for(Operator operator : operators)
 		{
-			CSharpLightMethodDeclarationBuilder builder = new CSharpLightMethodDeclarationBuilder(project);
-			builder.setOperator(operator.myOperatorToken);
+			CSharpLightLikeMethodDeclarationBuilder builder;
+			if(operator.myOperatorToken == CSharpTokens.IMPLICIT_KEYWORD || operator.myOperatorToken == CSharpTokens.EXPLICIT_KEYWORD)
+			{
+				CSharpStaticTypeRef staticTypeRef = CSharpStaticTypeRef.IMPLICIT;
+				if(operator.myOperatorToken == CSharpTokens.EXPLICIT_KEYWORD)
+				{
+					staticTypeRef = CSharpStaticTypeRef.EXPLICIT;
+				}
+				builder = new CSharpLightConversionMethodDeclarationBuilder(project, staticTypeRef);
+			}
+			else
+			{
+				CSharpLightMethodDeclarationBuilder temp = new CSharpLightMethodDeclarationBuilder(project);
+				temp.setOperator(operator.myOperatorToken);
+
+				builder= temp;
+			}
+
 			builder.withParent(parent);
 
 			builder.withReturnType(operator.myReturnTypeRef == null ? selfTypeRef : operator.myReturnTypeRef);
