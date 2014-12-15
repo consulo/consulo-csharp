@@ -9,8 +9,10 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeCastExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Ref;
@@ -71,12 +73,12 @@ public class CS0030 extends CompilerCheck<PsiElement>
 				}
 			}
 
-		/*	@Override
+			@Override
 			public void visitTypeCastExpression(CSharpTypeCastExpressionImpl expression)
 			{
 				DotNetType type = expression.getType();
-				DotNetTypeRef dotNetTypeRef = type.toTypeRef();
-				if(dotNetTypeRef == DotNetTypeRef.ERROR_TYPE)
+				DotNetTypeRef castTypeRef = type.toTypeRef();
+				if(castTypeRef == DotNetTypeRef.ERROR_TYPE)
 				{
 					return;
 				}
@@ -86,8 +88,19 @@ public class CS0030 extends CompilerCheck<PsiElement>
 				{
 					return;
 				}
-				Quaternary.create(innerExpression.toTypeRef(false), dotNetTypeRef, type, null);
-			}  */
+				DotNetTypeRef expressionTypeRef = innerExpression.toTypeRef(false);
+
+				CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(expressionTypeRef,
+						castTypeRef, expression, null);
+
+				if(!inheritResult.isSuccess())
+				{
+					CompilerCheckBuilder builder = newBuilder(type, CSharpTypeRefPresentationUtil.buildText(expressionTypeRef, expression,
+							CS0029.TYPE_FLAGS), CSharpTypeRefPresentationUtil.buildText(castTypeRef, expression, CS0029.TYPE_FLAGS));
+
+					ref.set(builder);
+				}
+			}
 		});
 
 		return ref.get();
