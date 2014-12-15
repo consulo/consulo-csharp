@@ -47,7 +47,7 @@ public class CompletionResolveScopeProcessor extends AbstractScopeProcessor
 		Collection<PsiElement> results = collectProcessor.getResults();
 
 		List<PsiElement> mergedElements = CSharpResolveUtil.mergeGroupsToIterable(results);
-		PsiElement[] psiElements = OverrideUtil.fiterOverridedAndHiddedElements(myPlace, mergedElements);
+		PsiElement[] psiElements = OverrideUtil.filterOverrideElements(myPlace, mergedElements, CommonProcessors.alwaysTrue());
 
 		for(PsiElement psiElement : CSharpResolveUtil.mergeGroupsToIterable(psiElements))
 		{

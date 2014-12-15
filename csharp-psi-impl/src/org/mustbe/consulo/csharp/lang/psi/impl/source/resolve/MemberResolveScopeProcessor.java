@@ -24,12 +24,16 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.Ove
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
+import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.util.CommonProcessors;
+import com.intellij.util.Processor;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -41,13 +45,25 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 
 	private final PsiElement myScopeElement;
 	private final GlobalSearchScope myResolveScope;
+	private final Processor<? extends DotNetVirtualImplementOwner> myOverrideProcessor;
 
 	public MemberResolveScopeProcessor(PsiElement scopeElement, ResolveResult[] elements, ExecuteTarget[] targets)
 	{
 		Collections.addAll(myElements, elements);
 		myScopeElement = scopeElement;
 		myResolveScope = scopeElement.getResolveScope();
+		myOverrideProcessor = CommonProcessors.alwaysTrue();
 		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
+	}
+
+	public MemberResolveScopeProcessor(PsiElement scopeElement,
+			ExecuteTarget[] targets,
+			Processor<? extends DotNetVirtualImplementOwner> overrideProcessor)
+	{
+		myScopeElement = scopeElement;
+		myResolveScope = scopeElement.getResolveScope();
+		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
+		myOverrideProcessor = overrideProcessor;
 	}
 
 	@Override
@@ -65,7 +81,7 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 		CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myResolveScope, element);
 
 		PsiElement[] psiElements = selector.doSelectElement(context, state.get(CSharpResolveUtil.WALK_DEEP) == Boolean.TRUE);
-		for(PsiElement psiElement : OverrideUtil.fiterOverridedAndHiddedElements(this, myScopeElement, psiElements))
+		for(val psiElement : OverrideUtil.filterOverrideElements(this, myScopeElement, psiElements, myOverrideProcessor))
 		{
 			if(!ExecuteTargetUtil.isMyElement(this, psiElement))
 			{

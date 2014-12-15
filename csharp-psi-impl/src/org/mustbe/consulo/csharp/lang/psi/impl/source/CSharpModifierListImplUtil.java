@@ -22,13 +22,13 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifierList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.PsiWhiteSpace;
@@ -86,7 +86,7 @@ public class CSharpModifierListImplUtil
 				}
 				break;
 			case ABSTRACT:
-				if(parent instanceof CSharpMethodDeclaration && parent.getParent() instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration)
+				if(parent instanceof DotNetVirtualImplementOwner && parent.getParent() instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration)
 						parent.getParent()).isInterface())
 				{
 					return true;

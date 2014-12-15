@@ -16,6 +16,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.Processor;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -26,8 +27,10 @@ import com.intellij.util.containers.ContainerUtil;
 public class OverrideUtil
 {
 	@NotNull
-	public static PsiElement[] fiterOverridedAndHiddedElements(@NotNull AbstractScopeProcessor processor, @NotNull PsiElement scopeElement,
-			@NotNull PsiElement[] psiElements)
+	public static PsiElement[] filterOverrideElements(@NotNull AbstractScopeProcessor processor,
+			@NotNull PsiElement scopeElement,
+			@NotNull PsiElement[] psiElements,
+			@NotNull Processor<? extends DotNetVirtualImplementOwner> overrideProcessor)
 	{
 		if(psiElements.length == 0)
 		{
@@ -41,11 +44,14 @@ public class OverrideUtil
 
 		List<PsiElement> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
 
-		return fiterOverridedAndHiddedElements(scopeElement, elements);
+		return filterOverrideElements(scopeElement, elements, overrideProcessor);
 	}
 
 	@NotNull
-	public static PsiElement[] fiterOverridedAndHiddedElements(@NotNull PsiElement scopeElement, @NotNull Collection<PsiElement> elements)
+	@SuppressWarnings("unchecked")
+	public static PsiElement[] filterOverrideElements(@NotNull PsiElement scopeElement,
+			@NotNull Collection<PsiElement> elements,
+			@NotNull Processor overrideProcessor)
 	{
 		List<PsiElement> copyElements = new ArrayList<PsiElement>(elements);
 
@@ -74,6 +80,10 @@ public class OverrideUtil
 
 					if(CSharpElementCompareUtil.isEqual(tempIterateElement, element, CSharpElementCompareUtil.CHECK_RETURN_TYPE, scopeElement))
 					{
+						if(!overrideProcessor.process(tempIterateElement))
+						{
+							return PsiElement.EMPTY_ARRAY;
+						}
 						copyElements.remove(tempIterateElement);
 					}
 				}
@@ -107,7 +117,7 @@ public class OverrideUtil
 		}
 		else if(elseElements.isEmpty())
 		{
-			return new PsiElement[] {new CSharpElementGroupImpl<PsiElement>(scopeElement.getProject(), "override", groupElements)};
+			return new PsiElement[]{new CSharpElementGroupImpl<PsiElement>(scopeElement.getProject(), "override", groupElements)};
 		}
 		else if(groupElements.isEmpty())
 		{
