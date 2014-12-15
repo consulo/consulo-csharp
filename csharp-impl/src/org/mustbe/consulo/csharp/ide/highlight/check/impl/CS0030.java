@@ -4,17 +4,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.ide.highlight.quickFix.ReplaceTypeQuickFix;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.Quaternary;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.codeInsight.intention.IntentionAction;
+import com.intellij.openapi.util.Ref;
 import com.intellij.psi.PsiElement;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -24,75 +25,71 @@ public class CS0030 extends CompilerCheck<PsiElement>
 {
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull PsiElement element)
+	public CompilerCheckBuilder checkImpl(@NotNull final CSharpLanguageVersion languageVersion, @NotNull PsiElement element)
 	{
-		Quaternary<DotNetTypeRef, DotNetTypeRef, ? extends PsiElement, IntentionAction[]> resolve = resolve(element);
-		if(resolve == null)
+		val ref = new Ref<CompilerCheckBuilder>();
+		element.accept(new CSharpElementVisitor()
 		{
-			return null;
-		}
-
-		DotNetTypeRef firstTypeRef = resolve.getFirst();
-		if(firstTypeRef == DotNetTypeRef.AUTO_TYPE)
-		{
-			return null;
-		}
-
-		DotNetTypeRef secondTypeRef = resolve.getSecond();
-		PsiElement elementToHighlight = resolve.getThird();
-
-		CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(firstTypeRef, secondTypeRef, element, null);
-		if(!inheritResult.isSuccess())
-		{
-			CompilerCheckBuilder builder = newBuilder(elementToHighlight, CSharpTypeRefPresentationUtil.buildText(secondTypeRef, element,
-					CS0029.TYPE_FLAGS), CSharpTypeRefPresentationUtil.buildText(firstTypeRef, element, CS0029.TYPE_FLAGS));
-
-			IntentionAction[] four = resolve.getFour();
-			if(four != null)
+			@Override
+			public void visitForeachStatement(CSharpForeachStatementImpl statement)
 			{
-				for(IntentionAction intentionAction : four)
+				CSharpLocalVariable variable = statement.getVariable();
+				if(variable == null)
 				{
-					builder.addQuickFix(intentionAction);
+					return;
+				}
+
+				DotNetType type = variable.getType();
+				if(type == null)
+				{
+					return;
+				}
+				DotNetTypeRef variableTypeRef = type.toTypeRef();
+				if(variableTypeRef == DotNetTypeRef.AUTO_TYPE || variableTypeRef == DotNetTypeRef.ERROR_TYPE)
+				{
+					return;
+				}
+				DotNetTypeRef iterableTypeRef = CSharpResolveUtil.resolveIterableType(statement);
+				if(iterableTypeRef == DotNetTypeRef.ERROR_TYPE)
+				{
+					return;
+				}
+
+				CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(variableTypeRef, iterableTypeRef, statement, null);
+				if(!inheritResult.isSuccess())
+				{
+					CompilerCheckBuilder builder = newBuilder(type, CSharpTypeRefPresentationUtil.buildText(iterableTypeRef, statement,
+							CS0029.TYPE_FLAGS), CSharpTypeRefPresentationUtil.buildText(variableTypeRef, statement, CS0029.TYPE_FLAGS));
+
+					if(languageVersion.isAtLeast(CSharpLanguageVersion._3_0))
+					{
+						builder.addQuickFix(new ReplaceTypeQuickFix(type, DotNetTypeRef.AUTO_TYPE));
+					}
+					builder.addQuickFix(new ReplaceTypeQuickFix(type, iterableTypeRef));
+
+					ref.set(builder);
 				}
 			}
-			return builder;
-		}
 
-		return null;
-	}
+		/*	@Override
+			public void visitTypeCastExpression(CSharpTypeCastExpressionImpl expression)
+			{
+				DotNetType type = expression.getType();
+				DotNetTypeRef dotNetTypeRef = type.toTypeRef();
+				if(dotNetTypeRef == DotNetTypeRef.ERROR_TYPE)
+				{
+					return;
+				}
 
-	@Nullable
-	private Quaternary<DotNetTypeRef, DotNetTypeRef, ? extends PsiElement, IntentionAction[]> resolve(PsiElement element)
-	{
-		if(element instanceof CSharpForeachStatementImpl)
-		{
-			CSharpLocalVariable variable = ((CSharpForeachStatementImpl) element).getVariable();
-			if(variable == null)
-			{
-				return null;
-			}
+				DotNetExpression innerExpression = expression.getInnerExpression();
+				if(innerExpression == null)
+				{
+					return;
+				}
+				Quaternary.create(innerExpression.toTypeRef(false), dotNetTypeRef, type, null);
+			}  */
+		});
 
-			DotNetType type = variable.getType();
-			if(type == null)
-			{
-				return null;
-			}
-			DotNetTypeRef variableTypeRef = type.toTypeRef();
-			if(variableTypeRef == DotNetTypeRef.AUTO_TYPE || variableTypeRef == DotNetTypeRef.ERROR_TYPE)
-			{
-				return null;
-			}
-			DotNetTypeRef iterableTypeRef = CSharpResolveUtil.resolveIterableType((CSharpForeachStatementImpl) element);
-			if(iterableTypeRef == DotNetTypeRef.ERROR_TYPE)
-			{
-				return null;
-			}
-
-			return Quaternary.create(variableTypeRef, iterableTypeRef, type, new IntentionAction[]{
-					new ReplaceTypeQuickFix(type, DotNetTypeRef.AUTO_TYPE),
-					new ReplaceTypeQuickFix(type, iterableTypeRef)
-			});
-		}
-		return null;
+		return ref.get();
 	}
 }
