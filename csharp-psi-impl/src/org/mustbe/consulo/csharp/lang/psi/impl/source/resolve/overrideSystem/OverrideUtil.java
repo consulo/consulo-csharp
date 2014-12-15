@@ -72,7 +72,7 @@ public class OverrideUtil
 						continue;
 					}
 
-					if(CSharpElementCompareUtil.isEqual(tempIterateElement, element, scopeElement))
+					if(CSharpElementCompareUtil.isEqual(tempIterateElement, element, CSharpElementCompareUtil.CHECK_RETURN_TYPE, scopeElement))
 					{
 						copyElements.remove(tempIterateElement);
 					}
