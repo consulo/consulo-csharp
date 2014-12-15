@@ -27,6 +27,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListOwner;
+import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
@@ -39,6 +40,7 @@ import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
@@ -443,19 +445,26 @@ public class CSharpResolveUtil
 	@NotNull
 	public static DotNetTypeRef resolveIterableType(@NotNull PsiElement scope, @NotNull DotNetTypeRef typeRef)
 	{
-		DotNetMethodDeclaration method = CSharpSearchUtil.findMethodByName("GetEnumerator", typeRef, scope);
-		if(method == null)
+		if(DotNetInheritUtil.isParentOrSelf(DotNetTypes2.System.Collections.Generic.IEnumerable$1, typeRef, scope, true))
 		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
+			DotNetMethodDeclaration method = CSharpSearchUtil.findMethodByName("GetEnumerator", typeRef, scope);
+			if(method == null)
+			{
+				return DotNetTypeRef.ERROR_TYPE;
+			}
 
-		DotNetPropertyDeclaration current = CSharpSearchUtil.findPropertyByName("Current", method.getReturnTypeRef(), scope);
-		if(current == null)
+			DotNetPropertyDeclaration current = CSharpSearchUtil.findPropertyByName("Current", method.getReturnTypeRef(), scope);
+			if(current == null)
+			{
+				return DotNetTypeRef.ERROR_TYPE;
+			}
+
+			return current.toTypeRef(false);
+		}
+		else
 		{
-			return DotNetTypeRef.ERROR_TYPE;
+			return DotNetTypeRef.UNKNOWN_TYPE;
 		}
-
-		return current.toTypeRef(false);
 	}
 
 	@NotNull

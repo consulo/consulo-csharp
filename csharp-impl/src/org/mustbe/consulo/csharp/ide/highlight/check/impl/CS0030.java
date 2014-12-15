@@ -75,7 +75,7 @@ public class CS0030 extends CompilerCheck<PsiElement>
 					return;
 				}
 				DotNetTypeRef iterableTypeRef = CSharpResolveUtil.resolveIterableType(statement);
-				if(iterableTypeRef == DotNetTypeRef.ERROR_TYPE)
+				if(iterableTypeRef == DotNetTypeRef.ERROR_TYPE || iterableTypeRef == DotNetTypeRef.UNKNOWN_TYPE)
 				{
 					return;
 				}
