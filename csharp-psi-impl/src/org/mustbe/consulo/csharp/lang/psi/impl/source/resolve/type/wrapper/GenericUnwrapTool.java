@@ -147,12 +147,16 @@ public class GenericUnwrapTool
 		else if(namedElement instanceof CSharpPropertyDeclaration)
 		{
 			CSharpPropertyDeclaration e = (CSharpPropertyDeclaration) namedElement;
-			return (T) new CSharpLightPropertyDeclaration(e, exchangeTypeRef(e.toTypeRef(true), extractor, e));
+			DotNetTypeRef returnTypeRef = exchangeTypeRef(e.toTypeRef(true), extractor, e);
+			DotNetTypeRef virtualTypeForImpl = exchangeTypeRef(e.getTypeRefForImplement(), extractor, e);
+			return (T) new CSharpLightPropertyDeclaration(e, returnTypeRef, virtualTypeForImpl);
 		}
 		else if(namedElement instanceof CSharpEventDeclaration)
 		{
 			CSharpEventDeclaration e = (CSharpEventDeclaration) namedElement;
-			return (T) new CSharpLightEventDeclaration(e, exchangeTypeRef(e.toTypeRef(true), extractor, e));
+			DotNetTypeRef returnTypeRef = exchangeTypeRef(e.toTypeRef(true), extractor, e);
+			DotNetTypeRef virtualTypeForImpl = exchangeTypeRef(e.getTypeRefForImplement(), extractor, e);
+			return (T) new CSharpLightEventDeclaration(e, returnTypeRef, virtualTypeForImpl);
 		}
 		else if(namedElement instanceof CSharpFieldDeclaration)
 		{
@@ -188,6 +192,10 @@ public class GenericUnwrapTool
 	@NotNull
 	public static DotNetTypeRef exchangeTypeRef(DotNetTypeRef typeRef, DotNetGenericExtractor extractor, PsiElement scope)
 	{
+		if(typeRef == DotNetTypeRef.ERROR_TYPE)
+		{
+			return DotNetTypeRef.ERROR_TYPE;
+		}
 		if(typeRef instanceof DotNetGenericWrapperTypeRef)
 		{
 			DotNetGenericWrapperTypeRef wrapperTypeRef = (DotNetGenericWrapperTypeRef) typeRef;

@@ -191,7 +191,9 @@ public class CSharpElementCompareUtil
 		{
 			return false;
 		}
-		return CSharpTypeUtil.isTypeEqual(type1.toTypeRef(), type2.toTypeRef(), scope);
+		// we need call getTypeRefForImplement() due light element have ref for original DotNetType but getTypeRefForImplement() ill return another
+		return CSharpTypeUtil.isTypeEqual(((DotNetVirtualImplementOwner) o1).getTypeRefForImplement(),
+				((DotNetVirtualImplementOwner) o2).getTypeRefForImplement(), scope);
 	}
 
 	private static boolean compareParameterList(@NotNull PsiElement listOwner, @NotNull PsiElement listOwner2, @NotNull PsiElement scope)

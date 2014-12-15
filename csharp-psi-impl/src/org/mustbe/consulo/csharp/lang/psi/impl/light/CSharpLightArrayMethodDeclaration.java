@@ -60,6 +60,6 @@ public class CSharpLightArrayMethodDeclaration extends CSharpLightLikeMethodDecl
 	@Override
 	public DotNetType getTypeForImplement()
 	{
-		return null;
+		return myOriginal.getTypeForImplement();
 	}
 }

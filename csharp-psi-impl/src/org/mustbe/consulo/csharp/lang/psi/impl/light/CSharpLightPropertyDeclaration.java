@@ -33,11 +33,13 @@ import com.intellij.psi.PsiElement;
 public class CSharpLightPropertyDeclaration extends CSharpLightVariable<CSharpPropertyDeclaration> implements  CSharpPropertyDeclaration
 {
 	private final DotNetTypeRef myTypeRef;
+	private final DotNetTypeRef myVirtualTypeRefForImpl;
 
-	public CSharpLightPropertyDeclaration(CSharpPropertyDeclaration original, DotNetTypeRef typeRef)
+	public CSharpLightPropertyDeclaration(CSharpPropertyDeclaration original, DotNetTypeRef typeRef, DotNetTypeRef virtualTypeRefForImpl)
 	{
 		super(original);
 		myTypeRef = typeRef;
+		myVirtualTypeRefForImpl = virtualTypeRefForImpl;
 	}
 
 	@NotNull
@@ -97,13 +99,13 @@ public class CSharpLightPropertyDeclaration extends CSharpLightVariable<CSharpPr
 	@Override
 	public DotNetType getTypeForImplement()
 	{
-		return null;
+		return myOriginal.getTypeForImplement();
 	}
 
 	@NotNull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{
-		return DotNetTypeRef.ERROR_TYPE;
+		return myVirtualTypeRefForImpl;
 	}
 }

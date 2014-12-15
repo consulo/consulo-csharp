@@ -104,6 +104,6 @@ public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclarati
 	@Override
 	public DotNetType getTypeForImplement()
 	{
-		return null;
+		return myOriginal.getTypeForImplement();
 	}
 }
