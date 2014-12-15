@@ -17,7 +17,9 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import com.intellij.lang.ASTNode;
@@ -37,10 +39,16 @@ public class CSharpUsingStatementImpl extends CSharpElementImpl implements DotNe
 		super(node);
 	}
 
-	@NotNull
-	public DotNetVariable[] getVariables()
+	@Nullable
+	public DotNetVariable getVariable()
 	{
-		return findChildrenByClass(DotNetVariable.class);
+		return findChildByClass(DotNetVariable.class);
+	}
+
+	@Nullable
+	public DotNetExpression getExpression()
+	{
+		return findChildByClass(DotNetExpression.class);
 	}
 
 	@Override
@@ -58,9 +66,10 @@ public class CSharpUsingStatementImpl extends CSharpElementImpl implements DotNe
 			return true;
 		}
 
-		for(DotNetVariable dotNetVariable : getVariables())
+		DotNetVariable variable = getVariable();
+		if(variable != null)
 		{
-			if(!processor.execute(dotNetVariable, state))
+			if(!processor.execute(variable, state))
 			{
 				return false;
 			}
