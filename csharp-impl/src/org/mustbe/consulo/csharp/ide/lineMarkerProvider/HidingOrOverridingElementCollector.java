@@ -58,7 +58,7 @@ import lombok.val;
  * @author VISTALL
  * @since 10.06.14
  */
-public class HiddingOrOverridingElementCollector implements LineMarkerCollector
+public class HidingOrOverridingElementCollector implements LineMarkerCollector
 {
 	private static class OurHandler implements GutterIconNavigationHandler<PsiElement>
 	{
