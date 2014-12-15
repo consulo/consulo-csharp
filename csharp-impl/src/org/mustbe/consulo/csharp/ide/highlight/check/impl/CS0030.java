@@ -1,7 +1,11 @@
 package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
+import org.consulo.ide.eap.EarlyAccessProgramDescriptor;
+import org.consulo.ide.eap.EarlyAccessProgramManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
+import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightKey;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.ide.highlight.quickFix.ReplaceTypeQuickFix;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -9,10 +13,14 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeCastExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.openapi.util.Ref;
 import com.intellij.psi.PsiElement;
 import lombok.val;
@@ -23,6 +31,23 @@ import lombok.val;
  */
 public class CS0030 extends CompilerCheck<PsiElement>
 {
+	public static class CS0030TypeCast extends EarlyAccessProgramDescriptor
+	{
+		@NotNull
+		@Override
+		public String getName()
+		{
+			return "CS0030 Type cast checks";
+		}
+
+		@NotNull
+		@Override
+		public String getDescription()
+		{
+			return "";
+		}
+	}
+
 	@Nullable
 	@Override
 	public CompilerCheckBuilder checkImpl(@NotNull final CSharpLanguageVersion languageVersion, @NotNull PsiElement element)
@@ -71,9 +96,13 @@ public class CS0030 extends CompilerCheck<PsiElement>
 				}
 			}
 
-			/*@Override
+			@Override
 			public void visitTypeCastExpression(CSharpTypeCastExpressionImpl expression)
 			{
+				if(!EarlyAccessProgramManager.is(CS0030TypeCast.class))
+				{
+					return;
+				}
 				DotNetType type = expression.getType();
 				DotNetTypeRef castTypeRef = type.toTypeRef();
 				if(castTypeRef == DotNetTypeRef.ERROR_TYPE)
@@ -108,7 +137,7 @@ public class CS0030 extends CompilerCheck<PsiElement>
 					builder.setHighlightInfoType(HighlightInfoType.INFORMATION);
 					ref.set(builder);
 				}
-			}*/
+			}
 		});
 
 		return ref.get();
