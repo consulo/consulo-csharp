@@ -142,17 +142,17 @@ public class CSharpElementCompareUtil
 				return false;
 			}
 
+			if(!Comparing.equal(((CSharpMethodDeclaration) element).getName(), ((CSharpMethodDeclaration) element2).getName()))
+			{
+				return false;
+			}
+
 			if(!compareReturnTypeRef(element, element2, flags, scope))
 			{
 				return false;
 			}
 
 			if(!compareVirtualImpl(element, element2, flags, scope))
-			{
-				return false;
-			}
-
-			if(!Comparing.equal(((CSharpMethodDeclaration) element).getName(), ((CSharpMethodDeclaration) element2).getName()))
 			{
 				return false;
 			}
