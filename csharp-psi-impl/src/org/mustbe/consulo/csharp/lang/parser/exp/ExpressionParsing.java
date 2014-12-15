@@ -37,7 +37,18 @@ public class ExpressionParsing extends SharedParsingHelpers
 {
 	private enum ExprType
 	{
-		CONDITIONAL_OR, CONDITIONAL_AND, OR, XOR, AND, EQUALITY, RELATIONAL, SHIFT, ADDITIVE, MULTIPLICATIVE, UNARY, TYPE
+		CONDITIONAL_OR,
+		CONDITIONAL_AND,
+		OR,
+		XOR,
+		AND,
+		EQUALITY,
+		RELATIONAL,
+		SHIFT,
+		ADDITIVE,
+		MULTIPLICATIVE,
+		UNARY,
+		MAYBE_NULLABLE_TYPE
 	}
 
 	private static final TokenSet CONDITIONAL_OR_OPS = TokenSet.create(OROR);
@@ -103,50 +114,54 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(builder.getTokenType() == QUEST)
 		{
-			final PsiBuilder.Marker ternary = condition.precede();
-			builder.advanceLexer();
-
-			final PsiBuilder.Marker truePart = parse(builder);
-			if(truePart == null)
+			// NULL_COALESCING
+			if(builder.lookAhead(1) == QUEST)
 			{
-				builder.error("Expression expected");
+				final PsiBuilder.Marker nullCoalescing = condition.precede();
+				builder.advanceLexer();
+				builder.advanceLexer();
+
+				final PsiBuilder.Marker ifNullPart = parse(builder);
+				if(ifNullPart == null)
+				{
+					builder.error("Expression expected");
+				}
+				nullCoalescing.done(NULL_COALESCING_EXPRESSION);
+				return nullCoalescing;
+			}
+			else
+			{
+				final PsiBuilder.Marker ternary = condition.precede();
+				builder.advanceLexer();
+
+				final PsiBuilder.Marker truePart = parse(builder);
+				if(truePart == null)
+				{
+					builder.error("Expression expected");
+					ternary.done(CONDITIONAL_EXPRESSION);
+					return ternary;
+				}
+
+				if(builder.getTokenType() != COLON)
+				{
+					builder.error("Expected colon");
+					ternary.done(CONDITIONAL_EXPRESSION);
+					return ternary;
+				}
+				builder.advanceLexer();
+
+				final PsiBuilder.Marker falsePart = parseConditional(builder);
+				if(falsePart == null)
+				{
+					builder.error("Expression expected");
+					ternary.done(CONDITIONAL_EXPRESSION);
+					return ternary;
+				}
+
 				ternary.done(CONDITIONAL_EXPRESSION);
 				return ternary;
 			}
-
-			if(builder.getTokenType() != COLON)
-			{
-				builder.error("Expected colon");
-				ternary.done(CONDITIONAL_EXPRESSION);
-				return ternary;
-			}
-			builder.advanceLexer();
-
-			final PsiBuilder.Marker falsePart = parseConditional(builder);
-			if(falsePart == null)
-			{
-				builder.error("Expression expected");
-				ternary.done(CONDITIONAL_EXPRESSION);
-				return ternary;
-			}
-
-			ternary.done(CONDITIONAL_EXPRESSION);
-			return ternary;
 		}
-		else if(builder.getTokenType() == NULL_COALESCING)
-		{
-			final PsiBuilder.Marker nullCoalescing = condition.precede();
-			builder.advanceLexer();
-
-			final PsiBuilder.Marker ifNullPart = parse(builder);
-			if(ifNullPart == null)
-			{
-				builder.error("Expression expected");
-			}
-			nullCoalescing.done(NULL_COALESCING_EXPRESSION);
-			return nullCoalescing;
-		}
-		else
 		{
 			return condition;
 		}
@@ -190,9 +205,42 @@ public class ExpressionParsing extends SharedParsingHelpers
 			case UNARY:
 				return parseUnary(builder);
 
-			case TYPE:
+			case MAYBE_NULLABLE_TYPE:
 				TypeInfo typeInfo = parseType(builder, NONE);
-				return typeInfo == null ? null : typeInfo.marker;
+				if(typeInfo == null)
+				{
+					return null;
+				}
+
+				// if we have nullable type - need find colon, or return original marker
+				if(typeInfo.isNullable)
+				{
+					if(builder.getTokenType() == QUEST)
+					{
+						return typeInfo.marker;
+					}
+					// o is int? "true" : "false"
+					PsiBuilder.Marker marker = parseConditional(builder);
+					if(marker != null)
+					{
+						IElementType tokenType = builder.getTokenType();
+						marker.rollbackTo();
+
+						if(tokenType == COLON)
+						{
+							typeInfo.marker.rollbackTo();
+
+							TypeInfo anotherTypeInfo = parseType(builder, WITHOUT_NULLABLE);
+							assert anotherTypeInfo != null;
+							return anotherTypeInfo.marker;
+						}
+					}
+					return typeInfo.marker;
+				}
+				else
+				{
+					return typeInfo.marker;
+				}
 			default:
 				assert false : "Unexpected type: " + type;
 				return null;
@@ -348,12 +396,12 @@ public class ExpressionParsing extends SharedParsingHelpers
 			else if(tokenType == IS_KEYWORD)
 			{
 				toCreate = IS_EXPRESSION;
-				toParse = ExprType.TYPE;
+				toParse = ExprType.MAYBE_NULLABLE_TYPE;
 			}
 			else if(tokenType == AS_KEYWORD)
 			{
 				toCreate = AS_EXPRESSION;
-				toParse = ExprType.TYPE;
+				toParse = ExprType.MAYBE_NULLABLE_TYPE;
 			}
 			else
 			{
@@ -373,7 +421,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			final PsiBuilder.Marker right = parseExpression(builder, toParse);
 			if(right == null)
 			{
-				builder.error(toParse == ExprType.TYPE ? "Type expected" : "Expression expected");
+				builder.error(toParse == ExprType.MAYBE_NULLABLE_TYPE ? "Type expected" : "Expression expected");
 				expression.done(toCreate);
 				return expression;
 			}

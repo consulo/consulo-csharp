@@ -272,8 +272,6 @@ public interface CSharpTokens extends TokenType
 
 	IElementType QUEST = new IElementType("QUEST", CSharpLanguage.INSTANCE);
 
-	IElementType NULL_COALESCING = new IElementType("NULL_COALESCING", CSharpLanguage.INSTANCE);
-
 	IElementType LINE_COMMENT = new IElementType("LINE_COMMENT", CSharpLanguage.INSTANCE);
 
 	IElementType BLOCK_COMMENT = new IElementType("BLOCK_COMMENT", CSharpLanguage.INSTANCE);
