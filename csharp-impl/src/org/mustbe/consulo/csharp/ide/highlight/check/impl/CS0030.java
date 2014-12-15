@@ -118,7 +118,16 @@ public class CS0030 extends CompilerCheck<PsiElement>
 				DotNetTypeRef expressionTypeRef = innerExpression.toTypeRef(false);
 
 				CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(expressionTypeRef, castTypeRef, expression,
-						CSharpStaticTypeRef.EXPLICIT);
+						CSharpStaticTypeRef.IMPLICIT);
+
+				if(!inheritResult.isSuccess())
+				{
+					inheritResult = CSharpTypeUtil.isInheritable(expressionTypeRef, castTypeRef, expression, CSharpStaticTypeRef.EXPLICIT);
+				}
+				else
+				{
+					return;
+				}
 
 				if(!inheritResult.isSuccess())
 				{
