@@ -10,6 +10,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementCompareUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpElementGroupImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
@@ -21,9 +22,12 @@ import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.ResolveState;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.util.CommonProcessors;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -182,5 +186,21 @@ public class OverrideUtil
 		CSharpResolveUtil.walkChildren(processor, parent, false, true, state);
 
 		return overrideProcessor.getResults();
+	}
+
+	@NotNull
+	public static Collection<PsiElement> getAllMembers(@NotNull PsiElement element,
+			@NotNull GlobalSearchScope scope,
+			@NotNull DotNetGenericExtractor extractor)
+	{
+		CommonProcessors.CollectProcessor<PsiElement> collectProcessor = new CommonProcessors.CollectProcessor<PsiElement>();
+		CSharpResolveContextUtil.createContext(extractor, scope, element).processElements(collectProcessor, true);
+
+		Collection<PsiElement> results = collectProcessor.getResults();
+
+		List<PsiElement> mergedElements = CSharpResolveUtil.mergeGroupsToIterable(results);
+		PsiElement[] psiElements = OverrideUtil.filterOverrideElements(element, mergedElements, OverrideProcessor.ALWAYS_TRUE);
+
+		return CSharpResolveUtil.mergeGroupsToIterable(psiElements);
 	}
 }

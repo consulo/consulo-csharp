@@ -1,13 +1,9 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
@@ -16,7 +12,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.CommonProcessors;
 
 /**
  * @author VISTALL
@@ -24,11 +19,12 @@ import com.intellij.util.CommonProcessors;
  */
 public class CompletionResolveScopeProcessor extends AbstractScopeProcessor
 {
+	@NotNull
 	private final GlobalSearchScope myScope;
 	@NotNull
 	private final PsiElement myPlace;
 
-	public CompletionResolveScopeProcessor(@NotNull PsiElement place, ResolveResult[] elements, ExecuteTarget[] targets)
+	public CompletionResolveScopeProcessor(@NotNull PsiElement place, @NotNull ResolveResult[] elements, @NotNull ExecuteTarget[] targets)
 	{
 		myPlace = place;
 		Collections.addAll(myElements, elements);
@@ -42,15 +38,7 @@ public class CompletionResolveScopeProcessor extends AbstractScopeProcessor
 		DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
 		assert extractor != null;
 
-		CommonProcessors.CollectProcessor<PsiElement> collectProcessor = new CommonProcessors.CollectProcessor<PsiElement>();
-		CSharpResolveContextUtil.createContext(extractor, myScope, element).processElements(collectProcessor, true);
-
-		Collection<PsiElement> results = collectProcessor.getResults();
-
-		List<PsiElement> mergedElements = CSharpResolveUtil.mergeGroupsToIterable(results);
-		PsiElement[] psiElements = OverrideUtil.filterOverrideElements(myPlace, mergedElements, OverrideProcessor.ALWAYS_TRUE);
-
-		for(PsiElement psiElement : CSharpResolveUtil.mergeGroupsToIterable(psiElements))
+		for(PsiElement psiElement : OverrideUtil.getAllMembers(element, myScope, extractor))
 		{
 			addElement(psiElement);
 		}
