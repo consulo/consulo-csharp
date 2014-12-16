@@ -137,24 +137,45 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 				return;
 			}
 
-			Icon icon = null;
-			if(overrideElements.size() == 1 && ContainerUtil.getFirstItem(overrideElements).getTypeForImplement() != null)
+			Icon icon = CSharpIcons.Gutter.HidedMethod;
+			for(DotNetVirtualImplementOwner overrideElement : overrideElements)
 			{
-				icon = CSharpIcons.Gutter.HidedMethod;
-			}
-			else
-			{
-				icon = AllIcons.Gutter.OverridenMethod;
-				for(DotNetVirtualImplementOwner overrideElement : overrideElements)
+				if(overrideElement.getTypeForImplement() == null)
 				{
-					if(!((DotNetModifierListOwner) overrideElement).hasModifier(DotNetModifier.ABSTRACT))
-					{
-						icon = AllIcons.Gutter.ImplementedMethod;
-						break;
-					}
+					icon = null;
+					break;
 				}
 			}
 
+			if(icon == null)
+			{
+				boolean allAbstract = true;
+				for(DotNetVirtualImplementOwner overrideElement : overrideElements)
+				{
+					if(!(overrideElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) overrideElement).hasModifier
+							(DotNetModifier.ABSTRACT)))
+					{
+						allAbstract = false;
+						break;
+					}
+				}
+
+				boolean abstractMe = virtualImplementOwner instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) virtualImplementOwner)
+						.hasModifier(DotNetModifier.ABSTRACT);
+
+				if(allAbstract && abstractMe)
+				{
+					icon = AllIcons.Gutter.OverridenMethod;
+				}
+				else if(abstractMe)
+				{
+					icon = AllIcons.Gutter.ImplementedMethod;
+				}
+				else
+				{
+					icon = AllIcons.Gutter.OverridenMethod;
+				}
+			}
 			val lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.UPDATE_OVERRIDEN_MARKERS,
 					new ConstantFunction<PsiElement, String>("Searching for overrided"), OurHandler.INSTANCE, GutterIconRenderer.Alignment.LEFT);
 
