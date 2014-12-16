@@ -8,11 +8,10 @@ import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
@@ -66,11 +65,11 @@ public class CSharpTypeResolveContext extends CSharpBaseResolveContext<CSharpTyp
 
 				if(set.contains(DotNetTypes.System.ValueType))
 				{
-					extendTypeRefs.add(new DotNetTypeRefByQName(DotNetTypes.System.ValueType, CSharpTransform.INSTANCE));
+					extendTypeRefs.add(new CSharpTypeRefByQName(DotNetTypes.System.ValueType));
 				}
 				else
 				{
-					extendTypeRefs.add(new DotNetTypeRefByQName(DotNetTypes.System.Object, CSharpTransform.INSTANCE));
+					extendTypeRefs.add(new CSharpTypeRefByQName(DotNetTypes.System.Object));
 				}
 			}
 		}

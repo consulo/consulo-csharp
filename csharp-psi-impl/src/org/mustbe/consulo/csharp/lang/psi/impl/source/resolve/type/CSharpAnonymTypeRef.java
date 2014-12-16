@@ -22,9 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightFieldDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightTypeDeclarationBuilder;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -106,7 +104,7 @@ public class CSharpAnonymTypeRef extends DotNetTypeRef.Adapter
 
 			if(valueReferenceExpression == null)
 			{
-				fieldBuilder.withTypeRef(new DotNetTypeRefByQName(DotNetTypes.System.Object, CSharpTransform.INSTANCE));
+				fieldBuilder.withTypeRef(new CSharpTypeRefByQName(DotNetTypes.System.Object));
 			}
 			else
 			{

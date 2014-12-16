@@ -19,8 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.light;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightTypeDeclarationBuilder;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.text.StringUtil;
@@ -53,7 +52,7 @@ public class CSharpLightAttributeWithSelfTypeBuilder extends CSharpAbstractLight
 	@Override
 	public DotNetTypeRef toTypeRef()
 	{
-		return new DotNetTypeRefByQName(myType.getVmQName(), CSharpTransform.INSTANCE);
+		return new CSharpTypeRefByQName(myType.getVmQName());
 	}
 
 	@Override

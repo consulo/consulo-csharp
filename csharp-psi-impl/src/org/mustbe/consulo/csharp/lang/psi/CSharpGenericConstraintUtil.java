@@ -21,9 +21,8 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
@@ -41,7 +40,7 @@ public class CSharpGenericConstraintUtil
 		CSharpGenericConstraint genericConstraint = findGenericConstraint(parameter);
 		if(genericConstraint == null)
 		{
-			return Collections.<DotNetTypeRef>singletonList(new DotNetTypeRefByQName(DotNetTypes.System.Object, CSharpTransform.INSTANCE));
+			return Collections.<DotNetTypeRef>singletonList(new CSharpTypeRefByQName(DotNetTypes.System.Object));
 		}
 
 		val superTypes = new SmartList<DotNetTypeRef>();
@@ -56,11 +55,11 @@ public class CSharpGenericConstraintUtil
 			{
 				if(((CSharpGenericConstraintKeywordValue) value).getKeywordElementType() == CSharpTokens.STRUCT_KEYWORD)
 				{
-					superTypes.add(new DotNetTypeRefByQName(DotNetTypes.System.ValueType, CSharpTransform.INSTANCE));
+					superTypes.add(new CSharpTypeRefByQName(DotNetTypes.System.ValueType));
 				}
 				else if(((CSharpGenericConstraintKeywordValue) value).getKeywordElementType() == CSharpTokens.CLASS_KEYWORD)
 				{
-					superTypes.add(new DotNetTypeRefByQName(DotNetTypes.System.Object, CSharpTransform.INSTANCE));
+					superTypes.add(new CSharpTypeRefByQName(DotNetTypes.System.Object));
 				}
 			}
 		}

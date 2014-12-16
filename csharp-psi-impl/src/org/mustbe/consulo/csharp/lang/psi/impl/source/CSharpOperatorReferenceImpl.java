@@ -33,7 +33,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightCallArgument;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
@@ -46,10 +45,10 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpPointerTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.OperatorByTokenSelector;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -260,7 +259,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		{
 			if(elementType == CSharpTokenSets.OROR || elementType == CSharpTokens.ANDAND)
 			{
-				return new DotNetTypeRefByQName(DotNetTypes.System.Boolean, CSharpTransform.INSTANCE, false);
+				return new CSharpTypeRefByQName(DotNetTypes.System.Boolean);
 			}
 
 			DotNetExpression[] parameterExpressions = getParameterExpressions();
@@ -270,7 +269,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 				{
 					return parameterExpressions[0].toTypeRef(false);
 				}
-				return new DotNetTypeRefByQName(DotNetTypes.System.Void, CSharpTransform.INSTANCE, false);
+				return new CSharpTypeRefByQName(DotNetTypes.System.Void);
 			}
 
 			List<Pair<MethodCalcResult, PsiElement>> pairs = new SmartList<Pair<MethodCalcResult, PsiElement>>();

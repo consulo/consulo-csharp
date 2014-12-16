@@ -4,10 +4,8 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightTypeDeclarationBuilder;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import com.intellij.openapi.project.Project;
 
@@ -29,7 +27,7 @@ public class CSharpLambdaResolveResultUtil
 
 		builder.putUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE, declaration);
 
-		builder.addExtendType(new DotNetTypeRefByQName(DotNetTypes.System.MulticastDelegate, CSharpTransform.INSTANCE));
+		builder.addExtendType(new CSharpTypeRefByQName(DotNetTypes.System.MulticastDelegate));
 
 		for(DotNetGenericParameter parameter : declaration.getGenericParameters())
 		{

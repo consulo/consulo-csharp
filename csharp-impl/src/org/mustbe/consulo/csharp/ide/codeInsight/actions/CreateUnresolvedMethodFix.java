@@ -30,9 +30,8 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
@@ -187,7 +186,7 @@ public class CreateUnresolvedMethodFix extends BaseIntentionAction
 			builder.append("static ");
 		}
 
-		DotNetTypeRef returnTypeRef = new DotNetTypeRefByQName(DotNetTypes.System.Void, CSharpTransform.INSTANCE); //TODO [VISTALL]
+		DotNetTypeRef returnTypeRef = new CSharpTypeRefByQName(DotNetTypes.System.Void);
 
 		builder.append(CSharpTypeRefPresentationUtil.buildShortText(returnTypeRef, generateContext.myExpression)).append(" ");
 		builder.append(myReferenceName);
