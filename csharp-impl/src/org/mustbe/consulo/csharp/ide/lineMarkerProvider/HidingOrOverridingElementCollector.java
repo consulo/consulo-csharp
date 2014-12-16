@@ -82,7 +82,8 @@ public class HidingOrOverridingElementCollector implements LineMarkerCollector
 			{
 				PsiElement[] elements = members.toArray(new PsiElement[members.size()]);
 
-				JBPopup popup = NavigationUtil.getPsiElementPopup(elements, "Open elements (" + elements.length + " items)");
+				JBPopup popup = NavigationUtil.getPsiElementPopup(elements, new ElementGutterRender(), "Open elements (" + elements.length + " " +
+						"items)");
 				popup.show(new RelativePoint(mouseEvent));
 			}
 		}
@@ -129,8 +130,7 @@ public class HidingOrOverridingElementCollector implements LineMarkerCollector
 			}
 
 			val lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.UPDATE_OVERRIDEN_MARKERS,
-					new ConstantFunction<PsiElement, String>("Searching for overriding"), OurHandler.INSTANCE, GutterIconRenderer.Alignment.LEFT
-			);
+					new ConstantFunction<PsiElement, String>("Searching for overriding"), OurHandler.INSTANCE, GutterIconRenderer.Alignment.LEFT);
 
 			lineMarkerInfos.add(lineMarkerInfo);
 		}

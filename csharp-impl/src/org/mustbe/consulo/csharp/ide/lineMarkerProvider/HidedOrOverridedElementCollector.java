@@ -107,7 +107,9 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 			{
 				PsiElement[] elements = members.toArray(new PsiElement[members.size()]);
 
-				JBPopup popup = NavigationUtil.getPsiElementPopup(elements, "Open elements (" + elements.length + " items)");
+				JBPopup popup = NavigationUtil.getPsiElementPopup(elements, new ElementGutterRender(), "Open elements (" + elements.length + " " +
+						"items)" +
+						"");
 				popup.show(new RelativePoint(mouseEvent));
 			}
 		}
@@ -118,8 +120,7 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 	{
 		PsiElement parent = psiElement.getParent();
 		IElementType elementType = psiElement.getNode().getElementType();
-		if((elementType == CSharpTokens.IDENTIFIER || elementType == CSharpTokens.THIS_KEYWORD) && OverrideUtil
-				.isAllowForOverride(parent))
+		if((elementType == CSharpTokens.IDENTIFIER || elementType == CSharpTokens.THIS_KEYWORD) && OverrideUtil.isAllowForOverride(parent))
 		{
 			PsiElement parentParent = parent.getParent();
 			if(!(parentParent instanceof DotNetTypeDeclaration))
