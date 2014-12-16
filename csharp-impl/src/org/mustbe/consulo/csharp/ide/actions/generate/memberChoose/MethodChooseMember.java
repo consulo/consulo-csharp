@@ -56,7 +56,7 @@ public class MethodChooseMember extends CSharpMemberChooseObject<CSharpMethodDec
 		CSharpAccessModifier modifier = CSharpAccessModifier.findModifier(myDeclaration);
 		if(modifier != CSharpAccessModifier.NONE)
 		{
-			builder.append(modifier.getPresentableText());
+			builder.append(modifier.getPresentableText()).append(" ");
 		}
 
 		builder.append(getPresentationText());
