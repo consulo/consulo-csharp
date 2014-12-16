@@ -2,21 +2,28 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementCompareUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpElementGroupImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
+import org.mustbe.consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.Processor;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.ResolveState;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -30,7 +37,7 @@ public class OverrideUtil
 	public static PsiElement[] filterOverrideElements(@NotNull AbstractScopeProcessor processor,
 			@NotNull PsiElement scopeElement,
 			@NotNull PsiElement[] psiElements,
-			@NotNull Processor<? extends DotNetVirtualImplementOwner> overrideProcessor)
+			@NotNull OverrideProcessor overrideProcessor)
 	{
 		if(psiElements.length == 0)
 		{
@@ -51,7 +58,7 @@ public class OverrideUtil
 	@SuppressWarnings("unchecked")
 	public static PsiElement[] filterOverrideElements(@NotNull PsiElement scopeElement,
 			@NotNull Collection<PsiElement> elements,
-			@NotNull Processor overrideProcessor)
+			@NotNull OverrideProcessor overrideProcessor)
 	{
 		List<PsiElement> copyElements = new ArrayList<PsiElement>(elements);
 
@@ -68,7 +75,9 @@ public class OverrideUtil
 				{
 					continue;
 				}
-				DotNetType typeForImplement = ((DotNetVirtualImplementOwner) element).getTypeForImplement();
+				DotNetVirtualImplementOwner virtualImplementOwner = (DotNetVirtualImplementOwner) element;
+
+				DotNetType typeForImplement = virtualImplementOwner.getTypeForImplement();
 
 				for(PsiElement tempIterateElement : elements)
 				{
@@ -80,7 +89,7 @@ public class OverrideUtil
 
 					if(CSharpElementCompareUtil.isEqual(tempIterateElement, element, CSharpElementCompareUtil.CHECK_RETURN_TYPE, scopeElement))
 					{
-						if(!overrideProcessor.process(tempIterateElement))
+						if(!overrideProcessor.elementOverride(virtualImplementOwner, (DotNetVirtualImplementOwner) tempIterateElement))
 						{
 							return PsiElement.EMPTY_ARRAY;
 						}
@@ -128,5 +137,50 @@ public class OverrideUtil
 			elseElements.add(new CSharpElementGroupImpl<PsiElement>(scopeElement.getProject(), "override", groupElements));
 			return ContainerUtil.toArray(elseElements, PsiElement.ARRAY_FACTORY);
 		}
+	}
+
+	public static boolean isAllowForOverride(PsiElement parent)
+	{
+		if(parent instanceof CSharpMethodDeclaration &&
+				!((CSharpMethodDeclaration) parent).isDelegate() && !((CSharpMethodDeclaration) parent).hasModifier(DotNetModifier.STATIC))
+		{
+			return true;
+		}
+		return parent instanceof DotNetVirtualImplementOwner;
+	}
+
+	@NotNull
+	public static Collection<DotNetVirtualImplementOwner> collectOverridingMembers(final DotNetVirtualImplementOwner target)
+	{
+		PsiElement parent = target.getParent();
+		if(parent == null)
+		{
+			return Collections.emptyList();
+		}
+		OverrideProcessor.Collector overrideProcessor = new OverrideProcessor.Collector();
+
+		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(parent, new ExecuteTarget[]{
+				ExecuteTarget.MEMBER,
+				ExecuteTarget.ELEMENT_GROUP
+		}, overrideProcessor);
+
+		ResolveState state = ResolveState.initial();
+		if(target instanceof CSharpArrayMethodDeclaration)
+		{
+			state = state.put(CSharpResolveUtil.SELECTOR, StaticResolveSelectors.INDEX_METHOD_GROUP);
+		}
+		else
+		{
+			String name = ((PsiNamedElement) target).getName();
+			if(name == null)
+			{
+				return Collections.emptyList();
+			}
+			state = state.put(CSharpResolveUtil.SELECTOR, new MemberByNameSelector(name));
+		}
+
+		CSharpResolveUtil.walkChildren(processor, parent, false, true, state);
+
+		return overrideProcessor.getResults();
 	}
 }

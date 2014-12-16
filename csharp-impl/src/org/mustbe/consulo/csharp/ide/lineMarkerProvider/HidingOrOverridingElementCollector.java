@@ -18,20 +18,13 @@ package org.mustbe.consulo.csharp.ide.lineMarkerProvider;
 
 import java.awt.event.MouseEvent;
 import java.util.Collection;
-import java.util.Collections;
 
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.CSharpIcons;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
-import org.mustbe.consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -45,11 +38,8 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.ResolveState;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.ui.awt.RelativePoint;
-import com.intellij.util.CommonProcessors;
 import com.intellij.util.ConstantFunction;
 import com.intellij.util.containers.ContainerUtil;
 import lombok.val;
@@ -68,19 +58,12 @@ public class HidingOrOverridingElementCollector implements LineMarkerCollector
 		public void navigate(MouseEvent mouseEvent, PsiElement element)
 		{
 			PsiElement parent = element.getParent();
-			if(!(parent instanceof DotNetVirtualImplementOwner) || !isAllowForOverride(parent))
+			if(!(parent instanceof DotNetVirtualImplementOwner) || !OverrideUtil.isAllowForOverride(parent))
 			{
 				return;
 			}
 
-			PsiElement maybeTypeDeclaration = parent.getParent();
-			if(!(maybeTypeDeclaration instanceof DotNetTypeDeclaration))
-			{
-				return;
-			}
-
-			Collection<DotNetVirtualImplementOwner> members = findOverridingMembers((DotNetTypeDeclaration) maybeTypeDeclaration,
-					(DotNetVirtualImplementOwner) parent);
+			Collection<DotNetVirtualImplementOwner> members = OverrideUtil.collectOverridingMembers((DotNetVirtualImplementOwner) parent);
 
 			if(members.isEmpty())
 			{
@@ -110,7 +93,7 @@ public class HidingOrOverridingElementCollector implements LineMarkerCollector
 	{
 		PsiElement parent = psiElement.getParent();
 		IElementType elementType = psiElement.getNode().getElementType();
-		if((elementType == CSharpTokens.IDENTIFIER || elementType == CSharpTokens.THIS_KEYWORD) && isAllowForOverride(parent))
+		if((elementType == CSharpTokens.IDENTIFIER || elementType == CSharpTokens.THIS_KEYWORD) && OverrideUtil.isAllowForOverride(parent))
 		{
 			PsiElement parentParent = parent.getParent();
 			if(!(parentParent instanceof DotNetTypeDeclaration))
@@ -120,8 +103,7 @@ public class HidingOrOverridingElementCollector implements LineMarkerCollector
 
 			DotNetVirtualImplementOwner virtualImplementOwner = (DotNetVirtualImplementOwner) parent;
 
-			Collection<DotNetVirtualImplementOwner> overrideElements = findOverridingMembers((DotNetTypeDeclaration) parentParent,
-					virtualImplementOwner);
+			Collection<DotNetVirtualImplementOwner> overrideElements = OverrideUtil.collectOverridingMembers(virtualImplementOwner);
 
 			if(overrideElements.isEmpty())
 			{
@@ -152,47 +134,5 @@ public class HidingOrOverridingElementCollector implements LineMarkerCollector
 
 			lineMarkerInfos.add(lineMarkerInfo);
 		}
-	}
-
-	public static boolean isAllowForOverride(PsiElement parent)
-	{
-		if(parent instanceof CSharpMethodDeclaration &&
-				!((CSharpMethodDeclaration) parent).isDelegate() && !((CSharpMethodDeclaration) parent).hasModifier(DotNetModifier.STATIC))
-		{
-			return true;
-		}
-		return parent instanceof DotNetVirtualImplementOwner;
-	}
-
-	@NotNull
-	private static Collection<DotNetVirtualImplementOwner> findOverridingMembers(final DotNetTypeDeclaration owner,
-			final DotNetVirtualImplementOwner target)
-	{
-		CommonProcessors.CollectProcessor<DotNetVirtualImplementOwner> overrideProcessor = new CommonProcessors
-				.CollectProcessor<DotNetVirtualImplementOwner>();
-
-		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(owner, new ExecuteTarget[]{
-				ExecuteTarget.MEMBER,
-				ExecuteTarget.ELEMENT_GROUP
-		}, overrideProcessor);
-
-		ResolveState state = ResolveState.initial();
-		if(target instanceof CSharpArrayMethodDeclaration)
-		{
-			state = state.put(CSharpResolveUtil.SELECTOR, StaticResolveSelectors.INDEX_METHOD_GROUP);
-		}
-		else
-		{
-			String name = ((PsiNamedElement) target).getName();
-			if(name == null)
-			{
-				return Collections.emptyList();
-			}
-			state = state.put(CSharpResolveUtil.SELECTOR, new MemberByNameSelector(name));
-		}
-
-		CSharpResolveUtil.walkChildren(processor, owner, false, true, state);
-
-		return overrideProcessor.getResults();
 	}
 }

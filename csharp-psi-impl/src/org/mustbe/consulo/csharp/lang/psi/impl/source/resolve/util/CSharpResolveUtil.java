@@ -445,15 +445,12 @@ public class CSharpResolveUtil
 	@NotNull
 	public static DotNetTypeRef resolveIterableType(@NotNull PsiElement scope, @NotNull DotNetTypeRef typeRef)
 	{
-		if(DotNetInheritUtil.isParentOrSelf(DotNetTypes2.System.Collections.Generic.IEnumerable$1, typeRef, scope, true))
+		DotNetMethodDeclaration method = CSharpSearchUtil.findMethodByName("GetEnumerator", DotNetTypes2.System.Collections.Generic.IEnumerable$1,
+				typeRef, scope);
+		if(method != null)
 		{
-			DotNetMethodDeclaration method = CSharpSearchUtil.findMethodByName("GetEnumerator", typeRef, scope);
-			if(method == null)
-			{
-				return DotNetTypeRef.ERROR_TYPE;
-			}
-
-			DotNetPropertyDeclaration current = CSharpSearchUtil.findPropertyByName("Current", method.getReturnTypeRef(), scope);
+			DotNetPropertyDeclaration current = CSharpSearchUtil.findPropertyByName("Current", DotNetTypes2.System.Collections.Generic.IEnumerator$1,
+					method.getReturnTypeRef(), scope);
 			if(current == null)
 			{
 				return DotNetTypeRef.ERROR_TYPE;
@@ -461,9 +458,14 @@ public class CSharpResolveUtil
 
 			return current.toTypeRef(false);
 		}
-		else
+
+		if(DotNetInheritUtil.isParentOrSelf(DotNetTypes2.System.Collections.IEnumerable, typeRef, scope, true))
 		{
 			return DotNetTypeRef.UNKNOWN_TYPE;
+		}
+		else
+		{
+			return DotNetTypeRef.ERROR_TYPE;
 		}
 	}
 

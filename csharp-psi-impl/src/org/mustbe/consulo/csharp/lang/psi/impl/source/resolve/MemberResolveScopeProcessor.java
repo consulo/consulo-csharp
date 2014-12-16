@@ -19,20 +19,19 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 import java.util.Collections;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
-import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.CommonProcessors;
-import com.intellij.util.Processor;
 import lombok.val;
 
 /**
@@ -45,20 +44,20 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 
 	private final PsiElement myScopeElement;
 	private final GlobalSearchScope myResolveScope;
-	private final Processor<? extends DotNetVirtualImplementOwner> myOverrideProcessor;
+	private final OverrideProcessor myOverrideProcessor;
 
 	public MemberResolveScopeProcessor(PsiElement scopeElement, ResolveResult[] elements, ExecuteTarget[] targets)
 	{
 		Collections.addAll(myElements, elements);
 		myScopeElement = scopeElement;
 		myResolveScope = scopeElement.getResolveScope();
-		myOverrideProcessor = CommonProcessors.alwaysTrue();
+		myOverrideProcessor = OverrideProcessor.ALWAYS_TRUE;
 		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
 	}
 
 	public MemberResolveScopeProcessor(PsiElement scopeElement,
-			ExecuteTarget[] targets,
-			Processor<? extends DotNetVirtualImplementOwner> overrideProcessor)
+			@Nullable ExecuteTarget[] targets,
+			@Nullable OverrideProcessor overrideProcessor)
 	{
 		myScopeElement = scopeElement;
 		myResolveScope = scopeElement.getResolveScope();

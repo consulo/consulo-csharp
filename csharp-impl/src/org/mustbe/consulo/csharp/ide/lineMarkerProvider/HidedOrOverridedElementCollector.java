@@ -31,6 +31,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementCompareUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
@@ -75,7 +76,7 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 		public void navigate(MouseEvent mouseEvent, PsiElement element)
 		{
 			PsiElement parent = element.getParent();
-			if(!(parent instanceof DotNetVirtualImplementOwner) || !HidingOrOverridingElementCollector.isAllowForOverride(parent))
+			if(!(parent instanceof DotNetVirtualImplementOwner) || !OverrideUtil.isAllowForOverride(parent))
 			{
 				return;
 			}
@@ -117,7 +118,7 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 	{
 		PsiElement parent = psiElement.getParent();
 		IElementType elementType = psiElement.getNode().getElementType();
-		if((elementType == CSharpTokens.IDENTIFIER || elementType == CSharpTokens.THIS_KEYWORD) && HidingOrOverridingElementCollector
+		if((elementType == CSharpTokens.IDENTIFIER || elementType == CSharpTokens.THIS_KEYWORD) && OverrideUtil
 				.isAllowForOverride(parent))
 		{
 			PsiElement parentParent = parent.getParent();

@@ -7,6 +7,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
@@ -47,7 +48,7 @@ public class CompletionResolveScopeProcessor extends AbstractScopeProcessor
 		Collection<PsiElement> results = collectProcessor.getResults();
 
 		List<PsiElement> mergedElements = CSharpResolveUtil.mergeGroupsToIterable(results);
-		PsiElement[] psiElements = OverrideUtil.filterOverrideElements(myPlace, mergedElements, CommonProcessors.alwaysTrue());
+		PsiElement[] psiElements = OverrideUtil.filterOverrideElements(myPlace, mergedElements, OverrideProcessor.ALWAYS_TRUE);
 
 		for(PsiElement psiElement : CSharpResolveUtil.mergeGroupsToIterable(psiElements))
 		{
