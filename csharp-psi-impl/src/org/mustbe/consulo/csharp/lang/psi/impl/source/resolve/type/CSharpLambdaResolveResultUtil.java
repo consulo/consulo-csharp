@@ -25,6 +25,7 @@ public class CSharpLambdaResolveResultUtil
 		CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(project);
 		builder.withParentQName(declaration.getPresentableParentQName());
 		builder.withName(declaration.getName());
+		builder.setNavigationElement(declaration);
 
 		builder.putUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE, declaration);
 
