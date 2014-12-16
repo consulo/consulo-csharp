@@ -17,140 +17,58 @@
 package org.mustbe.consulo.csharp.ide.actions.generate;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.ide.actions.generate.memberChoose.CSharpMemberChooseObject;
-import org.mustbe.consulo.csharp.ide.actions.generate.memberChoose.MethodChooseMember;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
-import com.intellij.ide.util.MemberChooser;
-import com.intellij.ide.util.MemberChooserBuilder;
-import com.intellij.lang.LanguageCodeInsightActionHandler;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiParserFacade;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
-* @author VISTALL
-* @since 16.12.14
-*/
-public class GenerateImplementMemberHandler implements LanguageCodeInsightActionHandler
+ * @author VISTALL
+ * @since 16.12.14
+ */
+public class GenerateImplementMemberHandler extends GenerateImplementOrOverrideMemberHandler
 {
+	@NotNull
 	@Override
-	public void invoke(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file)
+	public String getTitle()
 	{
-		final CSharpTypeDeclaration typeDeclaration = CSharpGenerateAction.findTypeDeclaration(editor, file);
-		if(typeDeclaration == null)
-		{
-			return;
-		}
+		return "Choose Members For Implement";
+	}
 
-		Collection<PsiElement> psiElements = OverrideUtil.collectMembersWithModifier(typeDeclaration, DotNetGenericExtractor.EMPTY,
-				CSharpModifier.ABSTRACT);
-		if(psiElements.isEmpty())
+	@Override
+	public void processItem(@NotNull StringBuilder builder, @NotNull PsiElement item)
+	{
+		if(item instanceof CSharpMethodDeclaration)
 		{
-			return;
-		}
-
-		List<CSharpMemberChooseObject> memberChooseObjects = ContainerUtil.map(psiElements, new Function<PsiElement, CSharpMemberChooseObject>()
-		{
-			@Override
-			public CSharpMemberChooseObject fun(PsiElement element)
+			if(((CSharpMethodDeclaration) item).getModifierList().hasModifierInTree(CSharpModifier.ABSTRACT))
 			{
-				if(element instanceof CSharpMethodDeclaration)
-				{
-					return new MethodChooseMember((CSharpMethodDeclaration) element);
-				}
-				return null;
+				builder.append("override ");
 			}
-		});
-
-		final MemberChooserBuilder<CSharpMemberChooseObject<?>> builder = new MemberChooserBuilder<CSharpMemberChooseObject<?>>(project);
-		builder.setTitle("Choose Members For Implement");
-		builder.allowMultiSelection(true);
-
-		final MemberChooser<CSharpMemberChooseObject<?>> memberChooser = builder.createBuilder(ContainerUtil.toArray(memberChooseObjects,
-				CSharpMemberChooseObject.ARRAY_FACTORY));
-
-		if(!memberChooser.showAndGet())
-		{
-			return;
-		}
-
-		final List<CSharpMemberChooseObject<?>> selectedElements = memberChooser.getSelectedElements();
-		if(selectedElements == null)
-		{
-			return;
-		}
-
-		for(CSharpMemberChooseObject<?> selectedElement : selectedElements)
-		{
-			generateMember(typeDeclaration, editor, file, selectedElement);
 		}
 	}
 
-	private static void generateMember(@NotNull final CSharpTypeDeclaration typeDeclaration,
-			@NotNull final Editor editor,
-			@NotNull final PsiFile file,
-			@NotNull CSharpMemberChooseObject<?> chooseMember)
+	@Override
+	public void processReturn(@NotNull StringBuilder builder, @NotNull PsiElement item)
 	{
-		String text = chooseMember.getText();
-
-		final DotNetLikeMethodDeclaration method = CSharpFileFactory.createMethod(typeDeclaration.getProject(), text);
-
-		final int offset = editor.getCaretModel().getOffset();
-		PsiElement elementAt = file.findElementAt(offset);
-		assert elementAt != null;
-
-		PsiElement brace = typeDeclaration.getLeftBrace();
-		if(brace != null && brace.getTextOffset() > offset)
+		if(item instanceof CSharpMethodDeclaration)
 		{
-			elementAt = file.findElementAt(brace.getTextOffset() + 1);
-		}
-
-		final PsiElement temp = elementAt;
-		new WriteCommandAction.Simple<Object>(file.getProject(), file)
-		{
-			@Override
-			protected void run() throws Throwable
+			String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(((CSharpMethodDeclaration) item).getReturnTypeRef(), item);
+			if(defaultValueForType != null)
 			{
-				final PsiElement psiElement = typeDeclaration.addAfter(method, temp);
-				typeDeclaration.addAfter(PsiParserFacade.SERVICE.getInstance(file.getProject()).createWhiteSpaceFromText("\n"), psiElement);
-
-				PsiDocumentManager.getInstance(getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
-
-				CodeStyleManager.getInstance(getProject()).reformat(psiElement);
+				builder.append("return ").append(defaultValueForType).append(";\n");
 			}
-		}.execute();
-	}
-
-	@Override
-	public boolean startInWriteAction()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isValidFor(Editor editor, PsiFile file)
-	{
-		CSharpTypeDeclaration typeDeclaration = CSharpGenerateAction.findTypeDeclaration(editor, file);
-		if(typeDeclaration == null)
-		{
-			return false;
 		}
-		return !OverrideUtil.collectMembersWithModifier(typeDeclaration, DotNetGenericExtractor.EMPTY, CSharpModifier.ABSTRACT).isEmpty();
+	}
+
+	@NotNull
+	@Override
+	public Collection<PsiElement> getItems(@NotNull CSharpTypeDeclaration typeDeclaration)
+	{
+		return OverrideUtil.collectMembersWithModifier(typeDeclaration, DotNetGenericExtractor.EMPTY, CSharpModifier.ABSTRACT);
 	}
 }

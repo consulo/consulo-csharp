@@ -16,8 +16,8 @@
 
 package org.mustbe.consulo.csharp.ide.actions.generate.memberChoose;
 
+import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
-import org.mustbe.consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
@@ -40,6 +40,16 @@ public class MethodChooseMember extends CSharpMemberChooseObject<CSharpMethodDec
 				CSharpElementPresentationUtil.METHOD_PARAMETER_NAME);
 	}
 
+	public void process(@NotNull StringBuilder builder)
+	{
+
+	}
+
+	public void processReturn(@NotNull StringBuilder builder)
+	{
+
+	}
+
 	@Override
 	public String getText()
 	{
@@ -53,19 +63,9 @@ public class MethodChooseMember extends CSharpMemberChooseObject<CSharpMethodDec
 			}
 		}
 
-		if(myDeclaration.getModifierList().hasModifierInTree(CSharpModifier.ABSTRACT))
-		{
-			builder.append("override ");
-		}
-
 		builder.append(getPresentationText());
 		builder.append(" {\n");
-
-		String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(myDeclaration.getReturnTypeRef(), myDeclaration);
-		if(defaultValueForType != null)
-		{
-			builder.append("return ").append(defaultValueForType).append(";\n");
-		}
+		processReturn(builder);
 		builder.append("}");
 		return builder.toString();
 	}
