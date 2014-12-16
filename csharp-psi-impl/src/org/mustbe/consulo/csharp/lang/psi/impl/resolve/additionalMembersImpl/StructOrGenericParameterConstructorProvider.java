@@ -53,7 +53,7 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 		}
 		else if(element instanceof DotNetGenericParameter)
 		{
-			// we need always create contructor, it ill check in CS0304
+			// we need always create constructor, it ill check in CS0304
 			return buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC, extractor);
 		}
 		return DotNetElement.EMPTY_ARRAY;
