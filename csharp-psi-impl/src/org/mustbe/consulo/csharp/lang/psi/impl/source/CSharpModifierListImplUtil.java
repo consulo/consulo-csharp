@@ -76,6 +76,13 @@ public class CSharpModifierListImplUtil
 		PsiElement parent = modifierList.getParent();
 		switch(cSharpModifier)
 		{
+			case PUBLIC:
+				if(parent instanceof DotNetVirtualImplementOwner && parent.getParent() instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration)
+						parent.getParent()).isInterface())
+				{
+					return true;
+				}
+				break;
 			case STATIC:
 				if(parent instanceof CSharpFieldDeclaration)
 				{

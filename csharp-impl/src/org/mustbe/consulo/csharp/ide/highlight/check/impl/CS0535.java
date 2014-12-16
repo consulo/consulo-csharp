@@ -14,27 +14,13 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.ide.actions.generate;
-
-import org.jetbrains.annotations.NotNull;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
+package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 /**
  * @author VISTALL
- * @since 25.06.14
+ * @since 16.12.14
  */
-public class GenerateConstructorAction extends CSharpGenerateAction
+public class CS0535
 {
-	public GenerateConstructorAction()
-	{
-		super(new GenerateConstructorHandler());
-	}
-
-	@Override
-	protected boolean isValidForFile(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file)
-	{
-		return findTypeDeclaration(editor, file) != null;
-	}
+	// see CS0534
 }

@@ -57,12 +57,11 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 	@Override
 	public void invoke(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file)
 	{
-		final CSharpTypeDeclaration typeDeclaration = GenerateConstructorAction.findTypeDeclaration(editor, file);
+		final CSharpTypeDeclaration typeDeclaration = CSharpGenerateAction.findTypeDeclaration(editor, file);
 		if(typeDeclaration == null)
 		{
 			return;
 		}
-
 
 		val pair = CSharpTypeDeclarationImplUtil.resolveBaseType(typeDeclaration, typeDeclaration);
 		if(pair == null)
@@ -75,7 +74,6 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 		{
 			return;
 		}
-
 
 		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(typeDeclaration,
 				ResolveResult.EMPTY_ARRAY, new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});

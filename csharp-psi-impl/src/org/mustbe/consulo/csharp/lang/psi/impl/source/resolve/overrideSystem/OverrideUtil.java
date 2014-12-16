@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementCompareUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpElementGroupImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
@@ -20,6 +21,7 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -186,6 +188,22 @@ public class OverrideUtil
 		CSharpResolveUtil.walkChildren(processor, parent, false, true, state);
 
 		return overrideProcessor.getResults();
+	}
+
+	@NotNull
+	public static Collection<PsiElement> collectMembersWithModifier(@NotNull PsiElement element,
+			@NotNull DotNetGenericExtractor extractor,
+			@NotNull CSharpModifier modifier)
+	{
+		List<PsiElement> psiElements = new SmartList<PsiElement>();
+		for(PsiElement psiElement : getAllMembers(element, element.getResolveScope(), extractor))
+		{
+			if(psiElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) psiElement).hasModifier(modifier))
+			{
+				psiElements.add(psiElement);
+			}
+		}
+		return psiElements;
 	}
 
 	@NotNull

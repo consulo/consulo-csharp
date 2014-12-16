@@ -18,18 +18,23 @@ package org.mustbe.consulo.csharp.ide.actions.generate.memberChoose;
 
 import javax.swing.JTree;
 
+import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import com.intellij.codeInsight.generation.ClassMember;
 import com.intellij.codeInsight.generation.MemberChooserObject;
 import com.intellij.ide.IconDescriptorUpdaters;
 import com.intellij.openapi.util.Iconable;
+import com.intellij.psi.PsiElement;
 import com.intellij.ui.SimpleColoredComponent;
 
 /**
  * @author VISTALL
  * @since 25.06.14
  */
-public abstract class CSharpMemberChooseObject<T extends DotNetElement> implements MemberChooserObject
+@ArrayFactoryFields
+public abstract class CSharpMemberChooseObject<T extends DotNetElement> implements MemberChooserObject, ClassMember
 {
 	protected T myDeclaration;
 
@@ -71,5 +76,16 @@ public abstract class CSharpMemberChooseObject<T extends DotNetElement> implemen
 	public int hashCode()
 	{
 		return myDeclaration.hashCode() ^ getClass().hashCode();
+	}
+	@Override
+
+	public MemberChooserObject getParentNodeDelegate()
+	{
+		final PsiElement parent = myDeclaration.getParent();
+		if(parent == null)
+		{
+			return null;
+		}
+		return new ClassChooseObject((DotNetTypeDeclaration) parent);
 	}
 }
