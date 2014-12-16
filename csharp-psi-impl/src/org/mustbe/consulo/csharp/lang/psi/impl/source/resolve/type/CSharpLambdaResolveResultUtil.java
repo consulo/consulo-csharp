@@ -2,10 +2,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightTypeDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -37,20 +34,6 @@ public class CSharpLambdaResolveResultUtil
 		{
 			builder.addGenericParameter(parameter);
 		}
-
-		CSharpLightConstructorDeclarationBuilder cBuilder = new CSharpLightConstructorDeclarationBuilder(project);
-		cBuilder.addModifier(CSharpModifier.PUBLIC);
-		cBuilder.setNavigationElement(declaration);
-		cBuilder.withParent(declaration);
-		cBuilder.withName(declaration.getName());
-
-		builder.addMember(cBuilder);
-
-		CSharpLightParameterBuilder parameter = new CSharpLightParameterBuilder(declaration.getProject());
-		parameter = parameter.withName("p");
-		parameter = parameter.withTypeRef(new CSharpLambdaTypeRef(declaration));
-		cBuilder.addParameter(parameter);
-
 		return builder;
 	}
 }
