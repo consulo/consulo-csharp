@@ -80,24 +80,26 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 
 	private static final TokenSet ourCatchFinallyKeywords = TokenSet.create(CATCH_KEYWORD, FINALLY_KEYWORD);
 
-	private static final ElementPattern<? extends PsiElement> ourContinueAndBreakPattern = psiElement().inside(or(
-			psiElement().inside(CSharpForeachStatementImpl.class),
-			psiElement().inside(CSharpForStatementImpl.class),
-			psiElement().inside(CSharpWhileStatementImpl.class),
-			psiElement().inside(CSharpDoWhileStatementImpl.class)));
+	private static final ElementPattern<? extends PsiElement> statementStart = or(psiElement().withElementType(CSharpTokens.SEMICOLON),
+			psiElement().withElementType(CSharpTokens.LBRACE));
+	private static final ElementPattern<? extends PsiElement> ourContinueAndBreakPattern = psiElement().afterLeaf(statementStart).inside(or
+			(psiElement().inside(CSharpForeachStatementImpl.class), psiElement().inside(CSharpForStatementImpl.class),
+					psiElement().inside(CSharpWhileStatementImpl.class), psiElement().inside(CSharpDoWhileStatementImpl.class)));
 
-	private static final ElementPattern<? extends PsiElement> ourGotoPattern = psiElement().inside(psiElement().inside(CSharpLabeledStatementImpl
-			.class));
+	private static final ElementPattern<? extends PsiElement> ourGotoPattern = psiElement().afterLeaf(statementStart).inside(psiElement().inside
+			(CSharpLabeledStatementImpl.class));
 
-	private static final ElementPattern<? extends PsiElement> ourReturnPattern = psiElement().inside(psiElement().inside(CSharpSimpleLikeMethodAsElement.class));
+	private static final ElementPattern<? extends PsiElement> ourReturnPattern = psiElement().afterLeaf(statementStart).inside(psiElement().inside
+			(CSharpSimpleLikeMethodAsElement.class));
 
 	public CSharpStatementCompletionContributor()
 	{
 		extend(CompletionType.BASIC, ourContinueAndBreakPattern, new CompletionProvider<CompletionParameters>()
 		{
 			@Override
-			protected void addCompletions(
-					@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			protected void addCompletions(@NotNull final CompletionParameters parameters,
+					ProcessingContext context,
+					@NotNull CompletionResultSet result)
 			{
 				CSharpCompletionUtil.tokenSetToLookup(result, ourContinueAndBreakKeywords, new NotNullPairFunction<LookupElementBuilder,
 						IElementType, LookupElementBuilder>()
@@ -126,8 +128,9 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 		extend(CompletionType.BASIC, ourReturnPattern, new CompletionProvider<CompletionParameters>()
 		{
 			@Override
-			protected void addCompletions(
-					@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			protected void addCompletions(@NotNull final CompletionParameters parameters,
+					ProcessingContext context,
+					@NotNull CompletionResultSet result)
 			{
 				val pseudoMethod = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpSimpleLikeMethodAsElement.class);
 				assert pseudoMethod != null;
@@ -173,8 +176,9 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 		extend(CompletionType.BASIC, ourGotoPattern, new CompletionProvider<CompletionParameters>()
 		{
 			@Override
-			protected void addCompletions(
-					@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			protected void addCompletions(@NotNull final CompletionParameters parameters,
+					ProcessingContext context,
+					@NotNull CompletionResultSet result)
 			{
 				CSharpCompletionUtil.tokenSetToLookup(result, ourContinueAndBreakKeywords, new NotNullPairFunction<LookupElementBuilder,
 						IElementType, LookupElementBuilder>()
@@ -207,8 +211,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 
 		{
 			@Override
-			protected void addCompletions(
-					@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				CSharpCompletionUtil.tokenSetToLookup(result, ourCaseAndDefaultKeywords, new NotNullPairFunction<LookupElementBuilder, IElementType,
 						LookupElementBuilder>()
@@ -239,8 +242,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 				new CompletionProvider<CompletionParameters>()
 		{
 			@Override
-			protected void addCompletions(
-					@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				CSharpCompletionUtil.tokenSetToLookup(result, ourElseStatementKeywords, null, null);
 
@@ -277,8 +279,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 		extend(CompletionType.BASIC, psiElement(), new CompletionProvider<CompletionParameters>()
 		{
 			@Override
-			protected void addCompletions(
-					@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				DotNetStatement statement = PsiTreeUtil.getParentOfType(parameters.getPosition(), DotNetStatement.class);
 				if(statement == null)
