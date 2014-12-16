@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 
 /**
  * @author VISTALL
@@ -57,10 +56,7 @@ public class MethodChooseMember extends CSharpMemberChooseObject<CSharpMethodDec
 		CSharpAccessModifier modifier = CSharpAccessModifier.findModifier(myDeclaration);
 		if(modifier != CSharpAccessModifier.NONE)
 		{
-			for(CSharpModifier sharpModifier : modifier.getModifiers())
-			{
-				builder.append(sharpModifier.getPresentableText()).append(" ");
-			}
+			builder.append(modifier.getPresentableText());
 		}
 
 		builder.append(getPresentationText());
