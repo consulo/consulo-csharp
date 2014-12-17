@@ -136,8 +136,8 @@ public class DeclarationParsing extends SharedParsingHelpers
 					TypeInfo implementType = parseImplementType(builder);
 					if(implementType == null)
 					{
-						modifierListMarker.drop();
-						marker.drop();
+						builder.error("Expected identifier");
+						marker.done(FIELD_DECLARATION);
 						return false;
 					}
 
