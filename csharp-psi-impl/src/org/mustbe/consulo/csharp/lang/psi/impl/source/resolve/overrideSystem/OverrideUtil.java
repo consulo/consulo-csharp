@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
@@ -194,7 +195,19 @@ public class OverrideUtil
 
 		CSharpResolveUtil.walkChildren(processor, parent, false, true, state);
 
-		return overrideProcessor.getResults();
+		List<DotNetVirtualImplementOwner> results = overrideProcessor.getResults();
+
+		// need filter not
+		ListIterator<DotNetVirtualImplementOwner> listIterator = results.listIterator();
+		while(listIterator.hasNext())
+		{
+			DotNetVirtualImplementOwner next = listIterator.next();
+			if(!CSharpElementCompareUtil.isEqual(next, target, CSharpElementCompareUtil.CHECK_RETURN_TYPE, target))
+			{
+				listIterator.remove();
+			}
+		}
+		return results;
 	}
 
 	@NotNull
