@@ -10,6 +10,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementCompareUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpElementGroupImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
@@ -17,19 +18,25 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import org.mustbe.consulo.dotnet.psi.search.searches.ClassInheritorsSearch;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.CommonProcessors;
+import com.intellij.util.Processor;
+import com.intellij.util.Query;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -191,6 +198,61 @@ public class OverrideUtil
 	}
 
 	@NotNull
+	public static Collection<DotNetVirtualImplementOwner> collectOverridenMembers(final DotNetVirtualImplementOwner target)
+	{
+		PsiElement parent = target.getParent();
+		if(!(parent instanceof DotNetTypeDeclaration))
+		{
+			return Collections.emptyList();
+		}
+		final CSharpResolveSelector selector;
+		if(target instanceof CSharpArrayMethodDeclaration)
+		{
+			selector = StaticResolveSelectors.INDEX_METHOD_GROUP;
+		}
+		else
+		{
+			String name = ((PsiNamedElement) target).getName();
+			if(name != null)
+			{
+				selector = new MemberByNameSelector(name);
+			}
+			else
+			{
+				selector = null;
+			}
+		}
+
+		if(selector == null)
+		{
+			return Collections.emptyList();
+		}
+		final GlobalSearchScope resolveScope = target.getResolveScope();
+
+		final List<DotNetVirtualImplementOwner> list = new ArrayList<DotNetVirtualImplementOwner>();
+		Query<DotNetTypeDeclaration> search = ClassInheritorsSearch.search((DotNetTypeDeclaration) parent, true, CSharpTransform.INSTANCE);
+		search.forEach(new Processor<DotNetTypeDeclaration>()
+		{
+			@Override
+			public boolean process(DotNetTypeDeclaration typeDeclaration)
+			{
+				CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, resolveScope, typeDeclaration);
+
+				PsiElement[] elements = selector.doSelectElement(context, false);
+				for(PsiElement element : CSharpResolveUtil.mergeGroupsToIterable(elements))
+				{
+					if(CSharpElementCompareUtil.isEqual(element, target, CSharpElementCompareUtil.CHECK_RETURN_TYPE, target))
+					{
+						list.add((DotNetVirtualImplementOwner) element);
+					}
+				}
+				return true;
+			}
+		});
+
+		return list;
+	}
+@NotNull
 	public static Collection<PsiElement> collectMembersWithModifier(@NotNull PsiElement element,
 			@NotNull DotNetGenericExtractor extractor,
 			@NotNull CSharpModifier modifier)

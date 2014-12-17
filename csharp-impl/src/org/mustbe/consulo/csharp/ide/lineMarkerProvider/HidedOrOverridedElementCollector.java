@@ -17,32 +17,17 @@
 package org.mustbe.consulo.csharp.ide.lineMarkerProvider;
 
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.CSharpIcons;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpElementCompareUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
-import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
-import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
-import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
-import org.mustbe.consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
-import org.mustbe.consulo.dotnet.psi.search.searches.ClassInheritorsSearch;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
@@ -52,13 +37,9 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.ConstantFunction;
-import com.intellij.util.Processor;
-import com.intellij.util.Query;
 import com.intellij.util.containers.ContainerUtil;
 import lombok.val;
 
@@ -81,14 +62,7 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 				return;
 			}
 
-			PsiElement maybeTypeDeclaration = parent.getParent();
-			if(!(maybeTypeDeclaration instanceof DotNetTypeDeclaration))
-			{
-				return;
-			}
-
-			Collection<DotNetVirtualImplementOwner> members = findOverridedMembers((DotNetTypeDeclaration) maybeTypeDeclaration,
-					(DotNetVirtualImplementOwner) parent);
+			Collection<DotNetVirtualImplementOwner> members = OverrideUtil.collectOverridenMembers(((DotNetVirtualImplementOwner) parent));
 
 			if(members.isEmpty())
 			{
@@ -122,16 +96,9 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 		IElementType elementType = psiElement.getNode().getElementType();
 		if((elementType == CSharpTokens.IDENTIFIER || elementType == CSharpTokens.THIS_KEYWORD) && OverrideUtil.isAllowForOverride(parent))
 		{
-			PsiElement parentParent = parent.getParent();
-			if(!(parentParent instanceof DotNetTypeDeclaration))
-			{
-				return;
-			}
-
 			DotNetVirtualImplementOwner virtualImplementOwner = (DotNetVirtualImplementOwner) parent;
 
-			Collection<DotNetVirtualImplementOwner> overrideElements = findOverridedMembers((DotNetTypeDeclaration) parentParent,
-					virtualImplementOwner);
+			Collection<DotNetVirtualImplementOwner> overrideElements = OverrideUtil.collectOverridenMembers(virtualImplementOwner);
 
 			if(overrideElements.isEmpty())
 			{
@@ -185,55 +152,5 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 	}
 
 
-	@NotNull
-	private static Collection<DotNetVirtualImplementOwner> findOverridedMembers(final DotNetTypeDeclaration owner,
-			final DotNetVirtualImplementOwner target)
-	{
-		final CSharpResolveSelector selector;
-		if(target instanceof CSharpArrayMethodDeclaration)
-		{
-			selector = StaticResolveSelectors.INDEX_METHOD_GROUP;
-		}
-		else
-		{
-			String name = ((PsiNamedElement) target).getName();
-			if(name != null)
-			{
-				selector = new MemberByNameSelector(name);
-			}
-			else
-			{
-				selector = null;
-			}
-		}
 
-		if(selector == null)
-		{
-			return Collections.emptyList();
-		}
-		final GlobalSearchScope resolveScope = target.getResolveScope();
-
-		final List<DotNetVirtualImplementOwner> list = new ArrayList<DotNetVirtualImplementOwner>();
-		Query<DotNetTypeDeclaration> search = ClassInheritorsSearch.search(owner, true, CSharpTransform.INSTANCE);
-		search.forEach(new Processor<DotNetTypeDeclaration>()
-		{
-			@Override
-			public boolean process(DotNetTypeDeclaration typeDeclaration)
-			{
-				CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, resolveScope, typeDeclaration);
-
-				PsiElement[] elements = selector.doSelectElement(context, false);
-				for(PsiElement element : CSharpResolveUtil.mergeGroupsToIterable(elements))
-				{
-					if(CSharpElementCompareUtil.isEqual(element, target, CSharpElementCompareUtil.CHECK_RETURN_TYPE, target))
-					{
-						list.add((DotNetVirtualImplementOwner) element);
-					}
-				}
-				return true;
-			}
-		});
-
-		return list;
-	}
 }
