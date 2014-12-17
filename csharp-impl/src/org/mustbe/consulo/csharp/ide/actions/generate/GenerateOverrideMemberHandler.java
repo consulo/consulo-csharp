@@ -55,6 +55,11 @@ public class GenerateOverrideMemberHandler extends GenerateImplementOrOverrideMe
 	@Override
 	public void processReturn(@NotNull StringBuilder builder, @NotNull PsiElement item)
 	{
+		generateReturn(builder, item);
+	}
+
+	public static void generateReturn(@NotNull StringBuilder builder, @NotNull PsiElement item)
+	{
 		if(item instanceof CSharpMethodDeclaration)
 		{
 			CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) item;

@@ -112,8 +112,8 @@
 		<codeInsight.implementMethod language="C#"
 									 implementationClass="org.mustbe.consulo.csharp.ide.actions.generate.GenerateImplementMemberHandler"/>
 		<codeInsight.overrideMethod language="C#"
-									 implementationClass="org.mustbe.consulo.csharp.ide.actions.generate.GenerateOverrideMemberHandler"/>
-		<codeInsight.gotoSuper language="C#" implementationClass="org.mustbe.consulo.csharp.ide.actions.generate.GotoSuperMethodHandler" />
+									implementationClass="org.mustbe.consulo.csharp.ide.actions.generate.GenerateOverrideMemberHandler"/>
+		<codeInsight.gotoSuper language="C#" implementationClass="org.mustbe.consulo.csharp.ide.actions.generate.GotoSuperMethodHandler"/>
 		<projectService serviceImplementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher"/>
 		<syntaxHighlighter key="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpSyntaxHighlighter"/>
 		<syntaxHighlighter key="C#Macro" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpMacroSyntaxHighlighter"/>
@@ -138,6 +138,8 @@
 
 		<codeInsight.unresolvedReferenceQuickFixProvider
 				implementation="org.mustbe.consulo.csharp.ide.codeInsight.CSharpUnresolvedReferenceQuickFixProvider"/>
+		<completion.contributor language="C#"
+								implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpOverrideOrImplementCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpReferenceCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpKeywordCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpStatementCompletionContributor"/>
