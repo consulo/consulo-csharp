@@ -31,6 +31,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDoWhileStatementImpl
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpSwitchStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTryStatementImpl;
@@ -67,8 +68,6 @@ import lombok.val;
  */
 public class CSharpStatementCompletionContributor extends CompletionContributor implements CSharpTokenSets
 {
-	private static final TokenSet ourElseStatementKeywords = TokenSet.create(NEW_KEYWORD, ELSE_KEYWORD);
-
 	private static final TokenSet ourParStatementKeywords = TokenSet.create(IF_KEYWORD, FOR_KEYWORD, FOREACH_KEYWORD, FOREACH_KEYWORD,
 			FIXED_KEYWORD, UNCHECKED_KEYWORD, CHECKED_KEYWORD, SWITCH_KEYWORD, USING_KEYWORD, WHILE_KEYWORD, DO_KEYWORD, TRY_KEYWORD);
 
@@ -80,16 +79,16 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 
 	private static final TokenSet ourCatchFinallyKeywords = TokenSet.create(CATCH_KEYWORD, FINALLY_KEYWORD);
 
-	private static final ElementPattern<? extends PsiElement> statementStart = or(psiElement().withElementType(CSharpTokens.SEMICOLON),
+	private static final ElementPattern<? extends PsiElement> ourStatementStart = or(psiElement().withElementType(CSharpTokens.SEMICOLON),
 			psiElement().withElementType(CSharpTokens.LBRACE));
-	private static final ElementPattern<? extends PsiElement> ourContinueAndBreakPattern = psiElement().afterLeaf(statementStart).inside(or
+	private static final ElementPattern<? extends PsiElement> ourContinueAndBreakPattern = psiElement().afterLeaf(ourStatementStart).inside(or
 			(psiElement().inside(CSharpForeachStatementImpl.class), psiElement().inside(CSharpForStatementImpl.class),
 					psiElement().inside(CSharpWhileStatementImpl.class), psiElement().inside(CSharpDoWhileStatementImpl.class)));
 
-	private static final ElementPattern<? extends PsiElement> ourGotoPattern = psiElement().afterLeaf(statementStart).inside(psiElement().inside
+	private static final ElementPattern<? extends PsiElement> ourGotoPattern = psiElement().afterLeaf(ourStatementStart).inside(psiElement().inside
 			(CSharpLabeledStatementImpl.class));
 
-	private static final ElementPattern<? extends PsiElement> ourReturnPattern = psiElement().afterLeaf(statementStart).inside(psiElement().inside
+	private static final ElementPattern<? extends PsiElement> ourReturnPattern = psiElement().afterLeaf(ourStatementStart).inside(psiElement().inside
 			(CSharpSimpleLikeMethodAsElement.class));
 
 	public CSharpStatementCompletionContributor()
@@ -238,14 +237,12 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement().withSuperParent(2, CSharpExpressionStatementImpl.class),
+		extend(CompletionType.BASIC, psiElement().afterLeaf(ourStatementStart).withSuperParent(2, CSharpExpressionStatementImpl.class),
 				new CompletionProvider<CompletionParameters>()
 		{
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
-				CSharpCompletionUtil.tokenSetToLookup(result, ourElseStatementKeywords, null, null);
-
 				CSharpCompletionUtil.tokenSetToLookup(result, ourParStatementKeywords, new NotNullPairFunction<LookupElementBuilder, IElementType,
 						LookupElementBuilder>()
 				{
@@ -319,6 +316,10 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 								}
 							}
 					);
+				}
+				else if(maybeTryStatement instanceof CSharpIfStatementImpl)
+				{
+					CSharpCompletionUtil.tokenSetToLookup(result, TokenSet.create(CSharpTokens.ELSE_KEYWORD), null, null);
 				}
 			}
 		});
