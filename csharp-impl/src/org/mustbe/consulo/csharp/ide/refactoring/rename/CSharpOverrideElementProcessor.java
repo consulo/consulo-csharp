@@ -19,6 +19,8 @@ package org.mustbe.consulo.csharp.ide.refactoring.rename;
 import gnu.trove.THashSet;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
@@ -30,11 +32,11 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.ui.MessageDialogBuilder;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiElement;
-import com.intellij.refactoring.listeners.RefactoringElementListener;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.refactoring.rename.RenamePsiElementProcessor;
-import com.intellij.refactoring.rename.RenameUtil;
+import com.intellij.refactoring.util.MoveRenameUsageInfo;
 import com.intellij.usageView.UsageInfo;
-import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
@@ -42,17 +44,13 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class CSharpOverrideElementProcessor extends RenamePsiElementProcessor
 {
-	private int myResult;
+	private int myResult = -1;
 
 	@Nullable
 	@Override
 	public PsiElement substituteElementToRename(PsiElement element, @Nullable Editor editor)
 	{
-		boolean show = !OverrideUtil.collectOverridingMembers((DotNetVirtualImplementOwner) element).isEmpty();
-		if(!show)
-		{
-			show = !OverrideUtil.collectOverridenMembers((DotNetVirtualImplementOwner) element).isEmpty();
-		}
+		boolean show = !getAllElements(element).isEmpty();
 
 		if(show)
 		{
@@ -69,31 +67,41 @@ public class CSharpOverrideElementProcessor extends RenamePsiElementProcessor
 		return element;
 	}
 
+	@NotNull
 	@Override
-	public void renameElement(PsiElement element,
-			String newName,
-			UsageInfo[] usages,
-			@Nullable RefactoringElementListener listener) throws IncorrectOperationException
+	public Collection<PsiReference> findReferences(PsiElement element)
 	{
-		switch(myResult)
-		{
-			case Messages.YES:
-				Collection<DotNetVirtualImplementOwner> temp1 = OverrideUtil.collectOverridingMembers((DotNetVirtualImplementOwner) element);
-				Collection<DotNetVirtualImplementOwner> temp2 = OverrideUtil.collectOverridenMembers((DotNetVirtualImplementOwner) element);
-				Set<DotNetVirtualImplementOwner> set = new THashSet<DotNetVirtualImplementOwner>(temp1.size() + temp1.size() + 1);
-				set.addAll(temp1);
-				set.addAll(temp2);
-				set.add((DotNetVirtualImplementOwner) element);
+		return super.findReferences(element);
+	}
 
-				for(DotNetVirtualImplementOwner owner : set)
+	@Override
+	public void findCollisions(PsiElement element, String newName, Map<? extends PsiElement, String> allRenames, List<UsageInfo> result)
+	{
+		if(myResult == Messages.YES)
+		{
+			Map map = allRenames;
+			Set<DotNetVirtualImplementOwner> allElements = getAllElements(element);
+			for(DotNetVirtualImplementOwner tempElement : allElements)
+			{
+				map.put(tempElement, newName);
+				Collection<PsiReference> references = ReferencesSearch.search(tempElement).findAll();
+				for(PsiReference psiReference : references)
 				{
-					RenameUtil.doRenameGenericNamedElement(owner, newName, usages, listener);
+					result.add(new MoveRenameUsageInfo(psiReference, tempElement));
 				}
-				break;
-			case Messages.NO:
-				super.renameElement(element, newName, usages, listener);
-				break;
+			}
 		}
+	}
+
+	@NotNull
+	public static Set<DotNetVirtualImplementOwner> getAllElements(PsiElement element)
+	{
+		Collection<DotNetVirtualImplementOwner> temp1 = OverrideUtil.collectOverridingMembers((DotNetVirtualImplementOwner) element);
+		Collection<DotNetVirtualImplementOwner> temp2 = OverrideUtil.collectOverridenMembers((DotNetVirtualImplementOwner) element);
+		Set<DotNetVirtualImplementOwner> set = new THashSet<DotNetVirtualImplementOwner>(temp1.size() + temp1.size() + 1);
+		set.addAll(temp1);
+		set.addAll(temp2);
+		return set;
 	}
 
 	@Override

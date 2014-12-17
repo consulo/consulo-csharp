@@ -7,6 +7,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -33,6 +34,18 @@ public class CSharpLikeMethodDeclarationImplUtil
 		CANT_HAVE,
 		FOUND,
 		NOT_FOUND
+	}
+
+	public static boolean isEquivalentTo(PsiElement o1, PsiElement o2)
+	{
+		PsiElement originalElement1 = o1.getOriginalElement();
+		PsiElement originalElement2 = o2.getOriginalElement();
+
+		if(o1.getUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER) == originalElement2)
+		{
+			return true;
+		}
+		return originalElement1 == originalElement2;
 	}
 
 	@NotNull

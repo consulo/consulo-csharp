@@ -56,6 +56,12 @@ public abstract class CSharpLightLikeMethodDeclaration<S extends DotNetLikeMetho
 		return CSharpLikeMethodDeclarationImplUtil.getParametersInfos(this);
 	}
 
+	@Override
+	public boolean isEquivalentTo(PsiElement another)
+	{
+		return CSharpLikeMethodDeclarationImplUtil.isEquivalentTo(this, another);
+	}
+
 	@Nullable
 	@Override
 	public DotNetParameterList getParameterList()

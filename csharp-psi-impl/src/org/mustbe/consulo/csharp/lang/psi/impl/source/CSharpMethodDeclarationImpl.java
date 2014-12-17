@@ -118,6 +118,12 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 		return childByType == null ? null : CSharpOperatorNameHelper.mergeTwiceOperatorIfNeed(childByType);
 	}
 
+	@Override
+	public boolean isEquivalentTo(PsiElement another)
+	{
+		return CSharpLikeMethodDeclarationImplUtil.isEquivalentTo(this, another);
+	}
+
 	@Nullable
 	@Override
 	public CSharpGenericConstraintList getGenericConstraintList()
