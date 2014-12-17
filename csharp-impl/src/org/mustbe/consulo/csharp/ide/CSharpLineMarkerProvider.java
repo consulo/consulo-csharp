@@ -42,6 +42,7 @@ import com.intellij.openapi.editor.markup.SeparatorPlacement;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.FunctionUtil;
 
 /**
@@ -84,7 +85,7 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 				return null;
 			}
 
-			if(((DotNetMemberOwner) parent).getMembers()[0] == element)
+			if(ArrayUtil.getFirstElement(((DotNetMemberOwner) parent).getMembers()) == element)
 			{
 				return null;
 			}
