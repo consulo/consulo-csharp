@@ -197,7 +197,7 @@ public class OverrideUtil
 
 		List<DotNetVirtualImplementOwner> results = overrideProcessor.getResults();
 
-		// need filter not
+		// need filter result due it ill return all elements with target selector
 		ListIterator<DotNetVirtualImplementOwner> listIterator = results.listIterator();
 		while(listIterator.hasNext())
 		{
