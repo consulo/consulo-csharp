@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingTypeStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
@@ -71,6 +72,7 @@ public class CSharpImportOptimizer implements ImportOptimizer
 	private static void formatUsing(@NotNull CSharpUsingListImpl usingList)
 	{
 		Set<String> namespaceUse = new TreeSet<String>();
+		Set<String> typeUse = new TreeSet<String>();
 		List<Pair<String, String>> typeDef = new ArrayList<Pair<String, String>>();
 		for(CSharpUsingListChild statement : usingList.getStatements())
 		{
@@ -92,9 +94,23 @@ public class CSharpImportOptimizer implements ImportOptimizer
 				}
 				typeDef.add(new Pair<String, String>(((CSharpTypeDefStatementImpl) statement).getName(), type.getText()));
 			}
+			else if(statement instanceof CSharpUsingTypeStatement)
+			{
+				DotNetType type = ((CSharpUsingTypeStatement) statement).getType();
+				if(type == null)
+				{
+					return;
+				}
+				typeUse.add(type.getText());
+			}
 		}
 
 		StringBuilder builder = new StringBuilder();
+		for(String qName : typeUse)
+		{
+			builder.append("using static ").append(qName).append(";\n");
+		}
+
 		for(String qName : namespaceUse)
 		{
 			builder.append("using ").append(qName).append(";\n");
