@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.ide.completion;
 
 import java.util.Map;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -51,30 +52,36 @@ public class CSharpCompletionUtil
 		}
 	};
 
-	public static void tokenSetToLookup(
-			CompletionResultSet resultSet,
-			TokenSet tokenSet,
-			NotNullPairFunction<LookupElementBuilder, IElementType, LookupElementBuilder> decorator,
-			Condition<IElementType> condition)
+	public static void tokenSetToLookup(@NotNull CompletionResultSet resultSet,
+			@NotNull TokenSet tokenSet,
+			@Nullable NotNullPairFunction<LookupElementBuilder, IElementType, LookupElementBuilder> decorator,
+			@Nullable Condition<IElementType> condition)
 	{
 		for(IElementType elementType : tokenSet.getTypes())
 		{
-			if(condition != null && !condition.value(elementType))
-			{
-				continue;
-			}
-
-			for(String keyword : ourCache.get(elementType))
-			{
-				LookupElementBuilder builder = LookupElementBuilder.create(keyword);
-				builder = builder.bold();
-				if(decorator != null)
-				{
-					builder = decorator.fun(builder, elementType);
-				}
-				resultSet.addElement(builder);
-			}
+			elementToLookup(resultSet, elementType, decorator, condition);
 		}
 	}
 
+	public static void elementToLookup(@NotNull CompletionResultSet resultSet,
+			@NotNull IElementType elementType,
+			@Nullable NotNullPairFunction<LookupElementBuilder, IElementType, LookupElementBuilder> decorator,
+			@Nullable Condition<IElementType> condition)
+	{
+		if(condition != null && !condition.value(elementType))
+		{
+			return;
+		}
+
+		for(String keyword : ourCache.get(elementType))
+		{
+			LookupElementBuilder builder = LookupElementBuilder.create(keyword);
+			builder = builder.bold();
+			if(decorator != null)
+			{
+				builder = decorator.fun(builder, elementType);
+			}
+			resultSet.addElement(builder);
+		}
+	}
 }

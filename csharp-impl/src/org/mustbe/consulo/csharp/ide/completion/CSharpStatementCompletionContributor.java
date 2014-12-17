@@ -68,6 +68,31 @@ import lombok.val;
  */
 public class CSharpStatementCompletionContributor extends CompletionContributor implements CSharpTokenSets
 {
+	private static class StatementKeywordInsertHandler implements InsertHandler<LookupElement>
+	{
+		private final IElementType myElementType;
+
+		public StatementKeywordInsertHandler(IElementType elementType)
+		{
+			myElementType = elementType;
+		}
+
+		@Override
+		public void handleInsert(InsertionContext insertionContext, LookupElement item)
+		{
+			int offset = insertionContext.getEditor().getCaretModel().getOffset();
+			if(myElementType == DO_KEYWORD || myElementType == TRY_KEYWORD || myElementType == CATCH_KEYWORD || myElementType == FINALLY_KEYWORD)
+			{
+				insertionContext.getDocument().insertString(offset, "{}");
+			}
+			else
+			{
+				insertionContext.getDocument().insertString(offset, "()");
+			}
+			insertionContext.getEditor().getCaretModel().moveToOffset(offset + 1);
+		}
+	}
+
 	private static final TokenSet ourParStatementKeywords = TokenSet.create(IF_KEYWORD, FOR_KEYWORD, FOREACH_KEYWORD, FOREACH_KEYWORD,
 			FIXED_KEYWORD, UNCHECKED_KEYWORD, CHECKED_KEYWORD, SWITCH_KEYWORD, USING_KEYWORD, WHILE_KEYWORD, DO_KEYWORD, TRY_KEYWORD);
 
@@ -88,8 +113,8 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 	private static final ElementPattern<? extends PsiElement> ourGotoPattern = psiElement().afterLeaf(ourStatementStart).inside(psiElement().inside
 			(CSharpLabeledStatementImpl.class));
 
-	private static final ElementPattern<? extends PsiElement> ourReturnPattern = psiElement().afterLeaf(ourStatementStart).inside(psiElement().inside
-			(CSharpSimpleLikeMethodAsElement.class));
+	private static final ElementPattern<? extends PsiElement> ourReturnPattern = psiElement().afterLeaf(ourStatementStart).inside(psiElement()
+			.inside(CSharpSimpleLikeMethodAsElement.class));
 
 	public CSharpStatementCompletionContributor()
 	{
@@ -250,23 +275,27 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 					@Override
 					public LookupElementBuilder fun(LookupElementBuilder t, final IElementType v)
 					{
-						t = t.withInsertHandler(new InsertHandler<LookupElement>()
-						{
-							@Override
-							public void handleInsert(InsertionContext insertionContext, LookupElement item)
-							{
-								int offset = insertionContext.getEditor().getCaretModel().getOffset();
-								if(v == DO_KEYWORD || v == TRY_KEYWORD)
-								{
-									insertionContext.getDocument().insertString(offset, "{}");
-								}
-								else
-								{
-									insertionContext.getDocument().insertString(offset, "()");
-								}
-								insertionContext.getEditor().getCaretModel().moveToOffset(offset + 1);
-							}
-						});
+						t = t.withInsertHandler(new StatementKeywordInsertHandler(v));
+						return t;
+					}
+				}, null);
+			}
+		});
+
+		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.ELSE_KEYWORD)).withSuperParent(2,
+				CSharpExpressionStatementImpl.class), new CompletionProvider<CompletionParameters>()
+		{
+			@Override
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			{
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.IF_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType,
+						LookupElementBuilder>()
+				{
+					@NotNull
+					@Override
+					public LookupElementBuilder fun(LookupElementBuilder t, final IElementType v)
+					{
+						t = t.withInsertHandler(new StatementKeywordInsertHandler(v));
 
 						return t;
 					}
@@ -294,16 +323,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 								@Override
 								public LookupElementBuilder fun(LookupElementBuilder t, IElementType v)
 								{
-									t = t.withInsertHandler(new InsertHandler<LookupElement>()
-									{
-										@Override
-										public void handleInsert(InsertionContext insertionContext, LookupElement item)
-										{
-											int offset = insertionContext.getEditor().getCaretModel().getOffset();
-											insertionContext.getDocument().insertString(offset, "{}");
-											insertionContext.getEditor().getCaretModel().moveToOffset(offset + 1);
-										}
-									});
+									t = t.withInsertHandler(new StatementKeywordInsertHandler(v));
 									return t;
 								}
 							}, new Condition<IElementType>()
@@ -319,7 +339,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 				}
 				else if(maybeTryStatement instanceof CSharpIfStatementImpl)
 				{
-					CSharpCompletionUtil.tokenSetToLookup(result, TokenSet.create(CSharpTokens.ELSE_KEYWORD), null, null);
+					CSharpCompletionUtil.elementToLookup(result, CSharpTokens.ELSE_KEYWORD, null, null);
 				}
 			}
 		});
