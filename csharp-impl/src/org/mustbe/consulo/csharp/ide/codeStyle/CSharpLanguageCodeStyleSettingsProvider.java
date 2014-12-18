@@ -78,6 +78,13 @@ public class CSharpLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSe
 			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_INDEX_METHOD_LBRACE", "Index methd left brace",
 					CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE, CodeStyleSettingsCustomizable.OptionAnchor.AFTER,
 					"SPACE_BEFORE_METHOD_LBRACE");
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_FOREACH_LBRACE", "'foreach' left brace",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE, CodeStyleSettingsCustomizable.OptionAnchor.BEFORE,
+					"SPACE_BEFORE_FOR_LBRACE");
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_UNSAFE_LBRACE", "'unsafe' left brace",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE);
 		}
 		else if(settingsType == SettingsType.BLANK_LINES_SETTINGS)
 		{

@@ -47,14 +47,12 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 
 		myBuilder.beforeInside(BLOCK_STATEMENT, SWITCH_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_SWITCH_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, FOR_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_FOR_LBRACE);
-		myBuilder.beforeInside(BLOCK_STATEMENT, FOREACH_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_FOR_LBRACE);
+		myBuilder.beforeInside(BLOCK_STATEMENT, FOREACH_STATEMENT).spaceIf(customSettings.SPACE_BEFORE_FOREACH_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, WHILE_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_WHILE_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, TRY_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_TRY_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, CATCH_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_CATCH_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, FINALLY_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_FINALLY_LBRACE);
-
-		//TODO [VISTALL] new config
-		myBuilder.beforeInside(BLOCK_STATEMENT, UNSAFE_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_WHILE_LBRACE);
+		myBuilder.beforeInside(BLOCK_STATEMENT, UNSAFE_STATEMENT).spaceIf(customSettings.SPACE_BEFORE_UNSAFE_LBRACE);
 
 		myBuilder.before(CSharpTokens.ELSE_KEYWORD).spaceIf(commonSettings.SPACE_BEFORE_ELSE_KEYWORD);
 		myBuilder.betweenInside(CSharpTokens.ELSE_KEYWORD, CSharpElements.BLOCK_STATEMENT, CSharpElements.IF_STATEMENT).spaceIf(commonSettings

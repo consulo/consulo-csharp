@@ -55,6 +55,20 @@ public class CSharpCodeStyleSettings extends CustomCodeStyleSettings
 	 */
 	public boolean SPACE_BEFORE_NAMESPACE_LBRACE = true;
 
+	/**
+	 * "unsafe {"
+	 * or
+	 * "unsafe{"
+	 */
+	public boolean SPACE_BEFORE_UNSAFE_LBRACE = true;
+
+	/**
+	 * "foreach(...) {"
+	 * or
+	 * "foreach(...){"
+	 */
+	public boolean SPACE_BEFORE_FOREACH_LBRACE = true;
+
 	public CSharpCodeStyleSettings(@NonNls @NotNull String tagName, CodeStyleSettings container)
 	{
 		super(tagName, container);
