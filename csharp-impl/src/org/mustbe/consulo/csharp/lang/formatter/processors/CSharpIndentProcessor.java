@@ -1,5 +1,6 @@
 package org.mustbe.consulo.csharp.lang.formatter.processors;
 
+import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStatementListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
@@ -26,7 +27,7 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 	private final ASTNode myNode;
 	private final CommonCodeStyleSettings myCodeStyleSettings;
 
-	public CSharpIndentProcessor(ASTNode node, CommonCodeStyleSettings codeStyleSettings)
+	public CSharpIndentProcessor(ASTNode node, CommonCodeStyleSettings codeStyleSettings, CSharpCodeStyleSettings customSettings)
 	{
 		myNode = node;
 		myCodeStyleSettings = codeStyleSettings;

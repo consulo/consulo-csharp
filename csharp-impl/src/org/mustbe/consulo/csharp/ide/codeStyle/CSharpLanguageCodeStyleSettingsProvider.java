@@ -62,6 +62,22 @@ public class CSharpLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSe
 					"SPACE_WITHIN_FOR_PARENTHESES", "SPACE_WITHIN_CATCH_PARENTHESES", "SPACE_WITHIN_SWITCH_PARENTHESES", "SPACE_BEFORE_QUEST",
 					"SPACE_AFTER_QUEST", "SPACE_BEFORE_COLON", "SPACE_AFTER_COLON", "SPACE_AFTER_COMMA", "SPACE_AFTER_COMMA_IN_TYPE_ARGUMENTS",
 					"SPACE_BEFORE_COMMA", "SPACE_AROUND_UNARY_OPERATOR");
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_NAMESPACE_LBRACE", "Namespace left brace",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE, CodeStyleSettingsCustomizable.OptionAnchor.BEFORE,
+					"SPACE_BEFORE_CLASS_LBRACE");
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_EVENT_LBRACE", "Event left brace",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE, CodeStyleSettingsCustomizable.OptionAnchor.AFTER,
+					"SPACE_BEFORE_METHOD_LBRACE");
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_PROPERTY_LBRACE", "Property left brace",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE, CodeStyleSettingsCustomizable.OptionAnchor.AFTER,
+					"SPACE_BEFORE_METHOD_LBRACE");
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_INDEX_METHOD_LBRACE", "Index methd left brace",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE, CodeStyleSettingsCustomizable.OptionAnchor.AFTER,
+					"SPACE_BEFORE_METHOD_LBRACE");
 		}
 		else if(settingsType == SettingsType.BLANK_LINES_SETTINGS)
 		{

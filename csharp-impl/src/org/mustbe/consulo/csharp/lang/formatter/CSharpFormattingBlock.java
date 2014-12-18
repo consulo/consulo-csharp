@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.formatter.processors.CSharpIndentProcessor;
 import org.mustbe.consulo.csharp.lang.formatter.processors.CSharpSpacingProcessor;
@@ -37,6 +38,7 @@ import com.intellij.formatting.templateLanguages.DataLanguageBlockWrapper;
 import com.intellij.formatting.templateLanguages.TemplateLanguageBlock;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
+import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.tree.IElementType;
 
 /**
@@ -56,9 +58,12 @@ public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSha
 			@Nullable List<DataLanguageBlockWrapper> foreignChildren)
 	{
 		super(blockFactory, settings, node, foreignChildren);
-		myWrappingProcessor = new CSharpWrappingProcessor(node, settings.getCommonSettings(CSharpLanguage.INSTANCE));
-		myIndentProcessor = new CSharpIndentProcessor(node, settings.getCommonSettings(CSharpLanguage.INSTANCE));
-		mySpacingProcessor = new CSharpSpacingProcessor(this, settings.getCommonSettings(CSharpLanguage.INSTANCE));
+		CommonCodeStyleSettings commonSettings = settings.getCommonSettings(CSharpLanguage.INSTANCE);
+		CSharpCodeStyleSettings customSettings = settings.getCustomSettings(CSharpCodeStyleSettings.class);
+
+		myWrappingProcessor = new CSharpWrappingProcessor(node, commonSettings, customSettings);
+		myIndentProcessor = new CSharpIndentProcessor(node, commonSettings, customSettings);
+		mySpacingProcessor = new CSharpSpacingProcessor(this, commonSettings, customSettings);
 	}
 
 	@Nullable

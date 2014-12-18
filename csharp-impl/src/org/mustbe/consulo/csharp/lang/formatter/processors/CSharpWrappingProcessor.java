@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.formatter.processors;
 
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
@@ -25,7 +26,7 @@ public class CSharpWrappingProcessor
 	private final ASTNode myNode;
 	private final CommonCodeStyleSettings myCodeStyleSettings;
 
-	public CSharpWrappingProcessor(ASTNode node, CommonCodeStyleSettings codeStyleSettings)
+	public CSharpWrappingProcessor(ASTNode node, CommonCodeStyleSettings codeStyleSettings, CSharpCodeStyleSettings customSettings)
 	{
 		myNode = node;
 		myCodeStyleSettings = codeStyleSettings;
