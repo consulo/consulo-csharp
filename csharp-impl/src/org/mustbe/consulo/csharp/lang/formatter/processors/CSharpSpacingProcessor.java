@@ -1,15 +1,22 @@
 package org.mustbe.consulo.csharp.lang.formatter.processors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import org.mustbe.consulo.csharp.lang.formatter.CSharpFormattingBlock;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import com.intellij.formatting.ASTBlock;
 import com.intellij.formatting.Spacing;
 import com.intellij.formatting.SpacingBuilder;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
 
 /**
  * @author VISTALL
@@ -17,13 +24,62 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
  */
 public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 {
+	private static class OperatorReferenceSpacingBuilder
+	{
+		private final CommonCodeStyleSettings myCommonSettings;
+		private final TokenSet myTokenSet;
+		private final boolean myCondition;
+
+		OperatorReferenceSpacingBuilder(CommonCodeStyleSettings commonSettings, IElementType[] types, boolean condition)
+		{
+			myCommonSettings = commonSettings;
+			myTokenSet = TokenSet.create(types);
+			myCondition = condition;
+		}
+
+		public boolean match(@Nullable ASTBlock child1, @NotNull ASTBlock child2)
+		{
+			CSharpOperatorReferenceImpl operatorReference = findOperatorReference(child1, child2);
+			return operatorReference != null && myTokenSet.contains(operatorReference.getOperatorElementType());
+		}
+
+		@Nullable
+		private static CSharpOperatorReferenceImpl findOperatorReference(@Nullable ASTBlock child1, @NotNull ASTBlock child2)
+		{
+			if(child1 != null)
+			{
+				PsiElement psi = child1.getNode().getPsi();
+				if(psi instanceof CSharpOperatorReferenceImpl)
+				{
+					return (CSharpOperatorReferenceImpl) psi;
+				}
+			}
+			PsiElement psi = child2.getNode().getPsi();
+			if(psi instanceof CSharpOperatorReferenceImpl)
+			{
+				return (CSharpOperatorReferenceImpl) psi;
+			}
+			return null;
+		}
+
+		@NotNull
+		public Spacing createSpacing()
+		{
+			int count = myCondition ? 1 : 0;
+			return Spacing.createSpacing(count, count, 0, myCommonSettings.KEEP_LINE_BREAKS, myCommonSettings.KEEP_BLANK_LINES_IN_CODE);
+		}
+	}
+
 	private final CSharpFormattingBlock myParent;
+	private final CommonCodeStyleSettings myCommonSettings;
 
 	private SpacingBuilder myBuilder;
+	private List<OperatorReferenceSpacingBuilder> myOperatorReferenceSpacingBuilders = new ArrayList<OperatorReferenceSpacingBuilder>();
 
 	public CSharpSpacingProcessor(CSharpFormattingBlock parent, CommonCodeStyleSettings commonSettings, CSharpCodeStyleSettings customSettings)
 	{
 		myParent = parent;
+		myCommonSettings = commonSettings;
 
 		myBuilder = new SpacingBuilder(commonSettings);
 
@@ -60,11 +116,39 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 
 		// need be after else declaration
 		myBuilder.beforeInside(BLOCK_STATEMENT, IF_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_IF_LBRACE);
+
+		operatorReferenceSpacing(commonSettings.SPACE_AROUND_EQUALITY_OPERATORS, CSharpTokens.EQEQ, CSharpTokens.NTEQ);
+		operatorReferenceSpacing(commonSettings.SPACE_AROUND_LOGICAL_OPERATORS, CSharpTokens.ANDAND, CSharpTokens.OROR);
+		operatorReferenceSpacing(commonSettings.SPACE_AROUND_RELATIONAL_OPERATORS, CSharpTokens.LT, CSharpTokens.GT, CSharpTokens.LTEQ,
+				CSharpTokens.GTEQ);
+		operatorReferenceSpacing(commonSettings.SPACE_AROUND_ASSIGNMENT_OPERATORS, CSharpTokens.EQ, CSharpTokens.PLUSEQ, CSharpTokens.MINUSEQ,
+				CSharpTokens.MULEQ, CSharpTokens.DIVEQ, CSharpTokens.PERCEQ);
+
+		// field, local var, etc initialization
+		myBuilder.around(CSharpTokens.EQ).spaceIf(commonSettings.SPACE_AROUND_ASSIGNMENT_OPERATORS);
+
+		operatorReferenceSpacing(commonSettings.SPACE_AROUND_SHIFT_OPERATORS, CSharpTokens.GTGT, CSharpTokens.GTGTEQ, CSharpTokens.LTLT,
+				CSharpTokens.LTLTEQ);
+		operatorReferenceSpacing(commonSettings.SPACE_AROUND_ADDITIVE_OPERATORS, CSharpTokens.PLUS, CSharpTokens.MINUS);
+		operatorReferenceSpacing(commonSettings.SPACE_AROUND_MULTIPLICATIVE_OPERATORS, CSharpTokens.MUL, CSharpTokens.DIV, CSharpTokens.PERC);
+		operatorReferenceSpacing(commonSettings.SPACE_AROUND_BITWISE_OPERATORS, CSharpTokens.XOR, CSharpTokens.AND, CSharpTokens.OR);
+	}
+
+	public void operatorReferenceSpacing(boolean ifCondition, IElementType... types)
+	{
+		myOperatorReferenceSpacingBuilders.add(new OperatorReferenceSpacingBuilder(myCommonSettings, types, ifCondition));
 	}
 
 	@Nullable
 	public Spacing getSpacing(@Nullable ASTBlock child1, @NotNull ASTBlock child2)
 	{
+		for(OperatorReferenceSpacingBuilder operatorReferenceSpacingBuilder : myOperatorReferenceSpacingBuilders)
+		{
+			if(operatorReferenceSpacingBuilder.match(child1, child2))
+			{
+				return operatorReferenceSpacingBuilder.createSpacing();
+			}
+		}
 		return myBuilder.getSpacing(myParent, child1, child2);
 	}
 }
