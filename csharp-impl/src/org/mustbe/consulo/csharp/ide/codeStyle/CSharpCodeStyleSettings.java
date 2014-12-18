@@ -27,6 +27,15 @@ import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
  */
 public class CSharpCodeStyleSettings extends CustomCodeStyleSettings
 {
+	// ----------------------------------- Parentheses  settings -------------------------------------
+	/**
+	 * "foreach (...)"
+	 * or
+	 * "foreach(...)"
+	 */
+	public boolean SPACE_BEFORE_FOREACH_PARENTHESES = true;
+
+	// ----------------------------------- Left Brace settings -------------------------------------
 	/**
 	 * "int MyProperty {"
 	 * or

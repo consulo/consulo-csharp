@@ -63,6 +63,12 @@ public class CSharpLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSe
 					"SPACE_AFTER_QUEST", "SPACE_BEFORE_COLON", "SPACE_AFTER_COLON", "SPACE_AFTER_COMMA", "SPACE_AFTER_COMMA_IN_TYPE_ARGUMENTS",
 					"SPACE_BEFORE_COMMA", "SPACE_AROUND_UNARY_OPERATOR");
 
+			// parentheses settings
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_FOREACH_PARENTHESES", "'foreach' parentheses",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_PARENTHESES, CodeStyleSettingsCustomizable.OptionAnchor.BEFORE,
+					"SPACE_BEFORE_FOR_PARENTHESES");
+
+			// left brace settings
 			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_NAMESPACE_LBRACE", "Namespace left brace",
 					CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE, CodeStyleSettingsCustomizable.OptionAnchor.BEFORE,
 					"SPACE_BEFORE_CLASS_LBRACE");
