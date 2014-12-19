@@ -23,15 +23,17 @@ import org.mustbe.consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetCodeBlockOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
+import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.editor.Editor;
@@ -48,13 +50,13 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 18.11.14
  */
-public class CS0501 extends CompilerCheck<DotNetLikeMethodDeclaration>
+public class CS0501 extends CompilerCheck<DotNetCodeBlockOwner>
 {
 	public static class CreateEmptyBoxFix extends BaseIntentionAction
 	{
-		private SmartPsiElementPointer<DotNetLikeMethodDeclaration> myPointer;
+		private SmartPsiElementPointer<DotNetCodeBlockOwner> myPointer;
 
-		public CreateEmptyBoxFix(DotNetLikeMethodDeclaration declaration)
+		public CreateEmptyBoxFix(DotNetCodeBlockOwner declaration)
 		{
 			myPointer = SmartPointerManager.getInstance(declaration.getProject()).createSmartPsiElementPointer(declaration);
 		}
@@ -70,7 +72,7 @@ public class CS0501 extends CompilerCheck<DotNetLikeMethodDeclaration>
 		@Override
 		public String getText()
 		{
-			return "Create empty method body";
+			return "Create empty code block";
 		}
 
 		@Override
@@ -82,16 +84,19 @@ public class CS0501 extends CompilerCheck<DotNetLikeMethodDeclaration>
 		@Override
 		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
-			DotNetLikeMethodDeclaration element = myPointer.getElement();
+			DotNetCodeBlockOwner element = myPointer.getElement();
 			if(element == null)
 			{
 				return;
 			}
 			PsiDocumentManager.getInstance(project).commitAllDocuments();
 
+			assert element instanceof CSharpSimpleLikeMethodAsElement;
+
 			StringBuilder builder = new StringBuilder();
 			builder.append("{\n");
-			String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(element.getReturnTypeRef(), element);
+			String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(((CSharpSimpleLikeMethodAsElement) element).getReturnTypeRef(),
+					element);
 			if(defaultValueForType != null)
 			{
 				builder.append("return ").append(defaultValueForType).append(";\n");
@@ -111,22 +116,14 @@ public class CS0501 extends CompilerCheck<DotNetLikeMethodDeclaration>
 
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetLikeMethodDeclaration element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetCodeBlockOwner element)
 	{
 		if(element instanceof CSharpArrayMethodDeclaration)
 		{
 			return null;
 		}
 
-		PsiElement highlight = null;
-		if(element instanceof CSharpConversionMethodDeclaration)
-		{
-			highlight = ((CSharpConversionMethodDeclaration) element).getConversionType();
-		}
-		else
-		{
-			highlight = ((PsiNameIdentifierOwner) element).getNameIdentifier();
-		}
+		PsiElement highlight = ((PsiNameIdentifierOwner) element).getNameIdentifier();
 
 		if(highlight == null)
 		{
@@ -144,26 +141,32 @@ public class CS0501 extends CompilerCheck<DotNetLikeMethodDeclaration>
 			else if(element instanceof CSharpMethodDeclaration && !(((CSharpMethodDeclaration) element).isDelegate()))
 			{
 				result.addQuickFix(new CreateEmptyBoxFix(element));
-				result.addQuickFix(new AddModifierFix(CSharpModifier.ABSTRACT, element));
-				result.addQuickFix(new AddModifierFix(CSharpModifier.EXTERN, element));
-				result.addQuickFix(new AddModifierFix(CSharpModifier.PARTIAL, element));
+				result.addQuickFix(new AddModifierFix(CSharpModifier.ABSTRACT, (DotNetModifierListOwner) element));
+				result.addQuickFix(new AddModifierFix(CSharpModifier.EXTERN, (DotNetModifierListOwner) element));
+				result.addQuickFix(new AddModifierFix(CSharpModifier.PARTIAL, (DotNetModifierListOwner) element));
+			}
+			else if(element instanceof DotNetXXXAccessor)
+			{
+				result.addQuickFix(new CreateEmptyBoxFix(element));
 			}
 			return result;
 		}
 		return null;
 	}
 
-	private boolean isAllowEmptyCodeBlock(DotNetLikeMethodDeclaration declaration)
+
+	private boolean isAllowEmptyCodeBlock(DotNetCodeBlockOwner declaration)
 	{
+		DotNetModifierListOwner owner = (DotNetModifierListOwner) declaration;
+
+		if(owner.hasModifier(DotNetModifier.ABSTRACT) || owner.hasModifier(CSharpModifier.PARTIAL) || owner.hasModifier(CSharpModifier.EXTERN))
+		{
+			return true;
+		}
+
 		if(declaration instanceof CSharpMethodDeclaration)
 		{
 			if(((CSharpMethodDeclaration) declaration).isDelegate())
-			{
-				return true;
-			}
-
-			if(declaration.hasModifier(DotNetModifier.ABSTRACT) || declaration.hasModifier(CSharpModifier.PARTIAL) || declaration.hasModifier
-					(CSharpModifier.EXTERN))
 			{
 				return true;
 			}

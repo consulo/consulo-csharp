@@ -28,7 +28,9 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.PsiWhiteSpace;
@@ -98,6 +100,18 @@ public class CSharpModifierListImplUtil
 						parent.getParent()).isInterface())
 				{
 					return true;
+				}
+				if(parent instanceof DotNetXXXAccessor)
+				{
+					if(((DotNetXXXAccessor) parent).getCodeBlock() == null)
+					{
+						PsiElement accessorOwner = parent.getParent();
+						if(accessorOwner instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) accessorOwner).hasModifier(DotNetModifier
+								.ABSTRACT))
+						{
+							return true;
+						}
+					}
 				}
 				break;
 		}

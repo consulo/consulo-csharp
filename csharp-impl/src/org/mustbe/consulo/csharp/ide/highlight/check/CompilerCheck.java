@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
 import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -33,6 +34,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.intention.IntentionAction;
@@ -215,6 +217,11 @@ public abstract class CompilerCheck<T extends PsiElement>
 		{
 			return ((CSharpLocalVariable) e).getName();
 		}
+		else if(e instanceof DotNetXXXAccessor)
+		{
+			PsiElement parent = e.getParent();
+			return formatElement(parent) + "." + ((DotNetXXXAccessor) e).getAccessorKind().name().toLowerCase();
+		}
 
 		String parentName = null;
 		PsiElement parent = e.getParent();
@@ -230,7 +237,7 @@ public abstract class CompilerCheck<T extends PsiElement>
 		String currentText = "Unknown element : " + e.getClass().getSimpleName();
 		if(e instanceof DotNetLikeMethodDeclaration)
 		{
-			currentText = DotNetElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration)e, 0);
+			currentText = CSharpElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) e, 0);
 		}
 		else if(e instanceof DotNetTypeDeclaration)
 		{

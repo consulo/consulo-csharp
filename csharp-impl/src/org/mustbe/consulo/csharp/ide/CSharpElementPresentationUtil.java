@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.ide;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0029;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -59,7 +60,14 @@ public class CSharpElementPresentationUtil
 			builder.append("~");
 		}
 
-		builder.append(methodDeclaration.getName());
+		if(methodDeclaration instanceof CSharpArrayMethodDeclaration)
+		{
+			builder.append("this");
+		}
+		else
+		{
+			builder.append(methodDeclaration.getName());
+		}
 		formatTypeGenericParameters(methodDeclaration.getGenericParameters(), builder);
 		formatParameters(methodDeclaration, builder, flags);
 		return builder.toString();
@@ -67,14 +75,16 @@ public class CSharpElementPresentationUtil
 
 	private static void formatParameters(@NotNull DotNetLikeMethodDeclaration methodDeclaration, @NotNull StringBuilder builder, final int flags)
 	{
+		boolean indexMethod = methodDeclaration instanceof CSharpArrayMethodDeclaration;
+
 		DotNetParameter[] parameters = methodDeclaration.getParameters();
 		if(parameters.length == 0)
 		{
-			builder.append("()");
+			builder.append(indexMethod ? "[]" : "()");
 		}
 		else
 		{
-			builder.append("(");
+			builder.append(indexMethod ? "[" : "(");
 			builder.append(StringUtil.join(parameters, new Function<DotNetParameter, String>()
 			{
 				@Override
@@ -97,7 +107,7 @@ public class CSharpElementPresentationUtil
 					}
 				}
 			}, ", "));
-			builder.append(")");
+			builder.append(indexMethod ? "]" : ")");
 		}
 
 		if(BitUtil.isSet(flags, METHOD_WITH_RETURN_TYPE) && BitUtil.isSet(flags, METHOD_SCALA_FORMAT))
