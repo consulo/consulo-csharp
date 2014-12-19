@@ -41,11 +41,11 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class CS0500 extends CompilerCheck<CSharpMethodDeclaration>
 {
-	public static class RemoveMethodBody extends BaseIntentionAction
+	public static class RemoveCodeBlockFix extends BaseIntentionAction
 	{
 		private SmartPsiElementPointer<DotNetLikeMethodDeclaration> myPointer;
 
-		public RemoveMethodBody(DotNetLikeMethodDeclaration declaration)
+		public RemoveCodeBlockFix(DotNetLikeMethodDeclaration declaration)
 		{
 			myPointer = SmartPointerManager.getInstance(declaration.getProject()).createSmartPsiElementPointer(declaration);
 		}
@@ -61,7 +61,7 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration>
 		@Override
 		public String getText()
 		{
-			return "Remove method body";
+			return "Remove code block";
 		}
 
 		@Override
@@ -101,7 +101,7 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration>
 		if((element.hasModifier(CSharpModifier.ABSTRACT) || element.isDelegate()) && element.getCodeBlock() != null)
 		{
 			CompilerCheckBuilder compilerCheckBuilder = newBuilder(nameIdentifier, formatElement(element));
-			compilerCheckBuilder.addQuickFix(new RemoveMethodBody(element));
+			compilerCheckBuilder.addQuickFix(new RemoveCodeBlockFix(element));
 			if(element.hasModifier(CSharpModifier.ABSTRACT))
 			{
 				compilerCheckBuilder.addQuickFix(new RemoveModifierFix(CSharpModifier.ABSTRACT, element));
