@@ -67,7 +67,7 @@ public class CSharpModuleTypeHelperImpl extends CSharpModuleTypeHelper
 			}
 
 			StringBuilder builder = new StringBuilder();
-			builder.append("public class ArrayImpl<T> : System.Array, System.Collections.Generic.IEnumerable<T>");
+			builder.append("public class ArrayImpl<T> : System.Array");
 			builder.append("{");
 			builder.append("public T this[int index");
 			for(int i = 0; i < dimensions; i++)
@@ -75,7 +75,6 @@ public class CSharpModuleTypeHelperImpl extends CSharpModuleTypeHelper
 				builder.append(", int index").append(i);
 			}
 			builder.append("] { get; set; }");
-			builder.append("public System.Collections.Generic.IEnumerator<T> GetEnumerator() { return null; }");
 			builder.append("}");
 
 			DotNetTypeDeclaration typeDeclaration = CSharpFileFactory.createTypeDeclaration(myModule.getProject(), builder.toString());
