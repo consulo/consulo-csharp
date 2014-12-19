@@ -24,7 +24,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetCodeBlockOwner;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -43,9 +43,9 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration>
 {
 	public static class RemoveCodeBlockFix extends BaseIntentionAction
 	{
-		private SmartPsiElementPointer<DotNetLikeMethodDeclaration> myPointer;
+		private SmartPsiElementPointer<DotNetCodeBlockOwner> myPointer;
 
-		public RemoveCodeBlockFix(DotNetLikeMethodDeclaration declaration)
+		public RemoveCodeBlockFix(DotNetCodeBlockOwner declaration)
 		{
 			myPointer = SmartPointerManager.getInstance(declaration.getProject()).createSmartPsiElementPointer(declaration);
 		}
@@ -73,7 +73,7 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration>
 		@Override
 		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
-			DotNetLikeMethodDeclaration element = myPointer.getElement();
+			DotNetCodeBlockOwner element = myPointer.getElement();
 			if(element == null)
 			{
 				return;

@@ -60,6 +60,7 @@ public enum CSharpCompilerChecks
 	CS0501(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // empty code block checks
 	CS0516(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // constructor cant call itself
 	CS0518(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // dynamic checks
+	CS0531(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // checks for body for only abstract items
 	CS0534(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // checks for missed impl of interfaces
 	//CS0535(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // checks for missed impl of abstract members
 	CS0539(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // checks for private impl of abstract methods
