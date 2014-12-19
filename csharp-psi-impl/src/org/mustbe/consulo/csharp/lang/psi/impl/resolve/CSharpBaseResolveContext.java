@@ -73,7 +73,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 				{
 					myConstructors = new SmartList<CSharpConstructorDeclaration>();
 				}
-				myConstructors.add(declaration);
+				myConstructors.add(GenericUnwrapTool.extract(declaration, myGenericExtractor));
 			}
 		}
 
