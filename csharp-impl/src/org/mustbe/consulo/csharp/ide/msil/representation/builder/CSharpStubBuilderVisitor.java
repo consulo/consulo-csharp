@@ -521,7 +521,13 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 				continue;
 			}
 
-			if(dotNetModifier == CSharpModifier.ABSTRACT && owner instanceof DotNetXXXAccessor && isInterface(owner.getParent().getParent()))
+			if(dotNetModifier == CSharpModifier.PUBLIC && isInterface(owner.getParent()))
+			{
+				continue;
+			}
+
+			if((dotNetModifier == CSharpModifier.ABSTRACT || dotNetModifier == CSharpModifier.PUBLIC) && owner instanceof DotNetXXXAccessor &&
+					isInterface(owner.getParent().getParent()))
 			{
 				continue;
 			}

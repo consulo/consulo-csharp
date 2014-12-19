@@ -71,10 +71,6 @@ public class MsilToCSharpUtil
 		switch(modifier)
 		{
 			case PUBLIC:
-				if(hasModifierInParentIfType(modifierList, MsilTokens.INTERFACE_KEYWORD))
-				{
-					return false;
-				}
 				elementType = MsilTokens.PUBLIC_KEYWORD;
 				break;
 			case PRIVATE:
