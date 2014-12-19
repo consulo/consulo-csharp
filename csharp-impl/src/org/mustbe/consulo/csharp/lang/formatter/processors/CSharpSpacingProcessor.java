@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import org.mustbe.consulo.csharp.lang.formatter.CSharpFormattingBlock;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import com.intellij.formatting.ASTBlock;
@@ -109,6 +110,16 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.beforeInside(BLOCK_STATEMENT, CATCH_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_CATCH_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, FINALLY_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_FINALLY_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, UNSAFE_STATEMENT).spaceIf(customSettings.SPACE_BEFORE_UNSAFE_LBRACE);
+
+		myBuilder.beforeInside(IDENTIFIER, TYPE_DECLARATION).spaces(1);
+		myBuilder.beforeInside(IDENTIFIER, LOCAL_VARIABLE).spaces(1);
+		myBuilder.beforeInside(IDENTIFIER, FIELD_DECLARATION).spaces(1);
+		myBuilder.beforeInside(IDENTIFIER, EVENT_DECLARATION).spaces(1);
+		myBuilder.beforeInside(IDENTIFIER, METHOD_DECLARATION).spaces(1);
+		myBuilder.beforeInside(IDENTIFIER, CONSTRUCTOR_DECLARATION).spaces(1);
+		myBuilder.beforeInside(THIS_KEYWORD, ARRAY_METHOD_DECLARATION).spaces(1);
+		myBuilder.beforeInside(IDENTIFIER, CSharpElements.PARAMETER).spaces(1);
+		myBuilder.beforeInside(IDENTIFIER, CSharpStubElements.PARAMETER).spaces(1);
 
 		myBuilder.before(CSharpTokens.ELSE_KEYWORD).spaceIf(commonSettings.SPACE_BEFORE_ELSE_KEYWORD);
 		myBuilder.betweenInside(CSharpTokens.ELSE_KEYWORD, CSharpElements.BLOCK_STATEMENT, CSharpElements.IF_STATEMENT).spaceIf(commonSettings
