@@ -26,6 +26,8 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPsiUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -162,6 +164,15 @@ public class CS0501 extends CompilerCheck<DotNetCodeBlockOwner>
 		if(owner.hasModifier(DotNetModifier.ABSTRACT) || owner.hasModifier(CSharpModifier.PARTIAL) || owner.hasModifier(CSharpModifier.EXTERN))
 		{
 			return true;
+		}
+
+		if(owner instanceof DotNetXXXAccessor)
+		{
+			PsiElement parent = owner.getParent();
+			if(parent instanceof CSharpPropertyDeclaration)
+			{
+				return CSharpPsiUtil.isAutoProperty(parent);
+			}
 		}
 
 		if(declaration instanceof CSharpMethodDeclaration)
