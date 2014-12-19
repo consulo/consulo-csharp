@@ -62,6 +62,7 @@ public class CSharpModifierListImplUtil
 			put(CSharpModifier.OVERRIDE, CSharpTokens.OVERRIDE_KEYWORD);
 			put(CSharpModifier.ASYNC, CSharpSoftTokens.ASYNC_KEYWORD);
 			put(CSharpModifier.IN, CSharpSoftTokens.IN_KEYWORD);
+			put(CSharpModifier.EXTERN, CSharpSoftTokens.EXTERN_KEYWORD);
 		}
 	};
 

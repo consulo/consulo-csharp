@@ -145,7 +145,7 @@ public class CS0501 extends CompilerCheck<DotNetLikeMethodDeclaration>
 			{
 				result.addQuickFix(new CreateEmptyBoxFix(element));
 				result.addQuickFix(new AddModifierFix(CSharpModifier.ABSTRACT, element));
-				//TODO [VISTALL] result.addQuickFix(new AddModifierFix(CSharpModifier.EXTERN, element));
+				result.addQuickFix(new AddModifierFix(CSharpModifier.EXTERN, element));
 				result.addQuickFix(new AddModifierFix(CSharpModifier.PARTIAL, element));
 			}
 			return result;
