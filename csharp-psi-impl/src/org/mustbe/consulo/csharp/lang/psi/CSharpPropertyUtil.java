@@ -24,7 +24,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 19.12.14
  */
-public class CSharpPsiUtil
+public class CSharpPropertyUtil
 {
 	public static boolean isAutoProperty(@NotNull PsiElement element)
 	{
