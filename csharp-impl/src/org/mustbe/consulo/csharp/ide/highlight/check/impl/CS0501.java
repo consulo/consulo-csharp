@@ -52,11 +52,11 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class CS0501 extends CompilerCheck<DotNetCodeBlockOwner>
 {
-	public static class CreateEmptyBoxFix extends BaseIntentionAction
+	public static class CreateEmptyCodeBlockFix extends BaseIntentionAction
 	{
 		private SmartPsiElementPointer<DotNetCodeBlockOwner> myPointer;
 
-		public CreateEmptyBoxFix(DotNetCodeBlockOwner declaration)
+		public CreateEmptyCodeBlockFix(DotNetCodeBlockOwner declaration)
 		{
 			myPointer = SmartPointerManager.getInstance(declaration.getProject()).createSmartPsiElementPointer(declaration);
 		}
@@ -136,18 +136,18 @@ public class CS0501 extends CompilerCheck<DotNetCodeBlockOwner>
 			CompilerCheckBuilder result = newBuilder(highlight, formatElement(element));
 			if(element instanceof CSharpConstructorDeclaration)
 			{
-				result.addQuickFix(new CreateEmptyBoxFix(element));
+				result.addQuickFix(new CreateEmptyCodeBlockFix(element));
 			}
 			else if(element instanceof CSharpMethodDeclaration && !(((CSharpMethodDeclaration) element).isDelegate()))
 			{
-				result.addQuickFix(new CreateEmptyBoxFix(element));
+				result.addQuickFix(new CreateEmptyCodeBlockFix(element));
 				result.addQuickFix(new AddModifierFix(CSharpModifier.ABSTRACT, (DotNetModifierListOwner) element));
 				result.addQuickFix(new AddModifierFix(CSharpModifier.EXTERN, (DotNetModifierListOwner) element));
 				result.addQuickFix(new AddModifierFix(CSharpModifier.PARTIAL, (DotNetModifierListOwner) element));
 			}
 			else if(element instanceof DotNetXXXAccessor)
 			{
-				result.addQuickFix(new CreateEmptyBoxFix(element));
+				result.addQuickFix(new CreateEmptyCodeBlockFix(element));
 			}
 			return result;
 		}
