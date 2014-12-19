@@ -30,6 +30,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpModifierList;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightAttributeBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightAttributeWithSelfTypeBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpModifierListImplUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeArgumentNode;
 import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeHolder;
@@ -172,18 +173,18 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
+		return CSharpModifierListImplUtil.hasModifier(this, modifier);
+	}
+
+	@Override
+	public boolean hasModifierInTree(@NotNull DotNetModifier modifier)
+	{
 		if(ArrayUtil.contains(modifier, myAdditional))
 		{
 			return true;
 		}
 		CSharpModifier cSharpModifier = CSharpModifier.as(modifier);
 		return MsilToCSharpUtil.hasCSharpInMsilModifierList(cSharpModifier, myModifierList);
-	}
-
-	@Override
-	public boolean hasModifierInTree(@NotNull DotNetModifier modifier)
-	{
-		return hasModifier(modifier);
 	}
 
 	@Nullable

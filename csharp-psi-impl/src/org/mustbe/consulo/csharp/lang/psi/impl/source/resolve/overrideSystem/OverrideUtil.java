@@ -25,6 +25,7 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -47,6 +48,17 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class OverrideUtil
 {
+	public static boolean isRequireOverrideModifier(@NotNull DotNetModifierListOwner modifierListOwner)
+	{
+		DotNetModifierList modifierList = modifierListOwner.getModifierList();
+		if(modifierList == null)
+		{
+			return false;
+		}
+		return modifierList.hasModifierInTree(CSharpModifier.ABSTRACT) || modifierList.hasModifierInTree(CSharpModifier.VIRTUAL) || modifierList
+				.hasModifierInTree(CSharpModifier.OVERRIDE);
+	}
+
 	@NotNull
 	public static PsiElement[] filterOverrideElements(@NotNull AbstractScopeProcessor processor,
 			@NotNull PsiElement scopeElement,
@@ -265,7 +277,8 @@ public class OverrideUtil
 
 		return list;
 	}
-@NotNull
+
+	@NotNull
 	public static Collection<PsiElement> collectMembersWithModifier(@NotNull PsiElement element,
 			@NotNull DotNetGenericExtractor extractor,
 			@NotNull CSharpModifier modifier)

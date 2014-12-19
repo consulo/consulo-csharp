@@ -24,6 +24,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.psi.PsiElement;
 
@@ -43,12 +44,9 @@ public class GenerateImplementMemberHandler extends GenerateImplementOrOverrideM
 	@Override
 	public void processItem(@NotNull StringBuilder builder, @NotNull PsiElement item)
 	{
-		if(item instanceof CSharpMethodDeclaration)
+		if(OverrideUtil.isRequireOverrideModifier((DotNetModifierListOwner) item))
 		{
-			if(((CSharpMethodDeclaration) item).getModifierList().hasModifierInTree(CSharpModifier.ABSTRACT))
-			{
-				builder.append("override ");
-			}
+			builder.append("override ");
 		}
 	}
 

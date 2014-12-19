@@ -71,6 +71,10 @@ public class MsilToCSharpUtil
 		switch(modifier)
 		{
 			case PUBLIC:
+				if(hasModifierInParentIfType(modifierList, MsilTokens.INTERFACE_KEYWORD))
+				{
+					return false;
+				}
 				elementType = MsilTokens.PUBLIC_KEYWORD;
 				break;
 			case PRIVATE:
@@ -118,6 +122,10 @@ public class MsilToCSharpUtil
 			case PARAMS:
 				return hasAttribute(modifierList, DotNetTypes.System.ParamArrayAttribute);
 			case ABSTRACT:
+				if(hasModifierInParentIfType(modifierList, MsilTokens.INTERFACE_KEYWORD))
+				{
+					return false;
+				}
 				// hide abstract attribute
 				if(hasAttribute(modifierList, DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute))
 				{

@@ -77,8 +77,8 @@ public abstract class CSharpMemberChooseObject<T extends DotNetElement> implemen
 	{
 		return myDeclaration.hashCode() ^ getClass().hashCode();
 	}
-	@Override
 
+	@Override
 	public MemberChooserObject getParentNodeDelegate()
 	{
 		final PsiElement parent = myDeclaration.getParent();

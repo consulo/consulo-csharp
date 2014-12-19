@@ -31,7 +31,6 @@ import org.mustbe.consulo.csharp.ide.actions.generate.GenerateImplementMemberHan
 import org.mustbe.consulo.csharp.ide.actions.generate.GenerateOverrideMemberHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
@@ -107,7 +106,7 @@ public class CSharpOverrideOrImplementCompletionContributor extends CompletionCo
 				builder.append(modifier.getPresentableText()).append(" ");
 			}
 
-			if(methodDeclaration.getModifierList().hasModifierInTree(CSharpModifier.ABSTRACT))
+			if(OverrideUtil.isRequireOverrideModifier(methodDeclaration))
 			{
 				builder.append("override ");
 			}
