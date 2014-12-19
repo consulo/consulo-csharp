@@ -20,18 +20,23 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
+import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
@@ -103,6 +108,27 @@ public class CSharpSearchUtil
 			@Nullable String parentQName,
 			@NotNull DotNetGenericExtractor extractor)
 	{
+		//TODO [VISTALL] some hack until we dont make override more powerfull
+		if(parentQName != null)
+		{
+			if(owner instanceof DotNetMemberOwner)
+			{
+				for(DotNetNamedElement dotNetNamedElement : ((DotNetMemberOwner) owner).getMembers())
+				{
+					if(dotNetNamedElement instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) dotNetNamedElement).getParameters()
+							.length == 0 &&
+							name.equals(dotNetNamedElement.getName()))
+					{
+						DotNetTypeRef typeRefForImplement = ((CSharpMethodDeclaration) dotNetNamedElement).getTypeRefForImplement();
+						if(DotNetTypeRefUtil.isVmQNameEqual(typeRefForImplement, owner, parentQName))
+						{
+							return (DotNetMethodDeclaration) GenericUnwrapTool.extract(dotNetNamedElement, extractor);
+						}
+					}
+				}
+			}
+		}
+
 		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner,
 				new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP}, OverrideProcessor.ALWAYS_TRUE);
 
