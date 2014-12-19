@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -28,6 +29,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.openapi.util.Comparing;
@@ -97,14 +99,25 @@ public class CSharpTypeDeclarationImplUtil
 				}
 			}
 		}
+
+		String defaultSuperType = getDefaultSuperType(typeDeclaration);
+		if(defaultSuperType != null)
+		{
+			DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(typeDeclaration.getProject()).findType(defaultSuperType,
+					scope.getResolveScope(), DotNetPsiSearcher.TypeResoleKind.UNKNOWN, CSharpTransform.INSTANCE);
+			if(type != null)
+			{
+				return Pair.create(type, DotNetGenericExtractor.EMPTY);
+			}
+		}
 		return null;
 	}
 
 	@Nullable
 	public static String getDefaultSuperType(@NotNull DotNetTypeDeclaration typeDeclaration)
 	{
-		String presentableQName = typeDeclaration.getPresentableQName();
-		if(Comparing.equal(presentableQName, DotNetTypes.System.Object))
+		String vmQName = typeDeclaration.getVmQName();
+		if(Comparing.equal(vmQName, DotNetTypes.System.Object))
 		{
 			return null;
 		}
