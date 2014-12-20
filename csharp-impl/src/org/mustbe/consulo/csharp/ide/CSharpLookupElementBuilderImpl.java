@@ -268,6 +268,7 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 			switch(accessorKind)
 			{
 				case SET:
+					builder = builder.withTailText(" = ;", true);
 					builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
 					{
 						@Override
@@ -280,6 +281,7 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 					});
 					break;
 				case ADD:
+					builder = builder.withTailText(" += ;", true);
 					builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
 					{
 						@Override
@@ -292,6 +294,7 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 					});
 					break;
 				case REMOVE:
+					builder = builder.withTailText(" -= ;", true);
 					builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
 					{
 						@Override
