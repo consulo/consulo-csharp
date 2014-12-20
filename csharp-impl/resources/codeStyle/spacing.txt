@@ -19,6 +19,13 @@ namespace Test {
 
     public static void Main(String[] args) {
       Console.WriteLine("test");
+      lock(args) {
+        using(var obj = new IoStream()) {
+           int intVal = obj.ReadInt();
+
+           intVal = ~intVal;
+        }
+      }
       if(true) {
         try {
           for(;;) {

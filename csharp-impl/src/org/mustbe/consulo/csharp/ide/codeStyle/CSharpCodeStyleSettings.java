@@ -42,6 +42,13 @@ public class CSharpCodeStyleSettings extends CustomCodeStyleSettings
 	 */
 	public boolean SPACE_BEFORE_USING_PARENTHESES = true;
 
+	/**
+	 * "lock (...)"
+	 * or
+	 * "lock(...)"
+	 */
+	public boolean SPACE_BEFORE_LOCK_PARENTHESES = true;
+
 	// ----------------------------------- Left Brace settings -------------------------------------
 	/**
 	 * "int MyProperty {"
