@@ -74,6 +74,9 @@ public class CSharpLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSe
 			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_LOCK_PARENTHESES", "'lock' parentheses",
 					CodeStyleSettingsCustomizable.SPACES_BEFORE_PARENTHESES);
 
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_FIXED_PARENTHESES", "'fixed' parentheses",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_PARENTHESES);
+
 			// left brace settings
 			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_NAMESPACE_LBRACE", "Namespace left brace",
 					CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE, CodeStyleSettingsCustomizable.OptionAnchor.BEFORE,

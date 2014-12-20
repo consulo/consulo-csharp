@@ -24,6 +24,12 @@ namespace Test {
            int intVal = obj.ReadInt();
 
            intVal = ~intVal;
+
+           fixed(int* pointer = &intVal) {
+             int newIntVal = *pointer;
+
+             Console.WriteLine(newIntVal);
+           }
         }
       }
       if(true) {
