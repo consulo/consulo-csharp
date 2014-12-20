@@ -72,6 +72,13 @@ public class CSharpCodeStyleSettings extends CustomCodeStyleSettings
 	public boolean SPACE_BEFORE_UNSAFE_LBRACE = true;
 
 	/**
+	 * "using(...) {"
+	 * or
+	 * "using(...){"
+	 */
+	public boolean SPACE_BEFORE_USING_LBRACE = true;
+
+	/**
 	 * "foreach(...) {"
 	 * or
 	 * "foreach(...){"
