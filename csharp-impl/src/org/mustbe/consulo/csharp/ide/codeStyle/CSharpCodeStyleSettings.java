@@ -113,6 +113,13 @@ public class CSharpCodeStyleSettings extends CustomCodeStyleSettings
 	 */
 	public boolean SPACE_BEFORE_FOREACH_LBRACE = true;
 
+	/**
+	 * "fixed(...) {"
+	 * or
+	 * "fixed(...){"
+	 */
+	public boolean SPACE_BEFORE_FIXED_LBRACE = true;
+
 	public CSharpCodeStyleSettings(@NonNls @NotNull String tagName, CodeStyleSettings container)
 	{
 		super(tagName, container);

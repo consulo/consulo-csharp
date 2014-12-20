@@ -106,6 +106,9 @@ public class CSharpLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSe
 
 			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_LOCK_LBRACE", "'lock' left brace",
 					CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE);
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_FIXED_LBRACE", "'fixed' left brace",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE);
 		}
 		else if(settingsType == SettingsType.BLANK_LINES_SETTINGS)
 		{
