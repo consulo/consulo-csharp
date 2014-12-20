@@ -22,14 +22,19 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.consulo.ide.eap.EarlyAccessProgramDescriptor;
+import org.consulo.ide.eap.EarlyAccessProgramManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
+import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import org.mustbe.consulo.csharp.lang.psi.CSharpXXXAccessorOwner;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -37,9 +42,13 @@ import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.codeInsight.completion.InsertHandler;
+import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -51,6 +60,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.proximity.PsiProximityComparator;
 import com.intellij.util.Function;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -58,6 +68,31 @@ import com.intellij.util.Function;
  */
 public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 {
+	public static class PropertyAndEventCompletionNew extends EarlyAccessProgramDescriptor
+	{
+		@NotNull
+		@Override
+		public String getName()
+		{
+			return "C#: property & event accessor completion";
+		}
+
+		@NotNull
+		@Override
+		public String getDescription()
+		{
+			return "";
+		}
+
+		@Override
+		public boolean isRestartRequired()
+		{
+			return true;
+		}
+	}
+
+	public static final boolean PROPERTY_AND_EVENT_ACCESSOR_COMPLETION = EarlyAccessProgramManager.is(PropertyAndEventCompletionNew.class);
+
 	@NotNull
 	@Override
 	public LookupElement[] buildToLookupElements(@Nullable PsiElement sender, @NotNull PsiElement[] arguments)
@@ -71,13 +106,12 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 			Arrays.sort(arguments, new PsiProximityComparator(sender));
 		}
 
-		LookupElement[] array = new LookupElement[arguments.length];
-		for(int i = 0; i < arguments.length; i++)
+		List<LookupElement> list = new ArrayList<LookupElement>(arguments.length);
+		for(PsiElement argument : arguments)
 		{
-			PsiElement argument = arguments[i];
-			array[i] = buildLookupElementImpl(argument);
+			ContainerUtil.addIfNotNull(list, buildLookupElementImpl(argument));
 		}
-		return array;
+		return list.toArray(new LookupElement[list.size()]);
 	}
 
 	@NotNull
@@ -91,13 +125,24 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 
 		//FIXME [VISTALL] sorter?
 
-		LookupElement[] array = new LookupElement[arguments.length];
-		for(int i = 0; i < arguments.length; i++)
+		List<LookupElement> list = new ArrayList<LookupElement>(arguments.length);
+		for(ResolveResult argument : arguments)
 		{
-			ResolveResult argument = arguments[i];
-			array[i] = buildLookupElementImpl(argument.getElement());
+			PsiElement element = argument.getElement();
+
+			if((element instanceof CSharpPropertyDeclaration || element instanceof CSharpEventDeclaration) && PROPERTY_AND_EVENT_ACCESSOR_COMPLETION)
+			{
+				for(DotNetXXXAccessor accessor : ((CSharpXXXAccessorOwner) element).getAccessors())
+				{
+					ContainerUtil.addIfNotNull(list, buildLookupElementImpl(accessor));
+				}
+			}
+			else
+			{
+				ContainerUtil.addIfNotNull(list, buildLookupElementImpl(element));
+			}
 		}
-		return array;
+		return list.toArray(new LookupElement[list.size()]);
 	}
 
 	@NotNull
@@ -112,7 +157,7 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 		List<? extends PsiElement> elements;
 		if(arguments instanceof List)
 		{
-			elements = (List<? extends PsiElement>)arguments;
+			elements = (List<? extends PsiElement>) arguments;
 		}
 		else
 		{
@@ -124,23 +169,24 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 			Collections.sort(elements, new PsiProximityComparator(sender));
 		}
 
-		LookupElement[] array = new LookupElement[arguments.size()];
-		for(int i = 0; i < array.length; i++)
+		List<LookupElement> list = new ArrayList<LookupElement>(elements.size());
+		for(PsiElement element : elements)
 		{
-			array[i] = buildLookupElementImpl(elements.get(i));
+			ContainerUtil.addIfNotNull(list, buildLookupElementImpl(element));
 		}
 
-		return array;
+		return list.toArray(new LookupElement[list.size()]);
 	}
 
-	@NotNull
+	@Nullable
 	public LookupElement buildLookupElementImpl(PsiElement element)
 	{
 		LookupElementBuilder builder = buildLookupElement(element);
 		if(builder == null)
 		{
-			throw new IllegalArgumentException("Element " + element.getClass().getSimpleName() + " is not handled");
+			return null;
 		}
+
 		if(DotNetAttributeUtil.hasAttribute(element, DotNetTypes.System.ObsoleteAttribute))
 		{
 			builder = builder.withStrikeoutness(true);
@@ -189,37 +235,122 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 			}
 			else
 			{
-				builder = builder.withTailText(DotNetElementPresentationUtil.formatGenericParameters((DotNetGenericParameterListOwner) element), true);
+				builder = builder.withTailText(DotNetElementPresentationUtil.formatGenericParameters((DotNetGenericParameterListOwner) element),
+						true);
 
 				builder = withGenericInsertHandler(element, builder);
+			}
+		}
+		else if(element instanceof DotNetXXXAccessor)
+		{
+			DotNetNamedElement parent = (DotNetNamedElement) element.getParent();
+
+			DotNetXXXAccessor.Kind accessorKind = ((DotNetXXXAccessor) element).getAccessorKind();
+			if(accessorKind == null)
+			{
+				return null;
+			}
+			String ownerName = parent.getName();
+			if(ownerName == null)
+			{
+				return null;
+			}
+			String accessorPrefix = accessorKind.name().toLowerCase();
+			builder = LookupElementBuilder.create(element, ownerName);
+			builder = builder.withPresentableText(accessorPrefix + "::" + parent.getName());
+			builder = builder.withLookupString(accessorPrefix + "::" + parent.getName());
+			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(parent, Iconable.ICON_FLAG_VISIBILITY));
+
+			if(parent instanceof DotNetVariable)
+			{
+				builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(((DotNetVariable) parent).toTypeRef(true), parent));
+			}
+			switch(accessorKind)
+			{
+				case SET:
+					builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
+					{
+						@Override
+						public void handleInsert(InsertionContext context, LookupElement item)
+						{
+							int offset = context.getEditor().getCaretModel().getOffset();
+							context.getDocument().insertString(offset, " = ;");
+							context.getEditor().getCaretModel().moveToOffset(offset + 3);
+						}
+					});
+					break;
+				case ADD:
+					builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
+					{
+						@Override
+						public void handleInsert(InsertionContext context, LookupElement item)
+						{
+							int offset = context.getEditor().getCaretModel().getOffset();
+							context.getDocument().insertString(offset, " += ;");
+							context.getEditor().getCaretModel().moveToOffset(offset + 4);
+						}
+					});
+					break;
+				case REMOVE:
+					builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
+					{
+						@Override
+						public void handleInsert(InsertionContext context, LookupElement item)
+						{
+							int offset = context.getEditor().getCaretModel().getOffset();
+							context.getDocument().insertString(offset, " -= ;");
+							context.getEditor().getCaretModel().moveToOffset(offset + 4);
+						}
+					});
+					break;
 			}
 		}
 		else if(element instanceof DotNetNamespaceAsElement)
 		{
 			DotNetNamespaceAsElement namespaceAsElement = (DotNetNamespaceAsElement) element;
-			builder = LookupElementBuilder.create(namespaceAsElement.getName());
+			String name = namespaceAsElement.getName();
+			if(name == null)
+			{
+				return null;
+			}
+			builder = LookupElementBuilder.create(name);
 
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 		}
 		else if(element instanceof CSharpTypeDefStatement)
 		{
 			CSharpTypeDefStatement typeDefStatement = (CSharpTypeDefStatement) element;
-			builder = LookupElementBuilder.create(typeDefStatement.getName());
+			String name = typeDefStatement.getName();
+			if(name == null)
+			{
+				return null;
+			}
+			builder = LookupElementBuilder.create(name);
 
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
-			builder = builder.withTypeText(typeDefStatement.toTypeRef().getPresentableText());
+			builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(typeDefStatement.toTypeRef(), typeDefStatement));
 		}
 		else if(element instanceof CSharpLabeledStatementImpl)
 		{
 			CSharpLabeledStatementImpl labeledStatement = (CSharpLabeledStatementImpl) element;
-			builder = LookupElementBuilder.create(labeledStatement.getName());
+			String name = labeledStatement.getName();
+			if(name == null)
+			{
+				return null;
+			}
+			builder = LookupElementBuilder.create(name);
 
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 		}
 		else if(element instanceof DotNetGenericParameter)
 		{
 			DotNetGenericParameter typeDefStatement = (DotNetGenericParameter) element;
-			builder = LookupElementBuilder.create(typeDefStatement.getName());
+			String name = typeDefStatement.getName();
+			if(name == null)
+			{
+				return null;
+			}
+			builder = LookupElementBuilder.create(name);
 
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 		}
@@ -230,7 +361,7 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 
-			builder = builder.withTypeText(dotNetVariable.toTypeRef(true).getPresentableText());
+			builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(dotNetVariable.toTypeRef(true), dotNetVariable));
 		}
 		else if(element instanceof CSharpMacroDefine)
 		{

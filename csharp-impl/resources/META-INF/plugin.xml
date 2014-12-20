@@ -259,5 +259,6 @@
 
 		<eapDescriptor implementation="org.mustbe.consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent$EapDescriptor"/>
 		<eapDescriptor implementation="org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0030$CS0030TypeCast"/>
+		<eapDescriptor implementation="org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilderImpl$PropertyAndEventCompletionNew"/>
 	</extensions>
 </idea-plugin>

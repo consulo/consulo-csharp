@@ -16,12 +16,16 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
-import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
+import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.dotnet.psi.DotNetElement;
+import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 
 /**
  * @author VISTALL
- * @since 15.01.14
+ * @since 20.12.14
  */
-public interface CSharpPropertyDeclaration extends DotNetPropertyDeclaration, CSharpBodyWithBraces, CSharpXXXAccessorOwner
+public interface CSharpXXXAccessorOwner extends DotNetElement
 {
+	@NotNull
+	DotNetXXXAccessor[] getAccessors();
 }
