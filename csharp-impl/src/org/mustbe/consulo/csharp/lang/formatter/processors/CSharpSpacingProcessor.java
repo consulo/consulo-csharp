@@ -113,6 +113,7 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.beforeInside(BLOCK_STATEMENT, FINALLY_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_FINALLY_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, UNSAFE_STATEMENT).spaceIf(customSettings.SPACE_BEFORE_UNSAFE_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, USING_STATEMENT).spaceIf(customSettings.SPACE_BEFORE_USING_LBRACE);
+		myBuilder.beforeInside(BLOCK_STATEMENT, LOCK_STATEMENT).spaceIf(customSettings.SPACE_BEFORE_LOCK_LBRACE);
 
 		myBuilder.beforeInside(IDENTIFIER, TYPE_DECLARATION).spaces(1);
 		myBuilder.beforeInside(IDENTIFIER, LOCAL_VARIABLE).spaces(1);
