@@ -233,7 +233,10 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	public Object[] getVariants()
 	{
 		ResolveToKind kind = kind();
-		if(kind != ResolveToKind.LABEL && kind != ResolveToKind.QUALIFIED_NAMESPACE && kind != ResolveToKind.SOFT_QUALIFIED_NAMESPACE)
+		if(kind != ResolveToKind.LABEL &&
+				kind != ResolveToKind.QUALIFIED_NAMESPACE &&
+				kind != ResolveToKind.FIELD_OR_PROPERTY &&
+				kind != ResolveToKind.SOFT_QUALIFIED_NAMESPACE)
 		{
 			kind = ResolveToKind.ANY_MEMBER;
 		}

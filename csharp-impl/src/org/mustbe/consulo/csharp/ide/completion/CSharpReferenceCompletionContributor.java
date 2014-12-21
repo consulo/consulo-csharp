@@ -22,14 +22,18 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.AddUsingAction;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializationExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNewExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
@@ -39,11 +43,11 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
 import org.mustbe.consulo.dotnet.libraryAnalyzer.NamespaceReference;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.codeInsight.completion.CompletionContributor;
@@ -80,8 +84,52 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 {
 	public CSharpReferenceCompletionContributor()
 	{
+		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class)
+				.withSuperParent(2, CSharpArrayInitializationExpressionImpl.class).withSuperParent(3, CSharpNewExpressionImpl.class),
+				new CompletionProvider<CompletionParameters>()
+		{
+			@Override
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			{
+				CSharpReferenceExpressionEx expression = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
 
-		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(DotNetReferenceExpression.class),
+				CSharpArrayInitializationExpressionImpl arrayInitializationExpression = PsiTreeUtil.getParentOfType(expression,
+						CSharpArrayInitializationExpressionImpl.class);
+
+				assert arrayInitializationExpression != null;
+				DotNetExpression[] expressions = arrayInitializationExpression.getExpressions();
+				if(expressions.length != 1 || expressions[0] != expression)
+				{
+					return;
+				}
+				ResolveResult[] resolveResults = CSharpReferenceExpressionImplUtil.collectResults(CSharpReferenceExpression.ResolveToKind
+						.FIELD_OR_PROPERTY, null, expression, null, true, true);
+
+				LookupElement[] lookupElements = CSharpLookupElementBuilder.getInstance(expression.getProject()).buildToLookupElements(expression,
+						resolveResults);
+
+				for(LookupElement lookupElement : lookupElements)
+				{
+					if(lookupElement instanceof LookupElementBuilder)
+					{
+						lookupElement = ((LookupElementBuilder) lookupElement).withTailText(" = ", true);
+						lookupElement = ((LookupElementBuilder) lookupElement).withInsertHandler(new InsertHandler<LookupElement>()
+						{
+							@Override
+							public void handleInsert(InsertionContext context, LookupElement item)
+							{
+								int offset = context.getEditor().getCaretModel().getOffset();
+								context.getDocument().insertString(offset, " = ");
+								context.getEditor().getCaretModel().moveToOffset(offset + 3);
+							}
+						});
+					}
+					result.addElement(lookupElement);
+				}
+			}
+		});
+
+		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class),
 				new CompletionProvider<CompletionParameters>()
 		{
 

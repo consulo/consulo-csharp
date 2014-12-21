@@ -40,6 +40,10 @@ public class CompletionResolveScopeProcessor extends AbstractScopeProcessor
 
 		for(PsiElement psiElement : OverrideUtil.getAllMembers(element, myScope, extractor))
 		{
+			if(!ExecuteTargetUtil.isMyElement(this, psiElement))
+			{
+				continue;
+			}
 			addElement(psiElement);
 		}
 		return true;

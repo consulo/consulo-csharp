@@ -421,18 +421,14 @@ public class CSharpReferenceExpressionImplUtil
 
 				DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
 
-				if(selector != null)
-				{
-					scopeProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY, completion);
+				scopeProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY, completion);
 
-					state = ResolveState.initial();
-					state = state.put(CSharpResolveUtil.EXTRACTOR, genericExtractor);
-					state = state.put(CSharpResolveUtil.SELECTOR, selector);
-					CSharpResolveUtil.walkChildren(scopeProcessor, typeElement, true, true, state);
+				state = ResolveState.initial();
+				state = state.put(CSharpResolveUtil.EXTRACTOR, genericExtractor);
+				state = state.put(CSharpResolveUtil.SELECTOR, selector);
+				CSharpResolveUtil.walkChildren(scopeProcessor, typeElement, false, true, state);
 
-					return scopeProcessor.toResolveResults();
-				}
-				break;
+				return scopeProcessor.toResolveResults();
 			case LABEL:
 				scopeProcessor = new SimpleNamedScopeProcessor(completion, ExecuteTarget.LABEL);
 
@@ -851,7 +847,8 @@ public class CSharpReferenceExpressionImplUtil
 			case FIELD_OR_PROPERTY:
 				targets = new ExecuteTarget[]{
 						ExecuteTarget.FIELD,
-						ExecuteTarget.PROPERTY
+						ExecuteTarget.PROPERTY,
+						ExecuteTarget.EVENT
 				};
 				break;
 			case ARRAY_METHOD:
