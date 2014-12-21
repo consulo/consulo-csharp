@@ -90,9 +90,9 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 					ProcessingContext processingContext,
 					@NotNull CompletionResultSet completionResultSet)
 			{
-				val parent = (DotNetReferenceExpression) completionParameters.getPosition().getParent();
+				val parent = (CSharpReferenceExpression) completionParameters.getPosition().getParent();
 
-				if(parent.getQualifier() == null)
+				if(parent.kind() == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE)
 				{
 					CSharpCompletionUtil.tokenSetToLookup(completionResultSet, CSharpTokenSets.NATIVE_TYPES, null, new Condition<IElementType>()
 					{
