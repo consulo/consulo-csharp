@@ -56,7 +56,7 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 		NamespaceType(CSharpModifier.STATIC, CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT,
 				CSharpModifier.PARTIAL, CSharpModifier.SEALED),
 		NestedType(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT,
-				CSharpModifier.PARTIAL, CSharpModifier.SEALED),
+				CSharpModifier.PARTIAL, CSharpModifier.SEALED, CSharpModifier.STATIC),
 		Unknown
 				{
 					@Override
