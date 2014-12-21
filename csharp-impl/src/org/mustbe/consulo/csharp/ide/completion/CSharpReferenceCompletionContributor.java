@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.ide.completion;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -84,6 +85,29 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 {
 	public CSharpReferenceCompletionContributor()
 	{
+		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class),
+				new CompletionProvider<CompletionParameters>()
+
+		{
+			@Override
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			{
+				CSharpReferenceExpressionEx expression = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
+				CSharpReferenceExpression.ResolveToKind kind = expression.kind();
+				if(kind != CSharpReferenceExpression.ResolveToKind.LABEL &&
+						kind != CSharpReferenceExpression.ResolveToKind.QUALIFIED_NAMESPACE &&
+						kind != CSharpReferenceExpression.ResolveToKind.FIELD_OR_PROPERTY &&
+						kind != CSharpReferenceExpression.ResolveToKind.SOFT_QUALIFIED_NAMESPACE)
+				{
+					kind = CSharpReferenceExpression.ResolveToKind.ANY_MEMBER;
+				}
+				ResolveResult[] psiElements = CSharpReferenceExpressionImplUtil.collectResults(kind, null, expression, null, true, true);
+				LookupElement[] lookupElements = CSharpLookupElementBuilder.getInstance(expression.getProject()).buildToLookupElements(expression,
+						psiElements);
+				result.addAllElements(Arrays.asList(lookupElements));
+			}
+		});
+
 		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class)
 				.withSuperParent(2, CSharpArrayInitializationExpressionImpl.class).withSuperParent(3, CSharpNewExpressionImpl.class),
 				new CompletionProvider<CompletionParameters>()

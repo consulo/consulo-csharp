@@ -21,7 +21,6 @@ import java.util.List;
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
@@ -43,6 +42,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
@@ -232,16 +232,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	@Override
 	public Object[] getVariants()
 	{
-		ResolveToKind kind = kind();
-		if(kind != ResolveToKind.LABEL &&
-				kind != ResolveToKind.QUALIFIED_NAMESPACE &&
-				kind != ResolveToKind.FIELD_OR_PROPERTY &&
-				kind != ResolveToKind.SOFT_QUALIFIED_NAMESPACE)
-		{
-			kind = ResolveToKind.ANY_MEMBER;
-		}
-		ResolveResult[] psiElements = CSharpReferenceExpressionImplUtil.collectResults(kind, null, this, null, true, true);
-		return CSharpLookupElementBuilder.getInstance(getProject()).buildToLookupElements(this, psiElements);
+		return ArrayUtil.EMPTY_OBJECT_ARRAY;
 	}
 
 	@Override
