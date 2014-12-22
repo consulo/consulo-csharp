@@ -95,7 +95,7 @@ public class CSharpModifierListImplUtil
 					}
 				}
 				break;
-			case ABSTRACT:
+			case INTERFACE_ABSTRACT:
 				if(parent instanceof DotNetVirtualImplementOwner && parent.getParent() instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration)
 						parent.getParent()).isInterface())
 				{
@@ -106,12 +106,17 @@ public class CSharpModifierListImplUtil
 					if(((DotNetXXXAccessor) parent).getCodeBlock() == null)
 					{
 						PsiElement accessorOwner = parent.getParent();
-						if(accessorOwner instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) accessorOwner).hasModifier(DotNetModifier
-								.ABSTRACT))
+						if(accessorOwner instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) accessorOwner).hasModifier(modifier))
 						{
 							return true;
 						}
 					}
+				}
+				break;
+			case ABSTRACT:
+				if(hasModifier(modifierList, CSharpModifier.INTERFACE_ABSTRACT))
+				{
+					return true;
 				}
 				break;
 		}

@@ -73,7 +73,7 @@ public class CSharpElementPresentationUtil
 		return builder.toString();
 	}
 
-	private static void formatParameters(@NotNull DotNetLikeMethodDeclaration methodDeclaration, @NotNull StringBuilder builder, final int flags)
+	public static void formatParameters(@NotNull DotNetLikeMethodDeclaration methodDeclaration, @NotNull StringBuilder builder, final int flags)
 	{
 		boolean indexMethod = methodDeclaration instanceof CSharpArrayMethodDeclaration;
 
