@@ -132,6 +132,10 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 			}
 		}
 
+		if(!(callable instanceof CSharpSimpleLikeMethod))
+		{
+			return null;
+		}
 		return callable;
 	}
 
