@@ -55,7 +55,7 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 			return;
 		}
 
-		Collection<PsiElement> psiElements = getItems(typeDeclaration);
+		Collection<? extends PsiElement> psiElements = getItems(typeDeclaration);
 		if(psiElements.isEmpty())
 		{
 			return;
@@ -119,7 +119,7 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 	public abstract void processReturn(@NotNull StringBuilder builder, @NotNull PsiElement item);
 
 	@NotNull
-	public abstract Collection<PsiElement> getItems(@NotNull CSharpTypeDeclaration typeDeclaration);
+	public abstract Collection<? extends PsiElement> getItems(@NotNull CSharpTypeDeclaration typeDeclaration);
 
 	private static void generateMember(@NotNull final CSharpTypeDeclaration typeDeclaration,
 			@NotNull final Editor editor,

@@ -26,7 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.codeInsight.generation.ImplementMethodsHandler;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
@@ -85,14 +85,14 @@ public class CS0534 extends CompilerCheck<CSharpTypeDeclaration>
 		{
 			return null;
 		}
-		Collection<PsiElement> psiElements = OverrideUtil.collectMembersWithModifier(element, DotNetGenericExtractor.EMPTY, CSharpModifier.ABSTRACT);
+		Collection<DotNetModifierListOwner> psiElements = OverrideUtil.collectMembersWithModifier(element, DotNetGenericExtractor.EMPTY, CSharpModifier.ABSTRACT);
 		if(!psiElements.isEmpty())
 		{
-			PsiElement firstItem = ContainerUtil.getFirstItem(psiElements);
+			DotNetModifierListOwner firstItem = ContainerUtil.getFirstItem(psiElements);
 			assert firstItem != null;
 			CompilerCheckBuilder compilerCheckBuilder = null;
 
-			if(firstItem.getParent() instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) firstItem.getParent()).isInterface())
+			if(firstItem.hasModifier(CSharpModifier.INTERFACE_ABSTRACT))
 			{
 				compilerCheckBuilder = newBuilderImpl(CS0535.class, nameIdentifier, formatElement(element), formatElement(firstItem));
 			}

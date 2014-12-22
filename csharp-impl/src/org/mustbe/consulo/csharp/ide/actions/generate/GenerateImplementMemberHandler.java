@@ -70,7 +70,7 @@ public class GenerateImplementMemberHandler extends GenerateImplementOrOverrideM
 
 	@NotNull
 	@Override
-	public Collection<PsiElement> getItems(@NotNull CSharpTypeDeclaration typeDeclaration)
+	public Collection<DotNetModifierListOwner> getItems(@NotNull CSharpTypeDeclaration typeDeclaration)
 	{
 		return OverrideUtil.collectMembersWithModifier(typeDeclaration, DotNetGenericExtractor.EMPTY, CSharpModifier.ABSTRACT);
 	}

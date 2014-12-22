@@ -279,16 +279,16 @@ public class OverrideUtil
 	}
 
 	@NotNull
-	public static Collection<PsiElement> collectMembersWithModifier(@NotNull PsiElement element,
+	public static Collection<DotNetModifierListOwner> collectMembersWithModifier(@NotNull PsiElement element,
 			@NotNull DotNetGenericExtractor extractor,
 			@NotNull CSharpModifier modifier)
 	{
-		List<PsiElement> psiElements = new SmartList<PsiElement>();
+		List<DotNetModifierListOwner> psiElements = new SmartList<DotNetModifierListOwner>();
 		for(PsiElement psiElement : getAllMembers(element, element.getResolveScope(), extractor))
 		{
 			if(psiElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) psiElement).hasModifier(modifier))
 			{
-				psiElements.add(psiElement);
+				psiElements.add((DotNetModifierListOwner) psiElement);
 			}
 		}
 		return psiElements;
