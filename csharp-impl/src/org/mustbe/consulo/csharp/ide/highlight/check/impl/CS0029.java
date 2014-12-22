@@ -30,9 +30,11 @@ import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDoWhileStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpWhileStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -40,6 +42,8 @@ import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.openapi.util.Trinity;
 import com.intellij.psi.PsiElement;
@@ -74,8 +78,8 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		DotNetTypeRef secondTypeRef = resolve.getSecond();
 		PsiElement elementToHighlight = resolve.getThird();
 
-		CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(firstTypeRef, secondTypeRef, element, CSharpStaticTypeRef
-				.IMPLICIT);
+		CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(firstTypeRef, secondTypeRef, element,
+				CSharpStaticTypeRef.IMPLICIT);
 		if(!inheritResult.isSuccess())
 		{
 			return newBuilder(elementToHighlight, CSharpTypeRefPresentationUtil.buildText(secondTypeRef, element, TYPE_FLAGS),
@@ -85,8 +89,8 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		{
 			String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildText(secondTypeRef, element,
 					TYPE_FLAGS), CSharpTypeRefPresentationUtil.buildText(firstTypeRef, element, TYPE_FLAGS));
-			return newBuilder(elementToHighlight).setText(text).setHighlightInfoType(HighlightInfoType.INFORMATION).setTextAttributesKey(CSharpHighlightKey
-					.IMPLICIT_OR_EXPLICIT_CAST);
+			return newBuilder(elementToHighlight).setText(text).setHighlightInfoType(HighlightInfoType.INFORMATION).setTextAttributesKey
+					(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
 		}
 
 		return null;
@@ -149,6 +153,33 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				return null;
 			}
 			return Trinity.create(new CSharpTypeRefByQName(DotNetTypes.System.Boolean), conditionExpression.toTypeRef(true), conditionExpression);
+		}
+		else if(element instanceof CSharpLambdaExpressionImpl)
+		{
+			CSharpLambdaExpressionImpl lambdaExpression = (CSharpLambdaExpressionImpl) element;
+			DotNetTypeRef typeRefOfLambda = lambdaExpression.toTypeRef(true);
+			if(typeRefOfLambda == DotNetTypeRef.ERROR_TYPE)
+			{
+				return null;
+			}
+
+			DotNetTypeResolveResult typeResolveResult = typeRefOfLambda.resolve(element);
+			if(!(typeResolveResult instanceof CSharpLambdaResolveResult))
+			{
+				return null;
+			}
+			DotNetExpression singleExpression = lambdaExpression.getSingleExpression();
+			if(singleExpression != null)
+			{
+				DotNetTypeRef returnTypeRef = ((CSharpLambdaResolveResult) typeResolveResult).getReturnTypeRef();
+				// void type allow any type if used expression body
+				if(DotNetTypeRefUtil.isVmQNameEqual(returnTypeRef, element, DotNetTypes.System.Void))
+				{
+					return null;
+				}
+				return Trinity.create(returnTypeRef, singleExpression.toTypeRef(true),
+						singleExpression);
+			}
 		}
 		else if(element instanceof CSharpReturnStatementImpl)
 		{
