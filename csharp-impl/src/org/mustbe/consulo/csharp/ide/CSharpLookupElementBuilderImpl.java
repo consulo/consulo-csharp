@@ -30,6 +30,7 @@ import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
@@ -54,6 +55,7 @@ import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.ide.IconDescriptorUpdaters;
+import com.intellij.openapi.editor.CaretModel;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -206,11 +208,19 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 		{
 			final CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) element;
 
-			builder = LookupElementBuilder.create(methodDeclaration);
-			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
-
 			if(!methodDeclaration.isDelegate())
 			{
+				String name = methodDeclaration.getName();
+				if(name == null)
+				{
+					return null;
+				}
+
+				boolean canInheritGeneric = CSharpMethodUtil.isCanInheritGeneric(methodDeclaration);
+				String lookupString = !canInheritGeneric ? name + "<>()" : name;
+				builder = LookupElementBuilder.create(methodDeclaration, lookupString);
+				builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
+
 				final DotNetTypeRef[] parameterTypes = methodDeclaration.getParameterTypeRefs();
 
 				String genericText = DotNetElementPresentationUtil.formatGenericParameters((DotNetGenericParameterListOwner) element);
@@ -224,7 +234,23 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 					}
 				}, ", ") + ")";
 
-				builder = builder.withInsertHandler(ParenthesesInsertHandler.getInstance(parameterTypes.length > 0));
+				if(!canInheritGeneric)
+				{
+					builder = builder.withPresentableText(name);
+					builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
+					{
+						@Override
+						public void handleInsert(InsertionContext context, LookupElement item)
+						{
+							CaretModel caretModel = context.getEditor().getCaretModel();
+							caretModel.moveToOffset(caretModel.getOffset() - 3);
+						}
+					});
+				}
+				else
+				{
+					builder = builder.withInsertHandler(ParenthesesInsertHandler.getInstance(parameterTypes.length > 0));
+				}
 
 				if(CSharpMethodImplUtil.isExtensionWrapper(methodDeclaration))
 				{
@@ -235,6 +261,8 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 			}
 			else
 			{
+				builder = LookupElementBuilder.create(methodDeclaration);
+				builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 				builder = builder.withTailText(DotNetElementPresentationUtil.formatGenericParameters((DotNetGenericParameterListOwner) element),
 						true);
 
