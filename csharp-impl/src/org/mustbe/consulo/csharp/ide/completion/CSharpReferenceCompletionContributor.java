@@ -143,12 +143,12 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 
 						DotNetTypeRef returnTypeRef = ((CSharpLambdaResolveResult) typeResolveResult).getReturnTypeRef();
 						String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(returnTypeRef, parent);
-						builder.append("{ ");
+						builder.append("{");
 						if(defaultValueForType != null)
 						{
 							builder.append("return ").append(defaultValueForType).append(";");
 						}
-						builder.append(" }");
+						builder.append("}");
 
 						lookupElementBuilder = LookupElementBuilder.create(builder.toString());
 						lookupElementBuilder = lookupElementBuilder.withInsertHandler(new InsertHandler<LookupElement>()
