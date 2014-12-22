@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.codeInsight.completion.CompletionResultSet;
+import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.tree.IElementType;
@@ -48,13 +49,17 @@ public class CSharpCompletionUtil
 						"false"
 				};
 			}
+			if(elementType == CSharpTokens.NULL_LITERAL)
+			{
+				return new String[]{"null"};
+			}
 			return new String[]{elementType.toString().replace("_KEYWORD", "").toLowerCase()};
 		}
 	};
 
 	public static void tokenSetToLookup(@NotNull CompletionResultSet resultSet,
 			@NotNull TokenSet tokenSet,
-			@Nullable NotNullPairFunction<LookupElementBuilder, IElementType, LookupElementBuilder> decorator,
+			@Nullable NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement> decorator,
 			@Nullable Condition<IElementType> condition)
 	{
 		for(IElementType elementType : tokenSet.getTypes())
@@ -65,7 +70,7 @@ public class CSharpCompletionUtil
 
 	public static void elementToLookup(@NotNull CompletionResultSet resultSet,
 			@NotNull IElementType elementType,
-			@Nullable NotNullPairFunction<LookupElementBuilder, IElementType, LookupElementBuilder> decorator,
+			@Nullable NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement> decorator,
 			@Nullable Condition<IElementType> condition)
 	{
 		if(condition != null && !condition.value(elementType))
@@ -79,9 +84,12 @@ public class CSharpCompletionUtil
 			builder = builder.bold();
 			if(decorator != null)
 			{
-				builder = decorator.fun(builder, elementType);
+				resultSet.addElement(decorator.fun(builder, elementType));
 			}
-			resultSet.addElement(builder);
+			else
+			{
+				resultSet.addElement(builder);
+			}
 		}
 	}
 }

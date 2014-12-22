@@ -16,19 +16,30 @@
 
 package org.mustbe.consulo.csharp.ide.completion;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
+import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyTypeRefByQName;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetUserType;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.codeInsight.lookup.AutoCompletionPolicy;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -36,8 +47,10 @@ import com.intellij.codeInsight.lookup.LookupElementPresentation;
 import com.intellij.codeInsight.lookup.LookupElementRenderer;
 import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.NotNullPairFunction;
 import com.intellij.util.ProcessingContext;
 import lombok.val;
 
@@ -47,8 +60,59 @@ import lombok.val;
  */
 public class CSharpKeywordCompletionContributor extends CompletionContributor
 {
+	private static final TokenSet ourExpressionLiterals = TokenSet.create(CSharpTokens.NULL_LITERAL, CSharpTokens.BOOL_LITERAL);
+
 	public CSharpKeywordCompletionContributor()
 	{
+		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class),
+				new CompletionProvider<CompletionParameters>()
+		{
+			@Override
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			{
+				val parent = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
+				if(parent.getQualifier() == null && parent.kind() == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
+				{
+					CSharpCompletionUtil.tokenSetToLookup(result, ourExpressionLiterals, new NotNullPairFunction<LookupElementBuilder, IElementType,
+							LookupElement>()
+					{
+						@NotNull
+						@Override
+						public LookupElement fun(LookupElementBuilder t, IElementType elementType)
+						{
+							List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(parent);
+							if(!expectedTypeRefs.isEmpty())
+							{
+								if(elementType == CSharpTokens.NULL_LITERAL)
+								{
+									for(ExpectedTypeInfo expectedTypeRef : expectedTypeRefs)
+									{
+										DotNetTypeResolveResult typeResolveResult = expectedTypeRef.getTypeRef().resolve(parent);
+										if(typeResolveResult.isNullable())
+										{
+											return PrioritizedLookupElement.withPriority(t, 2);
+										}
+									}
+								}
+								else if(elementType == CSharpTokens.BOOL_LITERAL)
+								{
+									CSharpLazyTypeRefByQName typeRefByQName = new CSharpLazyTypeRefByQName(parent, DotNetTypes.System.Boolean);
+									for(ExpectedTypeInfo expectedTypeRef : expectedTypeRefs)
+									{
+										if(CSharpTypeUtil.isInheritable(expectedTypeRef.getTypeRef(), typeRefByQName, parent))
+										{
+											return PrioritizedLookupElement.withPriority(t, 2);
+										}
+									}
+								}
+							}
+							return t;
+						}
+					}, null);
+				}
+			}
+		});
+
 		extend(CompletionType.BASIC, StandardPatterns.psiElement(), new CompletionProvider<CompletionParameters>()
 		{
 			@Override

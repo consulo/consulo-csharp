@@ -126,7 +126,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 					@NotNull CompletionResultSet result)
 			{
 				CSharpCompletionUtil.tokenSetToLookup(result, ourContinueAndBreakKeywords, new NotNullPairFunction<LookupElementBuilder,
-						IElementType, LookupElementBuilder>()
+						IElementType, LookupElement>()
 
 				{
 					@NotNull
@@ -159,12 +159,12 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 				val pseudoMethod = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpSimpleLikeMethodAsElement.class);
 				assert pseudoMethod != null;
 				CSharpCompletionUtil.tokenSetToLookup(result, ourReturnKeywords, new NotNullPairFunction<LookupElementBuilder, IElementType,
-						LookupElementBuilder>()
+						LookupElement>()
 
 				{
 					@NotNull
 					@Override
-					public LookupElementBuilder fun(LookupElementBuilder t, IElementType v)
+					public LookupElement fun(LookupElementBuilder t, IElementType v)
 					{
 						t = t.withInsertHandler(new InsertHandler<LookupElement>()
 						{
@@ -205,12 +205,12 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 					@NotNull CompletionResultSet result)
 			{
 				CSharpCompletionUtil.tokenSetToLookup(result, ourContinueAndBreakKeywords, new NotNullPairFunction<LookupElementBuilder,
-						IElementType, LookupElementBuilder>()
+						IElementType, LookupElement>()
 
 				{
 					@NotNull
 					@Override
-					public LookupElementBuilder fun(LookupElementBuilder t, IElementType v)
+					public LookupElement fun(LookupElementBuilder t, IElementType v)
 					{
 						t = t.withInsertHandler(new InsertHandler<LookupElement>()
 						{
@@ -238,11 +238,11 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				CSharpCompletionUtil.tokenSetToLookup(result, ourCaseAndDefaultKeywords, new NotNullPairFunction<LookupElementBuilder, IElementType,
-						LookupElementBuilder>()
+						LookupElement>()
 				{
 					@NotNull
 					@Override
-					public LookupElementBuilder fun(LookupElementBuilder t, final IElementType v)
+					public LookupElement fun(LookupElementBuilder t, final IElementType v)
 					{
 						t = t.withInsertHandler(new InsertHandler<LookupElement>()
 						{
@@ -269,11 +269,11 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				CSharpCompletionUtil.tokenSetToLookup(result, ourParStatementKeywords, new NotNullPairFunction<LookupElementBuilder, IElementType,
-						LookupElementBuilder>()
+						LookupElement>()
 				{
 					@NotNull
 					@Override
-					public LookupElementBuilder fun(LookupElementBuilder t, final IElementType v)
+					public LookupElement fun(LookupElementBuilder t, final IElementType v)
 					{
 						t = t.withInsertHandler(new StatementKeywordInsertHandler(v));
 						return t;
@@ -289,11 +289,11 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.IF_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType,
-						LookupElementBuilder>()
+						LookupElement>()
 				{
 					@NotNull
 					@Override
-					public LookupElementBuilder fun(LookupElementBuilder t, final IElementType v)
+					public LookupElement fun(LookupElementBuilder t, final IElementType v)
 					{
 						t = t.withInsertHandler(new StatementKeywordInsertHandler(v));
 
@@ -317,7 +317,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 				if(maybeTryStatement instanceof CSharpTryStatementImpl)
 				{
 					CSharpCompletionUtil.tokenSetToLookup(result, ourCatchFinallyKeywords, new NotNullPairFunction<LookupElementBuilder,
-									IElementType, LookupElementBuilder>()
+									IElementType, LookupElement>()
 							{
 								@NotNull
 								@Override
