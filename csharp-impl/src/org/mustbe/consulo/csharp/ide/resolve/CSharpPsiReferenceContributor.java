@@ -19,21 +19,15 @@ package org.mustbe.consulo.csharp.ide.resolve;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayAccessExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLikeMethodDeclarationImplUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.PsiReferenceContributor;
 import com.intellij.psi.PsiReferenceProvider;
 import com.intellij.psi.PsiReferenceRegistrar;
-import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.ProcessingContext;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -60,45 +54,6 @@ public class CSharpPsiReferenceContributor extends PsiReferenceContributor
 				return new PsiReference[]{
 						new PsiReferenceBase.Immediate<PsiElement>(element, new TextRange(0, element.getTextLength()), callable)
 				};
-			}
-		});
-
-		psiReferenceRegistrar.registerReferenceProvider(StandardPatterns.psiElement(DotNetVirtualImplementOwner.class), new PsiReferenceProvider()
-		{
-			@NotNull
-			@Override
-			public PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context)
-			{
-				PsiElement nameIdentifier = ((PsiNameIdentifierOwner) element).getNameIdentifier();
-				if(nameIdentifier == null)
-				{
-					return PsiReference.EMPTY_ARRAY;
-				}
-
-				val resultPair = CSharpLikeMethodDeclarationImplUtil.resolveVirtualImplementation((DotNetVirtualImplementOwner) element, element);
-				switch(resultPair.getFirst())
-				{
-					case FOUND:
-						int textOffset = nameIdentifier.getStartOffsetInParent();
-						PsiReferenceBase.Immediate<PsiElement> psiElementImmediate = new PsiReferenceBase.Immediate<PsiElement>(element,
-								new TextRange(textOffset, textOffset + nameIdentifier.getTextLength()), resultPair.getSecond())
-						{
-							@Override
-							public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException
-							{
-								PsiElement element1 = getElement();
-								if(element1 instanceof PsiNamedElement)
-								{
-									return ((PsiNamedElement) element1).setName(newElementName);
-								}
-								return element1;
-							}
-						};
-
-						return new PsiReference[]{psiElementImmediate};
-				}
-
-				return PsiReference.EMPTY_ARRAY;
 			}
 		});
 	}
