@@ -17,14 +17,16 @@
 package org.mustbe.consulo.csharp.ide.completion;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.AddUsingAction;
+import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
+import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
@@ -32,6 +34,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializationExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNewExpressionImpl;
@@ -47,10 +50,13 @@ import org.mustbe.consulo.dotnet.libraryAnalyzer.NamespaceReference;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
@@ -59,6 +65,7 @@ import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.completion.CompletionUtilCore;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
+import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.ide.IconDescriptorUpdaters;
@@ -85,8 +92,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 {
 	public CSharpReferenceCompletionContributor()
 	{
-		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class),
-				new CompletionProvider<CompletionParameters>()
+		CompletionProvider<CompletionParameters> provider = new CompletionProvider<CompletionParameters>()
 
 		{
 			@Override
@@ -102,11 +108,52 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 					kind = CSharpReferenceExpression.ResolveToKind.ANY_MEMBER;
 				}
 				ResolveResult[] psiElements = CSharpReferenceExpressionImplUtil.collectResults(kind, null, expression, null, true, true);
-				LookupElement[] lookupElements = CSharpLookupElementBuilder.getInstance(expression.getProject()).buildToLookupElements(expression,
-						psiElements);
-				result.addAllElements(Arrays.asList(lookupElements));
+				List<LookupElement> lookupElements = CSharpLookupElementBuilder.getInstance(expression.getProject()).buildToLookupElements
+						(expression, psiElements);
+
+				List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(expression);
+				if(!expectedTypeRefs.isEmpty())
+				{
+					ListIterator<LookupElement> iterator = lookupElements.listIterator();
+					while(iterator.hasNext())
+					{
+						LookupElement next = iterator.next();
+
+						PsiElement psiElement = next.getPsiElement();
+						if(psiElement == null || psiElement instanceof DotNetNamespaceAsElement || psiElement instanceof DotNetTypeDeclaration)
+						{
+							iterator.set(PrioritizedLookupElement.withPriority(next, -0.5));
+							continue;
+						}
+
+						DotNetTypeRef typeOfElement;
+						if(psiElement instanceof DotNetLikeMethodDeclaration)
+						{
+							typeOfElement = ((DotNetLikeMethodDeclaration) psiElement).getReturnTypeRef();
+						}
+						else
+						{
+							typeOfElement = CSharpReferenceExpressionImplUtil.toTypeRef(psiElement);
+						}
+
+						for(ExpectedTypeInfo expectedTypeInfo : expectedTypeRefs)
+						{
+							if(expectedTypeInfo.getTypeProvider() == psiElement)
+							{
+								continue;
+							}
+
+							if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), typeOfElement, expression))
+							{
+								iterator.set(PrioritizedLookupElement.withPriority(next, 1));
+							}
+						}
+					}
+				}
+				result.addAllElements(lookupElements);
 			}
-		});
+		};
+		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class), provider);
 
 		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class)
 				.withSuperParent(2, CSharpArrayInitializationExpressionImpl.class).withSuperParent(3, CSharpNewExpressionImpl.class),
@@ -129,8 +176,8 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 				ResolveResult[] resolveResults = CSharpReferenceExpressionImplUtil.collectResults(CSharpReferenceExpression.ResolveToKind
 						.FIELD_OR_PROPERTY, null, expression, null, true, true);
 
-				LookupElement[] lookupElements = CSharpLookupElementBuilder.getInstance(expression.getProject()).buildToLookupElements(expression,
-						resolveResults);
+				List<LookupElement> lookupElements = CSharpLookupElementBuilder.getInstance(expression.getProject()).buildToLookupElements
+						(expression, resolveResults);
 
 				for(LookupElement lookupElement : lookupElements)
 				{

@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.ide;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.consulo.lombok.annotations.ProjectService;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +38,7 @@ public abstract class CSharpLookupElementBuilder
 	public abstract LookupElement[] buildToLookupElements(@Nullable PsiElement sender, @NotNull PsiElement[] arguments);
 
 	@NotNull
-	public abstract LookupElement[] buildToLookupElements(@Nullable PsiElement sender, @NotNull ResolveResult[] arguments);
+	public abstract List<LookupElement> buildToLookupElements(@Nullable PsiElement sender, @NotNull ResolveResult[] arguments);
 
 	@NotNull
 	public abstract LookupElement[] buildToLookupElements(@Nullable PsiElement sender, @NotNull Collection<? extends PsiElement> arguments);

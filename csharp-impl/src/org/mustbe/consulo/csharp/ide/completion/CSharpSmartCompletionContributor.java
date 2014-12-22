@@ -2,18 +2,19 @@ package org.mustbe.consulo.csharp.ide.completion;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
+import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNewExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -55,49 +56,43 @@ public class CSharpSmartCompletionContributor extends CompletionContributor
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				PsiElement position = parameters.getPosition();
-				PsiElement parentOfType = PsiTreeUtil.getParentOfType(position, CSharpAssignmentExpressionImpl.class, CSharpLocalVariable.class);
+				CSharpNewExpressionImpl newExpression = PsiTreeUtil.getParentOfType(position, CSharpNewExpressionImpl.class);
+				assert newExpression != null;
 
-				DotNetTypeRef typeRef = null;
-				if(parentOfType instanceof CSharpLocalVariable)
+				List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(newExpression);
+
+				if(!expectedTypeRefs.isEmpty())
 				{
-					typeRef = ((CSharpLocalVariable) parentOfType).toTypeRef(false);
-				}
-				else if(parentOfType instanceof CSharpAssignmentExpressionImpl)
-				{
-					DotNetExpression dotNetExpression = ((CSharpAssignmentExpressionImpl) parentOfType).getParameterExpressions()[0];
-
-					typeRef = dotNetExpression.toTypeRef(false);
-				}
-
-				if(typeRef != null)
-				{
-					DotNetTypeResolveResult typeResolveResult = typeRef.resolve(parentOfType);
-
-					PsiElement element = typeResolveResult.getElement();
-					if(element == null)
+					for(ExpectedTypeInfo expectedTypeInfo : expectedTypeRefs)
 					{
-						return;
-					}
+						DotNetTypeResolveResult typeResolveResult = expectedTypeInfo.getTypeRef().resolve(position);
 
-					DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
-					CSharpResolveContext cSharpResolveContext = CSharpResolveContextUtil.createContext(genericExtractor,
-							parentOfType.getResolveScope(), element);
-
-					CSharpElementGroup<CSharpConstructorDeclaration> group = cSharpResolveContext.constructorGroup();
-					Collection<CSharpConstructorDeclaration> objects = group == null ? Collections.<CSharpConstructorDeclaration>emptyList() : group
-							.getElements();
-
-					if(objects.isEmpty())
-					{
-						return;
-					}
-
-					for(CSharpConstructorDeclaration object : objects)
-					{
-						LookupElementBuilder builder = buildForConstructor(object, genericExtractor);
-						if(builder != null)
+						PsiElement element = typeResolveResult.getElement();
+						if(element == null)
 						{
-							result.addElement(PrioritizedLookupElement.withGrouping(builder, 101));
+							return;
+						}
+
+						DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
+						CSharpResolveContext cSharpResolveContext = CSharpResolveContextUtil.createContext(genericExtractor,
+								position.getResolveScope(), element);
+
+						CSharpElementGroup<CSharpConstructorDeclaration> group = cSharpResolveContext.constructorGroup();
+						Collection<CSharpConstructorDeclaration> objects = group == null ? Collections.<CSharpConstructorDeclaration>emptyList() :
+								group.getElements();
+
+						if(objects.isEmpty())
+						{
+							return;
+						}
+
+						for(CSharpConstructorDeclaration object : objects)
+						{
+							LookupElementBuilder builder = buildForConstructor(object, genericExtractor);
+							if(builder != null)
+							{
+								result.addElement(PrioritizedLookupElement.withPriority(builder, 2));
+							}
 						}
 					}
 				}

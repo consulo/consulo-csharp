@@ -116,11 +116,11 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 
 	@NotNull
 	@Override
-	public LookupElement[] buildToLookupElements(@Nullable PsiElement sender, @NotNull ResolveResult[] arguments)
+	public List<LookupElement> buildToLookupElements(@Nullable PsiElement sender, @NotNull ResolveResult[] arguments)
 	{
 		if(arguments.length == 0)
 		{
-			return LookupElement.EMPTY_ARRAY;
+			return Collections.emptyList();
 		}
 
 		//FIXME [VISTALL] sorter?
@@ -142,7 +142,7 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 				ContainerUtil.addIfNotNull(list, buildLookupElementImpl(element));
 			}
 		}
-		return list.toArray(new LookupElement[list.size()]);
+		return list;
 	}
 
 	@NotNull
