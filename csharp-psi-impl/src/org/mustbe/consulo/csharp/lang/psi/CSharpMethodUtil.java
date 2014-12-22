@@ -24,14 +24,22 @@ import org.jetbrains.annotations.NotNull;
  */
 public class CSharpMethodUtil
 {
-	public static boolean isCanInheritGeneric(@NotNull CSharpMethodDeclaration methodDeclaration)
+	public static enum Result
+	{
+		NO_GENERIC,
+		CAN,
+		CANT
+	}
+
+	@NotNull
+	public static Result isCanInheritGeneric(@NotNull CSharpMethodDeclaration methodDeclaration)
 	{
 		int genericParametersCount = methodDeclaration.getGenericParametersCount();
 		if(genericParametersCount == 0)
 		{
-			return false;
+			return Result.NO_GENERIC;
 		}
 
-		return methodDeclaration.getParameters().length != 0;
+		return methodDeclaration.getParameters().length != 0 ? Result.CANT : Result.CAN;
 	}
 }

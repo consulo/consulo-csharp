@@ -216,8 +216,9 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 					return null;
 				}
 
-				boolean canInheritGeneric = CSharpMethodUtil.isCanInheritGeneric(methodDeclaration);
-				String lookupString = !canInheritGeneric ? name + "<>()" : name;
+				CSharpMethodUtil.Result inheritGeneric = CSharpMethodUtil.isCanInheritGeneric(methodDeclaration);
+
+				String lookupString = inheritGeneric == CSharpMethodUtil.Result.CAN ? name + "<>()" : name;
 				builder = LookupElementBuilder.create(methodDeclaration, lookupString);
 				builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 
@@ -234,7 +235,7 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 					}
 				}, ", ") + ")";
 
-				if(!canInheritGeneric)
+				if(inheritGeneric == CSharpMethodUtil.Result.CAN)
 				{
 					builder = builder.withPresentableText(name);
 					builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
