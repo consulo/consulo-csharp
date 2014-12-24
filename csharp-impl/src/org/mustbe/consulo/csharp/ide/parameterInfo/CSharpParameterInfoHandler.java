@@ -16,6 +16,9 @@
 
 package org.mustbe.consulo.csharp.ide.parameterInfo;
 
+import java.util.Comparator;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
@@ -42,6 +45,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtil;
+import com.intellij.util.SmartList;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -60,6 +65,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	public Object[] getParametersForLookup(LookupElement item, ParameterInfoContext context)
 	{
 		Object object = item.getObject();
+
 		if(object instanceof DotNetLikeMethodDeclaration || object instanceof DotNetVariable && ((DotNetVariable) object).toTypeRef(false).resolve(
 				(PsiElement) object) instanceof CSharpLambdaResolveResult)
 		{
@@ -86,57 +92,85 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	@Override
 	public void showParameterInfo(@NotNull PsiElement element, CreateParameterInfoContext context)
 	{
-		Object callableInfo = resolveToCallableInfo(element);
+		CSharpSimpleLikeMethod[] itemsToShow = resolveToCallables(element);
 
-		if(callableInfo != null)
+		if(itemsToShow.length > 0)
 		{
-			context.setItemsToShow(new Object[]{callableInfo});
+			context.setItemsToShow(itemsToShow);
 			context.showHint(element, element.getTextRange().getStartOffset(), this);
 		}
 	}
 
-	private static Object resolveToCallableInfo(PsiElement element)
+	@NotNull
+	private static CSharpSimpleLikeMethod[] resolveToCallables(PsiElement element)
 	{
-		Object callable = null;
+		List<CSharpSimpleLikeMethod> list = new SmartList<CSharpSimpleLikeMethod>();
 		if(element instanceof CSharpCallArgumentListOwner)
 		{
 			ResolveResult[] resolveResults = ((CSharpCallArgumentListOwner) element).multiResolve(false);
-			PsiElement firstValidElement = CSharpResolveUtil.findFirstValidElement(resolveResults);
-			// if we dont have valid result - get first
-			if(firstValidElement == null)
-			{
-				firstValidElement = resolveResults.length > 0 ? resolveResults[0].getElement() : null;
-			}
 
-			if(firstValidElement != null)
+			ResolveResult firstValidResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
+			if(firstValidResult != null)
 			{
-				callable = firstValidElement;
-				if(callable instanceof DotNetVariable)
+				CSharpSimpleLikeMethod likeMethod = resolveSimpleMethod(firstValidResult, element);
+				if(likeMethod != null)
 				{
-					DotNetTypeRef typeRef = ((DotNetVariable) callable).toTypeRef(false);
-
-					DotNetTypeResolveResult typeResolveResult = typeRef.resolve(element);
-					if(typeResolveResult instanceof CSharpLambdaResolveResult)
+					list.add(likeMethod);
+				}
+			}
+			else
+			{
+				for(ResolveResult resolveResult : resolveResults)
+				{
+					CSharpSimpleLikeMethod likeMethod = resolveSimpleMethod(resolveResult, element);
+					if(likeMethod != null)
 					{
-						CSharpMethodDeclaration resolve = ((CSharpLambdaResolveResult) typeResolveResult).getTarget();
-						if(resolve != null)
-						{
-							callable = GenericUnwrapTool.extract(resolve, typeResolveResult.getGenericExtractor());
-						}
-						else
-						{
-							callable = typeResolveResult;
-						}
+						list.add(likeMethod);
 					}
 				}
 			}
 		}
 
-		if(!(callable instanceof CSharpSimpleLikeMethod))
+		ContainerUtil.sort(list, new Comparator<CSharpSimpleLikeMethod>()
 		{
-			return null;
+			@Override
+			public int compare(CSharpSimpleLikeMethod o1, CSharpSimpleLikeMethod o2)
+			{
+				return o1.getParameterInfos().length - o2.getParameterInfos().length;
+			}
+		});
+		return ContainerUtil.toArray(list, CSharpSimpleLikeMethod.ARRAY_FACTORY);
+	}
+
+	@Nullable
+	private static CSharpSimpleLikeMethod resolveSimpleMethod(ResolveResult resolveResult, PsiElement scope)
+	{
+		CSharpSimpleLikeMethod method = null;
+
+		PsiElement resolveResultElement = resolveResult.getElement();
+		if(resolveResultElement instanceof DotNetVariable)
+		{
+			DotNetTypeRef typeRef = ((DotNetVariable) resolveResultElement).toTypeRef(false);
+
+			DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+			if(typeResolveResult instanceof CSharpLambdaResolveResult)
+			{
+				CSharpMethodDeclaration resolve = ((CSharpLambdaResolveResult) typeResolveResult).getTarget();
+				if(resolve != null)
+				{
+					method = GenericUnwrapTool.extract(resolve, typeResolveResult.getGenericExtractor());
+				}
+				else
+				{
+					method = (CSharpSimpleLikeMethod) typeResolveResult;
+				}
+			}
 		}
-		return callable;
+		else if(resolveResultElement instanceof CSharpSimpleLikeMethod)
+		{
+			method = (CSharpSimpleLikeMethod) resolveResultElement;
+		}
+		return method;
 	}
 
 	@Nullable
