@@ -27,6 +27,7 @@ import com.intellij.codeInsight.CodeInsightSettings;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.UnfairTextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.xml.util.XmlStringUtil;
 
 /**
  * @author VISTALL
@@ -66,8 +67,8 @@ public class CSharpParametersInfo
 				CSharpSimpleParameterInfo parameter = parameters[i];
 
 				int length = parametersInfo.length();
-				parametersInfo.buildParameter(parameter, scope);
-				parametersInfo.myParameterRanges[i] = new TextRange(length, parametersInfo.length());
+				int diff = parametersInfo.buildParameter(parameter, scope);
+				parametersInfo.myParameterRanges[i] = new TextRange(length, parametersInfo.length() + diff);
 			}
 		}
 		else
@@ -94,11 +95,13 @@ public class CSharpParametersInfo
 		myParameterRanges = new TextRange[myParameterCount == 0 ? 1 : myParameterCount];
 	}
 
-	private void buildParameter(@NotNull CSharpSimpleParameterInfo o, @NotNull PsiElement scope)
+	private int buildParameter(@NotNull CSharpSimpleParameterInfo o, @NotNull PsiElement scope)
 	{
-		myBuilder.append(CSharpTypeRefPresentationUtil.buildShortText(o.getTypeRef(), scope));
+		String text = CSharpTypeRefPresentationUtil.buildShortText(o.getTypeRef(), scope);
+		myBuilder.append(text);
 		myBuilder.append(" ");
 		myBuilder.append(o.getNotNullName());
+		return XmlStringUtil.escapeString(text).length() - text.length();
 	}
 
 	public int length()
