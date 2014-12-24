@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.completion;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
@@ -28,11 +29,12 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyTypeRefByQName;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetUserType;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
@@ -40,6 +42,7 @@ import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.completion.PrioritizedLookupElement;
+import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.AutoCompletionPolicy;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -60,7 +63,8 @@ import lombok.val;
  */
 public class CSharpKeywordCompletionContributor extends CompletionContributor
 {
-	private static final TokenSet ourExpressionLiterals = TokenSet.create(CSharpTokens.NULL_LITERAL, CSharpTokens.BOOL_LITERAL);
+	private static final TokenSet ourExpressionLiterals = TokenSet.create(CSharpTokens.NULL_LITERAL, CSharpTokens.BOOL_LITERAL,
+			CSharpTokens.DEFAULT_KEYWORD, CSharpTokens.TYPEOF_KEYWORD, CSharpTokens.SIZEOF_KEYWORD);
 
 	public CSharpKeywordCompletionContributor()
 	{
@@ -80,6 +84,14 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 						@Override
 						public LookupElement fun(LookupElementBuilder t, IElementType elementType)
 						{
+							if(elementType == CSharpTokens.DEFAULT_KEYWORD ||
+									elementType == CSharpTokens.TYPEOF_KEYWORD ||
+									elementType == CSharpTokens.SIZEOF_KEYWORD)
+							{
+								t = t.withTailText("(...)", true);
+								t = t.withInsertHandler(ParenthesesInsertHandler.getInstance(true));
+							}
+
 							List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(parent);
 							if(!expectedTypeRefs.isEmpty())
 							{
@@ -94,12 +106,16 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 										}
 									}
 								}
-								else if(elementType == CSharpTokens.BOOL_LITERAL)
+								else
 								{
-									CSharpLazyTypeRefByQName typeRefByQName = new CSharpLazyTypeRefByQName(parent, DotNetTypes.System.Boolean);
+									DotNetTypeRef typeRefForToken = typeRefFromTokeType(elementType);
+									if(typeRefForToken == null)
+									{
+										return t;
+									}
 									for(ExpectedTypeInfo expectedTypeRef : expectedTypeRefs)
 									{
-										if(CSharpTypeUtil.isInheritable(expectedTypeRef.getTypeRef(), typeRefByQName, parent))
+										if(CSharpTypeUtil.isInheritable(expectedTypeRef.getTypeRef(), typeRefForToken, parent))
 										{
 											return PrioritizedLookupElement.withPriority(t, 2);
 										}
@@ -202,5 +218,23 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 				resultSet.addElement(builder.withAutoCompletionPolicy(AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE));
 			}
 		});
+	}
+
+	@Nullable
+	private static DotNetTypeRef typeRefFromTokeType(@NotNull IElementType e)
+	{
+		if(e == CSharpTokens.BOOL_LITERAL)
+		{
+			return new CSharpTypeRefByQName(DotNetTypes.System.Boolean);
+		}
+		else if(e == CSharpTokens.TYPEOF_KEYWORD)
+		{
+			return new CSharpTypeRefByQName(DotNetTypes.System.Type);
+		}
+		else if(e == CSharpTokens.SIZEOF_KEYWORD)
+		{
+			return new CSharpTypeRefByQName(DotNetTypes.System.Int32);
+		}
+		return null;
 	}
 }
