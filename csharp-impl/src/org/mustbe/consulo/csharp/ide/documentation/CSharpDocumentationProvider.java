@@ -21,6 +21,7 @@ import java.util.List;
 import org.emonic.base.codehierarchy.CodeHierarchyHelper;
 import org.emonic.base.documentation.IDocumentation;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.dotnet.documentation.DotNetDocumentationCache;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetArrayTypeRef;
@@ -108,6 +109,10 @@ public class CSharpDocumentationProvider  implements DocumentationProvider
 		StringBuilder builder = new StringBuilder();
 
 		appendModifiers(element, builder);
+		if(element instanceof CSharpEventDeclaration)
+		{
+			builder.append("event ");
+		}
 		builder.append(generateLinksForType(element.toTypeRef(true), element));
 		builder.append(" ");
 		builder.append(element.getName());
