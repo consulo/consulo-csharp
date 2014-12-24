@@ -20,6 +20,7 @@ import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.stmt.StatementParsing;
 import com.intellij.lang.PsiBuilder;
+import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 
@@ -51,7 +52,7 @@ public class MemberWithBodyParsing extends SharedParsingHelpers
 	{
 		PsiBuilder.Marker marker = builder.mark();
 
-		parseModifierListWithAttributes(builder, STUB_SUPPORT);
+		Pair<PsiBuilder.Marker, Boolean> pairModifierList = parseModifierListWithAttributes(builder, STUB_SUPPORT);
 
 		builder.enableSoftKeywords(tokenSet);
 		boolean contains = tokenSet.contains(builder.getTokenType());
@@ -74,11 +75,19 @@ public class MemberWithBodyParsing extends SharedParsingHelpers
 		}
 		else
 		{
-			marker.rollbackTo();
-
-			PsiBuilder.Marker errorMarker = builder.mark();
-			builder.advanceLexer(); // advance one element
-			errorMarker.error("Expected accessor name");
+			// non empty
+			if(pairModifierList.getSecond() == Boolean.FALSE)
+			{
+				marker.drop();
+				builder.error("Expected accessor name");
+			}
+			else
+			{
+				marker.rollbackTo();
+				PsiBuilder.Marker errorMarker = builder.mark();
+				builder.advanceLexer(); // advance one element
+				errorMarker.error("Expected accessor name");
+			}
 		}
 	}
 }
