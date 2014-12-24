@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.completion;
 import static com.intellij.patterns.StandardPatterns.psiElement;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.codeInsight.completion.CompletionContributor;
@@ -26,7 +27,6 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.completion.CompletionUtilCore;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 
@@ -45,11 +45,12 @@ public abstract class CSharpMemberAddByCompletionContributor extends CompletionC
 			{
 				DotNetQualifiedElement currentElement = PsiTreeUtil.getParentOfType(parameters.getPosition(), DotNetQualifiedElement.class);
 				assert currentElement != null;
-				if(!currentElement.getText().contains(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED))
+
+				// if we not field - return
+				if(!(currentElement instanceof CSharpFieldDeclaration))
 				{
 					return;
 				}
-
 
 				CSharpTypeDeclaration typeDeclaration = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpTypeDeclaration.class);
 				assert typeDeclaration != null;
