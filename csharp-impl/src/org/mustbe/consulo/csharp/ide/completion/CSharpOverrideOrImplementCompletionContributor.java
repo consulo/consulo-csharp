@@ -16,8 +16,6 @@
 
 package org.mustbe.consulo.csharp.ide.completion;
 
-import static com.intellij.patterns.StandardPatterns.psiElement;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -45,17 +43,12 @@ import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
-import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.completion.CompletionUtilCore;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -73,49 +66,37 @@ import com.intellij.util.ProcessingContext;
  * @author VISTALL
  * @since 17.12.14
  */
-public class CSharpOverrideOrImplementCompletionContributor extends CompletionContributor
+public class CSharpOverrideOrImplementCompletionContributor extends CSharpMemberAddByCompletionContributor
 {
 	private static final int ourMethodFlags = CSharpElementPresentationUtil.METHOD_WITH_RETURN_TYPE | CSharpElementPresentationUtil
 			.METHOD_PARAMETER_NAME;
 
-	public CSharpOverrideOrImplementCompletionContributor()
+	@Override
+	public void processCompletion(@NotNull CompletionParameters parameters,
+			ProcessingContext context,
+			@NotNull CompletionResultSet result,
+			@NotNull CSharpTypeDeclaration typeDeclaration)
 	{
-		extend(CompletionType.BASIC, psiElement().withSuperParent(4, CSharpTypeDeclaration.class), new CompletionProvider<CompletionParameters>()
+		Collection<DotNetModifierListOwner> overrideItems = getItemsImpl(typeDeclaration);
+		for(DotNetModifierListOwner overrideItem : overrideItems)
 		{
-			@Override
-			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			LookupElementBuilder builder = buildLookupItem(overrideItem, false);
+
+			if(builder != null)
 			{
-				DotNetQualifiedElement currentElement = PsiTreeUtil.getParentOfType(parameters.getPosition(), DotNetQualifiedElement.class);
-				assert currentElement != null;
-				if(!currentElement.getText().contains(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED))
+				result.addElement(builder);
+			}
+
+			if(overrideItem.hasModifier(CSharpModifier.INTERFACE_ABSTRACT))
+			{
+				builder = buildLookupItem(overrideItem, true);
+
+				if(builder != null)
 				{
-					return;
-				}
-				CSharpTypeDeclaration typeDeclaration = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpTypeDeclaration.class);
-				assert typeDeclaration != null;
-
-				Collection<DotNetModifierListOwner> overrideItems = getItemsImpl(typeDeclaration);
-				for(DotNetModifierListOwner overrideItem : overrideItems)
-				{
-					LookupElementBuilder builder = buildLookupItem(overrideItem, false);
-
-					if(builder != null)
-					{
-						result.addElement(builder);
-					}
-
-					if(overrideItem.hasModifier(CSharpModifier.INTERFACE_ABSTRACT))
-					{
-						builder = buildLookupItem(overrideItem, true);
-
-						if(builder != null)
-						{
-							result.addElement(builder);
-						}
-					}
+					result.addElement(builder);
 				}
 			}
-		});
+		}
 	}
 
 	@Nullable
@@ -249,7 +230,7 @@ public class CSharpOverrideOrImplementCompletionContributor extends CompletionCo
 		{
 			if(hide)
 			{
-				builder.append(DotNetElementPresentationUtil.formatTypeWithGenericParameters((CSharpTypeDeclaration)methodDeclaration.getParent()));
+				builder.append(DotNetElementPresentationUtil.formatTypeWithGenericParameters((CSharpTypeDeclaration) methodDeclaration.getParent()));
 				builder.append(".");
 			}
 			builder.append(methodDeclaration.getName());
