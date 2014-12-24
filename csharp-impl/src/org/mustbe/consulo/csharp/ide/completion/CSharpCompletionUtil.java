@@ -27,6 +27,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.NotNullPairFunction;
 import com.intellij.util.containers.ConcurrentFactoryMap;
 
@@ -56,6 +57,20 @@ public class CSharpCompletionUtil
 			return new String[]{elementType.toString().replace("_KEYWORD", "").toLowerCase()};
 		}
 	};
+
+	@NotNull
+	public static String[] textsOfKeyword(IElementType elementType)
+	{
+		return ourCache.get(elementType);
+	}
+
+	@NotNull
+	public static String textOfKeyword(IElementType elementType)
+	{
+		String firstElement = ArrayUtil.getFirstElement(textsOfKeyword(elementType));
+		assert firstElement != null;
+		return firstElement;
+	}
 
 	public static void tokenSetToLookup(@NotNull CompletionResultSet resultSet,
 			@NotNull TokenSet tokenSet,

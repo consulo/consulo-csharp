@@ -251,4 +251,16 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 		DotNetType typeForImplement = getTypeForImplement();
 		return typeForImplement != null ? typeForImplement.toTypeRef() : DotNetTypeRef.ERROR_TYPE;
 	}
+
+	@Override
+	public PsiElement getLeftBrace()
+	{
+		return null;
+	}
+
+	@Override
+	public PsiElement getRightBrace()
+	{
+		return null;
+	}
 }

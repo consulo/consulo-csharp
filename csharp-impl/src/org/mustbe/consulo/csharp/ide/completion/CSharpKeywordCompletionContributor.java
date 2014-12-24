@@ -16,14 +16,14 @@
 
 package org.mustbe.consulo.csharp.ide.completion;
 
+import static com.intellij.patterns.StandardPatterns.psiElement;
+
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
-import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
@@ -43,12 +43,8 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
-import com.intellij.codeInsight.lookup.AutoCompletionPolicy;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.codeInsight.lookup.LookupElementPresentation;
-import com.intellij.codeInsight.lookup.LookupElementRenderer;
-import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
@@ -68,7 +64,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 
 	public CSharpKeywordCompletionContributor()
 	{
-		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class),
+		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class),
 				new CompletionProvider<CompletionParameters>()
 		{
 			@Override
@@ -129,7 +125,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, StandardPatterns.psiElement(), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, psiElement(), new CompletionProvider<CompletionParameters>()
 		{
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters completionParameters,
@@ -160,62 +156,6 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 						CSharpCompletionUtil.tokenSetToLookup(completionResultSet, tokenVal, null, null);
 					}
 				}
-			}
-		});
-
-		extend(CompletionType.BASIC, StandardPatterns.psiElement(), new CompletionProvider<CompletionParameters>()
-		{
-			@Override
-			protected void addCompletions(@NotNull CompletionParameters completionParameters,
-					ProcessingContext processingContext,
-					@NotNull CompletionResultSet resultSet)
-			{
-				PsiElement originalPosition = completionParameters.getOriginalPosition();
-				if(originalPosition == null)
-				{
-					return;
-				}
-
-				PsiElement prevSibling = originalPosition.getPrevSibling();
-				if(prevSibling == null)
-				{
-					return;
-				}
-
-				String text = null;
-				if(prevSibling.getNode().getElementType() == CSharpTokens.LBRACE)
-				{
-					PsiElement parent = prevSibling.getParent();
-					if(parent instanceof CSharpPropertyDeclaration)
-					{
-						text = "get; set;";
-					}
-					else if(parent instanceof CSharpEventDeclaration)
-					{
-						text = "add; remove;";
-					}
-				}
-
-				if(text == null)
-				{
-					return;
-				}
-
-				LookupElementBuilder builder = LookupElementBuilder.create(text);
-				builder = builder.bold();
-				builder = builder.withRenderer(new LookupElementRenderer<LookupElement>()
-				{
-					@Override
-					public void renderElement(LookupElement lookupElement, LookupElementPresentation lookupElementPresentation)
-					{
-						String lookupString = lookupElement.getLookupString();
-						for(char o : lookupString.toCharArray())
-						{
-							lookupElementPresentation.appendTailText(String.valueOf(o), o == ';');
-						}
-					}
-				});
-				resultSet.addElement(builder.withAutoCompletionPolicy(AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE));
 			}
 		});
 	}

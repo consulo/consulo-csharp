@@ -25,6 +25,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -75,5 +76,17 @@ public class CSharpLightArrayMethodDeclarationBuilder extends CSharpLightLikeMet
 	public DotNetNamedElement[] getMembers()
 	{
 		return DotNetNamedElement.EMPTY_ARRAY;
+	}
+
+	@Override
+	public PsiElement getLeftBrace()
+	{
+		return null;
+	}
+
+	@Override
+	public PsiElement getRightBrace()
+	{
+		return null;
 	}
 }

@@ -24,7 +24,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
  * @author VISTALL
  * @since 20.12.14
  */
-public interface CSharpXXXAccessorOwner extends DotNetElement
+public interface CSharpXXXAccessorOwner extends DotNetElement, CSharpBodyWithBraces
 {
 	@NotNull
 	DotNetXXXAccessor[] getAccessors();
