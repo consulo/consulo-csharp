@@ -68,7 +68,7 @@ public class CSharpVisibilityUtil
 			case NONE:
 				return true;
 			case PROTECTED_INTERNAL:
-				return isVisible(target, place, CSharpAccessModifier.PROTECTED) &&  isVisible(target, place, CSharpAccessModifier.INTERNAL);
+				return isVisible(target, place, CSharpAccessModifier.INTERNAL);
 			case INTERNAL:
 				Module targetModule = ModuleUtilCore.findModuleForPsiElement(target);
 				Module placeModule = ModuleUtilCore.findModuleForPsiElement(place);
