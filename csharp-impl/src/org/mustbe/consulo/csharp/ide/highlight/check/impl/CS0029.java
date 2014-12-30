@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.CastExpressionToTypeRef;
 import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightKey;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -82,8 +83,14 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				CSharpStaticTypeRef.IMPLICIT);
 		if(!inheritResult.isSuccess())
 		{
-			return newBuilder(elementToHighlight, CSharpTypeRefPresentationUtil.buildText(secondTypeRef, element, TYPE_FLAGS),
-					CSharpTypeRefPresentationUtil.buildText(firstTypeRef, element, TYPE_FLAGS));
+			CompilerCheckBuilder builder = newBuilder(elementToHighlight, CSharpTypeRefPresentationUtil.buildText(secondTypeRef,
+					element, TYPE_FLAGS), CSharpTypeRefPresentationUtil.buildText(firstTypeRef, element, TYPE_FLAGS));
+
+			if(elementToHighlight instanceof DotNetExpression)
+			{
+				builder.addQuickFix(new CastExpressionToTypeRef((DotNetExpression) elementToHighlight, firstTypeRef));
+			}
+			return builder;
 		}
 		else if(inheritResult.isConversion())
 		{
