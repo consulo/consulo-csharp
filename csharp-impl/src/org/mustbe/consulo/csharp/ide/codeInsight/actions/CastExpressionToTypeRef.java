@@ -20,8 +20,10 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0029;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.BundleBase;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
@@ -70,7 +72,17 @@ public class CastExpressionToTypeRef extends BaseIntentionAction
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
 	{
-		return myExpressionPointer.getElement() != null;
+		DotNetExpression element = myExpressionPointer.getElement();
+		if(element == null)
+		{
+			return false;
+		}
+
+		if(DotNetTypeRefUtil.isVmQNameEqual(myExpectedTypeRef, element, DotNetTypes.System.Void))
+		{
+			return false;
+		}
+		return true;
 	}
 
 	@Override
