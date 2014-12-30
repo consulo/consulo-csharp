@@ -21,10 +21,11 @@ import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0029;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
-import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.BundleBase;
+import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -39,15 +40,15 @@ import lombok.val;
  * @author VISTALL
  * @since 30.12.14
  */
-public class ChangeVariableToTypeRefFix extends BaseIntentionAction
+public class ChangeReturnToTypeRefFix extends BaseIntentionAction
 {
-	private final SmartPsiElementPointer<DotNetVariable> myVariablePointer;
+	private final SmartPsiElementPointer<DotNetLikeMethodDeclaration> myMethodPointer;
 	@NotNull
 	private final DotNetTypeRef myToTypeRef;
 
-	public ChangeVariableToTypeRefFix(@NotNull DotNetVariable element, @NotNull DotNetTypeRef toTypeRef)
+	public ChangeReturnToTypeRefFix(@NotNull DotNetLikeMethodDeclaration element, @NotNull DotNetTypeRef toTypeRef)
 	{
-		myVariablePointer = SmartPointerManager.getInstance(element.getProject()).createSmartPsiElementPointer(element);
+		myMethodPointer = SmartPointerManager.getInstance(element.getProject()).createSmartPsiElementPointer(element);
 		myToTypeRef = toTypeRef;
 	}
 
@@ -55,12 +56,12 @@ public class ChangeVariableToTypeRefFix extends BaseIntentionAction
 	@Override
 	public String getText()
 	{
-		DotNetVariable element = myVariablePointer.getElement();
+		DotNetLikeMethodDeclaration element = myMethodPointer.getElement();
 		if(element == null)
 		{
 			return "invalid";
 		}
-		return BundleBase.format("Change ''{0}'' type to ''{1}''", element.getName(), CSharpTypeRefPresentationUtil.buildText(myToTypeRef, element,
+		return BundleBase.format("Make ''{0}'' return to ''{1}''", element.getName(), CSharpTypeRefPresentationUtil.buildText(myToTypeRef, element,
 				CS0029.TYPE_FLAGS));
 	}
 
@@ -74,7 +75,7 @@ public class ChangeVariableToTypeRefFix extends BaseIntentionAction
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
 	{
-		return myVariablePointer.getElement() != null;
+		return myMethodPointer.getElement() != null;
 	}
 
 	@Override
@@ -82,13 +83,13 @@ public class ChangeVariableToTypeRefFix extends BaseIntentionAction
 	{
 		PsiDocumentManager.getInstance(project).commitAllDocuments();
 
-		DotNetVariable element = myVariablePointer.getElement();
+		DotNetLikeMethodDeclaration element = myMethodPointer.getElement();
 		if(element == null)
 		{
 			return;
 		}
 
-		DotNetType typeOfVariable = element.getType();
+		DotNetType typeOfVariable = element.getReturnType();
 		if(typeOfVariable == null)
 		{
 			return;
