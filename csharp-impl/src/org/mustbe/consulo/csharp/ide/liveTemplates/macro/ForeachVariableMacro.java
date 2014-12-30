@@ -19,8 +19,8 @@ package org.mustbe.consulo.csharp.ide.liveTemplates.macro;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.template.Expression;
@@ -35,6 +35,11 @@ import lombok.val;
  */
 public class ForeachVariableMacro extends VariableTypeMacroBase
 {
+	private static final String[] ourAcceptableTypes = {
+			DotNetTypes2.System.Collections.IEnumerable,
+			DotNetTypes2.System.Collections.Generic.IEnumerable$1
+	};
+
 	@Nullable
 	@Override
 	protected PsiElement[] getVariables(Expression[] params, ExpressionContext context)
@@ -50,15 +55,12 @@ public class ForeachVariableMacro extends VariableTypeMacroBase
 		List<DotNetVariable> list = new SmartList<DotNetVariable>();
 		for(DotNetVariable variable : variables)
 		{
-			DotNetTypeRef elementTypeRef = CSharpReferenceExpressionImplUtil.toTypeRef(variable);
+			DotNetTypeRef typeRefOfVariable = variable.toTypeRef(true);
 
-			DotNetTypeRef iterableTypeRef = CSharpResolveUtil.resolveIterableType(psiElementAtStartOffset, elementTypeRef);
-
-			if(iterableTypeRef == DotNetTypeRef.ERROR_TYPE)
+			if(CSharpTypeDeclarationImplUtil.isInheritOrSelf(typeRefOfVariable, psiElementAtStartOffset, ourAcceptableTypes))
 			{
-				continue;
+				list.add(variable);
 			}
-			list.add(variable);
 		}
 		return list.toArray(new PsiElement[list.size()]);
 	}

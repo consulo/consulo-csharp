@@ -32,6 +32,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.ArrayUtil;
 
 /**
  * @author VISTALL
@@ -39,6 +40,53 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpTypeDeclarationImplUtil
 {
+	public static boolean isInheritOrSelf(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope, @NotNull String[] vmQNames)
+	{
+		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+		PsiElement typeResolveResultElement = typeResolveResult.getElement();
+		if(!(typeResolveResultElement instanceof DotNetTypeDeclaration))
+		{
+			return false;
+		}
+
+		return isInheritOrSelf0((DotNetTypeDeclaration) typeResolveResultElement, scope, vmQNames);
+	}
+
+	private static boolean isInheritOrSelf0(DotNetTypeDeclaration typeDeclaration, PsiElement scope, String[] vmQNames)
+	{
+		if(ArrayUtil.contains(typeDeclaration.getVmQName(), vmQNames))
+		{
+			return true;
+		}
+
+		DotNetTypeRef[] anExtends = typeDeclaration.getExtendTypeRefs();
+		if(anExtends.length > 0)
+		{
+			for(DotNetTypeRef dotNetType : anExtends)
+			{
+				PsiElement psiElement = dotNetType.resolve(typeDeclaration).getElement();
+				if(psiElement instanceof DotNetTypeDeclaration)
+				{
+					if(psiElement.isEquivalentTo(typeDeclaration))
+					{
+						return false;
+					}
+
+					if(ArrayUtil.contains(((DotNetTypeDeclaration) psiElement).getVmQName(), vmQNames))
+					{
+						return true;
+					}
+
+					if(isInheritOrSelf0((DotNetTypeDeclaration) psiElement, scope, vmQNames))
+					{
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	public static boolean isEquivalentTo(@NotNull DotNetTypeDeclaration thisType, @Nullable PsiElement another)
 	{
 		return another instanceof DotNetTypeDeclaration && Comparing.equal(thisType.getVmQName(), ((DotNetTypeDeclaration) another).getVmQName());
