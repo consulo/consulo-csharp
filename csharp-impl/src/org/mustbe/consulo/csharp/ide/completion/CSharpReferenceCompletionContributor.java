@@ -228,9 +228,9 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 			}
 		}
 
-					);
+		);
 
-					extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class)
+		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class)
 				.withSuperParent(2, CSharpArrayInitializationExpressionImpl.class).withSuperParent(3, CSharpNewExpressionImpl.class),
 				new CompletionProvider<CompletionParameters>()
 		{
