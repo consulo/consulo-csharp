@@ -20,9 +20,13 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedConstructorFix;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedMethodFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNewExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
@@ -42,6 +46,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
+import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
 import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixActionRegistrarImpl;
 import com.intellij.codeInsight.quickfix.UnresolvedReferenceQuickFixProvider;
 import com.intellij.psi.PsiElement;
@@ -238,7 +243,24 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 			builder = builder.description("");
 			builder = builder.escapedToolTip(tooltipBuilder.toString());
 			builder = builder.range(parameterList);
-			return builder.create();
+
+			HighlightInfo highlightInfo = builder.create();
+			if(highlightInfo != null)
+			{
+				if(element instanceof CSharpReferenceExpression)
+				{
+					if(resolveElement instanceof CSharpMethodDeclaration)
+					{
+						QuickFixAction.registerQuickFixAction(highlightInfo, new CreateUnresolvedMethodFix((CSharpReferenceExpression) element));
+					}
+
+					if(resolveElement instanceof CSharpConstructorDeclaration)
+					{
+						QuickFixAction.registerQuickFixAction(highlightInfo, new CreateUnresolvedConstructorFix((CSharpReferenceExpression) element));
+					}
+				}
+			}
+			return highlightInfo;
 		}
 		return null;
 	}
