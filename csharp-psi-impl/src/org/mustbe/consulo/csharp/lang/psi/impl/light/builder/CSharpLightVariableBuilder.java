@@ -53,6 +53,13 @@ public abstract class CSharpLightVariableBuilder<T extends CSharpLightVariableBu
 		return myConstant;
 	}
 
+	@Nullable
+	@Override
+	public PsiElement getConstantKeywordElement()
+	{
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
 	public T setConstant()
 	{

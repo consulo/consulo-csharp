@@ -77,6 +77,13 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 		return false;
 	}
 
+	@Nullable
+	@Override
+	public PsiElement getConstantKeywordElement()
+	{
+		return null;
+	}
+
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolve)

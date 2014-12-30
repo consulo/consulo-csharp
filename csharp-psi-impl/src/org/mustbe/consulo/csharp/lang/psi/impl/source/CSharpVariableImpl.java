@@ -23,6 +23,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -67,6 +68,13 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 		{
 			return runtimeType;
 		}
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getConstantKeywordElement()
+	{
+		return null;
 	}
 
 	@Override

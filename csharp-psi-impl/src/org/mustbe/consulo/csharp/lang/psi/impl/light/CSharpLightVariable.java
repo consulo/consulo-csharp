@@ -45,6 +45,13 @@ public abstract class CSharpLightVariable<S extends DotNetVariable> extends CSha
 		return myOriginal.isConstant();
 	}
 
+	@Nullable
+	@Override
+	public PsiElement getConstantKeywordElement()
+	{
+		return myOriginal.getConstantKeywordElement();
+	}
+
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)

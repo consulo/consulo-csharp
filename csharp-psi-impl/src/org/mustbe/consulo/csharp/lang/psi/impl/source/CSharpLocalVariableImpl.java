@@ -145,7 +145,14 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 	@Override
 	public boolean isConstant()
 	{
-		return findChildByType(CSharpTokens.CONST_KEYWORD) != null;
+		return getConstantKeywordElement() != null;
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getConstantKeywordElement()
+	{
+		return findChildByType(CSharpTokens.CONST_KEYWORD);
 	}
 
 	@NotNull

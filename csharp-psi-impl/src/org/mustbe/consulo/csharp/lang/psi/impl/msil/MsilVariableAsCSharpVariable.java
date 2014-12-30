@@ -77,6 +77,13 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 		return myOriginal;
 	}
 
+	@Nullable
+	@Override
+	public PsiElement getConstantKeywordElement()
+	{
+		return null;
+	}
+
 	@Override
 	public boolean isConstant()
 	{
