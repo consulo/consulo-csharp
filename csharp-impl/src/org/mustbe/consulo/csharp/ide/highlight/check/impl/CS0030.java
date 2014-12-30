@@ -130,7 +130,7 @@ public class CS0030 extends CompilerCheck<PsiElement>
 							ref.set(builder);
 						}
 					}
-					else if(inheritResult.getConversionMethod() != null)
+					else if(inheritResult.isConversion())
 					{
 						CompilerCheckBuilder builder = newBuilder(innerExpression);
 						builder.setTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
@@ -141,7 +141,7 @@ public class CS0030 extends CompilerCheck<PsiElement>
 						ref.set(builder);
 					}
 				}
-				else if(inheritResult.getConversionMethod() != null)
+				else if(inheritResult.isConversion())
 				{
 					CompilerCheckBuilder builder = newBuilder(type);
 					builder.setTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);

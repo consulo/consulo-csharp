@@ -61,15 +61,33 @@ public class CSharpTypeUtil
 	public static class InheritResult
 	{
 		private final boolean mySuccess;
+		private final boolean myConversion;
 		private final CSharpConversionMethodDeclaration myConversionMethod;
 		//private final String myExceptionText = ExceptionUtil.getThrowableText(new Exception());
 
+		public InheritResult(boolean success, boolean conversion)
+		{
+			this(success, conversion, null);
+		}
+
 		public InheritResult(boolean success, CSharpConversionMethodDeclaration conversionMethod)
 		{
+			this(success, conversionMethod != null, conversionMethod);
+		}
+
+		public InheritResult(boolean success, boolean conversion, CSharpConversionMethodDeclaration conversionMethod)
+		{
 			mySuccess = success;
+			myConversion = conversion;
 			myConversionMethod = conversionMethod;
 		}
 
+		public boolean isConversion()
+		{
+			return myConversion;
+		}
+
+		@Nullable
 		public CSharpConversionMethodDeclaration getConversionMethod()
 		{
 			return myConversionMethod;

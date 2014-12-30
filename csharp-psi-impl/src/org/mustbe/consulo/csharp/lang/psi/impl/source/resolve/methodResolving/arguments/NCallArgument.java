@@ -114,7 +114,7 @@ public class NCallArgument extends UserDataHolderBase
 						CSharpStaticTypeRef.IMPLICIT);
 				if(inheritable.isSuccess())
 				{
-					if(inheritable.getConversionMethod() != null)
+					if(inheritable.isConversion())
 					{
 						putUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO, new ImplicitCastInfo(getTypeRef(), parameterTypeRef));
 					}

@@ -85,7 +85,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			return newBuilder(elementToHighlight, CSharpTypeRefPresentationUtil.buildText(secondTypeRef, element, TYPE_FLAGS),
 					CSharpTypeRefPresentationUtil.buildText(firstTypeRef, element, TYPE_FLAGS));
 		}
-		else if(inheritResult.getConversionMethod() != null)
+		else if(inheritResult.isConversion())
 		{
 			String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildText(secondTypeRef, element,
 					TYPE_FLAGS), CSharpTypeRefPresentationUtil.buildText(firstTypeRef, element, TYPE_FLAGS));
