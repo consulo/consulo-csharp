@@ -32,7 +32,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.BundleBase;
-import com.intellij.codeInsight.intention.HighPriorityAction;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.command.WriteCommandAction;
@@ -55,8 +54,7 @@ import lombok.val;
  * @author VISTALL
  * @since 30.12.14
  */
-public abstract class CreateUnresolvedLikeMethodFix<CONTEXT extends BaseLikeMethodGenerateContext> extends BaseIntentionAction implements
-		HighPriorityAction
+public abstract class CreateUnresolvedLikeMethodFix<CONTEXT extends BaseLikeMethodGenerateContext> extends BaseIntentionAction
 {
 	protected final SmartPsiElementPointer<CSharpReferenceExpression> myPointer;
 	protected final String myReferenceName;
