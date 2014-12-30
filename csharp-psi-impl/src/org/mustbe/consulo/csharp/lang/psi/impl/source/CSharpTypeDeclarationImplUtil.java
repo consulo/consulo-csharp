@@ -40,7 +40,7 @@ import com.intellij.util.ArrayUtil;
  */
 public class CSharpTypeDeclarationImplUtil
 {
-	public static boolean isInheritOrSelf(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope, @NotNull String[] vmQNames)
+	public static boolean isInheritOrSelf(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope, @NotNull String... vmQNames)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
 		PsiElement typeResolveResultElement = typeResolveResult.getElement();
@@ -52,7 +52,7 @@ public class CSharpTypeDeclarationImplUtil
 		return isInheritOrSelf0((DotNetTypeDeclaration) typeResolveResultElement, scope, vmQNames);
 	}
 
-	private static boolean isInheritOrSelf0(DotNetTypeDeclaration typeDeclaration, PsiElement scope, String[] vmQNames)
+	private static boolean isInheritOrSelf0(DotNetTypeDeclaration typeDeclaration, PsiElement scope, String... vmQNames)
 	{
 		if(ArrayUtil.contains(typeDeclaration.getVmQName(), vmQNames))
 		{
@@ -64,7 +64,7 @@ public class CSharpTypeDeclarationImplUtil
 		{
 			for(DotNetTypeRef dotNetType : anExtends)
 			{
-				PsiElement psiElement = dotNetType.resolve(typeDeclaration).getElement();
+				PsiElement psiElement = dotNetType.resolve(scope).getElement();
 				if(psiElement instanceof DotNetTypeDeclaration)
 				{
 					if(psiElement.isEquivalentTo(typeDeclaration))

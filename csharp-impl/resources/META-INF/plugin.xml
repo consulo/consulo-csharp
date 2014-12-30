@@ -222,7 +222,7 @@
 		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.SuggestVariableNameMacro"/>
 		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.SuggestIndexVariableNameMacro"/>
 		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.ArrayVariableMacro"/>
-		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.ArrayComponentTypeMacro"/>
+		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.IListVariableMacro"/>
 		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.ForeachVariableMacro"/>
 		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.ForeachComponentTypeMacro"/>
 		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.CSharpBoolExpressionFromMacro"/>

@@ -35,10 +35,21 @@
 	</template>
 	<template name="itar"
 			  value="for(int $INDEX$ = 0; $INDEX$ &lt; $ARRAY$.Length; $INDEX$++) {&#10;  $ELEMENT_TYPE$ $VAR$ = $ARRAY$[$INDEX$];&#10;  $END$&#10;}"
-			  key="Iterator array by index" toReformat="true" toShortenFQNames="true">
+			  description="Iterate array by index" toReformat="true" toShortenFQNames="true">
 		<variable name="INDEX" expression="csharpSuggestIndexName()" defaultValue="" alwaysStopAt="true"/>
 		<variable name="ARRAY" expression="csharpArrayVariable()" defaultValue="&quot;array&quot;" alwaysStopAt="true"/>
-		<variable name="ELEMENT_TYPE" expression="csharpComponentTypeOf(ARRAY)" defaultValue="" alwaysStopAt="false"/>
+		<variable name="ELEMENT_TYPE" expression="csharpForeachComponentType(ARRAY)" defaultValue="" alwaysStopAt="false"/>
+		<variable name="VAR" expression="csharpSuggestVariableName()" defaultValue="" alwaysStopAt="true"/>
+		<context>
+			<option name="CSHARP_STATEMENT" value="true"/>
+		</context>
+	</template>
+	<template name="itli"
+			  value="for(int $INDEX$ = 0; $INDEX$ &lt; $LIST$.Count; $INDEX$++) {&#10;  $ELEMENT_TYPE$ $VAR$ = $LIST$[$INDEX$];&#10;  $END$&#10;}"
+			  description="Iterate list by index" toReformat="true" toShortenFQNames="true">
+		<variable name="INDEX" expression="csharpSuggestIndexName()" defaultValue="" alwaysStopAt="true"/>
+		<variable name="LIST" expression="csharpIListVariable()" defaultValue="&quot;array&quot;" alwaysStopAt="true"/>
+		<variable name="ELEMENT_TYPE" expression="csharpForeachComponentType(LIST)" defaultValue="" alwaysStopAt="false"/>
 		<variable name="VAR" expression="csharpSuggestVariableName()" defaultValue="" alwaysStopAt="true"/>
 		<context>
 			<option name="CSHARP_STATEMENT" value="true"/>
