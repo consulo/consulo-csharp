@@ -1160,9 +1160,16 @@ public class ExpressionParsing extends SharedParsingHelpers
 			arrayMarker.done(NEW_ARRAY_LENGTH);
 		}
 
-		if(!forceArray && builder.getTokenType() == LPAR)
+		if(!forceArray)
 		{
-			parseArgumentList(builder, false);
+			if(builder.getTokenType() == LPAR)
+			{
+				parseArgumentList(builder, false);
+			}
+			else
+			{
+				builder.error("'(' expected");
+			}
 		}
 
 		AfterNewParsingTarget target = getTarget(builder, forceArray, typeMarker);
