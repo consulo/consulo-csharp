@@ -60,26 +60,6 @@ import lombok.val;
  */
 public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 {
-	public static class ResolveError
-	{
-		private String description;
-		private String tooltip;
-		private PsiElement range;
-
-		public ResolveError(String description, String tooltip, PsiElement range)
-		{
-			this.description = description;
-			this.tooltip = tooltip;
-			this.range = range;
-		}
-
-		@Nullable
-		public HighlightInfo create()
-		{
-			return HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR).description(description).escapedToolTip(tooltip).range(range).create();
-		}
-	}
-
 	@Nullable
 	@Override
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpReferenceExpression expression)
@@ -132,8 +112,8 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 			}
 			else
 			{
-				val forError = createResolveError(callElement, resolveResults[0]);
-				if(forError == null)
+				val highlightInfo = createHighlightInfo(callElement, resolveResults[0]);
+				if(highlightInfo == null)
 				{
 					return null;
 				}
@@ -144,7 +124,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 					@Override
 					public HighlightInfo create()
 					{
-						return forError.create();
+						return highlightInfo;
 					}
 				};
 			}
@@ -152,7 +132,8 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		return null;
 	}
 
-	private static ResolveError createResolveError(@NotNull PsiElement element, @NotNull ResolveResult resolveResult)
+	@Nullable
+	private static HighlightInfo createHighlightInfo(@NotNull PsiElement element, @NotNull ResolveResult resolveResult)
 	{
 		if(!(resolveResult instanceof MethodResolveResult))
 		{
@@ -168,20 +149,20 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		CSharpCallArgumentListOwner callOwner = findCallOwner(element);
 		if(callOwner != null)
 		{
-			StringBuilder builder = new StringBuilder();
-			builder.append("<b>");
+			StringBuilder tooltipBuilder = new StringBuilder();
+			tooltipBuilder.append("<b>");
 			// sometimes name can be null
 			if(element instanceof CSharpOperatorReferenceImpl)
 			{
 				String canonicalText = ((CSharpOperatorReferenceImpl) element).getCanonicalText();
-				builder.append(XmlStringUtil.escapeString(canonicalText));
+				tooltipBuilder.append(XmlStringUtil.escapeString(canonicalText));
 			}
 			else
 			{
 				String name = ((PsiNamedElement) resolveElement).getName();
-				builder.append(name);
+				tooltipBuilder.append(name);
 			}
-			builder.append("&#x9;(");
+			tooltipBuilder.append("&#x9;(");
 
 			if(resolveElement instanceof DotNetVariable)
 			{
@@ -196,9 +177,9 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 				{
 					if(i != 0)
 					{
-						builder.append(", ");
+						tooltipBuilder.append(", ");
 					}
-					appendType(builder, parameterTypes[i]);
+					appendType(tooltipBuilder, parameterTypes[i]);
 				}
 			}
 			else if(resolveElement instanceof DotNetLikeMethodDeclaration)
@@ -208,51 +189,56 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 				{
 					if(i != 0)
 					{
-						builder.append(", ");
+						tooltipBuilder.append(", ");
 					}
-					builder.append(parameters[i].getName()).append(" : ");
-					appendType(builder, parameters[i].toTypeRef(false));
+					tooltipBuilder.append(parameters[i].getName()).append(" : ");
+					appendType(tooltipBuilder, parameters[i].toTypeRef(false));
 				}
 			}
-			builder.append(")</b> cannot be applied<br>");
+			tooltipBuilder.append(")</b> cannot be applied<br>");
 
-			builder.append("to&#x9;<b>(");
+			tooltipBuilder.append("to&#x9;<b>(");
 
 			for(int i = 0; i < arguments.size(); i++)
 			{
 				if(i != 0)
 				{
-					builder.append(", ");
+					tooltipBuilder.append(", ");
 				}
 
 				NCallArgument nCallArgument = arguments.get(i);
 
 				if(!nCallArgument.isValid())
 				{
-					builder.append("<font color=\"").append(ColorUtil.toHex(JBColor.RED)).append("\">");
+					tooltipBuilder.append("<font color=\"").append(ColorUtil.toHex(JBColor.RED)).append("\">");
 				}
 
 				String parameterName = nCallArgument.getParameterName();
 				if(parameterName != null)
 				{
-					builder.append(parameterName).append(" : ");
+					tooltipBuilder.append(parameterName).append(" : ");
 				}
 
-				appendType(builder, nCallArgument.getTypeRef());
+				appendType(tooltipBuilder, nCallArgument.getTypeRef());
 				if(!nCallArgument.isValid())
 				{
-					builder.append("</font>");
+					tooltipBuilder.append("</font>");
 				}
 			}
 
-			builder.append(")</b>");
+			tooltipBuilder.append(")</b>");
 
 			PsiElement parameterList = callOwner.getParameterList();
 			if(parameterList == null)
 			{
 				parameterList = callOwner;
 			}
-			return new ResolveError("", builder.toString(), parameterList);
+
+			HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR);
+			builder = builder.description("");
+			builder = builder.escapedToolTip(tooltipBuilder.toString());
+			builder = builder.range(parameterList);
+			return builder.create();
 		}
 		return null;
 	}
