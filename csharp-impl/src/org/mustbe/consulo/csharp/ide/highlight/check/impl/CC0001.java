@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.ide.codeInsight.actions.CastNParameterTypeRefFix;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.CastNParameterTypeRefToFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedConstructorFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedMethodFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
@@ -276,7 +276,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 							{
 								continue;
 							}
-							QuickFixAction.registerQuickFixAction(highlightInfo, new CastNParameterTypeRefFix(argumentExpression,
+							QuickFixAction.registerQuickFixAction(highlightInfo, new CastNParameterTypeRefToFix(argumentExpression,
 									argument.getParameterTypeRef(), argument.getParameterName()));
 						}
 					}
