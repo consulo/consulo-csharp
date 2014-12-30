@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementCompareUtil;
@@ -29,6 +30,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.psi.search.searches.ClassInheritorsSearch;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -46,6 +48,7 @@ import com.intellij.util.containers.ContainerUtil;
  * @author VISTALL
  * @since 14.12.14
  */
+@Logger
 public class OverrideUtil
 {
 	public static boolean isRequireOverrideModifier(@NotNull DotNetModifierListOwner modifierListOwner)
@@ -152,7 +155,7 @@ public class OverrideUtil
 		}
 		else if(elseElements.isEmpty())
 		{
-			return new PsiElement[]{new CSharpElementGroupImpl<PsiElement>(scopeElement.getProject(), "override", groupElements)};
+			return new PsiElement[]{new CSharpElementGroupImpl<PsiElement>(scopeElement.getProject(), getNameForGroup(groupElements), groupElements)};
 		}
 		else if(groupElements.isEmpty())
 		{
@@ -160,8 +163,32 @@ public class OverrideUtil
 		}
 		else
 		{
-			elseElements.add(new CSharpElementGroupImpl<PsiElement>(scopeElement.getProject(), "override", groupElements));
+			elseElements.add(new CSharpElementGroupImpl<PsiElement>(scopeElement.getProject(), getNameForGroup(groupElements), groupElements));
 			return ContainerUtil.toArray(elseElements, PsiElement.ARRAY_FACTORY);
+		}
+	}
+
+	@NotNull
+	private static String getNameForGroup(List<PsiElement> elements)
+	{
+		assert !elements.isEmpty();
+		PsiElement element = elements.get(0);
+		if(element instanceof DotNetVariable)
+		{
+			return ((DotNetVariable) element).getName();
+		}
+		else if(element instanceof CSharpArrayMethodDeclaration)
+		{
+			return "this[]";
+		}
+		else if(element instanceof DotNetLikeMethodDeclaration)
+		{
+			return ((DotNetLikeMethodDeclaration) element).getName();
+		}
+		else
+		{
+			LOGGER.error(element.getClass() + " is not handled");
+			return "override";
 		}
 	}
 
