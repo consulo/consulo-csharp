@@ -20,10 +20,12 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.CastNParameterTypeRefFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedConstructorFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedMethodFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -38,6 +40,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.ar
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetUserType;
@@ -150,7 +153,6 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		MethodCalcResult calcResult = ((MethodResolveResult) resolveResult).getCalcResult();
 		List<NCallArgument> arguments = calcResult.getArguments();
 
-
 		CSharpCallArgumentListOwner callOwner = findCallOwner(element);
 		if(callOwner != null)
 		{
@@ -256,7 +258,27 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 
 					if(resolveElement instanceof CSharpConstructorDeclaration)
 					{
-						QuickFixAction.registerQuickFixAction(highlightInfo, new CreateUnresolvedConstructorFix((CSharpReferenceExpression) element));
+						QuickFixAction.registerQuickFixAction(highlightInfo, new CreateUnresolvedConstructorFix((CSharpReferenceExpression)
+								element));
+					}
+
+					for(NCallArgument argument : arguments)
+					{
+						if(!argument.isValid())
+						{
+							CSharpCallArgument callArgument = argument.getCallArgument();
+							if(callArgument == null)
+							{
+								continue;
+							}
+							DotNetExpression argumentExpression = callArgument.getArgumentExpression();
+							if(argumentExpression == null)
+							{
+								continue;
+							}
+							QuickFixAction.registerQuickFixAction(highlightInfo, new CastNParameterTypeRefFix(argumentExpression,
+									argument.getParameterTypeRef(), argument.getParameterName()));
+						}
 					}
 				}
 			}
