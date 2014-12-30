@@ -19,20 +19,25 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
  * @since 19.12.14
  */
-public class CS0145 extends CompilerCheck<CSharpFieldDeclaration>
+public class CS0145 extends CompilerCheck<DotNetVariable>
 {
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpFieldDeclaration element)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetVariable element)
 	{
+		if(element instanceof CSharpEnumConstantDeclaration)
+		{
+			return null;
+		}
 		if(element.isConstant())
 		{
 			PsiElement nameIdentifier = element.getNameIdentifier();
