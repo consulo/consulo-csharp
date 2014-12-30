@@ -35,7 +35,7 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 30.12.14
  */
-public class CastNParameterTypeRefToFix extends BaseIntentionAction
+public class CastNArgumentToTypeRefFix extends BaseIntentionAction
 {
 	@NotNull
 	private final SmartPsiElementPointer<DotNetExpression> myExpressionPointer;
@@ -44,7 +44,7 @@ public class CastNParameterTypeRefToFix extends BaseIntentionAction
 	@NotNull
 	private final String myParameterName;
 
-	public CastNParameterTypeRefToFix(@NotNull DotNetExpression expression, @NotNull DotNetTypeRef expectedTypeRef, @NotNull String parameterName)
+	public CastNArgumentToTypeRefFix(@NotNull DotNetExpression expression, @NotNull DotNetTypeRef expectedTypeRef, @NotNull String parameterName)
 	{
 		myParameterName = parameterName;
 		myExpressionPointer = SmartPointerManager.getInstance(expression.getProject()).createSmartPsiElementPointer(expression);
