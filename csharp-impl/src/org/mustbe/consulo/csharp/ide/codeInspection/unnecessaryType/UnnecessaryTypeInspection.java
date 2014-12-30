@@ -17,10 +17,9 @@
 package org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryType;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.ChangeVariableToTypeRefFix;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpCatchStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTypeRef;
@@ -30,17 +29,12 @@ import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.codeInspection.IntentionWrapper;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalInspectionToolSession;
-import com.intellij.codeInspection.LocalQuickFixOnPsiElement;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiFile;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -48,50 +42,6 @@ import lombok.val;
  */
 public class UnnecessaryTypeInspection extends LocalInspectionTool
 {
-	private static class ReplaceByVarFix extends LocalQuickFixOnPsiElement
-	{
-		ReplaceByVarFix(@NotNull PsiElement element)
-		{
-			super(element);
-		}
-
-		@NotNull
-		@Override
-		public String getText()
-		{
-			return "Replace by 'var'";
-		}
-
-		@NotNull
-		@Override
-		public String getFamilyName()
-		{
-			return "C#";
-		}
-
-		@Override
-		public void invoke(
-				@NotNull final Project project, @NotNull PsiFile psiFile, @NotNull final PsiElement element, @NotNull PsiElement element2)
-		{
-			new WriteCommandAction.Simple<Object>(project, psiFile)
-			{
-				@Override
-				protected void run() throws Throwable
-				{
-					val statement = (CSharpLocalVariableDeclarationStatement) CSharpFileFactory.createStatement(project, "var test = 1;");
-
-					val localVariable = statement.getVariables()[0];
-
-					val type = localVariable.getType();
-
-					assert type != null;
-
-					element.replace(type);
-				}
-			}.execute();
-		}
-	}
-
 	@NotNull
 	@Override
 	public PsiElementVisitor buildVisitor(@NotNull final ProblemsHolder holder, boolean isOnTheFly, @NotNull LocalInspectionToolSession session)
@@ -142,7 +92,8 @@ public class UnnecessaryTypeInspection extends LocalInspectionTool
 					return;
 				}
 
-				holder.registerProblem(type, "Can replaced by 'var'", ProblemHighlightType.LIKE_UNUSED_SYMBOL, new ReplaceByVarFix(type));
+				holder.registerProblem(type, "Can replaced by 'var'", ProblemHighlightType.LIKE_UNUSED_SYMBOL,
+						new IntentionWrapper(new ChangeVariableToTypeRefFix(variable, DotNetTypeRef.AUTO_TYPE), variable.getContainingFile()));
 			}
 		};
 	}
