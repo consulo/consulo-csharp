@@ -98,7 +98,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 										DotNetTypeResolveResult typeResolveResult = expectedTypeRef.getTypeRef().resolve(parent);
 										if(typeResolveResult.isNullable())
 										{
-											return PrioritizedLookupElement.withPriority(t, 2);
+											return PrioritizedLookupElement.withPriority(t, CSharpCompletionUtil.EXPR_KEYWORD_PRIORITY);
 										}
 									}
 								}
@@ -113,7 +113,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 									{
 										if(CSharpTypeUtil.isInheritable(expectedTypeRef.getTypeRef(), typeRefForToken, parent))
 										{
-											return PrioritizedLookupElement.withPriority(t, 2);
+											return PrioritizedLookupElement.withPriority(t, CSharpCompletionUtil.EXPR_KEYWORD_PRIORITY);
 										}
 									}
 								}

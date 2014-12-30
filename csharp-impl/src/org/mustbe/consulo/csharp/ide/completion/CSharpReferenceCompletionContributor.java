@@ -139,7 +139,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 
 						LookupElementBuilder lookupElementBuilder = LookupElementBuilder.create(builder.toString());
 
-						result.addElement(PrioritizedLookupElement.withPriority(lookupElementBuilder, 3));
+						result.addElement(PrioritizedLookupElement.withPriority(lookupElementBuilder, CSharpCompletionUtil.EXPR_REF_PRIORITY));
 
 						DotNetTypeRef returnTypeRef = ((CSharpLambdaResolveResult) typeResolveResult).getReturnTypeRef();
 						String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(returnTypeRef, parent);
@@ -160,7 +160,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 							}
 						});
 
-						result.addElement(PrioritizedLookupElement.withPriority(lookupElementBuilder, 3));
+						result.addElement(PrioritizedLookupElement.withPriority(lookupElementBuilder, CSharpCompletionUtil.EXPR_REF_PRIORITY));
 					}
 				}
 			}
@@ -219,7 +219,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 
 							if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), typeOfElement, expression))
 							{
-								iterator.set(PrioritizedLookupElement.withPriority(next, 1));
+								iterator.set(PrioritizedLookupElement.withPriority(next, CSharpCompletionUtil.EXPR_REF_PRIORITY));
 							}
 						}
 					}

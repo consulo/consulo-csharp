@@ -37,6 +37,9 @@ import com.intellij.util.containers.ConcurrentFactoryMap;
  */
 public class CSharpCompletionUtil
 {
+	public static final double EXPR_KEYWORD_PRIORITY = 1;
+	public static final double EXPR_REF_PRIORITY = 2;
+
 	private static Map<IElementType, String[]> ourCache = new ConcurrentFactoryMap<IElementType, String[]>()
 	{
 		@Nullable

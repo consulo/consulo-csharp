@@ -91,7 +91,7 @@ public class CSharpSmartCompletionContributor extends CompletionContributor
 							LookupElementBuilder builder = buildForConstructor(object, genericExtractor);
 							if(builder != null)
 							{
-								result.addElement(PrioritizedLookupElement.withPriority(builder, 2));
+								result.addElement(PrioritizedLookupElement.withPriority(builder, CSharpCompletionUtil.EXPR_REF_PRIORITY));
 							}
 						}
 					}
