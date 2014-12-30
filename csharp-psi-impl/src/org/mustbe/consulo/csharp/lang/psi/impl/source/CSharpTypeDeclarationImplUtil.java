@@ -18,13 +18,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
@@ -35,7 +32,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.Processor;
 
 /**
  * @author VISTALL
@@ -132,33 +128,6 @@ public class CSharpTypeDeclarationImplUtil
 		else
 		{
 			return DotNetTypes.System.Object;
-		}
-	}
-
-	public static void processConstructors(@NotNull DotNetTypeDeclaration type, @NotNull Processor<DotNetConstructorDeclaration> processor)
-	{
-		for(DotNetNamedElement dotNetNamedElement : type.getMembers())
-		{
-			if(!(dotNetNamedElement instanceof DotNetConstructorDeclaration))
-			{
-				continue;
-			}
-
-			if(!processor.process((DotNetConstructorDeclaration) dotNetNamedElement))
-			{
-				return;
-			}
-		}
-
-		if(type.isStruct())
-		{
-			CSharpLightConstructorDeclarationBuilder builder = new CSharpLightConstructorDeclarationBuilder(type.getProject());
-			builder.addModifier(CSharpModifier.PUBLIC);
-			builder.setNavigationElement(type);
-			builder.withParent(type);
-			builder.withName(type.getName());
-
-			processor.process(builder);
 		}
 	}
 }
