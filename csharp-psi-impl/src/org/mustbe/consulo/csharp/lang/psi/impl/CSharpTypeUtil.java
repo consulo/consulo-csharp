@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpChameleonTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpFastImplicitTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
@@ -288,9 +288,13 @@ public class CSharpTypeUtil
 			return SIMPLE_SUCCESS;
 		}
 
-		if(target instanceof CSharpChameleonTypeRef)
+		if(target instanceof CSharpFastImplicitTypeRef)
 		{
-			target = ((CSharpChameleonTypeRef) target).doMirror(top, scope);
+			DotNetTypeRef implicitTypeRef = ((CSharpFastImplicitTypeRef) target).doMirror(top, scope);
+			if(implicitTypeRef != null)
+			{
+				return new InheritResult(true, true);
+			}
 		}
 
 		int topRank = getNumberRank(top, scope);

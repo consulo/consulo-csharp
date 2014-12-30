@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 
@@ -24,8 +25,8 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 31.08.14
  */
-public interface CSharpChameleonTypeRef extends DotNetTypeRef
+public interface CSharpFastImplicitTypeRef extends DotNetTypeRef
 {
-	@NotNull
+	@Nullable
 	DotNetTypeRef doMirror(@NotNull DotNetTypeRef another, PsiElement scope);
 }

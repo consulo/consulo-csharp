@@ -696,7 +696,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(tokenType == LBRACE)
 		{
-			return parseArrayInitialization(builder);
+			return parseArrayInitialization(builder, IMPLICIT_ARRAY_INITIALIZATION_EXPRESSION);
 		}
 
 		if(tokenType == NEW_KEYWORD)
@@ -1174,7 +1174,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				parseFieldOrPropertySetBlock(builder);
 				break;
 			case ARRAY_INITIALIZATION:
-				parseArrayInitialization(builder);
+				parseArrayInitialization(builder, ARRAY_INITIALIZATION_EXPRESSION);
 				break;
 		}
 
@@ -1248,7 +1248,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 	}
 
-	private static PsiBuilder.Marker parseArrayInitialization(CSharpBuilderWrapper builderWrapper)
+	private static PsiBuilder.Marker parseArrayInitialization(CSharpBuilderWrapper builderWrapper, IElementType to)
 	{
 		if(builderWrapper.getTokenType() != LBRACE)
 		{
@@ -1283,7 +1283,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 
 		expect(builderWrapper, RBRACE, "'}' expected");
-		marker.done(ARRAY_INITIALIZATION_EXPRESSION);
+		marker.done(to);
 		return marker;
 	}
 
