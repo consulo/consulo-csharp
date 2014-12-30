@@ -16,7 +16,28 @@
 
 package org.mustbe.consulo.csharp.ide.controlFlow;
 
+import org.mustbe.consulo.csharp.ide.controlFlow.instruction.CSharpBindInstruction;
+import org.mustbe.consulo.csharp.ide.controlFlow.instruction.CSharpInstruction;
+import org.mustbe.consulo.csharp.ide.controlFlow.instruction.CSharpInstructionFactory;
+import org.mustbe.consulo.csharp.ide.controlFlow.instruction.CSharpReturnInstruction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
+import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
+import org.mustbe.consulo.dotnet.psi.DotNetStatement;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -24,4 +45,165 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
  */
 public class CSharpControlFlowVisitor extends CSharpElementVisitor
 {
+	private final CSharpInstructionFactory myFactory;
+
+	public CSharpControlFlowVisitor(CSharpInstructionFactory factory)
+	{
+		myFactory = factory;
+	}
+
+	@Override
+	public void visitMethodDeclaration(CSharpMethodDeclaration declaration)
+	{
+		declaration.acceptChildren(this);
+
+		PsiElement codeBlock = declaration.getCodeBlock();
+		if(codeBlock != null)
+		{
+			if(DotNetTypeRefUtil.isVmQNameEqual(declaration.getReturnTypeRef(), declaration, DotNetTypes.System.Void))
+			{
+				CSharpInstruction last = myFactory.last();
+				if(!(last instanceof CSharpReturnInstruction))
+				{
+					myFactory.returnValue(null);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void visitParameterList(DotNetParameterList list)
+	{
+		for(DotNetParameter parameter : list.getParameters())
+		{
+			parameter.accept(this);
+		}
+	}
+
+	@Override
+	public void visitParameter(DotNetParameter parameter)
+	{
+		myFactory.createVariable(parameter);
+	}
+
+	@Override
+	public void visitBlockStatement(CSharpBlockStatementImpl statement)
+	{
+		statement.acceptChildren(this);
+	}
+
+	@Override
+	public void visitLocalVariableDeclarationStatement(CSharpLocalVariableDeclarationStatement statement)
+	{
+		for(CSharpLocalVariable localVariable : statement.getVariables())
+		{
+			localVariable.accept(this);
+		}
+	}
+
+	@Override
+	public void visitLocalVariable(CSharpLocalVariable variable)
+	{
+		myFactory.createVariable(variable);
+
+		DotNetExpression initializer = variable.getInitializer();
+		if(initializer != null)
+		{
+			initializer.accept(this);
+			myFactory.writeValue(variable);
+		}
+	}
+
+	@Override
+	public void visitExpressionStatement(CSharpExpressionStatementImpl statement)
+	{
+		DotNetExpression expression = statement.getExpression();
+		if(expression != null)
+		{
+			expression.accept(this);
+		}
+	}
+
+	@Override
+	public void visitIfStatement(CSharpIfStatementImpl statement)
+	{
+		DotNetExpression conditionExpression = statement.getConditionExpression();
+		if(conditionExpression != null)
+		{
+			conditionExpression.accept(this);
+		}
+
+		CSharpBindInstruction mark = myFactory.bind();
+
+		DotNetStatement trueStatement = statement.getTrueStatement();
+		if(trueStatement != null)
+		{
+			trueStatement.accept(this);
+		}
+
+		myFactory.replace(mark).boolJump(myFactory.position());
+
+		DotNetStatement elseStatement = statement.getElseStatement();
+		if(elseStatement != null)
+		{
+			CSharpBindInstruction mark2 = myFactory.bind();
+
+			elseStatement.accept(this);
+
+			myFactory.replace(mark2).jump(myFactory.position());
+		}
+	}
+
+	@Override
+	public void visitAssignmentExpression(CSharpAssignmentExpressionImpl expression)
+	{
+		DotNetExpression[] parameterExpressions = expression.getParameterExpressions();
+
+		DotNetExpression leftExpression = parameterExpressions[0];
+
+		leftExpression.accept(this);
+
+		if(parameterExpressions.length > 1)
+		{
+			parameterExpressions[1].accept(this);
+		}
+		else
+		{
+			myFactory.errorValue();
+		}
+
+		myFactory.writeValue(leftExpression);
+	}
+
+	@Override
+	public void visitReturnStatement(CSharpReturnStatementImpl statement)
+	{
+		DotNetExpression expression = statement.getExpression();
+		if(expression != null)
+		{
+			expression.accept(this);
+			myFactory.pop();
+		}
+
+		myFactory.returnValue(statement);
+	}
+
+	@Override
+	public void visitReferenceExpression(CSharpReferenceExpression expression)
+	{
+		PsiElement qualifier = expression.getQualifier();
+		if(qualifier != null)
+		{
+			qualifier.accept(this);
+			myFactory.pop();
+		}
+
+		myFactory.readValue(expression);
+	}
+
+	@Override
+	public void visitConstantExpression(CSharpConstantExpressionImpl expression)
+	{
+		myFactory.putConstantValue(expression);
+	}
 }

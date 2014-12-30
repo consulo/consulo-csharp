@@ -16,35 +16,28 @@
 
 package org.mustbe.consulo.csharp.ide.controlFlow.instruction;
 
-import org.consulo.lombok.annotations.ArrayFactoryFields;
-
 /**
  * @author VISTALL
  * @since 30.12.14
  */
-@ArrayFactoryFields
-public class CSharpInstruction
+public class CSharpBoolJumpInstruction extends CSharpInstruction
 {
-	private int myIndex = -1;
+	private final int myElsePosition;
 
-	public CSharpInstruction()
+	public CSharpBoolJumpInstruction(int elsePosition)
 	{
+		super();
+		myElsePosition = elsePosition;
 	}
 
-	public int getIndex()
+	public int getElsePosition()
 	{
-		return myIndex;
-	}
-
-	public void setIndex(int index)
-	{
-		assert myIndex == -1;
-		myIndex = index;
+		return myElsePosition;
 	}
 
 	@Override
 	public String toString()
 	{
-		return "[" + myIndex + "] " + getClass().getSimpleName();
+		return super.toString() + " | " + myElsePosition;
 	}
 }

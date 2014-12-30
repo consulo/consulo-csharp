@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.ide.controlFlow;
 
+import org.mustbe.consulo.csharp.ide.controlFlow.instruction.CSharpInstructionFactory;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 
 /**
@@ -24,8 +25,13 @@ import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
  */
 public class CSharpControlFlowBuilder
 {
-	public static CSharpControlFlow build(DotNetQualifiedElement qualifiedElement)
+	public static CSharpControlFlow build(DotNetQualifiedElement element)
 	{
-		return new CSharpControlFlow();
+		CSharpInstructionFactory factory = new CSharpInstructionFactory();
+
+		CSharpControlFlowVisitor visitor = new CSharpControlFlowVisitor(factory);
+		element.accept(visitor);
+
+		return new CSharpControlFlow(factory);
 	}
 }

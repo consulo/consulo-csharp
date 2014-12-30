@@ -16,15 +16,35 @@
 
 package org.mustbe.consulo.csharp.ide.controlFlow;
 
+import java.util.List;
+
+import org.mustbe.consulo.csharp.ide.controlFlow.instruction.CSharpInstruction;
+import org.mustbe.consulo.csharp.ide.controlFlow.instruction.CSharpInstructionFactory;
+import com.intellij.util.containers.ContainerUtil;
+
 /**
  * @author VISTALL
  * @since 30.12.14
  */
 public class CSharpControlFlow
 {
+	private final CSharpInstruction[] myInstructions;
+
+	public CSharpControlFlow(CSharpInstructionFactory instructionFactory)
+	{
+		List<CSharpInstruction> instructions = instructionFactory.getInstructions();
+		myInstructions = ContainerUtil.toArray(instructions, CSharpInstruction.ARRAY_FACTORY);
+	}
+
 	@Override
 	public String toString()
 	{
-		return "test";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Instructions: \n");
+		for(CSharpInstruction instruction : myInstructions)
+		{
+			builder.append(" - ").append(instruction.toString()).append("\n");
+		}
+		return builder.toString();
 	}
 }

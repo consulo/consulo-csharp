@@ -16,35 +16,17 @@
 
 package org.mustbe.consulo.csharp.ide.controlFlow.instruction;
 
-import org.consulo.lombok.annotations.ArrayFactoryFields;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
 
 /**
  * @author VISTALL
  * @since 30.12.14
  */
-@ArrayFactoryFields
-public class CSharpInstruction
+public class CSharpReturnInstruction extends CSharpInstructionWithElement<CSharpReturnStatementImpl>
 {
-	private int myIndex = -1;
-
-	public CSharpInstruction()
+	public CSharpReturnInstruction(@Nullable CSharpReturnStatementImpl element)
 	{
-	}
-
-	public int getIndex()
-	{
-		return myIndex;
-	}
-
-	public void setIndex(int index)
-	{
-		assert myIndex == -1;
-		myIndex = index;
-	}
-
-	@Override
-	public String toString()
-	{
-		return "[" + myIndex + "] " + getClass().getSimpleName();
+		super(element);
 	}
 }

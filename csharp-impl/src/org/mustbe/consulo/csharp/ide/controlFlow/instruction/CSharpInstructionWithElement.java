@@ -16,35 +16,32 @@
 
 package org.mustbe.consulo.csharp.ide.controlFlow.instruction;
 
-import org.consulo.lombok.annotations.ArrayFactoryFields;
+import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
  * @since 30.12.14
  */
-@ArrayFactoryFields
-public class CSharpInstruction
+public class CSharpInstructionWithElement<T extends PsiElement> extends CSharpInstruction
 {
-	private int myIndex = -1;
+	private T myElement;
 
-	public CSharpInstruction()
+	public CSharpInstructionWithElement(@Nullable T element)
 	{
+		myElement = element;
 	}
 
-	public int getIndex()
+	@Nullable
+	public T getElement()
 	{
-		return myIndex;
-	}
-
-	public void setIndex(int index)
-	{
-		assert myIndex == -1;
-		myIndex = index;
+		return myElement;
 	}
 
 	@Override
 	public String toString()
 	{
-		return "[" + myIndex + "] " + getClass().getSimpleName();
+		return super.toString() + " | " + StringUtil.escapeLineBreak(myElement == null ? "null" : myElement.getText());
 	}
 }

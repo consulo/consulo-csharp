@@ -16,35 +16,17 @@
 
 package org.mustbe.consulo.csharp.ide.controlFlow.instruction;
 
-import org.consulo.lombok.annotations.ArrayFactoryFields;
+import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
  * @since 30.12.14
  */
-@ArrayFactoryFields
-public class CSharpInstruction
+public class CSharpReadValueInstruction extends CSharpInstructionWithElement<PsiElement>
 {
-	private int myIndex = -1;
-
-	public CSharpInstruction()
+	public CSharpReadValueInstruction(@NotNull PsiElement element)
 	{
-	}
-
-	public int getIndex()
-	{
-		return myIndex;
-	}
-
-	public void setIndex(int index)
-	{
-		assert myIndex == -1;
-		myIndex = index;
-	}
-
-	@Override
-	public String toString()
-	{
-		return "[" + myIndex + "] " + getClass().getSimpleName();
+		super(element);
 	}
 }
