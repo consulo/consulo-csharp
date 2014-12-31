@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
@@ -27,6 +28,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifier;
  * @author VISTALL
  * @since 06.01.14.
  */
+@ArrayFactoryFields
 public enum CSharpModifier implements DotNetModifier
 {
 	PUBLIC,
@@ -51,7 +53,6 @@ public enum CSharpModifier implements DotNetModifier
 	EXTERN,
 	INTERFACE_ABSTRACT; // dummy modifier
 
-	public static CSharpModifier[] EMPTY_ARRAY = new CSharpModifier[0];
 	private static Map<DotNetModifier, CSharpModifier> ourReplaceMap = new HashMap<DotNetModifier, CSharpModifier>()
 	{
 		{

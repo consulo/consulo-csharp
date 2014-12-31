@@ -20,12 +20,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -47,16 +45,6 @@ public class CSharpEnumConstantDeclarationImpl extends CSharpStubVariableImpl<CS
 	public CSharpEnumConstantDeclarationImpl(@NotNull CSharpVariableDeclStub<CSharpEnumConstantDeclarationImpl> stub)
 	{
 		super(stub, CSharpStubElements.ENUM_CONSTANT_DECLARATION);
-	}
-
-	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
-	{
-		if(modifier == CSharpModifier.STATIC || modifier == CSharpModifier.READONLY)
-		{
-			return true;
-		}
-		return false;
 	}
 
 	@Override

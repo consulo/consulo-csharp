@@ -31,11 +31,12 @@ public class CSharpModifierListStub extends StubBase<DotNetModifierList>
 	public static int getModifierMask(@NotNull DotNetModifierList list)
 	{
 		int val = 0;
-		DotNetModifier[] modifierElementTypes = list.getModifiers();
-		for(DotNetModifier netModifier : modifierElementTypes)
+		for(CSharpModifier modifier : CSharpModifier.values())
 		{
-			CSharpModifier modifier = CSharpModifier.as(netModifier);
-			val |= modifier.mask();
+			if(list.hasModifierInTree(modifier))
+			{
+				val |= modifier.mask();
+			}
 		}
 		return val;
 	}

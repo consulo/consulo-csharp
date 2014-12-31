@@ -44,17 +44,6 @@ import com.intellij.util.SmartList;
  */
 public class CSharpVisibilityUtil
 {
-	public static boolean isVisibleForCompletion(@NotNull DotNetModifierListOwner target, @NotNull PsiElement place)
-	{
-		if(!isVisible(target, place))
-		{
-			return false;
-		}
-
-		//TODO [VISTALL] static
-		return true;
-	}
-
 	public static boolean isVisible(@NotNull DotNetModifierListOwner target, @NotNull PsiElement place)
 	{
 		return isVisible(target, place, CSharpAccessModifier.findModifier(target));
