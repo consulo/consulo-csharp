@@ -1160,22 +1160,21 @@ public class ExpressionParsing extends SharedParsingHelpers
 			arrayMarker.done(NEW_ARRAY_LENGTH);
 		}
 
-		if(!forceArray)
+		boolean argumentsPassed = false;
+		if(builder.getTokenType() == LPAR)
 		{
-			if(builder.getTokenType() == LPAR)
-			{
-				parseArgumentList(builder, false);
-			}
-			else
-			{
-				builder.error("'(' expected");
-			}
+			parseArgumentList(builder, false);
+			argumentsPassed = true;
 		}
 
 		AfterNewParsingTarget target = getTarget(builder, forceArray, typeMarker);
 		switch(target)
 		{
 			case NONE:
+				if(!argumentsPassed && !forceArray)
+				{
+					builder.error("'(' expected");
+				}
 				break;
 			case PROPERTY_SET_LIST:
 				parseFieldOrPropertySetBlock(builder);
