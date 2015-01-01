@@ -594,9 +594,10 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 	private static void parseArguments(CSharpBuilderWrapper builder, IElementType stopElement, boolean fieldSet)
 	{
+		TokenSet stoppers = TokenSet.create(stopElement, CSharpTokens.RBRACE, CSharpTokens.SEMICOLON);
 		while(!builder.eof())
 		{
-			if(builder.getTokenType() == stopElement)
+			if(stoppers.contains(builder.getTokenType()))
 			{
 				break;
 			}
@@ -642,7 +643,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			{
 				builder.advanceLexer();
 			}
-			else if(builder.getTokenType() != stopElement)
+			else if(!stoppers.contains(builder.getTokenType()))
 			{
 				builder.error("',' expected");
 			}
