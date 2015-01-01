@@ -277,8 +277,13 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 							{
 								continue;
 							}
-							QuickFixAction.registerQuickFixAction(highlightInfo, new CastNArgumentToTypeRefFix(argumentExpression,
-									argument.getParameterTypeRef(), argument.getParameterName()));
+							DotNetTypeRef parameterTypeRef = argument.getParameterTypeRef();
+							if(parameterTypeRef == null)
+							{
+								continue;
+							}
+							QuickFixAction.registerQuickFixAction(highlightInfo, new CastNArgumentToTypeRefFix(argumentExpression, parameterTypeRef,
+									argument.getParameterName()));
 						}
 					}
 				}
