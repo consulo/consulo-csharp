@@ -33,6 +33,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.codeInsight.AutoPopupController;
+import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
@@ -63,25 +64,37 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 	private static class StatementKeywordInsertHandler implements InsertHandler<LookupElement>
 	{
 		private final IElementType myElementType;
+		private final char myOpenChar;
+		private final char myCloseChar;
 
 		public StatementKeywordInsertHandler(IElementType elementType)
 		{
 			myElementType = elementType;
+			if(myElementType == DO_KEYWORD || myElementType == TRY_KEYWORD || myElementType == CATCH_KEYWORD || myElementType == FINALLY_KEYWORD)
+			{
+				myOpenChar = '{';
+				myCloseChar = '}';
+			}
+			else
+			{
+				myOpenChar = '(';
+				myCloseChar = ')';
+			}
 		}
 
 		@Override
 		public void handleInsert(InsertionContext insertionContext, LookupElement item)
 		{
-			int offset = insertionContext.getEditor().getCaretModel().getOffset();
-			if(myElementType == DO_KEYWORD || myElementType == TRY_KEYWORD || myElementType == CATCH_KEYWORD || myElementType == FINALLY_KEYWORD)
+			if(!insertionContext.shouldAddCompletionChar())
 			{
-				insertionContext.getDocument().insertString(offset, "{}");
+				if(insertionContext.getCompletionChar() == myOpenChar || insertionContext.getCompletionChar() == '\n')
+				{
+					int offset = insertionContext.getTailOffset();
+					TailType.insertChar(insertionContext.getEditor(), offset, myOpenChar);
+					TailType.insertChar(insertionContext.getEditor(), offset + 1, myCloseChar);
+					insertionContext.getEditor().getCaretModel().moveToOffset(offset + 1);
+				}
 			}
-			else
-			{
-				insertionContext.getDocument().insertString(offset, "()");
-			}
-			insertionContext.getEditor().getCaretModel().moveToOffset(offset + 1);
 		}
 	}
 
