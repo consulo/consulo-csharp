@@ -17,7 +17,10 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -30,8 +33,20 @@ public class CSharpPropertyUtil
 	{
 		if(element instanceof CSharpPropertyDeclaration)
 		{
-			DotNetXXXAccessor[] accessors = ((CSharpPropertyDeclaration) element).getAccessors();
-			return accessors.length == 2 && accessors[0].getCodeBlock() == null && accessors[1].getCodeBlock() == null;
+			CSharpPropertyDeclaration propertyDeclaration = (CSharpPropertyDeclaration) element;
+			DotNetXXXAccessor[] accessors = propertyDeclaration.getAccessors();
+			if(accessors.length == 2 && accessors[0].getCodeBlock() == null && accessors[1].getCodeBlock() == null)
+			{
+				return true;
+			}
+
+			// C# 6.0 specific readonly auto property
+			if(accessors.length == 1 && accessors[0].getAccessorKind() == DotNetXXXAccessor.Kind.GET && accessors[0].getCodeBlock() == null &&
+					propertyDeclaration.getInitializer() != null)
+			{
+				CSharpModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpModuleExtension.class);
+				return extension != null && extension.getLanguageVersion().isAtLeast(CSharpLanguageVersion._6_0);
+			}
 		}
 		return false;
 	}
