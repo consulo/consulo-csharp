@@ -116,7 +116,7 @@ public class CS0453 extends CompilerCheck<CSharpNullableType>
 			return null;
 		}
 		PsiElement questElement = element.getQuestElement();
-		return newBuilder(questElement, CSharpTypeRefPresentationUtil.buildText(dotNetTypeRef, element,
-				CS0029.TYPE_FLAGS)).addQuickFix(new DeleteQuestMarkQuickFix(element, "?"));
+		return newBuilder(questElement, CSharpTypeRefPresentationUtil.buildTextWithKeyword(dotNetTypeRef,
+				element)).addQuickFix(new DeleteQuestMarkQuickFix(element, "?"));
 	}
 }

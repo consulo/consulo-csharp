@@ -17,7 +17,6 @@
 package org.mustbe.consulo.csharp.ide;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0029;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
@@ -50,7 +49,7 @@ public class CSharpElementPresentationUtil
 		{
 			if(!(methodDeclaration instanceof DotNetConstructorDeclaration))
 			{
-				CSharpTypeRefPresentationUtil.appendTypeRef(methodDeclaration, builder, methodDeclaration.getReturnTypeRef(), CS0029.TYPE_FLAGS);
+				CSharpTypeRefPresentationUtil.appendTypeRef(methodDeclaration, builder, methodDeclaration.getReturnTypeRef(), CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
 				builder.append(" ");
 			}
 		}
@@ -90,7 +89,7 @@ public class CSharpElementPresentationUtil
 				@Override
 				public String fun(DotNetParameter parameter)
 				{
-					String text = CSharpTypeRefPresentationUtil.buildText(parameter.toTypeRef(true), parameter, CS0029.TYPE_FLAGS);
+					String text = CSharpTypeRefPresentationUtil.buildTextWithKeyword(parameter.toTypeRef(true), parameter);
 
 					if(!BitUtil.isSet(flags, METHOD_PARAMETER_NAME))
 					{
@@ -115,7 +114,7 @@ public class CSharpElementPresentationUtil
 			if(!(methodDeclaration instanceof DotNetConstructorDeclaration))
 			{
 				builder.append(":");
-				CSharpTypeRefPresentationUtil.appendTypeRef(methodDeclaration, builder, methodDeclaration.getReturnTypeRef(), CS0029.TYPE_FLAGS);
+				CSharpTypeRefPresentationUtil.appendTypeRef(methodDeclaration, builder, methodDeclaration.getReturnTypeRef(), CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
 			}
 		}
 	}

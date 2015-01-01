@@ -17,7 +17,6 @@
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0029;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
@@ -60,8 +59,8 @@ public class ChangeVariableToTypeRefFix extends BaseIntentionAction
 		{
 			return "invalid";
 		}
-		return BundleBase.format("Change ''{0}'' type to ''{1}''", element.getName(), CSharpTypeRefPresentationUtil.buildText(myToTypeRef, element,
-				CS0029.TYPE_FLAGS));
+		return BundleBase.format("Change ''{0}'' type to ''{1}''", element.getName(), CSharpTypeRefPresentationUtil.buildTextWithKeyword
+				(myToTypeRef, element));
 	}
 
 	@NotNull

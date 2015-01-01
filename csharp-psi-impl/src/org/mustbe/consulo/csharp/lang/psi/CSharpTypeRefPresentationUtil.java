@@ -70,6 +70,8 @@ public class CSharpTypeRefPresentationUtil
 	public static final int QUALIFIED_NAME = 1 << 0;
 	public static final int TYPE_KEYWORD = 1 << 1;
 
+	public static final int QUALIFIED_NAME_WITH_KEYWORD = QUALIFIED_NAME | TYPE_KEYWORD;
+
 	@NotNull
 	public static String buildShortText(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
@@ -87,10 +89,10 @@ public class CSharpTypeRefPresentationUtil
 	}
 
 	@NotNull
-	public static String buildText(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope, int flags)
+	public static String buildTextWithKeyword(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
 		StringBuilder builder = new StringBuilder();
-		appendTypeRef(scope, builder, typeRef, flags);
+		appendTypeRef(scope, builder, typeRef, QUALIFIED_NAME | TYPE_KEYWORD);
 		return builder.toString();
 	}
 

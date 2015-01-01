@@ -291,8 +291,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 
 	private static void appendType(@NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
-		builder.append(XmlStringUtil.escapeString(CSharpTypeRefPresentationUtil.buildText(typeRef, scope,
-				CSharpTypeRefPresentationUtil.QUALIFIED_NAME)));
+		builder.append(XmlStringUtil.escapeString(CSharpTypeRefPresentationUtil.buildText(typeRef, scope)));
 	}
 
 	private static CSharpCallArgumentListOwner findCallOwner(PsiElement element)

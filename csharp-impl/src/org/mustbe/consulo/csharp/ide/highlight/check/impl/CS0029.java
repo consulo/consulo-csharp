@@ -62,8 +62,6 @@ import lombok.val;
  */
 public class CS0029 extends CompilerCheck<PsiElement>
 {
-	public static final int TYPE_FLAGS = CSharpTypeRefPresentationUtil.TYPE_KEYWORD | CSharpTypeRefPresentationUtil.QUALIFIED_NAME;
-
 	@Nullable
 	@Override
 	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull PsiElement element)
@@ -87,8 +85,8 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				CSharpStaticTypeRef.IMPLICIT);
 		if(!inheritResult.isSuccess())
 		{
-			CompilerCheckBuilder builder = newBuilder(elementToHighlight, CSharpTypeRefPresentationUtil.buildText(secondTypeRef,
-					element, TYPE_FLAGS), CSharpTypeRefPresentationUtil.buildText(firstTypeRef, element, TYPE_FLAGS));
+			CompilerCheckBuilder builder = newBuilder(elementToHighlight, CSharpTypeRefPresentationUtil.buildTextWithKeyword(secondTypeRef,
+					element), CSharpTypeRefPresentationUtil.buildTextWithKeyword(firstTypeRef, element));
 
 			if(elementToHighlight instanceof DotNetExpression)
 			{
@@ -113,8 +111,8 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		}
 		else if(inheritResult.isConversion())
 		{
-			String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildText(secondTypeRef, element,
-					TYPE_FLAGS), CSharpTypeRefPresentationUtil.buildText(firstTypeRef, element, TYPE_FLAGS));
+			String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildTextWithKeyword(secondTypeRef,
+					element), CSharpTypeRefPresentationUtil.buildTextWithKeyword(firstTypeRef, element));
 			return newBuilder(elementToHighlight).setText(text).setHighlightInfoType(HighlightInfoType.INFORMATION).setTextAttributesKey
 					(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
 		}
@@ -203,8 +201,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				{
 					return null;
 				}
-				return Trinity.create(returnTypeRef, singleExpression.toTypeRef(true),
-						singleExpression);
+				return Trinity.create(returnTypeRef, singleExpression.toTypeRef(true), singleExpression);
 			}
 		}
 		else if(element instanceof CSharpReturnStatementImpl)

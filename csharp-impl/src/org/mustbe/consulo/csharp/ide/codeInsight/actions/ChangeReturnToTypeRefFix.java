@@ -17,7 +17,6 @@
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0029;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
@@ -25,7 +24,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.BundleBase;
-import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -61,8 +59,8 @@ public class ChangeReturnToTypeRefFix extends BaseIntentionAction
 		{
 			return "invalid";
 		}
-		return BundleBase.format("Make ''{0}'' return to ''{1}''", element.getName(), CSharpTypeRefPresentationUtil.buildText(myToTypeRef, element,
-				CS0029.TYPE_FLAGS));
+		return BundleBase.format("Make ''{0}'' return to ''{1}''", element.getName(), CSharpTypeRefPresentationUtil.buildTextWithKeyword
+				(myToTypeRef, element));
 	}
 
 	@NotNull

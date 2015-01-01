@@ -21,7 +21,6 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.ConvertToNormalCallFix;
-import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0029;
 import org.mustbe.consulo.csharp.ide.highlight.util.ConstructorHighlightUtil;
 import org.mustbe.consulo.csharp.ide.highlight.util.GenericParameterHighlightUtil;
 import org.mustbe.consulo.csharp.lang.psi.*;
@@ -339,9 +338,9 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 			ImplicitCastInfo implicitCastInfo = nCallArgument.getUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO);
 			if(implicitCastInfo != null)
 			{
-				String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildText(implicitCastInfo
-						.getFromTypeRef(), scope, CS0029.TYPE_FLAGS), CSharpTypeRefPresentationUtil.buildText(implicitCastInfo
-						.getToTypeRef(), scope, CS0029.TYPE_FLAGS));
+				String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildTextWithKeyword
+						(implicitCastInfo.getFromTypeRef(), scope), CSharpTypeRefPresentationUtil.buildTextWithKeyword(implicitCastInfo.getToTypeRef
+						(), scope));
 
 				HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION);
 				builder = builder.range(argumentExpression.getTextRange());

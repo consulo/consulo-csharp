@@ -17,7 +17,6 @@
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0029;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -47,7 +46,7 @@ public class CastNArgumentToTypeRefFix extends CastExpressionToTypeRef
 		{
 			return "invalid";
 		}
-		return BundleBase.format("Cast ''{0}'' argument to ''{1}''", myParameterName, CSharpTypeRefPresentationUtil.buildText(myExpectedTypeRef,
-				element, CS0029.TYPE_FLAGS));
+		return BundleBase.format("Cast ''{0}'' argument to ''{1}''", myParameterName, CSharpTypeRefPresentationUtil.buildTextWithKeyword
+				(myExpectedTypeRef, element));
 	}
 }
