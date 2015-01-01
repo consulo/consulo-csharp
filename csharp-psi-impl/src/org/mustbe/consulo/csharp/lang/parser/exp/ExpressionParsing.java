@@ -543,7 +543,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				PsiBuilder.Marker argumentListMarker = builder.mark();
 				builder.advanceLexer();
 
-				parseArguments(builder, false);
+				parseArguments(builder, RBRACKET, false);
 
 				if(builder.getTokenType() != RBRACKET)
 				{
@@ -586,17 +586,20 @@ public class ExpressionParsing extends SharedParsingHelpers
 			return;
 		}
 
-		parseArguments(builder, fieldSet);
+		parseArguments(builder, RPAR, fieldSet);
 
 		expect(builder, RPAR, "')' expected");
 		mark.done(CALL_ARGUMENT_LIST);
 	}
 
-	private static void parseArguments(CSharpBuilderWrapper builder, boolean fieldSet)
+	private static void parseArguments(CSharpBuilderWrapper builder, IElementType stopElement, boolean fieldSet)
 	{
-		boolean empty = true;
 		while(!builder.eof())
 		{
+			if(builder.getTokenType() == stopElement)
+			{
+				break;
+			}
 			if(builder.getTokenType() == IDENTIFIER && builder.lookAhead(1) == COLON)
 			{
 				PsiBuilder.Marker marker = builder.mark();
@@ -627,27 +630,21 @@ public class ExpressionParsing extends SharedParsingHelpers
 				PsiBuilder.Marker marker = parse(builder);
 				if(marker == null)
 				{
-					argumentMarker.drop();
-					if(!empty)
-					{
-						builder.error("Expression expected");
-					}
-					break;
+					PsiBuilder.Marker errorMarker = builder.mark();
+					builder.advanceLexer();
+					builder.error("Expression expected");
+					errorMarker.done(ERROR_EXPRESSION);
 				}
-				else
-				{
-					argumentMarker.done(CALL_ARGUMENT);
-				}
+				argumentMarker.done(CALL_ARGUMENT);
 			}
-			empty = false;
 
 			if(builder.getTokenType() == COMMA)
 			{
 				builder.advanceLexer();
 			}
-			else
+			else if(builder.getTokenType() != stopElement)
 			{
-				break;
+				builder.error("',' expected");
 			}
 		}
 	}
@@ -1047,7 +1044,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 	private static void emptyExpression(final PsiBuilder builder)
 	{
-		emptyElement(builder, EMPTY_EXPRESSION);
+		emptyElement(builder, ERROR_EXPRESSION);
 	}
 
 	public static void parseConstructorSuperCall(CSharpBuilderWrapper builder)
