@@ -153,6 +153,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		return multiResolve(incompleteCode, true);
 	}
 
+	@Override
 	@NotNull
 	public ResolveResult[] multiResolve(final boolean incompleteCode, final boolean resolveFromParent)
 	{
@@ -304,35 +305,13 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
-		ResolveResult[] resolveResults = multiResolve(false, resolveFromParent);
-		if(resolveResults.length == 0)
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
-
-		ResolveResult resolveResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
-		if(resolveResult == null)
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
-		return CSharpReferenceExpressionImplUtil.toTypeRef(resolveResult);
+		return CSharpReferenceExpressionImplUtil.toTypeRef(this, resolveFromParent);
 	}
 
 	@Override
 	@NotNull
 	public DotNetTypeRef toTypeRefWithoutCaching(ResolveToKind kind, boolean resolveFromParent)
 	{
-		ResolveResult[] resolveResults = multiResolveImpl(kind, resolveFromParent);
-		if(resolveResults.length == 0)
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
-
-		ResolveResult firstValidResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
-		if(firstValidResult == null)
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
-		return CSharpReferenceExpressionImplUtil.toTypeRef(firstValidResult);
+		return CSharpReferenceExpressionImplUtil.toTypeRefWithoutCaching(this, kind, resolveFromParent);
 	}
 }
