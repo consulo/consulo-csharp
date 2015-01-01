@@ -282,8 +282,13 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 							{
 								continue;
 							}
+							String parameterName = argument.getParameterName();
+							if(parameterName == null)
+							{
+								continue;
+							}
 							QuickFixAction.registerQuickFixAction(highlightInfo, new CastNArgumentToTypeRefFix(argumentExpression, parameterTypeRef,
-									argument.getParameterName()));
+									parameterName));
 						}
 					}
 				}
