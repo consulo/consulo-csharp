@@ -27,15 +27,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.UsefulPsiTreeUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDoWhileStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpSwitchStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTryStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpWhileStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.*;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -100,12 +92,13 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 
 	private static final TokenSet ourContinueAndBreakKeywords = TokenSet.create(BREAK_KEYWORD, CONTINUE_KEYWORD, GOTO_KEYWORD);
 
-	private static final TokenSet ourReturnKeywords = TokenSet.create(RETURN_KEYWORD);
-
 	private static final TokenSet ourCatchFinallyKeywords = TokenSet.create(CATCH_KEYWORD, FINALLY_KEYWORD);
 
-	private static final ElementPattern<? extends PsiElement> ourStatementStart = or(psiElement().withElementType(CSharpTokens.SEMICOLON),
-			psiElement().withElementType(CSharpTokens.LBRACE));
+	private static final ElementPattern<? extends PsiElement> ourStatementStart = or(
+			psiElement().withElementType(CSharpTokens.SEMICOLON).inside(DotNetStatement.class),
+			psiElement().withElementType(CSharpTokens.LBRACE).inside(DotNetStatement.class),
+			psiElement().withElementType(CSharpTokens.RBRACE).inside(DotNetStatement.class));
+
 	private static final ElementPattern<? extends PsiElement> ourContinueAndBreakPattern = psiElement().afterLeaf(ourStatementStart).inside(or
 			(psiElement().inside(CSharpForeachStatementImpl.class), psiElement().inside(CSharpForStatementImpl.class),
 					psiElement().inside(CSharpWhileStatementImpl.class), psiElement().inside(CSharpDoWhileStatementImpl.class)));
@@ -114,7 +107,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			(CSharpLabeledStatementImpl.class));
 
 	private static final ElementPattern<? extends PsiElement> ourReturnPattern = psiElement().afterLeaf(ourStatementStart).inside(psiElement()
-			.inside(CSharpSimpleLikeMethodAsElement.class));
+			.inside(CSharpSimpleLikeMethodAsElement.class)).andNot(psiElement().inside(CSharpFinallyStatementImpl.class));
 
 	public CSharpStatementCompletionContributor()
 	{
@@ -158,8 +151,8 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			{
 				val pseudoMethod = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpSimpleLikeMethodAsElement.class);
 				assert pseudoMethod != null;
-				CSharpCompletionUtil.tokenSetToLookup(result, ourReturnKeywords, new NotNullPairFunction<LookupElementBuilder, IElementType,
-						LookupElement>()
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.RETURN_KEYWORD, new NotNullPairFunction<LookupElementBuilder,
+						IElementType, LookupElement>()
 
 				{
 					@NotNull
