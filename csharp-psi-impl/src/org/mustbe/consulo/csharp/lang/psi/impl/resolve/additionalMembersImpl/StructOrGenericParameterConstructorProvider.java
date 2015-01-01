@@ -26,11 +26,7 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 	@Override
 	public DotNetElement[] getAdditionalMembers(@NotNull DotNetElement element, DotNetGenericExtractor extractor)
 	{
-		if(element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).isStruct())
-		{
-			return buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC, extractor);
-		}
-		else if(element instanceof CSharpTypeDeclaration && !((CSharpTypeDeclaration) element).isInterface())
+		if(element instanceof CSharpTypeDeclaration && !((CSharpTypeDeclaration) element).isInterface())
 		{
 			CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) element;
 			DotNetNamedElement[] members = typeDeclaration.getMembers();

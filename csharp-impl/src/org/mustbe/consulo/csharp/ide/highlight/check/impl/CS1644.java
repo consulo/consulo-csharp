@@ -201,6 +201,23 @@ public class CS1644 extends CompilerCheck<PsiElement>
 					return element instanceof CSharpUsingTypeStatement ? element : null;
 				}
 			}));
+			add(new Feature("parameterless struct ctors", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
+			{
+				@Override
+				public PsiElement fun(PsiElement element)
+				{
+					if(element instanceof CSharpConstructorDeclaration)
+					{
+						PsiElement parent = element.getParent();
+						if(parent instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) parent).isStruct() && ((CSharpConstructorDeclaration)
+								element).getParameters().length == 0)
+						{
+							return ((CSharpConstructorDeclaration) element).getNameIdentifier();
+						}
+					}
+					return null;
+				}
+			}));
 			add(new Feature("property initializer", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
