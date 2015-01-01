@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.ide.refactoring.changeSignature;
 
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import com.intellij.refactoring.changeSignature.ParameterInfo;
 
@@ -37,7 +38,7 @@ public class CSharpParameterInfo implements ParameterInfo
 	{
 		myParameter = parameter;
 		myName = parameter.getName();
-		myTypeText = parameter.toTypeRef(false).getPresentableText();
+		myTypeText = CSharpTypeRefPresentationUtil.buildShortText(parameter.toTypeRef(false), parameter);
 		myNewIndex = newIndex;
 		myOldIndex = parameter.getIndex();
 	}

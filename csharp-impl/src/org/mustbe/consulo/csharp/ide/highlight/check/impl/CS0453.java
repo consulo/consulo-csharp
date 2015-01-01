@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNullableType;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -115,6 +116,7 @@ public class CS0453 extends CompilerCheck<CSharpNullableType>
 			return null;
 		}
 		PsiElement questElement = element.getQuestElement();
-		return newBuilder(questElement, dotNetTypeRef.getQualifiedText()).addQuickFix(new DeleteQuestMarkQuickFix(element, "?"));
+		return newBuilder(questElement, CSharpTypeRefPresentationUtil.buildText(dotNetTypeRef, element,
+				CS0029.TYPE_FLAGS)).addQuickFix(new DeleteQuestMarkQuickFix(element, "?"));
 	}
 }

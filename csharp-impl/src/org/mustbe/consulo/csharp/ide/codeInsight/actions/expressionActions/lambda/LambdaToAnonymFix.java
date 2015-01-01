@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -42,7 +43,8 @@ public class LambdaToAnonymFix extends PsiElementBaseIntentionAction
 			}
 			CSharpLambdaParameter parameter = parameters[i];
 
-			builder.append(parameter.toTypeRef(true).getPresentableText()).append(" ").append(parameter.getName());
+			builder.append(CSharpTypeRefPresentationUtil.buildShortText(parameter.toTypeRef(true), lambdaExpression)).append(" ").append(parameter
+					.getName());
 		}
 		builder.append(") { ");
 
