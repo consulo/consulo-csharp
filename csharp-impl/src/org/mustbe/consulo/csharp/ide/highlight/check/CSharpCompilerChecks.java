@@ -31,6 +31,7 @@ import com.intellij.psi.PsiElement;
  */
 public enum CSharpCompilerChecks
 {
+	CS0026(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), //  'this' dont exists in static context
 	CS0029(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //  cant convert A to B with implicit
 	CS0030(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // cant convert A to B
 	CS0100(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // parameter is duplicate
@@ -77,6 +78,7 @@ public enum CSharpCompilerChecks
 	CS1100(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // 'this' modifier can be only set to first parameter
 	CS1105(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // 'this' modifier can be only in method with static modifier
 	CS1106(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // 'this' modifier can be only in type with static modifier and no generic
+	CS1511(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // 'base' inside static context
 	CS1620(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // ref out exp checks
 	CS1644(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // features checks
 	CS1674(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // using statement expression or variable must be System.IDisposable
