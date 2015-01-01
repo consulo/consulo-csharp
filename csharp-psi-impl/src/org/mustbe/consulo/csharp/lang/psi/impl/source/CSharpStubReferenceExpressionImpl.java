@@ -157,6 +157,10 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	@NotNull
 	public ResolveResult[] multiResolve(final boolean incompleteCode, final boolean resolveFromParent)
 	{
+		if(!isValid())
+		{
+			return ResolveResult.EMPTY_ARRAY;
+		}
 		return CSharpResolveCache.getInstance(getProject()).resolveWithCaching(this, OurResolver.INSTANCE, true, incompleteCode, resolveFromParent);
 	}
 
