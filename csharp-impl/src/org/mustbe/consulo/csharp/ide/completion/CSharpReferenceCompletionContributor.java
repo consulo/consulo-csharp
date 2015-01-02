@@ -285,6 +285,10 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 					@NotNull CompletionResultSet completionResultSet)
 			{
 				val parent = (CSharpReferenceExpression) completionParameters.getPosition().getParent();
+				if(parent.getQualifier() != null)
+				{
+					return;
+				}
 
 				if(parent.kind() == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || parent.kind() == CSharpReferenceExpression.ResolveToKind
 						.ANY_MEMBER)
@@ -328,6 +332,10 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 					@NotNull CompletionResultSet completionResultSet)
 			{
 				val parent = (CSharpReferenceExpression) completionParameters.getPosition().getParent();
+				if(parent.getQualifier() != null)
+				{
+					return;
+				}
 
 				if(parent.kind() == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || parent.kind() == CSharpReferenceExpression.ResolveToKind
 						.ANY_MEMBER)
