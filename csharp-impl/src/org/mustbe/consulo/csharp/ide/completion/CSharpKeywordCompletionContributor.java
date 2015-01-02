@@ -243,11 +243,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 									return isParameter;
 								}
 
-								if(isParameter)
-								{
-									return false;
-								}
-								return true;
+								return !isParameter;
 							}
 						});
 					}
