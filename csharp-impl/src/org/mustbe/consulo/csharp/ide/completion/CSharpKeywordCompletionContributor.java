@@ -189,6 +189,15 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 							@Override
 							public boolean value(IElementType elementType)
 							{
+								if(elementType == CSharpSoftTokens.ASYNC_KEYWORD)
+								{
+									CSharpModuleExtension extension = ModuleUtilCore.getExtension(position, CSharpModuleExtension.class);
+									if(extension == null || !extension.getLanguageVersion().isAtLeast(CSharpLanguageVersion._5_0))
+									{
+										return false;
+									}
+								}
+
 								boolean isParameter = PsiTreeUtil.getParentOfType(position, DotNetParameter.class) != null;
 
 								if(elementType == CSharpTokens.REF_KEYWORD || elementType == CSharpTokens.OUT_KEYWORD || elementType ==
@@ -200,15 +209,6 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 								if(isParameter)
 								{
 									return false;
-								}
-
-								if(elementType == CSharpSoftTokens.ASYNC_KEYWORD)
-								{
-									CSharpModuleExtension extension = ModuleUtilCore.getExtension(position, CSharpModuleExtension.class);
-									if(extension == null || !extension.getLanguageVersion().isAtLeast(CSharpLanguageVersion._5_0))
-									{
-										return false;
-									}
 								}
 								return true;
 							}
