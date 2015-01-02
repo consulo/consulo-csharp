@@ -36,7 +36,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplU
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
+import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
@@ -58,7 +58,6 @@ import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -228,8 +227,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 								}
 								if(elementType == CSharpSoftTokens.ASYNC_KEYWORD)
 								{
-									CSharpModuleExtension extension = ModuleUtilCore.getExtension(position, CSharpModuleExtension.class);
-									if(extension == null || !extension.getLanguageVersion().isAtLeast(CSharpLanguageVersion._5_0))
+									if(CSharpModuleUtil.findLanguageVersion(position).isAtLeast(CSharpLanguageVersion._5_0))
 									{
 										return false;
 									}

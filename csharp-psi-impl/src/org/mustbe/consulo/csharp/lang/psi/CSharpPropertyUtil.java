@@ -18,9 +18,8 @@ package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
+import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
-import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -44,8 +43,7 @@ public class CSharpPropertyUtil
 			if(accessors.length == 1 && accessors[0].getAccessorKind() == DotNetXXXAccessor.Kind.GET && accessors[0].getCodeBlock() == null &&
 					propertyDeclaration.getInitializer() != null)
 			{
-				CSharpModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpModuleExtension.class);
-				return extension != null && extension.getLanguageVersion().isAtLeast(CSharpLanguageVersion._6_0);
+				return CSharpModuleUtil.findLanguageVersion(element).isAtLeast(CSharpLanguageVersion._6_0);
 			}
 		}
 		return false;
