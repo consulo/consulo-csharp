@@ -24,11 +24,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
@@ -36,6 +38,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRef
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
 import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
@@ -154,6 +157,36 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 			}
 		});
 
+		extend(CompletionType.BASIC, psiElement().inside(DotNetGenericParameter.class), new CompletionProvider<CompletionParameters>()
+
+		{
+			@Override
+			protected void addCompletions(@NotNull final CompletionParameters parameters,
+					ProcessingContext context,
+					@NotNull CompletionResultSet result)
+			{
+				CSharpCompletionUtil.tokenSetToLookup(result, TokenSet.create(CSharpTokens.IN_KEYWORD, CSharpTokens.OUT_KEYWORD), null,
+						new Condition<IElementType>()
+				{
+					@Override
+					public boolean value(IElementType elementType)
+					{
+						DotNetQualifiedElement qualifiedElement = PsiTreeUtil.getParentOfType(parameters.getPosition(),
+								CSharpMethodDeclaration.class, DotNetTypeDeclaration.class);
+						if(qualifiedElement instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) qualifiedElement).isDelegate())
+						{
+							return true;
+						}
+						if(qualifiedElement instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) qualifiedElement).isInterface())
+						{
+							return true;
+						}
+						return false;
+					}
+				});
+			}
+		});
+
 		extend(CompletionType.BASIC, psiElement(), new CompletionProvider<CompletionParameters>()
 		{
 			@Override
@@ -204,8 +237,8 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 
 								boolean isParameter = PsiTreeUtil.getParentOfType(position, DotNetParameter.class) != null;
 
-								if(elementType == CSharpTokens.REF_KEYWORD || elementType == CSharpTokens.OUT_KEYWORD || elementType ==
-										CSharpTokens.PARAMS_KEYWORD)
+								if(elementType == CSharpTokens.REF_KEYWORD || elementType == CSharpTokens.OUT_KEYWORD || elementType == CSharpTokens
+										.PARAMS_KEYWORD)
 								{
 									return isParameter;
 								}
