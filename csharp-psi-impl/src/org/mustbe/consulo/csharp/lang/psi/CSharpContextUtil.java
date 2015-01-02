@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
@@ -72,6 +73,11 @@ public class CSharpContextUtil
 		if(element instanceof CSharpConstructorDeclaration)
 		{
 			return CSharpContextUtil.ContextType.ANY;
+		}
+
+		if(element instanceof DotNetGenericParameter)
+		{
+			return ContextType.ANY;
 		}
 
 		if(CSharpMethodImplUtil.isExtensionWrapper(element))
