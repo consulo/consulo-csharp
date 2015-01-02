@@ -26,15 +26,19 @@ import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
+import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
@@ -51,6 +55,7 @@ import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -156,7 +161,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 					ProcessingContext processingContext,
 					@NotNull CompletionResultSet completionResultSet)
 			{
-				PsiElement position = completionParameters.getPosition();
+				val position = completionParameters.getPosition();
 				if(position.getParent() instanceof DotNetReferenceExpression && position.getParent().getParent() instanceof DotNetUserType)
 				{
 					PsiElement parent1 = position.getParent().getParent();
@@ -172,12 +177,42 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 					if(prevSibling == null ||
 							prevSibling.getNode().getElementType() == CSharpTokens.LBRACE ||
 							prevSibling.getNode().getElementType() == CSharpTokens.RBRACE ||
+							prevSibling.getNode().getElementType() == CSharpTokens.LPAR ||
+							prevSibling.getNode().getElementType() == CSharpTokens.COMMA ||
 							prevSibling.getNode().getElementType() == CSharpTokens.SEMICOLON ||
 							CSharpTokenSets.MODIFIERS.contains(prevSibling.getNode().getElementType()))
 					{
 						val tokenVal = TokenSet.orSet(CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START);
 
-						CSharpCompletionUtil.tokenSetToLookup(completionResultSet, tokenVal, null, null);
+						CSharpCompletionUtil.tokenSetToLookup(completionResultSet, tokenVal, null, new Condition<IElementType>()
+						{
+							@Override
+							public boolean value(IElementType elementType)
+							{
+								boolean isParameter = PsiTreeUtil.getParentOfType(position, DotNetParameter.class) != null;
+
+								if(elementType == CSharpTokens.REF_KEYWORD || elementType == CSharpTokens.OUT_KEYWORD || elementType ==
+										CSharpTokens.PARAMS_KEYWORD)
+								{
+									return isParameter;
+								}
+
+								if(isParameter)
+								{
+									return false;
+								}
+
+								if(elementType == CSharpSoftTokens.ASYNC_KEYWORD)
+								{
+									CSharpModuleExtension extension = ModuleUtilCore.getExtension(position, CSharpModuleExtension.class);
+									if(extension == null || !extension.getLanguageVersion().isAtLeast(CSharpLanguageVersion._5_0))
+									{
+										return false;
+									}
+								}
+								return true;
+							}
+						});
 					}
 				}
 			}
