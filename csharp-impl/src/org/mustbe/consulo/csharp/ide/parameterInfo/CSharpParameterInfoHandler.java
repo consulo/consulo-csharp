@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.parameterInfo;
 import java.util.Comparator;
 import java.util.List;
 
+import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
@@ -44,7 +45,6 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ArrayUtil;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -52,8 +52,21 @@ import com.intellij.util.containers.ContainerUtil;
  * @author VISTALL
  * @since 11.05.14
  */
-public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiElement, CSharpSimpleLikeMethod>
+public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiElement, CSharpParameterInfoHandler.ItemToShow>
 {
+	@ArrayFactoryFields
+	public static class ItemToShow
+	{
+		private CSharpSimpleLikeMethod myLikeMethod;
+		private PsiElement myScope;
+
+		public ItemToShow(@NotNull CSharpSimpleLikeMethod likeMethod, @NotNull PsiElement scope)
+		{
+			myLikeMethod = likeMethod;
+			myScope = scope;
+		}
+	}
+
 	@Override
 	public boolean couldShowInLookup()
 	{
@@ -62,21 +75,31 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 
 	@Nullable
 	@Override
-	public Object[] getParametersForLookup(LookupElement item, ParameterInfoContext context)
+	public ItemToShow[] getParametersForLookup(LookupElement item, ParameterInfoContext context)
 	{
 		Object object = item.getObject();
 
-		if(object instanceof DotNetLikeMethodDeclaration || object instanceof DotNetVariable && ((DotNetVariable) object).toTypeRef(false).resolve(
-				(PsiElement) object) instanceof CSharpLambdaResolveResult)
+		if(object instanceof DotNetLikeMethodDeclaration)
 		{
-			return new Object[]{object};
+			return new ItemToShow[] {new ItemToShow((CSharpSimpleLikeMethod) object, context.getFile())};
 		}
-		return ArrayUtil.EMPTY_OBJECT_ARRAY;
+		if(object instanceof DotNetVariable)
+		{
+			DotNetVariable variable = (DotNetVariable) object;
+			DotNetTypeRef dotNetTypeRef = variable.toTypeRef(tracksParameterIndex());
+
+			DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(variable);
+			if(typeResolveResult instanceof CSharpLambdaResolveResult)
+			{
+				return new ItemToShow[] {new ItemToShow((CSharpSimpleLikeMethod) typeResolveResult, variable)};
+			}
+		}
+		return ItemToShow.EMPTY_ARRAY;
 	}
 
 	@Nullable
 	@Override
-	public Object[] getParametersForDocumentation(CSharpSimpleLikeMethod p, ParameterInfoContext context)
+	public Object[] getParametersForDocumentation(ItemToShow p, ParameterInfoContext context)
 	{
 		return new Object[0];
 	}
@@ -92,7 +115,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	@Override
 	public void showParameterInfo(@NotNull PsiElement element, CreateParameterInfoContext context)
 	{
-		CSharpSimpleLikeMethod[] itemsToShow = resolveToCallables(element);
+		ItemToShow[] itemsToShow = resolveToCallables(element);
 
 		if(itemsToShow.length > 0)
 		{
@@ -102,9 +125,9 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	}
 
 	@NotNull
-	private static CSharpSimpleLikeMethod[] resolveToCallables(PsiElement element)
+	private static ItemToShow[] resolveToCallables(PsiElement element)
 	{
-		List<CSharpSimpleLikeMethod> list = new SmartList<CSharpSimpleLikeMethod>();
+		List<ItemToShow> list = new SmartList<ItemToShow>();
 		if(element instanceof CSharpCallArgumentListOwner)
 		{
 			ResolveResult[] resolveResults = ((CSharpCallArgumentListOwner) element).multiResolve(false);
@@ -115,7 +138,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 				CSharpSimpleLikeMethod likeMethod = resolveSimpleMethod(firstValidResult, element);
 				if(likeMethod != null)
 				{
-					list.add(likeMethod);
+					list.add(new ItemToShow(likeMethod, element));
 				}
 			}
 			else
@@ -125,21 +148,21 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 					CSharpSimpleLikeMethod likeMethod = resolveSimpleMethod(resolveResult, element);
 					if(likeMethod != null)
 					{
-						list.add(likeMethod);
+						list.add(new ItemToShow(likeMethod, element));
 					}
 				}
 			}
 		}
 
-		ContainerUtil.sort(list, new Comparator<CSharpSimpleLikeMethod>()
+		ContainerUtil.sort(list, new Comparator<ItemToShow>()
 		{
 			@Override
-			public int compare(CSharpSimpleLikeMethod o1, CSharpSimpleLikeMethod o2)
+			public int compare(ItemToShow o1, ItemToShow o2)
 			{
-				return o1.getParameterInfos().length - o2.getParameterInfos().length;
+				return o1.myLikeMethod.getParameterInfos().length - o2.myLikeMethod.getParameterInfos().length;
 			}
 		});
-		return ContainerUtil.toArray(list, CSharpSimpleLikeMethod.ARRAY_FACTORY);
+		return ContainerUtil.toArray(list, ItemToShow.ARRAY_FACTORY);
 	}
 
 	@Nullable
@@ -223,14 +246,14 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	}
 
 	@Override
-	public void updateUI(CSharpSimpleLikeMethod p, ParameterInfoUIContext context)
+	public void updateUI(ItemToShow p, ParameterInfoUIContext context)
 	{
 		if(p == null)
 		{
 			context.setUIComponentEnabled(false);
 			return;
 		}
-		CSharpParametersInfo build = CSharpParametersInfo.build(p, context.getParameterOwner());
+		CSharpParametersInfo build = CSharpParametersInfo.build(p.myLikeMethod, p.myScope);
 
 		String text = build.getText();
 
