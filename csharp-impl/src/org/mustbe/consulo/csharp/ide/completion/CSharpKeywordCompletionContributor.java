@@ -189,6 +189,10 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 							@Override
 							public boolean value(IElementType elementType)
 							{
+								if(elementType == CSharpTokens.IN_KEYWORD)
+								{
+									return false;
+								}
 								if(elementType == CSharpSoftTokens.ASYNC_KEYWORD)
 								{
 									CSharpModuleExtension extension = ModuleUtilCore.getExtension(position, CSharpModuleExtension.class);
