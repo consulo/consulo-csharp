@@ -214,7 +214,8 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 							prevSibling.getNode().getElementType() == CSharpTokens.SEMICOLON ||
 							CSharpTokenSets.MODIFIERS.contains(prevSibling.getNode().getElementType()))
 					{
-						val tokenVal = TokenSet.orSet(CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START);
+						val tokenVal = TokenSet.orSet(CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START,
+								TokenSet.create(CSharpTokens.DELEGATE_KEYWORD));
 
 						CSharpCompletionUtil.tokenSetToLookup(completionResultSet, tokenVal, null, new Condition<IElementType>()
 						{
