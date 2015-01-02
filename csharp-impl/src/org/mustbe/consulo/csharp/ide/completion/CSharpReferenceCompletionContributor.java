@@ -301,8 +301,11 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 							}
 							if(elementType == CSharpSoftTokens.VAR_KEYWORD)
 							{
-								if(!CSharpModuleUtil.findLanguageVersion(completionParameters.getOriginalFile()).isAtLeast(CSharpLanguageVersion
-										._2_0))
+								if(PsiTreeUtil.getParentOfType(parent, DotNetStatement.class) == null)
+								{
+									return false;
+								}
+								if(!CSharpModuleUtil.findLanguageVersion(parent).isAtLeast(CSharpLanguageVersion._2_0))
 								{
 									return false;
 								}
@@ -310,7 +313,23 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 							return true;
 						}
 					});
+				}
+			}
+		});
 
+		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class),
+				new CompletionProvider<CompletionParameters>()
+		{
+
+			@Override
+			protected void addCompletions(@NotNull final CompletionParameters completionParameters,
+					ProcessingContext processingContext,
+					@NotNull CompletionResultSet completionResultSet)
+			{
+				val parent = (CSharpReferenceExpression) completionParameters.getPosition().getParent();
+
+				if(parent.kind() == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE)
+				{
 					val referenceName = parent.getReferenceName().replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "");
 
 					if(StringUtil.isEmpty(referenceName))
