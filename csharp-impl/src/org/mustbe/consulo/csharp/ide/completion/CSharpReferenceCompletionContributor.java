@@ -286,7 +286,8 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 			{
 				val parent = (CSharpReferenceExpression) completionParameters.getPosition().getParent();
 
-				if(parent.kind() == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE)
+				if(parent.kind() == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || parent.kind() == CSharpReferenceExpression.ResolveToKind
+						.ANY_MEMBER)
 				{
 					CSharpCompletionUtil.tokenSetToLookup(completionResultSet, CSharpTokenSets.NATIVE_TYPES, null, new Condition<IElementType>()
 					{
@@ -328,7 +329,8 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 			{
 				val parent = (CSharpReferenceExpression) completionParameters.getPosition().getParent();
 
-				if(parent.kind() == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE)
+				if(parent.kind() == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || parent.kind() == CSharpReferenceExpression.ResolveToKind
+						.ANY_MEMBER)
 				{
 					val referenceName = parent.getReferenceName().replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "");
 
@@ -393,7 +395,12 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 							}
 						}
 
-						LookupElementBuilder builder = LookupElementBuilder.create(insideUsingList ? wrap.getPresentableQName() : wrap.getName());
+						String lookupString = insideUsingList ? wrap.getPresentableQName() : wrap.getName();
+						if(lookupString == null || presentationText == null)
+						{
+							continue;
+						}
+						LookupElementBuilder builder = LookupElementBuilder.create(wrap, lookupString);
 						builder = builder.withPresentableText(presentationText);
 						builder = builder.withIcon(IconDescriptorUpdaters.getIcon(wrap, Iconable.ICON_FLAG_VISIBILITY));
 
