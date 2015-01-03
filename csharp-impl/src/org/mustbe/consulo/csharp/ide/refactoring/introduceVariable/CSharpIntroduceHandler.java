@@ -16,6 +16,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.UsefulPsiTreeUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.codeInsight.CodeInsightUtilCore;
@@ -31,11 +32,13 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pass;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.PsiRecursiveElementVisitor;
 import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.TokenType;
+import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.refactoring.IntroduceTargetChooser;
 import com.intellij.refactoring.RefactoringActionHandler;
@@ -436,18 +439,25 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 	@Nullable
 	private PsiElement performReplace(@NotNull final PsiElement declaration, final CSharpIntroduceOperation operation)
 	{
-		final DotNetExpression expression = operation.getInitializer();
+		final DotNetExpression initializer = operation.getInitializer();
 		final Project project = operation.getProject();
-		return new WriteCommandAction<PsiElement>(project, expression.getContainingFile())
+		PsiDocumentManager.getInstance(project).commitAllDocuments();
+		return new WriteCommandAction<PsiElement>(project, declaration.getContainingFile())
 		{
 			@Override
 			protected void run(final Result<PsiElement> result) throws Throwable
 			{
 				PsiElement createdDeclaration = addDeclaration(operation, declaration);
-				if(createdDeclaration != null)
+
+				boolean needReferenceOfVariable = isNeedReferenceOfVariable(initializer);
+				if(needReferenceOfVariable)
 				{
-					createdDeclaration = modifyDeclaration(createdDeclaration);
+					if(createdDeclaration != null)
+					{
+						createdDeclaration = modifyDeclaration(createdDeclaration);
+					}
 				}
+
 				result.setResult(createdDeclaration);
 
 				PsiElement newExpression = createExpression(project, operation.getName());
@@ -455,20 +465,35 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 				if(operation.isReplaceAll())
 				{
 					List<PsiElement> newOccurrences = new ArrayList<PsiElement>();
-					for(PsiElement occurrence : operation.getOccurrences())
+					List<PsiElement> occurrences = operation.getOccurrences();
+					if(occurrences.size() == 1 && !needReferenceOfVariable)
 					{
-						final PsiElement replaced = replaceExpression(occurrence, newExpression, operation);
-						if(replaced != null)
-						{
-							newOccurrences.add(replaced);
-						}
+						occurrences.get(0).delete();
 					}
-					operation.setOccurrences(newOccurrences);
+					else
+					{
+						for(PsiElement occurrence : occurrences)
+						{
+							final PsiElement replaced = replaceExpression(occurrence, newExpression, operation);
+							if(replaced != null)
+							{
+								newOccurrences.add(replaced);
+							}
+						}
+						operation.setOccurrences(newOccurrences);
+					}
 				}
 				else
 				{
-					final PsiElement replaced = replaceExpression(expression, newExpression, operation);
-					operation.setOccurrences(Collections.singletonList(replaced));
+					if(needReferenceOfVariable)
+					{
+						final PsiElement replaced = replaceExpression(initializer, newExpression, operation);
+						operation.setOccurrences(Collections.singletonList(replaced));
+					}
+					else
+					{
+						initializer.delete();
+					}
 				}
 
 				postRefactoring(operation.getElement());
@@ -479,11 +504,22 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 	protected PsiElement modifyDeclaration(@NotNull PsiElement declaration)
 	{
 		PsiElement parent = declaration.getParent();
-
+		                            /*
 		parent.addAfter(PsiParserFacade.SERVICE.getInstance(declaration.getProject()).createWhiteSpaceFromText("\n"),
 				declaration);
-
+		                                */
+		parent.getNode().addChild(new LeafPsiElement(TokenType.WHITE_SPACE, "\n"));
 		return declaration;
+	}
+
+	private boolean isNeedReferenceOfVariable(@NotNull DotNetExpression expression)
+	{
+		PsiElement parent = expression.getParent();
+		if(parent instanceof CSharpExpressionStatementImpl)
+		{
+			return ((CSharpExpressionStatementImpl) expression.getParent()).getExpression() != expression;
+		}
+		return true;
 	}
 
 	@Nullable

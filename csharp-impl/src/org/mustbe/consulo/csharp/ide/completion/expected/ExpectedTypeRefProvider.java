@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAwaitExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
@@ -34,7 +35,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.ar
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
@@ -53,23 +53,24 @@ public class ExpectedTypeRefProvider
 	{
 		PsiElement parent = psiElement.getParent();
 
+		List<ExpectedTypeInfo> typeRefs = new SmartList<ExpectedTypeInfo>();
 		if(parent instanceof CSharpIfStatementImpl)
 		{
 			DotNetExpression conditionExpression = ((CSharpIfStatementImpl) parent).getConditionExpression();
 			if(conditionExpression == psiElement)
 			{
-				return Collections.singletonList(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Boolean), null));
+				typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Boolean), null));
 			}
 		}
-
-		if(parent instanceof DotNetStatement)
+		else if(parent instanceof CSharpForeachStatementImpl)
 		{
-			return Collections.emptyList();
+			if(((CSharpForeachStatementImpl) parent).getIterableExpression() == psiElement)
+			{
+				typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Collections.IEnumerable), null));
+				typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Collections.Generic.IEnumerable$1), null));
+			}
 		}
-
-		List<ExpectedTypeInfo> typeRefs = new SmartList<ExpectedTypeInfo>();
-
-		if(parent instanceof CSharpAssignmentExpressionImpl)
+		else if(parent instanceof CSharpAssignmentExpressionImpl)
 		{
 			CSharpAssignmentExpressionImpl assignmentExpression = (CSharpAssignmentExpressionImpl) parent;
 			DotNetExpression[] expressions = assignmentExpression.getParameterExpressions();
