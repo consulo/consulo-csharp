@@ -91,8 +91,8 @@ public class GenericInferenceUtil
 		DotNetGenericParameter[] genericParameters = methodDeclaration.getGenericParameters();
 		if(genericParameters.length == 0 || typeArgumentListRefs.length > 0)
 		{
-			DotNetGenericExtractor extractor = genericParameters.length != typeArgumentListRefs.length ? DotNetGenericExtractor.EMPTY : new
-					CSharpGenericExtractor(genericParameters, typeArgumentListRefs);
+			DotNetGenericExtractor extractor = genericParameters.length != typeArgumentListRefs.length ? DotNetGenericExtractor.EMPTY :
+					CSharpGenericExtractor.create(genericParameters, typeArgumentListRefs);
 			return new GenericInferenceResult(genericParameters.length == typeArgumentListRefs.length, extractor);
 		}
 
@@ -145,7 +145,7 @@ public class GenericInferenceUtil
 			inferenceGenericFromExpressionTypeRefAndParameterTypeRef(genericParameters, map, parameterTypeRef, expressionTypeRef, scope);
 		}
 
-		return new GenericInferenceResult(genericParameters.length == map.size(), new CSharpGenericExtractor(map));
+		return new GenericInferenceResult(genericParameters.length == map.size(), CSharpGenericExtractor.create(map));
 	}
 
 	private static void inferenceGenericFromExpressionTypeRefAndParameterTypeRef(DotNetGenericParameter[] methodGenericParameters,
@@ -281,7 +281,7 @@ public class GenericInferenceUtil
 
 			assert copy != null;
 
-			DotNetGenericExtractor extractor = map.isEmpty() ? DotNetGenericExtractor.EMPTY : new CSharpGenericExtractor(map);
+			DotNetGenericExtractor extractor = CSharpGenericExtractor.create(map);
 			DotNetTypeRef newParameterTypeRef = GenericUnwrapTool.exchangeTypeRef(parameterTypeRef, extractor, scope);
 			copy.putUserData(CSharpLambdaExpressionImplUtil.TYPE_REF_OF_LAMBDA, newParameterTypeRef);
 

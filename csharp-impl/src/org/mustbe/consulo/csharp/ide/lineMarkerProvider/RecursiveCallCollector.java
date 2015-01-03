@@ -46,11 +46,11 @@ public class RecursiveCallCollector implements LineMarkerCollector
 		if(psiElement.getNode().getElementType() == CSharpTokens.IDENTIFIER && psiElement.getParent() instanceof CSharpReferenceExpression &&
 				psiElement.getParent().getParent() instanceof CSharpMethodCallExpressionImpl)
 		{
-			PsiElement resolve = ((CSharpReferenceExpression) psiElement.getParent()).resolve();
-			if(resolve instanceof CSharpMethodDeclaration)
+			PsiElement resolvedElement = ((CSharpReferenceExpression) psiElement.getParent()).resolve();
+			if(resolvedElement instanceof CSharpMethodDeclaration)
 			{
 				CSharpMethodDeclaration methodDeclaration = PsiTreeUtil.getParentOfType(psiElement, CSharpMethodDeclaration.class);
-				if(resolve.isEquivalentTo(methodDeclaration))
+				if(resolvedElement.isEquivalentTo(methodDeclaration))
 				{
 					val lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), AllIcons.Gutter.RecursiveMethod,
 							Pass.UPDATE_OVERRIDEN_MARKERS, new ConstantFunction<PsiElement, String>("Recursive call"), new GutterIconNavigationHandler<PsiElement>()
