@@ -70,6 +70,7 @@ public enum CSharpCompilerChecks
 	CS0568(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // structs cant have parameterless constructor
 	CS0693(CSharpLanguageVersion._2_0, HighlightInfoType.WARNING), // check by generic
 	CS0702(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // System.Object or System.ValueType cant use by constraints
+	CS0708(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // members inside static type need define static modifier
 	CS0721(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static classes in parameters
 	CS0722(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static classes in methods
 	CS0723(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static classes in variables
