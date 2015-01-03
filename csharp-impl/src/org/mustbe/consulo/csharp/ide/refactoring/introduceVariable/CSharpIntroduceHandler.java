@@ -35,10 +35,9 @@ import com.intellij.openapi.util.Pass;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.PsiRecursiveElementVisitor;
 import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.TokenType;
-import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.refactoring.IntroduceTargetChooser;
 import com.intellij.refactoring.RefactoringActionHandler;
@@ -504,11 +503,7 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 	protected PsiElement modifyDeclaration(@NotNull PsiElement declaration)
 	{
 		PsiElement parent = declaration.getParent();
-		                            /*
-		parent.addAfter(PsiParserFacade.SERVICE.getInstance(declaration.getProject()).createWhiteSpaceFromText("\n"),
-				declaration);
-		                                */
-		parent.getNode().addChild(new LeafPsiElement(TokenType.WHITE_SPACE, "\n"));
+		parent.addAfter(PsiParserFacade.SERVICE.getInstance(declaration.getProject()).createWhiteSpaceFromText("\n"), declaration);
 		return declaration;
 	}
 
