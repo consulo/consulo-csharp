@@ -49,8 +49,8 @@ public class RecursiveCallCollector implements LineMarkerCollector
 			PsiElement resolve = ((CSharpReferenceExpression) psiElement.getParent()).resolve();
 			if(resolve instanceof CSharpMethodDeclaration)
 			{
-				CSharpMethodDeclaration parentOfType = PsiTreeUtil.getParentOfType(psiElement, CSharpMethodDeclaration.class);
-				if(parentOfType == resolve)
+				CSharpMethodDeclaration methodDeclaration = PsiTreeUtil.getParentOfType(psiElement, CSharpMethodDeclaration.class);
+				if(resolve.isEquivalentTo(methodDeclaration))
 				{
 					val lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), AllIcons.Gutter.RecursiveMethod,
 							Pass.UPDATE_OVERRIDEN_MARKERS, new ConstantFunction<PsiElement, String>("Recursive call"), new GutterIconNavigationHandler<PsiElement>()
@@ -59,7 +59,6 @@ public class RecursiveCallCollector implements LineMarkerCollector
 						@Override
 						public void navigate(MouseEvent e, PsiElement elt)
 						{
-
 						}
 					}, GutterIconRenderer.Alignment.LEFT);
 					lineMarkerInfos.add(lineMarkerInfo);
