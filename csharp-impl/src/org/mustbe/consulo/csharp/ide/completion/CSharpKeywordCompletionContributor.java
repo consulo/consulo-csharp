@@ -75,7 +75,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 {
 	private static final TokenSet ourExpressionLiterals = TokenSet.create(CSharpTokens.NULL_LITERAL, CSharpTokens.BOOL_LITERAL,
 			CSharpTokens.DEFAULT_KEYWORD, CSharpTokens.TYPEOF_KEYWORD, CSharpTokens.SIZEOF_KEYWORD, CSharpTokens.THIS_KEYWORD,
-			CSharpTokens.BASE_KEYWORD);
+			CSharpTokens.BASE_KEYWORD, CSharpSoftTokens.AWAIT_KEYWORD);
 
 	public CSharpKeywordCompletionContributor()
 	{
@@ -144,6 +144,13 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 									{
 										val owner = (DotNetModifierListOwner) PsiTreeUtil.getParentOfType(parent, DotNetQualifiedElement.class);
 										if(owner == null || owner.hasModifier(DotNetModifier.STATIC))
+										{
+											return false;
+										}
+									}
+									if(elementType == CSharpSoftTokens.AWAIT_KEYWORD)
+									{
+										if(!CSharpModuleUtil.findLanguageVersion(parent).isAtLeast(CSharpLanguageVersion._5_0))
 										{
 											return false;
 										}
