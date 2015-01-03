@@ -14,7 +14,6 @@ import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpRefactoringUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.UsefulPsiTreeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
@@ -554,13 +553,10 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 
 	private static class CSharpInplaceVariableIntroducer extends InplaceVariableIntroducer<PsiElement>
 	{
-		private final CSharpLocalVariableDeclarationStatement myStatement;
-
 		public CSharpInplaceVariableIntroducer(CSharpLocalVariable target, CSharpIntroduceOperation operation, List<PsiElement> occurrences)
 		{
 			super(target, operation.getEditor(), operation.getProject(), "Introduce Variable", occurrences.toArray(new PsiElement[occurrences.size()
 					]), null);
-			myStatement = (CSharpLocalVariableDeclarationStatement) target.getParent();
 		}
 
 		@Override
