@@ -26,11 +26,13 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAwaitExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -50,7 +52,16 @@ public class ExpectedTypeRefProvider
 	public static List<ExpectedTypeInfo> findExpectedTypeRefs(@NotNull PsiElement psiElement)
 	{
 		PsiElement parent = psiElement.getParent();
-		// <caret>;
+
+		if(parent instanceof CSharpIfStatementImpl)
+		{
+			DotNetExpression conditionExpression = ((CSharpIfStatementImpl) parent).getConditionExpression();
+			if(conditionExpression == psiElement)
+			{
+				return Collections.singletonList(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Boolean), null));
+			}
+		}
+
 		if(parent instanceof DotNetStatement)
 		{
 			return Collections.emptyList();
