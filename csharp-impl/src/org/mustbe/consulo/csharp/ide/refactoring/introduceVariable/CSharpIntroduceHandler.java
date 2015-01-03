@@ -243,6 +243,16 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 			}
 			elementAtCaret = elementAtCaret.getParent();
 		}
+
+		if(expressions.isEmpty())
+		{
+			PsiElement someElement = UsefulPsiTreeUtil.getPrevSiblingSkipWhiteSpaces(file.findElementAt(offset), false);
+			if(someElement instanceof CSharpExpressionStatementImpl)
+			{
+				expressions.add(((CSharpExpressionStatementImpl) someElement).getExpression());
+			}
+		}
+
 		if(expressions.isEmpty())
 		{
 			showCannotPerformError(file.getProject(), editor);
