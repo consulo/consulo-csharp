@@ -50,9 +50,8 @@ public class CSharpCompletionCharFilter extends CharFilter
 			case '{':
 			case '<':
 				return Result.SELECT_ITEM_AND_FINISH_LOOKUP;
-
 			default:
-				return Result.HIDE_LOOKUP;
+				return null;
 		}
 	}
 }
