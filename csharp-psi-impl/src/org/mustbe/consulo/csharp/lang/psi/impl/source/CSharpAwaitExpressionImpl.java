@@ -16,9 +16,6 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpAwaitExpressionImpl extends CSharpElementImpl implements DotNetExpression
 {
-	public static final String System_Threading_Tasks_Task = "System.Threading.Tasks.Task";
-	public static final String System_Threading_Tasks_Task$1 = "System.Threading.Tasks.Task`1";
-
 	public CSharpAwaitExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
