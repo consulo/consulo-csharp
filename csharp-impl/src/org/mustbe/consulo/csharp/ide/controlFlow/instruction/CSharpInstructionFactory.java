@@ -22,7 +22,6 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ContainerUtil;
@@ -33,7 +32,8 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class CSharpInstructionFactory
 {
-	private List<CSharpInstruction> myInstructions = new ArrayList<CSharpInstruction>();
+	private final List<CSharpInstruction> myInstructions = new ArrayList<CSharpInstruction>();
+	private final List<CSharpLabel> myLabels = new ArrayList<CSharpLabel>();
 
 	@NotNull
 	public CSharpPutConstantValueInstruction putConstantValue(CSharpConstantExpressionImpl constantExpression)
@@ -54,9 +54,9 @@ public class CSharpInstructionFactory
 	}
 
 	@NotNull
-	public CSharpReturnInstruction returnValue(@Nullable CSharpReturnStatementImpl statement)
+	public CSharpReturnInstruction returnValue(@Nullable PsiElement element)
 	{
-		return add(new CSharpReturnInstruction(statement));
+		return add(new CSharpReturnInstruction(element));
 	}
 
 	@NotNull
@@ -93,6 +93,14 @@ public class CSharpInstructionFactory
 	public CSharpPopInstruction pop()
 	{
 		return add(new CSharpPopInstruction());
+	}
+
+	@NotNull
+	public CSharpLabel label(@NotNull PsiElement debugElement)
+	{
+		CSharpLabel label = new CSharpLabel(myInstructions.size(), myLabels.size(), debugElement, this);
+		myLabels.add(label);
+		return label;
 	}
 
 	@Nullable
@@ -136,6 +144,11 @@ public class CSharpInstructionFactory
 		i.setIndex(myInstructions.size());
 		myInstructions.add(i);
 		return i;
+	}
+
+	public List<CSharpLabel> getLabels()
+	{
+		return myLabels;
 	}
 
 	public List<CSharpInstruction> getInstructions()

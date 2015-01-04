@@ -51,7 +51,7 @@ public class DebugControlFlowAction extends AnAction
 
 		CSharpControlFlow build = CSharpControlFlowBuilder.build(element);
 
-		showTextAreaDialog(build.toString(), "Control Flow", "#CSharpControlFlow");
+		showTextAreaDialog(build.toDebugString(), "Control Flow", "#CSharpControlFlow");
 	}
 
 	@Override

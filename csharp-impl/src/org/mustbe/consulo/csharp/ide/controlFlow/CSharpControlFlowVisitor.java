@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.controlFlow;
 import org.mustbe.consulo.csharp.ide.controlFlow.instruction.CSharpBindInstruction;
 import org.mustbe.consulo.csharp.ide.controlFlow.instruction.CSharpInstruction;
 import org.mustbe.consulo.csharp.ide.controlFlow.instruction.CSharpInstructionFactory;
+import org.mustbe.consulo.csharp.ide.controlFlow.instruction.CSharpLabel;
 import org.mustbe.consulo.csharp.ide.controlFlow.instruction.CSharpReturnInstruction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
@@ -65,7 +66,8 @@ public class CSharpControlFlowVisitor extends CSharpElementVisitor
 				CSharpInstruction last = myFactory.last();
 				if(!(last instanceof CSharpReturnInstruction))
 				{
-					myFactory.returnValue(null);
+					myFactory.errorValue();
+					myFactory.returnValue(declaration);
 				}
 			}
 		}
@@ -127,30 +129,39 @@ public class CSharpControlFlowVisitor extends CSharpElementVisitor
 	@Override
 	public void visitIfStatement(CSharpIfStatementImpl statement)
 	{
-		DotNetExpression conditionExpression = statement.getConditionExpression();
-		if(conditionExpression != null)
+		CSharpLabel label = myFactory.label(statement);
+
+		try
 		{
-			conditionExpression.accept(this);
+			DotNetExpression conditionExpression = statement.getConditionExpression();
+			if(conditionExpression != null)
+			{
+				conditionExpression.accept(this);
+			}
+
+			CSharpBindInstruction mark = myFactory.bind();
+
+			DotNetStatement trueStatement = statement.getTrueStatement();
+			if(trueStatement != null)
+			{
+				trueStatement.accept(this);
+			}
+
+			myFactory.replace(mark).boolJump(myFactory.position());
+
+			DotNetStatement elseStatement = statement.getElseStatement();
+			if(elseStatement != null)
+			{
+				CSharpBindInstruction mark2 = myFactory.bind();
+
+				elseStatement.accept(this);
+
+				myFactory.replace(mark2).jump(myFactory.position());
+			}
 		}
-
-		CSharpBindInstruction mark = myFactory.bind();
-
-		DotNetStatement trueStatement = statement.getTrueStatement();
-		if(trueStatement != null)
+		finally
 		{
-			trueStatement.accept(this);
-		}
-
-		myFactory.replace(mark).boolJump(myFactory.position());
-
-		DotNetStatement elseStatement = statement.getElseStatement();
-		if(elseStatement != null)
-		{
-			CSharpBindInstruction mark2 = myFactory.bind();
-
-			elseStatement.accept(this);
-
-			myFactory.replace(mark2).jump(myFactory.position());
+			label.finish();
 		}
 	}
 
@@ -182,7 +193,10 @@ public class CSharpControlFlowVisitor extends CSharpElementVisitor
 		if(expression != null)
 		{
 			expression.accept(this);
-			myFactory.pop();
+		}
+		else
+		{
+			myFactory.errorValue();
 		}
 
 		myFactory.returnValue(statement);

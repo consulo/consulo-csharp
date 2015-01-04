@@ -18,9 +18,13 @@ package org.mustbe.consulo.csharp.ide.controlFlow;
 
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.controlFlow.instruction.CSharpInstruction;
 import org.mustbe.consulo.csharp.ide.controlFlow.instruction.CSharpInstructionFactory;
+import org.mustbe.consulo.csharp.ide.controlFlow.instruction.CSharpLabel;
+import com.intellij.openapi.util.Condition;
 import com.intellij.util.containers.ContainerUtil;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -28,22 +32,59 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class CSharpControlFlow
 {
-	private final CSharpInstruction[] myInstructions;
+	private final List<CSharpInstruction> myInstructions;
+	private final List<CSharpLabel> myLabels;
 
 	public CSharpControlFlow(CSharpInstructionFactory instructionFactory)
 	{
-		List<CSharpInstruction> instructions = instructionFactory.getInstructions();
-		myInstructions = ContainerUtil.toArray(instructions, CSharpInstruction.ARRAY_FACTORY);
+		myInstructions = instructionFactory.getInstructions();
+		myLabels = instructionFactory.getLabels();
+		for(CSharpLabel label : myLabels)
+		{
+			if(label.getEndPosition() == -1)
+			{
+				throw new IllegalArgumentException("Label " + label + " is not finished at element: " + label.getDebugElement());
+			}
+		}
 	}
 
-	@Override
-	public String toString()
+	@NotNull
+	public String toDebugString()
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("Instructions: \n");
-		for(CSharpInstruction instruction : myInstructions)
+		for(int i = 0; i < myInstructions.size(); i++)
 		{
+			val temp = i;
+			CSharpLabel startLabel = ContainerUtil.find(myLabels, new Condition<CSharpLabel>()
+			{
+				@Override
+				public boolean value(CSharpLabel cSharpLabel)
+				{
+					return cSharpLabel.getStartPosition() == temp;
+				}
+			});
+
+			if(startLabel != null)
+			{
+				builder.append("+").append(startLabel.toString()).append("\n");
+			}
+			CSharpInstruction instruction = myInstructions.get(i);
 			builder.append(" - ").append(instruction.toString()).append("\n");
+
+			CSharpLabel endLabel = ContainerUtil.find(myLabels, new Condition<CSharpLabel>()
+			{
+				@Override
+				public boolean value(CSharpLabel cSharpLabel)
+				{
+					return cSharpLabel.getEndPosition() == temp;
+				}
+			});
+
+			if(endLabel != null)
+			{
+				builder.append("-").append(endLabel.toString()).append("\n");
+			}
 		}
 		return builder.toString();
 	}

@@ -17,15 +17,15 @@
 package org.mustbe.consulo.csharp.ide.controlFlow.instruction;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
  * @since 30.12.14
  */
-public class CSharpReturnInstruction extends CSharpInstructionWithElement<CSharpReturnStatementImpl>
+public class CSharpReturnInstruction extends CSharpInstructionWithElement<PsiElement>
 {
-	public CSharpReturnInstruction(@Nullable CSharpReturnStatementImpl element)
+	public CSharpReturnInstruction(@Nullable PsiElement element)
 	{
 		super(element);
 	}
