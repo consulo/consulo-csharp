@@ -96,7 +96,7 @@ public class StatementParsing extends SharedParsingHelpers
 		}
 		else if(tokenType == FOREACH_KEYWORD)
 		{
-			parseForeach(wrapper, marker);
+			parseForeachStatement(wrapper, marker);
 		}
 		else if(tokenType == YIELD_KEYWORD)
 		{
@@ -149,7 +149,7 @@ public class StatementParsing extends SharedParsingHelpers
 		}
 		else if(tokenType == SWITCH_KEYWORD)
 		{
-			parseSwitch(wrapper, marker);
+			parseSwitchStatement(wrapper, marker);
 		}
 		else if(tokenType == CONST_KEYWORD)
 		{
@@ -497,12 +497,15 @@ public class StatementParsing extends SharedParsingHelpers
 			expect(builder, RPAR, "')' expected");
 		}
 
-		parseStatement(builder);
+		if(parseStatement(builder) == null)
+		{
+			builder.error("Statement expected");
+		}
 
 		marker.done(FOR_STATEMENT);
 	}
 
-	private static void parseSwitch(@NotNull CSharpBuilderWrapper builder, PsiBuilder.Marker marker)
+	private static void parseSwitchStatement(@NotNull CSharpBuilderWrapper builder, PsiBuilder.Marker marker)
 	{
 		builder.advanceLexer();
 
@@ -596,7 +599,7 @@ public class StatementParsing extends SharedParsingHelpers
 		return mark;
 	}
 
-	private static void parseForeach(CSharpBuilderWrapper builder, PsiBuilder.Marker marker)
+	private static void parseForeachStatement(CSharpBuilderWrapper builder, PsiBuilder.Marker marker)
 	{
 		assert builder.getTokenType() == FOREACH_KEYWORD;
 
@@ -628,13 +631,9 @@ public class StatementParsing extends SharedParsingHelpers
 			expect(builder, RPAR, "')' expected");
 		}
 
-		if(builder.getTokenType() == SEMICOLON)
+		if(parseStatement(builder) == null)
 		{
-			builder.advanceLexer();
-		}
-		else
-		{
-			StatementParsing.parse(builder);
+			builder.error("Statement expected");
 		}
 
 		marker.done(FOREACH_STATEMENT);
