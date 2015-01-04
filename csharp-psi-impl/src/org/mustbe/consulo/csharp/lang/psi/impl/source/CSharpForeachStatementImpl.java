@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpStatementListOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.lang.ASTNode;
@@ -33,7 +33,7 @@ import com.intellij.psi.util.PsiTreeUtil;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpForeachStatementImpl extends CSharpElementImpl implements DotNetStatement, CSharpStatementListOwner
+public class CSharpForeachStatementImpl extends CSharpElementImpl implements DotNetStatement, CSharpStatementAsStatementOwner
 {
 	public CSharpForeachStatementImpl(@NotNull ASTNode node)
 	{
@@ -77,10 +77,10 @@ public class CSharpForeachStatementImpl extends CSharpElementImpl implements Dot
 		return true;
 	}
 
-	@NotNull
+	@Nullable
 	@Override
-	public DotNetStatement[] getStatements()
+	public DotNetStatement getChildStatement()
 	{
-		return findChildrenByClass(DotNetStatement.class);
+		return findChildByClass(DotNetStatement.class);
 	}
 }

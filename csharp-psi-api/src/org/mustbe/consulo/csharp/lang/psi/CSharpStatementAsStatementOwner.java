@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 must-be.org
+ * Copyright 2013-2015 must-be.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,15 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.dotnet.psi.DotNetElement;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 
 /**
  * @author VISTALL
- * @since 04.12.14
+ * @since 04.01.15
  */
-public interface CSharpStatementListOwner extends DotNetElement
+public interface CSharpStatementAsStatementOwner extends DotNetStatement
 {
-	@NotNull
-	DotNetStatement[] getStatements();
+	@Nullable
+	DotNetStatement getChildStatement();
 }

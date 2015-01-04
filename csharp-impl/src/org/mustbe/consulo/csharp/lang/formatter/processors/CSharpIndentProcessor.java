@@ -2,7 +2,7 @@ package org.mustbe.consulo.csharp.lang.formatter.processors;
 
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
-import org.mustbe.consulo.csharp.lang.psi.CSharpStatementListOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializationExpressionImpl;
@@ -101,10 +101,10 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 				return Indent.getNormalIndent();
 			}
 
-			if(element instanceof DotNetStatement && parent instanceof CSharpStatementListOwner)
+			if(parent instanceof CSharpStatementAsStatementOwner)
 			{
-				DotNetStatement[] statements = ((CSharpStatementListOwner) parent).getStatements();
-				if(statements.length == 1 && statements[0] == element)
+				DotNetStatement childStatement = ((CSharpStatementAsStatementOwner) parent).getChildStatement();
+				if(childStatement == element)
 				{
 					return Indent.getNormalIndent();
 				}

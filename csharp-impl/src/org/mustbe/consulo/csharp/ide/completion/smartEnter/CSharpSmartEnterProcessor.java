@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.ide.completion.smartEnter;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
@@ -25,6 +26,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -33,7 +35,7 @@ import com.intellij.psi.util.PsiTreeUtil;
  * @author VISTALL
  * @since 03.01.15
  */
-public class CSharpSmartEnterSemicolonProcessor extends SmartEnterProcessor
+public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 {
 	@Override
 	public boolean process(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile psiFile)
@@ -51,18 +53,35 @@ public class CSharpSmartEnterSemicolonProcessor extends SmartEnterProcessor
 			return false;
 		}
 
-		ASTNode node = statement.getNode();
-		ASTNode semicolonNode = node.findChildByType(CSharpTokens.SEMICOLON);
-		if(semicolonNode != null)
+		if(statement instanceof CSharpStatementAsStatementOwner)
 		{
-			return false;
-		}
+			DotNetStatement childStatement = ((CSharpStatementAsStatementOwner) statement).getChildStatement();
 
-		Document document = editor.getDocument();
-		int endOffset = statement.getTextRange().getEndOffset();
-		document.insertString(endOffset, ";");
-		editor.getCaretModel().moveToOffset(endOffset + 1);
+			if(childStatement == null)
+			{
+				Document document = editor.getDocument();
+				int endOffset = statement.getTextRange().getEndOffset();
+				document.insertString(endOffset, "{}");
+				PsiDocumentManager.getInstance(project).commitDocument(document);
+				editor.getCaretModel().moveToOffset(endOffset + 1);
+				reformat(statement);
+				return false;
+			}
+		}
+		else
+		{
+			ASTNode node = statement.getNode();
+			ASTNode semicolonNode = node.findChildByType(CSharpTokens.SEMICOLON);
+			if(semicolonNode != null)
+			{
+				return false;
+			}
+
+			Document document = editor.getDocument();
+			int endOffset = statement.getTextRange().getEndOffset();
+			document.insertString(endOffset, ";");
+			editor.getCaretModel().moveToOffset(endOffset + 1);
+		}
 		return true;
 	}
-
 }
