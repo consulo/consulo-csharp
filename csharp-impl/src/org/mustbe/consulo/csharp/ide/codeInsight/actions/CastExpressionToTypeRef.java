@@ -17,7 +17,6 @@
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0029;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -59,7 +58,7 @@ public class CastExpressionToTypeRef extends BaseIntentionAction
 		{
 			return "invalid";
 		}
-		return BundleBase.format("Cast to ''{0}''", CSharpTypeRefPresentationUtil.buildText(myExpectedTypeRef, element, CS0029.TYPE_FLAGS));
+		return BundleBase.format("Cast to ''{0}''", CSharpTypeRefPresentationUtil.buildTextWithKeyword(myExpectedTypeRef, element));
 	}
 
 	@NotNull

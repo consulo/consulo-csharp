@@ -543,7 +543,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				PsiBuilder.Marker argumentListMarker = builder.mark();
 				builder.advanceLexer();
 
-				parseArguments(builder, false);
+				parseArguments(builder, RBRACKET, false);
 
 				if(builder.getTokenType() != RBRACKET)
 				{
@@ -586,17 +586,21 @@ public class ExpressionParsing extends SharedParsingHelpers
 			return;
 		}
 
-		parseArguments(builder, fieldSet);
+		parseArguments(builder, RPAR, fieldSet);
 
 		expect(builder, RPAR, "')' expected");
 		mark.done(CALL_ARGUMENT_LIST);
 	}
 
-	private static void parseArguments(CSharpBuilderWrapper builder, boolean fieldSet)
+	private static void parseArguments(CSharpBuilderWrapper builder, IElementType stopElement, boolean fieldSet)
 	{
-		boolean empty = true;
+		TokenSet stoppers = TokenSet.create(stopElement, CSharpTokens.RBRACE, CSharpTokens.SEMICOLON);
 		while(!builder.eof())
 		{
+			if(stoppers.contains(builder.getTokenType()))
+			{
+				break;
+			}
 			if(builder.getTokenType() == IDENTIFIER && builder.lookAhead(1) == COLON)
 			{
 				PsiBuilder.Marker marker = builder.mark();
@@ -627,27 +631,21 @@ public class ExpressionParsing extends SharedParsingHelpers
 				PsiBuilder.Marker marker = parse(builder);
 				if(marker == null)
 				{
-					argumentMarker.drop();
-					if(!empty)
-					{
-						builder.error("Expression expected");
-					}
-					break;
+					PsiBuilder.Marker errorMarker = builder.mark();
+					builder.advanceLexer();
+					builder.error("Expression expected");
+					errorMarker.done(ERROR_EXPRESSION);
 				}
-				else
-				{
-					argumentMarker.done(CALL_ARGUMENT);
-				}
+				argumentMarker.done(CALL_ARGUMENT);
 			}
-			empty = false;
 
 			if(builder.getTokenType() == COMMA)
 			{
 				builder.advanceLexer();
 			}
-			else
+			else if(!stoppers.contains(builder.getTokenType()))
 			{
-				break;
+				builder.error("',' expected");
 			}
 		}
 	}
@@ -1047,7 +1045,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 	private static void emptyExpression(final PsiBuilder builder)
 	{
-		emptyElement(builder, EMPTY_EXPRESSION);
+		emptyElement(builder, ERROR_EXPRESSION);
 	}
 
 	public static void parseConstructorSuperCall(CSharpBuilderWrapper builder)
@@ -1160,22 +1158,21 @@ public class ExpressionParsing extends SharedParsingHelpers
 			arrayMarker.done(NEW_ARRAY_LENGTH);
 		}
 
-		if(!forceArray)
+		boolean argumentsPassed = false;
+		if(builder.getTokenType() == LPAR)
 		{
-			if(builder.getTokenType() == LPAR)
-			{
-				parseArgumentList(builder, false);
-			}
-			else
-			{
-				builder.error("'(' expected");
-			}
+			parseArgumentList(builder, false);
+			argumentsPassed = true;
 		}
 
 		AfterNewParsingTarget target = getTarget(builder, forceArray, typeMarker);
 		switch(target)
 		{
 			case NONE:
+				if(!argumentsPassed && !forceArray)
+				{
+					builder.error("'(' expected");
+				}
 				break;
 			case PROPERTY_SET_LIST:
 				parseFieldOrPropertySetBlock(builder);

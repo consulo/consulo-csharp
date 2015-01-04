@@ -31,6 +31,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNewExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
@@ -186,7 +187,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 					{
 						tooltipBuilder.append(", ");
 					}
-					appendType(tooltipBuilder, parameterTypes[i]);
+					appendType(tooltipBuilder, parameterTypes[i], element);
 				}
 			}
 			else if(resolveElement instanceof DotNetLikeMethodDeclaration)
@@ -199,7 +200,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 						tooltipBuilder.append(", ");
 					}
 					tooltipBuilder.append(parameters[i].getName()).append(" : ");
-					appendType(tooltipBuilder, parameters[i].toTypeRef(false));
+					appendType(tooltipBuilder, parameters[i].toTypeRef(false), element);
 				}
 			}
 			tooltipBuilder.append(")</b> cannot be applied<br>");
@@ -226,7 +227,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 					tooltipBuilder.append(parameterName).append(" : ");
 				}
 
-				appendType(tooltipBuilder, nCallArgument.getTypeRef());
+				appendType(tooltipBuilder, nCallArgument.getTypeRef(), element);
 				if(!nCallArgument.isValid())
 				{
 					tooltipBuilder.append("</font>");
@@ -276,8 +277,18 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 							{
 								continue;
 							}
-							QuickFixAction.registerQuickFixAction(highlightInfo, new CastNArgumentToTypeRefFix(argumentExpression,
-									argument.getParameterTypeRef(), argument.getParameterName()));
+							DotNetTypeRef parameterTypeRef = argument.getParameterTypeRef();
+							if(parameterTypeRef == null)
+							{
+								continue;
+							}
+							String parameterName = argument.getParameterName();
+							if(parameterName == null)
+							{
+								continue;
+							}
+							QuickFixAction.registerQuickFixAction(highlightInfo, new CastNArgumentToTypeRefFix(argumentExpression, parameterTypeRef,
+									parameterName));
 						}
 					}
 				}
@@ -288,9 +299,9 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 	}
 
 
-	private static void appendType(StringBuilder builder, DotNetTypeRef typeRef)
+	private static void appendType(@NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
-		builder.append(XmlStringUtil.escapeString(typeRef.getPresentableText()));
+		builder.append(XmlStringUtil.escapeString(CSharpTypeRefPresentationUtil.buildText(typeRef, scope)));
 	}
 
 	private static CSharpCallArgumentListOwner findCallOwner(PsiElement element)

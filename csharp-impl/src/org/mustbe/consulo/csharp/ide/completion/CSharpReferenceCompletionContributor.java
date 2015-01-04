@@ -285,8 +285,13 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 					@NotNull CompletionResultSet completionResultSet)
 			{
 				val parent = (CSharpReferenceExpression) completionParameters.getPosition().getParent();
+				if(parent.getQualifier() != null)
+				{
+					return;
+				}
 
-				if(parent.kind() == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE)
+				if(parent.kind() == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || parent.kind() == CSharpReferenceExpression.ResolveToKind
+						.ANY_MEMBER)
 				{
 					CSharpCompletionUtil.tokenSetToLookup(completionResultSet, CSharpTokenSets.NATIVE_TYPES, null, new Condition<IElementType>()
 					{
@@ -301,8 +306,11 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 							}
 							if(elementType == CSharpSoftTokens.VAR_KEYWORD)
 							{
-								if(!CSharpModuleUtil.findLanguageVersion(completionParameters.getOriginalFile()).isAtLeast(CSharpLanguageVersion
-										._2_0))
+								if(PsiTreeUtil.getParentOfType(parent, DotNetStatement.class) == null)
+								{
+									return false;
+								}
+								if(!CSharpModuleUtil.findLanguageVersion(parent).isAtLeast(CSharpLanguageVersion._2_0))
 								{
 									return false;
 								}
@@ -310,7 +318,28 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 							return true;
 						}
 					});
+				}
+			}
+		});
 
+		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class),
+				new CompletionProvider<CompletionParameters>()
+		{
+
+			@Override
+			protected void addCompletions(@NotNull final CompletionParameters completionParameters,
+					ProcessingContext processingContext,
+					@NotNull CompletionResultSet completionResultSet)
+			{
+				val parent = (CSharpReferenceExpression) completionParameters.getPosition().getParent();
+				if(parent.getQualifier() != null)
+				{
+					return;
+				}
+
+				if(parent.kind() == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || parent.kind() == CSharpReferenceExpression.ResolveToKind
+						.ANY_MEMBER)
+				{
 					val referenceName = parent.getReferenceName().replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "");
 
 					if(StringUtil.isEmpty(referenceName))
@@ -374,7 +403,12 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 							}
 						}
 
-						LookupElementBuilder builder = LookupElementBuilder.create(insideUsingList ? wrap.getPresentableQName() : wrap.getName());
+						String lookupString = insideUsingList ? wrap.getPresentableQName() : wrap.getName();
+						if(lookupString == null || presentationText == null)
+						{
+							continue;
+						}
+						LookupElementBuilder builder = LookupElementBuilder.create(wrap, lookupString);
 						builder = builder.withPresentableText(presentationText);
 						builder = builder.withIcon(IconDescriptorUpdaters.getIcon(wrap, Iconable.ICON_FLAG_VISIBILITY));
 

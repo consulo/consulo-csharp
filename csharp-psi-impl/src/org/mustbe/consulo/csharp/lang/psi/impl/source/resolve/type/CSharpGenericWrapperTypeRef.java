@@ -114,7 +114,7 @@ public class CSharpGenericWrapperTypeRef implements DotNetGenericWrapperTypeRef
 		{
 			return DotNetGenericExtractor.EMPTY;
 		}
-		return new CSharpGenericExtractor(genericParameters, getArgumentTypeRefs());
+		return CSharpGenericExtractor.create(genericParameters, getArgumentTypeRefs());
 	}
 
 	@Override

@@ -20,8 +20,10 @@ import java.util.List;
 
 import org.emonic.base.codehierarchy.CodeHierarchyHelper;
 import org.emonic.base.documentation.IDocumentation;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.dotnet.documentation.DotNetDocumentationCache;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetArrayTypeRef;
@@ -269,7 +271,7 @@ public class CSharpDocumentationProvider  implements DocumentationProvider
 			{
 				if(resolved instanceof DotNetGenericParameterListOwner)
 				{
-					wrapToLink(dotNetTypeRef, ((DotNetQualifiedElement) resolved).getPresentableQName(), ((DotNetGenericParameterListOwner)
+					wrapToLink(element, dotNetTypeRef, ((DotNetQualifiedElement) resolved).getPresentableQName(), ((DotNetGenericParameterListOwner)
 							resolved).getGenericParametersCount(), builder);
 
 					DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) resolved).getGenericParameters();
@@ -305,14 +307,15 @@ public class CSharpDocumentationProvider  implements DocumentationProvider
 			}
 			else
 			{
-				wrapToLink(dotNetTypeRef, "<unknown>", 0, builder);
+				wrapToLink(element, dotNetTypeRef, "<unknown>", 0, builder);
 			}
 		}
 
 		return builder.toString();
 	}
 
-	private static void wrapToLink(DotNetTypeRef dotNetTypeRef, String qName, int genericCount, StringBuilder builder)
+	private static void wrapToLink(@NotNull PsiElement scope, @NotNull DotNetTypeRef dotNetTypeRef, String qName, int genericCount,
+			StringBuilder builder)
 	{
 		builder.append("<a href=\"psi_element://").append(TYPE_PREFIX);
 		builder.append(qName);
@@ -320,6 +323,6 @@ public class CSharpDocumentationProvider  implements DocumentationProvider
 		{
 			builder.append("`").append(genericCount);
 		}
-		builder.append("\">").append(dotNetTypeRef.getPresentableText()).append("</a>");
+		builder.append("\">").append(XmlStringUtil.escapeString(CSharpTypeRefPresentationUtil.buildShortText(dotNetTypeRef, scope))).append("</a>");
 	}
 }

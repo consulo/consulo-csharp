@@ -92,11 +92,11 @@ public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModi
 	public CSharpModifier[] getModifiers()
 	{
 		List<CSharpModifier> list = new ArrayList<CSharpModifier>();
-		for(CSharpModifier CSharpModifier : CSharpModifierListImplUtil.ourModifiers.keySet())
+		for(CSharpModifier modifier : CSharpModifier.values())
 		{
-			if(hasModifier(CSharpModifier))
+			if(hasModifier(modifier))
 			{
-				list.add(CSharpModifier);
+				list.add(modifier);
 			}
 		}
 		return list.toArray(new CSharpModifier[list.size()]);
@@ -105,19 +105,20 @@ public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModi
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		CSharpModifierListStub stub = getStub();
-		if(stub != null)
-		{
-			return stub.hasModifier(modifier);
-		}
-
 		return CSharpModifierListImplUtil.hasModifier(this, modifier);
 	}
 
 	@Override
 	public boolean hasModifierInTree(@NotNull DotNetModifier modifier)
 	{
-		IElementType iElementType = CSharpModifierListImplUtil.ourModifiers.get(CSharpModifier.as(modifier));
+		CSharpModifier sharpModifier = CSharpModifier.as(modifier);
+		CSharpModifierListStub stub = getStub();
+		if(stub != null)
+		{
+			return stub.hasModifier(sharpModifier);
+		}
+
+		IElementType iElementType = CSharpModifierListImplUtil.ourModifiers.get(sharpModifier);
 		return findChildByType(iElementType) != null;
 	}
 

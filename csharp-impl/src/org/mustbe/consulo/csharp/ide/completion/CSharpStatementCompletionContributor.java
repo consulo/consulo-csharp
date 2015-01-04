@@ -22,20 +22,14 @@ import static com.intellij.patterns.StandardPatterns.psiElement;
 import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
+import org.mustbe.consulo.csharp.ide.completion.util.ExpressionOrStatementInsertHandler;
 import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.UsefulPsiTreeUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDoWhileStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpSwitchStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTryStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpWhileStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.*;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -55,6 +49,7 @@ import com.intellij.openapi.util.Condition;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -68,44 +63,19 @@ import lombok.val;
  */
 public class CSharpStatementCompletionContributor extends CompletionContributor implements CSharpTokenSets
 {
-	private static class StatementKeywordInsertHandler implements InsertHandler<LookupElement>
-	{
-		private final IElementType myElementType;
-
-		public StatementKeywordInsertHandler(IElementType elementType)
-		{
-			myElementType = elementType;
-		}
-
-		@Override
-		public void handleInsert(InsertionContext insertionContext, LookupElement item)
-		{
-			int offset = insertionContext.getEditor().getCaretModel().getOffset();
-			if(myElementType == DO_KEYWORD || myElementType == TRY_KEYWORD || myElementType == CATCH_KEYWORD || myElementType == FINALLY_KEYWORD)
-			{
-				insertionContext.getDocument().insertString(offset, "{}");
-			}
-			else
-			{
-				insertionContext.getDocument().insertString(offset, "()");
-			}
-			insertionContext.getEditor().getCaretModel().moveToOffset(offset + 1);
-		}
-	}
-
 	private static final TokenSet ourParStatementKeywords = TokenSet.create(IF_KEYWORD, FOR_KEYWORD, FOREACH_KEYWORD, FOREACH_KEYWORD,
-			FIXED_KEYWORD, UNCHECKED_KEYWORD, CHECKED_KEYWORD, SWITCH_KEYWORD, USING_KEYWORD, WHILE_KEYWORD, DO_KEYWORD, TRY_KEYWORD);
+			FIXED_KEYWORD, UNCHECKED_KEYWORD, CHECKED_KEYWORD, SWITCH_KEYWORD, USING_KEYWORD, WHILE_KEYWORD, DO_KEYWORD, TRY_KEYWORD, LOCK_KEYWORD);
 
 	private static final TokenSet ourCaseAndDefaultKeywords = TokenSet.create(CASE_KEYWORD, DEFAULT_KEYWORD);
 
 	private static final TokenSet ourContinueAndBreakKeywords = TokenSet.create(BREAK_KEYWORD, CONTINUE_KEYWORD, GOTO_KEYWORD);
 
-	private static final TokenSet ourReturnKeywords = TokenSet.create(RETURN_KEYWORD);
-
 	private static final TokenSet ourCatchFinallyKeywords = TokenSet.create(CATCH_KEYWORD, FINALLY_KEYWORD);
 
-	private static final ElementPattern<? extends PsiElement> ourStatementStart = or(psiElement().withElementType(CSharpTokens.SEMICOLON),
-			psiElement().withElementType(CSharpTokens.LBRACE));
+	private static final ElementPattern<? extends PsiElement> ourStatementStart = or(psiElement().withElementType(CSharpTokens.SEMICOLON).inside
+			(DotNetStatement.class), psiElement().withElementType(CSharpTokens.LBRACE).inside(DotNetStatement.class),
+			psiElement().withElementType(CSharpTokens.RBRACE).inside(DotNetStatement.class));
+
 	private static final ElementPattern<? extends PsiElement> ourContinueAndBreakPattern = psiElement().afterLeaf(ourStatementStart).inside(or
 			(psiElement().inside(CSharpForeachStatementImpl.class), psiElement().inside(CSharpForStatementImpl.class),
 					psiElement().inside(CSharpWhileStatementImpl.class), psiElement().inside(CSharpDoWhileStatementImpl.class)));
@@ -114,7 +84,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			(CSharpLabeledStatementImpl.class));
 
 	private static final ElementPattern<? extends PsiElement> ourReturnPattern = psiElement().afterLeaf(ourStatementStart).inside(psiElement()
-			.inside(CSharpSimpleLikeMethodAsElement.class));
+			.inside(CSharpSimpleLikeMethodAsElement.class)).andNot(psiElement().inside(CSharpFinallyStatementImpl.class));
 
 	public CSharpStatementCompletionContributor()
 	{
@@ -158,8 +128,8 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			{
 				val pseudoMethod = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpSimpleLikeMethodAsElement.class);
 				assert pseudoMethod != null;
-				CSharpCompletionUtil.tokenSetToLookup(result, ourReturnKeywords, new NotNullPairFunction<LookupElementBuilder, IElementType,
-						LookupElement>()
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.RETURN_KEYWORD, new NotNullPairFunction<LookupElementBuilder,
+						IElementType, LookupElement>()
 
 				{
 					@NotNull
@@ -275,7 +245,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 					@Override
 					public LookupElement fun(LookupElementBuilder t, final IElementType v)
 					{
-						t = t.withInsertHandler(new StatementKeywordInsertHandler(v));
+						t = t.withInsertHandler(buildInsertHandler(v));
 						return t;
 					}
 				}, null);
@@ -295,7 +265,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 					@Override
 					public LookupElement fun(LookupElementBuilder t, final IElementType v)
 					{
-						t = t.withInsertHandler(new StatementKeywordInsertHandler(v));
+						t = t.withInsertHandler(buildInsertHandler(v));
 
 						return t;
 					}
@@ -323,7 +293,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 								@Override
 								public LookupElementBuilder fun(LookupElementBuilder t, IElementType v)
 								{
-									t = t.withInsertHandler(new StatementKeywordInsertHandler(v));
+									t = t.withInsertHandler(buildInsertHandler(v));
 									return t;
 								}
 							}, new Condition<IElementType>()
@@ -360,5 +330,74 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 				}
 			}
 		});
+	}
+
+	@NotNull
+	public static InsertHandler<LookupElement> buildInsertHandler(final IElementType elementType)
+	{
+		char open = '(';
+		char close = ')';
+
+		if(elementType == DO_KEYWORD || elementType == TRY_KEYWORD || elementType == CATCH_KEYWORD || elementType == FINALLY_KEYWORD)
+		{
+			open = '{';
+			close = '}';
+		}
+
+		return new ExpressionOrStatementInsertHandler<LookupElement>(open, close)
+		{
+			@Override
+			protected boolean canAddSpaceBeforePair(InsertionContext insertionContext, LookupElement item)
+			{
+				CommonCodeStyleSettings codeStyleSettings = insertionContext.getCodeStyleSettings();
+				CSharpCodeStyleSettings customCodeStyleSettings = getCustomCodeStyleSettings(insertionContext);
+
+				if(elementType == DO_KEYWORD)
+				{
+					return codeStyleSettings.SPACE_BEFORE_DO_LBRACE;
+				}
+				else if(elementType == TRY_KEYWORD)
+				{
+					return codeStyleSettings.SPACE_BEFORE_TRY_LBRACE;
+				}
+				else if(elementType == CATCH_KEYWORD)
+				{
+					return codeStyleSettings.SPACE_BEFORE_CATCH_LBRACE;
+				}
+				else if(elementType == FINALLY_KEYWORD)
+				{
+					return codeStyleSettings.SPACE_BEFORE_FINALLY_LBRACE;
+				}
+				else if(elementType == IF_KEYWORD)
+				{
+					return codeStyleSettings.SPACE_BEFORE_IF_PARENTHESES;
+				}
+				else if(elementType == SWITCH_KEYWORD)
+				{
+					return codeStyleSettings.SPACE_BEFORE_SWITCH_PARENTHESES;
+				}
+				else if(elementType == WHILE_KEYWORD)
+				{
+					return codeStyleSettings.SPACE_BEFORE_WHILE_PARENTHESES;
+				}
+				else if(elementType == FOR_KEYWORD)
+				{
+					return codeStyleSettings.SPACE_BEFORE_FOR_LBRACE;
+				}
+				else if(elementType == FOREACH_KEYWORD)
+				{
+					return customCodeStyleSettings.SPACE_BEFORE_FOREACH_PARENTHESES;
+				}
+				else if(elementType == USING_KEYWORD)
+				{
+					return customCodeStyleSettings.SPACE_BEFORE_USING_PARENTHESES;
+				}
+				else if(elementType == LOCK_KEYWORD)
+				{
+					return customCodeStyleSettings.SPACE_BEFORE_LOCK_PARENTHESES;
+				}
+				return false;
+			}
+		};
 	}
 }

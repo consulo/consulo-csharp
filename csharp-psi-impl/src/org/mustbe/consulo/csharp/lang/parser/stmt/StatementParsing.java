@@ -198,9 +198,10 @@ public class StatementParsing extends SharedParsingHelpers
 		if(canParseAsVariable)
 		{
 			PsiBuilder.Marker mark = builder.mark();
-			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, mark, LOCAL_VARIABLE, VAR_SUPPORT, someMarker != null);
+			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, mark, LOCAL_VARIABLE, VAR_SUPPORT, false);
 			if(someMarker != null)
 			{
+				expect(builder, SEMICOLON, "';' expected");
 				someMarker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
 			}
 			return ParseVariableOrExpressionResult.VARIABLE;

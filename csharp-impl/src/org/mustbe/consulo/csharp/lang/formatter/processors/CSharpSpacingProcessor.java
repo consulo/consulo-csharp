@@ -126,7 +126,10 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.beforeInside(THIS_KEYWORD, ARRAY_METHOD_DECLARATION).spaces(1);
 		myBuilder.beforeInside(IDENTIFIER, CSharpElements.PARAMETER).spaces(1);
 		myBuilder.beforeInside(IDENTIFIER, CSharpStubElements.PARAMETER).spaces(1);
-		myBuilder.around(COLON).spaces(1);
+
+		myBuilder.afterInside(COLON, CSharpStubElements.EXTENDS_LIST).spaces(1);
+		myBuilder.before(CSharpStubElements.EXTENDS_LIST).spaces(1);
+
 		myBuilder.around(COLONCOLON).spaces(0);
 
 		myBuilder.before(CSharpTokens.ELSE_KEYWORD).spaceIf(commonSettings.SPACE_BEFORE_ELSE_KEYWORD);

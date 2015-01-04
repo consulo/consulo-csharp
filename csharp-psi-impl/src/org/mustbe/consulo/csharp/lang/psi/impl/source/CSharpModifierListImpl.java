@@ -84,11 +84,11 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements CSharpM
 	public CSharpModifier[] getModifiers()
 	{
 		List<CSharpModifier> list = new ArrayList<CSharpModifier>();
-		for(CSharpModifier CSharpModifier : CSharpModifierListImplUtil.ourModifiers.keySet())
+		for(CSharpModifier modifier : CSharpModifier.values())
 		{
-			if(hasModifier(CSharpModifier))
+			if(hasModifier(modifier))
 			{
-				list.add(CSharpModifier);
+				list.add(modifier);
 			}
 		}
 		return list.toArray(new CSharpModifier[list.size()]);

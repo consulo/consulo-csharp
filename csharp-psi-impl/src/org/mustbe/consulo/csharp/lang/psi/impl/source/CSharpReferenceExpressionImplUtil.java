@@ -41,8 +41,10 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.ar
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.ResolveResultSorter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.TypeLikeSorter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpElementGroupTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromNamespace;
@@ -55,6 +57,7 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.ExtensionMethodByNameSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
 import org.mustbe.consulo.dotnet.psi.*;
@@ -94,6 +97,60 @@ public class CSharpReferenceExpressionImplUtil
 
 	public static final TokenSet ourAccessTokens = TokenSet.create(CSharpTokens.ARROW, CSharpTokens.DOT, CSharpTokens.COLONCOLON,
 			CSharpTokens.NULLABE_CALL);
+
+	@NotNull
+	public static DotNetTypeRef toTypeRef(@NotNull CSharpReferenceExpressionEx referenceExpressionEx, boolean resolveFromParent)
+	{
+		ResolveResult[] resolveResults = referenceExpressionEx.multiResolve(false, resolveFromParent);
+		if(resolveResults.length == 0)
+		{
+			return DotNetTypeRef.ERROR_TYPE;
+		}
+
+		ResolveResult resolveResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
+		if(resolveResult == null)
+		{
+			return DotNetTypeRef.ERROR_TYPE;
+		}
+
+		CSharpReferenceExpression.AccessType memberAccessType = referenceExpressionEx.getMemberAccessType();
+
+		DotNetTypeRef typeRef = CSharpReferenceExpressionImplUtil.toTypeRef(resolveResult);
+		switch(memberAccessType)
+		{
+			case NULLABLE_CALL:
+				if(typeRef.resolve(referenceExpressionEx).isNullable())
+				{
+					return typeRef;
+				}
+				else
+				{
+					return new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(DotNetTypes.System.Nullable$1), typeRef);
+				}
+			default:
+
+				return typeRef;
+		}
+	}
+
+	@NotNull
+	public static DotNetTypeRef toTypeRefWithoutCaching(@NotNull CSharpReferenceExpressionEx referenceExpressionEx,
+			@NotNull ResolveToKind kind,
+			boolean resolveFromParent)
+	{
+		ResolveResult[] resolveResults = referenceExpressionEx.multiResolveImpl(kind, resolveFromParent);
+		if(resolveResults.length == 0)
+		{
+			return DotNetTypeRef.ERROR_TYPE;
+		}
+
+		ResolveResult firstValidResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
+		if(firstValidResult == null)
+		{
+			return DotNetTypeRef.ERROR_TYPE;
+		}
+		return CSharpReferenceExpressionImplUtil.toTypeRef(firstValidResult);
+	}
 
 	public static int getTypeArgumentListSize(@NotNull CSharpReferenceExpression referenceExpression)
 	{
@@ -527,8 +584,7 @@ public class CSharpReferenceExpressionImplUtil
 					{
 						if(selector != null)
 						{
-							if(selector instanceof CSharpNamedResolveSelector && ((CSharpNamedResolveSelector) selector).isNameEqual(o
-									.getParameterName()))
+							if(selector instanceof CSharpNamedResolveSelector && ((CSharpNamedResolveSelector) selector).isNameEqual(o.getParameterName()))
 							{
 								newResults.add(new PsiElementResolveResult(parameterElement, true));
 							}
@@ -766,8 +822,7 @@ public class CSharpReferenceExpressionImplUtil
 				p.merge(memberProcessor);
 
 				resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR, extractor);
-				resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, new ExtensionMethodByNameSelector(((CSharpReferenceExpression) element)
-						.getReferenceName()));
+				resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, new ExtensionMethodByNameSelector(((CSharpReferenceExpression) element).getReferenceName()));
 
 				Couple<PsiElement> resolveLayers = getResolveLayers(element, false);
 

@@ -26,9 +26,9 @@ import com.intellij.lang.ASTNode;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpEmptyExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public class CSharpErrorExpressionImpl extends CSharpElementImpl implements DotNetExpression
 {
-	public CSharpEmptyExpressionImpl(@NotNull ASTNode node)
+	public CSharpErrorExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}

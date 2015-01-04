@@ -179,11 +179,11 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 	@Override
 	public boolean hasModifierInTree(@NotNull DotNetModifier modifier)
 	{
-		if(ArrayUtil.contains(modifier, myAdditional))
+		CSharpModifier cSharpModifier = CSharpModifier.as(modifier);
+		if(ArrayUtil.contains(cSharpModifier, myAdditional))
 		{
 			return true;
 		}
-		CSharpModifier cSharpModifier = CSharpModifier.as(modifier);
 		return MsilToCSharpUtil.hasCSharpInMsilModifierList(cSharpModifier, myModifierList);
 	}
 

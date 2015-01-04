@@ -23,13 +23,18 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAwaitExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
@@ -47,15 +52,25 @@ public class ExpectedTypeRefProvider
 	public static List<ExpectedTypeInfo> findExpectedTypeRefs(@NotNull PsiElement psiElement)
 	{
 		PsiElement parent = psiElement.getParent();
-		// <caret>;
-		if(parent instanceof DotNetStatement)
-		{
-			return Collections.emptyList();
-		}
 
 		List<ExpectedTypeInfo> typeRefs = new SmartList<ExpectedTypeInfo>();
-
-		if(parent instanceof CSharpAssignmentExpressionImpl)
+		if(parent instanceof CSharpIfStatementImpl)
+		{
+			DotNetExpression conditionExpression = ((CSharpIfStatementImpl) parent).getConditionExpression();
+			if(conditionExpression == psiElement)
+			{
+				typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Boolean), null));
+			}
+		}
+		else if(parent instanceof CSharpForeachStatementImpl)
+		{
+			if(((CSharpForeachStatementImpl) parent).getIterableExpression() == psiElement)
+			{
+				typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Collections.IEnumerable), null));
+				typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Collections.Generic.IEnumerable$1), null));
+			}
+		}
+		else if(parent instanceof CSharpAssignmentExpressionImpl)
 		{
 			CSharpAssignmentExpressionImpl assignmentExpression = (CSharpAssignmentExpressionImpl) parent;
 			DotNetExpression[] expressions = assignmentExpression.getParameterExpressions();
@@ -84,6 +99,11 @@ public class ExpectedTypeRefProvider
 					typeRefs.add(new ExpectedTypeInfo(expression.toTypeRef(false), typeProvider));
 				}
 			}
+		}
+		else if(parent instanceof CSharpAwaitExpressionImpl)
+		{
+			typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Threading.Tasks.Task), null));
+			typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Threading.Tasks.Task$1), null));
 		}
 		else if(parent instanceof DotNetVariable)
 		{

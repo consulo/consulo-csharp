@@ -18,7 +18,6 @@ package org.mustbe.consulo.csharp.ide.actions.generate.memberChoose;
 
 import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
-import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0029;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
@@ -59,7 +58,7 @@ public class ConstructorChooseMember extends CSharpMemberChooseObject<DotNetCons
 				builder.append(", ");
 			}
 			DotNetParameter parameter = parameters[i];
-			CSharpTypeRefPresentationUtil.appendTypeRef(myDeclaration, builder, parameter.toTypeRef(true), CS0029.TYPE_FLAGS);
+			CSharpTypeRefPresentationUtil.appendTypeRef(myDeclaration, builder, parameter.toTypeRef(true), CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
 			builder.append(" ");
 			builder.append(parameter.getName());
 		}

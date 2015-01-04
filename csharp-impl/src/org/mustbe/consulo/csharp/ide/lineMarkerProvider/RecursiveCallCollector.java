@@ -16,7 +16,6 @@
 
 package org.mustbe.consulo.csharp.ide.lineMarkerProvider;
 
-import java.awt.event.MouseEvent;
 import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +24,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import com.intellij.codeHighlighting.Pass;
-import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
@@ -46,22 +44,15 @@ public class RecursiveCallCollector implements LineMarkerCollector
 		if(psiElement.getNode().getElementType() == CSharpTokens.IDENTIFIER && psiElement.getParent() instanceof CSharpReferenceExpression &&
 				psiElement.getParent().getParent() instanceof CSharpMethodCallExpressionImpl)
 		{
-			PsiElement resolve = ((CSharpReferenceExpression) psiElement.getParent()).resolve();
-			if(resolve instanceof CSharpMethodDeclaration)
+			PsiElement resolvedElement = ((CSharpReferenceExpression) psiElement.getParent()).resolve();
+			if(resolvedElement instanceof CSharpMethodDeclaration)
 			{
-				CSharpMethodDeclaration parentOfType = PsiTreeUtil.getParentOfType(psiElement, CSharpMethodDeclaration.class);
-				if(parentOfType == resolve)
+				CSharpMethodDeclaration methodDeclaration = PsiTreeUtil.getParentOfType(psiElement, CSharpMethodDeclaration.class);
+				if(resolvedElement.isEquivalentTo(methodDeclaration))
 				{
 					val lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), AllIcons.Gutter.RecursiveMethod,
-							Pass.UPDATE_OVERRIDEN_MARKERS, new ConstantFunction<PsiElement, String>("Recursive call"), new GutterIconNavigationHandler<PsiElement>()
-
-					{
-						@Override
-						public void navigate(MouseEvent e, PsiElement elt)
-						{
-
-						}
-					}, GutterIconRenderer.Alignment.LEFT);
+							Pass.UPDATE_OVERRIDEN_MARKERS, new ConstantFunction<PsiElement, String>("Recursive call"), null,
+							GutterIconRenderer.Alignment.LEFT);
 					lineMarkerInfos.add(lineMarkerInfo);
 				}
 			}

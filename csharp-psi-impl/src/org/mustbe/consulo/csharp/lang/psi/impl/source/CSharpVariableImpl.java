@@ -23,7 +23,10 @@ import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.NullableComputable;
+import com.intellij.openapi.util.RecursionManager;
 import com.intellij.psi.PsiElement;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -56,13 +59,22 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 		DotNetTypeRef runtimeType = type.toTypeRef();
 		if(resolveFromInitializer && runtimeType == DotNetTypeRef.AUTO_TYPE)
 		{
-			DotNetExpression initializer = getInitializer();
+			val initializer = getInitializer();
 			if(initializer == null)
 			{
 				return DotNetTypeRef.ERROR_TYPE;
 			}
 
-			return initializer.toTypeRef(false);
+			DotNetTypeRef resolvedTypeRef = RecursionManager.doPreventingRecursion(this, false, new NullableComputable<DotNetTypeRef>()
+			{
+				@Nullable
+				@Override
+				public DotNetTypeRef compute()
+				{
+					return initializer.toTypeRef(false);
+				}
+			});
+			return resolvedTypeRef == null ? DotNetTypeRef.AUTO_TYPE : resolvedTypeRef;
 		}
 		else
 		{
