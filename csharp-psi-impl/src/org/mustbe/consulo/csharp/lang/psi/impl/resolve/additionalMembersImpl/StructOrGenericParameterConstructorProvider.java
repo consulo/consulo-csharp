@@ -66,9 +66,7 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 
 			if(anyConstructor == null)
 			{
-				CSharpModifier modifier = typeDeclaration.hasModifier(CSharpModifier.ABSTRACT) ? CSharpModifier.PROTECTED : CSharpModifier.PUBLIC;
-
-				return buildDefaultConstructor((DotNetNamedElement) element, modifier, extractor);
+				return buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC, extractor);
 			}
 		}
 		else if(element instanceof DotNetGenericParameter)
