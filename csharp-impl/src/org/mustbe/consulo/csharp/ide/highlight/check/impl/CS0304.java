@@ -44,17 +44,17 @@ public class CS0304 extends CompilerCheck<CSharpNewExpression>
 	@Override
 	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpNewExpression element)
 	{
-		PsiElement resolve = element.toTypeRef(false).resolve(element).getElement();
-		if(resolve instanceof DotNetGenericParameter)
+		PsiElement resolvedNewElement = element.toTypeRef(false).resolve(element).getElement();
+		if(resolvedNewElement instanceof DotNetGenericParameter)
 		{
-			DotNetGenericParameterListOwner parent = PsiTreeUtil.getParentOfType(resolve, DotNetGenericParameterListOwner.class);
+			DotNetGenericParameterListOwner parent = PsiTreeUtil.getParentOfType(resolvedNewElement, DotNetGenericParameterListOwner.class);
 			if(!(parent instanceof CSharpGenericConstraintOwner))
 			{
 				return null;
 			}
 
 			boolean findNewOrStruct = false;
-			CSharpGenericConstraint genericConstraint = CSharpGenericConstraintUtil.findGenericConstraint((DotNetGenericParameter) resolve);
+			CSharpGenericConstraint genericConstraint = CSharpGenericConstraintUtil.findGenericConstraint((DotNetGenericParameter) resolvedNewElement);
 			if(genericConstraint != null)
 			{
 				for(CSharpGenericConstraintValue constraintValue : genericConstraint.getGenericConstraintValues())
@@ -72,7 +72,7 @@ public class CS0304 extends CompilerCheck<CSharpNewExpression>
 			{
 				DotNetType newType = element.getNewType();
 				assert newType != null;
-				return newBuilder(newType, ((DotNetGenericParameter) resolve).getName());
+				return newBuilder(newType, formatElement(resolvedNewElement));
 			}
 		}
 		return null;
