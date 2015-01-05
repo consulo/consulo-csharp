@@ -77,7 +77,7 @@ public enum CSharpImplicitReturnModel
 
 				@NotNull
 				@Override
-				public DotNetTypeRef extractTypeRef(@NotNull DotNetTypeRef expectedTypeRef, @NotNull PsiElement element)
+				public DotNetTypeRef extractTypeRef(@NotNull DotNetTypeRef expectedTypeRef, @NotNull PsiElement scope)
 				{
 					return expectedTypeRef;
 				}
@@ -96,10 +96,22 @@ public enum CSharpImplicitReturnModel
 
 	public abstract boolean canHandle(CSharpSimpleLikeMethodAsElement methodAsElement, CSharpReturnStatementImpl returnStatement);
 
-	@NotNull
-	public DotNetTypeRef extractTypeRef(@NotNull DotNetTypeRef expectedTypeRef, @NotNull PsiElement element)
+	@Nullable
+	public String getGenericVmQName()
 	{
-		return ObjectUtils.notNull(extractTypeRefImpl(expectedTypeRef, element), DotNetTypeRef.ERROR_TYPE);
+		return myGenericVmQName;
+	}
+
+	@Nullable
+	public String getNoGenericTypeVmQName()
+	{
+		return myNoGenericTypeVmQName;
+	}
+
+	@NotNull
+	public DotNetTypeRef extractTypeRef(@NotNull DotNetTypeRef expectedTypeRef, @NotNull PsiElement scope)
+	{
+		return ObjectUtils.notNull(extractTypeRefImpl(expectedTypeRef, scope), DotNetTypeRef.ERROR_TYPE);
 	}
 
 	@Nullable
@@ -128,5 +140,18 @@ public enum CSharpImplicitReturnModel
 			return new CSharpTypeRefByQName(myNoGenericTypeVmQName);
 		}
 		return null;
+	}
+
+	@NotNull
+	public static CSharpImplicitReturnModel getImplicitReturnModel(CSharpReturnStatementImpl element, CSharpSimpleLikeMethodAsElement pseudoMethod)
+	{
+		for(CSharpImplicitReturnModel implicitReturnModel : CSharpImplicitReturnModel.values())
+		{
+			if(implicitReturnModel.canHandle(pseudoMethod, element))
+			{
+				return implicitReturnModel;
+			}
+		}
+		throw new IllegalArgumentException("CSharpImplicitReturnModel is broken");
 	}
 }

@@ -23,12 +23,15 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAwaitExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
@@ -41,6 +44,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.SmartList;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -68,6 +72,29 @@ public class ExpectedTypeRefProvider
 			{
 				typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Collections.IEnumerable), null));
 				typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Collections.Generic.IEnumerable$1), null));
+			}
+		}
+		else if(parent instanceof CSharpReturnStatementImpl)
+		{
+			CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(psiElement, CSharpSimpleLikeMethodAsElement.class);
+			if(methodAsElement == null)
+			{
+				return Collections.emptyList();
+			}
+
+			val implicitReturnModel = CSharpImplicitReturnModel.getImplicitReturnModel((CSharpReturnStatementImpl) parent, methodAsElement);
+
+			if(implicitReturnModel == CSharpImplicitReturnModel.None)
+			{
+				typeRefs.add(new ExpectedTypeInfo(methodAsElement.getReturnTypeRef(), methodAsElement));
+			}
+			else
+			{
+				DotNetTypeRef extractedTypeRef = implicitReturnModel.extractTypeRef(methodAsElement.getReturnTypeRef(), parent);
+				if(extractedTypeRef != DotNetTypeRef.ERROR_TYPE)
+				{
+					typeRefs.add(new ExpectedTypeInfo(extractedTypeRef, methodAsElement));
+				}
 			}
 		}
 		else if(parent instanceof CSharpAssignmentExpressionImpl)

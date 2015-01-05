@@ -229,7 +229,8 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				actual = expression.toTypeRef(false);
 			}
 
-			CSharpImplicitReturnModel implicitReturnModel = getImplicitReturnModel((CSharpReturnStatementImpl) element, pseudoMethod);
+			CSharpImplicitReturnModel implicitReturnModel = CSharpImplicitReturnModel.getImplicitReturnModel((CSharpReturnStatementImpl) element,
+					pseudoMethod);
 			DotNetTypeRef typeRef = implicitReturnModel.extractTypeRef(expected, element);
 			if(typeRef != DotNetTypeRef.ERROR_TYPE)
 			{
@@ -238,18 +239,5 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			return Trinity.create(expected, actual, ObjectUtils.notNull(expression, element));
 		}
 		return null;
-	}
-
-	@NotNull
-	private static CSharpImplicitReturnModel getImplicitReturnModel(CSharpReturnStatementImpl element, CSharpSimpleLikeMethodAsElement pseudoMethod)
-	{
-		for(CSharpImplicitReturnModel implicitReturnModel : CSharpImplicitReturnModel.values())
-		{
-			if(implicitReturnModel.canHandle(pseudoMethod, element))
-			{
-				return implicitReturnModel;
-			}
-		}
-		throw new IllegalArgumentException("CSharpImplicitReturnModel is broken");
 	}
 }
