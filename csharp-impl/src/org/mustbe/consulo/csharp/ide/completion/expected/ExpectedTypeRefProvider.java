@@ -84,17 +84,10 @@ public class ExpectedTypeRefProvider
 
 			val implicitReturnModel = CSharpImplicitReturnModel.getImplicitReturnModel((CSharpReturnStatementImpl) parent, methodAsElement);
 
-			if(implicitReturnModel == CSharpImplicitReturnModel.None)
+			DotNetTypeRef extractedTypeRef = implicitReturnModel.extractTypeRef(methodAsElement.getReturnTypeRef(), parent);
+			if(extractedTypeRef != DotNetTypeRef.ERROR_TYPE)
 			{
-				typeRefs.add(new ExpectedTypeInfo(methodAsElement.getReturnTypeRef(), methodAsElement));
-			}
-			else
-			{
-				DotNetTypeRef extractedTypeRef = implicitReturnModel.extractTypeRef(methodAsElement.getReturnTypeRef(), parent);
-				if(extractedTypeRef != DotNetTypeRef.ERROR_TYPE)
-				{
-					typeRefs.add(new ExpectedTypeInfo(extractedTypeRef, methodAsElement));
-				}
+				typeRefs.add(new ExpectedTypeInfo(extractedTypeRef, methodAsElement));
 			}
 		}
 		else if(parent instanceof CSharpAssignmentExpressionImpl)
