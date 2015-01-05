@@ -31,6 +31,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
@@ -163,8 +164,24 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 			}
 		});
 
+		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.USING_KEYWORD)).inside
+				(CSharpUsingNamespaceStatement.class), new CompletionProvider<CompletionParameters>()
+		{
+			@Override
+			protected void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context,
+					@NotNull CompletionResultSet result)
+			{
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.STATIC_KEYWORD, null, new Condition<IElementType>()
+				{
+					@Override
+					public boolean value(IElementType elementType)
+					{
+						return CSharpModuleUtil.findLanguageVersion(parameters.getPosition()).isAtLeast(CSharpLanguageVersion._6_0);
+					}
+				});
+			}
+		});
 		extend(CompletionType.BASIC, psiElement().inside(DotNetGenericParameter.class), new CompletionProvider<CompletionParameters>()
-
 		{
 			@Override
 			protected void addCompletions(@NotNull final CompletionParameters parameters,
