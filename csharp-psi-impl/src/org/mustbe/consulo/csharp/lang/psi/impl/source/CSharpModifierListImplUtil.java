@@ -31,6 +31,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.psi.PsiElement;
@@ -132,6 +133,10 @@ public class CSharpModifierListImplUtil
 				}
 				break;
 			case ABSTRACT:
+				if(parent instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) parent).isInterface())
+				{
+					return true;
+				}
 				if(hasModifier(modifierList, CSharpModifier.INTERFACE_ABSTRACT))
 				{
 					return true;
