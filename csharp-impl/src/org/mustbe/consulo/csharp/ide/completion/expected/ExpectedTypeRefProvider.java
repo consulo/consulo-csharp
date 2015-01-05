@@ -28,10 +28,12 @@ import org.mustbe.consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAwaitExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDoWhileStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpWhileStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
@@ -61,6 +63,22 @@ public class ExpectedTypeRefProvider
 		if(parent instanceof CSharpIfStatementImpl)
 		{
 			DotNetExpression conditionExpression = ((CSharpIfStatementImpl) parent).getConditionExpression();
+			if(conditionExpression == psiElement)
+			{
+				typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Boolean), null));
+			}
+		}
+		else if(parent instanceof CSharpWhileStatementImpl)
+		{
+			DotNetExpression conditionExpression = ((CSharpWhileStatementImpl) parent).getConditionExpression();
+			if(conditionExpression == psiElement)
+			{
+				typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Boolean), null));
+			}
+		}
+		else if(parent instanceof CSharpDoWhileStatementImpl)
+		{
+			DotNetExpression conditionExpression = ((CSharpDoWhileStatementImpl) parent).getConditionExpression();
 			if(conditionExpression == psiElement)
 			{
 				typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Boolean), null));
