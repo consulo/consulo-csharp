@@ -103,9 +103,9 @@ public enum CSharpImplicitReturnModel
 	}
 
 	@Nullable
-	public DotNetTypeRef extractTypeRefImpl(@NotNull DotNetTypeRef expectedTypeRef, @NotNull PsiElement element)
+	public DotNetTypeRef extractTypeRefImpl(@NotNull DotNetTypeRef expectedTypeRef, @NotNull PsiElement scope)
 	{
-		Pair<DotNetTypeDeclaration, DotNetGenericExtractor> typeInSuper = CSharpTypeUtil.findTypeInSuper(expectedTypeRef, myGenericVmQName, element);
+		Pair<DotNetTypeDeclaration, DotNetGenericExtractor> typeInSuper = CSharpTypeUtil.findTypeInSuper(expectedTypeRef, myGenericVmQName, scope);
 		if(typeInSuper != null)
 		{
 			DotNetGenericParameter genericParameter = ArrayUtil2.safeGet(typeInSuper.getFirst().getGenericParameters(), 0);
@@ -122,7 +122,7 @@ public enum CSharpImplicitReturnModel
 			return extract;
 		}
 
-		typeInSuper = CSharpTypeUtil.findTypeInSuper(expectedTypeRef, myVmQName, element);
+		typeInSuper = CSharpTypeUtil.findTypeInSuper(expectedTypeRef, myVmQName, scope);
 		if(typeInSuper != null)
 		{
 			return new CSharpTypeRefByQName(myNoGenericTypeVmQName);

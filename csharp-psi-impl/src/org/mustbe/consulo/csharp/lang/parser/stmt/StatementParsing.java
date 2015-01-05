@@ -704,31 +704,36 @@ public class StatementParsing extends SharedParsingHelpers
 		return true;
 	}
 
-	private static void parseYieldStatement(CSharpBuilderWrapper wrapper, PsiBuilder.Marker marker)
+	private static void parseYieldStatement(CSharpBuilderWrapper builder, PsiBuilder.Marker marker)
 	{
-		assert wrapper.getTokenType() == YIELD_KEYWORD;
+		assert builder.getTokenType() == YIELD_KEYWORD;
 
-		wrapper.advanceLexer();
+		builder.advanceLexer();
 
-		if(wrapper.getTokenType() == BREAK_KEYWORD)
+		if(builder.getTokenType() == BREAK_KEYWORD)
 		{
-			PsiBuilder.Marker mark = wrapper.mark();
-			wrapper.advanceLexer();
+			PsiBuilder.Marker mark = builder.mark();
+			builder.advanceLexer();
 			mark.done(BREAK_STATEMENT);
 		}
-		else if(wrapper.getTokenType() == RETURN_KEYWORD)
+		else if(builder.getTokenType() == RETURN_KEYWORD)
 		{
-			PsiBuilder.Marker mark = wrapper.mark();
-			wrapper.advanceLexer();
-			ExpressionParsing.parse(wrapper);
+			PsiBuilder.Marker mark = builder.mark();
+			builder.advanceLexer();
+			ExpressionParsing.parse(builder);
 			mark.done(RETURN_STATEMENT);
 		}
 		else
 		{
-			wrapper.error("'break' or 'return' expected");
+			PsiBuilder.Marker mark = builder.mark();
+			if(builder.getTokenType() != RBRACE && builder.getTokenType() != SEMICOLON)
+			{
+				builder.advanceLexer();
+			}
+			mark.error("'break' or 'return' expected");
 		}
 
-		expect(wrapper, SEMICOLON, "';' expected");
+		expect(builder, SEMICOLON, "';' expected");
 
 		marker.done(YIELD_STATEMENT);
 	}

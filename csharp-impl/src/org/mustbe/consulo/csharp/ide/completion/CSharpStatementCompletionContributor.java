@@ -26,15 +26,19 @@ import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import org.mustbe.consulo.csharp.ide.completion.util.ExpressionOrStatementInsertHandler;
 import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.UsefulPsiTreeUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.*;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.codeInsight.AutoPopupController;
+import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
@@ -63,6 +67,39 @@ import lombok.val;
  */
 public class CSharpStatementCompletionContributor extends CompletionContributor implements CSharpTokenSets
 {
+	private static class ReturnStatementInsertHandler implements InsertHandler<LookupElement>
+	{
+		private final CSharpSimpleLikeMethodAsElement myPseudoMethod;
+
+		public ReturnStatementInsertHandler(CSharpSimpleLikeMethodAsElement pseudoMethod)
+		{
+			myPseudoMethod = pseudoMethod;
+		}
+
+		@Override
+		public void handleInsert(InsertionContext insertionContext, LookupElement item)
+		{
+			Editor editor = insertionContext.getEditor();
+			int offset = editor.getCaretModel().getOffset();
+			boolean isVoidReturnType = DotNetTypeRefUtil.isVmQNameEqual(myPseudoMethod.getReturnTypeRef(), myPseudoMethod, DotNetTypes.System.Void);
+			if(!isVoidReturnType)
+			{
+				TailType.insertChar(editor, offset, ' ');
+				TailType.insertChar(editor, offset + 1, ';');
+			}
+			else
+			{
+				TailType.insertChar(editor, offset, ';');
+			}
+
+			insertionContext.getEditor().getCaretModel().moveToOffset(offset + 1);
+			if(!isVoidReturnType)
+			{
+				AutoPopupController.getInstance(editor.getProject()).autoPopupMemberLookup(editor, null);
+			}
+		}
+	}
+
 	private static final TokenSet ourParStatementKeywords = TokenSet.create(IF_KEYWORD, FOR_KEYWORD, FOREACH_KEYWORD, FOREACH_KEYWORD,
 			FIXED_KEYWORD, UNCHECKED_KEYWORD, CHECKED_KEYWORD, SWITCH_KEYWORD, USING_KEYWORD, WHILE_KEYWORD, DO_KEYWORD, TRY_KEYWORD, LOCK_KEYWORD);
 
@@ -136,31 +173,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 					@Override
 					public LookupElement fun(LookupElementBuilder t, IElementType v)
 					{
-						t = t.withInsertHandler(new InsertHandler<LookupElement>()
-						{
-							@Override
-							public void handleInsert(InsertionContext insertionContext, LookupElement item)
-							{
-								int offset = insertionContext.getEditor().getCaretModel().getOffset();
-								boolean isVoidReturnType = DotNetTypeRefUtil.isVmQNameEqual(pseudoMethod.getReturnTypeRef(), pseudoMethod,
-										DotNetTypes.System.Void);
-								if(!isVoidReturnType)
-								{
-									insertionContext.getDocument().insertString(offset, " ;");
-								}
-								else
-								{
-									insertionContext.getDocument().insertString(offset, ";");
-								}
-
-								insertionContext.getEditor().getCaretModel().moveToOffset(offset + 1);
-								Editor editor = parameters.getEditor();
-								if(!isVoidReturnType)
-								{
-									AutoPopupController.getInstance(editor.getProject()).autoPopupMemberLookup(editor, null);
-								}
-							}
-						});
+						t = t.withInsertHandler(new ReturnStatementInsertHandler(pseudoMethod));
 						return t;
 					}
 				}, null);
@@ -252,6 +265,102 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
+		extend(CompletionType.BASIC, psiElement().afterLeaf(ourStatementStart).withSuperParent(2, CSharpExpressionStatementImpl.class),
+				new CompletionProvider<CompletionParameters>()
+		{
+			@Override
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			{
+				val position = parameters.getPosition();
+				CSharpCompletionUtil.elementToLookup(result, CSharpSoftTokens.YIELD_KEYWORD, new NotNullPairFunction<LookupElementBuilder,
+								IElementType, LookupElement>()
+						{
+							@NotNull
+							@Override
+							public LookupElement fun(LookupElementBuilder t, final IElementType v)
+							{
+								t = t.withInsertHandler(new InsertHandler<LookupElement>()
+								{
+									@Override
+									public void handleInsert(InsertionContext insertionContext, LookupElement item)
+									{
+										Editor editor = insertionContext.getEditor();
+
+										if(insertionContext.getCompletionChar() == ';')
+										{
+											insertionContext.getDocument().insertString(insertionContext.getTailOffset(), " ");
+											editor.getCaretModel().moveToOffset(insertionContext.getTailOffset() - 1);
+										}
+										else if(insertionContext.getCompletionChar() == ' ')
+										{
+											TailType.insertChar(editor, editor.getCaretModel().getOffset(), ';');
+											editor.getCaretModel().moveToOffset(editor.getCaretModel().getOffset() - 1);
+										}
+										else
+										{
+											insertionContext.getDocument().insertString(insertionContext.getTailOffset(), " ;");
+											editor.getCaretModel().moveToOffset(insertionContext.getTailOffset() - 1);
+										}
+
+										AutoPopupController.getInstance(insertionContext.getProject()).autoPopupMemberLookup(editor, null);
+									}
+								});
+								return t;
+							}
+						}, new Condition<IElementType>()
+						{
+							@Override
+							public boolean value(IElementType elementType)
+							{
+								CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(position,
+										CSharpSimpleLikeMethodAsElement.class);
+								if(methodAsElement == null)
+								{
+									return false;
+								}
+								DotNetTypeRef returnTypeRef = methodAsElement.getReturnTypeRef();
+								if(CSharpImplicitReturnModel.YieldEnumerable.extractTypeRef(returnTypeRef, position) != DotNetTypeRef.ERROR_TYPE)
+								{
+									return true;
+								}
+								if(CSharpImplicitReturnModel.YieldEnumerator.extractTypeRef(returnTypeRef, position) != DotNetTypeRef.ERROR_TYPE)
+								{
+									return true;
+								}
+								return false;
+							}
+						}
+				);
+			}
+		});
+
+		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpSoftTokens.YIELD_KEYWORD)),
+				new CompletionProvider<CompletionParameters>()
+		{
+			@Override
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			{
+				val position = parameters.getPosition();
+				val methodAsElement = PsiTreeUtil.getParentOfType(position, CSharpSimpleLikeMethodAsElement.class);
+				if(methodAsElement == null)
+				{
+					return;
+				}
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.BREAK_KEYWORD, null, null);
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.RETURN_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
+
+				{
+					@NotNull
+					@Override
+					public LookupElement fun(LookupElementBuilder t, IElementType v)
+					{
+						t = t.withInsertHandler(new ReturnStatementInsertHandler(methodAsElement));
+						return t;
+					}
+				}, null);
+			}
+		});
+
 		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.ELSE_KEYWORD)).withSuperParent(2,
 				CSharpExpressionStatementImpl.class), new CompletionProvider<CompletionParameters>()
 		{
@@ -272,6 +381,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 				}, null);
 			}
 		});
+
 		extend(CompletionType.BASIC, psiElement(), new CompletionProvider<CompletionParameters>()
 		{
 			@Override
