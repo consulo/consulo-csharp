@@ -52,7 +52,7 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 				return buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC, extractor);
 			}
 		}
-		else if(element instanceof CSharpTypeDeclaration && !((CSharpTypeDeclaration) element).isInterface())
+		else if(element instanceof CSharpTypeDeclaration)
 		{
 			CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) element;
 			DotNetNamedElement anyConstructor = ContainerUtil.find(typeDeclaration.getMembers(), new Condition<DotNetNamedElement>()
