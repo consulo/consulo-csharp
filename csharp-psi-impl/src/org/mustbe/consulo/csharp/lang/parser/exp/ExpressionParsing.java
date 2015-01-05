@@ -664,6 +664,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		if(version.isAtLeast(CSharpLanguageVersion._4_0))
 		{
 			builder.enableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);
+			builder.enableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
 		}
 		IElementType tokenType = builder.getTokenType();
 		if(linqState)
@@ -673,6 +674,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		if(version.isAtLeast(CSharpLanguageVersion._4_0))
 		{
 			builder.disableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);
+			builder.disableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
 		}
 
 		builder.disableSoftKeyword(CSharpSoftTokens.GLOBAL_KEYWORD);
@@ -740,6 +742,11 @@ public class ExpressionParsing extends SharedParsingHelpers
 		if(tokenType == AWAIT_KEYWORD)
 		{
 			return parseAwaitExpression(builder);
+		}
+
+		if(tokenType == ASYNC_KEYWORD)
+		{
+			return parseLambdaExpression(builder, null);
 		}
 
 		if(tokenType == LPAR)
@@ -942,6 +949,11 @@ public class ExpressionParsing extends SharedParsingHelpers
 	private static PsiBuilder.Marker parseLambdaExpression(final CSharpBuilderWrapper builder, @Nullable final PsiBuilder.Marker typeList)
 	{
 		val start = typeList != null ? typeList.precede() : builder.mark();
+
+		if(builder.getTokenType() == ASYNC_KEYWORD)
+		{
+			builder.advanceLexer();
+		}
 
 		parseLambdaParameterList(builder);
 

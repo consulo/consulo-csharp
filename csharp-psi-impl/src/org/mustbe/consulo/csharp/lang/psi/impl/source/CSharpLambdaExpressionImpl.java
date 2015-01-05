@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameterList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
@@ -48,6 +49,11 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements Dot
 	public CSharpLambdaExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	public boolean isAsync()
+	{
+		return findChildByType(CSharpSoftTokens.ASYNC_KEYWORD) != null;
 	}
 
 	@Nullable
