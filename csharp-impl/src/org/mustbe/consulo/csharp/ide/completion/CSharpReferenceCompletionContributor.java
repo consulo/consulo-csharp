@@ -179,7 +179,10 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 						kind != CSharpReferenceExpression.ResolveToKind.FIELD_OR_PROPERTY &&
 						kind != CSharpReferenceExpression.ResolveToKind.SOFT_QUALIFIED_NAMESPACE)
 				{
-					kind = CSharpReferenceExpression.ResolveToKind.ANY_MEMBER;
+					if(PsiTreeUtil.getParentOfType(expression, DotNetStatement.class) != null)
+					{
+						kind = CSharpReferenceExpression.ResolveToKind.ANY_MEMBER;
+					}
 				}
 				ResolveResult[] psiElements = CSharpReferenceExpressionImplUtil.collectResults(kind, null, expression, null, true, true);
 				List<LookupElement> lookupElements = CSharpLookupElementBuilder.getInstance(expression.getProject()).buildToLookupElements
