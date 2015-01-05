@@ -181,6 +181,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 				});
 			}
 		});
+
 		extend(CompletionType.BASIC, psiElement().inside(DotNetGenericParameter.class), new CompletionProvider<CompletionParameters>()
 		{
 			@Override
