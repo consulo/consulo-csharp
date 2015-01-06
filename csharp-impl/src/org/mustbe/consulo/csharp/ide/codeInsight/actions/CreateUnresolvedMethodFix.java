@@ -16,10 +16,15 @@
 
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
+import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
+import org.mustbe.consulo.csharp.ide.liveTemplates.expression.ReturnStatementExpression;
+import org.mustbe.consulo.csharp.ide.liveTemplates.expression.TypeRefExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -31,7 +36,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.codeInsight.template.Template;
-import com.intellij.codeInsight.template.impl.ConstantNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -132,30 +136,27 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix<Cre
 			template.addTextSegment("static ");
 		}
 
-		DotNetTypeRef returnTypeRef = new CSharpTypeRefByQName(DotNetTypes.System.Void);
+		// get expected from method call expression not reference
+		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(context.getExpression().getParent());
 
-		template.addVariable(new ConstantNode(CSharpTypeRefPresentationUtil.buildShortText(returnTypeRef, context.getExpression())), true);
+		if(!expectedTypeRefs.isEmpty())
+		{
+			template.addVariable(new TypeRefExpression(expectedTypeRefs, file), true);
+		}
+		else
+		{
+			template.addVariable(new TypeRefExpression(new CSharpTypeRefByQName(DotNetTypes.System.Void), file), true);
+		}
+
 		template.addTextSegment(" ");
 		template.addTextSegment(myReferenceName);
 
 		buildParameterList(context, file, template);
 
-		template.addTextSegment("{");
+		template.addTextSegment("{\n");
 
-		String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(returnTypeRef, file);
-		if(defaultValueForType != null)
-		{
-			template.addTextSegment("return ");
-			template.addTextSegment(defaultValueForType);
-			template.addTextSegment(";");
-			template.addEndVariable();
-			template.addTextSegment("\n");
-		}
-		else
-		{
-			template.addTextSegment("\n");
-			template.addEndVariable();
-		}
+		template.addVariable("$RETURN_STATEMENT$", new ReturnStatementExpression(), false);
+		template.addEndVariable();
 
 		template.addTextSegment("}");
 	}
