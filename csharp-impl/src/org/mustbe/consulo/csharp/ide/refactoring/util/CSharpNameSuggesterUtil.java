@@ -100,7 +100,7 @@ public class CSharpNameSuggesterUtil
 
 			if(isKeyword(next))
 			{
-				iterator.set("@" + next);
+				iterator.set(String.valueOf(next.charAt(0)));
 			}
 		}
 		return result;
@@ -176,7 +176,7 @@ public class CSharpNameSuggesterUtil
 
 			if(isKeyword(next))
 			{
-				iterator.set("@" + next);
+				iterator.set(String.valueOf(next.charAt(0)));
 			}
 		}
 		return result;
