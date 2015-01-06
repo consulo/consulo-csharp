@@ -297,40 +297,57 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 			switch(accessorKind)
 			{
 				case SET:
-					builder = builder.withTailText(" = ;", true);
+					builder = builder.withTailText(" = ", true);
 					builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
 					{
 						@Override
 						public void handleInsert(InsertionContext context, LookupElement item)
 						{
-							int offset = context.getEditor().getCaretModel().getOffset();
-							context.getDocument().insertString(offset, " = ;");
-							context.getEditor().getCaretModel().moveToOffset(offset + 3);
+							if(context.getCompletionChar() != '=')
+							{
+								int offset = context.getEditor().getCaretModel().getOffset();
+								context.getDocument().insertString(offset, " = ");
+								context.getEditor().getCaretModel().moveToOffset(offset + 3);
+							}
 						}
 					});
 					break;
 				case ADD:
-					builder = builder.withTailText(" += ;", true);
+					builder = builder.withTailText(" += ", true);
 					builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
 					{
 						@Override
 						public void handleInsert(InsertionContext context, LookupElement item)
 						{
 							int offset = context.getEditor().getCaretModel().getOffset();
-							context.getDocument().insertString(offset, " += ;");
+							if(context.getCompletionChar() == '+')
+							{
+								context.getDocument().insertString(offset, "= ");
+							}
+							else
+							{
+								context.getDocument().insertString(offset, " += ");
+							}
 							context.getEditor().getCaretModel().moveToOffset(offset + 4);
 						}
 					});
 					break;
 				case REMOVE:
-					builder = builder.withTailText(" -= ;", true);
+					builder = builder.withTailText(" -= ", true);
 					builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
 					{
 						@Override
 						public void handleInsert(InsertionContext context, LookupElement item)
 						{
 							int offset = context.getEditor().getCaretModel().getOffset();
-							context.getDocument().insertString(offset, " -= ;");
+							if(context.getCompletionChar() == '-')
+							{
+								context.getDocument().insertString(offset, "= ");
+							}
+							else
+							{
+								context.getDocument().insertString(offset, " -= ");
+							}
 							context.getEditor().getCaretModel().moveToOffset(offset + 4);
 						}
 					});
