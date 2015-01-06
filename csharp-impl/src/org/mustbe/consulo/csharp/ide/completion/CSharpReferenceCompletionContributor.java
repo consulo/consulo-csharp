@@ -29,6 +29,7 @@ import org.mustbe.consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
+import org.mustbe.consulo.csharp.lang.psi.CSharpQualifiedNonReference;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
@@ -42,6 +43,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializationE
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNewExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -462,8 +464,11 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 		//PsiElement last = resolveLayers.getFirst();
 		PsiElement targetToWalkChildren = resolveLayers.getSecond();
 
-		AbstractScopeProcessor p = CSharpReferenceExpressionImplUtil.createMemberProcessor(element, CSharpReferenceExpression.ResolveToKind
-				.TYPE_LIKE, ResolveResult.EMPTY_ARRAY, false);
+		CSharpResolveOptions options = CSharpResolveOptions.build();
+		options.kind(CSharpReferenceExpression.ResolveToKind.TYPE_LIKE);
+		options.element((CSharpQualifiedNonReference) element);
+
+		AbstractScopeProcessor p = CSharpReferenceExpressionImplUtil.createMemberProcessor(options);
 
 		if(!CSharpResolveUtil.walkChildren(p, targetToWalkChildren, true, true, resolveState))
 		{

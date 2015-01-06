@@ -8,7 +8,6 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import org.mustbe.consulo.csharp.lang.psi.CSharpQualifiedNonReference;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
@@ -68,7 +67,7 @@ public class GenericInferenceUtil
 	public static final GenericInferenceResult SUCCESS = new GenericInferenceResult(true, DotNetGenericExtractor.EMPTY);
 
 	@NotNull
-	public static GenericInferenceResult inferenceGenericExtractor(@NotNull CSharpQualifiedNonReference referenceElement,
+	public static GenericInferenceResult inferenceGenericExtractor(@NotNull PsiElement referenceElement,
 			@NotNull CSharpCallArgumentListOwner callArgumentListOwner,
 			@NotNull DotNetLikeMethodDeclaration methodDeclaration)
 	{

@@ -29,7 +29,6 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.search.GlobalSearchScope;
 import lombok.val;
@@ -46,11 +45,11 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 	private final GlobalSearchScope myResolveScope;
 	private final OverrideProcessor myOverrideProcessor;
 
-	public MemberResolveScopeProcessor(PsiElement scopeElement, ResolveResult[] elements, ExecuteTarget[] targets)
+	public MemberResolveScopeProcessor(CSharpResolveOptions options, ExecuteTarget[] targets)
 	{
-		Collections.addAll(myElements, elements);
-		myScopeElement = scopeElement;
-		myResolveScope = scopeElement.getResolveScope();
+		Collections.addAll(myElements, options.getAdditionalElements());
+		myScopeElement = options.getElement();
+		myResolveScope = myScopeElement.getResolveScope();
 		myOverrideProcessor = OverrideProcessor.ALWAYS_TRUE;
 		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
 	}

@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CompletionResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
@@ -382,6 +383,18 @@ public class CSharpReferenceExpressionImplUtil
 			final boolean completion,
 			boolean resolveFromParent)
 	{
+		return collectResults(new CSharpResolveOptions(kind, selector, element, callArgumentListOwner, completion, resolveFromParent));
+	}
+
+	public static ResolveResult[] collectResults(@NotNull CSharpResolveOptions options)
+	{
+		PsiElement element = options.getElement();
+		ResolveToKind kind = options.getKind();
+		CSharpCallArgumentListOwner callArgumentListOwner = options.getCallArgumentListOwner();
+		CSharpResolveSelector selector = options.getSelector();
+		boolean completion = options.isCompletion();
+		boolean resolveFromParent = options.isResolveFromParent();
+
 		if(!element.isValid())
 		{
 			return ResolveResult.EMPTY_ARRAY;
@@ -390,7 +403,7 @@ public class CSharpReferenceExpressionImplUtil
 		AbstractScopeProcessor scopeProcessor = null;
 		ResolveState state = null;
 		ResolveResult[] resolveResults = null;
-		PsiElement qualifier = element.getQualifier();
+		PsiElement qualifier = options.getQualifier();
 		List<Pair<MethodCalcResult, PsiElement>> methodResolveResults = null;
 		DotNetTypeDeclaration thisTypeDeclaration = null;
 		switch(kind)
@@ -478,7 +491,7 @@ public class CSharpReferenceExpressionImplUtil
 
 				DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
 
-				scopeProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY, completion);
+				scopeProcessor = createMemberProcessor(options);
 
 				state = ResolveState.initial();
 				state = state.put(CSharpResolveUtil.EXTRACTOR, genericExtractor);
@@ -598,9 +611,9 @@ public class CSharpReferenceExpressionImplUtil
 				}
 				return ContainerUtil.toArray(newResults, ResolveResult.EMPTY_ARRAY);
 			case TYPE_LIKE:
-				return processAnyMember(qualifier, selector, element, callArgumentListOwner, kind, completion);
+				return processAnyMember(options);
 			case ANY_MEMBER:
-				resolveResults = processAnyMember(qualifier, selector, element, callArgumentListOwner, kind, completion);
+				resolveResults = processAnyMember(options);
 				if(resolveResults.length == 0)
 				{
 					return ResolveResult.EMPTY_ARRAY;
@@ -637,7 +650,7 @@ public class CSharpReferenceExpressionImplUtil
 			case METHOD:
 			case ARRAY_METHOD:
 			case CONSTRUCTOR:
-				resolveResults = processAnyMember(qualifier, selector, element, callArgumentListOwner, kind, completion);
+				resolveResults = processAnyMember(options);
 				if(callArgumentListOwner == null || resolveResults.length == 0)
 				{
 					return ResolveResult.EMPTY_ARRAY;
@@ -698,13 +711,15 @@ public class CSharpReferenceExpressionImplUtil
 		return ResolveResult.EMPTY_ARRAY;
 	}
 
-	public static ResolveResult[] processAnyMember(@Nullable PsiElement qualifier,
-			@Nullable CSharpResolveSelector selector,
-			@NotNull PsiElement element,
-			@Nullable CSharpCallArgumentListOwner callArgumentListOwner,
-			@NotNull ResolveToKind kind,
-			boolean completion)
+	public static ResolveResult[] processAnyMember(@NotNull CSharpResolveOptions options)
 	{
+		PsiElement qualifier = options.getQualifier();
+		PsiElement element = options.getElement();
+		ResolveToKind kind = options.getKind();
+		CSharpCallArgumentListOwner callArgumentListOwner = options.getCallArgumentListOwner();
+		CSharpResolveSelector selector = options.getSelector();
+		boolean completion = options.isCompletion();
+
 		CSharpCodeFragment codeFragment = PsiTreeUtil.getParentOfType(element, CSharpCodeFragment.class);
 		if(codeFragment != null)
 		{
@@ -751,7 +766,7 @@ public class CSharpReferenceExpressionImplUtil
 				resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, selector);
 			}
 
-			AbstractScopeProcessor memberProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY, completion);
+			AbstractScopeProcessor memberProcessor = createMemberProcessor(options);
 
 			CSharpResolveUtil.walkChildren(memberProcessor, resolveElement, true, false, resolveState);
 			return memberProcessor.toResolveResults();
@@ -808,7 +823,7 @@ public class CSharpReferenceExpressionImplUtil
 
 		if(target != element)
 		{
-			AbstractScopeProcessor memberProcessor = createMemberProcessor(element, kind, ResolveResult.EMPTY_ARRAY, completion);
+			AbstractScopeProcessor memberProcessor = createMemberProcessor(options);
 
 			if(!CSharpResolveUtil.walkChildren(memberProcessor, target, false, true, resolveState))
 			{
@@ -859,7 +874,7 @@ public class CSharpReferenceExpressionImplUtil
 				elements = localProcessor.toResolveResults();
 			}
 
-			AbstractScopeProcessor p = createMemberProcessor(element, kind, elements, completion);
+			AbstractScopeProcessor p = createMemberProcessor(options.additionalElements(elements));
 
 			if(!CSharpResolveUtil.walkChildren(p, targetToWalkChildren, true, true, resolveState))
 			{
@@ -877,11 +892,13 @@ public class CSharpReferenceExpressionImplUtil
 		}
 	}
 
-	public static AbstractScopeProcessor createMemberProcessor(@NotNull PsiElement element,
-			ResolveToKind kind,
-			ResolveResult[] elements,
-			boolean completion)
+	@NotNull
+	public static AbstractScopeProcessor createMemberProcessor(@NotNull CSharpResolveOptions options)
 	{
+		ResolveToKind kind = options.getKind();
+		PsiElement element = options.getElement();
+		boolean completion = options.isCompletion();
+
 		ExecuteTarget[] targets;
 		ResolveResultSorter sorter = ResolveResultSorter.EMPTY;
 		switch(kind)
@@ -938,8 +955,8 @@ public class CSharpReferenceExpressionImplUtil
 				break;
 		}
 
-		AbstractScopeProcessor processor = completion ? new CompletionResolveScopeProcessor(element, elements,
-				targets) : new MemberResolveScopeProcessor(element, elements, targets);
+		AbstractScopeProcessor processor = completion ? new CompletionResolveScopeProcessor(options,
+				targets) : new MemberResolveScopeProcessor(options, targets);
 		processor.setSorter(sorter);
 		return processor;
 	}

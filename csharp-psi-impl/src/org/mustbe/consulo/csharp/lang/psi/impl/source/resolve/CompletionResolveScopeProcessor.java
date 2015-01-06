@@ -11,7 +11,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolve
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.search.GlobalSearchScope;
 
@@ -28,13 +27,13 @@ public class CompletionResolveScopeProcessor extends AbstractScopeProcessor
 	@NotNull
 	private CSharpContextUtil.ContextType myContextType;
 
-	public CompletionResolveScopeProcessor(@NotNull PsiElement place, @NotNull ResolveResult[] elements, @NotNull ExecuteTarget[] targets)
+	public CompletionResolveScopeProcessor(@NotNull CSharpResolveOptions options, @NotNull ExecuteTarget[] targets)
 	{
-		myPlace = place;
-		Collections.addAll(myElements, elements);
-		myScope = place.getResolveScope();
-		myContextType = place instanceof CSharpReferenceExpression ? CSharpContextUtil.getParentContextTypeForReference((CSharpReferenceExpression)
-				place) : CSharpContextUtil.ContextType.ANY;
+		myPlace = options.getElement();
+		Collections.addAll(myElements, options.getAdditionalElements());
+		myScope = myPlace.getResolveScope();
+		myContextType = myPlace instanceof CSharpReferenceExpression ? CSharpContextUtil.getParentContextTypeForReference((CSharpReferenceExpression)
+				myPlace) : CSharpContextUtil.ContextType.ANY;
 		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
 	}
 
