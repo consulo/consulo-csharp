@@ -23,12 +23,12 @@ import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
 * @author VISTALL
 * @since 30.12.14
 */
-public class BaseLikeMethodGenerateContext
+public class CreateUnresolvedElementFixContext
 {
 	private CSharpReferenceExpression myExpression;
 	private DotNetMemberOwner myTargetForGenerate;
 
-	public BaseLikeMethodGenerateContext(CSharpReferenceExpression expression, DotNetMemberOwner targetForGenerate)
+	public CreateUnresolvedElementFixContext(CSharpReferenceExpression expression, DotNetMemberOwner targetForGenerate)
 	{
 		myExpression = expression;
 		myTargetForGenerate = targetForGenerate;

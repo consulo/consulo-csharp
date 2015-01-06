@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -33,7 +34,7 @@ import com.intellij.psi.util.PsiTreeUtil;
  * @author VISTALL
  * @since 30.12.14
  */
-public class CreateUnresolvedConstructorFix extends CreateUnresolvedLikeMethodFix<BaseLikeMethodGenerateContext>
+public class CreateUnresolvedConstructorFix extends CreateUnresolvedLikeMethodFix
 {
 	public CreateUnresolvedConstructorFix(CSharpReferenceExpression expression)
 	{
@@ -64,7 +65,7 @@ public class CreateUnresolvedConstructorFix extends CreateUnresolvedLikeMethodFi
 
 	@Override
 	@Nullable
-	public BaseLikeMethodGenerateContext createGenerateContext()
+	public CreateUnresolvedElementFixContext createGenerateContext()
 	{
 		CSharpReferenceExpression element = myPointer.getElement();
 		if(element == null)
@@ -83,14 +84,14 @@ public class CreateUnresolvedConstructorFix extends CreateUnresolvedLikeMethodFi
 			PsiElement parent = qualifiedElement.getParent();
 			if(parent instanceof DotNetMemberOwner && parent.isWritable())
 			{
-				return new BaseLikeMethodGenerateContext(element, (DotNetMemberOwner) parent);
+				return new CreateUnresolvedElementFixContext(element, (DotNetMemberOwner) parent);
 			}
 		}
 		return null;
 	}
 
 	@Override
-	public void buildTemplate(@NotNull BaseLikeMethodGenerateContext context, @NotNull PsiFile file, @NotNull Template template)
+	public void buildTemplate(@NotNull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @NotNull PsiFile file, @NotNull Template template)
 	{
 		template.addTextSegment("public ");
 		template.addTextSegment(myReferenceName);

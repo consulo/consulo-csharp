@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 must-be.org
+ * Copyright 2013-2015 must-be.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,20 +19,22 @@ package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
-import org.mustbe.consulo.csharp.ide.liveTemplates.expression.ReturnStatementExpression;
 import org.mustbe.consulo.csharp.ide.liveTemplates.expression.TypeRefExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import org.mustbe.consulo.csharp.lang.psi.CSharpContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import com.intellij.BundleBase;
 import com.intellij.codeInsight.template.Template;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -40,24 +42,31 @@ import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
- * @since 01.07.14
+ * @since 06.01.15
  */
-public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
+public class CreateUnresolvedFieldFix extends CreateUnresolvedElementFix
 {
-	public CreateUnresolvedMethodFix(CSharpReferenceExpression expression)
+	public CreateUnresolvedFieldFix(CSharpReferenceExpression expression)
 	{
 		super(expression);
 	}
 
 	@NotNull
 	@Override
-	public String getTemplateText()
+	public PsiElement getElementForAfterAdd(@NotNull DotNetNamedElement[] elements, @NotNull CSharpBodyWithBraces targetForGenerate)
 	{
-		return "Create ''{0}({1})''";
+		PsiElement last = targetForGenerate.getLeftBrace();
+		for(DotNetNamedElement element : elements)
+		{
+			if(element instanceof DotNetVariable)
+			{
+				last = element;
+			}
+		}
+		return last;
 	}
 
 	@Override
-	@Nullable
 	protected CreateUnresolvedElementFixContext createGenerateContext()
 	{
 		CSharpReferenceExpression element = myPointer.getElement();
@@ -66,8 +75,7 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
 			return null;
 		}
 
-		//TODO [VISTALL] creating for ANY_MEMBER
-		if(element.kind() == CSharpReferenceExpression.ResolveToKind.METHOD)
+		if(element.kind() == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
 		{
 			PsiElement qualifier = element.getQualifier();
 			if(qualifier == null)
@@ -103,10 +111,18 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
 		return null;
 	}
 
+	@NotNull
+	@Override
+	public String getText()
+	{
+		return BundleBase.format("Create field ''{0}''", myReferenceName);
+	}
+
 	@Override
 	public void buildTemplate(@NotNull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @NotNull PsiFile file, @NotNull Template template)
 	{
 		template.addTextSegment("public ");
+
 		if(contextType == CSharpContextUtil.ContextType.STATIC)
 		{
 			template.addTextSegment("static ");
@@ -121,19 +137,12 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
 		}
 		else
 		{
-			template.addVariable(new TypeRefExpression(new CSharpTypeRefByQName(DotNetTypes.System.Void), file), true);
+			template.addVariable(new TypeRefExpression(new CSharpTypeRefByQName(DotNetTypes.System.Object), file), true);
 		}
 
 		template.addTextSegment(" ");
 		template.addTextSegment(myReferenceName);
-
-		buildParameterList(context, file, template);
-
-		template.addTextSegment("{\n");
-
-		template.addVariable("$RETURN_STATEMENT$", new ReturnStatementExpression(), false);
+		template.addTextSegment(";");
 		template.addEndVariable();
-
-		template.addTextSegment("}");
 	}
 }
