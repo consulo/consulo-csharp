@@ -23,10 +23,14 @@ import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
 import org.mustbe.consulo.csharp.ide.liveTemplates.expression.TypeRefExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpContextUtil;
+import org.mustbe.consulo.csharp.lang.psi.CSharpNewExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -75,7 +79,8 @@ public class CreateUnresolvedFieldFix extends CreateUnresolvedElementFix
 			return null;
 		}
 
-		if(element.kind() == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
+		CSharpReferenceExpression.ResolveToKind kind = element.kind();
+		if(kind == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
 		{
 			PsiElement qualifier = element.getQualifier();
 			if(qualifier == null)
@@ -108,6 +113,37 @@ public class CreateUnresolvedFieldFix extends CreateUnresolvedElementFix
 				}
 			}
 		}
+		else if(kind == CSharpReferenceExpression.ResolveToKind.FIELD_OR_PROPERTY)
+		{
+			CSharpCallArgumentListOwner callArgumentListOwner = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
+
+			DotNetTypeRef resolvedTypeRef = DotNetTypeRef.ERROR_TYPE;
+			if(callArgumentListOwner instanceof CSharpNewExpression)
+			{
+				resolvedTypeRef = ((CSharpNewExpression) callArgumentListOwner).toTypeRef(false);
+			}
+			else if(callArgumentListOwner instanceof DotNetAttribute)
+			{
+				resolvedTypeRef = ((DotNetAttribute) callArgumentListOwner).toTypeRef();
+			}
+			else
+			{
+				throw new IllegalArgumentException(callArgumentListOwner == null ? "null" : callArgumentListOwner.getClass().getName());
+			}
+
+			if(resolvedTypeRef == DotNetTypeRef.ERROR_TYPE)
+			{
+				return null;
+			}
+
+			DotNetTypeResolveResult typeResolveResult = resolvedTypeRef.resolve(element);
+			PsiElement typeResolveResultElement = typeResolveResult.getElement();
+			if(!(typeResolveResultElement instanceof CSharpTypeDeclaration))
+			{
+				return null;
+			}
+			return new CreateUnresolvedElementFixContext(element, (DotNetMemberOwner) typeResolveResultElement);
+		}
 		return null;
 	}
 
@@ -129,7 +165,7 @@ public class CreateUnresolvedFieldFix extends CreateUnresolvedElementFix
 		}
 
 		// get expected from method call expression not reference
-		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(context.getExpression().getParent());
+		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(context.getExpression());
 
 		if(!expectedTypeRefs.isEmpty())
 		{

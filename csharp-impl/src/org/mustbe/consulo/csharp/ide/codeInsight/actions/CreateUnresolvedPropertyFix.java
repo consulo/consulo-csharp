@@ -62,7 +62,7 @@ public class CreateUnresolvedPropertyFix extends CreateUnresolvedFieldFix
 		}
 
 		// get expected from method call expression not reference
-		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(context.getExpression().getParent());
+		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(context.getExpression());
 
 		if(!expectedTypeRefs.isEmpty())
 		{
