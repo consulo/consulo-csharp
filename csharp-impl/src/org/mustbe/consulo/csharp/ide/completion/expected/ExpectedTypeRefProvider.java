@@ -22,6 +22,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
@@ -42,10 +43,12 @@ import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.SmartList;
+import com.intellij.util.containers.ContainerUtil;
 import lombok.val;
 
 /**
@@ -92,6 +95,27 @@ public class ExpectedTypeRefProvider
 				typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Collections.Generic.IEnumerable$1), null));
 			}
 		}
+		else if(parent instanceof CSharpFieldOrPropertySet)
+		{
+			CSharpReferenceExpression nameReferenceExpression = ((CSharpFieldOrPropertySet) parent).getNameReferenceExpression();
+			DotNetExpression valueExpression = ((CSharpFieldOrPropertySet) parent).getValueExpression();
+
+			if(nameReferenceExpression == psiElement)
+			{
+				if(valueExpression != null)
+				{
+					typeRefs.add(new ExpectedTypeInfo(valueExpression.toTypeRef(false), null));
+				}
+			}
+			else if(valueExpression == psiElement)
+			{
+				PsiElement resolvedElement = nameReferenceExpression.resolve();
+				if(resolvedElement instanceof DotNetVariable)
+				{
+					typeRefs.add(new ExpectedTypeInfo(((DotNetVariable) resolvedElement).toTypeRef(true), resolvedElement));
+				}
+			}
+		}
 		else if(parent instanceof CSharpReturnStatementImpl)
 		{
 			CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(psiElement, CSharpSimpleLikeMethodAsElement.class);
@@ -103,10 +127,7 @@ public class ExpectedTypeRefProvider
 			val implicitReturnModel = CSharpImplicitReturnModel.getImplicitReturnModel((CSharpReturnStatementImpl) parent, methodAsElement);
 
 			DotNetTypeRef extractedTypeRef = implicitReturnModel.extractTypeRef(methodAsElement.getReturnTypeRef(), parent);
-			if(extractedTypeRef != DotNetTypeRef.ERROR_TYPE)
-			{
-				typeRefs.add(new ExpectedTypeInfo(extractedTypeRef, methodAsElement));
-			}
+			typeRefs.add(new ExpectedTypeInfo(extractedTypeRef, methodAsElement));
 		}
 		else if(parent instanceof CSharpAssignmentExpressionImpl)
 		{
@@ -121,10 +142,7 @@ public class ExpectedTypeRefProvider
 			{
 				DotNetExpression rightExpression = expressions[1];
 				DotNetTypeRef typeRef = rightExpression.toTypeRef(true);
-				if(typeRef != DotNetTypeRef.ERROR_TYPE)
-				{
-					typeRefs.add(new ExpectedTypeInfo(typeRef, null));
-				}
+				typeRefs.add(new ExpectedTypeInfo(typeRef, null));
 			}
 			else
 			{
@@ -187,6 +205,13 @@ public class ExpectedTypeRefProvider
 			}
 		}
 
-		return typeRefs;
+		return ContainerUtil.filter(typeRefs, new Condition<ExpectedTypeInfo>()
+		{
+			@Override
+			public boolean value(ExpectedTypeInfo expectedTypeInfo)
+			{
+				return expectedTypeInfo.getTypeRef() != DotNetTypeRef.ERROR_TYPE;
+			}
+		});
 	}
 }

@@ -149,7 +149,7 @@ public class ObsoleteInspection extends LocalInspectionTool
 				CSharpReferenceExpression argumentNameReference = namedCallArgument.getNameReferenceExpression();
 				if("Message".equals(argumentNameReference.getReferenceName()))
 				{
-					return new ConstantExpressionEvaluator(namedCallArgument.getValueReferenceExpression()).getValueAs(String.class);
+					return new ConstantExpressionEvaluator(namedCallArgument.getValueExpression()).getValueAs(String.class);
 				}
 			}
 		}
