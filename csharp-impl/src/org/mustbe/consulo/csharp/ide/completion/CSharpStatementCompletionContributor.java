@@ -19,12 +19,9 @@ package org.mustbe.consulo.csharp.ide.completion;
 import static com.intellij.patterns.StandardPatterns.or;
 import static com.intellij.patterns.StandardPatterns.psiElement;
 
-import java.util.Collection;
-
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import org.mustbe.consulo.csharp.ide.completion.util.ExpressionOrStatementInsertHandler;
-import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
@@ -34,7 +31,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.*;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
-import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.codeInsight.AutoPopupController;
@@ -51,7 +47,6 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.util.Condition;
 import com.intellij.patterns.ElementPattern;
-import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.tree.IElementType;
@@ -420,23 +415,6 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 				else if(maybeTryStatement instanceof CSharpIfStatementImpl)
 				{
 					CSharpCompletionUtil.elementToLookup(result, CSharpTokens.ELSE_KEYWORD, null, null);
-				}
-			}
-		});
-
-		extend(CompletionType.BASIC, StandardPatterns.psiElement().withElementType(CSharpTokens.IDENTIFIER).withParent(DotNetVariable.class),
-				new CompletionProvider<CompletionParameters>()
-		{
-			@Override
-			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
-			{
-				PsiElement position = parameters.getPosition();
-				DotNetVariable variable = PsiTreeUtil.getParentOfType(position, DotNetVariable.class);
-				assert variable != null;
-				Collection<String> suggestedNames = CSharpNameSuggesterUtil.getSuggestedNames(variable.toTypeRef(true), position);
-				for(String suggestedName : suggestedNames)
-				{
-					result.addElement(LookupElementBuilder.create(suggestedName));
 				}
 			}
 		});

@@ -1,5 +1,7 @@
 package org.mustbe.consulo.csharp.ide.refactoring.util;
 
+import gnu.trove.THashSet;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -7,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,11 +50,11 @@ public class CSharpNameSuggesterUtil
 	}
 
 	@NotNull
-	public static Collection<String> getSuggestedVariableNames(final DotNetVariable variable)
+	public static Set<String> getSuggestedVariableNames(final DotNetVariable variable)
 	{
 		PsiElement parent = variable.getParent();
 
-		Collection<String> suggestedNames = getSuggestedNames(variable.toTypeRef(true), variable);
+		Set<String> suggestedNames = getSuggestedNames(variable.toTypeRef(true), variable);
 		if(parent instanceof CSharpForeachStatementImpl)
 		{
 			DotNetExpression iterableExpression = ((CSharpForeachStatementImpl) parent).getIterableExpression();
@@ -64,7 +67,7 @@ public class CSharpNameSuggesterUtil
 	}
 
 	@NotNull
-	public static Collection<String> getSuggestedNames(final DotNetTypeRef typeRef, PsiElement scope)
+	public static Set<String> getSuggestedNames(final DotNetTypeRef typeRef, PsiElement scope)
 	{
 		Collection<String> candidates = new LinkedHashSet<String>();
 
@@ -103,7 +106,7 @@ public class CSharpNameSuggesterUtil
 				iterator.set(String.valueOf(next.charAt(0)));
 			}
 		}
-		return result;
+		return new TreeSet<String>(result);
 	}
 
 	@NotNull
@@ -113,9 +116,9 @@ public class CSharpNameSuggesterUtil
 	}
 
 	@NotNull
-	public static Collection<String> getSuggestedNames(final DotNetExpression expression, @Nullable Collection<String> additionalUsedNames)
+	public static Set<String> getSuggestedNames(final DotNetExpression expression, @Nullable Collection<String> additionalUsedNames)
 	{
-		Collection<String> candidates = new LinkedHashSet<String>();
+		Set<String> candidates = new LinkedHashSet<String>();
 
 		String text = expression.getText();
 		if(expression.getParent() instanceof CSharpForeachStatementImpl)
@@ -179,7 +182,7 @@ public class CSharpNameSuggesterUtil
 				iterator.set(String.valueOf(next.charAt(0)));
 			}
 		}
-		return result;
+		return new THashSet<String>(result);
 	}
 
 	public static boolean isKeyword(String str)
