@@ -39,14 +39,16 @@ import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.codeInsight.template.Template;
 import com.intellij.codeInsight.template.TemplateManager;
 import com.intellij.codeInsight.template.impl.ConstantNode;
+import com.intellij.ide.IdeBundle;
+import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ScrollType;
-import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
-import com.intellij.openapi.fileEditor.TextEditor;
+import com.intellij.openapi.fileEditor.ex.FileEditorProviderManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
@@ -218,19 +220,17 @@ public abstract class CreateUnresolvedLikeMethodFix<CONTEXT extends BaseLikeMeth
 				DotNetNamedElement[] members = targetForGenerate.getMembers();
 				if(members.length == 0)
 				{
-
 					CSharpGenerateUtil.normalizeBraces((CSharpBodyWithBraces) targetForGenerate);
 
 					PsiElement leftBrace = ((CSharpBodyWithBraces) targetForGenerate).getLeftBrace();
 
-					editorForAdd = navigate(leftBrace.getProject(), leftBrace.getTextOffset() + 1, leftBrace.getContainingFile().getVirtualFile());
+					editorForAdd = openEditor(leftBrace, leftBrace.getTextOffset() + 1);
 				}
 				else
 				{
 					PsiElement lastElement = getElementForAfterAdd(members, (CSharpBodyWithBraces) targetForGenerate);
 
-					editorForAdd = navigate(lastElement.getProject(), lastElement.getTextRange().getEndOffset(),
-							lastElement.getContainingFile().getVirtualFile());
+					editorForAdd = openEditor(lastElement, lastElement.getTextRange().getEndOffset());
 				}
 
 				if(editorForAdd == null)
@@ -238,23 +238,38 @@ public abstract class CreateUnresolvedLikeMethodFix<CONTEXT extends BaseLikeMeth
 					return;
 				}
 
-				templateManager.startTemplate(editor, template);
+				templateManager.startTemplate(editorForAdd, template);
 			}
 		}.execute();
 	}
 
 	@Nullable
-	protected static Editor navigate(Project project, int offset, @Nullable VirtualFile vfile)
+	protected static Editor openEditor(@NotNull PsiElement anchor, int offset)
 	{
-		if(vfile == null)
+		PsiFile containingFile = anchor.getContainingFile();
+		if(containingFile == null)
 		{
 			return null;
 		}
-		new OpenFileDescriptor(project, vfile, offset).navigate(true);
-		FileEditor fileEditor = FileEditorManager.getInstance(project).getSelectedEditor(vfile);
-		if(fileEditor instanceof TextEditor)
+		VirtualFile virtualFile = containingFile.getVirtualFile();
+		if(virtualFile == null)
 		{
-			final Editor editor = ((TextEditor) fileEditor).getEditor();
+			return null;
+		}
+
+		Project project = containingFile.getProject();
+		FileEditorProviderManager editorProviderManager = FileEditorProviderManager.getInstance();
+		if(editorProviderManager.getProviders(project, virtualFile).length == 0)
+		{
+			Messages.showMessageDialog(project, IdeBundle.message("error.files.of.this.type.cannot.be.opened",
+					ApplicationNamesInfo.getInstance().getProductName()), IdeBundle.message("title.cannot.open.file"), Messages.getErrorIcon());
+			return null;
+		}
+
+		OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
+		Editor editor = FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
+		if(editor != null)
+		{
 			editor.getCaretModel().moveToOffset(offset);
 			editor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
 			return editor;
