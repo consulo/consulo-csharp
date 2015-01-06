@@ -1320,16 +1320,20 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 				if(parseFieldOrPropertySet(builder) == null)
 				{
-					break;
+					PsiBuilder.Marker errorMarker = builder.mark();
+					builder.advanceLexer();
+					errorMarker.error("Identifier expected");
 				}
 
 				if(builder.getTokenType() == COMMA)
 				{
 					builder.advanceLexer();
 				}
-				else
+				else if(builder.getTokenType() != RBRACE)
 				{
-					break;
+					PsiBuilder.Marker errorMarker = builder.mark();
+					builder.advanceLexer();
+					errorMarker.error("',' expected");
 				}
 			}
 			expect(builder, RBRACE, "'}' expected");
@@ -1356,7 +1360,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 		else
 		{
-			mark.drop();
+			mark.rollbackTo();
 			return null;
 		}
 	}
