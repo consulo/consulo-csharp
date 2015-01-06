@@ -29,7 +29,6 @@ import org.mustbe.consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
-import org.mustbe.consulo.csharp.lang.psi.CSharpQualifiedNonReference;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
@@ -466,7 +465,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 
 		CSharpResolveOptions options = CSharpResolveOptions.build();
 		options.kind(CSharpReferenceExpression.ResolveToKind.TYPE_LIKE);
-		options.element((CSharpQualifiedNonReference) element);
+		options.element(element);
 
 		AbstractScopeProcessor p = CSharpReferenceExpressionImplUtil.createMemberProcessor(options);
 
