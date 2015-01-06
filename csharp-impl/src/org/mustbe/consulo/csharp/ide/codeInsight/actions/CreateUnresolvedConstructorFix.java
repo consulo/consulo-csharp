@@ -16,28 +16,18 @@
 
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
-import java.util.Collection;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.codeInsight.template.Template;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ContainerUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -99,56 +89,14 @@ public class CreateUnresolvedConstructorFix extends CreateUnresolvedLikeMethodFi
 		return null;
 	}
 
-	@NotNull
 	@Override
-	public CharSequence buildTemplateForAdd(@NotNull BaseLikeMethodGenerateContext context, @NotNull PsiFile file)
+	public void buildTemplate(@NotNull BaseLikeMethodGenerateContext context, @NotNull PsiFile file, @NotNull Template template)
 	{
-		val builder = new StringBuilder();
-		builder.append("public ");
-
-		builder.append(myReferenceName);
-		builder.append("(");
-
-		CSharpCallArgumentListOwner parent = PsiTreeUtil.getParentOfType(context.getExpression(), CSharpCallArgumentListOwner.class);
-
-		assert parent != null;
-
-		CSharpCallArgument[] callArguments = parent.getCallArguments();
-
-		for(int i = 0; i < callArguments.length; i++)
-		{
-			if(i != 0)
-			{
-				builder.append(", ");
-			}
-
-			CSharpCallArgument callArgument = callArguments[i];
-
-			DotNetExpression argumentExpression = callArgument.getArgumentExpression();
-			if(argumentExpression != null)
-			{
-				DotNetTypeRef typeRef = argumentExpression.toTypeRef(false);
-				builder.append(CSharpTypeRefPresentationUtil.buildShortText(typeRef, context.getExpression()));
-			}
-			else
-			{
-				builder.append("object");
-			}
-
-			builder.append(" ");
-			if(callArgument instanceof CSharpNamedCallArgument)
-			{
-				builder.append(((CSharpNamedCallArgument) callArgument).getName());
-			}
-			else
-			{
-				Collection<String> suggestedNames = CSharpNameSuggesterUtil.getSuggestedNames(argumentExpression);
-				builder.append(ContainerUtil.getFirstItem(suggestedNames)).append(i);
-			}
-		}
-		builder.append(")");
-		builder.append("{");
-		builder.append("}");
-		return builder;
+		template.addTextSegment("public ");
+		template.addTextSegment(myReferenceName);
+		buildParameterList(context, file, template);
+		template.addTextSegment("{\n");
+		template.addEndVariable();
+		template.addTextSegment("}");
 	}
 }

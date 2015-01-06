@@ -16,14 +16,8 @@
 
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
-import java.util.Collection;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
@@ -36,11 +30,11 @@ import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import com.intellij.codeInsight.template.Template;
+import com.intellij.codeInsight.template.impl.ConstantNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ContainerUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -129,71 +123,40 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix<Cre
 		return null;
 	}
 
-	@NotNull
 	@Override
-	public CharSequence buildTemplateForAdd(@NotNull GenerateContext context, @NotNull PsiFile file)
+	public void buildTemplate(@NotNull GenerateContext context, @NotNull PsiFile file, @NotNull Template template)
 	{
-		val builder = new StringBuilder();
-		builder.append("public ");
-
+		template.addTextSegment("public ");
 		if(context.myStaticContext)
 		{
-			builder.append("static ");
+			template.addTextSegment("static ");
 		}
 
 		DotNetTypeRef returnTypeRef = new CSharpTypeRefByQName(DotNetTypes.System.Void);
 
-		builder.append(CSharpTypeRefPresentationUtil.buildShortText(returnTypeRef, context.getExpression())).append(" ");
-		builder.append(myReferenceName);
-		builder.append("(");
+		template.addVariable(new ConstantNode(CSharpTypeRefPresentationUtil.buildShortText(returnTypeRef, context.getExpression())), true);
+		template.addTextSegment(" ");
+		template.addTextSegment(myReferenceName);
 
-		CSharpCallArgumentListOwner parent = (CSharpCallArgumentListOwner) context.getExpression().getParent();
+		buildParameterList(context, file, template);
 
-		CSharpCallArgument[] callArguments = parent.getCallArguments();
-
-		for(int i = 0; i < callArguments.length; i++)
-		{
-			if(i != 0)
-			{
-				builder.append(", ");
-			}
-
-			CSharpCallArgument callArgument = callArguments[i];
-
-			DotNetExpression argumentExpression = callArgument.getArgumentExpression();
-			if(argumentExpression != null)
-			{
-				DotNetTypeRef typeRef = argumentExpression.toTypeRef(false);
-				builder.append(CSharpTypeRefPresentationUtil.buildShortText(typeRef, context.getExpression()));
-			}
-			else
-			{
-				builder.append("object");
-			}
-
-			builder.append(" ");
-			if(callArgument instanceof CSharpNamedCallArgument)
-			{
-				builder.append(((CSharpNamedCallArgument) callArgument).getName());
-			}
-			else
-			{
-				Collection<String> suggestedNames = CSharpNameSuggesterUtil.getSuggestedNames(argumentExpression);
-				String item = ContainerUtil.getFirstItem(suggestedNames);
-				builder.append(item).append(i);
-			}
-		}
-		builder.append(")");
-		builder.append("{");
+		template.addTextSegment("{");
 
 		String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(returnTypeRef, file);
 		if(defaultValueForType != null)
 		{
-			builder.append("return ");
-			builder.append(defaultValueForType);
-			builder.append(";\n");
+			template.addTextSegment("return ");
+			template.addTextSegment(defaultValueForType);
+			template.addTextSegment(";");
+			template.addEndVariable();
+			template.addTextSegment("\n");
 		}
-		builder.append("}");
-		return builder;
+		else
+		{
+			template.addTextSegment("\n");
+			template.addEndVariable();
+		}
+
+		template.addTextSegment("}");
 	}
 }
