@@ -192,8 +192,8 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				return null;
 			}
-			DotNetExpression singleExpression = lambdaExpression.getSingleExpression();
-			if(singleExpression != null)
+			PsiElement singleExpression = lambdaExpression.getCodeBlock();
+			if(singleExpression instanceof DotNetExpression)
 			{
 				DotNetTypeRef returnTypeRef = ((CSharpLambdaResolveResult) typeResolveResult).getReturnTypeRef();
 				// void type allow any type if used expression body
@@ -201,7 +201,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				{
 					return null;
 				}
-				return Trinity.create(returnTypeRef, singleExpression.toTypeRef(true), singleExpression);
+				return Trinity.create(returnTypeRef, ((DotNetExpression) singleExpression).toTypeRef(true), singleExpression);
 			}
 		}
 		else if(element instanceof CSharpReturnStatementImpl)

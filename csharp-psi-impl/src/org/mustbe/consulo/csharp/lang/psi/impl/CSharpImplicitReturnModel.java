@@ -25,7 +25,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpYieldStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -45,8 +44,7 @@ public enum CSharpImplicitReturnModel
 				@Override
 				public boolean canHandle(CSharpSimpleLikeMethodAsElement methodAsElement, CSharpReturnStatementImpl returnStatement)
 				{
-					return methodAsElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) methodAsElement).hasModifier
-							(CSharpModifier.ASYNC);
+					return methodAsElement.hasModifier(CSharpModifier.ASYNC);
 				}
 			},
 	YieldEnumerator(DotNetTypes2.System.Collections.Generic.IEnumerator$1, DotNetTypes2.System.Collections.IEnumerator, DotNetTypes.System.Object)

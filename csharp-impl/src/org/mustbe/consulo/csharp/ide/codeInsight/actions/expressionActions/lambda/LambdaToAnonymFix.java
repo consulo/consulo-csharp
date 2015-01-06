@@ -48,28 +48,25 @@ public class LambdaToAnonymFix extends PsiElementBaseIntentionAction
 		}
 		builder.append(") { ");
 
-		DotNetExpression singleExpression = lambdaExpression.getSingleExpression();
-		if(singleExpression != null)
+		PsiElement codeBlock = lambdaExpression.getCodeBlock();
+		if(codeBlock instanceof DotNetExpression)
 		{
-			builder.append("return ").append(singleExpression.getText()).append(";");
+			builder.append("return ").append(codeBlock.getText()).append(";");
 		}
-		else
+		else if(codeBlock instanceof CSharpBlockStatementImpl)
 		{
-			CSharpBlockStatementImpl blockStatement = lambdaExpression.getBlockStatement();
-			if(blockStatement != null)
+			String join = StringUtil.join(((CSharpBlockStatementImpl) codeBlock).getStatements(), new Function<DotNetStatement, String>()
 			{
-				String join = StringUtil.join(blockStatement.getStatements(), new Function<DotNetStatement, String>()
+				@Override
+				public String fun(DotNetStatement dotNetStatement)
 				{
-					@Override
-					public String fun(DotNetStatement dotNetStatement)
-					{
-						return dotNetStatement.getText();
-					}
-				}, "\n");
+					return dotNetStatement.getText();
+				}
+			}, "\n");
 
-				builder.append(join);
-			}
+			builder.append(join);
 		}
+
 		builder.append("}");
 
 		DotNetExpression expression = CSharpFileFactory.createExpression(project, builder.toString());

@@ -26,9 +26,11 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -129,5 +131,18 @@ public class CSharpAnonymMethodExpressionImpl extends CSharpElementImpl implemen
 			return DotNetTypeRef.UNKNOWN_TYPE;
 		}
 		return type.getReturnTypeRef();
+	}
+
+	@Override
+	public boolean hasModifier(@NotNull DotNetModifier modifier)
+	{
+		return false;
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getCodeBlock()
+	{
+		return findChildByClass(DotNetStatement.class);
 	}
 }
