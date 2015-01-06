@@ -113,28 +113,39 @@ public class ExpectedTypeRefProvider
 			CSharpAssignmentExpressionImpl assignmentExpression = (CSharpAssignmentExpressionImpl) parent;
 			DotNetExpression[] expressions = assignmentExpression.getParameterExpressions();
 			// <caret> = test;
-			if(expressions[0] == assignmentExpression || expressions.length == 1)
+			if(expressions.length == 1)
 			{
-				return Collections.emptyList();
+				return typeRefs;
 			}
-
-			CSharpOperatorReferenceImpl operatorElement = assignmentExpression.getOperatorElement();
-
-			ResolveResult[] resolveResults = operatorElement.multiResolve(false);
-
-			for(ResolveResult resolveResult : resolveResults)
+			if(expressions[0] == psiElement)
 			{
-				PsiElement element = resolveResult.getElement();
-				// stub variant
-				if(operatorElement == element)
+				DotNetExpression rightExpression = expressions[1];
+				DotNetTypeRef typeRef = rightExpression.toTypeRef(true);
+				if(typeRef != DotNetTypeRef.ERROR_TYPE)
 				{
-					PsiElement typeProvider = null;
-					DotNetExpression expression = expressions[0];
-					if(expression instanceof CSharpReferenceExpression)
+					typeRefs.add(new ExpectedTypeInfo(typeRef, null));
+				}
+			}
+			else
+			{
+				CSharpOperatorReferenceImpl operatorElement = assignmentExpression.getOperatorElement();
+
+				ResolveResult[] resolveResults = operatorElement.multiResolve(false);
+
+				for(ResolveResult resolveResult : resolveResults)
+				{
+					PsiElement element = resolveResult.getElement();
+					// stub variant
+					if(operatorElement == element)
 					{
-						typeProvider = ((CSharpReferenceExpression) expression).resolve();
+						PsiElement typeProvider = null;
+						DotNetExpression expression = expressions[0];
+						if(expression instanceof CSharpReferenceExpression)
+						{
+							typeProvider = ((CSharpReferenceExpression) expression).resolve();
+						}
+						typeRefs.add(new ExpectedTypeInfo(expression.toTypeRef(false), typeProvider));
 					}
-					typeRefs.add(new ExpectedTypeInfo(expression.toTypeRef(false), typeProvider));
 				}
 			}
 		}
