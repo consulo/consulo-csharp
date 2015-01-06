@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 must-be.org
+ * Copyright 2013-2015 must-be.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,48 +16,81 @@
 
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
-import java.util.List;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
-import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
 import org.mustbe.consulo.csharp.ide.liveTemplates.expression.ReturnStatementExpression;
 import org.mustbe.consulo.csharp.ide.liveTemplates.expression.TypeRefExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
-import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import com.intellij.BundleBase;
 import com.intellij.codeInsight.template.Template;
+import com.intellij.codeInsight.template.impl.ConstantNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
- * @since 01.07.14
+ * @since 06.01.15
  */
-public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
+public class CreateUnresolvedMethodByLambdaTypeFix extends CreateUnresolvedElementFix
 {
-	public CreateUnresolvedMethodFix(CSharpReferenceExpression expression)
+	private final CSharpSimpleLikeMethod myLikeMethod;
+
+	public CreateUnresolvedMethodByLambdaTypeFix(CSharpReferenceExpression expression, CSharpSimpleLikeMethod likeMethod)
 	{
 		super(expression);
+		myLikeMethod = likeMethod;
 	}
 
 	@NotNull
 	@Override
-	public String getTemplateText()
+	public String getText()
 	{
-		return "Create method ''{0}({1})''";
+		String arguments = buildArgumentTypeRefs();
+		if(arguments == null)
+		{
+			return "invalid";
+		}
+		return BundleBase.format("Create method ''{0}({1})''", myReferenceName, arguments);
+	}
+
+	@Nullable
+	public String buildArgumentTypeRefs()
+	{
+		CSharpReferenceExpression element = myPointer.getElement();
+		if(element == null)
+		{
+			return null;
+		}
+
+		StringBuilder builder = new StringBuilder();
+
+		CSharpSimpleParameterInfo[] parameterInfos = myLikeMethod.getParameterInfos();
+
+		for(int i = 0; i < parameterInfos.length; i++)
+		{
+			if(i != 0)
+			{
+				builder.append(", ");
+			}
+
+			CSharpSimpleParameterInfo parameterInfo = parameterInfos[i];
+
+			builder.append(CSharpTypeRefPresentationUtil.buildShortText(parameterInfo.getTypeRef(), element));
+		}
+		return builder.toString();
 	}
 
 	@Override
-	@Nullable
 	protected CreateUnresolvedElementFixContext createGenerateContext()
 	{
 		CSharpReferenceExpression element = myPointer.getElement();
@@ -66,7 +99,7 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
 			return null;
 		}
 
-		if(element.kind() == CSharpReferenceExpression.ResolveToKind.METHOD)
+		if(element.kind() == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
 		{
 			PsiElement qualifier = element.getQualifier();
 			if(qualifier == null)
@@ -103,26 +136,17 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
 	}
 
 	@Override
-	public void buildTemplate(@NotNull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @NotNull PsiFile file, @NotNull Template template)
+	public void buildTemplate(@NotNull CreateUnresolvedElementFixContext context,
+			CSharpContextUtil.ContextType contextType,
+			@NotNull PsiFile file,
+			@NotNull Template template)
 	{
 		template.addTextSegment("public ");
 		if(contextType == CSharpContextUtil.ContextType.STATIC)
 		{
 			template.addTextSegment("static ");
 		}
-
-		// get expected from method call expression not reference
-		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(context.getExpression().getParent());
-
-		if(!expectedTypeRefs.isEmpty())
-		{
-			template.addVariable(new TypeRefExpression(expectedTypeRefs, file), true);
-		}
-		else
-		{
-			template.addVariable(new TypeRefExpression(new CSharpTypeRefByQName(DotNetTypes.System.Void), file), true);
-		}
-
+		template.addVariable(new TypeRefExpression(myLikeMethod.getReturnTypeRef(), file), true);
 		template.addTextSegment(" ");
 		template.addTextSegment(myReferenceName);
 
@@ -134,5 +158,28 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
 		template.addEndVariable();
 
 		template.addTextSegment("}");
+	}
+
+	protected void buildParameterList(@NotNull CreateUnresolvedElementFixContext context, @NotNull PsiFile file, @NotNull Template template)
+	{
+		template.addTextSegment("(");
+
+		CSharpSimpleParameterInfo[] parameterInfos = myLikeMethod.getParameterInfos();
+
+		for(int i = 0; i < parameterInfos.length; i++)
+		{
+			if(i != 0)
+			{
+				template.addTextSegment(", ");
+			}
+
+			CSharpSimpleParameterInfo parameterInfo = parameterInfos[i];
+
+			template.addVariable(new ConstantNode(CSharpTypeRefPresentationUtil.buildShortText(parameterInfo.getTypeRef(), context.getExpression())), true);
+			template.addTextSegment(" ");
+			template.addVariable(new ConstantNode(parameterInfo.getNotNullName()), true);
+
+		}
+		template.addTextSegment(")");
 	}
 }

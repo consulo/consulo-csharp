@@ -16,12 +16,21 @@
 
 package org.mustbe.consulo.csharp.ide.codeInsight;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedFieldFix;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedMethodByLambdaTypeFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedMethodFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedPropertyFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.UsingNamespaceFix;
+import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
+import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.codeInsight.daemon.QuickFixActionRegistrar;
 import com.intellij.codeInsight.quickfix.UnresolvedReferenceQuickFixProvider;
 
@@ -38,6 +47,17 @@ public class CSharpUnresolvedReferenceQuickFixProvider extends UnresolvedReferen
 		quickFixActionRegistrar.register(new CreateUnresolvedMethodFix(expression));
 		quickFixActionRegistrar.register(new CreateUnresolvedFieldFix(expression));
 		quickFixActionRegistrar.register(new CreateUnresolvedPropertyFix(expression));
+
+		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(expression);
+		for(ExpectedTypeInfo expectedTypeRef : expectedTypeRefs)
+		{
+			DotNetTypeRef typeRef = expectedTypeRef.getTypeRef();
+			DotNetTypeResolveResult result = typeRef.resolve(expression);
+			if(result instanceof CSharpLambdaResolveResult)
+			{
+				quickFixActionRegistrar.register(new CreateUnresolvedMethodByLambdaTypeFix(expression, (CSharpSimpleLikeMethod) result));
+			}
+		}
 	}
 
 	@NotNull

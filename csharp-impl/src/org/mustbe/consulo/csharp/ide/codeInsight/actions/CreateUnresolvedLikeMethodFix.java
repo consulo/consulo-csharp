@@ -57,7 +57,7 @@ public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElem
 		{
 			return "invalid";
 		}
-		return BundleBase.format(getTemplateText(), myReferenceName, buildArgumentTypeRefs());
+		return BundleBase.format(getTemplateText(), myReferenceName, arguments);
 	}
 
 	@NotNull
@@ -134,7 +134,7 @@ public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElem
 			template.addTextSegment(" ");
 			if(callArgument instanceof CSharpNamedCallArgument)
 			{
-				template.addTextSegment(((CSharpNamedCallArgument) callArgument).getName());
+				template.addVariable(new ConstantNode(((CSharpNamedCallArgument) callArgument).getName()), true);
 			}
 			else
 			{
