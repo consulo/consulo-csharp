@@ -29,6 +29,8 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
@@ -37,6 +39,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
@@ -176,19 +179,33 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements Dot
 			@Override
 			public void visitReturnStatement(CSharpReturnStatementImpl statement)
 			{
+				CSharpImplicitReturnModel implicitReturnModel = CSharpImplicitReturnModel.getImplicitReturnModel(statement,
+						CSharpLambdaExpressionImpl.this);
+
 				DotNetExpression expression = statement.getExpression();
-				if(expression == null)
+				DotNetTypeRef expectedTypeRef;
+
+				expectedTypeRef = expression == null ? new CSharpTypeRefByQName(DotNetTypes.System.Void) : expression.toTypeRef(false);
+				if(expectedTypeRef == DotNetTypeRef.ERROR_TYPE)
 				{
-					typeRefs.add(new CSharpTypeRefByQName(DotNetTypes.System.Void));
+					return;
+				}
+
+				if(implicitReturnModel == CSharpImplicitReturnModel.None)
+				{
+					typeRefs.add(expectedTypeRef);
 				}
 				else
 				{
-					DotNetTypeRef ref = expression.toTypeRef(false);
-					if(ref == DotNetTypeRef.ERROR_TYPE)
+					if(DotNetTypeRefUtil.isVmQNameEqual(expectedTypeRef, statement, DotNetTypes.System.Void))
 					{
-						return;
+						typeRefs.add(new CSharpTypeRefByQName(implicitReturnModel.getNoGenericTypeVmQName()));
 					}
-					typeRefs.add(ref);
+					else
+					{
+						typeRefs.add(new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(implicitReturnModel.getGenericVmQName()),
+								expectedTypeRef));
+					}
 				}
 			}
 		});
