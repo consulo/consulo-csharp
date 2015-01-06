@@ -202,7 +202,7 @@ public abstract class CreateUnresolvedLikeMethodFix<CONTEXT extends BaseLikeMeth
 		val template = templateManager.createTemplate("", "");
 		template.setToReformat(true);
 
-		template.addTextSegment("\n");
+		template.addTextSegment("\n\n");
 		buildTemplate(generateContext, file, template);
 
 		new WriteCommandAction.Simple<Object>(project, file)
