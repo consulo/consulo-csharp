@@ -305,11 +305,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 				@Override
 				public PsiElement fun(PsiElement element)
 				{
-					if(element instanceof CSharpMethodDeclaration)
-					{
-						return ((CSharpMethodDeclaration) element).getModifierList().getModifierElement(CSharpModifier.ASYNC);
-					}
-					return null;
+					return CS1998.getAsyncModifier(element);
 				}
 			}));
 			add(new Feature("named arguments", CSharpLanguageVersion._4_0, new Function<PsiElement, PsiElement>()

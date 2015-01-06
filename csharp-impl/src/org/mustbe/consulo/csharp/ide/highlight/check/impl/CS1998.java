@@ -68,8 +68,13 @@ public class CS1998 extends CompilerCheck<CSharpSimpleLikeMethodAsElement>
 	}
 
 	@Nullable
-	private static PsiElement getAsyncModifier(CSharpSimpleLikeMethodAsElement element)
+	public static PsiElement getAsyncModifier(PsiElement element)
 	{
+		if(!(element instanceof CSharpSimpleLikeMethodAsElement))
+		{
+			return null;
+		}
+
 		if(element instanceof DotNetModifierListOwner)
 		{
 			DotNetModifierList modifierList = ((DotNetModifierListOwner) element).getModifierList();
