@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.codeInsight;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedFieldFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedMethodFix;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedPropertyFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.UsingNamespaceFix;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import com.intellij.codeInsight.daemon.QuickFixActionRegistrar;
@@ -36,6 +37,7 @@ public class CSharpUnresolvedReferenceQuickFixProvider extends UnresolvedReferen
 		quickFixActionRegistrar.register(new UsingNamespaceFix(expression));
 		quickFixActionRegistrar.register(new CreateUnresolvedMethodFix(expression));
 		quickFixActionRegistrar.register(new CreateUnresolvedFieldFix(expression));
+		quickFixActionRegistrar.register(new CreateUnresolvedPropertyFix(expression));
 	}
 
 	@NotNull
