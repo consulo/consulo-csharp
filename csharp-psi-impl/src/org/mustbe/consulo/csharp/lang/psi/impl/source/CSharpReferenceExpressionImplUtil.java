@@ -373,17 +373,7 @@ public class CSharpReferenceExpressionImplUtil
 				break;
 		}
 
-		return collectResults(kind, selector, element, callArgumentListOwner, false, resolveFromParent);
-	}
-
-	public static ResolveResult[] collectResults(@NotNull ResolveToKind kind,
-			@Nullable CSharpResolveSelector selector,
-			@NotNull CSharpQualifiedNonReference element,
-			@Nullable CSharpCallArgumentListOwner callArgumentListOwner,
-			final boolean completion,
-			boolean resolveFromParent)
-	{
-		return collectResults(new CSharpResolveOptions(kind, selector, element, callArgumentListOwner, completion, resolveFromParent));
+		return collectResults(new CSharpResolveOptions(kind, selector, element, callArgumentListOwner, false, resolveFromParent));
 	}
 
 	public static ResolveResult[] collectResults(@NotNull CSharpResolveOptions options)

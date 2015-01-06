@@ -32,8 +32,16 @@ public class CompletionResolveScopeProcessor extends AbstractScopeProcessor
 		myPlace = options.getElement();
 		Collections.addAll(myElements, options.getAdditionalElements());
 		myScope = myPlace.getResolveScope();
-		myContextType = myPlace instanceof CSharpReferenceExpression ? CSharpContextUtil.getParentContextTypeForReference((CSharpReferenceExpression)
-				myPlace) : CSharpContextUtil.ContextType.ANY;
+		CSharpContextUtil.ContextType completionContextType = options.getCompletionContextType();
+		if(completionContextType != null)
+		{
+			myContextType = completionContextType;
+		}
+		else
+		{
+			myContextType = myPlace instanceof CSharpReferenceExpression ? CSharpContextUtil.getParentContextTypeForReference(
+					(CSharpReferenceExpression) myPlace) : CSharpContextUtil.ContextType.ANY;
+		}
 		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
 	}
 

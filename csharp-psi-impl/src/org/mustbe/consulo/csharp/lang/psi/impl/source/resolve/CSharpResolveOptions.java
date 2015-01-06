@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpQualifiedNonReference;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
@@ -47,6 +48,8 @@ public class CSharpResolveOptions
 	private CSharpCallArgumentListOwner myCallArgumentListOwner;
 
 	private boolean myCompletion;
+	private CSharpContextUtil.ContextType myCompletionContextType;
+
 	private boolean myResolveFromParent;
 
 	private ResolveResult[] myAdditionalElements = ResolveResult.EMPTY_ARRAY;
@@ -86,6 +89,21 @@ public class CSharpResolveOptions
 	}
 
 	@NotNull
+	public CSharpResolveOptions completion(@NotNull CSharpContextUtil.ContextType contextType)
+	{
+		myCompletion = true;
+		myCompletionContextType = contextType;
+		return this;
+	}
+
+	@NotNull
+	public CSharpResolveOptions resolveFromParent()
+	{
+		myResolveFromParent = true;
+		return this;
+	}
+
+	@NotNull
 	public CSharpResolveOptions element(@NotNull PsiElement element)
 	{
 		myElement = element;
@@ -115,6 +133,12 @@ public class CSharpResolveOptions
 	public PsiElement getElement()
 	{
 		return myElement;
+	}
+
+	@Nullable
+	public CSharpContextUtil.ContextType getCompletionContextType()
+	{
+		return myCompletionContextType;
 	}
 
 	@Nullable

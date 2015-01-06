@@ -29,6 +29,7 @@ import org.mustbe.consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
+import org.mustbe.consulo.csharp.lang.psi.CSharpContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
@@ -62,6 +63,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
@@ -74,6 +76,7 @@ import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.ide.IconDescriptorUpdaters;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.Iconable;
@@ -185,7 +188,8 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 						kind = CSharpReferenceExpression.ResolveToKind.ANY_MEMBER;
 					}
 				}
-				ResolveResult[] psiElements = CSharpReferenceExpressionImplUtil.collectResults(kind, null, expression, null, true, true);
+				ResolveResult[] psiElements = CSharpReferenceExpressionImplUtil.collectResults(new CSharpResolveOptions(kind, null, expression,
+						null, true, true));
 				List<LookupElement> lookupElements = CSharpLookupElementBuilder.getInstance(expression.getProject()).buildToLookupElements
 						(expression, psiElements);
 
@@ -252,8 +256,12 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 				{
 					return;
 				}
-				ResolveResult[] resolveResults = CSharpReferenceExpressionImplUtil.collectResults(CSharpReferenceExpression.ResolveToKind
-						.FIELD_OR_PROPERTY, null, expression, null, true, true);
+
+				CSharpResolveOptions options = CSharpResolveOptions.build().element(expression).resolveFromParent();
+				options.kind(CSharpReferenceExpression.ResolveToKind.FIELD_OR_PROPERTY);
+				options.completion(CSharpContextUtil.ContextType.INSTANCE);
+
+				ResolveResult[] resolveResults = CSharpReferenceExpressionImplUtil.collectResults(options);
 
 				List<LookupElement> lookupElements = CSharpLookupElementBuilder.getInstance(expression.getProject()).buildToLookupElements
 						(expression, resolveResults);
@@ -268,9 +276,15 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 							@Override
 							public void handleInsert(InsertionContext context, LookupElement item)
 							{
-								int offset = context.getEditor().getCaretModel().getOffset();
-								context.getDocument().insertString(offset, " = ");
-								context.getEditor().getCaretModel().moveToOffset(offset + 3);
+								if(context.getCompletionChar() != '=')
+								{
+									Editor editor = context.getEditor();
+									int offset = context.getTailOffset();
+									TailType.insertChar(editor, offset, ' ');
+									TailType.insertChar(editor, offset + 1, '=');
+									TailType.insertChar(editor, offset + 2, ' ');
+									editor.getCaretModel().moveToOffset(offset + 3);
+								}
 							}
 						});
 					}
