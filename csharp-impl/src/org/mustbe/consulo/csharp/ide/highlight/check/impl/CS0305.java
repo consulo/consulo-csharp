@@ -19,53 +19,36 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpNullableType;
-import org.mustbe.consulo.csharp.lang.psi.CSharpUserType;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetType;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
  * @since 23.10.14
  */
-public class CS0305 extends CompilerCheck<DotNetType>
+public class CS0305 extends CompilerCheck<CSharpReferenceExpression>
 {
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetType type)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpReferenceExpression referenceExpression)
 	{
-		int foundCount = 0;
-		PsiElement elementForHighlight = type;
-		if(type instanceof CSharpUserType)
+		if(referenceExpression.getParent() instanceof CSharpMethodCallExpressionImpl)
 		{
-			elementForHighlight = ((CSharpUserType) type).getReferenceExpression();
-			foundCount = CSharpReferenceExpressionImplUtil.getTypeArgumentListSize(((CSharpUserType) type).getReferenceExpression());
+			return null;
 		}
-		else if(type instanceof CSharpArrayType)
-		{
-			elementForHighlight = ((CSharpArrayType) type).getInnerType();
-			foundCount = 1;
-		}
-		else if(type instanceof CSharpNullableType)
-		{
-			elementForHighlight = ((CSharpNullableType) type).getInnerType();
-			foundCount = 1;
-		}
-
-		DotNetTypeResolveResult typeResolveResult = type.toTypeRef().resolve(type);
-
-		int expectedCount = 0;
-		PsiElement resolvedElement = typeResolveResult.getElement();
+		PsiElement resolvedElement = referenceExpression.resolve();
 		if(resolvedElement == null)
 		{
 			return null;
 		}
+
+		int expectedCount = 0;
+		int foundCount = CSharpReferenceExpressionImplUtil.getTypeArgumentListSize(referenceExpression);
 
 		if(resolvedElement instanceof CSharpConstructorDeclaration)
 		{
@@ -79,7 +62,7 @@ public class CS0305 extends CompilerCheck<DotNetType>
 
 		if(expectedCount != foundCount)
 		{
-			return newBuilder(elementForHighlight, formatElement(resolvedElement), String.valueOf(expectedCount));
+			return newBuilder(referenceExpression.getReferenceElement(), formatElement(resolvedElement), String.valueOf(expectedCount));
 		}
 		return null;
 	}
