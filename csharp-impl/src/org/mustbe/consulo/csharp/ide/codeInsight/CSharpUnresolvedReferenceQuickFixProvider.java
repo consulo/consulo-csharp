@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.codeInsight;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedEventFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedFieldFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedMethodByLambdaTypeFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedMethodFix;
@@ -47,6 +48,7 @@ public class CSharpUnresolvedReferenceQuickFixProvider extends UnresolvedReferen
 		quickFixActionRegistrar.register(new CreateUnresolvedMethodFix(expression));
 		quickFixActionRegistrar.register(new CreateUnresolvedFieldFix(expression));
 		quickFixActionRegistrar.register(new CreateUnresolvedPropertyFix(expression));
+		quickFixActionRegistrar.register(new CreateUnresolvedEventFix(expression));
 
 		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(expression);
 		for(ExpectedTypeInfo expectedTypeRef : expectedTypeRefs)
