@@ -236,6 +236,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 							prevSibling.getNode().getElementType() == CSharpTokens.RBRACE ||
 							prevSibling.getNode().getElementType() == CSharpTokens.LPAR ||
 							prevSibling.getNode().getElementType() == CSharpTokens.COMMA ||
+							prevSibling.getNode().getElementType() == CSharpTokens.RBRACKET ||
 							prevSibling.getNode().getElementType() == CSharpTokens.SEMICOLON ||
 							CSharpTokenSets.MODIFIERS.contains(prevSibling.getNode().getElementType()))
 					{
