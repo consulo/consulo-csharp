@@ -48,8 +48,6 @@ public class CSharpNewModuleBuilderPanel extends JPanel
 		myComboBox = new ComboBox();
 		myComboBox.setRenderer(new SdkListCellRenderer("<none>"));
 
-		myComboBox.addItem(null);
-
 		List<String> validSdkTypes = new SmartList<String>();
 		for(Map.Entry<String, String[]> entry : CSharpNewModuleBuilder.ourExtensionMapping.entrySet())
 		{
