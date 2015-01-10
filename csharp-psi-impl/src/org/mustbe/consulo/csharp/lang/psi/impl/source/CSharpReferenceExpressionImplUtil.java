@@ -704,7 +704,7 @@ public class CSharpReferenceExpressionImplUtil
 	public static ResolveResult[] processAnyMember(@NotNull CSharpResolveOptions options)
 	{
 		PsiElement qualifier = options.getQualifier();
-		PsiElement element = options.getElement();
+		@NotNull PsiElement element = options.getElement();
 		ResolveToKind kind = options.getKind();
 		CSharpCallArgumentListOwner callArgumentListOwner = options.getCallArgumentListOwner();
 		CSharpResolveSelector selector = options.getSelector();
@@ -723,7 +723,10 @@ public class CSharpReferenceExpressionImplUtil
 			DotNetTypeRef typeRef = DotNetTypeRef.ERROR_TYPE;
 
 			PsiElement referenceElement = referenceExpression.getReferenceElement();
-			assert referenceElement != null;
+			if(referenceElement == null)
+			{
+				return ResolveResult.EMPTY_ARRAY;
+			}
 			if(referenceElement.getNode().getElementType() == CSharpTokens.BASE_KEYWORD)
 			{
 				typeRef = referenceExpression.toTypeRefWithoutCaching(ResolveToKind.BASE, true);
