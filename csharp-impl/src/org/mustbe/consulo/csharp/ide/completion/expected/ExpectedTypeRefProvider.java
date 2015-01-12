@@ -26,16 +26,10 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUserType;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAwaitExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDoWhileStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpWhileStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
@@ -63,20 +57,20 @@ public class ExpectedTypeRefProvider
 	{
 		PsiElement parent = psiElement.getParent();
 
-		List<ExpectedTypeInfo> typeRefs = new SmartList<ExpectedTypeInfo>();
+		List<ExpectedTypeInfo> infoList = new SmartList<ExpectedTypeInfo>();
 		if(parent instanceof CSharpIfStatementImpl)
 		{
 			DotNetExpression conditionExpression = ((CSharpIfStatementImpl) parent).getConditionExpression();
 			if(conditionExpression == psiElement)
 			{
-				typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Boolean), null));
+				infoList.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Boolean), null));
 			}
 		}
 		else if(parent instanceof CSharpAttribute)
 		{
 			if(((CSharpAttribute) parent).getReferenceExpression() == psiElement)
 			{
-				typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Attribute), null));
+				infoList.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Attribute), null));
 			}
 		}
 		else if(parent instanceof CSharpWhileStatementImpl)
@@ -84,7 +78,7 @@ public class ExpectedTypeRefProvider
 			DotNetExpression conditionExpression = ((CSharpWhileStatementImpl) parent).getConditionExpression();
 			if(conditionExpression == psiElement)
 			{
-				typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Boolean), null));
+				infoList.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Boolean), null));
 			}
 		}
 		else if(parent instanceof CSharpDoWhileStatementImpl)
@@ -92,15 +86,15 @@ public class ExpectedTypeRefProvider
 			DotNetExpression conditionExpression = ((CSharpDoWhileStatementImpl) parent).getConditionExpression();
 			if(conditionExpression == psiElement)
 			{
-				typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Boolean), null));
+				infoList.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Boolean), null));
 			}
 		}
 		else if(parent instanceof CSharpForeachStatementImpl)
 		{
 			if(((CSharpForeachStatementImpl) parent).getIterableExpression() == psiElement)
 			{
-				typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Collections.IEnumerable), null));
-				typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Collections.Generic.IEnumerable$1), null));
+				infoList.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Collections.IEnumerable), null));
+				infoList.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Collections.Generic.IEnumerable$1), null));
 			}
 		}
 		else if(parent instanceof CSharpFieldOrPropertySet)
@@ -112,7 +106,7 @@ public class ExpectedTypeRefProvider
 			{
 				if(valueExpression != null)
 				{
-					typeRefs.add(new ExpectedTypeInfo(valueExpression.toTypeRef(false), null));
+					infoList.add(new ExpectedTypeInfo(valueExpression.toTypeRef(false), null));
 				}
 			}
 			else if(valueExpression == psiElement)
@@ -120,7 +114,7 @@ public class ExpectedTypeRefProvider
 				PsiElement resolvedElement = nameReferenceExpression.resolve();
 				if(resolvedElement instanceof DotNetVariable)
 				{
-					typeRefs.add(new ExpectedTypeInfo(((DotNetVariable) resolvedElement).toTypeRef(true), resolvedElement));
+					infoList.add(new ExpectedTypeInfo(((DotNetVariable) resolvedElement).toTypeRef(true), resolvedElement));
 				}
 			}
 		}
@@ -135,7 +129,7 @@ public class ExpectedTypeRefProvider
 			val implicitReturnModel = CSharpImplicitReturnModel.getImplicitReturnModel((CSharpReturnStatementImpl) parent, methodAsElement);
 
 			DotNetTypeRef extractedTypeRef = implicitReturnModel.extractTypeRef(methodAsElement.getReturnTypeRef(), parent);
-			typeRefs.add(new ExpectedTypeInfo(extractedTypeRef, methodAsElement));
+			infoList.add(new ExpectedTypeInfo(extractedTypeRef, methodAsElement));
 		}
 		else if(parent instanceof CSharpAssignmentExpressionImpl)
 		{
@@ -144,13 +138,13 @@ public class ExpectedTypeRefProvider
 			// <caret> = test;
 			if(expressions.length == 1)
 			{
-				return typeRefs;
+				return infoList;
 			}
 			if(expressions[0] == psiElement)
 			{
 				DotNetExpression rightExpression = expressions[1];
 				DotNetTypeRef typeRef = rightExpression.toTypeRef(true);
-				typeRefs.add(new ExpectedTypeInfo(typeRef, null));
+				infoList.add(new ExpectedTypeInfo(typeRef, null));
 			}
 			else
 			{
@@ -170,19 +164,19 @@ public class ExpectedTypeRefProvider
 						{
 							typeProvider = ((CSharpReferenceExpression) expression).resolve();
 						}
-						typeRefs.add(new ExpectedTypeInfo(expression.toTypeRef(false), typeProvider));
+						infoList.add(new ExpectedTypeInfo(expression.toTypeRef(false), typeProvider));
 					}
 				}
 			}
 		}
 		else if(parent instanceof CSharpAwaitExpressionImpl)
 		{
-			typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Threading.Tasks.Task), null));
-			typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Threading.Tasks.Task$1), null));
+			infoList.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Threading.Tasks.Task), null));
+			infoList.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Threading.Tasks.Task$1), null));
 		}
 		else if(parent instanceof DotNetVariable)
 		{
-			typeRefs.add(new ExpectedTypeInfo(((DotNetVariable) parent).toTypeRef(false), parent));
+			infoList.add(new ExpectedTypeInfo(((DotNetVariable) parent).toTypeRef(false), parent));
 		}
 		else if(parent instanceof CSharpCallArgument)
 		{
@@ -206,14 +200,22 @@ public class ExpectedTypeRefProvider
 							{
 								continue;
 							}
-							typeRefs.add(new ExpectedTypeInfo(parameterTypeRef, resolveResult.getElement()));
+							infoList.add(new ExpectedTypeInfo(parameterTypeRef, resolveResult.getElement()));
 						}
 					}
 				}
 			}
 		}
+		else if(parent instanceof CSharpUserType)
+		{
+			PsiElement parentOfUserType = parent.getParent();
+			if(parentOfUserType instanceof CSharpAsExpressionImpl)
+			{
+				infoList.addAll(findExpectedTypeRefs(parentOfUserType));
+			}
+		}
 
-		return ContainerUtil.filter(typeRefs, new Condition<ExpectedTypeInfo>()
+		return ContainerUtil.filter(infoList, new Condition<ExpectedTypeInfo>()
 		{
 			@Override
 			public boolean value(ExpectedTypeInfo expectedTypeInfo)
