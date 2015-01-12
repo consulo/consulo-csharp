@@ -40,6 +40,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializationExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAsExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIsExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNewExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
@@ -183,15 +185,9 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 			{
 				CSharpReferenceExpressionEx expression = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
 				CSharpReferenceExpression.ResolveToKind kind = expression.kind();
-				if(kind != CSharpReferenceExpression.ResolveToKind.LABEL &&
-						kind != CSharpReferenceExpression.ResolveToKind.QUALIFIED_NAMESPACE &&
-						kind != CSharpReferenceExpression.ResolveToKind.FIELD_OR_PROPERTY &&
-						kind != CSharpReferenceExpression.ResolveToKind.SOFT_QUALIFIED_NAMESPACE)
+				if(needRemapToAnyResolving(kind, expression))
 				{
-					if(PsiTreeUtil.getParentOfType(expression, DotNetStatement.class) != null)
-					{
-						kind = CSharpReferenceExpression.ResolveToKind.ANY_MEMBER;
-					}
+					kind = CSharpReferenceExpression.ResolveToKind.ANY_MEMBER;
 				}
 
 				if(kind == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR)
@@ -566,6 +562,33 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 				}
 			}
 		});
+	}
+
+	private static boolean needRemapToAnyResolving(CSharpReferenceExpression.ResolveToKind kind, CSharpReferenceExpression expression)
+	{
+		if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE)
+		{
+			PsiElement parent = expression.getParent();
+			if(parent instanceof CSharpUserType)
+			{
+				PsiElement parent1 = parent.getParent();
+				if(parent1 instanceof CSharpIsExpressionImpl || parent1 instanceof CSharpAsExpressionImpl)
+				{
+					return false;
+				}
+			}
+		}
+		if(kind != CSharpReferenceExpression.ResolveToKind.LABEL &&
+				kind != CSharpReferenceExpression.ResolveToKind.QUALIFIED_NAMESPACE &&
+				kind != CSharpReferenceExpression.ResolveToKind.FIELD_OR_PROPERTY &&
+				kind != CSharpReferenceExpression.ResolveToKind.SOFT_QUALIFIED_NAMESPACE)
+		{
+			if(PsiTreeUtil.getParentOfType(expression, DotNetStatement.class) != null)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@NotNull
