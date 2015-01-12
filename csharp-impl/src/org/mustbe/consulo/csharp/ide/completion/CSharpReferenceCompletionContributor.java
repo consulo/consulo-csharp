@@ -36,6 +36,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
@@ -188,6 +189,11 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 						kind = CSharpReferenceExpression.ResolveToKind.ANY_MEMBER;
 					}
 				}
+
+				if(kind == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR)
+				{
+					kind = CSharpReferenceExpression.ResolveToKind.TYPE_LIKE;
+				}
 				ResolveResult[] psiElements = CSharpReferenceExpressionImplUtil.collectResults(new CSharpResolveOptions(kind, null, expression,
 						null, true, true));
 				List<LookupElement> lookupElements = CSharpLookupElementBuilder.getInstance(expression.getProject()).buildToLookupElements
@@ -202,7 +208,14 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 						LookupElement next = iterator.next();
 
 						PsiElement psiElement = next.getPsiElement();
-						if(psiElement == null || psiElement instanceof DotNetNamespaceAsElement || psiElement instanceof DotNetTypeDeclaration)
+						if(psiElement == null || psiElement instanceof DotNetNamespaceAsElement)
+						{
+							iterator.set(PrioritizedLookupElement.withPriority(next, -0.5));
+							continue;
+						}
+
+						// if we have not type declaration, make types lower, dont allow int i = Int32 completion more high
+						if(kind != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE && psiElement instanceof CSharpTypeDeclaration)
 						{
 							iterator.set(PrioritizedLookupElement.withPriority(next, -0.5));
 							continue;

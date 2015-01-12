@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
@@ -69,6 +70,13 @@ public class ExpectedTypeRefProvider
 			if(conditionExpression == psiElement)
 			{
 				typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Boolean), null));
+			}
+		}
+		else if(parent instanceof CSharpAttribute)
+		{
+			if(((CSharpAttribute) parent).getReferenceExpression() == psiElement)
+			{
+				typeRefs.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Attribute), null));
 			}
 		}
 		else if(parent instanceof CSharpWhileStatementImpl)
