@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
+import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
@@ -76,7 +77,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 {
 	private static final TokenSet ourExpressionLiterals = TokenSet.create(CSharpTokens.NULL_LITERAL, CSharpTokens.BOOL_LITERAL,
 			CSharpTokens.DEFAULT_KEYWORD, CSharpTokens.TYPEOF_KEYWORD, CSharpTokens.SIZEOF_KEYWORD, CSharpTokens.THIS_KEYWORD,
-			CSharpTokens.BASE_KEYWORD, CSharpSoftTokens.AWAIT_KEYWORD);
+			CSharpTokens.BASE_KEYWORD, CSharpSoftTokens.AWAIT_KEYWORD, CSharpTokens.NEW_KEYWORD);
 
 	public CSharpKeywordCompletionContributor()
 	{
@@ -103,6 +104,10 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 										t = t.withTailText("(...)", true);
 										t = t.withInsertHandler(ParenthesesInsertHandler.getInstance(true));
 									}
+									else if(elementType == CSharpTokens.NEW_KEYWORD)
+									{
+										t = t.withInsertHandler(SpaceInsertHandler.INSTANCE);
+									}
 
 									List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(parent);
 									if(!expectedTypeRefs.isEmpty())
@@ -117,6 +122,10 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 													return PrioritizedLookupElement.withPriority(t, CSharpCompletionUtil.EXPR_KEYWORD_PRIORITY);
 												}
 											}
+										}
+										else if(elementType == CSharpTokens.NEW_KEYWORD)
+										{
+											return PrioritizedLookupElement.withPriority(t, CSharpCompletionUtil.EXPR_KEYWORD_PRIORITY);
 										}
 										else
 										{
