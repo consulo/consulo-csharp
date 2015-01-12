@@ -1236,8 +1236,14 @@ public class ExpressionParsing extends SharedParsingHelpers
 		return newExpr;
 	}
 
+	@NotNull
 	private static AfterNewParsingTarget getTarget(CSharpBuilderWrapper builderWrapper, boolean forceArray, TypeInfo typeInfo)
 	{
+		if(typeInfo != null && typeInfo.isArray)
+		{
+			return AfterNewParsingTarget.ARRAY_INITIALIZATION;
+		}
+
 		if(builderWrapper.getTokenType() != LBRACE)
 		{
 			return AfterNewParsingTarget.NONE;
