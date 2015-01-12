@@ -34,6 +34,7 @@ import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializationExpressionImpl;
@@ -373,7 +374,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 						PsiElement element = typeResolveResult.getElement();
 						if(element == null)
 						{
-							return;
+							continue;
 						}
 
 						DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
@@ -391,7 +392,12 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 
 						for(CSharpConstructorDeclaration object : objects)
 						{
-							LookupElementBuilder builder = buildForConstructor(object, genericExtractor);
+							if(!CSharpVisibilityUtil.isVisible(object, position))
+							{
+								continue;
+							}
+
+								LookupElementBuilder builder = buildForConstructor(object, genericExtractor);
 							if(builder != null)
 							{
 								result.addElement(PrioritizedLookupElement.withPriority(builder, CSharpCompletionUtil.EXPR_REF_PRIORITY));
