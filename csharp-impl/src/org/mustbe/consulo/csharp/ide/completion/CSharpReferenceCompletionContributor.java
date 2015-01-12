@@ -16,6 +16,8 @@
 
 package org.mustbe.consulo.csharp.ide.completion;
 
+import static com.intellij.patterns.StandardPatterns.psiElement;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,22 +25,17 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.AddUsingAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
-import org.mustbe.consulo.csharp.lang.psi.CSharpContextUtil;
-import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
-import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
-import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
+import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializationExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNewExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
@@ -48,6 +45,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScope
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeIndex;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
@@ -56,10 +55,12 @@ import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.codeInsight.TailType;
@@ -72,6 +73,7 @@ import com.intellij.codeInsight.completion.CompletionUtilCore;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.completion.PrioritizedLookupElement;
+import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.ide.IconDescriptorUpdaters;
@@ -80,7 +82,6 @@ import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
@@ -99,7 +100,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 {
 	public CSharpReferenceCompletionContributor()
 	{
-		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class),
+		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class),
 				new CompletionProvider<CompletionParameters>()
 		{
 			@Override
@@ -169,7 +170,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class),
+		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class),
 				new CompletionProvider<CompletionParameters>()
 		{
 			@Override
@@ -249,7 +250,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 
 		);
 
-		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class)
+		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class)
 				.withSuperParent(2, CSharpArrayInitializationExpressionImpl.class).withSuperParent(3, CSharpNewExpressionImpl.class),
 				new CompletionProvider<CompletionParameters>()
 		{
@@ -304,7 +305,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class),
+		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class),
 				new CompletionProvider<CompletionParameters>()
 		{
 
@@ -351,7 +352,57 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class),
+		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.NEW_KEYWORD)),
+				new CompletionProvider<CompletionParameters>()
+		{
+			@Override
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			{
+				PsiElement position = parameters.getPosition();
+				CSharpNewExpressionImpl newExpression = PsiTreeUtil.getParentOfType(position, CSharpNewExpressionImpl.class);
+				assert newExpression != null;
+
+				List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(newExpression);
+
+				if(!expectedTypeRefs.isEmpty())
+				{
+					for(ExpectedTypeInfo expectedTypeInfo : expectedTypeRefs)
+					{
+						DotNetTypeResolveResult typeResolveResult = expectedTypeInfo.getTypeRef().resolve(position);
+
+						PsiElement element = typeResolveResult.getElement();
+						if(element == null)
+						{
+							return;
+						}
+
+						DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
+						CSharpResolveContext cSharpResolveContext = CSharpResolveContextUtil.createContext(genericExtractor,
+								position.getResolveScope(), element);
+
+						CSharpElementGroup<CSharpConstructorDeclaration> group = cSharpResolveContext.constructorGroup();
+						Collection<CSharpConstructorDeclaration> objects = group == null ? Collections.<CSharpConstructorDeclaration>emptyList() :
+								group.getElements();
+
+						if(objects.isEmpty())
+						{
+							return;
+						}
+
+						for(CSharpConstructorDeclaration object : objects)
+						{
+							LookupElementBuilder builder = buildForConstructor(object, genericExtractor);
+							if(builder != null)
+							{
+								result.addElement(PrioritizedLookupElement.withPriority(builder, CSharpCompletionUtil.EXPR_REF_PRIORITY));
+							}
+						}
+					}
+				}
+			}
+		});
+
+		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class),
 				new CompletionProvider<CompletionParameters>()
 		{
 
@@ -470,6 +521,61 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 				}
 			}
 		});
+	}
+
+	@Nullable
+	private static LookupElementBuilder buildForConstructor(final CSharpConstructorDeclaration declaration, final DotNetGenericExtractor extractor)
+	{
+		PsiElement parent = declaration.getParent();
+
+		if(!(parent instanceof DotNetNamedElement))
+		{
+			return null;
+		}
+
+		String lookupString = ((DotNetNamedElement) parent).getName();
+		if(parent instanceof DotNetGenericParameterListOwner)
+		{
+			DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) parent).getGenericParameters();
+			if(genericParameters.length > 0)
+			{
+				lookupString += "<" + StringUtil.join(genericParameters, new Function<DotNetGenericParameter, String>()
+				{
+					@Override
+					public String fun(DotNetGenericParameter parameter)
+					{
+						DotNetTypeRef extract = extractor.extract(parameter);
+						if(extract != null)
+						{
+							return CSharpTypeRefPresentationUtil.buildShortText(extract, declaration);
+						}
+						return parameter.getName();
+					}
+				}, ", ") + ">";
+			}
+		}
+
+		if(lookupString == null)
+		{
+			return null;
+		}
+
+		DotNetTypeRef[] parameters = declaration.getParameterTypeRefs();
+
+		String parameterText = "(" + StringUtil.join(parameters, new Function<DotNetTypeRef, String>()
+		{
+			@Override
+			public String fun(DotNetTypeRef parameter)
+			{
+				return CSharpTypeRefPresentationUtil.buildShortText(parameter, declaration);
+			}
+		}, ", ") + ")";
+
+		LookupElementBuilder builder = LookupElementBuilder.create(parent, lookupString);
+		builder = builder.withIcon(IconDescriptorUpdaters.getIcon(parent, Iconable.ICON_FLAG_VISIBILITY));
+		builder = builder.withTailText(parameterText, true);
+		builder = builder.withInsertHandler(ParenthesesInsertHandler.getInstance(parameters.length > 0));
+		return builder;
 	}
 
 	public static boolean isAlreadyResolved(DotNetQualifiedElement element, PsiElement parent)
