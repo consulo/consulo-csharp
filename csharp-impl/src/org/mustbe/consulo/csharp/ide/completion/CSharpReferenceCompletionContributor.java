@@ -44,6 +44,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAsExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIsExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNewExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeCastExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
@@ -251,8 +252,8 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 
 		);
 
-		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class)
-				.withSuperParent(2, CSharpArrayInitializationExpressionImpl.class).withSuperParent(3, CSharpNewExpressionImpl.class),
+		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class).withSuperParent(2,
+				CSharpArrayInitializationExpressionImpl.class).withSuperParent(3, CSharpNewExpressionImpl.class),
 				new CompletionProvider<CompletionParameters>()
 		{
 			@Override
@@ -416,8 +417,8 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 									position.getResolveScope(), element);
 
 							CSharpElementGroup<CSharpConstructorDeclaration> group = cSharpResolveContext.constructorGroup();
-							Collection<CSharpConstructorDeclaration> objects = group == null ? Collections.<CSharpConstructorDeclaration>emptyList() :
-									group.getElements();
+							Collection<CSharpConstructorDeclaration> objects = group == null ? Collections.<CSharpConstructorDeclaration>emptyList()
+									: group.getElements();
 
 							if(objects.isEmpty())
 							{
@@ -572,7 +573,8 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 			if(parent instanceof CSharpUserType)
 			{
 				PsiElement parent1 = parent.getParent();
-				if(parent1 instanceof CSharpIsExpressionImpl || parent1 instanceof CSharpAsExpressionImpl)
+				if(parent1 instanceof CSharpIsExpressionImpl || parent1 instanceof CSharpAsExpressionImpl || parent1 instanceof
+						CSharpTypeCastExpressionImpl)
 				{
 					return false;
 				}

@@ -209,7 +209,7 @@ public class ExpectedTypeRefProvider
 		else if(parent instanceof CSharpUserType)
 		{
 			PsiElement parentOfUserType = parent.getParent();
-			if(parentOfUserType instanceof CSharpAsExpressionImpl)
+			if(parentOfUserType instanceof CSharpAsExpressionImpl || parentOfUserType instanceof CSharpTypeCastExpressionImpl)
 			{
 				infoList.addAll(findExpectedTypeRefs(parentOfUserType));
 			}
