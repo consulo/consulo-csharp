@@ -22,17 +22,22 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.CSharpIcons;
 import org.mustbe.consulo.csharp.module.extension.CSharpMutableModuleExtension;
+import org.mustbe.consulo.dotnet.DotNetTarget;
 import org.mustbe.consulo.dotnet.module.extension.DotNetMutableModuleExtension;
 import org.mustbe.consulo.dotnet.module.roots.DotNetLibraryOrderEntryImpl;
 import org.mustbe.consulo.ide.impl.NewModuleBuilder;
+import org.mustbe.consulo.ide.impl.NewModuleBuilderProcessor;
 import org.mustbe.consulo.ide.impl.NewModuleContext;
 import org.mustbe.consulo.ide.impl.UnzipNewModuleBuilderProcessor;
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.fileEditor.ex.FileEditorManagerEx;
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableModuleRootLayer;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.impl.ModuleRootLayerImpl;
+import com.intellij.openapi.vfs.VirtualFile;
 
 /**
  * @author VISTALL
@@ -62,67 +67,111 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 	public void setupContext(@NotNull NewModuleContext context)
 	{
 		context.addItem("#CSharp", "C#", CSharpIcons.FileType);
-		context.addItem("#CSharpHelloWorld", "Hello World", AllIcons.RunConfigurations.Application);
+		context.addItem("#CSharpEmpty", "Empty", AllIcons.FileTypes.Unknown);
+		context.addItem("#CSharpConsoleApplication", "Console Application", AllIcons.RunConfigurations.Application);
 
 		context.setupItem(new String[]{
 				"#CSharp",
-				"#CSharpHelloWorld"
-		}, new UnzipNewModuleBuilderProcessor<CSharpNewModuleBuilderPanel>("/moduleTemplates/#CSharpHelloWorld.zip")
+				"#CSharpEmpty"
+		}, new NewModuleBuilderProcessor<CSharpSdkPanel>()
 		{
 			@NotNull
 			@Override
-			public CSharpNewModuleBuilderPanel createConfigurationPanel()
+			public CSharpSdkPanel createConfigurationPanel()
 			{
-				return new CSharpNewModuleBuilderPanel();
+				return new CSharpSdkPanel();
 			}
 
 			@Override
-			public void setupModule(@NotNull CSharpNewModuleBuilderPanel panel, @NotNull ContentEntry contentEntry,
+			public void setupModule(@NotNull CSharpSdkPanel panel,
+					@NotNull ContentEntry contentEntry,
 					@NotNull ModifiableRootModel modifiableRootModel)
+			{
+				defaultSetup(panel, modifiableRootModel);
+			}
+		});
+
+		context.setupItem(new String[]{
+				"#CSharp",
+				"#CSharpConsoleApplication"
+		}, new UnzipNewModuleBuilderProcessor<CSharpSdkPanel>("/moduleTemplates/#CSharpConsoleApplication.zip")
+		{
+			@NotNull
+			@Override
+			public CSharpSdkPanel createConfigurationPanel()
+			{
+				return new CSharpSdkPanel().disableTargetComboBox(DotNetTarget.EXECUTABLE);
+			}
+
+			@Override
+			public void setupModule(@NotNull CSharpSdkPanel panel,
+					@NotNull final ContentEntry contentEntry,
+					@NotNull final ModifiableRootModel modifiableRootModel)
 			{
 				unzip(modifiableRootModel);
 
-				Sdk sdk = panel.getSdk();
-				if(sdk == null)
+				defaultSetup(panel, modifiableRootModel);
+
+				DumbService.getInstance(modifiableRootModel.getProject()).smartInvokeLater(new Runnable()
 				{
-					return;
-				}
-
-				String[] pair = ourExtensionMapping.get(sdk.getSdkType().getName());
-
-				for(String layerName : new String[]{
-						RELEASE,
-						DEBUG
-				})
-				{
-					ModifiableModuleRootLayer layer = modifiableRootModel.addLayer(layerName, DEFAULT, false);
-
-					assert layer != null;
-
-					// first we need enable .NET module extension
-					DotNetMutableModuleExtension<?> dotNetMutableModuleExtension = layer.getExtensionWithoutCheck(pair[0]);
-					assert dotNetMutableModuleExtension != null;
-
-					dotNetMutableModuleExtension.setEnabled(true);
-					boolean debug = layerName.equals(DEBUG);
-					if(debug)
+					@Override
+					public void run()
 					{
-						dotNetMutableModuleExtension.setAllowDebugInfo(true);
-						dotNetMutableModuleExtension.getVariables().add("DEBUG");
+						VirtualFile dir = contentEntry.getFile();
+						if(dir != null)
+						{
+							VirtualFile mainFile = dir.findFileByRelativePath("Program.cs");
+							if(mainFile != null)
+							{
+								FileEditorManagerEx.getInstanceEx(modifiableRootModel.getProject()).openFile(mainFile, false);
+							}
+						}
 					}
-					dotNetMutableModuleExtension.getInheritableSdk().set(null, sdk);
-
-					CSharpMutableModuleExtension<?> cSharpMutableModuleExtension = layer.getExtensionWithoutCheck(pair[1]);
-					assert cSharpMutableModuleExtension != null;
-					cSharpMutableModuleExtension.setEnabled(true);
-
-					layer.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) layer, "mscorlib"));
-					layer.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) layer, "System"));
-				}
-
-				modifiableRootModel.setCurrentLayer(DEBUG);
-				modifiableRootModel.removeLayer(DEFAULT, false);
+				});
 			}
 		});
+	}
+
+	private static void defaultSetup(@NotNull CSharpSdkPanel panel, @NotNull ModifiableRootModel modifiableRootModel)
+	{
+		Sdk sdk = panel.getSdk();
+		if(sdk == null)
+		{
+			return;
+		}
+
+		String[] pair = ourExtensionMapping.get(sdk.getSdkType().getName());
+
+		for(String layerName : new String[]{
+				RELEASE,
+				DEBUG
+		})
+		{
+			ModifiableModuleRootLayer layer = modifiableRootModel.addLayer(layerName, DEFAULT, false);
+
+			// first we need enable .NET module extension
+			DotNetMutableModuleExtension<?> dotNetMutableModuleExtension = layer.getExtensionWithoutCheck(pair[0]);
+			assert dotNetMutableModuleExtension != null;
+
+			dotNetMutableModuleExtension.setEnabled(true);
+			boolean debug = layerName.equals(DEBUG);
+			if(debug)
+			{
+				dotNetMutableModuleExtension.setAllowDebugInfo(true);
+				dotNetMutableModuleExtension.getVariables().add("DEBUG");
+			}
+			dotNetMutableModuleExtension.getInheritableSdk().set(null, sdk);
+			dotNetMutableModuleExtension.setTarget(panel.getTarget());
+
+			CSharpMutableModuleExtension<?> cSharpMutableModuleExtension = layer.getExtensionWithoutCheck(pair[1]);
+			assert cSharpMutableModuleExtension != null;
+			cSharpMutableModuleExtension.setEnabled(true);
+
+			layer.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) layer, "mscorlib"));
+			layer.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) layer, "System"));
+		}
+
+		modifiableRootModel.setCurrentLayer(DEBUG);
+		modifiableRootModel.removeLayer(DEFAULT, false);
 	}
 }
