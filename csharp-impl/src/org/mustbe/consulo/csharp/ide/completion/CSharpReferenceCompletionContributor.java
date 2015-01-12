@@ -36,7 +36,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
@@ -61,7 +60,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.codeInsight.TailType;
@@ -208,14 +206,14 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 						LookupElement next = iterator.next();
 
 						PsiElement psiElement = next.getPsiElement();
-						if(psiElement == null || psiElement instanceof DotNetNamespaceAsElement)
+						if(psiElement == null)
 						{
 							iterator.set(PrioritizedLookupElement.withPriority(next, -0.5));
 							continue;
 						}
 
 						// if we have not type declaration, make types lower, dont allow int i = Int32 completion more high
-						if(kind != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE && psiElement instanceof CSharpTypeDeclaration)
+						if(kind != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE && CSharpCompletionUtil.isTypeLikeElement(psiElement))
 						{
 							iterator.set(PrioritizedLookupElement.withPriority(next, -0.5));
 							continue;

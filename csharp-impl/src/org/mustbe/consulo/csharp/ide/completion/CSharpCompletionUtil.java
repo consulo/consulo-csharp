@@ -20,11 +20,15 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.Condition;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.ArrayUtil;
@@ -60,6 +64,12 @@ public class CSharpCompletionUtil
 			return new String[]{elementType.toString().replace("_KEYWORD", "").toLowerCase()};
 		}
 	};
+
+	public static boolean isTypeLikeElement(@NotNull PsiElement element)
+	{
+		return element instanceof CSharpTypeDeclaration || element instanceof DotNetNamespaceAsElement || element instanceof CSharpMethodDeclaration
+				&& ((CSharpMethodDeclaration) element).isDelegate();
+	}
 
 	@NotNull
 	public static String[] textsOfKeyword(IElementType elementType)
