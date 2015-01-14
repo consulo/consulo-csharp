@@ -29,5 +29,8 @@ public interface CSharpQualifiedNonReference extends PsiElement
 	String getReferenceName();
 
 	@Nullable
+	String getReferenceNameWithAt();
+
+	@Nullable
 	PsiElement getQualifier();
 }

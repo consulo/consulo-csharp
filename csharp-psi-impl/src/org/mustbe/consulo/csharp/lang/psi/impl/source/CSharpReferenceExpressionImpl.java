@@ -117,8 +117,16 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@Override
 	public String getReferenceName()
 	{
+		String referenceNameWithAt = getReferenceNameWithAt();
+		return referenceNameWithAt == null ? null : CSharpPsiUtilImpl.getNameWithoutAt(referenceNameWithAt);
+	}
+
+	@Nullable
+	@Override
+	public String getReferenceNameWithAt()
+	{
 		PsiElement referenceElement = getReferenceElement();
-		return referenceElement == null ? null : CSharpPsiUtilImpl.getNameWithoutAt(referenceElement.getText());
+		return referenceElement == null ? null : referenceElement.getText();
 	}
 
 	@Override

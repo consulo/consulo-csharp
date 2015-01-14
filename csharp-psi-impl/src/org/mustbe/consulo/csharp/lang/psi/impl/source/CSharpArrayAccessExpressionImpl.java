@@ -123,7 +123,14 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 	@Override
 	public String getReferenceName()
 	{
-		throw new IllegalArgumentException("This methid is never called");
+		throw new UnsupportedOperationException();
+	}
+
+	@Nullable
+	@Override
+	public String getReferenceNameWithAt()
+	{
+		throw new UnsupportedOperationException();
 	}
 
 	@NotNull

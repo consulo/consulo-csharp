@@ -516,6 +516,13 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
 	@Nullable
 	@Override
+	public String getReferenceNameWithAt()
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Nullable
+	@Override
 	public PsiElement getQualifier()
 	{
 		return null;

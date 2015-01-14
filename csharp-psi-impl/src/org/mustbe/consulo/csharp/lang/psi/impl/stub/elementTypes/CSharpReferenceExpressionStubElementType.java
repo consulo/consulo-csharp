@@ -56,7 +56,7 @@ public class CSharpReferenceExpressionStubElementType extends CSharpAbstractStub
 	@Override
 	public CSharpReferenceExpressionStub createStub(@NotNull CSharpReferenceExpression psi, StubElement parentStub)
 	{
-		String referenceName = psi.getReferenceName();
+		String referenceName = psi.getReferenceNameWithAt();
 		CSharpReferenceExpression.ResolveToKind kind = psi.kind();
 		boolean global = psi.isGlobalElement();
 		return new CSharpReferenceExpressionStub(parentStub, this, referenceName, kind.ordinal(), global);
