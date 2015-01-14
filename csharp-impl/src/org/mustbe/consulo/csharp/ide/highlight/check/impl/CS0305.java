@@ -41,6 +41,14 @@ public class CS0305 extends CompilerCheck<CSharpReferenceExpression>
 		{
 			return null;
 		}
+
+		CSharpReferenceExpression.ResolveToKind kind = referenceExpression.kind();
+		switch(kind)
+		{
+			case THIS:
+			case BASE:
+				return null;
+		}
 		PsiElement resolvedElement = referenceExpression.resolve();
 		if(resolvedElement == null)
 		{
