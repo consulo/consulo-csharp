@@ -40,8 +40,13 @@ public class CS0214 extends CompilerCheck<DotNetStatement>
 	@Override
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetStatement statement)
 	{
-		if(statement instanceof CSharpUnsafeStatementImpl || statement instanceof CSharpFixedStatementImpl)
+		if(statement instanceof CSharpFixedStatementImpl)
 		{
+			CSharpUnsafeStatementImpl unsafeStatement = PsiTreeUtil.getParentOfType(statement, CSharpUnsafeStatementImpl.class);
+			if(unsafeStatement != null)
+			{
+				return null;
+			}
 			DotNetQualifiedElement qualifiedElement = PsiTreeUtil.getParentOfType(statement, DotNetQualifiedElement.class);
 			if(!(qualifiedElement instanceof DotNetModifierListOwner))
 			{
@@ -50,8 +55,7 @@ public class CS0214 extends CompilerCheck<DotNetStatement>
 
 			if(!((DotNetModifierListOwner) qualifiedElement).hasModifier(CSharpModifier.UNSAFE))
 			{
-				PsiElement target = statement instanceof CSharpUnsafeStatementImpl ? ((CSharpUnsafeStatementImpl) statement).getUnsafeElement() :
-						((CSharpFixedStatementImpl)statement).getFixedElement();
+				PsiElement target = ((CSharpFixedStatementImpl)statement).getFixedElement();
 
 				return newBuilder(target).addQuickFix(new AddModifierFix(CSharpModifier.UNSAFE, (DotNetModifierListOwner) qualifiedElement));
 			}
