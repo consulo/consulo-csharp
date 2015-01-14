@@ -47,6 +47,8 @@ public class CS0305 extends CompilerCheck<CSharpReferenceExpression>
 		{
 			case THIS:
 			case BASE:
+			case THIS_CONSTRUCTOR:
+			case BASE_CONSTRUCTOR:
 				return null;
 		}
 		PsiElement resolvedElement = referenceExpression.resolve();

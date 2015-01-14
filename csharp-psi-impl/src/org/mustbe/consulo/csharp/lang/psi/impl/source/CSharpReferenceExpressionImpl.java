@@ -166,7 +166,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		CSharpCallArgumentListOwner p = null;
 		PsiElement parent = getParent();
 
-		if(kind == ResolveToKind.CONSTRUCTOR || kind == ResolveToKind.PARAMETER)
+		if(CSharpReferenceExpressionImplUtil.isConstructorKind(kind) || kind == ResolveToKind.PARAMETER)
 		{
 			p = PsiTreeUtil.getParentOfType(this, CSharpCallArgumentListOwner.class);
 		}

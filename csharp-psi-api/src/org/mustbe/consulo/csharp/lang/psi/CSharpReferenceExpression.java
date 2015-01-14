@@ -49,7 +49,9 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 		THIS, // return type declaration of parent
 		BASE,  // return type declaration super class of parent
 		ROOT_NAMESPACE,  // root namespace - global keyword
-		LABEL;
+		LABEL,
+		BASE_CONSTRUCTOR,
+		THIS_CONSTRUCTOR;
 
 		@NotNull
 		@Immutable

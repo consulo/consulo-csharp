@@ -99,6 +99,19 @@ public class CSharpReferenceExpressionImplUtil
 	public static final TokenSet ourAccessTokens = TokenSet.create(CSharpTokens.ARROW, CSharpTokens.DOT, CSharpTokens.COLONCOLON,
 			CSharpTokens.NULLABE_CALL);
 
+	public static boolean isConstructorKind(ResolveToKind kind)
+	{
+		switch(kind)
+		{
+			case CONSTRUCTOR:
+			case BASE_CONSTRUCTOR:
+			case THIS_CONSTRUCTOR:
+				return true;
+			default:
+				return false;
+		}
+	}
+
 	@NotNull
 	public static DotNetTypeRef toTypeRef(@NotNull CSharpReferenceExpressionEx referenceExpressionEx, boolean resolveFromParent)
 	{
@@ -231,6 +244,21 @@ public class CSharpReferenceExpressionImplUtil
 		}
 		else if(tempElement instanceof CSharpConstructorSuperCallImpl)
 		{
+			CSharpReferenceExpression expression = ((CSharpConstructorSuperCallImpl) tempElement).getExpression();
+			PsiElement referenceElement = expression.getReferenceElement();
+			if(referenceElement == null)
+			{
+				return ResolveToKind.CONSTRUCTOR;
+			}
+			IElementType elementType = referenceElement.getNode().getElementType();
+			if(elementType == CSharpTokens.BASE_KEYWORD)
+			{
+				return ResolveToKind.BASE_CONSTRUCTOR;
+			}
+			else if(elementType == CSharpTokens.THIS_KEYWORD)
+			{
+				return ResolveToKind.THIS_CONSTRUCTOR;
+			}
 			return ResolveToKind.CONSTRUCTOR;
 		}
 		else if(tempElement instanceof CSharpAttribute)
@@ -345,6 +373,8 @@ public class CSharpReferenceExpressionImplUtil
 				selector = StaticResolveSelectors.INDEX_METHOD_GROUP;
 				break;
 			case CONSTRUCTOR:
+			case BASE_CONSTRUCTOR:
+			case THIS_CONSTRUCTOR:
 				selector = StaticResolveSelectors.CONSTRUCTOR_GROUP;
 				break;
 			case TYPE_LIKE:
@@ -642,6 +672,8 @@ public class CSharpReferenceExpressionImplUtil
 			case METHOD:
 			case ARRAY_METHOD:
 			case CONSTRUCTOR:
+			case BASE_CONSTRUCTOR:
+			case THIS_CONSTRUCTOR:
 				resolveResults = processAnyMember(options);
 				if(callArgumentListOwner == null || resolveResults.length == 0)
 				{
@@ -661,7 +693,7 @@ public class CSharpReferenceExpressionImplUtil
 								GenericInferenceUtil.GenericInferenceResult inferenceResult = psiElement.getUserData(GenericInferenceUtil
 										.INFERENCE_RESULT);
 
-								if(inferenceResult == null && kind != ResolveToKind.CONSTRUCTOR)
+								if(inferenceResult == null && !isConstructorKind(kind))
 								{
 									inferenceResult = GenericInferenceUtil.inferenceGenericExtractor(element, callArgumentListOwner,
 											(DotNetLikeMethodDeclaration) psiElement);
@@ -718,7 +750,7 @@ public class CSharpReferenceExpressionImplUtil
 			element = codeFragment.getScopeElement();
 		}
 
-		if(kind == ResolveToKind.CONSTRUCTOR)
+		if(isConstructorKind(kind))
 		{
 			CSharpReferenceExpressionEx referenceExpression = (CSharpReferenceExpressionEx) element;
 
@@ -729,21 +761,25 @@ public class CSharpReferenceExpressionImplUtil
 			{
 				return ResolveResult.EMPTY_ARRAY;
 			}
-			if(referenceElement.getNode().getElementType() == CSharpTokens.BASE_KEYWORD)
+
+			switch(kind)
 			{
-				typeRef = referenceExpression.toTypeRefWithoutCaching(ResolveToKind.BASE, true);
-			}
-			else if(referenceElement.getNode().getElementType() == CSharpTokens.THIS_KEYWORD)
-			{
-				typeRef = referenceExpression.toTypeRefWithoutCaching(ResolveToKind.THIS, true);
-			}
-			else if(callArgumentListOwner instanceof CSharpNewExpression)
-			{
-				typeRef = ((CSharpNewExpression) callArgumentListOwner).toTypeRef(true);
-			}
-			else if(callArgumentListOwner instanceof DotNetAttribute)
-			{
-				typeRef = ((DotNetAttribute) callArgumentListOwner).toTypeRef();
+				case THIS_CONSTRUCTOR:
+					typeRef = referenceExpression.toTypeRefWithoutCaching(ResolveToKind.THIS, true);
+					break;
+				case BASE_CONSTRUCTOR:
+					typeRef = referenceExpression.toTypeRefWithoutCaching(ResolveToKind.BASE, true);
+					break;
+				default:
+					if(callArgumentListOwner instanceof CSharpNewExpression)
+					{
+						typeRef = ((CSharpNewExpression) callArgumentListOwner).toTypeRef(true);
+					}
+					else if(callArgumentListOwner instanceof DotNetAttribute)
+					{
+						typeRef = ((DotNetAttribute) callArgumentListOwner).toTypeRef();
+					}
+					break;
 			}
 
 			DotNetTypeResolveResult typeResolveResult = typeRef.resolve(element);
@@ -931,6 +967,8 @@ public class CSharpReferenceExpressionImplUtil
 				};
 				break;
 			case CONSTRUCTOR:
+			case THIS_CONSTRUCTOR:
+			case BASE_CONSTRUCTOR:
 				targets = new ExecuteTarget[]{
 						ExecuteTarget.ELEMENT_GROUP
 				};
