@@ -64,7 +64,8 @@ public class CSharpWrappingProcessor
 			}
 		}
 
-		if(elementType == CSharpTokens.RBRACE || elementType == CSharpElements.XXX_ACCESSOR)
+		if(elementType == CSharpTokens.RBRACE || elementType == CSharpElements.XXX_ACCESSOR || elementType == CSharpElements
+				.ENUM_CONSTANT_DECLARATION)
 		{
 			return Wrap.createWrap(WrapType.ALWAYS, true);
 		}
@@ -76,8 +77,8 @@ public class CSharpWrappingProcessor
 			return Wrap.createWrap(WrapType.ALWAYS, true);
 		}
 
-		if(psi instanceof DotNetStatement && parent instanceof CSharpBlockStatementImpl && ((CSharpBlockStatementImpl) parent).getStatements()[0]
-				== psi)
+		if(psi instanceof DotNetStatement && parent instanceof CSharpBlockStatementImpl && ((CSharpBlockStatementImpl) parent).getStatements()[0] ==
+				psi)
 		{
 			return Wrap.createWrap(WrapType.ALWAYS, true);
 		}
