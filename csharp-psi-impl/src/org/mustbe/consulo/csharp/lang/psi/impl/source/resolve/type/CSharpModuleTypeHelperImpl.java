@@ -76,6 +76,12 @@ public class CSharpModuleTypeHelperImpl extends CSharpModuleTypeHelper
 				builder.append(", int index").append(i);
 			}
 			builder.append("] { get; set; }");
+			builder.append("public T this[ulong index");
+			for(int i = 0; i < dimensions; i++)
+			{
+				builder.append(", int index").append(i);
+			}
+			builder.append("] { get; set; }");
 			builder.append("public T this[int index");
 			for(int i = 0; i < dimensions; i++)
 			{
