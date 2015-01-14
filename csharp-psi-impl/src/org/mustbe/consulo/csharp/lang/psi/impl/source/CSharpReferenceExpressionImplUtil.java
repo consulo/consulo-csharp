@@ -996,16 +996,6 @@ public class CSharpReferenceExpressionImplUtil
 				last = temp;
 				targetToWalkChildren = PsiTreeUtil.getParentOfType(temp, DotNetModifierListOwner.class);
 			}
-			else if(temp instanceof CSharpCallArgumentList)
-			{
-				DotNetAttribute attribute = PsiTreeUtil.getParentOfType(temp, DotNetAttribute.class);
-				if(attribute != null)
-				{
-					last = attribute;
-					targetToWalkChildren = PsiTreeUtil.getParentOfType(attribute, DotNetModifierListOwner.class);
-					break;
-				}
-			}
 			else if(temp instanceof DotNetFieldDeclaration ||
 					temp instanceof DotNetPropertyDeclaration ||
 					temp instanceof DotNetEventDeclaration ||
