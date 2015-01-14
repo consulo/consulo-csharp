@@ -363,7 +363,9 @@ public class CSharpReferenceExpressionImplUtil
 
 				if(kind == ResolveToKind.ATTRIBUTE)
 				{
-					selector = new AttributeByNameSelector(referenceName);
+					String referenceNameWithAt = element.getReferenceNameWithAt();
+					assert referenceNameWithAt != null;
+					selector = new AttributeByNameSelector(referenceNameWithAt);
 					kind = ResolveToKind.TYPE_LIKE; //remap to type search
 				}
 				else
