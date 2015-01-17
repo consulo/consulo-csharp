@@ -506,11 +506,6 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 		for(DotNetModifier dotNetModifier : modifierList.getModifiers())
 		{
-			if(dotNetModifier == CSharpModifier.REF || dotNetModifier == CSharpModifier.OUT)
-			{
-				continue;
-			}
-
 			if(owner instanceof DotNetVariable && ((DotNetVariable) owner).isConstant() && dotNetModifier == CSharpModifier.STATIC)
 			{
 				continue;
