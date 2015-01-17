@@ -641,6 +641,9 @@ public class CSharpTypeUtil
 			return false;
 		}
 
+		t1 = GenericUnwrapTool.exchangeTypeRef(t1, GenericUnwrapTool.TypeDefCleanFunction.INSTANCE, scope);
+		t2 = GenericUnwrapTool.exchangeTypeRef(t2, GenericUnwrapTool.TypeDefCleanFunction.INSTANCE, scope);
+
 		if(t1 instanceof CSharpArrayTypeRef && t2 instanceof CSharpArrayTypeRef)
 		{
 			return ((CSharpArrayTypeRef) t1).getDimensions() == ((CSharpArrayTypeRef) t2).getDimensions() && isTypeEqual(((CSharpArrayTypeRef) t1)
