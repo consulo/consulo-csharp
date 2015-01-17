@@ -96,7 +96,8 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 	}
 
 	private static final TokenSet ourParStatementKeywords = TokenSet.create(IF_KEYWORD, FOR_KEYWORD, FOREACH_KEYWORD, FOREACH_KEYWORD,
-			FIXED_KEYWORD, UNCHECKED_KEYWORD, CHECKED_KEYWORD, SWITCH_KEYWORD, USING_KEYWORD, WHILE_KEYWORD, DO_KEYWORD, TRY_KEYWORD, LOCK_KEYWORD);
+			FIXED_KEYWORD, UNCHECKED_KEYWORD, CHECKED_KEYWORD, SWITCH_KEYWORD, USING_KEYWORD, WHILE_KEYWORD, DO_KEYWORD, UNSAFE_KEYWORD,
+			TRY_KEYWORD, LOCK_KEYWORD);
 
 	private static final TokenSet ourCaseAndDefaultKeywords = TokenSet.create(CASE_KEYWORD, DEFAULT_KEYWORD);
 
@@ -342,7 +343,8 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 					return;
 				}
 				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.BREAK_KEYWORD, null, null);
-				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.RETURN_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.RETURN_KEYWORD, new NotNullPairFunction<LookupElementBuilder,
+						IElementType, LookupElement>()
 
 				{
 					@NotNull
@@ -426,7 +428,11 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 		char open = '(';
 		char close = ')';
 
-		if(elementType == DO_KEYWORD || elementType == TRY_KEYWORD || elementType == CATCH_KEYWORD || elementType == FINALLY_KEYWORD)
+		if(elementType == DO_KEYWORD ||
+				elementType == TRY_KEYWORD ||
+				elementType == CATCH_KEYWORD ||
+				elementType == UNSAFE_KEYWORD ||
+				elementType == FINALLY_KEYWORD)
 		{
 			open = '{';
 			close = '}';
@@ -483,6 +489,10 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 				else if(elementType == LOCK_KEYWORD)
 				{
 					return customCodeStyleSettings.SPACE_BEFORE_LOCK_PARENTHESES;
+				}
+				else if(elementType == UNSAFE_KEYWORD)
+				{
+					return customCodeStyleSettings.SPACE_BEFORE_UNSAFE_LBRACE;
 				}
 				return false;
 			}
