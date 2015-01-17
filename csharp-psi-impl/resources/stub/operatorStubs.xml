@@ -16,6 +16,9 @@
 			<parameter/>
 			<parameter/>
 		</operator>
+		<operator name="TILDE">
+			<parameter/>
+		</operator>
 		<operator name="GT" type="System.Boolean">
 			<parameter/>
 			<parameter/>
@@ -165,7 +168,6 @@
 
 		<operator name="TILDE">
 			<parameter/>
-			<parameter/>
 		</operator>
 		
 		<operator name="GTGT">
@@ -254,7 +256,6 @@
 		</operator>
 
 		<operator name="TILDE">
-			<parameter/>
 			<parameter/>
 		</operator>
 		
@@ -345,7 +346,6 @@
 
 		<operator name="TILDE">
 			<parameter/>
-			<parameter/>
 		</operator>
 		
 		<operator name="GTGT">
@@ -434,7 +434,6 @@
 		</operator>
 
 		<operator name="TILDE">
-			<parameter/>
 			<parameter/>
 		</operator>
 		
@@ -525,7 +524,6 @@
 
 		<operator name="TILDE">
 			<parameter/>
-			<parameter/>
 		</operator>
 		
 		<operator name="GTGT">
@@ -614,7 +612,6 @@
 		</operator>
 
 		<operator name="TILDE">
-			<parameter/>
 			<parameter/>
 		</operator>
 		
@@ -705,7 +702,6 @@
 
 		<operator name="TILDE">
 			<parameter/>
-			<parameter/>
 		</operator>
 		
 		<operator name="GTGT">
@@ -794,7 +790,6 @@
 		</operator>
 
 		<operator name="TILDE">
-			<parameter/>
 			<parameter/>
 		</operator>
 		
@@ -885,7 +880,6 @@
 
 		<operator name="TILDE">
 			<parameter/>
-			<parameter/>
 		</operator>
 	</type>
 
@@ -964,7 +958,6 @@
 		</operator>
 
 		<operator name="TILDE">
-			<parameter/>
 			<parameter/>
 		</operator>
 	</type>
