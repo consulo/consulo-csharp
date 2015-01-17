@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifierList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUnsafeStatementImpl;
 import org.mustbe.consulo.csharp.module.extension.BaseCSharpModuleExtension;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -112,7 +112,7 @@ public class CS0227 extends CompilerCheck<DotNetElement>
 		if(extension != null && !extension.isAllowUnsafeCode())
 		{
 			CompilerCheckBuilder builder = newBuilder(targetElement).addQuickFix(new AllowUnsafeCodeFix());
-			if(targetElement.getNode().getElementType() == CSharpTokens.UNSAFE_KEYWORD)
+			if(targetElement.getParent() instanceof CSharpModifierList)
 			{
 				builder.addQuickFix(new RemoveModifierFix(CSharpModifier.UNSAFE, (DotNetModifierListOwner) element));
 			}
