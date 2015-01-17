@@ -168,4 +168,10 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 		}
 		return true;
 	}
+
+	@NotNull
+	public CSharpResolveContext[] getContexts()
+	{
+		return myContexts;
+	}
 }

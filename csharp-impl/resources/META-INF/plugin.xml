@@ -155,6 +155,7 @@
 
 		<typedHandler implementation="org.mustbe.consulo.csharp.ide.completion.CSharpTypedHandler" id="csharp"/>
 
+		<renamePsiElementProcessor implementation="org.mustbe.consulo.csharp.ide.refactoring.rename.CSharpTypeRenamePsiElementProcessor"/>
 		<renamePsiElementProcessor implementation="org.mustbe.consulo.csharp.ide.refactoring.rename.CSharpOverrideElementProcessor"/>
 		<gotoClassContributor implementation="org.mustbe.consulo.csharp.ide.navigation.CSharpTypeNameContributor"/>
 		<gotoSymbolContributor implementation="org.mustbe.consulo.csharp.ide.navigation.CSharpSymbolNameContributor"/>
