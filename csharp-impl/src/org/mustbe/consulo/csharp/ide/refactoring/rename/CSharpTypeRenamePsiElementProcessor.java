@@ -30,7 +30,6 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.refactoring.rename.RenamePsiElementProcessor;
@@ -61,8 +60,7 @@ public class CSharpTypeRenamePsiElementProcessor extends RenamePsiElementProcess
 	@Override
 	public void prepareRenaming(PsiElement element, String newName, Map<PsiElement, String> allRenames, SearchScope scope)
 	{
-		CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY,
-				(GlobalSearchScope) element.getUseScope(), element);
+		CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, element.getResolveScope(), element);
 
 		CSharpElementGroup<CSharpConstructorDeclaration> constructors = context.constructorGroup();
 		if(constructors != null)
