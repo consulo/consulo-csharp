@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.ide.highlight.quickFix;
 
 import org.jetbrains.annotations.NotNull;
-import com.intellij.codeInsight.intention.IntentionAction;
+import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
@@ -30,7 +30,7 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 12.11.14
  */
-public class RenameQuickFix implements IntentionAction
+public class RenameQuickFix extends BaseIntentionAction
 {
 	private final String myNewName;
 	private final SmartPsiElementPointer<PsiNamedElement> myPointer;
@@ -39,18 +39,7 @@ public class RenameQuickFix implements IntentionAction
 	{
 		myNewName = newName;
 		myPointer = SmartPointerManager.getInstance(namedElement.getProject()).createSmartPsiElementPointer(namedElement);
-	}
-
-	@NotNull
-	@Override
-	public String getText()
-	{
-		PsiNamedElement element = myPointer.getElement();
-		if(element == null)
-		{
-			throw new IllegalArgumentException();
-		}
-		return "Rename '" + element.getName() + "' to '" + myNewName + "'";
+		setText("Rename '" + namedElement.getName() + "' to '" + myNewName + "'");
 	}
 
 	@NotNull
@@ -75,11 +64,5 @@ public class RenameQuickFix implements IntentionAction
 			return;
 		}
 		element.setName(myNewName);
-	}
-
-	@Override
-	public boolean startInWriteAction()
-	{
-		return true;
 	}
 }
