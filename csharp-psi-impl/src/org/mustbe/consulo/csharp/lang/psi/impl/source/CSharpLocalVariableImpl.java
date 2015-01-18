@@ -252,4 +252,11 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 			collectForDelete.add(prevSibling);
 		}
 	}
+
+	@Nullable
+	@Override
+	public DotNetType getSelfType()
+	{
+		return findChildByClass(DotNetType.class);
+	}
 }

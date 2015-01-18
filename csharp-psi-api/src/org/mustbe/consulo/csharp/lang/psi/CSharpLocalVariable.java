@@ -16,7 +16,9 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetLocalVariable;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
 
 /**
  * @author VISTALL
@@ -24,5 +26,10 @@ import org.mustbe.consulo.dotnet.psi.DotNetLocalVariable;
  */
 public interface CSharpLocalVariable extends DotNetLocalVariable
 {
-
+	/**
+	 *
+	 * @return variable type, but dont inherit it from prev child if we use declaration like 'int b, c'
+	 */
+	@Nullable
+	DotNetType getSelfType();
 }
