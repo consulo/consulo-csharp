@@ -440,6 +440,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			@Override
 			public Void fun(StringBuilder t, DotNetParameter v)
 			{
+				appendAttributeList(t, v);
 				processModifierList(t, v);
 				appendTypeRef(declaration, t, v.toTypeRef(false));
 				t.append(" ");
@@ -496,6 +497,55 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		}
 	}
 
+	private static void appendAttributeList(final StringBuilder builder, final DotNetModifierListOwner owner)
+	{
+		DotNetModifierList modifierList = owner.getModifierList();
+		if(modifierList == null)
+		{
+			return;
+		}
+
+		DotNetAttribute[] attributes = modifierList.getAttributes();
+		if(attributes.length == 0)
+		{
+			return;
+		}
+
+		builder.append("[");
+		StubBlockUtil.join(builder, attributes, new PairFunction<StringBuilder, DotNetAttribute, Void>()
+		{
+			@Override
+			public Void fun(StringBuilder builder, DotNetAttribute dotNetAttribute)
+			{
+				appendTypeRef(owner, builder, dotNetAttribute.toTypeRef());
+
+				if(dotNetAttribute instanceof CSharpAttribute)
+				{
+					DotNetExpression[] parameterExpressions = ((CSharpAttribute) dotNetAttribute).getParameterExpressions();
+					if(parameterExpressions.length > 0)
+					{
+						builder.append("(");
+
+						StubBlockUtil.join(builder, parameterExpressions, new PairFunction<StringBuilder, DotNetExpression, Void>()
+						{
+							@Nullable
+							@Override
+							public Void fun(StringBuilder builder, DotNetExpression dotNetExpression)
+							{
+								builder.append(dotNetExpression.getText());
+								return null;
+							}
+						}, ", ");
+
+						builder.append(")");
+					}
+				}
+				return null;
+			}
+		}, ", ");
+		builder.append("] ");
+	}
+
 	private static void processModifierList(StringBuilder builder, DotNetModifierListOwner owner)
 	{
 		DotNetModifierList modifierList = owner.getModifierList();
@@ -506,6 +556,11 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 		for(DotNetModifier dotNetModifier : modifierList.getModifiers())
 		{
+			if(dotNetModifier == CSharpModifier.OUT || dotNetModifier == CSharpModifier.IN)
+			{
+				continue;
+			}
+
 			if(owner instanceof DotNetVariable && ((DotNetVariable) owner).isConstant() && dotNetModifier == CSharpModifier.STATIC)
 			{
 				continue;

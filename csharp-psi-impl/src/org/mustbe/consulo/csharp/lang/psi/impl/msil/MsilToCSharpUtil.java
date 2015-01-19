@@ -104,9 +104,6 @@ public class MsilToCSharpUtil
 			case INTERNAL:
 				elementType = MsilTokens.ASSEMBLY_KEYWORD;
 				break;
-			case OUT:
-				elementType = MsilTokens.BRACKET_OUT_KEYWORD;
-				break;
 			case VIRTUAL:
 				if(hasModifierInParentIfType(modifierList, MsilTokens.INTERFACE_KEYWORD))
 				{

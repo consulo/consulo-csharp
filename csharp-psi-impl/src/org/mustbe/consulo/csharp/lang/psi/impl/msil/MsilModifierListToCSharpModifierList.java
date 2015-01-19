@@ -77,6 +77,11 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 		{
 			addAdditionalAttribute(new CSharpLightAttributeBuilder(myModifierList, DotNetTypes.System.Serializable));
 		}
+
+		if(myModifierList.hasModifier(MsilTokens.BRACKET_OUT_KEYWORD))
+		{
+			addAdditionalAttribute(new CSharpLightAttributeBuilder(myModifierList, DotNetTypes2.System.Runtime.InteropServices.OutAttribute));
+		}
 	}
 
 	public void addAdditionalAttribute(@NotNull DotNetAttribute attribute)
