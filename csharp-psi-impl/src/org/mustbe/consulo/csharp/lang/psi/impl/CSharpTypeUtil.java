@@ -34,7 +34,9 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -660,7 +662,33 @@ public class CSharpTypeUtil
 		PsiElement element1 = resolveResult1.getElement();
 		PsiElement element2 = resolveResult2.getElement();
 
-		if(element1 == null || element2 == null || !element1.isEquivalentTo(element2))
+		if(element1 == null || element2 == null)
+		{
+			return false;
+		}
+
+
+		if(element1 instanceof DotNetGenericParameter && element2 instanceof DotNetGenericParameter)
+		{
+			DotNetLikeMethodDeclaration likeMethodDeclaration1 = getLikeMethodElement(element1);
+			DotNetLikeMethodDeclaration likeMethodDeclaration2 = getLikeMethodElement(element2);
+
+			if(likeMethodDeclaration1 != null && likeMethodDeclaration2 != null)
+			{
+				DotNetGenericParameter[] genericParameters1 = likeMethodDeclaration1.getGenericParameters();
+				DotNetGenericParameter[] genericParameters2 = likeMethodDeclaration2.getGenericParameters();
+
+				int i1 = ArrayUtil.find(genericParameters1, element1);
+				int i2 = ArrayUtil.find(genericParameters2, element2);
+
+				if(i1 != -1 && i1 == i2)
+				{
+					return true;
+				}
+			}
+		}
+
+		if(!element1.isEquivalentTo(element2))
 		{
 			return false;
 		}
@@ -701,6 +729,22 @@ public class CSharpTypeUtil
 			}
 		}
 		return true;
+	}
+
+	@Nullable
+	private static DotNetLikeMethodDeclaration getLikeMethodElement(PsiElement element)
+	{
+		PsiElement parent = element.getParent();
+		if(!(parent instanceof DotNetGenericParameterList))
+		{
+			return null;
+		}
+		parent = parent.getParent();
+		if(parent instanceof DotNetLikeMethodDeclaration)
+		{
+			return (DotNetLikeMethodDeclaration) parent;
+		}
+		return null;
 	}
 
 	public static boolean haveErrorType(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
