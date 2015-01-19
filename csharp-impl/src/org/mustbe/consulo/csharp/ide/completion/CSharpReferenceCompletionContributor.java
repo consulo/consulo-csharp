@@ -602,7 +602,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 			PsiElement element = innerTypeRef.resolve(scope).getElement();
 			if(element != null)
 			{
-				return IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY | Iconable.ICON_FLAG_READ_STATUS);
+				return IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY);
 			}
 			else
 			{
