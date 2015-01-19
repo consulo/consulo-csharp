@@ -22,6 +22,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
@@ -33,8 +34,15 @@ import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.ResolveResult;
+import com.intellij.psi.SmartPointerManager;
+import com.intellij.psi.SmartPsiElementPointer;
+import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
 
 /**
@@ -43,6 +51,47 @@ import com.intellij.util.SmartList;
  */
 public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 {
+	public static class BaseUseTypeFix extends BaseIntentionAction
+	{
+		private final CSharpRefTypeRef.Type myType;
+		private final SmartPsiElementPointer<DotNetExpression> myPointer;
+
+		public BaseUseTypeFix(DotNetExpression expression, CSharpRefTypeRef.Type type)
+		{
+			myType = type;
+			myPointer = SmartPointerManager.getInstance(expression.getProject()).createSmartPsiElementPointer(expression);
+
+			setText("Wrap with '" + myType + "'");
+		}
+
+		@NotNull
+		@Override
+		public String getFamilyName()
+		{
+			return "C#";
+		}
+
+		@Override
+		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+		{
+			return myPointer.getElement() != null;
+		}
+
+		@Override
+		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+		{
+			DotNetExpression element = myPointer.getElement();
+			if(element == null)
+			{
+				return;
+			}
+
+			DotNetExpression expression = CSharpFileFactory.createExpression(project, myType.name() + " " + element.getText());
+
+			element.replace(expression);
+		}
+	}
+
 	@NotNull
 	@Override
 	public List<CompilerCheckBuilder> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpMethodCallExpressionImpl element)
@@ -96,7 +145,8 @@ public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 			DotNetTypeRef typeRef = argument.getTypeRef();
 			if(!(typeRef instanceof CSharpRefTypeRef) || ((CSharpRefTypeRef) typeRef).getType() != type)
 			{
-				results.add(newBuilder(argumentExpression, String.valueOf(parameter.getIndex() + 1), type.name()));
+				results.add(newBuilder(argumentExpression, String.valueOf(parameter.getIndex() + 1), type.name()).addQuickFix(new BaseUseTypeFix
+						(argumentExpression, type)));
 			}
 			return results;
 		}
