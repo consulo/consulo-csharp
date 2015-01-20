@@ -63,6 +63,11 @@ public class CSharpGenericConstraintUtil
 				}
 			}
 		}
+
+		if(superTypes.isEmpty())
+		{
+			superTypes.add(new CSharpTypeRefByQName(DotNetTypes.System.Object));
+		}
 		return superTypes;
 	}
 
