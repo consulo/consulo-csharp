@@ -31,6 +31,8 @@ import com.intellij.psi.PsiElement;
 public class CSharpLightGenericParameterBuilder extends CSharpLightNamedElementWiModifierListBuilder<CSharpLightGenericParameterBuilder>
 		implements DotNetGenericParameter, DotNetModifierListOwner
 {
+	private int myIndex = -1;
+
 	public CSharpLightGenericParameterBuilder(Project project)
 	{
 		super(project);
@@ -47,5 +49,16 @@ public class CSharpLightGenericParameterBuilder extends CSharpLightNamedElementW
 	public PsiElement getNameIdentifier()
 	{
 		return null;
+	}
+
+	@Override
+	public int getIndex()
+	{
+		return myIndex;
+	}
+
+	public void setIndex(int index)
+	{
+		myIndex = index;
 	}
 }

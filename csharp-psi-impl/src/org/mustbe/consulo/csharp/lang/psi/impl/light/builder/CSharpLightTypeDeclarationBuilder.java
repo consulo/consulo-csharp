@@ -276,9 +276,14 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 	}
 
 	@NotNull
-	public CSharpLightTypeDeclarationBuilder addGenericParameter(DotNetGenericParameter parameter)
+	public CSharpLightTypeDeclarationBuilder addGenericParameter(DotNetGenericParameter genericParameter)
 	{
-		myGenericParameters.add(parameter);
+		if(genericParameter instanceof CSharpLightGenericParameterBuilder)
+		{
+			((CSharpLightGenericParameterBuilder) genericParameter).setIndex(myGenericParameters.size());
+		}
+
+		myGenericParameters.add(genericParameter);
 		return this;
 	}
 

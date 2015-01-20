@@ -588,8 +588,7 @@ public class CSharpTypeUtil
 	}
 
 	@NotNull
-	public static List<DotNetTypeRef> getImplicitOrExplicitTypeRefs(
-			@NotNull DotNetTypeRef fromTypeRef,
+	public static List<DotNetTypeRef> getImplicitOrExplicitTypeRefs(@NotNull DotNetTypeRef fromTypeRef,
 			@NotNull DotNetTypeRef leftTypeRef,
 			@NotNull CSharpStaticTypeRef explicitOrImplicit,
 			@NotNull PsiElement scope)
@@ -670,21 +669,10 @@ public class CSharpTypeUtil
 
 		if(element1 instanceof DotNetGenericParameter && element2 instanceof DotNetGenericParameter)
 		{
-			DotNetLikeMethodDeclaration likeMethodDeclaration1 = getLikeMethodElement(element1);
-			DotNetLikeMethodDeclaration likeMethodDeclaration2 = getLikeMethodElement(element2);
-
-			if(likeMethodDeclaration1 != null && likeMethodDeclaration2 != null)
+			if(isMethodGeneric(element1) && isMethodGeneric(element2) && ((DotNetGenericParameter) element1).getIndex() == ((DotNetGenericParameter)
+					element2).getIndex())
 			{
-				DotNetGenericParameter[] genericParameters1 = likeMethodDeclaration1.getGenericParameters();
-				DotNetGenericParameter[] genericParameters2 = likeMethodDeclaration2.getGenericParameters();
-
-				int i1 = ArrayUtil.find(genericParameters1, element1);
-				int i2 = ArrayUtil.find(genericParameters2, element2);
-
-				if(i1 != -1 && i1 == i2)
-				{
-					return true;
-				}
+				return true;
 			}
 		}
 
@@ -731,20 +719,20 @@ public class CSharpTypeUtil
 		return true;
 	}
 
-	@Nullable
-	private static DotNetLikeMethodDeclaration getLikeMethodElement(PsiElement element)
+	private static boolean isMethodGeneric(PsiElement element)
 	{
-		PsiElement parent = element.getParent();
+		PsiElement originalElement = element.getOriginalElement();
+
+		if(!(originalElement instanceof DotNetGenericParameter))
+		{
+			return false;
+		}
+		PsiElement parent = originalElement.getParent();
 		if(!(parent instanceof DotNetGenericParameterList))
 		{
-			return null;
+			return false;
 		}
-		parent = parent.getParent();
-		if(parent instanceof DotNetLikeMethodDeclaration)
-		{
-			return (DotNetLikeMethodDeclaration) parent;
-		}
-		return null;
+		return parent.getParent() instanceof DotNetLikeMethodDeclaration;
 	}
 
 	public static boolean haveErrorType(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
