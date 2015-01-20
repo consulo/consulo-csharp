@@ -25,8 +25,15 @@ import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.SmartPointerManager;
+import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.util.ArrayUtil;
+import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
@@ -34,6 +41,57 @@ import com.intellij.util.ArrayUtil;
  */
 public class CS1722 extends CompilerCheck<DotNetTypeList>
 {
+	public static class MoveToFirstPositionFix extends BaseIntentionAction
+	{
+		private SmartPsiElementPointer<DotNetType> myTypePointer;
+
+		public MoveToFirstPositionFix(DotNetType baseType)
+		{
+			myTypePointer = SmartPointerManager.getInstance(baseType.getProject()).createSmartPsiElementPointer(baseType);
+			setText("Place base type at first");
+		}
+
+		@NotNull
+		@Override
+		public String getFamilyName()
+		{
+			return "C#";
+		}
+
+		@Override
+		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+		{
+			return myTypePointer.getElement() != null;
+		}
+
+		@Override
+		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+		{
+			DotNetType element = myTypePointer.getElement();
+			if(element == null)
+			{
+				return;
+			}
+
+			DotNetTypeList parent = (DotNetTypeList) element.getParent();
+
+			DotNetType[] types = parent.getTypes();
+
+			int i = ArrayUtil.indexOf(types, element);
+			if(i <= 0)
+			{
+				return;
+			}
+			DotNetType elementAtZeroPosition = types[0];
+
+			PsiElement baseElementCopy = element.copy();
+			PsiElement elementAtZeroCopy = elementAtZeroPosition.copy();
+
+			elementAtZeroPosition.replace(baseElementCopy);
+			element.replace(elementAtZeroCopy);
+		}
+	}
+
 	@Nullable
 	@Override
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetTypeList element)
@@ -67,7 +125,7 @@ public class CS1722 extends CompilerCheck<DotNetTypeList>
 		if(i != 0)
 		{
 			CSharpTypeDeclaration parent = (CSharpTypeDeclaration) element.getParent();
-			return newBuilder(baseType, formatElement(parent), formatElement(resolvedElement));
+			return newBuilder(baseType, formatElement(parent), formatElement(resolvedElement)).addQuickFix(new MoveToFirstPositionFix(baseType));
 		}
 		return null;
 	}
