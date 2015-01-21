@@ -48,7 +48,7 @@ public class AddXModifierFix extends PsiElementBaseIntentionAction
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException
 	{
 		DotNetModifierListOwner owner = findOwner(element);
-		if(owner == null)
+		if(owner == null || !owner.isWritable())
 		{
 			return;
 		}
@@ -81,7 +81,7 @@ public class AddXModifierFix extends PsiElementBaseIntentionAction
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element)
 	{
 		DotNetModifierListOwner owner = findOwner(element);
-		return owner != null && !hasModifiers(owner) && isAllow(owner, myModifiers);
+		return owner != null && !hasModifiers(owner) && isAllow(owner, myModifiers) && owner.isWritable();
 	}
 
 	protected boolean hasModifiers(DotNetModifierListOwner owner)
