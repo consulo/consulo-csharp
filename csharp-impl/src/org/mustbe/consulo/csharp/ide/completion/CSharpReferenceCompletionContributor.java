@@ -50,6 +50,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptio
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeIndex;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
@@ -57,11 +59,11 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
+import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.libraryAnalyzer.NamespaceReference;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
@@ -223,25 +225,52 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 						}
 
 						DotNetTypeRef typeOfElement;
-						if(psiElement instanceof DotNetLikeMethodDeclaration)
+						if(psiElement instanceof CSharpMethodDeclaration)
 						{
-							typeOfElement = ((DotNetLikeMethodDeclaration) psiElement).getReturnTypeRef();
+							CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) psiElement;
+							typeOfElement = methodDeclaration.getReturnTypeRef();
+
+							for(ExpectedTypeInfo expectedTypeInfo : expectedTypeRefs)
+							{
+								if(expectedTypeInfo.getTypeProvider() == psiElement)
+								{
+									continue;
+								}
+
+								if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), typeOfElement, expression))
+								{
+									iterator.set(PrioritizedLookupElement.withPriority(next, CSharpCompletionUtil.EXPR_REF_PRIORITY));
+								}
+								else
+								{
+									DotNetTypeResolveResult typeResolveResult = expectedTypeInfo.getTypeRef().resolve(expression);
+									if(typeResolveResult instanceof CSharpLambdaResolveResult)
+									{
+										if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), new CSharpLambdaTypeRef(methodDeclaration),
+												expression))
+										{
+											next = buildForMethodReference(methodDeclaration);
+											iterator.set(PrioritizedLookupElement.withPriority(next, CSharpCompletionUtil.EXPR_REF_PRIORITY));
+										}
+									}
+								}
+							}
 						}
 						else
 						{
 							typeOfElement = CSharpReferenceExpressionImplUtil.toTypeRef(psiElement);
-						}
 
-						for(ExpectedTypeInfo expectedTypeInfo : expectedTypeRefs)
-						{
-							if(expectedTypeInfo.getTypeProvider() == psiElement)
+							for(ExpectedTypeInfo expectedTypeInfo : expectedTypeRefs)
 							{
-								continue;
-							}
+								if(expectedTypeInfo.getTypeProvider() == psiElement)
+								{
+									continue;
+								}
 
-							if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), typeOfElement, expression))
-							{
-								iterator.set(PrioritizedLookupElement.withPriority(next, CSharpCompletionUtil.EXPR_REF_PRIORITY));
+								if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), typeOfElement, expression))
+								{
+									iterator.set(PrioritizedLookupElement.withPriority(next, CSharpCompletionUtil.EXPR_REF_PRIORITY));
+								}
 							}
 						}
 					}
@@ -613,6 +642,33 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 		{
 			return getIconForInnerTypeRef((CSharpArrayTypeRef) ((CSharpArrayTypeRef) innerTypeRef).getInnerTypeRef(), scope);
 		}
+	}
+
+	private static LookupElementBuilder buildForMethodReference(final CSharpMethodDeclaration methodDeclaration)
+	{
+		LookupElementBuilder builder = LookupElementBuilder.create(methodDeclaration.getName());
+		builder = builder.withIcon(IconDescriptorUpdaters.getIcon(methodDeclaration, Iconable.ICON_FLAG_VISIBILITY));
+
+		final DotNetTypeRef[] parameterTypes = methodDeclaration.getParameterTypeRefs();
+
+		String genericText = DotNetElementPresentationUtil.formatGenericParameters(methodDeclaration);
+
+		String parameterText = genericText + "(" + StringUtil.join(parameterTypes, new Function<DotNetTypeRef, String>()
+		{
+			@Override
+			public String fun(DotNetTypeRef parameter)
+			{
+				return CSharpTypeRefPresentationUtil.buildShortText(parameter, methodDeclaration);
+			}
+		}, ", ") + ")";
+
+		if(CSharpMethodImplUtil.isExtensionWrapper(methodDeclaration))
+		{
+			builder = builder.withItemTextUnderlined(true);
+		}
+		builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(methodDeclaration.getReturnTypeRef(), methodDeclaration), true);
+		builder = builder.withTailText(parameterText, true);
+		return builder;
 	}
 
 	@Nullable
