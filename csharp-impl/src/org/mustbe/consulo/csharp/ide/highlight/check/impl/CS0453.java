@@ -44,19 +44,11 @@ public class CS0453 extends CompilerCheck<CSharpNullableType>
 	public static class DeleteQuestMarkQuickFix extends BaseIntentionAction
 	{
 		private SmartPsiElementPointer<CSharpNullableType> myPointer;
-		private String myText;
 
 		public DeleteQuestMarkQuickFix(CSharpNullableType nullableType, String text)
 		{
-			myText = text;
 			myPointer = SmartPointerManager.getInstance(nullableType.getProject()).createSmartPsiElementPointer(nullableType);
-		}
-
-		@NotNull
-		@Override
-		public String getText()
-		{
-			return "Remove '" + myText + "'";
+			setText("Remove '" + text + "'");
 		}
 
 		@NotNull
@@ -70,12 +62,6 @@ public class CS0453 extends CompilerCheck<CSharpNullableType>
 		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
 		{
 			return myPointer.getElement() != null;
-		}
-
-		@Override
-		public boolean startInWriteAction()
-		{
-			return true;
 		}
 
 		@Override

@@ -65,13 +65,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 		public SetLanguageVersionFix(CSharpLanguageVersion languageVersion)
 		{
 			myLanguageVersion = languageVersion;
-		}
-
-		@NotNull
-		@Override
-		public String getText()
-		{
-			return "Set language version to '" + myLanguageVersion.getPresentableName() + "'";
+			setText("Set language version to '" + myLanguageVersion.getPresentableName() + "'");
 		}
 
 		@Override
@@ -92,12 +86,6 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			mutable.setLanguageVersion(myLanguageVersion);
 
 			modifiableModel.commit();
-		}
-
-		@Override
-		public boolean startInWriteAction()
-		{
-			return true;
 		}
 
 		@Override

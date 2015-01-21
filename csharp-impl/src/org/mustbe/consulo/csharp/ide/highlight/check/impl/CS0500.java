@@ -48,6 +48,7 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration>
 		public RemoveCodeBlockFix(DotNetCodeBlockOwner declaration)
 		{
 			myPointer = SmartPointerManager.getInstance(declaration.getProject()).createSmartPsiElementPointer(declaration);
+			setText("Remove code block");
 		}
 
 		@NotNull
@@ -55,13 +56,6 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration>
 		public String getFamilyName()
 		{
 			return "C#";
-		}
-
-		@NotNull
-		@Override
-		public String getText()
-		{
-			return "Remove code block";
 		}
 
 		@Override

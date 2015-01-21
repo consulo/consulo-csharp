@@ -70,12 +70,6 @@ public class CS0227 extends CompilerCheck<DotNetElement>
 		}
 
 		@Override
-		public boolean startInWriteAction()
-		{
-			return true;
-		}
-
-		@Override
 		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			Module moduleForPsiElement = ModuleUtilCore.findModuleForPsiElement(file);

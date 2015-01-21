@@ -52,6 +52,7 @@ public class CS0145 extends CompilerCheck<DotNetVariable>
 		public RemoveConstKeywordFix(DotNetVariable element)
 		{
 			myVariablePointer = SmartPointerManager.getInstance(element.getProject()).createSmartPsiElementPointer(element);
+			setText("Remove 'const' keyword");
 		}
 
 		@NotNull
@@ -59,13 +60,6 @@ public class CS0145 extends CompilerCheck<DotNetVariable>
 		public String getFamilyName()
 		{
 			return "C#";
-		}
-
-		@NotNull
-		@Override
-		public String getText()
-		{
-			return "Remove 'const' keyword";
 		}
 
 		@Override
