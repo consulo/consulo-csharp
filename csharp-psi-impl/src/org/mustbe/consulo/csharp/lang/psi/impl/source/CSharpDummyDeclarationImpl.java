@@ -19,9 +19,6 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
-import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListOwner;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpDummyDeclStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -31,7 +28,7 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 06.03.14
  */
-public class CSharpDummyDeclarationImpl extends CSharpStubMemberImpl<CSharpDummyDeclStub> implements CSharpUsingListOwner
+public class CSharpDummyDeclarationImpl extends CSharpStubMemberImpl<CSharpDummyDeclStub>
 {
 	public static final String DUMMY = "<dummy>";
 
@@ -62,12 +59,5 @@ public class CSharpDummyDeclarationImpl extends CSharpStubMemberImpl<CSharpDummy
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
 		visitor.visitDummyDeclaration(this);
-	}
-
-	@Nullable
-	@Override
-	public CSharpUsingList getUsingList()
-	{
-		return getStubOrPsiChild(CSharpStubElements.USING_LIST);
 	}
 }
