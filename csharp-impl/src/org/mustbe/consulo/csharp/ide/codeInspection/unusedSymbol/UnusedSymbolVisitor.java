@@ -7,10 +7,11 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.search.searches.ReferencesSearch;
+import com.intellij.util.Query;
 
 /**
  * @author VISTALL
@@ -23,7 +24,9 @@ public class UnusedSymbolVisitor extends CSharpElementVisitor
 	@Override
 	public void visitLocalVariable(CSharpLocalVariable variable)
 	{
-		myVariableStates.put(variable, Boolean.FALSE);
+		Query<PsiReference> query = ReferencesSearch.search(variable);
+
+		myVariableStates.put(variable, query.findFirst() != null);
 	}
 
 	@Override
@@ -36,22 +39,9 @@ public class UnusedSymbolVisitor extends CSharpElementVisitor
 				return;
 			}
 		}
-		myVariableStates.put(parameter, Boolean.FALSE);
-	}
+		Query<PsiReference> query = ReferencesSearch.search(parameter);
 
-	@Override
-	public void visitReferenceExpression(CSharpReferenceExpression expression)
-	{
-		PsiElement resolve = expression.resolve();
-		if(!(resolve instanceof PsiNameIdentifierOwner))
-		{
-			return;
-		}
-		Boolean aBoolean = myVariableStates.get(resolve);
-		if(aBoolean != null)
-		{
-			myVariableStates.put((PsiNameIdentifierOwner) resolve, Boolean.TRUE);
-		}
+		myVariableStates.put(parameter, query.findFirst() != null);
 	}
 
 	@NotNull
