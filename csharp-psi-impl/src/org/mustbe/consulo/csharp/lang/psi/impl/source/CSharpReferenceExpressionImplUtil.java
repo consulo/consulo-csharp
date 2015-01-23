@@ -173,7 +173,7 @@ public class CSharpReferenceExpressionImplUtil
 		{
 			return 0;
 		}
-		return typeArgumentList.getTypes().length;
+		return typeArgumentList.getTypesCount();
 	}
 
 	public static TextRange getRangeInElement(@NotNull CSharpReferenceExpression referenceExpression)

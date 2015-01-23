@@ -43,6 +43,12 @@ public class CSharpLightParameterList extends CSharpLightElement<PsiElement> imp
 		visitor.visitParameterList(this);
 	}
 
+	@Override
+	public int getParametersCount()
+	{
+		return myParameters.length;
+	}
+
 	@NotNull
 	@Override
 	public DotNetParameter[] getParameters()
