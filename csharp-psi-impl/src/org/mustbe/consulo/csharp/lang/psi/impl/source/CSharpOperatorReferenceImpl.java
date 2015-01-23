@@ -317,11 +317,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 
-		ResolveResult resolveResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
-		if(resolveResult == null)
-		{
-			resolveResult = resolveResults[0];
-		}
+		ResolveResult resolveResult = CSharpResolveUtil.findValidOrFirstMaybeResult(resolveResults);
 
 		if(resolveResult instanceof StubElementResolveResult)
 		{

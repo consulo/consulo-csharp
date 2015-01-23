@@ -593,11 +593,7 @@ public class CSharpReferenceExpressionImplUtil
 				}
 
 				resolveResults = callArgumentListOwner.multiResolve(false);
-				ResolveResult goodResolveResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
-				if(goodResolveResult == null)
-				{
-					goodResolveResult = ArrayUtil.getFirstElement(resolveResults);
-				}
+				ResolveResult goodResolveResult = CSharpResolveUtil.findValidOrFirstMaybeResult(resolveResults);
 
 				if(goodResolveResult == null)
 				{
