@@ -3,7 +3,7 @@ package org.mustbe.consulo.csharp.ide.codeInsight.actions.expressionActions.lamb
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAnonymMethodExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDelegateExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -28,7 +28,7 @@ public class AnonymToLambdaFix extends PsiElementBaseIntentionAction
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException
 	{
-		CSharpAnonymMethodExpressionImpl anonymMethodExpression = PsiTreeUtil.getParentOfType(element, CSharpAnonymMethodExpressionImpl.class);
+		CSharpDelegateExpressionImpl anonymMethodExpression = PsiTreeUtil.getParentOfType(element, CSharpDelegateExpressionImpl.class);
 
 		assert anonymMethodExpression != null;
 
@@ -105,7 +105,7 @@ public class AnonymToLambdaFix extends PsiElementBaseIntentionAction
 	{
 		if(element.getNode().getElementType() == CSharpTokens.DELEGATE_KEYWORD)
 		{
-			CSharpAnonymMethodExpressionImpl anonymMethodExpression = PsiTreeUtil.getParentOfType(element, CSharpAnonymMethodExpressionImpl.class);
+			CSharpDelegateExpressionImpl anonymMethodExpression = PsiTreeUtil.getParentOfType(element, CSharpDelegateExpressionImpl.class);
 			return anonymMethodExpression != null && anonymMethodExpression.toTypeRef(true) != DotNetTypeRef.ERROR_TYPE;
 		}
 		return false;

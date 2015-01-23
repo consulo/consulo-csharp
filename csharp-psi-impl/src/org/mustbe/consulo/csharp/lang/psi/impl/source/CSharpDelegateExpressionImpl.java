@@ -41,9 +41,9 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  * @author VISTALL
  * @since 19.01.14
  */
-public class CSharpAnonymMethodExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpSimpleLikeMethodAsElement, DotNetParameterListOwner
+public class CSharpDelegateExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpSimpleLikeMethodAsElement, DotNetParameterListOwner
 {
-	public CSharpAnonymMethodExpressionImpl(@NotNull ASTNode node)
+	public CSharpDelegateExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}

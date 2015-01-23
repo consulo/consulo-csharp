@@ -886,7 +886,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			builder.error("'{' expected");
 		}
 
-		marker.done(ANONYM_METHOD_EXPRESSION);
+		marker.done(DELEGATE_EXPRESSION);
 		return marker;
 	}
 

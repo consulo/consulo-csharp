@@ -159,7 +159,7 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements Dot
 		codeBlock.accept(new CSharpRecursiveElementVisitor()
 		{
 			@Override
-			public void visitAnonymMethodExpression(CSharpAnonymMethodExpressionImpl method)
+			public void visitAnonymMethodExpression(CSharpDelegateExpressionImpl method)
 			{
 				// dont need check return inside anonym
 			}
