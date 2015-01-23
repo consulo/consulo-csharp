@@ -25,7 +25,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameterList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -50,7 +49,7 @@ import lombok.val;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpSimpleLikeMethodAsElement
+public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements CSharpAnonymousMethodExpression
 {
 	public CSharpLambdaExpressionImpl(@NotNull ASTNode node)
 	{
@@ -63,6 +62,7 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements Dot
 		return getModifierElement(modifier) != null;
 	}
 
+	@Override
 	@Nullable
 	public PsiElement getModifierElement(@NotNull DotNetModifier modifier)
 	{

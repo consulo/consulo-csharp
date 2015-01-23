@@ -19,13 +19,13 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
@@ -41,7 +41,7 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  * @author VISTALL
  * @since 19.01.14
  */
-public class CSharpDelegateExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpSimpleLikeMethodAsElement, DotNetParameterListOwner
+public class CSharpDelegateExpressionImpl extends CSharpElementImpl implements CSharpAnonymousMethodExpression, DotNetParameterListOwner
 {
 	public CSharpDelegateExpressionImpl(@NotNull ASTNode node)
 	{
@@ -136,7 +136,20 @@ public class CSharpDelegateExpressionImpl extends CSharpElementImpl implements D
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		return false;
+		return getModifierElement(modifier) != null;
+	}
+
+	@Override
+	@Nullable
+	public PsiElement getModifierElement(@NotNull DotNetModifier modifier)
+	{
+		CSharpModifier as = CSharpModifier.as(modifier);
+		switch(as)
+		{
+			case ASYNC:
+				return findChildByType(CSharpSoftTokens.ASYNC_KEYWORD);
+		}
+		return null;
 	}
 
 	@Nullable

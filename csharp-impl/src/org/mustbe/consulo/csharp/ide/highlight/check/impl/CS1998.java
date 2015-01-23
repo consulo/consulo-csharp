@@ -22,8 +22,8 @@ import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStoppableRecursiveElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAnonymousMethodExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAwaitExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
@@ -84,9 +84,9 @@ public class CS1998 extends CompilerCheck<CSharpSimpleLikeMethodAsElement>
 			}
 			return modifierList.getModifierElement(CSharpModifier.ASYNC);
 		}
-		else if(element instanceof CSharpLambdaExpressionImpl)
+		else if(element instanceof CSharpAnonymousMethodExpression)
 		{
-			return ((CSharpLambdaExpressionImpl) element).getModifierElement(CSharpModifier.ASYNC);
+			return ((CSharpAnonymousMethodExpression) element).getModifierElement(CSharpModifier.ASYNC);
 		}
 		return null;
 	}

@@ -352,7 +352,8 @@ public class ExpressionParsing extends SharedParsingHelpers
 			final PsiBuilder.Marker right = parseExpression(builder, type);
 
 			tokenType = builder.getTokenType();
-			if(tokenType != null && ops.contains(tokenType) || tokenType == null || !ops.contains(tokenType) || tokenType != currentExprTokenType || right == null)
+			if(tokenType != null && ops.contains(tokenType) || tokenType == null || !ops.contains(tokenType) || tokenType != currentExprTokenType ||
+					right == null)
 			{
 				// save
 				result = result.precede();
@@ -731,7 +732,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(tokenType == DELEGATE_KEYWORD)
 		{
-			return parseAnonymMethodExpression(builder, null);
+			return parseDelegateExpression(builder);
 		}
 
 		if(tokenType == REF_KEYWORD || tokenType == OUT_KEYWORD)
@@ -746,6 +747,10 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(tokenType == ASYNC_KEYWORD)
 		{
+			if(builder.lookAhead(1) == CSharpTokens.DELEGATE_KEYWORD)
+			{
+				return parseDelegateExpression(builder);
+			}
 			return parseLambdaExpression(builder, null);
 		}
 
@@ -867,9 +872,14 @@ public class ExpressionParsing extends SharedParsingHelpers
 		return marker;
 	}
 
-	private static PsiBuilder.Marker parseAnonymMethodExpression(@NotNull CSharpBuilderWrapper builder, final PsiBuilder.Marker m)
+	private static PsiBuilder.Marker parseDelegateExpression(@NotNull CSharpBuilderWrapper builder)
 	{
-		val marker = m == null ? builder.mark() : m;
+		val marker = builder.mark();
+
+		if(builder.getTokenType() == CSharpSoftTokens.ASYNC_KEYWORD)
+		{
+			builder.advanceLexer();
+		}
 		builder.advanceLexer();
 
 		if(builder.getTokenType() == LPAR)
@@ -1422,8 +1432,10 @@ public class ExpressionParsing extends SharedParsingHelpers
 		return parseQualifiedReference(builder, prevMarker, NONE, TokenSet.EMPTY);
 	}
 
-	public static ReferenceInfo parseQualifiedReference(@NotNull CSharpBuilderWrapper builder, @Nullable final PsiBuilder.Marker prevMarker,
-			int flags, @NotNull TokenSet nameStopperSet)
+	public static ReferenceInfo parseQualifiedReference(@NotNull CSharpBuilderWrapper builder,
+			@Nullable final PsiBuilder.Marker prevMarker,
+			int flags,
+			@NotNull TokenSet nameStopperSet)
 	{
 		if(prevMarker != null)
 		{
