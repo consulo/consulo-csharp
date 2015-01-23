@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightNamespaceDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpPointerTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
@@ -53,6 +54,7 @@ import org.mustbe.consulo.msil.lang.psi.impl.type.MsilArrayTypRefImpl;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilNativeTypeRefImpl;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Condition;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ContainerUtil;
 import lombok.val;
@@ -181,6 +183,15 @@ public class MsilToCSharpUtil
 			if(cache != null)
 			{
 				return cache;
+			}
+
+			if(parent == null)
+			{
+				String parentQName = ((MsilClassEntry) element).getPresentableParentQName();
+				if(!StringUtil.isEmpty(parentQName))
+				{
+					parent = new CSharpLightNamespaceDeclarationBuilder(element.getProject(), parentQName);
+				}
 			}
 
 			cache = wrapToDelegateMethod((DotNetTypeDeclaration) element, parent);
