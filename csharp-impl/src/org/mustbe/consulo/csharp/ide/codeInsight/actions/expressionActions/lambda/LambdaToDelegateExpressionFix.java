@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.ide.codeInsight.actions.expressionActions.lamb
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
@@ -31,7 +32,14 @@ public class LambdaToDelegateExpressionFix extends PsiElementBaseIntentionAction
 		CSharpLambdaExpressionImpl lambdaExpression = PsiTreeUtil.getParentOfType(element, CSharpLambdaExpressionImpl.class);
 		assert lambdaExpression != null;
 
-		StringBuilder builder = new StringBuilder("delegate(");
+		StringBuilder builder = new StringBuilder();
+
+		if(lambdaExpression.hasModifier(CSharpModifier.ASYNC))
+		{
+			builder.append("async ");
+		}
+
+		builder.append("delegate(");
 
 		CSharpLambdaParameter[] parameters = lambdaExpression.getParameters();
 
@@ -89,7 +97,7 @@ public class LambdaToDelegateExpressionFix extends PsiElementBaseIntentionAction
 	@Override
 	public String getText()
 	{
-		return "To anonymous";
+		return "To delegate";
 	}
 
 	@NotNull
