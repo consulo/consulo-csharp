@@ -136,7 +136,15 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		{
 			CSharpMethodDeclaration parent = (CSharpMethodDeclaration) element.getParent();
 			assert parent.getCodeBlock() == element;
-			return Trinity.create(parent.getReturnTypeRef(), ((DotNetExpression) element).toTypeRef(true), element);
+
+			CSharpImplicitReturnModel model = CSharpImplicitReturnModel.None;
+			if(parent.hasModifier(CSharpModifier.ASYNC))
+			{
+				model = CSharpImplicitReturnModel.Async;
+			}
+
+			DotNetTypeRef returnTypeRef = model.extractTypeRef(parent.getReturnTypeRef(), element);
+			return Trinity.create(returnTypeRef, ((DotNetExpression) element).toTypeRef(true), element);
 		}
 		else if(element instanceof CSharpAssignmentExpressionImpl)
 		{
