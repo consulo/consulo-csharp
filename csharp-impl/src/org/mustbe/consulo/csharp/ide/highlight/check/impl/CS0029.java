@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightKey;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
@@ -196,6 +197,15 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			if(singleExpression instanceof DotNetExpression)
 			{
 				DotNetTypeRef returnTypeRef = ((CSharpLambdaResolveResult) typeResolveResult).getReturnTypeRef();
+
+				CSharpImplicitReturnModel model = CSharpImplicitReturnModel.None;
+				if(lambdaExpression.hasModifier(CSharpModifier.ASYNC))
+				{
+					model = CSharpImplicitReturnModel.Async;
+				}
+
+				returnTypeRef = model.extractTypeRef(returnTypeRef, element);
+
 				// void type allow any type if used expression body
 				if(DotNetTypeRefUtil.isVmQNameEqual(returnTypeRef, element, DotNetTypes.System.Void))
 				{
