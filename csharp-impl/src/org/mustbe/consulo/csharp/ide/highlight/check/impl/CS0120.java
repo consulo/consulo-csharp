@@ -20,10 +20,20 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpContextUtil;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
+import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.SmartPointerManager;
+import com.intellij.psi.SmartPsiElementPointer;
+import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
@@ -31,6 +41,78 @@ import com.intellij.psi.PsiElement;
  */
 public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx>
 {
+	public static class ReplaceQualifierByTypeFix extends BaseIntentionAction
+	{
+		private SmartPsiElementPointer<CSharpReferenceExpressionEx> myReferenceExpressionPointer;
+
+		public ReplaceQualifierByTypeFix(CSharpReferenceExpressionEx referenceExpressionEx)
+		{
+			myReferenceExpressionPointer = SmartPointerManager.getInstance(referenceExpressionEx.getProject()).createSmartPsiElementPointer
+					(referenceExpressionEx);
+		}
+
+		@NotNull
+		@Override
+		public String getText()
+		{
+			CSharpReferenceExpressionEx element = myReferenceExpressionPointer.getElement();
+			if(element == null)
+			{
+				throw new IllegalArgumentException();
+			}
+
+			PsiElement resolvedElement = element.resolve();
+			if(resolvedElement == null)
+			{
+				throw new IllegalArgumentException();
+			}
+			return "Replace qualifier by '" + formatElement(resolvedElement.getParent()) + "'";
+		}
+
+		@NotNull
+		@Override
+		public String getFamilyName()
+		{
+			return "C#";
+		}
+
+		@Override
+		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+		{
+			CSharpReferenceExpressionEx element = myReferenceExpressionPointer.getElement();
+			return element != null && element.getQualifier() != null;
+		}
+
+		@Override
+		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+		{
+			CSharpReferenceExpressionEx element = myReferenceExpressionPointer.getElement();
+			if(element == null)
+			{
+				return;
+			}
+
+			PsiElement qualifier = element.getQualifier();
+			if(qualifier == null)
+			{
+				return;
+			}
+			PsiElement resolvedElement = element.resolve();
+			if(resolvedElement == null)
+			{
+				return;
+			}
+
+			PsiElement parent = resolvedElement.getParent();
+
+			assert parent instanceof PsiNameIdentifierOwner;
+
+			DotNetExpression expression = CSharpFileFactory.createExpression(project, ((PsiNameIdentifierOwner) parent).getName());
+
+			qualifier.replace(expression);
+		}
+	}
+
 	@Nullable
 	@Override
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpReferenceExpressionEx element)
@@ -55,7 +137,8 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx>
 		}
 		else if(contextForResolved == CSharpContextUtil.ContextType.STATIC && parentContextType.isAllowInstance())
 		{
-			return newBuilderImpl(CS0176.class, referenceElement, formatElement(resolvedElement));
+			return newBuilderImpl(CS0176.class, referenceElement, formatElement(resolvedElement)).addQuickFix(new ReplaceQualifierByTypeFix
+					(element));
 		}
 		return null;
 	}
