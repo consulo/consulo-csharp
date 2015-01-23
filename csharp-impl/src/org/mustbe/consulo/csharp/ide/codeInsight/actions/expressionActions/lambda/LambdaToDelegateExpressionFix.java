@@ -23,7 +23,7 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 01.11.14
  */
-public class LambdaToAnonymFix extends PsiElementBaseIntentionAction
+public class LambdaToDelegateExpressionFix extends PsiElementBaseIntentionAction
 {
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException
