@@ -68,6 +68,21 @@ public class ExpressionParsing extends SharedParsingHelpers
 	private static final TokenSet THIS_OR_BASE = TokenSet.create(THIS_KEYWORD, BASE_KEYWORD);
 
 	@Nullable
+	public static PsiBuilder.Marker parseVariableInitializer(@NotNull CSharpBuilderWrapper builder)
+	{
+		IElementType tokenType = builder.getTokenType();
+
+		if(tokenType == LBRACE)
+		{
+			return parseArrayInitialization(builder, IMPLICIT_ARRAY_INITIALIZATION_EXPRESSION);
+		}
+		else
+		{
+			return parse(builder);
+		}
+	}
+
+	@Nullable
 	public static PsiBuilder.Marker parse(final CSharpBuilderWrapper builder)
 	{
 		return parseAssignment(builder);
@@ -693,11 +708,6 @@ public class ExpressionParsing extends SharedParsingHelpers
 			builder.advanceLexer();
 			literal.done(CONSTANT_EXPRESSION);
 			return literal;
-		}
-
-		if(tokenType == LBRACE)
-		{
-			return parseArrayInitialization(builder, IMPLICIT_ARRAY_INITIALIZATION_EXPRESSION);
 		}
 
 		if(tokenType == NEW_KEYWORD)

@@ -85,7 +85,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 		if(builder.getTokenType() == EQ)
 		{
 			builder.advanceLexer();
-			if(ExpressionParsing.parse(builder) == null)
+			if(ExpressionParsing.parseVariableInitializer(builder) == null)
 			{
 				builder.error("Expression expected");
 			}
@@ -141,7 +141,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 			if(builderWrapper.getTokenType() == EQ)
 			{
 				builderWrapper.advanceLexer();
-				if(ExpressionParsing.parse(builderWrapper) == null)
+				if(ExpressionParsing.parseVariableInitializer(builderWrapper) == null)
 				{
 					builderWrapper.error("Expression expected");
 				}
