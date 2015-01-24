@@ -24,7 +24,7 @@ import com.intellij.lang.ASTNode;
  * @author VISTALL
  * @since 24.01.15
  */
-public class CSharpArrayInitializerCompositeValueImpl extends CSharpElementImpl
+public class CSharpArrayInitializerCompositeValueImpl extends CSharpElementImpl implements CSharpArrayInitializerValue
 {
 	public CSharpArrayInitializerCompositeValueImpl(@NotNull ASTNode node)
 	{

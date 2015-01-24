@@ -94,6 +94,9 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.between(CSharpTokens.LOCK_KEYWORD, CSharpTokens.LPAR).spaceIf(customSettings.SPACE_BEFORE_LOCK_PARENTHESES);
 		myBuilder.between(CSharpTokens.FIXED_KEYWORD, CSharpTokens.LPAR).spaceIf(customSettings.SPACE_BEFORE_FIXED_PARENTHESES);
 
+		myBuilder.afterInside(CSharpTokens.LBRACE, CSharpElements.ARRAY_INITIALIZER_COMPOSITE_VALUE).spaces(0);
+		myBuilder.beforeInside(CSharpTokens.RBRACE, CSharpElements.ARRAY_INITIALIZER_COMPOSITE_VALUE).spaces(0);
+
 		myBuilder.beforeInside(LBRACE, TYPE_DECLARATION).spaceIf(commonSettings.SPACE_BEFORE_CLASS_LBRACE);
 		myBuilder.beforeInside(LBRACE, PROPERTY_DECLARATION).spaceIf(customSettings.SPACE_BEFORE_PROPERTY_LBRACE);
 		myBuilder.beforeInside(LBRACE, EVENT_DECLARATION).spaceIf(customSettings.SPACE_BEFORE_EVENT_LBRACE);
