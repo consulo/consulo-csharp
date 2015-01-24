@@ -61,11 +61,7 @@ public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpEleme
 		{
 			if(another instanceof DotNetArrayTypeRef)
 			{
-				DotNetExpression[] expressions = myExpression.getExpressions();
-				if(expressions.length == 0)
-				{
-					return another;
-				}
+				return another;
 			}
 			return null;
 		}
