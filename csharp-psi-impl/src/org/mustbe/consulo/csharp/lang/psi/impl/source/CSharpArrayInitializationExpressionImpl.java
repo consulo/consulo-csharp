@@ -62,6 +62,7 @@ public class CSharpArrayInitializationExpressionImpl extends CSharpElementImpl i
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 		List<DotNetTypeRef> typeRefs = new ArrayList<DotNetTypeRef>(expressions.length);
+
 		for(DotNetExpression expression : expressions)
 		{
 			typeRefs.add(expression.toTypeRef(resolveFromParent));
@@ -82,6 +83,11 @@ public class CSharpArrayInitializationExpressionImpl extends CSharpElementImpl i
 				return rank2 - rank1;
 			}
 		});
+
+		if(typeRefs.isEmpty())
+		{
+			return DotNetTypeRef.ERROR_TYPE;
+		}
 		return new CSharpArrayTypeRef(typeRefs.get(0), 0);
 	}
 }
