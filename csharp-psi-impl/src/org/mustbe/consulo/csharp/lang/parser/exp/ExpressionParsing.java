@@ -1352,42 +1352,30 @@ public class ExpressionParsing extends SharedParsingHelpers
 		return marker;
 	}
 
-	private static PsiBuilder.Marker parseArrayInitializerCompositeValue(CSharpBuilderWrapper builderWrapper)
+	private static PsiBuilder.Marker parseArrayInitializerCompositeValue(CSharpBuilderWrapper builder)
 	{
-		if(builderWrapper.getTokenType() != LBRACE)
+		if(builder.getTokenType() != LBRACE)
 		{
 			return null;
 		}
 
-		PsiBuilder.Marker marker = builderWrapper.mark();
+		PsiBuilder.Marker headerMarker = builder.mark();
 
-		builderWrapper.advanceLexer();
+		builder.advanceLexer();
 
-		while(!builderWrapper.eof())
+		if(builder.getTokenType() == RBRACE)
 		{
-			if(builderWrapper.getTokenType() == RBRACE)
-			{
-				break;
-			}
+			builder.advanceLexer();
+		}
+		else
+		{
+			parseArguments(builder, RBRACE, false);
 
-			if(parse(builderWrapper) == null)
-			{
-				builderWrapper.error("Expression expected");
-			}
-
-			if(builderWrapper.getTokenType() == COMMA)
-			{
-				builderWrapper.advanceLexer();
-			}
-			else if(builderWrapper.getTokenType() != RBRACE)
-			{
-				doneOneElement(builderWrapper, builderWrapper.getTokenType(), ERROR_EXPRESSION, "Expression expected");
-			}
+			expect(builder, RBRACE, "'}' expected");
 		}
 
-		expect(builderWrapper, RBRACE, "'}' expected");
-		marker.done(ARRAY_INITIALIZER_COMPOSITE_VALUE);
-		return marker;
+		headerMarker.done(ARRAY_INITIALIZER_COMPOSITE_VALUE);
+		return headerMarker;
 	}
 
 	private static void parseFieldOrPropertySetBlock(CSharpBuilderWrapper builder)

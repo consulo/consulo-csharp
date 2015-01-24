@@ -46,7 +46,7 @@ public class CS0826 extends CompilerCheck<CSharpNewExpressionImpl>
 			return null;
 		}
 
-		if(arrayInitializationExpression.toTypeRef(true) == DotNetTypeRef.ERROR_TYPE)
+		if(element.toTypeRef(true) == DotNetTypeRef.ERROR_TYPE)
 		{
 			return newBuilder(element);
 		}

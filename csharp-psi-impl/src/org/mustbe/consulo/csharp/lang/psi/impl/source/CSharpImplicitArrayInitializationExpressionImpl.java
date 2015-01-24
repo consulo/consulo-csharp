@@ -30,7 +30,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 30.12.14
  */
-public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpArrayInitializerOwner
 {
 	private static class ImplicitArrayInitializationTypeRef extends DotNetTypeRef.Adapter implements CSharpFastImplicitTypeRef
 	{
@@ -93,5 +93,12 @@ public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpEleme
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
 		return new ImplicitArrayInitializationTypeRef(this);
+	}
+
+	@Nullable
+	@Override
+	public CSharpArrayInitializerImpl getArrayInitializer()
+	{
+		return findChildByClass(CSharpArrayInitializerImpl.class);
 	}
 }

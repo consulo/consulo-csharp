@@ -451,7 +451,7 @@ public class CSharpResolveUtil
 			return ((DotNetArrayTypeRef) typeRef).getInnerTypeRef();
 		}
 		DotNetMethodDeclaration method = CSharpSearchUtil.findMethodByName("GetEnumerator", DotNetTypes2.System.Collections.Generic.IEnumerable$1,
-				typeRef, scope);
+				typeRef, scope, 0);
 		if(method != null)
 		{
 			DotNetPropertyDeclaration current = CSharpSearchUtil.findPropertyByName("Current", DotNetTypes2.System.Collections.Generic.IEnumerator$1,

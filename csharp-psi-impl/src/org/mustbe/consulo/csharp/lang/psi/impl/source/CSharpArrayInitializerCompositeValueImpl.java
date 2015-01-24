@@ -17,14 +17,31 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
+import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
  * @since 24.01.15
  */
-public class CSharpArrayInitializerCompositeValueImpl extends CSharpElementImpl implements CSharpArrayInitializerValue
+public class CSharpArrayInitializerCompositeValueImpl extends CSharpElementImpl implements CSharpArrayInitializerValue, CSharpCallArgumentList,
+		CSharpCallArgumentListOwner
 {
 	public CSharpArrayInitializerCompositeValueImpl(@NotNull ASTNode node)
 	{
@@ -35,5 +52,115 @@ public class CSharpArrayInitializerCompositeValueImpl extends CSharpElementImpl 
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
 		visitor.visitArrayInitializerCompositeValue(this);
+	}
+
+	@Override
+	public boolean canResolve()
+	{
+		CSharpArrayInitializerOwner arrayInitializerOwner = PsiTreeUtil.getParentOfType(this, CSharpArrayInitializerOwner.class);
+		if(arrayInitializerOwner instanceof CSharpNewExpressionImpl)
+		{
+			DotNetTypeRef typeRef = ((CSharpNewExpressionImpl) arrayInitializerOwner).toTypeRef(false);
+			return typeRef != DotNetTypeRef.ERROR_TYPE;
+		}
+		return false;
+	}
+
+	@NotNull
+	@Override
+	public DotNetExpression[] getParameterExpressions()
+	{
+		CSharpCallArgumentList parameterList = getParameterList();
+		return parameterList == null ? DotNetExpression.EMPTY_ARRAY : parameterList.getExpressions();
+	}
+
+	@Nullable
+	@Override
+	public PsiElement resolveToCallable()
+	{
+		ResolveResult[] resolveResults = multiResolve(false);
+		if(resolveResults.length == 0)
+		{
+			return null;
+		}
+		return CSharpResolveUtil.findFirstValidElement(resolveResults);
+	}
+
+	@NotNull
+	@Override
+	public ResolveResult[] multiResolve(boolean b)
+	{
+		CSharpArrayInitializerOwner arrayInitializerOwner = PsiTreeUtil.getParentOfType(this, CSharpArrayInitializerOwner.class);
+		if(arrayInitializerOwner instanceof CSharpNewExpressionImpl)
+		{
+			DotNetTypeRef typeRef = ((CSharpNewExpressionImpl) arrayInitializerOwner).toTypeRef(false);
+			if(typeRef == DotNetTypeRef.ERROR_TYPE)
+			{
+				return ResolveResult.EMPTY_ARRAY;
+			}
+
+			DotNetTypeResolveResult typeResolveResult = typeRef.resolve(this);
+			PsiElement resolvedElement = typeResolveResult.getElement();
+			if(resolvedElement == null)
+			{
+				return ResolveResult.EMPTY_ARRAY;
+			}
+
+			CSharpResolveOptions options = new CSharpResolveOptions(CSharpReferenceExpression.ResolveToKind.METHOD,
+					new MemberByNameSelector("Add"), this, this, false, true);
+
+			return CSharpReferenceExpressionImplUtil.collectResults(options, typeResolveResult.getGenericExtractor(), resolvedElement);
+		}
+		return ResolveResult.EMPTY_ARRAY;
+	}
+
+	@NotNull
+	@Override
+	public CSharpCallArgument[] getCallArguments()
+	{
+		CSharpCallArgumentList parameterList = getParameterList();
+		return parameterList == null ? CSharpCallArgument.EMPTY_ARRAY : parameterList.getArguments();
+	}
+
+	@Nullable
+	@Override
+	public CSharpCallArgumentList getParameterList()
+	{
+		return this;
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getOpenElement()
+	{
+		return findChildByType(CSharpTokens.LBRACE);
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getCloseElement()
+	{
+		return findChildByType(CSharpTokens.RBRACE);
+	}
+
+	@NotNull
+	@Override
+	public CSharpCallArgument[] getArguments()
+	{
+		return findChildrenByClass(CSharpCallArgument.class);
+	}
+
+	@NotNull
+	@Override
+	public CSharpFieldOrPropertySet[] getSets()
+	{
+		return CSharpFieldOrPropertySet.EMPTY_ARRAY;
+	}
+
+	@NotNull
+	@Override
+	public DotNetExpression[] getExpressions()
+	{
+		return new DotNetExpression[0];
 	}
 }

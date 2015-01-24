@@ -180,7 +180,7 @@ public class ExpectedTypeRefProvider
 		}
 		else if(parent instanceof CSharpCallArgument)
 		{
-			CSharpCallArgumentListOwner callArgumentListOwner = PsiTreeUtil.getParentOfType(parent, CSharpCallArgumentListOwner.class);
+			CSharpCallArgumentListOwner callArgumentListOwner = PsiTreeUtil.getParentOfType(parent, CSharpCallArgumentListOwner.class, false);
 
 			assert callArgumentListOwner != null;
 

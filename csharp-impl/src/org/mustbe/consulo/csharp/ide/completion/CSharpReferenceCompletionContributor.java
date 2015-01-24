@@ -297,7 +297,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 				assert arrayInitializationExpression != null;
 				CSharpArrayInitializerValue[] arrayInitializerValues = arrayInitializationExpression.getValues();
 				if(arrayInitializerValues.length != 1 || !(arrayInitializerValues[0] instanceof CSharpArrayInitializerSingleValueImpl) ||
-						((CSharpArrayInitializerSingleValueImpl)arrayInitializerValues[0]).getExpression() != expression)
+						((CSharpArrayInitializerSingleValueImpl)arrayInitializerValues[0]).getArgumentExpression() != expression)
 				{
 					return;
 				}
