@@ -8,7 +8,10 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerCompositeValueImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerValue;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpImplicitArrayInitializationExpressionImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.formatting.Wrap;
 import com.intellij.formatting.WrapType;
@@ -37,18 +40,17 @@ public class CSharpWrappingProcessor
 	{
 		IElementType elementType = myNode.getElementType();
 
+		PsiElement psi = myNode.getPsi();
+		PsiElement parentPsi = psi.getParent();
+
 		if(elementType == CSharpTokens.LBRACE)
 		{
-			ASTNode treeParent = myNode.getTreeParent();
-
-			PsiElement psi = treeParent.getPsi();
-
 			int braceStyle = myCodeStyleSettings.BRACE_STYLE;
-			if(psi instanceof CSharpTypeDeclaration)
+			if(parentPsi instanceof CSharpTypeDeclaration)
 			{
 				braceStyle = myCodeStyleSettings.CLASS_BRACE_STYLE;
 			}
-			else if(psi instanceof CSharpBlockStatementImpl && psi.getParent() instanceof CSharpMethodDeclaration)
+			else if(parentPsi instanceof CSharpBlockStatementImpl && parentPsi.getParent() instanceof CSharpMethodDeclaration)
 			{
 				braceStyle = myCodeStyleSettings.METHOD_BRACE_STYLE;
 			}
@@ -64,21 +66,32 @@ public class CSharpWrappingProcessor
 			}
 		}
 
-		if(elementType == CSharpTokens.RBRACE || elementType == CSharpElements.XXX_ACCESSOR || elementType == CSharpElements
-				.ENUM_CONSTANT_DECLARATION)
+		if(elementType == CSharpTokens.RBRACE)
+		{
+			if(parentPsi instanceof CSharpImplicitArrayInitializationExpressionImpl || parentPsi instanceof CSharpArrayInitializerCompositeValueImpl)
+			{
+				return Wrap.createWrap(WrapType.NONE, true);
+			}
+			return Wrap.createWrap(WrapType.ALWAYS, true);
+		}
+
+		if(psi instanceof CSharpArrayInitializerValue)
 		{
 			return Wrap.createWrap(WrapType.ALWAYS, true);
 		}
 
-		PsiElement psi = myNode.getPsi();
-		PsiElement parent = psi.getParent();
-		if(psi instanceof CSharpFieldOrPropertySet && !(parent instanceof CSharpCallArgumentList))
+		if(elementType == CSharpElements.XXX_ACCESSOR || elementType == CSharpElements.ENUM_CONSTANT_DECLARATION)
 		{
 			return Wrap.createWrap(WrapType.ALWAYS, true);
 		}
 
-		if(psi instanceof DotNetStatement && parent instanceof CSharpBlockStatementImpl && ((CSharpBlockStatementImpl) parent).getStatements()[0] ==
-				psi)
+		if(psi instanceof CSharpFieldOrPropertySet && !(parentPsi instanceof CSharpCallArgumentList))
+		{
+			return Wrap.createWrap(WrapType.ALWAYS, true);
+		}
+
+		if(psi instanceof DotNetStatement && parentPsi instanceof CSharpBlockStatementImpl && ((CSharpBlockStatementImpl) parentPsi).getStatements()
+				[0] == psi)
 		{
 			return Wrap.createWrap(WrapType.ALWAYS, true);
 		}

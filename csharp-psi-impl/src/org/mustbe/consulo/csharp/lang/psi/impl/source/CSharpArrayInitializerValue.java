@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 must-be.org
+ * Copyright 2013-2015 must-be.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
+package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.PsiElement;
+import org.mustbe.consulo.dotnet.psi.DotNetElement;
 
 /**
  * @author VISTALL
- * @since 31.08.14
+ * @since 24.01.15
  */
-public interface CSharpChameleonTypeRef extends DotNetTypeRef
+public interface CSharpArrayInitializerValue extends DotNetElement
 {
-	@NotNull
-	DotNetTypeRef doMirror(@NotNull DotNetTypeRef another, PsiElement scope);
 }

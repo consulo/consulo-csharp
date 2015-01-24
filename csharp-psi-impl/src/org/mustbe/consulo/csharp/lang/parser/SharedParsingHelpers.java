@@ -53,6 +53,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		public boolean isParameterized;
 		public boolean isNullable;
 		public boolean isArray;
+		public boolean isMultiArray;
 		public PsiBuilder.Marker marker;
 	}
 
@@ -132,9 +133,11 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 			{
 				builder.advanceLexer();  // advance [
 
+				boolean multi = false;
 				while(builder.getTokenType() == COMMA)
 				{
 					builder.advanceLexer();
+					multi = true;
 				}
 
 				expect(builder, RBRACKET, "']' expected");
@@ -142,6 +145,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 
 				typeInfo = new TypeInfo();
 				typeInfo.isArray = true;
+				typeInfo.isMultiArray = multi;
 				marker = newMarker;
 				continue;
 			}

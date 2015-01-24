@@ -5,10 +5,10 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializationExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerCompositeValueImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerSingleValueImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.formatting.Indent;
 import com.intellij.lang.ASTNode;
@@ -35,8 +35,8 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 
 	public Indent getIndent()
 	{
-		PsiElement element = myNode.getPsi();
-		PsiElement parent = element.getParent();
+		PsiElement psi = myNode.getPsi();
+		PsiElement parent = psi.getParent();
 		if(parent instanceof PsiFile)
 		{
 			return Indent.getNoneIndent();
@@ -55,13 +55,20 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 				elementType == EVENT_DECLARATION ||
 				elementType == ENUM_CONSTANT_DECLARATION ||
 				elementType == USING_LIST ||
-				elementType == CONSTRUCTOR_DECLARATION ||
-				element instanceof DotNetExpression && parent instanceof CSharpArrayInitializationExpressionImpl)
+				elementType == CONSTRUCTOR_DECLARATION)
+		{
+			return Indent.getNormalIndent();
+		}
+		else if(parent instanceof CSharpArrayInitializerSingleValueImpl)
 		{
 			return Indent.getNormalIndent();
 		}
 		else if(elementType == LBRACE || elementType == RBRACE)
 		{
+			if(parent instanceof CSharpArrayInitializerCompositeValueImpl)
+			{
+				return Indent.getNormalIndent();
+			}
 			return Indent.getNoneIndent();
 		}
 		else if(CommentUtilCore.isComment(myNode))
@@ -91,12 +98,12 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 		} */
 		else
 		{
-			if(element instanceof CSharpBlockStatementImpl)
+			if(psi instanceof CSharpBlockStatementImpl)
 			{
 				return Indent.getNoneIndent();
 			}
 
-			if(element instanceof DotNetStatement && parent instanceof CSharpIfStatementImpl)
+			if(psi instanceof DotNetStatement && parent instanceof CSharpIfStatementImpl)
 			{
 				return Indent.getNormalIndent();
 			}
@@ -104,7 +111,7 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 			if(parent instanceof CSharpStatementAsStatementOwner)
 			{
 				DotNetStatement childStatement = ((CSharpStatementAsStatementOwner) parent).getChildStatement();
-				if(childStatement == element)
+				if(childStatement == psi)
 				{
 					return Indent.getNormalIndent();
 				}

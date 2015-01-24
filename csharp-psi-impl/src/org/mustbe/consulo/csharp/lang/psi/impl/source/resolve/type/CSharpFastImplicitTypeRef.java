@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi;
+package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.dotnet.psi.DotNetElement;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
- * @since 29.12.13.
+ * @since 31.08.14
  */
-@ArrayFactoryFields
-public interface CSharpFieldOrPropertySet extends DotNetElement
+public interface CSharpFastImplicitTypeRef extends DotNetTypeRef
 {
-	@NotNull
-	CSharpReferenceExpression getNameReferenceExpression();
-
 	@Nullable
-	DotNetExpression getValueExpression();
+	DotNetTypeRef doMirror(@NotNull DotNetTypeRef another, PsiElement scope);
 }

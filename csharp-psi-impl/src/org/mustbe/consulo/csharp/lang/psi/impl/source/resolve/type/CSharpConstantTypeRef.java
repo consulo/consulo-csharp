@@ -27,7 +27,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 31.08.14
  */
-public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSharpChameleonTypeRef
+public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSharpFastImplicitTypeRef
 {
 	// this value always cached on JVM ?
 	private static final Integer ZERO = 0;
@@ -43,7 +43,7 @@ public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSh
 		myValue = value;
 	}
 
-	@NotNull
+	@Nullable
 	@Override
 	public DotNetTypeRef doMirror(@NotNull DotNetTypeRef another, PsiElement scope)
 	{
@@ -58,6 +58,6 @@ public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSh
 		{
 			return another;
 		}
-		return this;
+		return null;
 	}
 }

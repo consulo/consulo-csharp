@@ -14,24 +14,32 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi;
+package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
-import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.dotnet.psi.DotNetElement;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import com.intellij.lang.ASTNode;
 
 /**
  * @author VISTALL
- * @since 29.12.13.
+ * @since 06.02.14
  */
-@ArrayFactoryFields
-public interface CSharpFieldOrPropertySet extends DotNetElement
+public class CSharpArrayInitializerImpl extends CSharpElementImpl
 {
-	@NotNull
-	CSharpReferenceExpression getNameReferenceExpression();
+	public CSharpArrayInitializerImpl(@NotNull ASTNode node)
+	{
+		super(node);
+	}
 
-	@Nullable
-	DotNetExpression getValueExpression();
+	@Override
+	public void accept(@NotNull CSharpElementVisitor visitor)
+	{
+		visitor.visitArrayInitializerExpression(this);
+	}
+
+	@NotNull
+	public CSharpArrayInitializerValue[] getValues()
+	{
+		return findChildrenByClass(CSharpArrayInitializerValue.class);
+	}
 }

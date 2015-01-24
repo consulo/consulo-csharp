@@ -91,7 +91,8 @@ public class CSharpSearchUtil
 	public static DotNetMethodDeclaration findMethodByName(@NotNull final String name,
 			@Nullable String parentQName,
 			@NotNull DotNetTypeRef typeRef,
-			@NotNull PsiElement scope)
+			@NotNull PsiElement scope,
+			int parameterSize)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
 		PsiElement resolvedElement = typeResolveResult.getElement();
@@ -99,14 +100,15 @@ public class CSharpSearchUtil
 		{
 			return null;
 		}
-		return findMethodByName(name, resolvedElement, parentQName, typeResolveResult.getGenericExtractor());
+		return findMethodByName(name, resolvedElement, parentQName, typeResolveResult.getGenericExtractor(), parameterSize);
 	}
 
 	@Nullable
 	public static DotNetMethodDeclaration findMethodByName(@NotNull final String name,
 			@NotNull PsiElement owner,
 			@Nullable String parentQName,
-			@NotNull DotNetGenericExtractor extractor)
+			@NotNull DotNetGenericExtractor extractor,
+			final int parameterSize)
 	{
 		//TODO [VISTALL] some hack until we dont make override more powerfull
 		if(parentQName != null)
@@ -148,7 +150,7 @@ public class CSharpSearchUtil
 				{
 					//TODO [VISTALL] parameter handling
 					if(element instanceof DotNetMethodDeclaration &&
-							((DotNetMethodDeclaration) element).getParameters().length == 0 &&
+							((DotNetMethodDeclaration) element).getParameters().length == parameterSize &&
 							isMyElement(element, parentQName))
 					{
 						return (DotNetMethodDeclaration) element;

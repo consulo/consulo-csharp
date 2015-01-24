@@ -410,6 +410,12 @@ public class CSharpReferenceExpressionImplUtil
 
 	public static ResolveResult[] collectResults(@NotNull CSharpResolveOptions options)
 	{
+		return collectResults(options, DotNetGenericExtractor.EMPTY, options.getElement());
+	}
+
+	public static ResolveResult[] collectResults(@NotNull CSharpResolveOptions options, @NotNull DotNetGenericExtractor defaultExtractor,
+			@NotNull PsiElement forceQualifierElement)
+	{
 		PsiElement element = options.getElement();
 		ResolveToKind kind = options.getKind();
 		CSharpCallArgumentListOwner callArgumentListOwner = options.getCallArgumentListOwner();
@@ -629,9 +635,9 @@ public class CSharpReferenceExpressionImplUtil
 				}
 				return ContainerUtil.toArray(newResults, ResolveResult.EMPTY_ARRAY);
 			case TYPE_LIKE:
-				return processAnyMember(options);
+				return processAnyMember(options, defaultExtractor, forceQualifierElement);
 			case ANY_MEMBER:
-				resolveResults = processAnyMember(options);
+				resolveResults = processAnyMember(options, defaultExtractor, forceQualifierElement);
 				if(resolveResults.length == 0)
 				{
 					return ResolveResult.EMPTY_ARRAY;
@@ -670,7 +676,7 @@ public class CSharpReferenceExpressionImplUtil
 			case CONSTRUCTOR:
 			case BASE_CONSTRUCTOR:
 			case THIS_CONSTRUCTOR:
-				resolveResults = processAnyMember(options);
+				resolveResults = processAnyMember(options, defaultExtractor, forceQualifierElement);
 				if(callArgumentListOwner == null || resolveResults.length == 0)
 				{
 					return ResolveResult.EMPTY_ARRAY;
@@ -732,6 +738,12 @@ public class CSharpReferenceExpressionImplUtil
 	}
 
 	public static ResolveResult[] processAnyMember(@NotNull CSharpResolveOptions options)
+	{
+		return processAnyMember(options, DotNetGenericExtractor.EMPTY, options.getElement());
+	}
+
+	public static ResolveResult[] processAnyMember(@NotNull CSharpResolveOptions options, @NotNull DotNetGenericExtractor defaultExtractor,
+			@NotNull PsiElement forceQualifierElement)
 	{
 		PsiElement qualifier = options.getQualifier();
 		@NotNull PsiElement element = options.getElement();
@@ -799,8 +811,8 @@ public class CSharpReferenceExpressionImplUtil
 			return memberProcessor.toResolveResults();
 		}
 
-		PsiElement target = element;
-		DotNetGenericExtractor extractor = DotNetGenericExtractor.EMPTY;
+		PsiElement target = forceQualifierElement;
+		DotNetGenericExtractor extractor = defaultExtractor;
 		DotNetTypeRef qualifierTypeRef = DotNetTypeRef.ERROR_TYPE;
 
 		if(qualifier instanceof DotNetExpression)
