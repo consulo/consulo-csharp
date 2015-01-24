@@ -40,7 +40,7 @@ public class CS0826 extends CompilerCheck<CSharpNewExpressionImpl>
 		{
 			return null;
 		}
-		CSharpArrayInitializerImpl arrayInitializationExpression = element.getArrayInitializationExpression();
+		CSharpArrayInitializerImpl arrayInitializationExpression = element.getArrayInitializer();
 		if(arrayInitializationExpression == null)
 		{
 			return null;
