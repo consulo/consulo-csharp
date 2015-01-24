@@ -204,9 +204,6 @@ public interface CSharpElements
 	IElementType FIELD_OR_PROPERTY_SET_BLOCK = new ElementTypeAsPsiFactory("FIELD_OR_PROPERTY_SET_BLOCK", CSharpLanguage.INSTANCE,
 			CSharpFieldOrPropertySetBlockImpl.class);
 
-	IElementType MULTI_ARRAY_INITIALIZER_EXPRESSION = new ElementTypeAsPsiFactory("MULTI_ARRAY_INITIALIZER_EXPRESSION", CSharpLanguage.INSTANCE,
-			CSharpMultiArrayInitializerExpressionImpl.class);
-
 	IElementType ARRAY_INITIALIZER = new ElementTypeAsPsiFactory("ARRAY_INITIALIZER", CSharpLanguage.INSTANCE,
 			CSharpArrayInitializerImpl.class);
 

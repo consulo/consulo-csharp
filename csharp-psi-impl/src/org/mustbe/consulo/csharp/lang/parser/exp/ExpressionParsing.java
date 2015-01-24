@@ -74,15 +74,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(tokenType == LBRACE)
 		{
-			// special case
-			if(typeInfo.isMultiArray)
-			{
-				PsiBuilder.Marker marker = builder.mark();
-				parseArrayInitializer(builder);
-				marker.done(MULTI_ARRAY_INITIALIZER_EXPRESSION);
-				return marker;
-			}
-			return parseImplicitArrayInitialization(builder);
+			return parseArrayInitializer(builder, IMPLICIT_ARRAY_INITIALIZATION_EXPRESSION);
 		}
 		else
 		{
@@ -1162,7 +1154,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 	{
 		NONE,
 		PROPERTY_SET_LIST,
-		ROOT_ARRAY_INITIALIZATION
+		ARRAY_INITIALZER
 	}
 
 	private static PsiBuilder.Marker parseNewExpression(CSharpBuilderWrapper builder, PsiBuilder.Marker mark)
@@ -1217,8 +1209,8 @@ public class ExpressionParsing extends SharedParsingHelpers
 			case PROPERTY_SET_LIST:
 				parseFieldOrPropertySetBlock(builder);
 				break;
-			case ROOT_ARRAY_INITIALIZATION:
-				parseArrayInitializer(builder);
+			case ARRAY_INITIALZER:
+				parseArrayInitializer(builder, ARRAY_INITIALIZER);
 				break;
 		}
 
@@ -1269,7 +1261,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 	{
 		if(typeInfo != null && typeInfo.isArray)
 		{
-			return AfterNewParsingTarget.ROOT_ARRAY_INITIALIZATION;
+			return AfterNewParsingTarget.ARRAY_INITIALZER;
 		}
 
 		if(builderWrapper.getTokenType() != LBRACE)
@@ -1279,7 +1271,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(forceArray)
 		{
-			return AfterNewParsingTarget.ROOT_ARRAY_INITIALIZATION;
+			return AfterNewParsingTarget.ARRAY_INITIALZER;
 		}
 
 		// force property list, anonym object
@@ -1294,50 +1286,11 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 		else
 		{
-			return AfterNewParsingTarget.ROOT_ARRAY_INITIALIZATION;
+			return AfterNewParsingTarget.ARRAY_INITIALZER;
 		}
 	}
 
-	private static PsiBuilder.Marker parseImplicitArrayInitialization(CSharpBuilderWrapper builderWrapper)
-	{
-		if(builderWrapper.getTokenType() != LBRACE)
-		{
-			return null;
-		}
-
-		PsiBuilder.Marker marker = builderWrapper.mark();
-
-		builderWrapper.advanceLexer();
-
-		while(!builderWrapper.eof())
-		{
-			if(builderWrapper.getTokenType() == RBRACE)
-			{
-				break;
-			}
-
-			PsiBuilder.Marker parse = parse(builderWrapper);
-			if(parse == null)
-			{
-				builderWrapper.error("Expression expected");
-			}
-
-			if(builderWrapper.getTokenType() == COMMA)
-			{
-				builderWrapper.advanceLexer();
-			}
-			else
-			{
-				break;
-			}
-		}
-
-		expect(builderWrapper, RBRACE, "'}' expected");
-		marker.done(IMPLICIT_ARRAY_INITIALIZATION_EXPRESSION);
-		return marker;
-	}
-
-	private static PsiBuilder.Marker parseArrayInitializer(CSharpBuilderWrapper builderWrapper)
+	private static PsiBuilder.Marker parseArrayInitializer(CSharpBuilderWrapper builderWrapper, IElementType to)
 	{
 		if(builderWrapper.getTokenType() != LBRACE)
 		{
@@ -1380,7 +1333,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 
 		expect(builderWrapper, RBRACE, "'}' expected");
-		marker.done(ARRAY_INITIALIZER);
+		marker.done(to);
 		return marker;
 	}
 
