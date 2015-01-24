@@ -172,7 +172,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 					}
 					else
 					{
-						FieldOrPropertyParsing.parseFieldOrPropertyAfterName(builder, marker);
+						FieldOrPropertyParsing.parseFieldOrPropertyAfterName(builder, marker, typeInfo);
 					}
 				}
 			}

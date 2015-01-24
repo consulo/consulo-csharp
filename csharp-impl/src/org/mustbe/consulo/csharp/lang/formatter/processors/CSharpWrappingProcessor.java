@@ -8,6 +8,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerCompositeValueImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpImplicitArrayInitializationExpressionImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
@@ -66,7 +67,7 @@ public class CSharpWrappingProcessor
 
 		if(elementType == CSharpTokens.RBRACE)
 		{
-			if(parentPsi instanceof CSharpImplicitArrayInitializationExpressionImpl)
+			if(parentPsi instanceof CSharpImplicitArrayInitializationExpressionImpl || parentPsi instanceof CSharpArrayInitializerCompositeValueImpl)
 			{
 				return Wrap.createWrap(WrapType.NONE, true);
 			}
@@ -83,8 +84,8 @@ public class CSharpWrappingProcessor
 			return Wrap.createWrap(WrapType.ALWAYS, true);
 		}
 
-		if(psi instanceof DotNetStatement && parentPsi instanceof CSharpBlockStatementImpl && ((CSharpBlockStatementImpl) parentPsi).getStatements()[0] ==
-				psi)
+		if(psi instanceof DotNetStatement && parentPsi instanceof CSharpBlockStatementImpl && ((CSharpBlockStatementImpl) parentPsi).getStatements()
+				[0] == psi)
 		{
 			return Wrap.createWrap(WrapType.ALWAYS, true);
 		}

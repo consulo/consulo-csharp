@@ -39,7 +39,9 @@ import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpRootArrayInitializationExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerSingleValueImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerValue;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAsExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIsExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNewExpressionImpl;
@@ -61,7 +63,6 @@ import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.libraryAnalyzer.NamespaceReference;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -282,7 +283,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 		);
 
 		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class).withSuperParent(2,
-				CSharpRootArrayInitializationExpressionImpl.class).withSuperParent(3, CSharpNewExpressionImpl.class),
+				CSharpArrayInitializerImpl.class).withSuperParent(3, CSharpNewExpressionImpl.class),
 				new CompletionProvider<CompletionParameters>()
 		{
 			@Override
@@ -290,12 +291,13 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 			{
 				CSharpReferenceExpressionEx expression = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
 
-				CSharpRootArrayInitializationExpressionImpl arrayInitializationExpression = PsiTreeUtil.getParentOfType(expression,
-						CSharpRootArrayInitializationExpressionImpl.class);
+				CSharpArrayInitializerImpl arrayInitializationExpression = PsiTreeUtil.getParentOfType(expression,
+						CSharpArrayInitializerImpl.class);
 
 				assert arrayInitializationExpression != null;
-				DotNetExpression[] expressions = arrayInitializationExpression.getExpressions();
-				if(expressions.length != 1 || expressions[0] != expression)
+				CSharpArrayInitializerValue[] arrayInitializerValues = arrayInitializationExpression.getValues();
+				if(arrayInitializerValues.length != 1 || !(arrayInitializerValues[0] instanceof CSharpArrayInitializerSingleValueImpl) ||
+						((CSharpArrayInitializerSingleValueImpl)arrayInitializerValues[0]).getExpression() != expression)
 				{
 					return;
 				}

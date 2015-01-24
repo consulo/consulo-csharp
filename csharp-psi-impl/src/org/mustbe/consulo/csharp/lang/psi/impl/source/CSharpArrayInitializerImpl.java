@@ -33,9 +33,9 @@ import com.intellij.util.containers.ContainerUtil;
  * @author VISTALL
  * @since 06.02.14
  */
-public class CSharpRootArrayInitializationExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public class CSharpArrayInitializerImpl extends CSharpElementImpl
 {
-	public CSharpRootArrayInitializationExpressionImpl(@NotNull ASTNode node)
+	public CSharpArrayInitializerImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
@@ -47,13 +47,19 @@ public class CSharpRootArrayInitializationExpressionImpl extends CSharpElementIm
 	}
 
 	@NotNull
+	@Deprecated
 	public DotNetExpression[] getExpressions()
 	{
 		return findChildrenByClass(DotNetExpression.class);
 	}
 
 	@NotNull
-	@Override
+	public CSharpArrayInitializerValue[] getValues()
+	{
+		return findChildrenByClass(CSharpArrayInitializerValue.class);
+	}
+
+	@NotNull
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
 		DotNetExpression[] expressions = getExpressions();
@@ -73,8 +79,8 @@ public class CSharpRootArrayInitializationExpressionImpl extends CSharpElementIm
 			@Override
 			public int compare(DotNetTypeRef o1, DotNetTypeRef o2)
 			{
-				int rank1 = CSharpTypeUtil.getNumberRank(o1, CSharpRootArrayInitializationExpressionImpl.this);
-				int rank2 = CSharpTypeUtil.getNumberRank(o2, CSharpRootArrayInitializationExpressionImpl.this);
+				int rank1 = CSharpTypeUtil.getNumberRank(o1, CSharpArrayInitializerImpl.this);
+				int rank2 = CSharpTypeUtil.getNumberRank(o2, CSharpArrayInitializerImpl.this);
 				if(rank1 == -1 || rank2 == -1)
 				{
 					return 0;

@@ -429,7 +429,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(method);
 	}
 
-	public void visitRootArrayInitializationExpression(CSharpRootArrayInitializationExpressionImpl expression)
+	public void visitRootArrayInitializationExpression(CSharpArrayInitializerImpl expression)
 	{
 		visitElement(expression);
 	}
@@ -572,5 +572,20 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	public void visitUsingTypeStatement(CSharpUsingTypeStatement statement)
 	{
 		visitElement(statement);
+	}
+
+	public void visitArrayInitializerSingleValue(CSharpArrayInitializerSingleValueImpl value)
+	{
+		visitElement(value);
+	}
+
+	public void visitArrayInitializerCompositeValue(CSharpArrayInitializerCompositeValueImpl value)
+	{
+		visitElement(value);
+	}
+
+	public void visitMultiArrayInitializerExpression(CSharpMultiArrayInitializerExpressionImpl expression)
+	{
+		visitElement(expression);
 	}
 }

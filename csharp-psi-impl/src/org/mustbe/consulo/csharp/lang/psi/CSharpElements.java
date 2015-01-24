@@ -204,8 +204,17 @@ public interface CSharpElements
 	IElementType FIELD_OR_PROPERTY_SET_BLOCK = new ElementTypeAsPsiFactory("FIELD_OR_PROPERTY_SET_BLOCK", CSharpLanguage.INSTANCE,
 			CSharpFieldOrPropertySetBlockImpl.class);
 
-	IElementType ROOT_ARRAY_INITIALIZATION_EXPRESSION = new ElementTypeAsPsiFactory("ROOT_ARRAY_INITIALIZATION_EXPRESSION", CSharpLanguage.INSTANCE,
-			CSharpRootArrayInitializationExpressionImpl.class);
+	IElementType MULTI_ARRAY_INITIALIZER_EXPRESSION = new ElementTypeAsPsiFactory("MULTI_ARRAY_INITIALIZER_EXPRESSION", CSharpLanguage.INSTANCE,
+			CSharpMultiArrayInitializerExpressionImpl.class);
+
+	IElementType ARRAY_INITIALIZER = new ElementTypeAsPsiFactory("ARRAY_INITIALIZER", CSharpLanguage.INSTANCE,
+			CSharpArrayInitializerImpl.class);
+
+	IElementType ARRAY_INITIALIZER_SINGLE_VALUE = new ElementTypeAsPsiFactory("ARRAY_INITIALIZER_SINGLE_VALUE", CSharpLanguage.INSTANCE,
+			CSharpArrayInitializerSingleValueImpl.class);
+
+	IElementType ARRAY_INITIALIZER_COMPOSITE_VALUE = new ElementTypeAsPsiFactory("ARRAY_INITIALIZER_COMPOSITE_VALUE", CSharpLanguage.INSTANCE,
+			CSharpArrayInitializerCompositeValueImpl.class);
 
 	IElementType IMPLICIT_ARRAY_INITIALIZATION_EXPRESSION = new ElementTypeAsPsiFactory("IMPLICIT_ARRAY_INITIALIZATION_EXPRESSION",
 			CSharpLanguage.INSTANCE, CSharpImplicitArrayInitializationExpressionImpl.class);
