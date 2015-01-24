@@ -1163,31 +1163,19 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		builder.advanceLexer();
 
-		val typeMarker = parseType(builder, BRACKET_RETURN_BEFORE);
+		val typeInfo = parseType(builder, BRACKET_RETURN_BEFORE);
 
 		boolean forceArray = false;
-		while(builder.getTokenType() == LBRACKET)
+
+		while(parseArrayLength(builder))
 		{
 			forceArray = true;
 
-			val arrayMarker = builder.mark();
-			builder.advanceLexer();
-
-			while(true)
+			// we can eat only one [] if not type
+			if(typeInfo == null)
 			{
-				parse(builder);
-				if(builder.getTokenType() != COMMA)
-				{
-					break;
-				}
-				else
-				{
-					builder.advanceLexer();
-				}
+				break;
 			}
-
-			expect(builder, RBRACKET, "']' expected");
-			arrayMarker.done(NEW_ARRAY_LENGTH);
 		}
 
 		boolean argumentsPassed = false;
@@ -1197,7 +1185,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			argumentsPassed = true;
 		}
 
-		AfterNewParsingTarget target = getTarget(builder, forceArray, typeMarker);
+		AfterNewParsingTarget target = getTarget(builder, forceArray, typeInfo);
 		switch(target)
 		{
 			case NONE:
@@ -1216,6 +1204,33 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		newExpr.done(NEW_EXPRESSION);
 		return newExpr;
+	}
+
+	private static boolean parseArrayLength(@NotNull CSharpBuilderWrapper builder)
+	{
+		if(builder.getTokenType() == LBRACKET)
+		{
+			val arrayMarker = builder.mark();
+			builder.advanceLexer();
+
+			while(true)
+			{
+				parse(builder);
+				if(builder.getTokenType() != COMMA)
+				{
+					break;
+				}
+				else
+				{
+					builder.advanceLexer();
+				}
+			}
+
+			expect(builder, RBRACKET, "']' expected");
+			arrayMarker.done(NEW_ARRAY_LENGTH);
+			return true;
+		}
+		return false;
 	}
 
 	private static PsiBuilder.Marker parseStackAllocExpression(CSharpBuilderWrapper builder, PsiBuilder.Marker mark)
