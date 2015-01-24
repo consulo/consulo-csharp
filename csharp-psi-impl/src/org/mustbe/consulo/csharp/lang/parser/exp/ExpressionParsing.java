@@ -1210,7 +1210,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				parseFieldOrPropertySetBlock(builder);
 				break;
 			case ARRAY_INITIALIZATION:
-				parseArrayInitialization(builder, ARRAY_INITIALIZATION_EXPRESSION);
+				parseArrayInitialization(builder, ROOT_ARRAY_INITIALIZATION_EXPRESSION);
 				break;
 		}
 

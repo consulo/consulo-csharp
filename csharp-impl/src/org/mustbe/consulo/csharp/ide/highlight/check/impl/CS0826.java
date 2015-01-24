@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializationExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpRootArrayInitializationExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNewExpressionImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
@@ -40,7 +40,7 @@ public class CS0826 extends CompilerCheck<CSharpNewExpressionImpl>
 		{
 			return null;
 		}
-		CSharpArrayInitializationExpressionImpl arrayInitializationExpression = element.getArrayInitializationExpression();
+		CSharpRootArrayInitializationExpressionImpl arrayInitializationExpression = element.getArrayInitializationExpression();
 		if(arrayInitializationExpression == null)
 		{
 			return null;

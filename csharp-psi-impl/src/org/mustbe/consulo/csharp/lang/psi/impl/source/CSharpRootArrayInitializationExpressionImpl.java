@@ -33,9 +33,9 @@ import com.intellij.util.containers.ContainerUtil;
  * @author VISTALL
  * @since 06.02.14
  */
-public class CSharpArrayInitializationExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public class CSharpRootArrayInitializationExpressionImpl extends CSharpElementImpl implements DotNetExpression
 {
-	public CSharpArrayInitializationExpressionImpl(@NotNull ASTNode node)
+	public CSharpRootArrayInitializationExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
@@ -43,7 +43,7 @@ public class CSharpArrayInitializationExpressionImpl extends CSharpElementImpl i
 	@Override
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		visitor.visitArrayInitializationExpression(this);
+		visitor.visitRootArrayInitializationExpression(this);
 	}
 
 	@NotNull
@@ -73,8 +73,8 @@ public class CSharpArrayInitializationExpressionImpl extends CSharpElementImpl i
 			@Override
 			public int compare(DotNetTypeRef o1, DotNetTypeRef o2)
 			{
-				int rank1 = CSharpTypeUtil.getNumberRank(o1, CSharpArrayInitializationExpressionImpl.this);
-				int rank2 = CSharpTypeUtil.getNumberRank(o2, CSharpArrayInitializationExpressionImpl.this);
+				int rank1 = CSharpTypeUtil.getNumberRank(o1, CSharpRootArrayInitializationExpressionImpl.this);
+				int rank2 = CSharpTypeUtil.getNumberRank(o2, CSharpRootArrayInitializationExpressionImpl.this);
 				if(rank1 == -1 || rank2 == -1)
 				{
 					return 0;

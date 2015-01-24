@@ -69,7 +69,7 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 		{
 			if(arrayLengths.length == 1)
 			{
-				CSharpArrayInitializationExpressionImpl arrayInitializationExpression = getArrayInitializationExpression();
+				CSharpRootArrayInitializationExpressionImpl arrayInitializationExpression = getArrayInitializationExpression();
 				if(arrayInitializationExpression == null)
 				{
 					return DotNetTypeRef.ERROR_TYPE;
@@ -123,9 +123,9 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 	}
 
 	@Nullable
-	public CSharpArrayInitializationExpressionImpl getArrayInitializationExpression()
+	public CSharpRootArrayInitializationExpressionImpl getArrayInitializationExpression()
 	{
-		return findChildByClass(CSharpArrayInitializationExpressionImpl.class);
+		return findChildByClass(CSharpRootArrayInitializationExpressionImpl.class);
 	}
 
 	public CSharpNewArrayLengthImpl[] getNewArrayLengths()

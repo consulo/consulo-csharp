@@ -5,7 +5,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializationExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpRootArrayInitializationExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -56,7 +56,7 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 				elementType == ENUM_CONSTANT_DECLARATION ||
 				elementType == USING_LIST ||
 				elementType == CONSTRUCTOR_DECLARATION ||
-				element instanceof DotNetExpression && parent instanceof CSharpArrayInitializationExpressionImpl)
+				element instanceof DotNetExpression && parent instanceof CSharpRootArrayInitializationExpressionImpl)
 		{
 			return Indent.getNormalIndent();
 		}

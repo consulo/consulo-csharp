@@ -39,7 +39,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializationExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpRootArrayInitializationExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAsExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIsExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNewExpressionImpl;
@@ -282,7 +282,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 		);
 
 		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class).withSuperParent(2,
-				CSharpArrayInitializationExpressionImpl.class).withSuperParent(3, CSharpNewExpressionImpl.class),
+				CSharpRootArrayInitializationExpressionImpl.class).withSuperParent(3, CSharpNewExpressionImpl.class),
 				new CompletionProvider<CompletionParameters>()
 		{
 			@Override
@@ -290,8 +290,8 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 			{
 				CSharpReferenceExpressionEx expression = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
 
-				CSharpArrayInitializationExpressionImpl arrayInitializationExpression = PsiTreeUtil.getParentOfType(expression,
-						CSharpArrayInitializationExpressionImpl.class);
+				CSharpRootArrayInitializationExpressionImpl arrayInitializationExpression = PsiTreeUtil.getParentOfType(expression,
+						CSharpRootArrayInitializationExpressionImpl.class);
 
 				assert arrayInitializationExpression != null;
 				DotNetExpression[] expressions = arrayInitializationExpression.getExpressions();
