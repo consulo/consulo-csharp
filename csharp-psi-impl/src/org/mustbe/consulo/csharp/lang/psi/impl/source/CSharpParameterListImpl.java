@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.dotnet.lang.psi.impl.DotNetPsiCountUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -38,6 +39,12 @@ public class CSharpParameterListImpl extends CSharpElementImpl implements DotNet
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
 		visitor.visitParameterList(this);
+	}
+
+	@Override
+	public int getParametersCount()
+	{
+		return DotNetPsiCountUtil.countChildrenOfType(getNode(), DotNetParameter.class);
 	}
 
 	@NotNull

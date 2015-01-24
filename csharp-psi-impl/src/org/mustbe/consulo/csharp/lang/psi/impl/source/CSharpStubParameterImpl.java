@@ -70,6 +70,13 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 		return false;
 	}
 
+	@Nullable
+	@Override
+	public PsiElement getConstantKeywordElement()
+	{
+		return null;
+	}
+
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)

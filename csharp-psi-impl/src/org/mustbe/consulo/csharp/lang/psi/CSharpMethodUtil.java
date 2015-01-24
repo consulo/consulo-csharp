@@ -17,6 +17,8 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -29,6 +31,11 @@ public class CSharpMethodUtil
 		NO_GENERIC,
 		CAN,
 		CANT
+	}
+
+	public static boolean isDelegate(@Nullable PsiElement element)
+	{
+		return element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isDelegate();
 	}
 
 	@NotNull

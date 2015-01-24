@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -82,6 +83,22 @@ public class CSharpLambdaExpressionImplUtil
 				return null;
 			}
 			return resolveLeftLambdaTypeRefForVariable(variable);
+		}
+		else if(parent instanceof CSharpFieldOrPropertySet)
+		{
+			CSharpFieldOrPropertySet fieldOrPropertySet = (CSharpFieldOrPropertySet) parent;
+			if(fieldOrPropertySet.getValueExpression() != target)
+			{
+				return null;
+			}
+
+			CSharpReferenceExpression nameReferenceExpression = fieldOrPropertySet.getNameReferenceExpression();
+			PsiElement resolvedElement = nameReferenceExpression.resolve();
+			if(resolvedElement instanceof DotNetVariable)
+			{
+				return resolveLeftLambdaTypeRefForVariable((DotNetVariable) resolvedElement);
+			}
+			return null;
 		}
 		else if(parent instanceof CSharpCallArgument)
 		{

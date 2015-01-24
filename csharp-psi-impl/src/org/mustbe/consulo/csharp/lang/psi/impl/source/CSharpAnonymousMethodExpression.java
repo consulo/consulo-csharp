@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 must-be.org
+ * Copyright 2013-2015 must-be.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,32 +17,18 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.lang.ASTNode;
+import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
- * @since 04.01.14.
+ * @since 23.01.15
  */
-public class CSharpEmptyExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public interface CSharpAnonymousMethodExpression extends DotNetExpression, CSharpSimpleLikeMethodAsElement
 {
-	public CSharpEmptyExpressionImpl(@NotNull ASTNode node)
-	{
-		super(node);
-	}
-
-	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
-	{
-		visitor.visitElement(this);
-	}
-
-	@NotNull
-	@Override
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
-	{
-		return DotNetTypeRef.ERROR_TYPE;
-	}
+	@Nullable
+	PsiElement getModifierElement(@NotNull DotNetModifier modifier);
 }

@@ -22,8 +22,12 @@ import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifierList;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUnsafeStatementImpl;
 import org.mustbe.consulo.csharp.module.extension.BaseCSharpModuleExtension;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
+import org.mustbe.consulo.dotnet.psi.DotNetElement;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
@@ -33,8 +37,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.util.IncorrectOperationException;
 import lombok.val;
 
@@ -42,17 +44,10 @@ import lombok.val;
  * @author VISTALL
  * @since 15.05.14
  */
-public class CS0227 extends CompilerCheck<CSharpModifierList>
+public class CS0227 extends CompilerCheck<DotNetElement>
 {
 	public static class AllowUnsafeCodeFix extends BaseIntentionAction
 	{
-		private SmartPsiElementPointer<PsiElement> myPointer;
-
-		public AllowUnsafeCodeFix(PsiElement element)
-		{
-			myPointer = SmartPointerManager.getInstance(element.getProject()).createSmartPsiElementPointer(element);
-		}
-
 		@NotNull
 		@Override
 		public String getText()
@@ -70,25 +65,14 @@ public class CS0227 extends CompilerCheck<CSharpModifierList>
 		@Override
 		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
 		{
-			return myPointer.getElement() != null;
-		}
-
-		@Override
-		public boolean startInWriteAction()
-		{
-			return true;
+			CSharpModuleExtension extension = ModuleUtilCore.getExtension(file, CSharpModuleExtension.class);
+			return extension != null && !extension.isAllowUnsafeCode();
 		}
 
 		@Override
 		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
-			PsiElement element = myPointer.getElement();
-			if(element == null)
-			{
-				return;
-			}
-
-			Module moduleForPsiElement = ModuleUtilCore.findModuleForPsiElement(element);
+			Module moduleForPsiElement = ModuleUtilCore.findModuleForPsiElement(file);
 			if(moduleForPsiElement == null)
 			{
 				return;
@@ -109,10 +93,10 @@ public class CS0227 extends CompilerCheck<CSharpModifierList>
 
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpModifierList element)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetElement element)
 	{
-		PsiElement modifier = element.getModifierElement(CSharpModifier.UNSAFE);
-		if(modifier == null)
+		PsiElement targetElement = getElement(element);
+		if(targetElement == null)
 		{
 			return null;
 		}
@@ -121,8 +105,32 @@ public class CS0227 extends CompilerCheck<CSharpModifierList>
 
 		if(extension != null && !extension.isAllowUnsafeCode())
 		{
-			return newBuilder(modifier).addQuickFix(new AllowUnsafeCodeFix(element)).addQuickFix(new RemoveModifierFix(CSharpModifier.UNSAFE,
-					(DotNetModifierListOwner) element.getParent()));
+			CompilerCheckBuilder builder = newBuilder(targetElement).addQuickFix(new AllowUnsafeCodeFix());
+			if(targetElement.getParent() instanceof CSharpModifierList)
+			{
+				builder.addQuickFix(new RemoveModifierFix(CSharpModifier.UNSAFE, (DotNetModifierListOwner) element));
+			}
+
+			return builder;
+		}
+		return null;
+	}
+
+	@Nullable
+	private static PsiElement getElement(DotNetElement element)
+	{
+		if(element instanceof CSharpUnsafeStatementImpl)
+		{
+			return ((CSharpUnsafeStatementImpl) element).getUnsafeElement();
+		}
+		else if(element instanceof DotNetModifierListOwner)
+		{
+			DotNetModifierList modifierList = ((DotNetModifierListOwner) element).getModifierList();
+			if(modifierList == null)
+			{
+				return null;
+			}
+			return modifierList.getModifierElement(CSharpModifier.UNSAFE);
 		}
 		return null;
 	}

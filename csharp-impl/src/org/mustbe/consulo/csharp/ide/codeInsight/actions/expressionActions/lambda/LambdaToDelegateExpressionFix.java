@@ -3,7 +3,9 @@ package org.mustbe.consulo.csharp.ide.codeInsight.actions.expressionActions.lamb
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -22,7 +24,7 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 01.11.14
  */
-public class LambdaToAnonymFix extends PsiElementBaseIntentionAction
+public class LambdaToDelegateExpressionFix extends PsiElementBaseIntentionAction
 {
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException
@@ -30,7 +32,14 @@ public class LambdaToAnonymFix extends PsiElementBaseIntentionAction
 		CSharpLambdaExpressionImpl lambdaExpression = PsiTreeUtil.getParentOfType(element, CSharpLambdaExpressionImpl.class);
 		assert lambdaExpression != null;
 
-		StringBuilder builder = new StringBuilder("delegate(");
+		StringBuilder builder = new StringBuilder();
+
+		if(lambdaExpression.hasModifier(CSharpModifier.ASYNC))
+		{
+			builder.append("async ");
+		}
+
+		builder.append("delegate(");
 
 		CSharpLambdaParameter[] parameters = lambdaExpression.getParameters();
 
@@ -42,32 +51,30 @@ public class LambdaToAnonymFix extends PsiElementBaseIntentionAction
 			}
 			CSharpLambdaParameter parameter = parameters[i];
 
-			builder.append(parameter.toTypeRef(true).getPresentableText()).append(" ").append(parameter.getName());
+			builder.append(CSharpTypeRefPresentationUtil.buildShortText(parameter.toTypeRef(true), lambdaExpression)).append(" ").append(parameter
+					.getName());
 		}
 		builder.append(") { ");
 
-		DotNetExpression singleExpression = lambdaExpression.getSingleExpression();
-		if(singleExpression != null)
+		PsiElement codeBlock = lambdaExpression.getCodeBlock();
+		if(codeBlock instanceof DotNetExpression)
 		{
-			builder.append("return ").append(singleExpression.getText()).append(";");
+			builder.append("return ").append(codeBlock.getText()).append(";");
 		}
-		else
+		else if(codeBlock instanceof CSharpBlockStatementImpl)
 		{
-			CSharpBlockStatementImpl blockStatement = lambdaExpression.getBlockStatement();
-			if(blockStatement != null)
+			String join = StringUtil.join(((CSharpBlockStatementImpl) codeBlock).getStatements(), new Function<DotNetStatement, String>()
 			{
-				String join = StringUtil.join(blockStatement.getStatements(), new Function<DotNetStatement, String>()
+				@Override
+				public String fun(DotNetStatement dotNetStatement)
 				{
-					@Override
-					public String fun(DotNetStatement dotNetStatement)
-					{
-						return dotNetStatement.getText();
-					}
-				}, "\n");
+					return dotNetStatement.getText();
+				}
+			}, "\n");
 
-				builder.append(join);
-			}
+			builder.append(join);
 		}
+
 		builder.append("}");
 
 		DotNetExpression expression = CSharpFileFactory.createExpression(project, builder.toString());
@@ -90,7 +97,7 @@ public class LambdaToAnonymFix extends PsiElementBaseIntentionAction
 	@Override
 	public String getText()
 	{
-		return "To anonymous";
+		return "To delegate";
 	}
 
 	@NotNull

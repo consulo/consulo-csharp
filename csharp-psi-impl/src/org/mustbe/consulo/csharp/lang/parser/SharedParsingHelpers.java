@@ -52,6 +52,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		public IElementType nativeElementType;
 		public boolean isParameterized;
 		public boolean isNullable;
+		public boolean isArray;
 		public PsiBuilder.Marker marker;
 	}
 
@@ -140,6 +141,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 				newMarker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.ARRAY_TYPE : CSharpElements.ARRAY_TYPE);
 
 				typeInfo = new TypeInfo();
+				typeInfo.isArray = true;
 				marker = newMarker;
 				continue;
 			}
@@ -152,6 +154,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 				newMarker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.ARRAY_TYPE : CSharpElements.ARRAY_TYPE);
 
 				typeInfo = new TypeInfo();
+				typeInfo.isArray = true;
 				marker = newMarker;
 			}
 			else
@@ -168,6 +171,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 
 					builder.error("']' expected");
 					typeInfo = new TypeInfo();
+					typeInfo.isArray = true;
 					newMarker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.ARRAY_TYPE : CSharpElements.ARRAY_TYPE);
 
 					marker = newMarker;

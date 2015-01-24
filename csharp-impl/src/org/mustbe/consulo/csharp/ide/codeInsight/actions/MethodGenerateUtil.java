@@ -18,8 +18,8 @@ package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -40,34 +40,61 @@ public class MethodGenerateUtil
 		{
 			return "null";
 		}
-
-		if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Int32))
+		else
 		{
-			return "0";
+			if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Void))
+			{
+				return null;
+			}
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Byte))
+			{
+				return "0";
+			}
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.SByte))
+			{
+				return "0";
+			}
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Int16))
+			{
+				return "0";
+			}
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.UInt16))
+			{
+				return "0";
+			}
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Int32))
+			{
+				return "0";
+			}
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.UInt32))
+			{
+				return "0";
+			}
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Int64))
+			{
+				return "0";
+			}
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.UInt64))
+			{
+				return "0";
+			}
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Decimal))
+			{
+				return "0";
+			}
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Single))
+			{
+				return "0";
+			}
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Double))
+			{
+				return "0";
+			}
+			else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Boolean))
+			{
+				return "false";
+			}
+			return "default(" + CSharpTypeRefPresentationUtil.buildShortText(typeRef, scope) + ")";
 		}
-		else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Int64))
-		{
-			return "0l";
-		}
-		else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.UInt32))
-		{
-			return "0u";
-		}
-		else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.UInt32))
-		{
-			return "0ul";
-		}
-		else if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, scope, DotNetTypes.System.Boolean))
-		{
-			return "false";
-		}
-
-		PsiElement resolve = typeResolveResult.getElement();
-		if(resolve instanceof DotNetGenericParameter)
-		{
-			return "default(" + ((DotNetGenericParameter) resolve).getName() + ")";
-		}
-
-		return null;
 	}
 }

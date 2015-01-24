@@ -63,6 +63,13 @@ public class CSharpParameterImpl extends CSharpElementImpl implements DotNetPara
 		return false;
 	}
 
+	@Nullable
+	@Override
+	public PsiElement getConstantKeywordElement()
+	{
+		return null;
+	}
+
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)

@@ -41,9 +41,9 @@ public class CSharpFileViewProvider extends MultiplePsiFilesPerDocumentFileViewP
 {
 	private static final THashSet<Language> ourLanguages = new THashSet<Language>(Arrays.asList(CSharpMacroLanguage.INSTANCE, CSharpLanguage.INSTANCE));
 
-	public CSharpFileViewProvider(PsiManager manager, VirtualFile virtualFile, boolean physical)
+	public CSharpFileViewProvider(PsiManager manager, VirtualFile virtualFile, boolean eventSystemEnabled)
 	{
-		super(manager, virtualFile, physical);
+		super(manager, virtualFile, eventSystemEnabled);
 	}
 
 	@NotNull
@@ -92,6 +92,6 @@ public class CSharpFileViewProvider extends MultiplePsiFilesPerDocumentFileViewP
 	@Override
 	protected MultiplePsiFilesPerDocumentFileViewProvider cloneInner(VirtualFile virtualFile)
 	{
-		return new CSharpFileViewProvider(getManager(), virtualFile, true);
+		return new CSharpFileViewProvider(getManager(), virtualFile, false);
 	}
 }

@@ -14,18 +14,35 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi;
+package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.dotnet.psi.DotNetElement;
-import org.mustbe.consulo.dotnet.psi.DotNetStatement;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.lang.ASTNode;
 
 /**
  * @author VISTALL
- * @since 04.12.14
+ * @since 04.01.14.
  */
-public interface CSharpStatementListOwner extends DotNetElement
+public class CSharpErrorExpressionImpl extends CSharpElementImpl implements DotNetExpression
 {
+	public CSharpErrorExpressionImpl(@NotNull ASTNode node)
+	{
+		super(node);
+	}
+
+	@Override
+	public void accept(@NotNull CSharpElementVisitor visitor)
+	{
+		visitor.visitElement(this);
+	}
+
 	@NotNull
-	DotNetStatement[] getStatements();
+	@Override
+	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	{
+		return DotNetTypeRef.ERROR_TYPE;
+	}
 }

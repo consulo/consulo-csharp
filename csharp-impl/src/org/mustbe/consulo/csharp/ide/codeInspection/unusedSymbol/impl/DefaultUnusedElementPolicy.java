@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.impl;
 import org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.UnusedElementPolicy;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAnonymMethodExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDelegateExpressionImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
@@ -34,7 +34,7 @@ public class DefaultUnusedElementPolicy extends UnusedElementPolicy
 	public boolean canMarkAsUnused(DotNetParameter parameter)
 	{
 		DotNetParameterListOwner parameterOwner = parameter.getOwner();
-		if(parameterOwner instanceof CSharpAnonymMethodExpressionImpl)
+		if(parameterOwner instanceof CSharpDelegateExpressionImpl)
 		{
 			return false;
 		}

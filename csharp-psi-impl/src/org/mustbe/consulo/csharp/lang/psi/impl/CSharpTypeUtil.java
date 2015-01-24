@@ -35,7 +35,9 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -591,8 +593,7 @@ public class CSharpTypeUtil
 	}
 
 	@NotNull
-	public static List<DotNetTypeRef> getImplicitOrExplicitTypeRefs(
-			@NotNull DotNetTypeRef fromTypeRef,
+	public static List<DotNetTypeRef> getImplicitOrExplicitTypeRefs(@NotNull DotNetTypeRef fromTypeRef,
 			@NotNull DotNetTypeRef leftTypeRef,
 			@NotNull CSharpStaticTypeRef explicitOrImplicit,
 			@NotNull PsiElement scope)
@@ -646,6 +647,9 @@ public class CSharpTypeUtil
 			return false;
 		}
 
+		t1 = GenericUnwrapTool.exchangeTypeRef(t1, GenericUnwrapTool.TypeDefCleanFunction.INSTANCE, scope);
+		t2 = GenericUnwrapTool.exchangeTypeRef(t2, GenericUnwrapTool.TypeDefCleanFunction.INSTANCE, scope);
+
 		if(t1 instanceof CSharpArrayTypeRef && t2 instanceof CSharpArrayTypeRef)
 		{
 			return ((CSharpArrayTypeRef) t1).getDimensions() == ((CSharpArrayTypeRef) t2).getDimensions() && isTypeEqual(((CSharpArrayTypeRef) t1)
@@ -662,7 +666,22 @@ public class CSharpTypeUtil
 		PsiElement element1 = resolveResult1.getElement();
 		PsiElement element2 = resolveResult2.getElement();
 
-		if(element1 == null || element2 == null || !element1.isEquivalentTo(element2))
+		if(element1 == null || element2 == null)
+		{
+			return false;
+		}
+
+
+		if(element1 instanceof DotNetGenericParameter && element2 instanceof DotNetGenericParameter)
+		{
+			if(isMethodGeneric(element1) && isMethodGeneric(element2) && ((DotNetGenericParameter) element1).getIndex() == ((DotNetGenericParameter)
+					element2).getIndex())
+			{
+				return true;
+			}
+		}
+
+		if(!element1.isEquivalentTo(element2))
 		{
 			return false;
 		}
@@ -703,6 +722,22 @@ public class CSharpTypeUtil
 			}
 		}
 		return true;
+	}
+
+	private static boolean isMethodGeneric(PsiElement element)
+	{
+		PsiElement originalElement = element.getOriginalElement();
+
+		if(!(originalElement instanceof DotNetGenericParameter))
+		{
+			return false;
+		}
+		PsiElement parent = originalElement.getParent();
+		if(!(parent instanceof DotNetGenericParameterList))
+		{
+			return false;
+		}
+		return parent.getParent() instanceof DotNetLikeMethodDeclaration;
 	}
 
 	public static boolean haveErrorType(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)

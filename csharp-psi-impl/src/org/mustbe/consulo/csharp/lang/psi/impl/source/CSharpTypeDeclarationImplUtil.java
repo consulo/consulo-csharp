@@ -22,6 +22,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
@@ -40,6 +42,20 @@ import com.intellij.util.ArrayUtil;
  */
 public class CSharpTypeDeclarationImplUtil
 {
+	public static boolean isExplicitStaticType(@Nullable PsiElement maybeTypeDeclaration)
+	{
+		if(!(maybeTypeDeclaration instanceof DotNetTypeDeclaration))
+		{
+			return false;
+		}
+		if(((DotNetTypeDeclaration) maybeTypeDeclaration).hasModifier(DotNetModifier.STATIC))
+		{
+			DotNetModifierList modifierList = ((DotNetTypeDeclaration) maybeTypeDeclaration).getModifierList();
+			return modifierList != null && modifierList.hasModifierInTree(DotNetModifier.STATIC);
+		}
+		return false;
+	}
+
 	public static boolean isInheritOrSelf(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope, @NotNull String... vmQNames)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);

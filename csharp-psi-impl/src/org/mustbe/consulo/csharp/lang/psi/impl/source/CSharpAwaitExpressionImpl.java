@@ -3,10 +3,12 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -14,12 +16,15 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpAwaitExpressionImpl extends CSharpElementImpl implements DotNetExpression
 {
-	public static final String System_Threading_Tasks_Task = "System.Threading.Tasks.Task";
-	public static final String System_Threading_Tasks_Task$1 = "System.Threading.Tasks.Task`1";
-
 	public CSharpAwaitExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	@NotNull
+	public PsiElement getAwaitKeywordElement()
+	{
+		return findNotNullChildByType(CSharpSoftTokens.AWAIT_KEYWORD);
 	}
 
 	@Override

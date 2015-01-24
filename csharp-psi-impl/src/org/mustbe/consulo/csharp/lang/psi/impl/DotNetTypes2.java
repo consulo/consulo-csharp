@@ -30,6 +30,13 @@ public interface DotNetTypes2
 			{
 				String InternalsVisibleToAttribute = "System.Runtime.CompilerServices.InternalsVisibleToAttribute";
 				String AsyncStateMachineAttribute = "System.Runtime.CompilerServices.AsyncStateMachineAttribute";
+
+			}
+
+			interface InteropServices
+			{
+				String InAttribute = "System.Runtime.InteropServices.InAttribute";
+				String OutAttribute = "System.Runtime.InteropServices.OutAttribute";
 			}
 		}
 

@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementCompareUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -36,8 +37,12 @@ public class CSharpLikeMethodDeclarationImplUtil
 		NOT_FOUND
 	}
 
-	public static boolean isEquivalentTo(PsiElement o1, PsiElement o2)
+	public static boolean isEquivalentTo(@NotNull PsiElement o1, @Nullable PsiElement o2)
 	{
+		if(o2 == null)
+		{
+			return false;
+		}
 		PsiElement originalElement1 = o1.getOriginalElement();
 		PsiElement originalElement2 = o2.getOriginalElement();
 

@@ -33,14 +33,17 @@ import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeWithChildre
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetRefTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
+import org.mustbe.consulo.msil.lang.psi.impl.MsilTypeByRefImpl;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -58,7 +61,7 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 
 	public MsilParameterAsCSharpParameter(PsiElement parent, DotNetVariable variable, DotNetLikeMethodDeclaration methodDeclaration, int index)
 	{
-		super(parent, getAdditionalModifiers(index, methodDeclaration), variable);
+		super(parent, getAdditionalModifiers(index, methodDeclaration, variable), variable);
 		myMethodDeclaration = methodDeclaration;
 		myIndex = index;
 
@@ -68,7 +71,7 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 		}
 	}
 
-	private static CSharpModifier[] getAdditionalModifiers(int index, DotNetLikeMethodDeclaration parent)
+	private static CSharpModifier[] getAdditionalModifiers(int index, DotNetLikeMethodDeclaration parent, DotNetVariable variable)
 	{
 		if(index == 0)
 		{
@@ -78,6 +81,16 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 					.ExtensionAttribute))
 			{
 				return new CSharpModifier[]{CSharpModifier.THIS};
+			}
+		}
+
+		DotNetModifierList modifierList = variable.getModifierList();
+		if(modifierList != null && modifierList.hasModifier(MsilTokens.BRACKET_OUT_KEYWORD))
+		{
+			DotNetType type = variable.getType();
+			if(type instanceof MsilTypeByRefImpl)
+			{
+				return new CSharpModifier[]{CSharpModifier.OUT};
 			}
 		}
 		return CSharpModifier.EMPTY_ARRAY;

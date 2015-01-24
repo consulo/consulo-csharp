@@ -22,6 +22,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CompletionResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
@@ -46,7 +47,11 @@ public class CSharpLiveTemplateMacroUtil
 		AbstractScopeProcessor processor = new SimpleNamedScopeProcessor(true, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
 		CSharpResolveUtil.treeWalkUp(processor, scope, scope, resolveLayers.getFirst());
 
-		processor = new CompletionResolveScopeProcessor(scope, processor.toResolveResults(), new ExecuteTarget[]{
+		CSharpResolveOptions options = CSharpResolveOptions.build();
+		options.element(scope);
+		options.additionalElements(processor.toResolveResults());
+
+		processor = new CompletionResolveScopeProcessor(options, new ExecuteTarget[]{
 				ExecuteTarget.FIELD,
 				ExecuteTarget.PROPERTY,
 				ExecuteTarget.EVENT

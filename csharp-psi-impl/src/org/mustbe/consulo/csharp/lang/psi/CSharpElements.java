@@ -158,7 +158,7 @@ public interface CSharpElements
 
 	IElementType PREFIX_EXPRESSION = new ElementTypeAsPsiFactory("PREFIX_EXPRESSION", CSharpLanguage.INSTANCE, CSharpPrefixExpressionImpl.class);
 
-	IElementType EMPTY_EXPRESSION = new ElementTypeAsPsiFactory("EMPTY_EXPRESSION", CSharpLanguage.INSTANCE, CSharpEmptyExpressionImpl.class);
+	IElementType ERROR_EXPRESSION = new ElementTypeAsPsiFactory("ERROR_EXPRESSION", CSharpLanguage.INSTANCE, CSharpErrorExpressionImpl.class);
 
 	IElementType PARENTHESES_EXPRESSION = new ElementTypeAsPsiFactory("PARENTHESES_EXPRESSION", CSharpLanguage.INSTANCE,
 			CSharpParenthesesExpressionImpl.class);
@@ -190,8 +190,8 @@ public interface CSharpElements
 
 	IElementType LAMBDA_EXPRESSION = new ElementTypeAsPsiFactory("LAMBDA_EXPRESSION", CSharpLanguage.INSTANCE, CSharpLambdaExpressionImpl.class);
 
-	IElementType ANONYM_METHOD_EXPRESSION = new ElementTypeAsPsiFactory("ANONYM_EXPRESSION", CSharpLanguage.INSTANCE,
-			CSharpAnonymMethodExpressionImpl.class);
+	IElementType DELEGATE_EXPRESSION = new ElementTypeAsPsiFactory("DELEGATE_EXPRESSION", CSharpLanguage.INSTANCE,
+			CSharpDelegateExpressionImpl.class);
 
 	IElementType LAMBDA_PARAMETER = new ElementTypeAsPsiFactory("LAMBDA_PARAMETER", CSharpLanguage.INSTANCE, CSharpLambdaParameterImpl.class);
 

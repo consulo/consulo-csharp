@@ -77,6 +77,16 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 		{
 			addAdditionalAttribute(new CSharpLightAttributeBuilder(myModifierList, DotNetTypes.System.Serializable));
 		}
+
+		if(myModifierList.hasModifier(MsilTokens.BRACKET_OUT_KEYWORD))
+		{
+			addAdditionalAttribute(new CSharpLightAttributeBuilder(myModifierList, DotNetTypes2.System.Runtime.InteropServices.OutAttribute));
+		}
+
+		if(myModifierList.hasModifier(MsilTokens.BRACKET_IN_KEYWORD))
+		{
+			addAdditionalAttribute(new CSharpLightAttributeBuilder(myModifierList, DotNetTypes2.System.Runtime.InteropServices.InAttribute));
+		}
 	}
 
 	public void addAdditionalAttribute(@NotNull DotNetAttribute attribute)
@@ -179,11 +189,11 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 	@Override
 	public boolean hasModifierInTree(@NotNull DotNetModifier modifier)
 	{
-		if(ArrayUtil.contains(modifier, myAdditional))
+		CSharpModifier cSharpModifier = CSharpModifier.as(modifier);
+		if(ArrayUtil.contains(cSharpModifier, myAdditional))
 		{
 			return true;
 		}
-		CSharpModifier cSharpModifier = CSharpModifier.as(modifier);
 		return MsilToCSharpUtil.hasCSharpInMsilModifierList(cSharpModifier, myModifierList);
 	}
 

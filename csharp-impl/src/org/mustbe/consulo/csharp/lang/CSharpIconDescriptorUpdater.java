@@ -210,7 +210,8 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 			}
 		}
 
-		if(owner.hasModifier(CSharpModifier.STATIC))
+		DotNetModifierList modifierList = owner.getModifierList();
+		if(modifierList != null && modifierList.hasModifierInTree(DotNetModifier.STATIC))
 		{
 			iconDescriptor.addLayerIcon(AllIcons.Nodes.StaticMark);
 		}

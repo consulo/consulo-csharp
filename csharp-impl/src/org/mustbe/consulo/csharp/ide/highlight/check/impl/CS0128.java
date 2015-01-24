@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAnonymMethodExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDelegateExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpCatchStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForStatementImpl;
@@ -133,7 +133,7 @@ public class CS0128 extends CompilerCheck<CSharpBlockStatementImpl>
 			}
 
 			@Override
-			public void visitAnonymMethodExpression(CSharpAnonymMethodExpressionImpl method)
+			public void visitAnonymMethodExpression(CSharpDelegateExpressionImpl method)
 			{
 				visitAndRollback(method);
 			}

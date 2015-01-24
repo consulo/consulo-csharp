@@ -2,8 +2,9 @@ package org.mustbe.consulo.csharp.ide.codeInsight.actions.expressionActions.lamb
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAnonymMethodExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDelegateExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -23,18 +24,23 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 01.11.14
  */
-public class AnonymToLambdaFix extends PsiElementBaseIntentionAction
+public class DelegateToLambdaExpressionFix extends PsiElementBaseIntentionAction
 {
 	@Override
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException
 	{
-		CSharpAnonymMethodExpressionImpl anonymMethodExpression = PsiTreeUtil.getParentOfType(element, CSharpAnonymMethodExpressionImpl.class);
+		CSharpDelegateExpressionImpl delegateExpression = PsiTreeUtil.getParentOfType(element, CSharpDelegateExpressionImpl.class);
 
-		assert anonymMethodExpression != null;
+		assert delegateExpression != null;
 
-		DotNetParameter[] parameters = anonymMethodExpression.getParameters();
+		DotNetParameter[] parameters = delegateExpression.getParameters();
 
 		StringBuilder builder = new StringBuilder();
+
+		if(delegateExpression.hasModifier(CSharpModifier.ASYNC))
+		{
+			builder.append("async ");
+		}
 
 		if(parameters.length == 0)
 		{
@@ -61,7 +67,7 @@ public class AnonymToLambdaFix extends PsiElementBaseIntentionAction
 
 		builder.append(" => ");
 
-		CSharpBlockStatementImpl statement = anonymMethodExpression.getBodyStatement();
+		CSharpBlockStatementImpl statement = delegateExpression.getBodyStatement();
 		if(statement == null)
 		{
 			builder.append("{}");
@@ -97,7 +103,7 @@ public class AnonymToLambdaFix extends PsiElementBaseIntentionAction
 
 		DotNetExpression expression = CSharpFileFactory.createExpression(project, builder.toString());
 
-		anonymMethodExpression.replace(expression);
+		delegateExpression.replace(expression);
 	}
 
 	@Override
@@ -105,7 +111,7 @@ public class AnonymToLambdaFix extends PsiElementBaseIntentionAction
 	{
 		if(element.getNode().getElementType() == CSharpTokens.DELEGATE_KEYWORD)
 		{
-			CSharpAnonymMethodExpressionImpl anonymMethodExpression = PsiTreeUtil.getParentOfType(element, CSharpAnonymMethodExpressionImpl.class);
+			CSharpDelegateExpressionImpl anonymMethodExpression = PsiTreeUtil.getParentOfType(element, CSharpDelegateExpressionImpl.class);
 			return anonymMethodExpression != null && anonymMethodExpression.toTypeRef(true) != DotNetTypeRef.ERROR_TYPE;
 		}
 		return false;

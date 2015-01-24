@@ -20,11 +20,18 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.CastNArgumentToTypeRefFix;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedConstructorFix;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedMethodFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNewExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
@@ -34,6 +41,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.ar
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetUserType;
@@ -42,6 +50,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
+import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
 import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixActionRegistrarImpl;
 import com.intellij.codeInsight.quickfix.UnresolvedReferenceQuickFixProvider;
 import com.intellij.psi.PsiElement;
@@ -60,26 +69,6 @@ import lombok.val;
  */
 public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 {
-	public static class ResolveError
-	{
-		private String description;
-		private String tooltip;
-		private PsiElement range;
-
-		public ResolveError(String description, String tooltip, PsiElement range)
-		{
-			this.description = description;
-			this.tooltip = tooltip;
-			this.range = range;
-		}
-
-		@Nullable
-		public HighlightInfo create()
-		{
-			return HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR).description(description).escapedToolTip(tooltip).range(range).create();
-		}
-	}
-
 	@Nullable
 	@Override
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpReferenceExpression expression)
@@ -132,8 +121,8 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 			}
 			else
 			{
-				val forError = createResolveError(callElement, resolveResults[0]);
-				if(forError == null)
+				val highlightInfo = createHighlightInfo(callElement, resolveResults[0]);
+				if(highlightInfo == null)
 				{
 					return null;
 				}
@@ -144,7 +133,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 					@Override
 					public HighlightInfo create()
 					{
-						return forError.create();
+						return highlightInfo;
 					}
 				};
 			}
@@ -152,7 +141,8 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		return null;
 	}
 
-	private static ResolveError createResolveError(@NotNull PsiElement element, @NotNull ResolveResult resolveResult)
+	@Nullable
+	private static HighlightInfo createHighlightInfo(@NotNull PsiElement element, @NotNull ResolveResult resolveResult)
 	{
 		if(!(resolveResult instanceof MethodResolveResult))
 		{
@@ -164,24 +154,23 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		MethodCalcResult calcResult = ((MethodResolveResult) resolveResult).getCalcResult();
 		List<NCallArgument> arguments = calcResult.getArguments();
 
-
 		CSharpCallArgumentListOwner callOwner = findCallOwner(element);
 		if(callOwner != null)
 		{
-			StringBuilder builder = new StringBuilder();
-			builder.append("<b>");
+			StringBuilder tooltipBuilder = new StringBuilder();
+			tooltipBuilder.append("<b>");
 			// sometimes name can be null
 			if(element instanceof CSharpOperatorReferenceImpl)
 			{
 				String canonicalText = ((CSharpOperatorReferenceImpl) element).getCanonicalText();
-				builder.append(XmlStringUtil.escapeString(canonicalText));
+				tooltipBuilder.append(XmlStringUtil.escapeString(canonicalText));
 			}
 			else
 			{
 				String name = ((PsiNamedElement) resolveElement).getName();
-				builder.append(name);
+				tooltipBuilder.append(name);
 			}
-			builder.append("&#x9;(");
+			tooltipBuilder.append("&#x9;(");
 
 			if(resolveElement instanceof DotNetVariable)
 			{
@@ -196,9 +185,9 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 				{
 					if(i != 0)
 					{
-						builder.append(", ");
+						tooltipBuilder.append(", ");
 					}
-					appendType(builder, parameterTypes[i]);
+					appendType(tooltipBuilder, parameterTypes[i], element);
 				}
 			}
 			else if(resolveElement instanceof DotNetLikeMethodDeclaration)
@@ -208,59 +197,111 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 				{
 					if(i != 0)
 					{
-						builder.append(", ");
+						tooltipBuilder.append(", ");
 					}
-					builder.append(parameters[i].getName()).append(" : ");
-					appendType(builder, parameters[i].toTypeRef(false));
+					tooltipBuilder.append(parameters[i].getName()).append(" : ");
+					appendType(tooltipBuilder, parameters[i].toTypeRef(false), element);
 				}
 			}
-			builder.append(")</b> cannot be applied<br>");
+			tooltipBuilder.append(")</b> cannot be applied<br>");
 
-			builder.append("to&#x9;<b>(");
+			tooltipBuilder.append("to&#x9;<b>(");
 
 			for(int i = 0; i < arguments.size(); i++)
 			{
 				if(i != 0)
 				{
-					builder.append(", ");
+					tooltipBuilder.append(", ");
 				}
 
 				NCallArgument nCallArgument = arguments.get(i);
 
 				if(!nCallArgument.isValid())
 				{
-					builder.append("<font color=\"").append(ColorUtil.toHex(JBColor.RED)).append("\">");
+					tooltipBuilder.append("<font color=\"").append(ColorUtil.toHex(JBColor.RED)).append("\">");
 				}
 
 				String parameterName = nCallArgument.getParameterName();
 				if(parameterName != null)
 				{
-					builder.append(parameterName).append(" : ");
+					tooltipBuilder.append(parameterName).append(" : ");
 				}
 
-				appendType(builder, nCallArgument.getTypeRef());
+				appendType(tooltipBuilder, nCallArgument.getTypeRef(), element);
 				if(!nCallArgument.isValid())
 				{
-					builder.append("</font>");
+					tooltipBuilder.append("</font>");
 				}
 			}
 
-			builder.append(")</b>");
+			tooltipBuilder.append(")</b>");
 
 			PsiElement parameterList = callOwner.getParameterList();
 			if(parameterList == null)
 			{
 				parameterList = callOwner;
 			}
-			return new ResolveError("", builder.toString(), parameterList);
+
+			HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR);
+			builder = builder.description("");
+			builder = builder.escapedToolTip(tooltipBuilder.toString());
+			builder = builder.range(parameterList);
+
+			HighlightInfo highlightInfo = builder.create();
+			if(highlightInfo != null)
+			{
+				if(element instanceof CSharpReferenceExpression)
+				{
+					if(resolveElement instanceof CSharpMethodDeclaration)
+					{
+						QuickFixAction.registerQuickFixAction(highlightInfo, new CreateUnresolvedMethodFix((CSharpReferenceExpression) element));
+					}
+
+					if(resolveElement instanceof CSharpConstructorDeclaration)
+					{
+						QuickFixAction.registerQuickFixAction(highlightInfo, new CreateUnresolvedConstructorFix((CSharpReferenceExpression)
+								element));
+					}
+
+					for(NCallArgument argument : arguments)
+					{
+						if(!argument.isValid())
+						{
+							CSharpCallArgument callArgument = argument.getCallArgument();
+							if(callArgument == null)
+							{
+								continue;
+							}
+							DotNetExpression argumentExpression = callArgument.getArgumentExpression();
+							if(argumentExpression == null)
+							{
+								continue;
+							}
+							DotNetTypeRef parameterTypeRef = argument.getParameterTypeRef();
+							if(parameterTypeRef == null)
+							{
+								continue;
+							}
+							String parameterName = argument.getParameterName();
+							if(parameterName == null)
+							{
+								continue;
+							}
+							QuickFixAction.registerQuickFixAction(highlightInfo, new CastNArgumentToTypeRefFix(argumentExpression, parameterTypeRef,
+									parameterName));
+						}
+					}
+				}
+			}
+			return highlightInfo;
 		}
 		return null;
 	}
 
 
-	private static void appendType(StringBuilder builder, DotNetTypeRef typeRef)
+	private static void appendType(@NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
-		builder.append(XmlStringUtil.escapeString(typeRef.getPresentableText()));
+		builder.append(XmlStringUtil.escapeString(CSharpTypeRefPresentationUtil.buildText(typeRef, scope)));
 	}
 
 	private static CSharpCallArgumentListOwner findCallOwner(PsiElement element)

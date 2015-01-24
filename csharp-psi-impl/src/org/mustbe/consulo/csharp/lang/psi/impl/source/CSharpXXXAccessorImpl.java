@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
@@ -107,7 +108,8 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 	@NotNull
 	private Pair<DotNetTypeRef, DotNetQualifiedElement> getTypeRefOfParent()
 	{
-		PsiElement element = PsiTreeUtil.getParentOfType(this, CSharpPropertyDeclaration.class, CSharpArrayMethodDeclaration.class);
+		PsiElement element = PsiTreeUtil.getParentOfType(this, CSharpPropertyDeclaration.class, CSharpEventDeclaration.class,
+				CSharpArrayMethodDeclaration.class);
 		if(element == null)
 		{
 			return Pair.create(DotNetTypeRef.ERROR_TYPE, null);
@@ -118,16 +120,22 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 		{
 			typeRef = ((CSharpPropertyDeclaration) element).toTypeRef(false);
 		}
+		else if(element instanceof CSharpEventDeclaration)
+		{
+			typeRef = ((CSharpEventDeclaration) element).toTypeRef(false);
+		}
 		else if(element instanceof CSharpArrayMethodDeclaration)
 		{
 			typeRef = ((CSharpArrayMethodDeclaration) element).getReturnTypeRef();
 		}
-		return Pair.create(typeRef, (DotNetQualifiedElement)element);
+		return Pair.create(typeRef, (DotNetQualifiedElement) element);
 	}
 
 	@Override
-	public boolean processDeclarations(
-			@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place)
+	public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
+			@NotNull ResolveState state,
+			PsiElement lastParent,
+			@NotNull PsiElement place)
 	{
 		if(ExecuteTargetUtil.canProcess(processor, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER))
 		{
@@ -137,7 +145,8 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 				return false;
 			}
 
-			if(getAccessorKind() == Kind.SET)
+			Kind accessorKind = getAccessorKind();
+			if(accessorKind == Kind.SET || accessorKind == Kind.ADD || accessorKind == Kind.REMOVE)
 			{
 				Pair<DotNetTypeRef, DotNetQualifiedElement> pair = getTypeRefOfParent();
 				if(pair.getSecond() == null)
@@ -145,7 +154,8 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 					return true;
 				}
 
-				CSharpLightLocalVariableBuilder builder = new CSharpLightLocalVariableBuilder(pair.getSecond()).withName(VALUE).withParent(this).withTypeRef(pair.getFirst());
+				CSharpLightLocalVariableBuilder builder = new CSharpLightLocalVariableBuilder(pair.getSecond()).withName(VALUE).withParent(this)
+						.withTypeRef(pair.getFirst());
 
 				builder.putUserData(CSharpResolveUtil.ACCESSOR_VALUE_VARIABLE_OWNER, pair.getSecond());
 

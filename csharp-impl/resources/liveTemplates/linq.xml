@@ -15,11 +15,10 @@
   -->
 
 <templateSet group="C# Linq">
-	<template name="fws" value="from $VAR$ in $FOREACH_TYPE$ where $BOOL_EXPRESSION_FROM$ select $VAR$$END$"
+	<template name="fws" value="from $VAR$ in $FOREACH_VAR$ where $END$ select $VAR$"
 			  resource-bundle="messages.CSharpBundle" key="livetemplates.forv" toReformat="true" toShortenFQNames="true">
-		<variable name="FOREACH_TYPE" expression="csharpForeachVariable()" defaultValue="" alwaysStopAt="true" />
-		<variable name="VAR" expression="csharpSuggestVariableName()" defaultValue="it" alwaysStopAt="true" />
-		<variable name="BOOL_EXPRESSION_FROM" expression="csharpBoolExpressionFrom(VAR)" defaultValue="" alwaysStopAt="true" />
+		<variable name="FOREACH_VAR" expression="csharpForeachVariable()" defaultValue="" alwaysStopAt="true" />
+		<variable name="VAR" expression="csharpSuggestIndexName()" defaultValue="it" alwaysStopAt="false" />
 		<context>
 			<option name="CSHARP_STATEMENT" value="true" />
 			<option name="CSHARP_EXPRESSION" value="true" />

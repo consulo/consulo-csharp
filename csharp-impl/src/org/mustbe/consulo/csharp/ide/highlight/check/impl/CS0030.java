@@ -83,8 +83,8 @@ public class CS0030 extends CompilerCheck<PsiElement>
 				CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(variableTypeRef, iterableTypeRef, statement, null);
 				if(!inheritResult.isSuccess())
 				{
-					CompilerCheckBuilder builder = newBuilder(type, CSharpTypeRefPresentationUtil.buildText(iterableTypeRef, statement,
-							CS0029.TYPE_FLAGS), CSharpTypeRefPresentationUtil.buildText(variableTypeRef, statement, CS0029.TYPE_FLAGS));
+					CompilerCheckBuilder builder = newBuilder(type, CSharpTypeRefPresentationUtil.buildTextWithKeyword(iterableTypeRef, statement),
+							CSharpTypeRefPresentationUtil.buildTextWithKeyword(variableTypeRef, statement));
 
 					if(languageVersion.isAtLeast(CSharpLanguageVersion._3_0))
 					{
@@ -122,8 +122,8 @@ public class CS0030 extends CompilerCheck<PsiElement>
 
 					if(!inheritResult.isSuccess())
 					{
-						CompilerCheckBuilder builder = newBuilder(type, CSharpTypeRefPresentationUtil.buildText(expressionTypeRef, expression,
-								CS0029.TYPE_FLAGS), CSharpTypeRefPresentationUtil.buildText(castTypeRef, expression, CS0029.TYPE_FLAGS));
+						CompilerCheckBuilder builder = newBuilder(type, CSharpTypeRefPresentationUtil.buildTextWithKeyword(expressionTypeRef,
+								expression), CSharpTypeRefPresentationUtil.buildTextWithKeyword(castTypeRef, expression));
 
 						if(EarlyAccessProgramManager.is(CS0030TypeCast.class))
 						{
@@ -134,9 +134,8 @@ public class CS0030 extends CompilerCheck<PsiElement>
 					{
 						CompilerCheckBuilder builder = newBuilder(innerExpression);
 						builder.setTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
-						builder.setText(CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildText
-								(expressionTypeRef, expression, CS0029.TYPE_FLAGS), CSharpTypeRefPresentationUtil.buildText(castTypeRef, expression,
-								CS0029.TYPE_FLAGS)));
+						builder.setText(CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildTextWithKeyword
+								(expressionTypeRef, expression), CSharpTypeRefPresentationUtil.buildTextWithKeyword(castTypeRef, expression)));
 						builder.setHighlightInfoType(HighlightInfoType.INFORMATION);
 						ref.set(builder);
 					}
@@ -145,9 +144,8 @@ public class CS0030 extends CompilerCheck<PsiElement>
 				{
 					CompilerCheckBuilder builder = newBuilder(type);
 					builder.setTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
-					builder.setText(CSharpErrorBundle.message("explicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildText
-							(expressionTypeRef, expression, CS0029.TYPE_FLAGS), CSharpTypeRefPresentationUtil.buildText(castTypeRef, expression,
-							CS0029.TYPE_FLAGS)));
+					builder.setText(CSharpErrorBundle.message("explicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildTextWithKeyword
+							(expressionTypeRef, expression), CSharpTypeRefPresentationUtil.buildTextWithKeyword(castTypeRef, expression)));
 					builder.setHighlightInfoType(HighlightInfoType.INFORMATION);
 					ref.set(builder);
 				}

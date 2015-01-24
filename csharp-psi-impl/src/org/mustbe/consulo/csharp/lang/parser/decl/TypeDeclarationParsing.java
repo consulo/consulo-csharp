@@ -91,6 +91,11 @@ public class TypeDeclarationParsing extends SharedParsingHelpers
 
 		if(builder.getTokenType() == IDENTIFIER)
 		{
+			if(!nameExpected)
+			{
+				emptyElement(builder, CSharpStubElements.MODIFIER_LIST);
+			}
+
 			builder.advanceLexer();
 
 			if(builder.getTokenType() == EQ)

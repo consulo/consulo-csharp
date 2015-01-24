@@ -33,6 +33,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
@@ -316,11 +317,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 
-		ResolveResult resolveResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
-		if(resolveResult == null)
-		{
-			resolveResult = resolveResults[0];
-		}
+		ResolveResult resolveResult = CSharpResolveUtil.findValidOrFirstMaybeResult(resolveResults);
 
 		if(resolveResult instanceof StubElementResolveResult)
 		{
@@ -359,7 +356,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			return;
 		}
 
-		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(this, ResolveResult.EMPTY_ARRAY,
+		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(CSharpResolveOptions.build().element(this),
 				new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
 
 		ResolveState state = ResolveState.initial();
@@ -509,6 +506,13 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@Nullable
 	@Override
 	public String getReferenceName()
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Nullable
+	@Override
+	public String getReferenceNameWithAt()
 	{
 		throw new UnsupportedOperationException();
 	}

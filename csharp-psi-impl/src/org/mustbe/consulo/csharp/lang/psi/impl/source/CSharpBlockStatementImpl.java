@@ -23,7 +23,6 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpStatementListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.lang.ASTNode;
@@ -35,7 +34,7 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpBlockStatementImpl extends CSharpElementImpl implements DotNetStatement, CSharpBodyWithBraces, CSharpStatementListOwner
+public class CSharpBlockStatementImpl extends CSharpElementImpl implements DotNetStatement, CSharpBodyWithBraces
 {
 	public CSharpBlockStatementImpl(@NotNull ASTNode node)
 	{
@@ -60,7 +59,6 @@ public class CSharpBlockStatementImpl extends CSharpElementImpl implements DotNe
 		return findChildByType(CSharpTokens.RBRACE);
 	}
 
-	@Override
 	@NotNull
 	public DotNetStatement[] getStatements()
 	{

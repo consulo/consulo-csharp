@@ -84,4 +84,10 @@ public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWra
 	{
 		return null;
 	}
+
+	@Override
+	public int getIndex()
+	{
+		return myOriginal.getIndex();
+	}
 }

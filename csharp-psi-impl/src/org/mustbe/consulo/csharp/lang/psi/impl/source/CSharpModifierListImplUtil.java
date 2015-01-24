@@ -20,8 +20,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifierList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
@@ -29,6 +31,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.psi.PsiElement;
@@ -86,6 +89,12 @@ public class CSharpModifierListImplUtil
 					return true;
 				}
 				break;
+			case READONLY:
+				if(parent instanceof CSharpEnumConstantDeclaration)
+				{
+					return true;
+				}
+				break;
 			case STATIC:
 				if(parent instanceof CSharpFieldDeclaration)
 				{
@@ -93,6 +102,16 @@ public class CSharpModifierListImplUtil
 					{
 						return true;
 					}
+				}
+				if(CSharpMethodUtil.isDelegate(parent) || parent instanceof CSharpTypeDeclaration || parent instanceof CSharpEnumConstantDeclaration)
+				{
+					return true;
+				}
+				if(parent instanceof DotNetXXXAccessor)
+				{
+					PsiElement superParent = parent.getParent();
+					return superParent instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) superParent).hasModifier(DotNetModifier
+							.STATIC);
 				}
 				break;
 			case INTERFACE_ABSTRACT:
@@ -114,6 +133,10 @@ public class CSharpModifierListImplUtil
 				}
 				break;
 			case ABSTRACT:
+				if(parent instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) parent).isInterface())
+				{
+					return true;
+				}
 				if(hasModifier(modifierList, CSharpModifier.INTERFACE_ABSTRACT))
 				{
 					return true;

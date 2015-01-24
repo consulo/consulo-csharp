@@ -31,5 +31,5 @@ public interface CSharpFieldOrPropertySet extends DotNetElement
 	CSharpReferenceExpression getNameReferenceExpression();
 
 	@Nullable
-	DotNetExpression getValueReferenceExpression();
+	DotNetExpression getValueExpression();
 }

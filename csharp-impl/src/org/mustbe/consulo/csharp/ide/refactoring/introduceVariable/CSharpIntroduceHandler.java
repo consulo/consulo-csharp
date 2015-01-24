@@ -16,6 +16,8 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.UsefulPsiTreeUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
+import org.mustbe.consulo.dotnet.psi.DotNetCodeBlockOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.codeInsight.CodeInsightUtilCore;
@@ -28,11 +30,14 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.CaretModel;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pass;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.PsiRecursiveElementVisitor;
 import com.intellij.psi.PsiWhiteSpace;
@@ -51,6 +56,11 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 	@Nullable
 	protected static PsiElement findAnchor(PsiElement occurrence)
 	{
+		DotNetStatement statement = PsiTreeUtil.getParentOfType(occurrence, DotNetStatement.class);
+		if(statement != null)
+		{
+			return statement;
+		}
 		return findAnchor(Arrays.asList(occurrence));
 	}
 
@@ -233,6 +243,16 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 			}
 			elementAtCaret = elementAtCaret.getParent();
 		}
+
+		if(expressions.isEmpty())
+		{
+			PsiElement someElement = UsefulPsiTreeUtil.getPrevSiblingSkipWhiteSpaces(file.findElementAt(offset), false);
+			if(someElement instanceof CSharpExpressionStatementImpl)
+			{
+				expressions.add(((CSharpExpressionStatementImpl) someElement).getExpression());
+			}
+		}
+
 		if(expressions.isEmpty())
 		{
 			showCannotPerformError(file.getProject(), editor);
@@ -342,15 +362,10 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 
 	protected List<PsiElement> getOccurrences(PsiElement element, @NotNull final DotNetExpression expression)
 	{
-		PsiElement context = element;
-		do
-		{
-			context = PsiTreeUtil.getParentOfType(context, CSharpLocalVariable.class, true);
-		}
-		while(context != null);
+		PsiElement context = PsiTreeUtil.getParentOfType(element, DotNetCodeBlockOwner.class);
 		if(context == null)
 		{
-			context = expression.getContainingFile();
+			context = element;
 		}
 		return CSharpRefactoringUtil.getOccurrences(expression, context);
 	}
@@ -384,14 +399,14 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 	{
 		final PsiElement statement = performRefactoring(operation);
 		final CSharpLocalVariable target = PsiTreeUtil.findChildOfType(statement, CSharpLocalVariable.class);
-		final PsiElement componentName = target != null ? target.getNameIdentifier() : null;
-		if(componentName == null)
+		final PsiElement nameIdentifier = target != null ? target.getNameIdentifier() : null;
+		if(nameIdentifier == null)
 		{
 			return;
 		}
 		final List<PsiElement> occurrences = operation.getOccurrences();
-		operation.getEditor().getCaretModel().moveToOffset(componentName.getTextOffset());
-		final InplaceVariableIntroducer<PsiElement> introducer = new CSharpInplaceVariableIntroducer(target, operation, occurrences);
+		operation.getEditor().getCaretModel().moveToOffset(nameIdentifier.getTextOffset());
+		final InplaceVariableIntroducer<PsiElement> introducer = new CSharpInplaceVariableIntroducer(target,  operation, occurrences);
 		introducer.performInplaceRefactoring(new LinkedHashSet<String>(operation.getSuggestedNames()));
 	}
 
@@ -436,18 +451,25 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 	@Nullable
 	private PsiElement performReplace(@NotNull final PsiElement declaration, final CSharpIntroduceOperation operation)
 	{
-		final DotNetExpression expression = operation.getInitializer();
+		final DotNetExpression initializer = operation.getInitializer();
 		final Project project = operation.getProject();
-		return new WriteCommandAction<PsiElement>(project, expression.getContainingFile())
+		PsiDocumentManager.getInstance(project).commitAllDocuments();
+		return new WriteCommandAction<PsiElement>(project, declaration.getContainingFile())
 		{
 			@Override
 			protected void run(final Result<PsiElement> result) throws Throwable
 			{
 				PsiElement createdDeclaration = addDeclaration(operation, declaration);
-				if(createdDeclaration != null)
+
+				boolean needReferenceOfVariable = isNeedReferenceOfVariable(initializer);
+				if(needReferenceOfVariable)
 				{
-					createdDeclaration = modifyDeclaration(createdDeclaration);
+					if(createdDeclaration != null)
+					{
+						createdDeclaration = modifyDeclaration(createdDeclaration);
+					}
 				}
+
 				result.setResult(createdDeclaration);
 
 				PsiElement newExpression = createExpression(project, operation.getName());
@@ -455,20 +477,35 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 				if(operation.isReplaceAll())
 				{
 					List<PsiElement> newOccurrences = new ArrayList<PsiElement>();
-					for(PsiElement occurrence : operation.getOccurrences())
+					List<PsiElement> occurrences = operation.getOccurrences();
+					if(occurrences.size() == 1 && !needReferenceOfVariable)
 					{
-						final PsiElement replaced = replaceExpression(occurrence, newExpression, operation);
-						if(replaced != null)
-						{
-							newOccurrences.add(replaced);
-						}
+						occurrences.get(0).delete();
 					}
-					operation.setOccurrences(newOccurrences);
+					else
+					{
+						for(PsiElement occurrence : occurrences)
+						{
+							final PsiElement replaced = replaceExpression(occurrence, newExpression, operation);
+							if(replaced != null)
+							{
+								newOccurrences.add(replaced);
+							}
+						}
+						operation.setOccurrences(newOccurrences);
+					}
 				}
 				else
 				{
-					final PsiElement replaced = replaceExpression(expression, newExpression, operation);
-					operation.setOccurrences(Collections.singletonList(replaced));
+					if(needReferenceOfVariable)
+					{
+						final PsiElement replaced = replaceExpression(initializer, newExpression, operation);
+						operation.setOccurrences(Collections.singletonList(replaced));
+					}
+					else
+					{
+						initializer.delete();
+					}
 				}
 
 				postRefactoring(operation.getElement());
@@ -479,11 +516,18 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 	protected PsiElement modifyDeclaration(@NotNull PsiElement declaration)
 	{
 		PsiElement parent = declaration.getParent();
-
-		parent.addAfter(PsiParserFacade.SERVICE.getInstance(declaration.getProject()).createWhiteSpaceFromText("\n"),
-				declaration);
-
+		parent.addAfter(PsiParserFacade.SERVICE.getInstance(declaration.getProject()).createWhiteSpaceFromText("\n"), declaration);
 		return declaration;
+	}
+
+	private boolean isNeedReferenceOfVariable(@NotNull DotNetExpression expression)
+	{
+		PsiElement parent = expression.getParent();
+		if(parent instanceof CSharpExpressionStatementImpl)
+		{
+			return ((CSharpExpressionStatementImpl) expression.getParent()).getExpression() != expression;
+		}
+		return true;
 	}
 
 	@Nullable
@@ -519,19 +563,32 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 
 	private static class CSharpInplaceVariableIntroducer extends InplaceVariableIntroducer<PsiElement>
 	{
-		private final PsiElement myTarget;
-
 		public CSharpInplaceVariableIntroducer(CSharpLocalVariable target, CSharpIntroduceOperation operation, List<PsiElement> occurrences)
 		{
 			super(target, operation.getEditor(), operation.getProject(), "Introduce Variable", occurrences.toArray(new PsiElement[occurrences.size()
 					]), null);
-			myTarget = target;
+		}
+
+		@Override
+		protected void moveOffsetAfter(boolean success)
+		{
+			super.moveOffsetAfter(success);
+
+			if(success)
+			{
+				PsiNamedElement variable = getVariable();
+				if(variable != null && variable.isValid())
+				{
+					myEditor.getCaretModel().moveToOffset(variable.getTextRange().getEndOffset());
+					myEditor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
+				}
+			}
 		}
 
 		@Override
 		protected PsiElement checkLocalScope()
 		{
-			return myTarget.getContainingFile();
+			return myElementToRename.getContainingFile();
 		}
 	}
 

@@ -19,9 +19,14 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.CastExpressionToTypeRef;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.ChangeReturnToTypeRefFix;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.ChangeVariableToTypeRefFix;
 import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightKey;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
@@ -40,6 +45,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRef
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
@@ -57,8 +63,6 @@ import lombok.val;
  */
 public class CS0029 extends CompilerCheck<PsiElement>
 {
-	public static final int TYPE_FLAGS = CSharpTypeRefPresentationUtil.TYPE_KEYWORD | CSharpTypeRefPresentationUtil.QUALIFIED_NAME;
-
 	@Nullable
 	@Override
 	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull PsiElement element)
@@ -82,13 +86,34 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				CSharpStaticTypeRef.IMPLICIT);
 		if(!inheritResult.isSuccess())
 		{
-			return newBuilder(elementToHighlight, CSharpTypeRefPresentationUtil.buildText(secondTypeRef, element, TYPE_FLAGS),
-					CSharpTypeRefPresentationUtil.buildText(firstTypeRef, element, TYPE_FLAGS));
+			CompilerCheckBuilder builder = newBuilder(elementToHighlight, CSharpTypeRefPresentationUtil.buildTextWithKeyword(secondTypeRef,
+					element), CSharpTypeRefPresentationUtil.buildTextWithKeyword(firstTypeRef, element));
+
+			if(elementToHighlight instanceof DotNetExpression)
+			{
+				builder.addQuickFix(new CastExpressionToTypeRef((DotNetExpression) elementToHighlight, firstTypeRef));
+			}
+
+			if(element instanceof DotNetVariable)
+			{
+				builder.addQuickFix(new ChangeVariableToTypeRefFix((DotNetVariable) element, secondTypeRef));
+			}
+
+			if(element instanceof CSharpReturnStatementImpl)
+			{
+				DotNetLikeMethodDeclaration methodElement = PsiTreeUtil.getParentOfType(element, CSharpConversionMethodDeclaration.class,
+						CSharpMethodDeclaration.class);
+				if(methodElement != null)
+				{
+					builder.addQuickFix(new ChangeReturnToTypeRefFix(methodElement, secondTypeRef));
+				}
+			}
+			return builder;
 		}
 		else if(inheritResult.isConversion())
 		{
-			String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildText(secondTypeRef, element,
-					TYPE_FLAGS), CSharpTypeRefPresentationUtil.buildText(firstTypeRef, element, TYPE_FLAGS));
+			String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildTextWithKeyword(secondTypeRef,
+					element), CSharpTypeRefPresentationUtil.buildTextWithKeyword(firstTypeRef, element));
 			return newBuilder(elementToHighlight).setText(text).setHighlightInfoType(HighlightInfoType.INFORMATION).setTextAttributesKey
 					(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
 		}
@@ -111,7 +136,15 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		{
 			CSharpMethodDeclaration parent = (CSharpMethodDeclaration) element.getParent();
 			assert parent.getCodeBlock() == element;
-			return Trinity.create(parent.getReturnTypeRef(), ((DotNetExpression) element).toTypeRef(true), element);
+
+			CSharpImplicitReturnModel model = CSharpImplicitReturnModel.None;
+			if(parent.hasModifier(CSharpModifier.ASYNC))
+			{
+				model = CSharpImplicitReturnModel.Async;
+			}
+
+			DotNetTypeRef returnTypeRef = model.extractTypeRef(parent.getReturnTypeRef(), element);
+			return Trinity.create(returnTypeRef, ((DotNetExpression) element).toTypeRef(true), element);
 		}
 		else if(element instanceof CSharpAssignmentExpressionImpl)
 		{
@@ -168,17 +201,25 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				return null;
 			}
-			DotNetExpression singleExpression = lambdaExpression.getSingleExpression();
-			if(singleExpression != null)
+			PsiElement singleExpression = lambdaExpression.getCodeBlock();
+			if(singleExpression instanceof DotNetExpression)
 			{
 				DotNetTypeRef returnTypeRef = ((CSharpLambdaResolveResult) typeResolveResult).getReturnTypeRef();
+
+				CSharpImplicitReturnModel model = CSharpImplicitReturnModel.None;
+				if(lambdaExpression.hasModifier(CSharpModifier.ASYNC))
+				{
+					model = CSharpImplicitReturnModel.Async;
+				}
+
+				returnTypeRef = model.extractTypeRef(returnTypeRef, element);
+
 				// void type allow any type if used expression body
 				if(DotNetTypeRefUtil.isVmQNameEqual(returnTypeRef, element, DotNetTypes.System.Void))
 				{
 					return null;
 				}
-				return Trinity.create(returnTypeRef, singleExpression.toTypeRef(true),
-						singleExpression);
+				return Trinity.create(returnTypeRef, ((DotNetExpression) singleExpression).toTypeRef(true), singleExpression);
 			}
 		}
 		else if(element instanceof CSharpReturnStatementImpl)
@@ -206,7 +247,8 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				actual = expression.toTypeRef(false);
 			}
 
-			CSharpImplicitReturnModel implicitReturnModel = getImplicitReturnModel((CSharpReturnStatementImpl) element, pseudoMethod);
+			CSharpImplicitReturnModel implicitReturnModel = CSharpImplicitReturnModel.getImplicitReturnModel((CSharpReturnStatementImpl) element,
+					pseudoMethod);
 			DotNetTypeRef typeRef = implicitReturnModel.extractTypeRef(expected, element);
 			if(typeRef != DotNetTypeRef.ERROR_TYPE)
 			{
@@ -215,18 +257,5 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			return Trinity.create(expected, actual, ObjectUtils.notNull(expression, element));
 		}
 		return null;
-	}
-
-	@NotNull
-	private static CSharpImplicitReturnModel getImplicitReturnModel(CSharpReturnStatementImpl element, CSharpSimpleLikeMethodAsElement pseudoMethod)
-	{
-		for(CSharpImplicitReturnModel implicitReturnModel : CSharpImplicitReturnModel.values())
-		{
-			if(implicitReturnModel.canHandle(pseudoMethod, element))
-			{
-				return implicitReturnModel;
-			}
-		}
-		throw new IllegalArgumentException("CSharpImplicitReturnModel is broken");
 	}
 }

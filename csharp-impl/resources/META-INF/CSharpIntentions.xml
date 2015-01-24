@@ -34,11 +34,11 @@
 		</intentionAction>
 
 		<intentionAction>
-			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.expressionActions.lambda.AnonymToLambdaFix</className>
+			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.expressionActions.lambda.DelegateToLambdaExpressionFix</className>
 		</intentionAction>
 
 		<intentionAction>
-			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.expressionActions.lambda.LambdaToAnonymFix</className>
+			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.expressionActions.lambda.LambdaToDelegateExpressionFix</className>
 		</intentionAction>
 	</extensions>
 </idea-plugin>

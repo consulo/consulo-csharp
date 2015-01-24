@@ -143,13 +143,20 @@
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpReferenceCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpAccessorCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpKeywordCompletionContributor"/>
+		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpLinqCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpStatementCompletionContributor"/>
-		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpSmartCompletionContributor"/>
+		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpMemberNameCompletionContributor"/>
+		<lookup.charFilter implementation="org.mustbe.consulo.csharp.ide.completion.CSharpCompletionCharFilter" />
+
+		<lang.smartEnterProcessor language="C#"
+								  implementationClass="org.mustbe.consulo.csharp.ide.completion.smartEnter.CSharpSmartEnterProcessor"/>
+
 		<referenceImporter implementation="org.mustbe.consulo.csharp.ide.codeInsight.CSharpReferenceImporter"/>
 
 		<typedHandler implementation="org.mustbe.consulo.csharp.ide.completion.CSharpTypedHandler" id="csharp"/>
 
-		<renamePsiElementProcessor implementation="org.mustbe.consulo.csharp.ide.refactoring.rename.CSharpOverrideElementProcessor" />
+		<renamePsiElementProcessor implementation="org.mustbe.consulo.csharp.ide.refactoring.rename.CSharpTypeRenamePsiElementProcessor"/>
+		<renamePsiElementProcessor implementation="org.mustbe.consulo.csharp.ide.refactoring.rename.CSharpOverrideElementProcessor"/>
 		<gotoClassContributor implementation="org.mustbe.consulo.csharp.ide.navigation.CSharpTypeNameContributor"/>
 		<gotoSymbolContributor implementation="org.mustbe.consulo.csharp.ide.navigation.CSharpSymbolNameContributor"/>
 
@@ -214,7 +221,7 @@
 		<bundleLiveTemplateSet path="liveTemplates/output"/>
 		<bundleLiveTemplateSet path="liveTemplates/main"/>
 		<bundleLiveTemplateSet path="liveTemplates/foreach"/>
-		<!--<bundleLiveTemplateSet path="liveTemplates/linq"/> -->
+		<bundleLiveTemplateSet path="liveTemplates/linq"/>
 
 		<liveTemplateContext implementation="org.mustbe.consulo.csharp.ide.liveTemplates.context.CSharpStatementContextType"/>
 		<liveTemplateContext implementation="org.mustbe.consulo.csharp.ide.liveTemplates.context.CSharpClassBodyContextType"/>
@@ -225,7 +232,6 @@
 		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.IListVariableMacro"/>
 		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.ForeachVariableMacro"/>
 		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.ForeachComponentTypeMacro"/>
-		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.CSharpBoolExpressionFromMacro"/>
 
 		<codeStyleSettingsProvider implementation="org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettingsProvider"/>
 		<langCodeStyleSettingsProvider implementation="org.mustbe.consulo.csharp.ide.codeStyle.CSharpLanguageCodeStyleSettingsProvider"/>

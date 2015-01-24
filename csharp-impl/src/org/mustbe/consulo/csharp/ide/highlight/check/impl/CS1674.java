@@ -69,7 +69,7 @@ public class CS1674 extends CompilerCheck<CSharpUsingStatementImpl>
 		if(!CSharpTypeUtil.isInheritable(ourIDisposableTypeRef, usingTypeRef, element))
 		{
 			assert highlightElement != null;
-			return newBuilder(highlightElement, CSharpTypeRefPresentationUtil.buildText(usingTypeRef, element, CS0029.TYPE_FLAGS));
+			return newBuilder(highlightElement, CSharpTypeRefPresentationUtil.buildTextWithKeyword(usingTypeRef, element));
 		}
 		return null;
 	}

@@ -98,7 +98,7 @@ public class CSharpAnonymTypeRef extends DotNetTypeRef.Adapter
 		for(CSharpFieldOrPropertySet set : mySets)
 		{
 			DotNetExpression nameReferenceExpression = set.getNameReferenceExpression();
-			DotNetExpression valueReferenceExpression = set.getValueReferenceExpression();
+			DotNetExpression valueReferenceExpression = set.getValueExpression();
 
 			CSharpLightFieldDeclarationBuilder fieldBuilder = new CSharpLightFieldDeclarationBuilder(myContainingFile.getProject());
 

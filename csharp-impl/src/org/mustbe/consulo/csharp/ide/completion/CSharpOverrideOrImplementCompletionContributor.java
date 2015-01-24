@@ -28,7 +28,6 @@ import org.mustbe.consulo.csharp.CSharpIcons;
 import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
 import org.mustbe.consulo.csharp.ide.actions.generate.GenerateImplementMemberHandler;
 import org.mustbe.consulo.csharp.ide.actions.generate.GenerateOverrideMemberHandler;
-import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0029;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -213,7 +212,7 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 	{
 		if(!(methodDeclaration instanceof DotNetConstructorDeclaration))
 		{
-			CSharpTypeRefPresentationUtil.appendTypeRef(methodDeclaration, builder, methodDeclaration.getReturnTypeRef(), CS0029.TYPE_FLAGS);
+			CSharpTypeRefPresentationUtil.appendTypeRef(methodDeclaration, builder, methodDeclaration.getReturnTypeRef(), CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
 			builder.append(" ");
 		}
 

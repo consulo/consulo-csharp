@@ -19,10 +19,14 @@ package org.mustbe.consulo.csharp.ide.newProjectOrModule;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JComponent;
+import javax.swing.JList;
 import javax.swing.JPanel;
 
 import org.consulo.module.extension.ModuleExtensionProviderEP;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.dotnet.DotNetTarget;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkTable;
 import com.intellij.openapi.projectRoots.SdkTypeId;
@@ -30,25 +34,38 @@ import com.intellij.openapi.projectRoots.impl.SdkListCellRenderer;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.VerticalFlowLayout;
+import com.intellij.ui.ColoredListCellRendererWrapper;
 import com.intellij.util.SmartList;
 
 /**
  * @author VISTALL
  * @since 05.06.14
  */
-public class CSharpNewModuleBuilderPanel extends JPanel
+public class CSharpSdkPanel extends JPanel
 {
+	private ComboBox myTargetComboBox;
 	private ComboBox myComboBox;
 
-	public CSharpNewModuleBuilderPanel()
+	private JComponent myTargetComponent;
+
+	public CSharpSdkPanel()
 	{
 		super(new VerticalFlowLayout());
+
+		myTargetComboBox = new ComboBox(DotNetTarget.values());
+		myTargetComboBox.setRenderer(new ColoredListCellRendererWrapper<DotNetTarget>()
+		{
+			@Override
+			protected void doCustomize(JList list, DotNetTarget value, int index, boolean selected, boolean hasFocus)
+			{
+				append(value.getDescription());
+			}
+		});
+		add(myTargetComponent = LabeledComponent.left(myTargetComboBox, "Target"));
 
 		SdkTable sdkTable = SdkTable.getInstance();
 		myComboBox = new ComboBox();
 		myComboBox.setRenderer(new SdkListCellRenderer("<none>"));
-
-		myComboBox.addItem(null);
 
 		List<String> validSdkTypes = new SmartList<String>();
 		for(Map.Entry<String, String[]> entry : CSharpNewModuleBuilder.ourExtensionMapping.entrySet())
@@ -72,6 +89,20 @@ public class CSharpNewModuleBuilderPanel extends JPanel
 		}
 
 		add(LabeledComponent.left(myComboBox, ".NET SDK"));
+	}
+
+	@NotNull
+	public CSharpSdkPanel disableTargetComboBox(@NotNull DotNetTarget target)
+	{
+		myTargetComboBox.setSelectedItem(target);
+		myTargetComponent.setVisible(false);
+		return this;
+	}
+
+	@NotNull
+	public DotNetTarget getTarget()
+	{
+		return (DotNetTarget) myTargetComboBox.getSelectedItem();
 	}
 
 	@Nullable

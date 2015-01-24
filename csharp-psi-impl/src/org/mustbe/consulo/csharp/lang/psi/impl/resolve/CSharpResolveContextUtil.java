@@ -108,7 +108,10 @@ public class CSharpResolveContextUtil
 				{
 					continue;
 				}
-				list.add(cacheTypeContextImpl(genericExtractor, (CSharpTypeDeclaration) element));
+				if(element.hasModifier(CSharpModifier.PARTIAL))
+				{
+					list.add(cacheTypeContextImpl(genericExtractor, (CSharpTypeDeclaration) element));
+				}
 			}
 
 			if(list.isEmpty())

@@ -437,4 +437,10 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	{
 		return myOtherElements == null || ContainerUtil.process(myOtherElements.values(), processor);
 	}
+
+	@NotNull
+	public T getElement()
+	{
+		return myElement;
+	}
 }

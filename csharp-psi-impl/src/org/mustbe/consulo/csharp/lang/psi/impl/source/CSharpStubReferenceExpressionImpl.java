@@ -124,6 +124,14 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	@Override
 	public String getReferenceName()
 	{
+		String referenceNameWithAt = getReferenceNameWithAt();
+		return referenceNameWithAt == null ? null : CSharpPsiUtilImpl.getNameWithoutAt(referenceNameWithAt);
+	}
+
+	@Nullable
+	@Override
+	public String getReferenceNameWithAt()
+	{
 		CSharpReferenceExpressionStub stub = getStub();
 		if(stub != null)
 		{
@@ -131,7 +139,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		}
 
 		PsiElement referenceElement = getReferenceElement();
-		return referenceElement == null ? null : CSharpPsiUtilImpl.getNameWithoutAt(referenceElement.getText());
+		return referenceElement == null ? null : referenceElement.getText();
 	}
 
 	@Override
@@ -153,9 +161,14 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		return multiResolve(incompleteCode, true);
 	}
 
+	@Override
 	@NotNull
 	public ResolveResult[] multiResolve(final boolean incompleteCode, final boolean resolveFromParent)
 	{
+		if(!isValid())
+		{
+			return ResolveResult.EMPTY_ARRAY;
+		}
 		return CSharpResolveCache.getInstance(getProject()).resolveWithCaching(this, OurResolver.INSTANCE, true, incompleteCode, resolveFromParent);
 	}
 
@@ -304,35 +317,13 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
-		ResolveResult[] resolveResults = multiResolve(false, resolveFromParent);
-		if(resolveResults.length == 0)
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
-
-		ResolveResult resolveResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
-		if(resolveResult == null)
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
-		return CSharpReferenceExpressionImplUtil.toTypeRef(resolveResult);
+		return CSharpReferenceExpressionImplUtil.toTypeRef(this, resolveFromParent);
 	}
 
 	@Override
 	@NotNull
 	public DotNetTypeRef toTypeRefWithoutCaching(ResolveToKind kind, boolean resolveFromParent)
 	{
-		ResolveResult[] resolveResults = multiResolveImpl(kind, resolveFromParent);
-		if(resolveResults.length == 0)
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
-
-		ResolveResult firstValidResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
-		if(firstValidResult == null)
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
-		return CSharpReferenceExpressionImplUtil.toTypeRef(firstValidResult);
+		return CSharpReferenceExpressionImplUtil.toTypeRefWithoutCaching(this, kind, resolveFromParent);
 	}
 }

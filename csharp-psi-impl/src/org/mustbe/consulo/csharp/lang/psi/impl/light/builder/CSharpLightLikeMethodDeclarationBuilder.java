@@ -191,6 +191,11 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 			myGenericParameters = new ArrayList<DotNetGenericParameter>(2);
 		}
 
+		if(genericParameter instanceof CSharpLightGenericParameterBuilder)
+		{
+			((CSharpLightGenericParameterBuilder) genericParameter).setIndex(myGenericParameters.size());
+		}
+
 		myGenericParameters.add(genericParameter);
 		return (T) this;
 	}

@@ -19,24 +19,19 @@ package org.mustbe.consulo.csharp.ide.refactoring.rename;
 import gnu.trove.THashSet;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
-import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.ui.MessageDialogBuilder;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.search.searches.ReferencesSearch;
+import com.intellij.psi.search.SearchScope;
 import com.intellij.refactoring.rename.RenamePsiElementProcessor;
-import com.intellij.refactoring.util.MoveRenameUsageInfo;
-import com.intellij.usageView.UsageInfo;
 
 /**
  * @author VISTALL
@@ -44,51 +39,42 @@ import com.intellij.usageView.UsageInfo;
  */
 public class CSharpOverrideElementProcessor extends RenamePsiElementProcessor
 {
-	private int myResult = -1;
+	private int myLastResult;
 
-	@Nullable
 	@Override
-	public PsiElement substituteElementToRename(PsiElement element, @Nullable Editor editor)
+	public void prepareRenaming(PsiElement element, String newName, Map<PsiElement, String> allRenames, SearchScope scope)
 	{
-		boolean show = !getAllElements(element).isEmpty();
 
-		if(show)
+		// if name is empty that mean start rename
+		if(StringUtil.isEmpty(newName))
 		{
-			MessageDialogBuilder.YesNo builder = MessageDialogBuilder.yesNo("Rename", "Rename all override/implement methods or this method?");
-			builder = builder.yesText("All Methods");
-			builder = builder.noText("This Method");
-
-			myResult = builder.show();
+			myLastResult = -1;
 		}
-		else
+
+		if(myLastResult == -1)
 		{
-			myResult = Messages.NO;
+			Set<DotNetVirtualImplementOwner> allElements = getAllElements(element);
+			if(!allElements.isEmpty())
+			{
+				MessageDialogBuilder.YesNo builder = MessageDialogBuilder.yesNo("Rename", "Rename all override/implement methods or this method?");
+				builder = builder.yesText("All Methods");
+				builder = builder.noText("This Method");
+
+				if((myLastResult = builder.show()) == Messages.YES)
+				{
+					for(DotNetVirtualImplementOwner tempElement : allElements)
+					{
+						allRenames.put(tempElement, newName);
+					}
+				}
+			}
 		}
-		return element;
-	}
-
-	@NotNull
-	@Override
-	public Collection<PsiReference> findReferences(PsiElement element)
-	{
-		return super.findReferences(element);
-	}
-
-	@Override
-	public void findCollisions(PsiElement element, String newName, Map<? extends PsiElement, String> allRenames, List<UsageInfo> result)
-	{
-		if(myResult == Messages.YES)
+		else if(myLastResult == Messages.YES)
 		{
-			Map map = allRenames;
 			Set<DotNetVirtualImplementOwner> allElements = getAllElements(element);
 			for(DotNetVirtualImplementOwner tempElement : allElements)
 			{
-				map.put(tempElement, newName);
-				Collection<PsiReference> references = ReferencesSearch.search(tempElement).findAll();
-				for(PsiReference psiReference : references)
-				{
-					result.add(new MoveRenameUsageInfo(psiReference, tempElement));
-				}
+				allRenames.put(tempElement, newName);
 			}
 		}
 	}
@@ -98,7 +84,7 @@ public class CSharpOverrideElementProcessor extends RenamePsiElementProcessor
 	{
 		Collection<DotNetVirtualImplementOwner> temp1 = OverrideUtil.collectOverridingMembers((DotNetVirtualImplementOwner) element);
 		Collection<DotNetVirtualImplementOwner> temp2 = OverrideUtil.collectOverridenMembers((DotNetVirtualImplementOwner) element);
-		Set<DotNetVirtualImplementOwner> set = new THashSet<DotNetVirtualImplementOwner>(temp1.size() + temp1.size() + 1);
+		Set<DotNetVirtualImplementOwner> set = new THashSet<DotNetVirtualImplementOwner>(temp1.size() + temp1.size() );
 		set.addAll(temp1);
 		set.addAll(temp2);
 		return set;

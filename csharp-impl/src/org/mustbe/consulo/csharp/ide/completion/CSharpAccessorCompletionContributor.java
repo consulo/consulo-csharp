@@ -53,7 +53,7 @@ public class CSharpAccessorCompletionContributor extends CompletionContributor
 {
 	public CSharpAccessorCompletionContributor()
 	{
-		extend(CompletionType.BASIC, psiElement(), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, psiElement().andNot(psiElement().inside(DotNetXXXAccessor.class)), new CompletionProvider<CompletionParameters>()
 		{
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters completionParameters,
