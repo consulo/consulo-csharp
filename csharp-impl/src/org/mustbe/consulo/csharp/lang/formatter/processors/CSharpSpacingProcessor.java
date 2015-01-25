@@ -170,6 +170,8 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 
 		// name(parameterList)
 		myBuilder.between(CSharpTokens.IDENTIFIER, CSharpStubElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_BEFORE_METHOD_PARENTHESES);
+		// delegate(parameterList)
+		myBuilder.between(CSharpTokens.DELEGATE_KEYWORD, CSharpElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_BEFORE_METHOD_PARENTHESES);
 
 		myBuilder.beforeInside(IDENTIFIER, TYPE_DECLARATION).spaces(1);
 		myBuilder.beforeInside(IDENTIFIER, LOCAL_VARIABLE).spaces(1);
