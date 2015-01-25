@@ -148,12 +148,12 @@ public class CSharpModifierListImplUtil
 
 	public static void addModifier(@NotNull CSharpModifierList modifierList, @NotNull DotNetModifier modifier)
 	{
-		PsiElement firstChild = modifierList.getFirstChild();
+		PsiElement anchor = modifierList.getLastChild();
 
 		CSharpFieldDeclaration field = CSharpFileFactory.createField(modifierList.getProject(), modifier.getPresentableText() + " int b");
 		PsiElement modifierElement = field.getModifierList().getModifierElement(modifier);
 
-		PsiElement psiElement = modifierList.addBefore(modifierElement, firstChild);
+		PsiElement psiElement = modifierList.addAfter(modifierElement, anchor);
 		modifierList.addAfter(PsiParserFacade.SERVICE.getInstance(modifierList.getProject()).createWhiteSpaceFromText(" "), psiElement);
 	}
 
