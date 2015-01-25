@@ -66,4 +66,8 @@ namespace Test {
       }
     }
   }
+
+  public static void someMethodWithParameters(int b, int c, String str = null) {
+
+  }
 }
