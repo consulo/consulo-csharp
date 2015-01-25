@@ -79,7 +79,7 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 		Collection<DotNetModifierListOwner> overrideItems = getItemsImpl(typeDeclaration);
 		for(DotNetModifierListOwner overrideItem : overrideItems)
 		{
-			LookupElementBuilder builder = buildLookupItem(overrideItem, false);
+			LookupElementBuilder builder = buildLookupItem(typeDeclaration, overrideItem, false);
 
 			if(builder != null)
 			{
@@ -88,7 +88,7 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 
 			if(!typeDeclaration.isInterface() && overrideItem.hasModifier(CSharpModifier.INTERFACE_ABSTRACT))
 			{
-				builder = buildLookupItem(overrideItem, true);
+				builder = buildLookupItem(typeDeclaration, overrideItem, true);
 
 				if(builder != null)
 				{
@@ -99,7 +99,7 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 	}
 
 	@Nullable
-	private static LookupElementBuilder buildLookupItem(PsiElement element, boolean hide)
+	private static LookupElementBuilder buildLookupItem(CSharpTypeDeclaration typeDeclaration, PsiElement element, boolean hide)
 	{
 		Icon rightIcon = null;
 		LookupElementBuilder lookupElementBuilder = null;
@@ -108,7 +108,8 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 			CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) element;
 			StringBuilder builder = new StringBuilder();
 
-			CSharpAccessModifier modifier = hide ? CSharpAccessModifier.NONE : CSharpAccessModifier.findModifier(methodDeclaration);
+			CSharpAccessModifier modifier = hide || typeDeclaration.isInterface() ? CSharpAccessModifier.NONE : CSharpAccessModifier.findModifier
+					(methodDeclaration);
 			if(modifier != CSharpAccessModifier.NONE)
 			{
 				builder.append(modifier.getPresentableText()).append(" ");
@@ -122,25 +123,39 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 			formatMethod(methodDeclaration, builder, hide);
 
 			String presentationText = builder.toString();
-			builder.append("{\n");
-
-			if(methodDeclaration.hasModifier(DotNetModifier.ABSTRACT))
+			if(typeDeclaration.isInterface())
 			{
-				rightIcon = AllIcons.Gutter.ImplementingMethod;
-				GenerateImplementMemberHandler.generateReturn(builder, element);
+				builder.append(";");
+				if(methodDeclaration.hasModifier(DotNetModifier.ABSTRACT))
+				{
+					rightIcon = AllIcons.Gutter.OverridingMethod;
+				}
+				else
+				{
+					return null;
+				}
 			}
 			else
 			{
-				rightIcon = AllIcons.Gutter.OverridingMethod;
-				GenerateOverrideMemberHandler.generateReturn(builder, element);
-			}
+				builder.append("{\n");
+				if(methodDeclaration.hasModifier(DotNetModifier.ABSTRACT))
+				{
+					rightIcon = AllIcons.Gutter.ImplementingMethod;
+					GenerateImplementMemberHandler.generateReturn(builder, element);
+				}
+				else
+				{
+					rightIcon = AllIcons.Gutter.OverridingMethod;
+					GenerateOverrideMemberHandler.generateReturn(builder, element);
+				}
 
-			if(hide)
-			{
-				rightIcon = CSharpIcons.Gutter.HidingMethod;
-			}
+				if(hide)
+				{
+					rightIcon = CSharpIcons.Gutter.HidingMethod;
+				}
 
-			builder.append("}");
+				builder.append("}");
+			}
 
 			lookupElementBuilder = LookupElementBuilder.create(builder.toString());
 			lookupElementBuilder = lookupElementBuilder.withPresentableText(presentationText);
@@ -212,7 +227,8 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 	{
 		if(!(methodDeclaration instanceof DotNetConstructorDeclaration))
 		{
-			CSharpTypeRefPresentationUtil.appendTypeRef(methodDeclaration, builder, methodDeclaration.getReturnTypeRef(), CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
+			CSharpTypeRefPresentationUtil.appendTypeRef(methodDeclaration, builder, methodDeclaration.getReturnTypeRef(),
+					CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
 			builder.append(" ");
 		}
 
