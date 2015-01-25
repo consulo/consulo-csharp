@@ -9,6 +9,7 @@ import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import org.mustbe.consulo.csharp.lang.formatter.CSharpFormattingBlock;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import com.intellij.formatting.ASTBlock;
@@ -119,6 +120,17 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.beforeInside(BLOCK_STATEMENT, USING_STATEMENT).spaceIf(customSettings.SPACE_BEFORE_USING_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, LOCK_STATEMENT).spaceIf(customSettings.SPACE_BEFORE_LOCK_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, FIXED_STATEMENT).spaceIf(customSettings.SPACE_BEFORE_FIXED_LBRACE);
+
+		// <modifier-list> <type>
+		myBuilder.between(CSharpStubElements.MODIFIER_LIST, CSharpStubElements.TYPE_SET).spaces(1);
+		// <modifier> <modifier>
+		myBuilder.between(CSharpTokenSets.MODIFIERS, CSharpTokenSets.MODIFIERS).spaces(1);
+		// [Att]
+		// [Att]
+		myBuilder.between(CSharpStubElements.ATTRIBUTE_LIST, CSharpStubElements.ATTRIBUTE_LIST).blankLines(0);
+		// [Att]
+		// <modifier>
+		myBuilder.between(CSharpStubElements.ATTRIBUTE_LIST, CSharpTokenSets.MODIFIERS).blankLines(0);
 
 		myBuilder.beforeInside(IDENTIFIER, TYPE_DECLARATION).spaces(1);
 		myBuilder.beforeInside(IDENTIFIER, LOCAL_VARIABLE).spaces(1);
