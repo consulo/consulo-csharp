@@ -86,7 +86,7 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 				result.addElement(builder);
 			}
 
-			if(overrideItem.hasModifier(CSharpModifier.INTERFACE_ABSTRACT))
+			if(!typeDeclaration.isInterface() && overrideItem.hasModifier(CSharpModifier.INTERFACE_ABSTRACT))
 			{
 				builder = buildLookupItem(overrideItem, true);
 
