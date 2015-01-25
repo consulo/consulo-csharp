@@ -131,6 +131,8 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.beforeInside(CSharpTokens.RBRACKET, CSharpElements.CALL_ARGUMENT_LIST).spaceIf(commonSettings.SPACE_WITHIN_BRACKETS);
 		// arg, arg
 		myBuilder.afterInside(CSharpTokens.COMMA, CSharpElements.CALL_ARGUMENT_LIST).spaces(1);
+		// call(
+
 
 		// (Type
 		myBuilder.afterInside(CSharpTokens.LPAR, CSharpStubElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_PARENTHESES);
@@ -165,6 +167,9 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		// [Att]
 		// <modifier>
 		myBuilder.between(CSharpStubElements.ATTRIBUTE_LIST, CSharpTokenSets.MODIFIERS).blankLines(0);
+
+		// name(parameterList)
+		myBuilder.between(CSharpTokens.IDENTIFIER, CSharpStubElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_BEFORE_METHOD_PARENTHESES);
 
 		myBuilder.beforeInside(IDENTIFIER, TYPE_DECLARATION).spaces(1);
 		myBuilder.beforeInside(IDENTIFIER, LOCAL_VARIABLE).spaces(1);

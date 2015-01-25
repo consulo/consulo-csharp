@@ -67,7 +67,7 @@ namespace Test {
     }
   }
 
-  public static void someMethodWithParameters(int b, int c, String str = null) {
+  public static Dictionary<string, string> someMethodWithParameters(int b, int c, String str = null) {
 
   }
 }
