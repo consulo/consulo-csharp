@@ -129,6 +129,16 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.beforeInside(CSharpTokens.RPAR, CSharpElements.PARAMETER_LIST).spaces(0);
 		myBuilder.beforeInside(CSharpTokens.RPAR, CSharpElements.LAMBDA_PARAMETER_LIST).spaces(0);
 
+		// <Type
+		myBuilder.afterInside(CSharpTokens.LT, CSharpElements.TYPE_ARGUMENTS).spaces(0);
+		myBuilder.afterInside(CSharpTokens.LT, CSharpStubElements.TYPE_ARGUMENTS).spaces(0);
+		// <Type, Type
+		myBuilder.afterInside(CSharpTokens.COMMA, CSharpElements.TYPE_ARGUMENTS).spaces(1);
+		myBuilder.afterInside(CSharpTokens.COMMA, CSharpStubElements.TYPE_ARGUMENTS).spaces(1);
+		// Type>
+		myBuilder.beforeInside(CSharpTokens.GT, CSharpElements.TYPE_ARGUMENTS).spaces(0);
+		myBuilder.beforeInside(CSharpTokens.GT, CSharpStubElements.TYPE_ARGUMENTS).spaces(0);
+
 		// <modifier-list> <type>
 		myBuilder.between(CSharpStubElements.MODIFIER_LIST, CSharpStubElements.TYPE_SET).spaces(1);
 		// <modifier> <modifier>
