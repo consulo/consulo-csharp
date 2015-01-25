@@ -121,6 +121,17 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.beforeInside(BLOCK_STATEMENT, LOCK_STATEMENT).spaceIf(customSettings.SPACE_BEFORE_LOCK_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, FIXED_STATEMENT).spaceIf(customSettings.SPACE_BEFORE_FIXED_LBRACE);
 
+		// call(arg
+		myBuilder.afterInside(CSharpTokens.LPAR, CSharpElements.CALL_ARGUMENT_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_CALL_PARENTHESES);
+		// call[arg
+		myBuilder.afterInside(CSharpTokens.LBRACKET, CSharpElements.CALL_ARGUMENT_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_CALL_PARENTHESES);
+		// arg)
+		myBuilder.beforeInside(CSharpTokens.RPAR, CSharpElements.CALL_ARGUMENT_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_CALL_PARENTHESES);
+		// arg]
+		myBuilder.beforeInside(CSharpTokens.RBRACKET, CSharpElements.CALL_ARGUMENT_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_CALL_PARENTHESES);
+		// arg, arg
+		myBuilder.afterInside(CSharpTokens.COMMA, CSharpElements.CALL_ARGUMENT_LIST).spaces(1);
+
 		// (Type
 		myBuilder.afterInside(CSharpTokens.LPAR, CSharpStubElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_PARENTHESES);
 		myBuilder.afterInside(CSharpTokens.LPAR, CSharpElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_PARENTHESES);
