@@ -91,8 +91,6 @@ public interface CSharpElements
 
 	IElementType EXTENDS_LIST = CSharpStubElements.EXTENDS_LIST;
 
-	IElementType TYPE_CALL_ARGUMENTS = new ElementTypeAsPsiFactory("TYPE_CALL_ARGUMENTS", CSharpLanguage.INSTANCE, CSharpTypeListImpl.class);
-
 	IElementType TYPE_ARGUMENTS = new ElementTypeAsPsiFactory("TYPE_ARGUMENTS", CSharpLanguage.INSTANCE, CSharpTypeListImpl.class);
 
 	IElementType CONSTANT_EXPRESSION = new ElementTypeAsPsiFactory("CONSTANT_EXPRESSION", CSharpLanguage.INSTANCE,
