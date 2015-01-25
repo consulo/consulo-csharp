@@ -132,7 +132,7 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		// arg, arg
 		myBuilder.afterInside(CSharpTokens.COMMA, CSharpElements.CALL_ARGUMENT_LIST).spaces(1);
 		// call(
-
+		myBuilder.before(CSharpElements.CALL_ARGUMENT_LIST).spaceIf(commonSettings.SPACE_BEFORE_METHOD_CALL_PARENTHESES);
 
 		// (Type
 		myBuilder.afterInside(CSharpTokens.LPAR, CSharpStubElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_PARENTHESES);
