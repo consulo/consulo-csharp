@@ -123,7 +123,9 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.beforeInside(IDENTIFIER, TYPE_DECLARATION).spaces(1);
 		myBuilder.beforeInside(IDENTIFIER, LOCAL_VARIABLE).spaces(1);
 		myBuilder.beforeInside(IDENTIFIER, FIELD_DECLARATION).spaces(1);
+		myBuilder.betweenInside(DOT, IDENTIFIER, EVENT_DECLARATION).spaces(0);
 		myBuilder.beforeInside(IDENTIFIER, EVENT_DECLARATION).spaces(1);
+		myBuilder.betweenInside(DOT, IDENTIFIER, METHOD_DECLARATION).spaces(0);
 		myBuilder.beforeInside(IDENTIFIER, METHOD_DECLARATION).spaces(1);
 		myBuilder.beforeInside(IDENTIFIER, CONSTRUCTOR_DECLARATION).spaces(1);
 		myBuilder.beforeInside(THIS_KEYWORD, ARRAY_METHOD_DECLARATION).spaces(1);
