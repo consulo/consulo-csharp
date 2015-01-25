@@ -121,10 +121,15 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.beforeInside(BLOCK_STATEMENT, LOCK_STATEMENT).spaceIf(customSettings.SPACE_BEFORE_LOCK_LBRACE);
 		myBuilder.beforeInside(BLOCK_STATEMENT, FIXED_STATEMENT).spaceIf(customSettings.SPACE_BEFORE_FIXED_LBRACE);
 
+		// (Type
 		myBuilder.afterInside(CSharpTokens.LPAR, CSharpStubElements.PARAMETER_LIST).spaces(0);
 		myBuilder.afterInside(CSharpTokens.LPAR, CSharpElements.PARAMETER_LIST).spaces(0);
 		myBuilder.afterInside(CSharpTokens.LPAR, CSharpElements.LAMBDA_PARAMETER_LIST).spaces(0);
-
+		// , type identifier)
+		myBuilder.afterInside(CSharpTokens.COMMA, CSharpStubElements.PARAMETER_LIST).spaces(1);
+		myBuilder.afterInside(CSharpTokens.COMMA, CSharpElements.PARAMETER_LIST).spaces(1);
+		myBuilder.afterInside(CSharpTokens.COMMA, CSharpElements.LAMBDA_PARAMETER_LIST).spaces(1);
+		// name)
 		myBuilder.beforeInside(CSharpTokens.RPAR, CSharpStubElements.PARAMETER_LIST).spaces(0);
 		myBuilder.beforeInside(CSharpTokens.RPAR, CSharpElements.PARAMETER_LIST).spaces(0);
 		myBuilder.beforeInside(CSharpTokens.RPAR, CSharpElements.LAMBDA_PARAMETER_LIST).spaces(0);
