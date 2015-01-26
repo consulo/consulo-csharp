@@ -177,7 +177,8 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 				(CSharpUsingNamespaceStatement.class), new CompletionProvider<CompletionParameters>()
 		{
 			@Override
-			protected void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context,
+			protected void addCompletions(@NotNull final CompletionParameters parameters,
+					ProcessingContext context,
 					@NotNull CompletionResultSet result)
 			{
 				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.STATIC_KEYWORD, null, new Condition<IElementType>()
@@ -252,34 +253,46 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 						val tokenVal = TokenSet.orSet(CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START,
 								TokenSet.create(CSharpTokens.DELEGATE_KEYWORD));
 
-						CSharpCompletionUtil.tokenSetToLookup(completionResultSet, tokenVal, null, new Condition<IElementType>()
-						{
-							@Override
-							public boolean value(IElementType elementType)
-							{
-								if(elementType == CSharpTokens.IN_KEYWORD)
+						CSharpCompletionUtil.tokenSetToLookup(completionResultSet, tokenVal, new NotNullPairFunction<LookupElementBuilder,
+										IElementType, LookupElement>()
+
 								{
-									return false;
-								}
-								if(elementType == CSharpSoftTokens.ASYNC_KEYWORD)
-								{
-									if(CSharpModuleUtil.findLanguageVersion(position).isAtLeast(CSharpLanguageVersion._5_0))
+									@NotNull
+									@Override
+									public LookupElement fun(LookupElementBuilder t, IElementType v)
 									{
-										return false;
+										t = t.withInsertHandler(SpaceInsertHandler.INSTANCE);
+										return t;
+									}
+								}, new Condition<IElementType>()
+								{
+									@Override
+									public boolean value(IElementType elementType)
+									{
+										if(elementType == CSharpTokens.IN_KEYWORD)
+										{
+											return false;
+										}
+										if(elementType == CSharpSoftTokens.ASYNC_KEYWORD)
+										{
+											if(CSharpModuleUtil.findLanguageVersion(position).isAtLeast(CSharpLanguageVersion._5_0))
+											{
+												return false;
+											}
+										}
+
+										boolean isParameter = PsiTreeUtil.getParentOfType(position, DotNetParameter.class) != null;
+
+										if(elementType == CSharpTokens.REF_KEYWORD || elementType == CSharpTokens.OUT_KEYWORD || elementType ==
+												CSharpTokens.PARAMS_KEYWORD)
+										{
+											return isParameter;
+										}
+
+										return !isParameter;
 									}
 								}
-
-								boolean isParameter = PsiTreeUtil.getParentOfType(position, DotNetParameter.class) != null;
-
-								if(elementType == CSharpTokens.REF_KEYWORD || elementType == CSharpTokens.OUT_KEYWORD || elementType == CSharpTokens
-										.PARAMS_KEYWORD)
-								{
-									return isParameter;
-								}
-
-								return !isParameter;
-							}
-						});
+						);
 					}
 				}
 			}
