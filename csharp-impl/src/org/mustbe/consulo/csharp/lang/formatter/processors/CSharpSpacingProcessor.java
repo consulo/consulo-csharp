@@ -130,7 +130,8 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		// arg]
 		myBuilder.beforeInside(CSharpTokens.RBRACKET, CSharpElements.CALL_ARGUMENT_LIST).spaceIf(commonSettings.SPACE_WITHIN_BRACKETS);
 		// arg, arg
-		myBuilder.afterInside(CSharpTokens.COMMA, CSharpElements.CALL_ARGUMENT_LIST).spaces(1);
+		myBuilder.afterInside(CSharpTokens.COMMA, CSharpElements.CALL_ARGUMENT_LIST).spaceIf(commonSettings.SPACE_AFTER_COMMA);
+		myBuilder.beforeInside(CSharpTokens.COMMA, CSharpElements.CALL_ARGUMENT_LIST).spaceIf(commonSettings.SPACE_BEFORE_COMMA);
 		// call(
 		myBuilder.before(CSharpElements.CALL_ARGUMENT_LIST).spaceIf(commonSettings.SPACE_BEFORE_METHOD_CALL_PARENTHESES);
 
@@ -139,9 +140,12 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.afterInside(CSharpTokens.LPAR, CSharpElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_PARENTHESES);
 		myBuilder.afterInside(CSharpTokens.LPAR, CSharpElements.LAMBDA_PARAMETER_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_PARENTHESES);
 		// , type identifier)
-		myBuilder.afterInside(CSharpTokens.COMMA, CSharpStubElements.PARAMETER_LIST).spaces(1);
-		myBuilder.afterInside(CSharpTokens.COMMA, CSharpElements.PARAMETER_LIST).spaces(1);
-		myBuilder.afterInside(CSharpTokens.COMMA, CSharpElements.LAMBDA_PARAMETER_LIST).spaces(1);
+		myBuilder.afterInside(CSharpTokens.COMMA, CSharpStubElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_AFTER_COMMA);
+		myBuilder.afterInside(CSharpTokens.COMMA, CSharpElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_AFTER_COMMA);
+		myBuilder.afterInside(CSharpTokens.COMMA, CSharpElements.LAMBDA_PARAMETER_LIST).spaceIf(commonSettings.SPACE_AFTER_COMMA);
+		myBuilder.beforeInside(CSharpTokens.COMMA, CSharpStubElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_BEFORE_COMMA);
+		myBuilder.beforeInside(CSharpTokens.COMMA, CSharpElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_BEFORE_COMMA);
+		myBuilder.beforeInside(CSharpTokens.COMMA, CSharpElements.LAMBDA_PARAMETER_LIST).spaceIf(commonSettings.SPACE_BEFORE_COMMA);
 		// name)
 		myBuilder.beforeInside(CSharpTokens.RPAR, CSharpStubElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_PARENTHESES);
 		myBuilder.beforeInside(CSharpTokens.RPAR, CSharpElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_PARENTHESES);
