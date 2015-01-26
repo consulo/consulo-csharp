@@ -151,8 +151,8 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.afterInside(CSharpTokens.LT, CSharpElements.TYPE_ARGUMENTS).spaces(0);
 		myBuilder.afterInside(CSharpTokens.LT, CSharpStubElements.TYPE_ARGUMENTS).spaces(0);
 		// <Type, Type
-		myBuilder.afterInside(CSharpTokens.COMMA, CSharpElements.TYPE_ARGUMENTS).spaces(1);
-		myBuilder.afterInside(CSharpTokens.COMMA, CSharpStubElements.TYPE_ARGUMENTS).spaces(1);
+		myBuilder.afterInside(CSharpTokens.COMMA, CSharpElements.TYPE_ARGUMENTS).spaceIf(commonSettings.SPACE_AFTER_COMMA_IN_TYPE_ARGUMENTS);
+		myBuilder.afterInside(CSharpTokens.COMMA, CSharpStubElements.TYPE_ARGUMENTS).spaceIf(commonSettings.SPACE_AFTER_COMMA_IN_TYPE_ARGUMENTS);
 		// Type>
 		myBuilder.beforeInside(CSharpTokens.GT, CSharpElements.TYPE_ARGUMENTS).spaces(0);
 		myBuilder.beforeInside(CSharpTokens.GT, CSharpStubElements.TYPE_ARGUMENTS).spaces(0);
