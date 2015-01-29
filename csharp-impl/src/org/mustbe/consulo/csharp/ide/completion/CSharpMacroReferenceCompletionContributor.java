@@ -84,8 +84,7 @@ public class CSharpMacroReferenceCompletionContributor extends CompletionContrib
 				}
 
 
-				LookupElement[] lookupElements = CSharpLookupElementBuilder.getInstance(expression.getProject()).buildToLookupElements(expression,
-						map.values());
+				LookupElement[] lookupElements = CSharpLookupElementBuilder.buildToLookupElements(map.values());
 				result.addAllElements(Arrays.asList(lookupElements));
 			}
 		});

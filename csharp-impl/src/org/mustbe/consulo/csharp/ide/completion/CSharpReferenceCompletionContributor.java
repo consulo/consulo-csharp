@@ -200,8 +200,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 				}
 				ResolveResult[] psiElements = CSharpReferenceExpressionImplUtil.collectResults(new CSharpResolveOptions(kind, null, expression,
 						null, true, true));
-				List<LookupElement> lookupElements = CSharpLookupElementBuilder.getInstance(expression.getProject()).buildToLookupElements
-						(expression, psiElements);
+				List<LookupElement> lookupElements = CSharpLookupElementBuilder.buildToLookupElements(psiElements);
 
 				List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(expression);
 				if(!expectedTypeRefs.isEmpty())
@@ -308,8 +307,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 
 				ResolveResult[] resolveResults = CSharpReferenceExpressionImplUtil.collectResults(options);
 
-				List<LookupElement> lookupElements = CSharpLookupElementBuilder.getInstance(expression.getProject()).buildToLookupElements
-						(expression, resolveResults);
+				List<LookupElement> lookupElements = CSharpLookupElementBuilder.buildToLookupElements(resolveResults);
 
 				for(LookupElement lookupElement : lookupElements)
 				{

@@ -17,7 +17,6 @@
 package org.mustbe.consulo.csharp.ide;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -60,7 +59,6 @@ import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
-import com.intellij.psi.util.proximity.PsiProximityComparator;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -68,7 +66,7 @@ import com.intellij.util.containers.ContainerUtil;
  * @author VISTALL
  * @since 29.12.13.
  */
-public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
+public class CSharpLookupElementBuilder
 {
 	public static class PropertyAndEventCompletionNew extends EarlyAccessProgramDescriptor
 	{
@@ -96,16 +94,11 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 	public static final boolean PROPERTY_AND_EVENT_ACCESSOR_COMPLETION = EarlyAccessProgramManager.is(PropertyAndEventCompletionNew.class);
 
 	@NotNull
-	@Override
-	public LookupElement[] buildToLookupElements(@Nullable PsiElement sender, @NotNull PsiElement[] arguments)
+	public static LookupElement[] buildToLookupElements(@NotNull PsiElement[] arguments)
 	{
 		if(arguments.length == 0)
 		{
 			return LookupElement.EMPTY_ARRAY;
-		}
-		if(sender != null)
-		{
-			Arrays.sort(arguments, new PsiProximityComparator(sender));
 		}
 
 		List<LookupElement> list = new ArrayList<LookupElement>(arguments.length);
@@ -117,15 +110,12 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 	}
 
 	@NotNull
-	@Override
-	public List<LookupElement> buildToLookupElements(@Nullable PsiElement sender, @NotNull ResolveResult[] arguments)
+	public static List<LookupElement> buildToLookupElements(@NotNull ResolveResult[] arguments)
 	{
 		if(arguments.length == 0)
 		{
 			return Collections.emptyList();
 		}
-
-		//FIXME [VISTALL] sorter?
 
 		List<LookupElement> list = new ArrayList<LookupElement>(arguments.length);
 		for(ResolveResult argument : arguments)
@@ -148,31 +138,15 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 	}
 
 	@NotNull
-	@Override
-	@SuppressWarnings("unchecked")
-	public LookupElement[] buildToLookupElements(@Nullable PsiElement sender, @NotNull Collection<? extends PsiElement> arguments)
+	public static LookupElement[] buildToLookupElements(@NotNull Collection<? extends PsiElement> arguments)
 	{
 		if(arguments.isEmpty())
 		{
 			return LookupElement.EMPTY_ARRAY;
 		}
-		List<? extends PsiElement> elements;
-		if(arguments instanceof List)
-		{
-			elements = (List<? extends PsiElement>) arguments;
-		}
-		else
-		{
-			elements = new ArrayList<PsiElement>(arguments);
-		}
 
-		if(sender != null)
-		{
-			Collections.sort(elements, new PsiProximityComparator(sender));
-		}
-
-		List<LookupElement> list = new ArrayList<LookupElement>(elements.size());
-		for(PsiElement element : elements)
+		List<LookupElement> list = new ArrayList<LookupElement>(arguments.size());
+		for(PsiElement element : arguments)
 		{
 			ContainerUtil.addIfNotNull(list, buildLookupElementImpl(element));
 		}
@@ -180,8 +154,9 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 		return list.toArray(new LookupElement[list.size()]);
 	}
 
+
 	@Nullable
-	public LookupElement buildLookupElementImpl(PsiElement element)
+	public static LookupElement buildLookupElementImpl(PsiElement element)
 	{
 		LookupElementBuilder builder = buildLookupElement(element);
 		if(builder == null)
@@ -199,9 +174,7 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 		return builder;
 	}
 
-	@Nullable
-	@Override
-	public LookupElementBuilder buildLookupElement(final PsiElement element)
+	public static LookupElementBuilder buildLookupElement(final PsiElement element)
 	{
 		LookupElementBuilder builder = null;
 		if(element instanceof CSharpMethodDeclaration)
@@ -450,4 +423,5 @@ public class CSharpLookupElementBuilderImpl extends CSharpLookupElementBuilder
 		builder = builder.withInsertHandler(LtGtInsertHandler.getInstance(true));
 		return builder;
 	}
+
 }

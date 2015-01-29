@@ -185,10 +185,6 @@
 								  implementationClass="org.mustbe.consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
 		<itemPresentationProvider forClass="org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConversionMethodDeclarationImpl"
 								  implementationClass="org.mustbe.consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
-
-		<projectService serviceInterface="org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder"
-						serviceImplementation="org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilderImpl"/>
-
 		<moduleService serviceInterface="org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpModuleTypeHelper"
 					   serviceImplementation="org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpModuleTypeHelperImpl"/>
 
@@ -271,6 +267,6 @@
 
 		<eapDescriptor implementation="org.mustbe.consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent$EapDescriptor"/>
 		<eapDescriptor implementation="org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0030$CS0030TypeCast"/>
-		<eapDescriptor implementation="org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilderImpl$PropertyAndEventCompletionNew"/>
+		<eapDescriptor implementation="org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder$PropertyAndEventCompletionNew"/>
 	</extensions>
 </idea-plugin>
