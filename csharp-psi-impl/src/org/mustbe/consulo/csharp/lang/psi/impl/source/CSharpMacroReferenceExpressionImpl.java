@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightMacroDefine;
@@ -32,6 +31,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import lombok.val;
 
@@ -144,37 +144,7 @@ public class CSharpMacroReferenceExpressionImpl extends CSharpMacroElementImpl i
 	@Override
 	public Object[] getVariants()
 	{
-		Map<String, CSharpMacroDefine> map = new HashMap<String, CSharpMacroDefine>();
-
-		DotNetModuleExtension<?> extension = ModuleUtilCore.getExtension(this, DotNetModuleExtension.class);
-		if(extension != null)
-		{
-			for(String varName : extension.getVariables())
-			{
-				map.put(varName, new CSharpLightMacroDefine(extension.getModule(), varName));
-			}
-		}
-
-		for(CSharpMacroDefine macroDefine : ((CSharpMacroFileImpl) getContainingFile()).getDefines())
-		{
-			String name = macroDefine.getName();
-			if(name == null)
-			{
-				continue;
-			}
-
-			if(macroDefine.isUnDef())
-			{
-				map.remove(name);
-			}
-			else
-			{
-				map.put(name, macroDefine);
-			}
-		}
-
-
-		return CSharpLookupElementBuilder.getInstance(getProject()).buildToLookupElements(this, map.values());
+		return ArrayUtil.EMPTY_OBJECT_ARRAY;
 	}
 
 	@Override
