@@ -17,16 +17,18 @@
 package org.mustbe.consulo.csharp.ide.completion.smartEnter;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import com.intellij.codeInsight.editorActions.smartEnter.SmartEnterProcessor;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -37,51 +39,119 @@ import com.intellij.psi.util.PsiTreeUtil;
  */
 public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 {
-	@Override
-	public boolean process(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile psiFile)
+	public interface Fixer
 	{
-		PsiElement statementAtCaret = getStatementAtCaret(editor, psiFile);
+		boolean process(@NotNull Editor editor, @NotNull PsiFile psiFile);
+	}
 
-		DotNetStatement statement = PsiTreeUtil.getParentOfType(statementAtCaret, DotNetStatement.class);
-		if(statement == null)
+	public class VariableSemicolonFixer implements Fixer
+	{
+
+		@Override
+		public boolean process(@NotNull Editor editor, @NotNull PsiFile psiFile)
 		{
-			return false;
-		}
-
-		if(statement instanceof CSharpBlockStatementImpl)
-		{
-			return false;
-		}
-
-		if(statement instanceof CSharpStatementAsStatementOwner)
-		{
-			DotNetStatement childStatement = ((CSharpStatementAsStatementOwner) statement).getChildStatement();
-
-			if(childStatement == null)
+			PsiElement statementAtCaret = getStatementAtCaret(editor, psiFile);
+			DotNetVariable variable = PsiTreeUtil.getParentOfType(statementAtCaret, DotNetVariable.class);
+			if(variable == null || variable instanceof CSharpLocalVariable || variable.getNameIdentifier() == null)
 			{
-				Document document = editor.getDocument();
-				int endOffset = statement.getTextRange().getEndOffset();
-				document.insertString(endOffset, "{}");
-				PsiDocumentManager.getInstance(project).commitDocument(document);
-				editor.getCaretModel().moveToOffset(endOffset + 1);
-				reformat(statement);
 				return false;
 			}
-		}
-		else
-		{
-			ASTNode node = statement.getNode();
-			ASTNode semicolonNode = node.findChildByType(CSharpTokens.SEMICOLON);
+
+			ASTNode semicolonNode = variable.getNode().findChildByType(CSharpTokens.SEMICOLON);
 			if(semicolonNode != null)
 			{
 				return false;
 			}
 
-			Document document = editor.getDocument();
-			int endOffset = statement.getTextRange().getEndOffset();
-			document.insertString(endOffset, ";");
-			editor.getCaretModel().moveToOffset(endOffset + 1);
+			if(variable.hasModifier(CSharpModifier.ABSTRACT) || variable.hasModifier(CSharpModifier.PARTIAL) || variable.hasModifier(CSharpModifier
+					.EXTERN))
+			{
+				insertStringAtEndWithReformat("();", variable, editor, 3);
+			}
+			else
+			{
+				insertStringAtEnd(";", variable, editor);
+			}
+			return true;
 		}
-		return true;
+	}
+
+	public class StatementSemicolonFixer implements Fixer
+	{
+
+		@Override
+		public boolean process(@NotNull Editor editor, @NotNull PsiFile psiFile)
+		{
+			PsiElement statementAtCaret = getStatementAtCaret(editor, psiFile);
+
+			DotNetStatement statement = PsiTreeUtil.getParentOfType(statementAtCaret, DotNetStatement.class);
+			if(statement == null)
+			{
+				return false;
+			}
+
+			if(statement instanceof CSharpBlockStatementImpl)
+			{
+				return false;
+			}
+
+			if(statement instanceof CSharpStatementAsStatementOwner)
+			{
+				DotNetStatement childStatement = ((CSharpStatementAsStatementOwner) statement).getChildStatement();
+
+				if(childStatement == null)
+				{
+					insertStringAtEndWithReformat("{}", statement, editor, 1);
+					return false;
+				}
+			}
+			else
+			{
+				ASTNode node = statement.getNode();
+				ASTNode semicolonNode = node.findChildByType(CSharpTokens.SEMICOLON);
+				if(semicolonNode != null)
+				{
+					return false;
+				}
+
+				insertStringAtEnd(";", statement, editor);
+			}
+			return true;
+		}
+	}
+
+	private Fixer[] myFixers = new Fixer[]{
+			new VariableSemicolonFixer(),
+			new StatementSemicolonFixer()
+	};
+
+	@Override
+	public boolean process(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile psiFile)
+	{
+		for(Fixer fixer : myFixers)
+		{
+			if(fixer.process(editor, psiFile))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void insertStringAtEndWithReformat(@NotNull String text, @NotNull PsiElement anchor, @NotNull Editor editor, int moveOffset)
+	{
+		Document document = editor.getDocument();
+		int endOffset = anchor.getTextRange().getEndOffset();
+		document.insertString(endOffset, text);
+		editor.getCaretModel().moveToOffset(endOffset + moveOffset);
+		reformat(anchor);
+	}
+
+	private void insertStringAtEnd(@NotNull String text, @NotNull PsiElement anchor, @NotNull Editor editor)
+	{
+		Document document = editor.getDocument();
+		int endOffset = anchor.getTextRange().getEndOffset();
+		document.insertString(endOffset, text);
+		editor.getCaretModel().moveToOffset(endOffset + text.length());
 	}
 }
