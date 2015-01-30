@@ -135,6 +135,13 @@ public class ExpectedTypeRefProvider
 		{
 			infoList.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.TypedReference), null));
 		}
+		else if(parent instanceof CSharpRefValueExpressionImpl)
+		{
+			if(((CSharpRefValueExpressionImpl) parent).getExpression() == psiElement)
+			{
+				infoList.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.TypedReference), null));
+			}
+		}
 		else if(parent instanceof CSharpAssignmentExpressionImpl)
 		{
 			CSharpAssignmentExpressionImpl assignmentExpression = (CSharpAssignmentExpressionImpl) parent;
@@ -213,7 +220,8 @@ public class ExpectedTypeRefProvider
 		else if(parent instanceof CSharpUserType)
 		{
 			PsiElement parentOfUserType = parent.getParent();
-			if(parentOfUserType instanceof CSharpAsExpressionImpl || parentOfUserType instanceof CSharpTypeCastExpressionImpl)
+			if(parentOfUserType instanceof CSharpAsExpressionImpl || parentOfUserType instanceof CSharpTypeCastExpressionImpl || parentOfUserType
+					instanceof CSharpRefValueExpressionImpl)
 			{
 				infoList.addAll(findExpectedTypeRefs(parentOfUserType));
 			}

@@ -42,6 +42,12 @@ public class CSharpRefValueExpressionImpl extends CSharpElementImpl implements D
 	}
 
 	@Nullable
+	public DotNetExpression getExpression()
+	{
+		return findChildByClass(DotNetExpression.class);
+	}
+
+	@Nullable
 	public DotNetType getType()
 	{
 		return findChildByClass(DotNetType.class);

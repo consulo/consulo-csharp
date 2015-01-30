@@ -38,6 +38,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpRefTypeExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpRefValueExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpWhileStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
@@ -191,6 +192,15 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		else if(element instanceof CSharpRefTypeExpressionImpl)
 		{
 			DotNetExpression expression = ((CSharpRefTypeExpressionImpl) element).getExpression();
+			if(expression == null)
+			{
+				return null;
+			}
+			return Trinity.create(new CSharpTypeRefByQName(DotNetTypes.System.TypedReference), expression.toTypeRef(true), expression);
+		}
+		else if(element instanceof CSharpRefValueExpressionImpl)
+		{
+			DotNetExpression expression = ((CSharpRefValueExpressionImpl) element).getExpression();
 			if(expression == null)
 			{
 				return null;
