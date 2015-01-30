@@ -611,12 +611,21 @@ public class ExpressionParsing extends SharedParsingHelpers
 	private static void parseArguments(CSharpBuilderWrapper builder, IElementType stopElement, boolean fieldSet)
 	{
 		TokenSet stoppers = TokenSet.create(stopElement, CSharpTokens.RBRACE, CSharpTokens.SEMICOLON);
+
+		boolean commaEntered = false;
 		while(!builder.eof())
 		{
 			if(stoppers.contains(builder.getTokenType()))
 			{
+				if(commaEntered)
+				{
+					emptyElement(builder, ERROR_EXPRESSION);
+					// call(test,)
+					builder.error("Expression expected");
+				}
 				break;
 			}
+			commaEntered = false;
 			if(builder.getTokenType() == IDENTIFIER && builder.lookAhead(1) == COLON)
 			{
 				PsiBuilder.Marker marker = builder.mark();
@@ -658,6 +667,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			if(builder.getTokenType() == COMMA)
 			{
 				builder.advanceLexer();
+				commaEntered = true;
 			}
 			else if(!stoppers.contains(builder.getTokenType()))
 			{
