@@ -30,6 +30,8 @@ public interface CSharpTokens extends TokenType
 
 	IElementType __MAKEREF_KEYWORD = new IElementType("__MAKEREF_KEYWORD", CSharpLanguage.INSTANCE);
 
+	IElementType __REFTYPE_KEYWORD = new IElementType("__REFTYPE_KEYWORD", CSharpLanguage.INSTANCE);
+
 	IElementType __REFVALUE_KEYWORD = new IElementType("__REFVALUE_KEYWORD", CSharpLanguage.INSTANCE);
 
 	IElementType STRING_KEYWORD = new IElementType("STRING_KEYWORD", CSharpLanguage.INSTANCE);

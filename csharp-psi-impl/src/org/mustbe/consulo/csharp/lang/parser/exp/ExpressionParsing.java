@@ -760,6 +760,11 @@ public class ExpressionParsing extends SharedParsingHelpers
 			return parseArglistExpression(builder);
 		}
 
+		if(tokenType == __REFTYPE_KEYWORD)
+		{
+			return parseExpressionWithExpressionInLParRPar(builder, null, __REFTYPE_EXPRESSION);
+		}
+
 		if(tokenType == __REFVALUE_KEYWORD)
 		{
 			return parseRefValueExpression(builder);
@@ -1530,7 +1535,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		{
 			if(parse(builder) == null)
 			{
-				builder.error("Type expected");
+				builder.error("Expression expected");
 			}
 			expect(builder, RPAR, "')' expected");
 		}

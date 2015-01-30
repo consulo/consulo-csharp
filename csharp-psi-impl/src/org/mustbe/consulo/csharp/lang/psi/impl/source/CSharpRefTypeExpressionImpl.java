@@ -28,9 +28,9 @@ import com.intellij.lang.ASTNode;
  * @author VISTALL
  * @since 30.01.15
  */
-public class CSharpMakeRefExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public class CSharpRefTypeExpressionImpl extends CSharpElementImpl implements DotNetExpression
 {
-	public CSharpMakeRefExpressionImpl(@NotNull ASTNode node)
+	public CSharpRefTypeExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
@@ -38,13 +38,13 @@ public class CSharpMakeRefExpressionImpl extends CSharpElementImpl implements Do
 	@Override
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		visitor.visitMakeRefExpression(this);
+		visitor.visitRefTypeExpression(this);
 	}
 
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean b)
 	{
-		return new CSharpTypeRefByQName(DotNetTypes.System.TypedReference);
+		return new CSharpTypeRefByQName(DotNetTypes.System.Type);
 	}
 }
