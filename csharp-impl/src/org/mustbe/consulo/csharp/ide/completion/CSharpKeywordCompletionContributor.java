@@ -77,7 +77,8 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 {
 	private static final TokenSet ourExpressionLiterals = TokenSet.create(CSharpTokens.NULL_LITERAL, CSharpTokens.BOOL_LITERAL,
 			CSharpTokens.DEFAULT_KEYWORD, CSharpTokens.TYPEOF_KEYWORD, CSharpTokens.SIZEOF_KEYWORD, CSharpTokens.THIS_KEYWORD,
-			CSharpTokens.BASE_KEYWORD, CSharpSoftTokens.AWAIT_KEYWORD, CSharpTokens.NEW_KEYWORD);
+			CSharpTokens.BASE_KEYWORD, CSharpSoftTokens.AWAIT_KEYWORD, CSharpTokens.NEW_KEYWORD, CSharpTokens.__MAKEREF_KEYWORD,
+			CSharpTokens.__REFTYPE_KEYWORD, CSharpTokens.__REFVALUE_KEYWORD);
 
 	public CSharpKeywordCompletionContributor()
 	{
@@ -99,6 +100,9 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 								{
 									if(elementType == CSharpTokens.DEFAULT_KEYWORD ||
 											elementType == CSharpTokens.TYPEOF_KEYWORD ||
+											elementType == CSharpTokens.__MAKEREF_KEYWORD ||
+											elementType == CSharpTokens.__REFTYPE_KEYWORD ||
+											elementType == CSharpTokens.__REFVALUE_KEYWORD ||
 											elementType == CSharpTokens.SIZEOF_KEYWORD)
 									{
 										t = t.withTailText("(...)", true);
@@ -313,6 +317,14 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 		else if(e == CSharpTokens.SIZEOF_KEYWORD)
 		{
 			return new CSharpTypeRefByQName(DotNetTypes.System.Int32);
+		}
+		else if(e == CSharpTokens.__MAKEREF_KEYWORD)
+		{
+			return new CSharpTypeRefByQName(DotNetTypes.System.TypedReference);
+		}
+		else if(e == CSharpTokens.__REFTYPE_KEYWORD)
+		{
+			return new CSharpTypeRefByQName(DotNetTypes.System.Type);
 		}
 		else if(e == CSharpTokens.THIS_KEYWORD)
 		{
