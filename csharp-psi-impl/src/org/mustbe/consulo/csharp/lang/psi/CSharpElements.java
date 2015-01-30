@@ -133,6 +133,9 @@ public interface CSharpElements
 	IElementType __MAKEREF_EXPRESSION = new ElementTypeAsPsiFactory("__MAKEREF_EXPRESSION", CSharpLanguage.INSTANCE,
 			CSharpMakeRefExpressionImpl.class);
 
+	IElementType __REFVALUE_EXPRESSION = new ElementTypeAsPsiFactory("__REFVALUE_EXPRESSION", CSharpLanguage.INSTANCE,
+			CSharpRefValueExpressionImpl.class);
+
 	IElementType STACKALLOC_EXPRESSION = new ElementTypeAsPsiFactory("STACKALLOC_EXPRESSION", CSharpLanguage.INSTANCE,
 			CSharpStackAllocExpressionImpl.class);
 

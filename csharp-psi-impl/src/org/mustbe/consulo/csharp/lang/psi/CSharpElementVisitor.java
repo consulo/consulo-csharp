@@ -593,4 +593,9 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	{
 		visitElement(expression);
 	}
+
+	public void visitRefValueExpression(CSharpRefValueExpressionImpl expression)
+	{
+		visitElement(expression);
+	}
 }

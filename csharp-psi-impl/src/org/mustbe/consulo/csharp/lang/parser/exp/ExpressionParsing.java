@@ -760,6 +760,11 @@ public class ExpressionParsing extends SharedParsingHelpers
 			return parseArglistExpression(builder);
 		}
 
+		if(tokenType == __REFVALUE_KEYWORD)
+		{
+			return parseRefValueExpression(builder);
+		}
+
 		if(tokenType == DELEGATE_KEYWORD)
 		{
 			return parseDelegateExpression(builder);
@@ -882,6 +887,31 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 
 		mark.done(__ARGLIST_EXPRESSION);
+		return mark;
+	}
+
+	private static PsiBuilder.Marker parseRefValueExpression(CSharpBuilderWrapper builder)
+	{
+		PsiBuilder.Marker mark = builder.mark();
+		builder.advanceLexer();
+
+		if(expect(builder, LPAR, "'(' expected"))
+		{
+			if(parse(builder) == null)
+			{
+				builder.error("Expression expected");
+			}
+
+			expect(builder, COMMA, "',' expected");
+
+			if(parseType(builder) == null)
+			{
+				builder.error("Type expected");
+			}
+			expect(builder, RPAR, "')' expected");
+		}
+
+		mark.done(__REFVALUE_EXPRESSION);
 		return mark;
 	}
 
