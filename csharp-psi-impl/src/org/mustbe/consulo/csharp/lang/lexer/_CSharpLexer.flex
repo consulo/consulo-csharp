@@ -85,6 +85,8 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	"__arglist"               { return CSharpTokens.__ARGLIST_KEYWORD; }
 
+	"__makeref"               { return CSharpTokens.__MAKEREF_KEYWORD; }
+
 	"using"                   { return CSharpTokens.USING_KEYWORD; }
 
 // native types

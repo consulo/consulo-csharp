@@ -750,6 +750,11 @@ public class ExpressionParsing extends SharedParsingHelpers
 			return parseExpressionWithExpressionInLParRPar(builder, null, CHECKED_EXPRESSION);
 		}
 
+		if(tokenType == __MAKEREF_KEYWORD)
+		{
+			return parseExpressionWithExpressionInLParRPar(builder, null, __MAKEREF_EXPRESSION);
+		}
+
 		if(tokenType == __ARGLIST_KEYWORD)
 		{
 			return parseArglistExpression(builder);

@@ -130,6 +130,9 @@ public interface CSharpElements
 	IElementType __ARGLIST_EXPRESSION = new ElementTypeAsPsiFactory("__ARGLIST_EXPRESSION", CSharpLanguage.INSTANCE,
 			CSharpArglistExpressionImpl.class);
 
+	IElementType __MAKEREF_EXPRESSION = new ElementTypeAsPsiFactory("__MAKEREF_EXPRESSION", CSharpLanguage.INSTANCE,
+			CSharpMakeRefExpressionImpl.class);
+
 	IElementType STACKALLOC_EXPRESSION = new ElementTypeAsPsiFactory("STACKALLOC_EXPRESSION", CSharpLanguage.INSTANCE,
 			CSharpStackAllocExpressionImpl.class);
 
