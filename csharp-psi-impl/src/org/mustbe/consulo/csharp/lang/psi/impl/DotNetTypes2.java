@@ -67,5 +67,7 @@ public interface DotNetTypes2
 			String IEnumerable = "System.Collections.IEnumerable";
 			String IEnumerator = "System.Collections.IEnumerator";
 		}
+
+		String RuntimeArgumentHandle = "System.RuntimeArgumentHandle";
 	}
 }

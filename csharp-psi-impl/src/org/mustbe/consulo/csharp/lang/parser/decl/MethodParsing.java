@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import org.mustbe.consulo.csharp.lang.parser.stmt.StatementParsing;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
@@ -214,7 +215,8 @@ public class MethodParsing extends MemberWithBodyParsing
 
 		Pair<PsiBuilder.Marker, Boolean> modifierPair = parseModifierListWithAttributes(builder, flags);
 
-		if(parseType(builder, flags) == null)
+		TypeInfo typeInfo = parseType(builder, flags);
+		if(typeInfo == null)
 		{
 			if(modifierPair.getSecond() == Boolean.TRUE)
 			{
@@ -229,13 +231,16 @@ public class MethodParsing extends MemberWithBodyParsing
 		}
 		else
 		{
-			expect(builder, IDENTIFIER, "Name expected");
-
-			if(expect(builder, EQ, null))
+			if(typeInfo.nativeElementType != CSharpTokens.__ARGLIST_KEYWORD)
 			{
-				if(ExpressionParsing.parse(builder) == null)
+				expect(builder, IDENTIFIER, "Name expected");
+
+				if(expect(builder, EQ, null))
 				{
-					builder.error("Expression expected.");
+					if(ExpressionParsing.parse(builder) == null)
+					{
+						builder.error("Expression expected.");
+					}
 				}
 			}
 			mark.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.PARAMETER : CSharpElements.PARAMETER);

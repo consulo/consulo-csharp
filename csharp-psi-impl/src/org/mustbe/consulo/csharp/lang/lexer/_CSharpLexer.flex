@@ -83,6 +83,8 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	{VERBATIM_STRING_LITERAL} { return CSharpTokens.VERBATIM_STRING_LITERAL; }
 
+	"__arglist"               { return CSharpTokens.__ARGLIST_KEYWORD; }
+
 	"using"                   { return CSharpTokens.USING_KEYWORD; }
 
 // native types

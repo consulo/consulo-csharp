@@ -740,6 +740,11 @@ public class ExpressionParsing extends SharedParsingHelpers
 			return parseExpressionWithExpressionInLParRPar(builder, null, CHECKED_EXPRESSION);
 		}
 
+		if(tokenType == __ARGLIST_KEYWORD)
+		{
+			return parseArglistExpression(builder);
+		}
+
 		if(tokenType == DELEGATE_KEYWORD)
 		{
 			return parseDelegateExpression(builder);
@@ -849,6 +854,20 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 
 		return null;
+	}
+
+	private static PsiBuilder.Marker parseArglistExpression(CSharpBuilderWrapper builder)
+	{
+		PsiBuilder.Marker mark = builder.mark();
+		builder.advanceLexer();
+
+		if(builder.getTokenType() == LPAR)
+		{
+			parseArgumentList(builder, false);
+		}
+
+		mark.done(__ARGLIST_EXPRESSION);
+		return mark;
 	}
 
 	private static PsiBuilder.Marker parseOutRefWrapExpression(CSharpBuilderWrapper builder)

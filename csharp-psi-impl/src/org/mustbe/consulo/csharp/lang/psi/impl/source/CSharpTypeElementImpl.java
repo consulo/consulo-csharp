@@ -40,7 +40,8 @@ public abstract class CSharpTypeElementImpl extends CSharpElementImpl implements
 		{
 			DotNetTypeRef delegate = element.toTypeRefImpl();
 			if(delegate == DotNetTypeRef.AUTO_TYPE || delegate == DotNetTypeRef.UNKNOWN_TYPE || delegate == DotNetTypeRef.ERROR_TYPE || delegate ==
-					CSharpStaticTypeRef.EXPLICIT || delegate == CSharpStaticTypeRef.IMPLICIT || delegate == CSharpStaticTypeRef.DYNAMIC)
+					CSharpStaticTypeRef.EXPLICIT || delegate == CSharpStaticTypeRef.IMPLICIT || delegate == CSharpStaticTypeRef.DYNAMIC || delegate
+					== CSharpStaticTypeRef.__ARGLIST_TYPE)
 			{
 				return delegate;
 			}

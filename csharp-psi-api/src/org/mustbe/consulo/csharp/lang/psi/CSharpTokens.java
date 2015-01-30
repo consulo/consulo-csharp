@@ -26,6 +26,8 @@ import com.intellij.psi.tree.IElementType;
  */
 public interface CSharpTokens extends TokenType
 {
+	IElementType __ARGLIST_KEYWORD = new IElementType("__ARGLIST_KEYWORD", CSharpLanguage.INSTANCE);
+
 	IElementType STRING_KEYWORD = new IElementType("STRING_KEYWORD", CSharpLanguage.INSTANCE);
 
 	IElementType FIXED_KEYWORD = new IElementType("FIXED_KEYWORD", CSharpLanguage.INSTANCE);

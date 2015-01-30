@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -35,11 +36,12 @@ public class CSharpStaticTypeRef extends DotNetTypeRef.Adapter
 	public static final CSharpStaticTypeRef IMPLICIT = new CSharpStaticTypeRef("implicit", "System.Object");
 	public static final CSharpStaticTypeRef EXPLICIT = new CSharpStaticTypeRef("explicit", "System.Object");
 	public static final CSharpStaticTypeRef DYNAMIC = new CSharpStaticTypeRef("dynamic", "System.Object");
+	public static final CSharpStaticTypeRef __ARGLIST_TYPE = new CSharpStaticTypeRef("__arglist", null);
 
 	private final String myPresentableText;
 	private final String myWrapperQualifiedClass;
 
-	private CSharpStaticTypeRef(String presentableText, String wrapperQualifiedClass)
+	private CSharpStaticTypeRef(String presentableText, @Nullable String wrapperQualifiedClass)
 	{
 		myPresentableText = presentableText;
 		myWrapperQualifiedClass = wrapperQualifiedClass;
@@ -56,6 +58,10 @@ public class CSharpStaticTypeRef extends DotNetTypeRef.Adapter
 	@Override
 	public String getQualifiedText()
 	{
+		if(myWrapperQualifiedClass == null)
+		{
+			return getPresentableText();
+		}
 		return myWrapperQualifiedClass;
 	}
 
@@ -63,6 +69,10 @@ public class CSharpStaticTypeRef extends DotNetTypeRef.Adapter
 	@Override
 	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 	{
+		if(myWrapperQualifiedClass == null)
+		{
+			return DotNetTypeResolveResult.EMPTY;
+		}
 		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(scope.getProject()).findType(myWrapperQualifiedClass, scope.getResolveScope(),
 				DotNetPsiSearcher.TypeResoleKind.UNKNOWN, CSharpTransform.INSTANCE);
 		if(type == null)
