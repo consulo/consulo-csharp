@@ -277,9 +277,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 				}
 				result.addAllElements(lookupElements);
 			}
-		}
-
-		);
+		});
 
 		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class).withSuperParent(2,
 				CSharpArrayInitializerImpl.class).withSuperParent(3, CSharpNewExpressionImpl.class),
