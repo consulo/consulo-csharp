@@ -131,6 +131,10 @@ public class ExpectedTypeRefProvider
 			DotNetTypeRef extractedTypeRef = implicitReturnModel.extractTypeRef(methodAsElement.getReturnTypeRef(), parent);
 			infoList.add(new ExpectedTypeInfo(extractedTypeRef, methodAsElement));
 		}
+		else if(parent instanceof CSharpRefTypeExpressionImpl)
+		{
+			infoList.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.TypedReference), null));
+		}
 		else if(parent instanceof CSharpAssignmentExpressionImpl)
 		{
 			CSharpAssignmentExpressionImpl assignmentExpression = (CSharpAssignmentExpressionImpl) parent;
