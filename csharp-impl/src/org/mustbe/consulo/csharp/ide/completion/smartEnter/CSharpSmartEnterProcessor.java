@@ -70,7 +70,7 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 			}
 			else
 			{
-				insertStringAtEnd(";", variable, editor);
+				insertStringAtEndWithReformat(";", variable, editor, 1, true);
 			}
 			return true;
 		}
@@ -114,7 +114,7 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 					return false;
 				}
 
-				insertStringAtEnd(";", statement, editor);
+				insertStringAtEndWithReformat(";", statement, editor, 1, true);
 			}
 			return true;
 		}
@@ -150,13 +150,5 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 			commit(editor);
 		}
 		reformat(anchor);
-	}
-
-	private void insertStringAtEnd(@NotNull String text, @NotNull PsiElement anchor, @NotNull Editor editor)
-	{
-		Document document = editor.getDocument();
-		int endOffset = anchor.getTextRange().getEndOffset();
-		document.insertString(endOffset, text);
-		editor.getCaretModel().moveToOffset(endOffset + text.length());
 	}
 }
