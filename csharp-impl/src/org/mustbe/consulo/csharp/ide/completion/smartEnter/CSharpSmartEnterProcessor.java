@@ -66,7 +66,7 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 			if(variable.hasModifier(CSharpModifier.ABSTRACT) || variable.hasModifier(CSharpModifier.PARTIAL) || variable.hasModifier(CSharpModifier
 					.EXTERN))
 			{
-				insertStringAtEndWithReformat("();", variable, editor, 3);
+				insertStringAtEndWithReformat("();", variable, editor, 3, false);
 			}
 			else
 			{
@@ -101,7 +101,7 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 
 				if(childStatement == null)
 				{
-					insertStringAtEndWithReformat("{}", statement, editor, 1);
+					insertStringAtEndWithReformat("{}", statement, editor, 1, true);
 					return false;
 				}
 			}
@@ -138,12 +138,17 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 		return false;
 	}
 
-	private void insertStringAtEndWithReformat(@NotNull String text, @NotNull PsiElement anchor, @NotNull Editor editor, int moveOffset)
+	private void insertStringAtEndWithReformat(@NotNull String text, @NotNull PsiElement anchor, @NotNull Editor editor, int moveOffset,
+			boolean commit)
 	{
 		Document document = editor.getDocument();
 		int endOffset = anchor.getTextRange().getEndOffset();
 		document.insertString(endOffset, text);
 		editor.getCaretModel().moveToOffset(endOffset + moveOffset);
+		if(commit)
+		{
+			commit(editor);
+		}
 		reformat(anchor);
 	}
 
