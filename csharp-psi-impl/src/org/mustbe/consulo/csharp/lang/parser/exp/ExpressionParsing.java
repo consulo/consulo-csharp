@@ -712,6 +712,19 @@ public class ExpressionParsing extends SharedParsingHelpers
 			tokenType = builder.getTokenType();
 		}
 
+		if(tokenType == CSharpSoftTokens.ASYNC_KEYWORD)
+		{
+			PsiBuilder.Marker tempMarker = builder.mark();
+			builder.advanceLexer();
+			boolean isLambdaNext = builder.getTokenType() == CSharpTokens.DELEGATE_KEYWORD || parseLambdaExpression(builder, null) != null;
+			tempMarker.rollbackTo();
+			if(!isLambdaNext)
+			{
+				builder.remapBackIfSoft();
+				tokenType = builder.getTokenType();
+			}
+		}
+
 		if(LITERALS.contains(tokenType))
 		{
 			final PsiBuilder.Marker literal = builder.mark();
