@@ -81,6 +81,14 @@ public class ExpectedTypeRefProvider
 				infoList.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Boolean), null));
 			}
 		}
+		else if(parent instanceof CSharpThrowStatementImpl)
+		{
+			DotNetExpression throwExpression = ((CSharpThrowStatementImpl) parent).getExpression();
+			if(throwExpression == psiElement)
+			{
+				infoList.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Exception), null));
+			}
+		}
 		else if(parent instanceof CSharpDoWhileStatementImpl)
 		{
 			DotNetExpression conditionExpression = ((CSharpDoWhileStatementImpl) parent).getConditionExpression();
