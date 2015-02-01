@@ -51,7 +51,7 @@ public class CSharpFieldOrPropertySetImpl extends CSharpElementImpl implements C
 
 	@Nullable
 	@Override
-	public DotNetExpression getValueReferenceExpression()
+	public DotNetExpression getValueExpression()
 	{
 		PsiElement lastChild = getLastChild();
 		if(lastChild instanceof DotNetExpression && lastChild != getNameReferenceExpression())

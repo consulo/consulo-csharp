@@ -73,7 +73,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 				{
 					myConstructors = new SmartList<CSharpConstructorDeclaration>();
 				}
-				myConstructors.add(declaration);
+				myConstructors.add(GenericUnwrapTool.extract(declaration, myGenericExtractor));
 			}
 		}
 
@@ -108,12 +108,6 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 			}
 			else
 			{
-				// we dont interest in private impl
-				if(declaration.getTypeForImplement() != null)
-				{
-					return;
-				}
-
 				if(CSharpMethodImplUtil.isExtensionMethod(declaration))
 				{
 					String name = declaration.getName();
@@ -137,12 +131,6 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		@Override
 		public void visitArrayMethodDeclaration(CSharpArrayMethodDeclaration declaration)
 		{
-			// we dont interest in private impl
-			if(declaration.getTypeForImplement() != null)
-			{
-				return;
-			}
-
 			if(myIndexMethods == null)
 			{
 				myIndexMethods = new SmartList<CSharpArrayMethodDeclaration>();
@@ -165,24 +153,12 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		@Override
 		public void visitEventDeclaration(CSharpEventDeclaration declaration)
 		{
-			// we dont interest in private impl
-			if(declaration.getTypeForImplement() != null)
-			{
-				return;
-			}
-
 			putIfNotNull(declaration.getName(), declaration, myOtherElements);
 		}
 
 		@Override
 		public void visitPropertyDeclaration(CSharpPropertyDeclaration declaration)
 		{
-			// we dont interest in private impl
-			if(declaration.getTypeForImplement() != null)
-			{
-				return;
-			}
-
 			putIfNotNull(declaration.getName(), declaration, myOtherElements);
 		}
 
@@ -234,7 +210,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
 		for(CSharpAdditionalMemberProvider provider : getAdditionalTypeMemberProviders())
 		{
-			for(DotNetElement temp : provider.getAdditionalMembers(element))
+			for(DotNetElement temp : provider.getAdditionalMembers(element, extractor))
 			{
 				temp.accept(collector);
 			}
@@ -460,5 +436,11 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	public boolean processElementsImpl(@NotNull Processor<PsiElement> processor)
 	{
 		return myOtherElements == null || ContainerUtil.process(myOtherElements.values(), processor);
+	}
+
+	@NotNull
+	public T getElement()
+	{
+		return myElement;
 	}
 }

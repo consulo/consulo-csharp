@@ -20,6 +20,12 @@ public class NEmptyParamsCallArgument extends NParamsCallArgument
 	}
 
 	@Override
+	public boolean isValid()
+	{
+		return true;
+	}
+
+	@Override
 	public int calcValid(@NotNull PsiElement scope)
 	{
 		return INSTANCE_OF;

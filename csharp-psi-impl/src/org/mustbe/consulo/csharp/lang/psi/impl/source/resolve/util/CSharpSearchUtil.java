@@ -16,21 +16,30 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util;
 
+import java.util.Collection;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
+import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
-import com.intellij.util.ArrayUtil;
 
 /**
  * @author VISTALL
@@ -39,55 +48,91 @@ import com.intellij.util.ArrayUtil;
 public class CSharpSearchUtil
 {
 	@Nullable
-	public static DotNetPropertyDeclaration findPropertyByName(@NotNull final String name, @NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
+	public static DotNetPropertyDeclaration findPropertyByName(@NotNull final String name,
+			@Nullable String parentQName,
+			@NotNull DotNetTypeRef typeRef,
+			@NotNull PsiElement scope)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
-		PsiElement resolve = typeResolveResult.getElement();
-		if(resolve == null)
+		PsiElement resolvedElement = typeResolveResult.getElement();
+		if(resolvedElement == null)
 		{
 			return null;
 		}
 		DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
-		return findPropertyByName(name, resolve, genericExtractor);
+		return findPropertyByName(name, resolvedElement, parentQName, genericExtractor);
 	}
 
 	@Nullable
 	public static DotNetPropertyDeclaration findPropertyByName(@NotNull final String name,
 			@NotNull PsiElement owner,
+			@Nullable String parentQName,
 			@NotNull DotNetGenericExtractor extractor)
 	{
-		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner.getResolveScope(),
-				ResolveResult.EMPTY_ARRAY, new ExecuteTarget[]{ExecuteTarget.PROPERTY});
+		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner,
+				new ExecuteTarget[]{ExecuteTarget.PROPERTY}, OverrideProcessor.ALWAYS_TRUE);
 
 		ResolveState state = ResolveState.initial();
 		state = state.put(CSharpResolveUtil.EXTRACTOR, extractor);
 		state = state.put(CSharpResolveUtil.SELECTOR, new MemberByNameSelector(name));
 
 		CSharpResolveUtil.walkChildren(memberResolveScopeProcessor, owner, false, true, state);
-
-		PsiElement[] psiElements = memberResolveScopeProcessor.toPsiElements();
-		return (DotNetPropertyDeclaration) ArrayUtil.getFirstElement(psiElements);
+		for(PsiElement element : memberResolveScopeProcessor.toPsiElements())
+		{
+			if(isMyElement(element, parentQName))
+			{
+				return (DotNetPropertyDeclaration) element;
+			}
+		}
+		return null;
 	}
 
 	@Nullable
-	public static DotNetMethodDeclaration findMethodByName(@NotNull final String name, @NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
+	public static DotNetMethodDeclaration findMethodByName(@NotNull final String name,
+			@Nullable String parentQName,
+			@NotNull DotNetTypeRef typeRef,
+			@NotNull PsiElement scope,
+			int parameterSize)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
-		PsiElement resolve = typeResolveResult.getElement();
-		if(resolve == null)
+		PsiElement resolvedElement = typeResolveResult.getElement();
+		if(resolvedElement == null)
 		{
 			return null;
 		}
-		return findMethodByName(name, resolve, typeResolveResult.getGenericExtractor());
+		return findMethodByName(name, resolvedElement, parentQName, typeResolveResult.getGenericExtractor(), parameterSize);
 	}
 
 	@Nullable
 	public static DotNetMethodDeclaration findMethodByName(@NotNull final String name,
 			@NotNull PsiElement owner,
-			@NotNull DotNetGenericExtractor extractor)
+			@Nullable String parentQName,
+			@NotNull DotNetGenericExtractor extractor,
+			final int parameterSize)
 	{
-		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner.getResolveScope(),
-				ResolveResult.EMPTY_ARRAY, new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
+		//TODO [VISTALL] some hack until we dont make override more powerfull
+		if(parentQName != null)
+		{
+			if(owner instanceof DotNetMemberOwner)
+			{
+				for(DotNetNamedElement dotNetNamedElement : ((DotNetMemberOwner) owner).getMembers())
+				{
+					if(dotNetNamedElement instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) dotNetNamedElement).getParameters()
+							.length == 0 &&
+							name.equals(dotNetNamedElement.getName()))
+					{
+						DotNetTypeRef typeRefForImplement = ((CSharpMethodDeclaration) dotNetNamedElement).getTypeRefForImplement();
+						if(DotNetTypeRefUtil.isVmQNameEqual(typeRefForImplement, owner, parentQName))
+						{
+							return (DotNetMethodDeclaration) GenericUnwrapTool.extract(dotNetNamedElement, extractor);
+						}
+					}
+				}
+			}
+		}
+
+		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner,
+				new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP}, OverrideProcessor.ALWAYS_TRUE);
 
 		ResolveState state = ResolveState.initial();
 		state = state.put(CSharpResolveUtil.EXTRACTOR, extractor);
@@ -104,7 +149,9 @@ public class CSharpSearchUtil
 				for(PsiElement element : ((CSharpElementGroup<?>) psiElement).getElements())
 				{
 					//TODO [VISTALL] parameter handling
-					if(element instanceof DotNetMethodDeclaration && ((DotNetMethodDeclaration) element).getParameters().length == 0)
+					if(element instanceof DotNetMethodDeclaration &&
+							((DotNetMethodDeclaration) element).getParameters().length == parameterSize &&
+							isMyElement(element, parentQName))
 					{
 						return (DotNetMethodDeclaration) element;
 					}
@@ -112,5 +159,34 @@ public class CSharpSearchUtil
 			}
 		}
 		return null;
+	}
+
+	private static boolean isMyElement(@NotNull PsiElement element, @Nullable String parentQName)
+	{
+		if(parentQName == null)
+		{
+			return true;
+		}
+
+		if(isEqualVmQNameOfParent(element, parentQName))
+		{
+			return true;
+		}
+
+		Collection<DotNetVirtualImplementOwner> collection = OverrideUtil.collectOverridingMembers((DotNetVirtualImplementOwner) element);
+		for(DotNetVirtualImplementOwner owner : collection)
+		{
+			if(isEqualVmQNameOfParent(owner, parentQName))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static boolean isEqualVmQNameOfParent(PsiElement element, String parentQName)
+	{
+		PsiElement parent = element.getParent();
+		return parent instanceof CSharpTypeDeclaration && parentQName.equals(((CSharpTypeDeclaration) parent).getVmQName());
 	}
 }

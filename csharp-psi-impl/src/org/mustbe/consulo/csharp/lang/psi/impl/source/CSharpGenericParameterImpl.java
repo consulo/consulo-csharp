@@ -21,7 +21,10 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpGenericParameterStub;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.ArrayUtil;
 
 /**
  * @author VISTALL
@@ -43,5 +46,16 @@ public class CSharpGenericParameterImpl extends CSharpStubMemberImpl<CSharpGener
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
 		visitor.visitGenericParameter(this);
+	}
+
+	@Override
+	public int getIndex()
+	{
+		PsiElement parentByStub = getParentByStub();
+		if(parentByStub instanceof DotNetGenericParameterList)
+		{
+			return ArrayUtil.find(((DotNetGenericParameterList) parentByStub).getParameters(), this);
+		}
+		return -1;
 	}
 }

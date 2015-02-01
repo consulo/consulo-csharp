@@ -26,6 +26,14 @@ import com.intellij.psi.tree.IElementType;
  */
 public interface CSharpTokens extends TokenType
 {
+	IElementType __ARGLIST_KEYWORD = new IElementType("__ARGLIST_KEYWORD", CSharpLanguage.INSTANCE);
+
+	IElementType __MAKEREF_KEYWORD = new IElementType("__MAKEREF_KEYWORD", CSharpLanguage.INSTANCE);
+
+	IElementType __REFTYPE_KEYWORD = new IElementType("__REFTYPE_KEYWORD", CSharpLanguage.INSTANCE);
+
+	IElementType __REFVALUE_KEYWORD = new IElementType("__REFVALUE_KEYWORD", CSharpLanguage.INSTANCE);
+
 	IElementType STRING_KEYWORD = new IElementType("STRING_KEYWORD", CSharpLanguage.INSTANCE);
 
 	IElementType FIXED_KEYWORD = new IElementType("FIXED_KEYWORD", CSharpLanguage.INSTANCE);
@@ -91,6 +99,8 @@ public interface CSharpTokens extends TokenType
 	IElementType ENUM_KEYWORD = new IElementType("ENUM_KEYWORD", CSharpLanguage.INSTANCE);
 
 	IElementType NEW_KEYWORD = new IElementType("NEW_KEYWORD", CSharpLanguage.INSTANCE);
+
+	IElementType STACKALLOC_KEYWORD = new IElementType("STACKALLOC_KEYWORD", CSharpLanguage.INSTANCE);
 
 	IElementType TYPEOF_KEYWORD = new IElementType("TYPEOF_KEYWORD", CSharpLanguage.INSTANCE);
 
@@ -232,6 +242,10 @@ public interface CSharpTokens extends TokenType
 
 	IElementType MINUS = new IElementType("MINUS", CSharpLanguage.INSTANCE);
 
+	IElementType ARROW = new IElementType("ARROW", CSharpLanguage.INSTANCE);
+
+	IElementType NULLABE_CALL = new IElementType("NULLABE_CALL", CSharpLanguage.INSTANCE);
+
 	IElementType DARROW = new IElementType("DARROW", CSharpLanguage.INSTANCE);
 
 	IElementType MINUSMINUS = new IElementType("MINUSMINUS", CSharpLanguage.INSTANCE);
@@ -265,8 +279,6 @@ public interface CSharpTokens extends TokenType
 	IElementType PERC = new IElementType("PERC", CSharpLanguage.INSTANCE);
 
 	IElementType QUEST = new IElementType("QUEST", CSharpLanguage.INSTANCE);
-
-	IElementType NULL_COALESCING = new IElementType("NULL_COALESCING", CSharpLanguage.INSTANCE);
 
 	IElementType LINE_COMMENT = new IElementType("LINE_COMMENT", CSharpLanguage.INSTANCE);
 

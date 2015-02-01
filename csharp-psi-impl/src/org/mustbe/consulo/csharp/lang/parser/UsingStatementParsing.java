@@ -65,6 +65,16 @@ public class UsingStatementParsing extends SharedParsingHelpers
 			}
 			to = TYPE_DEF_STATEMENT;
 		}
+		else if(builder.getTokenType() == STATIC_KEYWORD)
+		{
+			builder.advanceLexer();
+
+			if(parseType(builder, STUB_SUPPORT) == null)
+			{
+				builder.error("Type expected");
+			}
+			to = USING_TYPE_STATEMENT;
+		}
 		else
 		{
 			ExpressionParsing.parseQualifiedReference(builder, null);

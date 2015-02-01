@@ -28,6 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
@@ -37,7 +38,6 @@ import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilEventEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilFieldEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
-import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
 import org.mustbe.consulo.msil.lang.psi.MsilPropertyEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import org.mustbe.consulo.msil.lang.psi.MsilXXXAcessor;
@@ -48,7 +48,6 @@ import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 
@@ -66,7 +65,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		{
 			MsilClassAsCSharpTypeDefinition parentThis = MsilClassAsCSharpTypeDefinition.this;
 
-			DotNetNamedElement[] temp = myMsilElement.getMembers();
+			DotNetNamedElement[] temp = myOriginal.getMembers();
 			List<DotNetNamedElement> copy = new ArrayList<DotNetNamedElement>(temp.length);
 			Collections.addAll(copy, temp);
 
@@ -84,7 +83,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 						continue;
 					}
 
-					if(StringUtil.contains(name, "<>") || Comparing.equal(name, "value__") && isEnum)
+					if(StringUtil.containsAnyChar(name, "<>") || Comparing.equal(name, "value__") && isEnum)
 					{
 						bannedFieldNames.add(name);
 					}
@@ -213,46 +212,41 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 
 	private MsilModifierListToCSharpModifierList myModifierList;
 	private MsilGenericParameterListAsCSharpGenericParameterList myGenericParameterList;
+	private CSharpLightGenericConstraintList myGenericConstraintList;
 
 	public MsilClassAsCSharpTypeDefinition(@Nullable PsiElement parent, MsilClassEntry classEntry)
 	{
 		super(parent, classEntry);
-		myModifierList = new MsilModifierListToCSharpModifierList((MsilModifierList) classEntry.getModifierList());
+		myModifierList = new MsilModifierListToCSharpModifierList(this, classEntry.getModifierList());
 		DotNetGenericParameterList genericParameterList = classEntry.getGenericParameterList();
 		myGenericParameterList = genericParameterList == null ? null : new MsilGenericParameterListAsCSharpGenericParameterList(this,
 				genericParameterList);
+		myGenericConstraintList = MsilAsCSharpBuildUtil.buildConstraintList(myGenericParameterList);
 	}
 
 	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		if(visitor instanceof CSharpElementVisitor)
-		{
-			((CSharpElementVisitor) visitor).visitTypeDeclaration(this);
-		}
-		else
-		{
-			visitor.visitElement(this);
-		}
+		visitor.visitTypeDeclaration(this);
 	}
 
 	@Override
 	public PsiFile getContainingFile()
 	{
-		return myMsilElement.getContainingFile();
+		return myOriginal.getContainingFile();
 	}
 
 	@Override
 	public String getVmQName()
 	{
-		return myMsilElement.getVmQName();
+		return myOriginal.getVmQName();
 	}
 
 	@Nullable
 	@Override
 	public String getVmName()
 	{
-		return myMsilElement.getVmName();
+		return myOriginal.getVmName();
 	}
 
 	@Override
@@ -277,38 +271,39 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	@Override
 	public CSharpGenericConstraintList getGenericConstraintList()
 	{
-		return null;
+		return myGenericConstraintList;
 	}
 
 	@NotNull
 	@Override
 	public CSharpGenericConstraint[] getGenericConstraints()
 	{
-		return new CSharpGenericConstraint[0];
+		CSharpGenericConstraintList genericConstraintList = getGenericConstraintList();
+		return genericConstraintList == null ? CSharpGenericConstraint.EMPTY_ARRAY : genericConstraintList.getGenericConstraints();
 	}
 
 	@Override
 	public boolean isInterface()
 	{
-		return myMsilElement.isInterface();
+		return myOriginal.isInterface();
 	}
 
 	@Override
 	public boolean isStruct()
 	{
-		return myMsilElement.isStruct();
+		return myOriginal.isStruct();
 	}
 
 	@Override
 	public boolean isEnum()
 	{
-		return myMsilElement.isEnum();
+		return myOriginal.isEnum();
 	}
 
 	@Override
 	public boolean isNested()
 	{
-		return myMsilElement.isNested();
+		return myOriginal.isNested();
 	}
 
 	@Nullable
@@ -329,7 +324,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		{
 			return DotNetTypeRef.EMPTY_ARRAY;
 		}
-		DotNetTypeRef[] extendTypeRefs = myMsilElement.getExtendTypeRefs();
+		DotNetTypeRef[] extendTypeRefs = myOriginal.getExtendTypeRefs();
 		if(extendTypeRefs.length == 0)
 		{
 			return DotNetTypeRef.EMPTY_ARRAY;
@@ -337,7 +332,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		DotNetTypeRef[] typeRefs = new DotNetTypeRef[extendTypeRefs.length];
 		for(int i = 0; i < typeRefs.length; i++)
 		{
-			typeRefs[i] = MsilToCSharpUtil.extractToCSharp(extendTypeRefs[i], myMsilElement);
+			typeRefs[i] = MsilToCSharpUtil.extractToCSharp(extendTypeRefs[i], myOriginal);
 		}
 		return typeRefs;
 	}
@@ -352,7 +347,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	@LazyInstance
 	public DotNetTypeRef getTypeRefForEnumConstants()
 	{
-		return MsilToCSharpUtil.extractToCSharp(myMsilElement.getTypeRefForEnumConstants(), myMsilElement);
+		return MsilToCSharpUtil.extractToCSharp(myOriginal.getTypeRefForEnumConstants(), myOriginal);
 	}
 
 	@Nullable
@@ -399,33 +394,33 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	@Override
 	public String getPresentableParentQName()
 	{
-		return myMsilElement.getPresentableParentQName();
+		return myOriginal.getPresentableParentQName();
 	}
 
 	@Override
 	public String getName()
 	{
-		return MsilHelper.cutGenericMarker(myMsilElement.getName());
+		return MsilHelper.cutGenericMarker(myOriginal.getName());
 	}
 
 	@Nullable
 	@Override
 	public String getPresentableQName()
 	{
-		return MsilHelper.cutGenericMarker(myMsilElement.getPresentableQName());
+		return MsilHelper.cutGenericMarker(myOriginal.getPresentableQName());
 	}
 
 	@Override
 	public String toString()
 	{
-		return myMsilElement.toString();
+		return myOriginal.toString();
 	}
 
 	@Nullable
 	@Override
 	public PsiElement getNameIdentifier()
 	{
-		return myMsilElement.getNameIdentifier();
+		return myOriginal.getNameIdentifier();
 	}
 
 	@Override

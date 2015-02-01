@@ -125,7 +125,7 @@ public class CSharpConfigurationPanel extends JPanel
 
 		add(LabeledComponent.left(levelComboBox, "Language Version: "));
 
-		val platformComboBox = new ComboBox(CSharpPlatform.values());
+		final ComboBox platformComboBox = new ComboBox(CSharpPlatform.values());
 		platformComboBox.setSelectedItem(ext.getPlatform());
 		platformComboBox.setRenderer(new ColoredListCellRendererWrapper<CSharpPlatform>()
 		{

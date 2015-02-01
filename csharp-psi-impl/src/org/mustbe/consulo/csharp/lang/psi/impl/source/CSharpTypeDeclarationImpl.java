@@ -24,12 +24,11 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeDeclStub;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
@@ -219,10 +218,10 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 		DotNetTypeList extendList = getExtendList();
 		if(extendList == null)
 		{
-			return new DotNetTypeRefByQName(DotNetTypes.System.Int32, CSharpTransform.INSTANCE, false);
+			return new CSharpTypeRefByQName(DotNetTypes.System.Int32);
 		}
 		DotNetTypeRef[] typeRefs = extendList.getTypeRefs();
-		return typeRefs.length == 0 ? new DotNetTypeRefByQName(DotNetTypes.System.Int32, CSharpTransform.INSTANCE, false) : typeRefs[0];
+		return typeRefs.length == 0 ? new CSharpTypeRefByQName(DotNetTypes.System.Int32) : typeRefs[0];
 	}
 
 	@Nullable

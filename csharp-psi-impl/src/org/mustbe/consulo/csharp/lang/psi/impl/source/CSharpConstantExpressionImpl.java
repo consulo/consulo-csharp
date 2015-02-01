@@ -99,7 +99,16 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 			{
 				return DotNetTypeRef.ERROR_TYPE;
 			}
-			return new CSharpConstantTypeRef(new CSharpLazyTypeRefByQName(element, qName));
+
+			Object value = null;
+			try
+			{
+				value = element.getValue();
+			}
+			catch(Exception ignored)
+			{
+			}
+			return new CSharpConstantTypeRef(new CSharpLazyTypeRefByQName(element, qName), value);
 		}
 	}
 

@@ -34,7 +34,6 @@ import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
 
 /**
  * @author VISTALL
@@ -42,22 +41,18 @@ import com.intellij.psi.PsiElementVisitor;
  */
 public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVariable implements CSharpEventDeclaration
 {
+	private final DotNetXXXAccessor[] myAccessors;
+
 	public MsilEventAsCSharpEventDeclaration(PsiElement parent, MsilEventEntry variable, List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
 	{
 		super(parent, MsilPropertyAsCSharpPropertyDeclaration.getAdditionalModifiers(variable, pairs), variable);
+		myAccessors = MsilPropertyAsCSharpPropertyDeclaration.buildAccessors(this, pairs);
 	}
 
 	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		if(visitor instanceof CSharpElementVisitor)
-		{
-			((CSharpElementVisitor) visitor).visitEventDeclaration(this);
-		}
-		else
-		{
-			visitor.visitElement(this);
-		}
+		visitor.visitEventDeclaration(this);
 	}
 
 	@Override
@@ -76,14 +71,14 @@ public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVaria
 	@Override
 	public DotNetXXXAccessor[] getAccessors()
 	{
-		return new DotNetXXXAccessor[0];
+		return myAccessors;
 	}
 
 	@NotNull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
-		return new DotNetNamedElement[0];
+		return getAccessors();
 	}
 
 	@Override
@@ -116,7 +111,7 @@ public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVaria
 		SomeType someType = SomeTypeParser.parseType(typeBeforeDot, nameFromBytecode);
 		if(someType != null)
 		{
-			return new DummyType(getProject(), myMsilElement, someType);
+			return new DummyType(getProject(), myOriginal, someType);
 		}
 		return null;
 	}

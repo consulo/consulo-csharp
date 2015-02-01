@@ -33,11 +33,13 @@ import com.intellij.psi.PsiElement;
 public class CSharpLightEventDeclaration extends CSharpLightVariable<CSharpEventDeclaration> implements CSharpEventDeclaration
 {
 	private final DotNetTypeRef myTypeRef;
+	private final DotNetTypeRef myVirtualTypeRefForImpl;
 
-	public CSharpLightEventDeclaration(CSharpEventDeclaration original, DotNetTypeRef typeRef)
+	public CSharpLightEventDeclaration(CSharpEventDeclaration original, DotNetTypeRef typeRef, DotNetTypeRef virtualTypeRefForImpl)
 	{
 		super(original);
 		myTypeRef = typeRef;
+		myVirtualTypeRefForImpl = virtualTypeRefForImpl;
 	}
 
 	@NotNull
@@ -97,13 +99,13 @@ public class CSharpLightEventDeclaration extends CSharpLightVariable<CSharpEvent
 	@Override
 	public DotNetType getTypeForImplement()
 	{
-		return null;
+		return myOriginal.getTypeForImplement();
 	}
 
 	@NotNull
 	@Override
 	public DotNetTypeRef getTypeRefForImplement()
 	{
-		return DotNetTypeRef.ERROR_TYPE;
+		return myVirtualTypeRefForImpl;
 	}
 }

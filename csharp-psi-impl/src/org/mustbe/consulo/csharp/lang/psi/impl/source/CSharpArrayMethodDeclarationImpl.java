@@ -185,6 +185,18 @@ public class CSharpArrayMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 	}
 
 	@Override
+	public PsiElement getLeftBrace()
+	{
+		return findChildByType(CSharpTokens.LBRACE);
+	}
+
+	@Override
+	public PsiElement getRightBrace()
+	{
+		return findChildByType(CSharpTokens.RBRACE);
+	}
+
+	@Override
 	public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
 			@NotNull ResolveState state,
 			PsiElement lastParent,

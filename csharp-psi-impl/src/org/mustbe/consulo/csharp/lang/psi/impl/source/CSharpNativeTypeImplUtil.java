@@ -62,6 +62,10 @@ public class CSharpNativeTypeImplUtil
 		{
 			return CSharpStaticTypeRef.DYNAMIC;
 		}
+		else if(elementType == CSharpTokens.__ARGLIST_KEYWORD)
+		{
+			return CSharpStaticTypeRef.__ARGLIST_TYPE;
+		}
 
 		String q = ourElementToQTypes.get(elementType);
 		assert q != null : elementType.toString();

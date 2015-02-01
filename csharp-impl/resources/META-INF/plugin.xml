@@ -46,6 +46,12 @@
 		</group>
 	</actions>
 
+	<project-components>
+		<component>
+			<implementation-class>org.mustbe.consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent</implementation-class>
+		</component>
+	</project-components>
+
 	<extensionPoints>
 		<extensionPoint name="unusedElementPolicy" interface="org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.UnusedElementPolicy"/>
 
@@ -103,6 +109,11 @@
 
 		<fileTypeFactory implementation="org.mustbe.consulo.csharp.lang.CSharpFileTypeFactory"/>
 
+		<codeInsight.implementMethod language="C#"
+									 implementationClass="org.mustbe.consulo.csharp.ide.actions.generate.GenerateImplementMemberHandler"/>
+		<codeInsight.overrideMethod language="C#"
+									implementationClass="org.mustbe.consulo.csharp.ide.actions.generate.GenerateOverrideMemberHandler"/>
+		<codeInsight.gotoSuper language="C#" implementationClass="org.mustbe.consulo.csharp.ide.actions.generate.GotoSuperMethodHandler"/>
 		<projectService serviceImplementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher"/>
 		<syntaxHighlighter key="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpSyntaxHighlighter"/>
 		<syntaxHighlighter key="C#Macro" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpMacroSyntaxHighlighter"/>
@@ -120,21 +131,34 @@
 		<stubElementTypeHolder class="org.mustbe.consulo.csharp.lang.psi.CSharpStubElements"/>
 		<codeInsight.lineMarkerProvider language="C#" implementationClass="org.mustbe.consulo.csharp.ide.CSharpLineMarkerProvider"/>
 
-		<fileStructureGroupRuleProvider implementation="org.mustbe.consulo.csharp.ide.findUsage.groupingRule.CSharpTypeGroupRuleProvider" />
-		<fileStructureGroupRuleProvider implementation="org.mustbe.consulo.csharp.ide.findUsage.groupingRule.CSharpCodeBlockOwnerGroupRuleProvider" />
-		<usageTypeProvider implementation="org.mustbe.consulo.csharp.ide.findUsage.usageType.CSharpUsageTypeProvider" />
+		<fileStructureGroupRuleProvider implementation="org.mustbe.consulo.csharp.ide.findUsage.groupingRule.CSharpTypeGroupRuleProvider"/>
+		<fileStructureGroupRuleProvider implementation="org.mustbe.consulo.csharp.ide.findUsage.groupingRule.CSharpCodeBlockOwnerGroupRuleProvider"/>
+		<usageTypeProvider implementation="org.mustbe.consulo.csharp.ide.findUsage.usageType.CSharpUsageTypeProvider"/>
 		<lang.findUsagesProvider language="C#" implementationClass="org.mustbe.consulo.csharp.ide.findUsage.CSharpFindUsagesProvider"/>
 
 		<codeInsight.unresolvedReferenceQuickFixProvider
 				implementation="org.mustbe.consulo.csharp.ide.codeInsight.CSharpUnresolvedReferenceQuickFixProvider"/>
+		<completion.contributor language="C#"
+								implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpOverrideOrImplementCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpReferenceCompletionContributor"/>
+		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpAccessorCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpKeywordCompletionContributor"/>
+		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpLinqCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpStatementCompletionContributor"/>
-		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpSmartCompletionContributor"/>
+		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpStatementCompletionContributor"/>
+		<completion.contributor language="C#Macro"
+								implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpMacroReferenceCompletionContributor"/>
+		<lookup.charFilter implementation="org.mustbe.consulo.csharp.ide.completion.CSharpCompletionCharFilter" />
+
+		<lang.smartEnterProcessor language="C#"
+								  implementationClass="org.mustbe.consulo.csharp.ide.completion.smartEnter.CSharpSmartEnterProcessor"/>
+
 		<referenceImporter implementation="org.mustbe.consulo.csharp.ide.codeInsight.CSharpReferenceImporter"/>
 
 		<typedHandler implementation="org.mustbe.consulo.csharp.ide.completion.CSharpTypedHandler" id="csharp"/>
 
+		<renamePsiElementProcessor implementation="org.mustbe.consulo.csharp.ide.refactoring.rename.CSharpTypeRenamePsiElementProcessor"/>
+		<renamePsiElementProcessor implementation="org.mustbe.consulo.csharp.ide.refactoring.rename.CSharpOverrideElementProcessor"/>
 		<gotoClassContributor implementation="org.mustbe.consulo.csharp.ide.navigation.CSharpTypeNameContributor"/>
 		<gotoSymbolContributor implementation="org.mustbe.consulo.csharp.ide.navigation.CSharpSymbolNameContributor"/>
 
@@ -161,10 +185,6 @@
 								  implementationClass="org.mustbe.consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
 		<itemPresentationProvider forClass="org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConversionMethodDeclarationImpl"
 								  implementationClass="org.mustbe.consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
-
-		<projectService serviceInterface="org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder"
-						serviceImplementation="org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilderImpl"/>
-
 		<moduleService serviceInterface="org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpModuleTypeHelper"
 					   serviceImplementation="org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpModuleTypeHelperImpl"/>
 
@@ -180,12 +200,11 @@
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.PropertyIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.EventIndex"/>
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.ExtendsListIndex"/>
-
-		<resolveScopeEnlarger implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveScopeEnlarger"/>
+		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.AttributeListIndex"/>
 
 		<lang.surroundDescriptor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.surroundWith.CSharpExpressionSurroundDescriptor"/>
 
-		<vetoRenameCondition implementation="org.mustbe.consulo.csharp.ide.reflactoring.rename.CSharpVetoRenameCondition"/>
+		<vetoRenameCondition implementation="org.mustbe.consulo.csharp.ide.refactoring.rename.CSharpVetoRenameCondition"/>
 
 		<problemFileHighlightFilter implementation="org.mustbe.consulo.csharp.ide.codeInsight.problems.CSharpFileProblemHighlightFilter"/>
 		<editorHighlighterProvider filetype="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpEditorHighlighterProvider"/>
@@ -195,23 +214,25 @@
 		<codeInsight.template.postfixTemplateProvider language="C#"
 													  implementationClass="org.mustbe.consulo.csharp.ide.codeInsight.template.postfix.CSharpPostfixTemplateProvider"/>
 
-		<referencesSearch implementation="org.mustbe.consulo.csharp.ide.findUsage.referenceSearch.AdditionalReferenceSearch" />
+		<referencesSearch implementation="org.mustbe.consulo.csharp.ide.findUsage.referenceSearch.AdditionalReferenceSearch"/>
 
 		<bundleLiveTemplateSet path="liveTemplates/output"/>
 		<bundleLiveTemplateSet path="liveTemplates/main"/>
 		<bundleLiveTemplateSet path="liveTemplates/foreach"/>
-		<!--<bundleLiveTemplateSet path="liveTemplates/linq"/> -->
+		<bundleLiveTemplateSet path="liveTemplates/linq"/>
 
 		<liveTemplateContext implementation="org.mustbe.consulo.csharp.ide.liveTemplates.context.CSharpStatementContextType"/>
 		<liveTemplateContext implementation="org.mustbe.consulo.csharp.ide.liveTemplates.context.CSharpClassBodyContextType"/>
 		<liveTemplateContext implementation="org.mustbe.consulo.csharp.ide.liveTemplates.context.CSharpExpressionContextType"/>
 		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.SuggestVariableNameMacro"/>
+		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.SuggestIndexVariableNameMacro"/>
+		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.ArrayVariableMacro"/>
+		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.IListVariableMacro"/>
 		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.ForeachVariableMacro"/>
 		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.ForeachComponentTypeMacro"/>
-		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.CSharpBoolExpressionFromMacro"/>
 
-		<codeStyleSettingsProvider implementation="org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettingsProvider" />
-		<langCodeStyleSettingsProvider implementation="org.mustbe.consulo.csharp.ide.codeStyle.CSharpLanguageCodeStyleSettingsProvider" />
+		<codeStyleSettingsProvider implementation="org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettingsProvider"/>
+		<langCodeStyleSettingsProvider implementation="org.mustbe.consulo.csharp.ide.codeStyle.CSharpLanguageCodeStyleSettingsProvider"/>
 
 		<quoteHandler fileType="C#" className="org.mustbe.consulo.csharp.ide.CSharpQuoteHandler"/>
 		<colorSettingsPage implementation="org.mustbe.consulo.csharp.ide.highlight.CSharpColorSettingsPage"/>
@@ -222,7 +243,7 @@
 		<lang.formatter language="C#Macro" implementationClass="org.mustbe.consulo.csharp.lang.formatter.CSharpMacroFormattingBuilder"/>
 		<lang.elementIcon language="C#" file="/icons/csharpLang.png"/>
 		<lang.commenter language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpCommenter"/>
-		<lang.namesValidator language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpNamesValidator" />
+		<lang.namesValidator language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpNamesValidator"/>
 		<lang.braceMatcher language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpPairedBraceMatcher"/>
 		<lang.importOptimizer language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpImportOptimizer"/>
 		<lang.foldingBuilder language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpFoldingBuilder"/>
@@ -230,18 +251,22 @@
 		<lang.syntaxHighlighterFactory key="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpSyntaxHighlighterFactory"/>
 		<lang.syntaxHighlighterFactory key="C#Macro"
 									   implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpMacroSyntaxHighlighterFactory"/>
-		<lang.refactoringSupport language="C#" implementationClass="org.mustbe.consulo.csharp.ide.reflactoring.CSharpRefactoringSupportProvider"/>
+		<lang.refactoringSupport language="C#" implementationClass="org.mustbe.consulo.csharp.ide.refactoring.CSharpRefactoringSupportProvider"/>
 		<refactoring.changeSignatureUsageProcessor
-				implementation="org.mustbe.consulo.csharp.ide.reflactoring.changeSignature.CSharpChangeSignatureUsageProcessor"/>
-		<inlineActionHandler implementation="org.mustbe.consulo.csharp.ide.reflactoring.inlineAction.CSharpLocalVariableInlineActionHandler"/>
+				implementation="org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureUsageProcessor"/>
+		<inlineActionHandler implementation="org.mustbe.consulo.csharp.ide.refactoring.inlineAction.CSharpLocalVariableInlineActionHandler"/>
 		<lang.parserDefinition language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpParserDefinition"/>
 		<lang.parserDefinition language="C#Macro" implementationClass="org.mustbe.consulo.csharp.lang.CSharpMacroParserDefinition"/>
 		<lang.fileViewProviderFactory language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpFileViewProviderFactory"/>
 		<lang.versionResolver language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpLanguageVersionResolver"/>
-		<lang.documentationProvider language="C#" implementationClass="org.mustbe.consulo.dotnet.documentation.DotNetDocumentationProvider"/>
+		<lang.documentationProvider language="C#" implementationClass="org.mustbe.consulo.csharp.ide.documentation.CSharpDocumentationProvider"/>
 
 		<psi.referenceContributor language="C#" implementation="org.mustbe.consulo.csharp.ide.resolve.CSharpPsiReferenceContributor"/>
 
 		<newModuleBuilder implementation="org.mustbe.consulo.csharp.ide.newProjectOrModule.CSharpNewModuleBuilder"/>
+
+		<eapDescriptor implementation="org.mustbe.consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent$EapDescriptor"/>
+		<eapDescriptor implementation="org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0030$CS0030TypeCast"/>
+		<eapDescriptor implementation="org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder$PropertyAndEventCompletionNew"/>
 	</extensions>
 </idea-plugin>

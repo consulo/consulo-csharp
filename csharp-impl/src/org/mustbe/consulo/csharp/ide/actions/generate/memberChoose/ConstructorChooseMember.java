@@ -17,14 +17,12 @@
 package org.mustbe.consulo.csharp.ide.actions.generate.memberChoose;
 
 import org.consulo.lombok.annotations.ArrayFactoryFields;
+import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
-import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.codeInsight.generation.ClassMember;
-import com.intellij.codeInsight.generation.MemberChooserObject;
-import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -60,7 +58,7 @@ public class ConstructorChooseMember extends CSharpMemberChooseObject<DotNetCons
 				builder.append(", ");
 			}
 			DotNetParameter parameter = parameters[i];
-			builder.append(parameter.toTypeRef(false).getPresentableText());
+			CSharpTypeRefPresentationUtil.appendTypeRef(myDeclaration, builder, parameter.toTypeRef(true), CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
 			builder.append(" ");
 			builder.append(parameter.getName());
 		}
@@ -88,17 +86,6 @@ public class ConstructorChooseMember extends CSharpMemberChooseObject<DotNetCons
 	@Override
 	public String getPresentationText()
 	{
-		return DotNetElementPresentationUtil.formatMethod(myDeclaration, 0);
-	}
-
-	@Override
-	public MemberChooserObject getParentNodeDelegate()
-	{
-		final PsiElement parent = myDeclaration.getParent();
-		if(parent == null)
-		{
-			return null;
-		}
-		return new ClassChooseObject((DotNetTypeDeclaration) parent);
+		return CSharpElementPresentationUtil.formatMethod(myDeclaration, CSharpElementPresentationUtil.METHOD_PARAMETER_NAME);
 	}
 }

@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLikeMethodDeclarationImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
@@ -14,7 +15,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 26.10.14
  */
-public class CSharpElementGroupTypeRef extends DotNetTypeRef.Adapter implements CSharpChameleonTypeRef
+public class CSharpElementGroupTypeRef extends DotNetTypeRef.Adapter implements CSharpFastImplicitTypeRef
 {
 	private final CSharpElementGroup<?> myElementGroup;
 
@@ -37,7 +38,7 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRef.Adapter implements 
 		return myElementGroup.getName();
 	}
 
-	@NotNull
+	@Nullable
 	@Override
 	public DotNetTypeRef doMirror(@NotNull DotNetTypeRef another, PsiElement scope)
 	{
@@ -62,6 +63,6 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRef.Adapter implements 
 				}
 			}
 		}
-		return this;
+		return null;
 	}
 }

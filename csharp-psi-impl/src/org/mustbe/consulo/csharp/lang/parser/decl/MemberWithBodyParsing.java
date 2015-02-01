@@ -20,9 +20,9 @@ import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.stmt.StatementParsing;
 import com.intellij.lang.PsiBuilder;
+import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -36,21 +36,23 @@ public class MemberWithBodyParsing extends SharedParsingHelpers
 		{
 			while(!builder.eof())
 			{
-				if(parseAccessor(builder, to, tokenSet) == null)
+				if(builder.getTokenType() == RBRACE)
 				{
 					break;
 				}
+
+				parseAccessor(builder, to, tokenSet);
 			}
 
 			expect(builder, RBRACE, "'}' expected");
 		}
 	}
 
-	protected static PsiBuilder.Marker parseAccessor(CSharpBuilderWrapper builder, IElementType to, TokenSet tokenSet)
+	private static void parseAccessor(CSharpBuilderWrapper builder, IElementType to, TokenSet tokenSet)
 	{
 		PsiBuilder.Marker marker = builder.mark();
 
-		val p  = parseModifierListWithAttributes(builder, STUB_SUPPORT);
+		Pair<PsiBuilder.Marker, Boolean> pairModifierList = parseModifierListWithAttributes(builder, STUB_SUPPORT);
 
 		builder.enableSoftKeywords(tokenSet);
 		boolean contains = tokenSet.contains(builder.getTokenType());
@@ -73,18 +75,19 @@ public class MemberWithBodyParsing extends SharedParsingHelpers
 		}
 		else
 		{
-			if(p.getSecond())
+			// non empty
+			if(pairModifierList.getSecond() == Boolean.FALSE)
 			{
-				p.getFirst().drop();
 				marker.drop();
+				builder.error("Expected accessor name");
 			}
 			else
 			{
-				builder.error("Expected accessor name");
-				marker.drop();
+				marker.rollbackTo();
+				PsiBuilder.Marker errorMarker = builder.mark();
+				builder.advanceLexer(); // advance one element
+				errorMarker.error("Expected accessor name");
 			}
-			marker = null;
 		}
-		return marker;
 	}
 }

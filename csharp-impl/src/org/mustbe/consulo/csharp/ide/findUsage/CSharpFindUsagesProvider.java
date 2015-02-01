@@ -190,7 +190,7 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 			if(dotNetTypeRef != DotNetTypeRef.ERROR_TYPE)
 			{
 				builder.append(" = ");
-				builder.append(dotNetTypeRef.getPresentableText());
+				builder.append(CSharpTypeRefPresentationUtil.buildText(dotNetTypeRef, element));
 			}
 			return builder.toString();
 		}
@@ -208,7 +208,7 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 			DotNetTypeRef dotNetTypeRef = ((DotNetVariable) element).toTypeRef(false);
 
 			StringBuilder builder = new StringBuilder();
-			builder.append(dotNetTypeRef.getPresentableText()).append(" ").append(name);
+			builder.append(CSharpTypeRefPresentationUtil.buildText(dotNetTypeRef, element)).append(" ").append(name);
 			return builder.toString();
 		}
 

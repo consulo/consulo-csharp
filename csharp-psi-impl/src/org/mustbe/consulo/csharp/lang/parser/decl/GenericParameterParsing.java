@@ -22,6 +22,7 @@ import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.NotNullFunction;
 import lombok.val;
 
@@ -31,6 +32,8 @@ import lombok.val;
  */
 public class GenericParameterParsing extends SharedParsingHelpers
 {
+	private static final TokenSet ourGenericStoppers = TokenSet.create(GT, LBRACE, LPAR, RBRACE);
+
 	public static void parseList(CSharpBuilderWrapper builder)
 	{
 		if(builder.getTokenType() != LT)
@@ -41,17 +44,24 @@ public class GenericParameterParsing extends SharedParsingHelpers
 		PsiBuilder.Marker mark = builder.mark();
 		builder.advanceLexer();
 
-		while(true)
+		while(!builder.eof())
 		{
+			if(ourGenericStoppers.contains(builder.getTokenType()))
+			{
+				break;
+			}
+
 			parse(builder);
 
 			if(builder.getTokenType() == COMMA)
 			{
 				builder.advanceLexer();
 			}
-			else
+			else if(!ourGenericStoppers.contains(builder.getTokenType()))
 			{
-				break;
+				PsiBuilder.Marker errorMarker = builder.mark();
+				builder.advanceLexer();
+				errorMarker.error("Expected identifier");
 			}
 		}
 

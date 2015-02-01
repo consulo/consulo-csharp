@@ -29,9 +29,12 @@ public class ConstantExpressionEvaluator extends CSharpElementVisitor
 {
 	private Object myValue;
 
-	public ConstantExpressionEvaluator(DotNetExpression expression)
+	public ConstantExpressionEvaluator(@Nullable DotNetExpression expression)
 	{
-		expression.accept(this);
+		if(expression != null)
+		{
+			expression.accept(this);
+		}
 	}
 
 	@Override

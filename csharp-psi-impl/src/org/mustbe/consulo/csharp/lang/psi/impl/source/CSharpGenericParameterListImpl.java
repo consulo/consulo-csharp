@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
+import org.mustbe.consulo.dotnet.lang.psi.impl.DotNetPsiCountUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import com.intellij.lang.ASTNode;
@@ -56,6 +57,6 @@ public class CSharpGenericParameterListImpl extends CSharpStubElementImpl<CSharp
 	@Override
 	public int getGenericParametersCount()
 	{
-		return getParameters().length;
+		return DotNetPsiCountUtil.countChildrenOfType(this, CSharpStubElements.GENERIC_PARAMETER);
 	}
 }

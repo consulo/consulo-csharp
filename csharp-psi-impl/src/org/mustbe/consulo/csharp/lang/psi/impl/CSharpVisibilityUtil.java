@@ -16,14 +16,24 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.AttributeListIndex;
+import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.module.impl.scopes.ModuleWithDependenciesScope;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.SmartList;
@@ -34,17 +44,6 @@ import com.intellij.util.SmartList;
  */
 public class CSharpVisibilityUtil
 {
-	public static boolean isVisibleForCompletion(@NotNull DotNetModifierListOwner target, @NotNull PsiElement place)
-	{
-		if(!isVisible(target, place))
-		{
-			return false;
-		}
-
-		//TODO [VISTALL] static
-		return true;
-	}
-
 	public static boolean isVisible(@NotNull DotNetModifierListOwner target, @NotNull PsiElement place)
 	{
 		return isVisible(target, place, CSharpAccessModifier.findModifier(target));
@@ -58,11 +57,32 @@ public class CSharpVisibilityUtil
 			case NONE:
 				return true;
 			case PROTECTED_INTERNAL:
-				return isVisible(target, place, CSharpAccessModifier.PROTECTED) &&  isVisible(target, place, CSharpAccessModifier.INTERNAL);
+				return isVisible(target, place, CSharpAccessModifier.INTERNAL);
 			case INTERNAL:
 				Module targetModule = ModuleUtilCore.findModuleForPsiElement(target);
 				Module placeModule = ModuleUtilCore.findModuleForPsiElement(place);
-				return targetModule != null && targetModule.equals(placeModule);
+				if(targetModule != null)
+				{
+					if(targetModule.equals(placeModule))
+					{
+						return true;
+					}
+
+					if(placeModule == null)
+					{
+						return false;
+					}
+
+					String placeAssemblyName = findAssemblyName(placeModule);
+					if(placeAssemblyName == null)
+					{
+						return false;
+					}
+
+					List<String> allowListForInternal = findAllowListForInternal(targetModule);
+					return allowListForInternal.contains(placeAssemblyName);
+				}
+				return false;
 			case PROTECTED:
 			{
 				List<DotNetTypeDeclaration> targetTypes = collectAllTypes(target);
@@ -98,6 +118,73 @@ public class CSharpVisibilityUtil
 				break;
 			}
 		} return false;
+	}
+
+	@Nullable
+	private static String findAssemblyName(@NotNull Module module)
+	{
+		Collection<CSharpAttributeList> attributeLists = AttributeListIndex.getInstance().get(DotNetAttributeTargetType.ASSEMBLY, module.getProject(),
+				new ModuleWithDependenciesScope(module, 0));
+
+		loop:for(CSharpAttributeList attributeList : attributeLists)
+		{
+			for(CSharpAttribute attribute : attributeList.getAttributes())
+			{
+				DotNetTypeDeclaration dotNetTypeDeclaration = attribute.resolveToType();
+				if(dotNetTypeDeclaration == null)
+				{
+					continue;
+				}
+				if(DotNetTypes.System.Reflection.AssemblyTitleAttribute.equalsIgnoreCase(dotNetTypeDeclaration.getVmQName()))
+				{
+					DotNetExpression[] parameterExpressions = attribute.getParameterExpressions();
+					if(parameterExpressions.length == 0)
+					{
+						break loop;
+					}
+					String valueAs = new ConstantExpressionEvaluator(parameterExpressions[0]).getValueAs(String.class);
+					if(valueAs != null)
+					{
+						return valueAs;
+					}
+				}
+			}
+		}
+		return module.getName();
+	}
+
+	@NotNull
+	public static List<String> findAllowListForInternal(@NotNull Module targetModule)
+	{
+		Collection<CSharpAttributeList> attributeLists = AttributeListIndex.getInstance().get(DotNetAttributeTargetType.ASSEMBLY, targetModule.getProject(),
+				new ModuleWithDependenciesScope(targetModule, 0));
+
+		List<String> list = new SmartList<String>();
+		for(CSharpAttributeList attributeList : attributeLists)
+		{
+			for(CSharpAttribute attribute : attributeList.getAttributes())
+			{
+				DotNetTypeDeclaration dotNetTypeDeclaration = attribute.resolveToType();
+				if(dotNetTypeDeclaration == null)
+				{
+					continue;
+				}
+				if(DotNetTypes2.System.Runtime.CompilerServices.InternalsVisibleToAttribute.equalsIgnoreCase(dotNetTypeDeclaration.getVmQName()))
+				{
+					DotNetExpression[] parameterExpressions = attribute.getParameterExpressions();
+					if(parameterExpressions.length == 0)
+					{
+						continue;
+					}
+					String valueAs = new ConstantExpressionEvaluator(parameterExpressions[0]).getValueAs(String.class);
+					if(valueAs != null)
+					{
+						list.add(valueAs);
+					}
+				}
+			}
+		}
+		return list;
 	}
 
 	private static List<DotNetTypeDeclaration> collectAllTypes(PsiElement place)

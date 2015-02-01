@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.ide.reflactoring.CSharpRefactoringUtil;
+import org.mustbe.consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLinqVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -75,6 +75,13 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 	public boolean isConstant()
 	{
 		return false;
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getConstantKeywordElement()
+	{
+		return null;
 	}
 
 	@NotNull

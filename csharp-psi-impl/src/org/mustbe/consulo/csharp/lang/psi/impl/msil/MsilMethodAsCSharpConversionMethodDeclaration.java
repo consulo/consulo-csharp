@@ -27,7 +27,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
 
 /**
  * @author VISTALL
@@ -48,16 +47,9 @@ public class MsilMethodAsCSharpConversionMethodDeclaration extends MsilMethodAsC
 	}
 
 	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		if(visitor instanceof CSharpElementVisitor)
-		{
-			((CSharpElementVisitor) visitor).visitConversionMethodDeclaration(this);
-		}
-		else
-		{
-			visitor.visitElement(this);
-		}
+		visitor.visitConversionMethodDeclaration(this);
 	}
 
 	@NotNull
@@ -65,23 +57,23 @@ public class MsilMethodAsCSharpConversionMethodDeclaration extends MsilMethodAsC
 	@LazyInstance
 	public DotNetTypeRef getReturnTypeRef()
 	{
-		return MsilToCSharpUtil.extractToCSharp(myMsilElement.getReturnTypeRef(), myMsilElement);
+		return MsilToCSharpUtil.extractToCSharp(myOriginal.getReturnTypeRef(), myOriginal);
 	}
 
 	@Override
 	public boolean isImplicit()
 	{
-		if(Comparing.equal(myMsilElement.getName(), "op_Explicit"))
+		if(Comparing.equal(myOriginal.getName(), "op_Explicit"))
 		{
 			return false;
 		}
-		else if(Comparing.equal(myMsilElement.getName(), "op_Implicit"))
+		else if(Comparing.equal(myOriginal.getName(), "op_Implicit"))
 		{
 			return true;
 		}
 		else
 		{
-			throw new IllegalArgumentException(myMsilElement.getName());
+			throw new IllegalArgumentException(myOriginal.getName());
 		}
 	}
 

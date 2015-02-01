@@ -21,9 +21,11 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementCompareUtil;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.openapi.util.Condition;
@@ -66,7 +68,14 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 					{
 						return false;
 					}
-					return CSharpElementCompareUtil.isEqualWithVirtualImpl(element, namedElement, element);
+
+					boolean equal = CSharpElementCompareUtil.isEqualWithVirtualImpl(element, namedElement, element);
+					// we dont interest if it partial types
+					if(equal && isPartial(element) && isPartial(namedElement))
+					{
+						return false;
+					}
+					return equal;
 				}
 			});
 
@@ -83,5 +92,10 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 			}
 		}
 		return results;
+	}
+
+	private static boolean isPartial(DotNetNamedElement element)
+	{
+		return element instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) element).hasModifier(CSharpModifier.PARTIAL);
 	}
 }

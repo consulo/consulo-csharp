@@ -21,12 +21,13 @@ import java.util.List;
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpReferenceExpressionStub;
@@ -40,6 +41,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.stubs.IStubElementType;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
@@ -121,6 +124,14 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	@Override
 	public String getReferenceName()
 	{
+		String referenceNameWithAt = getReferenceNameWithAt();
+		return referenceNameWithAt == null ? null : CSharpPsiUtilImpl.getNameWithoutAt(referenceNameWithAt);
+	}
+
+	@Nullable
+	@Override
+	public String getReferenceNameWithAt()
+	{
 		CSharpReferenceExpressionStub stub = getStub();
 		if(stub != null)
 		{
@@ -128,7 +139,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		}
 
 		PsiElement referenceElement = getReferenceElement();
-		return referenceElement == null ? null : CSharpPsiUtilImpl.getNameWithoutAt(referenceElement.getText());
+		return referenceElement == null ? null : referenceElement.getText();
 	}
 
 	@Override
@@ -140,15 +151,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	@Override
 	public TextRange getRangeInElement()
 	{
-		String referenceName = getReferenceName();
-		if(referenceName == null)
-		{
-			return TextRange.EMPTY_RANGE;
-		}
-
-		PsiElement qualifier = getQualifier();
-		int startOffset = qualifier != null ? qualifier.getTextLength() + 1 : 0;
-		return new TextRange(startOffset, referenceName.length() + startOffset);
+		return CSharpReferenceExpressionImplUtil.getRangeInElement(this);
 	}
 
 	@NotNull
@@ -158,9 +161,14 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		return multiResolve(incompleteCode, true);
 	}
 
+	@Override
 	@NotNull
 	public ResolveResult[] multiResolve(final boolean incompleteCode, final boolean resolveFromParent)
 	{
+		if(!isValid())
+		{
+			return ResolveResult.EMPTY_ARRAY;
+		}
 		return CSharpResolveCache.getInstance(getProject()).resolveWithCaching(this, OurResolver.INSTANCE, true, incompleteCode, resolveFromParent);
 	}
 
@@ -194,9 +202,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		{
 			return stub.getKind();
 		}
-		ResolveToKind kind = CSharpReferenceExpressionImplUtil.kind(this);
-		assert kind == ResolveToKind.TYPE_LIKE || kind == ResolveToKind.CONSTRUCTOR : "That kind is dont supported in stubs: " + kind;
-		return kind;
+		return CSharpReferenceExpressionImplUtil.kind(this);
 	}
 
 	@NotNull
@@ -239,13 +245,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	@Override
 	public Object[] getVariants()
 	{
-		ResolveToKind kind = kind();
-		if(kind != ResolveToKind.LABEL && kind != ResolveToKind.QUALIFIED_NAMESPACE && kind != ResolveToKind.SOFT_QUALIFIED_NAMESPACE)
-		{
-			kind = ResolveToKind.ANY_MEMBER;
-		}
-		ResolveResult[] psiElements = CSharpReferenceExpressionImplUtil.collectResults(kind, null, this, null, true, true);
-		return CSharpLookupElementBuilder.getInstance(getProject()).buildToLookupElements(this, psiElements);
+		return ArrayUtil.EMPTY_OBJECT_ARRAY;
 	}
 
 	@Override
@@ -269,39 +269,61 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		return typeArgumentList == null ? DotNetTypeRef.EMPTY_ARRAY : typeArgumentList.getTypeRefs();
 	}
 
+	@Override
+	public boolean isGlobalElement()
+	{
+		CSharpReferenceExpressionStub stub = getStub();
+		if(stub != null)
+		{
+			return stub.isGlobal();
+		}
+		PsiElement referenceElement = getReferenceElement();
+		return referenceElement != null && referenceElement.getNode().getElementType() == CSharpSoftTokens.GLOBAL_KEYWORD;
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getMemberAccessElement()
+	{
+		return findChildByType(CSharpReferenceExpressionImplUtil.ourAccessTokens);
+	}
+
+	@NotNull
+	@Override
+	public AccessType getMemberAccessType()
+	{
+		PsiElement childByType = getMemberAccessElement();
+		if(childByType == null)
+		{
+			return AccessType.NONE;
+		}
+		IElementType elementType = childByType.getNode().getElementType();
+		if(elementType == CSharpTokens.ARROW)
+		{
+			return AccessType.ARROW;
+		}
+		else if(elementType == CSharpTokens.COLONCOLON)
+		{
+			return AccessType.COLONCOLON;
+		}
+		else if(elementType == CSharpTokens.NULLABE_CALL)
+		{
+			return AccessType.NULLABLE_CALL;
+		}
+		return AccessType.DOT;
+	}
+
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
-		ResolveResult[] resolveResults = multiResolve(false, resolveFromParent);
-		if(resolveResults.length == 0)
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
-
-		ResolveResult resolveResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
-		if(resolveResult == null)
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
-		return CSharpReferenceExpressionImplUtil.toTypeRef(resolveResult);
+		return CSharpReferenceExpressionImplUtil.toTypeRef(this, resolveFromParent);
 	}
 
 	@Override
 	@NotNull
 	public DotNetTypeRef toTypeRefWithoutCaching(ResolveToKind kind, boolean resolveFromParent)
 	{
-		ResolveResult[] resolveResults = multiResolveImpl(kind, resolveFromParent);
-		if(resolveResults.length == 0)
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
-
-		ResolveResult firstValidResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
-		if(firstValidResult == null)
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
-		return CSharpReferenceExpressionImplUtil.toTypeRef(firstValidResult);
+		return CSharpReferenceExpressionImplUtil.toTypeRefWithoutCaching(this, kind, resolveFromParent);
 	}
 }

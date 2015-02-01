@@ -31,8 +31,9 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpQualifiedNonReference;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightCallArgument;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
@@ -40,16 +41,22 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubElementResolve
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.ImplicitCastInfo;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.ImplicitOperatorArgumentAsCallArgumentWrapper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpPointerTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.OperatorByTokenSelector;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
@@ -65,12 +72,14 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
+import lombok.val;
 
 /**
  * @author VISTALL
  * @since 12.03.14
  */
-public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements PsiReference, PsiPolyVariantReference, CSharpCallArgumentListOwner, CSharpQualifiedNonReference
+public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements PsiReference, PsiPolyVariantReference, CSharpCallArgumentListOwner,
+		CSharpQualifiedNonReference
 {
 	private static class OurResolver implements ResolveCache.PolyVariantResolver<CSharpOperatorReferenceImpl>
 	{
@@ -217,35 +226,64 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			return variable;
 		}
 
+		if(parent instanceof CSharpPrefixExpressionImpl)
+		{
+			if(elementType == CSharpTokens.AND)
+			{
+				DotNetExpression dotNetExpression = ArrayUtil2.safeGet(getParameterExpressions(), 0);
+				if(dotNetExpression == null)
+				{
+					return DotNetTypeRef.ERROR_TYPE;
+				}
+				return new CSharpPointerTypeRef(dotNetExpression.toTypeRef(true));
+			}
+			else if(elementType == CSharpTokens.MUL)
+			{
+				DotNetExpression dotNetExpression = ArrayUtil2.safeGet(getParameterExpressions(), 0);
+				if(dotNetExpression == null)
+				{
+					return DotNetTypeRef.ERROR_TYPE;
+				}
+				DotNetTypeRef expressionTypeRef = dotNetExpression.toTypeRef(true);
+				if(expressionTypeRef instanceof DotNetPointerTypeRef)
+				{
+					return ((DotNetPointerTypeRef) expressionTypeRef).getInnerTypeRef();
+				}
+				else
+				{
+					return DotNetTypeRef.ERROR_TYPE;
+				}
+			}
+		}
+
 		if(parent instanceof CSharpExpressionWithOperatorImpl)
 		{
 			if(elementType == CSharpTokenSets.OROR || elementType == CSharpTokens.ANDAND)
 			{
-				return new DotNetTypeRefByQName(DotNetTypes.System.Boolean, CSharpTransform.INSTANCE, false);
+				return new CSharpTypeRefByQName(DotNetTypes.System.Boolean);
 			}
 
+			DotNetExpression[] parameterExpressions = getParameterExpressions();
 			if(elementType == CSharpTokenSets.EQ)
 			{
-				DotNetExpression[] parameterExpressions = getParameterExpressions();
 				if(parameterExpressions.length > 0)
 				{
 					return parameterExpressions[0].toTypeRef(false);
 				}
-				return new DotNetTypeRefByQName(DotNetTypes.System.Void, CSharpTransform.INSTANCE, false);
+				return new CSharpTypeRefByQName(DotNetTypes.System.Void);
 			}
 
 			List<Pair<MethodCalcResult, PsiElement>> pairs = new SmartList<Pair<MethodCalcResult, PsiElement>>();
 
-			for(DotNetExpression dotNetExpression : ((CSharpExpressionWithOperatorImpl) parent).getParameterExpressions())
+			for(DotNetExpression dotNetExpression : parameterExpressions)
 			{
-				DotNetTypeRef dotNetTypeRef = dotNetExpression.toTypeRef(false);
-				DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(this);
+				DotNetTypeRef expressionTypeRef = dotNetExpression.toTypeRef(false);
 
-				PsiElement element = typeResolveResult.getElement();
+				resolveUserDefinedOperators(elementType, expressionTypeRef, expressionTypeRef, pairs, null);
 
-				if(element != null)
+				for(DotNetTypeRef implicitTypeRef : getAllImplicitCasts(expressionTypeRef, parent))
 				{
-					resolveUserDefinedOperators(elementType, element, pairs);
+					resolveUserDefinedOperators(elementType, expressionTypeRef, implicitTypeRef, pairs, dotNetExpression);
 				}
 			}
 
@@ -257,6 +295,20 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	}
 
 	@NotNull
+	private List<DotNetTypeRef> getAllImplicitCasts(DotNetTypeRef expressionTypeRef, PsiElement parent)
+	{
+		List<DotNetTypeRef> list = new SmartList<DotNetTypeRef>();
+		for(DotNetExpression dotNetExpression : ((CSharpExpressionWithOperatorImpl) parent).getParameterExpressions())
+		{
+			List<DotNetTypeRef> implicitOrExplicitTypeRefs = CSharpTypeUtil.getImplicitOrExplicitTypeRefs(dotNetExpression.toTypeRef(true),
+					expressionTypeRef, CSharpStaticTypeRef.IMPLICIT, this);
+
+			list.addAll(implicitOrExplicitTypeRefs);
+		}
+		return list;
+	}
+
+	@NotNull
 	public DotNetTypeRef resolveToTypeRef()
 	{
 		ResolveResult[] resolveResults = multiResolve(true);
@@ -265,11 +317,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 
-		ResolveResult resolveResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
-		if(resolveResult == null)
-		{
-			resolveResult = resolveResults[0];
-		}
+		ResolveResult resolveResult = CSharpResolveUtil.findValidOrFirstMaybeResult(resolveResults);
 
 		if(resolveResult instanceof StubElementResolveResult)
 		{
@@ -295,14 +343,25 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	}
 
 	public void resolveUserDefinedOperators(@NotNull IElementType elementType,
-			@NotNull PsiElement element,
-			@NotNull List<Pair<MethodCalcResult, PsiElement>> last)
+			@NotNull DotNetTypeRef originalTypeRef,
+			@NotNull DotNetTypeRef typeRef,
+			@NotNull List<Pair<MethodCalcResult, PsiElement>> last,
+			@Nullable DotNetExpression implicitExpression)
 	{
-		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(getResolveScope(), ResolveResult.EMPTY_ARRAY,
+		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(this);
+
+		PsiElement element = typeResolveResult.getElement();
+		if(element == null)
+		{
+			return;
+		}
+
+		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(CSharpResolveOptions.build().element(this),
 				new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
 
 		ResolveState state = ResolveState.initial();
 		state = state.put(CSharpResolveUtil.SELECTOR, new OperatorByTokenSelector(elementType));
+		state = state.put(CSharpResolveUtil.EXTRACTOR, typeResolveResult.getGenericExtractor());
 		CSharpResolveUtil.walkChildren(processor, element, false, true, state);
 
 		PsiElement[] psiElements = processor.toPsiElements();
@@ -311,11 +370,12 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			return;
 		}
 
+		CSharpCallArgument[] arguments = getCallArguments(originalTypeRef, implicitExpression, typeRef);
+
 		List<DotNetLikeMethodDeclaration> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
 		for(DotNetLikeMethodDeclaration psiElement : elements)
 		{
-			MethodCalcResult calc = MethodResolver.calc(this, psiElement, this);
-
+			MethodCalcResult calc = MethodResolver.calc(arguments, psiElement, this);
 			last.add(Pair.<MethodCalcResult, PsiElement>create(calc, psiElement));
 		}
 	}
@@ -416,12 +476,29 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@Override
 	public CSharpCallArgument[] getCallArguments()
 	{
+		return getCallArguments(null, null, null);
+	}
+
+	@NotNull
+	public CSharpCallArgument[] getCallArguments(DotNetTypeRef originalTypeRef, DotNetExpression wrapExpression, DotNetTypeRef toTypeRef)
+	{
 		DotNetExpression[] parameterExpressions = getParameterExpressions();
 		CSharpCallArgument[] array = new CSharpCallArgument[parameterExpressions.length];
 		for(int i = 0; i < parameterExpressions.length; i++)
 		{
 			DotNetExpression parameterExpression = parameterExpressions[i];
-			array[i] = new CSharpLightCallArgument(parameterExpression);
+			if(parameterExpression == wrapExpression)
+			{
+				val wrapper = new ImplicitOperatorArgumentAsCallArgumentWrapper(wrapExpression, toTypeRef);
+
+				wrapper.putUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO, new ImplicitCastInfo(originalTypeRef,
+						toTypeRef));
+				array[i] = wrapper;
+			}
+			else
+			{
+				array[i] = new CSharpLightCallArgument(parameterExpression);
+			}
 		}
 		return array;
 	}
@@ -429,6 +506,13 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@Nullable
 	@Override
 	public String getReferenceName()
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Nullable
+	@Override
+	public String getReferenceNameWithAt()
 	{
 		throw new UnsupportedOperationException();
 	}

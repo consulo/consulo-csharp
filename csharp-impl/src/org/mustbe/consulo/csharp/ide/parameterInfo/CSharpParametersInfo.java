@@ -21,12 +21,14 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.codeInsight.CodeInsightSettings;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.UnfairTextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.xml.util.XmlStringUtil;
 
 /**
  * @author VISTALL
@@ -34,8 +36,14 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpParametersInfo
 {
-	private static final char[] ourBrackets = {'[', ']'};
-	private static final char[] ourParentheses = {'(', ')'};
+	private static final char[] ourBrackets = {
+			'[',
+			']'
+	};
+	private static final char[] ourParentheses = {
+			'(',
+			')'
+	};
 
 	private static final TextRange EMPTY = new UnfairTextRange(-1, -1);
 
@@ -47,11 +55,16 @@ public class CSharpParametersInfo
 
 		char[] bounds = callable instanceof CSharpArrayMethodDeclaration ? ourBrackets : ourParentheses;
 
+		int length = 0;
+
 		CSharpParametersInfo parametersInfo = new CSharpParametersInfo(parameters.length);
 		if(CodeInsightSettings.getInstance().SHOW_FULL_SIGNATURES_IN_PARAMETER_INFO)
 		{
-			parametersInfo.myBuilder.append(CSharpTypeRefPresentationUtil.buildShortText(returnType, scope));
+			String textOfReturnType = CSharpTypeRefPresentationUtil.buildShortText(returnType, scope);
+			parametersInfo.myBuilder.append(textOfReturnType);
 			parametersInfo.myBuilder.append(" ").append(bounds[0]);
+
+			length = XmlStringUtil.escapeString(textOfReturnType).length() + 2; // space and brace
 		}
 
 		if(parameters.length > 0)
@@ -60,21 +73,20 @@ public class CSharpParametersInfo
 			{
 				if(i != 0)
 				{
-					parametersInfo.appendComma();
+					length += parametersInfo.appendComma();
 				}
 
+				final int startOffset = length;
 				CSharpSimpleParameterInfo parameter = parameters[i];
-
-				int length = parametersInfo.length();
-				parametersInfo.buildParameter(parameter, scope);
-				parametersInfo.myParameterRanges[i] = new TextRange(length, parametersInfo.length());
+				length += parametersInfo.buildParameter(parameter, scope);
+				parametersInfo.myParameterRanges[i] = new TextRange(startOffset, length);
 			}
 		}
 		else
 		{
-			int length = parametersInfo.length();
-			parametersInfo.myBuilder.append("<no parameters>");
-			parametersInfo.myParameterRanges[0] = new TextRange(length, parametersInfo.length() + 6); //escaping
+			String text = "<no parameters>";
+			parametersInfo.myBuilder.append(text);
+			parametersInfo.myParameterRanges[0] = new TextRange(length, length + XmlStringUtil.escapeString(text).length());
 		}
 
 		if(CodeInsightSettings.getInstance().SHOW_FULL_SIGNATURES_IN_PARAMETER_INFO)
@@ -84,6 +96,7 @@ public class CSharpParametersInfo
 
 		return parametersInfo;
 	}
+
 	private TextRange[] myParameterRanges;
 	private int myParameterCount;
 	private StringBuilder myBuilder = new StringBuilder();
@@ -94,16 +107,19 @@ public class CSharpParametersInfo
 		myParameterRanges = new TextRange[myParameterCount == 0 ? 1 : myParameterCount];
 	}
 
-	private void buildParameter(@NotNull CSharpSimpleParameterInfo o, @NotNull PsiElement scope)
+	private int buildParameter(@NotNull CSharpSimpleParameterInfo o, @NotNull PsiElement scope)
 	{
-		myBuilder.append(CSharpTypeRefPresentationUtil.buildShortText(o.getTypeRef(), scope));
-		myBuilder.append(" ");
-		myBuilder.append(o.getNotNullName());
-	}
-
-	public int length()
-	{
-		return myBuilder.length();
+		String text = CSharpTypeRefPresentationUtil.buildShortText(o.getTypeRef(), scope);
+		myBuilder.append(text);
+		int nameOffset = 0;
+		if(o.getTypeRef() != CSharpStaticTypeRef.__ARGLIST_TYPE)
+		{
+			myBuilder.append(" ");
+			String notNullName = o.getNotNullName();
+			myBuilder.append(notNullName);
+			nameOffset = notNullName.length() + 1;
+		}
+		return XmlStringUtil.escapeString(text).length() + nameOffset;
 	}
 
 	@NotNull
@@ -121,9 +137,10 @@ public class CSharpParametersInfo
 		return textRange == null ? EMPTY : textRange;
 	}
 
-	private void appendComma()
+	private int appendComma()
 	{
 		myBuilder.append(", ");
+		return 2;
 	}
 
 	@NotNull

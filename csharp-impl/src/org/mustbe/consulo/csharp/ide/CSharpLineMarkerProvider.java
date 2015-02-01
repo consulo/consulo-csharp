@@ -21,7 +21,8 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.ide.lineMarkerProvider.HideOrOverrideElementCollector;
+import org.mustbe.consulo.csharp.ide.lineMarkerProvider.HidedOrOverridedElementCollector;
+import org.mustbe.consulo.csharp.ide.lineMarkerProvider.HidingOrOverridingElementCollector;
 import org.mustbe.consulo.csharp.ide.lineMarkerProvider.LineMarkerCollector;
 import org.mustbe.consulo.csharp.ide.lineMarkerProvider.OverrideTypeCollector;
 import org.mustbe.consulo.csharp.ide.lineMarkerProvider.PartialTypeCollector;
@@ -41,6 +42,7 @@ import com.intellij.openapi.editor.markup.SeparatorPlacement;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.FunctionUtil;
 
 /**
@@ -53,7 +55,8 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 			new OverrideTypeCollector(),
 			new PartialTypeCollector(),
 			new RecursiveCallCollector(),
-			new HideOrOverrideElementCollector(),
+			new HidingOrOverridingElementCollector(),
+			new HidedOrOverridedElementCollector()
 	};
 
 	protected final DaemonCodeAnalyzerSettings daemonCodeAnalyzerSettings;
@@ -82,7 +85,7 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 				return null;
 			}
 
-			if(((DotNetMemberOwner) parent).getMembers()[0] == element)
+			if(ArrayUtil.getFirstElement(((DotNetMemberOwner) parent).getMembers()) == element)
 			{
 				return null;
 			}

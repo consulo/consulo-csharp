@@ -27,6 +27,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListOwner;
+import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
@@ -39,10 +40,12 @@ import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetArrayTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
@@ -443,22 +446,36 @@ public class CSharpResolveUtil
 	@NotNull
 	public static DotNetTypeRef resolveIterableType(@NotNull PsiElement scope, @NotNull DotNetTypeRef typeRef)
 	{
-		DotNetMethodDeclaration method = CSharpSearchUtil.findMethodByName("GetEnumerator", typeRef, scope);
-		if(method == null)
+		if(typeRef instanceof DotNetArrayTypeRef)
+		{
+			return ((DotNetArrayTypeRef) typeRef).getInnerTypeRef();
+		}
+		DotNetMethodDeclaration method = CSharpSearchUtil.findMethodByName("GetEnumerator", DotNetTypes2.System.Collections.Generic.IEnumerable$1,
+				typeRef, scope, 0);
+		if(method != null)
+		{
+			DotNetPropertyDeclaration current = CSharpSearchUtil.findPropertyByName("Current", DotNetTypes2.System.Collections.Generic.IEnumerator$1,
+					method.getReturnTypeRef(), scope);
+			if(current == null)
+			{
+				return DotNetTypeRef.ERROR_TYPE;
+			}
+
+			return current.toTypeRef(false);
+		}
+
+		if(DotNetInheritUtil.isParentOrSelf(DotNetTypes2.System.Collections.IEnumerable, typeRef, scope, true))
+		{
+			return DotNetTypeRef.UNKNOWN_TYPE;
+		}
+		else
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
-
-		DotNetPropertyDeclaration current = CSharpSearchUtil.findPropertyByName("Current", method.getReturnTypeRef(), scope);
-		if(current == null)
-		{
-			return DotNetTypeRef.ERROR_TYPE;
-		}
-
-		return current.toTypeRef(false);
 	}
 
 	@NotNull
+	@SuppressWarnings("unchecked")
 	public static <T extends PsiElement> List<T> mergeGroupsToIterable(@NotNull PsiElement[] elements)
 	{
 		List<T> list = new ArrayList<T>();
@@ -467,6 +484,29 @@ public class CSharpResolveUtil
 			if(element instanceof CSharpElementGroup)
 			{
 				list.addAll(((CSharpElementGroup) element).getElements());
+			}
+			else
+			{
+				list.add((T) element);
+			}
+		}
+		return list;
+	}
+
+	@NotNull
+	@SuppressWarnings("unchecked")
+	public static <T extends PsiElement> List<T> mergeGroupsToIterable(@NotNull Iterable<PsiElement> elements)
+	{
+		List<T> list = new ArrayList<T>();
+		for(PsiElement element : elements)
+		{
+			if(element instanceof CSharpElementGroup)
+			{
+				list.addAll(((CSharpElementGroup) element).getElements());
+			}
+			else
+			{
+				list.add((T) element);
 			}
 		}
 		return list;

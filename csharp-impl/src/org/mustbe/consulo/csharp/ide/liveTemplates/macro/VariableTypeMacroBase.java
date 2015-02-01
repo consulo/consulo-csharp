@@ -50,7 +50,7 @@ public abstract class VariableTypeMacroBase extends Macro
 		{
 			return null;
 		}
-		return CSharpLookupElementBuilder.getInstance(context.getProject()).buildToLookupElements(null, vars);
+		return CSharpLookupElementBuilder.buildToLookupElements(vars);
 	}
 
 	@Override

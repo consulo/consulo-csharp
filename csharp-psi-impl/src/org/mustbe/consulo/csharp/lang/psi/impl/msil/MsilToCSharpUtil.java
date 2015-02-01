@@ -23,18 +23,21 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightNamespaceDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpPointerTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -46,12 +49,12 @@ import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierElementType;
-import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilArrayTypRefImpl;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilNativeTypeRefImpl;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Condition;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ContainerUtil;
 import lombok.val;
@@ -64,7 +67,7 @@ public class MsilToCSharpUtil
 {
 	private static Map<MsilEntry, PsiElement> ourCache = new ConcurrentWeakKeyHashMap<MsilEntry, PsiElement>();
 
-	public static boolean hasCSharpInMsilModifierList(CSharpModifier modifier, MsilModifierList modifierList)
+	public static boolean hasCSharpInMsilModifierList(CSharpModifier modifier, DotNetModifierList modifierList)
 	{
 		MsilModifierElementType elementType = null;
 		switch(modifier)
@@ -98,11 +101,10 @@ public class MsilToCSharpUtil
 				}
 				elementType = MsilTokens.SEALED_KEYWORD;
 				break;
+			case ASYNC:
+				return hasAttribute(modifierList, DotNetTypes2.System.Runtime.CompilerServices.AsyncStateMachineAttribute);
 			case INTERNAL:
 				elementType = MsilTokens.ASSEMBLY_KEYWORD;
-				break;
-			case OUT:
-				elementType = MsilTokens.BRACKET_OUT_KEYWORD;
 				break;
 			case VIRTUAL:
 				if(hasModifierInParentIfType(modifierList, MsilTokens.INTERFACE_KEYWORD))
@@ -119,10 +121,6 @@ public class MsilToCSharpUtil
 			case PARAMS:
 				return hasAttribute(modifierList, DotNetTypes.System.ParamArrayAttribute);
 			case ABSTRACT:
-				if(modifierList.hasModifier(MsilTokens.INTERFACE_KEYWORD))
-				{
-					return false;
-				}
 				if(hasModifierInParentIfType(modifierList, MsilTokens.INTERFACE_KEYWORD))
 				{
 					return false;
@@ -139,7 +137,7 @@ public class MsilToCSharpUtil
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T extends DotNetModifierListOwner> boolean hasModifierInParentIfType(MsilModifierList msilModifierList, DotNetModifier modifier)
+	private static <T extends DotNetModifierListOwner> boolean hasModifierInParentIfType(DotNetModifierList msilModifierList, DotNetModifier modifier)
 	{
 		PsiElement parent = msilModifierList.getParent();
 		if(parent == null)
@@ -157,7 +155,7 @@ public class MsilToCSharpUtil
 		return modifierListOwner.hasModifier(modifier);
 	}
 
-	private static boolean hasAttribute(MsilModifierList modifierList, String qName)
+	private static boolean hasAttribute(DotNetModifierList modifierList, String qName)
 	{
 		for(DotNetAttribute attribute : modifierList.getAttributes())
 		{
@@ -185,6 +183,15 @@ public class MsilToCSharpUtil
 			if(cache != null)
 			{
 				return cache;
+			}
+
+			if(parent == null)
+			{
+				String parentQName = ((MsilClassEntry) element).getPresentableParentQName();
+				if(!StringUtil.isEmpty(parentQName))
+				{
+					parent = new CSharpLightNamespaceDeclarationBuilder(element.getProject(), parentQName);
+				}
 			}
 
 			cache = wrapToDelegateMethod((DotNetTypeDeclaration) element, parent);
@@ -242,11 +249,13 @@ public class MsilToCSharpUtil
 		}
 		else if(typeRef instanceof MsilArrayTypRefImpl)
 		{
-			return new CSharpArrayTypeRef(extractToCSharp(((MsilArrayTypRefImpl) typeRef).getInnerTypeRef(), scope), 0);
+			int[] lowerValues = ((MsilArrayTypRefImpl) typeRef).getLowerValues();
+			return new CSharpArrayTypeRef(extractToCSharp(((MsilArrayTypRefImpl) typeRef).getInnerTypeRef(), scope),
+					lowerValues.length == 0 ? 0 : lowerValues.length - 1);
 		}
 		else if(typeRef instanceof DotNetPointerTypeRef)
 		{
-			return new DotNetPointerTypeRefImpl(extractToCSharp(((DotNetPointerTypeRef) typeRef).getInnerTypeRef(), scope));
+			return new CSharpPointerTypeRef(extractToCSharp(((DotNetPointerTypeRef) typeRef).getInnerTypeRef(), scope));
 		}
 		else if(typeRef instanceof DotNetRefTypeRef)
 		{
@@ -256,10 +265,7 @@ public class MsilToCSharpUtil
 		{
 			DotNetTypeRef innerTypeRef = ((DotNetGenericWrapperTypeRef) typeRef).getInnerTypeRef();
 			DotNetTypeRef[] arguments = ((DotNetGenericWrapperTypeRef) typeRef).getArgumentTypeRefs();
-			if(DotNetTypes.System.Nullable$1.equals(innerTypeRef.getQualifiedText()))
-			{
-				return extractToCSharp(arguments[0], scope, Boolean.TRUE);
-			}
+
 			val inner = extractToCSharp(innerTypeRef, scope);
 			DotNetTypeRef[] newArguments = new DotNetTypeRef[arguments.length];
 			for(int i = 0; i < newArguments.length; i++)

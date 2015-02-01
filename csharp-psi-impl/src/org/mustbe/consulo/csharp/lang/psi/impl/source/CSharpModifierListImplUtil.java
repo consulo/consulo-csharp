@@ -20,15 +20,20 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifierList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.PsiWhiteSpace;
@@ -62,6 +67,7 @@ public class CSharpModifierListImplUtil
 			put(CSharpModifier.OVERRIDE, CSharpTokens.OVERRIDE_KEYWORD);
 			put(CSharpModifier.ASYNC, CSharpSoftTokens.ASYNC_KEYWORD);
 			put(CSharpModifier.IN, CSharpSoftTokens.IN_KEYWORD);
+			put(CSharpModifier.EXTERN, CSharpSoftTokens.EXTERN_KEYWORD);
 		}
 	};
 
@@ -76,6 +82,19 @@ public class CSharpModifierListImplUtil
 		PsiElement parent = modifierList.getParent();
 		switch(cSharpModifier)
 		{
+			case PUBLIC:
+				if(parent instanceof DotNetVirtualImplementOwner && parent.getParent() instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration)
+						parent.getParent()).isInterface())
+				{
+					return true;
+				}
+				break;
+			case READONLY:
+				if(parent instanceof CSharpEnumConstantDeclaration)
+				{
+					return true;
+				}
+				break;
 			case STATIC:
 				if(parent instanceof CSharpFieldDeclaration)
 				{
@@ -84,10 +103,41 @@ public class CSharpModifierListImplUtil
 						return true;
 					}
 				}
+				if(CSharpMethodUtil.isDelegate(parent) || parent instanceof CSharpTypeDeclaration || parent instanceof CSharpEnumConstantDeclaration)
+				{
+					return true;
+				}
+				if(parent instanceof DotNetXXXAccessor)
+				{
+					PsiElement superParent = parent.getParent();
+					return superParent instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) superParent).hasModifier(DotNetModifier
+							.STATIC);
+				}
+				break;
+			case INTERFACE_ABSTRACT:
+				if(parent instanceof DotNetVirtualImplementOwner && parent.getParent() instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration)
+						parent.getParent()).isInterface())
+				{
+					return true;
+				}
+				if(parent instanceof DotNetXXXAccessor)
+				{
+					if(((DotNetXXXAccessor) parent).getCodeBlock() == null)
+					{
+						PsiElement accessorOwner = parent.getParent();
+						if(accessorOwner instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) accessorOwner).hasModifier(modifier))
+						{
+							return true;
+						}
+					}
+				}
 				break;
 			case ABSTRACT:
-				if(parent instanceof CSharpMethodDeclaration && parent.getParent() instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration)
-						parent.getParent()).isInterface())
+				if(parent instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) parent).isInterface())
+				{
+					return true;
+				}
+				if(hasModifier(modifierList, CSharpModifier.INTERFACE_ABSTRACT))
 				{
 					return true;
 				}
@@ -98,12 +148,12 @@ public class CSharpModifierListImplUtil
 
 	public static void addModifier(@NotNull CSharpModifierList modifierList, @NotNull DotNetModifier modifier)
 	{
-		PsiElement firstChild = modifierList.getFirstChild();
+		PsiElement anchor = modifierList.getLastChild();
 
 		CSharpFieldDeclaration field = CSharpFileFactory.createField(modifierList.getProject(), modifier.getPresentableText() + " int b");
 		PsiElement modifierElement = field.getModifierList().getModifierElement(modifier);
 
-		PsiElement psiElement = modifierList.addBefore(modifierElement, firstChild);
+		PsiElement psiElement = modifierList.addAfter(modifierElement, anchor);
 		modifierList.addAfter(PsiParserFacade.SERVICE.getInstance(modifierList.getProject()).createWhiteSpaceFromText(" "), psiElement);
 	}
 

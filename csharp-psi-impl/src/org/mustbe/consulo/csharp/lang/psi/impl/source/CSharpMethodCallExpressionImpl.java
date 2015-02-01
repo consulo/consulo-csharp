@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.DeprecationInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -59,6 +60,8 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 
 	@Override
 	@NotNull
+	@Deprecated
+	@DeprecationInfo("Use #getCallArguments() due we can have named arguments")
 	public DotNetExpression[] getParameterExpressions()
 	{
 		CSharpCallArgumentList parameterList = getParameterList();

@@ -25,7 +25,6 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.module.CSharpLanguageVersionPointer;
 import org.mustbe.consulo.dotnet.DotNetRunUtil;
-import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleLangExtension;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.search.searches.AllClassesSearch;
@@ -58,12 +57,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	@Override
 	public PsiElement[] getEntryPointElements()
 	{
-		DotNetModuleExtension extension = myModuleRootLayer.getExtension(DotNetModuleExtension.class);
-		if(extension == null)
-		{
-			return PsiElement.EMPTY_ARRAY;
-		}
-		Query<DotNetTypeDeclaration> search = AllClassesSearch.search(extension.getScopeForResolving(false), getProject());
+		Query<DotNetTypeDeclaration> search = AllClassesSearch.search(getModule().getModuleWithDependenciesScope(), getProject());
 
 		final List<DotNetTypeDeclaration> typeDeclarations = new ArrayList<DotNetTypeDeclaration>();
 		search.forEach(new Processor<DotNetTypeDeclaration>()

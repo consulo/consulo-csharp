@@ -8,8 +8,11 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.ImplicitCastInfo;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
 import lombok.val;
 
@@ -17,7 +20,7 @@ import lombok.val;
  * @author VISTALL
  * @since 02.11.14
  */
-public class NCallArgument
+public class NCallArgument extends UserDataHolderBase
 {
 	public static final int NOT_CALCULATED = -1;
 	public static final int FAIL = 0;
@@ -40,6 +43,16 @@ public class NCallArgument
 		myTypeRef = typeRef;
 		myCallArgument = callArgument;
 		myParameterObject = parameterObject;
+
+		if(callArgument != null)
+		{
+			ImplicitCastInfo implicitCastInfo = callArgument.getUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO);
+			if(implicitCastInfo != null)
+			{
+				// copy it
+				putUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO, implicitCastInfo);
+			}
+		}
 	}
 
 	@NotNull
@@ -95,9 +108,19 @@ public class NCallArgument
 			{
 				newVal = EQUAL;
 			}
-			else if(CSharpTypeUtil.isInheritableWithImplicit(parameterTypeRef, getTypeRef(), scope))
+			else
 			{
-				newVal = INSTANCE_OF;
+				CSharpTypeUtil.InheritResult inheritable = CSharpTypeUtil.isInheritable(parameterTypeRef, getTypeRef(), scope,
+						CSharpStaticTypeRef.IMPLICIT);
+				if(inheritable.isSuccess())
+				{
+					if(inheritable.isConversion())
+					{
+						putUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO, new ImplicitCastInfo(getTypeRef(), parameterTypeRef));
+					}
+
+					newVal = INSTANCE_OF;
+				}
 			}
 		}
 

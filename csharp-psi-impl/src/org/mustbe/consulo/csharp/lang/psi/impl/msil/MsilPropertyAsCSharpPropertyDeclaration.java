@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.consulo.lombok.annotations.LazyInstance;
@@ -38,7 +39,6 @@ import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
@@ -49,11 +49,26 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCSharpVariable implements CSharpPropertyDeclaration
 {
+	private DotNetXXXAccessor[] myAccessors;
+
 	public MsilPropertyAsCSharpPropertyDeclaration(PsiElement parent,
 			MsilPropertyEntry variable,
 			List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
 	{
 		super(parent, getAdditionalModifiers(variable, pairs), variable);
+		myAccessors = buildAccessors(this, pairs);
+	}
+
+	public static DotNetXXXAccessor[] buildAccessors(@NotNull PsiElement parent,
+			@NotNull List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
+	{
+		List<DotNetXXXAccessor> accessors = new ArrayList<DotNetXXXAccessor>(2);
+
+		for(Pair<DotNetXXXAccessor, MsilMethodEntry> pair : pairs)
+		{
+			accessors.add(new MsilXXXAccessorAsCSharpXXXAccessor(parent, pair.getFirst(), pair.getSecond()));
+		}
+		return ContainerUtil.toArray(accessors, DotNetXXXAccessor.ARRAY_FACTORY);
 	}
 
 	@NotNull
@@ -109,16 +124,9 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 	}
 
 	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		if(visitor instanceof CSharpElementVisitor)
-		{
-			((CSharpElementVisitor) visitor).visitPropertyDeclaration(this);
-		}
-		else
-		{
-			visitor.visitElement(this);
-		}
+		visitor.visitPropertyDeclaration(this);
 	}
 
 	@Override
@@ -143,14 +151,14 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 	@Override
 	public DotNetXXXAccessor[] getAccessors()
 	{
-		return new DotNetXXXAccessor[0];
+		return myAccessors;
 	}
 
 	@NotNull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
-		return new DotNetNamedElement[0];
+		return getAccessors();
 	}
 
 	@Nullable
@@ -177,7 +185,7 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 		SomeType someType = SomeTypeParser.parseType(typeBeforeDot, nameFromBytecode);
 		if(someType != null)
 		{
-			return new DummyType(getProject(), myMsilElement, someType);
+			return new DummyType(getProject(), myOriginal, someType);
 		}
 		return null;
 	}

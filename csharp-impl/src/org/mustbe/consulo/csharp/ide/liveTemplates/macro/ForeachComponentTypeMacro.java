@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -34,6 +35,7 @@ import com.intellij.codeInsight.template.ExpressionContext;
 import com.intellij.codeInsight.template.Macro;
 import com.intellij.codeInsight.template.Result;
 import com.intellij.codeInsight.template.TextResult;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.SmartList;
 
@@ -103,8 +105,8 @@ public class ForeachComponentTypeMacro extends Macro
 		}
 		String text = result.toString();
 
-		CSharpFragmentFileImpl expressionFragment = CSharpFragmentFactory.createExpressionFragment(context.getProject(), text,
-				context.getPsiElementAtStartOffset());
+		PsiElement place = context.getPsiElementAtStartOffset();
+		CSharpFragmentFileImpl expressionFragment = CSharpFragmentFactory.createExpressionFragment(context.getProject(), text, place);
 
 		DotNetExpression expression = PsiTreeUtil.getChildOfType(expressionFragment, DotNetExpression.class);
 
@@ -113,11 +115,11 @@ public class ForeachComponentTypeMacro extends Macro
 			return null;
 		}
 
-		DotNetTypeRef typeRef = CSharpResolveUtil.resolveIterableType(context.getPsiElementAtStartOffset(), expression.toTypeRef(false));
+		DotNetTypeRef typeRef = CSharpResolveUtil.resolveIterableType(place, expression.toTypeRef(false));
 		if(typeRef == DotNetTypeRef.ERROR_TYPE)
 		{
 			return null;
 		}
-		return new TextResult(typeRef.getPresentableText());
+		return new TextResult(CSharpTypeRefPresentationUtil.buildShortText(typeRef, place));
 	}
 }

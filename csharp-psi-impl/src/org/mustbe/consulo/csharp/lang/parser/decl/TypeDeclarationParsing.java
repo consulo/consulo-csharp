@@ -16,14 +16,11 @@
 
 package org.mustbe.consulo.csharp.lang.parser.decl;
 
-import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import com.intellij.lang.PsiBuilder;
-import com.intellij.openapi.util.Pair;
-import com.intellij.util.NotNullFunction;
 
 /**
  * @author VISTALL
@@ -43,20 +40,10 @@ public class TypeDeclarationParsing extends SharedParsingHelpers
 
 		if(builder.getTokenType() == COLON)
 		{
-			parseWithSoftElements(new NotNullFunction<CSharpBuilderWrapper, Pair<PsiBuilder.Marker, Boolean>>()
-			{
-				@NotNull
-				@Override
-				public Pair<PsiBuilder.Marker, Boolean> fun(CSharpBuilderWrapper builderWrapper)
-				{
-					PsiBuilder.Marker mark = builderWrapper.mark();
-					builderWrapper.advanceLexer();  // colon
-
-					parseTypeList(builderWrapper, STUB_SUPPORT);
-					mark.done(EXTENDS_LIST);
-					return new Pair<PsiBuilder.Marker, Boolean>(mark, Boolean.FALSE);
-				}
-			}, builder, GLOBAL_KEYWORD);
+			PsiBuilder.Marker mark = builder.mark();
+			builder.advanceLexer();  // colon
+			parseTypeList(builder, STUB_SUPPORT);
+			mark.done(EXTENDS_LIST);
 		}
 
 		GenericParameterParsing.parseGenericConstraintList(builder);
@@ -104,6 +91,11 @@ public class TypeDeclarationParsing extends SharedParsingHelpers
 
 		if(builder.getTokenType() == IDENTIFIER)
 		{
+			if(!nameExpected)
+			{
+				emptyElement(builder, CSharpStubElements.MODIFIER_LIST);
+			}
+
 			builder.advanceLexer();
 
 			if(builder.getTokenType() == EQ)

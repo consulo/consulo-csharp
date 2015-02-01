@@ -24,6 +24,7 @@ import org.mustbe.consulo.csharp.ide.actions.generate.memberChoose.ConstructorCh
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -42,7 +43,6 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiParserFacade;
-import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.util.containers.ContainerUtil;
@@ -57,12 +57,11 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 	@Override
 	public void invoke(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file)
 	{
-		final CSharpTypeDeclaration typeDeclaration = GenerateConstructorAction.findTypeDeclaration(editor, file);
+		final CSharpTypeDeclaration typeDeclaration = CSharpGenerateAction.findTypeDeclaration(editor, file);
 		if(typeDeclaration == null)
 		{
 			return;
 		}
-
 
 		val pair = CSharpTypeDeclarationImplUtil.resolveBaseType(typeDeclaration, typeDeclaration);
 		if(pair == null)
@@ -76,9 +75,8 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 			return;
 		}
 
-
-		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(typeDeclaration.getResolveScope(),
-				ResolveResult.EMPTY_ARRAY, new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
+		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(CSharpResolveOptions.build().element
+				(typeDeclaration), new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
 
 		ResolveState resolveState = ResolveState.initial();
 		resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, StaticResolveSelectors.CONSTRUCTOR_GROUP);

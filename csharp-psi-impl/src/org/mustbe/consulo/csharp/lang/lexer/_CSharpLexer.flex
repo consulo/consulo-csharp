@@ -4,6 +4,7 @@ import java.util.*;
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 
 %%
@@ -81,6 +82,14 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 	}
 
 	{VERBATIM_STRING_LITERAL} { return CSharpTokens.VERBATIM_STRING_LITERAL; }
+
+	"__arglist"               { return CSharpTokens.__ARGLIST_KEYWORD; }
+
+	"__makeref"               { return CSharpTokens.__MAKEREF_KEYWORD; }
+
+	"__reftype"               { return CSharpTokens.__REFTYPE_KEYWORD; }
+
+	"__refvalue"              { return CSharpTokens.__REFVALUE_KEYWORD; }
 
 	"using"                   { return CSharpTokens.USING_KEYWORD; }
 
@@ -183,6 +192,8 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 // expression tokens
 	"new"                     { return CSharpTokens.NEW_KEYWORD; }
+
+	"stackalloc"              { return CSharpTokens.STACKALLOC_KEYWORD; }
 
 	"typeof"                  { return CSharpTokens.TYPEOF_KEYWORD; }
 
@@ -287,6 +298,8 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	"=>"                      { return CSharpTokens.DARROW; }
 
+	"->"                      { return CSharpTokens.ARROW; }
+
 	"=="                      { return CSharpTokens.EQEQ; }
 
 	"++"                      { return CSharpTokens.PLUSPLUS; }
@@ -321,7 +334,7 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	","                       { return CSharpTokens.COMMA; }
 
-	"??"                      { return CSharpTokens.NULL_COALESCING; }
+	"?."                      { return CSharpTokens.NULLABE_CALL; }
 
 	"?"                       { return CSharpTokens.QUEST; }
 

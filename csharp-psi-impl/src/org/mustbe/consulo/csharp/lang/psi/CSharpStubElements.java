@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubNullableTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubPointerTypeImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingTypeStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.*;
 import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
@@ -50,6 +51,22 @@ public interface CSharpStubElements
 	CSharpParameterStubElementType PARAMETER = new CSharpParameterStubElementType();
 	CSharpUsingListStubElementType USING_LIST = new CSharpUsingListStubElementType();
 	CSharpUsingNamespaceStatementStubElementType USING_NAMESPACE_STATEMENT = new CSharpUsingNamespaceStatementStubElementType();
+	CSharpEmptyStubElementType<CSharpUsingTypeStatement> USING_TYPE_STATEMENT = new CSharpEmptyStubElementType<CSharpUsingTypeStatement>
+			("USING_TYPE_STATEMENT")
+	{
+		@Override
+		public CSharpUsingTypeStatement createPsi(@NotNull CSharpEmptyStub<CSharpUsingTypeStatement> stub)
+		{
+			return new CSharpUsingTypeStatementImpl(stub, this);
+		}
+
+		@NotNull
+		@Override
+		public PsiElement createElement(@NotNull ASTNode astNode)
+		{
+			return new CSharpUsingTypeStatementImpl(astNode);
+		}
+	};
 	CSharpTypeDefStubElementType TYPE_DEF_STATEMENT = new CSharpTypeDefStubElementType();
 	CSharpGenericParameterListStubElementType GENERIC_PARAMETER_LIST = new CSharpGenericParameterListStubElementType();
 	CSharpGenericParameterStubElementType GENERIC_PARAMETER = new CSharpGenericParameterStubElementType();
@@ -62,7 +79,7 @@ public interface CSharpStubElements
 	CSharpAttributeListStubElementType ATTRIBUTE_LIST = new CSharpAttributeListStubElementType();
 	CSharpAttributeStubElementType ATTRIBUTE = new CSharpAttributeStubElementType();
 
-	TokenSet USING_CHILDREN = TokenSet.create(USING_NAMESPACE_STATEMENT, TYPE_DEF_STATEMENT);
+	TokenSet USING_CHILDREN = TokenSet.create(USING_NAMESPACE_STATEMENT, USING_TYPE_STATEMENT, TYPE_DEF_STATEMENT);
 
 	CSharpEmptyStubElementType<CSharpNullableType> NULLABLE_TYPE = new CSharpEmptyStubElementType<CSharpNullableType>("NULLABLE_TYPE")
 	{

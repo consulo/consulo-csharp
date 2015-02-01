@@ -24,10 +24,27 @@ public interface DotNetTypes2
 {
 	interface System
 	{
+		interface Runtime
+		{
+			interface CompilerServices
+			{
+				String InternalsVisibleToAttribute = "System.Runtime.CompilerServices.InternalsVisibleToAttribute";
+				String AsyncStateMachineAttribute = "System.Runtime.CompilerServices.AsyncStateMachineAttribute";
+
+			}
+
+			interface InteropServices
+			{
+				String InAttribute = "System.Runtime.InteropServices.InAttribute";
+				String OutAttribute = "System.Runtime.InteropServices.OutAttribute";
+			}
+		}
+
 		interface Linq
 		{
 			String IGrouping$2 = "System.Linq.IGrouping`2";
 		}
+
 		interface Threading
 		{
 			interface Tasks
@@ -44,10 +61,13 @@ public interface DotNetTypes2
 			{
 				String IEnumerable$1 = "System.Collections.Generic.IEnumerable`1";
 				String IEnumerator$1 = "System.Collections.Generic.IEnumerator`1";
+				String IList$1 = "System.Collections.Generic.IList`1";
 			}
 
 			String IEnumerable = "System.Collections.IEnumerable";
 			String IEnumerator = "System.Collections.IEnumerator";
 		}
+
+		String RuntimeArgumentHandle = "System.RuntimeArgumentHandle";
 	}
 }

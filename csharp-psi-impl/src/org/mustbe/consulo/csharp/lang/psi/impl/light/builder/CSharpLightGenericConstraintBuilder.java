@@ -28,6 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
@@ -51,7 +52,6 @@ public class CSharpLightGenericConstraintBuilder extends CSharpLightElementBuild
 	{
 		visitor.visitGenericConstraint(this);
 	}
-
 	@Nullable
 	@Override
 	public DotNetGenericParameter resolve()
@@ -71,6 +71,20 @@ public class CSharpLightGenericConstraintBuilder extends CSharpLightElementBuild
 	public CSharpGenericConstraintValue[] getGenericConstraintValues()
 	{
 		return ContainerUtil.toArray(myConstraintValues, CSharpGenericConstraintValue.ARRAY_FACTORY);
+	}
+
+	public boolean isEmpty()
+	{
+		return myConstraintValues.isEmpty();
+	}
+
+	public void addKeywordConstraint(@NotNull IElementType elementType)
+	{
+		if(myConstraintValues.isEmpty())
+		{
+			myConstraintValues = new ArrayList<CSharpGenericConstraintValue>(5);
+		}
+		myConstraintValues.add(new CSharpLightGenericConstraintKeywordValueBuilder(getProject(), elementType));
 	}
 
 	public void addTypeConstraint(@NotNull DotNetTypeRef typeRef)

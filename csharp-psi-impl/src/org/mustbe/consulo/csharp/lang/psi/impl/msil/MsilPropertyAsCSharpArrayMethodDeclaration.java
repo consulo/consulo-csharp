@@ -33,7 +33,6 @@ import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
-import org.mustbe.consulo.msil.lang.psi.MsilModifierList;
 import org.mustbe.consulo.msil.lang.psi.MsilPropertyEntry;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProviders;
@@ -41,7 +40,6 @@ import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
 import com.intellij.util.IncorrectOperationException;
 
 /**
@@ -54,14 +52,16 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 
 	private final DotNetParameter[] myParameters;
 
+	private final DotNetXXXAccessor[] myAccessors;
+
 	public MsilPropertyAsCSharpArrayMethodDeclaration(PsiElement parent, MsilPropertyEntry propertyEntry, List<Pair<DotNetXXXAccessor,
 			MsilMethodEntry>> pairs)
 	{
 		super(parent, propertyEntry);
 
+		myAccessors = MsilPropertyAsCSharpPropertyDeclaration.buildAccessors(this, pairs);
 		myModifierList = new MsilModifierListToCSharpModifierList(MsilPropertyAsCSharpPropertyDeclaration.getAdditionalModifiers(propertyEntry,
-				pairs),
-				(MsilModifierList) propertyEntry.getModifierList());
+				pairs), this, propertyEntry.getModifierList());
 
 		String name = getName();
 		if(!Comparing.equal(name, DotNetPropertyDeclaration.DEFAULT_INDEX_PROPERTY_NAME))
@@ -80,16 +80,9 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 	}
 
 	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		if(visitor instanceof CSharpElementVisitor)
-		{
-			((CSharpElementVisitor) visitor).visitArrayMethodDeclaration(this);
-		}
-		else
-		{
-			visitor.visitElement(this);
-		}
+		visitor.visitArrayMethodDeclaration(this);
 	}
 
 	@NotNull
@@ -103,20 +96,20 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 	@Override
 	public String getPresentableParentQName()
 	{
-		return myMsilElement.getPresentableParentQName();
+		return myOriginal.getPresentableParentQName();
 	}
 
 	@Nullable
 	@Override
 	public String getPresentableQName()
 	{
-		return myMsilElement.getPresentableQName();
+		return myOriginal.getPresentableQName();
 	}
 
 	@Override
 	public String getName()
 	{
-		return myMsilElement.getName();
+		return myOriginal.getName();
 	}
 
 	@Override
@@ -141,7 +134,7 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 	@Override
 	public DotNetXXXAccessor[] getAccessors()
 	{
-		return new DotNetXXXAccessor[0];
+		return myAccessors;
 	}
 
 	@NotNull
@@ -156,7 +149,7 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 	@LazyInstance
 	public DotNetTypeRef getReturnTypeRef()
 	{
-		return MsilToCSharpUtil.extractToCSharp(myMsilElement.toTypeRef(false), myMsilElement);
+		return MsilToCSharpUtil.extractToCSharp(myOriginal.toTypeRef(false), myOriginal);
 	}
 
 	@NotNull
@@ -240,12 +233,12 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 	@LazyInstance(notNull = false)
 	public DotNetType getTypeForImplement()
 	{
-		String nameFromBytecode = myMsilElement.getNameFromBytecode();
+		String nameFromBytecode = myOriginal.getNameFromBytecode();
 		String typeBeforeDot = StringUtil.getPackageName(nameFromBytecode);
 		SomeType someType = SomeTypeParser.parseType(typeBeforeDot, nameFromBytecode);
 		if(someType != null)
 		{
-			return new DummyType(getProject(), myMsilElement, someType);
+			return new DummyType(getProject(), myOriginal, someType);
 		}
 		return null;
 	}
@@ -257,5 +250,17 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 	{
 		DotNetType typeForImplement = getTypeForImplement();
 		return typeForImplement != null ? typeForImplement.toTypeRef() : DotNetTypeRef.ERROR_TYPE;
+	}
+
+	@Override
+	public PsiElement getLeftBrace()
+	{
+		return null;
+	}
+
+	@Override
+	public PsiElement getRightBrace()
+	{
+		return null;
 	}
 }

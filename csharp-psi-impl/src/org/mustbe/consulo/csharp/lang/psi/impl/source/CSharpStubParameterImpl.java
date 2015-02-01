@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.ide.reflactoring.CSharpRefactoringUtil;
+import org.mustbe.consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
@@ -32,6 +32,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
+import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -67,6 +68,13 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 	public boolean isConstant()
 	{
 		return false;
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getConstantKeywordElement()
+	{
+		return null;
 	}
 
 	@NotNull
@@ -158,9 +166,9 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 		return super.getUseScope();
 	}
 
-	@NotNull
+	@Nullable
 	@Override
-	public DotNetLikeMethodDeclaration getMethod()
+	public DotNetParameterListOwner getOwner()
 	{
 		return getStubOrPsiParentOfType(DotNetLikeMethodDeclaration.class);
 	}

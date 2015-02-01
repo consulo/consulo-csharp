@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
@@ -27,11 +28,11 @@ public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWra
 		modifier = CSharpModifier.as(modifier);
 		if(modifier == CSharpModifier.IN)
 		{
-			return myMsilElement.hasModifier(DotNetModifier.CONTRAVARIANT);
+			return myOriginal.hasModifier(DotNetModifier.CONTRAVARIANT);
 		}
 		else if(modifier == CSharpModifier.OUT)
 		{
-			return myMsilElement.hasModifier(DotNetModifier.COVARIANT);
+			return myOriginal.hasModifier(DotNetModifier.COVARIANT);
 		}
 		return false;
 	}
@@ -48,7 +49,7 @@ public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWra
 	{
 		if(another instanceof MsilGenericParameterAsCSharpGenericParameter)
 		{
-			return myMsilElement.isEquivalentTo(((MsilGenericParameterAsCSharpGenericParameter) another).myMsilElement);
+			return myOriginal.isEquivalentTo(((MsilGenericParameterAsCSharpGenericParameter) another).myOriginal);
 		}
 		return super.isEquivalentTo(another);
 	}
@@ -56,13 +57,19 @@ public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWra
 	@Override
 	public String getName()
 	{
-		return myMsilElement.getName();
+		return myOriginal.getName();
+	}
+
+	@Override
+	public void accept(@NotNull CSharpElementVisitor visitor)
+	{
+		visitor.visitGenericParameter(this);
 	}
 
 	@Override
 	public String toString()
 	{
-		return "MsilGenericParameterAsCSharpGenericParameter: " + myMsilElement.getName();
+		return "MsilGenericParameterAsCSharpGenericParameter: " + myOriginal.getName();
 	}
 
 	@Nullable
@@ -76,5 +83,11 @@ public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWra
 	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
 	{
 		return null;
+	}
+
+	@Override
+	public int getIndex()
+	{
+		return myOriginal.getIndex();
 	}
 }

@@ -24,7 +24,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetCodeBlockOwner;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -41,13 +41,14 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class CS0500 extends CompilerCheck<CSharpMethodDeclaration>
 {
-	public static class RemoveMethodBody extends BaseIntentionAction
+	public static class RemoveCodeBlockFix extends BaseIntentionAction
 	{
-		private SmartPsiElementPointer<DotNetLikeMethodDeclaration> myPointer;
+		private SmartPsiElementPointer<DotNetCodeBlockOwner> myPointer;
 
-		public RemoveMethodBody(DotNetLikeMethodDeclaration declaration)
+		public RemoveCodeBlockFix(DotNetCodeBlockOwner declaration)
 		{
 			myPointer = SmartPointerManager.getInstance(declaration.getProject()).createSmartPsiElementPointer(declaration);
+			setText("Remove code block");
 		}
 
 		@NotNull
@@ -55,13 +56,6 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration>
 		public String getFamilyName()
 		{
 			return "C#";
-		}
-
-		@NotNull
-		@Override
-		public String getText()
-		{
-			return "Remove method body";
 		}
 
 		@Override
@@ -73,7 +67,7 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration>
 		@Override
 		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
-			DotNetLikeMethodDeclaration element = myPointer.getElement();
+			DotNetCodeBlockOwner element = myPointer.getElement();
 			if(element == null)
 			{
 				return;
@@ -101,7 +95,7 @@ public class CS0500 extends CompilerCheck<CSharpMethodDeclaration>
 		if((element.hasModifier(CSharpModifier.ABSTRACT) || element.isDelegate()) && element.getCodeBlock() != null)
 		{
 			CompilerCheckBuilder compilerCheckBuilder = newBuilder(nameIdentifier, formatElement(element));
-			compilerCheckBuilder.addQuickFix(new RemoveMethodBody(element));
+			compilerCheckBuilder.addQuickFix(new RemoveCodeBlockFix(element));
 			if(element.hasModifier(CSharpModifier.ABSTRACT))
 			{
 				compilerCheckBuilder.addQuickFix(new RemoveModifierFix(CSharpModifier.ABSTRACT, element));

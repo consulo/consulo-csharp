@@ -27,7 +27,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
  * @since 01.03.14
  */
 public interface CSharpArrayMethodDeclaration extends DotNetLikeMethodDeclaration, DotNetVirtualImplementOwner, DotNetMemberOwner,
-		CSharpSimpleLikeMethodAsElement
+		CSharpSimpleLikeMethodAsElement, CSharpBodyWithBraces
 {
 	@NotNull
 	DotNetXXXAccessor[] getAccessors();

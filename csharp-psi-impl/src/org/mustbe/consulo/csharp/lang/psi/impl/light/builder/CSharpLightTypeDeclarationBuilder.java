@@ -25,10 +25,9 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
@@ -136,7 +135,7 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 	@Override
 	public DotNetTypeRef getTypeRefForEnumConstants()
 	{
-		return new DotNetTypeRefByQName(DotNetTypes.System.Int32, CSharpTransform.INSTANCE, false);
+		return new CSharpTypeRefByQName(DotNetTypes.System.Int32);
 	}
 
 	@Nullable
@@ -277,9 +276,14 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 	}
 
 	@NotNull
-	public CSharpLightTypeDeclarationBuilder addGenericParameter(DotNetGenericParameter parameter)
+	public CSharpLightTypeDeclarationBuilder addGenericParameter(DotNetGenericParameter genericParameter)
 	{
-		myGenericParameters.add(parameter);
+		if(genericParameter instanceof CSharpLightGenericParameterBuilder)
+		{
+			((CSharpLightGenericParameterBuilder) genericParameter).setIndex(myGenericParameters.size());
+		}
+
+		myGenericParameters.add(genericParameter);
 		return this;
 	}
 

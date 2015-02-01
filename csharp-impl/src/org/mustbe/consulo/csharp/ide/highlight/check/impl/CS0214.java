@@ -17,11 +17,25 @@
 package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.ide.highlight.check.AbstractCompilerCheck;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.AddModifierFix;
+import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFixedStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPrefixExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUnsafeStatementImpl;
+import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
+import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
+import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 
@@ -29,25 +43,90 @@ import com.intellij.psi.util.PsiTreeUtil;
  * @author VISTALL
  * @since 15.05.14
  */
-public class CS0214 extends AbstractCompilerCheck<CSharpFixedStatementImpl>
+public class CS0214 extends CompilerCheck<DotNetElement>
 {
+	@Nullable
 	@Override
-	public boolean accept(@NotNull CSharpFixedStatementImpl statement)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetElement element)
 	{
-		DotNetQualifiedElement qualifiedElement = PsiTreeUtil.getParentOfType(statement, DotNetQualifiedElement.class);
-		if(!(qualifiedElement instanceof DotNetModifierListOwner))
+		if(element instanceof CSharpFixedStatementImpl)
 		{
-			return false;
-		}
+			Pair<Boolean, DotNetModifierListOwner> pair = isAllowedUnsafeCode(element);
+			if(pair.getFirst() == Boolean.FALSE)
+			{
+				PsiElement target = ((CSharpFixedStatementImpl) element).getFixedElement();
 
-		return !((DotNetModifierListOwner) qualifiedElement).hasModifier(CSharpModifier.UNSAFE);
+				CompilerCheckBuilder builder = newBuilder(target);
+				if(pair.getSecond() != null)
+				{
+					builder.addQuickFix(new AddModifierFix(CSharpModifier.UNSAFE, pair.getSecond())).setHighlightInfoType(HighlightInfoType
+							.WRONG_REF);
+				}
+				return builder;
+			}
+		}
+		else if(element instanceof CSharpLocalVariableDeclarationStatement)
+		{
+			Pair<Boolean, DotNetModifierListOwner> pair = isAllowedUnsafeCode(element);
+			if(pair.getFirst() == Boolean.TRUE)
+			{
+				return null;
+			}
+
+			for(CSharpLocalVariable localVariable : ((CSharpLocalVariableDeclarationStatement) element).getVariables())
+			{
+				DotNetType selfType = localVariable.getSelfType();
+				if(selfType instanceof DotNetPointerType)
+				{
+					CompilerCheckBuilder builder = newBuilder(selfType);
+					if(pair.getSecond() != null)
+					{
+						builder.addQuickFix(new AddModifierFix(CSharpModifier.UNSAFE, pair.getSecond()));
+					}
+					return builder;
+				}
+			}
+		}
+		else if(element instanceof CSharpPrefixExpressionImpl)
+		{
+			CSharpOperatorReferenceImpl operatorElement = ((CSharpPrefixExpressionImpl) element).getOperatorElement();
+
+			if(operatorElement.getOperatorElementType() == CSharpTokens.MUL || operatorElement.getOperatorElementType() == CSharpTokens.AND)
+			{
+				Pair<Boolean, DotNetModifierListOwner> pair = isAllowedUnsafeCode(element);
+				if(pair.getFirst() == Boolean.TRUE)
+				{
+					return null;
+				}
+
+				CompilerCheckBuilder builder = newBuilder(element);
+				if(pair.getSecond() != null)
+				{
+					builder.addQuickFix(new AddModifierFix(CSharpModifier.UNSAFE, pair.getSecond()));
+				}
+				return builder;
+			}
+		}
+		return null;
 	}
 
-	@Override
-	public void checkImpl(
-			@NotNull CSharpFixedStatementImpl statement, @NotNull CompilerCheckBuilder checkResult)
+	@NotNull
+	private static Pair<Boolean, DotNetModifierListOwner> isAllowedUnsafeCode(PsiElement element)
 	{
-		PsiElement fixedElement = statement.getFixedElement();
-		checkResult.setTextRange(fixedElement.getTextRange());
+		CSharpUnsafeStatementImpl unsafeStatement = PsiTreeUtil.getParentOfType(element, CSharpUnsafeStatementImpl.class);
+		if(unsafeStatement != null)
+		{
+			return Pair.create(Boolean.TRUE, null);
+		}
+
+		DotNetQualifiedElement qualifiedElement = PsiTreeUtil.getParentOfType(element, DotNetQualifiedElement.class);
+		if(!(qualifiedElement instanceof DotNetModifierListOwner))
+		{
+			// dont interest if we dont have parent - how it can be?
+			return Pair.create(Boolean.TRUE, null);
+		}
+
+		DotNetModifierListOwner modifierListOwner = (DotNetModifierListOwner) qualifiedElement;
+		return Pair.create(modifierListOwner.hasModifier(CSharpModifier.UNSAFE), modifierListOwner);
 	}
 }

@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNullableType;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -43,19 +44,11 @@ public class CS0453 extends CompilerCheck<CSharpNullableType>
 	public static class DeleteQuestMarkQuickFix extends BaseIntentionAction
 	{
 		private SmartPsiElementPointer<CSharpNullableType> myPointer;
-		private String myText;
 
 		public DeleteQuestMarkQuickFix(CSharpNullableType nullableType, String text)
 		{
-			myText = text;
 			myPointer = SmartPointerManager.getInstance(nullableType.getProject()).createSmartPsiElementPointer(nullableType);
-		}
-
-		@NotNull
-		@Override
-		public String getText()
-		{
-			return "Remove '" + myText + "'";
+			setText("Remove '" + text + "'");
 		}
 
 		@NotNull
@@ -69,12 +62,6 @@ public class CS0453 extends CompilerCheck<CSharpNullableType>
 		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
 		{
 			return myPointer.getElement() != null;
-		}
-
-		@Override
-		public boolean startInWriteAction()
-		{
-			return true;
 		}
 
 		@Override
@@ -115,6 +102,7 @@ public class CS0453 extends CompilerCheck<CSharpNullableType>
 			return null;
 		}
 		PsiElement questElement = element.getQuestElement();
-		return newBuilder(questElement, dotNetTypeRef.getQualifiedText()).addQuickFix(new DeleteQuestMarkQuickFix(element, "?"));
+		return newBuilder(questElement, CSharpTypeRefPresentationUtil.buildTextWithKeyword(dotNetTypeRef,
+				element)).addQuickFix(new DeleteQuestMarkQuickFix(element, "?"));
 	}
 }

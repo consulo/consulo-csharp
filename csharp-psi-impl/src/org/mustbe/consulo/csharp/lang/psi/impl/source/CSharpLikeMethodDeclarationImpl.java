@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -34,6 +35,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.stubs.IStubElementType;
+import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
@@ -79,7 +81,7 @@ public abstract class CSharpLikeMethodDeclarationImpl<T extends CSharpMethodDecl
 	@Override
 	public PsiElement getCodeBlock()
 	{
-		return findChildByClass(DotNetStatement.class);
+		return PsiTreeUtil.getChildOfAnyType(this, DotNetExpression.class, DotNetStatement.class);
 	}
 
 	@Nullable

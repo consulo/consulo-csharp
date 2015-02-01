@@ -69,13 +69,32 @@ public class CSharpModuleTypeHelperImpl extends CSharpModuleTypeHelper
 			StringBuilder builder = new StringBuilder();
 			builder.append("public class ArrayImpl<T> : System.Array, System.Collections.Generic.IEnumerable<T>");
 			builder.append("{");
+			builder.append("private ArrayImpl() {}");
+			builder.append("public T this[long index");
+			for(int i = 0; i < dimensions; i++)
+			{
+				builder.append(", int index").append(i);
+			}
+			builder.append("] { get; set; }");
+			builder.append("public T this[ulong index");
+			for(int i = 0; i < dimensions; i++)
+			{
+				builder.append(", int index").append(i);
+			}
+			builder.append("] { get; set; }");
 			builder.append("public T this[int index");
 			for(int i = 0; i < dimensions; i++)
 			{
 				builder.append(", int index").append(i);
 			}
 			builder.append("] { get; set; }");
-			builder.append("public System.Collections.Generic.IEnumerator<T> GetEnumerator() { return null; }");
+			builder.append("public T this[uint index");
+			for(int i = 0; i < dimensions; i++)
+			{
+				builder.append(", int index").append(i);
+			}
+			builder.append("] { get; set; }");
+			builder.append("public System.Collections.Generic.IEnumerator<T> System.Collections.Generic.IEnumerator<T>.GetEnumerator() {}");
 			builder.append("}");
 
 			DotNetTypeDeclaration typeDeclaration = CSharpFileFactory.createTypeDeclaration(myModule.getProject(), builder.toString());

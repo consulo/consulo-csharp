@@ -16,23 +16,17 @@
 
 package org.mustbe.consulo.csharp.ide.liveTemplates.macro;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CompletionResolveScopeProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.template.Expression;
 import com.intellij.codeInsight.template.ExpressionContext;
-import com.intellij.openapi.util.Couple;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.ResolveState;
+import com.intellij.util.SmartList;
 import lombok.val;
 
 /**
@@ -41,6 +35,11 @@ import lombok.val;
  */
 public class ForeachVariableMacro extends VariableTypeMacroBase
 {
+	private static final String[] ourAcceptableTypes = {
+			DotNetTypes2.System.Collections.IEnumerable,
+			DotNetTypes2.System.Collections.Generic.IEnumerable$1
+	};
+
 	@Nullable
 	@Override
 	protected PsiElement[] getVariables(Expression[] params, ExpressionContext context)
@@ -51,33 +50,17 @@ public class ForeachVariableMacro extends VariableTypeMacroBase
 			return PsiElement.EMPTY_ARRAY;
 		}
 
-		Couple<PsiElement> resolveLayers = CSharpReferenceExpressionImplUtil.getResolveLayers(psiElementAtStartOffset, false);
+		List<DotNetVariable> variables = CSharpLiveTemplateMacroUtil.resolveAllVariables(context.getPsiElementAtStartOffset());
 
-		AbstractScopeProcessor processor = new SimpleNamedScopeProcessor(true, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
-		CSharpResolveUtil.treeWalkUp(processor, psiElementAtStartOffset, psiElementAtStartOffset, resolveLayers.getFirst());
-
-		processor = new CompletionResolveScopeProcessor(psiElementAtStartOffset.getResolveScope(), processor.toResolveResults(), new ExecuteTarget[]{
-				ExecuteTarget.FIELD,
-				ExecuteTarget.PROPERTY
-		});
-
-		CSharpResolveUtil.walkChildren(processor, resolveLayers.getSecond(), true, false, ResolveState.initial());
-
-		ResolveResult[] resolveResults = processor.toResolveResults();
-		List<PsiElement> list = new ArrayList<PsiElement>(resolveResults.length);
-		for(ResolveResult resolveResultWithWeight : resolveResults)
+		List<DotNetVariable> list = new SmartList<DotNetVariable>();
+		for(DotNetVariable variable : variables)
 		{
-			PsiElement element = resolveResultWithWeight.getElement();
+			DotNetTypeRef typeRefOfVariable = variable.toTypeRef(true);
 
-			DotNetTypeRef elementTypeRef = CSharpReferenceExpressionImplUtil.toTypeRef(element);
-
-			DotNetTypeRef iterableTypeRef = CSharpResolveUtil.resolveIterableType(psiElementAtStartOffset, elementTypeRef);
-
-			if(iterableTypeRef == DotNetTypeRef.ERROR_TYPE)
+			if(CSharpTypeDeclarationImplUtil.isInheritOrSelf(typeRefOfVariable, psiElementAtStartOffset, ourAcceptableTypes))
 			{
-				continue;
+				list.add(variable);
 			}
-			list.add(element);
 		}
 		return list.toArray(new PsiElement[list.size()]);
 	}

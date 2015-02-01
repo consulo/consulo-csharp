@@ -21,7 +21,7 @@ import java.util.List;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.ide.reflactoring.CSharpRefactoringUtil;
+import org.mustbe.consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
@@ -145,7 +145,14 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 	@Override
 	public boolean isConstant()
 	{
-		return findChildByType(CSharpTokens.CONST_KEYWORD) != null;
+		return getConstantKeywordElement() != null;
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getConstantKeywordElement()
+	{
+		return findChildByType(CSharpTokens.CONST_KEYWORD);
 	}
 
 	@NotNull
@@ -244,5 +251,12 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 		{
 			collectForDelete.add(prevSibling);
 		}
+	}
+
+	@Nullable
+	@Override
+	public DotNetType getSelfType()
+	{
+		return findChildByClass(DotNetType.class);
 	}
 }

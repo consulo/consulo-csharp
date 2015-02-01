@@ -17,7 +17,10 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import com.intellij.lang.ASTNode;
@@ -30,17 +33,23 @@ import com.intellij.psi.util.PsiTreeUtil;
  * @author VISTALL
  * @since 06.01.14.
  */
-public class CSharpUsingStatementImpl extends CSharpElementImpl implements DotNetStatement
+public class CSharpUsingStatementImpl extends CSharpElementImpl implements DotNetStatement, CSharpStatementAsStatementOwner
 {
 	public CSharpUsingStatementImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	@NotNull
-	public DotNetVariable[] getVariables()
+	@Nullable
+	public DotNetVariable getVariable()
 	{
-		return findChildrenByClass(DotNetVariable.class);
+		return findChildByClass(DotNetVariable.class);
+	}
+
+	@Nullable
+	public DotNetExpression getExpression()
+	{
+		return findChildByClass(DotNetExpression.class);
 	}
 
 	@Override
@@ -58,13 +67,21 @@ public class CSharpUsingStatementImpl extends CSharpElementImpl implements DotNe
 			return true;
 		}
 
-		for(DotNetVariable dotNetVariable : getVariables())
+		DotNetVariable variable = getVariable();
+		if(variable != null)
 		{
-			if(!processor.execute(dotNetVariable, state))
+			if(!processor.execute(variable, state))
 			{
 				return false;
 			}
 		}
 		return true;
+	}
+
+	@Nullable
+	@Override
+	public DotNetStatement getChildStatement()
+	{
+		return findChildByClass(DotNetStatement.class);
 	}
 }

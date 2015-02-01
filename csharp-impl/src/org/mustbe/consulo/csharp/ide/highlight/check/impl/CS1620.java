@@ -21,16 +21,28 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.dotnet.util.ArrayUtil2;
+import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.ResolveResult;
+import com.intellij.psi.SmartPointerManager;
+import com.intellij.psi.SmartPsiElementPointer;
+import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
 
 /**
@@ -39,44 +51,102 @@ import com.intellij.util.SmartList;
  */
 public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 {
+	public static class BaseUseTypeFix extends BaseIntentionAction
+	{
+		private final CSharpRefTypeRef.Type myType;
+		private final SmartPsiElementPointer<DotNetExpression> myPointer;
+
+		public BaseUseTypeFix(DotNetExpression expression, CSharpRefTypeRef.Type type)
+		{
+			myType = type;
+			myPointer = SmartPointerManager.getInstance(expression.getProject()).createSmartPsiElementPointer(expression);
+
+			setText("Wrap with '" + myType + "'");
+		}
+
+		@NotNull
+		@Override
+		public String getFamilyName()
+		{
+			return "C#";
+		}
+
+		@Override
+		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+		{
+			return myPointer.getElement() != null;
+		}
+
+		@Override
+		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+		{
+			DotNetExpression element = myPointer.getElement();
+			if(element == null)
+			{
+				return;
+			}
+
+			DotNetExpression expression = CSharpFileFactory.createExpression(project, myType.name() + " " + element.getText());
+
+			element.replace(expression);
+		}
+	}
+
 	@NotNull
 	@Override
 	public List<CompilerCheckBuilder> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpMethodCallExpressionImpl element)
 	{
-		PsiElement psiElement = element.resolveToCallable();
-		if(psiElement instanceof DotNetLikeMethodDeclaration)
+		ResolveResult resolveResult = CSharpResolveUtil.findFirstValidResult(element.multiResolve(true));
+		if(!(resolveResult instanceof MethodResolveResult))
 		{
-			DotNetExpression[] parameterExpressions = element.getParameterExpressions();
-			DotNetParameter[] parameters = ((DotNetLikeMethodDeclaration) psiElement).getParameters();
+			return Collections.emptyList();
+		}
 
-			List<CompilerCheckBuilder> results = new SmartList<CompilerCheckBuilder>();
-			for(int i = 0; i < parameters.length; i++)
+		MethodCalcResult calcResult = ((MethodResolveResult) resolveResult).getCalcResult();
+
+		List<CompilerCheckBuilder> results = new SmartList<CompilerCheckBuilder>();
+
+		List<NCallArgument> arguments = calcResult.getArguments();
+		for(NCallArgument argument : arguments)
+		{
+			CSharpCallArgument callArgument = argument.getCallArgument();
+			if(callArgument == null)
 			{
-				DotNetExpression dotNetExpression = ArrayUtil2.safeGet(parameterExpressions, i);
-				if(dotNetExpression == null)
-				{
-					break;
-				}
+				continue;
+			}
 
-				DotNetParameter parameter = parameters[i];
-				CSharpRefTypeRef.Type type = null;
-				if(parameter.hasModifier(CSharpModifier.REF))
-				{
-					type = CSharpRefTypeRef.Type.ref;
-				}
-				else if(parameter.hasModifier(CSharpModifier.OUT))
-				{
-					type = CSharpRefTypeRef.Type.out;
-				}
-				else
-				{
-					continue;
-				}
-				DotNetTypeRef typeRef = dotNetExpression.toTypeRef(false);
-				if(!(typeRef instanceof CSharpRefTypeRef) || ((CSharpRefTypeRef) typeRef).getType() != type)
-				{
-					results.add(newBuilder(dotNetExpression, String.valueOf(i + 1), type.name()));
-				}
+			DotNetExpression argumentExpression = callArgument.getArgumentExpression();
+			if(argumentExpression == null)
+			{
+				continue;
+			}
+			PsiElement parameterElement = argument.getParameterElement();
+			if(!(parameterElement instanceof DotNetParameter))
+			{
+				continue;
+			}
+
+			CSharpRefTypeRef.Type type = null;
+
+			DotNetParameter parameter = (DotNetParameter) parameterElement;
+			if(parameter.hasModifier(CSharpModifier.REF))
+			{
+				type = CSharpRefTypeRef.Type.ref;
+			}
+			else if(parameter.hasModifier(CSharpModifier.OUT))
+			{
+				type = CSharpRefTypeRef.Type.out;
+			}
+			else
+			{
+				continue;
+			}
+
+			DotNetTypeRef typeRef = argument.getTypeRef();
+			if(!(typeRef instanceof CSharpRefTypeRef) || ((CSharpRefTypeRef) typeRef).getType() != type)
+			{
+				results.add(newBuilder(argumentExpression, String.valueOf(parameter.getIndex() + 1), type.name()).addQuickFix(new BaseUseTypeFix
+						(argumentExpression, type)));
 			}
 			return results;
 		}

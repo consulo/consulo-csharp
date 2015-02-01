@@ -22,15 +22,10 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
-import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
-import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
+import org.mustbe.consulo.csharp.lang.psi.*;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAwaitExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpCatchStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFinallyStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpGenericParameterListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -39,6 +34,7 @@ import org.mustbe.consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
@@ -51,6 +47,7 @@ import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
 import lombok.val;
@@ -68,13 +65,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 		public SetLanguageVersionFix(CSharpLanguageVersion languageVersion)
 		{
 			myLanguageVersion = languageVersion;
-		}
-
-		@NotNull
-		@Override
-		public String getText()
-		{
-			return "Set language version to '" + myLanguageVersion.getPresentableName() + "'";
+			setText("Set language version to '" + myLanguageVersion.getPresentableName() + "'");
 		}
 
 		@Override
@@ -95,12 +86,6 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			mutable.setLanguageVersion(myLanguageVersion);
 
 			modifiableModel.commit();
-		}
-
-		@Override
-		public boolean startInWriteAction()
-		{
-			return true;
 		}
 
 		@Override
@@ -200,6 +185,31 @@ public class CS1644 extends CompilerCheck<PsiElement>
 					return null;
 				}
 			}));
+			add(new Feature("using static members", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
+			{
+				@Override
+				public PsiElement fun(PsiElement element)
+				{
+					return element instanceof CSharpUsingTypeStatement ? element : null;
+				}
+			}));
+			add(new Feature("parameterless struct ctors", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
+			{
+				@Override
+				public PsiElement fun(PsiElement element)
+				{
+					if(element instanceof CSharpConstructorDeclaration)
+					{
+						PsiElement parent = element.getParent();
+						if(parent instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) parent).isStruct() && ((CSharpConstructorDeclaration)
+								element).getParameters().length == 0)
+						{
+							return ((CSharpConstructorDeclaration) element).getNameIdentifier();
+						}
+					}
+					return null;
+				}
+			}));
 			add(new Feature("property initializer", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
@@ -216,16 +226,74 @@ public class CS1644 extends CompilerCheck<PsiElement>
 					return null;
 				}
 			}));
-			add(new Feature("asynchronous functions", CSharpLanguageVersion._4_0, new Function<PsiElement, PsiElement>()
+			add(new Feature("expression-bodied members", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
 				public PsiElement fun(PsiElement element)
 				{
 					if(element instanceof CSharpMethodDeclaration)
 					{
-						return ((CSharpMethodDeclaration) element).getModifierList().getModifierElement(CSharpModifier.ASYNC);
+						PsiElement codeBlock = ((CSharpMethodDeclaration) element).getCodeBlock();
+						if(codeBlock instanceof DotNetExpression)
+						{
+							return codeBlock;
+						}
 					}
 					return null;
+				}
+			}));
+			add(new Feature("exception filters", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
+			{
+				@Override
+				public PsiElement fun(PsiElement element)
+				{
+					if(element instanceof CSharpCatchStatementImpl)
+					{
+						return ((CSharpCatchStatementImpl) element).getFilterExpression();
+					}
+					return null;
+				}
+			}));
+			add(new Feature("null propagation", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
+			{
+				@Override
+				public PsiElement fun(PsiElement element)
+				{
+					if(element instanceof CSharpReferenceExpression)
+					{
+						PsiElement memberAccessElement = ((CSharpReferenceExpression) element).getMemberAccessElement();
+						if(memberAccessElement != null && memberAccessElement.getNode().getElementType() == CSharpTokens.NULLABE_CALL)
+						{
+							return memberAccessElement;
+						}
+					}
+					return null;
+				}
+			}));
+			add(new Feature("await in catch/finally", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
+			{
+				@Override
+				public PsiElement fun(PsiElement element)
+				{
+					if(element instanceof CSharpAwaitExpressionImpl)
+					{
+						DotNetStatement statement = PsiTreeUtil.getParentOfType(element, CSharpFinallyStatementImpl.class,
+								CSharpCatchStatementImpl.class);
+						if(statement != null)
+						{
+							return ((CSharpAwaitExpressionImpl) element).getAwaitKeywordElement();
+						}
+						return null;
+					}
+					return null;
+				}
+			}));
+			add(new Feature("asynchronous functions", CSharpLanguageVersion._4_0, new Function<PsiElement, PsiElement>()
+			{
+				@Override
+				public PsiElement fun(PsiElement element)
+				{
+					return CS1998.getAsyncModifier(element);
 				}
 			}));
 			add(new Feature("named arguments", CSharpLanguageVersion._4_0, new Function<PsiElement, PsiElement>()

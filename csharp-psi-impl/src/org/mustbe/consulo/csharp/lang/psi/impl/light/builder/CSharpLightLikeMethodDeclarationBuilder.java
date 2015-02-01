@@ -64,6 +64,12 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 		return CSharpLikeMethodDeclarationImplUtil.getParametersInfos(this);
 	}
 
+	@Override
+	public boolean isEquivalentTo(PsiElement another)
+	{
+		return CSharpLikeMethodDeclarationImplUtil.isEquivalentTo(this, another);
+	}
+
 	@Nullable
 	@Override
 	public DotNetType getReturnType()
@@ -183,6 +189,11 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 		if(myGenericParameters.isEmpty())
 		{
 			myGenericParameters = new ArrayList<DotNetGenericParameter>(2);
+		}
+
+		if(genericParameter instanceof CSharpLightGenericParameterBuilder)
+		{
+			((CSharpLightGenericParameterBuilder) genericParameter).setIndex(myGenericParameters.size());
 		}
 
 		myGenericParameters.add(genericParameter);

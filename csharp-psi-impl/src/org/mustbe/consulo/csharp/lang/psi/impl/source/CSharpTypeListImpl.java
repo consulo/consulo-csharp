@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.dotnet.lang.psi.impl.DotNetPsiCountUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -46,6 +47,12 @@ public class CSharpTypeListImpl extends CSharpElementImpl implements DotNetTypeL
 			array[i] = type.getText();
 		}
 		return array;
+	}
+
+	@Override
+	public int getTypesCount()
+	{
+		return DotNetPsiCountUtil.countChildrenOfType(getNode(), DotNetType.class);
 	}
 
 	@NotNull

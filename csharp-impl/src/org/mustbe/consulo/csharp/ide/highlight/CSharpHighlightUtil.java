@@ -90,7 +90,7 @@ public class CSharpHighlightUtil
 		{
 			if(element.getUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE) != null)
 			{
-				return null;
+				return CSharpHighlightKey.DELEGATE_METHOD_NAME;
 			}
 
 			if(DotNetInheritUtil.isAttribute((DotNetTypeDeclaration) element))

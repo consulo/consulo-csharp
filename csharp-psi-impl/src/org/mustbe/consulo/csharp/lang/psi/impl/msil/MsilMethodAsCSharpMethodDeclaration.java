@@ -39,7 +39,6 @@ import com.intellij.openapi.util.NullableLazyValue;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.tree.IElementType;
 
 /**
@@ -82,7 +81,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 		@Override
 		protected String compute()
 		{
-			Pair<String, IElementType> pair = ourOperatorNames.get(myMsilElement.getName());
+			Pair<String, IElementType> pair = ourOperatorNames.get(myOriginal.getName());
 			if(pair != null)
 			{
 				return pair.getFirst();
@@ -101,16 +100,9 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 	}
 
 	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		if(visitor instanceof CSharpElementVisitor)
-		{
-			((CSharpElementVisitor) visitor).visitMethodDeclaration(this);
-		}
-		else
-		{
-			visitor.visitElement(this);
-		}
+		visitor.visitMethodDeclaration(this);
 	}
 
 	@Override
@@ -138,14 +130,15 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 	@Override
 	public CSharpGenericConstraintList getGenericConstraintList()
 	{
-		return null;
+		return myGenericConstraintList;
 	}
 
 	@NotNull
 	@Override
 	public CSharpGenericConstraint[] getGenericConstraints()
 	{
-		return CSharpGenericConstraint.EMPTY_ARRAY;
+		CSharpGenericConstraintList genericConstraintList = getGenericConstraintList();
+		return genericConstraintList == null ? CSharpGenericConstraint.EMPTY_ARRAY : genericConstraintList.getGenericConstraints();
 	}
 
 	@Override
@@ -157,14 +150,14 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 	@Override
 	public boolean isOperator()
 	{
-		return ourOperatorNames.containsKey(myMsilElement.getName());
+		return ourOperatorNames.containsKey(myOriginal.getName());
 	}
 
 	@Nullable
 	@Override
 	public IElementType getOperatorElementType()
 	{
-		Pair<String, IElementType> pair = ourOperatorNames.get(myMsilElement.getName());
+		Pair<String, IElementType> pair = ourOperatorNames.get(myOriginal.getName());
 		if(pair == null)
 		{
 			return null;
@@ -184,12 +177,12 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 	@LazyInstance(notNull = false)
 	public DotNetType getTypeForImplement()
 	{
-		String nameFromBytecode = myMsilElement.getNameFromBytecode();
+		String nameFromBytecode = myOriginal.getNameFromBytecode();
 		String typeBeforeDot = StringUtil.getPackageName(nameFromBytecode);
 		SomeType someType = SomeTypeParser.parseType(typeBeforeDot, nameFromBytecode);
 		if(someType != null)
 		{
-			return new DummyType(getProject(), myMsilElement, someType);
+			return new DummyType(getProject(), myOriginal, someType);
 		}
 		return null;
 	}

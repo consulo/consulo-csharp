@@ -65,7 +65,6 @@ public class CS0409 extends CompilerCheck<CSharpGenericConstraint>
 
 			if(constraint.resolve() == resolve)
 			{
-
 				return newBuilder(constraint, resolve.getName());
 			}
 		}

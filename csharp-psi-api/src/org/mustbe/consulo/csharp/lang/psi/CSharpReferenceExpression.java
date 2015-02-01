@@ -48,11 +48,23 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 		PARAMETER,
 		THIS, // return type declaration of parent
 		BASE,  // return type declaration super class of parent
-		LABEL;
+		ROOT_NAMESPACE,  // root namespace - global keyword
+		LABEL,
+		BASE_CONSTRUCTOR,
+		THIS_CONSTRUCTOR;
 
 		@NotNull
 		@Immutable
 		public static final ResolveToKind[] VALUES = values();
+	}
+
+	public static enum AccessType
+	{
+		NONE,
+		DOT,
+		ARROW,
+		COLONCOLON,
+		NULLABLE_CALL
 	}
 
 	@Nullable
@@ -66,4 +78,12 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 
 	@NotNull
 	DotNetTypeRef[] getTypeArgumentListRefs();
+
+	boolean isGlobalElement();
+
+	@Nullable
+	PsiElement getMemberAccessElement();
+
+	@NotNull
+	AccessType getMemberAccessType();
 }

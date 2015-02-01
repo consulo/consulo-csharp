@@ -61,7 +61,54 @@ public class CSharpLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSe
 					"SPACE_WITHIN_METHOD_PARENTHESES", "SPACE_WITHIN_IF_PARENTHESES", "SPACE_WITHIN_WHILE_PARENTHESES",
 					"SPACE_WITHIN_FOR_PARENTHESES", "SPACE_WITHIN_CATCH_PARENTHESES", "SPACE_WITHIN_SWITCH_PARENTHESES", "SPACE_BEFORE_QUEST",
 					"SPACE_AFTER_QUEST", "SPACE_BEFORE_COLON", "SPACE_AFTER_COLON", "SPACE_AFTER_COMMA", "SPACE_AFTER_COMMA_IN_TYPE_ARGUMENTS",
-					"SPACE_BEFORE_COMMA", "SPACE_AROUND_UNARY_OPERATOR");
+					"SPACE_BEFORE_COMMA", "SPACE_AROUND_UNARY_OPERATOR", "SPACE_WITHIN_BRACKETS", "SPACE_BEFORE_METHOD_PARENTHESES");
+
+			// parentheses settings
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_FOREACH_PARENTHESES", "'foreach' parentheses",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_PARENTHESES, CodeStyleSettingsCustomizable.OptionAnchor.BEFORE,
+					"SPACE_BEFORE_FOR_PARENTHESES");
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_USING_PARENTHESES", "'using' parentheses",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_PARENTHESES);
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_LOCK_PARENTHESES", "'lock' parentheses",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_PARENTHESES);
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_FIXED_PARENTHESES", "'fixed' parentheses",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_PARENTHESES);
+
+			// left brace settings
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_NAMESPACE_LBRACE", "Namespace left brace",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE, CodeStyleSettingsCustomizable.OptionAnchor.BEFORE,
+					"SPACE_BEFORE_CLASS_LBRACE");
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_EVENT_LBRACE", "Event left brace",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE, CodeStyleSettingsCustomizable.OptionAnchor.AFTER,
+					"SPACE_BEFORE_METHOD_LBRACE");
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_PROPERTY_LBRACE", "Property left brace",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE, CodeStyleSettingsCustomizable.OptionAnchor.AFTER,
+					"SPACE_BEFORE_METHOD_LBRACE");
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_INDEX_METHOD_LBRACE", "Index methd left brace",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE, CodeStyleSettingsCustomizable.OptionAnchor.AFTER,
+					"SPACE_BEFORE_METHOD_LBRACE");
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_FOREACH_LBRACE", "'foreach' left brace",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE, CodeStyleSettingsCustomizable.OptionAnchor.BEFORE,
+					"SPACE_BEFORE_FOR_LBRACE");
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_UNSAFE_LBRACE", "'unsafe' left brace",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE);
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_USING_LBRACE", "'using' left brace",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE);
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_LOCK_LBRACE", "'lock' left brace",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE);
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "SPACE_BEFORE_FIXED_LBRACE", "'fixed' left brace",
+					CodeStyleSettingsCustomizable.SPACES_BEFORE_LEFT_BRACE);
 		}
 		else if(settingsType == SettingsType.BLANK_LINES_SETTINGS)
 		{
@@ -74,8 +121,7 @@ public class CSharpLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSe
 					"METHOD_PARAMETERS_LPAREN_ON_NEXT_LINE", "METHOD_PARAMETERS_RPAREN_ON_NEXT_LINE", "ELSE_ON_NEW_LINE", "WHILE_ON_NEW_LINE",
 					"CATCH_ON_NEW_LINE", "ALIGN_MULTILINE_PARAMETERS", "ALIGN_MULTILINE_PARAMETERS_IN_CALLS", "ALIGN_MULTILINE_BINARY_OPERATION",
 					"BINARY_OPERATION_WRAP", "BINARY_OPERATION_SIGN_ON_NEXT_LINE", "TERNARY_OPERATION_WRAP", "TERNARY_OPERATION_SIGNS_ON_NEXT_LINE",
-					"PARENTHESES_EXPRESSION_LPAREN_WRAP", "PARENTHESES_EXPRESSION_RPAREN_WRAP", "ALIGN_MULTILINE_TERNARY_OPERATION",
-					"SPECIAL_ELSE_IF_TREATMENT");
+					"PARENTHESES_EXPRESSION_LPAREN_WRAP", "PARENTHESES_EXPRESSION_RPAREN_WRAP", "ALIGN_MULTILINE_TERNARY_OPERATION");
 		}
 	}
 

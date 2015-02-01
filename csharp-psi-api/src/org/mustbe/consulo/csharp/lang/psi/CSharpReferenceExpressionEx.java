@@ -30,5 +30,8 @@ public interface CSharpReferenceExpressionEx extends CSharpReferenceExpression
 	DotNetTypeRef toTypeRefWithoutCaching(ResolveToKind kind, boolean resolveFromParent);
 
 	@NotNull
+	ResolveResult[] multiResolve(final boolean incompleteCode, final boolean resolveFromParent);
+
+	@NotNull
 	ResolveResult[] multiResolveImpl(ResolveToKind kind, boolean resolveFromParent);
 }

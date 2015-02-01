@@ -27,8 +27,10 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingTypeStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
@@ -64,12 +66,19 @@ public class CSharpUsingListImpl extends CSharpStubElementImpl<CSharpEmptyStub<C
 		return getStubOrPsiChildren(CSharpStubElements.USING_NAMESPACE_STATEMENT, CSharpUsingNamespaceStatement.ARRAY_FACTORY);
 	}
 
+	@Override
+	@NotNull
+	public CSharpUsingTypeStatement[] getUsingTypeDirectives()
+	{
+		return getStubOrPsiChildren(CSharpStubElements.USING_TYPE_STATEMENT, CSharpUsingTypeStatement.ARRAY_FACTORY);
+	}
+
 	@NotNull
 	@Override
 	public DotNetNamespaceAsElement[] getUsingNamespaces()
 	{
 		CSharpUsingNamespaceStatement[] usingDirectives = getUsingDirectives();
-		List<DotNetNamespaceAsElement> namespaceAsElements = new ArrayList<DotNetNamespaceAsElement>(usingDirectives.length + 1);
+		List<DotNetNamespaceAsElement> namespaceAsElements = new ArrayList<DotNetNamespaceAsElement>(usingDirectives.length);
 		for(CSharpUsingNamespaceStatement usingDirective : usingDirectives)
 		{
 			DotNetNamespaceAsElement resolve = usingDirective.resolve();
@@ -80,6 +89,24 @@ public class CSharpUsingListImpl extends CSharpStubElementImpl<CSharpEmptyStub<C
 		}
 
 		return ContainerUtil.toArray(namespaceAsElements, DotNetNamespaceAsElement.ARRAY_FACTORY);
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef[] getUsingTypeRefs()
+	{
+		CSharpUsingTypeStatement[] usingDirectives = getUsingTypeDirectives();
+		List<DotNetTypeRef> typeRefs = new ArrayList<DotNetTypeRef>(usingDirectives.length);
+		for(CSharpUsingTypeStatement usingDirective : usingDirectives)
+		{
+			DotNetTypeRef typeRef = usingDirective.getTypeRef();
+			if(typeRef != DotNetTypeRef.ERROR_TYPE)
+			{
+				typeRefs.add(typeRef);
+			}
+		}
+
+		return ContainerUtil.toArray(typeRefs, DotNetTypeRef.ARRAY_FACTORY);
 	}
 
 	@Override

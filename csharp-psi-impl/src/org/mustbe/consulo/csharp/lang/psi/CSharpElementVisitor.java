@@ -18,10 +18,12 @@ package org.mustbe.consulo.csharp.lang.psi;
 
 import org.mustbe.consulo.csharp.lang.psi.impl.source.*;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
+import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.psi.PsiElementVisitor;
 
 /**
@@ -57,7 +59,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(list);
 	}
 
-	public void visitNamespaceDeclaration(CSharpNamespaceDeclarationImpl declaration)
+	public void visitNamespaceDeclaration(CSharpNamespaceDeclaration declaration)
 	{
 		visitElement(declaration);
 	}
@@ -97,7 +99,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(parameter);
 	}
 
-	public void visitGenericParameterList(CSharpGenericParameterListImpl list)
+	public void visitGenericParameterList(DotNetGenericParameterList list)
 	{
 		visitElement(list);
 	}
@@ -137,7 +139,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(declaration);
 	}
 
-	public void visitXXXAccessor(CSharpXXXAccessorImpl accessor)
+	public void visitXXXAccessor(DotNetXXXAccessor accessor)
 	{
 		visitElement(accessor);
 	}
@@ -422,12 +424,17 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(list);
 	}
 
-	public void visitAnonymMethodExpression(CSharpAnonymMethodExpressionImpl method)
+	public void visitAnonymMethodExpression(CSharpDelegateExpressionImpl method)
 	{
 		visitElement(method);
 	}
 
-	public void visitArrayInitializationExpression(CSharpArrayInitializationExpressionImpl expression)
+	public void visitArrayInitializerExpression(CSharpArrayInitializerImpl expression)
+	{
+		visitElement(expression);
+	}
+
+	public void visitImplicitArrayInitializationExpression(CSharpImplicitArrayInitializationExpressionImpl expression)
 	{
 		visitElement(expression);
 	}
@@ -550,5 +557,50 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	public void visitLinqIntroClause(CSharpLinqIntoClauseImpl clause)
 	{
 		visitElement(clause);
+	}
+
+	public void visitUnsafeStatement(CSharpUnsafeStatementImpl statement)
+	{
+		visitElement(statement);
+	}
+
+	public void visitStackAllocExpression(CSharpStackAllocExpressionImpl expression)
+	{
+		visitElement(expression);
+	}
+
+	public void visitUsingTypeStatement(CSharpUsingTypeStatement statement)
+	{
+		visitElement(statement);
+	}
+
+	public void visitArrayInitializerSingleValue(CSharpArrayInitializerSingleValueImpl value)
+	{
+		visitElement(value);
+	}
+
+	public void visitArrayInitializerCompositeValue(CSharpArrayInitializerCompositeValueImpl value)
+	{
+		visitElement(value);
+	}
+
+	public void visitArglistExpression(CSharpArglistExpressionImpl expression)
+	{
+		visitElement(expression);
+	}
+
+	public void visitMakeRefExpression(CSharpMakeRefExpressionImpl expression)
+	{
+		visitElement(expression);
+	}
+
+	public void visitRefValueExpression(CSharpRefValueExpressionImpl expression)
+	{
+		visitElement(expression);
+	}
+
+	public void visitRefTypeExpression(CSharpRefTypeExpressionImpl expression)
+	{
+		visitElement(expression);
 	}
 }

@@ -17,24 +17,30 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
+import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.util.ArrayUtil;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ObjectUtils;
 
 /**
@@ -43,8 +49,10 @@ import com.intellij.util.ObjectUtils;
  */
 public class CSharpLambdaExpressionImplUtil
 {
+	public static final Key<DotNetTypeRef> TYPE_REF_OF_LAMBDA = Key.create("type.ref.of.lambda");
+
 	@NotNull
-	public static DotNetTypeRef resolveTypeForParameter(PsiElement target, int parameterIndex)
+	public static DotNetTypeRef resolveTypeForParameter(CSharpLambdaExpressionImpl target, int parameterIndex)
 	{
 		CSharpLambdaResolveResult leftTypeRef = resolveLeftLambdaTypeRef(target);
 		if(leftTypeRef == null)
@@ -59,6 +67,17 @@ public class CSharpLambdaExpressionImplUtil
 	@Nullable
 	public static CSharpLambdaResolveResult resolveLeftLambdaTypeRef(PsiElement target)
 	{
+		DotNetTypeRef typeRefOfLambda = target.getUserData(TYPE_REF_OF_LAMBDA);
+		if(typeRefOfLambda != null)
+		{
+			DotNetTypeResolveResult typeResolveResult = typeRefOfLambda.resolve(target);
+			if(typeResolveResult instanceof CSharpLambdaResolveResult)
+			{
+				return (CSharpLambdaResolveResult) typeResolveResult;
+			}
+			return null;
+		}
+
 		PsiElement parent = target.getParent();
 		if(parent instanceof DotNetVariable)
 		{
@@ -69,33 +88,67 @@ public class CSharpLambdaExpressionImplUtil
 			}
 			return resolveLeftLambdaTypeRefForVariable(variable);
 		}
+		else if(parent instanceof CSharpFieldOrPropertySet)
+		{
+			CSharpFieldOrPropertySet fieldOrPropertySet = (CSharpFieldOrPropertySet) parent;
+			if(fieldOrPropertySet.getValueExpression() != target)
+			{
+				return null;
+			}
+
+			CSharpReferenceExpression nameReferenceExpression = fieldOrPropertySet.getNameReferenceExpression();
+			PsiElement resolvedElement = nameReferenceExpression.resolve();
+			if(resolvedElement instanceof DotNetVariable)
+			{
+				return resolveLeftLambdaTypeRefForVariable((DotNetVariable) resolvedElement);
+			}
+			return null;
+		}
 		else if(parent instanceof CSharpCallArgument)
 		{
 			if(parent instanceof CSharpNamedCallArgument)
 			{
 				return null;
 			}
-			CSharpCallArgumentListOwner argumentListOwner = (CSharpCallArgumentListOwner) parent.getParent().getParent();
-
-			PsiElement callable = argumentListOwner.resolveToCallable();
-			if(!(callable instanceof DotNetLikeMethodDeclaration))
-			{
-				return null;
-			}
-			DotNetExpression[] parameterExpressions = argumentListOwner.getParameterExpressions();
-			int index = ArrayUtil.indexOf(parameterExpressions, target);
-			if(index == -1)
+			CSharpCallArgumentListOwner argumentListOwner = PsiTreeUtil.getParentOfType(parent, CSharpCallArgumentListOwner.class, false);
+			if(argumentListOwner == null)
 			{
 				return null;
 			}
 
-			DotNetParameter[] parameters = ((DotNetLikeMethodDeclaration) callable).getParameters();
-			DotNetParameter parameter = ArrayUtil2.safeGet(parameters, index);
-			if(parameter == null)
+			ResolveResult validOrFirstMaybeResult = CSharpResolveUtil.findValidOrFirstMaybeResult(argumentListOwner.multiResolve(false));
+			if(validOrFirstMaybeResult == null)
 			{
 				return null;
 			}
-			return resolveLeftLambdaTypeRefForVariable(parameter);
+
+			if(validOrFirstMaybeResult instanceof MethodResolveResult)
+			{
+				List<NCallArgument> arguments = ((MethodResolveResult) validOrFirstMaybeResult).getCalcResult().getArguments();
+				for(NCallArgument argument : arguments)
+				{
+					if(argument.getCallArgument() == null)
+					{
+						continue;
+					}
+					CSharpCallArgument callArgument = argument.getCallArgument();
+					if(callArgument.getArgumentExpression() == target)
+					{
+						DotNetTypeRef parameterTypeRef = argument.getParameterTypeRef();
+						if(parameterTypeRef == null)
+						{
+							return null;
+						}
+
+						DotNetTypeResolveResult typeResolveResult = parameterTypeRef.resolve(target);
+						if(typeResolveResult instanceof CSharpLambdaResolveResult)
+						{
+							return (CSharpLambdaResolveResult) typeResolveResult;
+						}
+						return null;
+					}
+				}
+			}
 		}
 		else if(parent instanceof CSharpAssignmentExpressionImpl)
 		{

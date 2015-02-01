@@ -52,8 +52,8 @@ import com.intellij.util.messages.MessageBus;
 public class CSharpResolveCache
 {
 	private static final Logger LOG = Logger.getInstance("#com.intellij.psi.impl.source.resolve.ResolveCache");
-	private final ConcurrentMap[] myMaps = new ConcurrentMap[2 * 2 * 2 * 2]; //boolean physical, boolean incompleteCode,
-	// boolean resolveFromParent, boolean isPoly
+	private final ConcurrentMap[] myMaps = new ConcurrentMap[2 * 2 * 2 * 2];
+	//boolean physical, boolean incompleteCode, boolean resolveFromParent, boolean isPoly
 	private final RecursionGuard myGuard = RecursionManager.createGuard("csharpResolveCache");
 
 	public static CSharpResolveCache getInstance(Project project)
@@ -67,7 +67,7 @@ public class CSharpResolveCache
 		TResult resolve(@NotNull TRef ref, boolean incompleteCode, boolean resolveFromParent);
 	}
 
-	public interface PolyVariantResolver<T extends PsiPolyVariantReference & PsiElement> extends AbstractResolver<T, ResolveResult[]>
+	public interface PolyVariantResolver<T extends PsiElement> extends AbstractResolver<T, ResolveResult[]>
 	{
 		@Override
 		@NotNull
@@ -120,13 +120,18 @@ public class CSharpResolveCache
 	public void clearCache(boolean isPhysical)
 	{
 		int startIndex = isPhysical ? 0 : 1;
-		for(int i = startIndex; i < 2; i++)
+
+		// (physical ? 0 : 1) * 8 + (incompleteCode ? 0 : 1) * 4 + (resolveFromParent ? 0 : 1) * 2 + (isPoly ? 0 : 1)
+		for(int physicalIndex = startIndex; physicalIndex < 2; physicalIndex++)
 		{
-			for(int j = 0; j < 2; j++)
+			for(int incompleteCodeIndex = 0; incompleteCodeIndex < 2; incompleteCodeIndex++)
 			{
-				for(int k = 0; k < 2; k++)
+				for(int resolveFromParentIndex = 0; resolveFromParentIndex < 2; resolveFromParentIndex++)
 				{
-					myMaps[i * 4 + j * 2 + k].clear();
+					for(int polyIndex = 0; polyIndex < 2; polyIndex++)
+					{
+						myMaps[physicalIndex * 8 + incompleteCodeIndex * 4 + resolveFromParentIndex * 2 + polyIndex].clear();
+					}
 				}
 			}
 		}
@@ -173,17 +178,17 @@ public class CSharpResolveCache
 	}
 
 	@NotNull
-	public <T extends PsiPolyVariantReference & PsiElement> ResolveResult[] resolveWithCaching(@NotNull T ref,
+	public <T extends PsiElement> ResolveResult[] resolveWithCaching(@NotNull T ref,
 			@NotNull PolyVariantResolver<T> resolver,
 			boolean needToPreventRecursion,
 			boolean incompleteCode,
 			boolean resolveFromParent)
 	{
-		return resolveWithCaching(ref, resolver, needToPreventRecursion, incompleteCode, resolveFromParent, ref.getElement().getContainingFile());
+		return resolveWithCaching(ref, resolver, needToPreventRecursion, incompleteCode, resolveFromParent, ref.getContainingFile());
 	}
 
 	@NotNull
-	public <T extends PsiPolyVariantReference & PsiElement> ResolveResult[] resolveWithCaching(@NotNull T ref,
+	public <T extends PsiElement> ResolveResult[] resolveWithCaching(@NotNull T ref,
 			@NotNull PolyVariantResolver<T> resolver,
 			boolean needToPreventRecursion,
 			boolean incompleteCode,

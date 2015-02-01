@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetPointerTypeRefImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpPointerTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -31,7 +31,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 05.12.14
  */
-public class CSharpPointerTypeImpl extends CSharpTypeElementImpl implements DotNetPointerType
+public class CSharpPointerTypeImpl extends CSharpElementImpl implements DotNetPointerType
 {
 	public CSharpPointerTypeImpl(@NotNull ASTNode node)
 	{
@@ -46,14 +46,14 @@ public class CSharpPointerTypeImpl extends CSharpTypeElementImpl implements DotN
 
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRefImpl()
+	public DotNetTypeRef toTypeRef()
 	{
 		DotNetType innerType = getInnerType();
 		if(innerType == null)
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
-		return new DotNetPointerTypeRefImpl(innerType.toTypeRef());
+		return new CSharpPointerTypeRef(innerType.toTypeRef());
 	}
 
 	@Nullable

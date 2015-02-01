@@ -17,8 +17,10 @@
 package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.ide.highlight.check.AbstractCompilerCheck;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import com.intellij.util.ArrayUtil;
@@ -27,20 +29,25 @@ import com.intellij.util.ArrayUtil;
  * @author VISTALL
  * @since 15.05.14
  */
-public class CS0231 extends AbstractCompilerCheck<DotNetParameter>
+public class CS0231 extends CompilerCheck<DotNetParameter>
 {
+	@Nullable
 	@Override
-	public boolean accept(@NotNull DotNetParameter dotNetParameter)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetParameter dotNetParameter)
 	{
 		if(!dotNetParameter.hasModifier(CSharpModifier.PARAMS))
 		{
-			return false;
+			return null;
 		}
 
 		DotNetParameterList parent = (DotNetParameterList) dotNetParameter.getParent();
 
 		DotNetParameter[] parameters = parent.getParameters();
 
-		return ArrayUtil.getLastElement(parameters) != dotNetParameter;
+		if(ArrayUtil.getLastElement(parameters) != dotNetParameter)
+		{
+			return newBuilder(dotNetParameter);
+		}
+		return null;
 	}
 }

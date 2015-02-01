@@ -16,6 +16,9 @@
 			<parameter/>
 			<parameter/>
 		</operator>
+		<operator name="TILDE">
+			<parameter/>
+		</operator>
 		<operator name="GT" type="System.Boolean">
 			<parameter/>
 			<parameter/>
@@ -30,6 +33,39 @@
 		</operator>
 		<operator name="GTEQ" type="System.Boolean">
 			<parameter/>
+			<parameter/>
+		</operator>
+		<operator name="EXPLICIT_KEYWORD" type="System.Int32">
+			<parameter/>
+		</operator>
+		<operator name="EXPLICIT_KEYWORD" type="System.UInt32">
+			<parameter/>
+		</operator>
+		<operator name="EXPLICIT_KEYWORD" type="System.Int64">
+			<parameter/>
+		</operator>
+		<operator name="EXPLICIT_KEYWORD" type="System.UInt64">
+			<parameter/>
+		</operator>
+		<operator name="EXPLICIT_KEYWORD" type="System.Int16">
+			<parameter/>
+		</operator>
+		<operator name="EXPLICIT_KEYWORD" type="System.UInt16">
+			<parameter/>
+		</operator>
+		<operator name="EXPLICIT_KEYWORD" type="System.Byte">
+			<parameter/>
+		</operator>
+		<operator name="EXPLICIT_KEYWORD" type="System.SByte">
+			<parameter/>
+		</operator>
+		<operator name="EXPLICIT_KEYWORD" type="System.Single">
+			<parameter/>
+		</operator>
+		<operator name="EXPLICIT_KEYWORD" type="System.Double">
+			<parameter/>
+		</operator>
+		<operator name="EXPLICIT_KEYWORD" type="System.Decimal">
 			<parameter/>
 		</operator>
 	</enum>
@@ -132,7 +168,6 @@
 
 		<operator name="TILDE">
 			<parameter/>
-			<parameter/>
 		</operator>
 		
 		<operator name="GTGT">
@@ -221,7 +256,6 @@
 		</operator>
 
 		<operator name="TILDE">
-			<parameter/>
 			<parameter/>
 		</operator>
 		
@@ -312,7 +346,6 @@
 
 		<operator name="TILDE">
 			<parameter/>
-			<parameter/>
 		</operator>
 		
 		<operator name="GTGT">
@@ -401,7 +434,6 @@
 		</operator>
 
 		<operator name="TILDE">
-			<parameter/>
 			<parameter/>
 		</operator>
 		
@@ -492,7 +524,6 @@
 
 		<operator name="TILDE">
 			<parameter/>
-			<parameter/>
 		</operator>
 		
 		<operator name="GTGT">
@@ -581,7 +612,6 @@
 		</operator>
 
 		<operator name="TILDE">
-			<parameter/>
 			<parameter/>
 		</operator>
 		
@@ -672,7 +702,6 @@
 
 		<operator name="TILDE">
 			<parameter/>
-			<parameter/>
 		</operator>
 		
 		<operator name="GTGT">
@@ -761,7 +790,6 @@
 		</operator>
 
 		<operator name="TILDE">
-			<parameter/>
 			<parameter/>
 		</operator>
 		
@@ -852,7 +880,6 @@
 
 		<operator name="TILDE">
 			<parameter/>
-			<parameter/>
 		</operator>
 	</type>
 
@@ -931,7 +958,6 @@
 		</operator>
 
 		<operator name="TILDE">
-			<parameter/>
 			<parameter/>
 		</operator>
 	</type>

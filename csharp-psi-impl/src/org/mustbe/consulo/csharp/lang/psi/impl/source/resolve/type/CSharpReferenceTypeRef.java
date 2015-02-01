@@ -216,7 +216,7 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 			DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) resolved).getGenericParameters();
 			if(genericParameters.length == typeArgumentListRefs.length)
 			{
-				return new CSharpGenericExtractor(genericParameters, typeArgumentListRefs);
+				return CSharpGenericExtractor.create(genericParameters, typeArgumentListRefs);
 			}
 		}
 		return DotNetGenericExtractor.EMPTY;

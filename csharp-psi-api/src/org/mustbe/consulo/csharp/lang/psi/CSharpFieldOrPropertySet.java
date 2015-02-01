@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
+import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
@@ -25,11 +26,12 @@ import org.mustbe.consulo.dotnet.psi.DotNetExpression;
  * @author VISTALL
  * @since 29.12.13.
  */
+@ArrayFactoryFields
 public interface CSharpFieldOrPropertySet extends DotNetElement
 {
 	@NotNull
 	CSharpReferenceExpression getNameReferenceExpression();
 
 	@Nullable
-	DotNetExpression getValueReferenceExpression();
+	DotNetExpression getValueExpression();
 }

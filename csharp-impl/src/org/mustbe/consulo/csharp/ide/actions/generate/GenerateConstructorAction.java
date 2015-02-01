@@ -17,12 +17,8 @@
 package org.mustbe.consulo.csharp.ide.actions.generate;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.CSharpFileType;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 
 /**
@@ -40,22 +36,5 @@ public class GenerateConstructorAction extends CSharpGenerateAction
 	protected boolean isValidForFile(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file)
 	{
 		return findTypeDeclaration(editor, file) != null;
-	}
-
-	@Nullable
-	public static CSharpTypeDeclaration findTypeDeclaration(@NotNull Editor editor, @NotNull PsiFile file)
-	{
-		if(file.getFileType() != CSharpFileType.INSTANCE)
-		{
-			return null;
-		}
-		final int offset = editor.getCaretModel().getOffset();
-		final PsiElement elementAt = file.findElementAt(offset);
-		if(elementAt == null)
-		{
-			return null;
-		}
-		final PsiElement parent = elementAt.getParent();
-		return parent instanceof CSharpTypeDeclaration ? (CSharpTypeDeclaration) parent : null;
 	}
 }

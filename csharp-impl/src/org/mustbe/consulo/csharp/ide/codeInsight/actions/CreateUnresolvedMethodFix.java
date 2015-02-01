@@ -16,104 +16,49 @@
 
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.ide.reflactoring.CSharpGenerateUtil;
-import org.mustbe.consulo.csharp.ide.reflactoring.util.CSharpNameSuggesterUtil;
-import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
-import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
+import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
+import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
+import org.mustbe.consulo.csharp.ide.liveTemplates.expression.ReturnStatementExpression;
+import org.mustbe.consulo.csharp.ide.liveTemplates.expression.TypeRefExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.BundleBase;
-import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDocumentManager;
+import com.intellij.codeInsight.template.Template;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.impl.source.codeStyle.CodeEditUtil;
-import com.intellij.psi.impl.source.tree.TreeElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
  * @since 01.07.14
  */
-public class CreateUnresolvedMethodFix extends BaseIntentionAction
+public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
 {
-	public static class GenerateContext
-	{
-		CSharpReferenceExpression myExpression;
-		DotNetMemberOwner myTargetForGenerate;
-		boolean myStaticContext;
-
-		public GenerateContext(CSharpReferenceExpression expression, DotNetMemberOwner targetForGenerate, boolean staticContext)
-		{
-			myExpression = expression;
-			myTargetForGenerate = targetForGenerate;
-			myStaticContext = staticContext;
-		}
-	}
-
-	private final SmartPsiElementPointer<CSharpReferenceExpression> myPointer;
-	private final String myReferenceName;
-
 	public CreateUnresolvedMethodFix(CSharpReferenceExpression expression)
 	{
-		myPointer = SmartPointerManager.getInstance(expression.getProject()).createSmartPsiElementPointer(expression);
-		myReferenceName = expression.getReferenceName();
+		super(expression);
 	}
 
 	@NotNull
 	@Override
-	public String getText()
+	public String getTemplateText()
 	{
-		return BundleBase.format("Create ''{0}'' method", myReferenceName);
-	}
-
-	@NotNull
-	@Override
-	public String getFamilyName()
-	{
-		return "C#";
+		return "Create method ''{0}({1})''";
 	}
 
 	@Override
-	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
-	{
-		return resolveTargets() != null;
-	}
-
 	@Nullable
-	public GenerateContext resolveTargets()
+	protected CreateUnresolvedElementFixContext createGenerateContext()
 	{
 		CSharpReferenceExpression element = myPointer.getElement();
 		if(element == null)
@@ -121,7 +66,6 @@ public class CreateUnresolvedMethodFix extends BaseIntentionAction
 			return null;
 		}
 
-		//TODO [VISTALL] creating for ANY_MEMBER
 		if(element.kind() == CSharpReferenceExpression.ResolveToKind.METHOD)
 		{
 			PsiElement qualifier = element.getQualifier();
@@ -136,9 +80,7 @@ public class CreateUnresolvedMethodFix extends BaseIntentionAction
 				PsiElement parent = qualifiedElement.getParent();
 				if(parent instanceof DotNetMemberOwner && parent.isWritable())
 				{
-					boolean staticModifier = qualifiedElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) qualifiedElement)
-							.hasModifier(DotNetModifier.STATIC);
-					return new GenerateContext(element, (DotNetMemberOwner) parent, staticModifier);
+					return new CreateUnresolvedElementFixContext(element, (DotNetMemberOwner) parent);
 				}
 			}
 			else
@@ -152,16 +94,7 @@ public class CreateUnresolvedMethodFix extends BaseIntentionAction
 					PsiElement typeResolveResultElement = typeResolveResult.getElement();
 					if(typeResolveResultElement instanceof DotNetMemberOwner && typeResolveResultElement.isWritable())
 					{
-						boolean staticModifier = false;
-						if(qualifier instanceof CSharpReferenceExpression)
-						{
-							PsiElement resolved = ((CSharpReferenceExpression) qualifier).resolve();
-							if(resolved instanceof DotNetTypeDeclaration)
-							{
-								staticModifier = true;
-							}
-						}
-						return new GenerateContext(element, (DotNetMemberOwner) typeResolveResultElement, staticModifier);
+						return new CreateUnresolvedElementFixContext(element, (DotNetMemberOwner) typeResolveResultElement);
 					}
 				}
 			}
@@ -170,119 +103,36 @@ public class CreateUnresolvedMethodFix extends BaseIntentionAction
 	}
 
 	@Override
-	public void invoke(@NotNull Project project, final Editor editor, PsiFile file) throws IncorrectOperationException
+	public void buildTemplate(@NotNull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @NotNull PsiFile file, @NotNull Template template)
 	{
-		val generateContext = resolveTargets();
-		if(generateContext == null)
+		template.addTextSegment("public ");
+		if(contextType == CSharpContextUtil.ContextType.STATIC)
 		{
-			return;
-		}
-		PsiDocumentManager.getInstance(project).commitAllDocuments();
-
-		val builder = new StringBuilder();
-		builder.append("public ");
-
-		if(generateContext.myStaticContext)
-		{
-			builder.append("static ");
+			template.addTextSegment("static ");
 		}
 
-		DotNetTypeRef returnTypeRef = new DotNetTypeRefByQName(DotNetTypes.System.Void, CSharpTransform.INSTANCE); //TODO [VISTALL]
+		// get expected from method call expression not reference
+		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(context.getExpression().getParent());
 
-		builder.append(CSharpTypeRefPresentationUtil.buildShortText(returnTypeRef, generateContext.myExpression)).append(" ");
-		builder.append(myReferenceName);
-		builder.append("(");
-
-		CSharpCallArgumentListOwner parent = (CSharpCallArgumentListOwner) generateContext.myExpression.getParent();
-
-		CSharpCallArgument[] callArguments = parent.getCallArguments();
-
-		for(int i = 0; i < callArguments.length; i++)
+		if(!expectedTypeRefs.isEmpty())
 		{
-			if(i != 0)
-			{
-				builder.append(", ");
-			}
-
-			CSharpCallArgument callArgument = callArguments[i];
-
-			DotNetExpression argumentExpression = callArgument.getArgumentExpression();
-			if(argumentExpression != null)
-			{
-				DotNetTypeRef typeRef = argumentExpression.toTypeRef(false);
-				builder.append(CSharpTypeRefPresentationUtil.buildShortText(typeRef, generateContext.myExpression));
-			}
-			else
-			{
-				builder.append("object");
-			}
-
-			builder.append(" ");
-			if(callArgument instanceof CSharpNamedCallArgument)
-			{
-				builder.append(((CSharpNamedCallArgument) callArgument).getName());
-			}
-			else
-			{
-				Collection<String> suggestedNames = CSharpNameSuggesterUtil.getSuggestedNames(argumentExpression);
-				builder.append(ContainerUtil.getFirstItem(suggestedNames)).append(i);
-			}
+			template.addVariable(new TypeRefExpression(expectedTypeRefs, file), true);
 		}
-		builder.append(")");
-		builder.append("{");
-
-		String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(returnTypeRef, file);
-		if(defaultValueForType != null)
+		else
 		{
-			builder.append("return ");
-			builder.append(defaultValueForType);
-			builder.append(";\n");
+			template.addVariable(new TypeRefExpression(new CSharpTypeRefByQName(DotNetTypes.System.Void), file), true);
 		}
-		builder.append("}");
 
+		template.addTextSegment(" ");
+		template.addTextSegment(myReferenceName);
 
-		new WriteCommandAction.Simple<Object>(project, file)
-		{
-			@Override
-			protected void run() throws Throwable
-			{
-				final DotNetLikeMethodDeclaration newMethod = CSharpFileFactory.createMethod(getProject(), builder);
+		buildParameterList(context, file, template);
 
-				DotNetMemberOwner targetForGenerate = generateContext.myTargetForGenerate;
+		template.addTextSegment("{\n");
 
-				DotNetNamedElement[] members = targetForGenerate.getMembers();
-				if(members.length == 0)
-				{
-					assert targetForGenerate instanceof CSharpBodyWithBraces;
+		template.addVariable("$RETURN_STATEMENT$", new ReturnStatementExpression(), false);
+		template.addEndVariable();
 
-					CSharpGenerateUtil.normalizeBraces((CSharpBodyWithBraces) targetForGenerate);
-
-					PsiElement leftBrace = ((CSharpBodyWithBraces) targetForGenerate).getLeftBrace();
-
-					add(targetForGenerate, newMethod, leftBrace);
-				}
-				else
-				{
-					DotNetNamedElement lastElement = ArrayUtil.getLastElement(members);
-					assert lastElement != null;
-
-					add(targetForGenerate, newMethod, lastElement);
-				}
-			}
-
-			private void add(DotNetMemberOwner targetForGenerate, DotNetLikeMethodDeclaration newMethod, PsiElement lastElement)
-			{
-				ASTNode node = lastElement.getNode();
-				ASTNode treeNext = node.getTreeNext();
-
-				targetForGenerate.getNode().addLeaf(CSharpTokens.WHITE_SPACE, "\n", treeNext);
-
-				CodeEditUtil.setOldIndentation((TreeElement) newMethod.getNode(), 1);
-				targetForGenerate.getNode().addChild(newMethod.getNode(), treeNext);
-
-				PsiDocumentManager.getInstance(getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
-				CodeStyleManager.getInstance(getProject()).reformat(newMethod);
-			}
-		}.execute();
+		template.addTextSegment("}");
 	}
 }

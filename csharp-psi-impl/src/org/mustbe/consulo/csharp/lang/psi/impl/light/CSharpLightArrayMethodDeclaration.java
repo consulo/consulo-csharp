@@ -24,6 +24,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -59,6 +60,18 @@ public class CSharpLightArrayMethodDeclaration extends CSharpLightLikeMethodDecl
 	@Nullable
 	@Override
 	public DotNetType getTypeForImplement()
+	{
+		return myOriginal.getTypeForImplement();
+	}
+
+	@Override
+	public PsiElement getLeftBrace()
+	{
+		return null;
+	}
+
+	@Override
+	public PsiElement getRightBrace()
 	{
 		return null;
 	}

@@ -49,13 +49,14 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 	public static enum Owners
 	{
 		Constructor(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL),
+		StaticConstructor(CSharpModifier.STATIC),
 		DeConstructor,
-		InterfaceMember,
+		InterfaceMember(CSharpModifier.NEW),
 		GenericParameter(CSharpModifier.IN, CSharpModifier.OUT),
 		NamespaceType(CSharpModifier.STATIC, CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT,
 				CSharpModifier.PARTIAL, CSharpModifier.SEALED),
 		NestedType(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT,
-				CSharpModifier.PARTIAL, CSharpModifier.SEALED),
+				CSharpModifier.PARTIAL, CSharpModifier.SEALED, CSharpModifier.STATIC),
 		Unknown
 				{
 					@Override
@@ -122,6 +123,10 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 	{
 		if(owner instanceof CSharpConstructorDeclaration)
 		{
+			if(owner.hasModifier(DotNetModifier.STATIC))
+			{
+				return Owners.StaticConstructor;
+			}
 			if(((CSharpConstructorDeclaration) owner).isDeConstructor())
 			{
 				return Owners.DeConstructor;

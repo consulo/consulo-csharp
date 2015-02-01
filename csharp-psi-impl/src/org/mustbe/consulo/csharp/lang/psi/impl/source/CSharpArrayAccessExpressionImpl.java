@@ -28,11 +28,18 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpQualifiedNonReference;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightArrayMethodDeclarationBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -40,8 +47,48 @@ import com.intellij.util.containers.ContainerUtil;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpCallArgumentListOwner, CSharpQualifiedNonReference
+public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpCallArgumentListOwner,
+		CSharpQualifiedNonReference
 {
+	public static class OurResolver implements CSharpResolveCache.PolyVariantResolver<CSharpArrayAccessExpressionImpl>
+	{
+		public static final OurResolver INSTANCE = new OurResolver();
+
+		@NotNull
+		@Override
+		public ResolveResult[] resolve(@NotNull CSharpArrayAccessExpressionImpl expression, boolean incompleteCode, boolean resolveFromParent)
+		{
+			DotNetExpression qualifier = expression.getQualifier();
+			DotNetTypeRef typeRef = qualifier.toTypeRef(true);
+			if(typeRef instanceof DotNetPointerTypeRef)
+			{
+				DotNetTypeRef innerTypeRef = ((DotNetPointerTypeRef) typeRef).getInnerTypeRef();
+
+				CSharpLightArrayMethodDeclarationBuilder builder = new CSharpLightArrayMethodDeclarationBuilder(expression.getProject());
+				builder.withReturnType(innerTypeRef);
+				builder.addParameter(new CSharpLightParameterBuilder(expression.getProject()).withName("p").withTypeRef(new CSharpTypeRefByQName
+						(DotNetTypes.System.Int32)));
+				return new ResolveResult[]{new PsiElementResolveResult(builder)};
+			}
+
+			ResolveResult[] resolveResults = CSharpReferenceExpressionImplUtil.multiResolve0(CSharpReferenceExpression.ResolveToKind.ARRAY_METHOD,
+					expression, expression, true);
+			if(!incompleteCode)
+			{
+				return resolveResults;
+			}
+			List<ResolveResult> filter = new ArrayList<ResolveResult>();
+			for(ResolveResult resolveResult : resolveResults)
+			{
+				if(resolveResult.isValidResult())
+				{
+					filter.add(resolveResult);
+				}
+			}
+			return ContainerUtil.toArray(filter, ResolveResult.EMPTY_ARRAY);
+		}
+	}
+
 	public CSharpArrayAccessExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
@@ -76,7 +123,14 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 	@Override
 	public String getReferenceName()
 	{
-		throw new IllegalArgumentException("This methid is never called");
+		throw new UnsupportedOperationException();
+	}
+
+	@Nullable
+	@Override
+	public String getReferenceNameWithAt()
+	{
+		throw new UnsupportedOperationException();
 	}
 
 	@NotNull
@@ -124,20 +178,6 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
-		ResolveResult[] resolveResults = CSharpReferenceExpressionImplUtil.multiResolve0(CSharpReferenceExpression.ResolveToKind.ARRAY_METHOD, this,
-				this, true);
-		if(!incompleteCode)
-		{
-			return resolveResults;
-		}
-		List<ResolveResult> filter = new ArrayList<ResolveResult>();
-		for(ResolveResult resolveResult : resolveResults)
-		{
-			if(resolveResult.isValidResult())
-			{
-				filter.add(resolveResult);
-			}
-		}
-		return ContainerUtil.toArray(filter, ResolveResult.EMPTY_ARRAY);
+		return CSharpResolveCache.getInstance(getProject()).resolveWithCaching(this, OurResolver.INSTANCE, true, incompleteCode, true);
 	}
 }

@@ -19,32 +19,35 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
-import org.mustbe.consulo.csharp.lang.CSharpLanguage;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightElement;
 import org.mustbe.consulo.msil.representation.MsilRepresentationNavigateUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.impl.light.LightElement;
+import com.intellij.psi.PsiFile;
 
 /**
  * @author VISTALL
  * @since 02.06.14
  */
-public abstract class MsilElementWrapper<T extends PsiElement> extends LightElement
+public abstract class MsilElementWrapper<T extends PsiElement> extends CSharpLightElement<T>
 {
 	private final PsiElement myParent;
-	protected T myMsilElement;
 
 	public MsilElementWrapper(@Nullable PsiElement parent, T msilElement)
 	{
-		super(PsiManager.getInstance(msilElement.getProject()), CSharpLanguage.INSTANCE);
+		super(msilElement);
 		myParent = parent;
-		myMsilElement = msilElement;
 	}
 
 	@Override
 	public PsiElement getParent()
 	{
 		return myParent;
+	}
+
+	@Override
+	public PsiFile getContainingFile()
+	{
+		return null;
 	}
 
 	@Override
@@ -56,12 +59,13 @@ public abstract class MsilElementWrapper<T extends PsiElement> extends LightElem
 	@Override
 	public void navigate(boolean requestFocus)
 	{
-		MsilRepresentationNavigateUtil.navigateToRepresentation(myMsilElement, CSharpFileType.INSTANCE);
+		MsilRepresentationNavigateUtil.navigateToRepresentation(myOriginal, CSharpFileType.INSTANCE);
 	}
 
 	@NotNull
-	public T getMsilElement()
+	@Override
+	public PsiElement getNavigationElement()
 	{
-		return myMsilElement;
+		return this;
 	}
 }

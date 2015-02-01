@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import com.intellij.psi.PsiElement;
@@ -20,6 +21,12 @@ public class MsilGenericParameterListAsCSharpGenericParameterList extends MsilEl
 	}
 
 	@Override
+	public void accept(@NotNull CSharpElementVisitor visitor)
+	{
+		visitor.visitGenericParameterList(this);
+	}
+
+	@Override
 	public String toString()
 	{
 		return "MsilGenericParameterListAsCSharpGenericParameterList";
@@ -30,7 +37,7 @@ public class MsilGenericParameterListAsCSharpGenericParameterList extends MsilEl
 	@LazyInstance
 	public DotNetGenericParameter[] getParameters()
 	{
-		DotNetGenericParameter[] oldParameters = myMsilElement.getParameters();
+		DotNetGenericParameter[] oldParameters = myOriginal.getParameters();
 		if(oldParameters.length == 0)
 		{
 			return DotNetGenericParameter.EMPTY_ARRAY;
@@ -47,6 +54,6 @@ public class MsilGenericParameterListAsCSharpGenericParameterList extends MsilEl
 	@Override
 	public int getGenericParametersCount()
 	{
-		return myMsilElement.getGenericParametersCount();
+		return myOriginal.getGenericParametersCount();
 	}
 }

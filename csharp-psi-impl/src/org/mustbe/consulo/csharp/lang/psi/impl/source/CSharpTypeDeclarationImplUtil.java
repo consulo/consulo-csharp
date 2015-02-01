@@ -18,23 +18,23 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
-import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.Processor;
+import com.intellij.util.ArrayUtil;
 
 /**
  * @author VISTALL
@@ -42,6 +42,67 @@ import com.intellij.util.Processor;
  */
 public class CSharpTypeDeclarationImplUtil
 {
+	public static boolean isExplicitStaticType(@Nullable PsiElement maybeTypeDeclaration)
+	{
+		if(!(maybeTypeDeclaration instanceof DotNetTypeDeclaration))
+		{
+			return false;
+		}
+		if(((DotNetTypeDeclaration) maybeTypeDeclaration).hasModifier(DotNetModifier.STATIC))
+		{
+			DotNetModifierList modifierList = ((DotNetTypeDeclaration) maybeTypeDeclaration).getModifierList();
+			return modifierList != null && modifierList.hasModifierInTree(DotNetModifier.STATIC);
+		}
+		return false;
+	}
+
+	public static boolean isInheritOrSelf(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope, @NotNull String... vmQNames)
+	{
+		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+		PsiElement typeResolveResultElement = typeResolveResult.getElement();
+		if(!(typeResolveResultElement instanceof DotNetTypeDeclaration))
+		{
+			return false;
+		}
+
+		return isInheritOrSelf0((DotNetTypeDeclaration) typeResolveResultElement, scope, vmQNames);
+	}
+
+	private static boolean isInheritOrSelf0(DotNetTypeDeclaration typeDeclaration, PsiElement scope, String... vmQNames)
+	{
+		if(ArrayUtil.contains(typeDeclaration.getVmQName(), vmQNames))
+		{
+			return true;
+		}
+
+		DotNetTypeRef[] anExtends = typeDeclaration.getExtendTypeRefs();
+		if(anExtends.length > 0)
+		{
+			for(DotNetTypeRef dotNetType : anExtends)
+			{
+				PsiElement psiElement = dotNetType.resolve(scope).getElement();
+				if(psiElement instanceof DotNetTypeDeclaration)
+				{
+					if(psiElement.isEquivalentTo(typeDeclaration))
+					{
+						return false;
+					}
+
+					if(ArrayUtil.contains(((DotNetTypeDeclaration) psiElement).getVmQName(), vmQNames))
+					{
+						return true;
+					}
+
+					if(isInheritOrSelf0((DotNetTypeDeclaration) psiElement, scope, vmQNames))
+					{
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	public static boolean isEquivalentTo(@NotNull DotNetTypeDeclaration thisType, @Nullable PsiElement another)
 	{
 		return another instanceof DotNetTypeDeclaration && Comparing.equal(thisType.getVmQName(), ((DotNetTypeDeclaration) another).getVmQName());
@@ -76,7 +137,7 @@ public class CSharpTypeDeclarationImplUtil
 			{
 				return DotNetTypeRef.EMPTY_ARRAY;
 			}
-			typeRefs = new DotNetTypeRef[]{new DotNetTypeRefByQName(defaultSuperType, CSharpTransform.INSTANCE)};
+			typeRefs = new DotNetTypeRef[]{new CSharpTypeRefByQName(defaultSuperType)};
 		}
 		return typeRefs;
 	}
@@ -98,14 +159,25 @@ public class CSharpTypeDeclarationImplUtil
 				}
 			}
 		}
+
+		String defaultSuperType = getDefaultSuperType(typeDeclaration);
+		if(defaultSuperType != null)
+		{
+			DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(typeDeclaration.getProject()).findType(defaultSuperType,
+					scope.getResolveScope(), DotNetPsiSearcher.TypeResoleKind.UNKNOWN, CSharpTransform.INSTANCE);
+			if(type != null)
+			{
+				return Pair.create(type, DotNetGenericExtractor.EMPTY);
+			}
+		}
 		return null;
 	}
 
 	@Nullable
 	public static String getDefaultSuperType(@NotNull DotNetTypeDeclaration typeDeclaration)
 	{
-		String presentableQName = typeDeclaration.getPresentableQName();
-		if(Comparing.equal(presentableQName, DotNetTypes.System.Object))
+		String vmQName = typeDeclaration.getVmQName();
+		if(Comparing.equal(vmQName, DotNetTypes.System.Object))
 		{
 			return null;
 		}
@@ -120,33 +192,6 @@ public class CSharpTypeDeclarationImplUtil
 		else
 		{
 			return DotNetTypes.System.Object;
-		}
-	}
-
-	public static void processConstructors(@NotNull DotNetTypeDeclaration type, @NotNull Processor<DotNetConstructorDeclaration> processor)
-	{
-		for(DotNetNamedElement dotNetNamedElement : type.getMembers())
-		{
-			if(!(dotNetNamedElement instanceof DotNetConstructorDeclaration))
-			{
-				continue;
-			}
-
-			if(!processor.process((DotNetConstructorDeclaration) dotNetNamedElement))
-			{
-				return;
-			}
-		}
-
-		if(type.isStruct())
-		{
-			CSharpLightConstructorDeclarationBuilder builder = new CSharpLightConstructorDeclarationBuilder(type.getProject());
-			builder.addModifier(CSharpModifier.PUBLIC);
-			builder.setNavigationElement(type);
-			builder.withParent(type);
-			builder.withName(type.getName());
-
-			processor.process(builder);
 		}
 	}
 }

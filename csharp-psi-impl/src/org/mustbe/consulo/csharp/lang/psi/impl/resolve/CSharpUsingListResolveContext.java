@@ -2,7 +2,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
 import gnu.trove.THashMap;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.consulo.lombok.annotations.LazyInstance;
@@ -21,6 +24,7 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -79,7 +83,21 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 	@Override
 	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
 	{
-		return getCachedNamespaceContext().findExtensionMethodGroupByName(name);
+		CSharpElementGroup<CSharpMethodDeclaration> groupByName1 = getCachedNamespaceContext().findExtensionMethodGroupByName(name);
+		CSharpElementGroup<CSharpMethodDeclaration> groupByName2 = getCachedTypeContext().findExtensionMethodGroupByName(name);
+		if(groupByName1 == null && groupByName2 == null)
+		{
+			return null;
+		}
+		if(groupByName1 == null)
+		{
+			return groupByName2;
+		}
+		if(groupByName2 == null)
+		{
+			return groupByName1;
+		}
+		return new CSharpCompositeElementGroupImpl<CSharpMethodDeclaration>(myUsingList.getProject(), Arrays.asList(groupByName1, groupByName2));
 	}
 
 	@Override
@@ -97,7 +115,8 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 				}
 			}
 		}
-		return true;
+
+		return getCachedTypeContext().processExtensionMethodGroups(processor);
 	}
 
 	@NotNull
@@ -111,6 +130,15 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 		{
 			return new PsiElement[] {typeDefStatement};
 		}
+
+		CSharpResolveContext cachedTypeContext = getCachedTypeContext();
+
+		PsiElement[] selectedMembers = cachedTypeContext.findByName(name, deep, holder);
+		if(selectedMembers.length > 0)
+		{
+			return selectedMembers;
+		}
+
 		CSharpResolveContext cachedNamespaceContext = getCachedNamespaceContext();
 
 		return cachedNamespaceContext.findByName(name, deep, holder);
@@ -120,6 +148,12 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 	public boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
 	{
 		if(!ContainerUtil.process(myUsingList.getTypeDefs(), processor))
+		{
+			return false;
+		}
+
+		CSharpResolveContext cachedTypeContext = getCachedTypeContext();
+		if(!cachedTypeContext.processElements(processor, deep))
 		{
 			return false;
 		}
@@ -136,6 +170,32 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 			return EMPTY;
 		}
 		return CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, myUsingList.getResolveScope(), usingNamespaces);
+	}
+
+	@NotNull
+	@LazyInstance
+	public CSharpResolveContext getCachedTypeContext()
+	{
+		DotNetTypeRef[] usingTypeRefs = myUsingList.getUsingTypeRefs();
+		if(usingTypeRefs.length == 0)
+		{
+			return EMPTY;
+		}
+
+		List<CSharpResolveContext> contexts = new ArrayList<CSharpResolveContext>(usingTypeRefs.length);
+		for(DotNetTypeRef usingTypeRef : usingTypeRefs)
+		{
+			DotNetTypeResolveResult typeResolveResult = usingTypeRef.resolve(myUsingList);
+
+			PsiElement typeResolveResultElement = typeResolveResult.getElement();
+			if(typeResolveResultElement == null)
+			{
+				continue;
+			}
+			contexts.add(CSharpResolveContextUtil.createContext(typeResolveResult.getGenericExtractor(), myUsingList.getResolveScope(),
+					typeResolveResultElement));
+		}
+		return new CSharpCompositeResolveContext(myUsingList.getProject(), ContainerUtil.toArray(contexts, ARRAY_FACTORY));
 	}
 
 	@NotNull

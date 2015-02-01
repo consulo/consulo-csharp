@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
 import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -33,10 +34,12 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.util.NullableFactory;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
@@ -62,6 +65,7 @@ public abstract class CompilerCheck<T extends PsiElement>
 		private String myText;
 		private TextRange myTextRange;
 		private HighlightInfoType myHighlightInfoType;
+		private TextAttributesKey myTextAttributesKey;
 
 		private List<IntentionAction> myQuickFixes = Collections.emptyList();
 
@@ -92,6 +96,17 @@ public abstract class CompilerCheck<T extends PsiElement>
 			return myHighlightInfoType;
 		}
 
+		public TextAttributesKey getTextAttributesKey()
+		{
+			return myTextAttributesKey;
+		}
+
+		public CompilerCheckBuilder setTextAttributesKey(TextAttributesKey textAttributesKey)
+		{
+			myTextAttributesKey = textAttributesKey;
+			return this;
+		}
+
 		public CompilerCheckBuilder setHighlightInfoType(HighlightInfoType highlightInfoType)
 		{
 			myHighlightInfoType = highlightInfoType;
@@ -108,6 +123,7 @@ public abstract class CompilerCheck<T extends PsiElement>
 			return this;
 		}
 
+		@Override
 		@NotNull
 		public List<IntentionAction> getQuickFixes()
 		{
@@ -121,6 +137,12 @@ public abstract class CompilerCheck<T extends PsiElement>
 			HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(getHighlightInfoType());
 			builder = builder.descriptionAndTooltip(getText());
 			builder = builder.range(getTextRange());
+
+			TextAttributesKey textAttributesKey = getTextAttributesKey();
+			if(textAttributesKey != null)
+			{
+				builder = builder.textAttributes(textAttributesKey);
+			}
 			return builder.create();
 		}
 	}
@@ -195,6 +217,11 @@ public abstract class CompilerCheck<T extends PsiElement>
 		{
 			return ((CSharpLocalVariable) e).getName();
 		}
+		else if(e instanceof DotNetXXXAccessor)
+		{
+			PsiElement parent = e.getParent();
+			return formatElement(parent) + "." + ((DotNetXXXAccessor) e).getAccessorKind().name().toLowerCase();
+		}
 
 		String parentName = null;
 		PsiElement parent = e.getParent();
@@ -210,7 +237,7 @@ public abstract class CompilerCheck<T extends PsiElement>
 		String currentText = "Unknown element : " + e.getClass().getSimpleName();
 		if(e instanceof DotNetLikeMethodDeclaration)
 		{
-			currentText = DotNetElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration)e, 0);
+			currentText = CSharpElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) e, 0);
 		}
 		else if(e instanceof DotNetTypeDeclaration)
 		{

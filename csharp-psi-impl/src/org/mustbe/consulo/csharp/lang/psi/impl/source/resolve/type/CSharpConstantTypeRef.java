@@ -17,7 +17,9 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 
@@ -25,14 +27,23 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 31.08.14
  */
-public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSharpChameleonTypeRef
+public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSharpFastImplicitTypeRef
 {
-	public CSharpConstantTypeRef(DotNetTypeRef defaultTypeRef)
+	// this value always cached on JVM ?
+	private static final Integer ZERO = 0;
+
+	private static final DotNetTypeRef ourEnumTypeRef = new CSharpTypeRefByQName(DotNetTypes.System.Enum);
+
+	@Nullable
+	private final Object myValue;
+
+	public CSharpConstantTypeRef(@NotNull DotNetTypeRef defaultTypeRef, @Nullable Object value)
 	{
 		super(defaultTypeRef);
+		myValue = value;
 	}
 
-	@NotNull
+	@Nullable
 	@Override
 	public DotNetTypeRef doMirror(@NotNull DotNetTypeRef another, PsiElement scope)
 	{
@@ -42,6 +53,11 @@ public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSh
 		{
 			return another;
 		}
-		return this;
+
+		if(myValue == ZERO && CSharpTypeUtil.isInheritable(ourEnumTypeRef, another, scope))
+		{
+			return another;
+		}
+		return null;
 	}
 }

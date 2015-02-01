@@ -4,14 +4,13 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightConstructorDeclarationBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightTypeDeclarationBuilder;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.source.resolve.type.DotNetTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import com.intellij.openapi.project.Project;
 
 /**
@@ -28,29 +27,30 @@ public class CSharpLambdaResolveResultUtil
 		CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(project);
 		builder.withParentQName(declaration.getPresentableParentQName());
 		builder.withName(declaration.getName());
+		builder.setNavigationElement(declaration);
 
 		builder.putUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE, declaration);
 
-		builder.addExtendType(new DotNetTypeRefByQName(DotNetTypes.System.MulticastDelegate, CSharpTransform.INSTANCE));
+		builder.addExtendType(new CSharpTypeRefByQName(DotNetTypes.System.MulticastDelegate));
 
 		for(DotNetGenericParameter parameter : declaration.getGenericParameters())
 		{
 			builder.addGenericParameter(parameter);
 		}
 
-		CSharpLightConstructorDeclarationBuilder cBuilder = new CSharpLightConstructorDeclarationBuilder(project);
-		cBuilder.addModifier(CSharpModifier.PUBLIC);
-		cBuilder.setNavigationElement(declaration);
-		cBuilder.withParent(declaration);
-		cBuilder.withName(declaration.getName());
+		CSharpLightMethodDeclarationBuilder invokeMethodBuilder = new CSharpLightMethodDeclarationBuilder(project);
+		invokeMethodBuilder.withName("Invoke");
+		invokeMethodBuilder.addModifier(CSharpModifier.PUBLIC);
+		invokeMethodBuilder.withReturnType(declaration.getReturnTypeRef());
 
-		builder.addMember(cBuilder);
-
-		CSharpLightParameterBuilder parameter = new CSharpLightParameterBuilder(declaration.getProject());
-		parameter = parameter.withName("p");
-		parameter = parameter.withTypeRef(new CSharpLambdaTypeRef(declaration));
-		cBuilder.addParameter(parameter);
-
+		for(DotNetParameter parameter : declaration.getParameters())
+		{
+			CSharpLightParameterBuilder parameterBuilder = new CSharpLightParameterBuilder(project);
+			parameterBuilder.withName(parameter.getName());
+			parameterBuilder.withTypeRef(parameter.toTypeRef(true));
+			invokeMethodBuilder.addParameter(parameterBuilder);
+		}
+		builder.addMember(invokeMethodBuilder);
 		return builder;
 	}
 }

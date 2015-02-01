@@ -27,6 +27,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -45,10 +46,11 @@ public class CSharpConversionMethodDeclarationImpl extends CSharpLikeMethodDecla
 		super(stub, CSharpStubElements.CONVERSION_METHOD_DECLARATION);
 	}
 
+	@Nullable
 	@Override
-	public String getName()
+	public PsiElement getNameIdentifier()
 	{
-		return isImplicit() ? "<implicit>" : "<explicit>";
+		return getReturnType();
 	}
 
 	@Override

@@ -16,24 +16,22 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
-import java.util.Collection;
 import java.util.Collections;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.containers.ContainerUtil;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -43,13 +41,27 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 {
 	public static final Key<Boolean> BREAK_RULE = Key.create("break.rule");
 
-	private final GlobalSearchScope myScope;
+	private final PsiElement myScopeElement;
+	private final GlobalSearchScope myResolveScope;
+	private final OverrideProcessor myOverrideProcessor;
 
-	public MemberResolveScopeProcessor(GlobalSearchScope scope, ResolveResult[] elements, ExecuteTarget[] targets)
+	public MemberResolveScopeProcessor(CSharpResolveOptions options, ExecuteTarget[] targets)
 	{
-		Collections.addAll(myElements, elements);
-		myScope = scope;
+		Collections.addAll(myElements, options.getAdditionalElements());
+		myScopeElement = options.getElement();
+		myResolveScope = myScopeElement.getResolveScope();
+		myOverrideProcessor = OverrideProcessor.ALWAYS_TRUE;
 		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
+	}
+
+	public MemberResolveScopeProcessor(PsiElement scopeElement,
+			@Nullable ExecuteTarget[] targets,
+			@Nullable OverrideProcessor overrideProcessor)
+	{
+		myScopeElement = scopeElement;
+		myResolveScope = scopeElement.getResolveScope();
+		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
+		myOverrideProcessor = overrideProcessor;
 	}
 
 	@Override
@@ -64,18 +76,17 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 		DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
 		assert extractor != null;
 
-		CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myScope, element);
+		CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myResolveScope, element);
 
 		PsiElement[] psiElements = selector.doSelectElement(context, state.get(CSharpResolveUtil.WALK_DEEP) == Boolean.TRUE);
-		for(PsiElement psiElement : psiElements)
+		for(val psiElement : OverrideUtil.filterOverrideElements(this, myScopeElement, psiElements, myOverrideProcessor))
 		{
-			PsiElement normalize = normalize(psiElement);
-			if(!ExecuteTargetUtil.isMyElement(this, normalize))
+			if(!ExecuteTargetUtil.isMyElement(this, psiElement))
 			{
 				continue;
 			}
 
-			addElement(normalize);
+			addElement(psiElement);
 
 			if(state.get(BREAK_RULE) == Boolean.TRUE)
 			{
@@ -83,23 +94,5 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 			}
 		}
 		return true;
-	}
-
-	private static PsiElement normalize(PsiElement element)
-	{
-		if(element instanceof CSharpElementGroup)
-		{
-			Collection<? extends PsiElement> elements = ((CSharpElementGroup) element).getElements();
-			if(elements.size() == 1)
-			{
-				PsiElement firstItem = ContainerUtil.getFirstItem(elements);
-				if(firstItem instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) firstItem).isDelegate() || !(firstItem instanceof
-						DotNetLikeMethodDeclaration))
-				{
-					return firstItem;
-				}
-			}
-		}
-		return element;
 	}
 }

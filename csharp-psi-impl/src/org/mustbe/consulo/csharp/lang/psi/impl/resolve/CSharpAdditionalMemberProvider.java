@@ -2,6 +2,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.extensions.ExtensionPointName;
 
 /**
@@ -14,5 +15,5 @@ public interface CSharpAdditionalMemberProvider
 			ExtensionPointName.create("org.mustbe.consulo.csharp.additionalMemberProvider");
 
 	@NotNull
-	DotNetElement[] getAdditionalMembers(@NotNull DotNetElement element);
+	DotNetElement[] getAdditionalMembers(@NotNull DotNetElement element, DotNetGenericExtractor extractor);
 }
