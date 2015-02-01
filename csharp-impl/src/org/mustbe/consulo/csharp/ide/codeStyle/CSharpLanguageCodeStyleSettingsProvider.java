@@ -122,6 +122,22 @@ public class CSharpLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSe
 					"CATCH_ON_NEW_LINE", "ALIGN_MULTILINE_PARAMETERS", "ALIGN_MULTILINE_PARAMETERS_IN_CALLS", "ALIGN_MULTILINE_BINARY_OPERATION",
 					"BINARY_OPERATION_WRAP", "BINARY_OPERATION_SIGN_ON_NEXT_LINE", "TERNARY_OPERATION_WRAP", "TERNARY_OPERATION_SIGNS_ON_NEXT_LINE",
 					"PARENTHESES_EXPRESSION_LPAREN_WRAP", "PARENTHESES_EXPRESSION_RPAREN_WRAP", "ALIGN_MULTILINE_TERNARY_OPERATION");
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "NAMESPACE_BRACE_STYLE", "In namespace declaration",
+					CodeStyleSettingsCustomizable.WRAPPING_BRACES, CodeStyleSettingsCustomizable.OptionAnchor.BEFORE, "CLASS_BRACE_STYLE",
+					CodeStyleSettingsCustomizable.BRACE_PLACEMENT_OPTIONS, CodeStyleSettingsCustomizable.BRACE_PLACEMENT_VALUES);
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "EVENT_BRACE_STYLE", "In event declaration",
+					CodeStyleSettingsCustomizable.WRAPPING_BRACES, CodeStyleSettingsCustomizable.OptionAnchor.AFTER, "METHOD_BRACE_STYLE",
+					CodeStyleSettingsCustomizable.BRACE_PLACEMENT_OPTIONS, CodeStyleSettingsCustomizable.BRACE_PLACEMENT_VALUES);
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "PROPERTY_BRACE_STYLE", "In property declaration",
+					CodeStyleSettingsCustomizable.WRAPPING_BRACES, CodeStyleSettingsCustomizable.OptionAnchor.AFTER, "METHOD_BRACE_STYLE",
+					CodeStyleSettingsCustomizable.BRACE_PLACEMENT_OPTIONS, CodeStyleSettingsCustomizable.BRACE_PLACEMENT_VALUES);
+
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "INDEX_METHOD_BRACE_STYLE", "In index method declaration",
+					CodeStyleSettingsCustomizable.WRAPPING_BRACES, CodeStyleSettingsCustomizable.OptionAnchor.AFTER, "METHOD_BRACE_STYLE",
+					CodeStyleSettingsCustomizable.BRACE_PLACEMENT_OPTIONS, CodeStyleSettingsCustomizable.BRACE_PLACEMENT_VALUES);
 		}
 	}
 

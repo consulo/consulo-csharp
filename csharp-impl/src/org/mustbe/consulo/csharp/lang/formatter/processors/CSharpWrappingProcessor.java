@@ -2,16 +2,12 @@ package org.mustbe.consulo.csharp.lang.formatter.processors;
 
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
-import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerCompositeValueImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerValue;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpImplicitArrayInitializationExpressionImpl;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.formatting.Wrap;
 import com.intellij.formatting.WrapType;
@@ -28,11 +24,13 @@ public class CSharpWrappingProcessor
 {
 	private final ASTNode myNode;
 	private final CommonCodeStyleSettings myCodeStyleSettings;
+	private final CSharpCodeStyleSettings myCustomSettings;
 
 	public CSharpWrappingProcessor(ASTNode node, CommonCodeStyleSettings codeStyleSettings, CSharpCodeStyleSettings customSettings)
 	{
 		myNode = node;
 		myCodeStyleSettings = codeStyleSettings;
+		myCustomSettings = customSettings;
 	}
 
 	@Nullable
@@ -50,7 +48,23 @@ public class CSharpWrappingProcessor
 			{
 				braceStyle = myCodeStyleSettings.CLASS_BRACE_STYLE;
 			}
-			else if(parentPsi instanceof CSharpBlockStatementImpl && parentPsi.getParent() instanceof CSharpMethodDeclaration)
+			else if(parentPsi instanceof CSharpNamespaceDeclaration)
+			{
+				braceStyle = myCustomSettings.NAMESPACE_BRACE_STYLE;
+			}
+			else if(parentPsi instanceof CSharpPropertyDeclaration)
+			{
+				braceStyle = myCustomSettings.PROPERTY_BRACE_STYLE;
+			}
+			else if(parentPsi instanceof CSharpEventDeclaration)
+			{
+				braceStyle = myCustomSettings.EVENT_BRACE_STYLE;
+			}
+			else if(parentPsi instanceof CSharpArrayMethodDeclaration)
+			{
+				braceStyle = myCustomSettings.INDEX_METHOD_BRACE_STYLE;
+			}
+			else if(parentPsi instanceof CSharpBlockStatementImpl && parentPsi.getParent() instanceof DotNetLikeMethodDeclaration)
 			{
 				braceStyle = myCodeStyleSettings.METHOD_BRACE_STYLE;
 			}
