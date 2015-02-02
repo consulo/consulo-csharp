@@ -18,10 +18,13 @@ package org.mustbe.consulo.csharp.lang;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import com.intellij.lang.BracePair;
 import com.intellij.lang.PairedBraceMatcher;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 
@@ -58,8 +61,22 @@ public class CSharpPairedBraceMatcher implements PairedBraceMatcher
 	}
 
 	@Override
-	public int getCodeConstructStart(PsiFile psiFile, int i)
+	public int getCodeConstructStart(PsiFile psiFile, int offset)
 	{
-		return i;
+		PsiElement openElement = psiFile.findElementAt(offset);
+		if(openElement == null)
+		{
+			return offset;
+		}
+		PsiElement parent = openElement.getParent();
+		if(parent instanceof CSharpBodyWithBraces)
+		{
+			if(parent.getParent() instanceof DotNetLikeMethodDeclaration)
+			{
+				return parent.getParent().getTextOffset();
+			}
+			return parent.getTextOffset();
+		}
+		return offset;
 	}
 }
