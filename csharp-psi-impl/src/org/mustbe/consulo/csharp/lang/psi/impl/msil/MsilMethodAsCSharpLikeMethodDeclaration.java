@@ -35,6 +35,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
+import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.psi.PsiElement;
@@ -163,11 +164,16 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 	public DotNetParameter[] getParameters()
 	{
 		DotNetParameter[] parameters = myOriginal.getParameters();
-		DotNetParameter[] newParameters = new DotNetParameter[parameters.length];
+		boolean hasVararg = myOriginal.hasModifier(MsilTokens.VARARG_KEYWORD);
+		DotNetParameter[] newParameters = new DotNetParameter[parameters.length + (hasVararg ? 1 : 0)];
 		for(int i = 0; i < parameters.length; i++)
 		{
 			DotNetParameter parameter = parameters[i];
 			newParameters[i] = new MsilParameterAsCSharpParameter(this, parameter, this, i);
+		}
+		if(hasVararg)
+		{
+			newParameters[parameters.length] = new MsilVarargParameterAsCSharpParameter(this);
 		}
 		return newParameters;
 	}
