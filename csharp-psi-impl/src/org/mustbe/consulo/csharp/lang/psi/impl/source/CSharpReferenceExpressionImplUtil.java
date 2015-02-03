@@ -18,6 +18,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import static org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression.ResolveToKind;
 
+import gnu.trove.THashMap;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +44,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.ar
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.ResolveResultSorter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.TypeLikeSorter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpElementGroupTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
@@ -440,7 +443,18 @@ public class CSharpReferenceExpressionImplUtil
 				thisTypeDeclaration = PsiTreeUtil.getParentOfType(element, DotNetTypeDeclaration.class);
 				if(thisTypeDeclaration != null)
 				{
-					return new ResolveResult[]{new PsiElementResolveResult(thisTypeDeclaration, true)};
+					DotNetGenericExtractor genericExtractor = DotNetGenericExtractor.EMPTY;
+					int genericParametersCount = thisTypeDeclaration.getGenericParametersCount();
+					if(genericParametersCount > 0)
+					{
+						val map = new THashMap<DotNetGenericParameter, DotNetTypeRef>(genericParametersCount);
+						for(DotNetGenericParameter genericParameter : thisTypeDeclaration.getGenericParameters())
+						{
+							map.put(genericParameter, new CSharpTypeRefFromGenericParameter(genericParameter));
+						}
+						genericExtractor = CSharpGenericExtractor.create(map);
+					}
+					return new ResolveResult[]{new PsiElementResolveResultWithExtractor(thisTypeDeclaration, genericExtractor, true)};
 				}
 				break;
 			case BASE:
