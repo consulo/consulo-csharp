@@ -486,8 +486,10 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 					return;
 				}
 
-				if(parent.kind() == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || parent.kind() == CSharpReferenceExpression.ResolveToKind
-						.ANY_MEMBER)
+				CSharpReferenceExpression.ResolveToKind kind = parent.kind();
+				if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE ||
+						kind == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR ||
+						kind == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
 				{
 					val referenceName = parent.getReferenceName().replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "");
 
