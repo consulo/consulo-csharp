@@ -238,7 +238,7 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 		SomeType someType = SomeTypeParser.parseType(typeBeforeDot, nameFromBytecode);
 		if(someType != null)
 		{
-			return new DummyType(getProject(), myOriginal, someType);
+			return new DummyType(getProject(), MsilPropertyAsCSharpArrayMethodDeclaration.this, someType);
 		}
 		return null;
 	}

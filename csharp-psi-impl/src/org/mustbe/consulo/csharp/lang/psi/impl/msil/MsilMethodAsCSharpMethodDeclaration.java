@@ -182,7 +182,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 		SomeType someType = SomeTypeParser.parseType(typeBeforeDot, nameFromBytecode);
 		if(someType != null)
 		{
-			return new DummyType(getProject(), myOriginal, someType);
+			return new DummyType(getProject(), MsilMethodAsCSharpMethodDeclaration.this, someType);
 		}
 		return null;
 	}

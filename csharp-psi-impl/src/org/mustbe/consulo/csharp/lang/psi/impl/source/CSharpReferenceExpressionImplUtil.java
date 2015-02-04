@@ -766,10 +766,11 @@ public class CSharpReferenceExpressionImplUtil
 		CSharpResolveSelector selector = options.getSelector();
 		boolean completion = options.isCompletion();
 
+		PsiElement scopeElement = element;
 		CSharpCodeFragment codeFragment = PsiTreeUtil.getParentOfType(element, CSharpCodeFragment.class);
 		if(codeFragment != null)
 		{
-			element = codeFragment.getScopeElement();
+			scopeElement = codeFragment.getScopeElement();
 		}
 
 		if(isConstructorKind(kind))
@@ -892,7 +893,7 @@ public class CSharpReferenceExpressionImplUtil
 				resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR, extractor);
 				resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, new ExtensionMethodByNameSelector(((CSharpReferenceExpression) element).getReferenceName()));
 
-				Couple<PsiElement> resolveLayers = getResolveLayers(element, false);
+				Couple<PsiElement> resolveLayers = getResolveLayers(scopeElement, scopeElement != element);
 
 				//PsiElement last = resolveLayers.getFirst();
 				PsiElement targetToWalkChildren = resolveLayers.getSecond();
@@ -910,7 +911,7 @@ public class CSharpReferenceExpressionImplUtil
 		}
 		else
 		{
-			Couple<PsiElement> resolveLayers = getResolveLayers(element, false);
+			Couple<PsiElement> resolveLayers = getResolveLayers(scopeElement, scopeElement != element);
 
 			PsiElement last = resolveLayers.getFirst();
 			PsiElement targetToWalkChildren = resolveLayers.getSecond();
