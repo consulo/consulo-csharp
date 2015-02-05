@@ -1598,6 +1598,10 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(BitUtil.isSet(flags, ALLOW_EMPTY_TYPE_ARGUMENTS))
 		{
+			if(BitUtil.isSet(flags, STUB_SUPPORT))
+			{
+				throw new IllegalArgumentException("Empty type arguments is not allowed inside stub tree");
+			}
 			PsiBuilder.Marker marker = parseReferenceEmptyTypeArgumentListImpl(builder);
 			if(marker != null)
 			{
