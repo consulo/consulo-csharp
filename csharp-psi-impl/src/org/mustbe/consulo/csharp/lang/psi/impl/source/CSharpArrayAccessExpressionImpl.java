@@ -71,7 +71,7 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 				return new ResolveResult[]{new PsiElementResolveResult(builder)};
 			}
 
-			ResolveResult[] resolveResults = CSharpReferenceExpressionImplUtil.multiResolve0(CSharpReferenceExpression.ResolveToKind.ARRAY_METHOD,
+			ResolveResult[] resolveResults = CSharpReferenceExpressionImplUtil.multiResolveImpl(CSharpReferenceExpression.ResolveToKind.ARRAY_METHOD,
 					expression, expression, true);
 			if(!incompleteCode)
 			{

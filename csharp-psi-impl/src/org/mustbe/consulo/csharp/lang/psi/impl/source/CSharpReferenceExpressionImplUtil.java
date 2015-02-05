@@ -21,6 +21,7 @@ import static org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression.Resol
 import gnu.trove.THashMap;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -71,6 +72,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.Couple;
@@ -357,6 +359,47 @@ public class CSharpReferenceExpressionImplUtil
 			return null;
 		}
 		return resultWithWeights[0].getElement();
+	}
+
+
+	public static ResolveResult[] multiResolveImpl(ResolveToKind kind,
+			final CSharpCallArgumentListOwner callArgumentListOwner,
+			final CSharpQualifiedNonReference element,
+			boolean resolveFromParent)
+	{
+		ResolveResult[] resolveResults = multiResolve0(kind, callArgumentListOwner, element, resolveFromParent);
+		if(element instanceof CSharpReferenceExpression)
+		{
+			int typeArgumentListSize = getTypeArgumentListSize((CSharpReferenceExpression) element);
+			if(typeArgumentListSize > 0)
+			{
+				DotNetTypeRef[] typeArgumentListRefs = ((CSharpReferenceExpression) element).getTypeArgumentListRefs();
+
+				for(int i = 0; i < resolveResults.length; i++)
+				{
+					ResolveResult resolveResult = resolveResults[i];
+
+					PsiElement resolveResultElement = resolveResult.getElement();
+					if(resolveResultElement instanceof CSharpTypeDeclaration)
+					{
+						val map = new HashMap<DotNetGenericParameter, DotNetTypeRef>();
+						DotNetGenericParameter[] genericParameters = ((CSharpTypeDeclaration) resolveResultElement).getGenericParameters();
+						for(int j = 0; j < typeArgumentListRefs.length; j++)
+						{
+							DotNetTypeRef typeArgumentListRef = typeArgumentListRefs[j];
+							DotNetGenericParameter genericParameter = ArrayUtil2.safeGet(genericParameters, j);
+							if(genericParameter == null)
+							{
+								continue;
+							}
+							map.put(genericParameter, typeArgumentListRef);
+						}
+						resolveResults[i] = new PsiElementResolveResultWithExtractor(resolveResultElement, CSharpGenericExtractor.create(map));
+					}
+				}
+			}
+		}
+		return resolveResults;
 	}
 
 	public static ResolveResult[] multiResolve0(ResolveToKind kind,

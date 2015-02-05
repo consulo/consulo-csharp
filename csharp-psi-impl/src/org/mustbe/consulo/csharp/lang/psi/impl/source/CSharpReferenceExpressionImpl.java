@@ -174,7 +174,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		{
 			p = (CSharpCallArgumentListOwner) parent;
 		}
-		return CSharpReferenceExpressionImplUtil.multiResolve0(kind, p, this, resolveFromParent);
+		return CSharpReferenceExpressionImplUtil.multiResolveImpl(kind, p, this, resolveFromParent);
 	}
 
 	@Nullable
