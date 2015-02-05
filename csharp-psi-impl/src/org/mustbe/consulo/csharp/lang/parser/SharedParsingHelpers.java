@@ -46,6 +46,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 	public static final int LT_GT_HARD_REQUIRE = 1 << 2;
 	public static final int BRACKET_RETURN_BEFORE = 1 << 3;
 	public static final int WITHOUT_NULLABLE = 1 << 4;
+	public static final int ALLOW_EMPTY_TYPE_ARGUMENTS = 1 << 5;
 
 	public static class TypeInfo
 	{
