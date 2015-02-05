@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.ide.actions.generate;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
@@ -72,6 +73,10 @@ public class GenerateImplementMemberHandler extends GenerateImplementOrOverrideM
 	@Override
 	public Collection<DotNetModifierListOwner> getItems(@NotNull CSharpTypeDeclaration typeDeclaration)
 	{
+		if(typeDeclaration.isInterface())
+		{
+			return Collections.emptyList();
+		}
 		return OverrideUtil.collectMembersWithModifier(typeDeclaration, DotNetGenericExtractor.EMPTY, CSharpModifier.ABSTRACT);
 	}
 }
