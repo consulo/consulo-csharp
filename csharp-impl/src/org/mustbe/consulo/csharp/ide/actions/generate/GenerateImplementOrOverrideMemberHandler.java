@@ -81,6 +81,12 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 						{
 							GenerateImplementOrOverrideMemberHandler.this.processReturn(builder, element);
 						}
+
+						@Override
+						public boolean canGenerateCodeBlock()
+						{
+							return !typeDeclaration.isInterface();
+						}
 					};
 				}
 				return null;

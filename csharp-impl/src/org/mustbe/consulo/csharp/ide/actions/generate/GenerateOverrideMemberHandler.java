@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
@@ -91,24 +92,49 @@ public class GenerateOverrideMemberHandler extends GenerateImplementOrOverrideMe
 		Collection<PsiElement> allMembers = OverrideUtil.getAllMembers(typeDeclaration, typeDeclaration.getResolveScope(),
 				DotNetGenericExtractor.EMPTY);
 
+		boolean isInterface = typeDeclaration.isInterface();
+
 		List<PsiElement> elements = new ArrayList<PsiElement>();
 		for(PsiElement element : allMembers)
 		{
-			if(element instanceof DotNetModifierListOwner)
+			if(isInterface)
 			{
-				if(((DotNetModifierListOwner) element).hasModifier(DotNetModifier.ABSTRACT))
+				if(element instanceof DotNetModifierListOwner)
 				{
-					continue;
-				}
+					if(!((DotNetModifierListOwner) element).hasModifier(CSharpModifier.INTERFACE_ABSTRACT))
+					{
+						continue;
+					}
 
-				if(((DotNetModifierListOwner) element).hasModifier(DotNetModifier.STATIC))
-				{
-					continue;
-				}
+					if(((DotNetModifierListOwner) element).hasModifier(CSharpModifier.STATIC))
+					{
+						continue;
+					}
 
-				if(!CSharpVisibilityUtil.isVisible((DotNetModifierListOwner) element, typeDeclaration))
+					if(!CSharpVisibilityUtil.isVisible((DotNetModifierListOwner) element, typeDeclaration))
+					{
+						continue;
+					}
+				}
+			}
+			else
+			{
+				if(element instanceof DotNetModifierListOwner)
 				{
-					continue;
+					if(((DotNetModifierListOwner) element).hasModifier(DotNetModifier.ABSTRACT))
+					{
+						continue;
+					}
+
+					if(((DotNetModifierListOwner) element).hasModifier(DotNetModifier.STATIC))
+					{
+						continue;
+					}
+
+					if(!CSharpVisibilityUtil.isVisible((DotNetModifierListOwner) element, typeDeclaration))
+					{
+						continue;
+					}
 				}
 			}
 
