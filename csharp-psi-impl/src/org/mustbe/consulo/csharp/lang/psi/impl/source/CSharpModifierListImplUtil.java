@@ -141,6 +141,12 @@ public class CSharpModifierListImplUtil
 				{
 					return true;
 				}
+				if(parent instanceof DotNetXXXAccessor)
+				{
+					PsiElement superParent = parent.getParent();
+					return superParent instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) superParent).hasModifier(DotNetModifier
+							.ABSTRACT);
+				}
 				break;
 		}
 		return false;
