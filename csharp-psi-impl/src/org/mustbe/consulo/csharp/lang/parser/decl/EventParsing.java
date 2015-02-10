@@ -37,7 +37,20 @@ public class EventParsing extends MemberWithBodyParsing
 		{
 			expect(builder, IDENTIFIER, "Identifier expected");
 			IElementType tokenType = builder.getTokenType();
-			if(tokenType == SEMICOLON)
+			if(tokenType == COMMA)
+			{
+				marker.done(EVENT_DECLARATION);
+
+				while(builder.getTokenType() == COMMA)
+				{
+					PsiBuilder.Marker marker2 = builder.mark();
+					builder.advanceLexer();
+					expect(builder, IDENTIFIER, "Identifier expected");
+					marker2.done(EVENT_DECLARATION);
+				}
+				expect(builder, SEMICOLON, "';' expected");
+			}
+			else if(tokenType == SEMICOLON)
 			{
 				builder.advanceLexer();
 			}
@@ -49,14 +62,13 @@ public class EventParsing extends MemberWithBodyParsing
 					builder.error("Expression expected");
 				}
 				expect(builder, SEMICOLON, "';' expected");
+				marker.done(EVENT_DECLARATION);
 			}
 			else
 			{
 				parseAccessors(builder, XXX_ACCESSOR, EVENT_ACCESSOR_START);
+				marker.done(EVENT_DECLARATION);
 			}
 		}
-
-		marker.done(EVENT_DECLARATION);
 	}
-
 }

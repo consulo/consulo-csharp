@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -47,8 +48,7 @@ public abstract class CSharpStubVariableImpl<S extends CSharpVariableDeclStub<?>
 	@Override
 	public boolean isConstant()
 	{
-		S stub = getStub();
-		return stub != null && stub.isConstant();
+		return false;
 	}
 
 	@Nullable
@@ -62,7 +62,19 @@ public abstract class CSharpStubVariableImpl<S extends CSharpVariableDeclStub<?>
 	@Nullable
 	public DotNetType getType()
 	{
+		return getExplicitType();
+	}
+
+	@Nullable
+	public DotNetType getExplicitType()
+	{
 		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
+	}
+
+	@Nullable
+	public DotNetModifierList getExplicitModifierList()
+	{
+		return getStubOrPsiChild(CSharpStubElements.MODIFIER_LIST);
 	}
 
 	@NotNull

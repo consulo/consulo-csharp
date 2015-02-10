@@ -25,6 +25,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetEventDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
@@ -46,6 +47,20 @@ public class CSharpEventDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 	public CSharpEventDeclarationImpl(@NotNull CSharpVariableDeclStub<DotNetEventDeclaration> stub)
 	{
 		super(stub, CSharpStubElements.EVENT_DECLARATION);
+	}
+
+	@Nullable
+	@Override
+	public DotNetType getType()
+	{
+		return CSharpStubVariableImplUtil.getType(this);
+	}
+
+	@Nullable
+	@Override
+	public DotNetModifierList getModifierList()
+	{
+		return CSharpStubVariableImplUtil.getModifierList(this);
 	}
 
 	@Override
