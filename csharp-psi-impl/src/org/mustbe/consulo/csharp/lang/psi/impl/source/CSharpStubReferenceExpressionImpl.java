@@ -292,6 +292,12 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	@Override
 	public AccessType getMemberAccessType()
 	{
+		CSharpReferenceExpressionStub stub = getStub();
+		if(stub != null)
+		{
+			return stub.getMemberAccessType();
+		}
+
 		PsiElement childByType = getMemberAccessElement();
 		if(childByType == null)
 		{

@@ -64,7 +64,11 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 		DOT,
 		ARROW,
 		COLONCOLON,
-		NULLABLE_CALL
+		NULLABLE_CALL;
+
+		@NotNull
+		@Immutable
+		public static final AccessType[] VALUES = values();
 	}
 
 	@Nullable
