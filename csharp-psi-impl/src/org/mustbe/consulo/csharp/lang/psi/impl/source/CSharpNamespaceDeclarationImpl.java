@@ -61,15 +61,14 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		DotNetModifierList modifierList = getModifierList();
-		return modifierList != null && modifierList.hasModifier(modifier);
+		return false;
 	}
 
 	@Nullable
 	@Override
 	public DotNetModifierList getModifierList()
 	{
-		return findChildByClass(DotNetModifierList.class);
+		return null;
 	}
 
 	@Override
