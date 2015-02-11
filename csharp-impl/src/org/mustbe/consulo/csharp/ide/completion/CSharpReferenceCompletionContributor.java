@@ -389,7 +389,10 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 			{
 				PsiElement position = parameters.getPosition();
 				CSharpNewExpressionImpl newExpression = PsiTreeUtil.getParentOfType(position, CSharpNewExpressionImpl.class);
-				assert newExpression != null;
+				if(newExpression == null)
+				{
+					return;
+				}
 
 				List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(newExpression);
 
