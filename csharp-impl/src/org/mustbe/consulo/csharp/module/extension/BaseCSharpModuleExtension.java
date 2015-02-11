@@ -104,7 +104,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 				{
 					continue;
 				}
-				if(DotNetTypes.System.Reflection.AssemblyTitleAttribute.equalsIgnoreCase(dotNetTypeDeclaration.getVmQName()))
+				if(DotNetTypes.System.Reflection.AssemblyTitleAttribute.equals(dotNetTypeDeclaration.getVmQName()))
 				{
 					DotNetExpression[] parameterExpressions = attribute.getParameterExpressions();
 					if(parameterExpressions.length == 0)
