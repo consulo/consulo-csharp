@@ -20,13 +20,12 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.AttributeListIndex;
-import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.module.DotNetAssemblyUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
@@ -73,7 +72,7 @@ public class CSharpVisibilityUtil
 						return false;
 					}
 
-					String placeAssemblyName = findAssemblyTitle(placeModule);
+					String placeAssemblyName = DotNetAssemblyUtil.getAssemblyTitle(place);
 					if(placeAssemblyName == null)
 					{
 						return false;
@@ -118,39 +117,6 @@ public class CSharpVisibilityUtil
 				break;
 			}
 		} return false;
-	}
-
-	@Nullable
-	public static String findAssemblyTitle(@NotNull Module module)
-	{
-		Collection<CSharpAttributeList> attributeLists = AttributeListIndex.getInstance().get(DotNetAttributeTargetType.ASSEMBLY, module.getProject(),
-				new ModuleWithDependenciesScope(module, 0));
-
-		loop:for(CSharpAttributeList attributeList : attributeLists)
-		{
-			for(CSharpAttribute attribute : attributeList.getAttributes())
-			{
-				DotNetTypeDeclaration dotNetTypeDeclaration = attribute.resolveToType();
-				if(dotNetTypeDeclaration == null)
-				{
-					continue;
-				}
-				if(DotNetTypes.System.Reflection.AssemblyTitleAttribute.equalsIgnoreCase(dotNetTypeDeclaration.getVmQName()))
-				{
-					DotNetExpression[] parameterExpressions = attribute.getParameterExpressions();
-					if(parameterExpressions.length == 0)
-					{
-						break loop;
-					}
-					String valueAs = new ConstantExpressionEvaluator(parameterExpressions[0]).getValueAs(String.class);
-					if(valueAs != null)
-					{
-						return valueAs;
-					}
-				}
-			}
-		}
-		return module.getName();
 	}
 
 	@NotNull

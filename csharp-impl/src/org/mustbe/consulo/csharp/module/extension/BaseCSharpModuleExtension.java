@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.module.extension;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.consulo.module.extension.impl.ModuleExtensionImpl;
@@ -25,13 +26,20 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
+import org.mustbe.consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.AttributeListIndex;
 import org.mustbe.consulo.csharp.module.CSharpLanguageVersionPointer;
 import org.mustbe.consulo.dotnet.DotNetRunUtil;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleLangExtension;
+import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.search.searches.AllClassesSearch;
 import com.intellij.openapi.fileTypes.LanguageFileType;
+import com.intellij.openapi.module.impl.scopes.ModuleWithDependenciesScope;
 import com.intellij.openapi.roots.ModuleRootLayer;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.Processor;
@@ -84,7 +92,34 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	@RequiredReadAction
 	public String getAssemblyTitle()
 	{
-		return CSharpVisibilityUtil.findAssemblyTitle(getModule());
+		Collection<CSharpAttributeList> attributeLists = AttributeListIndex.getInstance().get(DotNetAttributeTargetType.ASSEMBLY, getProject(),
+				new ModuleWithDependenciesScope(getModule(), 0));
+
+		loop:for(CSharpAttributeList attributeList : attributeLists)
+		{
+			for(CSharpAttribute attribute : attributeList.getAttributes())
+			{
+				DotNetTypeDeclaration dotNetTypeDeclaration = attribute.resolveToType();
+				if(dotNetTypeDeclaration == null)
+				{
+					continue;
+				}
+				if(DotNetTypes.System.Reflection.AssemblyTitleAttribute.equalsIgnoreCase(dotNetTypeDeclaration.getVmQName()))
+				{
+					DotNetExpression[] parameterExpressions = attribute.getParameterExpressions();
+					if(parameterExpressions.length == 0)
+					{
+						break loop;
+					}
+					String valueAs = new ConstantExpressionEvaluator(parameterExpressions[0]).getValueAs(String.class);
+					if(valueAs != null)
+					{
+						return valueAs;
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	@NotNull
