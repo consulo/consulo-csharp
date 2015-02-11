@@ -72,6 +72,19 @@ public class CSharpStubVariableImplUtil
 	}
 
 	@Nullable
+	public static PsiElement getConstantKeywordElement(@NotNull CSharpStubVariableImpl<?> variable)
+	{
+		PsiElement keywordElement = variable.getExplicitConstantKeywordElement();
+		if(keywordElement != null)
+		{
+			return keywordElement;
+		}
+
+		DotNetVariable prevVariable = getPrevVariable(variable);
+		return prevVariable == null ? null : prevVariable.getConstantKeywordElement();
+	}
+
+	@Nullable
 	private static DotNetVariable getPrevVariable(@NotNull CSharpStubVariableImpl<?> variable)
 	{
 		if(isMultipleDeclaration(variable))

@@ -55,7 +55,7 @@ public abstract class CSharpStubVariableImpl<S extends CSharpVariableDeclStub<?>
 	@Override
 	public PsiElement getConstantKeywordElement()
 	{
-		return findChildByType(CSharpTokens.CONST_KEYWORD);
+		return getExplicitConstantKeywordElement();
 	}
 
 	@Override
@@ -75,6 +75,12 @@ public abstract class CSharpStubVariableImpl<S extends CSharpVariableDeclStub<?>
 	public DotNetModifierList getExplicitModifierList()
 	{
 		return getStubOrPsiChild(CSharpStubElements.MODIFIER_LIST);
+	}
+
+	@Nullable
+	public PsiElement getExplicitConstantKeywordElement()
+	{
+		return findChildByType(CSharpTokens.CONST_KEYWORD);
 	}
 
 	@NotNull

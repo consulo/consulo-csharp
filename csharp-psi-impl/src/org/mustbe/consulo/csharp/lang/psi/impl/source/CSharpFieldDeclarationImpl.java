@@ -21,13 +21,13 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -67,6 +67,13 @@ public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 
 	@Nullable
 	@Override
+	public PsiElement getConstantKeywordElement()
+	{
+		return CSharpStubVariableImplUtil.getConstantKeywordElement(this);
+	}
+
+	@Nullable
+	@Override
 	public DotNetExpression getInitializer()
 	{
 		return findChildByClass(DotNetExpression.class);
@@ -80,6 +87,6 @@ public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 		{
 			return stub.isConstant();
 		}
-		return findChildByType(CSharpTokens.CONST_KEYWORD) != null;
+		return CSharpStubVariableImplUtil.getConstantKeywordElement(this) != null;
 	}
 }
