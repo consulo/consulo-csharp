@@ -73,7 +73,7 @@ public class CSharpVisibilityUtil
 						return false;
 					}
 
-					String placeAssemblyName = findAssemblyName(placeModule);
+					String placeAssemblyName = findAssemblyTitle(placeModule);
 					if(placeAssemblyName == null)
 					{
 						return false;
@@ -121,7 +121,7 @@ public class CSharpVisibilityUtil
 	}
 
 	@Nullable
-	private static String findAssemblyName(@NotNull Module module)
+	public static String findAssemblyTitle(@NotNull Module module)
 	{
 		Collection<CSharpAttributeList> attributeLists = AttributeListIndex.getInstance().get(DotNetAttributeTargetType.ASSEMBLY, module.getProject(),
 				new ModuleWithDependenciesScope(module, 0));

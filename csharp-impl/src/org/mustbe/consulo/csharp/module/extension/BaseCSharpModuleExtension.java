@@ -22,7 +22,10 @@ import java.util.List;
 import org.consulo.module.extension.impl.ModuleExtensionImpl;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import org.mustbe.consulo.csharp.module.CSharpLanguageVersionPointer;
 import org.mustbe.consulo.dotnet.DotNetRunUtil;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleLangExtension;
@@ -55,6 +58,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public PsiElement[] getEntryPointElements()
 	{
 		Query<DotNetTypeDeclaration> search = AllClassesSearch.search(getModule().getModuleWithDependenciesScope(), getProject());
@@ -73,6 +77,14 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 			}
 		});
 		return ContainerUtil.toArray(typeDeclarations, DotNetTypeDeclaration.ARRAY_FACTORY);
+	}
+
+	@Nullable
+	@Override
+	@RequiredReadAction
+	public String getAssemblyTitle()
+	{
+		return CSharpVisibilityUtil.findAssemblyTitle(getModule());
 	}
 
 	@NotNull
