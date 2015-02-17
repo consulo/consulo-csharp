@@ -83,6 +83,7 @@ import com.intellij.codeInsight.completion.CompletionUtilCore;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.completion.PrioritizedLookupElement;
+import com.intellij.codeInsight.completion.impl.CamelHumpMatcher;
 import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -501,13 +502,14 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 						return;
 					}
 
+					val camelHumpMatcher = new CamelHumpMatcher(referenceName, false);
 					val names = new ArrayList<String>();
 					TypeIndex.getInstance().processAllKeys(parent.getProject(), new Processor<String>()
 					{
 						@Override
 						public boolean process(String s)
 						{
-							if(s.startsWith(referenceName))
+							if(camelHumpMatcher.prefixMatches(s))
 							{
 								names.add(s);
 							}
