@@ -17,64 +17,35 @@
 package org.mustbe.consulo.csharp.lang.psi.impl;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.CSharpFileType;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.impl.PsiModificationTrackerImpl;
-import com.intellij.psi.impl.PsiTreeChangeEventImpl;
-import com.intellij.psi.impl.PsiTreeChangePreprocessor;
-import com.intellij.psi.util.PsiModificationTracker;
+import com.intellij.psi.impl.PsiTreeChangePreprocessorBase;
 import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
  * @since 19.12.13.
  */
-public class CSharpPsiTreeChangePreprocessor implements PsiTreeChangePreprocessor
+public class CSharpPsiTreeChangePreprocessor extends PsiTreeChangePreprocessorBase
 {
-	private final PsiModificationTrackerImpl myTracker;
-
-	public CSharpPsiTreeChangePreprocessor(PsiModificationTracker tracker)
+	public CSharpPsiTreeChangePreprocessor(@NotNull Project project)
 	{
-		myTracker = (PsiModificationTrackerImpl) tracker;
+		super(project);
 	}
 
 	@Override
-	public void treeChanged(@NotNull PsiTreeChangeEventImpl psiTreeChangeEvent)
+	protected boolean isMyFile(@NotNull PsiFile file)
 	{
-		switch(psiTreeChangeEvent.getCode())
-		{
-			case BEFORE_CHILD_ADDITION:
-			case BEFORE_CHILD_REMOVAL:
-			case BEFORE_CHILD_REPLACEMENT:
-			case BEFORE_CHILD_MOVEMENT:
-			case BEFORE_CHILDREN_CHANGE:
-			case BEFORE_PROPERTY_CHANGE:
-				break;
-			case CHILD_ADDED:
-			case CHILD_REMOVED:
-			case CHILD_REPLACED:
-			case CHILD_MOVED:
-			case CHILDREN_CHANGED:
-			case PROPERTY_CHANGED:
-				PsiFile file = psiTreeChangeEvent.getFile();
-				if(file == null || file.getFileType() != CSharpFileType.INSTANCE)
-				{
-					return;
-				}
-				PsiElement element = psiTreeChangeEvent.getElement();
-				if(element == null)
-				{
-					return;
-				}
-				DotNetStatement statement = PsiTreeUtil.getParentOfType(element, DotNetStatement.class);
-				if(statement != null)
-				{
-					return;
-				}
-				myTracker.incOutOfCodeBlockModificationCounter();
-				break;
-		}
+		return file instanceof CSharpFile;
+	}
+
+	@Override
+	protected boolean isInsideCodeBlock(@Nullable PsiElement element)
+	{
+		return PsiTreeUtil.getParentOfType(element, DotNetStatement.class, false) != null;
 	}
 }
