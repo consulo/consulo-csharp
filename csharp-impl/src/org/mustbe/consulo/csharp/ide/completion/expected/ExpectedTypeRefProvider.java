@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
@@ -184,6 +185,10 @@ public class ExpectedTypeRefProvider
 							typeProvider = ((CSharpReferenceExpression) expression).resolve();
 						}
 						infoList.add(new ExpectedTypeInfo(expression.toTypeRef(false), typeProvider));
+					}
+					else if(element instanceof CSharpEventDeclaration)
+					{
+						infoList.add(new ExpectedTypeInfo(((CSharpEventDeclaration) element).toTypeRef(false), element));
 					}
 				}
 			}
