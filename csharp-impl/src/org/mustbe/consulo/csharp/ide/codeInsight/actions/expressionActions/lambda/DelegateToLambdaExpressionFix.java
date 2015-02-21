@@ -12,6 +12,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
+import com.intellij.lang.ASTNode;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
@@ -109,7 +110,12 @@ public class DelegateToLambdaExpressionFix extends PsiElementBaseIntentionAction
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element)
 	{
-		if(element.getNode().getElementType() == CSharpTokens.DELEGATE_KEYWORD)
+		ASTNode node = element.getNode();
+		if(node == null)
+		{
+			return false;
+		}
+		if(node.getElementType() == CSharpTokens.DELEGATE_KEYWORD)
 		{
 			CSharpDelegateExpressionImpl anonymMethodExpression = PsiTreeUtil.getParentOfType(element, CSharpDelegateExpressionImpl.class);
 			return anonymMethodExpression != null && anonymMethodExpression.toTypeRef(true) != DotNetTypeRef.ERROR_TYPE;
