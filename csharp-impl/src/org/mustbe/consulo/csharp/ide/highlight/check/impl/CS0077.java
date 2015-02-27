@@ -19,10 +19,19 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAsExpressionImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.SmartPointerManager;
+import com.intellij.psi.SmartPsiElementPointer;
+import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
@@ -30,6 +39,43 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CS0077 extends CompilerCheck<CSharpAsExpressionImpl>
 {
+	public static class AddQuestMarkQuickFix extends BaseIntentionAction
+	{
+		private SmartPsiElementPointer<DotNetType> myPointer;
+
+		public AddQuestMarkQuickFix(DotNetType type)
+		{
+			myPointer = SmartPointerManager.getInstance(type.getProject()).createSmartPsiElementPointer(type);
+			setText("Add '?'");
+		}
+
+		@NotNull
+		@Override
+		public String getFamilyName()
+		{
+			return "C#";
+		}
+
+		@Override
+		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+		{
+			return myPointer.getElement() != null;
+		}
+
+		@Override
+		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+		{
+			DotNetType element = myPointer.getElement();
+			if(element == null)
+			{
+				return;
+			}
+
+			DotNetType type = CSharpFileFactory.createType(project, element.getText() + "?");
+			element.replace(type);
+		}
+	}
+
 	@Nullable
 	@Override
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpAsExpressionImpl element)
@@ -42,7 +88,10 @@ public class CS0077 extends CompilerCheck<CSharpAsExpressionImpl>
 
 		if(!typeRef.resolve(element).isNullable())
 		{
-			return newBuilder(element.getAsKeyword(), "as", CSharpTypeRefPresentationUtil.buildTextWithKeyword(typeRef, element));
+			DotNetType type = element.getType();
+			assert type != null;
+			return newBuilder(element.getAsKeyword(), "as", CSharpTypeRefPresentationUtil.buildTextWithKeyword(typeRef,
+					element)).addQuickFix(new AddQuestMarkQuickFix(type));
 		}
 		return super.checkImpl(languageVersion, element);
 	}

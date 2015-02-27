@@ -45,10 +45,10 @@ public class CS0453 extends CompilerCheck<CSharpNullableType>
 	{
 		private SmartPsiElementPointer<CSharpNullableType> myPointer;
 
-		public DeleteQuestMarkQuickFix(CSharpNullableType nullableType, String text)
+		public DeleteQuestMarkQuickFix(CSharpNullableType nullableType)
 		{
 			myPointer = SmartPointerManager.getInstance(nullableType.getProject()).createSmartPsiElementPointer(nullableType);
-			setText("Remove '" + text + "'");
+			setText("Remove '?'");
 		}
 
 		@NotNull
@@ -103,6 +103,6 @@ public class CS0453 extends CompilerCheck<CSharpNullableType>
 		}
 		PsiElement questElement = element.getQuestElement();
 		return newBuilder(questElement, CSharpTypeRefPresentationUtil.buildTextWithKeyword(dotNetTypeRef,
-				element)).addQuickFix(new DeleteQuestMarkQuickFix(element, "?"));
+				element)).addQuickFix(new DeleteQuestMarkQuickFix(element));
 	}
 }
