@@ -127,55 +127,50 @@ public class ExpressionParsing extends SharedParsingHelpers
 			return null;
 		}
 
-		if(builder.getTokenType() == QUEST)
+		if(builder.getTokenType() == QUESTQUEST)
 		{
-			// NULL_COALESCING
-			if(builder.lookAhead(1) == QUEST)
-			{
-				final PsiBuilder.Marker nullCoalescing = condition.precede();
-				builder.advanceLexer();
-				builder.advanceLexer();
+			final PsiBuilder.Marker nullCoalescing = condition.precede();
+			builder.advanceLexer();
 
-				final PsiBuilder.Marker ifNullPart = parse(builder);
-				if(ifNullPart == null)
-				{
-					builder.error("Expression expected");
-				}
-				nullCoalescing.done(NULL_COALESCING_EXPRESSION);
-				return nullCoalescing;
+			final PsiBuilder.Marker ifNullPart = parse(builder);
+			if(ifNullPart == null)
+			{
+				builder.error("Expression expected");
 			}
-			else
+			nullCoalescing.done(NULL_COALESCING_EXPRESSION);
+			return nullCoalescing;
+		}
+		else if(builder.getTokenType() == QUEST)
+		{
+			final PsiBuilder.Marker ternary = condition.precede();
+			builder.advanceLexer();
+
+			final PsiBuilder.Marker truePart = parse(builder);
+			if(truePart == null)
 			{
-				final PsiBuilder.Marker ternary = condition.precede();
-				builder.advanceLexer();
-
-				final PsiBuilder.Marker truePart = parse(builder);
-				if(truePart == null)
-				{
-					builder.error("Expression expected");
-					ternary.done(CONDITIONAL_EXPRESSION);
-					return ternary;
-				}
-
-				if(builder.getTokenType() != COLON)
-				{
-					builder.error("Expected colon");
-					ternary.done(CONDITIONAL_EXPRESSION);
-					return ternary;
-				}
-				builder.advanceLexer();
-
-				final PsiBuilder.Marker falsePart = parseConditional(builder);
-				if(falsePart == null)
-				{
-					builder.error("Expression expected");
-					ternary.done(CONDITIONAL_EXPRESSION);
-					return ternary;
-				}
-
+				builder.error("Expression expected");
 				ternary.done(CONDITIONAL_EXPRESSION);
 				return ternary;
 			}
+
+			if(builder.getTokenType() != COLON)
+			{
+				builder.error("Expected colon");
+				ternary.done(CONDITIONAL_EXPRESSION);
+				return ternary;
+			}
+			builder.advanceLexer();
+
+			final PsiBuilder.Marker falsePart = parseConditional(builder);
+			if(falsePart == null)
+			{
+				builder.error("Expression expected");
+				ternary.done(CONDITIONAL_EXPRESSION);
+				return ternary;
+			}
+
+			ternary.done(CONDITIONAL_EXPRESSION);
+			return ternary;
 		}
 		{
 			return condition;
