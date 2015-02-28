@@ -177,6 +177,13 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		return CSharpReferenceExpressionImplUtil.multiResolveImpl(kind, p, this, resolveFromParent);
 	}
 
+	@NotNull
+	@Override
+	public ResolveResult[] tryResolveFromQualifier(@NotNull PsiElement element)
+	{
+		return CSharpReferenceExpressionImplUtil.tryResolveFromQualifier(this, element);
+	}
+
 	@Nullable
 	@Override
 	public PsiElement resolve()

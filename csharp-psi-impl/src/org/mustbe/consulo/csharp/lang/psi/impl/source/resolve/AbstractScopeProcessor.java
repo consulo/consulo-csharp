@@ -17,11 +17,12 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.ResolveResultSorter;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.UserDataHolderBase;
@@ -39,7 +40,7 @@ import com.intellij.util.containers.ContainerUtil;
 public abstract class AbstractScopeProcessor extends UserDataHolderBase implements PsiScopeProcessor
 {
 	protected final List<ResolveResult> myElements = new ArrayList<ResolveResult>();
-	private ResolveResultSorter mySorter = ResolveResultSorter.EMPTY;
+	private Comparator<ResolveResult> myComparator;
 
 	public void add(ResolveResult resolveResult)
 	{
@@ -79,7 +80,10 @@ public abstract class AbstractScopeProcessor extends UserDataHolderBase implemen
 		}
 
 		ResolveResult[] resolveResults = ContainerUtil.toArray(myElements, ResolveResult.EMPTY_ARRAY);
-		mySorter.sort(resolveResults);
+		if(myComparator != null)
+		{
+			Arrays.sort(resolveResults, myComparator);
+		}
 		return resolveResults;
 	}
 
@@ -107,11 +111,10 @@ public abstract class AbstractScopeProcessor extends UserDataHolderBase implemen
 	@Override
 	public void handleEvent(Event event, @Nullable Object o)
 	{
-
 	}
 
-	public void setSorter(@NotNull ResolveResultSorter sorter)
+	public void setComparator(@Nullable Comparator<ResolveResult> comparator)
 	{
-		mySorter = sorter;
+		myComparator = comparator;
 	}
 }

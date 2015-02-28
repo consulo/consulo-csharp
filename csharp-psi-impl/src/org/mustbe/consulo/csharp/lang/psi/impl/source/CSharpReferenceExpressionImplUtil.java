@@ -21,6 +21,7 @@ import static org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression.Resol
 import gnu.trove.THashMap;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,8 +43,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.genericInference.G
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.ResolveResultSorter;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.TypeLikeSorter;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.TypeLikeComparator;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.VariableOrTypeComparator;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpElementGroupTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
@@ -88,6 +89,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtil;
+import com.intellij.util.ObjectUtils;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import lombok.val;
@@ -361,13 +363,13 @@ public class CSharpReferenceExpressionImplUtil
 		return resultWithWeights[0].getElement();
 	}
 
-
+	@NotNull
 	public static ResolveResult[] multiResolveImpl(ResolveToKind kind,
 			final CSharpCallArgumentListOwner callArgumentListOwner,
 			final CSharpQualifiedNonReference element,
 			boolean resolveFromParent)
 	{
-		ResolveResult[] resolveResults = multiResolve0(kind, callArgumentListOwner, element, resolveFromParent);
+		ResolveResult[] resolveResults = buildSelectorAndMultiResolve(kind, callArgumentListOwner, element, resolveFromParent);
 		if(element instanceof CSharpReferenceExpression)
 		{
 			int typeArgumentListSize = getTypeArgumentListSize((CSharpReferenceExpression) element);
@@ -402,9 +404,18 @@ public class CSharpReferenceExpressionImplUtil
 		return resolveResults;
 	}
 
-	public static ResolveResult[] multiResolve0(ResolveToKind kind,
-			final CSharpCallArgumentListOwner callArgumentListOwner,
-			final CSharpQualifiedNonReference element,
+	public static ResolveResult[] buildSelectorAndMultiResolve(@NotNull ResolveToKind kind,
+			@Nullable final CSharpCallArgumentListOwner callArgumentListOwner,
+			@NotNull final CSharpQualifiedNonReference element,
+			boolean resolveFromParent)
+	{
+		return buildSelectorAndMultiResolve(kind, callArgumentListOwner, element, null, resolveFromParent);
+	}
+
+	public static ResolveResult[] buildSelectorAndMultiResolve(@NotNull ResolveToKind kind,
+			@Nullable final CSharpCallArgumentListOwner callArgumentListOwner,
+			@NotNull final CSharpQualifiedNonReference element,
+			@Nullable final PsiElement forceQualifierElement,
 			boolean resolveFromParent)
 	{
 		CSharpResolveSelector selector = StaticResolveSelectors.NONE;
@@ -451,7 +462,8 @@ public class CSharpReferenceExpressionImplUtil
 				break;
 		}
 
-		return collectResults(new CSharpResolveOptions(kind, selector, element, callArgumentListOwner, false, resolveFromParent));
+		return collectResults(new CSharpResolveOptions(kind, selector, element, callArgumentListOwner, false, resolveFromParent),
+				DotNetGenericExtractor.EMPTY, forceQualifierElement);
 	}
 
 	public static ResolveResult[] collectResults(@NotNull CSharpResolveOptions options)
@@ -459,8 +471,9 @@ public class CSharpReferenceExpressionImplUtil
 		return collectResults(options, DotNetGenericExtractor.EMPTY, options.getElement());
 	}
 
-	public static ResolveResult[] collectResults(@NotNull CSharpResolveOptions options, @NotNull DotNetGenericExtractor defaultExtractor,
-			@NotNull PsiElement forceQualifierElement)
+	public static ResolveResult[] collectResults(@NotNull CSharpResolveOptions options,
+			@NotNull DotNetGenericExtractor defaultExtractor,
+			@Nullable PsiElement forceQualifierElement)
 	{
 		PsiElement element = options.getElement();
 		ResolveToKind kind = options.getKind();
@@ -678,7 +691,8 @@ public class CSharpReferenceExpressionImplUtil
 					{
 						if(selector != null)
 						{
-							if(selector instanceof CSharpNamedResolveSelector && ((CSharpNamedResolveSelector) selector).isNameEqual(o.getParameterName()))
+							if(selector instanceof CSharpNamedResolveSelector && ((CSharpNamedResolveSelector) selector).isNameEqual(o
+									.getParameterName()))
 							{
 								newResults.add(new PsiElementResolveResult(parameterElement, true));
 							}
@@ -799,8 +813,29 @@ public class CSharpReferenceExpressionImplUtil
 		return processAnyMember(options, DotNetGenericExtractor.EMPTY, options.getElement());
 	}
 
-	public static ResolveResult[] processAnyMember(@NotNull CSharpResolveOptions options, @NotNull DotNetGenericExtractor defaultExtractor,
-			@NotNull PsiElement forceQualifierElement)
+	@NotNull
+	public static ResolveResult[] tryResolveFromQualifier(@NotNull CSharpReferenceExpressionEx referenceExpressionEx,
+			@NotNull PsiElement qualifierElement)
+	{
+		ResolveToKind kind = referenceExpressionEx.kind();
+		CSharpCallArgumentListOwner argumentListOwner = null;
+		PsiElement parent = referenceExpressionEx.getParent();
+
+		if(CSharpReferenceExpressionImplUtil.isConstructorKind(kind) || kind == ResolveToKind.PARAMETER)
+		{
+			argumentListOwner = PsiTreeUtil.getParentOfType(referenceExpressionEx, CSharpCallArgumentListOwner.class);
+		}
+		else if(parent instanceof CSharpCallArgumentListOwner)
+		{
+			argumentListOwner = (CSharpCallArgumentListOwner) parent;
+		}
+
+		return buildSelectorAndMultiResolve(kind, argumentListOwner, referenceExpressionEx, qualifierElement, false);
+	}
+
+	public static ResolveResult[] processAnyMember(@NotNull CSharpResolveOptions options,
+			@NotNull DotNetGenericExtractor defaultExtractor,
+			@Nullable PsiElement forceQualifierElement)
 	{
 		PsiElement qualifier = options.getQualifier();
 		@NotNull PsiElement element = options.getElement();
@@ -869,7 +904,7 @@ public class CSharpReferenceExpressionImplUtil
 			return memberProcessor.toResolveResults();
 		}
 
-		PsiElement target = forceQualifierElement;
+		PsiElement target = ObjectUtils.notNull(forceQualifierElement, element);
 		DotNetGenericExtractor extractor = defaultExtractor;
 		DotNetTypeRef qualifierTypeRef = DotNetTypeRef.ERROR_TYPE;
 
@@ -934,7 +969,8 @@ public class CSharpReferenceExpressionImplUtil
 				p.merge(memberProcessor);
 
 				resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR, extractor);
-				resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, new ExtensionMethodByNameSelector(((CSharpReferenceExpression) element).getReferenceName()));
+				resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, new ExtensionMethodByNameSelector(((CSharpReferenceExpression) element)
+						.getReferenceName()));
 
 				Couple<PsiElement> resolveLayers = getResolveLayers(scopeElement, scopeElement != element);
 
@@ -997,7 +1033,7 @@ public class CSharpReferenceExpressionImplUtil
 		boolean completion = options.isCompletion();
 
 		ExecuteTarget[] targets;
-		ResolveResultSorter sorter = ResolveResultSorter.EMPTY;
+		Comparator<ResolveResult> sorter = null;
 		switch(kind)
 		{
 			case TYPE_LIKE:
@@ -1008,7 +1044,7 @@ public class CSharpReferenceExpressionImplUtil
 						ExecuteTarget.NAMESPACE,
 						ExecuteTarget.TYPE_DEF
 				};
-				sorter = TypeLikeSorter.createByReference(element);
+				sorter = TypeLikeComparator.create(element);
 				break;
 			case QUALIFIED_NAMESPACE:
 				targets = new ExecuteTarget[]{ExecuteTarget.NAMESPACE};
@@ -1045,7 +1081,7 @@ public class CSharpReferenceExpressionImplUtil
 						ExecuteTarget.TYPE_DEF,
 						ExecuteTarget.ELEMENT_GROUP
 				};
-				sorter = TypeLikeSorter.createByReference(element);
+				sorter = VariableOrTypeComparator.create(element);
 				if(completion)
 				{
 					// append generic when completion due at ANY_MEMBER it dont resolved
@@ -1054,9 +1090,9 @@ public class CSharpReferenceExpressionImplUtil
 				break;
 		}
 
-		AbstractScopeProcessor processor = completion ? new CompletionResolveScopeProcessor(options,
-				targets) : new MemberResolveScopeProcessor(options, targets);
-		processor.setSorter(sorter);
+		AbstractScopeProcessor processor = completion ? new CompletionResolveScopeProcessor(options, targets) : new MemberResolveScopeProcessor
+				(options, targets);
+		processor.setComparator(sorter);
 		return processor;
 	}
 
