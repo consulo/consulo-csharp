@@ -111,7 +111,7 @@ public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVaria
 		SomeType someType = SomeTypeParser.parseType(typeBeforeDot, nameFromBytecode);
 		if(someType != null)
 		{
-			return new DummyType(getProject(), myOriginal, someType);
+			return new DummyType(getProject(), MsilEventAsCSharpEventDeclaration.this, someType);
 		}
 		return null;
 	}

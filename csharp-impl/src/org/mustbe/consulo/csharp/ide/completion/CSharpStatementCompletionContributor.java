@@ -22,6 +22,7 @@ import static com.intellij.patterns.StandardPatterns.psiElement;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import org.mustbe.consulo.csharp.ide.completion.util.ExpressionOrStatementInsertHandler;
+import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
@@ -255,6 +256,17 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 					public LookupElement fun(LookupElementBuilder t, final IElementType v)
 					{
 						t = t.withInsertHandler(buildInsertHandler(v));
+						return t;
+					}
+				}, null);
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.THROW_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
+
+				{
+					@NotNull
+					@Override
+					public LookupElement fun(LookupElementBuilder t, IElementType v)
+					{
+						t = t.withInsertHandler(SpaceInsertHandler.INSTANCE);
 						return t;
 					}
 				}, null);

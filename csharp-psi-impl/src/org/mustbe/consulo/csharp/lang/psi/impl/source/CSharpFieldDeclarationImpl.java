@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
@@ -29,7 +28,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
@@ -57,29 +55,21 @@ public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 	@Override
 	public DotNetType getType()
 	{
-		DotNetType type = super.getType();
-		// int a, b
-		if(type == null && getNameIdentifier() != null)
-		{
-			CSharpFieldDeclaration fieldDeclaration = PsiTreeUtil.getPrevSiblingOfType(this, CSharpFieldDeclaration.class);
-			assert fieldDeclaration != null;
-			return fieldDeclaration.getType();
-		}
-		return type;
+		return CSharpStubVariableImplUtil.getType(this);
 	}
 
 	@Nullable
 	@Override
 	public DotNetModifierList getModifierList()
 	{
-		DotNetModifierList childByClass = super.getModifierList();
-		if(childByClass == null && getNameIdentifier() != null)
-		{
-			CSharpFieldDeclaration fieldDeclaration = PsiTreeUtil.getPrevSiblingOfType(this, CSharpFieldDeclaration.class);
-			assert fieldDeclaration != null;
-			return fieldDeclaration.getModifierList();
-		}
-		return super.getModifierList();
+		return CSharpStubVariableImplUtil.getModifierList(this);
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getConstantKeywordElement()
+	{
+		return CSharpStubVariableImplUtil.getConstantKeywordElement(this);
 	}
 
 	@Nullable
@@ -92,12 +82,11 @@ public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 	@Override
 	public boolean isConstant()
 	{
-		if(super.isConstant())
+		CSharpVariableDeclStub<DotNetFieldDeclaration> stub = getStub();
+		if(stub != null)
 		{
-			return true;
+			return stub.isConstant();
 		}
-		PsiElement psiElement = findChildByType(CSharpTokens.CONST_KEYWORD);
-
-		return psiElement != null;
+		return CSharpStubVariableImplUtil.getConstantKeywordElement(this) != null;
 	}
 }

@@ -54,15 +54,28 @@ public class MethodChooseMember extends CSharpMemberChooseObject<CSharpMethodDec
 	{
 		StringBuilder builder = new StringBuilder();
 		CSharpAccessModifier modifier = CSharpAccessModifier.findModifier(myDeclaration);
-		if(modifier != CSharpAccessModifier.NONE)
+		boolean canGenerateCodeBlock = canGenerateCodeBlock();
+		if(modifier != CSharpAccessModifier.NONE && canGenerateCodeBlock)
 		{
 			builder.append(modifier.getPresentableText()).append(" ");
 		}
 
 		builder.append(getPresentationText());
-		builder.append(" {\n");
-		processReturn(builder);
-		builder.append("}");
+		if(canGenerateCodeBlock)
+		{
+			builder.append(" {\n");
+			processReturn(builder);
+			builder.append("}");
+		}
+		else
+		{
+			builder.append(";");
+		}
 		return builder.toString();
+	}
+
+	public boolean canGenerateCodeBlock()
+	{
+		return true;
 	}
 }

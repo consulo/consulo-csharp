@@ -46,6 +46,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 	public static final int LT_GT_HARD_REQUIRE = 1 << 2;
 	public static final int BRACKET_RETURN_BEFORE = 1 << 3;
 	public static final int WITHOUT_NULLABLE = 1 << 4;
+	public static final int ALLOW_EMPTY_TYPE_ARGUMENTS = 1 << 5;
 
 	public static class TypeInfo
 	{
@@ -194,18 +195,21 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.POINTER_TYPE : CSharpElements.POINTER_TYPE);
 		}
 
-		if(!BitUtil.isSet(flags, WITHOUT_NULLABLE))
+		if(!typeInfo.isArray)
 		{
-			if(builder.getTokenType() == QUEST)
+			if(!BitUtil.isSet(flags, WITHOUT_NULLABLE))
 			{
-				typeInfo = new TypeInfo();
-				typeInfo.isNullable = true;
+				if(builder.getTokenType() == QUEST)
+				{
+					typeInfo = new TypeInfo();
+					typeInfo.isNullable = true;
 
-				marker = marker.precede();
+					marker = marker.precede();
 
-				builder.advanceLexer();
+					builder.advanceLexer();
 
-				marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.NULLABLE_TYPE : CSharpElements.NULLABLE_TYPE);
+					marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.NULLABLE_TYPE : CSharpElements.NULLABLE_TYPE);
+				}
 			}
 		}
 

@@ -30,7 +30,7 @@ import org.jboss.netty.util.internal.ConcurrentWeakKeyHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
 import org.mustbe.consulo.dotnet.module.extension.DotNetLibraryOpenCache;
-import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
+import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.module.Module;
@@ -116,7 +116,7 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 				Module[] modules = ModuleManager.getInstance(myProject).getModules();
 				for(Module module : modules)
 				{
-					DotNetModuleExtension extension = ModuleUtilCore.getExtension(module, DotNetModuleExtension.class);
+					DotNetSimpleModuleExtension extension = ModuleUtilCore.getExtension(module, DotNetSimpleModuleExtension.class);
 					if(extension == null)
 					{
 						continue;
@@ -137,14 +137,14 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 			@Override
 			public void beforeExtensionChanged(@NotNull ModuleExtension<?> moduleExtension, @NotNull final ModuleExtension<?> moduleExtension2)
 			{
-				if(moduleExtension2 instanceof DotNetModuleExtension && moduleExtension2.isEnabled())
+				if(moduleExtension2 instanceof DotNetSimpleModuleExtension && moduleExtension2.isEnabled())
 				{
 					ApplicationManager.getApplication().invokeLater(new Runnable()
 					{
 						@Override
 						public void run()
 						{
-							runAnalyzerFor((DotNetModuleExtension) moduleExtension2);
+							runAnalyzerFor((DotNetSimpleModuleExtension) moduleExtension2);
 						}
 					});
 				}
@@ -153,7 +153,7 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 
 	}
 
-	private void runAnalyzerFor(@NotNull final DotNetModuleExtension<?> extension)
+	private void runAnalyzerFor(@NotNull final DotNetSimpleModuleExtension<?> extension)
 	{
 		new Task.Backgroundable(extension.getProject(), "Analyzing .NET libraries for module: " + extension.getModule().getName())
 		{

@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.CSharpFileStubElementType;
-import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
+import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.ExternalAnnotator;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -41,7 +41,7 @@ public class CSharpNonActiveAnnotator extends ExternalAnnotator<List<TextRange>,
 	{
 		if(file instanceof CSharpMacroFileImpl)
 		{
-			DotNetModuleExtension extension = ModuleUtilCore.getExtension(file, DotNetModuleExtension.class);
+			DotNetSimpleModuleExtension extension = ModuleUtilCore.getExtension(file, DotNetSimpleModuleExtension.class);
 			if(extension == null)
 			{
 				return null;

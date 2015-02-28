@@ -338,6 +338,8 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	"?"                       { return CSharpTokens.QUEST; }
 
+	"??"                      { return CSharpTokens.QUESTQUEST; }
+
 	"false"                   { return CSharpTokens.BOOL_LITERAL; }
 
 	"true"                    { return CSharpTokens.BOOL_LITERAL; }

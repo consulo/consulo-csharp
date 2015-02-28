@@ -17,9 +17,12 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubVariableImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubVariableImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.CSharpAbstractStubElementType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import com.intellij.psi.stubs.StubElement;
+import com.intellij.util.BitUtil;
 import com.intellij.util.io.StringRef;
 
 /**
@@ -28,19 +31,36 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpVariableDeclStub<V extends DotNetVariable> extends MemberStub<V>
 {
-	private final boolean myConstant;
+	public static final int CONSTANT_MASK = 1 << 0;
+	public static final int MULTIPLE_DECLARATION_MASK = 1 << 1;
+
 	public CSharpVariableDeclStub(StubElement parent,
 			CSharpAbstractStubElementType<?, ?> elementType,
 			@Nullable StringRef name,
 			@Nullable StringRef namespaceQName,
-			boolean constant)
+			int flags)
 	{
-		super(parent, elementType, name, namespaceQName, 0);
-		myConstant = constant;
+		super(parent, elementType, name, namespaceQName, flags);
+	}
+
+	public static int getOtherModifierMask(DotNetVariable variable)
+	{
+		int i = 0;
+		i |= BitUtil.set(i, CONSTANT_MASK, variable.isConstant());
+		if(variable instanceof CSharpStubVariableImpl)
+		{
+			i |= BitUtil.set(i, MULTIPLE_DECLARATION_MASK, CSharpStubVariableImplUtil.isMultipleDeclaration((CSharpStubVariableImpl<?>) variable));
+		}
+		return i;
 	}
 
 	public boolean isConstant()
 	{
-		return myConstant;
+		return BitUtil.isSet(getOtherModifierMask(), CONSTANT_MASK);
+	}
+
+	public boolean isMultipleDeclaration()
+	{
+		return BitUtil.isSet(getOtherModifierMask(), MULTIPLE_DECLARATION_MASK);
 	}
 }

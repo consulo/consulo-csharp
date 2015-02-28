@@ -1,38 +1,73 @@
 using System;
 
-public class Program {
-  public static void Main(String[] args) {
-    Console.WriteLine("test");
-    if(true) {
-       try {
-         for(;;) {
-            String[] array = new [] {};
+namespace Test {
+  public class Program {
+    public static int SomeProperty {
+      get;
+      set;
+    }
+
+    public static event Delegate SomeEvent {
+      add;
+      remove;
+    }
+
+    public static int this[int b] {
+      get;
+      set;
+    }
+
+    public static void Main(String[] args) {
+      Console.WriteLine("test");
+      lock(args) {
+        using(var obj = new IoStream()) {
+           int intVal = obj.ReadInt();
+
+           intVal = ~intVal;
+
+           fixed(int* pointer = &intVal) {
+             int newIntVal = *pointer;
+
+             Console.WriteLine(newIntVal);
+           }
+        }
+      }
+      if(true) {
+        try {
+          for(;;) {
+            String[] array = new [] {
+            };
             foreach(var item in array) {
-               while(true) {
-                 Console.WriteLine(item);
-               }
+              while(true) {
+                Console.WriteLine(item);
+              }
             }
-         }
-         int var = 1;
-         switch(var) {
-           case 1:
-              break;
-           default:
-              break;
-         }
-       }
-       catch {
+          }
+          int var = 1;
+          switch(var) {
+            case 1:
+            break;
+            default:
+            break;
+          }
+        }
+        catch {
 
-       }
-       finally {
+        }
+        finally {
 
-       }
+        }
+      }
+      else if(1 == 2) {
+        Console.WriteLine("else if");
+      }
+      else {
+        Console.WriteLine("bad");
+      }
     }
-    else if(1 == 2) {
-       Console.WriteLine("else if");
-    }
-    else {
-       Console.WriteLine("bad");
-    }
+  }
+
+  public static Dictionary<string, string> someMethodWithParameters(int b, int c, String str = null) {
+
   }
 }

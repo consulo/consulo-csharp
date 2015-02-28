@@ -183,7 +183,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		{
 			p = (CSharpCallArgumentListOwner) parent;
 		}
-		return CSharpReferenceExpressionImplUtil.multiResolve0(kind, p, this, resolveFromParent);
+		return CSharpReferenceExpressionImplUtil.multiResolveImpl(kind, p, this, resolveFromParent);
 	}
 
 	@Nullable
@@ -292,6 +292,12 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	@Override
 	public AccessType getMemberAccessType()
 	{
+		CSharpReferenceExpressionStub stub = getStub();
+		if(stub != null)
+		{
+			return stub.getMemberAccessType();
+		}
+
 		PsiElement childByType = getMemberAccessElement();
 		if(childByType == null)
 		{

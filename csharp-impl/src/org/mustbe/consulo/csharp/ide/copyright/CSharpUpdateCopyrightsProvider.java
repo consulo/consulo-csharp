@@ -16,35 +16,47 @@
 
 package org.mustbe.consulo.csharp.ide.copyright;
 
+import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.copyright.config.CopyrightFileConfig;
 import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.maddyhome.idea.copyright.CopyrightProfile;
-import com.maddyhome.idea.copyright.psi.UpdateCopyright;
 import com.maddyhome.idea.copyright.psi.UpdateCopyrightsProvider;
 import com.maddyhome.idea.copyright.psi.UpdatePsiFileCopyright;
+import com.maddyhome.idea.copyright.ui.TemplateCommentPanel;
 
 /**
  * @author VISTALL
  * @since 15.03.14
  */
-public class CSharpUpdateCopyrightsProvider extends UpdateCopyrightsProvider
+public class CSharpUpdateCopyrightsProvider extends UpdateCopyrightsProvider<CopyrightFileConfig>
 {
+	@NotNull
 	@Override
-	public UpdateCopyright createInstance(Project project, Module module, VirtualFile virtualFile, FileType fileType,
-			CopyrightProfile copyrightProfile)
+	public UpdatePsiFileCopyright<CopyrightFileConfig> createInstance(@NotNull final PsiFile file, @NotNull CopyrightProfile copyrightProfile)
 	{
-		return new UpdatePsiFileCopyright(project, module, virtualFile, copyrightProfile)
+		return new UpdatePsiFileCopyright<CopyrightFileConfig>(file, copyrightProfile)
 		{
 			@Override
 			protected void scanFile()
 			{
-				PsiFile file = getFile();
-
 				checkComments(file.getFirstChild(), null, true);
 			}
 		};
+	}
+
+	@NotNull
+	@Override
+	public CopyrightFileConfig createDefaultOptions()
+	{
+		return new CopyrightFileConfig();
+	}
+
+	@NotNull
+	@Override
+	public TemplateCommentPanel createConfigurable(@NotNull Project project, @NotNull TemplateCommentPanel parentPane, @NotNull FileType fileType)
+	{
+		return new TemplateCommentPanel(fileType, parentPane, project);
 	}
 }

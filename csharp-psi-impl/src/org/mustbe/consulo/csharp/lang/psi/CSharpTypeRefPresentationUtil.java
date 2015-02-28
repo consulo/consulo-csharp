@@ -107,6 +107,12 @@ public class CSharpTypeRefPresentationUtil
 			return;
 		}
 
+		if(typeRef == CSharpStaticTypeRef.__ARGLIST_TYPE)
+		{
+			builder.append(typeRef.getPresentableText());
+			return;
+		}
+
 		if(typeRef instanceof CSharpStaticTypeRef)
 		{
 			builder.append(typeRef.getPresentableText());

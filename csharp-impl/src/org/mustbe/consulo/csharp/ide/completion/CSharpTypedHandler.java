@@ -26,6 +26,7 @@ import com.intellij.codeInsight.editorActions.TypedHandlerDelegate;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
@@ -67,6 +68,10 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 
 	private static boolean handleDotAtPointerType(Editor editor, PsiFile file)
 	{
+		if(DumbService.isDumb(file.getProject()))
+		{
+			return false;
+		}
 		int offset = editor.getCaretModel().getOffset();
 
 		PsiElement lastElement = file.findElementAt(offset - 1);

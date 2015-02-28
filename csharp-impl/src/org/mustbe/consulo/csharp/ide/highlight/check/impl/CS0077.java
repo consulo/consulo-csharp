@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 must-be.org
+ * Copyright 2013-2015 must-be.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +20,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
-import org.mustbe.consulo.csharp.lang.psi.CSharpNullableType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAsExpressionImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
@@ -37,18 +35,18 @@ import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
- * @since 15.09.14
+ * @since 27.02.2015
  */
-public class CS0453 extends CompilerCheck<CSharpNullableType>
+public class CS0077 extends CompilerCheck<CSharpAsExpressionImpl>
 {
-	public static class DeleteQuestMarkQuickFix extends BaseIntentionAction
+	public static class AddQuestMarkQuickFix extends BaseIntentionAction
 	{
-		private SmartPsiElementPointer<CSharpNullableType> myPointer;
+		private SmartPsiElementPointer<DotNetType> myPointer;
 
-		public DeleteQuestMarkQuickFix(CSharpNullableType nullableType)
+		public AddQuestMarkQuickFix(DotNetType type)
 		{
-			myPointer = SmartPointerManager.getInstance(nullableType.getProject()).createSmartPsiElementPointer(nullableType);
-			setText("Remove '?'");
+			myPointer = SmartPointerManager.getInstance(type.getProject()).createSmartPsiElementPointer(type);
+			setText("Add '?'");
 		}
 
 		@NotNull
@@ -67,42 +65,34 @@ public class CS0453 extends CompilerCheck<CSharpNullableType>
 		@Override
 		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
-			CSharpNullableType element = myPointer.getElement();
+			DotNetType element = myPointer.getElement();
 			if(element == null)
 			{
 				return;
 			}
 
-			DotNetType innerType = element.getInnerType();
-			if(innerType == null)
-			{
-				return;
-			}
-
-			DotNetType type = CSharpFileFactory.createType(project, innerType.getText());
+			DotNetType type = CSharpFileFactory.createType(project, element.getText() + "?");
 			element.replace(type);
 		}
 	}
 
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpNullableType element)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpAsExpressionImpl element)
 	{
-		DotNetType innerType = element.getInnerType();
-		if(innerType == null)
+		DotNetTypeRef typeRef = element.toTypeRef(false);
+		if(typeRef == DotNetTypeRef.ERROR_TYPE)
 		{
 			return null;
 		}
-		DotNetTypeRef dotNetTypeRef = innerType.toTypeRef();
 
-		DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(element);
-
-		if(!typeResolveResult.isNullable())
+		if(!typeRef.resolve(element).isNullable())
 		{
-			return null;
+			DotNetType type = element.getType();
+			assert type != null;
+			return newBuilder(element.getAsKeyword(), "as", CSharpTypeRefPresentationUtil.buildTextWithKeyword(typeRef,
+					element)).addQuickFix(new AddQuestMarkQuickFix(type));
 		}
-		PsiElement questElement = element.getQuestElement();
-		return newBuilder(questElement, CSharpTypeRefPresentationUtil.buildTextWithKeyword(dotNetTypeRef,
-				element)).addQuickFix(new DeleteQuestMarkQuickFix(element));
+		return super.checkImpl(languageVersion, element);
 	}
 }

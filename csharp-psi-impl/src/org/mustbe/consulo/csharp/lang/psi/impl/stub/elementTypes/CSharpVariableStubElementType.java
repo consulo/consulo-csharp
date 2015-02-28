@@ -40,18 +40,18 @@ public abstract class CSharpVariableStubElementType<P extends DotNetVariable> ex
 	}
 
 	@Override
-	public CSharpVariableDeclStub<P> createStub(@NotNull P dotNetPropertyDeclaration, StubElement stubElement)
+	public CSharpVariableDeclStub<P> createStub(@NotNull P variable, StubElement stubElement)
 	{
-		StringRef name = StringRef.fromNullableString(dotNetPropertyDeclaration.getName());
-		boolean constant = dotNetPropertyDeclaration.isConstant();
-		return new CSharpVariableDeclStub<P>(stubElement, this, name, null, constant);
+		StringRef name = StringRef.fromNullableString(variable.getName());
+		int otherModifierMask = CSharpVariableDeclStub.getOtherModifierMask(variable);
+		return new CSharpVariableDeclStub<P>(stubElement, this, name, null, otherModifierMask);
 	}
 
 	@Override
 	public void serialize(@NotNull CSharpVariableDeclStub<P> cSharpPropertyStub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(cSharpPropertyStub.getName());
-		stubOutputStream.writeBoolean(cSharpPropertyStub.isConstant());
+		stubOutputStream.writeVarInt(cSharpPropertyStub.getOtherModifierMask());
 	}
 
 	@NotNull
@@ -59,7 +59,7 @@ public abstract class CSharpVariableStubElementType<P extends DotNetVariable> ex
 	public CSharpVariableDeclStub<P> deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef name = stubInputStream.readName();
-		boolean constant = stubInputStream.readBoolean();
-		return new CSharpVariableDeclStub<P>(stubElement, this, name, null, constant);
+		int otherModifierMask = stubInputStream.readVarInt();
+		return new CSharpVariableDeclStub<P>(stubElement, this, name, null, otherModifierMask);
 	}
 }

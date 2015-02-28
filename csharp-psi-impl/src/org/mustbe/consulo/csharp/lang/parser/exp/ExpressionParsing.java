@@ -127,55 +127,50 @@ public class ExpressionParsing extends SharedParsingHelpers
 			return null;
 		}
 
-		if(builder.getTokenType() == QUEST)
+		if(builder.getTokenType() == QUESTQUEST)
 		{
-			// NULL_COALESCING
-			if(builder.lookAhead(1) == QUEST)
-			{
-				final PsiBuilder.Marker nullCoalescing = condition.precede();
-				builder.advanceLexer();
-				builder.advanceLexer();
+			final PsiBuilder.Marker nullCoalescing = condition.precede();
+			builder.advanceLexer();
 
-				final PsiBuilder.Marker ifNullPart = parse(builder);
-				if(ifNullPart == null)
-				{
-					builder.error("Expression expected");
-				}
-				nullCoalescing.done(NULL_COALESCING_EXPRESSION);
-				return nullCoalescing;
+			final PsiBuilder.Marker ifNullPart = parse(builder);
+			if(ifNullPart == null)
+			{
+				builder.error("Expression expected");
 			}
-			else
+			nullCoalescing.done(NULL_COALESCING_EXPRESSION);
+			return nullCoalescing;
+		}
+		else if(builder.getTokenType() == QUEST)
+		{
+			final PsiBuilder.Marker ternary = condition.precede();
+			builder.advanceLexer();
+
+			final PsiBuilder.Marker truePart = parse(builder);
+			if(truePart == null)
 			{
-				final PsiBuilder.Marker ternary = condition.precede();
-				builder.advanceLexer();
-
-				final PsiBuilder.Marker truePart = parse(builder);
-				if(truePart == null)
-				{
-					builder.error("Expression expected");
-					ternary.done(CONDITIONAL_EXPRESSION);
-					return ternary;
-				}
-
-				if(builder.getTokenType() != COLON)
-				{
-					builder.error("Expected colon");
-					ternary.done(CONDITIONAL_EXPRESSION);
-					return ternary;
-				}
-				builder.advanceLexer();
-
-				final PsiBuilder.Marker falsePart = parseConditional(builder);
-				if(falsePart == null)
-				{
-					builder.error("Expression expected");
-					ternary.done(CONDITIONAL_EXPRESSION);
-					return ternary;
-				}
-
+				builder.error("Expression expected");
 				ternary.done(CONDITIONAL_EXPRESSION);
 				return ternary;
 			}
+
+			if(builder.getTokenType() != COLON)
+			{
+				builder.error("Expected colon");
+				ternary.done(CONDITIONAL_EXPRESSION);
+				return ternary;
+			}
+			builder.advanceLexer();
+
+			final PsiBuilder.Marker falsePart = parseConditional(builder);
+			if(falsePart == null)
+			{
+				builder.error("Expression expected");
+				ternary.done(CONDITIONAL_EXPRESSION);
+				return ternary;
+			}
+
+			ternary.done(CONDITIONAL_EXPRESSION);
+			return ternary;
 		}
 		{
 			return condition;
@@ -745,17 +740,17 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(tokenType == TYPEOF_KEYWORD)
 		{
-			return parseExpressionWithTypeInLParRPar(builder, null, TYPE_OF_EXPRESSION);
+			return parseExpressionWithTypeInLParRPar(builder, ALLOW_EMPTY_TYPE_ARGUMENTS, null, TYPE_OF_EXPRESSION);
 		}
 
 		if(tokenType == DEFAULT_KEYWORD)
 		{
-			return parseExpressionWithTypeInLParRPar(builder, null, DEFAULT_EXPRESSION);
+			return parseExpressionWithTypeInLParRPar(builder, NONE, null, DEFAULT_EXPRESSION);
 		}
 
 		if(tokenType == SIZEOF_KEYWORD)
 		{
-			return parseExpressionWithTypeInLParRPar(builder, null, SIZE_OF_EXPRESSION);
+			return parseExpressionWithTypeInLParRPar(builder, NONE, null, SIZE_OF_EXPRESSION);
 		}
 
 		if(tokenType == CHECKED_KEYWORD || tokenType == UNCHECKED_KEYWORD)
@@ -1187,51 +1182,6 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 	}
 
-	public static void parseTypeParameterList(CSharpBuilderWrapper builder)
-	{
-		PsiBuilder.Marker mark = builder.mark();
-
-		builder.advanceLexer();
-
-		if(builder.getTokenType() == RPAR)
-		{
-			builder.advanceLexer();
-			mark.done(CALL_ARGUMENT_LIST);
-			return;
-		}
-
-		boolean empty = true;
-		while(!builder.eof())
-		{
-			PsiBuilder.Marker marker = parse(builder);
-			if(marker == null)
-			{
-				if(!empty)
-				{
-					builder.error("Expression expected");
-				}
-				break;
-			}
-
-			empty = false;
-
-			if(builder.getTokenType() == COMMA)
-			{
-				builder.advanceLexer();
-			}
-			else if(builder.getTokenType() == RPAR)
-			{
-				break;
-			}
-			else
-			{
-				break;
-			}
-		}
-		expect(builder, RPAR, "')' expected");
-		mark.done(CALL_ARGUMENT_LIST);
-	}
-
 	private static enum AfterNewParsingTarget
 	{
 		NONE,
@@ -1522,14 +1472,15 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 	}
 
-	private static PsiBuilder.Marker parseExpressionWithTypeInLParRPar(CSharpBuilderWrapper builder, PsiBuilder.Marker mark, IElementType to)
+	private static PsiBuilder.Marker parseExpressionWithTypeInLParRPar(CSharpBuilderWrapper builder, int flags, PsiBuilder.Marker mark,
+			IElementType to)
 	{
 		PsiBuilder.Marker newMarker = mark == null ? builder.mark() : mark.precede();
 		builder.advanceLexer();
 
 		if(expect(builder, LPAR, "'(' expected"))
 		{
-			if(parseType(builder) == null)
+			if(parseType(builder, flags, TokenSet.EMPTY) == null)
 			{
 				builder.error("Type expected");
 			}
@@ -1639,6 +1590,69 @@ public class ExpressionParsing extends SharedParsingHelpers
 		{
 			return null;
 		}
+
+		if(BitUtil.isSet(flags, ALLOW_EMPTY_TYPE_ARGUMENTS))
+		{
+			if(BitUtil.isSet(flags, STUB_SUPPORT))
+			{
+				throw new IllegalArgumentException("Empty type arguments is not allowed inside stub tree");
+			}
+			PsiBuilder.Marker marker = parseReferenceEmptyTypeArgumentListImpl(builder);
+			if(marker != null)
+			{
+				return marker;
+			}
+		}
+		return parseReferenceTypeArgumentListImpl(builder, flags);
+	}
+
+	@Nullable
+	private static PsiBuilder.Marker parseReferenceEmptyTypeArgumentListImpl(@NotNull CSharpBuilderWrapper builder)
+	{
+		PsiBuilder.Marker mark = builder.mark();
+		builder.advanceLexer();
+
+		if(builder.getTokenType() == GT)
+		{
+			builder.advanceLexer();
+		}
+		else
+		{
+			while(!builder.eof())
+			{
+				if(builder.getTokenType() == GT)
+				{
+					break;
+				}
+
+				if(builder.getTokenType() == COMMA)
+				{
+					builder.advanceLexer();
+				}
+				else
+				{
+					mark.rollbackTo();
+					return null;
+				}
+			}
+
+			if(builder.getTokenType() == GT)
+			{
+				builder.advanceLexer();
+			}
+			else
+			{
+				mark.rollbackTo();
+				return null;
+			}
+		}
+		mark.done(CSharpElements.EMPTY_TYPE_ARGUMENTS);
+		return mark;
+	}
+
+	@Nullable
+	private static PsiBuilder.Marker parseReferenceTypeArgumentListImpl(@NotNull CSharpBuilderWrapper builder, int flags)
+	{
 		PsiBuilder.Marker mark = builder.mark();
 		builder.advanceLexer();
 

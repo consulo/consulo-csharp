@@ -28,7 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroReferenceExpressionImpl;
-import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
+import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
@@ -56,7 +56,7 @@ public class CSharpMacroReferenceCompletionContributor extends CompletionContrib
 				CSharpMacroReferenceExpressionImpl expression = (CSharpMacroReferenceExpressionImpl) parameters.getPosition().getParent();
 				Map<String, CSharpMacroDefine> map = new HashMap<String, CSharpMacroDefine>();
 
-				DotNetModuleExtension<?> extension = ModuleUtilCore.getExtension(expression, DotNetModuleExtension.class);
+				DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(expression, DotNetSimpleModuleExtension.class);
 				if(extension != null)
 				{
 					for(String varName : extension.getVariables())

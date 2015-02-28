@@ -51,6 +51,7 @@ import com.intellij.util.ArrayUtil;
 public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<DotNetModifierList> implements CSharpModifierList
 {
 	private static final String[] ourAttributeBans = new String[]{
+			DotNetTypes.System.ParamArrayAttribute,
 			DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute,
 			DotNetTypes2.System.Runtime.CompilerServices.AsyncStateMachineAttribute
 	};

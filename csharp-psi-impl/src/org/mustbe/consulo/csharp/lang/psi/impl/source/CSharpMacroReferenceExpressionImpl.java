@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightMacroDefine;
-import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
+import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.util.TextRange;
@@ -85,7 +85,7 @@ public class CSharpMacroReferenceExpressionImpl extends CSharpMacroElementImpl i
 
 		Map<String, CSharpMacroDefine> map = new HashMap<String, CSharpMacroDefine>();
 
-		DotNetModuleExtension<?> extension = ModuleUtilCore.getExtension(containingFile, DotNetModuleExtension.class);
+		DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(containingFile, DotNetSimpleModuleExtension.class);
 		if(extension != null)
 		{
 			for(String var : extension.getVariables())

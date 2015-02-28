@@ -28,8 +28,8 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import com.intellij.codeInsight.folding.CodeFoldingSettings;
@@ -239,7 +239,7 @@ public class CSharpFoldingBuilder implements FoldingBuilder
 		}
 		else if(psi instanceof PsiComment)
 		{
-			return  CodeFoldingSettings.getInstance().COLLAPSE_FILE_HEADER;
+			return CodeFoldingSettings.getInstance().COLLAPSE_FILE_HEADER;
 		}
 
 		return false;

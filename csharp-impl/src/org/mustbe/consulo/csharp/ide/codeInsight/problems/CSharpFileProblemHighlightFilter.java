@@ -16,7 +16,9 @@
 
 package org.mustbe.consulo.csharp.ide.codeInsight.problems;
 
+import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
+import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
@@ -41,25 +43,37 @@ public class CSharpFileProblemHighlightFilter implements Condition<VirtualFile>
 	@Override
 	public boolean value(VirtualFile virtualFile)
 	{
+		if(virtualFile.getFileType() != CSharpFileType.INSTANCE)
+		{
+			return false;
+		}
+
 		Module moduleForFile = ModuleUtilCore.findModuleForFile(virtualFile, myProject);
 		if(moduleForFile == null)
 		{
 			return false;
 		}
-		DotNetModuleExtension extension = ModuleUtilCore.getExtension(moduleForFile, DotNetModuleExtension.class);
+		DotNetSimpleModuleExtension extension = ModuleUtilCore.getExtension(moduleForFile, DotNetSimpleModuleExtension.class);
 		if(extension == null)
 		{
 			return false;
 		}
 
-		if(!extension.isAllowSourceRoots())
+		if(extension instanceof DotNetModuleExtension)
 		{
-			return true;
+			if(!((DotNetModuleExtension) extension).isAllowSourceRoots())
+			{
+				return true;
+			}
+			else
+			{
+				ModuleFileIndex fileIndex = ModuleRootManager.getInstance(moduleForFile).getFileIndex();
+				return fileIndex.isInSourceContent(virtualFile) || fileIndex.isInTestSourceContent(virtualFile);
+			}
 		}
 		else
 		{
-			ModuleFileIndex fileIndex = ModuleRootManager.getInstance(moduleForFile).getFileIndex();
-			return fileIndex.isInSourceContent(virtualFile) || fileIndex.isInTestSourceContent(virtualFile);
+			return true;
 		}
 	}
 }

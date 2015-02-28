@@ -74,15 +74,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.codeInsight.TailType;
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.completion.CompletionUtilCore;
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.completion.PrioritizedLookupElement;
+import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -202,99 +194,26 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 						null, true, true));
 				List<LookupElement> lookupElements = CSharpLookupElementBuilder.buildToLookupElements(psiElements);
 
-				List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(expression);
-				if(!expectedTypeRefs.isEmpty())
-				{
-					ListIterator<LookupElement> iterator = lookupElements.listIterator();
-					while(iterator.hasNext())
-					{
-						LookupElement next = iterator.next();
+				prioritizeLookupItems(expression, kind, lookupElements);
 
-						PsiElement psiElement = next.getPsiElement();
-						if(psiElement == null)
-						{
-							iterator.set(PrioritizedLookupElement.withPriority(next, -0.5));
-							continue;
-						}
-
-						// if we have not type declaration, make types lower, dont allow int i = Int32 completion more high
-						if(kind != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE && CSharpCompletionUtil.isTypeLikeElement(psiElement))
-						{
-							iterator.set(PrioritizedLookupElement.withPriority(next, -0.5));
-							continue;
-						}
-
-						DotNetTypeRef typeOfElement;
-						if(psiElement instanceof CSharpMethodDeclaration)
-						{
-							CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) psiElement;
-							typeOfElement = methodDeclaration.getReturnTypeRef();
-
-							for(ExpectedTypeInfo expectedTypeInfo : expectedTypeRefs)
-							{
-								if(expectedTypeInfo.getTypeProvider() == psiElement)
-								{
-									continue;
-								}
-
-								if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), typeOfElement, expression))
-								{
-									iterator.set(PrioritizedLookupElement.withPriority(next, CSharpCompletionUtil.EXPR_REF_PRIORITY));
-								}
-								else
-								{
-									DotNetTypeResolveResult typeResolveResult = expectedTypeInfo.getTypeRef().resolve(expression);
-									if(typeResolveResult instanceof CSharpLambdaResolveResult)
-									{
-										if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), new CSharpLambdaTypeRef(methodDeclaration),
-												expression))
-										{
-											next = buildForMethodReference(methodDeclaration);
-											iterator.set(PrioritizedLookupElement.withPriority(next, CSharpCompletionUtil.EXPR_REF_PRIORITY));
-										}
-									}
-								}
-							}
-						}
-						else
-						{
-							typeOfElement = CSharpReferenceExpressionImplUtil.toTypeRef(psiElement);
-
-							for(ExpectedTypeInfo expectedTypeInfo : expectedTypeRefs)
-							{
-								if(expectedTypeInfo.getTypeProvider() == psiElement)
-								{
-									continue;
-								}
-
-								if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), typeOfElement, expression))
-								{
-									iterator.set(PrioritizedLookupElement.withPriority(next, CSharpCompletionUtil.EXPR_REF_PRIORITY));
-								}
-							}
-						}
-					}
-				}
 				result.addAllElements(lookupElements);
 			}
 		});
 
 		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class).withSuperParent(2,
-				CSharpArrayInitializerImpl.class).withSuperParent(3, CSharpNewExpressionImpl.class),
-				new CompletionProvider<CompletionParameters>()
+				CSharpArrayInitializerImpl.class).withSuperParent(3, CSharpNewExpressionImpl.class), new CompletionProvider<CompletionParameters>()
 		{
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				CSharpReferenceExpressionEx expression = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
 
-				CSharpArrayInitializerImpl arrayInitializationExpression = PsiTreeUtil.getParentOfType(expression,
-						CSharpArrayInitializerImpl.class);
+				CSharpArrayInitializerImpl arrayInitializationExpression = PsiTreeUtil.getParentOfType(expression, CSharpArrayInitializerImpl.class);
 
 				assert arrayInitializationExpression != null;
 				CSharpArrayInitializerValue[] arrayInitializerValues = arrayInitializationExpression.getValues();
 				if(arrayInitializerValues.length != 1 || !(arrayInitializerValues[0] instanceof CSharpArrayInitializerSingleValueImpl) ||
-						((CSharpArrayInitializerSingleValueImpl)arrayInitializerValues[0]).getArgumentExpression() != expression)
+						((CSharpArrayInitializerSingleValueImpl) arrayInitializerValues[0]).getArgumentExpression() != expression)
 				{
 					return;
 				}
@@ -389,7 +308,10 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 			{
 				PsiElement position = parameters.getPosition();
 				CSharpNewExpressionImpl newExpression = PsiTreeUtil.getParentOfType(position, CSharpNewExpressionImpl.class);
-				assert newExpression != null;
+				if(newExpression == null)
+				{
+					return;
+				}
 
 				List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(newExpression);
 
@@ -486,9 +408,16 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 					return;
 				}
 
-				if(parent.kind() == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || parent.kind() == CSharpReferenceExpression.ResolveToKind
-						.ANY_MEMBER)
+				CSharpReferenceExpression.ResolveToKind kind = parent.kind();
+				if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE ||
+						kind == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR ||
+						kind == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
 				{
+					if(kind == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR)
+					{
+						kind = CSharpReferenceExpression.ResolveToKind.TYPE_LIKE;
+					}
+
 					val referenceName = parent.getReferenceName().replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "");
 
 					if(StringUtil.isEmpty(referenceName))
@@ -496,13 +425,14 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 						return;
 					}
 
+					val matcher = new PlainPrefixMatcher(referenceName);
 					val names = new ArrayList<String>();
 					TypeIndex.getInstance().processAllKeys(parent.getProject(), new Processor<String>()
 					{
 						@Override
 						public boolean process(String s)
 						{
-							if(s.startsWith(referenceName))
+							if(matcher.prefixMatches(s))
 							{
 								names.add(s);
 							}
@@ -521,6 +451,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 						return;
 					}
 
+					List<LookupElement> lookupElements = new ArrayList<LookupElement>(typeDeclarations.size());
 					for(DotNetTypeDeclaration dotNetTypeDeclaration : typeDeclarations)
 					{
 						DotNetQualifiedElement wrap = (DotNetQualifiedElement) MsilToCSharpUtil.wrap(dotNetTypeDeclaration);
@@ -585,11 +516,98 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 								}
 							});
 						}
-						completionResultSet.addElement(builder);
+						lookupElements.add(builder);
 					}
+
+					//FIXME [VISTALL] perfomance issue
+					if(lookupElements.size() < 500)
+					{
+						prioritizeLookupItems(parent, kind, lookupElements);
+					}
+
+					completionResultSet.addAllElements(lookupElements);
 				}
 			}
 		});
+	}
+
+	private static void prioritizeLookupItems(@NotNull CSharpReferenceExpression expression,
+			@NotNull CSharpReferenceExpression.ResolveToKind kind,
+			@NotNull List<LookupElement> lookupElements)
+	{
+		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(expression);
+		if(!expectedTypeRefs.isEmpty())
+		{
+			ListIterator<LookupElement> iterator = lookupElements.listIterator();
+			while(iterator.hasNext())
+			{
+				LookupElement next = iterator.next();
+
+				PsiElement psiElement = next.getPsiElement();
+				if(psiElement == null)
+				{
+					iterator.set(PrioritizedLookupElement.withPriority(next, -0.5));
+					continue;
+				}
+
+				// if we have not type declaration, make types lower, dont allow int i = Int32 completion more high
+				if(kind != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE && CSharpCompletionUtil.isTypeLikeElement(psiElement))
+				{
+					iterator.set(PrioritizedLookupElement.withPriority(next, -0.5));
+					continue;
+				}
+
+				DotNetTypeRef typeOfElement;
+				if(psiElement instanceof CSharpMethodDeclaration)
+				{
+					CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) psiElement;
+					typeOfElement = methodDeclaration.getReturnTypeRef();
+
+					for(ExpectedTypeInfo expectedTypeInfo : expectedTypeRefs)
+					{
+						if(expectedTypeInfo.getTypeProvider() == psiElement)
+						{
+							continue;
+						}
+
+						if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), typeOfElement, expression))
+						{
+							iterator.set(PrioritizedLookupElement.withPriority(next, CSharpCompletionUtil.EXPR_REF_PRIORITY));
+						}
+						else
+						{
+							DotNetTypeResolveResult typeResolveResult = expectedTypeInfo.getTypeRef().resolve(expression);
+							if(typeResolveResult instanceof CSharpLambdaResolveResult)
+							{
+								if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), new CSharpLambdaTypeRef(methodDeclaration),
+										expression))
+								{
+									next = buildForMethodReference(methodDeclaration);
+									iterator.set(PrioritizedLookupElement.withPriority(next, CSharpCompletionUtil.EXPR_REF_PRIORITY));
+								}
+							}
+						}
+					}
+				}
+				else
+				{
+					typeOfElement = CSharpReferenceExpressionImplUtil.toTypeRef(psiElement);
+
+					for(ExpectedTypeInfo expectedTypeInfo : expectedTypeRefs)
+					{
+						if(expectedTypeInfo.getTypeProvider() == psiElement)
+						{
+							continue;
+						}
+
+						if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), typeOfElement, expression))
+						{
+							iterator.set(PrioritizedLookupElement.withPriority(next, CSharpCompletionUtil.EXPR_REF_PRIORITY));
+						}
+					}
+				}
+			}
+		}
 	}
 
 	private static boolean needRemapToAnyResolving(CSharpReferenceExpression.ResolveToKind kind, CSharpReferenceExpression expression)

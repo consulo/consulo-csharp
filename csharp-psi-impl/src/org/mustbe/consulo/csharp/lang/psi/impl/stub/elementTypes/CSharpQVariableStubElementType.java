@@ -45,8 +45,8 @@ public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & 
 	{
 		StringRef name = StringRef.fromNullableString(declaration.getName());
 		StringRef namespaceQName = StringRef.fromNullableString(declaration.getPresentableParentQName());
-		boolean constant = declaration.isConstant();
-		return new CSharpVariableDeclStub<P>(stubElement, this, name, namespaceQName, constant);
+		int otherModifierMask = CSharpVariableDeclStub.getOtherModifierMask(declaration);
+		return new CSharpVariableDeclStub<P>(stubElement, this, name, namespaceQName, otherModifierMask);
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & 
 	{
 		stubOutputStream.writeName(variableStub.getName());
 		stubOutputStream.writeName(variableStub.getParentQName());
-		stubOutputStream.writeBoolean(variableStub.isConstant());
+		stubOutputStream.writeVarInt(variableStub.getOtherModifierMask());
 	}
 
 	@NotNull
@@ -63,7 +63,7 @@ public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & 
 	{
 		StringRef name = stubInputStream.readName();
 		StringRef parentQName = stubInputStream.readName();
-		boolean constant = stubInputStream.readBoolean();
-		return new CSharpVariableDeclStub<P>(stubElement, this, name, parentQName, constant);
+		int otherModifierMask = stubInputStream.readVarInt();
+		return new CSharpVariableDeclStub<P>(stubElement, this, name, parentQName, otherModifierMask);
 	}
 }

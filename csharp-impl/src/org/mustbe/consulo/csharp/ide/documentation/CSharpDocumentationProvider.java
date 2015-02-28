@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.dotnet.documentation.DotNetDocumentationCache;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetArrayTypeRef;
@@ -99,7 +100,12 @@ public class CSharpDocumentationProvider  implements DocumentationProvider
 			@Override
 			public String fun(DotNetParameter dotNetParameter)
 			{
-				return generateLinksForType(dotNetParameter.toTypeRef(true), dotNetParameter) + " " + dotNetParameter.getName();
+				DotNetTypeRef typeRef = dotNetParameter.toTypeRef(true);
+				if(typeRef == CSharpStaticTypeRef.__ARGLIST_TYPE)
+				{
+					return typeRef.getPresentableText();
+				}
+				return generateLinksForType(typeRef, dotNetParameter) + " " + dotNetParameter.getName();
 			}
 		}, ", "));
 		builder.append(")");

@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubBase;
@@ -31,21 +32,34 @@ public class CSharpReferenceExpressionStub extends StubBase<CSharpReferenceExpre
 {
 	private StringRef myReferenceText;
 	private int myKindIndex;
+	private int myMemberAccessTypeIndex;
 	private boolean myGlobal;
 
-	public CSharpReferenceExpressionStub(StubElement parent, IStubElementType elementType, String referenceText, int kindIndex, boolean global)
+	public CSharpReferenceExpressionStub(StubElement parent,
+			IStubElementType elementType,
+			String referenceText,
+			int kindIndex,
+			int memberAccessType,
+			boolean global)
 	{
 		super(parent, elementType);
 		myGlobal = global;
 		myReferenceText = StringRef.fromNullableString(referenceText);
 		myKindIndex = kindIndex;
+		myMemberAccessTypeIndex = memberAccessType;
 	}
 
-	public CSharpReferenceExpressionStub(StubElement parent, IStubElementType elementType, StringRef referenceText, int kindIndex, boolean global)
+	public CSharpReferenceExpressionStub(StubElement parent,
+			IStubElementType elementType,
+			StringRef referenceText,
+			int kindIndex,
+			int memberAccessType,
+			boolean global)
 	{
 		super(parent, elementType);
 		myReferenceText = referenceText;
 		myKindIndex = kindIndex;
+		myMemberAccessTypeIndex = memberAccessType;
 		myGlobal = global;
 	}
 
@@ -62,6 +76,17 @@ public class CSharpReferenceExpressionStub extends StubBase<CSharpReferenceExpre
 	public int getKindIndex()
 	{
 		return myKindIndex;
+	}
+
+	public int getMemberAccessTypeIndex()
+	{
+		return myMemberAccessTypeIndex;
+	}
+
+	@NotNull
+	public CSharpReferenceExpression.AccessType getMemberAccessType()
+	{
+		return CSharpReferenceExpression.AccessType.VALUES[myMemberAccessTypeIndex];
 	}
 
 	@NotNull

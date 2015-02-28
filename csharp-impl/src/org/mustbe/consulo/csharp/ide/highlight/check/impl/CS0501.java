@@ -46,6 +46,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
+import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.util.IncorrectOperationException;
 
 /**
@@ -113,6 +114,11 @@ public class CS0501 extends CompilerCheck<DotNetCodeBlockOwner>
 			{
 				childByType.getPsi().replace(statement);
 			}
+
+			PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+			PsiDocumentManager.getInstance(project).commitDocument(editor.getDocument());
+
+			CodeStyleManager.getInstance(project).reformat(element);
 		}
 	}
 

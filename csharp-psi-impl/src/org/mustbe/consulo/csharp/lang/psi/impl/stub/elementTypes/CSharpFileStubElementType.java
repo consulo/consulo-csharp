@@ -38,7 +38,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroIfImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpFileStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.macro.MacroEvaluator;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
+import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.LanguageParserDefinitions;
@@ -107,7 +107,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 		List<TextRange> textRanges = Collections.emptyList();
 		if(macroFile != null)
 		{
-			DotNetModuleExtension<?> extension = ModuleUtilCore.getExtension(((PsiFile) psi).getOriginalFile(), DotNetModuleExtension.class);
+			DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(((PsiFile) psi).getOriginalFile(), DotNetSimpleModuleExtension.class);
 			if(extension != null)
 			{
 				textRanges = collectDisabledBlocks(macroFile, extension);
@@ -122,7 +122,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 	}
 
 	@NotNull
-	public static List<TextRange> collectDisabledBlocks(PsiFile macroFile, @NotNull DotNetModuleExtension<?> extension)
+	public static List<TextRange> collectDisabledBlocks(PsiFile macroFile, @NotNull DotNetSimpleModuleExtension<?> extension)
 	{
 		return collectDisabledBlocks(macroFile, extension.getVariables());
 	}
@@ -273,7 +273,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 	@Override
 	public int getStubVersion()
 	{
-		return 58;
+		return 60;
 	}
 
 	@NotNull

@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.codeStyle;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
+import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
 
 /**
@@ -27,6 +28,19 @@ import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
  */
 public class CSharpCodeStyleSettings extends CustomCodeStyleSettings
 {
+	// Wrapping settings
+	@CommonCodeStyleSettings.BraceStyleConstant
+	public int NAMESPACE_BRACE_STYLE = CommonCodeStyleSettings.END_OF_LINE;
+
+	@CommonCodeStyleSettings.BraceStyleConstant
+	public int PROPERTY_BRACE_STYLE = CommonCodeStyleSettings.END_OF_LINE;
+
+	@CommonCodeStyleSettings.BraceStyleConstant
+	public int EVENT_BRACE_STYLE = CommonCodeStyleSettings.END_OF_LINE;
+
+	@CommonCodeStyleSettings.BraceStyleConstant
+	public int INDEX_METHOD_BRACE_STYLE = CommonCodeStyleSettings.END_OF_LINE;
+
 	// ----------------------------------- Parentheses  settings -------------------------------------
 	/**
 	 * "foreach (...)"

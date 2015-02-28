@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import org.mustbe.consulo.csharp.lang.psi.*;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.dll.vfs.builder.block.LineStubBlock;
 import org.mustbe.consulo.dotnet.dll.vfs.builder.block.StubBlock;
@@ -442,15 +443,19 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			{
 				appendAttributeList(t, v);
 				processModifierList(t, v);
-				appendTypeRef(declaration, t, v.toTypeRef(false));
-				t.append(" ");
-				appendValidName(t, v.getName());
-
-				DotNetExpression initializer = v.getInitializer();
-				if(initializer != null)
+				DotNetTypeRef typeRef = v.toTypeRef(false);
+				appendTypeRef(declaration, t, typeRef);
+				if(typeRef != CSharpStaticTypeRef.__ARGLIST_TYPE)
 				{
-					t.append(" = ");
-					t.append(initializer.getText());
+					t.append(" ");
+					appendValidName(t, v.getName());
+
+					DotNetExpression initializer = v.getInitializer();
+					if(initializer != null)
+					{
+						t.append(" = ");
+						t.append(initializer.getText());
+					}
 				}
 				return null;
 			}

@@ -59,7 +59,8 @@ public class CSharpReferenceExpressionStubElementType extends CSharpAbstractStub
 		String referenceName = psi.getReferenceNameWithAt();
 		CSharpReferenceExpression.ResolveToKind kind = psi.kind();
 		boolean global = psi.isGlobalElement();
-		return new CSharpReferenceExpressionStub(parentStub, this, referenceName, kind.ordinal(), global);
+		CSharpReferenceExpression.AccessType memberAccessType = psi.getMemberAccessType();
+		return new CSharpReferenceExpressionStub(parentStub, this, referenceName, kind.ordinal(), memberAccessType.ordinal(), global);
 	}
 
 	@Override
@@ -67,6 +68,7 @@ public class CSharpReferenceExpressionStubElementType extends CSharpAbstractStub
 	{
 		dataStream.writeName(stub.getReferenceText());
 		dataStream.writeVarInt(stub.getKindIndex());
+		dataStream.writeVarInt(stub.getMemberAccessTypeIndex());
 		dataStream.writeBoolean(stub.isGlobal());
 	}
 
@@ -76,7 +78,8 @@ public class CSharpReferenceExpressionStubElementType extends CSharpAbstractStub
 	{
 		StringRef referenceText = dataStream.readName();
 		int kind = dataStream.readVarInt();
+		int memberAccessType = dataStream.readVarInt();
 		boolean global = dataStream.readBoolean();
-		return new CSharpReferenceExpressionStub(parentStub, this, referenceText, kind, global);
+		return new CSharpReferenceExpressionStub(parentStub, this, referenceText, kind, memberAccessType, global);
 	}
 }
