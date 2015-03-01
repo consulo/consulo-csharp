@@ -164,6 +164,14 @@ public class CSharpLambdaExpressionImplUtil
 				}
 			}
 		}
+		else if(parent instanceof CSharpTypeCastExpressionImpl)
+		{
+			DotNetTypeResolveResult typeResolveResult = ((CSharpTypeCastExpressionImpl) parent).toTypeRef(false).resolve(parent);
+			if(typeResolveResult instanceof CSharpLambdaResolveResult)
+			{
+				return (CSharpLambdaResolveResult) typeResolveResult;
+			}
+		}
 
 		return null;
 	}
