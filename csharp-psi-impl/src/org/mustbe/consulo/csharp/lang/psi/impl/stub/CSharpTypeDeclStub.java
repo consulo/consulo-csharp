@@ -34,7 +34,7 @@ public class CSharpTypeDeclStub extends MemberStub<CSharpTypeDeclaration>
 	public static final int STRUCT = 1 << 1;
 	public static final int ENUM = 1 << 2;
 
-	public static final int HAVE_EXTENSIONS = 1 << 31;
+	public static final int HAVE_EXTENSIONS = 1 << 10;
 
 	public static int getOtherModifiers(CSharpTypeDeclaration typeDeclaration)
 	{

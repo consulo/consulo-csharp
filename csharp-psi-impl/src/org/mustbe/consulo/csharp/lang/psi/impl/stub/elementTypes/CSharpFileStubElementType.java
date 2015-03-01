@@ -81,6 +81,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 	{
 		return new DefaultStubBuilder()
 		{
+			@NotNull
 			@Override
 			protected StubElement createStubForFile(@NotNull PsiFile file)
 			{
@@ -273,7 +274,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 	@Override
 	public int getStubVersion()
 	{
-		return 60;
+		return 61;
 	}
 
 	@NotNull
