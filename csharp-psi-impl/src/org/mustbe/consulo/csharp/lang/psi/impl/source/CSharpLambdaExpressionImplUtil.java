@@ -172,6 +172,27 @@ public class CSharpLambdaExpressionImplUtil
 				return (CSharpLambdaResolveResult) typeResolveResult;
 			}
 		}
+		else if(parent instanceof CSharpConditionalExpressionImpl)
+		{
+			DotNetExpression expression = ((CSharpConditionalExpressionImpl) parent).getTrueExpression();
+			if(expression != null)
+			{
+				DotNetTypeResolveResult typeResolveResult = expression.toTypeRef(false).resolve(parent);
+				if(typeResolveResult instanceof CSharpLambdaResolveResult)
+				{
+					return (CSharpLambdaResolveResult) typeResolveResult;
+				}
+			}
+			expression = ((CSharpConditionalExpressionImpl) parent).getFalseExpression();
+			if(expression != null)
+			{
+				DotNetTypeResolveResult typeResolveResult = expression.toTypeRef(false).resolve(parent);
+				if(typeResolveResult instanceof CSharpLambdaResolveResult)
+				{
+					return (CSharpLambdaResolveResult) typeResolveResult;
+				}
+			}
+		}
 
 		return null;
 	}
