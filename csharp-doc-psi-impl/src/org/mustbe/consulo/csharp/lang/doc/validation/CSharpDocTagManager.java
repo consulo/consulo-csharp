@@ -40,12 +40,12 @@ public class CSharpDocTagManager
 		addTag(new CSharpDocTagInfo("code"));
 		addTag(new CSharpDocTagInfo("see"));
 		addTag(new CSharpDocTagInfo("example"));
-		addTag(new CSharpDocTagInfo("exception").add(new CSharpDocAttributeInfo("cref", CSharpDocAttributeInfo.ValueType.TYPE_REFERENCE)));
+		addTag(new CSharpDocTagInfo("exception").add(new CSharpDocAttributeInfo("cref", CSharpDocAttributeInfo.ValueType.TYPE)));
 		addTag(new CSharpDocTagInfo("include").add(new CSharpDocAttributeInfo("file", CSharpDocAttributeInfo.ValueType.TEXT)).add(new
 				CSharpDocAttributeInfo("path", CSharpDocAttributeInfo.ValueType.TEXT)));
 		addTag(new CSharpDocTagInfo("list"));
 		addTag(new CSharpDocTagInfo("para"));
-		addTag(new CSharpDocTagInfo("param"));
+		addTag(new CSharpDocTagInfo("param").add(new CSharpDocAttributeInfo("name", CSharpDocAttributeInfo.ValueType.PARAMETER)));
 		addTag(new CSharpDocTagInfo("paramref"));
 		addTag(new CSharpDocTagInfo("permission"));
 		addTag(new CSharpDocTagInfo("remarks"));

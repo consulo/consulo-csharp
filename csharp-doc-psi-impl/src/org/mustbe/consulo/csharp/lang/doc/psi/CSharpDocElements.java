@@ -22,6 +22,7 @@ import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.doc.CSharpDocLanguage;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
+import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.LanguageVersion;
@@ -63,9 +64,9 @@ public interface CSharpDocElements
 		}
 	};
 
-	IElementType TYPE_REFERENCE = new ILazyParseableElementType("TYPE_REFERENCE", CSharpDocLanguage.INSTANCE)
+	IElementType TYPE = new ILazyParseableElementType("TYPE", CSharpDocLanguage.INSTANCE)
 	{
-		private final PsiParser ourTypeParser = new PsiParser()
+		private final PsiParser myParser = new PsiParser()
 		{
 			@NotNull
 			@Override
@@ -90,7 +91,51 @@ public interface CSharpDocElements
 			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser,
 					languageForParser.getVersions()[0],
 					chameleon.getChars());
-			return ourTypeParser.parse(this, builder, languageForParser.getVersions()[0]).getFirstChildNode();
+			return myParser.parse(this, builder, languageForParser.getVersions()[0]).getFirstChildNode();
+		}
+
+		@Override
+		protected Language getLanguageForParser(PsiElement psi)
+		{
+			return CSharpLanguage.INSTANCE;
+		}
+
+		@Nullable
+		@Override
+		public ASTNode createNode(CharSequence text)
+		{
+			return new LazyParseableElement(this, text);
+		}
+	};
+
+	IElementType EXPRESSION = new ILazyParseableElementType("REFERENCE", CSharpDocLanguage.INSTANCE)
+	{
+		private final PsiParser myParser = new PsiParser()
+		{
+			@NotNull
+			@Override
+			public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
+			{
+				PsiBuilder.Marker mark = builder.mark();
+				ExpressionParsing.parse(new CSharpBuilderWrapper(builder, languageVersion));
+				if(!builder.eof())
+				{
+					builder.advanceLexer();
+				}
+				mark.done(elementType);
+				return builder.getTreeBuilt();
+			}
+		};
+
+		@Override
+		protected ASTNode doParseContents(@NotNull final ASTNode chameleon, @NotNull final PsiElement psi)
+		{
+			final Project project = psi.getProject();
+			final Language languageForParser = getLanguageForParser(psi);
+			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser,
+					languageForParser.getVersions()[0],
+					chameleon.getChars());
+			return myParser.parse(this, builder, languageForParser.getVersions()[0]).getFirstChildNode();
 		}
 
 		@Override

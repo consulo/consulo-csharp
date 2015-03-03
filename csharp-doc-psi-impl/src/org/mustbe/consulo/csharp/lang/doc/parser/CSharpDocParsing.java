@@ -370,8 +370,12 @@ public class CSharpDocParsing
 					{
 						switch(attributeInfo.getValueType())
 						{
-							case TYPE_REFERENCE:
-								myBuilder.remapCurrentToken(CSharpDocElements.TYPE_REFERENCE);
+							case TYPE:
+								myBuilder.remapCurrentToken(CSharpDocElements.TYPE);
+								break;
+							case PARAMETER:
+							case TYPE_PARAMETER:
+								myBuilder.remapCurrentToken(CSharpDocElements.EXPRESSION);
 								break;
 						}
 						advance();

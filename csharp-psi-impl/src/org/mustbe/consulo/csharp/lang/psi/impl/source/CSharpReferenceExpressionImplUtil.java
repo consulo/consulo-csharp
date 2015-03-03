@@ -27,6 +27,10 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocAttribute;
+import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocAttributeValue;
+import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocRoot;
+import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocAttributeInfo;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
@@ -323,6 +327,26 @@ public class CSharpReferenceExpressionImplUtil
 			return ResolveToKind.LABEL;
 		}
 
+		PsiElement superParent = tempElement.getParent();
+		if(superParent instanceof CSharpDocAttributeValue)
+		{
+			PsiElement parent = superParent.getParent();
+			if(parent instanceof CSharpDocAttribute)
+			{
+				CSharpDocAttributeInfo attributeInfo = ((CSharpDocAttribute) parent).getAttributeInfo();
+				if(attributeInfo != null)
+				{
+					switch(attributeInfo.getValueType())
+					{
+						case PARAMETER:
+							return ResolveToKind.PARAMETER_FROM_PARENT;
+						case TYPE_PARAMETER:
+							return ResolveToKind.GENERIC_PARAMETER_FROM_PARENT;
+					}
+				}
+			}
+		}
+
 		tempElement = referenceExpression.getReferenceElement();
 		ASTNode node = tempElement == null ? null : tempElement.getNode();
 		if(node == null)
@@ -529,13 +553,26 @@ public class CSharpReferenceExpressionImplUtil
 				assert temp != null;
 				return new ResolveResult[]{new PsiElementResolveResult(temp, true)};
 			case GENERIC_PARAMETER_FROM_PARENT:
-				DotNetGenericParameterListOwner parameterListOwner = PsiTreeUtil.getParentOfType(element, DotNetGenericParameterListOwner.class);
-				if(parameterListOwner == null)
+				DotNetGenericParameterListOwner genericParameterListOwner = findParentOrNextIfDoc(element, DotNetGenericParameterListOwner.class);
+				if(genericParameterListOwner == null)
 				{
 					return ResolveResult.EMPTY_ARRAY;
 				}
 
 				scopeProcessor = new SimpleNamedScopeProcessor(ExecuteTarget.GENERIC_PARAMETER);
+				state = ResolveState.initial();
+				state = state.put(CSharpResolveUtil.SELECTOR, selector);
+
+				genericParameterListOwner.processDeclarations(scopeProcessor, state, null, element);
+				return scopeProcessor.toResolveResults();
+			case PARAMETER_FROM_PARENT:
+				DotNetParameterListOwner parameterListOwner = findParentOrNextIfDoc(element, DotNetParameterListOwner.class);
+				if(parameterListOwner == null)
+				{
+					return ResolveResult.EMPTY_ARRAY;
+				}
+
+				scopeProcessor = new SimpleNamedScopeProcessor(ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
 				state = ResolveState.initial();
 				state = state.put(CSharpResolveUtil.SELECTOR, selector);
 
@@ -1023,6 +1060,26 @@ public class CSharpReferenceExpressionImplUtil
 
 			return p.toResolveResults();
 		}
+	}
+
+	private static <T extends PsiElement> T findParentOrNextIfDoc(PsiElement element, Class<T> clazz)
+	{
+		T firstParent = PsiTreeUtil.getParentOfType(element, clazz);
+		if(firstParent != null)
+		{
+			return firstParent;
+		}
+
+		CSharpDocRoot parentOfType = PsiTreeUtil.getParentOfType(element, CSharpDocRoot.class);
+		if(parentOfType != null)
+		{
+			PsiElement next = UsefulPsiTreeUtil.getNextSiblingSkippingWhiteSpacesAndComments(parentOfType);
+			if(next != null && clazz.isInstance(next))
+			{
+				return (T) next;
+			}
+		}
+		return null;
 	}
 
 	@NotNull

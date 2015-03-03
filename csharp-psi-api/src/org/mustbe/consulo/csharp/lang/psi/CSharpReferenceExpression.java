@@ -51,7 +51,8 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 		ROOT_NAMESPACE,  // root namespace - global keyword
 		LABEL,
 		BASE_CONSTRUCTOR,
-		THIS_CONSTRUCTOR;
+		THIS_CONSTRUCTOR,
+		PARAMETER_FROM_PARENT;
 
 		@NotNull
 		@Immutable

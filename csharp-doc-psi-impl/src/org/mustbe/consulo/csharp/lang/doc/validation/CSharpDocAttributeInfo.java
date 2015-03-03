@@ -24,7 +24,9 @@ public class CSharpDocAttributeInfo
 {
 	public enum ValueType
 	{
-		TYPE_REFERENCE,
+		TYPE,
+		PARAMETER,
+		TYPE_PARAMETER,
 		TEXT
 	}
 
