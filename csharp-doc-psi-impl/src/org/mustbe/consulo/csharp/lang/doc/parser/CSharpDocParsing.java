@@ -55,7 +55,7 @@ public class CSharpDocParsing
 			if(tt == CSharpDocTokenType.XML_START_TAG_START)
 			{
 				error = flushError(error);
-				parseTag(false);
+				parseTag();
 			}
 			else if(isCommentToken(tt))
 			{
@@ -96,7 +96,7 @@ public class CSharpDocParsing
 		return error;
 	}
 
-	protected void parseTag(boolean multipleRootTagError)
+	protected void parseTag()
 	{
 		assert token() == CSharpDocTokenType.XML_START_TAG_START : "Tag start expected";
 		final PsiBuilder.Marker tag = mark();
@@ -229,7 +229,7 @@ public class CSharpDocParsing
 			if(tt == CSharpDocTokenType.XML_START_TAG_START)
 			{
 				xmlText = terminateText(xmlText);
-				parseTag(false);
+				parseTag();
 			}
 			else if(isCommentToken(tt))
 			{
