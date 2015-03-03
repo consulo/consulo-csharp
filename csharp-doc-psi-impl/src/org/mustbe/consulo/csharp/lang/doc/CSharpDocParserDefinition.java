@@ -20,6 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.doc.lexer.DeprecatedCSharpDocLexer;
 import org.mustbe.consulo.csharp.lang.doc.parser.CSharpDocParser;
+import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocElements;
+import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocRoot;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTokenType;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
@@ -86,6 +88,10 @@ public class CSharpDocParserDefinition implements ParserDefinition
 	@Override
 	public PsiElement createElement(ASTNode node)
 	{
+		if(node.getElementType() == CSharpDocElements.LINE_DOC_COMMENT)
+		{
+			return new CSharpDocRoot(node);
+		}
 		return new ASTWrapperPsiElement(node);
 	}
 
