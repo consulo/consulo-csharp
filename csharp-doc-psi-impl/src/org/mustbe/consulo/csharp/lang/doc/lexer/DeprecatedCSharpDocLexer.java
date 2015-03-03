@@ -44,7 +44,7 @@ public class DeprecatedCSharpDocLexer extends LookAheadLexer
 				if(StringUtil.equals(tokenSequence, "///"))
 				{
 					myNewLine = false;
-					advanceAs(baseLexer, CSharpDocTokenType.XML_WHITE_SPACE);
+					advanceAs(baseLexer, CSharpDocTokenType.DOC_LINE_START);
 					return;
 				}
 			}

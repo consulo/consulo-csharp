@@ -24,7 +24,7 @@ import com.intellij.psi.tree.TokenSet;
 /**
  * @author VISTALL
  * @since 03.03.2015
- *
+ * <p/>
  * Base code is {@see com.intellij.psi.xml.XmlTokenType}
  */
 public interface CSharpDocTokenType
@@ -42,6 +42,7 @@ public interface CSharpDocTokenType
 	IElementType XML_DATA_CHARACTERS = new IElementType("XML_DATA_CHARACTERS", CSharpDocLanguage.INSTANCE);
 	IElementType XML_TAG_CHARACTERS = new IElementType("XML_TAG_CHARACTERS", CSharpDocLanguage.INSTANCE);
 	IElementType XML_WHITE_SPACE = TokenType.WHITE_SPACE;
+	IElementType DOC_LINE_START = new IElementType("DOC_LINE_START", CSharpDocLanguage.INSTANCE);
 	IElementType XML_REAL_WHITE_SPACE = new IElementType("XML_WHITE_SPACE", CSharpDocLanguage.INSTANCE);
 	IElementType XML_COMMENT_START = new IElementType("XML_COMMENT_START", CSharpDocLanguage.INSTANCE);
 	IElementType XML_COMMENT_END = new IElementType("XML_COMMENT_END", CSharpDocLanguage.INSTANCE);

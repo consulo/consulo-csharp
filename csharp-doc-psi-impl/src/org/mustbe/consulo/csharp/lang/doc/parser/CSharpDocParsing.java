@@ -59,7 +59,9 @@ public class CSharpDocParsing
 				error = flushError(error);
 				parseComment();
 			}
-			else if(tt == CSharpDocTokenType.XML_REAL_WHITE_SPACE || tt == CSharpDocTokenType.XML_DATA_CHARACTERS)
+			else if(tt == CSharpDocTokenType.XML_REAL_WHITE_SPACE ||
+					tt == CSharpDocTokenType.XML_DATA_CHARACTERS ||
+					tt == CSharpDocTokenType.DOC_LINE_START)
 			{
 				error = flushError(error);
 				advance();
