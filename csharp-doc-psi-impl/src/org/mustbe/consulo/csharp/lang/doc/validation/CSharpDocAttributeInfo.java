@@ -22,11 +22,24 @@ package org.mustbe.consulo.csharp.lang.doc.validation;
  */
 public class CSharpDocAttributeInfo
 {
-	private String myName;
+	public enum ValueType
+	{
+		TYPE_REFERENCE,
+		TEXT
+	}
 
-	public CSharpDocAttributeInfo(String name)
+	private final String myName;
+	private final ValueType myValueType;
+
+	public CSharpDocAttributeInfo(String name, ValueType valueType)
 	{
 		myName = name;
+		myValueType = valueType;
+	}
+
+	public ValueType getValueType()
+	{
+		return myValueType;
 	}
 
 	public String getName()

@@ -16,10 +16,19 @@
 
 package org.mustbe.consulo.csharp.lang.doc.psi;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.doc.CSharpDocLanguage;
+import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
+import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
+import com.intellij.lang.LanguageVersion;
+import com.intellij.lang.PsiBuilder;
+import com.intellij.lang.PsiBuilderFactory;
+import com.intellij.lang.PsiParser;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.tree.LazyParseableElement;
 import com.intellij.psi.tree.ElementTypeAsPsiFactory;
@@ -44,6 +53,50 @@ public interface CSharpDocElements
 		protected Language getLanguageForParser(PsiElement psi)
 		{
 			return CSharpDocLanguage.INSTANCE;
+		}
+
+		@Nullable
+		@Override
+		public ASTNode createNode(CharSequence text)
+		{
+			return new LazyParseableElement(this, text);
+		}
+	};
+
+	IElementType TYPE_REFERENCE = new ILazyParseableElementType("TYPE_REFERENCE", CSharpDocLanguage.INSTANCE)
+	{
+		private final PsiParser ourTypeParser = new PsiParser()
+		{
+			@NotNull
+			@Override
+			public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
+			{
+				PsiBuilder.Marker mark = builder.mark();
+				SharedParsingHelpers.parseType(new CSharpBuilderWrapper(builder, languageVersion), SharedParsingHelpers.VAR_SUPPORT);
+				if(!builder.eof())
+				{
+					builder.advanceLexer();
+				}
+				mark.done(elementType);
+				return builder.getTreeBuilt();
+			}
+		};
+
+		@Override
+		protected ASTNode doParseContents(@NotNull final ASTNode chameleon, @NotNull final PsiElement psi)
+		{
+			final Project project = psi.getProject();
+			final Language languageForParser = getLanguageForParser(psi);
+			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser,
+					languageForParser.getVersions()[0],
+					chameleon.getChars());
+			return ourTypeParser.parse(this, builder, languageForParser.getVersions()[0]).getFirstChildNode();
+		}
+
+		@Override
+		protected Language getLanguageForParser(PsiElement psi)
+		{
+			return CSharpLanguage.INSTANCE;
 		}
 
 		@Nullable

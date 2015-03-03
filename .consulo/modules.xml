@@ -210,6 +210,8 @@
           <orderEntry type="module-extension-sdk" extension-id="consulo-plugin" />
           <orderEntry type="module-extension-sdk" extension-id="java" />
           <orderEntry type="sourceFolder" />
+          <orderEntry type="module" module-name="csharp-psi-api" />
+          <orderEntry type="module" module-name="csharp-psi-impl" />
         </module-layer>
       </module>
     </modules>

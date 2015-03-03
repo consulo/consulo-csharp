@@ -19,6 +19,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocElements;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTokenType;
+import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocAttributeInfo;
+import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocTagInfo;
+import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocTagManager;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.CustomParsingType;
 import com.intellij.psi.tree.IElementType;
@@ -178,7 +181,7 @@ public class CSharpDocParsing
 			final IElementType tt = token();
 			if(tt == CSharpDocTokenType.XML_NAME)
 			{
-				parseAttribute();
+				parseAttribute(tagName);
 			}
 			else
 			{
@@ -314,15 +317,20 @@ public class CSharpDocParsing
 		}
 	}
 
-	private void parseAttribute()
+	private void parseAttribute(String tagInfo)
 	{
+		String attributeName = myBuilder.getTokenText();
+
+		CSharpDocTagInfo docTagInfo = CSharpDocTagManager.getInstance().getTag(tagInfo);
+		CSharpDocAttributeInfo attributeInfo = docTagInfo == null ? null : docTagInfo.getAttribute(attributeName);
+
 		assert token() == CSharpDocTokenType.XML_NAME;
 		final PsiBuilder.Marker att = mark();
 		advance();
 		if(token() == CSharpDocTokenType.XML_EQ)
 		{
 			advance();
-			parseAttributeValue();
+			parseAttributeValue(attributeInfo);
 			att.done(CSharpDocElements.ATTRIBUTE);
 		}
 		else
@@ -332,7 +340,7 @@ public class CSharpDocParsing
 		}
 	}
 
-	private void parseAttributeValue()
+	private void parseAttributeValue(@Nullable CSharpDocAttributeInfo attributeInfo)
 	{
 		final PsiBuilder.Marker attValue = mark();
 		if(token() == CSharpDocTokenType.XML_ATTRIBUTE_VALUE_START_DELIMITER)
@@ -354,7 +362,20 @@ public class CSharpDocParsing
 				}
 				else
 				{
-					advance();
+					if(attributeInfo == null)
+					{
+						advance();
+					}
+					else
+					{
+						switch(attributeInfo.getValueType())
+						{
+							case TYPE_REFERENCE:
+								myBuilder.remapCurrentToken(CSharpDocElements.TYPE_REFERENCE);
+								break;
+						}
+						advance();
+					}
 				}
 			}
 
