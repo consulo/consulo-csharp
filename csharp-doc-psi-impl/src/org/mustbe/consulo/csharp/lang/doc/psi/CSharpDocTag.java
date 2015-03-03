@@ -19,10 +19,14 @@ package org.mustbe.consulo.csharp.lang.doc.psi;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocTagInfo;
+import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocTagManager;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -33,6 +37,17 @@ public class CSharpDocTag extends ASTWrapperPsiElement
 	public CSharpDocTag(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	@Nullable
+	public CSharpDocTagInfo getTagInfo()
+	{
+		PsiElement tagName = ContainerUtil.getFirstItem(getNameElements());
+		if(tagName == null)
+		{
+			return null;
+		}
+		return CSharpDocTagManager.getInstance().getTag(tagName.getText());
 	}
 
 	@NotNull

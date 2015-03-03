@@ -19,15 +19,15 @@ package org.mustbe.consulo.csharp.lang.doc.inspection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocAttribute;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocElementVisitor;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTag;
-import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocTagInfo;
-import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocTagManager;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -44,15 +44,26 @@ public class CSharpDocInspection extends LocalInspectionTool
 			@Override
 			public void visitDocTag(CSharpDocTag docTag)
 			{
-				CSharpDocTagManager docTagManager = CSharpDocTagManager.getInstance();
-				List<PsiElement> nameElements = docTag.getNameElements();
-				for(PsiElement nameElement : nameElements)
+				if(docTag.getTagInfo() == null)
 				{
-					CSharpDocTagInfo tagInfo = docTagManager.getTagInfo(nameElement.getText());
-					if(tagInfo == null)
+					List<PsiElement> nameElements = docTag.getNameElements();
+					PsiElement firstItem = ContainerUtil.getFirstItem(nameElements);
+					if(firstItem == null)
 					{
-						holder.registerProblem(nameElement, "Unknown tag name '" + nameElement.getText() + "'", ProblemHighlightType.ERROR);
+						return;
 					}
+					holder.registerProblem(firstItem, "Unknown tag name '" + firstItem.getText() + "'", ProblemHighlightType.ERROR);
+				}
+			}
+
+			@Override
+			public void visitDocAttribute(CSharpDocAttribute docAttribute)
+			{
+				if(docAttribute.getAttributeInfo() == null)
+				{
+					PsiElement psiElement = docAttribute.getNameIdentifier();
+					assert psiElement != null;
+					holder.registerProblem(psiElement, "Unknown attribute name '" + psiElement.getText() + "'", ProblemHighlightType.ERROR);
 				}
 			}
 		};

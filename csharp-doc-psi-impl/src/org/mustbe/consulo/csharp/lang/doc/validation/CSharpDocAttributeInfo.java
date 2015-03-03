@@ -16,47 +16,17 @@
 
 package org.mustbe.consulo.csharp.lang.doc.validation;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.consulo.annotations.Immutable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 /**
  * @author VISTALL
  * @since 03.03.2015
  */
-public class CSharpDocTagInfo
+public class CSharpDocAttributeInfo
 {
-	private Map<String, CSharpDocAttributeInfo> myAttributes = new HashMap<String, CSharpDocAttributeInfo>();
+	private String myName;
 
-	private final String myName;
-
-	public CSharpDocTagInfo(String name)
+	public CSharpDocAttributeInfo(String name)
 	{
 		myName = name;
-	}
-
-	@NotNull
-	public CSharpDocTagInfo add(@NotNull CSharpDocAttributeInfo a)
-	{
-		myAttributes.put(a.getName(), a);
-		return this;
-	}
-
-	@NotNull
-	@Immutable
-	public Collection<CSharpDocAttributeInfo> getAttributes()
-	{
-		return myAttributes.values();
-	}
-
-	@Nullable
-	public CSharpDocAttributeInfo getAttribute(String tagName)
-	{
-		return myAttributes.get(tagName);
 	}
 
 	public String getName()

@@ -16,16 +16,23 @@
 
 package org.mustbe.consulo.csharp.lang.doc.psi;
 
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocAttributeInfo;
+import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocTagInfo;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
  * @since 03.03.2015
  */
-public class CSharpDocAttribute extends ASTWrapperPsiElement
+public class CSharpDocAttribute extends ASTWrapperPsiElement implements PsiNameIdentifierOwner
 {
 	public CSharpDocAttribute(@NotNull ASTNode node)
 	{
@@ -43,5 +50,45 @@ public class CSharpDocAttribute extends ASTWrapperPsiElement
 		{
 			super.accept(visitor);
 		}
+	}
+
+	@Nullable
+	public CSharpDocTagInfo getTagInfo()
+	{
+		PsiElement parent = getParent();
+		if(parent instanceof CSharpDocTag)
+		{
+			return ((CSharpDocTag) parent).getTagInfo();
+		}
+		return null;
+	}
+
+	@Nullable
+	public CSharpDocAttributeInfo getAttributeInfo()
+	{
+		PsiElement nameIdentifier = getNameIdentifier();
+		if(nameIdentifier == null)
+		{
+			return null;
+		}
+		CSharpDocTagInfo tagInfo = getTagInfo();
+		if(tagInfo != null)
+		{
+			return tagInfo.getAttribute(nameIdentifier.getText());
+		}
+		return null;
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getNameIdentifier()
+	{
+		return findChildByType(CSharpDocTokenType.XML_NAME);
+	}
+
+	@Override
+	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	{
+		return null;
 	}
 }

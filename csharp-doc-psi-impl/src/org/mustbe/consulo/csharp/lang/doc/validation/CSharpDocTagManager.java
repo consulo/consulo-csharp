@@ -40,7 +40,7 @@ public class CSharpDocTagManager
 		addTag(new CSharpDocTagInfo("code"));
 		addTag(new CSharpDocTagInfo("see"));
 		addTag(new CSharpDocTagInfo("example"));
-		addTag(new CSharpDocTagInfo("exception"));
+		addTag(new CSharpDocTagInfo("exception").add(new CSharpDocAttributeInfo("cref")));
 		addTag(new CSharpDocTagInfo("include"));
 		addTag(new CSharpDocTagInfo("list"));
 		addTag(new CSharpDocTagInfo("para"));
@@ -69,7 +69,7 @@ public class CSharpDocTagManager
 	}
 
 	@Nullable
-	public CSharpDocTagInfo getTagInfo(String tagName)
+	public CSharpDocTagInfo getTag(String tagName)
 	{
 		return myTags.get(tagName);
 	}

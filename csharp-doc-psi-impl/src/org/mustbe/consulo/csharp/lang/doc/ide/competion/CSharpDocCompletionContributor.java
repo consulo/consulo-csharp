@@ -19,8 +19,10 @@ package org.mustbe.consulo.csharp.lang.doc.ide.competion;
 import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocAttribute;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTag;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTokenType;
+import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocAttributeInfo;
 import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocTagInfo;
 import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocTagManager;
 import com.intellij.codeInsight.completion.CompletionContributor;
@@ -53,6 +55,18 @@ public class CSharpDocCompletionContributor extends CompletionContributor
 					for(CSharpDocTagInfo tag : tags)
 					{
 						result.addElement(LookupElementBuilder.create(tag.getName()));
+					}
+				}
+				else if(parent instanceof CSharpDocAttribute)
+				{
+					CSharpDocTagInfo tagInfo = ((CSharpDocAttribute) parent).getTagInfo();
+					if(tagInfo == null)
+					{
+						return;
+					}
+					for(CSharpDocAttributeInfo attributeInfo : tagInfo.getAttributes())
+					{
+						result.addElement(LookupElementBuilder.create(attributeInfo.getName()));
 					}
 				}
 			}
