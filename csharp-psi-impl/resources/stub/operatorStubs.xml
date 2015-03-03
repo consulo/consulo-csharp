@@ -966,5 +966,15 @@
 		<operator name="EXCL">
 			<parameter/>
 		</operator>
+
+		<operator name="AND">
+			<parameter/>
+			<parameter/>
+		</operator>
+
+		<operator name="OR">
+			<parameter/>
+			<parameter/>
+		</operator>
 	</type>
 </list>
