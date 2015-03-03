@@ -39,6 +39,13 @@ public class CSharpDocTag extends ASTWrapperPsiElement
 		super(node);
 	}
 
+	@Override
+	public String getName()
+	{
+		List<PsiElement> nameElements = getNameElements();
+		return nameElements.isEmpty() ? null : ContainerUtil.getFirstItem(nameElements).getText();
+	}
+
 	@Nullable
 	public CSharpDocTagInfo getTagInfo()
 	{
