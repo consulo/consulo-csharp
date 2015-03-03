@@ -16,32 +16,21 @@
 
 package org.mustbe.consulo.csharp.lang.doc.psi;
 
-import org.jetbrains.annotations.NotNull;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 
 /**
  * @author VISTALL
  * @since 03.03.2015
  */
-public class CSharpDocAttribute extends ASTWrapperPsiElement
+public class CSharpDocElementVisitor extends PsiElementVisitor
 {
-	public CSharpDocAttribute(@NotNull ASTNode node)
+	public void visitDocAttribute(CSharpDocAttribute docAttribute)
 	{
-		super(node);
+		visitElement(docAttribute);
 	}
 
-	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public void visitDocTag(CSharpDocTag docTag)
 	{
-		if(visitor instanceof CSharpDocElementVisitor)
-		{
-			((CSharpDocElementVisitor) visitor).visitDocAttribute(this);
-		}
-		else
-		{
-			super.accept(visitor);
-		}
+		visitElement(docTag);
 	}
 }

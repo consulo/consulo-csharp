@@ -19,16 +19,11 @@ package org.mustbe.consulo.csharp.lang.doc.ide.highlight;
 import java.util.List;
 
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTag;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTokenType;
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerBase;
-import com.intellij.lang.ASTNode;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.Consumer;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -47,15 +42,7 @@ public class CSharpDocTagHighlightUsagesHandler extends HighlightUsagesHandlerBa
 	@Override
 	public List<PsiElement> getTargets()
 	{
-		ASTNode[] children = myDocTag.getNode().getChildren(TokenSet.create(CSharpDocTokenType.XML_NAME));
-		return ContainerUtil.map(children, new Function<ASTNode, PsiElement>()
-		{
-			@Override
-			public PsiElement fun(ASTNode astNode)
-			{
-				return astNode.getPsi();
-			}
-		});
+		return myDocTag.getNameElements();
 	}
 
 	@Override

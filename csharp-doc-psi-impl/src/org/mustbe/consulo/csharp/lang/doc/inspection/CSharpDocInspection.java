@@ -14,34 +14,32 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.doc.psi;
+package org.mustbe.consulo.csharp.lang.doc.inspection;
 
 import org.jetbrains.annotations.NotNull;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
+import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocElementVisitor;
+import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTag;
+import com.intellij.codeInspection.LocalInspectionTool;
+import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElementVisitor;
 
 /**
  * @author VISTALL
  * @since 03.03.2015
  */
-public class CSharpDocAttribute extends ASTWrapperPsiElement
+public class CSharpDocInspection extends LocalInspectionTool
 {
-	public CSharpDocAttribute(@NotNull ASTNode node)
-	{
-		super(node);
-	}
-
+	@NotNull
 	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder, boolean isOnTheFly)
 	{
-		if(visitor instanceof CSharpDocElementVisitor)
+		return new CSharpDocElementVisitor()
 		{
-			((CSharpDocElementVisitor) visitor).visitDocAttribute(this);
-		}
-		else
-		{
-			super.accept(visitor);
-		}
+			@Override
+			public void visitDocTag(CSharpDocTag docTag)
+			{
+				System.out.println("test");
+			}
+		};
 	}
 }

@@ -27,5 +27,8 @@
 				displayName="Unnecessary Named Argument" groupName="C#" enabledByDefault="true"/>
 		<localInspection implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.UnusedSymbolLocalInspection"
 						 displayName="Unused Symbol" groupName="C#" enabledByDefault="true"/>
+
+		<localInspection implementationClass="org.mustbe.consulo.csharp.lang.doc.inspection.CSharpDocInspection"
+						 displayName="C# Documentation problems" groupName="C# Documentation" enabledByDefault="true"/>
 	</extensions>
 </idea-plugin>
