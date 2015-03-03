@@ -52,8 +52,9 @@ public class CSharpFragmentFactory
 		{
 			PsiBuilder.Marker mark = builder.mark();
 			ExpressionParsing.parse(new CSharpBuilderWrapper(builder, languageVersion));
-			if(!builder.eof())
+			while(!builder.eof())
 			{
+				builder.error("Unexpected token");
 				builder.advanceLexer();
 			}
 			mark.done(elementType);
@@ -69,8 +70,9 @@ public class CSharpFragmentFactory
 		{
 			PsiBuilder.Marker mark = builder.mark();
 			SharedParsingHelpers.parseType(new CSharpBuilderWrapper(builder, languageVersion), SharedParsingHelpers.VAR_SUPPORT);
-			if(!builder.eof())
+			while(!builder.eof())
 			{
+				builder.error("Unexpected token");
 				builder.advanceLexer();
 			}
 			mark.done(elementType);
@@ -90,7 +92,7 @@ public class CSharpFragmentFactory
 			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion,
 					chameleon.getChars());
 
-			return ourExpressionParser.parse(this, builder, languageVersion).getFirstChildNode();
+			return ourExpressionParser.parse(this, builder, languageVersion);
 		}
 	};
 
@@ -106,7 +108,7 @@ public class CSharpFragmentFactory
 			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion,
 					chameleon.getChars());
 
-			return ourTypeParser.parse(this, builder, languageVersion).getFirstChildNode();
+			return ourTypeParser.parse(this, builder, languageVersion);
 		}
 	};
 
