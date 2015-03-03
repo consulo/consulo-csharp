@@ -1062,6 +1062,7 @@ public class CSharpReferenceExpressionImplUtil
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private static <T extends PsiElement> T findParentOrNextIfDoc(PsiElement element, Class<T> clazz)
 	{
 		CSharpGenericConstraintList constraintList = PsiTreeUtil.getParentOfType(element, CSharpGenericConstraintList.class);
