@@ -133,8 +133,7 @@ CONDITIONAL_COMMENT_CONDITION=({ALPHA})({ALPHA}|{S}|{DIGIT}|"."|"("|")"|"|"|"!"|
 }
 
 <YYINITIAL> {S} { return CSharpDocTokenType.XML_REAL_WHITE_SPACE; }
-<TAG, END_TAG, ATTR_LIST> {S} { return CSharpDocTokenType.TAG_WHITE_SPACE; }
-<ATTR> {S} { return CSharpDocTokenType.XML_WHITE_SPACE; }
+<TAG, END_TAG, ATTR_LIST, ATTR> {S} { return CSharpDocTokenType.TAG_WHITE_SPACE; }
 <YYINITIAL> ([^<&\$# \n\r\t\f]|(\\\$)|(\\#))* { return CSharpDocTokenType.XML_DATA_CHARACTERS; }
 <YYINITIAL> [^<&\ \n\r\t\f]|(\\\$)|(\\#) { return CSharpDocTokenType.XML_DATA_CHARACTERS; }
 
