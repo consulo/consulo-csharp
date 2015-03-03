@@ -38,7 +38,7 @@ public class CSharpDocTagManager
 	{
 		addTag(new CSharpDocTagInfo("c"));
 		addTag(new CSharpDocTagInfo("code"));
-		addTag(new CSharpDocTagInfo("see"));
+		addTag(new CSharpDocTagInfo("see").add(new CSharpDocAttributeInfo("cref", CSharpDocAttributeInfo.ValueType.TYPE)));
 		addTag(new CSharpDocTagInfo("example"));
 		addTag(new CSharpDocTagInfo("exception").add(new CSharpDocAttributeInfo("cref", CSharpDocAttributeInfo.ValueType.TYPE)));
 		addTag(new CSharpDocTagInfo("include").add(new CSharpDocAttributeInfo("file", CSharpDocAttributeInfo.ValueType.TEXT)).add(new
@@ -46,14 +46,14 @@ public class CSharpDocTagManager
 		addTag(new CSharpDocTagInfo("list"));
 		addTag(new CSharpDocTagInfo("para"));
 		addTag(new CSharpDocTagInfo("param").add(new CSharpDocAttributeInfo("name", CSharpDocAttributeInfo.ValueType.PARAMETER)));
-		addTag(new CSharpDocTagInfo("paramref"));
-		addTag(new CSharpDocTagInfo("permission"));
+		addTag(new CSharpDocTagInfo("paramref").add(new CSharpDocAttributeInfo("name", CSharpDocAttributeInfo.ValueType.PARAMETER)));
+		addTag(new CSharpDocTagInfo("permission").add(new CSharpDocAttributeInfo("member", CSharpDocAttributeInfo.ValueType.TEXT)));
 		addTag(new CSharpDocTagInfo("remarks"));
 		addTag(new CSharpDocTagInfo("returns"));
-		addTag(new CSharpDocTagInfo("seealso"));
+		addTag(new CSharpDocTagInfo("seealso").add(new CSharpDocAttributeInfo("member", CSharpDocAttributeInfo.ValueType.TEXT)));
 		addTag(new CSharpDocTagInfo("summary"));
-		addTag(new CSharpDocTagInfo("typeparam"));
-		addTag(new CSharpDocTagInfo("typeparamref"));
+		addTag(new CSharpDocTagInfo("typeparam").add(new CSharpDocAttributeInfo("name", CSharpDocAttributeInfo.ValueType.TYPE_PARAMETER)));
+		addTag(new CSharpDocTagInfo("typeparamref").add(new CSharpDocAttributeInfo("name", CSharpDocAttributeInfo.ValueType.TYPE_PARAMETER)));
 		addTag(new CSharpDocTagInfo("value"));
 	}
 

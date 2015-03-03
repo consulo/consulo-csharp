@@ -559,7 +559,7 @@ public class CSharpReferenceExpressionImplUtil
 					return ResolveResult.EMPTY_ARRAY;
 				}
 
-				scopeProcessor = new SimpleNamedScopeProcessor(ExecuteTarget.GENERIC_PARAMETER);
+				scopeProcessor = new SimpleNamedScopeProcessor(completion, ExecuteTarget.GENERIC_PARAMETER);
 				state = ResolveState.initial();
 				state = state.put(CSharpResolveUtil.SELECTOR, selector);
 
@@ -572,7 +572,7 @@ public class CSharpReferenceExpressionImplUtil
 					return ResolveResult.EMPTY_ARRAY;
 				}
 
-				scopeProcessor = new SimpleNamedScopeProcessor(ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
+				scopeProcessor = new SimpleNamedScopeProcessor(completion, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
 				state = ResolveState.initial();
 				state = state.put(CSharpResolveUtil.SELECTOR, selector);
 
