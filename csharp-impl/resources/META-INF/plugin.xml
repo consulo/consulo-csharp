@@ -99,6 +99,7 @@
 
 		<applicationService serviceInterface="org.mustbe.consulo.csharp.lang.CSharpLanguageVersionHelper"
 							serviceImplementation="org.mustbe.consulo.csharp.lang.CSharpLanguageVersionHelperImpl"/>
+		<applicationService serviceImplementation="org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocTagManager"/>
 		<applicationService serviceInterface="org.mustbe.consulo.csharp.ide.codeInsight.CSharpCodeInsightSettings"
 							serviceImplementation="org.mustbe.consulo.csharp.ide.codeInsight.CSharpCodeInsightSettings"/>
 		<projectService serviceInterface="org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache"
@@ -145,6 +146,8 @@
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpStatementCompletionContributor"/>
 		<completion.contributor language="C#Macro"
 								implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpMacroReferenceCompletionContributor"/>
+		<completion.contributor language="C#Doc"
+								implementationClass="org.mustbe.consulo.csharp.lang.doc.ide.competion.CSharpDocCompletionContributor"/>
 		<lookup.charFilter implementation="org.mustbe.consulo.csharp.ide.completion.CSharpCompletionCharFilter"/>
 
 		<lang.smartEnterProcessor language="C#"

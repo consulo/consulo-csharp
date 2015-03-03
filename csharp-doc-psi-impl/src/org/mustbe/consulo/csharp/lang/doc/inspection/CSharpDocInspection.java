@@ -16,11 +16,17 @@
 
 package org.mustbe.consulo.csharp.lang.doc.inspection;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocElementVisitor;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTag;
+import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocTagInfo;
+import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocTagManager;
 import com.intellij.codeInspection.LocalInspectionTool;
+import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 
 /**
@@ -31,14 +37,23 @@ public class CSharpDocInspection extends LocalInspectionTool
 {
 	@NotNull
 	@Override
-	public PsiElementVisitor buildVisitor(@NotNull ProblemsHolder holder, boolean isOnTheFly)
+	public PsiElementVisitor buildVisitor(@NotNull final ProblemsHolder holder, boolean isOnTheFly)
 	{
 		return new CSharpDocElementVisitor()
 		{
 			@Override
 			public void visitDocTag(CSharpDocTag docTag)
 			{
-				System.out.println("test");
+				CSharpDocTagManager docTagManager = CSharpDocTagManager.getInstance();
+				List<PsiElement> nameElements = docTag.getNameElements();
+				for(PsiElement nameElement : nameElements)
+				{
+					CSharpDocTagInfo tagInfo = docTagManager.getTagInfo(nameElement.getText());
+					if(tagInfo == null)
+					{
+						holder.registerProblem(nameElement, "Unknown tag name '" + nameElement.getText() + "'", ProblemHighlightType.ERROR);
+					}
+				}
 			}
 		};
 	}
