@@ -12,6 +12,7 @@
             <element id="module-output" name="csharp-spellchecker" />
             <element id="module-production-resource-output" name="csharp-psi-api" />
             <element id="module-output" name="csharp-psi-api" />
+            <element id="module-output" name="csharp-doc-psi-impl" />
           </element>
           <element id="file-copy" path="$PROJECT_DIR$/csharp-psi-impl/lib/jel.jar" />
           <element id="zip-archive" name="microsoft-csharp.jar">

@@ -1,0 +1,75 @@
+/*
+ * Copyright 2013-2015 must-be.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.mustbe.consulo.csharp.lang.doc.ide.highlight;
+
+import java.util.List;
+
+import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTag;
+import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTokenType;
+import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerBase;
+import com.intellij.lang.ASTNode;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.tree.TokenSet;
+import com.intellij.util.Consumer;
+import com.intellij.util.Function;
+import com.intellij.util.containers.ContainerUtil;
+
+/**
+ * @author VISTALL
+ * @since 03.03.2015
+ */
+public class CSharpDocTagHighlightUsagesHandler extends HighlightUsagesHandlerBase<PsiElement>
+{
+	private final CSharpDocTag myDocTag;
+
+	public CSharpDocTagHighlightUsagesHandler(Editor editor, PsiFile file, CSharpDocTag docTag)
+	{
+		super(editor, file);
+		myDocTag = docTag;
+	}
+
+	@Override
+	public List<PsiElement> getTargets()
+	{
+		ASTNode[] children = myDocTag.getNode().getChildren(TokenSet.create(CSharpDocTokenType.XML_NAME));
+		return ContainerUtil.map(children, new Function<ASTNode, PsiElement>()
+		{
+			@Override
+			public PsiElement fun(ASTNode astNode)
+			{
+				return astNode.getPsi();
+			}
+		});
+	}
+
+	@Override
+	protected void selectTargets(List<PsiElement> targets, Consumer<List<PsiElement>> selectionConsumer)
+	{
+		selectionConsumer.consume(targets);
+	}
+
+	@Override
+	public void computeUsages(List<PsiElement> targets)
+	{
+		for(PsiElement target : targets)
+		{
+			addOccurrence(target);
+		}
+	}
+}

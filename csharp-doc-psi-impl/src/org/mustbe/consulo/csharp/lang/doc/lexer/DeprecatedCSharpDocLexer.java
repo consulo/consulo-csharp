@@ -1,30 +1,31 @@
 package org.mustbe.consulo.csharp.lang.doc.lexer;
 
+import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTokenType;
 import com.intellij.lexer.Lexer;
 import com.intellij.lexer.LookAheadLexer;
-import com.intellij.lexer.XmlLexer;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.xml.XmlTokenType;
 
 /**
  * @author VISTALL
  * @since 15.09.14
+ *
+ * TODO [VISTALL] merge with CSharpDocLexer
  */
-public class CSharpDocLexer extends LookAheadLexer
+public class DeprecatedCSharpDocLexer extends LookAheadLexer
 {
 	private boolean myNewLine = true;
 
-	public CSharpDocLexer()
+	public DeprecatedCSharpDocLexer()
 	{
-		super(new XmlLexer());
+		super(new CSharpDocLexer());
 	}
 
 	@Override
 	protected void lookAhead(Lexer baseLexer)
 	{
 		IElementType tokenType = baseLexer.getTokenType();
-		if(tokenType == XmlTokenType.TAG_WHITE_SPACE)
+		if(tokenType == CSharpDocTokenType.TAG_WHITE_SPACE)
 		{
 			CharSequence tokenSequence = baseLexer.getTokenSequence();
 			if(StringUtil.containsLineBreak(tokenSequence))
@@ -37,13 +38,13 @@ public class CSharpDocLexer extends LookAheadLexer
 
 		if(myNewLine)
 		{
-			if(tokenType == XmlTokenType.XML_DATA_CHARACTERS)
+			if(tokenType == CSharpDocTokenType.XML_DATA_CHARACTERS)
 			{
 				CharSequence tokenSequence = baseLexer.getTokenSequence();
 				if(StringUtil.equals(tokenSequence, "///"))
 				{
 					myNewLine = false;
-					advanceAs(baseLexer, XmlTokenType.XML_WHITE_SPACE);
+					advanceAs(baseLexer, CSharpDocTokenType.XML_WHITE_SPACE);
 					return;
 				}
 			}

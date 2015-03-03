@@ -68,9 +68,6 @@
 				implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl.OperatorsProvider"/>
 	</extensions>
 
-	<extensions defaultExtensionNs="com.intellij.xml">
-		<elementDescriptorProvider implementation="org.mustbe.consulo.csharp.lang.doc.CSharpXmlElementDescriptorProvider"/>
-	</extensions>
 
 	<extensions defaultExtensionNs="org.mustbe.consulo.dotnet.core">
 		<allClassesSearch implementation="org.mustbe.consulo.csharp.lang.psi.impl.search.CSharpAllClassesSearchExecutor"/>
@@ -148,7 +145,7 @@
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpStatementCompletionContributor"/>
 		<completion.contributor language="C#Macro"
 								implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpMacroReferenceCompletionContributor"/>
-		<lookup.charFilter implementation="org.mustbe.consulo.csharp.ide.completion.CSharpCompletionCharFilter" />
+		<lookup.charFilter implementation="org.mustbe.consulo.csharp.ide.completion.CSharpCompletionCharFilter"/>
 
 		<lang.smartEnterProcessor language="C#"
 								  implementationClass="org.mustbe.consulo.csharp.ide.completion.smartEnter.CSharpSmartEnterProcessor"/>
@@ -257,12 +254,14 @@
 		<inlineActionHandler implementation="org.mustbe.consulo.csharp.ide.refactoring.inlineAction.CSharpLocalVariableInlineActionHandler"/>
 		<lang.parserDefinition language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpParserDefinition"/>
 		<lang.parserDefinition language="C#Macro" implementationClass="org.mustbe.consulo.csharp.lang.CSharpMacroParserDefinition"/>
+		<lang.parserDefinition language="C#Doc" implementationClass="org.mustbe.consulo.csharp.lang.doc.CSharpDocParserDefinition"/>
 		<lang.fileViewProviderFactory language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpFileViewProviderFactory"/>
 		<lang.versionResolver language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpLanguageVersionResolver"/>
 		<lang.documentationProvider language="C#" implementationClass="org.mustbe.consulo.csharp.ide.documentation.CSharpDocumentationProvider"/>
-
+		<lang.braceMatcher language="C#Doc" implementationClass="org.mustbe.consulo.csharp.lang.doc.CSharpDocBraceMatcher"/>
 		<psi.referenceContributor language="C#" implementation="org.mustbe.consulo.csharp.ide.resolve.CSharpPsiReferenceContributor"/>
 
+		<highlightUsagesHandlerFactory implementation="org.mustbe.consulo.csharp.lang.doc.ide.highlight.CSharpDocHighlightUsagesHandlerFactory"/>
 		<newModuleBuilder implementation="org.mustbe.consulo.csharp.ide.newProjectOrModule.CSharpNewModuleBuilder"/>
 
 		<eapDescriptor implementation="org.mustbe.consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent$EapDescriptor"/>

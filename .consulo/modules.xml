@@ -113,6 +113,7 @@
               </binaries>
             </library>
           </orderEntry>
+          <orderEntry type="module" module-name="csharp-doc-psi-impl" exported="" />
         </module-layer>
       </module>
       <module name="csharp-spellchecker" dirurl="file://$PROJECT_DIR$/csharp-spellchecker" current-layer="Default">
@@ -196,6 +197,18 @@
               </binaries>
             </library>
           </orderEntry>
+        </module-layer>
+      </module>
+      <module name="csharp-doc-psi-impl" dirurl="file://$PROJECT_DIR$/csharp-doc-psi-impl" current-layer="Default">
+        <module-layer name="Default">
+          <extension id="consulo-plugin" sdk-module-name="" sdk-name="Consulo 1.SNAPSHOT" />
+          <extension id="java" sdk-module-name="" sdk-name="1.6" language-level-module-name="" language-level-name="JDK_1_6" special-dir-location="SOURCE_DIR" />
+          <content url="file://$MODULE_DIR$">
+            <content-folder type="PRODUCTION" url="file://$MODULE_DIR$/src" />
+          </content>
+          <orderEntry type="module-extension-sdk" extension-id="consulo-plugin" />
+          <orderEntry type="module-extension-sdk" extension-id="java" />
+          <orderEntry type="sourceFolder" />
         </module-layer>
       </module>
     </modules>

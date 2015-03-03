@@ -62,9 +62,4 @@ public interface CSharpHighlightKey
 	TextAttributesKey LINE_COMMENT = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
 			DefaultLanguageHighlighterColors.LINE_COMMENT);
 	TextAttributesKey DISABLED_BLOCK = TextAttributesKey.createTextAttributesKey("CSHARP_DISABLED_BLOCK");
-	TextAttributesKey DOC_COMMENT = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.DOC_COMMENT);
-	TextAttributesKey DOC_COMMENT_TAG = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
-			DefaultLanguageHighlighterColors.DOC_COMMENT_MARKUP);
-	TextAttributesKey DOC_COMMENT_ATTRIBUTE = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
-			DefaultLanguageHighlighterColors.DOC_COMMENT_TAG_VALUE);
 }
