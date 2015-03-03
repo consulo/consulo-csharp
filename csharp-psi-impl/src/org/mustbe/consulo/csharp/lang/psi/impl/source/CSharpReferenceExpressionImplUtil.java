@@ -28,7 +28,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocAttribute;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocAttributeValue;
+import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocFragmentHolder;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocRoot;
 import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocAttributeInfo;
 import org.mustbe.consulo.csharp.lang.psi.*;
@@ -328,12 +328,12 @@ public class CSharpReferenceExpressionImplUtil
 		}
 
 		PsiElement superParent = tempElement.getParent();
-		if(superParent instanceof CSharpDocAttributeValue)
+		if(superParent instanceof CSharpDocFragmentHolder)
 		{
-			PsiElement parent = superParent.getParent();
-			if(parent instanceof CSharpDocAttribute)
+			CSharpDocAttribute docAttribute = PsiTreeUtil.getParentOfType(superParent, CSharpDocAttribute.class);
+			if(docAttribute != null)
 			{
-				CSharpDocAttributeInfo attributeInfo = ((CSharpDocAttribute) parent).getAttributeInfo();
+				CSharpDocAttributeInfo attributeInfo = docAttribute.getAttributeInfo();
 				if(attributeInfo != null)
 				{
 					switch(attributeInfo.getValueType())
@@ -1064,10 +1064,15 @@ public class CSharpReferenceExpressionImplUtil
 
 	private static <T extends PsiElement> T findParentOrNextIfDoc(PsiElement element, Class<T> clazz)
 	{
-		T firstParent = PsiTreeUtil.getParentOfType(element, clazz);
-		if(firstParent != null)
+		CSharpGenericConstraintList constraintList = PsiTreeUtil.getParentOfType(element, CSharpGenericConstraintList.class);
+		if(constraintList != null)
 		{
-			return firstParent;
+			PsiElement parent = constraintList.getParent();
+			if(parent != null && clazz.isInstance(parent))
+			{
+				return (T) parent;
+			}
+			return null;
 		}
 
 		CSharpDocRoot parentOfType = PsiTreeUtil.getParentOfType(element, CSharpDocRoot.class);

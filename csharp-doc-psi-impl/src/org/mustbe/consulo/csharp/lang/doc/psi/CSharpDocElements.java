@@ -74,8 +74,9 @@ public interface CSharpDocElements
 			{
 				PsiBuilder.Marker mark = builder.mark();
 				SharedParsingHelpers.parseType(new CSharpBuilderWrapper(builder, languageVersion), SharedParsingHelpers.VAR_SUPPORT);
-				if(!builder.eof())
+				while(!builder.eof())
 				{
+					builder.error("Unexpected token");
 					builder.advanceLexer();
 				}
 				mark.done(elementType);
@@ -91,7 +92,7 @@ public interface CSharpDocElements
 			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser,
 					languageForParser.getVersions()[0],
 					chameleon.getChars());
-			return myParser.parse(this, builder, languageForParser.getVersions()[0]).getFirstChildNode();
+			return myParser.parse(this, builder, languageForParser.getVersions()[0]);
 		}
 
 		@Override
@@ -104,7 +105,7 @@ public interface CSharpDocElements
 		@Override
 		public ASTNode createNode(CharSequence text)
 		{
-			return new LazyParseableElement(this, text);
+			return new CSharpDocFragmentHolder(this, text);
 		}
 	};
 
@@ -118,8 +119,9 @@ public interface CSharpDocElements
 			{
 				PsiBuilder.Marker mark = builder.mark();
 				ExpressionParsing.parse(new CSharpBuilderWrapper(builder, languageVersion));
-				if(!builder.eof())
+				while(!builder.eof())
 				{
+					builder.error("Unexpected token");
 					builder.advanceLexer();
 				}
 				mark.done(elementType);
@@ -135,7 +137,7 @@ public interface CSharpDocElements
 			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser,
 					languageForParser.getVersions()[0],
 					chameleon.getChars());
-			return myParser.parse(this, builder, languageForParser.getVersions()[0]).getFirstChildNode();
+			return myParser.parse(this, builder, languageForParser.getVersions()[0]);
 		}
 
 		@Override
@@ -148,7 +150,7 @@ public interface CSharpDocElements
 		@Override
 		public ASTNode createNode(CharSequence text)
 		{
-			return new LazyParseableElement(this, text);
+			return new CSharpDocFragmentHolder(this, text);
 		}
 	};
 }
