@@ -44,7 +44,6 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 		}
 
 		val elementType = myNode.getElementType();
-		System.out.println(elementType);
 		if(elementType == NAMESPACE_DECLARATION ||
 				elementType == TYPE_DECLARATION ||
 				elementType == METHOD_DECLARATION ||
