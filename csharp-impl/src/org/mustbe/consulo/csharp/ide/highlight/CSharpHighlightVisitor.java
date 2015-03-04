@@ -16,8 +16,6 @@
 
 package org.mustbe.consulo.csharp.ide.highlight;
 
-import java.util.List;
-
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.ConvertToNormalCallFix;
@@ -45,15 +43,11 @@ import com.intellij.codeInsight.daemon.impl.analysis.HighlightInfoHolder;
 import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
 import com.intellij.openapi.editor.colors.EditorColors;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
-import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
-import com.intellij.psi.ReferenceRange;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.xml.XmlAttribute;
-import com.intellij.psi.xml.XmlTag;
 
 /**
  * @author VISTALL
@@ -92,37 +86,6 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 			PsiElement parent = element.getParent();
 
 			parent.accept(this);
-		}
-
-		if(element instanceof XmlTag)
-		{
-			PsiReference[] references = element.getReferences();
-			for(PsiReference reference : references)
-			{
-				PsiElement resolve = reference.resolve();
-				if(resolve == null)
-				{
-					List<TextRange> range = ReferenceRange.getAbsoluteRanges(reference);
-
-					myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.WRONG_REF).range(range.get(0)).descriptionAndTooltip
-							("Unknown tag").create());
-				}
-			}
-		}
-		if(element instanceof XmlAttribute)
-		{
-			PsiReference[] references = element.getReferences();
-			for(PsiReference reference : references)
-			{
-				PsiElement resolve = reference.resolve();
-				if(resolve == null)
-				{
-					List<TextRange> range = ReferenceRange.getAbsoluteRanges(reference);
-
-					myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.WRONG_REF).range(range.get(0)).descriptionAndTooltip
-							("Unknown attribute").create());
-				}
-			}
 		}
 	}
 
