@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.formatter.processors;
 
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
+import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTokenType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
@@ -43,6 +44,7 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 		}
 
 		val elementType = myNode.getElementType();
+		System.out.println(elementType);
 		if(elementType == NAMESPACE_DECLARATION ||
 				elementType == TYPE_DECLARATION ||
 				elementType == METHOD_DECLARATION ||
@@ -56,6 +58,10 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 				elementType == ENUM_CONSTANT_DECLARATION ||
 				elementType == USING_LIST ||
 				elementType == CONSTRUCTOR_DECLARATION)
+		{
+			return Indent.getNormalIndent();
+		}
+		else if(elementType == CSharpDocTokenType.DOC_LINE_START)
 		{
 			return Indent.getNormalIndent();
 		}

@@ -25,7 +25,7 @@ public class DeprecatedCSharpDocLexer extends LookAheadLexer
 	protected void lookAhead(Lexer baseLexer)
 	{
 		IElementType tokenType = baseLexer.getTokenType();
-		if(tokenType == CSharpDocTokenType.TAG_WHITE_SPACE)
+		if(tokenType == CSharpDocTokenType.TAG_WHITE_SPACE || tokenType == CSharpDocTokenType.XML_REAL_WHITE_SPACE)
 		{
 			CharSequence tokenSequence = baseLexer.getTokenSequence();
 			if(StringUtil.containsLineBreak(tokenSequence))
