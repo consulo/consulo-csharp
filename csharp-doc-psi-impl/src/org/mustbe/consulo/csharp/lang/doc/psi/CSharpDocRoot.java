@@ -16,9 +16,14 @@
 
 package org.mustbe.consulo.csharp.lang.doc.psi;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.Condition;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -29,5 +34,38 @@ public class CSharpDocRoot extends ASTWrapperPsiElement
 	public CSharpDocRoot(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	@Nullable
+	public String getTagText(@NotNull String tagName)
+	{
+		CSharpDocTag tagElement = findTagElement(tagName);
+		return tagElement == null ? null : tagElement.getInnerText();
+	}
+
+	@Nullable
+	public CSharpDocTag findTagElement(@NotNull final String tagName)
+	{
+		List<CSharpDocTag> tags = findTagElements(tagName);
+		return ContainerUtil.getFirstItem(tags);
+	}
+
+	@NotNull
+	public List<CSharpDocTag> findTagElements(@NotNull final String tagName)
+	{
+		return ContainerUtil.filter(getTagElements(), new Condition<CSharpDocTag>()
+		{
+			@Override
+			public boolean value(CSharpDocTag docTag)
+			{
+				return tagName.equals(docTag.getName());
+			}
+		});
+	}
+
+	@NotNull
+	public CSharpDocTag[] getTagElements()
+	{
+		return findChildrenByClass(CSharpDocTag.class);
 	}
 }

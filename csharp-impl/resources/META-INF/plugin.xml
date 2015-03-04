@@ -78,6 +78,8 @@
 
 		<msilFileRepresentation implementation="org.mustbe.consulo.csharp.ide.msil.representation.CSharpMsilFileRepresentationProvider"/>
 		<injectionByAttributeHelper implementation="org.mustbe.consulo.csharp.lang.CSharpMultiHostInjectorByAttributeHelper"/>
+
+		<documentationResolver implementation="org.mustbe.consulo.csharp.lang.doc.CSharpCommentDocumentationResolver" />
 	</extensions>
 
 	<extensions defaultExtensionNs="com.intellij">

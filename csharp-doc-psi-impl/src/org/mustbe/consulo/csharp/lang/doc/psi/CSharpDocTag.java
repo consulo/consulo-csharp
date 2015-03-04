@@ -39,6 +39,19 @@ public class CSharpDocTag extends ASTWrapperPsiElement
 		super(node);
 	}
 
+	@Nullable
+	public String getInnerText()
+	{
+		CSharpDocText textElement = getInnerTextElement();
+		return textElement == null ? null : textElement.getInnerText();
+	}
+
+	@Nullable
+	public CSharpDocText getInnerTextElement()
+	{
+		return findChildByClass(CSharpDocText.class);
+	}
+
 	@Override
 	public String getName()
 	{

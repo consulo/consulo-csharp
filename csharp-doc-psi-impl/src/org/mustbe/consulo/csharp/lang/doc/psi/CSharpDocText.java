@@ -30,4 +30,20 @@ public class CSharpDocText extends ASTWrapperPsiElement
 	{
 		super(node);
 	}
+
+	@NotNull
+	public String getInnerText()
+	{
+		StringBuilder builder = new StringBuilder();
+		ASTNode[] children = getNode().getChildren(null);
+		for(ASTNode child : children)
+		{
+			if(child.getElementType() == CSharpDocTokenType.DOC_LINE_START)
+			{
+				continue;
+			}
+			builder.append(child.getText());
+		}
+		return builder.toString();
+	}
 }
