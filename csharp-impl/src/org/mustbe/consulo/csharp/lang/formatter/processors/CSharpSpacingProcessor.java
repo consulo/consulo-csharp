@@ -6,6 +6,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
+import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTokenType;
 import org.mustbe.consulo.csharp.lang.formatter.CSharpFormattingBlock;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
@@ -220,6 +221,9 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		operatorReferenceSpacing(commonSettings.SPACE_AROUND_ADDITIVE_OPERATORS, CSharpTokens.PLUS, CSharpTokens.MINUS);
 		operatorReferenceSpacing(commonSettings.SPACE_AROUND_MULTIPLICATIVE_OPERATORS, CSharpTokens.MUL, CSharpTokens.DIV, CSharpTokens.PERC);
 		operatorReferenceSpacing(commonSettings.SPACE_AROUND_BITWISE_OPERATORS, CSharpTokens.XOR, CSharpTokens.AND, CSharpTokens.OR);
+
+		// doc
+		myBuilder.after(CSharpDocTokenType.DOC_LINE_START).spacing(1, 1, 0, true, 0);
 	}
 
 	public void operatorReferenceSpacing(boolean ifCondition, IElementType... types)
