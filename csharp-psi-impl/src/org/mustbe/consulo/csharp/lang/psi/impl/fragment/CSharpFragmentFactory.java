@@ -92,7 +92,7 @@ public class CSharpFragmentFactory
 			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion,
 					chameleon.getChars());
 
-			return ourExpressionParser.parse(this, builder, languageVersion);
+			return ourExpressionParser.parse(this, builder, languageVersion).getFirstChildNode();
 		}
 	};
 
@@ -108,7 +108,7 @@ public class CSharpFragmentFactory
 			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion,
 					chameleon.getChars());
 
-			return ourTypeParser.parse(this, builder, languageVersion);
+			return ourTypeParser.parse(this, builder, languageVersion).getFirstChildNode();
 		}
 	};
 

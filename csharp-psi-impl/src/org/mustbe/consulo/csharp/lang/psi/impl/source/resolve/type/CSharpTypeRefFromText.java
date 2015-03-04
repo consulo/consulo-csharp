@@ -16,7 +16,6 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
@@ -43,7 +42,7 @@ public class CSharpTypeRefFromText extends DotNetTypeRef.Adapter
 	}
 
 	@NotNull
-	@LazyInstance
+	//@LazyInstance
 	private DotNetType getType()
 	{
 		CSharpFragmentFileImpl typeFragment = CSharpFragmentFactory.createTypeFragment(myOwner.getProject(), myText, myOwner);
