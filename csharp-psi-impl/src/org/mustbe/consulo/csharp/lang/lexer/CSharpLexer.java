@@ -20,7 +20,6 @@ import java.io.Reader;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
@@ -44,11 +43,8 @@ public class CSharpLexer extends MergingLexerAdapterBase
 
 	private static class MyMergeFunction implements MergeFunction
 	{
-		private List<TextRange> myRanges;
-
-		private MyMergeFunction(List<TextRange> ranges)
+		private MyMergeFunction()
 		{
-			myRanges = ranges;
 		}
 
 		@Override
@@ -61,7 +57,7 @@ public class CSharpLexer extends MergingLexerAdapterBase
 
 			while(true)
 			{
-				IElementType currentToken = modifyNonActiveSymbols(originalLexer, myRanges);
+				IElementType currentToken = originalLexer.getTokenType();
 
 				// we need merge two docs if one line between
 				if(mergeToken == CSharpTokensImpl.LINE_DOC_COMMENT && currentToken == CSharpTokens.WHITE_SPACE)
@@ -93,31 +89,6 @@ public class CSharpLexer extends MergingLexerAdapterBase
 			return mergeToken;
 		}
 
-		@Nullable
-		private static IElementType modifyNonActiveSymbols(Lexer originalLexer, List<TextRange> textRanges)
-		{
-			IElementType tokenType = originalLexer.getTokenType();
-			if(tokenType == null)
-			{
-				return null;
-			}
-
-			if(textRanges.isEmpty())
-			{
-				return tokenType;
-			}
-
-			for(int i = 0; i < textRanges.size(); i++)
-			{
-				TextRange textRange = textRanges.get(i);
-				if(textRange.contains(originalLexer.getTokenStart()))
-				{
-					return CSharpTokens.NON_ACTIVE_SYMBOL;
-				}
-			}
-			return tokenType;
-		}
-
 		private static boolean hasOnlyOneLine(CharSequence sequence)
 		{
 			int c = 0;
@@ -142,6 +113,7 @@ public class CSharpLexer extends MergingLexerAdapterBase
 	}
 
 	private final MyMergeFunction myMergeFunction;
+	private final List<TextRange> myRanges;
 
 	public CSharpLexer()
 	{
@@ -151,7 +123,33 @@ public class CSharpLexer extends MergingLexerAdapterBase
 	public CSharpLexer(List<TextRange> ranges)
 	{
 		super(new FlexAdapter(new _CSharpLexer((Reader) null)));
-		myMergeFunction = new MyMergeFunction(ranges);
+		myRanges = ranges;
+		myMergeFunction = new MyMergeFunction();
+	}
+
+	@Override
+	public IElementType getTokenType()
+	{
+		IElementType tokenType =  super.getTokenType();
+		if(tokenType == null)
+		{
+			return null;
+		}
+
+		if(myRanges.isEmpty())
+		{
+			return tokenType;
+		}
+
+		for(int i = 0; i < myRanges.size(); i++)
+		{
+			TextRange textRange = myRanges.get(i);
+			if(textRange.contains(getTokenStart()))
+			{
+				return CSharpTokens.NON_ACTIVE_SYMBOL;
+			}
+		}
+		return tokenType;
 	}
 
 	@Override

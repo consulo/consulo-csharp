@@ -21,14 +21,24 @@ import java.util.List;
 
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.CSharpLanguageVersionWrapper;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroFileImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.CSharpFileStubElementType;
+import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import com.intellij.lang.Language;
 import com.intellij.lang.LanguageVersionResolvers;
 import com.intellij.lexer.Lexer;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.SingleRootFileViewProvider;
 import com.intellij.psi.templateLanguages.TemplateDataElementType;
 import com.intellij.psi.templateLanguages.TemplateLanguageFileViewProvider;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.testFramework.LightVirtualFile;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -50,13 +60,28 @@ public interface CSharpTemplateTokens
 					(baseLanguage).getLanguageVersion(baseLanguage, file);
 
 			List<TextRange> disabledBlocks = Collections.emptyList();
-			/*DotNetModuleExtension extension = ModuleUtilCore.getExtension(file, DotNetModuleExtension.class);
-			if(extension != null)
+
+			Module moduleForFile = ModuleUtilCore.findModuleForFile(viewProvider.getVirtualFile(), file.getProject());
+
+			if(moduleForFile != null)
 			{
-				assert file.getOriginalFile() == file;
-				disabledBlocks = CSharpFileStubElementType.collectDisabledBlocks(file.getOriginalFile(), extension);
-			}     */
+				DotNetModuleExtension extension = ModuleUtilCore.getExtension(moduleForFile, DotNetModuleExtension.class);
+				if(extension != null)
+				{
+					CSharpMacroFileImpl macroFile = createMacroFile(moduleForFile.getProject(), viewProvider);
+					disabledBlocks = CSharpFileStubElementType.collectDisabledBlocks(macroFile, extension);
+				}
+			}
+
 			return languageVersion.createLexer(disabledBlocks);
 		}
+
+		private CSharpMacroFileImpl createMacroFile(Project project, TemplateLanguageFileViewProvider provider)
+		{
+			val virtualFile = new LightVirtualFile("dummy.cs", CSharpInnerFileType.INSTANCE, provider.getContents(), System.currentTimeMillis());
+			val viewProvider = new SingleRootFileViewProvider(PsiManager.getInstance(project), virtualFile, false);
+			return new CSharpMacroFileImpl(viewProvider);
+		}
 	};
+
 }
