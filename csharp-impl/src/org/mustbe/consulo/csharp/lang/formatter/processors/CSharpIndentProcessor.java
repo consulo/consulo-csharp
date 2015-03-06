@@ -126,6 +126,10 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 		{
 			if(psi instanceof CSharpBlockStatementImpl)
 			{
+				if(parent instanceof CSharpBlockStatementImpl)
+				{
+					return Indent.getNormalIndent();
+				}
 				return Indent.getNoneIndent();
 			}
 
