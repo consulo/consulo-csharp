@@ -345,41 +345,33 @@ public class CSharpDocParsing
 		final PsiBuilder.Marker attValue = mark();
 		if(token() == CSharpDocTokenType.XML_ATTRIBUTE_VALUE_START_DELIMITER)
 		{
-			while(true)
-			{
-				final IElementType tt = token();
-				if(tt == null || tt == CSharpDocTokenType.XML_ATTRIBUTE_VALUE_END_DELIMITER || tt == CSharpDocTokenType.XML_END_TAG_START || tt == CSharpDocTokenType.XML_EMPTY_ELEMENT_END ||
-						tt == CSharpDocTokenType.XML_START_TAG_START)
-				{
-					break;
-				}
+			advance();
 
-				if(tt == CSharpDocTokenType.XML_BAD_CHARACTER)
+			if(token() == CSharpDocTokenType.XML_BAD_CHARACTER)
+			{
+				final PsiBuilder.Marker error = mark();
+				advance();
+				error.error("Unexpected token");
+			}
+			else if(token() == CSharpDocTokenType.XML_ATTRIBUTE_VALUE_TOKEN)
+			{
+				if(attributeInfo == null)
 				{
-					final PsiBuilder.Marker error = mark();
 					advance();
-					error.error("Unexpected token");
 				}
 				else
 				{
-					if(attributeInfo == null)
+					switch(attributeInfo.getValueType())
 					{
-						advance();
+						case TYPE:
+							myBuilder.remapCurrentToken(CSharpDocElements.TYPE);
+							break;
+						case PARAMETER:
+						case TYPE_PARAMETER:
+							myBuilder.remapCurrentToken(CSharpDocElements.EXPRESSION);
+							break;
 					}
-					else
-					{
-						switch(attributeInfo.getValueType())
-						{
-							case TYPE:
-								myBuilder.remapCurrentToken(CSharpDocElements.TYPE);
-								break;
-							case PARAMETER:
-							case TYPE_PARAMETER:
-								myBuilder.remapCurrentToken(CSharpDocElements.EXPRESSION);
-								break;
-						}
-						advance();
-					}
+					advance();
 				}
 			}
 
