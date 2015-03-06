@@ -45,7 +45,9 @@ public class CSharpParser extends SharedParsingHelpers implements PsiParser
 		{
 			if(!DeclarationParsing.parse(builderWrapper, false))
 			{
+				PsiBuilder.Marker mark = builder.mark();
 				builder.advanceLexer();
+				mark.error("Unexpected token");
 			}
 		}
 
