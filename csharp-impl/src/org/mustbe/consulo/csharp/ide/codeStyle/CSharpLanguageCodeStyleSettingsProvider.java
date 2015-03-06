@@ -34,15 +34,9 @@ public class CSharpLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSe
 	@Override
 	public CommonCodeStyleSettings getDefaultCommonSettings()
 	{
-		CommonCodeStyleSettings defaultSettings = new CommonCodeStyleSettings(getLanguage());
-		CommonCodeStyleSettings.IndentOptions indentOptions = defaultSettings.initIndentOptions();
-		indentOptions.INDENT_SIZE = 2;
-		indentOptions.CONTINUATION_INDENT_SIZE = 4;
-		indentOptions.TAB_SIZE = 2;
-
-		defaultSettings.KEEP_LINE_BREAKS = false;
-
-		return defaultSettings;
+		CommonCodeStyleSettings settings = new CommonCodeStyleSettings(CSharpLanguage.INSTANCE);
+		settings.initIndentOptions();
+		return settings;
 	}
 
 	@Override
