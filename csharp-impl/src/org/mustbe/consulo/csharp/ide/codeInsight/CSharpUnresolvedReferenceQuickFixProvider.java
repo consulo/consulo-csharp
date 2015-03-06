@@ -26,7 +26,7 @@ import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedMethodF
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedPropertyFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.UsingNamespaceFix;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
-import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
+import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
@@ -50,7 +50,7 @@ public class CSharpUnresolvedReferenceQuickFixProvider extends UnresolvedReferen
 		quickFixActionRegistrar.register(new CreateUnresolvedPropertyFix(expression));
 		quickFixActionRegistrar.register(new CreateUnresolvedEventFix(expression));
 
-		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(expression);
+		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(expression);
 		for(ExpectedTypeInfo expectedTypeRef : expectedTypeRefs)
 		{
 			DotNetTypeRef typeRef = expectedTypeRef.getTypeRef();

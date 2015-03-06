@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
-import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
+import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import org.mustbe.consulo.csharp.ide.liveTemplates.expression.TypeRefExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -64,7 +64,7 @@ public class CreateUnresolvedEventFix extends CreateUnresolvedFieldFix
 		template.addTextSegment("event ");
 
 		// get expected from method call expression not reference
-		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(context.getExpression());
+		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(context.getExpression());
 
 		if(!expectedTypeRefs.isEmpty())
 		{

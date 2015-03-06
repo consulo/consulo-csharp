@@ -32,7 +32,7 @@ import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.AddUsingAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
-import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeRefProvider;
+import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
@@ -115,7 +115,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 					return;
 				}
 
-				List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(parent);
+				List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(parent);
 				for(ExpectedTypeInfo expectedTypeRef : expectedTypeRefs)
 				{
 					DotNetTypeRef typeRef = expectedTypeRef.getTypeRef();
@@ -313,7 +313,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 					return;
 				}
 
-				List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(newExpression);
+				List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(newExpression);
 
 				if(!expectedTypeRefs.isEmpty())
 				{
@@ -535,7 +535,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 			@NotNull CSharpReferenceExpression.ResolveToKind kind,
 			@NotNull List<LookupElement> lookupElements)
 	{
-		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeRefProvider.findExpectedTypeRefs(expression);
+		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(expression);
 		if(!expectedTypeRefs.isEmpty())
 		{
 			ListIterator<LookupElement> iterator = lookupElements.listIterator();

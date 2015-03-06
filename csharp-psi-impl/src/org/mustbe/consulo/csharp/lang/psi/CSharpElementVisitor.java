@@ -23,6 +23,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.psi.PsiElementVisitor;
 
@@ -66,7 +67,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 
 	public void visitParameter(DotNetParameter parameter)
 	{
-		visitElement(parameter);
+		visitVariable(parameter);
 	}
 
 	public void visitParameterList(DotNetParameterList list)
@@ -131,12 +132,12 @@ public class CSharpElementVisitor extends PsiElementVisitor
 
 	public void visitEventDeclaration(CSharpEventDeclaration declaration)
 	{
-		visitElement(declaration);
+		visitVariable(declaration);
 	}
 
 	public void visitPropertyDeclaration(CSharpPropertyDeclaration declaration)
 	{
-		visitElement(declaration);
+		visitVariable(declaration);
 	}
 
 	public void visitXXXAccessor(DotNetXXXAccessor accessor)
@@ -146,7 +147,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 
 	public void visitFieldDeclaration(CSharpFieldDeclaration declaration)
 	{
-		visitElement(declaration);
+		visitVariable(declaration);
 	}
 
 	public void visitPointerType(DotNetPointerType type)
@@ -171,7 +172,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 
 	public void visitLocalVariable(CSharpLocalVariable variable)
 	{
-		visitElement(variable);
+		visitVariable(variable);
 	}
 
 	public void visitConstantExpression(CSharpConstantExpressionImpl expression)
@@ -371,7 +372,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 
 	public void visitEnumConstantDeclaration(CSharpEnumConstantDeclaration declaration)
 	{
-		visitElement(declaration);
+		visitVariable(declaration);
 	}
 
 	public void visitConversionMethodDeclaration(CSharpConversionMethodDeclaration element)
@@ -416,7 +417,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 
 	public void visitLambdaParameter(CSharpLambdaParameterImpl parameter)
 	{
-		visitElement(parameter);
+		visitVariable(parameter);
 	}
 
 	public void visitLambdaParameterList(CSharpLambdaParameterListImpl list)
@@ -531,7 +532,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 
 	public void visitLinqVariable(CSharpLinqVariable variable)
 	{
-		visitElement(variable);
+		visitVariable(variable);
 	}
 
 	public void visitLinqOrderByClause(CSharpLinqOrderByClauseImpl clause)
@@ -602,5 +603,10 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	public void visitRefTypeExpression(CSharpRefTypeExpressionImpl expression)
 	{
 		visitElement(expression);
+	}
+
+	public void visitVariable(DotNetVariable variable)
+	{
+		visitElement(variable);
 	}
 }
