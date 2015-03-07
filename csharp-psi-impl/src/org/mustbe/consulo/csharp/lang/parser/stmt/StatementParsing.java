@@ -346,7 +346,11 @@ public class StatementParsing extends SharedParsingHelpers
 			expect(builder, RPAR, "')' expected");
 		}
 
-		if(builder.getTokenType() == IF_KEYWORD)
+		builder.enableSoftKeyword(CSharpSoftTokens.WHEN_KEYWORD);
+		IElementType tokenType = builder.getTokenType();
+		builder.disableSoftKeyword(CSharpSoftTokens.WHEN_KEYWORD);
+
+		if(tokenType == CSharpSoftTokens.WHEN_KEYWORD)
 		{
 			builder.advanceLexer();
 
