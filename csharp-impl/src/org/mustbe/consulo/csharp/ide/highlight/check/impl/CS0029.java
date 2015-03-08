@@ -103,11 +103,10 @@ public class CS0029 extends CompilerCheck<PsiElement>
 
 			if(element instanceof CSharpReturnStatementImpl)
 			{
-				DotNetLikeMethodDeclaration methodElement = PsiTreeUtil.getParentOfType(element, CSharpConversionMethodDeclaration.class,
-						CSharpMethodDeclaration.class);
-				if(methodElement != null)
+				CSharpSimpleLikeMethodAsElement methodElement = PsiTreeUtil.getParentOfType(element, CSharpSimpleLikeMethodAsElement.class);
+				if(methodElement instanceof CSharpConversionMethodDeclaration || methodElement instanceof CSharpMethodDeclaration)
 				{
-					builder.addQuickFix(new ChangeReturnToTypeRefFix(methodElement, secondTypeRef));
+					builder.addQuickFix(new ChangeReturnToTypeRefFix((DotNetLikeMethodDeclaration) methodElement, secondTypeRef));
 				}
 			}
 			return builder;
