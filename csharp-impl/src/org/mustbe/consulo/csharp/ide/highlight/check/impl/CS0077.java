@@ -71,7 +71,7 @@ public class CS0077 extends CompilerCheck<CSharpAsExpressionImpl>
 				return;
 			}
 
-			DotNetType type = CSharpFileFactory.createType(project, element.getText() + "?");
+			DotNetType type = CSharpFileFactory.createStubType(project, element.getText() + "?", element);
 			element.replace(type);
 		}
 	}

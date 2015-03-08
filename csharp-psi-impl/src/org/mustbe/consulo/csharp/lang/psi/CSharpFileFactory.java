@@ -17,12 +17,12 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingNamespaceStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
@@ -33,6 +33,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.SingleRootFileViewProvider;
+import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.testFramework.LightVirtualFile;
 import lombok.val;
 
@@ -67,10 +68,19 @@ public class CSharpFileFactory
 	}
 
 	@NotNull
-	public static DotNetType createType(@NotNull Project project, @NotNull String typeText)
+	public static DotNetType createStubType(@NotNull Project project, @NotNull String typeText, @Nullable DotNetType oldType)
 	{
-		CSharpFieldDeclaration field = createField(project, typeText + " _dummy");
-		return field.getType();
+		if(oldType instanceof StubBasedPsiElement)
+		{
+			CSharpFieldDeclaration field = createField(project, typeText + " _dummy");
+			return field.getType();
+		}
+		else
+		{
+			val statement = (CSharpLocalVariableDeclarationStatement) createStatement(project, typeText + " i;");
+			CSharpLocalVariable localVariable = statement.getVariables()[0];
+			return localVariable.getType();
+		}
 	}
 
 	@NotNull

@@ -18,7 +18,6 @@ package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
-import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -94,13 +93,7 @@ public class ChangeVariableToTypeRefFix extends BaseIntentionAction
 		}
 		String typeText = CSharpTypeRefPresentationUtil.buildShortText(myToTypeRef, element);
 
-		val statement = (CSharpLocalVariableDeclarationStatement) CSharpFileFactory.createStatement(project, typeText + " test = 1;");
-
-		val localVariable = statement.getVariables()[0];
-
-		val type = localVariable.getType();
-
-		assert type != null;
+		val type = CSharpFileFactory.createStubType(project, typeText, typeOfVariable);
 
 		typeOfVariable.replace(type);
 	}
