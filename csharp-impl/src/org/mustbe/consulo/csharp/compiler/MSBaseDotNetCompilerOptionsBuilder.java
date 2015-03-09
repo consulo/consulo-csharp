@@ -73,7 +73,6 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 	@Override
 	public DotNetCompilerMessage convertToMessage(Module module, String line)
 	{
-		System.out.println(line);
 		if(line.startsWith("error"))
 		{
 			return new DotNetCompilerMessage(CompilerMessageCategory.ERROR, line, null, -1, 1);
