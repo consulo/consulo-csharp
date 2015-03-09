@@ -20,7 +20,9 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.csharp.module.extension.BaseCSharpModuleExtension;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
+import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import org.mustbe.consulo.mono.dotnet.sdk.MonoSdkType;
+import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ModuleRootLayer;
 import com.intellij.openapi.util.SystemInfo;
 
@@ -39,15 +41,9 @@ public class MonoCSharpModuleExtension extends BaseCSharpModuleExtension<MonoCSh
 	@Override
 	public DotNetCompilerOptionsBuilder createCompilerOptionsBuilder()
 	{
-		return createCompilerOptionsBuilderImpl(this);
-	}
+		MSBaseDotNetCompilerOptionsBuilder optionsBuilder = new MSBaseDotNetCompilerOptionsBuilder();
 
-	@NotNull
-	public static DotNetCompilerOptionsBuilder createCompilerOptionsBuilderImpl(BaseCSharpModuleExtension<?> extension)
-	{
-		MSBaseDotNetCompilerOptionsBuilder optionsBuilder = new MSBaseDotNetCompilerOptionsBuilder(extension);
-
-		switch(extension.getLanguageVersion())
+		switch(getLanguageVersion())
 		{
 			case _1_0:
 				optionsBuilder.addArgument("/langversion:ISO-1");
@@ -64,13 +60,19 @@ public class MonoCSharpModuleExtension extends BaseCSharpModuleExtension<MonoCSh
 				optionsBuilder.addArgument("/langversion:5");
 				break;
 		}
+
+		DotNetModuleExtension extension = getModuleRootLayer().getExtension(DotNetModuleExtension.class);
+		assert extension != null;
+		Sdk sdk = extension.getSdk();
+		assert sdk != null;
+
 		if(SystemInfo.isWindows)
 		{
-			optionsBuilder.setExecutableFromSdk("/../../../bin/mcs.bat");
+			optionsBuilder.setExecutableFromSdk(sdk, "/../../../bin/mcs.bat");
 		}
 		else if(SystemInfo.isMac)
 		{
-			optionsBuilder.setExecutableFromSdk("/../../../bin/mcs");
+			optionsBuilder.setExecutableFromSdk(sdk, "/../../../bin/mcs");
 		}
 		else if(SystemInfo.isLinux)
 		{

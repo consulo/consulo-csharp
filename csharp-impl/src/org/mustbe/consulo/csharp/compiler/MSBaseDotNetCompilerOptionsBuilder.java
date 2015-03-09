@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
 import org.mustbe.consulo.dotnet.DotNetTarget;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerMessage;
@@ -32,7 +33,6 @@ import org.mustbe.consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerUtil;
 import org.mustbe.consulo.dotnet.compiler.DotNetMacroUtil;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
-import org.mustbe.consulo.dotnet.module.extension.DotNetModuleLangExtension;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.compiler.CompilerMessageCategory;
@@ -60,21 +60,9 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 	private static Pattern LINE_ERROR_PATTERN = Pattern.compile("(.+)\\((\\d+),(\\d+)\\):\\s(error|warning) (\\w+\\d+):\\s(.+)");
 
 	private String myExecutable;
-	private Sdk mySdk;
 
 	private final List<String> myArguments = new ArrayList<String>();
 
-	public MSBaseDotNetCompilerOptionsBuilder(DotNetModuleLangExtension<?> langExtension)
-	{
-		DotNetModuleExtension extension = ModuleUtilCore.getExtension(langExtension.getModule(), DotNetModuleExtension.class);
-		assert extension != null;
-		mySdk = extension.getSdk();
-	}
-
-	public MSBaseDotNetCompilerOptionsBuilder(Sdk sdk)
-	{
-		mySdk = sdk;
-	}
 
 	public MSBaseDotNetCompilerOptionsBuilder addArgument(@NotNull String arg)
 	{
@@ -85,6 +73,7 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 	@Override
 	public DotNetCompilerMessage convertToMessage(Module module, String line)
 	{
+		System.out.println(line);
 		if(line.startsWith("error"))
 		{
 			return new DotNetCompilerMessage(CompilerMessageCategory.ERROR, line, null, -1, 1);
@@ -259,13 +248,19 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 		return commandLine;
 	}
 
-	public void setExecutable(String executable)
+	@Nullable
+	public String getExecutable()
+	{
+		return myExecutable;
+	}
+
+	public void setExecutable(@NotNull String executable)
 	{
 		myExecutable = executable;
 	}
 
-	public void setExecutableFromSdk(String executableFromSdk)
+	public void setExecutableFromSdk(@NotNull Sdk sdk, @NotNull String executableFromSdk)
 	{
-		myExecutable = mySdk.getHomePath() + File.separatorChar + executableFromSdk;
+		myExecutable = sdk.getHomePath() + File.separatorChar + executableFromSdk;
 	}
 }

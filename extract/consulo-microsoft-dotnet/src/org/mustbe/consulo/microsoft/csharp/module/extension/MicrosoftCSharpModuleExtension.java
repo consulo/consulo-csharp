@@ -20,6 +20,10 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.csharp.module.extension.BaseCSharpModuleExtension;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
+import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
+import org.mustbe.consulo.microsoft.dotnet.sdk.MicrosoftDotNetSdkData;
+import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.projectRoots.SdkAdditionalData;
 import com.intellij.openapi.roots.ModuleRootLayer;
 
 /**
@@ -37,17 +41,11 @@ public class MicrosoftCSharpModuleExtension extends BaseCSharpModuleExtension<Mi
 	@Override
 	public DotNetCompilerOptionsBuilder createCompilerOptionsBuilder()
 	{
-		return createCompilerOptionsBuilderImpl(this);
-	}
-
-	@NotNull
-	public static DotNetCompilerOptionsBuilder createCompilerOptionsBuilderImpl(BaseCSharpModuleExtension<?> extension)
-	{
-		MSBaseDotNetCompilerOptionsBuilder optionsBuilder = new MSBaseDotNetCompilerOptionsBuilder(extension);
+		MSBaseDotNetCompilerOptionsBuilder optionsBuilder = new MSBaseDotNetCompilerOptionsBuilder();
 		optionsBuilder.addArgument("/fullpaths");
 		optionsBuilder.addArgument("/utf8output");
 
-		switch(extension.getLanguageVersion())
+		switch(getLanguageVersion())
 		{
 			case _1_0:
 				optionsBuilder.addArgument("/langversion:ISO-1");
@@ -60,10 +58,27 @@ public class MicrosoftCSharpModuleExtension extends BaseCSharpModuleExtension<Mi
 				break;
 			case _4_0:
 			case _5_0:
+			case _6_0:
 				optionsBuilder.addArgument("/langversion:default");
 				break;
 		}
-		optionsBuilder.setExecutableFromSdk("csc.exe");
+
+		DotNetModuleExtension extension = getModuleRootLayer().getExtension(DotNetModuleExtension.class);
+		assert extension != null;
+		Sdk sdk = extension.getSdk();
+		assert sdk != null;
+
+		SdkAdditionalData sdkAdditionalData = sdk.getSdkAdditionalData();
+		if(sdkAdditionalData instanceof MicrosoftDotNetSdkData)
+		{
+			String compilerPath = ((MicrosoftDotNetSdkData) sdkAdditionalData).getCompilerPath();
+			optionsBuilder.setExecutable(compilerPath + "/csc.exe");
+		}
+		else
+		{
+			optionsBuilder.setExecutableFromSdk(sdk, "csc.exe");
+		}
+
 		return optionsBuilder;
 	}
 }
