@@ -19,12 +19,13 @@ package org.mustbe.consulo.microsoft.csharp.module.extension;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.csharp.module.extension.BaseCSharpModuleExtension;
+import org.mustbe.consulo.dotnet.compiler.DotNetCompileFailedException;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
-import org.mustbe.consulo.microsoft.dotnet.sdk.MicrosoftDotNetSdkData;
+import org.mustbe.consulo.microsoft.dotnet.sdk.MicrosoftCompilerDirOrderRootType;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.projectRoots.SdkAdditionalData;
 import com.intellij.openapi.roots.ModuleRootLayer;
+import com.intellij.openapi.vfs.VirtualFile;
 
 /**
  * @author VISTALL
@@ -39,7 +40,7 @@ public class MicrosoftCSharpModuleExtension extends BaseCSharpModuleExtension<Mi
 
 	@NotNull
 	@Override
-	public DotNetCompilerOptionsBuilder createCompilerOptionsBuilder()
+	public DotNetCompilerOptionsBuilder createCompilerOptionsBuilder() throws DotNetCompileFailedException
 	{
 		MSBaseDotNetCompilerOptionsBuilder optionsBuilder = new MSBaseDotNetCompilerOptionsBuilder();
 		optionsBuilder.addArgument("/fullpaths");
@@ -68,16 +69,25 @@ public class MicrosoftCSharpModuleExtension extends BaseCSharpModuleExtension<Mi
 		Sdk sdk = extension.getSdk();
 		assert sdk != null;
 
-		SdkAdditionalData sdkAdditionalData = sdk.getSdkAdditionalData();
-		if(sdkAdditionalData instanceof MicrosoftDotNetSdkData)
+		VirtualFile[] files = sdk.getRootProvider().getFiles(MicrosoftCompilerDirOrderRootType.getInstance());
+
+		VirtualFile compilerFile = null;
+
+		for(VirtualFile file : files)
 		{
-			String compilerPath = ((MicrosoftDotNetSdkData) sdkAdditionalData).getCompilerPath();
-			optionsBuilder.setExecutable(compilerPath + "/csc.exe");
+			VirtualFile child = file.findChild("csc.exe");
+			if(child != null)
+			{
+				compilerFile = child;
+				break;
+			}
 		}
-		else
+
+		if(compilerFile == null)
 		{
-			optionsBuilder.setExecutableFromSdk(sdk, "csc.exe");
+			throw new DotNetCompileFailedException("Compiler 'csc.exe' is not found");
 		}
+		optionsBuilder.setExecutable(compilerFile.getPath());
 
 		return optionsBuilder;
 	}
