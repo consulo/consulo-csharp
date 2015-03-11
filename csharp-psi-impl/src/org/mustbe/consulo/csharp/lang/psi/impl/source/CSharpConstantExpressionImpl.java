@@ -54,7 +54,8 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 			IElementType elementType = element.getLiteralType();
 
 			String qName = null;
-			if(elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL)
+			if(elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL || elementType == CSharpTokens
+					.INTERPOLATION_STRING_LITERAL)
 			{
 				qName = DotNetTypes.System.String;
 			}
@@ -146,6 +147,10 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 		{
 			return getText(); //TODO [VISTALL] unquote @ "" and escape \n \t
 		}
+		else if(elementType == CSharpTokens.INTERPOLATION_STRING_LITERAL)
+		{
+			return getText(); //TODO [VISTALL] unquote $ "" and escape \n \t
+		}
 		else if(elementType == CSharpTokens.CHARACTER_LITERAL)
 		{
 			return StringUtil.unquoteString(text).charAt(0);
@@ -200,7 +205,8 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 	public boolean isValidHost()
 	{
 		IElementType elementType = getLiteralType();
-		return elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL;
+		return elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL || elementType == CSharpTokens
+				.INTERPOLATION_STRING_LITERAL;
 	}
 
 	@Override
@@ -220,7 +226,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 		{
 			return new CSharpStringLiteralEscaper<CSharpConstantExpressionImpl>(this);
 		}
-		else if(elementType == CSharpTokens.VERBATIM_STRING_LITERAL)
+		else if(elementType == CSharpTokens.VERBATIM_STRING_LITERAL || elementType == CSharpTokens.INTERPOLATION_STRING_LITERAL)
 		{
 			return LiteralTextEscaper.createSimple(this);
 		}
