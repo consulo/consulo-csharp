@@ -66,6 +66,12 @@ public class CSharpElementGroupImpl<T extends PsiElement> extends LightElement i
 	}
 
 	@Override
+	public boolean canNavigate()
+	{
+		return true;
+	}
+
+	@Override
 	public void navigate(boolean requestFocus)
 	{
 		for(PsiElement element : getElements())

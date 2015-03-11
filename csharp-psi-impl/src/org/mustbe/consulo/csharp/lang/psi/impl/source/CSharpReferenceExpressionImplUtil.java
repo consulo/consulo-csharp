@@ -235,6 +235,10 @@ public class CSharpReferenceExpressionImplUtil
 		{
 			return ResolveToKind.SOFT_QUALIFIED_NAMESPACE;
 		}
+		else if(tempElement instanceof CSharpNameOfExpressionImpl)
+		{
+			return ResolveToKind.NAMEOF;
+		}
 		else if(tempElement instanceof DotNetUserType)
 		{
 			PsiElement parentOfParent = tempElement.getParent();
@@ -743,6 +747,7 @@ public class CSharpReferenceExpressionImplUtil
 				}
 				return ContainerUtil.toArray(newResults, ResolveResult.EMPTY_ARRAY);
 			case TYPE_LIKE:
+			case NAMEOF:
 				return processAnyMember(options, defaultExtractor, forceQualifierElement);
 			case ANY_MEMBER:
 				resolveResults = processAnyMember(options, defaultExtractor, forceQualifierElement);
@@ -1034,7 +1039,7 @@ public class CSharpReferenceExpressionImplUtil
 
 			ResolveResult[] elements = ResolveResult.EMPTY_ARRAY;
 			// if resolving is any member, first we need process locals and then go to fields and other
-			if(kind == ResolveToKind.ANY_MEMBER || kind == ResolveToKind.METHOD)
+			if(kind == ResolveToKind.ANY_MEMBER || kind == ResolveToKind.METHOD || kind == ResolveToKind.NAMEOF)
 			{
 				SimpleNamedScopeProcessor localProcessor = new SimpleNamedScopeProcessor(completion, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
 				if(!CSharpResolveUtil.treeWalkUp(localProcessor, target, element, last, resolveState))
@@ -1137,6 +1142,9 @@ public class CSharpReferenceExpressionImplUtil
 				targets = new ExecuteTarget[]{
 						ExecuteTarget.ELEMENT_GROUP
 				};
+				break;
+			case NAMEOF:
+				targets = ExecuteTarget.values();
 				break;
 			default:
 				targets = new ExecuteTarget[]{

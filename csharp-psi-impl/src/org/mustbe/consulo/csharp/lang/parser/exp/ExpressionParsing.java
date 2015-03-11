@@ -687,6 +687,10 @@ public class ExpressionParsing extends SharedParsingHelpers
 			builder.enableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);
 			builder.enableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
 		}
+		if(version.isAtLeast(CSharpLanguageVersion._6_0))
+		{
+			builder.enableSoftKeyword(CSharpSoftTokens.NAMEOF_KEYWORD);
+		}
 		IElementType tokenType = builder.getTokenType();
 		if(linqState)
 		{
@@ -696,6 +700,10 @@ public class ExpressionParsing extends SharedParsingHelpers
 		{
 			builder.disableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);
 			builder.disableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
+		}
+		if(version.isAtLeast(CSharpLanguageVersion._6_0))
+		{
+			builder.disableSoftKeyword(CSharpSoftTokens.NAMEOF_KEYWORD);
 		}
 
 		builder.disableSoftKeyword(CSharpSoftTokens.GLOBAL_KEYWORD);
@@ -741,6 +749,11 @@ public class ExpressionParsing extends SharedParsingHelpers
 		if(tokenType == TYPEOF_KEYWORD)
 		{
 			return parseExpressionWithTypeInLParRPar(builder, ALLOW_EMPTY_TYPE_ARGUMENTS, null, TYPE_OF_EXPRESSION);
+		}
+
+		if(tokenType == NAMEOF_KEYWORD)
+		{
+			return parseExpressionWithExpressionInLParRPar(builder, null, NAMEOF_EXPRESSION);
 		}
 
 		if(tokenType == DEFAULT_KEYWORD)

@@ -52,7 +52,8 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 		LABEL,
 		BASE_CONSTRUCTOR,
 		THIS_CONSTRUCTOR,
-		PARAMETER_FROM_PARENT;
+		PARAMETER_FROM_PARENT,
+		NAMEOF;
 
 		@NotNull
 		@Immutable

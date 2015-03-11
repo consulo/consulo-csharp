@@ -111,6 +111,8 @@ public interface CSharpElements
 
 	IElementType TYPE_OF_EXPRESSION = new ElementTypeAsPsiFactory("TYPE_OF_EXPRESSION", CSharpLanguage.INSTANCE, CSharpTypeOfExpressionImpl.class);
 
+	IElementType NAMEOF_EXPRESSION = new ElementTypeAsPsiFactory("NAMEOF_EXPRESSION", CSharpLanguage.INSTANCE, CSharpNameOfExpressionImpl.class);
+
 	IElementType AWAIT_EXPRESSION = new ElementTypeAsPsiFactory("AWAIT_EXPRESSION", CSharpLanguage.INSTANCE, CSharpAwaitExpressionImpl.class);
 
 	IElementType SIZE_OF_EXPRESSION = new ElementTypeAsPsiFactory("SIZE_OF_EXPRESSION", CSharpLanguage.INSTANCE, CSharpSizeOfExpressionImpl.class);
