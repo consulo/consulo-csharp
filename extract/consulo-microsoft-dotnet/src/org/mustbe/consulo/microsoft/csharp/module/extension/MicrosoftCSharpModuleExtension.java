@@ -17,12 +17,12 @@
 package org.mustbe.consulo.microsoft.csharp.module.extension;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.compiler.CSharpCompilerUtil;
 import org.mustbe.consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.csharp.module.extension.BaseCSharpModuleExtension;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompileFailedException;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
-import org.mustbe.consulo.microsoft.dotnet.sdk.MicrosoftCompilerDirOrderRootType;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ModuleRootLayer;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -69,19 +69,7 @@ public class MicrosoftCSharpModuleExtension extends BaseCSharpModuleExtension<Mi
 		Sdk sdk = extension.getSdk();
 		assert sdk != null;
 
-		VirtualFile[] files = sdk.getRootProvider().getFiles(MicrosoftCompilerDirOrderRootType.getInstance());
-
-		VirtualFile compilerFile = null;
-
-		for(VirtualFile file : files)
-		{
-			VirtualFile child = file.findChild("csc.exe");
-			if(child != null)
-			{
-				compilerFile = child;
-				break;
-			}
-		}
+		VirtualFile compilerFile = CSharpCompilerUtil.findCompilerInSdk(sdk, "csc.exe");
 
 		if(compilerFile == null)
 		{

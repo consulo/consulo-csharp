@@ -17,6 +17,7 @@
 package org.mustbe.consulo.mono.csharp.module.extension;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.compiler.CSharpCompilerUtil;
 import org.mustbe.consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.csharp.module.extension.BaseCSharpModuleExtension;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
@@ -25,6 +26,7 @@ import org.mustbe.consulo.mono.dotnet.sdk.MonoSdkType;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ModuleRootLayer;
 import com.intellij.openapi.util.SystemInfo;
+import com.intellij.openapi.vfs.VirtualFile;
 
 /**
  * @author VISTALL
@@ -66,17 +68,26 @@ public class MonoCSharpModuleExtension extends BaseCSharpModuleExtension<MonoCSh
 		Sdk sdk = extension.getSdk();
 		assert sdk != null;
 
-		if(SystemInfo.isWindows)
+		VirtualFile compilerInSdk = CSharpCompilerUtil.findCompilerInSdk(sdk, "csc.exe");
+		if(compilerInSdk != null)
 		{
-			optionsBuilder.setExecutableFromSdk(sdk, "/../../../bin/mcs.bat");
+			optionsBuilder.setExecutable(MonoSdkType.getInstance().getExecutable(sdk));
+			optionsBuilder.addArgument(compilerInSdk.getPath());
 		}
-		else if(SystemInfo.isMac)
+		else
 		{
-			optionsBuilder.setExecutableFromSdk(sdk, "/../../../bin/mcs");
-		}
-		else if(SystemInfo.isLinux)
-		{
-			optionsBuilder.setExecutable(MonoSdkType.LINUX_COMPILER);
+			if(SystemInfo.isWindows)
+			{
+				optionsBuilder.setExecutableFromSdk(sdk, "/../../../bin/mcs.bat");
+			}
+			else if(SystemInfo.isMac)
+			{
+				optionsBuilder.setExecutableFromSdk(sdk, "/../../../bin/mcs");
+			}
+			else if(SystemInfo.isLinux)
+			{
+				optionsBuilder.setExecutable(MonoSdkType.LINUX_COMPILER);
+			}
 		}
 
 		return optionsBuilder;
