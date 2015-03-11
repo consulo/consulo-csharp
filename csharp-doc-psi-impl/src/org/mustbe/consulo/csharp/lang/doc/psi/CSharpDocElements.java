@@ -22,7 +22,9 @@ import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.doc.CSharpDocLanguage;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
-import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.injection.CSharpForInjectionFragmentHolder;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.injection.CSharpInjectExpressionElementType;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.LanguageVersion;
@@ -90,9 +92,8 @@ public interface CSharpDocElements
 			final Project project = psi.getProject();
 			final Language languageForParser = getLanguageForParser(psi);
 			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser,
-					languageForParser.getVersions()[0],
-					chameleon.getChars());
-			return myParser.parse(this, builder, languageForParser.getVersions()[0]);
+					languageForParser.getVersions()[0], chameleon.getChars());
+			return myParser.parse(this, builder, languageForParser.getVersions()[0]).getFirstChildNode();
 		}
 
 		@Override
@@ -105,52 +106,13 @@ public interface CSharpDocElements
 		@Override
 		public ASTNode createNode(CharSequence text)
 		{
-			return new CSharpDocFragmentHolder(this, text);
+			return new CSharpForInjectionFragmentHolder(this, text, CSharpReferenceExpression.ResolveToKind.TYPE_LIKE);
 		}
 	};
 
-	IElementType EXPRESSION = new ILazyParseableElementType("REFERENCE", CSharpDocLanguage.INSTANCE)
-	{
-		private final PsiParser myParser = new PsiParser()
-		{
-			@NotNull
-			@Override
-			public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
-			{
-				PsiBuilder.Marker mark = builder.mark();
-				ExpressionParsing.parse(new CSharpBuilderWrapper(builder, languageVersion));
-				while(!builder.eof())
-				{
-					builder.error("Unexpected token");
-					builder.advanceLexer();
-				}
-				mark.done(elementType);
-				return builder.getTreeBuilt();
-			}
-		};
+	IElementType PARAMETER_EXPRESSION = new CSharpInjectExpressionElementType("PARAMETER_REFERENCE", CSharpDocLanguage.INSTANCE,
+			CSharpReferenceExpression.ResolveToKind.PARAMETER_FROM_PARENT);
 
-		@Override
-		protected ASTNode doParseContents(@NotNull final ASTNode chameleon, @NotNull final PsiElement psi)
-		{
-			final Project project = psi.getProject();
-			final Language languageForParser = getLanguageForParser(psi);
-			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser,
-					languageForParser.getVersions()[0],
-					chameleon.getChars());
-			return myParser.parse(this, builder, languageForParser.getVersions()[0]);
-		}
-
-		@Override
-		protected Language getLanguageForParser(PsiElement psi)
-		{
-			return CSharpLanguage.INSTANCE;
-		}
-
-		@Nullable
-		@Override
-		public ASTNode createNode(CharSequence text)
-		{
-			return new CSharpDocFragmentHolder(this, text);
-		}
-	};
+	IElementType GENERIC_PARAMETER_EXPRESSION = new CSharpInjectExpressionElementType("GENERIC_PARAMETER_EXPRESSION", CSharpDocLanguage.INSTANCE,
+			CSharpReferenceExpression.ResolveToKind.GENERIC_PARAMETER_FROM_PARENT);
 }

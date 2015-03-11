@@ -367,8 +367,10 @@ public class CSharpDocParsing
 							myBuilder.remapCurrentToken(CSharpDocElements.TYPE);
 							break;
 						case PARAMETER:
+							myBuilder.remapCurrentToken(CSharpDocElements.PARAMETER_EXPRESSION);
+							break;
 						case TYPE_PARAMETER:
-							myBuilder.remapCurrentToken(CSharpDocElements.EXPRESSION);
+							myBuilder.remapCurrentToken(CSharpDocElements.GENERIC_PARAMETER_EXPRESSION);
 							break;
 					}
 					advance();

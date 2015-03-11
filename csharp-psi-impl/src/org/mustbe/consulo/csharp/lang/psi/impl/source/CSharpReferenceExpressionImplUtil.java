@@ -27,12 +27,10 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocAttribute;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocFragmentHolder;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocRoot;
-import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocAttributeInfo;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.injection.CSharpForInjectionFragmentHolder;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CompletionResolveScopeProcessor;
@@ -87,8 +85,12 @@ import com.intellij.openapi.util.text.CharFilter;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
+import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
+import com.intellij.psi.SmartPsiElementPointer;
+import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtil;
+import com.intellij.psi.impl.source.tree.injected.Place;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -330,25 +332,9 @@ public class CSharpReferenceExpressionImplUtil
 		{
 			return ResolveToKind.LABEL;
 		}
-
-		PsiElement superParent = tempElement.getParent();
-		if(superParent instanceof CSharpDocFragmentHolder)
+		else if(tempElement instanceof CSharpForInjectionFragmentHolder)
 		{
-			CSharpDocAttribute docAttribute = PsiTreeUtil.getParentOfType(superParent, CSharpDocAttribute.class);
-			if(docAttribute != null)
-			{
-				CSharpDocAttributeInfo attributeInfo = docAttribute.getAttributeInfo();
-				if(attributeInfo != null)
-				{
-					switch(attributeInfo.getValueType())
-					{
-						case PARAMETER:
-							return ResolveToKind.PARAMETER_FROM_PARENT;
-						case TYPE_PARAMETER:
-							return ResolveToKind.GENERIC_PARAMETER_FROM_PARENT;
-					}
-				}
-			}
+			return ((CSharpForInjectionFragmentHolder) tempElement).getKind();
 		}
 
 		tempElement = referenceExpression.getReferenceElement();
@@ -1173,6 +1159,7 @@ public class CSharpReferenceExpressionImplUtil
 	@NotNull
 	public static Couple<PsiElement> getResolveLayers(PsiElement element, boolean strict)
 	{
+		String text = element.getText();
 		PsiElement last = null;
 		PsiElement targetToWalkChildren = null;
 
@@ -1227,6 +1214,20 @@ public class CSharpReferenceExpressionImplUtil
 				last = temp;
 				targetToWalkChildren = temp.getParent();
 				break;
+			}
+			else if(temp instanceof CSharpForInjectionFragmentHolder)
+			{
+				Place place = InjectedLanguageUtil.getShreds(temp.getContainingFile());
+				if(place != null)
+				{
+					SmartPsiElementPointer<PsiLanguageInjectionHost> hostPointer = place.getHostPointer();
+					PsiLanguageInjectionHost hostPointerElement = hostPointer.getElement();
+					if(hostPointerElement != null)
+					{
+						temp = hostPointerElement;
+						continue;
+					}
+				}
 			}
 			temp = temp.getParent();
 		}

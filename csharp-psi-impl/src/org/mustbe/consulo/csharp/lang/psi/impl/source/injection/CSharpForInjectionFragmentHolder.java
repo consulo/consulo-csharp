@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.doc.psi;
+package org.mustbe.consulo.csharp.lang.psi.impl.source.injection;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import com.intellij.psi.impl.source.tree.LazyParseablePsiElement;
 import com.intellij.psi.tree.IElementType;
 
@@ -24,10 +25,19 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 04.03.2015
  */
-public class CSharpDocFragmentHolder extends LazyParseablePsiElement
+public class CSharpForInjectionFragmentHolder extends LazyParseablePsiElement
 {
-	public CSharpDocFragmentHolder(@NotNull IElementType type, CharSequence buffer)
+	private final CSharpReferenceExpression.ResolveToKind myKind;
+
+	public CSharpForInjectionFragmentHolder(@NotNull IElementType type, CharSequence buffer, CSharpReferenceExpression.ResolveToKind kind)
 	{
 		super(type, buffer);
+		myKind = kind;
+	}
+
+	@NotNull
+	public CSharpReferenceExpression.ResolveToKind getKind()
+	{
+		return myKind;
 	}
 }

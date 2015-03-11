@@ -34,6 +34,9 @@
 	<xi:include href="/META-INF/CSharpIntentions.xml" xpointer="xpointer(/idea-plugin/*)">
 		<xi:fallback/>
 	</xi:include>
+	<xi:include href="/META-INF/CSharpCfs.xml" xpointer="xpointer(/idea-plugin/*)">
+		<xi:fallback/>
+	</xi:include>
 
 	<actions>
 		<action id="CSharp.File" class="org.mustbe.consulo.csharp.ide.actions.CreateCSharpFileAction">
