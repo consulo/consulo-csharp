@@ -239,6 +239,14 @@ public class CS1644 extends CompilerCheck<PsiElement>
 							return codeBlock;
 						}
 					}
+					else if(element instanceof CSharpFieldDeclaration)
+					{
+						ASTNode darrowNode = element.getNode().findChildByType(CSharpTokens.DARROW);
+						if(darrowNode != null)
+						{
+							return darrowNode.getPsi();
+						}
+					}
 					return null;
 				}
 			}));

@@ -86,7 +86,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 			@NotNull TypeInfo typeInfo,
 			boolean semicolonEat)
 	{
-		if(builder.getTokenType() == EQ)
+		if(builder.getTokenType() == EQ || builder.getTokenType() == DARROW)
 		{
 			builder.advanceLexer();
 			if(ExpressionParsing.parseVariableInitializer(builder, typeInfo) == null)
