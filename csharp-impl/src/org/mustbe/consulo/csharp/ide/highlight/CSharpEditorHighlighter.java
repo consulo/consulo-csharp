@@ -18,6 +18,8 @@ package org.mustbe.consulo.csharp.ide.highlight;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.cfs.lang.CfsTokens;
+import org.mustbe.consulo.csharp.lang.CSharpCfsLanguageVersion;
 import org.mustbe.consulo.csharp.lang.doc.ide.highlight.CSharpDocSyntaxHighlighter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -25,9 +27,12 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
 import com.intellij.lexer.Lexer;
 import com.intellij.lexer.StringLiteralLexer;
 import com.intellij.openapi.editor.colors.EditorColorsScheme;
+import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.ex.util.LayerDescriptor;
 import com.intellij.openapi.editor.ex.util.LayeredLexerEditorHighlighter;
+import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
@@ -58,7 +63,26 @@ public class CSharpEditorHighlighter extends LayeredLexerEditorHighlighter
 				return new StringLiteralLexer('\'', CSharpTokens.CHARACTER_LITERAL);
 			}
 		}, ""));
+		registerLayer(CSharpTokensImpl.INTERPOLATION_STRING_LITERAL, new LayerDescriptor(new SyntaxHighlighterBase()
+		{
+			@NotNull
+			@Override
+			public Lexer getHighlightingLexer()
+			{
+				return CSharpCfsLanguageVersion.getInstance().createLexer(null);
+			}
 
+			@NotNull
+			@Override
+			public TextAttributesKey[] getTokenHighlights(IElementType elementType)
+			{
+				if(elementType == CfsTokens.TEXT)
+				{
+					return pack(CSharpHighlightKey.STRING);
+				}
+				return EMPTY;
+			}
+		}, ""));
 	}
 
 }

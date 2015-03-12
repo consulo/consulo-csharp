@@ -312,7 +312,5 @@ public interface CSharpTokens extends TokenType
 
 	IElementType VERBATIM_STRING_LITERAL = new IElementType("VERBATIM_STRING_LITERAL", CSharpLanguage.INSTANCE);
 
-	IElementType INTERPOLATION_STRING_LITERAL = new IElementType("INTERPOLATION_STRING_LITERAL", CSharpLanguage.INSTANCE);
-
 	IElementType IDENTIFIER = new IElementType("IDENTIFIER", CSharpLanguage.INSTANCE);
 }
