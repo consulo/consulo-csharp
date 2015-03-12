@@ -43,10 +43,20 @@ public class CSharpLambdaResolveResultUtil
 		invokeMethodBuilder.addModifier(CSharpModifier.PUBLIC);
 		invokeMethodBuilder.withReturnType(declaration.getReturnTypeRef());
 
-		for(DotNetParameter parameter : declaration.getParameters())
+		DotNetParameter[] parameters = declaration.getParameters();
+		for(int i = 0; i < parameters.length; i++)
 		{
+			DotNetParameter parameter = parameters[i];
 			CSharpLightParameterBuilder parameterBuilder = new CSharpLightParameterBuilder(project);
-			parameterBuilder.withName(parameter.getName());
+			String name = parameter.getName();
+			if(name == null)
+			{
+				parameterBuilder.withName("p" + i);
+			}
+			else
+			{
+				parameterBuilder.withName(name);
+			}
 			parameterBuilder.withTypeRef(parameter.toTypeRef(true));
 			invokeMethodBuilder.addParameter(parameterBuilder);
 		}
