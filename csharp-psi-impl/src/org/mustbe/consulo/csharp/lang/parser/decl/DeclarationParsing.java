@@ -34,7 +34,7 @@ import lombok.val;
  */
 public class DeclarationParsing extends SharedParsingHelpers
 {
-	// { (
+		// { (
 	private static final TokenSet NAME_STOPPERS = TokenSet.create(LBRACE, LPAR, THIS_KEYWORD);
 
 	private static final TokenSet NAME_TOKENS = TokenSet.create(THIS_KEYWORD, IDENTIFIER);
@@ -137,7 +137,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 					if(implementType == null)
 					{
 						builder.error("Expected identifier");
-						marker.done(FIELD_DECLARATION);
+						done(marker, FIELD_DECLARATION);
 						return false;
 					}
 

@@ -32,7 +32,7 @@ public class EventParsing extends MemberWithBodyParsing
 		if(parseType(builder, STUB_SUPPORT) == null)
 		{
 			builder.error("Type expected");
-			marker.done(EVENT_DECLARATION);
+			done(marker, EVENT_DECLARATION);
 		}
 		else
 		{
@@ -40,7 +40,7 @@ public class EventParsing extends MemberWithBodyParsing
 			IElementType tokenType = builder.getTokenType();
 			if(tokenType == COMMA)
 			{
-				marker.done(EVENT_DECLARATION);
+				done(marker, EVENT_DECLARATION);
 
 				while(builder.getTokenType() == COMMA)
 				{
@@ -54,7 +54,7 @@ public class EventParsing extends MemberWithBodyParsing
 			else if(tokenType == SEMICOLON)
 			{
 				builder.advanceLexer();
-				marker.done(EVENT_DECLARATION);
+				done(marker, EVENT_DECLARATION);
 			}
 			else if(tokenType == EQ)
 			{
@@ -64,12 +64,12 @@ public class EventParsing extends MemberWithBodyParsing
 					builder.error("Expression expected");
 				}
 				expect(builder, SEMICOLON, "';' expected");
-				marker.done(EVENT_DECLARATION);
+				done(marker, EVENT_DECLARATION);
 			}
 			else
 			{
 				parseAccessors(builder, XXX_ACCESSOR, EVENT_ACCESSOR_START);
-				marker.done(EVENT_DECLARATION);
+				done(marker, EVENT_DECLARATION);
 			}
 		}
 	}

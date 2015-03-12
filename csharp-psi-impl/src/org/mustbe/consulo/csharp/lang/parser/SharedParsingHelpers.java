@@ -16,6 +16,8 @@
 
 package org.mustbe.consulo.csharp.lang.parser;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
@@ -24,9 +26,11 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.lang.LighterASTNode;
 import com.intellij.lang.PsiBuilder;
+import com.intellij.lang.WhitespacesAndCommentsBinder;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
@@ -40,6 +44,29 @@ import lombok.val;
  */
 public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSharpElements
 {
+	public static class DocWhitespacesAndCommentsBinder implements WhitespacesAndCommentsBinder
+	{
+		public static WhitespacesAndCommentsBinder INSTANCE = new DocWhitespacesAndCommentsBinder();
+
+		@Override
+		public int getEdgePosition(final List<IElementType> tokens, final boolean atStreamEdge, final TokenTextGetter getter)
+		{
+			if(tokens.isEmpty())
+			{
+				return 0;
+			}
+
+			for(int i = tokens.size() - 1; i >= 0; i--)
+			{
+				if(tokens.get(i) == CSharpTokensImpl.LINE_DOC_COMMENT)
+				{
+					return i;
+				}
+			}
+			return tokens.size();
+		}
+	}
+
 	public static final int NONE = 0;
 	public static final int VAR_SUPPORT = 1 << 0;
 	public static final int STUB_SUPPORT = 1 << 1;
@@ -56,6 +83,16 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		public boolean isArray;
 		public boolean isMultiArray;
 		public PsiBuilder.Marker marker;
+	}
+
+	protected static void done(PsiBuilder.Marker marker, IElementType elementType)
+	{
+		marker.done(elementType);
+
+		if(CSharpStubElements.QUALIFIED_MEMBERS.contains(elementType))
+		{
+			marker.setCustomEdgeTokenBinders(DocWhitespacesAndCommentsBinder.INSTANCE, null);
+		}
 	}
 
 	protected static boolean parseTypeList(@NotNull CSharpBuilderWrapper builder, int flags)

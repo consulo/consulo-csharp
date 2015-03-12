@@ -54,7 +54,7 @@ public class MethodParsing extends MemberWithBodyParsing
 		else
 		{
 			builder.error("Name expected");
-			marker.done(METHOD_DECLARATION);
+			done(marker, METHOD_DECLARATION);
 		}
 	}
 
@@ -165,13 +165,13 @@ public class MethodParsing extends MemberWithBodyParsing
 		{
 			case DECONSTRUCTOR:
 			case CONSTRUCTOR:
-				marker.done(CONSTRUCTOR_DECLARATION);
+				done(marker, CONSTRUCTOR_DECLARATION);
 				break;
 			case METHOD:
-				marker.done(METHOD_DECLARATION);
+				done(marker, METHOD_DECLARATION);
 				break;
 			case CONVERSION_METHOD:
-				marker.done(CONVERSION_METHOD_DECLARATION);
+				done(marker, CONVERSION_METHOD_DECLARATION);
 				break;
 		}
 	}

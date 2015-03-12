@@ -114,7 +114,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 				expect(builder, SEMICOLON, "';' expected");
 			}
 
-			marker.done(to);
+			done(marker, to);
 
 			return marker;
 		}
@@ -133,7 +133,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 
 		parseAccessors(builderWrapper, XXX_ACCESSOR, PROPERTY_ACCESSOR_START);
 
-		marker.done(ARRAY_METHOD_DECLARATION);
+		done(marker, ARRAY_METHOD_DECLARATION);
 	}
 
 	public static void parseFieldOrPropertyAfterName(CSharpBuilderWrapper builderWrapper, PsiBuilder.Marker marker, @NotNull TypeInfo typeInfo)

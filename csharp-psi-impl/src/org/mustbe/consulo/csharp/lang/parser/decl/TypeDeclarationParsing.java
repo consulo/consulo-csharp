@@ -71,7 +71,7 @@ public class TypeDeclarationParsing extends SharedParsingHelpers
 			expect(builder, SEMICOLON, null);
 		}
 
-		marker.done(TYPE_DECLARATION);
+		done(marker, TYPE_DECLARATION);
 	}
 
 	private static boolean parseEnumConstant(CSharpBuilderWrapper builder)
@@ -117,12 +117,12 @@ public class TypeDeclarationParsing extends SharedParsingHelpers
 					builder.error("Name expected");
 				}
 
-				mark.done(ENUM_CONSTANT_DECLARATION);
+				done(mark, ENUM_CONSTANT_DECLARATION);
 				return false;
 			}
 		}
 
-		mark.done(ENUM_CONSTANT_DECLARATION);
+		done(mark, ENUM_CONSTANT_DECLARATION);
 
 		if(builder.getTokenType() == COMMA)
 		{

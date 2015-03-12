@@ -1067,13 +1067,13 @@ public class CSharpReferenceExpressionImplUtil
 			return null;
 		}
 
-		CSharpDocRoot parentOfType = PsiTreeUtil.getParentOfType(element, CSharpDocRoot.class);
-		if(parentOfType != null)
+		CSharpDocRoot docRoot = PsiTreeUtil.getParentOfType(element, CSharpDocRoot.class);
+		if(docRoot != null)
 		{
-			PsiElement next = UsefulPsiTreeUtil.getNextSiblingSkippingWhiteSpacesAndComments(parentOfType);
-			if(next != null && clazz.isInstance(next))
+			PsiElement docRootParent = docRoot.getParent();
+			if(docRootParent != null && clazz.isInstance(docRootParent))
 			{
-				return (T) next;
+				return (T) docRootParent;
 			}
 		}
 		return null;
