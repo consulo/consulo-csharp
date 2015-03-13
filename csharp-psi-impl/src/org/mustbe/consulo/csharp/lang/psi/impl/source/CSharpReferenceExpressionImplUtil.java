@@ -85,12 +85,8 @@ import com.intellij.openapi.util.text.CharFilter;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
-import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
-import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtil;
-import com.intellij.psi.impl.source.tree.injected.Place;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -1214,20 +1210,6 @@ public class CSharpReferenceExpressionImplUtil
 				last = temp;
 				targetToWalkChildren = temp.getParent();
 				break;
-			}
-			else if(temp instanceof CSharpForInjectionFragmentHolder)
-			{
-				Place place = InjectedLanguageUtil.getShreds(temp.getContainingFile());
-				if(place != null)
-				{
-					SmartPsiElementPointer<PsiLanguageInjectionHost> hostPointer = place.getHostPointer();
-					PsiLanguageInjectionHost hostPointerElement = hostPointer.getElement();
-					if(hostPointerElement != null)
-					{
-						temp = hostPointerElement;
-						continue;
-					}
-				}
 			}
 			temp = temp.getParent();
 		}
