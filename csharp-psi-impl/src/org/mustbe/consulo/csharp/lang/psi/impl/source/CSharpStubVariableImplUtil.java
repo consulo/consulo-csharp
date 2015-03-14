@@ -96,7 +96,7 @@ public class CSharpStubVariableImplUtil
 				PsiElement[] stubVariables = parentStub.getChildrenByType(variable.getElementType(), PsiElement.ARRAY_FACTORY);
 
 				int i = ArrayUtil.find(stubVariables, variable);
-				if(i == -1 || i == 0)
+				if(i <= 0)
 				{
 					LOGGER.error("Variable dont have type but dont second");
 					return null;
