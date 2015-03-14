@@ -162,10 +162,15 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 			}
 			dotNetMutableModuleExtension.getInheritableSdk().set(null, sdk);
 			dotNetMutableModuleExtension.setTarget(panel.getTarget());
+			dotNetMutableModuleExtension.getVariables().add("TRACE");
 
 			CSharpMutableModuleExtension<?> cSharpMutableModuleExtension = layer.getExtensionWithoutCheck(pair[1]);
 			assert cSharpMutableModuleExtension != null;
 			cSharpMutableModuleExtension.setEnabled(true);
+			if(!debug)
+			{
+				cSharpMutableModuleExtension.setOptimizeCode(true);
+			}
 
 			layer.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) layer, "mscorlib"));
 			layer.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) layer, "System"));
