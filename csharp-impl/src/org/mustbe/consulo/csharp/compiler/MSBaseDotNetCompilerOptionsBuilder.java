@@ -117,8 +117,9 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 
 	@Override
 	@NotNull
-	public GeneralCommandLine createCommandLine(@NotNull Module module, @NotNull VirtualFile[] results, @NotNull DotNetModuleExtension<?> extension)
-			throws IOException
+	public GeneralCommandLine createCommandLine(@NotNull Module module,
+			@NotNull VirtualFile[] results,
+			@NotNull DotNetModuleExtension<?> extension) throws IOException
 	{
 		CSharpModuleExtension csharpExtension = ModuleUtilCore.getExtension(module, CSharpModuleExtension.class);
 
@@ -147,7 +148,7 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 
 		addArgument("/target:" + target);
 		String outputFile = DotNetMacroUtil.expandOutputFile(extension);
-		addArgument("/out:" + outputFile);
+		addArgument("/out:" + StringUtil.QUOTER.fun(outputFile));
 
 		val libraryFiles = DotNetCompilerUtil.collectDependencies(module, DotNetTarget.LIBRARY, true);
 		if(!libraryFiles.isEmpty())
@@ -226,15 +227,15 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 			addArgument("/main:" + mainType);
 		}
 
+		for(VirtualFile result : results)
+		{
+			addArgument(StringUtil.QUOTER.fun(result.getPath()));
+		}
+
 		File tempFile = FileUtil.createTempFile("consulo-dotnet-rsp", ".rsp");
 		for(String argument : myArguments)
 		{
 			FileUtil.appendToFile(tempFile, argument);
-		}
-
-		for(VirtualFile result : results)
-		{
-			FileUtil.appendToFile(tempFile, FileUtil.toSystemDependentName(result.getPath()) + "\n");
 		}
 
 		//LOGGER.warn("Compiler def file: " + tempFile);
