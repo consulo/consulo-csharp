@@ -157,6 +157,7 @@
 
 		<lang.smartEnterProcessor language="C#"
 								  implementationClass="org.mustbe.consulo.csharp.ide.completion.smartEnter.CSharpSmartEnterProcessor"/>
+		<enterHandlerDelegate implementation="org.mustbe.consulo.csharp.ide.editor.CSharpEnterInDocLineCommentHandler" />
 
 		<referenceImporter implementation="org.mustbe.consulo.csharp.ide.codeInsight.CSharpReferenceImporter"/>
 
