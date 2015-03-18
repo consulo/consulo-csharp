@@ -16,11 +16,9 @@
 
 package org.mustbe.consulo.csharp.lang;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
@@ -34,7 +32,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import com.intellij.codeInsight.folding.CodeFoldingSettings;
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.folding.FoldingBuilder;
+import com.intellij.lang.folding.CustomFoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
@@ -43,30 +41,27 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.tree.IElementType;
-import lombok.val;
 
 /**
  * @author VISTALL
  * @since 30.11.13.
  */
-public class CSharpFoldingBuilder implements FoldingBuilder
+public class CSharpFoldingBuilder extends CustomFoldingBuilder
 {
-	@NotNull
 	@Override
-	public FoldingDescriptor[] buildFoldRegions(@NotNull ASTNode astNode, @NotNull Document document)
+	protected void buildLanguageFoldRegions(@NotNull final List<FoldingDescriptor> descriptors,
+			@NotNull PsiElement root,
+			@NotNull Document document,
+			boolean quick)
 	{
-		val foldingList = new ArrayList<FoldingDescriptor>();
-
-		PsiElement psi = astNode.getPsi();
-
-		psi.accept(new CSharpRecursiveElementVisitor()
+		root.accept(new CSharpRecursiveElementVisitor()
 		{
 			@Override
 			public void visitTypeDeclaration(CSharpTypeDeclaration declaration)
 			{
 				super.visitTypeDeclaration(declaration);
 
-				addBodyWithBraces(foldingList, declaration);
+				addBodyWithBraces(descriptors, declaration);
 			}
 
 			@Override
@@ -74,7 +69,7 @@ public class CSharpFoldingBuilder implements FoldingBuilder
 			{
 				super.visitPropertyDeclaration(declaration);
 
-				addBodyWithBraces(foldingList, declaration);
+				addBodyWithBraces(descriptors, declaration);
 			}
 
 			@Override
@@ -82,7 +77,7 @@ public class CSharpFoldingBuilder implements FoldingBuilder
 			{
 				super.visitEventDeclaration(declaration);
 
-				addBodyWithBraces(foldingList, declaration);
+				addBodyWithBraces(descriptors, declaration);
 			}
 
 			@Override
@@ -108,7 +103,7 @@ public class CSharpFoldingBuilder implements FoldingBuilder
 				int startOffset = usingKeyword.getTextRange().getEndOffset() + 1;
 				int endOffset = statements[statements.length - 1].getLastChild().getTextRange().getEndOffset();
 
-				foldingList.add(new FoldingDescriptor(list, new TextRange(startOffset, endOffset)));
+				descriptors.add(new FoldingDescriptor(list, new TextRange(startOffset, endOffset)));
 			}
 
 			@Override
@@ -120,7 +115,7 @@ public class CSharpFoldingBuilder implements FoldingBuilder
 				{
 					return;
 				}
-				addBodyWithBraces(foldingList, statement);
+				addBodyWithBraces(descriptors, statement);
 			}
 
 			@Override
@@ -140,11 +135,42 @@ public class CSharpFoldingBuilder implements FoldingBuilder
 
 					PsiElement lastComment = findLastComment(comment, comment.getTokenType());
 
-					foldingList.add(new FoldingDescriptor(comment, new TextRange(startOffset, lastComment.getTextRange().getEndOffset())));
+					descriptors.add(new FoldingDescriptor(comment, new TextRange(startOffset, lastComment.getTextRange().getEndOffset())));
 				}
 			}
 		});
-		return foldingList.toArray(new FoldingDescriptor[foldingList.size()]);
+	}
+
+	@Override
+	protected String getLanguagePlaceholderText(@NotNull ASTNode node, @NotNull TextRange range)
+	{
+		PsiElement psi = node.getPsi();
+		if(psi instanceof CSharpUsingListImpl)
+		{
+			return "...";
+		}
+		else if(psi instanceof CSharpBlockStatementImpl || psi instanceof CSharpPropertyDeclaration || psi instanceof CSharpTypeDeclaration || psi
+				instanceof CSharpEventDeclaration)
+		{
+			return "{...}";
+		}
+		else if(psi instanceof PsiComment)
+		{
+			IElementType tokenType = ((PsiComment) psi).getTokenType();
+			if(tokenType == CSharpTokensImpl.LINE_DOC_COMMENT)
+			{
+				return "/// ...";
+			}
+			else if(tokenType == CSharpTokens.LINE_COMMENT)
+			{
+				return "// ...";
+			}
+			else if(tokenType == CSharpTokens.BLOCK_COMMENT)
+			{
+				return "/** ... */";
+			}
+		}
+		return null;
 	}
 
 	private static PsiElement findLastComment(PsiElement element, IElementType elementType)
@@ -196,43 +222,10 @@ public class CSharpFoldingBuilder implements FoldingBuilder
 				rightBrace.getTextRange().getStartOffset() + rightBrace.getTextLength())));
 	}
 
-	@Nullable
 	@Override
-	public String getPlaceholderText(@NotNull ASTNode astNode)
+	protected boolean isRegionCollapsedByDefault(@NotNull ASTNode node)
 	{
-		PsiElement psi = astNode.getPsi();
-		if(psi instanceof CSharpUsingListImpl)
-		{
-			return "...";
-		}
-		else if(psi instanceof CSharpBlockStatementImpl || psi instanceof CSharpPropertyDeclaration || psi instanceof CSharpTypeDeclaration || psi
-				instanceof CSharpEventDeclaration)
-		{
-			return "{...}";
-		}
-		else if(psi instanceof PsiComment)
-		{
-			IElementType tokenType = ((PsiComment) psi).getTokenType();
-			if(tokenType == CSharpTokensImpl.LINE_DOC_COMMENT)
-			{
-				return "/// ...";
-			}
-			else if(tokenType == CSharpTokens.LINE_COMMENT)
-			{
-				return "// ...";
-			}
-			else if(tokenType == CSharpTokens.BLOCK_COMMENT)
-			{
-				return "/** ... */";
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public boolean isCollapsedByDefault(@NotNull ASTNode astNode)
-	{
-		PsiElement psi = astNode.getPsi();
+		PsiElement psi = node.getPsi();
 		if(psi instanceof CSharpUsingListImpl)
 		{
 			return true;
