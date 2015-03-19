@@ -82,7 +82,7 @@
 		<msilFileRepresentation implementation="org.mustbe.consulo.csharp.ide.msil.representation.CSharpMsilFileRepresentationProvider"/>
 		<injectionByAttributeHelper implementation="org.mustbe.consulo.csharp.lang.CSharpMultiHostInjectorByAttributeHelper"/>
 
-		<documentationResolver implementation="org.mustbe.consulo.csharp.lang.doc.CSharpCommentDocumentationResolver" />
+		<documentationResolver implementation="org.mustbe.consulo.csharp.lang.doc.CSharpCommentDocumentationResolver"/>
 	</extensions>
 
 	<extensions defaultExtensionNs="com.intellij">
@@ -157,7 +157,7 @@
 
 		<lang.smartEnterProcessor language="C#"
 								  implementationClass="org.mustbe.consulo.csharp.ide.completion.smartEnter.CSharpSmartEnterProcessor"/>
-		<enterHandlerDelegate implementation="org.mustbe.consulo.csharp.ide.editor.CSharpEnterInDocLineCommentHandler" />
+		<enterHandlerDelegate implementation="org.mustbe.consulo.csharp.ide.editor.CSharpEnterInDocLineCommentHandler"/>
 
 		<referenceImporter implementation="org.mustbe.consulo.csharp.ide.codeInsight.CSharpReferenceImporter"/>
 
@@ -277,5 +277,9 @@
 		<eapDescriptor implementation="org.mustbe.consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent$EapDescriptor"/>
 		<eapDescriptor implementation="org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0030$CS0030TypeCast"/>
 		<eapDescriptor implementation="org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder$PropertyAndEventCompletionNew"/>
+
+		<xdebugger.lineBreakpointResolver filetype="C#"
+										  implementationClass="org.mustbe.consulo.dotnet.debugger.linebreakType.DotNetLineBreakpointResolver"
+										  id="csharp"/>
 	</extensions>
 </idea-plugin>

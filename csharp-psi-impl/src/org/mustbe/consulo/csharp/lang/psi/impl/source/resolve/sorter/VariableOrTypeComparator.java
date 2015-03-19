@@ -99,6 +99,7 @@ public class VariableOrTypeComparator implements Comparator<ResolveResult>
 				parentContext = CSharpContextUtil.ContextType.INSTANCE;
 			}
 
+			// region Some code
 			ResolveResult[] resolveResults = myParent.tryResolveFromQualifier(element);
 			if(resolveResults.length == 0)
 			{
@@ -134,6 +135,7 @@ public class VariableOrTypeComparator implements Comparator<ResolveResult>
 					}
 				}
 			}
+			// endregion
 		}
 		return myComparator.getWeight(resolveResult);
 	}

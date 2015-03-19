@@ -3,13 +3,14 @@ package org.mustbe.consulo.csharp.ide.debugger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
+import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import org.mustbe.consulo.dotnet.debugger.DotNetDebugContext;
 import org.mustbe.consulo.dotnet.debugger.DotNetDebuggerProvider;
 import org.mustbe.consulo.dotnet.debugger.nodes.DotNetLocalVariableMirrorNode;
 import org.mustbe.consulo.dotnet.debugger.nodes.DotNetMethodParameterMirrorNode;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.lang.Language;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -26,13 +27,6 @@ import mono.debugger.StackFrameMirror;
  */
 public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 {
-	@NotNull
-	@Override
-	public FileType getSupportedFileType()
-	{
-		return CSharpFileType.INSTANCE;
-	}
-
 	@NotNull
 	@Override
 	public PsiFile createExpressionCodeFragment(
@@ -75,5 +69,17 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 		{
 			callback.evaluated(new ErrorValue("no value"));
 		}
+	}
+
+	@Override
+	public boolean isSupported(@NotNull PsiFile psiFile)
+	{
+		return psiFile.getFileType() == CSharpFileType.INSTANCE;
+	}
+
+	@Override
+	public Language getEditorLanguage()
+	{
+		return CSharpLanguage.INSTANCE;
 	}
 }
