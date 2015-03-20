@@ -16,10 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.lexer;
 
-import java.io.Reader;
-
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
-import com.intellij.lexer.FlexAdapter;
 import com.intellij.lexer.MergingLexerAdapter;
 import com.intellij.psi.tree.TokenSet;
 
@@ -33,6 +30,6 @@ public class CSharpMacroLexer extends MergingLexerAdapter
 
 	public CSharpMacroLexer()
 	{
-		super(new FlexAdapter(new _CSharpMacroLexer((Reader) null)), ourMergeSet);
+		super(new _CSharpMacroLexer(), ourMergeSet);
 	}
 }

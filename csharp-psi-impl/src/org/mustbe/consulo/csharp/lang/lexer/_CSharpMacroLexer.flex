@@ -1,16 +1,16 @@
 package org.mustbe.consulo.csharp.lang.lexer;
 
 import java.util.*;
-import com.intellij.lexer.FlexLexer;
+import com.intellij.lexer.LexerBase;
 import com.intellij.psi.tree.IElementType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 
 %%
 
 %class _CSharpMacroLexer
-%implements FlexLexer
+%extends LexerBase
 %unicode
-%function advance
+%function advanceImpl
 %type IElementType
 %eof{  return;
 %eof}
