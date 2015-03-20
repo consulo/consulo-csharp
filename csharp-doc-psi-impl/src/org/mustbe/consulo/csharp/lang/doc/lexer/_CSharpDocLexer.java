@@ -19,32 +19,26 @@
 /* It's an automatically generated code. Do not modify it. */
 package org.mustbe.consulo.csharp.lang.doc.lexer;
 
-import com.intellij.lexer.FlexAdapter;
+import com.intellij.lexer.DelegateLexer;
 
-public class _CSharpDocLexer extends FlexAdapter
+public class _CSharpDocLexer extends DelegateLexer
 {
 	private int myState = __CSharpDocLexer.YYINITIAL;
 
-	public _CSharpDocLexer(final __CSharpDocLexer flexLexer)
+	public _CSharpDocLexer()
 	{
-		this(flexLexer, false);
-	}
-
-	public _CSharpDocLexer(final __CSharpDocLexer flexLexer, final boolean conditionalCommentsSupport)
-	{
-		super(flexLexer);
-		flexLexer.setConditionalCommentsSupport(conditionalCommentsSupport);
+		super(new __CSharpDocLexer());
 	}
 
 	private void packState()
 	{
-		final __CSharpDocLexer flex = (__CSharpDocLexer) getFlex();
+		final __CSharpDocLexer flex = (__CSharpDocLexer) getDelegate();
 		myState = ((flex.yyprevstate() & 15) << 4) | (flex.yystate() & 15);
 	}
 
 	private void handleState(final int initialState)
 	{
-		final __CSharpDocLexer flex = (__CSharpDocLexer) getFlex();
+		final __CSharpDocLexer flex = (__CSharpDocLexer) getDelegate();
 		flex.yybegin(initialState & 15);
 		flex.pushState((initialState >> 4) & 15);
 		packState();

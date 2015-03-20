@@ -296,8 +296,7 @@ public class CSharpDocParsing
 		while(true)
 		{
 			final IElementType tt = token();
-			if(tt == CSharpDocTokenType.XML_COMMENT_CHARACTERS || tt == CSharpDocTokenType.XML_CONDITIONAL_COMMENT_START || tt == CSharpDocTokenType.XML_CONDITIONAL_COMMENT_START_END || tt ==
-					CSharpDocTokenType.XML_CONDITIONAL_COMMENT_END_START || tt == CSharpDocTokenType.XML_CONDITIONAL_COMMENT_END)
+			if(tt == CSharpDocTokenType.XML_COMMENT_CHARACTERS)
 			{
 				advance();
 				continue;

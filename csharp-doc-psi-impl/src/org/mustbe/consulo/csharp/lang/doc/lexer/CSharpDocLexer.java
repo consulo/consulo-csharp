@@ -16,8 +16,6 @@
 
 package org.mustbe.consulo.csharp.lang.doc.lexer;
 
-import java.io.Reader;
-
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTokenType;
 import com.intellij.lexer.Lexer;
 import com.intellij.lexer.MergingLexerAdapter;
@@ -34,12 +32,7 @@ public class CSharpDocLexer extends MergingLexerAdapter
 
 	public CSharpDocLexer()
 	{
-		this(false);
-	}
-
-	public CSharpDocLexer(final boolean conditionalCommentsSupport)
-	{
-		this(new _CSharpDocLexer(new __CSharpDocLexer((Reader) null), conditionalCommentsSupport));
+		this(new _CSharpDocLexer());
 	}
 
 	public CSharpDocLexer(Lexer baseLexer)

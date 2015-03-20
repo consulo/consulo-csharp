@@ -2,30 +2,12 @@
 package org.mustbe.consulo.csharp.lang.doc.lexer;
 
 import com.intellij.psi.tree.IElementType;
-import com.intellij.lexer.*;
+import com.intellij.lexer.LexerBase;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTokenType;
 
 %%
 
 %{
-  private IElementType elTokenType = CSharpDocTokenType.XML_DATA_CHARACTERS;
-  private IElementType elTokenType2 = CSharpDocTokenType.XML_ATTRIBUTE_VALUE_TOKEN;
-  private IElementType javaEmbeddedTokenType = CSharpDocTokenType.XML_ATTRIBUTE_VALUE_TOKEN;
-  private boolean myConditionalCommentsSupport;
-
-  public void setConditionalCommentsSupport(final boolean b) {
-    myConditionalCommentsSupport = b;
-  }
-
-  public void setElTypes(IElementType _elTokenType,IElementType _elTokenType2) {
-    elTokenType = _elTokenType;
-    elTokenType2 = _elTokenType2;
-  }
-
-  public void setJavaEmbeddedType(IElementType _tokenType) {
-    javaEmbeddedTokenType = _tokenType;
-  }
-
   private int myPrevState = YYINITIAL;
 
   public int yyprevstate() {
@@ -45,9 +27,8 @@ import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTokenType;
 
 %unicode
 %class __CSharpDocLexer
-%public
-%implements FlexLexer
-%function advance
+%extends LexerBase
+%function advanceImpl
 %type IElementType
 %eof{  return;
 %eof}
@@ -68,38 +49,22 @@ DIGIT=[0-9]
 WS=[\ \n\r\t\f]
 S={WS}+
 
-EL_EMBEDMENT_START="${" | "#{"
 NAME=({ALPHA}|"_")({ALPHA}|{DIGIT}|"_"|"."|"-")*(":"({ALPHA}|"_")?({ALPHA}|{DIGIT}|"_"|"."|"-")*)?
 
 END_COMMENT="-->"
-CONDITIONAL_COMMENT_CONDITION=({ALPHA})({ALPHA}|{S}|{DIGIT}|"."|"("|")"|"|"|"!"|"&")*
 
 %%
 
 "<!--" { yybegin(COMMENT); return CSharpDocTokenType.XML_COMMENT_START; }
-<COMMENT> "[" { if (myConditionalCommentsSupport) {
-    yybegin(C_COMMENT_START);
-    return CSharpDocTokenType.XML_CONDITIONAL_COMMENT_START;
-  } else return CSharpDocTokenType.XML_COMMENT_CHARACTERS; }
-<COMMENT> "<![" { if (myConditionalCommentsSupport) {
-    yybegin(C_COMMENT_END);
-    return CSharpDocTokenType.XML_CONDITIONAL_COMMENT_END_START;
-  } else return CSharpDocTokenType.XML_COMMENT_CHARACTERS; }
+<COMMENT> "[" { return CSharpDocTokenType.XML_COMMENT_CHARACTERS; }
+<COMMENT> "<![" { return CSharpDocTokenType.XML_COMMENT_CHARACTERS; }
 <COMMENT> {END_COMMENT} { yybegin(YYINITIAL); return CSharpDocTokenType.XML_COMMENT_END; }
 <COMMENT> [^\-]|(-[^\-]) { return CSharpDocTokenType.XML_COMMENT_CHARACTERS; }
 <COMMENT> [^] { return CSharpDocTokenType.XML_BAD_CHARACTER; }
 
-<C_COMMENT_START,C_COMMENT_END> {CONDITIONAL_COMMENT_CONDITION} { return CSharpDocTokenType.XML_COMMENT_CHARACTERS; }
 <C_COMMENT_START> [^] { yybegin(COMMENT); return CSharpDocTokenType.XML_COMMENT_CHARACTERS; }
-<C_COMMENT_START> "]>" { yybegin(COMMENT); return CSharpDocTokenType.XML_CONDITIONAL_COMMENT_START_END; }
 <C_COMMENT_START,C_COMMENT_END> {END_COMMENT} { yybegin(YYINITIAL); return CSharpDocTokenType.XML_COMMENT_END; }
-<C_COMMENT_END> "]" { yybegin(COMMENT); return CSharpDocTokenType.XML_CONDITIONAL_COMMENT_END; }
 <C_COMMENT_END> [^] { yybegin(COMMENT); return CSharpDocTokenType.XML_COMMENT_CHARACTERS; }
-
-
-<YYINITIAL> {EL_EMBEDMENT_START} [^<\}]* "}" {
-  return elTokenType;
-}
 
 <YYINITIAL> "<" { yybegin(TAG); return CSharpDocTokenType.XML_START_TAG_START; }
 <TAG> {NAME} { yybegin(ATTR_LIST); pushState(TAG); return CSharpDocTokenType.XML_NAME; }
@@ -119,16 +84,12 @@ CONDITIONAL_COMMENT_CONDITION=({ALPHA})({ALPHA}|{S}|{DIGIT}|"."|"("|")"|"|"|"!"|
 <ATTR_VALUE_DQ>{
   "\"" { yybegin(ATTR_LIST); return CSharpDocTokenType.XML_ATTRIBUTE_VALUE_END_DELIMITER;}
   "&" { return CSharpDocTokenType.XML_BAD_CHARACTER; }
-  {EL_EMBEDMENT_START} [^\}\"]* "}" { return elTokenType2; }
-  "%=" [^%\"]* "%" { return javaEmbeddedTokenType; }
   [^] { return CSharpDocTokenType.XML_ATTRIBUTE_VALUE_TOKEN;}
 }
 
 <ATTR_VALUE_SQ>{
   "&" { return CSharpDocTokenType.XML_BAD_CHARACTER; }
   "'" { yybegin(ATTR_LIST); return CSharpDocTokenType.XML_ATTRIBUTE_VALUE_END_DELIMITER;}
-  {EL_EMBEDMENT_START} [^\}\']* "}" { return elTokenType2; }
-  "%=" [^%\']* "%" { return javaEmbeddedTokenType; }
   [^] { return CSharpDocTokenType.XML_ATTRIBUTE_VALUE_TOKEN;}
 }
 
@@ -140,4 +101,5 @@ CONDITIONAL_COMMENT_CONDITION=({ALPHA})({ALPHA}|{S}|{DIGIT}|"."|"("|")"|"|"|"!"|
 [^] { if(yystate() == YYINITIAL){
         return CSharpDocTokenType.XML_BAD_CHARACTER;
       }
-      else yybegin(popState()); yypushback(yylength());}
+      else yybegin(popState()); yypushback(yylength());
+      }

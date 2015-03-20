@@ -47,10 +47,7 @@ public class CSharpDocSyntaxHighlighter extends SyntaxHighlighterBase
 		keys1.put(CSharpDocTokenType.XML_COMMENT_START, CSharpDocHighlightKey.DOC_COMMENT);
 		keys1.put(CSharpDocTokenType.XML_COMMENT_END, CSharpDocHighlightKey.DOC_COMMENT);
 		keys1.put(CSharpDocTokenType.XML_COMMENT_CHARACTERS, CSharpDocHighlightKey.DOC_COMMENT);
-		keys1.put(CSharpDocTokenType.XML_CONDITIONAL_COMMENT_END, CSharpDocHighlightKey.DOC_COMMENT);
-		keys1.put(CSharpDocTokenType.XML_CONDITIONAL_COMMENT_END_START, CSharpDocHighlightKey.DOC_COMMENT);
-		keys1.put(CSharpDocTokenType.XML_CONDITIONAL_COMMENT_START, CSharpDocHighlightKey.DOC_COMMENT);
-		keys1.put(CSharpDocTokenType.XML_CONDITIONAL_COMMENT_START_END, CSharpDocHighlightKey.DOC_COMMENT);
+
 
 		keys1.put(CSharpDocTokenType.XML_START_TAG_START, CSharpDocHighlightKey.DOC_COMMENT_TAG);
 		keys1.put(CSharpDocTokenType.XML_END_TAG_START, CSharpDocHighlightKey.DOC_COMMENT_TAG);
