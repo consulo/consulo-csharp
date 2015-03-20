@@ -16,7 +16,6 @@
 
 package org.mustbe.consulo.csharp.lang.lexer;
 
-import java.io.Reader;
 import java.util.Collections;
 import java.util.List;
 
@@ -150,7 +149,7 @@ public class CSharpLexer extends MergingLexerAdapterBase
 
 	public CSharpLexer(List<TextRange> ranges)
 	{
-		super(new FlexAdapter(new _CSharpLexer((Reader) null)));
+		super(new FlexAdapter(new _CSharpLexer()));
 		myMergeFunction = new MyMergeFunction(ranges);
 	}
 
