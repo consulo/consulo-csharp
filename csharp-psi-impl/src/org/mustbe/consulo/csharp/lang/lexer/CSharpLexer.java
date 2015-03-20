@@ -23,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
-import com.intellij.lexer.FlexAdapter;
 import com.intellij.lexer.Lexer;
 import com.intellij.lexer.MergeFunction;
 import com.intellij.lexer.MergingLexerAdapterBase;
@@ -149,7 +148,7 @@ public class CSharpLexer extends MergingLexerAdapterBase
 
 	public CSharpLexer(List<TextRange> ranges)
 	{
-		super(new FlexAdapter(new _CSharpLexer()));
+		super(new _CSharpLexer());
 		myMergeFunction = new MyMergeFunction(ranges);
 	}
 
