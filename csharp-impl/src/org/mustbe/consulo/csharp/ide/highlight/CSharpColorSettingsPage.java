@@ -22,6 +22,7 @@ import java.util.Map;
 
 import javax.swing.Icon;
 
+import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.doc.ide.highlight.CSharpDocHighlightKey;
@@ -110,11 +111,12 @@ public class CSharpColorSettingsPage implements ColorSettingsPage, DisplayPriori
 
 	@NotNull
 	@Override
+	@LazyInstance
 	public String getDemoText()
 	{
 		try
 		{
-			return FileUtil.loadTextAndClose(getClass().getResourceAsStream("/colorSettingsPage/C#.txt"));
+			return FileUtil.loadTextAndClose(getClass().getResourceAsStream("/colorSettingsPage/C#.txt"), true);
 		}
 		catch(IOException e)
 		{
