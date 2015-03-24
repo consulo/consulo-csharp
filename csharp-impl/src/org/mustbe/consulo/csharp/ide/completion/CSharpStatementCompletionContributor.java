@@ -444,7 +444,8 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			{
 				if(CSharpModuleUtil.findLanguageVersion(parameters.getPosition()).isAtLeast(CSharpLanguageVersion._6_0))
 				{
-					CSharpCompletionUtil.elementToLookup(result, CSharpSoftTokens.WHEN_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
+					CSharpCompletionUtil.elementToLookup(result, CSharpSoftTokens.WHEN_KEYWORD, new NotNullPairFunction<LookupElementBuilder,
+							IElementType, LookupElement>()
 
 					{
 						@NotNull
