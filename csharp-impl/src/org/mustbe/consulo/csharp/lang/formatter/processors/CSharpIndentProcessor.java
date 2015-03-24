@@ -137,6 +137,10 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 		{
 			return Indent.getNoneIndent();
 		}
+		else if(elementType == CSharpElements.TRY_STATEMENT)
+		{
+			return Indent.getNoneIndent();
+		}
 		return Indent.getNormalIndent();
 	}
 }
