@@ -30,6 +30,8 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.UsefulPsiTreeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.*;
+import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -259,7 +261,8 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 						return t;
 					}
 				}, null);
-				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.THROW_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.THROW_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType,
+						LookupElement>()
 
 				{
 					@NotNull
@@ -429,6 +432,29 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 				else if(maybeTryStatement instanceof CSharpIfStatementImpl)
 				{
 					CSharpCompletionUtil.elementToLookup(result, CSharpTokens.ELSE_KEYWORD, null, null);
+				}
+			}
+		});
+
+		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.RPAR).withParent(CSharpCatchStatementImpl
+				.class)), new CompletionProvider<CompletionParameters>()
+		{
+			@Override
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			{
+				if(CSharpModuleUtil.findLanguageVersion(parameters.getPosition()).isAtLeast(CSharpLanguageVersion._6_0))
+				{
+					CSharpCompletionUtil.elementToLookup(result, CSharpSoftTokens.WHEN_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
+
+					{
+						@NotNull
+						@Override
+						public LookupElement fun(LookupElementBuilder t, IElementType v)
+						{
+							t = t.withInsertHandler(buildInsertHandler(v));
+							return t;
+						}
+					}, null);
 				}
 			}
 		});
