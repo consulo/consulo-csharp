@@ -50,7 +50,10 @@ public class TypeDeclarationParsing extends SharedParsingHelpers
 		{
 			PsiBuilder.Marker mark = builder.mark();
 			builder.advanceLexer();  // colon
-			parseTypeList(builder, STUB_SUPPORT);
+			if(parseTypeList(builder, STUB_SUPPORT))
+			{
+				builder.error("Expected type");
+			}
 			mark.done(EXTENDS_LIST);
 		}
 
