@@ -19,8 +19,10 @@ package org.mustbe.consulo.csharp.lang.parser.decl;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import com.intellij.lang.PsiBuilder;
+import com.intellij.psi.tree.TokenSet;
 
 /**
  * @author VISTALL
@@ -28,6 +30,8 @@ import com.intellij.lang.PsiBuilder;
  */
 public class TypeDeclarationParsing extends SharedParsingHelpers
 {
+	private static final TokenSet WHERE_SET = TokenSet.create(CSharpSoftTokens.WHERE_KEYWORD);
+
 	public static void parse(CSharpBuilderWrapper builder, PsiBuilder.Marker marker)
 	{
 		boolean isEnum = builder.getTokenType() == ENUM_KEYWORD;
@@ -36,7 +40,11 @@ public class TypeDeclarationParsing extends SharedParsingHelpers
 
 		expect(builder, IDENTIFIER, "Name expected");
 
+		reportErrorUntil(builder, "Expected ':', '<', '{' or 'where'", TokenSet.create(COLON, LT, LBRACE), WHERE_SET);
+
 		GenericParameterParsing.parseList(builder);
+
+		reportErrorUntil(builder, "Expected ':', '{' or 'where'", TokenSet.create(COLON, LBRACE), WHERE_SET);
 
 		if(builder.getTokenType() == COLON)
 		{
@@ -46,7 +54,11 @@ public class TypeDeclarationParsing extends SharedParsingHelpers
 			mark.done(EXTENDS_LIST);
 		}
 
+		reportErrorUntil(builder, "Expected '{' or 'where'", TokenSet.create(LBRACE), WHERE_SET);
+
 		GenericParameterParsing.parseGenericConstraintList(builder);
+
+		reportErrorUntil(builder, "Expected '{'", TokenSet.create(LBRACE), TokenSet.EMPTY);
 
 		if(expect(builder, LBRACE, "'{' expected"))
 		{

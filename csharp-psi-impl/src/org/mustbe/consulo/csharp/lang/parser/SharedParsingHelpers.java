@@ -85,6 +85,33 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		public PsiBuilder.Marker marker;
 	}
 
+	protected static void reportErrorUntil(CSharpBuilderWrapper builder, String error, TokenSet originalSet, TokenSet softSet)
+	{
+		while(!builder.eof())
+		{
+			if(originalSet.contains(builder.getTokenType()))
+			{
+				break;
+			}
+
+			if(builder.getTokenType() == IDENTIFIER)
+			{
+				builder.enableSoftKeywords(softSet);
+				IElementType tokenType = builder.getTokenType();
+				builder.disableSoftKeywords(softSet);
+				if(softSet.contains(tokenType))
+				{
+					// remap
+					builder.remapBackIfSoft();
+					break;
+				}
+			}
+			PsiBuilder.Marker mark = builder.mark();
+			builder.advanceLexer();
+			mark.error(error);
+		}
+	}
+
 	protected static void done(PsiBuilder.Marker marker, IElementType elementType)
 	{
 		marker.done(elementType);
