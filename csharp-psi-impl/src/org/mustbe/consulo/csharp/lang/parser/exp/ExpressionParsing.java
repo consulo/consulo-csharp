@@ -1396,27 +1396,48 @@ public class ExpressionParsing extends SharedParsingHelpers
 				break;
 			}
 
+			boolean enteredValue = false;
 			if(builderWrapper.getTokenType() == LBRACE)
 			{
 				parseArrayInitializerCompositeValue(builderWrapper);
+				enteredValue = true;
 			}
 			else
 			{
 				PsiBuilder.Marker temp = builderWrapper.mark();
-				if(parse(builderWrapper) == null)
+				if(parse(builderWrapper) != null)
 				{
-					builderWrapper.error("Expression expected");
+					enteredValue = true;
+					temp.done(ARRAY_INITIALIZER_SINGLE_VALUE);
 				}
-				temp.done(ARRAY_INITIALIZER_SINGLE_VALUE);
+				else
+				{
+					// for example we entered keyword, it cant be parsed as expression
+					if(builderWrapper.getTokenType() != COMMA && builderWrapper.getTokenType() != RBRACE)
+					{
+						// we entered value
+						enteredValue = true;
+						builderWrapper.advanceLexer();
+						temp.error("Expression expected");
+					}
+					else
+					{
+						temp.drop();
+					}
+				}
 			}
 
 			if(builderWrapper.getTokenType() == COMMA)
 			{
+				if(!enteredValue)
+				{
+					builderWrapper.error("Expression expected");
+				}
 				builderWrapper.advanceLexer();
 			}
-			else
+			else if(builderWrapper.getTokenType() != RBRACE)
 			{
-				break;
+				builderWrapper.error("Comma expected");
 			}
 		}
 
