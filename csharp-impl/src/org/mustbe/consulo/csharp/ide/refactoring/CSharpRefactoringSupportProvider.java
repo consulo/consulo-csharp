@@ -27,6 +27,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.lang.refactoring.RefactoringSupportProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.PsiSearchHelper;
 import com.intellij.psi.search.SearchScope;
@@ -69,6 +70,10 @@ public class CSharpRefactoringSupportProvider extends RefactoringSupportProvider
 	@Override
 	public boolean isMemberInplaceRenameAvailable(PsiElement element, PsiElement context)
 	{
+		if(element instanceof DotNetParameter && element instanceof StubBasedPsiElement)
+		{
+			return true;
+		}
 		return element instanceof DotNetQualifiedElement && !(element instanceof DotNetNamespaceAsElement);
 	}
 

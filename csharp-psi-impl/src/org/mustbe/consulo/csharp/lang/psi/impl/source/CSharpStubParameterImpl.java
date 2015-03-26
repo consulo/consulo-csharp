@@ -37,8 +37,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.LocalSearchScope;
-import com.intellij.psi.search.SearchScope;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 
@@ -152,18 +150,6 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 	{
 		CSharpRefactoringUtil.replaceNameIdentifier(this, s);
 		return this;
-	}
-
-	@NotNull
-	@Override
-	public SearchScope getUseScope()
-	{
-		PsiElement parent = getParent();
-		if(parent instanceof DotNetParameterList)
-		{
-			return new LocalSearchScope(parent.getParent());
-		}
-		return super.getUseScope();
 	}
 
 	@Nullable
