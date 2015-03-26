@@ -229,6 +229,12 @@ public interface CSharpElements
 	IElementType IMPLICIT_ARRAY_INITIALIZATION_EXPRESSION = new ElementTypeAsPsiFactory("IMPLICIT_ARRAY_INITIALIZATION_EXPRESSION",
 			CSharpLanguage.INSTANCE, CSharpImplicitArrayInitializationExpressionImpl.class);
 
+	IElementType DICTIONARY_INITIALIZER_LIST = new ElementTypeAsPsiFactory("DICTIONARY_INITIALIZER_LIST", CSharpLanguage.INSTANCE,
+			CSharpDictionaryInitializerListImpl.class);
+
+	IElementType DICTIONARY_INITIALIZER = new ElementTypeAsPsiFactory("DICTIONARY_INITIALIZER", CSharpLanguage.INSTANCE,
+			CSharpDictionaryInitializerImpl.class);
+
 	IElementType CALL_ARGUMENT_LIST = new ElementTypeAsPsiFactory("CALL_ARGUMENT_LIST", CSharpLanguage.INSTANCE, CSharpCallArgumentListImpl.class);
 
 	IElementType CALL_ARGUMENT = new ElementTypeAsPsiFactory("CALL_ARGUMENT", CSharpLanguage.INSTANCE, CSharpCallArgumentImpl.class);

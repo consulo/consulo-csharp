@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAwaitExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpCatchStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDictionaryInitializerImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFinallyStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpGenericParameterListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
@@ -288,6 +289,18 @@ public class CS1644 extends CompilerCheck<PsiElement>
 					{
 						return ((CSharpConstantExpressionImpl) element).getLiteralType() == CSharpTokensImpl.INTERPOLATION_STRING_LITERAL ? element
 								: null;
+					}
+					return null;
+				}
+			}));
+			add(new Feature("dictionary initializer", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
+			{
+				@Override
+				public PsiElement fun(PsiElement element)
+				{
+					if(element instanceof CSharpDictionaryInitializerImpl)
+					{
+						return element;
 					}
 					return null;
 				}

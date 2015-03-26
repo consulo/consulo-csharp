@@ -614,4 +614,14 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	{
 		visitElement(expression);
 	}
+
+	public void visitDictionaryInitializer(CSharpDictionaryInitializerImpl initializer)
+	{
+		visitElement(initializer);
+	}
+
+	public void visitDictionaryInitializerList(CSharpDictionaryInitializerListImpl list)
+	{
+		visitElement(list);
+	}
 }
