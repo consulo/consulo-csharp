@@ -190,8 +190,9 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 				{
 					kind = CSharpReferenceExpression.ResolveToKind.TYPE_LIKE;
 				}
-				ResolveResult[] psiElements = CSharpReferenceExpressionImplUtil.collectResults(new CSharpResolveOptions(kind, null, expression,
-						null, true, true));
+				CSharpCallArgumentListOwner callArgumentListOwner = CSharpReferenceExpressionImplUtil.findCallArgumentListOwner(kind, expression);
+				ResolveResult[] psiElements = CSharpReferenceExpressionImplUtil.collectResults(new CSharpResolveOptions(kind, null,
+						expression, callArgumentListOwner, true, true));
 				List<LookupElement> lookupElements = CSharpLookupElementBuilder.buildToLookupElements(psiElements);
 
 				prioritizeLookupItems(expression, kind, lookupElements);
@@ -612,6 +613,10 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 
 	private static boolean needRemapToAnyResolving(CSharpReferenceExpression.ResolveToKind kind, CSharpReferenceExpression expression)
 	{
+		if(kind == CSharpReferenceExpression.ResolveToKind.PARAMETER || kind == CSharpReferenceExpression.ResolveToKind.PARAMETER_FROM_PARENT)
+		{
+			return false;
+		}
 		if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE)
 		{
 			PsiElement parent = expression.getParent();

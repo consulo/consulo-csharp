@@ -121,6 +121,23 @@ public class CSharpReferenceExpressionImplUtil
 		}
 	}
 
+	@Nullable
+	public static CSharpCallArgumentListOwner findCallArgumentListOwner(ResolveToKind kind, CSharpReferenceExpression referenceExpression)
+	{
+		PsiElement parent = referenceExpression.getParent();
+
+		CSharpCallArgumentListOwner p = null;
+		if(CSharpReferenceExpressionImplUtil.isConstructorKind(kind) || kind == ResolveToKind.PARAMETER)
+		{
+			p = PsiTreeUtil.getParentOfType(referenceExpression, CSharpCallArgumentListOwner.class);
+		}
+		else if(parent instanceof CSharpCallArgumentListOwner)
+		{
+			p = (CSharpCallArgumentListOwner) parent;
+		}
+		return p;
+	}
+
 	@NotNull
 	public static DotNetTypeRef toTypeRef(@NotNull CSharpReferenceExpressionEx referenceExpressionEx, boolean resolveFromParent)
 	{
@@ -842,19 +859,8 @@ public class CSharpReferenceExpressionImplUtil
 			@NotNull PsiElement qualifierElement)
 	{
 		ResolveToKind kind = referenceExpressionEx.kind();
-		CSharpCallArgumentListOwner argumentListOwner = null;
-		PsiElement parent = referenceExpressionEx.getParent();
-
-		if(CSharpReferenceExpressionImplUtil.isConstructorKind(kind) || kind == ResolveToKind.PARAMETER)
-		{
-			argumentListOwner = PsiTreeUtil.getParentOfType(referenceExpressionEx, CSharpCallArgumentListOwner.class);
-		}
-		else if(parent instanceof CSharpCallArgumentListOwner)
-		{
-			argumentListOwner = (CSharpCallArgumentListOwner) parent;
-		}
-
-		return buildSelectorAndMultiResolve(kind, argumentListOwner, referenceExpressionEx, qualifierElement, false);
+		return buildSelectorAndMultiResolve(kind, findCallArgumentListOwner(kind, referenceExpressionEx), referenceExpressionEx, qualifierElement,
+				false);
 	}
 
 	public static ResolveResult[] processAnyMember(@NotNull CSharpResolveOptions options,

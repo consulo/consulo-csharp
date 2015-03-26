@@ -21,7 +21,6 @@ import java.util.List;
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
@@ -176,14 +175,8 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	@NotNull
 	public ResolveResult[] multiResolveImpl(ResolveToKind kind, boolean resolveFromParent)
 	{
-		CSharpCallArgumentListOwner p = null;
-		PsiElement parent = getParent();
-
-		if(parent instanceof CSharpCallArgumentListOwner)
-		{
-			p = (CSharpCallArgumentListOwner) parent;
-		}
-		return CSharpReferenceExpressionImplUtil.multiResolveImpl(kind, p, this, resolveFromParent);
+		return CSharpReferenceExpressionImplUtil.multiResolveImpl(kind, CSharpReferenceExpressionImplUtil.findCallArgumentListOwner(kind, this),
+				this, resolveFromParent);
 	}
 
 	@NotNull
