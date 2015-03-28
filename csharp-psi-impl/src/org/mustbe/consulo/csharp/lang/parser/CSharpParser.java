@@ -35,21 +35,12 @@ public class CSharpParser extends SharedParsingHelpers implements PsiParser
 	@Override
 	public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
 	{
-		builder.setDebugMode(true);
+		//builder.setDebugMode(true);
 		val builderWrapper = new CSharpBuilderWrapper(builder, languageVersion);
 
 		val marker = builderWrapper.mark();
 
-
-		while(!builder.eof())
-		{
-			if(!DeclarationParsing.parse(builderWrapper, false))
-			{
-				PsiBuilder.Marker mark = builder.mark();
-				builder.advanceLexer();
-				mark.error("Unexpected token");
-			}
-		}
+		DeclarationParsing.parseAll(builderWrapper, true, false);
 
 		marker.done(elementType);
 		return builder.getTreeBuilt();

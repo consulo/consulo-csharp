@@ -20,6 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.UsingStatementParsing;
+import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.Pair;
@@ -39,11 +41,29 @@ public class DeclarationParsing extends SharedParsingHelpers
 
 	private static final TokenSet NAME_TOKENS = TokenSet.create(THIS_KEYWORD, IDENTIFIER);
 
-	public static boolean parse(@NotNull CSharpBuilderWrapper builder, boolean inner)
+	public static void parseAll(@NotNull CSharpBuilderWrapper builder, boolean root, boolean isEnum)
 	{
-		if(inner && builder.getTokenType() == RBRACE)
+		while(!builder.eof())
 		{
-			return false;
+			if(!root && builder.getTokenType() == RBRACE)
+			{
+				return;
+			}
+
+			if(!parse(builder, root, isEnum))
+			{
+				PsiBuilder.Marker mark = builder.mark();
+				builder.advanceLexer();
+				mark.error("Unexpected token");
+			}
+		}
+	}
+
+	private static boolean parse(@NotNull CSharpBuilderWrapper builder, boolean root, boolean isEnum)
+	{
+		if(isEnum)
+		{
+			return parseEnumConstant(builder);
 		}
 
 		PsiBuilder.Marker marker = builder.mark();
@@ -112,7 +132,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 				{
 					if(!modifierListPair.getSecond())
 					{
-						if(!inner)
+						if(root)
 						{
 							marker.done(DUMMY_DECLARATION);
 							return true;
@@ -167,6 +187,66 @@ public class DeclarationParsing extends SharedParsingHelpers
 					parseAfterName(builder, marker, prevToken);
 				}
 			}
+		}
+		return true;
+	}
+
+	private static boolean parseEnumConstant(CSharpBuilderWrapper builder)
+	{
+		PsiBuilder.Marker mark = builder.mark();
+
+		boolean nameExpected = false;
+		if(builder.getTokenType() == LBRACKET)
+		{
+			PsiBuilder.Marker modMark = builder.mark();
+			parseAttributeList(builder, STUB_SUPPORT);
+			modMark.done(CSharpStubElements.MODIFIER_LIST);
+
+			nameExpected = true;
+		}
+
+		if(builder.getTokenType() == IDENTIFIER)
+		{
+			if(!nameExpected)
+			{
+				emptyElement(builder, CSharpStubElements.MODIFIER_LIST);
+			}
+
+			builder.advanceLexer();
+
+			if(builder.getTokenType() == EQ)
+			{
+				builder.advanceLexer();
+
+				if(ExpressionParsing.parse(builder) == null)
+				{
+					builder.error("Expression expected");
+				}
+			}
+		}
+		else
+		{
+			if(builder.getTokenType() == COMMA || builder.getTokenType() == RBRACE)
+			{
+				if(nameExpected)
+				{
+					builder.error("Name expected");
+				}
+
+				done(mark, ENUM_CONSTANT_DECLARATION);
+				return false;
+			}
+		}
+
+		done(mark, ENUM_CONSTANT_DECLARATION);
+
+		if(builder.getTokenType() == COMMA)
+		{
+			builder.advanceLexer();
+		}
+		else
+		{
+			return false;
 		}
 		return true;
 	}
