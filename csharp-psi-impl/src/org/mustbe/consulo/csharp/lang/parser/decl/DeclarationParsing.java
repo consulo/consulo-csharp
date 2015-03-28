@@ -43,29 +43,56 @@ public class DeclarationParsing extends SharedParsingHelpers
 
 	public static void parseAll(@NotNull CSharpBuilderWrapper builder, boolean root, boolean isEnum)
 	{
-		while(!builder.eof())
+		if(isEnum)
 		{
-			if(!root && builder.getTokenType() == RBRACE)
+			IElementType prevToken;
+			while(!builder.eof())
 			{
-				return;
-			}
+				prevToken = builder.getTokenType();
 
-			if(!parse(builder, root, isEnum))
+				parseEnumConstant(builder);
+
+				if(builder.getTokenType() == COMMA)
+				{
+					if(prevToken == COMMA)
+					{
+						builder.error("Name expected");
+					}
+					builder.advanceLexer();
+				}
+				else if(builder.getTokenType() == RBRACE)
+				{
+					break;
+				}
+				else
+				{
+					PsiBuilder.Marker errorMarker = builder.mark();
+					builder.advanceLexer();
+					errorMarker.error("Expected comma");
+				}
+			}
+		}
+		else
+		{
+			while(!builder.eof())
 			{
-				PsiBuilder.Marker mark = builder.mark();
-				builder.advanceLexer();
-				mark.error("Unexpected token");
+				if(!root && builder.getTokenType() == RBRACE)
+				{
+					return;
+				}
+
+				if(!parse(builder, root))
+				{
+					PsiBuilder.Marker mark = builder.mark();
+					builder.advanceLexer();
+					mark.error("Unexpected token");
+				}
 			}
 		}
 	}
 
-	private static boolean parse(@NotNull CSharpBuilderWrapper builder, boolean root, boolean isEnum)
+	private static boolean parse(@NotNull CSharpBuilderWrapper builder, boolean root)
 	{
-		if(isEnum)
-		{
-			return parseEnumConstant(builder);
-		}
-
 		PsiBuilder.Marker marker = builder.mark();
 
 		Pair<PsiBuilder.Marker, Boolean> modifierListPair = parseWithSoftElements(new NotNullFunction<CSharpBuilderWrapper, Pair<PsiBuilder.Marker,
@@ -193,6 +220,10 @@ public class DeclarationParsing extends SharedParsingHelpers
 
 	private static boolean parseEnumConstant(CSharpBuilderWrapper builder)
 	{
+		if(builder.getTokenType() == RBRACE)
+		{
+			return true;
+		}
 		PsiBuilder.Marker mark = builder.mark();
 
 		boolean nameExpected = false;
@@ -239,11 +270,6 @@ public class DeclarationParsing extends SharedParsingHelpers
 		}
 
 		done(mark, ENUM_CONSTANT_DECLARATION);
-
-		if(builder.getTokenType() == COMMA)
-		{
-			builder.advanceLexer();
-		}
 		return true;
 	}
 
