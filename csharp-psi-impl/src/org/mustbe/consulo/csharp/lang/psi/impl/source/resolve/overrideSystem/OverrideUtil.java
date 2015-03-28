@@ -34,6 +34,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.psi.search.searches.ClassInheritorsSearch;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.ResolveState;
@@ -334,6 +335,13 @@ public class OverrideUtil
 		List<PsiElement> mergedElements = CSharpResolveUtil.mergeGroupsToIterable(results);
 		PsiElement[] psiElements = OverrideUtil.filterOverrideElements(element, mergedElements, OverrideProcessor.ALWAYS_TRUE);
 
-		return CSharpResolveUtil.mergeGroupsToIterable(psiElements);
+		return ContainerUtil.filter(CSharpResolveUtil.mergeGroupsToIterable(psiElements), new Condition<PsiElement>()
+		{
+			@Override
+			public boolean value(PsiElement element)
+			{
+				return !(element instanceof DotNetTypeDeclaration);
+			}
+		});
 	}
 }
