@@ -660,7 +660,9 @@ public class StatementParsing extends SharedParsingHelpers
 					PsiBuilder.Marker anotherMarker = parse(builder);
 					if(anotherMarker == null)
 					{
-						break;
+						PsiBuilder.Marker mark = builder.mark();
+						builder.advanceLexer();
+						mark.error("Unexpected token");
 					}
 				}
 			}
