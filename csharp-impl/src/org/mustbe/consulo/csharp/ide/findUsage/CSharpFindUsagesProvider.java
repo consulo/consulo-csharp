@@ -84,6 +84,10 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		{
 			return ((CSharpConstructorDeclaration) element).isDeConstructor() ? "deconstructor" : "constructor";
 		}
+		else if(element instanceof CSharpArrayMethodDeclaration)
+		{
+			return "index method";
+		}
 		else if(element instanceof CSharpMethodDeclaration)
 		{
 			return "method";
