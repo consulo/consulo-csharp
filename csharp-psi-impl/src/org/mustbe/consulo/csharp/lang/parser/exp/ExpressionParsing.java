@@ -614,9 +614,11 @@ public class ExpressionParsing extends SharedParsingHelpers
 			{
 				if(commaEntered)
 				{
+					PsiBuilder.Marker mark = builder.mark();
 					emptyElement(builder, ERROR_EXPRESSION);
 					// call(test,)
 					builder.error("Expression expected");
+					mark.done(CALL_ARGUMENT);
 				}
 				break;
 			}
