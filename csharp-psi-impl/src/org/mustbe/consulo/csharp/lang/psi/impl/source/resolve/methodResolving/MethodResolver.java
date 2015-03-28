@@ -82,6 +82,8 @@ public class MethodResolver
 				name = ((CSharpNamedCallArgument) argument).getName();
 
 				list.add(new NNamedCallArgument(expressionTypeRef, argument, context.getParameterByName(name), name));
+
+				i++;
 			}
 			else
 			{
