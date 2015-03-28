@@ -27,6 +27,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDictionaryInitializerImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -44,6 +45,7 @@ import com.intellij.lang.parameterInfo.UpdateParameterInfoContext;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
@@ -210,7 +212,12 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 		CSharpCallArgumentList callArgumentList = PsiTreeUtil.getParentOfType(place, CSharpCallArgumentList.class, false);
 		if(callArgumentList != null)
 		{
-			parameterIndex = ParameterInfoUtils.getCurrentParameterIndex(callArgumentList.getNode(), context.getOffset(), CSharpTokens.COMMA);
+			IElementType delimiter = CSharpTokens.COMMA;
+			if(callArgumentList instanceof CSharpDictionaryInitializerImpl)
+			{
+				delimiter = CSharpTokens.EQ;
+			}
+			parameterIndex = ParameterInfoUtils.getCurrentParameterIndex(callArgumentList.getNode(), context.getOffset(), delimiter);
 		}
 
 		context.setCurrentParameter(parameterIndex);
