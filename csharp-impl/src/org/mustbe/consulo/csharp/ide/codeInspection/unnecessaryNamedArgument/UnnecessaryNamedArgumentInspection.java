@@ -19,28 +19,24 @@ package org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryNamedArgument;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.ConvertNamedToSimpleArgumentFix;
+import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS1738;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import com.intellij.codeInspection.IntentionWrapper;
 import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.codeInspection.LocalQuickFixOnPsiElement;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
@@ -51,50 +47,6 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class UnnecessaryNamedArgumentInspection extends LocalInspectionTool
 {
-	private static class ConvertToSimpleArgument extends LocalQuickFixOnPsiElement
-	{
-		ConvertToSimpleArgument(@NotNull PsiElement element)
-		{
-			super(element);
-		}
-
-		@NotNull
-		@Override
-		public String getText()
-		{
-			return "Convert to simple argument";
-		}
-
-		@NotNull
-		@Override
-		public String getFamilyName()
-		{
-			return "C#";
-		}
-
-		@Override
-		public void invoke(@NotNull final Project project, @NotNull PsiFile psiFile, @NotNull final PsiElement element, @NotNull PsiElement element2)
-		{
-			new WriteCommandAction.Simple<Object>(project, psiFile)
-			{
-				@Override
-				protected void run() throws Throwable
-				{
-					DotNetExpression argumentExpression = ((CSharpNamedCallArgument) element).getArgumentExpression();
-
-					assert argumentExpression != null;
-
-					CSharpMethodCallExpressionImpl expression = (CSharpMethodCallExpressionImpl) CSharpFileFactory.createExpression(project,
-							"test(" + argumentExpression.getText() + ")");
-
-					CSharpCallArgument callArgument = expression.getCallArguments()[0];
-
-					element.replace(callArgument);
-				}
-			}.execute();
-		}
-	}
-
 	@NotNull
 	@Override
 	public PsiElementVisitor buildVisitor(@NotNull final ProblemsHolder holder, boolean isOnTheFly)
@@ -105,10 +57,11 @@ public class UnnecessaryNamedArgumentInspection extends LocalInspectionTool
 			public void visitNamedCallArgument(final CSharpNamedCallArgument argument)
 			{
 				DotNetExpression argumentExpression = argument.getArgumentExpression();
-				if(argumentExpression == null)
+				if(argumentExpression == null || CS1738.argumentIsInWrongPosition(argument))
 				{
 					return;
 				}
+
 				CSharpCallArgumentListOwner owner = PsiTreeUtil.getParentOfType(argument, CSharpCallArgumentListOwner.class);
 
 				assert owner != null;
@@ -151,7 +104,7 @@ public class UnnecessaryNamedArgumentInspection extends LocalInspectionTool
 				{
 					CSharpReferenceExpression argumentNameReference = argument.getArgumentNameReference();
 					holder.registerProblem(argumentNameReference, "Unnecessary argument name specific", ProblemHighlightType.LIKE_UNUSED_SYMBOL,
-							new ConvertToSimpleArgument(argument));
+							new IntentionWrapper(new ConvertNamedToSimpleArgumentFix(argument), owner.getContainingFile()));
 				}
 			}
 		};
