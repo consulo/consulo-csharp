@@ -16,7 +16,6 @@
 
 package org.mustbe.consulo.csharp.lang.parser.decl;
 
-import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import com.intellij.lang.PsiBuilder;
@@ -47,7 +46,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 		}
 		else
 		{
-			parseFieldOrLocalVariableAtNameWithDone(builder, marker, to, typeFlags, typeInfo, semicolonEat);
+			parseFieldOrLocalVariableAtNameWithDone(builder, marker, to, typeFlags, semicolonEat);
 		}
 	}
 
@@ -55,14 +54,13 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 			PsiBuilder.Marker marker,
 			IElementType to,
 			int typeFlags,
-			@NotNull TypeInfo typeInfo,
 			boolean semicolonEat)
 	{
 		if(builder.getTokenType() == IDENTIFIER)
 		{
 			builder.advanceLexer();
 
-			parseFieldAfterName(builder, marker, to, typeFlags, typeInfo, semicolonEat);
+			parseFieldAfterName(builder, marker, to, typeFlags, semicolonEat);
 			return true;
 		}
 		else
@@ -83,13 +81,12 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 			PsiBuilder.Marker marker,
 			IElementType to,
 			int typeFlags,
-			@NotNull TypeInfo typeInfo,
 			boolean semicolonEat)
 	{
 		if(builder.getTokenType() == EQ || builder.getTokenType() == DARROW)
 		{
 			builder.advanceLexer();
-			if(ExpressionParsing.parseVariableInitializer(builder, typeInfo) == null)
+			if(ExpressionParsing.parseVariableInitializer(builder) == null)
 			{
 				builder.error("Expression expected");
 			}
@@ -103,7 +100,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 
 			PsiBuilder.Marker newMarker = builder.mark();
 
-			parseFieldOrLocalVariableAtNameWithDone(builder, newMarker, to, typeFlags, typeInfo, semicolonEat);
+			parseFieldOrLocalVariableAtNameWithDone(builder, newMarker, to, typeFlags, semicolonEat);
 
 			return marker;
 		}
@@ -136,7 +133,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 		done(marker, ARRAY_METHOD_DECLARATION);
 	}
 
-	public static void parseFieldOrPropertyAfterName(CSharpBuilderWrapper builderWrapper, PsiBuilder.Marker marker, @NotNull TypeInfo typeInfo)
+	public static void parseFieldOrPropertyAfterName(CSharpBuilderWrapper builderWrapper, PsiBuilder.Marker marker)
 	{
 		if(builderWrapper.getTokenType() == LBRACE)
 		{
@@ -145,7 +142,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 			if(builderWrapper.getTokenType() == EQ)
 			{
 				builderWrapper.advanceLexer();
-				if(ExpressionParsing.parseVariableInitializer(builderWrapper, typeInfo) == null)
+				if(ExpressionParsing.parseVariableInitializer(builderWrapper) == null)
 				{
 					builderWrapper.error("Expression expected");
 				}
@@ -156,7 +153,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 		}
 		else
 		{
-			parseFieldAfterName(builderWrapper, marker, FIELD_DECLARATION, STUB_SUPPORT, typeInfo, true);
+			parseFieldAfterName(builderWrapper, marker, FIELD_DECLARATION, STUB_SUPPORT, true);
 		}
 	}
 }

@@ -68,7 +68,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 	private static final TokenSet THIS_OR_BASE = TokenSet.create(THIS_KEYWORD, BASE_KEYWORD);
 
 	@Nullable
-	public static PsiBuilder.Marker parseVariableInitializer(@NotNull CSharpBuilderWrapper builder, @NotNull TypeInfo typeInfo)
+	public static PsiBuilder.Marker parseVariableInitializer(@NotNull CSharpBuilderWrapper builder)
 	{
 		IElementType tokenType = builder.getTokenType();
 

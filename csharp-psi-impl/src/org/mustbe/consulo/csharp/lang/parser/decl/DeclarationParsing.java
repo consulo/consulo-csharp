@@ -136,9 +136,11 @@ public class DeclarationParsing extends SharedParsingHelpers
 					TypeInfo implementType = parseImplementType(builder);
 					if(implementType == null)
 					{
-						builder.error("Expected identifier");
-						done(marker, FIELD_DECLARATION);
-						return false;
+						builder.error("Name is expected");
+
+						// if we dont have name but we have lbracket - parse as index method
+						parseAfterName(builder, marker, builder.getTokenType() == LBRACKET ? THIS_KEYWORD : null);
+						return true;
 					}
 
 					IElementType prevToken = null;
@@ -162,22 +164,27 @@ public class DeclarationParsing extends SharedParsingHelpers
 						expect(builder, NAME_TOKENS, "Name is expected");
 					}
 
-					if(prevToken == THIS_KEYWORD)
-					{
-						FieldOrPropertyParsing.parseArrayAfterThis(builder, marker);
-					}
-					else if(builder.getTokenType() == LPAR || builder.getTokenType() == LT) // MODIFIER_LIST TYPE IDENTIFIER LPAR -> METHOD
-					{
-						MethodParsing.parseMethodStartAfterName(builder, marker, MethodParsing.Target.METHOD);
-					}
-					else
-					{
-						FieldOrPropertyParsing.parseFieldOrPropertyAfterName(builder, marker, typeInfo);
-					}
+					parseAfterName(builder, marker, prevToken);
 				}
 			}
 		}
 		return true;
+	}
+
+	private static void parseAfterName(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, IElementType prevToken)
+	{
+		if(prevToken == THIS_KEYWORD)
+		{
+			FieldOrPropertyParsing.parseArrayAfterThis(builder, marker);
+		}
+		else if(builder.getTokenType() == LPAR || builder.getTokenType() == LT) // MODIFIER_LIST TYPE IDENTIFIER LPAR -> METHOD
+		{
+			MethodParsing.parseMethodStartAfterName(builder, marker, MethodParsing.Target.METHOD);
+		}
+		else
+		{
+			FieldOrPropertyParsing.parseFieldOrPropertyAfterName(builder, marker);
+		}
 	}
 
 	private static TypeInfo parseImplementType(CSharpBuilderWrapper builder)
