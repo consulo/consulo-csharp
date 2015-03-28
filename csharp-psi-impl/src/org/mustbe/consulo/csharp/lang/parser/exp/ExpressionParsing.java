@@ -1346,26 +1346,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(builderWrapper.lookAhead(1) == LBRACKET)
 		{
-			PsiBuilder.Marker marker = null;
-			try
-			{
-				marker = builderWrapper.mark();
-				builderWrapper.advanceLexer(); // skip {
-				builderWrapper.advanceLexer(); // skip [
-				PsiBuilder.Marker expressionParser = parse(builderWrapper);
-				if(expressionParser != null)
-				{
-					if(builderWrapper.getTokenType() == RBRACKET && builderWrapper.lookAhead(1) == EQ)
-					{
-						return AfterNewParsingTarget.DICTIONARY_INITIALZER;
-					}
-				}
-			}
-			finally
-			{
-				assert marker != null;
-				marker.rollbackTo();
-			}
+			return AfterNewParsingTarget.DICTIONARY_INITIALZER;
 		}
 
 		if(builderWrapper.lookAhead(1) == IDENTIFIER && builderWrapper.lookAhead(2) == EQ)
