@@ -244,10 +244,6 @@ public class DeclarationParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 		}
-		else
-		{
-			return false;
-		}
 		return true;
 	}
 
