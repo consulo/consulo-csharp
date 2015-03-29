@@ -236,13 +236,6 @@ public class CSharpDocParsing
 				xmlText = terminateText(xmlText);
 				parseComment();
 			}
-			else if(tt == CSharpDocTokenType.XML_BAD_CHARACTER)
-			{
-				xmlText = startText(xmlText);
-				final PsiBuilder.Marker error = mark();
-				advance();
-				error.error("Unescaped \\\\& or nonterminated character/entity reference");
-			}
 			else if(tt instanceof CustomParsingType || tt instanceof ILazyParseableElementType)
 			{
 				xmlText = terminateText(xmlText);

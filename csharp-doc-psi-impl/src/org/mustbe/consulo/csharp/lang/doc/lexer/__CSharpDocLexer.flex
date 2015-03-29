@@ -83,20 +83,18 @@ END_COMMENT="-->"
 
 <ATTR_VALUE_DQ>{
   "\"" { yybegin(ATTR_LIST); return CSharpDocTokenType.XML_ATTRIBUTE_VALUE_END_DELIMITER;}
-  "&" { return CSharpDocTokenType.XML_BAD_CHARACTER; }
   [^] { return CSharpDocTokenType.XML_ATTRIBUTE_VALUE_TOKEN;}
 }
 
 <ATTR_VALUE_SQ>{
-  "&" { return CSharpDocTokenType.XML_BAD_CHARACTER; }
   "'" { yybegin(ATTR_LIST); return CSharpDocTokenType.XML_ATTRIBUTE_VALUE_END_DELIMITER;}
   [^] { return CSharpDocTokenType.XML_ATTRIBUTE_VALUE_TOKEN;}
 }
 
 <YYINITIAL> {S} { return CSharpDocTokenType.XML_REAL_WHITE_SPACE; }
 <TAG, END_TAG, ATTR_LIST, ATTR> {S} { return CSharpDocTokenType.TAG_WHITE_SPACE; }
-<YYINITIAL> ([^<&\$# \n\r\t\f]|(\\\$)|(\\#))* { return CSharpDocTokenType.XML_DATA_CHARACTERS; }
-<YYINITIAL> [^<&\ \n\r\t\f]|(\\\$)|(\\#) { return CSharpDocTokenType.XML_DATA_CHARACTERS; }
+<YYINITIAL> ([^< \n\r\t\f])* { return CSharpDocTokenType.XML_DATA_CHARACTERS; }
+<YYINITIAL> [^<\ \n\r\t\f] { return CSharpDocTokenType.XML_DATA_CHARACTERS; }
 
 [^] { if(yystate() == YYINITIAL){
         return CSharpDocTokenType.XML_BAD_CHARACTER;
