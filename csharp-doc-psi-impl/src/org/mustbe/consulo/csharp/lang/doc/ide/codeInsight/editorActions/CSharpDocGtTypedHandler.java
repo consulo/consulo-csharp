@@ -17,7 +17,6 @@ package org.mustbe.consulo.csharp.lang.doc.ide.codeInsight.editorActions;
 
 import java.util.List;
 
-import org.apache.xmlbeans.impl.values.XmlTokenImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocAttributeValue;
@@ -55,6 +54,7 @@ public class CSharpDocGtTypedHandler extends TypedHandlerDelegate
 {
 	private static final RoleFinder CLOSING_TAG_NAME_FINDER = new RoleFinder()
 	{
+		@Override
 		@Nullable
 		public ASTNode findChild(@NotNull ASTNode parent)
 		{
@@ -194,8 +194,7 @@ public class CSharpDocGtTypedHandler extends TypedHandlerDelegate
 			}
 			if(!(element instanceof CSharpDocTag))
 			{
-				if(element instanceof XmlTokenImpl &&
-						element.getPrevSibling() != null &&
+				if(element.getPrevSibling() != null &&
 						element.getPrevSibling().getText().equals("<"))
 				{
 					// tag is started and there is another text in the end
