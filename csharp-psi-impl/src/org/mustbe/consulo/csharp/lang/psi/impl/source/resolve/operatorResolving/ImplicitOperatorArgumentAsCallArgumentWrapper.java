@@ -20,9 +20,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.lang.Language;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.light.LightElement;
@@ -33,15 +33,13 @@ import com.intellij.psi.impl.light.LightElement;
  */
 public class ImplicitOperatorArgumentAsCallArgumentWrapper extends LightElement implements CSharpCallArgument
 {
-	private static class LightExpression extends LightElement implements DotNetExpression
+	private static class LightExpression extends CSharpLightExpression
 	{
-		private final DotNetTypeRef myImplicitTypeRef;
 		private final DotNetExpression myOriginalExpression;
 
-		protected LightExpression(PsiManager manager, Language language, DotNetTypeRef implicitTypeRef, DotNetExpression originalExpression)
+		protected LightExpression(PsiManager manager, DotNetTypeRef typeRef, DotNetExpression originalExpression)
 		{
-			super(manager, language);
-			myImplicitTypeRef = implicitTypeRef;
+			super(manager, typeRef);
 			myOriginalExpression = originalExpression;
 		}
 
@@ -50,19 +48,6 @@ public class ImplicitOperatorArgumentAsCallArgumentWrapper extends LightElement 
 		{
 			return myOriginalExpression.getTextRange();
 		}
-
-		@NotNull
-		@Override
-		public DotNetTypeRef toTypeRef(boolean b)
-		{
-			return myImplicitTypeRef;
-		}
-
-		@Override
-		public String toString()
-		{
-			return "ImplicitOperatorArgumentAsCallArgumentWrapper.LightExpression";
-		}
 	}
 
 	private LightExpression myExpression;
@@ -70,7 +55,7 @@ public class ImplicitOperatorArgumentAsCallArgumentWrapper extends LightElement 
 	public ImplicitOperatorArgumentAsCallArgumentWrapper(@NotNull DotNetExpression originalExpression, @NotNull DotNetTypeRef implicitTypeRef)
 	{
 		super(PsiManager.getInstance(originalExpression.getProject()), CSharpLanguage.INSTANCE);
-		myExpression = new LightExpression(getManager(), getLanguage(), implicitTypeRef, originalExpression);
+		myExpression = new LightExpression(getManager(), implicitTypeRef, originalExpression);
 	}
 
 	@Override

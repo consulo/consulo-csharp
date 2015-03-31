@@ -22,7 +22,10 @@ import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.doc.CSharpDocLanguage;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
+import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.injection.CSharpForInjectionFragmentHolder;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.injection.CSharpInjectExpressionElementType;
 import com.intellij.lang.ASTNode;
@@ -37,6 +40,7 @@ import com.intellij.psi.impl.source.tree.LazyParseableElement;
 import com.intellij.psi.tree.ElementTypeAsPsiFactory;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.ILazyParseableElementType;
+import com.intellij.psi.tree.TokenSet;
 
 /**
  * @author VISTALL
@@ -75,8 +79,27 @@ public interface CSharpDocElements
 			public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
 			{
 				PsiBuilder.Marker mark = builder.mark();
-				SharedParsingHelpers.parseType(new CSharpBuilderWrapper(builder, languageVersion), SharedParsingHelpers.VAR_SUPPORT |
-						SharedParsingHelpers.INSIDE_DOC);
+
+				CSharpBuilderWrapper builderWrapper = new CSharpBuilderWrapper(builder, languageVersion);
+				SharedParsingHelpers.parseType(builderWrapper, SharedParsingHelpers.VAR_SUPPORT | SharedParsingHelpers.INSIDE_DOC);
+
+				if(builder.getTokenType() == CSharpTokens.LPAR)
+				{
+					mark.rollbackTo();
+
+					mark = builder.mark();
+
+					PsiBuilder.Marker tempMarker = builder.mark();
+
+					ExpressionParsing.parseQualifiedReference(builderWrapper, null, SharedParsingHelpers.INSIDE_DOC, TokenSet.EMPTY);
+
+					if(builder.getTokenType() == CSharpTokens.LPAR)
+					{
+						parseArgumentList(builderWrapper);
+					}
+					tempMarker.done(CSharpElements.METHOD_CALL_EXPRESSION);
+				}
+
 				while(!builder.eof())
 				{
 					builder.error("Unexpected token");
@@ -86,6 +109,76 @@ public interface CSharpDocElements
 				return builder.getTreeBuilt();
 			}
 		};
+
+		public void parseArgumentList(CSharpBuilderWrapper builder)
+		{
+			PsiBuilder.Marker mark = builder.mark();
+
+			if(builder.getTokenType() != CSharpTokens.LPAR)
+			{
+				mark.done(CSharpElements.CALL_ARGUMENT_LIST);
+				return;
+			}
+
+			builder.advanceLexer();
+
+			if(builder.getTokenType() == CSharpTokens.RPAR)
+			{
+				builder.advanceLexer();
+				mark.done(CSharpElements.CALL_ARGUMENT_LIST);
+				return;
+			}
+
+			parseArguments(builder, CSharpTokens.RPAR);
+			SharedParsingHelpers.expect(builder, CSharpTokens.RPAR, "')' expected");
+			mark.done(CSharpElements.CALL_ARGUMENT_LIST);
+		}
+
+		private void parseArguments(CSharpBuilderWrapper builder, IElementType stopElement)
+		{
+			TokenSet stoppers = TokenSet.create(stopElement, CSharpTokens.RBRACE, CSharpTokens.SEMICOLON);
+
+			boolean commaEntered = false;
+			while(!builder.eof())
+			{
+				if(stoppers.contains(builder.getTokenType()))
+				{
+					if(commaEntered)
+					{
+						PsiBuilder.Marker mark = builder.mark();
+						SharedParsingHelpers.emptyElement(builder, CSharpElements.ERROR_EXPRESSION);
+						// call(test,)
+						builder.error("Type expected");
+						mark.done(CSharpElements.DOC_CALL_ARGUMENT);
+					}
+					break;
+				}
+				commaEntered = false;
+
+				PsiBuilder.Marker argumentMarker = builder.mark();
+				SharedParsingHelpers.TypeInfo marker = SharedParsingHelpers.parseType(builder, SharedParsingHelpers.VAR_SUPPORT |
+						SharedParsingHelpers.INSIDE_DOC);
+				if(marker == null)
+				{
+					PsiBuilder.Marker errorMarker = builder.mark();
+					builder.advanceLexer();
+					builder.error("Type expected");
+					errorMarker.done(CSharpElements.ERROR_EXPRESSION);
+				}
+				argumentMarker.done(CSharpElements.DOC_CALL_ARGUMENT);
+
+
+				if(builder.getTokenType() == CSharpTokens.COMMA)
+				{
+					builder.advanceLexer();
+					commaEntered = true;
+				}
+				else if(!stoppers.contains(builder.getTokenType()))
+				{
+					builder.error("',' expected");
+				}
+			}
+		}
 
 		@Override
 		protected ASTNode doParseContents(@NotNull final ASTNode chameleon, @NotNull final PsiElement psi)
