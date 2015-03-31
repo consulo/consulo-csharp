@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
@@ -51,10 +52,14 @@ public class CSharpMethodDescriptor implements MethodDescriptor<CSharpParameterI
 	@Override
 	public String getName()
 	{
-		if(myMethod instanceof CSharpMethodDeclaration)
+		if(myMethod instanceof CSharpMethodDeclaration || myMethod instanceof CSharpConstructorDeclaration)
 		{
 			return myMethod.getName();
 		}
+//		if(myMethod instanceof CSharpArrayMethodDeclaration)
+//		{
+//			return "this[]";
+//		}
 		return null;
 	}
 
