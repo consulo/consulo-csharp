@@ -75,7 +75,8 @@ public interface CSharpDocElements
 			public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
 			{
 				PsiBuilder.Marker mark = builder.mark();
-				SharedParsingHelpers.parseType(new CSharpBuilderWrapper(builder, languageVersion), SharedParsingHelpers.VAR_SUPPORT);
+				SharedParsingHelpers.parseType(new CSharpBuilderWrapper(builder, languageVersion), SharedParsingHelpers.VAR_SUPPORT |
+						SharedParsingHelpers.INSIDE_DOC);
 				while(!builder.eof())
 				{
 					builder.error("Unexpected token");

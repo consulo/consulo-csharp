@@ -1705,7 +1705,9 @@ public class ExpressionParsing extends SharedParsingHelpers
 	@Nullable
 	private static PsiBuilder.Marker parseReferenceTypeArgumentList(@NotNull CSharpBuilderWrapper builder, int flags)
 	{
-		if(builder.getTokenType() != LT)
+		IElementType startElementType = BitUtil.isSet(flags, INSIDE_DOC) ? LBRACE : LT;
+
+		if(builder.getTokenType() != startElementType)
 		{
 			return null;
 		}
@@ -1775,7 +1777,8 @@ public class ExpressionParsing extends SharedParsingHelpers
 		PsiBuilder.Marker mark = builder.mark();
 		builder.advanceLexer();
 
-		if(builder.getTokenType() == GT)
+		IElementType stopElementType = BitUtil.isSet(flags, INSIDE_DOC) ? RBRACE : GT;
+		if(builder.getTokenType() == stopElementType)
 		{
 			builder.error("Expected type");
 			builder.advanceLexer();
@@ -1800,7 +1803,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				}
 			}
 
-			if(builder.getTokenType() == GT)
+			if(builder.getTokenType() == stopElementType)
 			{
 				builder.advanceLexer();
 			}

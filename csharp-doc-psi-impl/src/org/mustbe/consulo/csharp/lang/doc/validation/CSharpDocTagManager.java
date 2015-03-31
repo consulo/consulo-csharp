@@ -38,9 +38,9 @@ public class CSharpDocTagManager
 	{
 		addTag(new CSharpDocTagInfo("c"));
 		addTag(new CSharpDocTagInfo("code"));
-		addTag(new CSharpDocTagInfo("see").add(new CSharpDocAttributeInfo("cref", CSharpDocAttributeInfo.ValueType.TYPE)));
+		addTag(new CSharpDocTagInfo("see").add(new CSharpDocAttributeInfo("cref", CSharpDocAttributeInfo.ValueType.REFERENCE)));
 		addTag(new CSharpDocTagInfo("example"));
-		addTag(new CSharpDocTagInfo("exception").add(new CSharpDocAttributeInfo("cref", CSharpDocAttributeInfo.ValueType.TYPE)));
+		addTag(new CSharpDocTagInfo("exception").add(new CSharpDocAttributeInfo("cref", CSharpDocAttributeInfo.ValueType.REFERENCE)));
 		addTag(new CSharpDocTagInfo("include").add(new CSharpDocAttributeInfo("file", CSharpDocAttributeInfo.ValueType.TEXT)).add(new
 				CSharpDocAttributeInfo("path", CSharpDocAttributeInfo.ValueType.TEXT)));
 		addTag(new CSharpDocTagInfo("list"));
