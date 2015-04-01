@@ -99,7 +99,8 @@ public class CSharpContextUtil
 		if(qualifier == null)
 		{
 			// object initializer can only initialize instance variables
-			if(referenceExpression.getParent() instanceof CSharpFieldOrPropertySet)
+			PsiElement parent = referenceExpression.getParent();
+			if(parent instanceof CSharpFieldOrPropertySet && ((CSharpFieldOrPropertySet) parent).getNameReferenceExpression() == referenceExpression)
 			{
 				return ContextType.INSTANCE;
 			}
