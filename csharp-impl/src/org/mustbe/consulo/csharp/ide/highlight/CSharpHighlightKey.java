@@ -62,4 +62,15 @@ public interface CSharpHighlightKey
 	TextAttributesKey LINE_COMMENT = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
 			DefaultLanguageHighlighterColors.LINE_COMMENT);
 	TextAttributesKey DISABLED_BLOCK = TextAttributesKey.createTextAttributesKey("CSHARP_DISABLED_BLOCK");
+
+	TextAttributesKey PARENTHESES = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.PARENTHESES);
+	TextAttributesKey BRACES = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.BRACES);
+	TextAttributesKey BRACKETS = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.BRACKETS);
+	TextAttributesKey DOT = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.DOT);
+	TextAttributesKey COMMA = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.COMMA);
+	TextAttributesKey SEMICOLON = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.SEMICOLON);
+	TextAttributesKey COLON = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, SEMICOLON);
+	TextAttributesKey ARROW = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DOT);
+	TextAttributesKey OPERATION_SIGN = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
+			DefaultLanguageHighlighterColors.OPERATION_SIGN);
 }

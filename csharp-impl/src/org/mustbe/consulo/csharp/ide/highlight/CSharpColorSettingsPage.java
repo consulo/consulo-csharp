@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.doc.ide.highlight.CSharpDocHighlightKey;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
+import com.intellij.openapi.options.OptionsBundle;
 import com.intellij.openapi.options.colors.AttributesDescriptor;
 import com.intellij.openapi.options.colors.ColorDescriptor;
 import com.intellij.openapi.options.colors.ColorSettingsPage;
@@ -41,34 +42,42 @@ import com.intellij.psi.codeStyle.DisplayPrioritySortable;
  */
 public class CSharpColorSettingsPage implements ColorSettingsPage, DisplayPrioritySortable
 {
-	private static final AttributesDescriptor[] ourDescriptors = new AttributesDescriptor[]
-			{
-				new AttributesDescriptor("Block comment", CSharpHighlightKey.BLOCK_COMMENT),
-				new AttributesDescriptor("Line comment", CSharpHighlightKey.LINE_COMMENT),
-				new AttributesDescriptor("Keyword", CSharpHighlightKey.KEYWORD),
-				new AttributesDescriptor("Context keyword", CSharpHighlightKey.SOFT_KEYWORD),
-				new AttributesDescriptor("Preprocessor keyword", CSharpHighlightKey.MACRO_KEYWORD),
-				new AttributesDescriptor("Preprocessor variable", CSharpHighlightKey.MACRO_VARIABLE),
-				new AttributesDescriptor("Disabled preprocessor block", CSharpHighlightKey.DISABLED_BLOCK),
-				new AttributesDescriptor("String", CSharpHighlightKey.STRING),
-				new AttributesDescriptor("Number", CSharpHighlightKey.NUMBER),
-				new AttributesDescriptor("Class name", CSharpHighlightKey.CLASS_NAME),
-				new AttributesDescriptor("Delegate method name", CSharpHighlightKey.DELEGATE_METHOD_NAME),
-				new AttributesDescriptor("Generic parameter name", CSharpHighlightKey.GENERIC_PARAMETER_NAME),
-				new AttributesDescriptor("Extension method call", CSharpHighlightKey.EXTENSION_METHOD),
-				new AttributesDescriptor("Static method call", CSharpHighlightKey.STATIC_METHOD),
-				new AttributesDescriptor("Instance method call", CSharpHighlightKey.INSTANCE_METHOD),
-				new AttributesDescriptor("Instance field or property", CSharpHighlightKey.INSTANCE_FIELD_OR_PROPERTY),
-				new AttributesDescriptor("Static field or property", CSharpHighlightKey.STATIC_FIELD_OR_PROPERTY),
-				new AttributesDescriptor("Static event", CSharpHighlightKey.STATIC_EVENT),
-				new AttributesDescriptor("Instance event", CSharpHighlightKey.INSTANCE_EVENT),
-				new AttributesDescriptor("Parameter", CSharpHighlightKey.PARAMETER),
-				new AttributesDescriptor("Method reference", CSharpHighlightKey.METHOD_REF),
-				new AttributesDescriptor("Implicit or explicit cast", CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST),
-				new AttributesDescriptor("Doc comment", CSharpDocHighlightKey.DOC_COMMENT),
-				new AttributesDescriptor("Doc tag", CSharpDocHighlightKey.DOC_COMMENT_TAG),
-				new AttributesDescriptor("Doc attribute", CSharpDocHighlightKey.DOC_COMMENT_ATTRIBUTE),
-			};
+	private static final AttributesDescriptor[] ourDescriptors = new AttributesDescriptor[]{
+			new AttributesDescriptor("Block comment", CSharpHighlightKey.BLOCK_COMMENT),
+			new AttributesDescriptor("Line comment", CSharpHighlightKey.LINE_COMMENT),
+			new AttributesDescriptor("Keyword", CSharpHighlightKey.KEYWORD),
+			new AttributesDescriptor("Context keyword", CSharpHighlightKey.SOFT_KEYWORD),
+			new AttributesDescriptor("Preprocessor keyword", CSharpHighlightKey.MACRO_KEYWORD),
+			new AttributesDescriptor("Preprocessor variable", CSharpHighlightKey.MACRO_VARIABLE),
+			new AttributesDescriptor("Disabled preprocessor block", CSharpHighlightKey.DISABLED_BLOCK),
+			new AttributesDescriptor("String", CSharpHighlightKey.STRING),
+			new AttributesDescriptor("Number", CSharpHighlightKey.NUMBER),
+			new AttributesDescriptor("Class name", CSharpHighlightKey.CLASS_NAME),
+			new AttributesDescriptor("Delegate method name", CSharpHighlightKey.DELEGATE_METHOD_NAME),
+			new AttributesDescriptor("Generic parameter name", CSharpHighlightKey.GENERIC_PARAMETER_NAME),
+			new AttributesDescriptor("Extension method call", CSharpHighlightKey.EXTENSION_METHOD),
+			new AttributesDescriptor("Static method call", CSharpHighlightKey.STATIC_METHOD),
+			new AttributesDescriptor("Instance method call", CSharpHighlightKey.INSTANCE_METHOD),
+			new AttributesDescriptor("Instance field or property", CSharpHighlightKey.INSTANCE_FIELD_OR_PROPERTY),
+			new AttributesDescriptor("Static field or property", CSharpHighlightKey.STATIC_FIELD_OR_PROPERTY),
+			new AttributesDescriptor("Static event", CSharpHighlightKey.STATIC_EVENT),
+			new AttributesDescriptor("Instance event", CSharpHighlightKey.INSTANCE_EVENT),
+			new AttributesDescriptor("Parameter", CSharpHighlightKey.PARAMETER),
+			new AttributesDescriptor("Method reference", CSharpHighlightKey.METHOD_REF),
+			new AttributesDescriptor("Implicit or explicit cast", CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST),
+			new AttributesDescriptor("Doc comment", CSharpDocHighlightKey.DOC_COMMENT),
+			new AttributesDescriptor("Doc tag", CSharpDocHighlightKey.DOC_COMMENT_TAG),
+			new AttributesDescriptor("Doc attribute", CSharpDocHighlightKey.DOC_COMMENT_ATTRIBUTE),
+			new AttributesDescriptor(OptionsBundle.message("options.language.defaults.dot"), CSharpHighlightKey.DOT),
+			new AttributesDescriptor(OptionsBundle.message("options.language.defaults.comma"), CSharpHighlightKey.COMMA),
+			new AttributesDescriptor(OptionsBundle.message("options.language.defaults.brackets"), CSharpHighlightKey.BRACKETS),
+			new AttributesDescriptor(OptionsBundle.message("options.language.defaults.braces"), CSharpHighlightKey.BRACES),
+			new AttributesDescriptor(OptionsBundle.message("options.language.defaults.parentheses"), CSharpHighlightKey.PARENTHESES),
+			new AttributesDescriptor(OptionsBundle.message("options.language.defaults.semicolon"), CSharpHighlightKey.SEMICOLON),
+			new AttributesDescriptor(OptionsBundle.message("options.language.defaults.operation"), CSharpHighlightKey.OPERATION_SIGN),
+			new AttributesDescriptor("Colon", CSharpHighlightKey.COLON),
+			new AttributesDescriptor("Arrows (->, =>)", CSharpHighlightKey.ARROW),
+	};
 	private static final Map<String, TextAttributesKey> ourAdditionalTags = new HashMap<String, TextAttributesKey>()
 	{
 		{
