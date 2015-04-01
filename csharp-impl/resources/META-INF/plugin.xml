@@ -56,14 +56,11 @@
 	</project-components>
 
 	<extensionPoints>
-		<extensionPoint name="unusedElementPolicy" interface="org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.UnusedElementPolicy"/>
-
 		<extensionPoint name="additionalMemberProvider"
 						interface="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalMemberProvider"/>
 	</extensionPoints>
 
 	<extensions defaultExtensionNs="org.mustbe.consulo.csharp">
-		<unusedElementPolicy implementation="org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.impl.DefaultUnusedElementPolicy"/>
 
 		<additionalMemberProvider
 				implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl.StructOrGenericParameterConstructorProvider"/>
