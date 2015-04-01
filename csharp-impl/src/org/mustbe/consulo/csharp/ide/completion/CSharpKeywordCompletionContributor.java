@@ -263,7 +263,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 							CSharpTokenSets.MODIFIERS.contains(prevSibling.getNode().getElementType()))
 					{
 						val tokenVal = TokenSet.orSet(CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START,
-								TokenSet.create(CSharpTokens.DELEGATE_KEYWORD));
+								TokenSet.create(CSharpTokens.DELEGATE_KEYWORD, CSharpTokens.NAMESPACE_KEYWORD));
 
 						CSharpCompletionUtil.tokenSetToLookup(completionResultSet, tokenVal, new NotNullPairFunction<LookupElementBuilder,
 										IElementType, LookupElement>()
