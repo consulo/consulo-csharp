@@ -92,6 +92,12 @@
 		</operator>
 	</type>
 
+	<type name="System.Char">
+		<operator name="IMPLICIT_KEYWORD" type="System.Int32">
+			<parameter/>
+		</operator>
+	</type>
+
 	<type name="System.Byte">
 		<operator name="PLUS">
 			<parameter/>
