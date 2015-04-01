@@ -259,7 +259,7 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 	public static Collection<DotNetModifierListOwner> getItemsImpl(@NotNull CSharpTypeDeclaration typeDeclaration)
 	{
 		Collection<PsiElement> allMembers = OverrideUtil.getAllMembers(typeDeclaration, typeDeclaration.getResolveScope(),
-				DotNetGenericExtractor.EMPTY);
+				DotNetGenericExtractor.EMPTY, false);
 
 		List<DotNetModifierListOwner> elements = new ArrayList<DotNetModifierListOwner>();
 		for(PsiElement element : allMembers)

@@ -156,7 +156,8 @@ public class OverrideUtil
 		}
 		else if(elseElements.isEmpty())
 		{
-			return new PsiElement[]{new CSharpElementGroupImpl<PsiElement>(scopeElement.getProject(), getNameForGroup(groupElements), groupElements)};
+			return new PsiElement[]{new CSharpElementGroupImpl<PsiElement>(scopeElement.getProject(), getNameForGroup(groupElements),
+					groupElements)};
 		}
 		else if(groupElements.isEmpty())
 		{
@@ -312,7 +313,7 @@ public class OverrideUtil
 			@NotNull CSharpModifier modifier)
 	{
 		List<DotNetModifierListOwner> psiElements = new SmartList<DotNetModifierListOwner>();
-		for(PsiElement psiElement : getAllMembers(element, element.getResolveScope(), extractor))
+		for(PsiElement psiElement : getAllMembers(element, element.getResolveScope(), extractor, false))
 		{
 			if(psiElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) psiElement).hasModifier(modifier))
 			{
@@ -325,7 +326,8 @@ public class OverrideUtil
 	@NotNull
 	public static Collection<PsiElement> getAllMembers(@NotNull PsiElement element,
 			@NotNull GlobalSearchScope scope,
-			@NotNull DotNetGenericExtractor extractor)
+			@NotNull DotNetGenericExtractor extractor,
+			boolean allowTypes)
 	{
 		CommonProcessors.CollectProcessor<PsiElement> collectProcessor = new CommonProcessors.CollectProcessor<PsiElement>();
 		CSharpResolveContextUtil.createContext(extractor, scope, element).processElements(collectProcessor, true);
@@ -335,7 +337,8 @@ public class OverrideUtil
 		List<PsiElement> mergedElements = CSharpResolveUtil.mergeGroupsToIterable(results);
 		PsiElement[] psiElements = OverrideUtil.filterOverrideElements(element, mergedElements, OverrideProcessor.ALWAYS_TRUE);
 
-		return ContainerUtil.filter(CSharpResolveUtil.mergeGroupsToIterable(psiElements), new Condition<PsiElement>()
+		List<PsiElement> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
+		return allowTypes ? elements : ContainerUtil.filter(elements, new Condition<PsiElement>()
 		{
 			@Override
 			public boolean value(PsiElement element)

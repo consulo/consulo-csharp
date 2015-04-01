@@ -114,7 +114,6 @@
             </library>
           </orderEntry>
           <orderEntry type="module" module-name="csharp-doc-psi-impl" exported="" />
-          <orderEntry type="module" module-name="csharp-preprocessor-impl" exported="" />
         </module-layer>
       </module>
       <module name="csharp-spellchecker" dirurl="file://$PROJECT_DIR$/csharp-spellchecker" current-layer="Default">

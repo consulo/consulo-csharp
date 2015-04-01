@@ -51,7 +51,7 @@ public class CompletionResolveScopeProcessor extends AbstractScopeProcessor
 		DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
 		assert extractor != null;
 
-		for(PsiElement psiElement : OverrideUtil.getAllMembers(element, myScope, extractor))
+		for(PsiElement psiElement : OverrideUtil.getAllMembers(element, myScope, extractor, true))
 		{
 			if(!ExecuteTargetUtil.isMyElement(this, psiElement))
 			{
