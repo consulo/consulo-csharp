@@ -67,6 +67,8 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		}
 	}
 
+	public static final TokenSet ourSemicolonSet = TokenSet.create(CSharpTokens.SEMICOLON);
+
 	public static final int NONE = 0;
 	public static final int VAR_SUPPORT = 1 << 0;
 	public static final int STUB_SUPPORT = 1 << 1;

@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.parser;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
 import lombok.val;
 
 /**
@@ -80,6 +81,8 @@ public class UsingStatementParsing extends SharedParsingHelpers
 			ExpressionParsing.parseQualifiedReference(builder, null);
 			to = USING_NAMESPACE_STATEMENT;
 		}
+
+		reportErrorUntil(builder, "';' expected", ourSemicolonSet, TokenSet.EMPTY);
 
 		expect(builder, SEMICOLON, "';' expected");
 
