@@ -29,6 +29,6 @@ public class CSharpCfsLanguageVersion extends BaseExpressionCfsLanguageVersion
 	@Override
 	public IElementType createExpressionElementType()
 	{
-		return new CSharpInjectExpressionElementType("EXPRESSION", CfsLanguage.INSTANCE, this, CSharpReferenceExpression.ResolveToKind.ANY_MEMBER);
+		return new CSharpInjectExpressionElementType("EXPRESSION", CfsLanguage.INSTANCE, CSharpReferenceExpression.ResolveToKind.ANY_MEMBER);
 	}
 }

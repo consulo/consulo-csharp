@@ -44,15 +44,8 @@ public class CSharpInjectExpressionElementType extends ILazyParseableElementType
 
 	private final CSharpReferenceExpression.ResolveToKind myResolveToKind;
 
-	public CSharpInjectExpressionElementType(@NotNull @NonNls String debugName, @Nullable Language language,
-			@NotNull LanguageVersion<?> languageVersion,
-			@NotNull CSharpReferenceExpression.ResolveToKind resolveToKind)
-	{
-		super(debugName, language, languageVersion);
-		myResolveToKind = resolveToKind;
-	}
-
-	public CSharpInjectExpressionElementType(@NotNull @NonNls String debugName, @Nullable Language language,
+	public CSharpInjectExpressionElementType(@NotNull @NonNls String debugName,
+			@Nullable Language language,
 			@NotNull CSharpReferenceExpression.ResolveToKind resolveToKind)
 	{
 		super(debugName, language);
