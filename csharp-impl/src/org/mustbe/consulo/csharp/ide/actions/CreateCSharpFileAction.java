@@ -24,11 +24,14 @@ import org.consulo.psi.PsiPackage;
 import org.consulo.psi.PsiPackageManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.CSharpIcons;
 import org.mustbe.consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.module.extension.BaseCSharpModuleExtension;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
+import org.mustbe.consulo.roots.ContentEntryFileListener;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.IconDescriptor;
 import com.intellij.ide.IdeView;
@@ -38,6 +41,7 @@ import com.intellij.ide.actions.CreateFromTemplateAction;
 import com.intellij.ide.fileTemplates.FileTemplate;
 import com.intellij.ide.fileTemplates.FileTemplateManager;
 import com.intellij.ide.fileTemplates.FileTemplateUtil;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -47,13 +51,16 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileSystem;
 import com.intellij.openapi.vfs.VirtualFileVisitor;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleManager;
+import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.util.IncorrectOperationException;
 import lombok.val;
 
@@ -69,9 +76,10 @@ public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
 	}
 
 	@Override
+	@RequiredDispatchThread
 	protected boolean isAvailable(DataContext dataContext)
 	{
-		val module = LangDataKeys.MODULE.getData(dataContext);
+		val module = findModule(dataContext);
 		if(module != null)
 		{
 			DotNetModuleExtension extension = ModuleUtilCore.getExtension(module, DotNetModuleExtension.class);
@@ -97,6 +105,49 @@ public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
 			}
 		}
 		return module != null && ModuleUtilCore.getExtension(module, BaseCSharpModuleExtension.class) != null;
+	}
+
+	@RequiredReadAction
+	private static Module findModule(DataContext dataContext)
+	{
+		Project project = CommonDataKeys.PROJECT.getData(dataContext);
+		assert project != null;
+		final IdeView view = LangDataKeys.IDE_VIEW.getData(dataContext);
+		if(view == null)
+		{
+			return null;
+		}
+
+		val orChooseDirectory = view.getOrChooseDirectory();
+		if(orChooseDirectory == null)
+		{
+			return null;
+		}
+
+		LightVirtualFile l = new LightVirtualFile("test.cs", CSharpFileType.INSTANCE, "")
+		{
+			@Override
+			public VirtualFile getParent()
+			{
+				return orChooseDirectory.getVirtualFile();
+			}
+
+			@NotNull
+			@Override
+			public VirtualFileSystem getFileSystem()
+			{
+				return LocalFileSystem.getInstance();
+			}
+		};
+		for(val o : ContentEntryFileListener.PossibleModuleForFileResolver.EP_NAME.getExtensions())
+		{
+			Module resolve = o.resolve(project, l);
+			if(resolve != null)
+			{
+				return resolve;
+			}
+		}
+		return LangDataKeys.MODULE.getData(dataContext);
 	}
 
 	@Override
@@ -154,7 +205,9 @@ public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
 
 	@SuppressWarnings("DialogTitleCapitalization")
 	@Nullable
-	public static PsiFile createFileFromTemplate(@Nullable String name, @Nullable String namespaceName, @NotNull FileTemplate template,
+	public static PsiFile createFileFromTemplate(@Nullable String name,
+			@Nullable String namespaceName,
+			@NotNull FileTemplate template,
 			@NotNull PsiDirectory dir)
 	{
 		CreateFileAction.MkDirs mkdirs = new CreateFileAction.MkDirs(name, dir);
@@ -219,8 +272,7 @@ public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
 		builder.addKind("Interface", new IconDescriptor(AllIcons.Nodes.Interface).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpInterface");
 		builder.addKind("Enum", new IconDescriptor(AllIcons.Nodes.Enum).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpEnum");
 		builder.addKind("Struct", new IconDescriptor(AllIcons.Nodes.Struct).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpStruct");
-		builder.addKind("Attribute", new IconDescriptor(AllIcons.Nodes.Attribute).addLayerIcon(CSharpIcons.Lang).toIcon(),
-				"CSharpAttribute");
+		builder.addKind("Attribute", new IconDescriptor(AllIcons.Nodes.Attribute).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpAttribute");
 		if(isCreationOfAssemblyFileAvailable(psiDirectory))
 		{
 			builder.addKind("Assembly File", AllIcons.FileTypes.Config, "CSharpAssemblyFile");
