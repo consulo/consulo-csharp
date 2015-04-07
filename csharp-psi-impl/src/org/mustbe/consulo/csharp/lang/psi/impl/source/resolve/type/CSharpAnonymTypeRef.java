@@ -18,8 +18,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAnonymFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpNamedFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightFieldDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightTypeDeclarationBuilder;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -28,8 +30,10 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -37,6 +41,32 @@ import com.intellij.psi.PsiFile;
  */
 public class CSharpAnonymTypeRef extends DotNetTypeRef.Adapter
 {
+	public static class SetField extends CSharpLightFieldDeclarationBuilder
+	{
+		private CSharpFieldOrPropertySet mySet;
+
+		public SetField(Project project, CSharpFieldOrPropertySet set)
+		{
+			super(project);
+			mySet = set;
+		}
+
+		@Override
+		public boolean isEquivalentTo(PsiElement another)
+		{
+			if(another instanceof SetField)
+			{
+				return mySet.isEquivalentTo(((SetField) another).getSet());
+			}
+			return super.isEquivalentTo(another);
+		}
+
+		public CSharpFieldOrPropertySet getSet()
+		{
+			return mySet;
+		}
+	}
+
 	private final PsiFile myContainingFile;
 	private CSharpFieldOrPropertySet[] mySets;
 
@@ -73,7 +103,7 @@ public class CSharpAnonymTypeRef extends DotNetTypeRef.Adapter
 				builder.append(", ");
 			}
 			CSharpFieldOrPropertySet set = mySets[i];
-			builder.append(set.getNameReferenceExpression().getText());
+			builder.append(set.getNameElement().getText());
 		}
 		builder.append("}");
 		return builder.toString();
@@ -95,12 +125,17 @@ public class CSharpAnonymTypeRef extends DotNetTypeRef.Adapter
 		builder.withType(CSharpLightTypeDeclarationBuilder.Type.STRUCT);
 		builder.addExtendType(new CSharpTypeRefByQName(DotNetTypes.System.ValueType));
 
-		for(CSharpFieldOrPropertySet set : mySets)
+		for(val set : mySets)
 		{
-			DotNetExpression nameReferenceExpression = set.getNameReferenceExpression();
+			String name = set.getName();
+			if(name == null)
+			{
+				continue;
+			}
+
 			DotNetExpression valueReferenceExpression = set.getValueExpression();
 
-			CSharpLightFieldDeclarationBuilder fieldBuilder = new CSharpLightFieldDeclarationBuilder(myContainingFile.getProject());
+			SetField fieldBuilder = new SetField(myContainingFile.getProject(), set);
 
 			if(valueReferenceExpression == null)
 			{
@@ -111,8 +146,18 @@ public class CSharpAnonymTypeRef extends DotNetTypeRef.Adapter
 				fieldBuilder.withTypeRef(valueReferenceExpression.toTypeRef(true));
 			}
 			fieldBuilder.addModifier(CSharpModifier.PUBLIC);
-			fieldBuilder.withNameIdentifier(nameReferenceExpression);
-			fieldBuilder.setNavigationElement(nameReferenceExpression);
+			fieldBuilder.withName(name);
+			if(set instanceof CSharpNamedFieldOrPropertySet)
+			{
+				PsiElement nameReferenceExpression = set.getNameElement();
+
+				fieldBuilder.withNameIdentifier(nameReferenceExpression);
+				fieldBuilder.setNavigationElement(nameReferenceExpression);
+			}
+			else if(set instanceof CSharpAnonymFieldOrPropertySet)
+			{
+				fieldBuilder.setNavigationElement(set.getValueExpression());
+			}
 			builder.addMember(fieldBuilder);
 		}
 

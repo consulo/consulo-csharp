@@ -302,9 +302,9 @@ public class CSharpReferenceExpressionImplUtil
 				return ResolveToKind.PARAMETER;
 			}
 		}
-		else if(tempElement instanceof CSharpFieldOrPropertySet)
+		else if(tempElement instanceof CSharpNamedFieldOrPropertySet)
 		{
-			if(((CSharpFieldOrPropertySet) tempElement).getNameReferenceExpression() == referenceExpression)
+			if(((CSharpFieldOrPropertySet) tempElement).getNameElement() == referenceExpression)
 			{
 				return ResolveToKind.FIELD_OR_PROPERTY;
 			}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 must-be.org
+ * Copyright 2013-2015 must-be.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAnonymFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import com.intellij.lang.ASTNode;
@@ -27,13 +27,25 @@ import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
- * @since 29.12.13.
+ * @since 07.04.2015
  */
-public class CSharpFieldOrPropertySetImpl extends CSharpElementImpl implements CSharpFieldOrPropertySet
+public class CSharpAnonymFieldOrPropertySetImpl extends CSharpElementImpl implements CSharpAnonymFieldOrPropertySet
 {
-	public CSharpFieldOrPropertySetImpl(@NotNull ASTNode node)
+	public CSharpAnonymFieldOrPropertySetImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	@Nullable
+	@Override
+	public String getName()
+	{
+		DotNetExpression valueExpression = getValueExpression();
+		if(valueExpression instanceof CSharpReferenceExpression)
+		{
+			return  ((CSharpReferenceExpression) valueExpression).getReferenceName();
+		}
+		return null;
 	}
 
 	@Override
@@ -44,20 +56,15 @@ public class CSharpFieldOrPropertySetImpl extends CSharpElementImpl implements C
 
 	@NotNull
 	@Override
-	public CSharpReferenceExpression getNameReferenceExpression()
+	public PsiElement getNameElement()
 	{
-		return (CSharpReferenceExpression) getFirstChild();
+		return getFirstChild();
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	public DotNetExpression getValueExpression()
 	{
-		PsiElement lastChild = getLastChild();
-		if(lastChild instanceof DotNetExpression && lastChild != getNameReferenceExpression())
-		{
-			return (DotNetExpression) lastChild;
-		}
-		return null;
+		return findNotNullChildByClass(DotNetExpression.class);
 	}
 }

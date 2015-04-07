@@ -23,8 +23,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.CSharpNamedFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
@@ -88,15 +88,15 @@ public class CSharpLambdaExpressionImplUtil
 			}
 			return resolveLeftLambdaTypeRefForVariable(variable);
 		}
-		else if(parent instanceof CSharpFieldOrPropertySet)
+		else if(parent instanceof CSharpNamedFieldOrPropertySet)
 		{
-			CSharpFieldOrPropertySet fieldOrPropertySet = (CSharpFieldOrPropertySet) parent;
+			CSharpNamedFieldOrPropertySet fieldOrPropertySet = (CSharpNamedFieldOrPropertySet) parent;
 			if(fieldOrPropertySet.getValueExpression() != target)
 			{
 				return null;
 			}
 
-			CSharpReferenceExpression nameReferenceExpression = fieldOrPropertySet.getNameReferenceExpression();
+			CSharpReferenceExpression nameReferenceExpression = fieldOrPropertySet.getNameElement();
 			PsiElement resolvedElement = nameReferenceExpression.resolve();
 			if(resolvedElement instanceof DotNetVariable)
 			{

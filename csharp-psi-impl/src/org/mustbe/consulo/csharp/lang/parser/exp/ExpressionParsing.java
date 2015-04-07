@@ -645,7 +645,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				{
 					builder.error("Expression expected");
 				}
-				marker.done(FIELD_OR_PROPERTY_SET);
+				marker.done(NAMED_FIELD_OR_PROPERTY_SET);
 			}
 			else
 			{
@@ -1200,6 +1200,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 	private static enum AfterNewParsingTarget
 	{
 		NONE,
+		ANONYM_PROPERTY_SET_LIST,
 		PROPERTY_SET_LIST,
 		ARRAY_INITIALZER,
 		DICTIONARY_INITIALZER
@@ -1243,7 +1244,10 @@ public class ExpressionParsing extends SharedParsingHelpers
 				}
 				break;
 			case PROPERTY_SET_LIST:
-				parseFieldOrPropertySetBlock(builder);
+				parseNamedFieldOrPropertySetBlock(builder);
+				break;
+			case ANONYM_PROPERTY_SET_LIST:
+				parseAnonymFieldOrPropertySetBlock(builder);
 				break;
 			case DICTIONARY_INITIALZER:
 				parseDictionaryInitializerList(builder);
@@ -1343,7 +1347,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		// force property list, anonym object
 		if(typeInfo == null)
 		{
-			return AfterNewParsingTarget.PROPERTY_SET_LIST;
+			return AfterNewParsingTarget.ANONYM_PROPERTY_SET_LIST;
 		}
 
 		if(builderWrapper.lookAhead(1) == LBRACKET)
@@ -1455,7 +1459,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		return headerMarker;
 	}
 
-	private static void parseFieldOrPropertySetBlock(CSharpBuilderWrapper builder)
+	private static void parseAnonymFieldOrPropertySetBlock(CSharpBuilderWrapper builder)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
@@ -1470,7 +1474,66 @@ public class ExpressionParsing extends SharedParsingHelpers
 					break;
 				}
 
-				if(parseFieldOrPropertySet(builder) == null)
+				PsiBuilder.Marker tempMarker = builder.mark();
+				PsiBuilder.Marker expressionMarker = parse(builder);
+				if(expressionMarker != null)
+				{
+					IElementType elementType = SharedParsingHelpers.exprType(expressionMarker);
+					if(elementType == CSharpElements.ASSIGNMENT_EXPRESSION)
+					{
+						tempMarker.rollbackTo();
+						parseNamedFieldOrPropertySet(builder);
+					}
+					else
+					{
+						if(elementType != CSharpElements.REFERENCE_EXPRESSION)
+						{
+							tempMarker.error("Can use assign or reference expression");
+						}
+						else
+						{
+							tempMarker.done(CSharpElements.ANONYM_FIELD_OR_PROPERTY_SET);
+						}
+					}
+				}
+				else
+				{
+					tempMarker.drop();
+				}
+
+				if(builder.getTokenType() == COMMA)
+				{
+					builder.advanceLexer();
+				}
+				else if(builder.getTokenType() != RBRACE)
+				{
+					PsiBuilder.Marker errorMarker = builder.mark();
+					builder.advanceLexer();
+					errorMarker.error("',' expected");
+				}
+			}
+			expect(builder, RBRACE, "'}' expected");
+		}
+
+		mark.done(FIELD_OR_PROPERTY_SET_BLOCK);
+	}
+
+	private static void parseNamedFieldOrPropertySetBlock(CSharpBuilderWrapper builder)
+	{
+		PsiBuilder.Marker mark = builder.mark();
+
+		builder.advanceLexer();
+
+		if(!expect(builder, RBRACE, null))
+		{
+			while(!builder.eof())
+			{
+				if(builder.getTokenType() == RBRACE)
+				{
+					break;
+				}
+
+				if(parseNamedFieldOrPropertySet(builder) == null)
 				{
 					PsiBuilder.Marker errorMarker = builder.mark();
 					builder.advanceLexer();
@@ -1494,7 +1557,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		mark.done(FIELD_OR_PROPERTY_SET_BLOCK);
 	}
 
-	private static PsiBuilder.Marker parseFieldOrPropertySet(CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseNamedFieldOrPropertySet(CSharpBuilderWrapper builder)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
@@ -1507,7 +1570,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 					builder.error("Expression expected");
 				}
 			}
-			mark.done(FIELD_OR_PROPERTY_SET);
+			mark.done(NAMED_FIELD_OR_PROPERTY_SET);
 			return mark;
 		}
 		else

@@ -230,6 +230,11 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(block);
 	}
 
+	public void visitNamedFieldOrPropertySet(CSharpNamedFieldOrPropertySet element)
+	{
+		visitElement(element);
+	}
+
 	public void visitFieldOrPropertySet(CSharpFieldOrPropertySet element)
 	{
 		visitElement(element);

@@ -212,8 +212,11 @@ public interface CSharpElements
 	IElementType LAMBDA_PARAMETER_LIST = new ElementTypeAsPsiFactory("LAMBDA_PARAMETER_LIST", CSharpLanguage.INSTANCE,
 			CSharpLambdaParameterListImpl.class);
 
-	IElementType FIELD_OR_PROPERTY_SET = new ElementTypeAsPsiFactory("FIELD_OR_PROPERTY_SET", CSharpLanguage.INSTANCE,
-			CSharpFieldOrPropertySetImpl.class);
+	IElementType ANONYM_FIELD_OR_PROPERTY_SET = new ElementTypeAsPsiFactory("ANONYM_FIELD_OR_PROPERTY_SET", CSharpLanguage.INSTANCE,
+			CSharpAnonymFieldOrPropertySetImpl.class);
+
+	IElementType NAMED_FIELD_OR_PROPERTY_SET = new ElementTypeAsPsiFactory("NAMED_FIELD_OR_PROPERTY_SET", CSharpLanguage.INSTANCE,
+			CSharpNamedFieldOrPropertySetImpl.class);
 
 	IElementType FIELD_OR_PROPERTY_SET_BLOCK = new ElementTypeAsPsiFactory("FIELD_OR_PROPERTY_SET_BLOCK", CSharpLanguage.INSTANCE,
 			CSharpFieldOrPropertySetBlockImpl.class);

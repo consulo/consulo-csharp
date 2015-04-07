@@ -24,7 +24,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
+import org.mustbe.consulo.csharp.lang.psi.CSharpNamedFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUserType;
@@ -146,9 +146,9 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 	}
 
 	@Override
-	public void visitFieldOrPropertySet(CSharpFieldOrPropertySet parent)
+	public void visitNamedFieldOrPropertySet(CSharpNamedFieldOrPropertySet parent)
 	{
-		CSharpReferenceExpression nameReferenceExpression = parent.getNameReferenceExpression();
+		CSharpReferenceExpression nameReferenceExpression = parent.getNameElement();
 		DotNetExpression valueExpression = parent.getValueExpression();
 
 		if(nameReferenceExpression == myCurrentElement)

@@ -146,10 +146,13 @@ public class ObsoleteInspection extends LocalInspectionTool
 		{
 			for(CSharpFieldOrPropertySet namedCallArgument : parameterList.getSets())
 			{
-				CSharpReferenceExpression argumentNameReference = namedCallArgument.getNameReferenceExpression();
-				if("Message".equals(argumentNameReference.getReferenceName()))
+				if(namedCallArgument instanceof CSharpNamedFieldOrPropertySet)
 				{
-					return new ConstantExpressionEvaluator(namedCallArgument.getValueExpression()).getValueAs(String.class);
+					CSharpReferenceExpression argumentNameReference = (CSharpReferenceExpression) namedCallArgument.getNameElement();
+					if("Message".equals(argumentNameReference.getReferenceName()))
+					{
+						return new ConstantExpressionEvaluator(namedCallArgument.getValueExpression()).getValueAs(String.class);
+					}
 				}
 			}
 		}
