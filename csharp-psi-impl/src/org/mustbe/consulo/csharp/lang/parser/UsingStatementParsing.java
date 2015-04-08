@@ -17,6 +17,8 @@
 package org.mustbe.consulo.csharp.lang.parser;
 
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
@@ -28,10 +30,13 @@ import lombok.val;
  */
 public class UsingStatementParsing extends SharedParsingHelpers
 {
+	public static final TokenSet ourStoppers = TokenSet.orSet(ourSemicolonSet, CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START,
+			TokenSet.create(DELEGATE_KEYWORD, CONST_KEYWORD));
+
 	public static void parseUsingList(CSharpBuilderWrapper builder, PsiBuilder.Marker marker)
 	{
 		boolean empty = true;
-		while(builder.getTokenType() == USING_KEYWORD)
+		while(builder.getTokenType() == CSharpTokens.USING_KEYWORD)
 		{
 			parseUsing(builder);
 
@@ -55,7 +60,7 @@ public class UsingStatementParsing extends SharedParsingHelpers
 		builder.advanceLexer();
 
 		IElementType to = null;
-		if(builder.getTokenType() == IDENTIFIER && builder.lookAhead(1) == EQ)
+		if(builder.getTokenType() == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == CSharpTokens.EQ)
 		{
 			builder.advanceLexer();
 			builder.advanceLexer();
@@ -66,7 +71,7 @@ public class UsingStatementParsing extends SharedParsingHelpers
 			}
 			to = TYPE_DEF_STATEMENT;
 		}
-		else if(builder.getTokenType() == STATIC_KEYWORD)
+		else if(builder.getTokenType() == CSharpTokens.STATIC_KEYWORD)
 		{
 			builder.advanceLexer();
 
@@ -78,13 +83,14 @@ public class UsingStatementParsing extends SharedParsingHelpers
 		}
 		else
 		{
-			ExpressionParsing.parseQualifiedReference(builder, null);
 			to = USING_NAMESPACE_STATEMENT;
+
+			ExpressionParsing.parseQualifiedReference(builder, null);
 		}
 
-		reportErrorUntil(builder, "';' expected", ourSemicolonSet, TokenSet.EMPTY);
+		reportErrorUntil(builder, "';' expected", ourStoppers, TokenSet.EMPTY);
 
-		expect(builder, SEMICOLON, "';' expected");
+		expect(builder, CSharpTokens.SEMICOLON, "';' expected");
 
 		marker.done(to);
 	}
