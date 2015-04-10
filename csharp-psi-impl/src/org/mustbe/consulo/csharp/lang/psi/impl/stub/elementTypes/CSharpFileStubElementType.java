@@ -128,7 +128,8 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 		return collectDisabledBlocks(macroFile, extension.getVariables());
 	}
 
-	private static List<TextRange> collectDisabledBlocks(PsiFile templateFile, final List<String> baseVariables)
+	@NotNull
+	private static List<TextRange> collectDisabledBlocks(PsiFile templateFile, @NotNull final List<String> baseVariables)
 	{
 		final Ref<List<TextRange>> listRef = Ref.create();
 		final Ref<List<String>> redefined = Ref.create();
