@@ -16,7 +16,13 @@
 
 package org.musbe.consulo.csharp.parsing;
 
-import org.mustbe.consulo.csharp.lang.CSharpParserDefinition;
+import java.lang.reflect.Method;
+
+import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.CSharpLanguageVersionHelper;
+import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import com.intellij.lang.LanguageVersion;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.testFramework.ParsingTestCase;
 
 /**
@@ -27,17 +33,67 @@ public class CSharpParsingTest extends ParsingTestCase
 {
 	public CSharpParsingTest()
 	{
-		super("parsing", "cs", new CSharpParserDefinition());
+		super("parsing", "cs");
 	}
 
+	@Override
+	protected boolean checkAllPsiRoots()
+	{
+		return false;
+	}
+
+	@SetLanguageVersion(version = CSharpLanguageVersion._6_0)
+	public void testUsingStatic()
+	{
+		doTest(true);
+	}
+
+	@SetLanguageVersion(version = CSharpLanguageVersion._5_0)
 	public void testSoftKeywords()
 	{
 		doTest(true);
 	}
 
+	@SetLanguageVersion(version = CSharpLanguageVersion._5_0)
 	public void testGenericParameters()
 	{
 		doTest(true);
+	}
+
+	@SetLanguageVersion(version = CSharpLanguageVersion._6_0)
+	public void testNameOf()
+	{
+		doTest(true);
+	}
+
+	@SetLanguageVersion(version = CSharpLanguageVersion._5_0)
+	public void testNameOfNotAllowed()
+	{
+		doTest(true);
+	}
+
+	@NotNull
+	@Override
+	public LanguageVersion<?> resolveLanguageVersion(@NotNull FileType fileType)
+	{
+		String name = getName();
+		try
+		{
+			Method declaredMethod = getClass().getDeclaredMethod(name);
+			SetLanguageVersion annotation = declaredMethod.getAnnotation(SetLanguageVersion.class);
+			if(annotation != null)
+			{
+				return CSharpLanguageVersionHelper.getInstance().getWrapper(annotation.version());
+			}
+			else
+			{
+				throw new IllegalArgumentException("Missed @SetLanguageVersion");
+			}
+		}
+		catch(NoSuchMethodException e)
+		{
+			throw new Error(e);
+		}
 	}
 
 	@Override
@@ -49,6 +105,6 @@ public class CSharpParsingTest extends ParsingTestCase
 	@Override
 	protected String getTestDataPath()
 	{
-		return "csharp-impl/testData";
+		return "/csharp-impl/testData";
 	}
 }

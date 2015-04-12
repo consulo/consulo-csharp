@@ -1,0 +1,15 @@
+<component name="ArtifactManager">
+  <artifact name="pluginTest">
+    <output-path>$PROJECT_DIR$/out/artifacts/pluginTest</output-path>
+    <root id="root">
+      <element id="directory" name="csharp">
+        <element id="directory" name="lib">
+          <element id="zip-archive" name="csharp-tests.jar">
+            <element id="module-test-output" name="csharp-impl" />
+          </element>
+        </element>
+      </element>
+      <element id="artifact" artifact-name="plugin" />
+    </root>
+  </artifact>
+</component>
