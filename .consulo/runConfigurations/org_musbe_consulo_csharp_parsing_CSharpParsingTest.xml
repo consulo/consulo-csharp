@@ -1,0 +1,28 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="org.musbe.consulo.csharp.parsing.CSharpParsingTest" type="#ConsuloTestRunConfigurationType" factoryName="Consulo In Sandbox (Test)" singleton="true">
+    <option name="PLUGIN_ID" value="org.mustbe.consulo.csharp" />
+    <option name="CLASS_NAME" value="org.musbe.consulo.csharp.parsing.CSharpParsingTest" />
+    <option name="VM_PARAMETERS" value="" />
+    <option name="PROGRAM_PARAMETERS" value="" />
+    <option name="USE_ALT_CONSULO_SDK" value="false" />
+    <option name="ALT_CONSULO_SDK_PATH" />
+    <java-sdk name="1.6" />
+    <consulo-sdk name="Consulo 1.SNAPSHOT" />
+    <artifact name="pluginTest" />
+    <predefined_log_file id="IDEA_LOG" enabled="true" />
+    <RunnerSettings RunnerId="Debug">
+      <option name="DEBUG_PORT" value="" />
+      <option name="TRANSPORT" value="0" />
+      <option name="LOCAL" value="true" />
+    </RunnerSettings>
+    <ConfigurationWrapper RunnerId="Cover" />
+    <ConfigurationWrapper RunnerId="Debug" />
+    <method>
+      <option name="BuildArtifacts" enabled="true">
+        <artifact name="dist" />
+        <artifact name="plugin" />
+        <artifact name="pluginTest" />
+      </option>
+    </method>
+  </configuration>
+</component>

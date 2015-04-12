@@ -35,8 +35,7 @@ CSHARP_FILE
             PsiWhiteSpace(' ')
             CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
               PsiElement(INTEGER_LITERAL)('1')
-          PsiErrorElement:';' expected
-            <empty list>
+          PsiElement(SEMICOLON)(';')
         PsiWhiteSpace('\n\t')
         PsiElement(RBRACE)('}')
     PsiWhiteSpace('\n')

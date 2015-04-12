@@ -1,0 +1,29 @@
+CSHARP_FILE
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      PsiElement(PUBLIC_KEYWORD)('public')
+    PsiWhiteSpace(' ')
+    PsiElement(CLASS_KEYWORD)('class')
+    PsiWhiteSpace(' ')
+    PsiElement(IDENTIFIER)('Test')
+    PsiWhiteSpace('\n')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace('\n    ')
+    CSharpEventDeclarationImpl [EVENT_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(PUBLIC_KEYWORD)('public')
+      PsiWhiteSpace(' ')
+      PsiElement(EVENT_KEYWORD)('event')
+      PsiWhiteSpace(' ')
+      CSharpStubUserTypeImpl [USER_TYPE]
+        CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+          PsiElement(IDENTIFIER)('Action')
+      PsiWhiteSpace(' ')
+      PsiElement(IDENTIFIER)('Test1')
+    CSharpEventDeclarationImpl [EVENT_DECLARATION]
+      PsiElement(COMMA)(',')
+      PsiWhiteSpace(' ')
+      PsiElement(IDENTIFIER)('Test2')
+    PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace('\n')
+    PsiElement(RBRACE)('}')

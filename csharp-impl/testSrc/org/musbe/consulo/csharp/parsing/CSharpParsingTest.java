@@ -66,6 +66,66 @@ public class CSharpParsingTest extends ParsingTestCase
 		doTest(true);
 	}
 
+	@SetLanguageVersion(version = CSharpLanguageVersion._6_0)
+	public void testIssue40()
+	{
+		doTest(true);
+	}
+
+	@SetLanguageVersion(version = CSharpLanguageVersion._6_0)
+	public void testIssue70()
+	{
+		doTest(true);
+	}
+
+	@SetLanguageVersion(version = CSharpLanguageVersion._6_0)
+	public void testIssue89()
+	{
+		doTest(true);
+	}
+
+	@SetLanguageVersion(version = CSharpLanguageVersion._6_0)
+	public void testIssue121()
+	{
+		doTest(true);
+	}
+
+	@SetLanguageVersion(version = CSharpLanguageVersion._6_0)
+	public void testIssue191()
+	{
+		doTest(true);
+	}
+
+	@SetLanguageVersion(version = CSharpLanguageVersion._6_0)
+	public void testIssue233()
+	{
+		doTest(true);
+	}
+
+	@SetLanguageVersion(version = CSharpLanguageVersion._6_0)
+	public void testIssue240()
+	{
+		doTest(true);
+	}
+
+	@SetLanguageVersion(version = CSharpLanguageVersion._6_0)
+	public void testIssue248()
+	{
+		doTest(true);
+	}
+
+	@SetLanguageVersion(version = CSharpLanguageVersion._6_0)
+	public void testIssue251()
+	{
+		doTest(true);
+	}
+
+	@SetLanguageVersion(version = CSharpLanguageVersion._6_0)
+	public void testIssue267()
+	{
+		doTest(true);
+	}
+
 	@SetLanguageVersion(version = CSharpLanguageVersion._5_0)
 	public void testNameOfNotAllowed()
 	{

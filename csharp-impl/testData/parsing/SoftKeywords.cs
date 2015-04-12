@@ -2,6 +2,6 @@ partial class PartialClass
 {
 	partial void partialMethod()
 	{
-		int partial = 1
+		int partial = 1;
 	}
 }
