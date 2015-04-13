@@ -1,0 +1,71 @@
+CSHARP_FILE
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      PsiElement(PUBLIC_KEYWORD)('public')
+    PsiWhiteSpace(' ')
+    PsiElement(CLASS_KEYWORD)('class')
+    PsiWhiteSpace(' ')
+    PsiElement(IDENTIFIER)('VarVar')
+    PsiWhiteSpace('\n')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace('\n    ')
+    CSharpFieldDeclarationImpl [FIELD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(PRIVATE_KEYWORD)('private')
+      PsiWhiteSpace(' ')
+      CSharpStubUserTypeImpl [USER_TYPE]
+        CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+          PsiElement(IDENTIFIER)('var')
+      PsiWhiteSpace(' ')
+      PsiElement(IDENTIFIER)('var')
+      PsiWhiteSpace(' ')
+      PsiElement(EQ)('=')
+      PsiWhiteSpace(' ')
+      CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+        PsiElement(INTEGER_LITERAL)('1')
+      PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace('\n\n    ')
+    CSharpEventDeclarationImpl [EVENT_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(PRIVATE_KEYWORD)('private')
+      PsiWhiteSpace(' ')
+      PsiElement(EVENT_KEYWORD)('event')
+      PsiWhiteSpace(' ')
+      CSharpStubUserTypeImpl [USER_TYPE]
+        CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+          PsiElement(IDENTIFIER)('var')
+      PsiWhiteSpace(' ')
+      PsiElement(IDENTIFIER)('var')
+      PsiElement(SEMICOLON)(';')
+    PsiWhiteSpace('\n\n    ')
+    CSharpMethodDeclarationImpl [METHOD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(PUBLIC_KEYWORD)('public')
+      PsiWhiteSpace(' ')
+      CSharpStubNativeTypeImpl [NATIVE_TYPE]
+        PsiElement(VOID_KEYWORD)('void')
+      PsiWhiteSpace(' ')
+      PsiElement(IDENTIFIER)('test')
+      CSharpStubParameterListImpl [PARAMETER_LIST]
+        PsiElement(LPAR)('(')
+        PsiElement(RPAR)(')')
+      PsiWhiteSpace('\n    ')
+      CSharpBlockStatementImpl(BLOCK_STATEMENT)
+        PsiElement(LBRACE)('{')
+        PsiWhiteSpace('\n        ')
+        CSharpLocalVariableDeclarationStatementImpl(LOCAL_VARIABLE_DECLARATION_STATEMENT)
+          CSharpLocalVariableImpl(LOCAL_VARIABLE)
+            CSharpNativeTypeImpl(NATIVE_TYPE)
+              PsiElement(VAR_KEYWORD)('var')
+            PsiWhiteSpace(' ')
+            PsiElement(IDENTIFIER)('var')
+            PsiWhiteSpace(' ')
+            PsiElement(EQ)('=')
+            PsiWhiteSpace(' ')
+            CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+              PsiElement(INTEGER_LITERAL)('1')
+          PsiElement(SEMICOLON)(';')
+        PsiWhiteSpace('\n    ')
+        PsiElement(RBRACE)('}')
+    PsiWhiteSpace('\n')
+    PsiElement(RBRACE)('}')

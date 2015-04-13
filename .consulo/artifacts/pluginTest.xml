@@ -6,6 +6,7 @@
         <element id="directory" name="lib">
           <element id="zip-archive" name="csharp-tests.jar">
             <element id="module-test-output" name="csharp-impl" />
+            <element id="module-test-output" name="csharp-psi-impl" />
           </element>
         </element>
       </element>

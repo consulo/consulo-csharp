@@ -1,7 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="org.musbe.consulo.csharp.parsing.CSharpParsingTest" type="#ConsuloTestRunConfigurationType" factoryName="Consulo In Sandbox (Test)" singleton="true">
+  <configuration default="false" name="All Tests" type="#ConsuloTestRunConfigurationType" factoryName="Consulo In Sandbox (Test)" singleton="true" target-type="PACKAGE">
     <option name="PLUGIN_ID" value="org.mustbe.consulo.csharp" />
     <option name="CLASS_NAME" value="org.musbe.consulo.csharp.parsing.CSharpParsingTest" />
+    <option name="PACKAGE_NAME" />
     <option name="VM_PARAMETERS" value="" />
     <option name="PROGRAM_PARAMETERS" value="" />
     <option name="USE_ALT_CONSULO_SDK" value="false" />
