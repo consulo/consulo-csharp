@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 must-be.org
+ * Copyright 2013-2015 must-be.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +16,24 @@
 
 package org.mustbe.consulo.csharp.ide.codeInsight.problems;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.vfs.VirtualFile;
+import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
+import com.intellij.codeInsight.daemon.ProblemHighlightFilter;
+import com.intellij.psi.PsiFile;
 
 /**
  * @author VISTALL
- * @since 17.01.14
+ * @since 13.04.2015
  */
-public class CSharpFileProblemHighlightFilter implements Condition<VirtualFile>
+public class CSharpProblemHighlightFilter extends ProblemHighlightFilter
 {
-	private final Project myProject;
-
-	public CSharpFileProblemHighlightFilter(Project project)
-	{
-		myProject = project;
-	}
-
 	@Override
-	public boolean value(VirtualFile virtualFile)
+	public boolean shouldHighlight(@NotNull PsiFile psiFile)
 	{
-		return CSharpLocationUtil.isValidLocation(myProject, virtualFile);
+		if(psiFile instanceof CSharpFile)
+		{
+			return CSharpLocationUtil.isValidLocation(psiFile.getProject(), psiFile.getVirtualFile());
+		}
+		return true;
 	}
 }

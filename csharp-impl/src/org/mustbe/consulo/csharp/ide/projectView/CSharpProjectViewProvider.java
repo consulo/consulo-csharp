@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.codeInsight.problems.CSharpLocationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
@@ -28,8 +29,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import com.intellij.ide.projectView.SelectableTreeStructureProvider;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
-import com.intellij.openapi.project.DumbAware;
-import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -38,7 +37,7 @@ import com.intellij.psi.PsiFile;
  * @author VISTALL
  * @since 09.12.13.
  */
-public class CSharpProjectViewProvider implements SelectableTreeStructureProvider, DumbAware
+public class CSharpProjectViewProvider implements SelectableTreeStructureProvider
 {
 	private final Project myProject;
 
@@ -58,10 +57,6 @@ public class CSharpProjectViewProvider implements SelectableTreeStructureProvide
 	public Collection<AbstractTreeNode> modify(AbstractTreeNode abstractTreeNode, Collection<AbstractTreeNode> abstractTreeNodes, ViewSettings
 			settings)
 	{
-		if(DumbService.isDumb(myProject))
-		{
-			return abstractTreeNodes;
-		}
 		List<AbstractTreeNode> nodes = new ArrayList<AbstractTreeNode>(abstractTreeNodes.size());
 		for(AbstractTreeNode treeNode : abstractTreeNodes)
 		{
@@ -72,14 +67,21 @@ public class CSharpProjectViewProvider implements SelectableTreeStructureProvide
 				CSharpFileImpl cSharpFile = CSharpPsiUtilImpl.findCSharpFile((PsiFile) value);
 				if(cSharpFile != null)
 				{
-					DotNetNamedElement singleElement = CSharpPsiUtilImpl.findSingleElement(cSharpFile);
-					if(singleElement != null)
+					if(CSharpLocationUtil.isValidLocation(myProject, ((PsiFile) value).getVirtualFile()))
 					{
-						nodes.add(new CSharpElementTreeNode(singleElement, settings));
+						DotNetNamedElement singleElement = CSharpPsiUtilImpl.findSingleElement(cSharpFile);
+						if(singleElement != null)
+						{
+							nodes.add(new CSharpElementTreeNode(singleElement, settings));
+						}
+						else
+						{
+							nodes.add(new CSharpElementTreeNode(cSharpFile, settings));
+						}
 					}
 					else
 					{
-						nodes.add(new CSharpElementTreeNode(cSharpFile, settings));
+						nodes.add(treeNode);
 					}
 				}
 				else

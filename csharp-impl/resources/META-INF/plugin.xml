@@ -211,6 +211,7 @@
 		<vetoRenameCondition implementation="org.mustbe.consulo.csharp.ide.refactoring.rename.CSharpVetoRenameCondition"/>
 
 		<problemFileHighlightFilter implementation="org.mustbe.consulo.csharp.ide.codeInsight.problems.CSharpFileProblemHighlightFilter"/>
+		<problemHighlightFilter implementation="org.mustbe.consulo.csharp.ide.codeInsight.problems.CSharpProblemHighlightFilter" />
 		<editorHighlighterProvider filetype="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpEditorHighlighterProvider"/>
 
 		<codeInsight.parameterInfo language="C#" implementationClass="org.mustbe.consulo.csharp.ide.parameterInfo.CSharpParameterInfoHandler"/>
