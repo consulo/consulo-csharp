@@ -239,6 +239,7 @@
 		<codeStyleSettingsProvider implementation="org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettingsProvider"/>
 		<langCodeStyleSettingsProvider implementation="org.mustbe.consulo.csharp.ide.codeStyle.CSharpLanguageCodeStyleSettingsProvider"/>
 
+		<readWriteAccessDetector implementation="org.mustbe.consulo.csharp.ide.codeInsight.highlighting.CSharpReadWriteAccessDetector" />
 		<quoteHandler fileType="C#" className="org.mustbe.consulo.csharp.ide.CSharpQuoteHandler"/>
 		<colorSettingsPage implementation="org.mustbe.consulo.csharp.ide.highlight.CSharpColorSettingsPage"/>
 		<fileEditorProvider implementation="org.mustbe.consulo.csharp.ide.assemblyInfo.CSharpAssemblyFileEditorProvider"/>
