@@ -220,6 +220,7 @@
 													  implementationClass="org.mustbe.consulo.csharp.ide.codeInsight.template.postfix.CSharpPostfixTemplateProvider"/>
 
 		<referencesSearch implementation="org.mustbe.consulo.csharp.ide.findUsage.referenceSearch.AdditionalReferenceSearch"/>
+		<referencesSearch implementation="org.mustbe.consulo.csharp.ide.findUsage.referenceSearch.CSharpConstructorPlusTypeReferenceSearch"/>
 
 		<bundleLiveTemplateSet path="liveTemplates/output"/>
 		<bundleLiveTemplateSet path="liveTemplates/main"/>
