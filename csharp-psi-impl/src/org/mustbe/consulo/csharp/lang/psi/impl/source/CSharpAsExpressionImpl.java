@@ -38,6 +38,12 @@ public class CSharpAsExpressionImpl extends CSharpElementImpl implements DotNetE
 	}
 
 	@Nullable
+	public DotNetExpression getInnerExpression()
+	{
+		return findChildByClass(DotNetExpression.class);
+	}
+
+	@Nullable
 	public DotNetType getType()
 	{
 		return findChildByClass(DotNetType.class);

@@ -18,8 +18,18 @@ package org.mustbe.consulo.csharp.lang.evaluator;
 
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAsExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBinaryExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeCastExpressionImpl;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -41,6 +51,119 @@ public class ConstantExpressionEvaluator extends CSharpElementVisitor
 	public void visitConstantExpression(CSharpConstantExpressionImpl expression)
 	{
 		myValue = expression.getValue();
+	}
+
+	@Override
+	public void visitBinaryExpression(CSharpBinaryExpressionImpl expression)
+	{
+		DotNetExpression leftExpression = expression.getLeftExpression();
+		DotNetExpression rightExpression = expression.getRightExpression();
+		if(leftExpression == null || rightExpression == null)
+		{
+			return;
+		}
+
+		Object leftValue = new ConstantExpressionEvaluator(leftExpression).getValue();
+		Object rightValue = new ConstantExpressionEvaluator(rightExpression).getValue();
+		if(leftValue == null || rightValue == null)
+		{
+			return;
+		}
+
+		myValue = OperatorEvaluator.calcBinary(expression.getOperatorElement().getOperatorElementType(), leftValue, rightValue);
+	}
+
+	@Override
+	public void visitTypeCastExpression(CSharpTypeCastExpressionImpl expression)
+	{
+		myValue = castTo(new ConstantExpressionEvaluator(expression.getInnerExpression()).getValue(), expression);
+	}
+
+	@Override
+	public void visitAsExpression(CSharpAsExpressionImpl expression)
+	{
+		myValue = castTo(new ConstantExpressionEvaluator(expression.getInnerExpression()).getValue(), expression);
+	}
+
+	@Override
+	public void visitReferenceExpression(CSharpReferenceExpression expression)
+	{
+		PsiElement resolvedElement = expression.resolve();
+		if(resolvedElement instanceof DotNetVariable)
+		{
+			if(((DotNetVariable) resolvedElement).isConstant() || ((DotNetVariable) resolvedElement).hasModifier(CSharpModifier.READONLY))
+			{
+				DotNetExpression initializer = ((DotNetVariable) resolvedElement).getInitializer();
+				if(initializer == null)
+				{
+					return;
+				}
+				myValue = new ConstantExpressionEvaluator(initializer).getValue();
+			}
+		}
+	}
+
+	private static Object castTo(Object value, DotNetExpression element)
+	{
+		if(value == null)
+		{
+			return null;
+		}
+		DotNetTypeRef typeRef = element.toTypeRef(false);
+		PsiElement psiElement = typeRef.resolve(element).getElement();
+		if(!(psiElement instanceof DotNetTypeDeclaration))
+		{
+			return value;
+		}
+
+		String vmQName = ((DotNetTypeDeclaration) psiElement).getVmQName();
+		if(DotNetTypes.System.Int32.equals(vmQName))
+		{
+			if(value instanceof Number)
+			{
+				return ((Number) value).intValue();
+			}
+		}
+		else if(DotNetTypes.System.Int16.equals(vmQName))
+		{
+			if(value instanceof Number)
+			{
+				return ((Number) value).shortValue();
+			}
+		}
+		else if(DotNetTypes.System.Int64.equals(vmQName))
+		{
+			if(value instanceof Number)
+			{
+				return ((Number) value).longValue();
+			}
+		}
+		else if(DotNetTypes.System.SByte.equals(vmQName))
+		{
+			if(value instanceof Number)
+			{
+				return ((Number) value).byteValue();
+			}
+		}
+		else if(DotNetTypes.System.Single.equals(vmQName))
+		{
+			if(value instanceof Number)
+			{
+				return ((Number) value).floatValue();
+			}
+		}
+		else if(DotNetTypes.System.Double.equals(vmQName))
+		{
+			if(value instanceof Number)
+			{
+				return ((Number) value).doubleValue();
+			}
+		}
+		else if(DotNetTypes.System.String.equals(vmQName))
+		{
+			return value.toString();
+		}
+		return value;
 	}
 
 	@Nullable

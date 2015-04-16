@@ -164,11 +164,11 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 		}
 		else if(elementType == CSharpTokens.INTEGER_LITERAL)
 		{
-			return Integer.parseInt(text);
+			return Integer.decode(text);
 		}
 		else if(elementType == CSharpTokens.LONG_LITERAL)
 		{
-			return Long.parseLong(text);
+			return Long.decode(text);
 		}
 		else if(elementType == CSharpTokens.FLOAT_LITERAL)
 		{

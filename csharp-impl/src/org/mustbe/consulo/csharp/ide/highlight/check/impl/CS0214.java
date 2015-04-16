@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.AddModifierFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
@@ -30,6 +31,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPrefixExpressionImpl
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUnsafeStatementImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
@@ -75,6 +77,10 @@ public class CS0214 extends CompilerCheck<DotNetElement>
 
 			for(CSharpLocalVariable localVariable : ((CSharpLocalVariableDeclarationStatement) element).getVariables())
 			{
+				DotNetExpression initializer = localVariable.getInitializer();
+
+				if(initializer != null)
+				System.out.println(new ConstantExpressionEvaluator(initializer).getValue());
 				DotNetType selfType = localVariable.getSelfType();
 				if(selfType instanceof DotNetPointerType)
 				{
