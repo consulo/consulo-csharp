@@ -214,6 +214,10 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	private MsilGenericParameterListAsCSharpGenericParameterList myGenericParameterList;
 	private CSharpLightGenericConstraintList myGenericConstraintList;
 
+	private Boolean myIsStruct;
+	private Boolean myIsEnum;
+	private Boolean myIsInterface;
+
 	public MsilClassAsCSharpTypeDefinition(@Nullable PsiElement parent, MsilClassEntry classEntry)
 	{
 		super(parent, classEntry);
@@ -285,19 +289,31 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	@Override
 	public boolean isInterface()
 	{
-		return myOriginal.isInterface();
+		if(myIsInterface != null)
+		{
+			return myIsInterface;
+		}
+		return myIsInterface = myOriginal.isEnum();
 	}
 
 	@Override
 	public boolean isStruct()
 	{
-		return myOriginal.isStruct();
+		if(myIsStruct != null)
+		{
+			return myIsStruct;
+		}
+		return myIsStruct = myOriginal.isStruct();
 	}
 
 	@Override
 	public boolean isEnum()
 	{
-		return myOriginal.isEnum();
+		if(myIsEnum != null)
+		{
+			return myIsEnum;
+		}
+		return myIsEnum = myOriginal.isEnum();
 	}
 
 	@Override
