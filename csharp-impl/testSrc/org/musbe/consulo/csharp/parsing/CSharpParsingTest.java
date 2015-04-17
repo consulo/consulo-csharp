@@ -138,6 +138,18 @@ public class CSharpParsingTest extends ParsingTestCase
 		doTest(true);
 	}
 
+	@SetLanguageVersion(version = CSharpLanguageVersion._6_0)
+	public void testNamespaceInsideClass()
+	{
+		doTest(true);
+	}
+
+	@SetLanguageVersion(version = CSharpLanguageVersion._6_0)
+	public void testEnumParsing()
+	{
+		doTest(true);
+	}
+
 	@NotNull
 	@Override
 	public LanguageVersion<?> resolveLanguageVersion(@NotNull FileType fileType)

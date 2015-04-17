@@ -1,0 +1,65 @@
+CSHARP_FILE
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      PsiElement(PUBLIC_KEYWORD)('public')
+    PsiWhiteSpace(' ')
+    PsiElement(ENUM_KEYWORD)('enum')
+    PsiWhiteSpace(' ')
+    PsiElement(IDENTIFIER)('EnumParsing')
+    PsiWhiteSpace('\n')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace('\n    ')
+    CSharpEnumConstantDeclarationImpl [ENUM_CONSTANT_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        <empty list>
+      PsiElement(IDENTIFIER)('Test')
+    PsiElement(COMMA)(',')
+    PsiWhiteSpace('\n    ')
+    CSharpEnumConstantDeclarationImpl [ENUM_CONSTANT_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        <empty list>
+      PsiElement(IDENTIFIER)('Test2')
+    PsiWhiteSpace('\n')
+    PsiElement(RBRACE)('}')
+  PsiWhiteSpace('\n\n')
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      PsiElement(PUBLIC_KEYWORD)('public')
+    PsiWhiteSpace(' ')
+    PsiElement(ENUM_KEYWORD)('enum')
+    PsiWhiteSpace(' ')
+    PsiElement(IDENTIFIER)('EnumParsingWithComma')
+    PsiWhiteSpace('\n')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace('\n    ')
+    CSharpEnumConstantDeclarationImpl [ENUM_CONSTANT_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+          PsiElement(LBRACKET)('[')
+          CSharpStubAttributeImpl [ATTRIBUTE]
+            CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+              PsiElement(IDENTIFIER)('Attribute')
+            CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+              <empty list>
+          PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n    ')
+      PsiElement(IDENTIFIER)('Test')
+      PsiWhiteSpace(' ')
+      PsiElement(EQ)('=')
+      PsiWhiteSpace(' ')
+      CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+        PsiElement(INTEGER_LITERAL)('1')
+    PsiElement(COMMA)(',')
+    PsiWhiteSpace('\n    ')
+    CSharpEnumConstantDeclarationImpl [ENUM_CONSTANT_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        <empty list>
+      PsiElement(IDENTIFIER)('Test2')
+      PsiWhiteSpace(' ')
+      PsiElement(EQ)('=')
+      PsiWhiteSpace(' ')
+      CSharpConstantExpressionImpl(CONSTANT_EXPRESSION)
+        PsiElement(INTEGER_LITERAL)('2')
+    PsiElement(COMMA)(',')
+    PsiWhiteSpace('\n')
+    PsiElement(RBRACE)('}')
