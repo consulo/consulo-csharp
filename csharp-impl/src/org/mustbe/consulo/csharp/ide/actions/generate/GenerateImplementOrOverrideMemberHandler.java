@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.ide.actions.generate;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -37,13 +38,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
-* @author VISTALL
-* @since 16.12.14
-*/
+ * @author VISTALL
+ * @since 16.12.14
+ */
 public abstract class GenerateImplementOrOverrideMemberHandler implements LanguageCodeInsightActionHandler
 {
 	@Override
@@ -61,37 +61,33 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 			return;
 		}
 
-		List<CSharpMemberChooseObject> memberChooseObjects = ContainerUtil.map(psiElements, new Function<PsiElement, CSharpMemberChooseObject>()
+		List<CSharpMemberChooseObject> memberChooseObjects = new ArrayList<CSharpMemberChooseObject>(psiElements.size());
+		for(final PsiElement psiElement : psiElements)
 		{
-			@Override
-			public CSharpMemberChooseObject fun(final PsiElement element)
+			if(psiElement instanceof CSharpMethodDeclaration)
 			{
-				if(element instanceof CSharpMethodDeclaration)
+				memberChooseObjects.add(new MethodChooseMember((CSharpMethodDeclaration) psiElement)
 				{
-					return new MethodChooseMember((CSharpMethodDeclaration) element)
+					@Override
+					public void process(@NotNull StringBuilder builder)
 					{
-						@Override
-						public void process(@NotNull StringBuilder builder)
-						{
-							GenerateImplementOrOverrideMemberHandler.this.processItem(builder, element);
-						}
+						GenerateImplementOrOverrideMemberHandler.this.processItem(builder, psiElement);
+					}
 
-						@Override
-						public void processReturn(@NotNull StringBuilder builder)
-						{
-							GenerateImplementOrOverrideMemberHandler.this.processReturn(builder, element);
-						}
+					@Override
+					public void processReturn(@NotNull StringBuilder builder)
+					{
+						GenerateImplementOrOverrideMemberHandler.this.processReturn(builder, psiElement);
+					}
 
-						@Override
-						public boolean canGenerateCodeBlock()
-						{
-							return !typeDeclaration.isInterface();
-						}
-					};
-				}
-				return null;
+					@Override
+					public boolean canGenerateCodeBlock()
+					{
+						return !typeDeclaration.isInterface();
+					}
+				});
 			}
-		});
+		}
 
 		final MemberChooserBuilder<CSharpMemberChooseObject<?>> builder = new MemberChooserBuilder<CSharpMemberChooseObject<?>>(project);
 		builder.setTitle(getTitle());
