@@ -36,7 +36,6 @@ import com.intellij.openapi.vfs.ArchiveFileSystem;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.impl.PsiManagerImpl;
 import com.intellij.psi.search.EverythingGlobalScope;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
@@ -56,7 +55,6 @@ public class CSharpDirectInheritorsSearcherExecutor implements QueryExecutor<Dot
 	public boolean execute(@NotNull final DirectClassInheritorsSearch.SearchParameters p, @NotNull final Processor<DotNetTypeDeclaration> consumer)
 	{
 		final DotNetTypeDeclaration aClass = p.getClassToProcess();
-		final PsiManagerImpl psiManager = (PsiManagerImpl) aClass.getManager();
 
 		final SearchScope useScope = ApplicationManager.getApplication().runReadAction(new Computable<SearchScope>()
 		{
@@ -106,8 +104,7 @@ public class CSharpDirectInheritorsSearcherExecutor implements QueryExecutor<Dot
 			});
 		}  */
 
-		final GlobalSearchScope scope = useScope instanceof GlobalSearchScope ? (GlobalSearchScope) useScope : new EverythingGlobalScope(psiManager
-				.getProject());
+		final GlobalSearchScope scope = useScope instanceof GlobalSearchScope ? (GlobalSearchScope) useScope : new EverythingGlobalScope(aClass.getProject());
 		final String searchKey = ApplicationManager.getApplication().runReadAction(new Computable<String>()
 		{
 			@Override
@@ -126,7 +123,7 @@ public class CSharpDirectInheritorsSearcherExecutor implements QueryExecutor<Dot
 			@Override
 			public Collection<DotNetTypeList> compute()
 			{
-				return ExtendsListIndex.getInstance().get(searchKey, psiManager.getProject(), scope);
+				return ExtendsListIndex.getInstance().get(searchKey, aClass.getProject(), scope);
 			}
 		});
 
