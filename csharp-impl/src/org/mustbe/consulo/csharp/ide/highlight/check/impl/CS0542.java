@@ -46,7 +46,12 @@ public class CS0542 extends CompilerCheck<DotNetQualifiedElement>
 
 		if(Comparing.equal(element.getName(), ((CSharpTypeDeclaration) parent).getName()))
 		{
-			return newBuilder(((PsiNameIdentifierOwner) element).getNameIdentifier(), element.getName());
+			PsiElement nameIdentifier = ((PsiNameIdentifierOwner) element).getNameIdentifier();
+			if(nameIdentifier == null)
+			{
+				return null;
+			}
+			return newBuilder(nameIdentifier, element.getName());
 		}
 		return null;
 	}
