@@ -165,6 +165,7 @@
 		<renamePsiElementProcessor implementation="org.mustbe.consulo.csharp.ide.refactoring.rename.CSharpOverrideElementProcessor"/>
 		<gotoClassContributor implementation="org.mustbe.consulo.csharp.ide.navigation.CSharpTypeNameContributor"/>
 		<gotoSymbolContributor implementation="org.mustbe.consulo.csharp.ide.navigation.CSharpSymbolNameContributor"/>
+		<gotoDeclarationHandler implementation="org.mustbe.consulo.csharp.ide.navigation.CSharpGotoDeclarationHandler" />
 
 		<qualifiedNameProvider implementation="org.mustbe.consulo.csharp.ide.CSharpQualifiedNameProvider"/>
 
@@ -211,7 +212,7 @@
 		<vetoRenameCondition implementation="org.mustbe.consulo.csharp.ide.refactoring.rename.CSharpVetoRenameCondition"/>
 
 		<problemFileHighlightFilter implementation="org.mustbe.consulo.csharp.ide.codeInsight.problems.CSharpFileProblemHighlightFilter"/>
-		<problemHighlightFilter implementation="org.mustbe.consulo.csharp.ide.codeInsight.problems.CSharpProblemHighlightFilter" />
+		<problemHighlightFilter implementation="org.mustbe.consulo.csharp.ide.codeInsight.problems.CSharpProblemHighlightFilter"/>
 		<editorHighlighterProvider filetype="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpEditorHighlighterProvider"/>
 
 		<codeInsight.parameterInfo language="C#" implementationClass="org.mustbe.consulo.csharp.ide.parameterInfo.CSharpParameterInfoHandler"/>
@@ -240,7 +241,7 @@
 		<codeStyleSettingsProvider implementation="org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettingsProvider"/>
 		<langCodeStyleSettingsProvider implementation="org.mustbe.consulo.csharp.ide.codeStyle.CSharpLanguageCodeStyleSettingsProvider"/>
 
-		<readWriteAccessDetector implementation="org.mustbe.consulo.csharp.ide.codeInsight.highlighting.CSharpReadWriteAccessDetector" />
+		<readWriteAccessDetector implementation="org.mustbe.consulo.csharp.ide.codeInsight.highlighting.CSharpReadWriteAccessDetector"/>
 		<quoteHandler fileType="C#" className="org.mustbe.consulo.csharp.ide.CSharpQuoteHandler"/>
 		<colorSettingsPage implementation="org.mustbe.consulo.csharp.ide.highlight.CSharpColorSettingsPage"/>
 		<fileEditorProvider implementation="org.mustbe.consulo.csharp.ide.assemblyInfo.CSharpAssemblyFileEditorProvider"/>

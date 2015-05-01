@@ -16,12 +16,14 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
+import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 
 /**
  * @author VISTALL
  * @since 30.11.13.
  */
+@ArrayFactoryFields
 public interface CSharpTypeDeclaration extends DotNetTypeDeclaration, CSharpGenericConstraintOwner, CSharpBodyWithBraces
 {
 }

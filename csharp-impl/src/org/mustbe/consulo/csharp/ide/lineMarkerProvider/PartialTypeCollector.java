@@ -50,7 +50,7 @@ import lombok.val;
  */
 public class PartialTypeCollector implements LineMarkerCollector
 {
-	private static class OurRender extends PsiElementListCellRenderer<PsiElement>
+	public static class OurRender extends PsiElementListCellRenderer<PsiElement>
 	{
 		@Override
 		public String getElementText(PsiElement element)
@@ -70,8 +70,7 @@ public class PartialTypeCollector implements LineMarkerCollector
 			}
 			else
 			{
-				VirtualFile parent = virtualFile.getParent();
-				return parent == null ? null : parent.getPath();
+				return "(" + virtualFile.getPath() + ")";
 			}
 		}
 

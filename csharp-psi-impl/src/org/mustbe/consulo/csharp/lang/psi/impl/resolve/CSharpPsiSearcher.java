@@ -16,11 +16,17 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.consulo.lombok.annotations.ProjectService;
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceAsElementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeByVmQNameIndex;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
@@ -30,6 +36,8 @@ import org.mustbe.consulo.dotnet.resolve.impl.IndexBasedDotNetPsiSearcher;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndexKey;
+import com.intellij.util.containers.ContainerUtil;
+import lombok.val;
 
 /**
  * @author VISTALL
@@ -69,6 +77,40 @@ public class CSharpPsiSearcher extends IndexBasedDotNetPsiSearcher
 	public Collection<? extends DotNetTypeDeclaration> findTypesImpl(@NotNull String vmQName, @NotNull GlobalSearchScope scope,
 			@NotNull TypeResoleKind typeResoleKind)
 	{
-		return TypeByVmQNameIndex.getInstance().get(vmQName, myProject, scope);
+		Collection<DotNetTypeDeclaration> declarations = TypeByVmQNameIndex.getInstance().get(vmQName, myProject, scope);
+
+		List<CSharpTypeDeclaration> list = Collections.emptyList();
+		for(DotNetTypeDeclaration element : declarations)
+		{
+			if(!(element instanceof CSharpTypeDeclaration))
+			{
+				continue;
+			}
+
+			if(element.hasModifier(CSharpModifier.PARTIAL))
+			{
+				if(list.isEmpty())
+				{
+					list = new ArrayList<CSharpTypeDeclaration>(2);
+				}
+
+				list.add((CSharpTypeDeclaration) element);
+			}
+		}
+
+		if(list.isEmpty())
+		{
+			return declarations;
+		}
+
+		val typeDeclaration = new CSharpCompositeTypeDeclaration(ContainerUtil.toArray(list, CSharpTypeDeclaration.ARRAY_FACTORY));
+
+		List<DotNetTypeDeclaration> newList = new ArrayList<DotNetTypeDeclaration>(declarations.size() - list.size() + 1);
+		newList.add(typeDeclaration);
+
+		declarations.removeAll(list);
+		newList.addAll(declarations);
+
+		return newList;
 	}
 }

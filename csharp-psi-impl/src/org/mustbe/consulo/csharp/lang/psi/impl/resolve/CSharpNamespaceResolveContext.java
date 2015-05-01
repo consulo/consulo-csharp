@@ -15,6 +15,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransformer;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeWithExtensionMethodsIndex;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
@@ -186,8 +187,11 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 	@Override
 	public boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
 	{
-		for(PsiElement element : myNamespaceAsElement.getChildren(myResolveScope, CSharpTransformer.INSTANCE,
-				DotNetNamespaceAsElement.ChildrenFilter.NONE))
+		PsiElement[] children = myNamespaceAsElement.getChildren(myResolveScope, CSharpTransformer.INSTANCE,
+				DotNetNamespaceAsElement.ChildrenFilter.NONE);
+		children = CSharpCompositeTypeDeclaration.wrapPartialTypes(children);
+
+		for(PsiElement element : children)
 		{
 			if(!processor.process(element))
 			{

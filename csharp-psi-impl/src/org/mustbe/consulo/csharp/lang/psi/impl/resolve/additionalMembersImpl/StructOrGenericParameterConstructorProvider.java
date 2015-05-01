@@ -54,6 +54,8 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 		}
 		else if(element instanceof CSharpTypeDeclaration)
 		{
+			String vmQName = ((CSharpTypeDeclaration) element).getVmQName();
+
 			CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) element;
 			DotNetNamedElement anyConstructor = ContainerUtil.find(typeDeclaration.getMembers(), new Condition<DotNetNamedElement>()
 			{
