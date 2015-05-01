@@ -22,7 +22,6 @@ import org.mustbe.consulo.csharp.ide.codeInsight.actions.ConvertToNormalCallFix;
 import org.mustbe.consulo.csharp.ide.highlight.util.ConstructorHighlightUtil;
 import org.mustbe.consulo.csharp.ide.highlight.util.GenericParameterHighlightUtil;
 import org.mustbe.consulo.csharp.lang.psi.*;
-import org.mustbe.consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayAccessExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLinqExpressionImpl;
@@ -131,7 +130,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	@Override
 	public void visitTypeDeclaration(CSharpTypeDeclaration declaration)
 	{
-		super.visitTypeDeclaration(CSharpCompositeTypeDeclaration.wrapPartialType(declaration));
+		super.visitTypeDeclaration(declaration);
 
 		CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, declaration, declaration.getNameIdentifier(), null);
 	}
