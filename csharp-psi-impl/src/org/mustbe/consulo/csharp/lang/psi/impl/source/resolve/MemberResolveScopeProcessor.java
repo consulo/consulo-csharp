@@ -80,7 +80,7 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 		CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myResolveScope, element);
 
 		PsiElement[] psiElements = selector.doSelectElement(context, state.get(CSharpResolveUtil.WALK_DEEP) == Boolean.TRUE);
-		psiElements = CSharpCompositeTypeDeclaration.wrapPartialTypes(psiElements);
+		psiElements = CSharpCompositeTypeDeclaration.wrapPartialTypes(myResolveScope, myScopeElement.getProject(), psiElements);
 
 		for(val psiElement : OverrideUtil.filterOverrideElements(this, myScopeElement, psiElements, myOverrideProcessor))
 		{

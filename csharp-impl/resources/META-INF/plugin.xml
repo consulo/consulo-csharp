@@ -106,6 +106,7 @@
 							serviceImplementation="org.mustbe.consulo.csharp.ide.codeInsight.CSharpCodeInsightSettings"/>
 		<projectService serviceInterface="org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache"
 						serviceImplementation="org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache"/>
+		<projectService serviceImplementation="org.mustbe.consulo.csharp.lang.psi.impl.partial.CSharpPartialElementManager"/>
 
 		<fileTypeFactory implementation="org.mustbe.consulo.csharp.lang.CSharpFileTypeFactory"/>
 
@@ -165,7 +166,7 @@
 		<renamePsiElementProcessor implementation="org.mustbe.consulo.csharp.ide.refactoring.rename.CSharpOverrideElementProcessor"/>
 		<gotoClassContributor implementation="org.mustbe.consulo.csharp.ide.navigation.CSharpTypeNameContributor"/>
 		<gotoSymbolContributor implementation="org.mustbe.consulo.csharp.ide.navigation.CSharpSymbolNameContributor"/>
-		<gotoDeclarationHandler implementation="org.mustbe.consulo.csharp.ide.navigation.CSharpGotoDeclarationHandler" />
+		<gotoDeclarationHandler implementation="org.mustbe.consulo.csharp.ide.navigation.CSharpGotoDeclarationHandler"/>
 
 		<qualifiedNameProvider implementation="org.mustbe.consulo.csharp.ide.CSharpQualifiedNameProvider"/>
 

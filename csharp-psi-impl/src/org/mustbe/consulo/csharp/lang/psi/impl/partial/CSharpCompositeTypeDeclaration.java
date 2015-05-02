@@ -45,10 +45,12 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.light.LightElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
@@ -61,13 +63,7 @@ import com.intellij.util.containers.MultiMap;
 public class CSharpCompositeTypeDeclaration extends LightElement implements CSharpTypeDeclaration
 {
 	@NotNull
-	public static CSharpTypeDeclaration wrapPartialType(@NotNull CSharpTypeDeclaration psiElement)
-	{
-		PsiElement[] elements = wrapPartialTypes(new PsiElement[]{psiElement});
-		return (CSharpTypeDeclaration) elements[0];
-	}
-
-	public static PsiElement[] wrapPartialTypes(@NotNull PsiElement[] psiElements)
+	public static PsiElement[] wrapPartialTypes(@NotNull GlobalSearchScope scope, @NotNull Project project, @NotNull PsiElement[] psiElements)
 	{
 		MultiMap<String, CSharpTypeDeclaration> partialTypes = null;
 
@@ -119,8 +115,10 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 			}
 			else
 			{
-				CSharpTypeDeclaration[] declarations = ContainerUtil.toArray(value, CSharpTypeDeclaration.ARRAY_FACTORY);
-				newElementList.add(new CSharpCompositeTypeDeclaration(declarations));
+				CSharpTypeDeclaration compositeType = CSharpPartialElementManager.getInstance(project).createCompositeType(scope, entry.getKey(),
+						value);
+
+				newElementList.add(compositeType);
 			}
 		}
 		return ContainerUtil.toArray(newElementList, PsiElement.ARRAY_FACTORY);
@@ -180,7 +178,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 	@Override
 	public void navigate(boolean requestFocus)
 	{
-		((Navigatable)myTypeDeclarations[0]).navigate(requestFocus);
+		((Navigatable) myTypeDeclarations[0]).navigate(requestFocus);
 
 	}
 

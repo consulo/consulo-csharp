@@ -189,7 +189,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 	{
 		PsiElement[] children = myNamespaceAsElement.getChildren(myResolveScope, CSharpTransformer.INSTANCE,
 				DotNetNamespaceAsElement.ChildrenFilter.NONE);
-		children = CSharpCompositeTypeDeclaration.wrapPartialTypes(children);
+		children = CSharpCompositeTypeDeclaration.wrapPartialTypes(myResolveScope, myNamespaceAsElement.getProject(), children);
 
 		for(PsiElement element : children)
 		{
