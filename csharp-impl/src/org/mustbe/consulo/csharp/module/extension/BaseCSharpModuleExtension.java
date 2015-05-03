@@ -41,6 +41,7 @@ import org.mustbe.consulo.dotnet.psi.search.searches.AllClassesSearch;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.module.impl.scopes.ModuleWithDependenciesScope;
 import com.intellij.openapi.roots.ModuleRootLayer;
+import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.Processor;
 import com.intellij.util.Query;
@@ -57,6 +58,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	protected boolean myOptimizeCode;
 	protected CSharpPlatform myPlatform = CSharpPlatform.ANY_CPU;
 	protected CSharpLanguageVersionPointer myLanguageVersionPointer;
+	protected String myCompilerTarget;
 
 	public BaseCSharpModuleExtension(@NotNull String id, @NotNull ModuleRootLayer module)
 	{
@@ -167,6 +169,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 				myAllowUnsafeCode != mutableModuleExtension.myAllowUnsafeCode ||
 				myOptimizeCode != mutableModuleExtension.myOptimizeCode ||
 				myPlatform != mutableModuleExtension.myPlatform ||
+				!Comparing.equal(myCompilerTarget, mutableModuleExtension.myCompilerTarget) ||
 				!myLanguageVersionPointer.equals(mutableModuleExtension.myLanguageVersionPointer);
 	}
 
@@ -181,6 +184,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 		myAllowUnsafeCode = Boolean.valueOf(element.getAttributeValue("unsafe-code", "false"));
 		myOptimizeCode = Boolean.valueOf(element.getAttributeValue("optimize-code", "false"));
 		myPlatform = CSharpPlatform.valueOf(element.getAttributeValue("platform", CSharpPlatform.ANY_CPU.name()));
+		myCompilerTarget = element.getAttributeValue("compiler-target");
 		myLanguageVersionPointer.fromXml(element);
 	}
 
@@ -190,6 +194,10 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 		element.setAttribute("unsafe-code", Boolean.toString(myAllowUnsafeCode));
 		element.setAttribute("optimize-code", Boolean.toString(myOptimizeCode));
 		element.setAttribute("platform", myPlatform.name());
+		if(myCompilerTarget != null)
+		{
+			element.setAttribute("compiler-target", myCompilerTarget);
+		}
 		myLanguageVersionPointer.toXml(element);
 	}
 
@@ -201,7 +209,20 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 		myAllowUnsafeCode = mutableModuleExtension.myAllowUnsafeCode;
 		myOptimizeCode = mutableModuleExtension.myOptimizeCode;
 		myPlatform = mutableModuleExtension.myPlatform;
+		myCompilerTarget = mutableModuleExtension.myCompilerTarget;
 		myLanguageVersionPointer.set(mutableModuleExtension.myLanguageVersionPointer);
+	}
+
+	@Nullable
+	@Override
+	public String getCompilerTarget()
+	{
+		return myCompilerTarget;
+	}
+
+	public void setCompilerTarget(@Nullable String target)
+	{
+		myCompilerTarget = target;
 	}
 
 	@NotNull

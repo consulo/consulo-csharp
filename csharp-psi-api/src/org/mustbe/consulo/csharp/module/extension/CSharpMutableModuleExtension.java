@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.module.extension;
 import org.consulo.module.extension.MutableModuleExtension;
 import org.consulo.module.extension.MutableModuleInheritableNamedPointer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -35,4 +36,6 @@ public interface CSharpMutableModuleExtension<T extends CSharpModuleExtension<T>
 	void setOptimizeCode(boolean value);
 
 	void setPlatform(@NotNull CSharpPlatform platform);
+
+	void setCompilerTarget(@Nullable String target);
 }

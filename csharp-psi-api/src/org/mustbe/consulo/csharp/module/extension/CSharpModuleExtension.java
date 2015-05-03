@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.module.extension;
 
 import org.consulo.module.extension.ModuleExtension;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author VISTALL
@@ -34,4 +35,7 @@ public interface CSharpModuleExtension<T extends ModuleExtension<T>> extends Mod
 
 	@NotNull
 	CSharpLanguageVersion getLanguageVersion();
+
+	@Nullable
+	String getCompilerTarget();
 }

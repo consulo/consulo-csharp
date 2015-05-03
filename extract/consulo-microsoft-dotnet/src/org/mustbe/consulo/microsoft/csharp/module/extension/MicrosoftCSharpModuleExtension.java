@@ -46,22 +46,10 @@ public class MicrosoftCSharpModuleExtension extends BaseCSharpModuleExtension<Mi
 		optionsBuilder.addArgument("/fullpaths");
 		optionsBuilder.addArgument("/utf8output");
 
-		switch(getLanguageVersion())
+		String compilerTarget = getCompilerTarget();
+		if(compilerTarget != null)
 		{
-			case _1_0:
-				optionsBuilder.addArgument("/langversion:ISO-1");
-				break;
-			case _2_0:
-				optionsBuilder.addArgument("/langversion:ISO-2");
-				break;
-			case _3_0:
-				optionsBuilder.addArgument("/langversion:3");
-				break;
-			case _4_0:
-			case _5_0:
-			case _6_0:
-				optionsBuilder.addArgument("/langversion:default");
-				break;
+			optionsBuilder.addArgument("/langversion:" + compilerTarget);
 		}
 
 		DotNetModuleExtension extension = getModuleRootLayer().getExtension(DotNetModuleExtension.class);

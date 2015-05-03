@@ -4,9 +4,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Arrays;
 
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.event.DocumentEvent;
 
 import org.consulo.module.extension.MutableModuleInheritableNamedPointer;
 import com.intellij.icons.AllIcons;
@@ -16,8 +18,11 @@ import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.VerticalFlowLayout;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.ColoredListCellRendererWrapper;
+import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.SimpleTextAttributes;
+import com.intellij.ui.TextFieldWithHistory;
 import com.intellij.ui.components.JBCheckBox;
 import lombok.val;
 
@@ -27,6 +32,16 @@ import lombok.val;
  */
 public class CSharpConfigurationPanel extends JPanel
 {
+	private static final String[] ourCompileLevels = new String[] {
+			"ISO-1",
+			"ISO-2",
+			"3",
+			"4",
+			"5",
+			"6",
+			"default"
+	};
+
 	public CSharpConfigurationPanel(final CSharpMutableModuleExtension<?> ext)
 	{
 		super(new VerticalFlowLayout());
@@ -124,6 +139,25 @@ public class CSharpConfigurationPanel extends JPanel
 		});
 
 		add(LabeledComponent.left(levelComboBox, "Language Version: "));
+
+		final TextFieldWithHistory compileLevelField = new TextFieldWithHistory();
+		compileLevelField.setHistory(Arrays.asList(ourCompileLevels));
+		compileLevelField.setHistorySize(-1);
+		String compilerTarget = ext.getCompilerTarget();
+		if(compilerTarget != null)
+		{
+			compileLevelField.setText(compilerTarget);
+		}
+		compileLevelField.addDocumentListener(new DocumentAdapter()
+		{
+			@Override
+			protected void textChanged(DocumentEvent e)
+			{
+				ext.setCompilerTarget(StringUtil.nullize(compileLevelField.getText(), true));
+			}
+		});
+
+		add(LabeledComponent.left(compileLevelField, "Compiler Target:"));
 
 		final ComboBox platformComboBox = new ComboBox(CSharpPlatform.values());
 		platformComboBox.setSelectedItem(ext.getPlatform());
