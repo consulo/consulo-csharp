@@ -1,0 +1,350 @@
+CSHARP_FILE
+  CSharpDummyDeclarationImpl [DUMMY_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')
+      PsiWhiteSpace('\n')
+      CSharpStubAttributeListImpl [ATTRIBUTE_LIST]
+        PsiElement(LBRACKET)('[')
+        PsiElement(ASSEMBLY_KEYWORD)('assembly')
+        PsiElement(COLON)(':')
+        CSharpStubAttributeImpl [ATTRIBUTE]
+          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
+            PsiElement(IDENTIFIER)('SomeClassAA')
+          CSharpCallArgumentListImpl(CALL_ARGUMENT_LIST)
+            PsiElement(LPAR)('(')
+            PsiElement(RPAR)(')')
+        PsiElement(RBRACKET)(']')

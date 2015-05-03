@@ -156,6 +156,18 @@ public class CSharpParsingTest extends ParsingTestCase
 		doTest(true);
 	}
 
+	@SetLanguageVersion(version = CSharpLanguageVersion._6_0)
+	public void testRootAttribute()
+	{
+		doTest(true);
+	}
+
+	@SetLanguageVersion(version = CSharpLanguageVersion._6_0)
+	public void testAssemblyAttributeBeforeAndAfterMember()
+	{
+		doTest(true);
+	}
+
 	@NotNull
 	@Override
 	public LanguageVersion<?> resolveLanguageVersion(@NotNull FileType fileType)
