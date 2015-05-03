@@ -69,7 +69,7 @@ public class CSharpPartialElementManager implements Disposable
 	}
 
 	@NotNull
-	public CSharpTypeDeclaration createCompositeType(@NotNull GlobalSearchScope scope,
+	public CSharpTypeDeclaration getOrCreateCompositeType(@NotNull GlobalSearchScope scope,
 			@NotNull final String vmQName,
 			@NotNull final Collection<CSharpTypeDeclaration> typeDeclarations)
 	{

@@ -115,8 +115,8 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 			}
 			else
 			{
-				CSharpTypeDeclaration compositeType = CSharpPartialElementManager.getInstance(project).createCompositeType(scope, entry.getKey(),
-						value);
+				CSharpTypeDeclaration compositeType = CSharpPartialElementManager.getInstance(project).getOrCreateCompositeType(scope, entry.getKey
+						(), value);
 
 				newElementList.add(compositeType);
 			}

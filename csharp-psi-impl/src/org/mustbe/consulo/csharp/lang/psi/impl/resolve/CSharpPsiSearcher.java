@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceAsElementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.partial.CSharpPartialElementManager;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeByVmQNameIndex;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
@@ -36,8 +36,6 @@ import org.mustbe.consulo.dotnet.resolve.impl.IndexBasedDotNetPsiSearcher;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndexKey;
-import com.intellij.util.containers.ContainerUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -79,7 +77,7 @@ public class CSharpPsiSearcher extends IndexBasedDotNetPsiSearcher
 	{
 		Collection<DotNetTypeDeclaration> declarations = TypeByVmQNameIndex.getInstance().get(vmQName, myProject, scope);
 
-		List<CSharpTypeDeclaration> list = Collections.emptyList();
+		List<CSharpTypeDeclaration> partials = Collections.emptyList();
 		for(DotNetTypeDeclaration element : declarations)
 		{
 			if(!(element instanceof CSharpTypeDeclaration))
@@ -89,26 +87,26 @@ public class CSharpPsiSearcher extends IndexBasedDotNetPsiSearcher
 
 			if(element.hasModifier(CSharpModifier.PARTIAL))
 			{
-				if(list.isEmpty())
+				if(partials.isEmpty())
 				{
-					list = new ArrayList<CSharpTypeDeclaration>(2);
+					partials = new ArrayList<CSharpTypeDeclaration>(2);
 				}
 
-				list.add((CSharpTypeDeclaration) element);
+				partials.add((CSharpTypeDeclaration) element);
 			}
 		}
 
-		if(list.isEmpty())
+		if(partials.isEmpty())
 		{
 			return declarations;
 		}
 
-		val typeDeclaration = new CSharpCompositeTypeDeclaration(ContainerUtil.toArray(list, CSharpTypeDeclaration.ARRAY_FACTORY));
+		CSharpTypeDeclaration typeDeclaration = CSharpPartialElementManager.getInstance(myProject).getOrCreateCompositeType(scope, vmQName, partials);
 
-		List<DotNetTypeDeclaration> newList = new ArrayList<DotNetTypeDeclaration>(declarations.size() - list.size() + 1);
+		List<DotNetTypeDeclaration> newList = new ArrayList<DotNetTypeDeclaration>(declarations.size() - partials.size() + 1);
 		newList.add(typeDeclaration);
 
-		declarations.removeAll(list);
+		declarations.removeAll(partials);
 		newList.addAll(declarations);
 
 		return newList;
