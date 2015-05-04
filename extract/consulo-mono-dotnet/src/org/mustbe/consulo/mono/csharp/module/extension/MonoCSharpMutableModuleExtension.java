@@ -20,6 +20,7 @@ import javax.swing.JComponent;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.module.extension.CSharpConfigurationPanel;
 import org.mustbe.consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import com.intellij.openapi.roots.ModuleRootLayer;
@@ -37,6 +38,7 @@ public class MonoCSharpMutableModuleExtension extends MonoCSharpModuleExtension 
 
 	@Nullable
 	@Override
+	@RequiredDispatchThread
 	public JComponent createConfigurablePanel(@NotNull Runnable runnable)
 	{
 		return new CSharpConfigurationPanel(this);

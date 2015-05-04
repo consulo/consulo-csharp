@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 
 import org.consulo.module.extension.MutableModuleInheritableNamedPointer;
+import org.mustbe.consulo.RequiredDispatchThread;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -42,6 +43,7 @@ public class CSharpConfigurationPanel extends JPanel
 			"default"
 	};
 
+	@RequiredDispatchThread
 	public CSharpConfigurationPanel(final CSharpMutableModuleExtension<?> ext)
 	{
 		super(new VerticalFlowLayout());
