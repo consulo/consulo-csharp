@@ -1050,6 +1050,7 @@
 			<parameter/>
 		</operator>
 
+		<!-- 'float' can be converted to 'double' (implicit) -->
 		<operator name="IMPLICIT_KEYWORD" type="System.Double">
 			<parameter/>
 		</operator>
