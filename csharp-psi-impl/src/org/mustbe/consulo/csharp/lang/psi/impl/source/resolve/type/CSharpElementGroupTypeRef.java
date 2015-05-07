@@ -65,4 +65,10 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRef.Adapter implements 
 		}
 		return null;
 	}
+
+	@Override
+	public boolean isConversion()
+	{
+		return false;
+	}
 }

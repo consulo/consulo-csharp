@@ -18,10 +18,17 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joou.UByte;
+import org.joou.UInteger;
+import org.joou.UShort;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
@@ -29,35 +36,147 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSharpFastImplicitTypeRef
 {
-	// this value always cached on JVM ?
-	private static final Integer ZERO = 0;
-
 	private static final DotNetTypeRef ourEnumTypeRef = new CSharpTypeRefByQName(DotNetTypes.System.Enum);
 
-	@Nullable
-	private final Object myValue;
+	private CSharpConstantExpressionImpl myElement;
 
-	public CSharpConstantTypeRef(@NotNull DotNetTypeRef defaultTypeRef, @Nullable Object value)
+	public CSharpConstantTypeRef(CSharpConstantExpressionImpl element, @NotNull DotNetTypeRef defaultTypeRef)
 	{
 		super(defaultTypeRef);
-		myValue = value;
+		myElement = element;
 	}
 
 	@Nullable
 	@Override
 	public DotNetTypeRef doMirror(@NotNull DotNetTypeRef another, PsiElement scope)
 	{
-		int topRank = CSharpTypeUtil.getNumberRank(getDelegate(), scope);
-		int targetRank = CSharpTypeUtil.getNumberRank(another, scope);
-		if(targetRank != -1 && targetRank < topRank)
+		DotNetTypeRef anotherTypeRef = testNumberConstant(myElement, "", another, scope);
+		if(anotherTypeRef != null)
 		{
-			return another;
-		}
-
-		if(myValue == ZERO && CSharpTypeUtil.isInheritable(ourEnumTypeRef, another, scope))
-		{
-			return another;
+			return anotherTypeRef;
 		}
 		return null;
+	}
+
+	@Override
+	public boolean isConversion()
+	{
+		return false;
+	}
+
+	@Nullable
+	public static DotNetTypeRef testNumberConstant(@NotNull CSharpConstantExpressionImpl expression,
+			@NotNull String prefix,
+			@NotNull DotNetTypeRef another,
+			@NotNull PsiElement scope)
+	{
+		IElementType literalType = expression.getLiteralType();
+		if(literalType == CSharpTokenSets.INTEGER_LITERAL || literalType == CSharpTokenSets.UINTEGER_LITERAL)
+		{
+			PsiElement element = another.resolve(scope).getElement();
+			String qName = element instanceof CSharpTypeDeclaration ? ((CSharpTypeDeclaration) element).getVmQName() : null;
+			if(qName == null)
+			{
+				return null;
+			}
+
+			Object value = null;
+			try
+			{
+				value = expression.getValue(prefix);
+			}
+			catch(Exception e)
+			{
+				return null;
+			}
+
+			DotNetTypeRef anotherRef = testNumber(value, qName, another, scope);
+			if(anotherRef != null)
+			{
+				return anotherRef;
+			}
+		}
+
+		return null;
+	}
+
+	@Nullable
+	public static DotNetTypeRef testNumber(@Nullable Object value, @NotNull String qName, @NotNull DotNetTypeRef another, @NotNull PsiElement scope)
+	{
+		if(value instanceof Number)
+		{
+			Number numberValue = (Number) value;
+
+			if(testInteger(DotNetTypes.System.Byte, qName, numberValue, UByte.MIN_VALUE, UByte.MAX_VALUE))
+			{
+				return another;
+			}
+
+			if(testInteger(DotNetTypes.System.SByte, qName, numberValue, Byte.MIN_VALUE, Byte.MAX_VALUE))
+			{
+				return another;
+			}
+
+			if(testInteger(DotNetTypes.System.Int16, qName, numberValue, Short.MIN_VALUE, Short.MAX_VALUE))
+			{
+				return another;
+			}
+
+			if(testInteger(DotNetTypes.System.UInt16, qName, numberValue, UShort.MIN_VALUE, UShort.MAX_VALUE))
+			{
+				return another;
+			}
+
+			if(testInteger(DotNetTypes.System.Int32, qName, numberValue, Integer.MIN_VALUE, Integer.MAX_VALUE))
+			{
+				return another;
+			}
+
+			if(testInteger(DotNetTypes.System.UInt32, qName, numberValue, UInteger.MIN_VALUE, UInteger.MAX_VALUE))
+			{
+				return another;
+			}
+
+			if(testInteger(DotNetTypes.System.Int64, qName, numberValue, Long.MIN_VALUE, Long.MAX_VALUE))
+			{
+				return another;
+			}
+
+			if(CSharpTypeUtil.isInheritable(ourEnumTypeRef, another, scope) && numberValue.longValue() == 0)
+			{
+				return another;
+			}
+
+			if(testDouble(DotNetTypes.System.Single, qName, numberValue, Float.MIN_VALUE, Float.MAX_VALUE))
+			{
+				return another;
+			}
+
+			if(testDouble(DotNetTypes.System.Double, qName, numberValue, Double.MIN_VALUE, Double.MAX_VALUE))
+			{
+				return another;
+			}
+		}
+		return null;
+	}
+
+	private static boolean testInteger(@NotNull String leftTypeQName, String qName, @NotNull Number value, long min, long max)
+	{
+		if(!(leftTypeQName.equals(qName)))
+		{
+			return false;
+		}
+		long l = value.longValue();
+		return l <= max && l >= min;
+	}
+
+	private static boolean testDouble(@NotNull String leftTypeQName, String qName, @NotNull Number value, double min, double max)
+	{
+		if(!(leftTypeQName.equals(qName)))
+		{
+			return false;
+		}
+		double l = value.doubleValue();
+		return l <= max && l >= min;
 	}
 }

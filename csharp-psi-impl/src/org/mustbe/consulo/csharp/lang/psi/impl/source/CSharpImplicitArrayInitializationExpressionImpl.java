@@ -65,6 +65,12 @@ public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpEleme
 			}
 			return null;
 		}
+
+		@Override
+		public boolean isConversion()
+		{
+			return true;
+		}
 	}
 
 	public CSharpImplicitArrayInitializationExpressionImpl(@NotNull ASTNode node)

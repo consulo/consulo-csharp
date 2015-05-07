@@ -29,4 +29,6 @@ public interface CSharpFastImplicitTypeRef extends DotNetTypeRef
 {
 	@Nullable
 	DotNetTypeRef doMirror(@NotNull DotNetTypeRef another, PsiElement scope);
+
+	boolean isConversion();
 }

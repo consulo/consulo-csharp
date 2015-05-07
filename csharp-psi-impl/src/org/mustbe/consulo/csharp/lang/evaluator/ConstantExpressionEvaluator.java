@@ -50,7 +50,14 @@ public class ConstantExpressionEvaluator extends CSharpElementVisitor
 	@Override
 	public void visitConstantExpression(CSharpConstantExpressionImpl expression)
 	{
-		myValue = expression.getValue();
+		try
+		{
+			myValue = expression.getValue();
+		}
+		catch(Exception e)
+		{
+			//
+		}
 	}
 
 	@Override

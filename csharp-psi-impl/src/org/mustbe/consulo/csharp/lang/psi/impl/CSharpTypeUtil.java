@@ -24,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpElementGroupTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpFastImplicitTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTypeRef;
@@ -38,7 +37,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
@@ -50,7 +48,6 @@ import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.util.ArrayUtil;
 import com.intellij.util.ObjectUtils;
 import com.intellij.util.SmartList;
 import lombok.val;
@@ -105,19 +102,6 @@ public class CSharpTypeUtil
 	public static final InheritResult FAIL = new InheritResult(false, null);
 	public static final InheritResult SIMPLE_SUCCESS = new InheritResult(true, null);
 
-	private static final String[] ourNumberRanks = new String[]{
-			DotNetTypes.System.Byte,
-			DotNetTypes.System.SByte,
-			DotNetTypes.System.Int16,
-			DotNetTypes.System.UInt16,
-			DotNetTypes.System.Int32,
-			DotNetTypes.System.UInt32,
-			DotNetTypes.System.Int64,
-			DotNetTypes.System.UInt64,
-			DotNetTypes.System.Single,
-			DotNetTypes.System.Double,
-	};
-
 	public static boolean isElementIsNullable(@Nullable PsiElement element)
 	{
 		if(element instanceof DotNetTypeDeclaration)
@@ -162,19 +146,6 @@ public class CSharpTypeUtil
 			}
 		}
 		return true;
-	}
-
-	public static int getNumberRank(DotNetTypeRef typeRef, PsiElement scope)
-	{
-		PsiElement element = typeRef.resolve(scope).getElement();
-		if(element instanceof DotNetQualifiedElement)
-		{
-			return ArrayUtil.find(ourNumberRanks, ((DotNetQualifiedElement) element).getPresentableQName());
-		}
-		else
-		{
-			return -1;
-		}
 	}
 
 	@Nullable
@@ -296,18 +267,7 @@ public class CSharpTypeUtil
 			DotNetTypeRef implicitTypeRef = ((CSharpFastImplicitTypeRef) target).doMirror(top, scope);
 			if(implicitTypeRef != null)
 			{
-				return new InheritResult(true, !(target instanceof CSharpElementGroupTypeRef));
-			}
-		}
-
-		int topRank = getNumberRank(top, scope);
-		int targetRank = getNumberRank(target, scope);
-
-		if(topRank != -1 && targetRank != -1)
-		{
-			if(targetRank <= topRank)
-			{
-				return SIMPLE_SUCCESS;
+				return new InheritResult(true, ((CSharpFastImplicitTypeRef) target).isConversion());
 			}
 		}
 

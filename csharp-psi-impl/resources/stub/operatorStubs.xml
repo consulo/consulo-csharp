@@ -273,7 +273,31 @@
 			<parameter/>
 			<parameter/>
 		</operator>
-		
+
+		<!-- 'sbyte' can be converted to 'short' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Int16">
+			<parameter/>
+		</operator>
+
+		<!-- 'sbyte' can be converted to 'int' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Int32">
+			<parameter/>
+		</operator>
+
+		<!-- 'sbyte' can be converted to 'long' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Int64">
+			<parameter/>
+		</operator>
+
+		<!-- 'sbyte' can be converted to 'float' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Single">
+			<parameter/>
+		</operator>
+
+		<!-- 'sbyte' can be converted to 'double' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Double">
+			<parameter/>
+		</operator>
 	</type>
 
 	<type name="System.Int16">
@@ -885,6 +909,10 @@
 		</operator>
 
 		<operator name="TILDE">
+			<parameter/>
+		</operator>
+
+		<operator name="IMPLICIT_KEYWORD" type="System.Double">
 			<parameter/>
 		</operator>
 	</type>

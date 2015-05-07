@@ -102,15 +102,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 				return DotNetTypeRef.ERROR_TYPE;
 			}
 
-			Object value = null;
-			try
-			{
-				value = element.getValue();
-			}
-			catch(Exception ignored)
-			{
-			}
-			return new CSharpConstantTypeRef(new CSharpLazyTypeRefByQName(element, qName), value);
+			return new CSharpConstantTypeRef(element, new CSharpLazyTypeRefByQName(element, qName));
 		}
 	}
 
@@ -133,13 +125,12 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 	}
 
 	@Nullable
-	@Override
-	public Object getValue()
+	public Object getValue(@NotNull String prefix)
 	{
 		PsiElement byType = getFirstChild();
 		assert byType != null;
 		IElementType elementType = getLiteralType();
-		String text = getText();
+		String text = prefix.isEmpty() ? getText() : prefix + getText();
 		if(elementType == CSharpTokens.STRING_LITERAL)
 		{
 			return StringUtil.unquoteString(text);
@@ -164,7 +155,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 		}
 		else if(elementType == CSharpTokens.INTEGER_LITERAL)
 		{
-			return Integer.decode(text);
+			return Long.decode(text);
 		}
 		else if(elementType == CSharpTokens.LONG_LITERAL)
 		{
@@ -172,7 +163,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 		}
 		else if(elementType == CSharpTokens.FLOAT_LITERAL)
 		{
-			return Float.parseFloat(text);
+			return Double.parseDouble(text);
 		}
 		else if(elementType == CSharpTokens.DOUBLE_LITERAL)
 		{
@@ -187,6 +178,13 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 			return Boolean.parseBoolean(text);
 		}
 		throw new IllegalArgumentException(elementType.toString());
+	}
+
+	@Nullable
+	@Override
+	public Object getValue()
+	{
+		return getValue("");
 	}
 
 	@NotNull
