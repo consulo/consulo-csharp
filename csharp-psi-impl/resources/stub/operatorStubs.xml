@@ -754,7 +754,26 @@
 			<parameter/>
 			<parameter/>
 		</operator>
-		
+
+		<!-- 'uint' can be converted to 'long' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Int64">
+			<parameter/>
+		</operator>
+
+		<!-- 'uint' can be converted to 'ulong' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.UInt64">
+			<parameter/>
+		</operator>
+
+		<!-- 'uint' can be converted to 'float' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Single">
+			<parameter/>
+		</operator>
+
+		<!-- 'uint' can be converted to 'double' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Double">
+			<parameter/>
+		</operator>
 	</type>
 
 	<type name="System.Int64">
