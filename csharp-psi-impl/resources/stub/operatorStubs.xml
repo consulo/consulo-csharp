@@ -960,7 +960,16 @@
 			<parameter/>
 			<parameter/>
 		</operator>
-		
+
+		<!-- 'ulong' can be converted to 'float' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Single">
+			<parameter/>
+		</operator>
+
+		<!-- 'ulong' can be converted to 'double' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Double">
+			<parameter/>
+		</operator>
 	</type>
 
 	<type name="System.Single">
