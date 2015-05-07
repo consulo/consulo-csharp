@@ -184,7 +184,46 @@
 			<parameter/>
 			<parameter/>
 		</operator>
-		
+
+		<!-- 'byte' can be converted to 'short' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Int16">
+			<parameter/>
+		</operator>
+
+		<!-- 'byte' can be converted to 'ushort' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.UInt16">
+			<parameter/>
+		</operator>
+
+		<!-- 'byte' can be converted to 'int' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Int32">
+			<parameter/>
+		</operator>
+
+		<!-- 'byte' can be converted to 'uint' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.UInt32">
+			<parameter/>
+		</operator>
+
+		<!-- 'byte' can be converted to 'long' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Int64">
+			<parameter/>
+		</operator>
+
+		<!-- 'byte' can be converted to 'ulong' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.UInt64">
+			<parameter/>
+		</operator>
+
+		<!-- 'byte' can be converted to 'float' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Single">
+			<parameter/>
+		</operator>
+
+		<!-- 'byte' can be converted to 'double' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Double">
+			<parameter/>
+		</operator>
 	</type>
 
 	<type name="System.SByte">
