@@ -386,7 +386,26 @@
 			<parameter/>
 			<parameter/>
 		</operator>
-		
+
+		<!-- 'short' can be converted to 'int' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Int32">
+			<parameter/>
+		</operator>
+
+		<!-- 'short' can be converted to 'long' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Int64">
+			<parameter/>
+		</operator>
+
+		<!-- 'short' can be converted to 'float' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Single">
+			<parameter/>
+		</operator>
+
+		<!-- 'short' can be converted to 'double' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Double">
+			<parameter/>
+		</operator>
 	</type>
 
 	<type name="System.UInt16">
@@ -564,7 +583,21 @@
 			<parameter/>
 			<parameter/>
 		</operator>
-		
+
+		<!-- 'int' can be converted to 'long' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Int64">
+			<parameter/>
+		</operator>
+
+		<!-- 'int' can be converted to 'float' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Single">
+			<parameter/>
+		</operator>
+
+		<!-- 'int' can be converted to 'double' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Double">
+			<parameter/>
+		</operator>
 	</type>
 
 	<type name="System.UInt32">
@@ -742,7 +775,16 @@
 			<parameter/>
 			<parameter/>
 		</operator>
-		
+
+		<!-- 'long' can be converted to 'float' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Single">
+			<parameter/>
+		</operator>
+
+		<!-- 'long' can be converted to 'double' (implicit) -->
+		<operator name="IMPLICIT_KEYWORD" type="System.Double">
+			<parameter/>
+		</operator>
 	</type>
 
 	<type name="System.UInt64">
