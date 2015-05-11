@@ -27,13 +27,13 @@ import org.mustbe.consulo.csharp.ide.msil.representation.builder.CSharpStubBuild
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
-import org.mustbe.consulo.dotnet.dll.vfs.builder.block.StubBlock;
-import org.mustbe.consulo.dotnet.dll.vfs.builder.block.StubBlockUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.msil.lang.psi.MsilFile;
 import org.mustbe.consulo.msil.representation.MsilFileRepresentationProvider;
 import org.mustbe.consulo.msil.representation.MsilFileRepresentationVirtualFile;
+import org.mustbe.dotnet.msil.decompiler.textBuilder.block.StubBlock;
+import org.mustbe.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.util.io.FileUtil;

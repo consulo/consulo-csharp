@@ -27,13 +27,13 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefType
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.dll.vfs.builder.block.StubBlockUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import org.mustbe.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.BitUtil;
 import com.intellij.util.PairFunction;
