@@ -31,4 +31,16 @@ public class CSharpMacroLanguage extends Language implements TemplateLanguage
 	{
 		super("C#Macro");
 	}
+
+	@Override
+	public String getDisplayName()
+	{
+		return "C# Preprocessor";
+	}
+
+	@Override
+	public boolean isCaseSensitive()
+	{
+		return true;
+	}
 }

@@ -16,19 +16,20 @@
 
 <idea-plugin>
 	<extensions defaultExtensionNs="com.intellij">
-		<localInspection implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.obsolete.ObsoleteInspection"
+		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.obsolete.ObsoleteInspection"
 						 displayName="Obsolete warnings" groupName="C#" enabledByDefault="true"/>
-		<localInspection implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryCast.UnnecessaryCastInspection"
+		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryCast.UnnecessaryCastInspection"
 						 displayName="Unnecessary Cast" groupName="C#" enabledByDefault="true"/>
-		<localInspection implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryType.UnnecessaryTypeInspection"
+		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryType.UnnecessaryTypeInspection"
 						 displayName="Unnecessary Type" groupName="C#" enabledByDefault="true"/>
 		<localInspection
+				language="C#"
 				implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryNamedArgument.UnnecessaryNamedArgumentInspection"
 				displayName="Unnecessary Named Argument" groupName="C#" enabledByDefault="true"/>
-		<localInspection implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.UnusedSymbolLocalInspection"
+		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.UnusedSymbolLocalInspection"
 						 displayName="Unused Symbol" groupName="C#" enabledByDefault="true"/>
 
-		<localInspection implementationClass="org.mustbe.consulo.csharp.lang.doc.inspection.CSharpDocInspection"
+		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.lang.doc.inspection.CSharpDocInspection"
 						 displayName="C# Documentation problems" groupName="C# Documentation" enabledByDefault="true"/>
 	</extensions>
 </idea-plugin>
