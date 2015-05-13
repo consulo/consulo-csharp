@@ -150,7 +150,7 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 		String outputFile = DotNetMacroUtil.expandOutputFile(extension);
 		addArgument("/out:" + StringUtil.QUOTER.fun(outputFile));
 
-		val libraryFiles = DotNetCompilerUtil.collectDependencies(module, DotNetTarget.LIBRARY, true);
+		val libraryFiles = DotNetCompilerUtil.collectDependencies(module, DotNetTarget.LIBRARY, true, DotNetCompilerUtil.ACCEPT_ALL);
 		if(!libraryFiles.isEmpty())
 		{
 			addArgument("/reference:" + StringUtil.join(libraryFiles, new Function<File, String>()
@@ -163,7 +163,7 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 			}, ","));
 		}
 
-		val moduleFiles = DotNetCompilerUtil.collectDependencies(module, DotNetTarget.NET_MODULE, true);
+		val moduleFiles = DotNetCompilerUtil.collectDependencies(module, DotNetTarget.NET_MODULE, true, DotNetCompilerUtil.ACCEPT_ALL);
 		if(!moduleFiles.isEmpty())
 		{
 			addArgument("/addmodule:" + StringUtil.join(moduleFiles, new Function<File, String>()
