@@ -31,8 +31,13 @@ public class CSharpAttributeStubBuilder
 		{
 			innerValue = new StringBuilder();
 			DotNetTypeRef[] parameterTypeRefs = attribute.getParameterList().getParameterTypeRefs();
-			for(DotNetTypeRef parameterTypeRef : parameterTypeRefs)
+			for(int i = 0; i < parameterTypeRefs.length; i++)
 			{
+				DotNetTypeRef parameterTypeRef = parameterTypeRefs[i];
+				if(i != 0)
+				{
+					innerValue.append(", ");
+				}
 				try
 				{
 					appendValue(innerValue, parameterTypeRef, byteBuffer);
@@ -45,15 +50,13 @@ public class CSharpAttributeStubBuilder
 			}
 		}
 
+		if(StringUtil.isEmpty(innerValue))
+		{
+			return;
+		}
+
 		builder.append("(");
-		if(innerValue == null)
-		{
-			builder.append(StringUtil.QUOTER.fun("ERRROR"));
-		}
-		else
-		{
-			builder.append(innerValue);
-		}
+		builder.append(innerValue);
 		builder.append(")");
 	}
 

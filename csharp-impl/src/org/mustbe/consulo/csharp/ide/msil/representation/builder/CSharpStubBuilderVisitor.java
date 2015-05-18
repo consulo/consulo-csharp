@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
@@ -58,7 +59,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	public void visitPropertyDeclaration(CSharpPropertyDeclaration declaration)
 	{
 		StringBuilder builder = new StringBuilder();
-		processAttributeListAsLine(declaration);
+		processAttributeListAsLine(declaration, myBlocks);
 		processModifierList(builder, declaration);
 		appendTypeRef(declaration, builder, declaration.toTypeRef(false));
 		builder.append(" ");
@@ -102,7 +103,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	@Override
 	public void visitEnumConstantDeclaration(CSharpEnumConstantDeclaration declaration)
 	{
-		processAttributeListAsLine(declaration);
+		processAttributeListAsLine(declaration, myBlocks);
 		StringBuilder builder = new StringBuilder();
 		builder.append(declaration.getName());
 		builder.append(",\n");
@@ -113,7 +114,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	public void visitFieldDeclaration(CSharpFieldDeclaration declaration)
 	{
 		StringBuilder builder = new StringBuilder();
-		processAttributeListAsLine(declaration);
+		processAttributeListAsLine(declaration, myBlocks);
 		processModifierList(builder, declaration);
 		if(declaration.isConstant())
 		{
@@ -130,7 +131,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	public void visitEventDeclaration(CSharpEventDeclaration declaration)
 	{
 		StringBuilder builder = new StringBuilder();
-		processAttributeListAsLine(declaration);
+		processAttributeListAsLine(declaration, myBlocks);
 		processModifierList(builder, declaration);
 		builder.append("event ");
 		appendTypeRef(declaration, builder, declaration.toTypeRef(false));
@@ -150,7 +151,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	{
 		StringBuilder builder = new StringBuilder();
 
-		processAttributeListAsLine(declaration);
+		processAttributeListAsLine(declaration, myBlocks);
 		processModifierList(builder, declaration);
 		appendTypeRef(declaration, builder, declaration.getReturnTypeRef());
 		builder.append(" ");
@@ -170,7 +171,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	{
 		StringBuilder builder = new StringBuilder();
 
-		processAttributeListAsLine(declaration);
+		processAttributeListAsLine(declaration, myBlocks);
 		processModifierList(builder, declaration);
 		appendTypeRef(declaration, builder, declaration.getConversionTypeRef());
 		builder.append(" ");
@@ -192,7 +193,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		}
 		else
 		{
-			processAttributeListAsLine(declaration);
+			processAttributeListAsLine(declaration, myBlocks);
 			processModifierList(builder, declaration);
 		}
 
@@ -207,7 +208,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	{
 		StringBuilder builder = new StringBuilder();
 
-		processAttributeListAsLine(declaration);
+		processAttributeListAsLine(declaration, myBlocks);
 		processModifierList(builder, declaration);
 
 		if(declaration.isDelegate())
@@ -242,7 +243,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	public void visitTypeDeclaration(final CSharpTypeDeclaration declaration)
 	{
 		StringBuilder builder = new StringBuilder();
-		processAttributeListAsLine(declaration);
+		processAttributeListAsLine(declaration, myBlocks);
 		processModifierList(builder, declaration);
 
 		if(declaration.isEnum())
@@ -464,19 +465,33 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		builder.append(p2);
 	}
 
-	private void processAttributeListAsLine(DotNetModifierListOwner owner)
+	@RequiredReadAction
+	public static void processAttributeListAsLine(DotNetModifierListOwner owner, List<StubBlock> blocks)
 	{
 		DotNetModifierList modifierList = owner.getModifierList();
 		if(modifierList == null)
 		{
 			return;
 		}
+		processAttributeListAsLine(owner, blocks, null, modifierList.getAttributes());
+	}
 
-		for(DotNetAttribute dotNetAttribute : modifierList.getAttributes())
+	@RequiredReadAction
+	public static void processAttributeListAsLine(PsiElement scope,
+			List<StubBlock> blocks,
+			DotNetAttributeTargetType targetType,
+			DotNetAttribute[] attributes)
+	{
+		for(DotNetAttribute dotNetAttribute : attributes)
 		{
 			StringBuilder builder = new StringBuilder();
 			builder.append("[");
-			appendTypeRef(owner, builder, dotNetAttribute.toTypeRef());
+
+			if(targetType != null)
+			{
+				builder.append(targetType.name().toLowerCase()).append(": ");
+			}
+			appendTypeRef(scope, builder, dotNetAttribute.toTypeRef());
 
 			if(dotNetAttribute instanceof CSharpAttribute)
 			{
@@ -503,10 +518,11 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 				CSharpAttributeStubBuilder.append(builder, (MsilCustomAttribute) dotNetAttribute);
 			}
 			builder.append("]");
-			myBlocks.add(new LineStubBlock(builder));
+			blocks.add(new LineStubBlock(builder));
 		}
 	}
 
+	@RequiredReadAction
 	private static void appendAttributeList(final StringBuilder builder, final DotNetModifierListOwner owner)
 	{
 		DotNetModifierList modifierList = owner.getModifierList();
