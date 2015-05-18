@@ -28,6 +28,7 @@ import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
+import org.mustbe.consulo.msil.lang.psi.MsilCustomAttribute;
 import org.mustbe.dotnet.msil.decompiler.textBuilder.block.LineStubBlock;
 import org.mustbe.dotnet.msil.decompiler.textBuilder.block.StubBlock;
 import org.mustbe.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
@@ -497,6 +498,10 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 					builder.append(")");
 				}
 			}
+			else if(dotNetAttribute instanceof MsilCustomAttribute)
+			{
+				CSharpAttributeStubBuilder.append(builder, (MsilCustomAttribute) dotNetAttribute);
+			}
 			builder.append("]");
 			myBlocks.add(new LineStubBlock(builder));
 		}
@@ -544,6 +549,10 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 						builder.append(")");
 					}
+				}
+				else if(dotNetAttribute instanceof MsilCustomAttribute)
+				{
+					CSharpAttributeStubBuilder.append(builder, (MsilCustomAttribute) dotNetAttribute);
 				}
 				return null;
 			}
