@@ -98,6 +98,10 @@ public class CSharpAttributeStubBuilder
 			{
 				builder.append(StringUtil.QUOTER.fun(XStubUtil.getUtf8(byteBuffer)));
 			}
+			else if(qualifiedText.equals(DotNetTypes.System.Type))
+			{
+				builder.append(XStubUtil.getUtf8(byteBuffer));
+			}
 			else
 			{
 				builder.append(StringUtil.QUOTER.fun("Unknown how build type: " + parameterTypeRef.getQualifiedText()));
