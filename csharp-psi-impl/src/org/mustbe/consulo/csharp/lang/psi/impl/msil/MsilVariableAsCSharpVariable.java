@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
@@ -85,6 +86,7 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 	}
 
 	@Override
+	@RequiredReadAction
 	public boolean isConstant()
 	{
 		return false;
@@ -103,6 +105,7 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 		return MsilToCSharpUtil.extractToCSharp(myOriginal.toTypeRef(false), myOriginal);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetType getType()
@@ -117,12 +120,14 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 		return null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
 		return myModifierList.hasModifier(modifier);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetModifierList getModifierList()

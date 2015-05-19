@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -43,11 +44,13 @@ public class MsilFieldAsCSharpFieldDeclaration extends MsilVariableAsCSharpVaria
 	}
 
 	@Override
+	@RequiredReadAction
 	public boolean isConstant()
 	{
 		return getVariable().hasModifier(MsilTokens.LITERAL_KEYWORD);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableParentQName()
@@ -61,6 +64,7 @@ public class MsilFieldAsCSharpFieldDeclaration extends MsilVariableAsCSharpVaria
 		return (MsilFieldEntry) super.getVariable();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableQName()
