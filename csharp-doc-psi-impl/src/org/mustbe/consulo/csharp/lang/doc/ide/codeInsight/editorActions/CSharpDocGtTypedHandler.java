@@ -33,6 +33,7 @@ import com.intellij.openapi.editor.highlighter.HighlighterIterator;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
@@ -224,7 +225,7 @@ public class CSharpDocGtTypedHandler extends TypedHandlerDelegate
 				name = name.substring(0, offset - elementAtCaret.getTextOffset());
 			}
 
-			if("".equals(name))
+			if(StringUtil.isEmpty(name))
 			{
 				return Result.CONTINUE;
 			}
