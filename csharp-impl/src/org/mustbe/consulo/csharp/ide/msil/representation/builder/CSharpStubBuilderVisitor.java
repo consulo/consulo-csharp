@@ -112,6 +112,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		processAttributeListAsLine(declaration, myBlocks);
 		StringBuilder builder = new StringBuilder();
 		builder.append(declaration.getName());
+		appendInitializer(builder, declaration);
 		builder.append(",\n");
 		myBlocks.add(new LineStubBlock(builder));
 	}
