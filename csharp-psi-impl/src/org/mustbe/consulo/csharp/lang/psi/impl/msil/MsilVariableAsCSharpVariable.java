@@ -113,11 +113,12 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 		return null;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetExpression getInitializer()
 	{
-		return null;
+		return myOriginal.getInitializer();
 	}
 
 	@RequiredReadAction

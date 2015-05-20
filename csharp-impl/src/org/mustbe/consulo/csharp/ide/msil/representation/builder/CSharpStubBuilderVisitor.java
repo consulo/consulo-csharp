@@ -29,7 +29,9 @@ import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
+import org.mustbe.consulo.msil.lang.psi.MsilConstantValue;
 import org.mustbe.consulo.msil.lang.psi.MsilCustomAttribute;
+import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import org.mustbe.dotnet.msil.decompiler.textBuilder.block.LineStubBlock;
 import org.mustbe.dotnet.msil.decompiler.textBuilder.block.StubBlock;
 import org.mustbe.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
@@ -46,6 +48,7 @@ import com.intellij.util.containers.ContainerUtil;
 public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 {
 	@NotNull
+	@RequiredReadAction
 	public static List<StubBlock> buildBlocks(PsiElement qualifiedElement)
 	{
 		CSharpStubBuilderVisitor visitor = new CSharpStubBuilderVisitor();
@@ -56,6 +59,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	private List<StubBlock> myBlocks = new ArrayList<StubBlock>(2);
 
 	@Override
+	@RequiredReadAction
 	public void visitPropertyDeclaration(CSharpPropertyDeclaration declaration)
 	{
 		StringBuilder builder = new StringBuilder();
@@ -73,6 +77,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitXXXAccessor(DotNetXXXAccessor accessor)
 	{
 		DotNetXXXAccessor.Kind accessorKind = accessor.getAccessorKind();
@@ -101,6 +106,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitEnumConstantDeclaration(CSharpEnumConstantDeclaration declaration)
 	{
 		processAttributeListAsLine(declaration, myBlocks);
@@ -111,6 +117,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitFieldDeclaration(CSharpFieldDeclaration declaration)
 	{
 		StringBuilder builder = new StringBuilder();
@@ -123,11 +130,13 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		appendTypeRef(declaration, builder, declaration.toTypeRef(false));
 		builder.append(" ");
 		appendValidName(builder, declaration.getName());
+		appendInitializer(builder, declaration);
 		builder.append(";\n");
 		myBlocks.add(new LineStubBlock(builder));
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitEventDeclaration(CSharpEventDeclaration declaration)
 	{
 		StringBuilder builder = new StringBuilder();
@@ -147,6 +156,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitArrayMethodDeclaration(CSharpArrayMethodDeclaration declaration)
 	{
 		StringBuilder builder = new StringBuilder();
@@ -167,6 +177,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitConversionMethodDeclaration(CSharpConversionMethodDeclaration declaration)
 	{
 		StringBuilder builder = new StringBuilder();
@@ -183,6 +194,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitConstructorDeclaration(CSharpConstructorDeclaration declaration)
 	{
 		StringBuilder builder = new StringBuilder();
@@ -204,6 +216,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitMethodDeclaration(CSharpMethodDeclaration declaration)
 	{
 		StringBuilder builder = new StringBuilder();
@@ -240,6 +253,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitTypeDeclaration(final CSharpTypeDeclaration declaration)
 	{
 		StringBuilder builder = new StringBuilder();
@@ -361,6 +375,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		{
 			@Nullable
 			@Override
+			@RequiredReadAction
 			public Void fun(StringBuilder t, DotNetGenericParameter v)
 			{
 				if(v.hasModifier(CSharpModifier.OUT))
@@ -441,6 +456,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		{
 			@Nullable
 			@Override
+			@RequiredReadAction
 			public Void fun(StringBuilder t, DotNetParameter v)
 			{
 				appendAttributeList(t, v);
@@ -451,13 +467,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 				{
 					t.append(" ");
 					appendValidName(t, v.getName());
-
-					DotNetExpression initializer = v.getInitializer();
-					if(initializer != null)
-					{
-						t.append(" = ");
-						t.append(initializer.getText());
-					}
+					appendInitializer(t, v);
 				}
 				return null;
 			}
@@ -503,6 +513,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 					{
 						@Nullable
 						@Override
+						@RequiredReadAction
 						public Void fun(StringBuilder builder, DotNetExpression dotNetExpression)
 						{
 							builder.append(dotNetExpression.getText());
@@ -541,6 +552,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		StubBlockUtil.join(builder, attributes, new PairFunction<StringBuilder, DotNetAttribute, Void>()
 		{
 			@Override
+			@RequiredReadAction
 			public Void fun(StringBuilder builder, DotNetAttribute dotNetAttribute)
 			{
 				appendTypeRef(owner, builder, dotNetAttribute.toTypeRef());
@@ -556,6 +568,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 						{
 							@Nullable
 							@Override
+							@RequiredReadAction
 							public Void fun(StringBuilder builder, DotNetExpression dotNetExpression)
 							{
 								builder.append(dotNetExpression.getText());
@@ -576,6 +589,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		builder.append("] ");
 	}
 
+	@RequiredReadAction
 	private static void processModifierList(StringBuilder builder, DotNetModifierListOwner owner)
 	{
 		DotNetModifierList modifierList = owner.getModifierList();
@@ -628,6 +642,33 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			builder.append("@");
 		}
 		builder.append(name);
+	}
+
+	@RequiredReadAction
+	private static void appendInitializer(StringBuilder builder, DotNetVariable variable)
+	{
+		DotNetExpression initializer = variable.getInitializer();
+		if(initializer instanceof MsilConstantValue)
+		{
+			IElementType valueType = ((MsilConstantValue) initializer).getValueType();
+			if(valueType == null)
+			{
+				return;
+			}
+			if(valueType == MsilTokens.NULLREF_KEYWORD)
+			{
+				builder.append(" = null");
+			}
+			else
+			{
+				String valueText = ((MsilConstantValue) initializer).getValueText();
+				if(valueText == null)
+				{
+					return;
+				}
+				builder.append(" = ").append(valueText);
+			}
+		}
 	}
 
 	public List<StubBlock> getBlocks()
