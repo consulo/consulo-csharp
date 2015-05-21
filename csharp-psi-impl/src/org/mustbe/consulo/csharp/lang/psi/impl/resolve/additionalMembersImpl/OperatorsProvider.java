@@ -3,12 +3,12 @@ package org.mustbe.consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -33,8 +33,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.JDOMUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.Consumer;
 import com.intellij.util.ReflectionUtil;
-import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.MultiMap;
 
@@ -121,13 +121,14 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 		}
 	}
 
-	@NotNull
+	@RequiredReadAction
 	@Override
-	public DotNetElement[] getAdditionalMembers(@NotNull DotNetElement element, DotNetGenericExtractor extractor)
+	public void processAdditionalMembers(@NotNull DotNetElement element,
+			@NotNull DotNetGenericExtractor extractor,
+			@NotNull Consumer<DotNetElement> consumer)
 	{
 		Project project = element.getProject();
 
-		List<DotNetElement> elements = new SmartList<DotNetElement>();
 		if(element instanceof CSharpTypeDeclaration)
 		{
 			CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) element;
@@ -143,24 +144,25 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 				selfTypeRef = new CSharpTypeRefByTypeDeclaration(typeDeclaration, extractor);
 			}
 
-			buildOperators(project, selfTypeRef, element, myTypeOperators.get(typeDeclaration.getVmQName()), elements);
+			buildOperators(project, selfTypeRef, element, myTypeOperators.get(typeDeclaration.getVmQName()), consumer);
 			if(typeDeclaration.isEnum())
 			{
-				buildOperators(project, selfTypeRef, element, myEnumOperators, elements);
+				buildOperators(project, selfTypeRef, element, myEnumOperators, consumer);
 			}
 
 			if(DotNetTypes.System.Nullable$1.equals(typeDeclaration.getVmQName()))
 			{
-				Collections.addAll(elements, buildNullableOperators(selfTypeRef, typeDeclaration, extractor));
+				buildNullableOperators(selfTypeRef, typeDeclaration, extractor, consumer);
 			}
 		}
-
-		return ContainerUtil.toArray(elements, DotNetElement.ARRAY_FACTORY);
 	}
 
 	@NotNull
-	private DotNetElement[] buildNullableOperators(DotNetTypeRef selfTypeRef, CSharpTypeDeclaration typeDeclaration,
-			DotNetGenericExtractor extractor)
+	@RequiredReadAction
+	private DotNetElement[] buildNullableOperators(@NotNull DotNetTypeRef selfTypeRef,
+			@NotNull CSharpTypeDeclaration typeDeclaration,
+			@NotNull DotNetGenericExtractor extractor,
+			@NotNull Consumer<DotNetElement> consumer)
 	{
 		DotNetGenericParameter[] genericParameters = typeDeclaration.getGenericParameters();
 		if(genericParameters.length == 0)
@@ -186,10 +188,11 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 		List<DotNetElement> elements = new ArrayList<DotNetElement>();
 
 		DotNetTypeDeclaration forAddOperatorsElement = (DotNetTypeDeclaration) typeResolveResultElement;
-		buildOperators(project, selfTypeRef, forAddOperatorsElement, myTypeOperators.get(forAddOperatorsElement.getVmQName()), elements);
+		buildOperators(project, selfTypeRef, forAddOperatorsElement, myTypeOperators.get(forAddOperatorsElement.getVmQName()), consumer);
+
 		if(forAddOperatorsElement.isEnum())
 		{
-			buildOperators(project, selfTypeRef, forAddOperatorsElement, myEnumOperators, elements);
+			buildOperators(project, selfTypeRef, forAddOperatorsElement, myEnumOperators, consumer);
 		}
 		return ContainerUtil.toArray(elements, DotNetElement.ARRAY_FACTORY);
 	}
@@ -198,7 +201,7 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 			@NotNull DotNetTypeRef selfTypeRef,
 			@NotNull DotNetElement parent,
 			@NotNull Collection<Operator> operators,
-			@NotNull List<DotNetElement> list)
+			@NotNull Consumer<DotNetElement> consumer)
 	{
 		if(operators.isEmpty())
 		{
@@ -222,7 +225,7 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 				CSharpLightMethodDeclarationBuilder temp = new CSharpLightMethodDeclarationBuilder(project);
 				temp.setOperator(operator.myOperatorToken);
 
-				builder= temp;
+				builder = temp;
 			}
 
 			builder.withParent(parent);
@@ -239,7 +242,8 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 				builder.addParameter(parameterBuilder);
 				i++;
 			}
-			list.add(builder);
+
+			consumer.consume(builder);
 		}
 	}
 }

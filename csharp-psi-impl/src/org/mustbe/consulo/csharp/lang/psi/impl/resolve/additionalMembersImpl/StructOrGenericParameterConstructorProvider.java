@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
@@ -16,6 +17,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.util.Condition;
+import com.intellij.util.Consumer;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
@@ -24,9 +26,11 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class StructOrGenericParameterConstructorProvider implements CSharpAdditionalMemberProvider
 {
-	@NotNull
+	@RequiredReadAction
 	@Override
-	public DotNetElement[] getAdditionalMembers(@NotNull DotNetElement element, DotNetGenericExtractor extractor)
+	public void processAdditionalMembers(@NotNull DotNetElement element,
+			@NotNull DotNetGenericExtractor extractor,
+			@NotNull Consumer<DotNetElement> consumer)
 	{
 		if(element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).isStruct())
 		{
@@ -49,7 +53,7 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 
 			if(parameterlessConstructor == null)
 			{
-				return buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC, extractor);
+				buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC, extractor, consumer);
 			}
 		}
 		else if(element instanceof CSharpTypeDeclaration)
@@ -66,26 +70,25 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 
 			if(anyConstructor == null)
 			{
-				return buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC, extractor);
+				buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC, extractor, consumer);
 			}
 		}
 		else if(element instanceof DotNetGenericParameter)
 		{
 			// we need always create constructor, it ill check in CS0304
-			return buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC, extractor);
+			buildDefaultConstructor((DotNetNamedElement) element, CSharpModifier.PUBLIC, extractor, consumer);
 		}
-		return DotNetElement.EMPTY_ARRAY;
 	}
 
-	@NotNull
-	private static DotNetElement[] buildDefaultConstructor(@NotNull DotNetNamedElement element,
+	private static void buildDefaultConstructor(@NotNull DotNetNamedElement element,
 			@NotNull CSharpModifier modifier,
-			@NotNull DotNetGenericExtractor extractor)
+			@NotNull DotNetGenericExtractor extractor,
+			@NotNull Consumer<DotNetElement> consumer)
 	{
 		String name = element.getName();
 		if(name == null)
 		{
-			return DotNetElement.EMPTY_ARRAY;
+			return;
 		}
 		CSharpLightConstructorDeclarationBuilder builder = new CSharpLightConstructorDeclarationBuilder(element.getProject());
 		builder.addModifier(modifier);
@@ -103,6 +106,6 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 			parameter = parameter.withTypeRef(new CSharpLambdaTypeRef(extractedMethod));
 			builder.addParameter(parameter);
 		}
-		return new DotNetElement[]{builder};
+		consumer.consume(builder);
 	}
 }

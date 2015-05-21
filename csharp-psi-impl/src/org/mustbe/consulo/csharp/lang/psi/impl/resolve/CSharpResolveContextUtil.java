@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
@@ -51,6 +52,7 @@ public class CSharpResolveContextUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static CSharpResolveContext createContext(@NotNull DotNetGenericExtractor genericExtractor,
 			@NotNull GlobalSearchScope resolveScope,
 			@NotNull PsiElement element)
@@ -81,6 +83,7 @@ public class CSharpResolveContextUtil
 			{
 				@NotNull
 				@Override
+				@RequiredReadAction
 				public CSharpResolveContext fun(DotNetGenericParameter element)
 				{
 					return new CSharpGenericParameterResolveContext(element);
@@ -91,6 +94,7 @@ public class CSharpResolveContextUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	private static CSharpResolveContext cacheTypeContext(@NotNull DotNetGenericExtractor genericExtractor,
 			GlobalSearchScope resolveScope,
 			@NotNull CSharpTypeDeclaration typeDeclaration)
@@ -114,6 +118,7 @@ public class CSharpResolveContextUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	private static CSharpResolveContext cacheTypeContextImpl(@NotNull DotNetGenericExtractor genericExtractor,
 			@NotNull final CSharpTypeDeclaration typeDeclaration)
 	{
@@ -130,6 +135,7 @@ public class CSharpResolveContextUtil
 			{
 				@Nullable
 				@Override
+				@RequiredReadAction
 				public Result<CSharpResolveContext> compute()
 				{
 					return Result.<CSharpResolveContext>create(new CSharpTypeResolveContext(typeDeclaration, DotNetGenericExtractor.EMPTY),

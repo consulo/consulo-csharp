@@ -11,6 +11,7 @@ import java.util.Map;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
@@ -28,6 +29,7 @@ import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
+import com.intellij.util.Consumer;
 import com.intellij.util.Processor;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
@@ -198,6 +200,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	@Nullable
 	private final Map<String, CSharpElementGroup<PsiElement>> myOtherElements;
 
+	@RequiredReadAction
 	public CSharpBaseResolveContext(@NotNull T element, @NotNull DotNetGenericExtractor extractor)
 	{
 		myElement = element;
@@ -208,12 +211,18 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
 		processMembers(element, collector);
 
+		Consumer<DotNetElement> elementConsumer = new Consumer<DotNetElement>()
+		{
+			@Override
+			public void consume(DotNetElement dotNetElement)
+			{
+				dotNetElement.accept(collector);
+			}
+		};
+
 		for(CSharpAdditionalMemberProvider provider : getAdditionalTypeMemberProviders())
 		{
-			for(DotNetElement temp : provider.getAdditionalMembers(element, extractor))
-			{
-				temp.accept(collector);
-			}
+			provider.processAdditionalMembers(element, extractor, elementConsumer);
 		}
 
 		myOtherElements = convertToGroup(project, collector.myOtherElements);
@@ -365,7 +374,8 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		}
 		else
 		{
-			CSharpElementGroup<CSharpConversionMethodDeclaration> deepGroup = deep ? getSuperContext().findConversionMethodGroup(typeRef, deep) : null;
+			CSharpElementGroup<CSharpConversionMethodDeclaration> deepGroup = deep ? getSuperContext().findConversionMethodGroup(typeRef,
+					deep) : null;
 
 			if(deepGroup == null)
 			{
@@ -377,7 +387,8 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 			{
 				return deepGroup;
 			}
-			return new CSharpCompositeElementGroupImpl<CSharpConversionMethodDeclaration>(myElement.getProject(), Arrays.asList(thisGroup, deepGroup));
+			return new CSharpCompositeElementGroupImpl<CSharpConversionMethodDeclaration>(myElement.getProject(), Arrays.asList(thisGroup,
+					deepGroup));
 		}
 	}
 

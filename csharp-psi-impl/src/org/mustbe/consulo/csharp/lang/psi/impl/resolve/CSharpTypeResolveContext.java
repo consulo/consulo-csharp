@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -16,6 +17,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpTypeResolveContext extends CSharpBaseResolveContext<CSharpTypeDeclaration>
 {
+	@RequiredReadAction
 	public CSharpTypeResolveContext(@NotNull CSharpTypeDeclaration element, @NotNull DotNetGenericExtractor genericExtractor)
 	{
 		super(element, genericExtractor);
