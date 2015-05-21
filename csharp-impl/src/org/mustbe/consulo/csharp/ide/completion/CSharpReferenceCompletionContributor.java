@@ -21,6 +21,7 @@ import static com.intellij.patterns.StandardPatterns.psiElement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -28,6 +29,7 @@ import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.AddUsingAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
@@ -55,6 +57,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaR
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeIndex;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
@@ -81,6 +84,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.IconDescriptorUpdaters;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.Iconable;
@@ -88,11 +92,13 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
+import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Function;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.Processor;
+import com.intellij.util.indexing.IdFilter;
 import lombok.val;
 
 /**
@@ -399,6 +405,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 		{
 
 			@Override
+			@RequiredReadAction
 			protected void addCompletions(@NotNull final CompletionParameters completionParameters,
 					ProcessingContext processingContext,
 					@NotNull CompletionResultSet completionResultSet)
@@ -427,26 +434,28 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 					}
 
 					val matcher = new PlainPrefixMatcher(referenceName);
-					val names = new ArrayList<String>();
-					TypeIndex.getInstance().processAllKeys(parent.getProject(), new Processor<String>()
+
+					val project = parent.getProject();
+					val resolveScope = parent.getResolveScope();
+
+					val typeDeclarations = new LinkedList<DotNetTypeDeclaration>();
+
+					StubIndex.getInstance().processAllKeys(CSharpIndexKeys.TYPE_INDEX, new Processor<String>()
 					{
 						@Override
-						public boolean process(String s)
+						public boolean process(String key)
 						{
-							if(matcher.prefixMatches(s))
+							ProgressManager.checkCanceled();
+
+							if(matcher.prefixMatches(key))
 							{
-								names.add(s);
+								Collection<DotNetTypeDeclaration> temp = TypeIndex.getInstance().get(key, project, resolveScope);
+								typeDeclarations.addAll(temp);
 							}
 							return true;
 						}
-					});
+					}, resolveScope, IdFilter.getProjectIdFilter(project, false));
 
-					List<DotNetTypeDeclaration> typeDeclarations = new ArrayList<DotNetTypeDeclaration>(names.size());
-					for(String name : names)
-					{
-						Collection<DotNetTypeDeclaration> temp = TypeIndex.getInstance().get(name, parent.getProject(), parent.getResolveScope());
-						typeDeclarations.addAll(temp);
-					}
 					if(typeDeclarations.isEmpty())
 					{
 						return;
@@ -455,6 +464,8 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 					List<LookupElement> lookupElements = new ArrayList<LookupElement>(typeDeclarations.size());
 					for(DotNetTypeDeclaration dotNetTypeDeclaration : typeDeclarations)
 					{
+						ProgressManager.checkCanceled();
+
 						DotNetQualifiedElement wrap = (DotNetQualifiedElement) MsilToCSharpUtil.wrap(dotNetTypeDeclaration);
 
 						boolean insideUsingList = PsiTreeUtil.getParentOfType(parent, CSharpUsingList.class) != null;
