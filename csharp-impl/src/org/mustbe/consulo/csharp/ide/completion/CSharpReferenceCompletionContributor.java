@@ -454,14 +454,14 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 						return;
 					}
 
+					boolean insideUsingList = PsiTreeUtil.getParentOfType(parent, CSharpUsingList.class) != null;
+
 					List<LookupElement> lookupElements = new ArrayList<LookupElement>(typeDeclarations.size());
 					for(DotNetTypeDeclaration dotNetTypeDeclaration : typeDeclarations)
 					{
 						ProgressManager.checkCanceled();
 
 						DotNetQualifiedElement wrap = (DotNetQualifiedElement) MsilToCSharpUtil.wrap(dotNetTypeDeclaration);
-
-						boolean insideUsingList = PsiTreeUtil.getParentOfType(parent, CSharpUsingList.class) != null;
 
 						String presentationText = wrap.getName();
 
