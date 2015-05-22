@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.light.builder;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
@@ -85,12 +86,14 @@ public class CSharpLightNamespaceDeclarationBuilder extends CSharpLightElementBu
 		throw new IllegalArgumentException("This is light element");
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
 		return false;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetModifierList getModifierList()
@@ -98,6 +101,7 @@ public class CSharpLightNamespaceDeclarationBuilder extends CSharpLightElementBu
 		return null;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableParentQName()
@@ -111,6 +115,7 @@ public class CSharpLightNamespaceDeclarationBuilder extends CSharpLightElementBu
 		return StringUtil.getShortName(myQualifiedName);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableQName()

@@ -21,6 +21,7 @@ import java.util.Map;
 import org.jboss.netty.util.internal.ConcurrentWeakKeyHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
@@ -169,12 +170,14 @@ public class MsilToCSharpUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static PsiElement wrap(PsiElement element)
 	{
 		return wrap(element, null);
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static PsiElement wrap(PsiElement element, @Nullable PsiElement parent)
 	{
 		if(element instanceof MsilClassEntry)
