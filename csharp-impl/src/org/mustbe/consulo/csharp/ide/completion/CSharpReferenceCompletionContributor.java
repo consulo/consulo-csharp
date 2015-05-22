@@ -426,14 +426,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 						kind = CSharpReferenceExpression.ResolveToKind.TYPE_LIKE;
 					}
 
-					val referenceName = parent.getReferenceName().replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "");
-
-					if(StringUtil.isEmpty(referenceName))
-					{
-						return;
-					}
-
-					val matcher = new PlainPrefixMatcher(referenceName);
+					val matcher = completionResultSet.getPrefixMatcher();
 
 					val project = parent.getProject();
 					val resolveScope = parent.getResolveScope();
