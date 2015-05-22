@@ -1,4 +1,4 @@
-package org.musbe.consulo.csharp.parsing;
+package org.musbe.consulo.csharp.formatting;
 
 import org.mustbe.consulo.testFramework.FormattingTestCase;
 

@@ -16,30 +16,17 @@
 
 package org.musbe.consulo.csharp.parsing;
 
-import java.lang.reflect.Method;
-
-import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.CSharpLanguageVersionHelper;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import com.intellij.lang.LanguageVersion;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.testFramework.ParsingTestCase;
 
 /**
  * @author VISTALL
  * @since 30.11.13.
  */
-public class CSharpParsingTest extends ParsingTestCase
+public class CSharpParsingTest extends CSharpParsingTestCase
 {
 	public CSharpParsingTest()
 	{
-		super("parsing", "cs");
-	}
-
-	@Override
-	protected boolean checkAllPsiRoots()
-	{
-		return false;
+		super("parsing");
 	}
 
 	@SetLanguageVersion(version = CSharpLanguageVersion._6_0)
@@ -166,41 +153,5 @@ public class CSharpParsingTest extends ParsingTestCase
 	public void testAssemblyAttributeBeforeAndAfterMember()
 	{
 		doTest(true);
-	}
-
-	@NotNull
-	@Override
-	public LanguageVersion<?> resolveLanguageVersion(@NotNull FileType fileType)
-	{
-		String name = getName();
-		try
-		{
-			Method declaredMethod = getClass().getDeclaredMethod(name);
-			SetLanguageVersion annotation = declaredMethod.getAnnotation(SetLanguageVersion.class);
-			if(annotation != null)
-			{
-				return CSharpLanguageVersionHelper.getInstance().getWrapper(annotation.version());
-			}
-			else
-			{
-				throw new IllegalArgumentException("Missed @SetLanguageVersion");
-			}
-		}
-		catch(NoSuchMethodException e)
-		{
-			throw new Error(e);
-		}
-	}
-
-	@Override
-	protected boolean shouldContainTempFiles()
-	{
-		return false;
-	}
-
-	@Override
-	protected String getTestDataPath()
-	{
-		return "/csharp-impl/testData";
 	}
 }

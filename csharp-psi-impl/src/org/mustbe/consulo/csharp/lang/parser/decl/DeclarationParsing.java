@@ -28,7 +28,6 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.NotNullFunction;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -81,17 +80,12 @@ public class DeclarationParsing extends SharedParsingHelpers
 					return;
 				}
 
-				if(!parse(builder, root))
-				{
-					PsiBuilder.Marker mark = builder.mark();
-					builder.advanceLexer();
-					mark.error("Unexpected token");
-				}
+				parse(builder, root);
 			}
 		}
 	}
 
-	private static boolean parse(@NotNull CSharpBuilderWrapper builder, boolean root)
+	private static void parse(@NotNull CSharpBuilderWrapper builder, boolean root)
 	{
 		PsiBuilder.Marker marker = builder.mark();
 
@@ -108,7 +102,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 
 		PsiBuilder.Marker modifierListMarker = modifierListPair.getFirst();
 
-		val tokenType = builder.getTokenType();
+		IElementType tokenType = builder.getTokenType();
 		if(tokenType == NAMESPACE_KEYWORD)
 		{
 			NamespaceDeclarationParsing.parse(builder, marker);
@@ -162,9 +156,11 @@ public class DeclarationParsing extends SharedParsingHelpers
 						if(root)
 						{
 							marker.done(DUMMY_DECLARATION);
-							return true;
+							return;
 						}
 						builder.error("Type expected");
+						marker.done(FIELD_DECLARATION);
+						return;
 					}
 					else
 					{
@@ -172,7 +168,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 					}
 
 					marker.drop();
-					return false;
+					advanceUnexpectedToken(builder);
 				}
 				else if(builder.getTokenType() == OPERATOR_KEYWORD)
 				{
@@ -187,7 +183,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 
 						// if we dont have name but we have lbracket - parse as index method
 						parseAfterName(builder, marker, builder.getTokenType() == LBRACKET ? THIS_KEYWORD : null);
-						return true;
+						return;
 					}
 
 					IElementType prevToken = null;
@@ -215,7 +211,6 @@ public class DeclarationParsing extends SharedParsingHelpers
 				}
 			}
 		}
-		return true;
 	}
 
 	private static boolean parseEnumConstant(CSharpBuilderWrapper builder)

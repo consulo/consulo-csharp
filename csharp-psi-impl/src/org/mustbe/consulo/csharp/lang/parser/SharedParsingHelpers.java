@@ -115,6 +115,13 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		}
 	}
 
+	protected static void advanceUnexpectedToken(@NotNull PsiBuilder builder)
+	{
+		PsiBuilder.Marker mark = builder.mark();
+		builder.advanceLexer();
+		mark.error("Unexpected token");
+	}
+
 	protected static void done(PsiBuilder.Marker marker, IElementType elementType)
 	{
 		marker.done(elementType);

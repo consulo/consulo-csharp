@@ -1,0 +1,18 @@
+CSHARP_FILE
+  CSharpTypeDeclarationImpl [TYPE_DECLARATION]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      PsiElement(PUBLIC_KEYWORD)('public')
+    PsiWhiteSpace(' ')
+    PsiElement(CLASS_KEYWORD)('class')
+    PsiWhiteSpace(' ')
+    PsiElement(IDENTIFIER)('A')
+    PsiWhiteSpace('\n')
+    PsiElement(LBRACE)('{')
+    PsiWhiteSpace('\n    ')
+    CSharpFieldDeclarationImpl [FIELD_DECLARATION]
+      CSharpStubModifierListImpl [MODIFIER_LIST]
+        PsiElement(PUBLIC_KEYWORD)('public')
+      PsiErrorElement:Type expected
+        <empty list>
+    PsiWhiteSpace('\n')
+    PsiElement(RBRACE)('}')
