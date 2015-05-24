@@ -92,7 +92,7 @@ public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 			@Override
 			public boolean isNullable()
 			{
-				return CSharpTypeUtil.isElementIsNullable(getElement());
+				return CSharpTypeUtil.isNullableElement(getElement());
 			}
 		};
 	}

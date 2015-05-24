@@ -50,7 +50,7 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 		public boolean isNullable()
 		{
 			PsiElement element = getElement();
-			return element == null || CSharpTypeUtil.isElementIsNullable(element);
+			return element == null || CSharpTypeUtil.isNullableElement(element);
 		}
 	}
 

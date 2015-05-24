@@ -102,7 +102,7 @@ public class CSharpTypeUtil
 	public static final InheritResult FAIL = new InheritResult(false, null);
 	public static final InheritResult SIMPLE_SUCCESS = new InheritResult(true, null);
 
-	public static boolean isElementIsNullable(@Nullable PsiElement element)
+	public static boolean isNullableElement(@Nullable PsiElement element)
 	{
 		if(element instanceof DotNetTypeDeclaration)
 		{
