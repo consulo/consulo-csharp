@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.codeInsight.problems.CSharpLocationUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -64,7 +64,7 @@ public class CSharpProjectViewProvider implements SelectableTreeStructureProvide
 
 			if(value instanceof PsiFile)
 			{
-				CSharpFileImpl cSharpFile = CSharpPsiUtilImpl.findCSharpFile((PsiFile) value);
+				CSharpFile cSharpFile = CSharpPsiUtilImpl.findCSharpFile((PsiFile) value);
 				if(cSharpFile != null)
 				{
 					if(CSharpLocationUtil.isValidLocation(myProject, ((PsiFile) value).getVirtualFile()))

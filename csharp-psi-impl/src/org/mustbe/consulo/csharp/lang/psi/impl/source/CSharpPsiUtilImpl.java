@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import com.intellij.openapi.util.Comparing;
@@ -61,7 +62,7 @@ public class CSharpPsiUtilImpl
 	}
 
 	@Nullable
-	public static DotNetNamedElement findSingleElement(@NotNull CSharpFileImpl file)
+	public static DotNetNamedElement findSingleElement(@NotNull CSharpFile file)
 	{
 		DotNetNamedElement[] members = file.getMembers();
 		if(members.length != 1)
@@ -96,8 +97,12 @@ public class CSharpPsiUtilImpl
 	}
 
 	@Nullable
-	public static CSharpFileImpl findCSharpFile(@NotNull PsiFile psiFile)
+	public static CSharpFile findCSharpFile(@Nullable PsiFile psiFile)
 	{
+		if(psiFile == null)
+		{
+			return null;
+		}
 		FileViewProvider viewProvider = psiFile.getViewProvider();
 
 		PsiFile psi = viewProvider.getPsi(CSharpLanguage.INSTANCE);
@@ -105,6 +110,6 @@ public class CSharpPsiUtilImpl
 		{
 			return null;
 		}
-		return (CSharpFileImpl) psi;
+		return (CSharpFile) psi;
 	}
 }

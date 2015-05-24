@@ -21,18 +21,24 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpCompositeResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpTypeResolveContext;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
+import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.refactoring.rename.RenamePsiElementProcessor;
+import com.intellij.util.containers.MultiMap;
 
 /**
  * @author VISTALL
@@ -58,6 +64,32 @@ public class CSharpTypeRenamePsiElementProcessor extends RenamePsiElementProcess
 	}
 
 	@Override
+	public void findExistingNameConflicts(PsiElement element,
+			String newName,
+			MultiMap<PsiElement, String> conflicts,
+			Map<PsiElement, String> allRenames)
+	{
+		for(Map.Entry<PsiElement, String> entry : allRenames.entrySet())
+		{
+			if(entry.getKey() instanceof CSharpFile)
+			{
+				CSharpFile key = (CSharpFile) entry.getKey();
+				PsiDirectory parent = key.getParent();
+				if(parent == null)
+				{
+					continue;
+				}
+
+				PsiFile file = parent.findFile(entry.getValue());
+				if(file != null)
+				{
+					conflicts.putValue(file, entry.getValue() + " already exists in parent directory");
+				}
+			}
+		}
+	}
+
+	@Override
 	public void prepareRenaming(PsiElement element, String newName, Map<PsiElement, String> allRenames, SearchScope scope)
 	{
 		CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, element.getResolveScope(), element);
@@ -76,6 +108,19 @@ public class CSharpTypeRenamePsiElementProcessor extends RenamePsiElementProcess
 			for(CSharpConstructorDeclaration declaration : constructors.getElements())
 			{
 				allRenames.put(declaration, newName);
+			}
+		}
+
+		if(element instanceof CSharpTypeDeclaration)
+		{
+			PsiFile containingFile = element.getContainingFile();
+			if(containingFile instanceof CSharpFile)
+			{
+				DotNetNamedElement singleElement = CSharpPsiUtilImpl.findSingleElement((CSharpFile) containingFile);
+				if(element.isEquivalentTo(singleElement))
+				{
+					allRenames.put(containingFile, newName + "." +  containingFile.getFileType().getDefaultExtension());
+				}
 			}
 		}
 
