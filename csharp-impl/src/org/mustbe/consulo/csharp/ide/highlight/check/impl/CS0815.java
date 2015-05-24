@@ -48,7 +48,7 @@ public class CS0815 extends CompilerCheck<CSharpLocalVariable>
 			DotNetTypeResolveResult typeResolveResult = initializerType.resolve(localVariable);
 			if(typeResolveResult instanceof CSharpLambdaResolveResult && ((CSharpLambdaResolveResult) typeResolveResult).getTarget() == null)
 			{
-				return newBuilder(localVariable.getInitializer());
+				return newBuilder(localVariable.getInitializer(), "anonymous method");
 			}
 		}
 		return null;
