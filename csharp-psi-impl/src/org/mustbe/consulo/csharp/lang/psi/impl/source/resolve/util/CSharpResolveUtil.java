@@ -22,6 +22,7 @@ import java.util.List;
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
@@ -153,6 +154,7 @@ public class CSharpResolveUtil
 		return true;
 	}
 
+	@RequiredReadAction
 	public static boolean walkUsing(@NotNull final PsiScopeProcessor processor,
 			@NotNull final PsiElement entrance,
 			@Nullable PsiElement maxScope,
@@ -306,6 +308,7 @@ public class CSharpResolveUtil
 		return true;
 	}
 
+	@RequiredReadAction
 	public static boolean walkChildren(@NotNull final PsiScopeProcessor processor,
 			@NotNull final PsiElement entrance,
 			boolean walkParent,
