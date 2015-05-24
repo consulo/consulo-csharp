@@ -22,11 +22,13 @@ import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorPolicy;
 import com.intellij.openapi.fileEditor.FileEditorProvider;
 import com.intellij.openapi.fileEditor.FileEditorState;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
@@ -55,13 +57,20 @@ public class CSharpAssemblyFileEditorProvider implements FileEditorProvider
 	}
 
 	@Override
-	public boolean accept(@NotNull Project project, @NotNull VirtualFile virtualFile)
+	public boolean accept(@NotNull final Project project, @NotNull final VirtualFile virtualFile)
 	{
 		if(!EarlyAccessProgramManager.getInstance().getState(EapDescriptor.class))
 		{
 			return false;
 		}
-		PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
+		PsiFile file = ApplicationManager.getApplication().runReadAction(new Computable<PsiFile>()
+		{
+			@Override
+			public PsiFile compute()
+			{
+				return PsiManager.getInstance(project).findFile(virtualFile);
+			}
+		});
 		return virtualFile.getName().equals(CSharpAssemblyConstants.FileName) && file instanceof CSharpFileImpl;
 	}
 
