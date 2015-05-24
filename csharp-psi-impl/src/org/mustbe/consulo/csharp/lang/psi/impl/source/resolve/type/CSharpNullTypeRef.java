@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -35,6 +36,7 @@ public class CSharpNullTypeRef implements DotNetTypeRef
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public DotNetTypeResolveResult resolve(@NotNull PsiElement element)
 	{
 		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(element.getProject()).findType(DotNetTypes.System.Object,
@@ -43,6 +45,6 @@ public class CSharpNullTypeRef implements DotNetTypeRef
 		{
 			return DotNetTypeResolveResult.EMPTY;
 		}
-		return new SimpleTypeResolveResult(element, DotNetGenericExtractor.EMPTY);
+		return new SimpleTypeResolveResult(type, DotNetGenericExtractor.EMPTY);
 	}
 }
