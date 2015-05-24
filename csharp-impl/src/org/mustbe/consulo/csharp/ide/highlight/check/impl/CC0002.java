@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -28,6 +29,7 @@ import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
  */
 public class CC0002 extends CompilerCheck<CSharpOperatorReferenceImpl>
 {
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpOperatorReferenceImpl element)

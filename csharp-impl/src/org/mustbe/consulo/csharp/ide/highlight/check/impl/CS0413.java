@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintOwner;
@@ -40,6 +41,7 @@ import lombok.val;
  */
 public class CS0413 extends CompilerCheck<PsiElement>
 {
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CompilerCheckBuilder checkImpl(

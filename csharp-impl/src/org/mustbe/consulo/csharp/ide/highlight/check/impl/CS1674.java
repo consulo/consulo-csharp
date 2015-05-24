@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
@@ -38,6 +39,7 @@ public class CS1674 extends CompilerCheck<CSharpUsingStatementImpl>
 {
 	private static DotNetTypeRef ourIDisposableTypeRef = new CSharpTypeRefByQName(DotNetTypes.System.IDisposable);
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpUsingStatementImpl element)

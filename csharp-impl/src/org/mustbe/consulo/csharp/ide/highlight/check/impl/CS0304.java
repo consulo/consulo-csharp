@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintKeywordValue;
@@ -41,6 +42,7 @@ public class CS0304 extends CompilerCheck<CSharpNewExpression>
 {
 	private static final TokenSet ourGenericConstraintSet = TokenSet.create(CSharpTokens.NEW_KEYWORD, CSharpTokens.STRUCT_KEYWORD);
 
+	@RequiredReadAction
 	@Override
 	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpNewExpression element)
 	{

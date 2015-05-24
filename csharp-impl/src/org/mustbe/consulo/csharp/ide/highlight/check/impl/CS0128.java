@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
@@ -50,6 +51,7 @@ import lombok.val;
  */
 public class CS0128 extends CompilerCheck<CSharpBlockStatementImpl>
 {
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public List<CompilerCheckBuilder> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpBlockStatementImpl element)

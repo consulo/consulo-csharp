@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
 import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
@@ -148,6 +149,7 @@ public abstract class CompilerCheck<T extends PsiElement>
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public List<? extends HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull T element)
 	{
 		HighlightInfoFactory check = checkImpl(languageVersion, element);
@@ -159,30 +161,35 @@ public abstract class CompilerCheck<T extends PsiElement>
 	}
 
 	@Nullable
+	@RequiredReadAction
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull T element)
 	{
 		return null;
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public CompilerCheckBuilder newBuilder(@NotNull PsiElement range, String... args)
 	{
 		return newBuilderImpl(getClass(), range, args);
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public CompilerCheckBuilder newBuilder(@NotNull TextRange range, String... args)
 	{
 		return newBuilderImpl(getClass(), range, args);
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static CompilerCheckBuilder newBuilderImpl(@NotNull Class<?> clazz, @NotNull PsiElement range, String... args)
 	{
 		return newBuilderImpl(clazz, range.getTextRange(), args);
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static CompilerCheckBuilder newBuilderImpl(@NotNull Class<?> clazz, @NotNull TextRange range, String... args)
 	{
 		CompilerCheckBuilder result = new CompilerCheckBuilder();
@@ -203,6 +210,8 @@ public abstract class CompilerCheck<T extends PsiElement>
 		return message;
 	}
 
+	@RequiredReadAction
+	@Nullable
 	public static String formatElement(PsiElement e)
 	{
 		if(e instanceof DotNetParameter)

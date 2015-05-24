@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
@@ -79,6 +80,7 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 		}
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public List<CompilerCheckBuilder> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetModifierListOwner element)

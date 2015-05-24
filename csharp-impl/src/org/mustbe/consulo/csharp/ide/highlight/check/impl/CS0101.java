@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -29,6 +30,7 @@ import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
  */
 public class CS0101 extends CompilerCheck<CSharpNamespaceDeclaration>
 {
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public List<CompilerCheckBuilder> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpNamespaceDeclaration element)
