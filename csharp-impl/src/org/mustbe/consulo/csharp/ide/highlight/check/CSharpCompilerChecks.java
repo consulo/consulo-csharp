@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.psi.PsiElement;
@@ -119,6 +120,7 @@ public enum CSharpCompilerChecks
 		try
 		{
 			Class<?> aClass = Class.forName("org.mustbe.consulo.csharp.ide.highlight.check.impl." + name());
+			//noinspection unchecked
 			myCheck = (CompilerCheck<PsiElement>) aClass.newInstance();
 
 			ParameterizedType genericType = (ParameterizedType) aClass.getGenericSuperclass();
@@ -132,6 +134,7 @@ public enum CSharpCompilerChecks
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public List<? extends CompilerCheck.HighlightInfoFactory> check(CSharpLanguageVersion languageVersion, PsiElement element)
 	{
 		List<? extends CompilerCheck.HighlightInfoFactory> results = myCheck.check(languageVersion, element);

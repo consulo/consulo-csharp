@@ -19,8 +19,9 @@ package org.mustbe.consulo.csharp.ide.highlight.check;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
@@ -45,6 +46,7 @@ public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements 
 	private HighlightInfoHolder myHighlightInfoHolder;
 
 	@Override
+	@RequiredReadAction
 	public void visitElement(PsiElement element)
 	{
 		ProgressIndicatorProvider.checkCanceled();
@@ -91,11 +93,7 @@ public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements 
 	public boolean suitableForFile(@NotNull PsiFile psiFile)
 	{
 		VirtualFile virtualFile = psiFile.getVirtualFile();
-		if(virtualFile instanceof MsilFileRepresentationVirtualFile)
-		{
-			return false;
-		}
-		return psiFile instanceof CSharpFileImpl;
+		return !(virtualFile instanceof MsilFileRepresentationVirtualFile) && psiFile instanceof CSharpFile;
 	}
 
 	@Override
