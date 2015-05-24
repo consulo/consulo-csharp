@@ -20,10 +20,10 @@ import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import org.mustbe.dotnet.msil.decompiler.util.MsilHelper;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -34,25 +34,18 @@ public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 {
 	@NotNull
 	private final PsiElement myScope;
-	private final Boolean myNullability;
 
-	public MsilDelegateTypeRef(@NotNull PsiElement scope, @NotNull DotNetTypeRef typeRef, @Nullable Boolean nullability)
+	public MsilDelegateTypeRef(@NotNull PsiElement scope, @NotNull DotNetTypeRef typeRef)
 	{
 		super(typeRef);
 		myScope = scope;
-		myNullability = nullability;
 	}
 
 	@NotNull
 	@Override
 	public String getPresentableText()
 	{
-		String s = MsilHelper.cutGenericMarker(super.getPresentableText());
-		if(myNullability == Boolean.TRUE)
-		{
-			s += "?";
-		}
-		return s;
+		return MsilHelper.cutGenericMarker(super.getPresentableText());
 	}
 
 	@NotNull
@@ -99,7 +92,7 @@ public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 			@Override
 			public boolean isNullable()
 			{
-				return myNullability == Boolean.TRUE || CSharpTypeUtil.isElementIsNullable(getElement());
+				return CSharpTypeUtil.isElementIsNullable(getElement());
 			}
 		};
 	}

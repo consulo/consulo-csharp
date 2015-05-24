@@ -23,7 +23,7 @@ public class CSharpLazyTypeRefByQName extends CSharpTypeRefByQName
 
 	public CSharpLazyTypeRefByQName(PsiElement scope, @NotNull String qualifiedName, @Nullable Boolean nullable)
 	{
-		super(qualifiedName, nullable);
+		super(qualifiedName);
 		myScope = scope;
 	}
 

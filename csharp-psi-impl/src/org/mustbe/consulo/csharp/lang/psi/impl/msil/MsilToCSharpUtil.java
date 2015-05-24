@@ -235,12 +235,6 @@ public class MsilToCSharpUtil
 	@NotNull
 	public static DotNetTypeRef extractToCSharp(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
-		return extractToCSharp(typeRef, scope, null);
-	}
-
-	@NotNull
-	private static DotNetTypeRef extractToCSharp(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope, @Nullable Boolean forceNullable)
-	{
 		if(typeRef == DotNetTypeRef.ERROR_TYPE)
 		{
 			return DotNetTypeRef.ERROR_TYPE;
@@ -248,7 +242,7 @@ public class MsilToCSharpUtil
 
 		if(typeRef instanceof MsilNativeTypeRefImpl)
 		{
-			return new CSharpLazyTypeRefByQName(scope, typeRef.getQualifiedText(), forceNullable == Boolean.TRUE);
+			return new CSharpLazyTypeRefByQName(scope, typeRef.getQualifiedText());
 		}
 		else if(typeRef instanceof MsilArrayTypRefImpl)
 		{
@@ -292,6 +286,6 @@ public class MsilToCSharpUtil
 		{
 			return new CSharpTypeRefFromGenericParameter(new MsilGenericParameterAsCSharpGenericParameter(null, (DotNetGenericParameter) resolve));
 		}
-		return new MsilDelegateTypeRef(scope, typeRef, forceNullable);
+		return new MsilDelegateTypeRef(scope, typeRef);
 	}
 }
