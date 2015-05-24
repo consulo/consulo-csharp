@@ -39,7 +39,7 @@ public class CS0023 extends CompilerCheck<DotNetElement>
 		if(element instanceof CSharpReferenceExpression)
 		{
 			PsiElement qualifier = ((CSharpReferenceExpression) element).getQualifier();
-			if(qualifier instanceof CSharpConstantExpressionImpl && ((CSharpConstantExpressionImpl) qualifier).getLiteralType() == CSharpTokens.NULL_LITERAL)
+			if(isNullConstant(qualifier))
 			{
 				PsiElement memberAccessElement = ((CSharpReferenceExpression) element).getMemberAccessElement();
 				assert memberAccessElement != null;
@@ -47,5 +47,11 @@ public class CS0023 extends CompilerCheck<DotNetElement>
 			}
 		}
 		return super.checkImpl(languageVersion, element);
+	}
+
+	public static boolean isNullConstant(@Nullable PsiElement element)
+	{
+		return element instanceof CSharpConstantExpressionImpl && ((CSharpConstantExpressionImpl) element).getLiteralType() == CSharpTokens
+				.NULL_LITERAL;
 	}
 }

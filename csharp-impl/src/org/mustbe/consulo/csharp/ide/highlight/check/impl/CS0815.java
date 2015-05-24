@@ -44,6 +44,10 @@ public class CS0815 extends CompilerCheck<CSharpLocalVariable>
 			{
 				return null;
 			}
+			if(CS0023.isNullConstant(initializer))
+			{
+				return newBuilder(localVariable.getInitializer(), "null");
+			}
 			DotNetTypeRef initializerType = initializer.toTypeRef(false);
 			DotNetTypeResolveResult typeResolveResult = initializerType.resolve(localVariable);
 			if(typeResolveResult instanceof CSharpLambdaResolveResult && ((CSharpLambdaResolveResult) typeResolveResult).getTarget() == null)
