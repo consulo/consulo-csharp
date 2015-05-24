@@ -21,7 +21,7 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpReferenceTypeRef implements DotNetTypeRef
 {
-	public static class Result<T extends PsiElement> implements DotNetTypeResolveResult
+	public static class Result<T extends PsiElement> extends SingleNullableStateResolveResult
 	{
 		protected final T myElement;
 		protected final DotNetGenericExtractor myExtractor;
@@ -47,7 +47,7 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 		}
 
 		@Override
-		public boolean isNullable()
+		public boolean isNullableImpl()
 		{
 			PsiElement element = getElement();
 			return element == null || CSharpTypeUtil.isNullableElement(element);
@@ -113,7 +113,7 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 		}
 
 		@Override
-		public boolean isNullable()
+		public boolean isNullableImpl()
 		{
 			return true;
 		}

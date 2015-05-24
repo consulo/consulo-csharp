@@ -20,6 +20,7 @@ import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.SingleNullableStateResolveResult;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -66,7 +67,7 @@ public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 	@LazyInstance
 	public DotNetTypeResolveResult resolveImpl()
 	{
-		return new DotNetTypeResolveResult()
+		return new SingleNullableStateResolveResult()
 		{
 			private DotNetTypeResolveResult cachedResult = MsilDelegateTypeRef.this.getDelegate().resolve(myScope);
 
@@ -90,7 +91,7 @@ public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 			}
 
 			@Override
-			public boolean isNullable()
+			public boolean isNullableImpl()
 			{
 				return CSharpTypeUtil.isNullableElement(getElement());
 			}
