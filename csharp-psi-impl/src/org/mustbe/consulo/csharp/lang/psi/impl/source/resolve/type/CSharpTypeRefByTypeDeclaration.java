@@ -71,6 +71,6 @@ public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRef.Adapter
 		{
 			return new CSharpReferenceTypeRef.LambdaResult(scope, methodDeclaration, myExtractor);
 		}
-		return new SimpleTypeResolveResult(myElement, myExtractor, CSharpTypeUtil.isElementIsNullable(myElement));
+		return new CSharpReferenceTypeRef.Result<PsiElement>(myElement, myExtractor);
 	}
 }

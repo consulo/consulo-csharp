@@ -143,7 +143,7 @@ public class CSharpTypeRefPresentationUtil
 			DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
 
 			PsiElement element = typeResolveResult.getElement();
-			boolean isNullable = element == null || CSharpTypeUtil.isElementIsNullable(element);
+			boolean isNullable = CSharpTypeUtil.isElementIsNullable(element);
 			boolean isExpectedNullable = typeResolveResult.isNullable();
 
 			if(element instanceof DotNetQualifiedElement)

@@ -18,14 +18,12 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
-import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -95,11 +93,11 @@ public class CSharpGenericWrapperTypeRef implements DotNetGenericWrapperTypeRef
 			CSharpMethodDeclaration target = ((CSharpLambdaResolveResult) typeResolveResult).getTarget();
 			if(target == null)
 			{
-				return new SimpleTypeResolveResult(element, getGenericExtractor(element), CSharpTypeUtil.isElementIsNullable(element));
+				return new CSharpReferenceTypeRef.Result<PsiElement>(element, getGenericExtractor(element));
 			}
 			return new CSharpReferenceTypeRef.LambdaResult(scope, target, getGenericExtractor(target));
 		}
-		return new SimpleTypeResolveResult(element, getGenericExtractor(element), CSharpTypeUtil.isElementIsNullable(element));
+		return new CSharpReferenceTypeRef.Result<PsiElement>(element, getGenericExtractor(element));
 	}
 
 	public DotNetGenericExtractor getGenericExtractor(PsiElement resolved)
