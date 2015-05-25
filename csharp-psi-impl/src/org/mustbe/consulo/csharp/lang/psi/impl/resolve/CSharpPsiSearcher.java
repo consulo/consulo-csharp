@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.consulo.lombok.annotations.ProjectService;
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNamespaceAsElementImpl;
@@ -70,6 +71,7 @@ public class CSharpPsiSearcher extends IndexBasedDotNetPsiSearcher
 		return CSharpIndexKeys.MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public Collection<? extends DotNetTypeDeclaration> findTypesImpl(@NotNull String vmQName, @NotNull GlobalSearchScope scope,
