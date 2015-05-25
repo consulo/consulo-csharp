@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpCompositeResolveContext;
+import org.mustbe.consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpTypeResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
@@ -111,29 +111,39 @@ public class CSharpTypeRenamePsiElementProcessor extends RenamePsiElementProcess
 			}
 		}
 
-		if(element instanceof CSharpTypeDeclaration)
+		CSharpTypeDeclaration[] typesIfPartial = getTypesIfPartial(context);
+
+		for(CSharpTypeDeclaration typeDeclaration : typesIfPartial)
 		{
-			PsiFile containingFile = element.getContainingFile();
+			allRenames.put(typeDeclaration, newName);
+
+			PsiFile containingFile = typeDeclaration.getContainingFile();
 			if(containingFile instanceof CSharpFile)
 			{
 				DotNetNamedElement singleElement = CSharpPsiUtilImpl.findSingleElement((CSharpFile) containingFile);
-				if(element.isEquivalentTo(singleElement))
+				if(typeDeclaration.isEquivalentTo(singleElement))
 				{
-					allRenames.put(containingFile, newName + "." +  containingFile.getFileType().getDefaultExtension());
+					allRenames.put(containingFile, newName + "." + containingFile.getFileType().getDefaultExtension());
 				}
 			}
 		}
+	}
 
-		// if we have composite - that partial type, need append other types
-		if(context instanceof CSharpCompositeResolveContext)
+	private static CSharpTypeDeclaration[] getTypesIfPartial(CSharpResolveContext context)
+	{
+		if(context instanceof CSharpTypeResolveContext)
 		{
-			for(CSharpResolveContext resolveContext : ((CSharpCompositeResolveContext) context).getContexts())
+			// if we have composite - that partial type, need append other types
+			CSharpTypeDeclaration maybeCompositeType = ((CSharpTypeResolveContext) context).getElement();
+			if(maybeCompositeType instanceof CSharpCompositeTypeDeclaration)
 			{
-				if(resolveContext instanceof CSharpTypeResolveContext)
-				{
-					allRenames.put(((CSharpTypeResolveContext) resolveContext).getElement(), newName);
-				}
+				return ((CSharpCompositeTypeDeclaration) maybeCompositeType).getTypeDeclarations();
+			}
+			else
+			{
+				return new CSharpTypeDeclaration[]{maybeCompositeType};
 			}
 		}
+		return CSharpTypeDeclaration.EMPTY_ARRAY;
 	}
 }

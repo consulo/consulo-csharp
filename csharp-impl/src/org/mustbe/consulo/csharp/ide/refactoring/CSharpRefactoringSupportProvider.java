@@ -17,10 +17,13 @@
 package org.mustbe.consulo.csharp.ide.refactoring;
 
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureHandler;
 import org.mustbe.consulo.csharp.ide.refactoring.introduceVariable.CSharpIntroduceVariableHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
@@ -62,21 +65,28 @@ public class CSharpRefactoringSupportProvider extends RefactoringSupportProvider
 	}
 
 	@Override
+	@RequiredReadAction
 	public boolean isInplaceRenameAvailable(PsiElement element, PsiElement context)
 	{
 		return mayRenameInplace(element, context);
 	}
 
 	@Override
+	@RequiredReadAction
 	public boolean isMemberInplaceRenameAvailable(PsiElement element, PsiElement context)
 	{
 		if(element instanceof DotNetParameter && element instanceof StubBasedPsiElement)
 		{
 			return true;
 		}
+		if(element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).hasModifier(CSharpModifier.PARTIAL))
+		{
+			return false;
+		}
 		return element instanceof DotNetQualifiedElement && !(element instanceof DotNetNamespaceAsElement);
 	}
 
+	@RequiredReadAction
 	public static boolean mayRenameInplace(PsiElement elementToRename, final PsiElement nameSuggestionContext)
 	{
 		if(nameSuggestionContext != null && nameSuggestionContext.getContainingFile() != elementToRename.getContainingFile())
