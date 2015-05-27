@@ -99,28 +99,28 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.afterInside(CSharpTokens.LBRACE, CSharpElements.ARRAY_INITIALIZER_COMPOSITE_VALUE).spaces(0);
 		myBuilder.beforeInside(CSharpTokens.RBRACE, CSharpElements.ARRAY_INITIALIZER_COMPOSITE_VALUE).spaces(0);
 
-		myBuilder.beforeInside(LBRACE, TYPE_DECLARATION).spaceIf(commonSettings.SPACE_BEFORE_CLASS_LBRACE);
-		myBuilder.beforeInside(LBRACE, PROPERTY_DECLARATION).spaceIf(customSettings.SPACE_BEFORE_PROPERTY_LBRACE);
-		myBuilder.beforeInside(LBRACE, EVENT_DECLARATION).spaceIf(customSettings.SPACE_BEFORE_EVENT_LBRACE);
-		myBuilder.beforeInside(LBRACE, ARRAY_METHOD_DECLARATION).spaceIf(customSettings.SPACE_BEFORE_INDEX_METHOD_LBRACE);
-		myBuilder.beforeInside(LBRACE, NAMESPACE_DECLARATION).spaceIf(customSettings.SPACE_BEFORE_NAMESPACE_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(LBRACE, TYPE_DECLARATION), commonSettings.SPACE_BEFORE_CLASS_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(LBRACE, PROPERTY_DECLARATION), customSettings.SPACE_BEFORE_PROPERTY_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(LBRACE, EVENT_DECLARATION), customSettings.SPACE_BEFORE_EVENT_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(LBRACE, ARRAY_METHOD_DECLARATION), customSettings.SPACE_BEFORE_INDEX_METHOD_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(LBRACE, NAMESPACE_DECLARATION), customSettings.SPACE_BEFORE_NAMESPACE_LBRACE);
 
-		myBuilder.beforeInside(BLOCK_STATEMENT, METHOD_DECLARATION).spaceIf(commonSettings.SPACE_BEFORE_METHOD_LBRACE);
-		myBuilder.beforeInside(BLOCK_STATEMENT, CONSTRUCTOR_DECLARATION).spaceIf(commonSettings.SPACE_BEFORE_METHOD_LBRACE);
-		myBuilder.beforeInside(BLOCK_STATEMENT, CONVERSION_METHOD_DECLARATION).spaceIf(commonSettings.SPACE_BEFORE_METHOD_LBRACE);
-		myBuilder.beforeInside(BLOCK_STATEMENT, XXX_ACCESSOR).spaceIf(commonSettings.SPACE_BEFORE_METHOD_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, METHOD_DECLARATION), commonSettings.SPACE_BEFORE_METHOD_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, CONSTRUCTOR_DECLARATION), commonSettings.SPACE_BEFORE_METHOD_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, CONVERSION_METHOD_DECLARATION), commonSettings.SPACE_BEFORE_METHOD_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, XXX_ACCESSOR), commonSettings.SPACE_BEFORE_METHOD_LBRACE);
 
-		myBuilder.beforeInside(BLOCK_STATEMENT, SWITCH_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_SWITCH_LBRACE);
-		myBuilder.beforeInside(BLOCK_STATEMENT, FOR_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_FOR_LBRACE);
-		myBuilder.beforeInside(BLOCK_STATEMENT, FOREACH_STATEMENT).spaceIf(customSettings.SPACE_BEFORE_FOREACH_LBRACE);
-		myBuilder.beforeInside(BLOCK_STATEMENT, WHILE_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_WHILE_LBRACE);
-		myBuilder.beforeInside(BLOCK_STATEMENT, TRY_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_TRY_LBRACE);
-		myBuilder.beforeInside(BLOCK_STATEMENT, CATCH_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_CATCH_LBRACE);
-		myBuilder.beforeInside(BLOCK_STATEMENT, FINALLY_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_FINALLY_LBRACE);
-		myBuilder.beforeInside(BLOCK_STATEMENT, UNSAFE_STATEMENT).spaceIf(customSettings.SPACE_BEFORE_UNSAFE_LBRACE);
-		myBuilder.beforeInside(BLOCK_STATEMENT, USING_STATEMENT).spaceIf(customSettings.SPACE_BEFORE_USING_LBRACE);
-		myBuilder.beforeInside(BLOCK_STATEMENT, LOCK_STATEMENT).spaceIf(customSettings.SPACE_BEFORE_LOCK_LBRACE);
-		myBuilder.beforeInside(BLOCK_STATEMENT, FIXED_STATEMENT).spaceIf(customSettings.SPACE_BEFORE_FIXED_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, SWITCH_STATEMENT), commonSettings.SPACE_BEFORE_SWITCH_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, FOR_STATEMENT), commonSettings.SPACE_BEFORE_FOR_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, FOREACH_STATEMENT), customSettings.SPACE_BEFORE_FOREACH_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, WHILE_STATEMENT), commonSettings.SPACE_BEFORE_WHILE_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, TRY_STATEMENT), commonSettings.SPACE_BEFORE_TRY_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, CATCH_STATEMENT), commonSettings.SPACE_BEFORE_CATCH_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, FINALLY_STATEMENT), commonSettings.SPACE_BEFORE_FINALLY_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, UNSAFE_STATEMENT), customSettings.SPACE_BEFORE_UNSAFE_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, USING_STATEMENT), customSettings.SPACE_BEFORE_USING_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, LOCK_STATEMENT), customSettings.SPACE_BEFORE_LOCK_LBRACE);
+		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, FIXED_STATEMENT), customSettings.SPACE_BEFORE_FIXED_LBRACE);
 
 		// call(arg
 		myBuilder.afterInside(CSharpTokens.LPAR, CSharpElements.CALL_ARGUMENT_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_CALL_PARENTHESES);
@@ -224,6 +224,12 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 
 		// doc
 		myBuilder.after(CSharpDocTokenType.DOC_LINE_START).spacing(1, 1, 0, true, 0);
+	}
+
+	private void spaceIfNoBlankLines(SpacingBuilder.RuleBuilder builder, boolean config)
+	{
+		int count = config ? 1 : 0;
+		builder.spacing(count, count, 0, false, 0);
 	}
 
 	public void operatorReferenceSpacing(boolean ifCondition, IElementType... types)
