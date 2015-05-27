@@ -62,18 +62,27 @@ public class CSharpAttributeStubBuilder
 
 		if(innerValue != null && byteBuffer.canRead())
 		{
-			int count = byteBuffer.getShort();
-			for(int i = 0; i < count; i++)
+			StringBuilder newBuilder = new StringBuilder();
+			try
 			{
-				innerValue.append(", ");
+				int count = byteBuffer.getShort();
+				for(int i = 0; i < count; i++)
+				{
+					newBuilder.append(", ");
 
-				byteBuffer.get(); //type  0x53 field 0x54 property
-				TypeSignature typeSignature = TypeSignatureParser.parse(byteBuffer, null);
-				String name = XStubUtil.getUtf8(byteBuffer);
+					byteBuffer.get(); //type  0x53 field 0x54 property
+					TypeSignature typeSignature = TypeSignatureParser.parse(byteBuffer, null);
+					String name = XStubUtil.getUtf8(byteBuffer);
 
-				innerValue.append(name).append(" = ");
+					newBuilder.append(name).append(" = ");
 
-				appendValue(innerValue, toTypeRef(typeSignature), byteBuffer);
+					appendValue(newBuilder, toTypeRef(typeSignature), byteBuffer);
+				}
+				innerValue.append(newBuilder);
+			}
+			catch(Exception e)
+			{
+				LOGGER.warn(e);
 			}
 		}
 
