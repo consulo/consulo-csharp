@@ -86,6 +86,14 @@ public class CSharpWrappingProcessor
 			{
 				return Wrap.createWrap(WrapType.NONE, true);
 			}
+
+			if(CSharpFormattingUtil.isAutoAccessorOwner(parentPsi))
+			{
+				if(myCustomSettings.KEEP_AUTO_PROPERTY_IN_ONE_LINE)
+				{
+					return Wrap.createWrap(WrapType.NONE, true);
+				}
+			}
 			return Wrap.createWrap(WrapType.ALWAYS, true);
 		}
 
@@ -94,7 +102,19 @@ public class CSharpWrappingProcessor
 			return Wrap.createWrap(WrapType.ALWAYS, true);
 		}
 
-		if(elementType == CSharpElements.XXX_ACCESSOR || elementType == CSharpElements.ENUM_CONSTANT_DECLARATION)
+		if(elementType == CSharpElements.XXX_ACCESSOR)
+		{
+			if(CSharpFormattingUtil.isAutoAccessorOwner(parentPsi) && myCustomSettings.KEEP_AUTO_PROPERTY_IN_ONE_LINE)
+			{
+				return Wrap.createWrap(WrapType.NONE, true);
+			}
+			else
+			{
+				return Wrap.createWrap(WrapType.ALWAYS, true);
+			}
+		}
+
+		if(elementType == CSharpElements.ENUM_CONSTANT_DECLARATION)
 		{
 			return Wrap.createWrap(WrapType.ALWAYS, true);
 		}

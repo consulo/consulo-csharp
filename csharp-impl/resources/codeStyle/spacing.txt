@@ -2,6 +2,8 @@ using System;
 
 namespace Test {
   public class Program {
+    private static int someVar;
+
     public static int SomeProperty {
       get;
       set;
@@ -13,8 +15,12 @@ namespace Test {
     }
 
     public static int this[int b] {
-      get;
-      set;
+      get {
+        return somevar;
+      }
+      set {
+        someVar = b;
+      }
     }
 
     public static void Main(String[] args) {

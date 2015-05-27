@@ -41,6 +41,8 @@ public class CSharpCodeStyleSettings extends CustomCodeStyleSettings
 	@CommonCodeStyleSettings.BraceStyleConstant
 	public int INDEX_METHOD_BRACE_STYLE = CommonCodeStyleSettings.END_OF_LINE;
 
+	public boolean KEEP_AUTO_PROPERTY_IN_ONE_LINE = true;
+
 	// ----------------------------------- Parentheses  settings -------------------------------------
 	/**
 	 * "foreach (...)"

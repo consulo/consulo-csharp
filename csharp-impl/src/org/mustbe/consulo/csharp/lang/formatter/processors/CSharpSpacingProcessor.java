@@ -122,6 +122,19 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, LOCK_STATEMENT), customSettings.SPACE_BEFORE_LOCK_LBRACE);
 		spaceIfNoBlankLines(myBuilder.beforeInside(BLOCK_STATEMENT, FIXED_STATEMENT), customSettings.SPACE_BEFORE_FIXED_LBRACE);
 
+		if(customSettings.KEEP_AUTO_PROPERTY_IN_ONE_LINE)
+		{
+			spaceIfNoBlankLines(myBuilder.afterInside(LBRACE, PROPERTY_DECLARATION), true);
+			spaceIfNoBlankLines(myBuilder.afterInside(LBRACE, EVENT_DECLARATION), true);
+			spaceIfNoBlankLines(myBuilder.afterInside(LBRACE, ARRAY_METHOD_DECLARATION), true);
+
+			spaceIfNoBlankLines(myBuilder.between(XXX_ACCESSOR, XXX_ACCESSOR), true);
+
+			spaceIfNoBlankLines(myBuilder.beforeInside(RBRACE, PROPERTY_DECLARATION), true);
+			spaceIfNoBlankLines(myBuilder.beforeInside(RBRACE, EVENT_DECLARATION), true);
+			spaceIfNoBlankLines(myBuilder.beforeInside(RBRACE, ARRAY_METHOD_DECLARATION), true);
+		}
+
 		// call(arg
 		myBuilder.afterInside(CSharpTokens.LPAR, CSharpElements.CALL_ARGUMENT_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_CALL_PARENTHESES);
 		// call[arg

@@ -16,19 +16,15 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 
 /**
  * @author VISTALL
  * @since 01.03.14
  */
 public interface CSharpArrayMethodDeclaration extends DotNetLikeMethodDeclaration, DotNetVirtualImplementOwner, DotNetMemberOwner,
-		CSharpSimpleLikeMethodAsElement, CSharpBodyWithBraces
+		CSharpSimpleLikeMethodAsElement, CSharpBodyWithBraces, CSharpXXXAccessorOwner
 {
-	@NotNull
-	DotNetXXXAccessor[] getAccessors();
 }
