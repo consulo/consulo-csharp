@@ -213,8 +213,9 @@ public class CSharpAttributeStubBuilder
 			}
 			else if(qualifiedText.equals(DotNetTypes.System.Type))
 			{
-				builder.append("typeof(");
-				builder.append(XStubUtil.getUtf8(byteBuffer));
+				builder.append("typeof(System.Object");
+				//FIXME [VISTALL] see #277 issue at consulo-csharp
+				// builder.append(XStubUtil.getUtf8(byteBuffer));
 				builder.append(")");
 			}
 			else
