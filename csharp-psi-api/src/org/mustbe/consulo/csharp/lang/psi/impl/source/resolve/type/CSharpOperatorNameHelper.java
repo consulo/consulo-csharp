@@ -50,7 +50,7 @@ public class CSharpOperatorNameHelper
 			put(CSharpTokens.MINUS, "-");
 			put(CSharpTokens.MINUSEQ, "-");
 			put(CSharpTokens.MINUSMINUS, "--");
-			put(CSharpTokens.LTLT, "-<<");
+			put(CSharpTokens.LTLT, "<<");
 			put(CSharpTokens.LTLTEQ, "<<");
 			put(CSharpTokens.GTGT, ">>");
 			put(CSharpTokens.GTGTEQ, ">>");
