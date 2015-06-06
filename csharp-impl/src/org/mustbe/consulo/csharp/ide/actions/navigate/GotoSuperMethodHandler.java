@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.ide.actions.generate;
+package org.mustbe.consulo.csharp.ide.actions.navigate;
 
 import java.util.Collection;
 
