@@ -1,7 +1,7 @@
 package org.mustbe.consulo.csharp.ide.msil.representation.builder;
 
 import org.consulo.lombok.annotations.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
@@ -68,10 +68,15 @@ public class CSharpAttributeStubBuilder
 				int count = byteBuffer.getShort();
 				for(int i = 0; i < count; i++)
 				{
-					newBuilder.append(", ");
-
 					byteBuffer.get(); //type  0x53 field 0x54 property
 					TypeSignature typeSignature = TypeSignatureParser.parse(byteBuffer, null);
+
+					if(typeSignature == null)
+					{
+						continue;
+					}
+					newBuilder.append(", ");
+
 					String name = XStubUtil.getUtf8(byteBuffer);
 
 					newBuilder.append(name).append(" = ");
@@ -96,9 +101,13 @@ public class CSharpAttributeStubBuilder
 		builder.append(")");
 	}
 
-	@NotNull
+	@Nullable
 	private static DotNetTypeRef toTypeRef(TypeSignature typeSignature)
 	{
+		if(typeSignature== null)
+		{
+			return null;
+		}
 		if(typeSignature == TypeSignature.BOOLEAN)
 		{
 			return new CSharpTypeRefByQName(DotNetTypes.System.Boolean);
