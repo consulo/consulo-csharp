@@ -115,6 +115,7 @@
 		<codeInsight.overrideMethod language="C#"
 									implementationClass="org.mustbe.consulo.csharp.ide.actions.generate.GenerateOverrideMemberHandler"/>
 		<codeInsight.gotoSuper language="C#" implementationClass="org.mustbe.consulo.csharp.ide.actions.navigate.GotoSuperMethodHandler"/>
+		<typeDeclarationProvider implementation="org.mustbe.consulo.csharp.ide.actions.navigate.GotoTypeDeclarationProvider" />
 		<projectService serviceImplementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher"/>
 		<syntaxHighlighter key="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpSyntaxHighlighter"/>
 		<syntaxHighlighter key="C#Macro" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpMacroSyntaxHighlighter"/>
