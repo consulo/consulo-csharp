@@ -75,9 +75,13 @@ public class CSharpAttributeStubBuilder
 					{
 						continue;
 					}
-					newBuilder.append(", ");
-
 					String name = XStubUtil.getUtf8(byteBuffer);
+					if(name.isEmpty())
+					{
+						continue;
+					}
+
+					newBuilder.append(", ");
 
 					newBuilder.append(name).append(" = ");
 
