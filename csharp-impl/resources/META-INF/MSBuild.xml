@@ -1,0 +1,5 @@
+<idea-plugin>
+	<extensions defaultExtensionNs="org.mustbe.consulo.csharp">
+		<compilerBundleTypeProvider implementation="org.mustbe.consulo.csharp.compiler.impl.MSBundleCompilerBundleTypeProvider" order="first"/>
+	</extensions>
+</idea-plugin>

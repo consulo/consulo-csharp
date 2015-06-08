@@ -16,26 +16,31 @@
 
 package org.mustbe.consulo.csharp.module.extension;
 
-import org.consulo.module.extension.MutableModuleExtension;
-import org.consulo.module.extension.MutableModuleInheritableNamedPointer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
+import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
- * @since 15.05.14
+ * @since 18.05.14
  */
-public interface CSharpMutableModuleExtension<T extends CSharpModuleExtension<T>> extends CSharpModuleExtension<T>, MutableModuleExtension<T>
+public class CSharpModuleUtil
 {
-	MutableModuleInheritableNamedPointer<CSharpLanguageVersion> getLanguageVersionPointer();
-
-	void setLanguageVersion(@NotNull CSharpLanguageVersion version);
-
-	void setAllowUnsafeCode(boolean value);
-
-	void setOptimizeCode(boolean value);
-
-	void setPlatform(@NotNull CSharpPlatform platform);
-
-	void setCompilerTarget(@Nullable String target);
+	@NotNull
+	@RequiredReadAction
+	public static CSharpLanguageVersion findLanguageVersion(@Nullable PsiElement element)
+	{
+		if(element == null)
+		{
+			return CSharpLanguageVersion.HIGHEST;
+		}
+		CSharpSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(element, CSharpSimpleModuleExtension.class);
+		if(extension == null)
+		{
+			return CSharpLanguageVersion.HIGHEST;
+		}
+		return extension.getLanguageVersion();
+	}
 }

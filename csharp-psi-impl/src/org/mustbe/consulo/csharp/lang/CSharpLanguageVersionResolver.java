@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.lang;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
+import org.mustbe.consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import com.intellij.lang.Language;
 import com.intellij.lang.LanguageVersion;
 import com.intellij.lang.LanguageVersionResolver;
@@ -47,7 +47,7 @@ public class CSharpLanguageVersionResolver implements LanguageVersionResolver<CS
 		{
 			return CSharpLanguageVersionHelper.getInstance().getHighestVersion();
 		}
-		CSharpModuleExtension extension = ModuleUtilCore.getExtension(moduleForPsiElement, CSharpModuleExtension.class);
+		CSharpSimpleModuleExtension extension = ModuleUtilCore.getExtension(moduleForPsiElement, CSharpSimpleModuleExtension.class);
 		if(extension == null)
 		{
 			return CSharpLanguageVersionHelper.getInstance().getHighestVersion();
@@ -68,7 +68,7 @@ public class CSharpLanguageVersionResolver implements LanguageVersionResolver<CS
 		{
 			return CSharpLanguageVersionHelper.getInstance().getHighestVersion();
 		}
-		CSharpModuleExtension extension = ModuleUtilCore.getExtension(moduleForPsiElement, CSharpModuleExtension.class);
+		CSharpSimpleModuleExtension extension = ModuleUtilCore.getExtension(moduleForPsiElement, CSharpSimpleModuleExtension.class);
 		if(extension == null)
 		{
 			return CSharpLanguageVersionHelper.getInstance().getHighestVersion();

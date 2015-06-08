@@ -29,7 +29,7 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.CSharpIcons;
 import org.mustbe.consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
-import org.mustbe.consulo.csharp.module.extension.BaseCSharpModuleExtension;
+import org.mustbe.consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import org.mustbe.consulo.roots.ContentEntryFileListener;
 import com.intellij.icons.AllIcons;
@@ -104,7 +104,7 @@ public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
 				}
 			}
 		}
-		return module != null && ModuleUtilCore.getExtension(module, BaseCSharpModuleExtension.class) != null;
+		return module != null && ModuleUtilCore.getExtension(module, CSharpSimpleModuleExtension.class) != null;
 	}
 
 	@RequiredReadAction
@@ -291,7 +291,7 @@ public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
 				return false;
 			}
 		}
-		if(module == null || ModuleUtilCore.getExtension(module, BaseCSharpModuleExtension.class) == null)
+		if(module == null || ModuleUtilCore.getExtension(module, CSharpSimpleModuleExtension.class) == null)
 		{
 			return false;
 		}

@@ -57,14 +57,22 @@ public class MicrosoftCSharpModuleExtension extends BaseCSharpModuleExtension<Mi
 		Sdk sdk = extension.getSdk();
 		assert sdk != null;
 
-		VirtualFile compilerFile = CSharpCompilerUtil.findCompilerInSdk(sdk, "csc.exe");
+		VirtualFile compilerFile = null;
+		if(getCustomCompilerSdkPointer().isNull())
+		{
+			compilerFile = CSharpCompilerUtil.findDefaultCompilerFromProvilders(extension);
+		}
+		else
+		{
+			compilerFile = CSharpCompilerUtil.findCompilerInSdk(extension, this);
+		}
 
 		if(compilerFile == null)
 		{
 			throw new DotNetCompileFailedException("Compiler 'csc.exe' is not found");
 		}
-		optionsBuilder.setExecutable(compilerFile.getPath());
 
+		optionsBuilder.setExecutable(compilerFile.getPath());
 		return optionsBuilder;
 	}
 }

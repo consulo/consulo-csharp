@@ -23,8 +23,9 @@
 	<resource-bundle>messages.CSharpBundle</resource-bundle>
 	<depends>org.mustbe.consulo.dotnet.core</depends>
 	<depends>com.intellij.xml</depends>
-	<depends optional="true" config-file="CSharpSpellchecker.xml">com.intellij.spellchecker</depends>
-	<depends config-file="microsoft-csharp.xml" optional="true">org.mustbe.consulo.microsoft.dotnet</depends>
+	<depends config-file="CSharpSpellchecker.xml" optional="true">com.intellij.spellchecker</depends>
+	<depends config-file="MSBuild.xml" optional="true">org.mustbe.consulo.msbuild</depends>
+	<depends config-file="microsoft-csharp.xml" optional="true">org.mustbe.consulo.dotnet.microsoft</depends>
 	<depends config-file="mono-csharp.xml" optional="true">org.mustbe.consulo.dotnet.mono</depends>
 
 	<xi:include href="/META-INF/CSharpInspections.xml" xpointer="xpointer(/idea-plugin/*)">
@@ -58,9 +59,13 @@
 	<extensionPoints>
 		<extensionPoint name="additionalMemberProvider"
 						interface="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalMemberProvider"/>
+		<extensionPoint name="compilerBundleTypeProvider"
+						interface="org.mustbe.consulo.csharp.compiler.CSharpCompilerBundleTypeProvider"/>
 	</extensionPoints>
 
 	<extensions defaultExtensionNs="org.mustbe.consulo.csharp">
+		<!-- roslyn compiler bundle always available-->
+		<compilerBundleTypeProvider implementation="org.mustbe.consulo.csharp.compiler.impl.RoslynCompilerBundleTypeProvider"/>
 
 		<additionalMemberProvider
 				implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl.StructOrGenericParameterConstructorProvider"/>
@@ -115,7 +120,7 @@
 		<codeInsight.overrideMethod language="C#"
 									implementationClass="org.mustbe.consulo.csharp.ide.actions.generate.GenerateOverrideMemberHandler"/>
 		<codeInsight.gotoSuper language="C#" implementationClass="org.mustbe.consulo.csharp.ide.actions.navigate.GotoSuperMethodHandler"/>
-		<typeDeclarationProvider implementation="org.mustbe.consulo.csharp.ide.actions.navigate.GotoTypeDeclarationProvider" />
+		<typeDeclarationProvider implementation="org.mustbe.consulo.csharp.ide.actions.navigate.GotoTypeDeclarationProvider"/>
 		<projectService serviceImplementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher"/>
 		<syntaxHighlighter key="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpSyntaxHighlighter"/>
 		<syntaxHighlighter key="C#Macro" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpMacroSyntaxHighlighter"/>

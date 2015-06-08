@@ -20,17 +20,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.consulo.module.extension.impl.ModuleExtensionImpl;
+import org.consulo.module.extension.MutableModuleInheritableNamedPointer;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.CSharpFileType;
+import org.mustbe.consulo.csharp.compiler.CSharpPlatform;
 import org.mustbe.consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.AttributeListIndex;
-import org.mustbe.consulo.csharp.module.CSharpLanguageVersionPointer;
 import org.mustbe.consulo.dotnet.DotNetRunUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleLangExtension;
@@ -38,8 +37,8 @@ import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.search.searches.AllClassesSearch;
-import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.module.impl.scopes.ModuleWithDependenciesScope;
+import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ModuleRootLayer;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
@@ -51,19 +50,25 @@ import com.intellij.util.containers.ContainerUtil;
  * @author VISTALL
  * @since 15.12.13.
  */
-public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtension<T>> extends ModuleExtensionImpl<T> implements
+public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtension<T>> extends BaseCSharpSimpleModuleExtension<T> implements
 		DotNetModuleLangExtension<T>, CSharpModuleExtension<T>
 {
-	protected boolean myAllowUnsafeCode;
 	protected boolean myOptimizeCode;
 	protected CSharpPlatform myPlatform = CSharpPlatform.ANY_CPU;
-	protected CSharpLanguageVersionPointer myLanguageVersionPointer;
 	protected String myCompilerTarget;
+	protected CSharpCustomCompilerSdkPointer myCustomCompilerSdkPointer;
 
 	public BaseCSharpModuleExtension(@NotNull String id, @NotNull ModuleRootLayer module)
 	{
 		super(id, module);
-		myLanguageVersionPointer = new CSharpLanguageVersionPointer(getProject(), id);
+		myCustomCompilerSdkPointer = new CSharpCustomCompilerSdkPointer(getProject(), id);
+	}
+
+	@NotNull
+	@Override
+	public MutableModuleInheritableNamedPointer<Sdk> getCustomCompilerSdkPointer()
+	{
+		return myCustomCompilerSdkPointer;
 	}
 
 	@NotNull
@@ -132,12 +137,6 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	}
 
 	@Override
-	public boolean isAllowUnsafeCode()
-	{
-		return myAllowUnsafeCode;
-	}
-
-	@Override
 	public boolean isOptimizeCode()
 	{
 		return myOptimizeCode;
@@ -153,52 +152,40 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 		myOptimizeCode = optimizeCode;
 	}
 
-	public void setLanguageVersion(@NotNull CSharpLanguageVersion languageVersion)
-	{
-		myLanguageVersionPointer.set(null, languageVersion);
-	}
-
-	public void setAllowUnsafeCode(boolean value)
-	{
-		myAllowUnsafeCode = value;
-	}
-
+	@Override
 	public boolean isModifiedImpl(@NotNull T mutableModuleExtension)
 	{
-		return myIsEnabled != mutableModuleExtension.isEnabled() ||
-				myAllowUnsafeCode != mutableModuleExtension.myAllowUnsafeCode ||
+		return super.isModifiedImpl(mutableModuleExtension) ||
 				myOptimizeCode != mutableModuleExtension.myOptimizeCode ||
 				myPlatform != mutableModuleExtension.myPlatform ||
-				!Comparing.equal(myCompilerTarget, mutableModuleExtension.myCompilerTarget) ||
-				!myLanguageVersionPointer.equals(mutableModuleExtension.myLanguageVersionPointer);
+				!myCustomCompilerSdkPointer.equals(mutableModuleExtension.myCustomCompilerSdkPointer) ||
+				!Comparing.equal(myCompilerTarget, mutableModuleExtension.myCompilerTarget);
 	}
 
-	public CSharpLanguageVersionPointer getLanguageVersionPointer()
-	{
-		return myLanguageVersionPointer;
-	}
-
+	@RequiredReadAction
 	@Override
 	protected void loadStateImpl(@NotNull Element element)
 	{
-		myAllowUnsafeCode = Boolean.valueOf(element.getAttributeValue("unsafe-code", "false"));
+		super.loadStateImpl(element);
+
 		myOptimizeCode = Boolean.valueOf(element.getAttributeValue("optimize-code", "false"));
 		myPlatform = CSharpPlatform.valueOf(element.getAttributeValue("platform", CSharpPlatform.ANY_CPU.name()));
 		myCompilerTarget = element.getAttributeValue("compiler-target");
-		myLanguageVersionPointer.fromXml(element);
+		myCustomCompilerSdkPointer.fromXml(element);
 	}
 
 	@Override
 	protected void getStateImpl(@NotNull Element element)
 	{
-		element.setAttribute("unsafe-code", Boolean.toString(myAllowUnsafeCode));
+		super.getStateImpl(element);
+
 		element.setAttribute("optimize-code", Boolean.toString(myOptimizeCode));
 		element.setAttribute("platform", myPlatform.name());
 		if(myCompilerTarget != null)
 		{
 			element.setAttribute("compiler-target", myCompilerTarget);
 		}
-		myLanguageVersionPointer.toXml(element);
+		myCustomCompilerSdkPointer.toXml(element);
 	}
 
 	@Override
@@ -206,11 +193,10 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	{
 		super.commit(mutableModuleExtension);
 
-		myAllowUnsafeCode = mutableModuleExtension.myAllowUnsafeCode;
 		myOptimizeCode = mutableModuleExtension.myOptimizeCode;
 		myPlatform = mutableModuleExtension.myPlatform;
 		myCompilerTarget = mutableModuleExtension.myCompilerTarget;
-		myLanguageVersionPointer.set(mutableModuleExtension.myLanguageVersionPointer);
+		myCustomCompilerSdkPointer.set(mutableModuleExtension.myCustomCompilerSdkPointer);
 	}
 
 	@Nullable
@@ -223,19 +209,5 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	public void setCompilerTarget(@Nullable String target)
 	{
 		myCompilerTarget = target;
-	}
-
-	@NotNull
-	@Override
-	public CSharpLanguageVersion getLanguageVersion()
-	{
-		return myLanguageVersionPointer.get();
-	}
-
-	@NotNull
-	@Override
-	public LanguageFileType getFileType()
-	{
-		return CSharpFileType.INSTANCE;
 	}
 }

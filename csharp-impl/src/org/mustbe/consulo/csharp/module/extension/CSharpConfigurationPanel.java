@@ -5,27 +5,38 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 
 import org.consulo.module.extension.MutableModuleInheritableNamedPointer;
+import org.consulo.module.extension.ui.ModuleExtensionSdkBoxBuilder;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.csharp.compiler.CSharpCompilerBundleTypeProvider;
+import org.mustbe.consulo.csharp.compiler.CSharpPlatform;
+import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.projectRoots.SdkType;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.VerticalFlowLayout;
+import com.intellij.openapi.util.EmptyRunnable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.ColoredListCellRendererWrapper;
 import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.SimpleTextAttributes;
 import com.intellij.ui.TextFieldWithHistory;
+import com.intellij.ui.TitledSeparator;
 import com.intellij.ui.components.JBCheckBox;
-import lombok.val;
+import com.intellij.util.NullableFunction;
 
 /**
  * @author VISTALL
@@ -33,7 +44,7 @@ import lombok.val;
  */
 public class CSharpConfigurationPanel extends JPanel
 {
-	private static final String[] ourCompileLevels = new String[] {
+	private static final String[] ourCompileLevels = new String[]{
 			"ISO-1",
 			"ISO-2",
 			"3",
@@ -159,7 +170,40 @@ public class CSharpConfigurationPanel extends JPanel
 			}
 		});
 
-		add(LabeledComponent.left(compileLevelField, "Compiler Target:"));
+		add(new TitledSeparator("Compiler Options"));
+
+		DotNetSimpleModuleExtension extension = ext.getModuleRootLayer().getExtension(DotNetSimpleModuleExtension.class);
+		final Set<SdkType> compilerBundleTypes = new LinkedHashSet<SdkType>();
+		if(extension != null)
+		{
+			for(CSharpCompilerBundleTypeProvider typeProvider : CSharpCompilerBundleTypeProvider.EP_NAME.getExtensions())
+			{
+				SdkType bundleType = typeProvider.getBundleType(extension);
+				if(bundleType != null)
+				{
+					compilerBundleTypes.add(bundleType);
+				}
+			}
+		}
+
+		ModuleExtensionSdkBoxBuilder customCompilerBundleBoxBuilder = ModuleExtensionSdkBoxBuilder.create(ext, EmptyRunnable.getInstance());
+		customCompilerBundleBoxBuilder.sdkTypes(compilerBundleTypes);
+		customCompilerBundleBoxBuilder.sdkPointerFunc(new NullableFunction<CSharpMutableModuleExtension<?>,
+				MutableModuleInheritableNamedPointer<Sdk>>()
+
+		{
+			@Nullable
+			@Override
+			public MutableModuleInheritableNamedPointer<Sdk> fun(CSharpMutableModuleExtension<?> cSharpMutableModuleExtension)
+			{
+				return ext.getCustomCompilerSdkPointer();
+			}
+		});
+		customCompilerBundleBoxBuilder.labelText("Compiler");
+
+		add(customCompilerBundleBoxBuilder.build());
+
+		add(LabeledComponent.left(compileLevelField, "Compiler Target (/langversion):"));
 
 		final ComboBox platformComboBox = new ComboBox(CSharpPlatform.values());
 		platformComboBox.setSelectedItem(ext.getPlatform());
@@ -205,9 +249,9 @@ public class CSharpConfigurationPanel extends JPanel
 			}
 		});
 
-		add(LabeledComponent.left(platformComboBox, "Platform: "));
+		add(LabeledComponent.left(platformComboBox, "Platform (/platform): "));
 
-		val allowUnsafeCode = new JBCheckBox("Allow unsafe code?", ext.isAllowUnsafeCode());
+		final JBCheckBox allowUnsafeCode = new JBCheckBox("Allow unsafe code (/unsafe)", ext.isAllowUnsafeCode());
 		allowUnsafeCode.addActionListener(new ActionListener()
 		{
 			@Override
@@ -219,7 +263,7 @@ public class CSharpConfigurationPanel extends JPanel
 
 		add(allowUnsafeCode);
 
-		val optimizeCode = new JBCheckBox("Optimize Code?", ext.isOptimizeCode());
+		final JBCheckBox optimizeCode = new JBCheckBox("Optimize Code (/optimize+)", ext.isOptimizeCode());
 		optimizeCode.addActionListener(new ActionListener()
 		{
 			@Override

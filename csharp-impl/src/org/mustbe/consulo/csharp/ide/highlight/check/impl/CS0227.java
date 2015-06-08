@@ -18,15 +18,17 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.RequiredWriteAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifierList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUnsafeStatementImpl;
-import org.mustbe.consulo.csharp.module.extension.BaseCSharpModuleExtension;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
+import org.mustbe.consulo.csharp.module.extension.CSharpSimpleModuleExtension;
+import org.mustbe.consulo.csharp.module.extension.CSharpSimpleMutableModuleExtension;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
@@ -64,13 +66,15 @@ public class CS0227 extends CompilerCheck<DotNetElement>
 		}
 
 		@Override
+		@RequiredDispatchThread
 		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
 		{
-			CSharpModuleExtension extension = ModuleUtilCore.getExtension(file, CSharpModuleExtension.class);
+			CSharpSimpleModuleExtension extension = ModuleUtilCore.getExtension(file, CSharpSimpleModuleExtension.class);
 			return extension != null && !extension.isAllowUnsafeCode();
 		}
 
 		@Override
+		@RequiredWriteAction
 		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			Module moduleForPsiElement = ModuleUtilCore.findModuleForPsiElement(file);
@@ -82,7 +86,7 @@ public class CS0227 extends CompilerCheck<DotNetElement>
 			ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(moduleForPsiElement);
 
 			val modifiableModel = moduleRootManager.getModifiableModel();
-			BaseCSharpModuleExtension cSharpModuleExtension = modifiableModel.getExtension(BaseCSharpModuleExtension.class);
+			CSharpSimpleMutableModuleExtension cSharpModuleExtension = modifiableModel.getExtension(CSharpSimpleMutableModuleExtension.class);
 			if(cSharpModuleExtension != null)
 			{
 				cSharpModuleExtension.setAllowUnsafeCode(true);
@@ -103,7 +107,7 @@ public class CS0227 extends CompilerCheck<DotNetElement>
 			return null;
 		}
 
-		BaseCSharpModuleExtension extension = ModuleUtilCore.getExtension(element, BaseCSharpModuleExtension.class);
+		CSharpSimpleModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpSimpleModuleExtension.class);
 
 		if(extension != null && !extension.isAllowUnsafeCode())
 		{

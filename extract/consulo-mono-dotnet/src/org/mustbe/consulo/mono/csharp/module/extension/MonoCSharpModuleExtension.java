@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.compiler.CSharpCompilerUtil;
 import org.mustbe.consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.csharp.module.extension.BaseCSharpModuleExtension;
+import org.mustbe.consulo.dotnet.compiler.DotNetCompileFailedException;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import org.mustbe.consulo.mono.dotnet.sdk.MonoSdkType;
@@ -41,7 +42,7 @@ public class MonoCSharpModuleExtension extends BaseCSharpModuleExtension<MonoCSh
 
 	@NotNull
 	@Override
-	public DotNetCompilerOptionsBuilder createCompilerOptionsBuilder()
+	public DotNetCompilerOptionsBuilder createCompilerOptionsBuilder() throws DotNetCompileFailedException
 	{
 		MSBaseDotNetCompilerOptionsBuilder optionsBuilder = new MSBaseDotNetCompilerOptionsBuilder();
 
@@ -56,13 +57,7 @@ public class MonoCSharpModuleExtension extends BaseCSharpModuleExtension<MonoCSh
 		Sdk sdk = extension.getSdk();
 		assert sdk != null;
 
-		VirtualFile compilerInSdk = CSharpCompilerUtil.findCompilerInSdk(sdk, "csc.exe");
-		if(compilerInSdk != null)
-		{
-			optionsBuilder.setExecutable(MonoSdkType.getInstance().getExecutable(sdk));
-			optionsBuilder.addArgument(compilerInSdk.getPath());
-		}
-		else
+		if(getCustomCompilerSdkPointer().isNull())
 		{
 			if(SystemInfo.isWindows)
 			{
@@ -76,6 +71,17 @@ public class MonoCSharpModuleExtension extends BaseCSharpModuleExtension<MonoCSh
 			{
 				optionsBuilder.setExecutable(MonoSdkType.LINUX_COMPILER);
 			}
+		}
+		else
+		{
+			VirtualFile compilerFile = CSharpCompilerUtil.findCompilerInSdk(extension, this);
+			if(compilerFile == null)
+			{
+				throw new DotNetCompileFailedException("Compiler 'csc.exe' is not found");
+			}
+
+			optionsBuilder.setExecutable(MonoSdkType.getInstance().getExecutable(sdk));
+			optionsBuilder.addArgument(compilerFile.getPath());
 		}
 
 		return optionsBuilder;

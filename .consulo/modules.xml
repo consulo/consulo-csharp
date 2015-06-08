@@ -26,6 +26,7 @@
           <orderEntry type="module-extension-sdk" extension-id="consulo-plugin" />
           <orderEntry type="module-extension-sdk" extension-id="java" />
           <orderEntry type="sourceFolder" />
+          <orderEntry type="module" module-name="csharp-api" />
           <orderEntry type="module" module-name="csharp-psi-impl" exported="" />
           <orderEntry type="module-library">
             <library name="consulo:XML">
@@ -73,6 +74,7 @@
               </binaries>
             </library>
           </orderEntry>
+          <orderEntry type="module" module-name="csharp-api" exported="" />
         </module-layer>
       </module>
       <module name="csharp-psi-impl" dirurl="file://$PROJECT_DIR$/csharp-psi-impl" current-layer="Default">
@@ -223,6 +225,51 @@
                 <root url="jar://F:/consulo-apache-ant/dep/dotnet/lib/dotnet.jar!/" />
                 <root url="jar://F:/consulo-apache-ant/dep/dotnet/lib/joou-0.9.2-SNAPSHOT.jar!/" />
                 <root url="jar://F:/consulo-apache-ant/dep/dotnet/lib/mono-soft-debugging.jar!/" />
+              </binaries>
+            </library>
+          </orderEntry>
+        </module-layer>
+      </module>
+      <module name="csharp-api" dirurl="file://$PROJECT_DIR$/csharp-api" current-layer="Default">
+        <module-layer name="Default">
+          <extension id="consulo-plugin" sdk-module-name="" sdk-name="Consulo 1.SNAPSHOT" />
+          <extension id="java" sdk-module-name="" sdk-name="1.6" language-level-module-name="" language-level-name="JDK_1_6" special-dir-location="SOURCE_DIR" />
+          <extension id="lombok" />
+          <content url="file://$MODULE_DIR$">
+            <content-folder type="PRODUCTION_RESOURCE" url="file://$MODULE_DIR$/resources" />
+            <content-folder type="PRODUCTION" url="file://$MODULE_DIR$/src" />
+          </content>
+          <orderEntry type="module-extension-sdk" extension-id="java" />
+          <orderEntry type="module-extension-sdk" extension-id="consulo-plugin" />
+          <orderEntry type="sourceFolder" />
+        </module-layer>
+      </module>
+      <module name="csharp-msbuild-impl" dirurl="file://$PROJECT_DIR$/csharp-msbuild-impl" current-layer="Default">
+        <module-layer name="Default">
+          <extension id="consulo-plugin" sdk-module-name="" sdk-name="Consulo 1.SNAPSHOT" custom-plugin-dir-url="file://$MODULE_DIR$/../dep" />
+          <extension id="java" sdk-module-name="" sdk-name="1.6" language-level-module-name="" language-level-name="JDK_1_6" special-dir-location="SOURCE_DIR" />
+          <content url="file://$MODULE_DIR$">
+            <content-folder type="PRODUCTION" url="file://$MODULE_DIR$/src" />
+          </content>
+          <orderEntry type="module-extension-sdk" extension-id="consulo-plugin" />
+          <orderEntry type="module-extension-sdk" extension-id="java" />
+          <orderEntry type="sourceFolder" />
+          <orderEntry type="module-library">
+            <library name="consulo:MSBuild/XBuild">
+              <binaries>
+                <root url="jar://$MODULE_DIR$/../dep/msbuild/lib/msbuild.jar!/" />
+              </binaries>
+            </library>
+          </orderEntry>
+          <orderEntry type="module" module-name="csharp-impl" />
+          <orderEntry type="module-library">
+            <library name="consulo:.NET Core">
+              <binaries>
+                <root url="jar://$MODULE_DIR$/../dep/dotnet/lib/dotnet-asm.jar!/" />
+                <root url="jar://$MODULE_DIR$/../dep/dotnet/lib/dotnet-msil-decompiler.jar!/" />
+                <root url="jar://$MODULE_DIR$/../dep/dotnet/lib/dotnet.jar!/" />
+                <root url="jar://$MODULE_DIR$/../dep/dotnet/lib/joou-0.9.2-SNAPSHOT.jar!/" />
+                <root url="jar://$MODULE_DIR$/../dep/dotnet/lib/mono-soft-debugging.jar!/" />
               </binaries>
             </library>
           </orderEntry>

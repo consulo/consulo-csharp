@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.module.extension;
+package org.mustbe.consulo.csharp.compiler;
 
 /**
  * @author VISTALL

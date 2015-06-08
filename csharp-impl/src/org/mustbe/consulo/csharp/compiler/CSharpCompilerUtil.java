@@ -1,8 +1,17 @@
 package org.mustbe.consulo.csharp.compiler;
 
+import java.util.List;
+
+import org.consulo.module.extension.ModuleInheritableNamedPointer;
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.dotnet.sdk.DotNetCompilerDirOrderRootType;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
+import org.mustbe.consulo.dotnet.compiler.DotNetCompileFailedException;
+import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.projectRoots.SdkTable;
+import com.intellij.openapi.projectRoots.SdkType;
+import com.intellij.openapi.projectRoots.SdkTypeId;
 import com.intellij.openapi.vfs.VirtualFile;
 
 /**
@@ -11,21 +20,79 @@ import com.intellij.openapi.vfs.VirtualFile;
  */
 public class CSharpCompilerUtil
 {
-	public static VirtualFile findCompilerInSdk(@NotNull Sdk sdk, @NotNull String compilerName)
+	public static final String COMPILER_NAME = "csc.exe";
+
+	@Nullable
+	public static VirtualFile findCompilerInSdk(@NotNull DotNetModuleExtension<?> dotNetModuleExtension,
+			@NotNull CSharpModuleExtension<?> cSharpModuleExtension) throws DotNetCompileFailedException
 	{
-		VirtualFile[] files = sdk.getRootProvider().getFiles(DotNetCompilerDirOrderRootType.getInstance());
-
-		VirtualFile compilerFile = null;
-
-		for(VirtualFile file : files)
+		ModuleInheritableNamedPointer<Sdk> customCompilerSdkPointer = cSharpModuleExtension.getCustomCompilerSdkPointer();
+		if(customCompilerSdkPointer.isNull())
 		{
-			VirtualFile child = file.findChild(compilerName);
-			if(child != null)
+			return null;
+		}
+		else
+		{
+			Sdk sdk = customCompilerSdkPointer.get();
+			if(sdk == null)
 			{
-				compilerFile = child;
-				break;
+				return null;
+			}
+
+			CSharpCompilerBundleTypeProvider provider = findProvider(dotNetModuleExtension, sdk.getSdkType());
+			if(provider == null)
+			{
+				return null;
+			}
+			VirtualFile homeDirectory = sdk.getHomeDirectory();
+			if(homeDirectory == null)
+			{
+				return null;
+			}
+			return provider.findCompiler(homeDirectory, COMPILER_NAME);
+		}
+	}
+
+	@Nullable
+	public static VirtualFile findDefaultCompilerFromProvilders(@NotNull DotNetModuleExtension dotNetModuleExtension)
+	{
+		SdkTable sdkTable = SdkTable.getInstance();
+
+		for(CSharpCompilerBundleTypeProvider typeProvider : CSharpCompilerBundleTypeProvider.EP_NAME.getExtensions())
+		{
+			SdkType bundleType = typeProvider.getBundleType(dotNetModuleExtension);
+			if(bundleType != null)
+			{
+				List<Sdk> sdksOfType = sdkTable.getSdksOfType(bundleType);
+				for(Sdk sdk : sdksOfType)
+				{
+					VirtualFile homeDirectory = sdk.getHomeDirectory();
+					if(homeDirectory == null)
+					{
+						continue;
+					}
+					VirtualFile child = typeProvider.findCompiler(homeDirectory, COMPILER_NAME);
+					if(child != null)
+					{
+						return child;
+					}
+				}
 			}
 		}
-		return compilerFile;
+		return null;
+	}
+
+	@Nullable
+	private static CSharpCompilerBundleTypeProvider findProvider(@NotNull DotNetModuleExtension<?> dotNetModuleExtension, @NotNull SdkTypeId type)
+	{
+		for(CSharpCompilerBundleTypeProvider typeProvider : CSharpCompilerBundleTypeProvider.EP_NAME.getExtensions())
+		{
+			SdkType bundleType = typeProvider.getBundleType(dotNetModuleExtension);
+			if(bundleType == type)
+			{
+				return typeProvider;
+			}
+		}
+		return null;
 	}
 }

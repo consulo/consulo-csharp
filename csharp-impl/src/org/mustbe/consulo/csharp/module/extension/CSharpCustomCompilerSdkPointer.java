@@ -14,63 +14,63 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.module;
+package org.mustbe.consulo.csharp.module.extension;
 
 import org.consulo.module.extension.impl.ModuleInheritableNamedPointerImpl;
 import org.consulo.util.pointers.NamedPointer;
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import org.mustbe.consulo.csharp.module.extension.CSharpSimpleModuleExtension;
+import org.mustbe.consulo.sdk.SdkUtil;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.projectRoots.Sdk;
 
 /**
  * @author VISTALL
- * @since 15.05.14
+ * @since 08.06.15
  */
-public class CSharpLanguageVersionPointer extends ModuleInheritableNamedPointerImpl<CSharpLanguageVersion>
+public class CSharpCustomCompilerSdkPointer extends ModuleInheritableNamedPointerImpl<Sdk>
 {
 	private final String myExtensionId;
 
-	public CSharpLanguageVersionPointer(@NotNull Project project, @NotNull String id)
+	public CSharpCustomCompilerSdkPointer(@NotNull Project project, @NotNull String id)
 	{
-		super(project, "language-version");
+		super(project, "custom-compiler-sdk");
 		myExtensionId = id;
 	}
 
 	@Override
 	public String getItemNameFromModule(@NotNull Module module)
 	{
-		final CSharpSimpleModuleExtension extension = (CSharpSimpleModuleExtension) ModuleUtilCore.getExtension(module, myExtensionId);
+		final CSharpModuleExtension<?> extension = (CSharpModuleExtension) ModuleUtilCore.getExtension(module, myExtensionId);
 		if(extension != null)
 		{
-			return extension.getLanguageVersion().getName();
+			return extension.getCustomCompilerSdkPointer().getName();
 		}
 		return null;
 	}
 
 	@Override
-	public CSharpLanguageVersion getItemFromModule(@NotNull Module module)
+	public Sdk getItemFromModule(@NotNull Module module)
 	{
-		final CSharpSimpleModuleExtension extension = (CSharpSimpleModuleExtension) ModuleUtilCore.getExtension(module, myExtensionId);
+		final CSharpModuleExtension<?> extension = (CSharpModuleExtension) ModuleUtilCore.getExtension(module, myExtensionId);
 		if(extension != null)
 		{
-			return extension.getLanguageVersion();
+			return extension.getCustomCompilerSdkPointer().get();
 		}
 		return null;
 	}
 
 	@NotNull
 	@Override
-	public NamedPointer<CSharpLanguageVersion> getPointer(@NotNull Project project, @NotNull String name)
+	public NamedPointer<Sdk> getPointer(@NotNull Project project, @NotNull String name)
 	{
-		return CSharpLanguageVersion.valueOf(name);
+		return SdkUtil.createPointer(name);
 	}
 
 	@Override
-	public CSharpLanguageVersion getDefaultValue()
+	public Sdk getDefaultValue()
 	{
-		return CSharpLanguageVersion.HIGHEST;
+		return null;
 	}
 }

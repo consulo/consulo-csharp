@@ -21,7 +21,9 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.RequiredWriteAction;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAwaitExpressionImpl;
@@ -32,8 +34,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFinallyStatementImpl
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpGenericParameterListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
 import org.mustbe.consulo.csharp.module.extension.CSharpMutableModuleExtension;
+import org.mustbe.consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
@@ -72,9 +74,10 @@ public class CS1644 extends CompilerCheck<PsiElement>
 		}
 
 		@Override
+		@RequiredWriteAction
 		public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException
 		{
-			CSharpModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpModuleExtension.class);
+			CSharpSimpleModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpSimpleModuleExtension.class);
 			if(extension == null)
 			{
 				return;
@@ -92,9 +95,10 @@ public class CS1644 extends CompilerCheck<PsiElement>
 		}
 
 		@Override
+		@RequiredDispatchThread
 		public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element)
 		{
-			CSharpModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpModuleExtension.class);
+			CSharpSimpleModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpSimpleModuleExtension.class);
 			return extension != null && extension.getLanguageVersion().ordinal() < myLanguageVersion.ordinal();
 		}
 

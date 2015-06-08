@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.spellchecker;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -36,6 +37,7 @@ public class CSharpSpellcheckingStrategy extends SpellcheckingStrategy
 	private static final Tokenizer<PsiNameIdentifierOwner> ourNameTokenizer = new Tokenizer<PsiNameIdentifierOwner>()
 	{
 		@Override
+		@RequiredReadAction
 		public void tokenize(@NotNull PsiNameIdentifierOwner owner, TokenConsumer tokenConsumer)
 		{
 			PsiElement identifier = owner.getNameIdentifier();

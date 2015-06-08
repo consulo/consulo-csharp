@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.ide.codeInsight.problems;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
-import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
+import org.mustbe.consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import org.mustbe.consulo.msil.representation.MsilFileRepresentationVirtualFile;
@@ -61,7 +61,7 @@ public class CSharpLocationUtil
 			return false;
 		}
 
-		if(ModuleUtilCore.getExtension(moduleForFile, CSharpModuleExtension.class) == null)
+		if(ModuleUtilCore.getExtension(moduleForFile, CSharpSimpleModuleExtension.class) == null)
 		{
 			return false;
 		}

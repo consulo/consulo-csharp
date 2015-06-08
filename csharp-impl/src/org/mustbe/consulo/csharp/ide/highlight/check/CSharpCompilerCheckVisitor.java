@@ -23,7 +23,7 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
+import org.mustbe.consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.msil.representation.MsilFileRepresentationVirtualFile;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
@@ -53,7 +53,7 @@ public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements 
 		if(element instanceof DotNetElement)
 		{
 			CSharpLanguageVersion languageVersion = CSharpLanguageVersion.HIGHEST;
-			CSharpModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpModuleExtension.class);
+			CSharpSimpleModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpSimpleModuleExtension.class);
 			if(extension != null)
 			{
 				languageVersion = extension.getLanguageVersion();

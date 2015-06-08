@@ -17,25 +17,26 @@
 package org.mustbe.consulo.csharp.module.extension;
 
 import org.consulo.module.extension.ModuleExtension;
+import org.consulo.module.extension.ModuleInheritableNamedPointer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.compiler.CSharpPlatform;
+import com.intellij.openapi.projectRoots.Sdk;
 
 /**
  * @author VISTALL
  * @since 15.05.14
  */
-public interface CSharpModuleExtension<T extends ModuleExtension<T>> extends ModuleExtension<T>
+public interface CSharpModuleExtension<T extends ModuleExtension<T>> extends CSharpSimpleModuleExtension<T>
 {
-	boolean isAllowUnsafeCode();
-
 	boolean isOptimizeCode();
 
 	@NotNull
 	CSharpPlatform getPlatform();
 
-	@NotNull
-	CSharpLanguageVersion getLanguageVersion();
-
 	@Nullable
 	String getCompilerTarget();
+
+	@NotNull
+	ModuleInheritableNamedPointer<Sdk> getCustomCompilerSdkPointer();
 }
