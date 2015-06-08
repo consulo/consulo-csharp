@@ -21,8 +21,8 @@ import com.intellij.psi.PsiElement;
 public class BaseCSharpSimpleModuleExtension<T extends BaseCSharpSimpleModuleExtension<T>> extends ModuleExtensionImpl<T> implements
 		CSharpSimpleModuleExtension<T>, DotNetModuleLangExtension<T>
 {
-	private final CSharpLanguageVersionPointer myLanguageVersionPointer;
-	private boolean myAllowUnsafeCode;
+	protected final CSharpLanguageVersionPointer myLanguageVersionPointer;
+	protected boolean myAllowUnsafeCode;
 
 	public BaseCSharpSimpleModuleExtension(@NotNull String id, @NotNull ModuleRootLayer module)
 	{
