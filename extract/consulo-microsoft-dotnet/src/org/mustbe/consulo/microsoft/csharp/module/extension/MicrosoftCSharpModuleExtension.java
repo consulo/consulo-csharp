@@ -60,7 +60,12 @@ public class MicrosoftCSharpModuleExtension extends BaseCSharpModuleExtension<Mi
 		VirtualFile compilerFile = null;
 		if(getCustomCompilerSdkPointer().isNull())
 		{
-			compilerFile = CSharpCompilerUtil.findDefaultCompilerFromProvilders(extension);
+			VirtualFile homeDirectory = sdk.getHomeDirectory();
+			compilerFile = homeDirectory == null ? null : homeDirectory.findChild(CSharpCompilerUtil.COMPILER_NAME);
+			if(compilerFile == null)
+			{
+				compilerFile = CSharpCompilerUtil.findDefaultCompilerFromProvilders(extension);
+			}
 		}
 		else
 		{
