@@ -1176,7 +1176,6 @@ public class CSharpReferenceExpressionImplUtil
 	@NotNull
 	public static Couple<PsiElement> getResolveLayers(PsiElement element, boolean strict)
 	{
-		String text = element.getText();
 		PsiElement last = null;
 		PsiElement targetToWalkChildren = null;
 
