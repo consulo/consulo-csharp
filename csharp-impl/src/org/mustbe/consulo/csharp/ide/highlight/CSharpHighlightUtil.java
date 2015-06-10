@@ -133,8 +133,8 @@ public class CSharpHighlightUtil
 			}
 			else
 			{
-				key = ((DotNetModifierListOwner) element).hasModifier(CSharpModifier.STATIC) ? CSharpHighlightKey.STATIC_METHOD : CSharpHighlightKey
-						.INSTANCE_METHOD;
+				key = ((DotNetModifierListOwner) element).hasModifier(CSharpModifier.STATIC) ? CSharpHighlightKey.STATIC_METHOD_CALL : CSharpHighlightKey
+						.INSTANCE_METHOD_CALL;
 			}
 		}
 		else if(element instanceof CSharpMacroDefine)

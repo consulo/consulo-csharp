@@ -40,14 +40,14 @@ public interface CSharpHighlightKey
 	TextAttributesKey INSTANCE_FIELD_OR_PROPERTY = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
 			DefaultLanguageHighlighterColors.INSTANCE_FIELD);
 	TextAttributesKey INSTANCE_EVENT = TextAttributesKey.createTextAttributesKey("CSHARP_INSTANCE_EVENT", INSTANCE_FIELD_OR_PROPERTY);
-	TextAttributesKey STATIC_METHOD = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
+	TextAttributesKey STATIC_METHOD_CALL = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
 			DefaultLanguageHighlighterColors.STATIC_METHOD);
 	TextAttributesKey EXTENSION_METHOD_CALL = TextAttributesKey.createTextAttributesKey("CSHARP_EXTENSION_METHOD_CALL",
 			DefaultLanguageHighlighterColors.LABEL);
 	TextAttributesKey METHOD_REF = TextAttributesKey.createTextAttributesKey("CSHARP_METHOD_REF", DefaultLanguageHighlighterColors.IDENTIFIER);
 	TextAttributesKey IMPLICIT_OR_EXPLICIT_CAST = TextAttributesKey.createTextAttributesKey("CSHARP_IMPLICIT_OR_EXPLICIT_CAST",
 			EditorColors.INJECTED_LANGUAGE_FRAGMENT);
-	TextAttributesKey INSTANCE_METHOD = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
+	TextAttributesKey INSTANCE_METHOD_CALL = TextAttributesKey.createTextAttributesKey("CSHARP_INSTANCE_METHOD_CALL",
 			DefaultLanguageHighlighterColors.INSTANCE_METHOD);
 	TextAttributesKey PARAMETER = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.PARAMETER);
 	TextAttributesKey KEYWORD = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.KEYWORD);
