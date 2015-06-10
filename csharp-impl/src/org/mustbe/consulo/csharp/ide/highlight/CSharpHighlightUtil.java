@@ -129,7 +129,7 @@ public class CSharpHighlightUtil
 
 			if(CSharpMethodImplUtil.isExtensionWrapper(element))
 			{
-				key = CSharpHighlightKey.EXTENSION_METHOD;
+				key = CSharpHighlightKey.EXTENSION_METHOD_CALL;
 			}
 			else
 			{
