@@ -105,9 +105,9 @@ public class CSharpHighlightUtil
 				key = CSharpHighlightKey.CLASS_NAME;
 			}
 		}
-		else if(element instanceof DotNetConstructorDeclaration)
+		else if(element instanceof CSharpConstructorDeclaration)
 		{
-			if(target == ((DotNetMethodDeclaration) element).getNameIdentifier())
+			if(target == ((CSharpConstructorDeclaration) element).getNameIdentifier())
 			{
 				return CSharpHighlightKey.CONSTRUCTOR_NAME;
 			}
