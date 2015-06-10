@@ -51,4 +51,11 @@
 			<option name="EFFECT_TYPE" value="0" />
 		</value>
 	</option>
+	<option name="CSHARP_EXTENSION_METHOD_CALL">
+		<value>
+			<option name="FOREGROUND" value="ffc66d" />
+			<option name="EFFECT_COLOR" value="ffc66d" />
+			<option name="EFFECT_TYPE" value="1" />
+		</value>
+	</option>
 </list>

@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.highlight;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.PropertyKey;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
@@ -42,6 +43,7 @@ import com.intellij.psi.tree.IElementType;
 public class CSharpHighlightUtil
 {
 	@Nullable
+	@RequiredReadAction
 	public static HighlightInfo highlightNamed(@NotNull HighlightInfoHolder holder,
 			@Nullable PsiElement element,
 			@Nullable PsiElement target,
@@ -65,7 +67,7 @@ public class CSharpHighlightUtil
 			holder.add(highlightInfo);
 		}
 
-		TextAttributesKey defaultTextAttributeKey = getDefaultTextAttributeKey(element);
+		TextAttributesKey defaultTextAttributeKey = getDefaultTextAttributeKey(element, target);
 		if(defaultTextAttributeKey == null)
 		{
 			return null;
@@ -83,7 +85,8 @@ public class CSharpHighlightUtil
 		return info;
 	}
 
-	private static TextAttributesKey getDefaultTextAttributeKey(PsiElement element)
+	@RequiredReadAction
+	private static TextAttributesKey getDefaultTextAttributeKey(@NotNull PsiElement element, @NotNull PsiElement target)
 	{
 		TextAttributesKey key = null;
 		if(element instanceof CSharpTypeDeclaration)
@@ -104,8 +107,13 @@ public class CSharpHighlightUtil
 		}
 		else if(element instanceof DotNetConstructorDeclaration)
 		{
+			if(target == ((DotNetMethodDeclaration) element).getNameIdentifier())
+			{
+				return CSharpHighlightKey.CONSTRUCTOR_NAME;
+			}
+
 			PsiElement parent = element.getParent();
-			return getDefaultTextAttributeKey(parent);
+			return getDefaultTextAttributeKey(parent, target);
 		}
 		else if(element instanceof DotNetGenericParameter || element instanceof CSharpTypeDefStatementImpl)
 		{
@@ -125,6 +133,11 @@ public class CSharpHighlightUtil
 			if(element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isDelegate())
 			{
 				return CSharpHighlightKey.DELEGATE_METHOD_NAME;
+			}
+
+			if(target == ((DotNetMethodDeclaration) element).getNameIdentifier())
+			{
+				return CSharpHighlightKey.METHOD_NAME;
 			}
 
 			if(CSharpMethodImplUtil.isExtensionWrapper(element))

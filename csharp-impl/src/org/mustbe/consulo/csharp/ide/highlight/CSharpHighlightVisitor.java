@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.ide.highlight;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.ConvertToNormalCallFix;
 import org.mustbe.consulo.csharp.ide.highlight.util.ConstructorHighlightUtil;
@@ -90,6 +91,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitGenericParameter(DotNetGenericParameter parameter)
 	{
 		super.visitGenericParameter(parameter);
@@ -100,6 +102,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitGenericConstraint(CSharpGenericConstraint constraint)
 	{
 		super.visitGenericConstraint(constraint);
@@ -128,6 +131,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitTypeDeclaration(CSharpTypeDeclaration declaration)
 	{
 		super.visitTypeDeclaration(declaration);
@@ -136,6 +140,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitFieldDeclaration(CSharpFieldDeclaration declaration)
 	{
 		super.visitFieldDeclaration(declaration);
@@ -144,6 +149,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitLocalVariable(CSharpLocalVariable variable)
 	{
 		super.visitLocalVariable(variable);
@@ -161,6 +167,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitLinqVariable(CSharpLinqVariable variable)
 	{
 		super.visitLinqVariable(variable);
@@ -169,6 +176,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitEnumConstantDeclaration(CSharpEnumConstantDeclaration declaration)
 	{
 		super.visitEnumConstantDeclaration(declaration);
@@ -177,6 +185,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitTypeDefStatement(CSharpTypeDefStatement statement)
 	{
 		super.visitTypeDefStatement(statement);
@@ -185,6 +194,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitParameter(DotNetParameter parameter)
 	{
 		super.visitParameter(parameter);
@@ -193,6 +203,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitPropertyDeclaration(CSharpPropertyDeclaration declaration)
 	{
 		super.visitPropertyDeclaration(declaration);
@@ -201,6 +212,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitEventDeclaration(CSharpEventDeclaration declaration)
 	{
 		super.visitEventDeclaration(declaration);
@@ -209,10 +221,15 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitMethodDeclaration(CSharpMethodDeclaration declaration)
 	{
 		super.visitMethodDeclaration(declaration);
 		if(declaration.isDelegate())
+		{
+			CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, declaration, declaration.getNameIdentifier(), null);
+		}
+		else
 		{
 			CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, declaration, declaration.getNameIdentifier(), null);
 		}

@@ -53,6 +53,8 @@ public class CSharpColorSettingsPage implements ColorSettingsPage, DisplayPriori
 			new AttributesDescriptor("String", CSharpHighlightKey.STRING),
 			new AttributesDescriptor("Number", CSharpHighlightKey.NUMBER),
 			new AttributesDescriptor("Class name", CSharpHighlightKey.CLASS_NAME),
+			new AttributesDescriptor("Constructor declaration", CSharpHighlightKey.CONSTRUCTOR_NAME),
+			new AttributesDescriptor("Method declaration", CSharpHighlightKey.METHOD_NAME),
 			new AttributesDescriptor("Delegate method name", CSharpHighlightKey.DELEGATE_METHOD_NAME),
 			new AttributesDescriptor("Generic parameter name", CSharpHighlightKey.GENERIC_PARAMETER_NAME),
 			new AttributesDescriptor("Extension method call", CSharpHighlightKey.EXTENSION_METHOD_CALL),
@@ -86,6 +88,8 @@ public class CSharpColorSettingsPage implements ColorSettingsPage, DisplayPriori
 			put("generic_parameter_name", CSharpHighlightKey.GENERIC_PARAMETER_NAME);
 			put("delegate_method_name", CSharpHighlightKey.DELEGATE_METHOD_NAME);
 			put("soft_keyword", CSharpHighlightKey.SOFT_KEYWORD);
+			put("method_name", CSharpHighlightKey.METHOD_NAME);
+			put("constructor_name", CSharpHighlightKey.CONSTRUCTOR_NAME);
 			put("macro_keyword", CSharpHighlightKey.MACRO_KEYWORD);
 			put("macro_variable", CSharpHighlightKey.MACRO_VARIABLE);
 			put("disabled_block", CSharpHighlightKey.DISABLED_BLOCK);

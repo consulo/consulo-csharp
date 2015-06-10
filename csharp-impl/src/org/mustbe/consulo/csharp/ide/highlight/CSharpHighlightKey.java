@@ -32,6 +32,9 @@ public interface CSharpHighlightKey
 	TextAttributesKey ATTRIBUTE_NAME = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.METADATA);
 	TextAttributesKey GENERIC_PARAMETER_NAME = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
 			DefaultLanguageHighlighterColors.TYPE_ALIAS_NAME);
+	TextAttributesKey METHOD_NAME = TextAttributesKey.createTextAttributesKey("CSHARP_METHOD_NAME",
+			DefaultLanguageHighlighterColors.INSTANCE_METHOD);
+	TextAttributesKey CONSTRUCTOR_NAME = TextAttributesKey.createTextAttributesKey("CSHARP_CONSTRUCTOR_NAME", METHOD_NAME);
 	TextAttributesKey DELEGATE_METHOD_NAME = TextAttributesKey.createTextAttributesKey("CSHARP_DELEGATE_METHOD_NAME",
 			DefaultLanguageHighlighterColors.IDENTIFIER);
 	TextAttributesKey STATIC_FIELD_OR_PROPERTY = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
@@ -48,7 +51,7 @@ public interface CSharpHighlightKey
 	TextAttributesKey IMPLICIT_OR_EXPLICIT_CAST = TextAttributesKey.createTextAttributesKey("CSHARP_IMPLICIT_OR_EXPLICIT_CAST",
 			EditorColors.INJECTED_LANGUAGE_FRAGMENT);
 	TextAttributesKey INSTANCE_METHOD_CALL = TextAttributesKey.createTextAttributesKey("CSHARP_INSTANCE_METHOD_CALL",
-			DefaultLanguageHighlighterColors.INSTANCE_METHOD);
+			DefaultLanguageHighlighterColors.IDENTIFIER);
 	TextAttributesKey PARAMETER = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.PARAMETER);
 	TextAttributesKey KEYWORD = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE, DefaultLanguageHighlighterColors.KEYWORD);
 	TextAttributesKey MACRO_KEYWORD = TextAttributesKey.createTextAttributesKey(CSharpLanguage.INSTANCE,
