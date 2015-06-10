@@ -243,6 +243,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitReferenceExpression(CSharpReferenceExpression expression)
 	{
 		super.visitReferenceExpression(expression);
@@ -269,6 +270,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 		highlightMaybeImplicit(referenceExpression);
 	}
 
+	@RequiredReadAction
 	private void highlightResolvedTarget(@NotNull PsiReference reference, @NotNull PsiElement referenceElement)
 	{
 		PsiElement resolved = reference.resolve();
