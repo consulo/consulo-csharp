@@ -379,6 +379,8 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			@RequiredReadAction
 			public Void fun(StringBuilder t, DotNetGenericParameter v)
 			{
+				appendAttributeList(v, t, v.getAttributes());
+
 				if(v.hasModifier(CSharpModifier.OUT))
 				{
 					t.append("out ");
@@ -548,6 +550,16 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		{
 			return;
 		}
+		appendAttributeList(owner, builder, attributes);
+	}
+
+	@RequiredReadAction
+	private static void appendAttributeList(final PsiElement scope, final StringBuilder builder, final DotNetAttribute[] attributes)
+	{
+		if(attributes.length == 0)
+		{
+			return;
+		}
 
 		builder.append("[");
 		StubBlockUtil.join(builder, attributes, new PairFunction<StringBuilder, DotNetAttribute, Void>()
@@ -556,7 +568,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			@RequiredReadAction
 			public Void fun(StringBuilder builder, DotNetAttribute dotNetAttribute)
 			{
-				appendTypeRef(owner, builder, dotNetAttribute.toTypeRef());
+				appendTypeRef(scope, builder, dotNetAttribute.toTypeRef());
 
 				if(dotNetAttribute instanceof CSharpAttribute)
 				{

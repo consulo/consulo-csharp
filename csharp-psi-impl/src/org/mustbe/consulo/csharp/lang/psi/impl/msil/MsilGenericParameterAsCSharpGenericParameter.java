@@ -3,8 +3,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
+import org.mustbe.consulo.dotnet.psi.DotNetAttributeListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
@@ -15,13 +18,14 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 21.11.14
  */
-public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWrapper<DotNetGenericParameter> implements DotNetGenericParameter
+public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWrapper<DotNetGenericParameter> implements DotNetGenericParameter, DotNetAttributeListOwner
 {
 	public MsilGenericParameterAsCSharpGenericParameter(@Nullable PsiElement parent, DotNetGenericParameter msilElement)
 	{
 		super(parent, msilElement);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
@@ -37,6 +41,7 @@ public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWra
 		return false;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetModifierList getModifierList()
@@ -89,5 +94,13 @@ public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWra
 	public int getIndex()
 	{
 		return myOriginal.getIndex();
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	public DotNetAttribute[] getAttributes()
+	{
+		return myOriginal.getAttributes();
 	}
 }

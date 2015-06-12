@@ -17,11 +17,14 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpGenericParameterStub;
+import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayUtil;
@@ -57,5 +60,18 @@ public class CSharpGenericParameterImpl extends CSharpStubMemberImpl<CSharpGener
 			return ArrayUtil.find(((DotNetGenericParameterList) parentByStub).getParameters(), this);
 		}
 		return -1;
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	public DotNetAttribute[] getAttributes()
+	{
+		DotNetModifierList modifierList = getModifierList();
+		if(modifierList != null)
+		{
+			return modifierList.getAttributes();
+		}
+		return DotNetAttribute.EMPTY_ARRAY;
 	}
 }

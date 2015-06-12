@@ -18,8 +18,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.light.builder;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -60,5 +63,18 @@ public class CSharpLightGenericParameterBuilder extends CSharpLightNamedElementW
 	public void setIndex(int index)
 	{
 		myIndex = index;
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	public DotNetAttribute[] getAttributes()
+	{
+		DotNetModifierList modifierList = getModifierList();
+		if(modifierList != null)
+		{
+			return modifierList.getAttributes();
+		}
+		return DotNetAttribute.EMPTY_ARRAY;
 	}
 }
