@@ -97,4 +97,9 @@ public class CSharpMethodDeclStub extends MemberStub<CSharpMethodDeclaration>
 		}
 		return i;
 	}
+
+	public boolean isNested()
+	{
+		return getParentStub() instanceof CSharpTypeDeclStub;
+	}
 }

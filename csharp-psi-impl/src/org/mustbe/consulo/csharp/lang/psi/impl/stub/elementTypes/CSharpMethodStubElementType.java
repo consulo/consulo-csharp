@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodDeclarationImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
@@ -32,7 +33,6 @@ import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.BitUtil;
 import com.intellij.util.io.StringRef;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -58,6 +58,7 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 		return new CSharpMethodDeclarationImpl(cSharpTypeStub, this);
 	}
 
+	@RequiredReadAction
 	@Override
 	public CSharpMethodDeclStub createStub(@NotNull CSharpMethodDeclaration methodDeclaration, StubElement stubElement)
 	{
@@ -96,12 +97,15 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 		{
 			indexSink.occurrence(CSharpIndexKeys.METHOD_INDEX, name);
 
-			if(BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodDeclStub.DELEGATE_MASK))
+			if(!stub.isNested())
 			{
-				val parentQName = stub.getParentQName();
+				if(BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodDeclStub.DELEGATE_MASK))
+				{
+					String parentQName = stub.getParentQName();
 
-				DotNetNamespaceStubUtil.indexStub(indexSink, CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX,
-						CSharpIndexKeys.MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX, parentQName, name);
+					DotNetNamespaceStubUtil.indexStub(indexSink, CSharpIndexKeys.MEMBER_BY_NAMESPACE_QNAME_INDEX,
+							CSharpIndexKeys.MEMBER_BY_ALL_NAMESPACE_QNAME_INDEX, parentQName, name);
+				}
 			}
 
 			if(BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodDeclStub.EXTENSION_MASK))
