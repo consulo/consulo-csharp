@@ -75,8 +75,8 @@ public class CSharpAttributeStubBuilder
 					{
 						continue;
 					}
-					String name = XStubUtil.getUtf8(byteBuffer);
-					if(name.isEmpty())
+					CharSequence name = XStubUtil.getUtf8(byteBuffer);
+					if(name.length() == 0)
 					{
 						continue;
 					}
@@ -222,7 +222,9 @@ public class CSharpAttributeStubBuilder
 			}
 			else if(qualifiedText.equals(DotNetTypes.System.String))
 			{
-				builder.append(StringUtil.QUOTER.fun(XStubUtil.getUtf8(byteBuffer)));
+				builder.append("\"");
+				builder.append(XStubUtil.getUtf8(byteBuffer));
+				builder.append("\"");
 			}
 			else if(qualifiedText.equals(DotNetTypes.System.Type))
 			{
