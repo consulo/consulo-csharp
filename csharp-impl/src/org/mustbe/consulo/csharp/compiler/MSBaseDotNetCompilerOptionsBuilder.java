@@ -229,7 +229,7 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 
 		for(VirtualFile result : results)
 		{
-			addArgument(StringUtil.QUOTER.fun(result.getPath()));
+			addArgument(StringUtil.QUOTER.fun(FileUtil.toSystemDependentName(result.getPath())));
 		}
 
 		File tempFile = FileUtil.createTempFile("consulo-dotnet-rsp", ".rsp");
