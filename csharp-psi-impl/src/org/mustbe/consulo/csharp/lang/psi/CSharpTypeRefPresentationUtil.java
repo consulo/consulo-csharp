@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpEmptyGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
@@ -69,6 +70,7 @@ public class CSharpTypeRefPresentationUtil
 
 	public static final int QUALIFIED_NAME = 1 << 0;
 	public static final int TYPE_KEYWORD = 1 << 1;
+	public static final int NO_GENERIC_ARGUMENTS = 1 << 2;
 
 	public static final int QUALIFIED_NAME_WITH_KEYWORD = QUALIFIED_NAME | TYPE_KEYWORD;
 
@@ -133,6 +135,11 @@ public class CSharpTypeRefPresentationUtil
 			builder.append(" ");
 			appendTypeRef(scope, builder, ((CSharpRefTypeRef) typeRef).getInnerTypeRef(), flags);
 		}
+		else if(typeRef instanceof CSharpEmptyGenericWrapperTypeRef)
+		{
+			appendTypeRef(scope, builder, ((CSharpEmptyGenericWrapperTypeRef) typeRef).getInnerTypeRef(), flags | NO_GENERIC_ARGUMENTS);
+			builder.append("<>");
+		}
 		else if(typeRef instanceof DotNetPointerTypeRef)
 		{
 			appendTypeRef(scope, builder, ((DotNetPointerTypeRef) typeRef).getInnerTypeRef(), flags);
@@ -188,29 +195,32 @@ public class CSharpTypeRefPresentationUtil
 				}
 			}
 
-			if(element instanceof DotNetGenericParameterListOwner)
+			if(!BitUtil.isSet(flags, NO_GENERIC_ARGUMENTS))
 			{
-				DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) element).getGenericParameters();
-				if(genericParameters.length > 0)
+				if(element instanceof DotNetGenericParameterListOwner)
 				{
-					val genericExtractor = typeResolveResult.getGenericExtractor();
-					builder.append("<");
-					StubBlockUtil.join(builder, genericParameters, new PairFunction<StringBuilder, DotNetGenericParameter, Void>()
+					DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) element).getGenericParameters();
+					if(genericParameters.length > 0)
 					{
-						@Nullable
-						@Override
-						public Void fun(StringBuilder t, DotNetGenericParameter v)
+						val genericExtractor = typeResolveResult.getGenericExtractor();
+						builder.append("<");
+						StubBlockUtil.join(builder, genericParameters, new PairFunction<StringBuilder, DotNetGenericParameter, Void>()
 						{
-							DotNetTypeRef extractedTypeRef = genericExtractor.extract(v);
-							if(extractedTypeRef == null)
+							@Nullable
+							@Override
+							public Void fun(StringBuilder t, DotNetGenericParameter v)
 							{
-								extractedTypeRef = new CSharpTypeRefFromGenericParameter(v);
+								DotNetTypeRef extractedTypeRef = genericExtractor.extract(v);
+								if(extractedTypeRef == null)
+								{
+									extractedTypeRef = new CSharpTypeRefFromGenericParameter(v);
+								}
+								appendTypeRef(scope, t, extractedTypeRef, flags);
+								return null;
 							}
-							appendTypeRef(scope, t, extractedTypeRef, flags);
-							return null;
-						}
-					}, ", ");
-					builder.append(">");
+						}, ", ");
+						builder.append(">");
+					}
 				}
 			}
 			if(isExpectedNullable && !isNullable)

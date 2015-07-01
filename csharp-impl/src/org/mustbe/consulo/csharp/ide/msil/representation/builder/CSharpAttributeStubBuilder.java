@@ -1,9 +1,14 @@
 package org.mustbe.consulo.csharp.ide.msil.representation.builder;
 
+import java.util.List;
+
 import org.consulo.lombok.annotations.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpEmptyGenericWrapperTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -11,13 +16,19 @@ import org.mustbe.consulo.msil.lang.psi.MsilCustomAttribute;
 import org.mustbe.consulo.msil.lang.psi.MsilCustomAttributeSignature;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilArrayTypRefImpl;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilReferenceTypeRefImpl;
+import org.mustbe.dotnet.asm.STypeSignatureParser;
 import org.mustbe.dotnet.msil.decompiler.textBuilder.util.XStubUtil;
+import org.mustbe.dotnet.msil.decompiler.util.MsilHelper;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.CharsetToolkit;
+import com.intellij.psi.PsiElement;
 import edu.arizona.cs.mbel.io.ByteBuffer;
+import edu.arizona.cs.mbel.signature.ArrayShapeSignature;
 import edu.arizona.cs.mbel.signature.ArrayTypeSignature;
 import edu.arizona.cs.mbel.signature.ClassTypeSignature;
 import edu.arizona.cs.mbel.signature.TypeSignature;
 import edu.arizona.cs.mbel.signature.TypeSignatureParser;
+import edu.arizona.cs.mbel.signature.TypeSignatureWithGenericParameters;
 import edu.arizona.cs.mbel.signature.ValueTypeSignature;
 
 /**
@@ -50,7 +61,7 @@ public class CSharpAttributeStubBuilder
 				}
 				try
 				{
-					appendValue(innerValue, parameterTypeRef, byteBuffer);
+					appendValue(attribute, innerValue, parameterTypeRef, byteBuffer);
 				}
 				catch(Exception e)
 				{
@@ -75,7 +86,7 @@ public class CSharpAttributeStubBuilder
 					{
 						continue;
 					}
-					CharSequence name = XStubUtil.getUtf8(byteBuffer);
+					CharSequence name = XStubUtil.getString(byteBuffer, CharsetToolkit.UTF8_CHARSET);
 					if(name.length() == 0)
 					{
 						continue;
@@ -85,7 +96,7 @@ public class CSharpAttributeStubBuilder
 
 					newBuilder.append(name).append(" = ");
 
-					appendValue(newBuilder, toTypeRef(typeSignature), byteBuffer);
+					appendValue(attribute, newBuilder, toTypeRef(typeSignature, true), byteBuffer);
 				}
 				innerValue.append(newBuilder);
 			}
@@ -106,9 +117,9 @@ public class CSharpAttributeStubBuilder
 	}
 
 	@Nullable
-	private static DotNetTypeRef toTypeRef(TypeSignature typeSignature)
+	private static DotNetTypeRef toTypeRef(TypeSignature typeSignature, boolean firstEnter)
 	{
-		if(typeSignature== null)
+		if(typeSignature == null)
 		{
 			return null;
 		}
@@ -164,9 +175,21 @@ public class CSharpAttributeStubBuilder
 		{
 			return new CSharpTypeRefByQName(DotNetTypes.System.Char);
 		}
+		else if(typeSignature instanceof TypeSignatureWithGenericParameters)
+		{
+			TypeSignatureWithGenericParameters typeSignatureWithGenericParameters = (TypeSignatureWithGenericParameters) typeSignature;
+			List<TypeSignature> genericArguments = typeSignatureWithGenericParameters.getGenericArguments();
+			DotNetTypeRef[] innerTypeRefs = new DotNetTypeRef[genericArguments.size()];
+			for(int i = 0; i < innerTypeRefs.length; i++)
+			{
+				innerTypeRefs[i] = toTypeRef(genericArguments.get(i), false);
+			}
+			return new CSharpGenericWrapperTypeRef(toTypeRef(typeSignatureWithGenericParameters.getSignature(), false), innerTypeRefs);
+		}
 		else if(typeSignature instanceof ArrayTypeSignature)
 		{
-			return new CSharpArrayTypeRef(toTypeRef(((ArrayTypeSignature) typeSignature).getElementType()), 0);
+			ArrayShapeSignature arrayShape = ((ArrayTypeSignature) typeSignature).getArrayShape();
+			return new CSharpArrayTypeRef(toTypeRef(((ArrayTypeSignature) typeSignature).getElementType(), false), arrayShape.getRank());
 		}
 		else if(typeSignature instanceof ValueTypeSignature)
 		{
@@ -174,7 +197,16 @@ public class CSharpAttributeStubBuilder
 		}
 		else if(typeSignature instanceof ClassTypeSignature)
 		{
-			return new CSharpTypeRefByQName(((ClassTypeSignature) typeSignature).getClassType().getFullName());
+			String fullName = ((ClassTypeSignature) typeSignature).getClassType().getFullName();
+			CSharpTypeRefByQName innerTypeRef = new CSharpTypeRefByQName(fullName);
+			if(firstEnter)
+			{
+				if(StringUtil.containsChar(fullName, MsilHelper.GENERIC_MARKER_IN_NAME))
+				{
+					return new CSharpEmptyGenericWrapperTypeRef(innerTypeRef);
+				}
+			}
+			return innerTypeRef;
 		}
 		else
 		{
@@ -183,7 +215,7 @@ public class CSharpAttributeStubBuilder
 		}
 	}
 
-	private static void appendValue(StringBuilder builder, DotNetTypeRef parameterTypeRef, ByteBuffer byteBuffer)
+	private static void appendValue(@NotNull PsiElement scope, StringBuilder builder, DotNetTypeRef parameterTypeRef, ByteBuffer byteBuffer)
 	{
 		if(parameterTypeRef instanceof MsilArrayTypRefImpl)
 		{
@@ -223,14 +255,16 @@ public class CSharpAttributeStubBuilder
 			else if(qualifiedText.equals(DotNetTypes.System.String))
 			{
 				builder.append("\"");
-				builder.append(XStubUtil.getUtf8(byteBuffer));
+				builder.append(XStubUtil.getString(byteBuffer, CharsetToolkit.UTF8_CHARSET));
 				builder.append("\"");
 			}
 			else if(qualifiedText.equals(DotNetTypes.System.Type))
 			{
-				builder.append("typeof(System.Object");
-				//FIXME [VISTALL] see #277 issue at consulo-csharp
-				// builder.append(XStubUtil.getUtf8(byteBuffer));
+				builder.append("typeof(");
+				CharSequence text = XStubUtil.getString(byteBuffer, CharsetToolkit.UTF8_CHARSET);
+				TypeSignature typeSignature = STypeSignatureParser.parse(text);
+				DotNetTypeRef typeRef = toTypeRef(typeSignature, true);
+				CSharpStubBuilderVisitor.appendTypeRef(scope, builder, typeRef);
 				builder.append(")");
 			}
 			else

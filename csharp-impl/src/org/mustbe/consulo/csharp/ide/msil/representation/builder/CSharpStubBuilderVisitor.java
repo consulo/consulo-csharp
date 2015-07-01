@@ -329,7 +329,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		}
 	}
 
-	private static void appendTypeRef(@NotNull final PsiElement scope, @NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef)
+	public static void appendTypeRef(@NotNull final PsiElement scope, @NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef)
 	{
 		CSharpTypeRefPresentationUtil.appendTypeRef(scope, builder, typeRef, CSharpTypeRefPresentationUtil.QUALIFIED_NAME |
 				CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
