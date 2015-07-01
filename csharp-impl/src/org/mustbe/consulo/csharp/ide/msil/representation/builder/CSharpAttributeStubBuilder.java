@@ -11,6 +11,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpEmptyGe
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilCustomAttribute;
 import org.mustbe.consulo.msil.lang.psi.MsilCustomAttributeSignature;
@@ -264,12 +265,21 @@ public class CSharpAttributeStubBuilder
 				CharSequence text = XStubUtil.getString(byteBuffer, CharsetToolkit.UTF8_CHARSET);
 				TypeSignature typeSignature = STypeSignatureParser.parse(text);
 				DotNetTypeRef typeRef = toTypeRef(typeSignature, true);
+				assert typeRef != null : text;
 				CSharpStubBuilderVisitor.appendTypeRef(scope, builder, typeRef);
 				builder.append(")");
 			}
 			else
 			{
-				builder.append(StringUtil.QUOTER.fun("Unknown how build type: " + parameterTypeRef.getQualifiedText()));
+				PsiElement element = parameterTypeRef.resolve(scope).getElement();
+				if(element instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) element).isStruct())
+				{
+					appendValue(scope, builder, ((DotNetTypeDeclaration) element).getTypeRefForEnumConstants(), byteBuffer);
+				}
+				else
+				{
+					builder.append(StringUtil.QUOTER.fun("Unknown how build type: " + parameterTypeRef.getQualifiedText()));
+				}
 			}
 		}
 		else
