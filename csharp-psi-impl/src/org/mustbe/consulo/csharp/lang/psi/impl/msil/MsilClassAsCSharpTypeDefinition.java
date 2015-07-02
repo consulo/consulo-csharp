@@ -293,7 +293,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		{
 			return myIsInterface;
 		}
-		return myIsInterface = myOriginal.isEnum();
+		return myIsInterface = myOriginal.isInterface();
 	}
 
 	@Override
