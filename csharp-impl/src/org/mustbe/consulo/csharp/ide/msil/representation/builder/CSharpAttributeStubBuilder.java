@@ -49,7 +49,7 @@ public class CSharpAttributeStubBuilder
 
 		ByteBuffer byteBuffer = new ByteBuffer(bytes);
 
-		if(byteBuffer.getShort() == 1)
+		if(byteBuffer.canRead() && byteBuffer.getShort() == 1)
 		{
 			innerValue = new StringBuilder();
 			DotNetTypeRef[] parameterTypeRefs = attribute.getParameterList().getParameterTypeRefs();
@@ -70,40 +70,40 @@ public class CSharpAttributeStubBuilder
 					break;
 				}
 			}
-		}
 
-		if(innerValue != null && byteBuffer.canRead())
-		{
-			StringBuilder newBuilder = new StringBuilder();
-			try
+			if(innerValue != null && byteBuffer.canRead())
 			{
-				int count = byteBuffer.getShort();
-				for(int i = 0; i < count; i++)
+				StringBuilder newBuilder = new StringBuilder();
+				try
 				{
-					byteBuffer.get(); //type  0x53 field 0x54 property
-					TypeSignature typeSignature = TypeSignatureParser.parse(byteBuffer, null);
-
-					if(typeSignature == null)
+					int count = byteBuffer.getShort();
+					for(int i = 0; i < count; i++)
 					{
-						continue;
+						byteBuffer.get(); //type  0x53 field 0x54 property
+						TypeSignature typeSignature = TypeSignatureParser.parse(byteBuffer, null);
+
+						if(typeSignature == null)
+						{
+							continue;
+						}
+						CharSequence name = XStubUtil.getString(byteBuffer, CharsetToolkit.UTF8_CHARSET);
+						if(name.length() == 0)
+						{
+							continue;
+						}
+
+						newBuilder.append(", ");
+
+						newBuilder.append(name).append(" = ");
+
+						appendValue(attribute, newBuilder, toTypeRef(typeSignature, true), byteBuffer);
 					}
-					CharSequence name = XStubUtil.getString(byteBuffer, CharsetToolkit.UTF8_CHARSET);
-					if(name.length() == 0)
-					{
-						continue;
-					}
-
-					newBuilder.append(", ");
-
-					newBuilder.append(name).append(" = ");
-
-					appendValue(attribute, newBuilder, toTypeRef(typeSignature, true), byteBuffer);
+					innerValue.append(newBuilder);
 				}
-				innerValue.append(newBuilder);
-			}
-			catch(Exception e)
-			{
-				LOGGER.warn(e);
+				catch(Exception e)
+				{
+					LOGGER.warn(innerValue.toString(), e);
+				}
 			}
 		}
 
@@ -284,7 +284,7 @@ public class CSharpAttributeStubBuilder
 		}
 		else
 		{
-			builder.append(StringUtil.QUOTER.fun("Unknown how build type: " + parameterTypeRef.getQualifiedText()));
+			builder.append(StringUtil.QUOTER.fun("Unknown how build type2: " + parameterTypeRef.getQualifiedText()));
 		}
 	}
 }
