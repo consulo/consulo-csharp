@@ -272,7 +272,7 @@ public class CSharpAttributeStubBuilder
 			else
 			{
 				PsiElement element = parameterTypeRef.resolve(scope).getElement();
-				if(element instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) element).isStruct())
+				if(element instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) element).isEnum())
 				{
 					appendValue(scope, builder, ((DotNetTypeDeclaration) element).getTypeRefForEnumConstants(), byteBuffer);
 				}
