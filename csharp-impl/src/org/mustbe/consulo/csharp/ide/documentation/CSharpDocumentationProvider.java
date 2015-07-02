@@ -22,8 +22,8 @@ import org.emonic.base.codehierarchy.CodeHierarchyHelper;
 import org.emonic.base.documentation.IDocumentation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.dotnet.documentation.DotNetDocumentationCache;
 import org.mustbe.consulo.dotnet.psi.*;
@@ -44,6 +44,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.util.Function;
 import com.intellij.xml.util.XmlStringUtil;
 
@@ -51,9 +52,9 @@ import com.intellij.xml.util.XmlStringUtil;
  * @author VISTALL
  * @since 15.12.14
  */
-public class CSharpDocumentationProvider  implements DocumentationProvider
+public class CSharpDocumentationProvider implements DocumentationProvider
 {
-	private static final String TYPE_PREFIX = "type::";
+	private static final String TYPE_PREFIX = "csharp_type::";
 
 	@Nullable
 	@Override
@@ -252,6 +253,7 @@ public class CSharpDocumentationProvider  implements DocumentationProvider
 		return null;
 	}
 
+	@RequiredReadAction
 	private static String generateLinksForType(DotNetTypeRef dotNetTypeRef, PsiElement element)
 	{
 		StringBuilder builder = new StringBuilder();
@@ -277,8 +279,7 @@ public class CSharpDocumentationProvider  implements DocumentationProvider
 			{
 				if(resolved instanceof DotNetGenericParameterListOwner)
 				{
-					wrapToLink(element, dotNetTypeRef, ((DotNetQualifiedElement) resolved).getPresentableQName(), ((DotNetGenericParameterListOwner)
-							resolved).getGenericParametersCount(), builder);
+					wrapToLink(resolved, builder);
 
 					DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) resolved).getGenericParameters();
 					if(genericParameters.length > 0)
@@ -313,22 +314,30 @@ public class CSharpDocumentationProvider  implements DocumentationProvider
 			}
 			else
 			{
-				wrapToLink(element, dotNetTypeRef, "<unknown>", 0, builder);
+				builder.append(dotNetTypeRef.getPresentableText());
 			}
 		}
 
 		return builder.toString();
 	}
 
-	private static void wrapToLink(@NotNull PsiElement scope, @NotNull DotNetTypeRef dotNetTypeRef, String qName, int genericCount,
-			StringBuilder builder)
+	@RequiredReadAction
+	private static void wrapToLink(@NotNull PsiElement resolved, StringBuilder builder)
 	{
 		builder.append("<a href=\"psi_element://").append(TYPE_PREFIX);
-		builder.append(qName);
-		if(genericCount > 0)
+		if(resolved instanceof DotNetTypeDeclaration)
 		{
-			builder.append("`").append(genericCount);
+			builder.append(((DotNetTypeDeclaration) resolved).getVmQName());
 		}
-		builder.append("\">").append(XmlStringUtil.escapeString(CSharpTypeRefPresentationUtil.buildShortText(dotNetTypeRef, scope))).append("</a>");
+		else if(resolved instanceof DotNetQualifiedElement)
+		{
+			builder.append(((DotNetQualifiedElement) resolved).getPresentableQName());
+		}
+		else
+		{
+			builder.append(((PsiNamedElement)resolved).getName());
+		}
+
+		builder.append("\">").append(((PsiNamedElement)resolved).getName()).append("</a>");
 	}
 }
