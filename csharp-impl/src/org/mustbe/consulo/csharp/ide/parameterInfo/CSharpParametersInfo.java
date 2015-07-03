@@ -17,10 +17,12 @@
 package org.mustbe.consulo.csharp.ide.parameterInfo;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayAccessExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
@@ -36,11 +38,11 @@ import com.intellij.xml.util.XmlStringUtil;
  */
 public class CSharpParametersInfo
 {
-	private static final char[] ourBrackets = {
+	public static final char[] ourBrackets = {
 			'[',
 			']'
 	};
-	private static final char[] ourParentheses = {
+	public static final char[] ourParentheses = {
 			'(',
 			')'
 	};
@@ -48,12 +50,22 @@ public class CSharpParametersInfo
 	private static final TextRange EMPTY = new UnfairTextRange(-1, -1);
 
 	@NotNull
+	public static char[] getOpenAndCloseTokens(@Nullable Object callable)
+	{
+		if(callable instanceof CSharpArrayAccessExpressionImpl || callable instanceof CSharpArrayMethodDeclaration)
+		{
+			return ourBrackets;
+		}
+		return ourParentheses;
+	}
+
+	@NotNull
 	public static CSharpParametersInfo build(@NotNull CSharpSimpleLikeMethod callable, @NotNull PsiElement scope)
 	{
 		CSharpSimpleParameterInfo[] parameters = callable.getParameterInfos();
 		DotNetTypeRef returnType = callable.getReturnTypeRef();
 
-		char[] bounds = callable instanceof CSharpArrayMethodDeclaration ? ourBrackets : ourParentheses;
+		char[] bounds = getOpenAndCloseTokens(callable);
 
 		int length = 0;
 

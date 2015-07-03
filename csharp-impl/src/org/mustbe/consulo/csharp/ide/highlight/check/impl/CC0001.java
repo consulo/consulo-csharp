@@ -25,6 +25,7 @@ import org.mustbe.consulo.csharp.ide.codeInsight.actions.CastNArgumentToTypeRefF
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedConstructorFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedMethodFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.ide.parameterInfo.CSharpParametersInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -33,6 +34,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNewExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayAccessExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
@@ -143,12 +145,15 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 	}
 
 	@Nullable
-	private static HighlightInfo createHighlightInfo(@NotNull PsiElement element, @NotNull ResolveResult resolveResult)
+	@RequiredReadAction
+	public static HighlightInfo createHighlightInfo(@NotNull PsiElement element, @NotNull ResolveResult resolveResult)
 	{
 		if(!(resolveResult instanceof MethodResolveResult))
 		{
 			return null;
 		}
+
+		char[] openAndCloseTokens = CSharpParametersInfo.getOpenAndCloseTokens(element);
 
 		PsiElement resolveElement = resolveResult.getElement();
 
@@ -166,12 +171,17 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 				String canonicalText = ((CSharpOperatorReferenceImpl) element).getCanonicalText();
 				tooltipBuilder.append(XmlStringUtil.escapeString(canonicalText));
 			}
+			else if(element instanceof CSharpArrayAccessExpressionImpl)
+			{
+				tooltipBuilder.append(""); //FIXME [VISTALL] some name?
+			}
 			else
 			{
 				String name = ((PsiNamedElement) resolveElement).getName();
 				tooltipBuilder.append(name);
 			}
-			tooltipBuilder.append("&#x9;(");
+
+			tooltipBuilder.append("&#x9;").append(openAndCloseTokens[0]);
 
 			if(resolveElement instanceof DotNetVariable)
 			{
@@ -204,9 +214,9 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 					appendType(tooltipBuilder, parameters[i].toTypeRef(false), element);
 				}
 			}
-			tooltipBuilder.append(")</b> cannot be applied<br>");
+			tooltipBuilder.append(openAndCloseTokens[1]).append("</b> cannot be applied<br>");
 
-			tooltipBuilder.append("to&#x9;<b>(");
+			tooltipBuilder.append("to&#x9;<b>").append(openAndCloseTokens[0]);
 
 			for(int i = 0; i < arguments.size(); i++)
 			{
@@ -235,7 +245,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 				}
 			}
 
-			tooltipBuilder.append(")</b>");
+			tooltipBuilder.append(openAndCloseTokens[1]).append("</b>");
 
 			PsiElement parameterList = callOwner.getParameterList();
 			if(parameterList == null)
@@ -309,6 +319,10 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 	{
 		PsiElement parent = element.getParent();
 		if(element instanceof CSharpOperatorReferenceImpl)
+		{
+			return (CSharpCallArgumentListOwner) element;
+		}
+		else if(element instanceof CSharpArrayAccessExpressionImpl)
 		{
 			return (CSharpCallArgumentListOwner) element;
 		}

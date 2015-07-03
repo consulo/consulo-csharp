@@ -21,14 +21,21 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayAccessExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import com.intellij.openapi.util.TextRange;
+import com.intellij.codeInsight.daemon.impl.HighlightInfo;
+import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
+import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixActionRegistrarImpl;
+import com.intellij.codeInsight.quickfix.UnresolvedReferenceQuickFixProvider;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.SmartList;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.ResolveResult;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -41,34 +48,76 @@ public class CC0003 extends CompilerCheck<CSharpArrayAccessExpressionImpl>
 	@Override
 	public List<HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpArrayAccessExpressionImpl expression)
 	{
-		PsiElement resolve = expression.resolveToCallable();
-		if(resolve == null)
+		return checkReference(expression);
+	}
+
+	@NotNull
+	public static List<HighlightInfoFactory> checkReference(@NotNull final CSharpArrayAccessExpressionImpl callElement)
+	{
+		ResolveResult[] resolveResults = callElement.multiResolve(false);
+
+		ResolveResult goodResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
+
+		List<PsiElement> ranges = new ArrayList<PsiElement>(2);
+		CSharpCallArgumentList parameterList = callElement.getParameterList();
+		if(parameterList != null)
 		{
-			CSharpCallArgumentList parameterList = expression.getParameterList();
-			if(parameterList == null)
-			{
-				return Collections.emptyList();
-			}
-
-			List<TextRange> list = new ArrayList<TextRange>();
-			PsiElement temp = parameterList.getOpenElement();
-			if(temp != null)
-			{
-				list.add(temp.getTextRange());
-			}
-			temp = parameterList.getCloseElement();
-			if(temp != null)
-			{
-				list.add(temp.getTextRange());
-			}
-
-			List<HighlightInfoFactory> result = new SmartList<HighlightInfoFactory>();
-			for(TextRange textRange : list)
-			{
-				result.add(newBuilder(textRange));
-			}
-			return result;
+			ContainerUtil.addIfNotNull(ranges, parameterList.getOpenElement());
+			ContainerUtil.addIfNotNull(ranges, parameterList.getCloseElement());
 		}
-		return Collections.emptyList();
+
+		if(ranges.isEmpty())
+		{
+			return Collections.emptyList();
+		}
+
+		List<HighlightInfoFactory> list = new ArrayList<HighlightInfoFactory>(2);
+		if(goodResult == null)
+		{
+			if(resolveResults.length == 0)
+			{
+				for(PsiElement range : ranges)
+				{
+					CompilerCheckBuilder result = new CompilerCheckBuilder()
+					{
+						@Nullable
+						@Override
+						public HighlightInfo create()
+						{
+							HighlightInfo highlightInfo = super.create();
+							if(highlightInfo != null && callElement instanceof PsiReference)
+							{
+								UnresolvedReferenceQuickFixProvider.registerReferenceFixes((PsiReference) callElement,
+										new QuickFixActionRegistrarImpl(highlightInfo));
+							}
+							return highlightInfo;
+						}
+					};
+					result.setHighlightInfoType(HighlightInfoType.WRONG_REF);
+					result.setText(message(CC0003.class));
+					result.setTextRange(range.getTextRange());
+					list.add(result);
+				}
+			}
+			else
+			{
+				final HighlightInfo highlightInfo = CC0001.createHighlightInfo(callElement, resolveResults[0]);
+				if(highlightInfo == null)
+				{
+					return list;
+				}
+
+				list.add(new HighlightInfoFactory()
+				{
+					@Nullable
+					@Override
+					public HighlightInfo create()
+					{
+						return highlightInfo;
+					}
+				});
+			}
+		}
+		return list;
 	}
 }
