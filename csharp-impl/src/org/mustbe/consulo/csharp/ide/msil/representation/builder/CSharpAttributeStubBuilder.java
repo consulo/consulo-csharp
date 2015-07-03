@@ -1,20 +1,30 @@
 package org.mustbe.consulo.csharp.ide.msil.representation.builder;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpEmptyGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.msil.lang.psi.MsilConstantValue;
 import org.mustbe.consulo.msil.lang.psi.MsilCustomAttribute;
 import org.mustbe.consulo.msil.lang.psi.MsilCustomAttributeSignature;
+import org.mustbe.consulo.msil.lang.psi.MsilFieldEntry;
+import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilArrayTypRefImpl;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilReferenceTypeRefImpl;
 import org.mustbe.dotnet.asm.STypeSignatureParser;
@@ -216,6 +226,7 @@ public class CSharpAttributeStubBuilder
 		}
 	}
 
+	@RequiredReadAction
 	private static void appendValue(@NotNull PsiElement scope, StringBuilder builder, DotNetTypeRef parameterTypeRef, ByteBuffer byteBuffer)
 	{
 		if(parameterTypeRef instanceof MsilArrayTypRefImpl)
@@ -224,42 +235,54 @@ public class CSharpAttributeStubBuilder
 		}
 		else if(parameterTypeRef instanceof MsilReferenceTypeRefImpl || parameterTypeRef instanceof CSharpTypeRefByQName)
 		{
-			String qualifiedText = parameterTypeRef.getQualifiedText();
-			if(qualifiedText.equals(DotNetTypes.System.Int32))
+			PsiElement resolvedElement = parameterTypeRef.resolve(scope).getElement();
+			String vmQName = null;
+			if(resolvedElement instanceof DotNetTypeDeclaration)
+			{
+				vmQName = ((DotNetTypeDeclaration) resolvedElement).getVmQName();
+			}
+			else
+			{
+				vmQName = parameterTypeRef.getQualifiedText();
+			}
+
+			assert vmQName != null;
+
+			if(vmQName.equals(DotNetTypes.System.Int32))
 			{
 				builder.append(byteBuffer.getInt());
 			}
-			else if(qualifiedText.equals(DotNetTypes.System.UInt32))
+			else if(vmQName.equals(DotNetTypes.System.UInt32))
 			{
 				builder.append(byteBuffer.getInt() & 0xFFFFFFFFL);
 			}
-			else if(qualifiedText.equals(DotNetTypes.System.Boolean))
+			else if(vmQName.equals(DotNetTypes.System.Boolean))
 			{
 				builder.append(byteBuffer.get() == 1);
 			}
-			else if(qualifiedText.equals(DotNetTypes.System.Int16))
+			else if(vmQName.equals(DotNetTypes.System.Int16))
 			{
 				builder.append(byteBuffer.getShort());
 			}
-			else if(qualifiedText.equals(DotNetTypes.System.UInt16))
+			else if(vmQName.equals(DotNetTypes.System.UInt16))
 			{
 				builder.append(byteBuffer.getShort() & 0xFFFF);
 			}
-			else if(qualifiedText.equals(DotNetTypes.System.Byte))
+			else if(vmQName.equals(DotNetTypes.System.Byte))
 			{
 				builder.append(byteBuffer.get() & 0xFF);
 			}
-			else if(qualifiedText.equals(DotNetTypes.System.SByte))
+			else if(vmQName.equals(DotNetTypes.System.SByte))
 			{
 				builder.append(byteBuffer.getShort());
 			}
-			else if(qualifiedText.equals(DotNetTypes.System.String))
+			else if(vmQName.equals(DotNetTypes.System.String))
 			{
 				builder.append("\"");
 				builder.append(XStubUtil.getString(byteBuffer, CharsetToolkit.UTF8_CHARSET));
 				builder.append("\"");
 			}
-			else if(qualifiedText.equals(DotNetTypes.System.Type))
+			else if(vmQName.equals(DotNetTypes.System.Type))
 			{
 				builder.append("typeof(");
 				CharSequence text = XStubUtil.getString(byteBuffer, CharsetToolkit.UTF8_CHARSET);
@@ -271,10 +294,59 @@ public class CSharpAttributeStubBuilder
 			}
 			else
 			{
-				PsiElement element = parameterTypeRef.resolve(scope).getElement();
-				if(element instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) element).isEnum())
+				if(resolvedElement instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) resolvedElement).isEnum())
 				{
-					appendValue(scope, builder, ((DotNetTypeDeclaration) element).getTypeRefForEnumConstants(), byteBuffer);
+					Number value = getValue(scope, byteBuffer, ((DotNetTypeDeclaration) resolvedElement).getTypeRefForEnumConstants());
+					if(value != null)
+					{
+						Map<Long, String> map = new HashMap<Long, String>();
+
+						long l = value.longValue();
+						DotNetNamedElement[] members = ((DotNetTypeDeclaration) resolvedElement).getMembers();
+						for(DotNetNamedElement member : members)
+						{
+							if(member instanceof MsilFieldEntry && ((MsilFieldEntry) member).hasModifier(MsilTokens.LITERAL_KEYWORD))
+							{
+								DotNetExpression initializer = ((MsilFieldEntry) member).getInitializer();
+								if(!(initializer instanceof MsilConstantValue))
+								{
+									continue;
+								}
+								String valueText = ((MsilConstantValue) initializer).getValueText();
+								map.put(Long.parseLong(valueText), member.getName());
+							}
+						}
+
+						if(DotNetAttributeUtil.hasAttribute(resolvedElement, DotNetTypes2.System.FlagsAttribute))
+						{
+							List<String> fields = new ArrayList<String>();
+
+							for(Map.Entry<Long, String> entry : map.entrySet())
+							{
+								if((l & entry.getKey()) == entry.getKey())
+								{
+									fields.add(vmQName + "." + entry.getValue());
+								}
+							}
+							builder.append(StringUtil.join(fields, " | "));
+						}
+						else
+						{
+							String str = map.get(l);
+							if(str != null)
+							{
+								builder.append(vmQName).append(".").append(str);
+							}
+							else
+							{
+								builder.append(value);
+							}
+						}
+					}
+					else
+					{
+						builder.append("0");
+					}
 				}
 				else
 				{
@@ -286,5 +358,49 @@ public class CSharpAttributeStubBuilder
 		{
 			builder.append(StringUtil.QUOTER.fun("Unknown how build type2: " + parameterTypeRef.getQualifiedText()));
 		}
+	}
+
+	@Nullable
+	private static Number getValue(PsiElement scope, ByteBuffer byteBuffer, DotNetTypeRef typeRef)
+	{
+		PsiElement resolvedElement = typeRef.resolve(scope).getElement();
+		String qName = null;
+		if(resolvedElement instanceof DotNetTypeDeclaration)
+		{
+			qName = ((DotNetTypeDeclaration) resolvedElement).getVmQName();
+		}
+		else
+		{
+			qName = typeRef.getQualifiedText();
+		}
+
+		assert qName != null;
+
+		if(qName.equals(DotNetTypes.System.Int32))
+		{
+			return byteBuffer.getInt();
+		}
+		else if(qName.equals(DotNetTypes.System.UInt32))
+		{
+			return byteBuffer.getInt() & 0xFFFFFFFFL;
+		}
+		else if(qName.equals(DotNetTypes.System.Int16))
+		{
+			return byteBuffer.getShort();
+		}
+		else if(qName.equals(DotNetTypes.System.UInt16))
+		{
+			return byteBuffer.getShort() & 0xFFFF;
+		}
+		else if(qName.equals(DotNetTypes.System.Byte))
+		{
+			return byteBuffer.get() & 0xFF;
+		}
+		else if(qName.equals(DotNetTypes.System.SByte))
+		{
+			return byteBuffer.getShort();
+		}
+		LOGGER.warn("Unknown type: " + qName);
+		return null;
 	}
 }

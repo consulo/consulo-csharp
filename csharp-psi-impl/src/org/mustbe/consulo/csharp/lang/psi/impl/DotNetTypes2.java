@@ -69,5 +69,6 @@ public interface DotNetTypes2
 		}
 
 		String RuntimeArgumentHandle = "System.RuntimeArgumentHandle";
+		String FlagsAttribute  = "System.FlagsAttribute";
 	}
 }
