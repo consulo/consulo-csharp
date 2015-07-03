@@ -62,7 +62,6 @@ import com.intellij.psi.ResolveResult;
 import com.intellij.ui.ColorUtil;
 import com.intellij.ui.JBColor;
 import com.intellij.xml.util.XmlStringUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -123,7 +122,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 			}
 			else
 			{
-				val highlightInfo = createHighlightInfo(callElement, resolveResults[0]);
+				final HighlightInfo highlightInfo = createHighlightInfo(callElement, resolveResults[0]);
 				if(highlightInfo == null)
 				{
 					return null;
