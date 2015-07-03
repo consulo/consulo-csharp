@@ -21,20 +21,12 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayAccessExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
-import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixActionRegistrarImpl;
-import com.intellij.codeInsight.quickfix.UnresolvedReferenceQuickFixProvider;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.ResolveResult;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
@@ -48,18 +40,8 @@ public class CC0003 extends CompilerCheck<CSharpArrayAccessExpressionImpl>
 	@Override
 	public List<HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpArrayAccessExpressionImpl expression)
 	{
-		return checkReference(expression);
-	}
-
-	@NotNull
-	public static List<HighlightInfoFactory> checkReference(@NotNull final CSharpArrayAccessExpressionImpl callElement)
-	{
-		ResolveResult[] resolveResults = callElement.multiResolve(false);
-
-		ResolveResult goodResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
-
 		List<PsiElement> ranges = new ArrayList<PsiElement>(2);
-		CSharpCallArgumentList parameterList = callElement.getParameterList();
+		CSharpCallArgumentList parameterList = expression.getParameterList();
 		if(parameterList != null)
 		{
 			ContainerUtil.addIfNotNull(ranges, parameterList.getOpenElement());
@@ -70,54 +52,6 @@ public class CC0003 extends CompilerCheck<CSharpArrayAccessExpressionImpl>
 		{
 			return Collections.emptyList();
 		}
-
-		List<HighlightInfoFactory> list = new ArrayList<HighlightInfoFactory>(2);
-		if(goodResult == null)
-		{
-			if(resolveResults.length == 0)
-			{
-				for(PsiElement range : ranges)
-				{
-					CompilerCheckBuilder result = new CompilerCheckBuilder()
-					{
-						@Nullable
-						@Override
-						public HighlightInfo create()
-						{
-							HighlightInfo highlightInfo = super.create();
-							if(highlightInfo != null && callElement instanceof PsiReference)
-							{
-								UnresolvedReferenceQuickFixProvider.registerReferenceFixes((PsiReference) callElement,
-										new QuickFixActionRegistrarImpl(highlightInfo));
-							}
-							return highlightInfo;
-						}
-					};
-					result.setHighlightInfoType(HighlightInfoType.WRONG_REF);
-					result.setText(message(CC0003.class));
-					result.setTextRange(range.getTextRange());
-					list.add(result);
-				}
-			}
-			else
-			{
-				final HighlightInfo highlightInfo = CC0001.createHighlightInfo(callElement, resolveResults[0]);
-				if(highlightInfo == null)
-				{
-					return list;
-				}
-
-				list.add(new HighlightInfoFactory()
-				{
-					@Nullable
-					@Override
-					public HighlightInfo create()
-					{
-						return highlightInfo;
-					}
-				});
-			}
-		}
-		return list;
+		return CC0001.checkReference(expression, ranges);
 	}
 }

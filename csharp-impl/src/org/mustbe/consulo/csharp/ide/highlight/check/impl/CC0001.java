@@ -16,6 +16,9 @@
 
 package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -72,22 +75,27 @@ import com.intellij.xml.util.XmlStringUtil;
 public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 {
 	@RequiredReadAction
-	@Nullable
+	@NotNull
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpReferenceExpression expression)
+	public List<HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpReferenceExpression expression)
 	{
 		PsiElement referenceElement = expression.getReferenceElement();
 		if(referenceElement == null || expression.isSoft())
 		{
-			return null;
+			return Collections.emptyList();
 		}
 
-		return checkReference(expression, referenceElement);
+		return checkReference(expression, Arrays.asList(referenceElement));
 	}
 
-	@Nullable
-	public static HighlightInfoFactory checkReference(@NotNull final PsiElement callElement, @NotNull PsiElement referenceElement)
+	@NotNull
+	@RequiredReadAction
+	public static List<HighlightInfoFactory> checkReference(@NotNull final PsiElement callElement, @NotNull List<? extends PsiElement> ranges)
 	{
+		if(ranges.isEmpty())
+		{
+			return Collections.emptyList();
+		}
 		ResolveResult[] resolveResults = ResolveResult.EMPTY_ARRAY;
 
 		if(callElement instanceof PsiPolyVariantReference)
@@ -97,40 +105,46 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 
 		ResolveResult goodResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
 
+		List<HighlightInfoFactory> list = new ArrayList<HighlightInfoFactory>(2);
 		if(goodResult == null)
 		{
 			if(resolveResults.length == 0)
 			{
-				CompilerCheckBuilder result = new CompilerCheckBuilder()
+				for(PsiElement range : ranges)
 				{
-					@Nullable
-					@Override
-					public HighlightInfo create()
+					CompilerCheckBuilder result = new CompilerCheckBuilder()
 					{
-						HighlightInfo highlightInfo = super.create();
-						if(highlightInfo != null && callElement instanceof PsiReference)
+						@Nullable
+						@Override
+						public HighlightInfo create()
 						{
-							UnresolvedReferenceQuickFixProvider.registerReferenceFixes((PsiReference) callElement,
-									new QuickFixActionRegistrarImpl(highlightInfo));
+							HighlightInfo highlightInfo = super.create();
+							if(highlightInfo != null && callElement instanceof PsiReference)
+							{
+								UnresolvedReferenceQuickFixProvider.registerReferenceFixes((PsiReference) callElement,
+										new QuickFixActionRegistrarImpl(highlightInfo));
+							}
+							return highlightInfo;
 						}
-						return highlightInfo;
-					}
-				};
-				result.setHighlightInfoType(HighlightInfoType.WRONG_REF);
-				result.setText("'" + referenceElement.getText() + "' is not resolved");
-				result.setTextRange(referenceElement.getTextRange());
+					};
+					result.setHighlightInfoType(HighlightInfoType.WRONG_REF);
 
-				return result;
+					String unresolvedText = getUnresolvedText(callElement, range);
+					result.setText("'" + unresolvedText + "' is not resolved");
+
+					result.setTextRange(range.getTextRange());
+					list.add(result);
+				}
 			}
 			else
 			{
-				final HighlightInfo highlightInfo = createHighlightInfo(callElement, resolveResults[0]);
+				final HighlightInfo highlightInfo = CC0001.createHighlightInfo(callElement, resolveResults[0]);
 				if(highlightInfo == null)
 				{
-					return null;
+					return list;
 				}
 
-				return new HighlightInfoFactory()
+				list.add(new HighlightInfoFactory()
 				{
 					@Nullable
 					@Override
@@ -138,10 +152,52 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 					{
 						return highlightInfo;
 					}
-				};
+				});
 			}
 		}
-		return null;
+		return list;
+	}
+
+	@RequiredReadAction
+	private static String getUnresolvedText(@NotNull PsiElement element, @NotNull PsiElement range)
+	{
+		CSharpCallArgumentListOwner callOwner = findCallOwner(element);
+		if(callOwner != null)
+		{
+			String name = null;
+			if(element instanceof CSharpArrayAccessExpressionImpl)
+			{
+				name = "this";
+			}
+			else
+			{
+				name = range.getText();
+			}
+
+			StringBuilder builder = new StringBuilder();
+			builder.append(name);
+			char[] openAndCloseTokens = CSharpParametersInfo.getOpenAndCloseTokens(element);
+			builder.append(openAndCloseTokens[0]);
+			CSharpCallArgument[] arguments = callOwner.getCallArguments();
+			for(int i = 0; i < arguments.length; i++)
+			{
+				if(i != 0)
+				{
+					builder.append(", ");
+				}
+
+				CSharpCallArgument callArgument = arguments[i];
+
+				DotNetExpression argumentExpression = callArgument.getArgumentExpression();
+				appendType(builder, argumentExpression == null ? DotNetTypeRef.ERROR_TYPE : argumentExpression.toTypeRef(false), element);
+			}
+			builder.append(openAndCloseTokens[1]);
+			return builder.toString();
+		}
+		else
+		{
+			return range.getText();
+		}
 	}
 
 	@Nullable
@@ -312,7 +368,14 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 
 	private static void appendType(@NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
-		builder.append(XmlStringUtil.escapeString(CSharpTypeRefPresentationUtil.buildText(typeRef, scope)));
+		if(typeRef == DotNetTypeRef.ERROR_TYPE)
+		{
+			builder.append("error");
+		}
+		else
+		{
+			builder.append(XmlStringUtil.escapeString(CSharpTypeRefPresentationUtil.buildText(typeRef, scope)));
+		}
 	}
 
 	private static CSharpCallArgumentListOwner findCallOwner(PsiElement element)
