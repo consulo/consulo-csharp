@@ -23,6 +23,8 @@ import org.emonic.base.documentation.IDocumentation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.parameterInfo.CSharpParametersInfo;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.dotnet.documentation.DotNetDocumentationCache;
@@ -75,6 +77,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 		return null;
 	}
 
+	@RequiredReadAction
 	private static String generateQuickLikeMethodDeclarationInfo(DotNetLikeMethodDeclaration element)
 	{
 		StringBuilder builder = new StringBuilder();
@@ -93,12 +96,21 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 		{
 			builder.append(generateLinksForType(element.getReturnTypeRef(), element));
 			builder.append(" ");
-			builder.append(XmlStringUtil.escapeString(element.getName()));
+			if(element instanceof CSharpArrayMethodDeclaration)
+			{
+				builder.append("this");
+			}
+			else
+			{
+				builder.append(XmlStringUtil.escapeString(element.getName()));
+			}
 		}
-		builder.append("(");
+		char[] openAndCloseTokens = CSharpParametersInfo.getOpenAndCloseTokens(element);
+		builder.append(openAndCloseTokens[0]);
 		builder.append(StringUtil.join(element.getParameters(), new Function<DotNetParameter, String>()
 		{
 			@Override
+			@RequiredReadAction
 			public String fun(DotNetParameter dotNetParameter)
 			{
 				DotNetTypeRef typeRef = dotNetParameter.toTypeRef(true);
@@ -109,7 +121,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 				return generateLinksForType(typeRef, dotNetParameter) + " " + dotNetParameter.getName();
 			}
 		}, ", "));
-		builder.append(")");
+		builder.append(openAndCloseTokens[1]);
 		return builder.toString();
 	}
 
@@ -335,9 +347,9 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 		}
 		else
 		{
-			builder.append(((PsiNamedElement)resolved).getName());
+			builder.append(((PsiNamedElement) resolved).getName());
 		}
 
-		builder.append("\">").append(((PsiNamedElement)resolved).getName()).append("</a>");
+		builder.append("\">").append(((PsiNamedElement) resolved).getName()).append("</a>");
 	}
 }
