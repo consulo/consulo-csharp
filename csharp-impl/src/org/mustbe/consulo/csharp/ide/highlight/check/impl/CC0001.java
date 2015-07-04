@@ -102,6 +102,10 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		{
 			resolveResults = ((PsiPolyVariantReference) callElement).multiResolve(false);
 		}
+		else if(callElement instanceof CSharpArrayAccessExpressionImpl)
+		{
+			resolveResults = ((CSharpArrayAccessExpressionImpl) callElement).multiResolve(false);
+		}
 
 		ResolveResult goodResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
 
