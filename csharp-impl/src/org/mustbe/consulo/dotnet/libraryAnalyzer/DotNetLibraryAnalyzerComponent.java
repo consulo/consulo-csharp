@@ -28,9 +28,9 @@ import org.consulo.module.extension.ModuleExtension;
 import org.consulo.module.extension.ModuleExtensionChangeListener;
 import org.jboss.netty.util.internal.ConcurrentWeakKeyHashMap;
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
 import org.mustbe.consulo.dotnet.module.extension.DotNetLibraryOpenCache;
 import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
+import org.mustbe.dotnet.msil.decompiler.util.MsilHelper;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.module.Module;
@@ -46,7 +46,6 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.PathUtil;
 import com.intellij.util.containers.MultiMap;
 import com.intellij.util.messages.MessageBusConnection;
-import edu.arizona.cs.mbel.mbel.ModuleParser;
 import edu.arizona.cs.mbel.mbel.TypeDef;
 import edu.arizona.cs.mbel.parse.MSILParseException;
 
@@ -185,6 +184,7 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 				myCacheMap.put(extension.getModule(), map);
 			}
 
+			@NotNull
 			@Override
 			public DumbModeAction getDumbModeAction()
 			{
@@ -195,12 +195,13 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 
 	private static MultiMap<String, NamespaceReference> buildCache(File key, String libraryName)
 	{
+		DotNetLibraryOpenCache.Record record = null;
 		try
 		{
-			ModuleParser parser = DotNetLibraryOpenCache.acquireWithNext(key.getPath());
+			record = DotNetLibraryOpenCache.acquireWithNext(key.getPath());
 
 			MultiMap<String, NamespaceReference> map = new MultiMap<String, NamespaceReference>();
-			TypeDef[] typeDefs = parser.getTypeDefs();
+			TypeDef[] typeDefs = record.get().getTypeDefs();
 
 			for(TypeDef typeDef : typeDefs)
 			{
@@ -213,11 +214,18 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 			}
 			return map;
 		}
-		catch(IOException e)
+		catch(IOException ignored)
 		{
 		}
-		catch(MSILParseException e)
+		catch(MSILParseException ignored)
 		{
+		}
+		finally
+		{
+			if(record != null)
+			{
+				record.finish();
+			}
 		}
 		return MultiMap.emptyInstance();
 	}
