@@ -39,7 +39,6 @@ import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerSingleValueImpl;
@@ -76,8 +75,16 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import org.mustbe.dotnet.msil.decompiler.util.MsilHelper;
 import com.intellij.codeInsight.TailType;
-import com.intellij.codeInsight.completion.*;
+import com.intellij.codeInsight.completion.CompletionContributor;
+import com.intellij.codeInsight.completion.CompletionParameters;
+import com.intellij.codeInsight.completion.CompletionProvider;
+import com.intellij.codeInsight.completion.CompletionResultSet;
+import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.codeInsight.completion.InsertHandler;
+import com.intellij.codeInsight.completion.InsertionContext;
+import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -457,49 +464,48 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 					boolean insideUsingList = PsiTreeUtil.getParentOfType(parent, CSharpUsingList.class) != null;
 
 					List<LookupElement> lookupElements = new ArrayList<LookupElement>(typeDeclarations.size());
-					for(DotNetTypeDeclaration dotNetTypeDeclaration : typeDeclarations)
+					for(DotNetTypeDeclaration maybeMsilType : typeDeclarations)
 					{
 						ProgressManager.checkCanceled();
 
-						DotNetQualifiedElement wrap = (DotNetQualifiedElement) MsilToCSharpUtil.wrap(dotNetTypeDeclaration);
+						//DotNetQualifiedElement wrap = (DotNetQualifiedElement) MsilToCSharpUtil.wrap(dotNetTypeDeclaration);
 
-						String presentationText = wrap.getName();
+						String presentationText = MsilHelper.cutGenericMarker(maybeMsilType.getName());
 
-						if(!insideUsingList && isAlreadyResolved(wrap, parent))
+						if(!insideUsingList && isAlreadyResolved(maybeMsilType, parent))
 						{
 							continue;
 						}
 
 						int genericCount = 0;
-						if(wrap instanceof DotNetGenericParameterListOwner)
+						DotNetGenericParameter[] genericParameters = maybeMsilType.getGenericParameters();
+						if((genericCount = genericParameters.length) > 0)
 						{
-							DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) wrap).getGenericParameters();
-							if((genericCount = genericParameters.length) > 0)
+							presentationText += "<" + StringUtil.join(genericParameters, new Function<DotNetGenericParameter, String>()
 							{
-								presentationText += "<" + StringUtil.join(genericParameters, new Function<DotNetGenericParameter, String>()
+								@Override
+								public String fun(DotNetGenericParameter parameter)
 								{
-									@Override
-									public String fun(DotNetGenericParameter parameter)
-									{
-										return parameter.getName();
-									}
-								}, ", ");
-								presentationText += ">";
-							}
+									return parameter.getName();
+								}
+							}, ", ");
+							presentationText += ">";
 						}
 
-						String lookupString = insideUsingList ? wrap.getPresentableQName() : wrap.getName();
-						if(lookupString == null || presentationText == null)
+						String lookupString = insideUsingList ? maybeMsilType.getPresentableQName() : maybeMsilType.getName();
+						if(lookupString == null)
 						{
 							continue;
 						}
-						LookupElementBuilder builder = LookupElementBuilder.create(wrap, lookupString);
-						builder = builder.withPresentableText(presentationText);
-						builder = builder.withIcon(IconDescriptorUpdaters.getIcon(wrap, Iconable.ICON_FLAG_VISIBILITY));
+						lookupString = MsilHelper.cutGenericMarker(lookupString);
 
-						val parentQName = wrap.getPresentableParentQName();
+						LookupElementBuilder builder = LookupElementBuilder.create(maybeMsilType, lookupString);
+						builder = builder.withPresentableText(presentationText);
+						builder = builder.withIcon(IconDescriptorUpdaters.getIcon(maybeMsilType, Iconable.ICON_FLAG_VISIBILITY));
+
+						final String parentQName = maybeMsilType.getPresentableParentQName();
 						builder = builder.withTypeText(parentQName, true);
-						val ltGtInsertHandler = genericCount == 0 ? null : LtGtInsertHandler.getInstance(genericCount > 0);
+						final InsertHandler<LookupElement> ltGtInsertHandler = genericCount == 0 ? null : LtGtInsertHandler.getInstance(genericCount > 0);
 						if(insideUsingList)
 						{
 							builder = builder.withInsertHandler(ltGtInsertHandler);
@@ -751,6 +757,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 		return builder;
 	}
 
+	@RequiredReadAction
 	public static boolean isAlreadyResolved(DotNetQualifiedElement element, PsiElement parent)
 	{
 		String parentQName = element.getPresentableParentQName();
@@ -760,7 +767,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 		}
 
 		ResolveState resolveState = ResolveState.initial();
-		resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, new MemberByNameSelector(element.getName()));
+		resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, new MemberByNameSelector(MsilHelper.cutGenericMarker(element.getName())));
 		resolveState = resolveState.put(MemberResolveScopeProcessor.BREAK_RULE, Boolean.TRUE);
 
 		Couple<PsiElement> resolveLayers = CSharpReferenceExpressionImplUtil.getResolveLayers(parent, false);
