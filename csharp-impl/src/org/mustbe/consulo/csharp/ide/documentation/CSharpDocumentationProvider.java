@@ -26,6 +26,7 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.parameterInfo.CSharpParametersInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.dotnet.documentation.DotNetDocumentationCache;
 import org.mustbe.consulo.dotnet.psi.*;
@@ -83,6 +84,11 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 		StringBuilder builder = new StringBuilder();
 
 		appendModifiers(element, builder);
+
+		if(element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isDelegate())
+		{
+			builder.append("delegate ");
+		}
 
 		if(element instanceof DotNetConstructorDeclaration)
 		{
