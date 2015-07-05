@@ -39,7 +39,6 @@ import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerSingleValueImpl;
@@ -502,7 +501,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 
 						LookupElementBuilder builder = LookupElementBuilder.create(maybeMsilType, lookupString);
 						builder = builder.withPresentableText(presentationText);
-						builder = builder.withIcon(MsilToCSharpUtil.getIconForType(maybeMsilType, Iconable.ICON_FLAG_VISIBILITY));
+						builder = builder.withIcon(IconDescriptorUpdaters.getIcon(maybeMsilType, Iconable.ICON_FLAG_VISIBILITY));
 
 						final String parentQName = maybeMsilType.getPresentableParentQName();
 						builder = builder.withTypeText(parentQName, true);

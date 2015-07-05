@@ -18,8 +18,6 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
 import java.util.Map;
 
-import javax.swing.Icon;
-
 import org.jboss.netty.util.internal.ConcurrentWeakKeyHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -55,9 +53,6 @@ import org.mustbe.consulo.msil.lang.psi.MsilModifierElementType;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilArrayTypRefImpl;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilNativeTypeRefImpl;
-import com.intellij.icons.AllIcons;
-import com.intellij.ide.IconDescriptor;
-import com.intellij.ide.IconDescriptorUpdaters;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.text.StringUtil;
@@ -172,19 +167,6 @@ public class MsilToCSharpUtil
 			}
 		}
 		return false;
-	}
-
-	@NotNull
-	public static Icon getIconForType(@NotNull DotNetTypeDeclaration typeDeclaration, int flags)
-	{
-		IconDescriptor iconDescriptor = new IconDescriptor(AllIcons.Nodes.Class);
-		IconDescriptorUpdaters.processExistingDescriptor(iconDescriptor, typeDeclaration, flags);
-
-		if(DotNetInheritUtil.isInheritor(typeDeclaration, DotNetTypes.System.MulticastDelegate, true))
-		{
-			iconDescriptor.setMainIcon(AllIcons.Nodes.Method);
-		}
-		return iconDescriptor.toIcon();
 	}
 
 	@NotNull
