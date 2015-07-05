@@ -450,7 +450,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 
 							if(matcher.prefixMatches(key))
 							{
-								Collection<DotNetTypeDeclaration> temp = TypeIndex.getInstance().get(key, project, resolveScope);
+								Collection<CSharpTypeDeclaration> temp = TypeIndex.getInstance().get(key, project, resolveScope);
 								typeDeclarations.addAll(temp);
 							}
 							return true;

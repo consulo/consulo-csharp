@@ -16,22 +16,23 @@
 
 package org.mustbe.consulo.csharp.ide.navigation;
 
-import java.util.Collection;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
+import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeIndex;
 import com.intellij.navigation.ChooseByNameContributorEx;
 import com.intellij.navigation.GotoClassContributor;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
+import com.intellij.util.ArrayUtil;
+import com.intellij.util.CommonProcessors;
 import com.intellij.util.Processor;
+import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.indexing.FindSymbolParameters;
 import com.intellij.util.indexing.IdFilter;
 
@@ -45,23 +46,23 @@ public class CSharpTypeNameContributor implements ChooseByNameContributorEx, Got
 	@Override
 	public String[] getNames(Project project, boolean includeNonProjectItems)
 	{
-		Collection<String> allKeys = TypeIndex.getInstance().getAllKeys(project);
-		return allKeys.toArray(new String[allKeys.size()]);
+		CommonProcessors.CollectProcessor<String> processor = new CommonProcessors.CollectProcessor<String>(ContainerUtil.<String>newTroveSet());
+		processNames(processor, GlobalSearchScope.allScope(project), IdFilter.getProjectIdFilter(project, includeNonProjectItems));
+		return processor.toArray(ArrayUtil.EMPTY_STRING_ARRAY);
 	}
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public NavigationItem[] getItemsByName(String name, final String pattern, Project project, boolean includeNonProjectItems)
 	{
-		Collection<DotNetTypeDeclaration> cSharpTypeDeclarations = TypeIndex.getInstance().get(name, project, GlobalSearchScope.allScope(project));
-		NavigationItem[] items = new NavigationItem[cSharpTypeDeclarations.size()];
-		int i = 0;
-		for(DotNetTypeDeclaration t : cSharpTypeDeclarations)
-		{
-			items[i ++] = (NavigationItem) MsilToCSharpUtil.wrap(t);
-		}
-		return items;
+		CommonProcessors.CollectProcessor<NavigationItem> processor = new CommonProcessors.CollectProcessor<NavigationItem>(ContainerUtil
+				.<NavigationItem>newTroveSet());
+		processElementsWithName(name, processor, new FindSymbolParameters(pattern, name, GlobalSearchScope.allScope(project),
+				IdFilter.getProjectIdFilter(project, includeNonProjectItems)));
+		return processor.toArray(NavigationItem.EMPTY_NAVIGATION_ITEM_ARRAY);
 	}
+
 
 	@Override
 	public void processNames(@NotNull Processor<String> stringProcessor, @NotNull GlobalSearchScope searchScope, @Nullable IdFilter idFilter)
@@ -70,26 +71,22 @@ public class CSharpTypeNameContributor implements ChooseByNameContributorEx, Got
 	}
 
 	@Override
-	public void processElementsWithName(@NotNull String name, @NotNull final Processor<NavigationItem> navigationItemProcessor,
+	public void processElementsWithName(@NotNull String name,
+			@NotNull final Processor<NavigationItem> navigationItemProcessor,
 			@NotNull FindSymbolParameters findSymbolParameters)
 	{
 		Project project = findSymbolParameters.getProject();
 		IdFilter idFilter = findSymbolParameters.getIdFilter();
-		Processor<DotNetTypeDeclaration> castVar = new Processor<DotNetTypeDeclaration>()
-		{
-			@Override
-			public boolean process(DotNetTypeDeclaration typeDeclaration)
-			{
-				return navigationItemProcessor.process((NavigationItem) MsilToCSharpUtil.wrap(typeDeclaration));
-			}
-		};
+		Processor temp = navigationItemProcessor;
 		GlobalSearchScope searchScope = findSymbolParameters.getSearchScope();
 
-		StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_INDEX, name, project, searchScope, idFilter, DotNetTypeDeclaration.class, castVar);
+		StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_INDEX, name, project, searchScope, idFilter, CSharpTypeDeclaration.class,
+				temp);
 	}
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public String getQualifiedName(NavigationItem navigationItem)
 	{
 		if(navigationItem instanceof DotNetQualifiedElement)

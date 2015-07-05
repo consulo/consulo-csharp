@@ -16,8 +16,9 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.stub.index;
 
+import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
@@ -26,8 +27,10 @@ import com.intellij.psi.stubs.StubIndexKey;
  * @author VISTALL
  * @since 15.12.13.
  */
-public class TypeIndex extends StringStubIndexExtension<DotNetTypeDeclaration>
+public class TypeIndex extends StringStubIndexExtension<CSharpTypeDeclaration>
 {
+	@NotNull
+	@LazyInstance
 	public static TypeIndex getInstance()
 	{
 		return StubIndexExtension.EP_NAME.findExtension(TypeIndex.class);
@@ -35,7 +38,7 @@ public class TypeIndex extends StringStubIndexExtension<DotNetTypeDeclaration>
 
 	@NotNull
 	@Override
-	public StubIndexKey<String, DotNetTypeDeclaration> getKey()
+	public StubIndexKey<String, CSharpTypeDeclaration> getKey()
 	{
 		return CSharpIndexKeys.TYPE_INDEX;
 	}
