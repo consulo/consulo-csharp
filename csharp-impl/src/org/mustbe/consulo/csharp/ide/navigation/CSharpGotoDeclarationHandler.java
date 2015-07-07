@@ -40,7 +40,7 @@ public class CSharpGotoDeclarationHandler implements GotoDeclarationHandlerEx
 	@Override
 	public PsiElement[] getGotoDeclarationTargets(PsiElement sourceElement, int offset, Editor editor)
 	{
-		ASTNode node = sourceElement.getNode();
+		ASTNode node = sourceElement == null ? null : sourceElement.getNode();
 		if(node != null && node.getElementType() == CSharpTokens.IDENTIFIER)
 		{
 			PsiElement parent = sourceElement.getParent();
