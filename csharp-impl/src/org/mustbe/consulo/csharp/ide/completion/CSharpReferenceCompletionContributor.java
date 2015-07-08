@@ -203,8 +203,8 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 					kind = CSharpReferenceExpression.ResolveToKind.TYPE_LIKE;
 				}
 				CSharpCallArgumentListOwner callArgumentListOwner = CSharpReferenceExpressionImplUtil.findCallArgumentListOwner(kind, expression);
-				ResolveResult[] psiElements = CSharpReferenceExpressionImplUtil.collectResults(new CSharpResolveOptions(kind, null,
-						expression, callArgumentListOwner, true, true));
+				ResolveResult[] psiElements = CSharpReferenceExpressionImplUtil.collectResults(new CSharpResolveOptions(kind, null, expression,
+						callArgumentListOwner, true, true));
 				List<LookupElement> lookupElements = CSharpLookupElementBuilder.buildToLookupElements(psiElements);
 
 				prioritizeLookupItems(expression, kind, lookupElements);
@@ -451,9 +451,10 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 
 							if(matcher.prefixMatches(key))
 							{
-								shortNameSearcher.collectTypes(key, resolveScope, projectIdFilter, new CommonProcessors
-										.CollectProcessor<DotNetTypeDeclaration>(typeDeclarations));
-							} return true;
+								shortNameSearcher.collectTypes(key, resolveScope, projectIdFilter,
+										new CommonProcessors.CollectProcessor<DotNetTypeDeclaration>(typeDeclarations));
+							}
+							return true;
 						}
 					}, resolveScope, projectIdFilter);
 
@@ -506,7 +507,8 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 
 						final String parentQName = maybeMsilType.getPresentableParentQName();
 						builder = builder.withTypeText(parentQName, true);
-						final InsertHandler<LookupElement> ltGtInsertHandler = genericCount == 0 ? null : LtGtInsertHandler.getInstance(genericCount > 0);
+						final InsertHandler<LookupElement> ltGtInsertHandler = genericCount == 0 ? null : LtGtInsertHandler.getInstance(genericCount
+								> 0);
 						if(insideUsingList)
 						{
 							builder = builder.withInsertHandler(ltGtInsertHandler);
