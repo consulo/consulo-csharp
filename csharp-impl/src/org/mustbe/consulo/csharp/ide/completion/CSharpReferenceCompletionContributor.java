@@ -56,8 +56,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaR
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeIndex;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
@@ -73,6 +71,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import org.mustbe.consulo.dotnet.resolve.DotNetShortNameSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.dotnet.msil.decompiler.util.MsilHelper;
@@ -99,9 +98,9 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
-import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.CommonProcessors;
 import com.intellij.util.Function;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.Processor;
@@ -440,7 +439,10 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 
 					val typeDeclarations = new LinkedList<DotNetTypeDeclaration>();
 
-					StubIndex.getInstance().processAllKeys(CSharpIndexKeys.TYPE_INDEX, new Processor<String>()
+					final DotNetShortNameSearcher shortNameSearcher = DotNetShortNameSearcher.getInstance(project);
+					final IdFilter projectIdFilter = IdFilter.getProjectIdFilter(project, false);
+
+					shortNameSearcher.collectTypeNames(new Processor<String>()
 					{
 						@Override
 						public boolean process(String key)
@@ -449,12 +451,11 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 
 							if(matcher.prefixMatches(key))
 							{
-								Collection<CSharpTypeDeclaration> temp = TypeIndex.getInstance().get(key, project, resolveScope);
-								typeDeclarations.addAll(temp);
-							}
-							return true;
+								shortNameSearcher.collectTypes(key, resolveScope, projectIdFilter, new CommonProcessors
+										.CollectProcessor<DotNetTypeDeclaration>(typeDeclarations));
+							} return true;
 						}
-					}, resolveScope, IdFilter.getProjectIdFilter(project, false));
+					}, resolveScope, projectIdFilter);
 
 					if(typeDeclarations.isEmpty())
 					{
