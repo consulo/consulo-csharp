@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeDeclStub;
@@ -58,6 +59,7 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 		return new CSharpTypeDeclarationImpl(stub);
 	}
 
+	@RequiredReadAction
 	@Override
 	public CSharpTypeDeclStub createStub(@NotNull CSharpTypeDeclaration typeDeclaration, StubElement stubElement)
 	{
