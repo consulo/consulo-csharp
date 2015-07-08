@@ -46,8 +46,6 @@ public class CSharpMsilStubIndexer extends MsilStubIndexer
 			return;
 		}
 
-		indexSink.occurrence(CSharpIndexKeys.TYPE_INDEX, name);
-
 		if(stub.isNested())
 		{
 			return;
@@ -71,6 +69,6 @@ public class CSharpMsilStubIndexer extends MsilStubIndexer
 	@Override
 	public int getVersion()
 	{
-		return 2;
+		return 3;
 	}
 }

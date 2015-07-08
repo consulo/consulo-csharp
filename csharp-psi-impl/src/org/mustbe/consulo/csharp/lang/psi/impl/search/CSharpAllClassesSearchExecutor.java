@@ -120,10 +120,10 @@ public class CSharpAllClassesSearchExecutor implements QueryExecutor<DotNetTypeD
 		for(final String name : sorted)
 		{
 			ProgressIndicatorProvider.checkCanceled();
-			final Collection<DotNetTypeDeclaration> classes = ApplicationManager.getApplication().runReadAction(new Computable<Collection<DotNetTypeDeclaration>>()
+			final Collection<CSharpTypeDeclaration> classes = ApplicationManager.getApplication().runReadAction(new Computable<Collection<CSharpTypeDeclaration>>()
 			{
 				@Override
-				public Collection<DotNetTypeDeclaration> compute()
+				public Collection<CSharpTypeDeclaration> compute()
 				{
 					return TypeIndex.getInstance().get(name, parameters.getProject(), scope);
 				}
