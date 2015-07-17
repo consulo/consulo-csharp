@@ -29,6 +29,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.AttributeListIndex;
 import org.mustbe.consulo.dotnet.module.DotNetAssemblyUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.openapi.module.Module;
@@ -94,7 +95,9 @@ public class CSharpVisibilityUtil
 				{
 					for(DotNetTypeDeclaration targetType : targetTypes)
 					{
-						if(placeType.isInheritor(targetType.getVmQName(), true))
+						String vmQName = targetType.getVmQName();
+						assert vmQName != null;
+						if(DotNetInheritUtil.isParentOrSelf(vmQName, placeType, true))
 						{
 							return true;
 						}
