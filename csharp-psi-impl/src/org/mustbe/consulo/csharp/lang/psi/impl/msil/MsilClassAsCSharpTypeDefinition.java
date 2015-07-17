@@ -24,6 +24,7 @@ import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
@@ -353,8 +354,9 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		return typeRefs;
 	}
 
+	@RequiredReadAction
 	@Override
-	public boolean isInheritor(@NotNull DotNetTypeDeclaration other, boolean deep)
+	public boolean isInheritor(@NotNull String other, boolean deep)
 	{
 		return DotNetInheritUtil.isInheritor(this, other, deep);
 	}

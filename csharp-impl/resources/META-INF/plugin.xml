@@ -76,7 +76,7 @@
 
 	<extensions defaultExtensionNs="org.mustbe.consulo.dotnet.core">
 		<allClassesSearch implementation="org.mustbe.consulo.csharp.lang.psi.impl.search.CSharpAllClassesSearchExecutor"/>
-		<directClassInheritorsSearch implementation="org.mustbe.consulo.csharp.lang.psi.impl.search.CSharpDirectInheritorsSearcherExecutor"/>
+		<directTypeInheritorsSearch implementation="org.mustbe.consulo.csharp.lang.psi.impl.search.CSharpDirectTypeInheritorsSearcherExecutor"/>
 		<psiSearcher implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher"/>
 		<shortNameSearcher implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpShortNameSearcher"/>
 		<debugger.provider implementation="org.mustbe.consulo.csharp.ide.debugger.CSharpDebuggerProvider"/>

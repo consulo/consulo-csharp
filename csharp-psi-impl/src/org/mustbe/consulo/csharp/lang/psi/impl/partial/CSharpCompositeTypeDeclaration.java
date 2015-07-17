@@ -29,6 +29,7 @@ import java.util.Set;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
@@ -248,8 +249,9 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return ContainerUtil.toArray(extendTypeRefs, DotNetTypeRef.ARRAY_FACTORY);
 	}
 
+	@RequiredReadAction
 	@Override
-	public boolean isInheritor(@NotNull DotNetTypeDeclaration typeDeclaration, boolean b)
+	public boolean isInheritor(@NotNull String typeDeclaration, boolean b)
 	{
 		for(CSharpTypeDeclaration declaration : myTypeDeclarations)
 		{

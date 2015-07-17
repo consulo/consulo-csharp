@@ -22,26 +22,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.ExtendsListIndex;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
-import org.mustbe.consulo.dotnet.psi.search.searches.DirectClassInheritorsSearch;
+import org.mustbe.consulo.dotnet.psi.search.searches.DirectTypeInheritorsSearch;
+import org.mustbe.dotnet.msil.decompiler.util.MsilHelper;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
-import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.ArchiveFileSystem;
-import com.intellij.openapi.vfs.VfsUtilCore;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.EverythingGlobalScope;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.util.Processor;
 import com.intellij.util.QueryExecutor;
-import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.HashMap;
 
 /**
@@ -49,30 +43,12 @@ import com.intellij.util.containers.HashMap;
  *         <p/>
  *         Copied from Java plugin by Jetbrains (com.intellij.psi.search.searches.ClassInheritorsSearch)
  */
-public class CSharpDirectInheritorsSearcherExecutor implements QueryExecutor<DotNetTypeDeclaration, DirectClassInheritorsSearch.SearchParameters>
+public class CSharpDirectTypeInheritorsSearcherExecutor implements QueryExecutor<DotNetTypeDeclaration, DirectTypeInheritorsSearch.SearchParameters>
 {
 	@Override
-	public boolean execute(@NotNull final DirectClassInheritorsSearch.SearchParameters p, @NotNull final Processor<DotNetTypeDeclaration> consumer)
+	public boolean execute(@NotNull final DirectTypeInheritorsSearch.SearchParameters p, @NotNull final Processor<DotNetTypeDeclaration> consumer)
 	{
-		final DotNetTypeDeclaration aClass = p.getClassToProcess();
-
-		final SearchScope useScope = ApplicationManager.getApplication().runReadAction(new Computable<SearchScope>()
-		{
-			@Override
-			public SearchScope compute()
-			{
-				return aClass.getUseScope();
-			}
-		});
-
-		final String qualifiedName = ApplicationManager.getApplication().runReadAction(new Computable<String>()
-		{
-			@Override
-			public String compute()
-			{
-				return aClass.getPresentableQName();
-			}
-		});
+		String vmQName = p.getVmQName();
 
 		/*if(DotNetTypes.System_Object.equals(qualifiedName))
 		{
@@ -104,15 +80,11 @@ public class CSharpDirectInheritorsSearcherExecutor implements QueryExecutor<Dot
 			});
 		}  */
 
-		final GlobalSearchScope scope = useScope instanceof GlobalSearchScope ? (GlobalSearchScope) useScope : new EverythingGlobalScope(aClass.getProject());
-		final String searchKey = ApplicationManager.getApplication().runReadAction(new Computable<String>()
-		{
-			@Override
-			public String compute()
-			{
-				return aClass.getName();
-			}
-		});
+		SearchScope useScope = p.getScope();
+		final GlobalSearchScope scope = useScope instanceof GlobalSearchScope ? (GlobalSearchScope) useScope : new EverythingGlobalScope(p
+				.getProject());
+		final String searchKey = MsilHelper.cutGenericMarker(StringUtil.getShortName(vmQName));
+
 		if(StringUtil.isEmpty(searchKey))
 		{
 			return true;
@@ -123,7 +95,7 @@ public class CSharpDirectInheritorsSearcherExecutor implements QueryExecutor<Dot
 			@Override
 			public Collection<DotNetTypeList> compute()
 			{
-				return ExtendsListIndex.getInstance().get(searchKey, aClass.getProject(), scope);
+				return ExtendsListIndex.getInstance().get(searchKey, p.getProject(), scope);
 			}
 		});
 
@@ -133,7 +105,7 @@ public class CSharpDirectInheritorsSearcherExecutor implements QueryExecutor<Dot
 		{
 			ProgressIndicatorProvider.checkCanceled();
 			final DotNetTypeDeclaration candidate = (DotNetTypeDeclaration) referenceList.getParent();
-			if(!checkInheritance(p, aClass, candidate))
+			if(!checkInheritance(p, vmQName, candidate))
 			{
 				continue;
 			}
@@ -157,16 +129,20 @@ public class CSharpDirectInheritorsSearcherExecutor implements QueryExecutor<Dot
 
 		for(List<DotNetTypeDeclaration> sameNamedClasses : classes.values())
 		{
-			if(!processSameNamedClasses(consumer, aClass, sameNamedClasses))
+			for(DotNetTypeDeclaration sameNamedClass : sameNamedClasses)
 			{
-				return false;
+				if(!consumer.process(sameNamedClass))
+				{
+					return false;
+				}
 			}
 		}
 
 		return true;
 	}
 
-	private static boolean checkInheritance(final DirectClassInheritorsSearch.SearchParameters p, final DotNetTypeDeclaration aClass,
+	private static boolean checkInheritance(final DirectTypeInheritorsSearch.SearchParameters p,
+			final String vmQName,
 			final DotNetTypeDeclaration candidate)
 	{
 		return ApplicationManager.getApplication().runReadAction(new Computable<Boolean>()
@@ -174,45 +150,8 @@ public class CSharpDirectInheritorsSearcherExecutor implements QueryExecutor<Dot
 			@Override
 			public Boolean compute()
 			{
-				return !p.isCheckInheritance() || candidate.isInheritor(aClass, false);
+				return !p.isCheckInheritance() || candidate.isInheritor(vmQName, false);
 			}
 		});
-	}
-
-	private static boolean processSameNamedClasses(Processor<DotNetTypeDeclaration> consumer, DotNetTypeDeclaration aClass,
-			List<DotNetTypeDeclaration> sameNamedClasses)
-	{
-		// if there is a class from the same jar, prefer it
-		boolean sameJarClassFound = false;
-
-		VirtualFile jarFile = getArchiveFile(aClass);
-		if(jarFile != null)
-		{
-			for(DotNetTypeDeclaration sameNamedClass : sameNamedClasses)
-			{
-				boolean fromSameJar = Comparing.equal(getArchiveFile(sameNamedClass), jarFile);
-				if(fromSameJar)
-				{
-					sameJarClassFound = true;
-					if(!consumer.process(sameNamedClass))
-					{
-						return false;
-					}
-				}
-			}
-		}
-
-		return sameJarClassFound || ContainerUtil.process(sameNamedClasses, consumer);
-	}
-
-	@Nullable
-	public static VirtualFile getArchiveFile(@NotNull PsiElement candidate)
-	{
-		VirtualFile file = candidate.getContainingFile().getVirtualFile();
-		if(file != null && file.getFileSystem() instanceof ArchiveFileSystem)
-		{
-			return VfsUtilCore.getVirtualFileForJar(file);
-		}
-		return file;
 	}
 }

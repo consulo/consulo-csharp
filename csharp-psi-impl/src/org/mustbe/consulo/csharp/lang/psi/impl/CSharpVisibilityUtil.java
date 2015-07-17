@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
@@ -43,11 +44,13 @@ import com.intellij.util.SmartList;
  */
 public class CSharpVisibilityUtil
 {
+	@RequiredReadAction
 	public static boolean isVisible(@NotNull DotNetModifierListOwner target, @NotNull PsiElement place)
 	{
 		return isVisible(target, place, CSharpAccessModifier.findModifier(target));
 	}
 
+	@RequiredReadAction
 	private static boolean isVisible(DotNetModifierListOwner target, PsiElement place, CSharpAccessModifier accessModifier)
 	{
 		switch(accessModifier)
@@ -91,7 +94,7 @@ public class CSharpVisibilityUtil
 				{
 					for(DotNetTypeDeclaration targetType : targetTypes)
 					{
-						if(placeType.isInheritor(targetType, true))
+						if(placeType.isInheritor(targetType.getVmQName(), true))
 						{
 							return true;
 						}

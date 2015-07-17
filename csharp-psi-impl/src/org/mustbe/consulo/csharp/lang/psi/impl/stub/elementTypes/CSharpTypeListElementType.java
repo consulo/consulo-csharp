@@ -17,19 +17,25 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUserType;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubTypeListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeListStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.IndexSink;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
+import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.io.StringRef;
 
 /**
@@ -56,23 +62,27 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 		return new CSharpStubTypeListImpl(cSharpTypeListStub, this);
 	}
 
+	@RequiredReadAction
 	@Override
 	public CSharpTypeListStub createStub(@NotNull DotNetTypeList dotNetTypeList, StubElement stubElement)
 	{
-		String[] typeTexts = dotNetTypeList.getTypeTexts();
-		StringRef[] refs = new StringRef[typeTexts.length];
-		for(int i = 0; i < typeTexts.length; i++)
+		DotNetType[] types = dotNetTypeList.getTypes();
+		List<StringRef> typeRefs = new ArrayList<StringRef>(types.length);
+		for(DotNetType type : types)
 		{
-			String typeText = typeTexts[i];
-			refs[i] = StringRef.fromString(typeText);
+			if(type instanceof CSharpUserType)
+			{
+				typeRefs.add(StringRef.fromString(((CSharpUserType) type).getReferenceExpression().getReferenceName()));
+			}
 		}
-		return new CSharpTypeListStub(stubElement, this, refs);
+
+		return new CSharpTypeListStub(stubElement, this, ContainerUtil.toArray(typeRefs, StringRef.EMPTY_ARRAY));
 	}
 
 	@Override
 	public void serialize(@NotNull CSharpTypeListStub cSharpTypeListStub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
-		String[] references = cSharpTypeListStub.getReferences();
+		String[] references = cSharpTypeListStub.geShortReferences();
 		stubOutputStream.writeByte(references.length);
 		for(String reference : references)
 		{
@@ -98,61 +108,10 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 	{
 		if(cSharpTypeListStub.getStubType() == CSharpStubElements.EXTENDS_LIST)
 		{
-			for(String s : cSharpTypeListStub.getReferences())
+			for(String s : cSharpTypeListStub.geShortReferences())
 			{
-				String shortClassName = getShortClassName(s);
-
-				indexSink.occurrence(CSharpIndexKeys.EXTENDS_LIST_INDEX, shortClassName);
+				indexSink.occurrence(CSharpIndexKeys.EXTENDS_LIST_INDEX, s);
 			}
 		}
-	}
-
-	@NotNull
-	public static String getShortClassName(@NotNull String referenceText)
-	{
-		int lessPos = referenceText.length(), bracesBalance = 0, i;
-
-		loop:
-		for(i = referenceText.length() - 1; i >= 0; i--)
-		{
-			char ch = referenceText.charAt(i);
-			switch(ch)
-			{
-				case ')':
-				case '>':
-					bracesBalance++;
-					break;
-
-				case '(':
-				case '<':
-					bracesBalance--;
-					lessPos = i;
-					break;
-
-				case '@':
-				case '.':
-					if(bracesBalance <= 0)
-					{
-						break loop;
-					}
-					break;
-
-				default:
-					if(Character.isWhitespace(ch) && bracesBalance <= 0)
-					{
-						for(int j = i + 1; j < lessPos; j++)
-						{
-							if(!Character.isWhitespace(referenceText.charAt(j)))
-							{
-								break loop;
-							}
-						}
-						lessPos = i;
-					}
-			}
-		}
-
-		String sub = referenceText.substring(i + 1, lessPos).trim();
-		return sub.length() == referenceText.length() ? sub : new String(sub);
 	}
 }

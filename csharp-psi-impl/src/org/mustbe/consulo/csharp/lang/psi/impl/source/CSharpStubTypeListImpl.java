@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeListStub;
@@ -43,26 +44,14 @@ public class CSharpStubTypeListImpl extends CSharpStubElementImpl<CSharpTypeList
 		super(stub, nodeType);
 	}
 
-	@Override
-	@NotNull
-	public String[] getTypeTexts()
-	{
-		DotNetType[] types = getTypes();
-		String[] array = new String[types.length];
-		for(int i = 0; i < types.length; i++)
-		{
-			DotNetType type = types[i];
-			array[i] = type.getText();
-		}
-		return array;
-	}
-
+	@RequiredReadAction
 	@Override
 	public int getTypesCount()
 	{
 		return DotNetPsiCountUtil.countChildrenOfType(this, CSharpStubElements.TYPE_SET);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetType[] getTypes()
@@ -70,6 +59,7 @@ public class CSharpStubTypeListImpl extends CSharpStubElementImpl<CSharpTypeList
 		return getStubOrPsiChildren(CSharpStubElements.TYPE_SET, DotNetType.ARRAY_FACTORY);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef[] getTypeRefs()

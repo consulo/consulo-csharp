@@ -459,7 +459,7 @@ public class CSharpTypeUtil
 
 		if(topElement instanceof DotNetTypeDeclaration && targetElement instanceof DotNetTypeDeclaration)
 		{
-			if(((DotNetTypeDeclaration) targetElement).isInheritor((DotNetTypeDeclaration) topElement, true))
+			if(((DotNetTypeDeclaration) targetElement).isInheritor(((DotNetTypeDeclaration) topElement).getVmQName(), true))
 			{
 				return SIMPLE_SUCCESS;
 			}

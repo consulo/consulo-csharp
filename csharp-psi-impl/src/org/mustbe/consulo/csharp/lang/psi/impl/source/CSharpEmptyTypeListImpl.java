@@ -17,13 +17,13 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
-import com.intellij.util.ArrayUtil;
 
 /**
  * @author VISTALL
@@ -42,6 +42,7 @@ public class CSharpEmptyTypeListImpl extends CSharpElementImpl implements DotNet
 		visitor.visitTypeList(this);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetType[] getTypes()
@@ -49,6 +50,7 @@ public class CSharpEmptyTypeListImpl extends CSharpElementImpl implements DotNet
 		return DotNetType.EMPTY_ARRAY;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef[] getTypeRefs()
@@ -56,13 +58,7 @@ public class CSharpEmptyTypeListImpl extends CSharpElementImpl implements DotNet
 		return DotNetTypeRef.EMPTY_ARRAY;
 	}
 
-	@NotNull
-	@Override
-	public String[] getTypeTexts()
-	{
-		return ArrayUtil.EMPTY_STRING_ARRAY;
-	}
-
+	@RequiredReadAction
 	@Override
 	public int getTypesCount()
 	{

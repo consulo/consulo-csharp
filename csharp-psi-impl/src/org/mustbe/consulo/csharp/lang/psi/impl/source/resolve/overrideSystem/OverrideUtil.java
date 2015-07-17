@@ -32,7 +32,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
-import org.mustbe.consulo.dotnet.psi.search.searches.ClassInheritorsSearch;
+import org.mustbe.consulo.dotnet.psi.search.searches.TypeInheritorsSearch;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
@@ -284,7 +284,7 @@ public class OverrideUtil
 		final GlobalSearchScope resolveScope = target.getResolveScope();
 
 		final List<DotNetVirtualImplementOwner> list = new ArrayList<DotNetVirtualImplementOwner>();
-		Query<DotNetTypeDeclaration> search = ClassInheritorsSearch.search((DotNetTypeDeclaration) parent, true, CSharpTransform.INSTANCE);
+		Query<DotNetTypeDeclaration> search = TypeInheritorsSearch.search((DotNetTypeDeclaration) parent, true, CSharpTransform.INSTANCE);
 		search.forEach(new Processor<DotNetTypeDeclaration>()
 		{
 			@Override

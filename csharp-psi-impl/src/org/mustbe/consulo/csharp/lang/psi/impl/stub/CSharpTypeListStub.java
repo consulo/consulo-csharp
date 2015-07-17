@@ -38,7 +38,7 @@ public class CSharpTypeListStub extends StubBase<DotNetTypeList>
 	}
 
 	@NotNull
-	public String[] getReferences()
+	public String[] geShortReferences()
 	{
 		String[] ar = new String[myReferences.length];
 		for(int i = 0; i < myReferences.length; i++)
