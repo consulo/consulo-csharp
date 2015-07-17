@@ -36,7 +36,7 @@ import org.mustbe.consulo.dotnet.module.extension.DotNetModuleLangExtension;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.search.searches.AllClassesSearch;
+import org.mustbe.consulo.dotnet.psi.search.searches.AllTypesSearch;
 import com.intellij.openapi.module.impl.scopes.ModuleWithDependenciesScope;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ModuleRootLayer;
@@ -76,7 +76,7 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	@RequiredReadAction
 	public PsiElement[] getEntryPointElements()
 	{
-		Query<DotNetTypeDeclaration> search = AllClassesSearch.search(getModule().getModuleWithDependenciesScope(), getProject());
+		Query<DotNetTypeDeclaration> search = AllTypesSearch.search(getModule().getModuleWithDependenciesScope(), getProject());
 
 		final List<DotNetTypeDeclaration> typeDeclarations = new ArrayList<DotNetTypeDeclaration>();
 		search.forEach(new Processor<DotNetTypeDeclaration>()

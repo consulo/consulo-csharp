@@ -28,7 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeIndex;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.search.searches.AllClassesSearch;
+import org.mustbe.consulo.dotnet.psi.search.searches.AllTypesSearch;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
@@ -45,10 +45,10 @@ import com.intellij.util.QueryExecutor;
  *         <p/>
  *         Copied from Java plugin by Jetbrains (com.intellij.psi.search.searches.ClassInheritorsSearch)
  */
-public class CSharpAllClassesSearchExecutor implements QueryExecutor<DotNetTypeDeclaration, AllClassesSearch.SearchParameters>
+public class CSharpAllTypesSearchExecutor implements QueryExecutor<DotNetTypeDeclaration, AllTypesSearch.SearchParameters>
 {
 	@Override
-	public boolean execute(@NotNull final AllClassesSearch.SearchParameters queryParameters, @NotNull final Processor<DotNetTypeDeclaration>
+	public boolean execute(@NotNull final AllTypesSearch.SearchParameters queryParameters, @NotNull final Processor<DotNetTypeDeclaration>
 			consumer)
 	{
 		SearchScope scope = queryParameters.getScope();
@@ -70,7 +70,7 @@ public class CSharpAllClassesSearchExecutor implements QueryExecutor<DotNetTypeD
 	}
 
 	private static boolean processAllClassesInGlobalScope(final GlobalSearchScope scope, final Processor<DotNetTypeDeclaration> processor,
-			final AllClassesSearch.SearchParameters parameters)
+			final AllTypesSearch.SearchParameters parameters)
 	{
 		final Collection<String> names = ApplicationManager.getApplication().runReadAction(new Computable<Collection<String>>()
 		{
