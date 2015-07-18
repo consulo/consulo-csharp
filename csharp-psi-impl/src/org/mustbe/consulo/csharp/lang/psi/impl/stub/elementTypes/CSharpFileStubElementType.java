@@ -268,7 +268,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 	@Override
 	public int getStubVersion()
 	{
-		return 65;
+		return 66;
 	}
 
 	@NotNull

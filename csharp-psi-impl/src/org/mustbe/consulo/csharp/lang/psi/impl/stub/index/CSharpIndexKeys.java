@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub.index;
 
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
 import org.mustbe.consulo.dotnet.psi.DotNetEventDeclaration;
@@ -42,6 +43,8 @@ public interface CSharpIndexKeys
 	StubIndexKey<String, DotNetLikeMethodDeclaration> METHOD_INDEX = StubIndexKey.createIndexKey("csharp.method.index");
 	StubIndexKey<String, DotNetLikeMethodDeclaration> EXTENSION_METHOD_BY_NAME_INDEX =
 			StubIndexKey.createIndexKey("csharp.extension.method.by.name.index");
+	StubIndexKey<String, CSharpMethodDeclaration> DELEGATE_METHOD_BY_NAME_INDEX =
+			StubIndexKey.createIndexKey("csharp.delegate.method.by.name.index");
 
 	StubIndexKey<String, DotNetTypeDeclaration> TYPE_WITH_EXTENSION_METHODS_INDEX =
 			StubIndexKey.createIndexKey("csharp.type.with.extensions.index");

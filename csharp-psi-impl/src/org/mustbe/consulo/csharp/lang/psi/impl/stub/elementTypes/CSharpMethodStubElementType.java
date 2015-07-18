@@ -112,6 +112,11 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 			{
 				indexSink.occurrence(CSharpIndexKeys.EXTENSION_METHOD_BY_NAME_INDEX, name);
 			}
+
+			if(BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodDeclStub.DELEGATE_MASK))
+			{
+				indexSink.occurrence(CSharpIndexKeys.DELEGATE_METHOD_BY_NAME_INDEX, name);
+			}
 		}
 	}
 }
