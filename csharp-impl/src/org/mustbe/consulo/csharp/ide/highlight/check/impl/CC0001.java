@@ -219,6 +219,14 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 
 		MethodCalcResult calcResult = ((MethodResolveResult) resolveResult).getCalcResult();
 		List<NCallArgument> arguments = calcResult.getArguments();
+		for(NCallArgument argument : arguments)
+		{
+			DotNetTypeRef typeRef = argument.getTypeRef();
+			if(typeRef == DotNetTypeRef.ERROR_TYPE)
+			{
+				return null;
+			}
+		}
 
 		CSharpCallArgumentListOwner callOwner = findCallOwner(element);
 		if(callOwner != null)
@@ -374,7 +382,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 	{
 		if(typeRef == DotNetTypeRef.ERROR_TYPE)
 		{
-			builder.append("error");
+			builder.append("?");
 		}
 		else
 		{
