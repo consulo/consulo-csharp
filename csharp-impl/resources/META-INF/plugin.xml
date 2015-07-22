@@ -86,6 +86,7 @@
 		<injectionByAttributeHelper implementation="org.mustbe.consulo.csharp.lang.CSharpMultiHostInjectorByAttributeHelper"/>
 
 		<documentationResolver implementation="org.mustbe.consulo.csharp.lang.doc.CSharpCommentDocumentationResolver"/>
+		<debugger.sourceLineResolver language="C#" implementationClass="org.mustbe.consulo.csharp.ide.debugger.CSharpDebuggerSourceLineResolver" />
 	</extensions>
 
 	<extensions defaultExtensionNs="com.intellij">

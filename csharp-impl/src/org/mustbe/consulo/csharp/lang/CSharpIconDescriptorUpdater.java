@@ -21,6 +21,7 @@ import javax.swing.Icon;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
 import org.mustbe.consulo.csharp.lang.psi.*;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAnonymousMethodExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import org.mustbe.consulo.dotnet.DotNetRunUtil;
@@ -54,6 +55,11 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 		if(element instanceof DotNetNamespaceAsElement)
 		{
 			iconDescriptor.setMainIcon(AllIcons.Nodes.Package);
+			return;
+		}
+		else if(element instanceof CSharpAnonymousMethodExpression)
+		{
+			iconDescriptor.setMainIcon(AllIcons.Nodes.Lambda);
 			return;
 		}
 		else if(element instanceof CSharpMacroDefine)
