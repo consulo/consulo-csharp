@@ -76,6 +76,7 @@ public class CSharpAttributeStubBuilder
 				}
 				catch(Exception e)
 				{
+					LOGGER.warn(e);
 					innerValue = null;
 					break;
 				}
