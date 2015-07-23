@@ -29,6 +29,7 @@ import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedConstru
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedMethodFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.ide.parameterInfo.CSharpParametersInfo;
+import org.mustbe.consulo.csharp.lang.doc.CSharpDocUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -80,7 +81,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 	public List<HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpReferenceExpression expression)
 	{
 		PsiElement referenceElement = expression.getReferenceElement();
-		if(referenceElement == null || expression.isSoft())
+		if(referenceElement == null || expression.isSoft() || CSharpDocUtil.isInsideDoc(expression))
 		{
 			return Collections.emptyList();
 		}

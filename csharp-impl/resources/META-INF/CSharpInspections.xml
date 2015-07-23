@@ -31,5 +31,7 @@
 
 		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.lang.doc.inspection.CSharpDocInspection"
 						 displayName="C# Documentation problems" groupName="C# Documentation" enabledByDefault="true"/>
+		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.lang.doc.inspection.CSharpDocReferenceInspection"
+						 displayName="C# Documentation reference problems" groupName="C# Documentation" enabledByDefault="true" level="WARNING"/>
 	</extensions>
 </idea-plugin>
