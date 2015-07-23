@@ -20,6 +20,7 @@ import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
@@ -51,6 +52,7 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 		visitor.visitLambdaParameter(this);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)

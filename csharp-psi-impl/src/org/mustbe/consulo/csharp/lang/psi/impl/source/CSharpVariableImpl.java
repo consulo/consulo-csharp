@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -39,6 +40,7 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 		super(node);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetExpression getInitializer()
@@ -46,6 +48,7 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 		return findChildByClass(DotNetExpression.class);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
@@ -82,6 +85,7 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 		}
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getConstantKeywordElement()
@@ -89,6 +93,7 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 		return null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean isConstant()
 	{

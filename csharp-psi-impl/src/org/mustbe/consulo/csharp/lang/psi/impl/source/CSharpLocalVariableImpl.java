@@ -21,6 +21,7 @@ import java.util.List;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
@@ -73,6 +74,7 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 		return type;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
@@ -142,12 +144,14 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 		return this;
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean isConstant()
 	{
 		return getConstantKeywordElement() != null;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getConstantKeywordElement()
