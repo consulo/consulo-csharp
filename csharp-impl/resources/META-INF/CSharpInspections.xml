@@ -21,7 +21,7 @@
 		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryCast.UnnecessaryCastInspection"
 						 displayName="Unnecessary Cast" groupName="C#" enabledByDefault="true"/>
 		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryType.UnnecessaryTypeInspection"
-						 displayName="Unnecessary Type" groupName="C#" enabledByDefault="true"/>
+						 displayName="Unnecessary Type" groupName="C#" enabledByDefault="false"/>
 		<localInspection
 				language="C#"
 				implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryNamedArgument.UnnecessaryNamedArgumentInspection"
