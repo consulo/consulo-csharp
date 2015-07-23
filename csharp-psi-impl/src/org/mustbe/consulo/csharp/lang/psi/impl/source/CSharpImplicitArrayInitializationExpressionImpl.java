@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpFastImplicitTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -55,6 +56,7 @@ public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpEleme
 			return "{...}";
 		}
 
+		@RequiredReadAction
 		@Nullable
 		@Override
 		public DotNetTypeRef doMirror(@NotNull DotNetTypeRef another, PsiElement scope)

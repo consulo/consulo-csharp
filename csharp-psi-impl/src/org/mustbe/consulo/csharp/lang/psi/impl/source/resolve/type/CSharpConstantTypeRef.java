@@ -16,11 +16,15 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
+import java.math.BigInteger;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joou.UByte;
 import org.joou.UInteger;
+import org.joou.ULong;
 import org.joou.UShort;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
@@ -48,6 +52,7 @@ public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSh
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public DotNetTypeRef doMirror(@NotNull DotNetTypeRef another, PsiElement scope)
 	{
 		DotNetTypeRef anotherTypeRef = testNumberConstant(myElement, "", another, scope);
@@ -65,13 +70,19 @@ public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSh
 	}
 
 	@Nullable
+	@RequiredReadAction
 	public static DotNetTypeRef testNumberConstant(@NotNull CSharpConstantExpressionImpl expression,
 			@NotNull String prefix,
 			@NotNull DotNetTypeRef another,
 			@NotNull PsiElement scope)
 	{
 		IElementType literalType = expression.getLiteralType();
-		if(literalType == CSharpTokenSets.INTEGER_LITERAL || literalType == CSharpTokenSets.UINTEGER_LITERAL)
+		if(literalType == CSharpTokenSets.INTEGER_LITERAL ||
+				literalType == CSharpTokenSets.UINTEGER_LITERAL ||
+				literalType == CSharpTokenSets.ULONG_LITERAL ||
+				literalType == CSharpTokenSets.FLOAT_LITERAL ||
+				literalType == CSharpTokenSets.DOUBLE_LITERAL ||
+				literalType == CSharpTokenSets.LONG_LITERAL)
 		{
 			PsiElement element = another.resolve(scope).getElement();
 			String qName = element instanceof CSharpTypeDeclaration ? ((CSharpTypeDeclaration) element).getVmQName() : null;
@@ -94,6 +105,10 @@ public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSh
 			if(anotherRef != null)
 			{
 				return anotherRef;
+			}
+			else
+			{
+				return null;
 			}
 		}
 
@@ -142,6 +157,11 @@ public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSh
 				return another;
 			}
 
+			if(testBigInteger(DotNetTypes.System.UInt64, qName, numberValue, ULong.MIN_VALUE, ULong.MAX_VALUE))
+			{
+				return another;
+			}
+
 			if(CSharpTypeUtil.isInheritable(ourEnumTypeRef, another, scope) && numberValue.longValue() == 0)
 			{
 				return another;
@@ -162,12 +182,20 @@ public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSh
 
 	private static boolean testInteger(@NotNull String leftTypeQName, String qName, @NotNull Number value, long min, long max)
 	{
+		return testBigInteger(leftTypeQName, qName, value, BigInteger.valueOf(min), BigInteger.valueOf(max));
+	}
+
+	private static boolean testBigInteger(@NotNull String leftTypeQName, String qName, @NotNull Number value, BigInteger min, BigInteger max)
+	{
 		if(!(leftTypeQName.equals(qName)))
 		{
 			return false;
 		}
-		long l = value.longValue();
-		return l <= max && l >= min;
+
+		BigInteger bigInteger = (BigInteger) value;
+		int toMax = bigInteger.compareTo(max);
+		int toMin = bigInteger.compareTo(min);
+		return toMax <= 0 && toMin >= 0;
 	}
 
 	private static boolean testDouble(@NotNull String leftTypeQName, String qName, @NotNull Number value, double min, double max)

@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpConstantTypeRef;
@@ -44,6 +45,7 @@ public class CSharpPrefixExpressionImpl extends CSharpExpressionWithOperatorImpl
 			myPrefixExpression = prefixExpression;
 		}
 
+		@RequiredReadAction
 		@Nullable
 		@Override
 		public DotNetTypeRef doMirror(@NotNull DotNetTypeRef another, PsiElement scope)

@@ -84,6 +84,7 @@ public enum CSharpCompilerChecks
 	CS0820(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // var cant be use it initializer is implicit array initializer
 	CS0826(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // fail inherit type of typed array initializer
 	CS1004(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // duplicate modifier check
+	CS1021(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // too big number
 	CS1100(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // 'this' modifier can be only set to first parameter
 	CS1105(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // 'this' modifier can be only in method with static modifier
 	CS1106(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // 'this' modifier can be only in type with static modifier and no generic

@@ -16,9 +16,10 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
+import java.math.BigInteger;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joou.Unsigned;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
@@ -146,20 +147,21 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 		else if(elementType == CSharpTokens.UINTEGER_LITERAL)
 		{
 			text = text.substring(0, text.length() - 1); //cut U
-			return Unsigned.uint(text);
+			return getBigInteger(text);
 		}
 		else if(elementType == CSharpTokens.ULONG_LITERAL)
 		{
 			text = text.substring(0, text.length() - 2); //cut UL
-			return Unsigned.ulong(text);
+			return getBigInteger(text);
 		}
 		else if(elementType == CSharpTokens.INTEGER_LITERAL)
 		{
-			return Long.decode(text);
+			return getBigInteger(text);
 		}
 		else if(elementType == CSharpTokens.LONG_LITERAL)
 		{
-			return Long.decode(text);
+			text = text.substring(0, text.length() - 1); //cut L
+			return getBigInteger(text);
 		}
 		else if(elementType == CSharpTokens.FLOAT_LITERAL)
 		{
@@ -178,6 +180,17 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 			return Boolean.parseBoolean(text);
 		}
 		throw new IllegalArgumentException(elementType.toString());
+	}
+
+	private static BigInteger getBigInteger(String text)
+	{
+		int radix = 10;
+		if(text.startsWith("0x") || text.startsWith("0X"))
+		{
+			radix = 16;
+			text = text.substring(2, text.length());
+		}
+		return new BigInteger(text, radix);
 	}
 
 	@Nullable

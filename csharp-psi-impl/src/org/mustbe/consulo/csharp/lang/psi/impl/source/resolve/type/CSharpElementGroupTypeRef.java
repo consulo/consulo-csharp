@@ -2,6 +2,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLikeMethodDeclarationImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
@@ -38,6 +39,7 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRef.Adapter implements 
 		return myElementGroup.getName();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetTypeRef doMirror(@NotNull DotNetTypeRef another, PsiElement scope)
