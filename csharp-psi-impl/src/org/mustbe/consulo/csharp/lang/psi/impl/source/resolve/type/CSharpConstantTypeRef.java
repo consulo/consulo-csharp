@@ -69,6 +69,17 @@ public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSh
 		return false;
 	}
 
+	public static boolean isNumberLiteral(CSharpConstantExpressionImpl expression)
+	{
+		IElementType literalType = expression.getLiteralType();
+		return literalType == CSharpTokenSets.INTEGER_LITERAL ||
+				literalType == CSharpTokenSets.UINTEGER_LITERAL ||
+				literalType == CSharpTokenSets.ULONG_LITERAL ||
+				literalType == CSharpTokenSets.FLOAT_LITERAL ||
+				literalType == CSharpTokenSets.DOUBLE_LITERAL ||
+				literalType == CSharpTokenSets.LONG_LITERAL;
+	}
+
 	@Nullable
 	@RequiredReadAction
 	public static DotNetTypeRef testNumberConstant(@NotNull CSharpConstantExpressionImpl expression,
@@ -76,13 +87,7 @@ public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSh
 			@NotNull DotNetTypeRef another,
 			@NotNull PsiElement scope)
 	{
-		IElementType literalType = expression.getLiteralType();
-		if(literalType == CSharpTokenSets.INTEGER_LITERAL ||
-				literalType == CSharpTokenSets.UINTEGER_LITERAL ||
-				literalType == CSharpTokenSets.ULONG_LITERAL ||
-				literalType == CSharpTokenSets.FLOAT_LITERAL ||
-				literalType == CSharpTokenSets.DOUBLE_LITERAL ||
-				literalType == CSharpTokenSets.LONG_LITERAL)
+		if(isNumberLiteral(expression))
 		{
 			PsiElement element = another.resolve(scope).getElement();
 			String qName = element instanceof CSharpTypeDeclaration ? ((CSharpTypeDeclaration) element).getVmQName() : null;

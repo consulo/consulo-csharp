@@ -28,6 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.Me
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpConstantTypeRef;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
@@ -45,65 +46,88 @@ public class CS1021 extends CompilerCheck<CSharpConstantExpressionImpl>
 	@Override
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpConstantExpressionImpl element)
 	{
-		CSharpConstantTypeRef constantTypeRef = (CSharpConstantTypeRef) element.toTypeRef(false);
-		PsiElement parent = element.getParent();
-		if(parent instanceof CSharpCallArgument)
+		if(!CSharpConstantTypeRef.isNumberLiteral(element))
 		{
-			CSharpCallArgumentListOwner callArgumentListOwner = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
-			if(callArgumentListOwner == null)
+			return null;
+		}
+		PsiElement parent = element.getParent();
+		DotNetTypeRef tempTypeRef = element.toTypeRef(false);
+		if(tempTypeRef instanceof CSharpConstantTypeRef)
+		{
+			CSharpConstantTypeRef constantTypeRef = (CSharpConstantTypeRef) tempTypeRef;
+			if(parent instanceof CSharpCallArgument)
 			{
-				return null;
-			}
-
-			ResolveResult[] resolveResults = callArgumentListOwner.multiResolve(false);
-
-			for(ResolveResult resolveResult : resolveResults)
-			{
-				if(resolveResult instanceof MethodResolveResult && resolveResult.isValidResult())
+				CSharpCallArgumentListOwner callArgumentListOwner = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
+				if(callArgumentListOwner == null)
 				{
-					MethodCalcResult calcResult = ((MethodResolveResult) resolveResult).getCalcResult();
-					for(NCallArgument nCallArgument : calcResult.getArguments())
+					return null;
+				}
+
+				ResolveResult[] resolveResults = callArgumentListOwner.multiResolve(false);
+
+				for(ResolveResult resolveResult : resolveResults)
+				{
+					if(resolveResult instanceof MethodResolveResult && resolveResult.isValidResult())
 					{
-						CSharpCallArgument callArgument = nCallArgument.getCallArgument();
-						if(callArgument == parent)
+						MethodCalcResult calcResult = ((MethodResolveResult) resolveResult).getCalcResult();
+						for(NCallArgument nCallArgument : calcResult.getArguments())
 						{
-							DotNetTypeRef parameterTypeRef = nCallArgument.getParameterTypeRef();
-							if(parameterTypeRef == null)
+							CSharpCallArgument callArgument = nCallArgument.getCallArgument();
+							if(callArgument == parent)
 							{
-								continue;
-							}
-							DotNetTypeRef mirror = constantTypeRef.doMirror(parameterTypeRef, element);
-							if(mirror == null)
-							{
-								return newBuilder(element);
+								DotNetTypeRef parameterTypeRef = nCallArgument.getParameterTypeRef();
+								if(parameterTypeRef == null)
+								{
+									continue;
+								}
+								DotNetTypeRef mirror = constantTypeRef.doMirror(parameterTypeRef, element);
+								if(mirror == null)
+								{
+									return newBuilder(element);
+								}
 							}
 						}
 					}
 				}
 			}
-		}
-		else if(parent instanceof DotNetVariable)
-		{
-			DotNetTypeRef typeRef = ((DotNetVariable) parent).toTypeRef(false);
-			if(typeRef == DotNetTypeRef.AUTO_TYPE)
+			else if(parent instanceof DotNetVariable)
 			{
-				DotNetTypeRef delegate = constantTypeRef.getDelegate();
+				DotNetTypeRef typeRef = ((DotNetVariable) parent).toTypeRef(false);
+				if(typeRef != DotNetTypeRef.AUTO_TYPE)
+				{
+					DotNetTypeRef variableTypeRef = ((DotNetVariable) parent).toTypeRef(false);
 
-				DotNetTypeRef mirror = constantTypeRef.doMirror(delegate, element);
-				if(mirror == null)
-				{
-					return newBuilder(element);
+					PsiElement typeRefElement = variableTypeRef.resolve(element).getElement();
+
+					if(typeRefElement instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) typeRefElement).isEnum())
+					{
+						variableTypeRef = ((DotNetTypeDeclaration) typeRefElement).getTypeRefForEnumConstants();
+					}
+
+					DotNetTypeRef mirror = constantTypeRef.doMirror(variableTypeRef, element);
+					if(mirror == null)
+					{
+						return newBuilder(element);
+					}
 				}
 			}
-			else
-			{
-				DotNetTypeRef mirror = constantTypeRef.doMirror(((DotNetVariable) parent).toTypeRef(false), element);
-				if(mirror == null)
-				{
-					return newBuilder(element);
-				}
-			}
+			return null;
 		}
-		return null;
+		else
+		{
+			if(parent instanceof DotNetVariable)
+			{
+				DotNetTypeRef typeRef = ((DotNetVariable) parent).toTypeRef(false);
+				if(typeRef == DotNetTypeRef.AUTO_TYPE)
+				{
+					if(tempTypeRef == DotNetTypeRef.ERROR_TYPE)
+					{
+						return newBuilder(element);
+					}
+				}
+			}
+
+			return null;
+		}
 	}
 }
