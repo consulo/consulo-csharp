@@ -69,6 +69,7 @@ public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSh
 		return false;
 	}
 
+	@RequiredReadAction
 	public static boolean isNumberLiteral(CSharpConstantExpressionImpl expression)
 	{
 		IElementType literalType = expression.getLiteralType();
@@ -193,6 +194,11 @@ public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSh
 	private static boolean testBigInteger(@NotNull String leftTypeQName, String qName, @NotNull Number value, BigInteger min, BigInteger max)
 	{
 		if(!(leftTypeQName.equals(qName)))
+		{
+			return false;
+		}
+
+		if(!(value instanceof BigInteger))
 		{
 			return false;
 		}

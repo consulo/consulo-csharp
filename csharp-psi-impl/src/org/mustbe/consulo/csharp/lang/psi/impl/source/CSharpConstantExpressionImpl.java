@@ -82,39 +82,46 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 				}
 			}
 
-			String qName = null;
-			if(elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL ||
-					elementType == CSharpTokensImpl.INTERPOLATION_STRING_LITERAL)
+			if(elementType == CSharpTokens.INTEGER_LITERAL)
 			{
-				qName = DotNetTypes.System.String;
-			}
-			else if(elementType == CSharpTokens.CHARACTER_LITERAL)
-			{
-				qName = DotNetTypes.System.Char;
-			}
-			else if(elementType == CSharpTokens.UINTEGER_LITERAL)
-			{
-				qName = DotNetTypes.System.UInt32;
-			}
-			else if(elementType == CSharpTokens.ULONG_LITERAL)
-			{
-				qName = DotNetTypes.System.UInt64;
-			}
-			else if(elementType == CSharpTokens.INTEGER_LITERAL)
-			{
-				qName = DotNetTypes.System.Int32;
-			}
-			else if(elementType == CSharpTokens.LONG_LITERAL)
-			{
-				qName = DotNetTypes.System.Int64;
-			}
-			else if(elementType == CSharpTokens.FLOAT_LITERAL)
-			{
-				qName = DotNetTypes.System.Single;
+				return new CSharpConstantTypeRef(element, new CSharpLazyTypeRefByQName(element, DotNetTypes.System.Int32));
 			}
 			else if(elementType == CSharpTokens.DOUBLE_LITERAL)
 			{
-				qName = DotNetTypes.System.Double;
+				String text = element.getText();
+				// explicit type
+				if(text.endsWith("d") || text.endsWith("D"))
+				{
+					return new CSharpConstantTypeRef(element, new CSharpLazyTypeRefByQName(element, DotNetTypes.System.Double));
+				}
+
+				return new CSharpConstantTypeRef(element, new CSharpLazyTypeRefByQName(element, DotNetTypes.System.Double));
+			}
+
+			if(elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL ||
+					elementType == CSharpTokensImpl.INTERPOLATION_STRING_LITERAL)
+			{
+				return new CSharpLazyTypeRefByQName(element, DotNetTypes.System.String);
+			}
+			else if(elementType == CSharpTokens.CHARACTER_LITERAL)
+			{
+				return new CSharpLazyTypeRefByQName(element, DotNetTypes.System.Char);
+			}
+			else if(elementType == CSharpTokens.UINTEGER_LITERAL)
+			{
+				return new CSharpLazyTypeRefByQName(element, DotNetTypes.System.UInt32);
+			}
+			else if(elementType == CSharpTokens.ULONG_LITERAL)
+			{
+				return new CSharpLazyTypeRefByQName(element, DotNetTypes.System.UInt64);
+			}
+			else if(elementType == CSharpTokens.LONG_LITERAL)
+			{
+				return new CSharpLazyTypeRefByQName(element, DotNetTypes.System.Int64);
+			}
+			else if(elementType == CSharpTokens.FLOAT_LITERAL)
+			{
+				return new CSharpLazyTypeRefByQName(element, DotNetTypes.System.Single);
 			}
 			else if(elementType == CSharpTokens.NULL_LITERAL)
 			{
@@ -122,15 +129,12 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 			}
 			else if(elementType == CSharpTokens.BOOL_LITERAL)
 			{
-				qName = DotNetTypes.System.Boolean;
+				return new CSharpLazyTypeRefByQName(element, DotNetTypes.System.Boolean);
 			}
-
-			if(qName == null)
+			else
 			{
-				return DotNetTypeRef.ERROR_TYPE;
+				throw new UnsupportedOperationException(element.toString());
 			}
-
-			return new CSharpConstantTypeRef(element, new CSharpLazyTypeRefByQName(element, qName));
 		}
 	}
 
@@ -154,6 +158,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 	}
 
 	@Nullable
+	@RequiredReadAction
 	public Object getValue(@NotNull String prefix)
 	{
 		PsiElement byType = getFirstChild();
@@ -223,6 +228,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public Object getValue()
 	{
 		return getValue("");
@@ -230,6 +236,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public IElementType getLiteralType()
 	{
 		PsiElement byType = getFirstChild();
@@ -238,6 +245,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 	}
 
 	@Override
+	@RequiredReadAction
 	public boolean isValidHost()
 	{
 		IElementType elementType = getLiteralType();
@@ -245,6 +253,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 	}
 
 	@Override
+	@RequiredReadAction
 	public PsiLanguageInjectionHost updateText(@NotNull String s)
 	{
 		LeafPsiElement first = (LeafPsiElement) getFirstChild();
@@ -254,6 +263,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public LiteralTextEscaper<? extends PsiLanguageInjectionHost> createLiteralTextEscaper()
 	{
 		IElementType elementType = getLiteralType();
