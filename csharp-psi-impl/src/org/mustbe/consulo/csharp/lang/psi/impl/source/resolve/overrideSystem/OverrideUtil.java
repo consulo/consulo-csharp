@@ -8,6 +8,7 @@ import java.util.ListIterator;
 
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementCompareUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -52,15 +53,26 @@ import com.intellij.util.containers.ContainerUtil;
 @Logger
 public class OverrideUtil
 {
-	public static boolean isRequireOverrideModifier(@NotNull DotNetModifierListOwner modifierListOwner)
+	@RequiredReadAction
+	public static CSharpModifier getRequiredOverrideModifier(@NotNull DotNetModifierListOwner modifierListOwner)
 	{
 		DotNetModifierList modifierList = modifierListOwner.getModifierList();
 		if(modifierList == null)
 		{
-			return false;
+			return null;
 		}
-		return modifierList.hasModifierInTree(CSharpModifier.ABSTRACT) || modifierList.hasModifierInTree(CSharpModifier.VIRTUAL) || modifierList
-				.hasModifierInTree(CSharpModifier.OVERRIDE);
+
+		if(modifierList.hasModifier(CSharpModifier.INTERFACE_ABSTRACT))
+		{
+			return null;
+		}
+
+		if(modifierList.hasModifierInTree(CSharpModifier.ABSTRACT) || modifierList.hasModifierInTree(CSharpModifier.VIRTUAL) || modifierList
+				.hasModifierInTree(CSharpModifier.OVERRIDE))
+		{
+			return CSharpModifier.OVERRIDE;
+		}
+		return CSharpModifier.NEW;
 	}
 
 	@NotNull

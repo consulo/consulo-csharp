@@ -60,6 +60,8 @@ public class MethodChooseMember extends CSharpMemberChooseObject<CSharpMethodDec
 			builder.append(modifier.getPresentableText()).append(" ");
 		}
 
+		process(builder);
+
 		builder.append(getPresentationText());
 		if(canGenerateCodeBlock)
 		{

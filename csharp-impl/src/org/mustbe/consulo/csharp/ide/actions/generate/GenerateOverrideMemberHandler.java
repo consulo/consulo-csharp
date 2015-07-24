@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -48,11 +49,18 @@ public class GenerateOverrideMemberHandler extends GenerateImplementOrOverrideMe
 		return "Choose Members For Override";
 	}
 
+	@RequiredReadAction
 	@Override
 	public void processItem(@NotNull StringBuilder builder, @NotNull PsiElement item)
 	{
+		CSharpModifier requiredOverrideModifier = OverrideUtil.getRequiredOverrideModifier((DotNetModifierListOwner) item);
+		if(requiredOverrideModifier != null)
+		{
+			builder.append(requiredOverrideModifier.getPresentableText()).append(" ");
+		}
 	}
 
+	@RequiredReadAction
 	@Override
 	public void processReturn(@NotNull StringBuilder builder, @NotNull PsiElement item)
 	{

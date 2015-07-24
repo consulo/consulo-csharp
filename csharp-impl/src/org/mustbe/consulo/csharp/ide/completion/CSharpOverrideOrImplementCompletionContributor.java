@@ -24,6 +24,7 @@ import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.CSharpIcons;
 import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
 import org.mustbe.consulo.csharp.ide.actions.generate.GenerateImplementMemberHandler;
@@ -99,6 +100,7 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 	}
 
 	@Nullable
+	@RequiredReadAction
 	private static LookupElementBuilder buildLookupItem(CSharpTypeDeclaration typeDeclaration, PsiElement element, boolean hide)
 	{
 		Icon rightIcon = null;
@@ -115,9 +117,10 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 				builder.append(modifier.getPresentableText()).append(" ");
 			}
 
-			if(OverrideUtil.isRequireOverrideModifier(methodDeclaration))
+			CSharpModifier requiredOverrideModifier = OverrideUtil.getRequiredOverrideModifier(methodDeclaration);
+			if(requiredOverrideModifier != null)
 			{
-				builder.append("override ");
+				builder.append(requiredOverrideModifier.getPresentableText()).append(" ");
 			}
 
 			formatMethod(methodDeclaration, builder, hide);

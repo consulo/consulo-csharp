@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
@@ -42,15 +43,18 @@ public class GenerateImplementMemberHandler extends GenerateImplementOrOverrideM
 		return "Choose Members For Implement";
 	}
 
+	@RequiredReadAction
 	@Override
 	public void processItem(@NotNull StringBuilder builder, @NotNull PsiElement item)
 	{
-		if(OverrideUtil.isRequireOverrideModifier((DotNetModifierListOwner) item))
+		CSharpModifier requiredOverrideModifier = OverrideUtil.getRequiredOverrideModifier((DotNetModifierListOwner) item);
+		if(requiredOverrideModifier != null)
 		{
-			builder.append("override ");
+			builder.append(requiredOverrideModifier.getPresentableText()).append(" ");
 		}
 	}
 
+	@RequiredReadAction
 	@Override
 	public void processReturn(@NotNull StringBuilder builder, @NotNull PsiElement item)
 	{

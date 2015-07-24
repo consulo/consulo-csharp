@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.actions.generate.memberChoose.CSharpMemberChooseObject;
 import org.mustbe.consulo.csharp.ide.actions.generate.memberChoose.MethodChooseMember;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
@@ -116,8 +117,10 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 	@NotNull
 	public abstract String getTitle();
 
+	@RequiredReadAction
 	public abstract void processItem(@NotNull StringBuilder builder, @NotNull PsiElement item);
 
+	@RequiredReadAction
 	public abstract void processReturn(@NotNull StringBuilder builder, @NotNull PsiElement item);
 
 	@NotNull
