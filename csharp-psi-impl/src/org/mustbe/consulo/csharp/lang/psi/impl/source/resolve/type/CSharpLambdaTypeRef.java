@@ -39,10 +39,17 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 	private final CSharpSimpleParameterInfo[] myParameterInfos;
 	private final DotNetTypeRef myReturnType;
 	private final boolean myInheritParameters;
+	private DotNetGenericExtractor myExtractor = DotNetGenericExtractor.EMPTY;
 
 	public CSharpLambdaTypeRef(@NotNull CSharpMethodDeclaration method)
 	{
 		this(method, method.getParameterInfos(), method.getReturnTypeRef());
+	}
+
+	public CSharpLambdaTypeRef(@NotNull CSharpMethodDeclaration method, @NotNull DotNetGenericExtractor extractor)
+	{
+		this(method, method.getParameterInfos(), method.getReturnTypeRef());
+		myExtractor = extractor;
 	}
 
 	public CSharpLambdaTypeRef(@Nullable CSharpMethodDeclaration target, @NotNull CSharpSimpleParameterInfo[] parameterInfos, @NotNull DotNetTypeRef returnType)
@@ -168,7 +175,7 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 			@Override
 			public DotNetGenericExtractor getGenericExtractor()
 			{
-				return DotNetGenericExtractor.EMPTY;
+				return myExtractor;
 			}
 
 			@Override

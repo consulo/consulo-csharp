@@ -52,7 +52,6 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.OperatorByTokenSelector;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -220,11 +219,6 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		}
 
 		PsiElement parent = getParent();
-		DotNetVariable variable = CSharpLambdaExpressionImplUtil.resolveLambdaVariableInsideAssignmentExpression(parent);
-		if(variable != null)
-		{
-			return variable;
-		}
 
 		if(parent instanceof CSharpPrefixExpressionImpl)
 		{

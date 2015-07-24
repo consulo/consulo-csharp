@@ -137,7 +137,7 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 			DotNetTypeRef selfTypeRef;
 			if(methodDeclaration != null)
 			{
-				selfTypeRef = new CSharpLambdaTypeRef(methodDeclaration);
+				selfTypeRef = new CSharpLambdaTypeRef(methodDeclaration, extractor);
 			}
 			else
 			{
@@ -154,6 +154,40 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 			{
 				buildNullableOperators(selfTypeRef, typeDeclaration, extractor, consumer);
 			}
+
+			if(methodDeclaration != null)
+			{
+				buildOperatorsForDelegates(consumer, project, typeDeclaration, selfTypeRef);
+			}
+		}
+	}
+
+	private static void buildOperatorsForDelegates(Consumer<DotNetElement> consumer,
+			Project project,
+			CSharpTypeDeclaration typeDeclaration,
+			DotNetTypeRef selfTypeRef)
+	{
+		for(IElementType elementType : new IElementType[]{
+				CSharpTokens.PLUS,
+				CSharpTokens.MINUS
+		})
+		{
+			CSharpLightMethodDeclarationBuilder builder = new CSharpLightMethodDeclarationBuilder(project);
+			builder.setOperator(elementType);
+
+			builder.withParent(typeDeclaration);
+
+			builder.withReturnType(selfTypeRef);
+
+			for(int i = 0; i < 2; i++)
+			{
+				CSharpLightParameterBuilder parameterBuilder = new CSharpLightParameterBuilder(project);
+				parameterBuilder.withName("p" + i);
+				parameterBuilder.withTypeRef(selfTypeRef);
+				builder.addParameter(parameterBuilder);
+			}
+
+			consumer.consume(builder);
 		}
 	}
 
