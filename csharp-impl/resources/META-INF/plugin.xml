@@ -45,7 +45,10 @@
 		</action>
 
 		<group id="CSharp.GenerateActions">
+			<action id="CSharp.GenerateReadOnlyProperty" class="org.mustbe.consulo.csharp.ide.actions.generate.GenerateReadOnlyPropertyAction"/>
+			<action id="CSharp.GenerateProperty" class="org.mustbe.consulo.csharp.ide.actions.generate.GeneratePropertyAction"/>
 			<action id="CSharp.GenerateConstructor" class="org.mustbe.consulo.csharp.ide.actions.generate.GenerateConstructorAction"/>
+
 			<add-to-group group-id="GenerateGroup" anchor="first"/>
 		</group>
 	</actions>

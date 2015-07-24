@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
@@ -86,7 +87,7 @@ public class CSharpFileFactory
 	@NotNull
 	public static CSharpFieldDeclaration createField(@NotNull Project project, @NotNull String text)
 	{
-		val clazz = "class _Dummy { " + text + "; }";
+		String clazz = "class _Dummy { " + text + "; }";
 
 		CSharpFileImpl psiFile = createTypeDeclarationWithScope(project, clazz);
 
@@ -95,9 +96,20 @@ public class CSharpFileFactory
 	}
 
 	@NotNull
+	public static CSharpPropertyDeclaration createProperty(@NotNull Project project, @NotNull String text)
+	{
+		String clazz = "class _Dummy { " + text + "; }";
+
+		CSharpFileImpl psiFile = createTypeDeclarationWithScope(project, clazz);
+
+		DotNetTypeDeclaration typeDeclaration = (DotNetTypeDeclaration) psiFile.getMembers()[0];
+		return (CSharpPropertyDeclaration) typeDeclaration.getMembers()[0];
+	}
+
+	@NotNull
 	public static DotNetLikeMethodDeclaration createMethod(@NotNull Project project, @NotNull CharSequence text)
 	{
-		val clazz = "class _Dummy { " + text + "; }";
+		String clazz = "class _Dummy { " + text + "; }";
 
 		CSharpFileImpl psiFile = createTypeDeclarationWithScope(project, clazz);
 
