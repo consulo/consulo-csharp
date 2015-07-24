@@ -20,20 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpConstantTypeRef;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetVariable;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
@@ -46,7 +34,7 @@ public class CS1021 extends CompilerCheck<CSharpConstantExpressionImpl>
 	@Override
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpConstantExpressionImpl element)
 	{
-		if(!CSharpConstantTypeRef.isNumberLiteral(element))
+		/*if(!CSharpConstantTypeRef.isNumberLiteral(element))
 		{
 			return null;
 		}
@@ -128,6 +116,7 @@ public class CS1021 extends CompilerCheck<CSharpConstantExpressionImpl>
 			}
 
 			return null;
-		}
+		} */
+		return null;
 	}
 }
