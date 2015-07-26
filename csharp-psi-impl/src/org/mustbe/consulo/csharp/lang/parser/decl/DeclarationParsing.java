@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.parser.UsingStatementParsing;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
@@ -38,7 +39,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 		// { (
 	private static final TokenSet NAME_STOPPERS = TokenSet.create(LBRACE, LPAR, THIS_KEYWORD);
 
-	private static final TokenSet NAME_TOKENS = TokenSet.create(THIS_KEYWORD, IDENTIFIER);
+	private static final TokenSet NAME_TOKENS = TokenSet.create(THIS_KEYWORD, CSharpTokens.IDENTIFIER);
 
 	public static void parseAll(@NotNull CSharpBuilderWrapper builder, boolean root, boolean isEnum)
 	{
@@ -136,7 +137,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 		else
 		{
 			// MODIFIER_LIST IDENTIFIER LPAR -> CONSTRUCTOR
-			if(tokenType == IDENTIFIER && builder.lookAhead(1) == LPAR)
+			if(tokenType == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == LPAR)
 			{
 				MethodParsing.parseMethodStartAfterType(builder, marker, null, MethodParsing.Target.CONSTRUCTOR);
 			}
@@ -231,7 +232,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 			nameExpected = true;
 		}
 
-		if(builder.getTokenType() == IDENTIFIER)
+		if(builder.getTokenType() == CSharpTokens.IDENTIFIER)
 		{
 			if(!nameExpected)
 			{

@@ -51,6 +51,7 @@ public interface CSharpStubElements
 	CSharpParameterStubElementType PARAMETER = new CSharpParameterStubElementType();
 	CSharpUsingListStubElementType USING_LIST = new CSharpUsingListStubElementType();
 	CSharpUsingNamespaceStatementStubElementType USING_NAMESPACE_STATEMENT = new CSharpUsingNamespaceStatementStubElementType();
+	CSharpIdentifierStubElementType IDENTIFIER = new CSharpIdentifierStubElementType();
 	CSharpEmptyStubElementType<CSharpUsingTypeStatement> USING_TYPE_STATEMENT = new CSharpEmptyStubElementType<CSharpUsingTypeStatement>
 			("USING_TYPE_STATEMENT")
 	{

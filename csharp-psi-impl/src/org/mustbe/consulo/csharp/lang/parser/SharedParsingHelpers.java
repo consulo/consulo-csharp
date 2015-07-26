@@ -97,7 +97,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 				break;
 			}
 
-			if(builder.getTokenType() == IDENTIFIER)
+			if(builder.getTokenType() == CSharpTokens.IDENTIFIER)
 			{
 				builder.enableSoftKeywords(softSet);
 				IElementType tokenType = builder.getTokenType();
@@ -120,6 +120,13 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		PsiBuilder.Marker mark = builder.mark();
 		builder.advanceLexer();
 		mark.error("Unexpected token");
+	}
+
+	protected static void doneIdentifier(PsiBuilder builder, int flags)
+	{
+		PsiBuilder.Marker mark = builder.mark();
+		builder.advanceLexer();
+		mark.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.IDENTIFIER : CSharpElements.IDENTIFIER);
 	}
 
 	protected static void done(PsiBuilder.Marker marker, IElementType elementType)
@@ -315,7 +322,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 
 			typeInfo.nativeElementType = tokenType;
 		}
-		else if(builder.getTokenType() == IDENTIFIER)
+		else if(builder.getTokenType() == CSharpTokens.IDENTIFIER)
 		{
 			ExpressionParsing.ReferenceInfo referenceInfo = ExpressionParsing.parseQualifiedReference(builder, null, flags, nameStopperSet);
 			typeInfo.isParameterized = referenceInfo != null && referenceInfo.isParameterized;

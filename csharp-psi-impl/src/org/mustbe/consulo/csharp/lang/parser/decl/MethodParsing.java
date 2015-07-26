@@ -65,7 +65,7 @@ public class MethodParsing extends MemberWithBodyParsing
 	{
 		if(target == Target.CONSTRUCTOR || target == Target.DECONSTRUCTOR)
 		{
-			expect(builder, IDENTIFIER, "Name expected");
+			expect(builder, CSharpTokens.IDENTIFIER, "Name expected");
 		}
 		else
 		{
@@ -98,7 +98,7 @@ public class MethodParsing extends MemberWithBodyParsing
 			}
 			else
 			{
-				expect(builder, IDENTIFIER, "Name expected");
+				expect(builder, CSharpTokens.IDENTIFIER, "Name expected");
 			}
 		}
 
@@ -233,7 +233,7 @@ public class MethodParsing extends MemberWithBodyParsing
 		{
 			if(typeInfo.nativeElementType != CSharpTokens.__ARGLIST_KEYWORD)
 			{
-				expect(builder, IDENTIFIER, "Name expected");
+				expect(builder, CSharpTokens.IDENTIFIER, "Name expected");
 
 				if(expect(builder, EQ, null))
 				{

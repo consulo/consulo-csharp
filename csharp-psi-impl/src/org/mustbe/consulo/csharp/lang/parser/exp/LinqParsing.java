@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.parser.exp;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
@@ -87,7 +88,7 @@ public class LinqParsing extends SharedParsingHelpers
 		}
 
 		IElementType tokenType = builder.getTokenType();
-		if(tokenType == IDENTIFIER)
+		if(tokenType == CSharpTokens.IDENTIFIER)
 		{
 			builder.advanceLexer();
 		}
@@ -101,7 +102,7 @@ public class LinqParsing extends SharedParsingHelpers
 			}
 			else
 			{
-				variableMarker.error("Identifier expected");
+				variableMarker.error("CSharpTokens.IDENTIFIER expected");
 				variableMarker = null;
 			}
 		}
@@ -140,7 +141,7 @@ public class LinqParsing extends SharedParsingHelpers
 				return true;
 			}
 
-			if(builder.getTokenType() == IDENTIFIER)
+			if(builder.getTokenType() == CSharpTokens.IDENTIFIER)
 			{
 				typeInfo.marker.rollbackTo();
 				return true;
@@ -195,13 +196,13 @@ public class LinqParsing extends SharedParsingHelpers
 			parseType(builder, BRACKET_RETURN_BEFORE);
 		}
 
-		if(builder.getTokenType() == IDENTIFIER)
+		if(builder.getTokenType() == CSharpTokens.IDENTIFIER)
 		{
 			builder.advanceLexer();
 		}
 		else
 		{
-			builder.error("Identifier expected");
+			builder.error("CSharpTokens.IDENTIFIER expected");
 		}
 		variableMarker.done(LINQ_VARIABLE);
 
@@ -252,7 +253,7 @@ public class LinqParsing extends SharedParsingHelpers
 			PsiBuilder.Marker tempMarker = builder.mark();
 			builder.advanceLexer();
 
-			doneOneElement(builder, IDENTIFIER, LINQ_VARIABLE, "Identifier expected");
+			doneOneElement(builder, CSharpTokens.IDENTIFIER, LINQ_VARIABLE, "CSharpTokens.IDENTIFIER expected");
 			tempMarker.done(LINQ_INTRO_CLAUSE);
 		}
 
@@ -281,7 +282,7 @@ public class LinqParsing extends SharedParsingHelpers
 
 		builder.advanceLexer();
 
-		if(builder.getTokenType() == IDENTIFIER)
+		if(builder.getTokenType() == CSharpTokens.IDENTIFIER)
 		{
 			PsiBuilder.Marker varMarker = builder.mark();
 			builder.advanceLexer();
@@ -296,7 +297,7 @@ public class LinqParsing extends SharedParsingHelpers
 		}
 		else
 		{
-			builder.error("Identifier expected");
+			builder.error("CSharpTokens.IDENTIFIER expected");
 		}
 
 		mark.done(LINQ_LET_CLAUSE);

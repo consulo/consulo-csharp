@@ -64,7 +64,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 	private static final TokenSet POSTFIX_OPS = TokenSet.create(PLUSPLUS, MINUSMINUS);
 	private static final TokenSet PREF_ARITHMETIC_OPS = TokenSet.orSet(POSTFIX_OPS, TokenSet.create(PLUS, MINUS, MUL, AND));
 	private static final TokenSet PREFIX_OPS = TokenSet.orSet(PREF_ARITHMETIC_OPS, TokenSet.create(TILDE, EXCL));
-	private static final TokenSet ID_OR_SUPER = TokenSet.create(IDENTIFIER, BASE_KEYWORD);
+	private static final TokenSet ID_OR_SUPER = TokenSet.create(CSharpTokens.IDENTIFIER, BASE_KEYWORD);
 	private static final TokenSet THIS_OR_BASE = TokenSet.create(THIS_KEYWORD, BASE_KEYWORD);
 
 	@Nullable
@@ -490,7 +490,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 					dotPos.drop();
 					final PsiBuilder.Marker refExpr = expr.precede();
 
-					if(!expect(builder, ID_OR_SUPER, "expected.identifier"))
+					if(!expect(builder, ID_OR_SUPER, "expected.CSharpTokens.IDENTIFIER"))
 					{
 						refExpr.done(REFERENCE_EXPRESSION);
 						startMarker.drop();
@@ -508,7 +508,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 				final PsiBuilder.Marker refExpr = expr.precede();
 
-				if(!expect(builder, IDENTIFIER, "expected.identifier"))
+				if(!expect(builder, CSharpTokens.IDENTIFIER, "expected.CSharpTokens.IDENTIFIER"))
 				{
 					refExpr.done(REFERENCE_EXPRESSION);
 					startMarker.drop();
@@ -524,7 +524,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 				final PsiBuilder.Marker refExpr = expr.precede();
 
-				if(!expect(builder, IDENTIFIER, "expected.identifier"))
+				if(!expect(builder, CSharpTokens.IDENTIFIER, "expected.CSharpTokens.IDENTIFIER"))
 				{
 					refExpr.done(REFERENCE_EXPRESSION);
 					startMarker.drop();
@@ -623,10 +623,10 @@ public class ExpressionParsing extends SharedParsingHelpers
 				break;
 			}
 			commaEntered = false;
-			if(builder.getTokenType() == IDENTIFIER && builder.lookAhead(1) == COLON)
+			if(builder.getTokenType() == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == COLON)
 			{
 				PsiBuilder.Marker marker = builder.mark();
-				doneOneElement(builder, IDENTIFIER, REFERENCE_EXPRESSION, null);
+				doneOneElement(builder, CSharpTokens.IDENTIFIER, REFERENCE_EXPRESSION, null);
 				builder.advanceLexer(); // eq
 				PsiBuilder.Marker expressionParser = parse(builder);
 				if(expressionParser == null)
@@ -635,10 +635,10 @@ public class ExpressionParsing extends SharedParsingHelpers
 				}
 				marker.done(NAMED_CALL_ARGUMENT);
 			}
-			else if(fieldSet && builder.getTokenType() == IDENTIFIER && builder.lookAhead(1) == EQ)
+			else if(fieldSet && builder.getTokenType() == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == EQ)
 			{
 				PsiBuilder.Marker marker = builder.mark();
-				doneOneElement(builder, IDENTIFIER, REFERENCE_EXPRESSION, null);
+				doneOneElement(builder, CSharpTokens.IDENTIFIER, REFERENCE_EXPRESSION, null);
 				builder.advanceLexer(); // eq
 				PsiBuilder.Marker expressionParser = parse(builder);
 				if(expressionParser == null)
@@ -869,7 +869,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			return refExpr;
 		}
 
-		if(tokenType == IDENTIFIER)
+		if(tokenType == CSharpTokens.IDENTIFIER)
 		{
 			if(builder.lookAhead(1) == DARROW)
 			{
@@ -948,9 +948,9 @@ public class ExpressionParsing extends SharedParsingHelpers
 		PsiBuilder.Marker mark = builder.mark();
 		builder.advanceLexer();
 
-		if(builder.getTokenType() != IDENTIFIER)
+		if(builder.getTokenType() != CSharpTokens.IDENTIFIER)
 		{
-			builder.error("Identifier expected");
+			builder.error("CSharpTokens.IDENTIFIER expected");
 		}
 		else
 		{
@@ -1140,14 +1140,14 @@ public class ExpressionParsing extends SharedParsingHelpers
 			}
 			else
 			{
-				expect(builder, IDENTIFIER, "Name expected");
+				expect(builder, CSharpTokens.IDENTIFIER, "Name expected");
 			}
 		}
 		else
 		{
 			IElementType iElementType = builder.lookAhead(1);
 			// not typed parameter
-			if(builder.getTokenType() == IDENTIFIER && (iElementType == COMMA || iElementType == RPAR || iElementType == DARROW))
+			if(builder.getTokenType() == CSharpTokens.IDENTIFIER && (iElementType == COMMA || iElementType == RPAR || iElementType == DARROW))
 			{
 				builder.advanceLexer();
 			}
@@ -1159,7 +1159,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				}
 				else
 				{
-					expect(builder, IDENTIFIER, "Name expected");
+					expect(builder, CSharpTokens.IDENTIFIER, "Name expected");
 				}
 			}
 		}
@@ -1355,7 +1355,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			return AfterNewParsingTarget.DICTIONARY_INITIALZER;
 		}
 
-		if(builderWrapper.lookAhead(1) == IDENTIFIER && builderWrapper.lookAhead(2) == EQ)
+		if(builderWrapper.lookAhead(1) == CSharpTokens.IDENTIFIER && builderWrapper.lookAhead(2) == EQ)
 		{
 			return AfterNewParsingTarget.PROPERTY_SET_LIST;
 		}
@@ -1537,7 +1537,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				{
 					PsiBuilder.Marker errorMarker = builder.mark();
 					builder.advanceLexer();
-					errorMarker.error("Identifier expected");
+					errorMarker.error("CSharpTokens.IDENTIFIER expected");
 				}
 
 				if(builder.getTokenType() == COMMA)
@@ -1561,7 +1561,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
-		if(doneOneElement(builder, IDENTIFIER, REFERENCE_EXPRESSION, "Identifier expected"))
+		if(doneOneElement(builder, CSharpTokens.IDENTIFIER, REFERENCE_EXPRESSION, "CSharpTokens.IDENTIFIER expected"))
 		{
 			if(expect(builder, EQ, "'=' expected"))
 			{
@@ -1740,7 +1740,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			}
 		}
 
-		if(expect(builder, IDENTIFIER, "Identifier expected"))
+		if(expect(builder, CSharpTokens.IDENTIFIER, "CSharpTokens.IDENTIFIER expected"))
 		{
 			referenceInfo.isParameterized = parseReferenceTypeArgumentList(builder, flags) != null;
 

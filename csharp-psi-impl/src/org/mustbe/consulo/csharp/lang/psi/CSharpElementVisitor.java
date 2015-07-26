@@ -629,4 +629,9 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	{
 		visitElement(list);
 	}
+
+	public void visitIdentifier(CSharpIdentifier identifier)
+	{
+		visitElement(identifier);
+	}
 }
