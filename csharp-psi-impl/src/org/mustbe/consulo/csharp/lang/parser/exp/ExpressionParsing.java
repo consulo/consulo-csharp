@@ -1140,7 +1140,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			}
 			else
 			{
-				expect(builder, CSharpTokens.IDENTIFIER, "Name expected");
+				expectOrReportIdentifier(builder,  0);
 			}
 		}
 		else
@@ -1149,7 +1149,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			// not typed parameter
 			if(builder.getTokenType() == CSharpTokens.IDENTIFIER && (iElementType == COMMA || iElementType == RPAR || iElementType == DARROW))
 			{
-				builder.advanceLexer();
+				expectOrReportIdentifier(builder, 0);
 			}
 			else
 			{
@@ -1159,7 +1159,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				}
 				else
 				{
-					expect(builder, CSharpTokens.IDENTIFIER, "Name expected");
+					expectOrReportIdentifier(builder,  0);
 				}
 			}
 		}
