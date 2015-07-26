@@ -556,6 +556,7 @@ public class CSharpReferenceExpressionImplUtil
 
 	@NotNull
 	@RequiredReadAction
+	@Deprecated
 	public static ResolveResult[] collectResults(@NotNull CSharpResolveOptions options)
 	{
 		CommonProcessors.CollectProcessor<ResolveResult> processor = new CommonProcessors.CollectProcessor<ResolveResult>();
