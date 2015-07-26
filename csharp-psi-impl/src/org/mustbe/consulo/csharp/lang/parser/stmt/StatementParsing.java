@@ -265,7 +265,7 @@ public class StatementParsing extends SharedParsingHelpers
 					return true;
 				}
 				IElementType lookAhead = builder.lookAhead(1);
-				if(lookAhead == SEMICOLON || lookAhead == EQ || lookAhead == COMMA)
+				if(lookAhead == SEMICOLON || lookAhead == EQ || lookAhead == COMMA || lookAhead == RBRACE || lookAhead == LBRACE)
 				{
 					return true;
 				}
