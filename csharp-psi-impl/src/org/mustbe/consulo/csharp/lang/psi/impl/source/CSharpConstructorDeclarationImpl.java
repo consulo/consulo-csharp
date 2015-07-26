@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
@@ -66,7 +67,7 @@ public class CSharpConstructorDeclarationImpl extends CSharpLikeMethodDeclaratio
 	@Nullable
 	public PsiElement getNameIdentifier()
 	{
-		return findChildByType(CSharpTokens.IDENTIFIER);
+		return getStubOrPsiChild(CSharpStubElements.IDENTIFIER);
 	}
 
 	@Override

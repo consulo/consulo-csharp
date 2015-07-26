@@ -197,7 +197,9 @@ public class OverrideUtil
 		}
 		else if(element instanceof DotNetLikeMethodDeclaration)
 		{
-			return ((DotNetLikeMethodDeclaration) element).getName();
+			String name = ((DotNetLikeMethodDeclaration) element).getName();
+			assert name != null : element.getClass().getName();
+			return name;
 		}
 		else
 		{
