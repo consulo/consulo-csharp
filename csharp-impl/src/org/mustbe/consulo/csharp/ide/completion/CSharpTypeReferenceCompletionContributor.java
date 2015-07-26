@@ -143,12 +143,12 @@ public class CSharpTypeReferenceCompletionContributor extends CompletionContribu
 			boolean insideUsingList,
 			DotNetTypeDeclaration maybeMsilType)
 	{
-		String presentationText = MsilHelper.cutGenericMarker(maybeMsilType.getName());
-
 		if(!insideUsingList && isAlreadyResolved(maybeMsilType, parent))
 		{
 			return;
 		}
+
+		String presentationText = MsilHelper.cutGenericMarker(maybeMsilType.getName());
 
 		int genericCount = 0;
 		DotNetGenericParameter[] genericParameters = maybeMsilType.getGenericParameters();
