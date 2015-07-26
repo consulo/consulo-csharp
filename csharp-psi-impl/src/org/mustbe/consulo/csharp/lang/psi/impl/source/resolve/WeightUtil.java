@@ -3,11 +3,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 import java.util.Comparator;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
+import com.intellij.util.Processor;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
@@ -27,21 +27,18 @@ public class WeightUtil
 		}
 	};
 
-	@NotNull
-	public static ResolveResult[] sortAndReturn(List<Pair<MethodCalcResult, PsiElement>> list)
+	public static void sortAndReturn(List<Pair<MethodCalcResult, PsiElement>> list, Processor<ResolveResult> processor)
 	{
 		if(list.isEmpty())
 		{
-			return ResolveResult.EMPTY_ARRAY;
+			return;
 		}
+
 		ContainerUtil.sort(list, ourComparator);
 
-		ResolveResult[] resolveResults = new ResolveResult[list.size()];
-		int i = 0;
 		for(Pair<MethodCalcResult, PsiElement> pair : list)
 		{
-			resolveResults[i++] = new MethodResolveResult(pair.getSecond(), pair.getFirst());
+			processor.process(new MethodResolveResult(pair.getSecond(), pair.getFirst()));
 		}
-		return resolveResults;
 	}
 }

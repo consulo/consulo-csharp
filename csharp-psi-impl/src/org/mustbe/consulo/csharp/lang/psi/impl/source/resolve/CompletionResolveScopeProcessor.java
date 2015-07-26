@@ -1,8 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
-import java.util.Collections;
-
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
@@ -11,14 +10,17 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolve
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementResolveResult;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.util.Processor;
 
 /**
  * @author VISTALL
  * @since 23.10.14
  */
-public class CompletionResolveScopeProcessor extends AbstractScopeProcessor
+public class CompletionResolveScopeProcessor extends StubScopeProcessor
 {
 	@NotNull
 	private final GlobalSearchScope myScope;
@@ -26,11 +28,14 @@ public class CompletionResolveScopeProcessor extends AbstractScopeProcessor
 	private final PsiElement myPlace;
 	@NotNull
 	private CSharpContextUtil.ContextType myContextType;
+	@NotNull
+	private Processor<ResolveResult> myProcessor;
 
-	public CompletionResolveScopeProcessor(@NotNull CSharpResolveOptions options, @NotNull ExecuteTarget[] targets)
+	public CompletionResolveScopeProcessor(@NotNull CSharpResolveOptions options, @NotNull Processor<ResolveResult> processor, @NotNull ExecuteTarget[] targets)
 	{
+		myProcessor = processor;
 		myPlace = options.getElement();
-		Collections.addAll(myElements, options.getAdditionalElements());
+
 		myScope = myPlace.getResolveScope();
 		CSharpContextUtil.ContextType completionContextType = options.getCompletionContextType();
 		if(completionContextType != null)
@@ -46,6 +51,7 @@ public class CompletionResolveScopeProcessor extends AbstractScopeProcessor
 	}
 
 	@Override
+	@RequiredReadAction
 	public boolean execute(@NotNull PsiElement element, ResolveState state)
 	{
 		DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
@@ -62,7 +68,7 @@ public class CompletionResolveScopeProcessor extends AbstractScopeProcessor
 		return true;
 	}
 
-	@Override
+	@RequiredReadAction
 	public void addElement(@NotNull PsiElement element)
 	{
 		if(element instanceof DotNetModifierListOwner && !CSharpVisibilityUtil.isVisible((DotNetModifierListOwner) element, myPlace))
@@ -89,6 +95,6 @@ public class CompletionResolveScopeProcessor extends AbstractScopeProcessor
 					break;
 			}
 		}
-		super.addElement(element);
+		myProcessor.process(new PsiElementResolveResult(element, true));
 	}
 }

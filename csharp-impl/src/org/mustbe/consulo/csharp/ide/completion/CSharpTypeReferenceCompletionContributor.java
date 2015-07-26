@@ -28,9 +28,8 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import org.mustbe.consulo.dotnet.libraryAnalyzer.NamespaceReference;
@@ -56,9 +55,11 @@ import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.CommonProcessors;
 import com.intellij.util.Consumer;
 import com.intellij.util.Function;
 import com.intellij.util.ProcessingContext;
@@ -215,7 +216,6 @@ public class CSharpTypeReferenceCompletionContributor extends CompletionContribu
 
 		ResolveState resolveState = ResolveState.initial();
 		resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, new MemberByNameSelector(MsilHelper.cutGenericMarker(element.getName())));
-		resolveState = resolveState.put(MemberResolveScopeProcessor.BREAK_RULE, Boolean.TRUE);
 
 		Couple<PsiElement> resolveLayers = CSharpReferenceExpressionImplUtil.getResolveLayers(parent, false);
 		//PsiElement last = resolveLayers.getFirst();
@@ -225,7 +225,7 @@ public class CSharpTypeReferenceCompletionContributor extends CompletionContribu
 		options.kind(CSharpReferenceExpression.ResolveToKind.TYPE_LIKE);
 		options.element(element);
 
-		AbstractScopeProcessor p = CSharpReferenceExpressionImplUtil.createMemberProcessor(options);
+		StubScopeProcessor p = CSharpReferenceExpressionImplUtil.createMemberProcessor(options, CommonProcessors.<ResolveResult>alwaysFalse());
 
 		if(!CSharpResolveUtil.walkChildren(p, targetToWalkChildren, true, true, resolveState))
 		{

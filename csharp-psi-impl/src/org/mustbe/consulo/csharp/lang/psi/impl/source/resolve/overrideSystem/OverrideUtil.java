@@ -16,7 +16,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpElementGroupImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
@@ -38,7 +37,9 @@ import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
+import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.Processor;
@@ -76,7 +77,7 @@ public class OverrideUtil
 	}
 
 	@NotNull
-	public static PsiElement[] filterOverrideElements(@NotNull AbstractScopeProcessor processor,
+	public static PsiElement[] filterOverrideElements(@NotNull PsiScopeProcessor processor,
 			@NotNull PsiElement scopeElement,
 			@NotNull PsiElement[] psiElements,
 			@NotNull OverrideProcessor overrideProcessor)
@@ -168,8 +169,9 @@ public class OverrideUtil
 		}
 		else if(elseElements.isEmpty())
 		{
-			return new PsiElement[]{new CSharpElementGroupImpl<PsiElement>(scopeElement.getProject(), getNameForGroup(groupElements),
-					groupElements)};
+			return new PsiElement[]{
+					new CSharpElementGroupImpl<PsiElement>(scopeElement.getProject(), getNameForGroup(groupElements), groupElements)
+			};
 		}
 		else if(groupElements.isEmpty())
 		{
@@ -228,7 +230,8 @@ public class OverrideUtil
 		}
 		OverrideProcessor.Collector overrideProcessor = new OverrideProcessor.Collector();
 
-		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(parent, new ExecuteTarget[]{
+		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(parent, CommonProcessors.<ResolveResult>alwaysTrue(),
+				new ExecuteTarget[]{
 				ExecuteTarget.MEMBER,
 				ExecuteTarget.ELEMENT_GROUP
 		}, overrideProcessor);

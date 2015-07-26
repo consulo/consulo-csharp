@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -33,6 +34,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.CommonProcessors;
 
 /**
  * @author VISTALL
@@ -91,6 +93,7 @@ public class CSharpArrayInitializerSingleValueImpl extends CSharpElementImpl imp
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public ResolveResult[] multiResolve(boolean b)
 	{
 		CSharpArrayInitializerOwner arrayInitializerOwner = PsiTreeUtil.getParentOfType(this, CSharpArrayInitializerOwner.class);
@@ -112,7 +115,9 @@ public class CSharpArrayInitializerSingleValueImpl extends CSharpElementImpl imp
 			CSharpResolveOptions options = new CSharpResolveOptions(CSharpReferenceExpression.ResolveToKind.METHOD,
 					new MemberByNameSelector("Add"), this, this, false, true);
 
-			return CSharpReferenceExpressionImplUtil.collectResults(options, typeResolveResult.getGenericExtractor(), resolvedElement);
+			CommonProcessors.CollectProcessor<ResolveResult> processor = new CommonProcessors.CollectProcessor<ResolveResult>();
+			CSharpReferenceExpressionImplUtil.collectResults(options, typeResolveResult.getGenericExtractor(), resolvedElement, processor);
+			return processor.toArray(ResolveResult.ARRAY_FACTORY);
 		}
 		return ResolveResult.EMPTY_ARRAY;
 	}

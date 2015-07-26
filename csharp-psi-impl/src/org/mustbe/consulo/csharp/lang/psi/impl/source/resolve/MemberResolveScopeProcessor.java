@@ -16,10 +16,9 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
-import java.util.Collections;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideProcessor;
@@ -28,43 +27,48 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolve
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
-import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementResolveResult;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.search.GlobalSearchScope;
-import lombok.val;
+import com.intellij.util.Processor;
 
 /**
  * @author VISTALL
  * @since 17.12.13.
  */
-public class MemberResolveScopeProcessor extends AbstractScopeProcessor
+public class MemberResolveScopeProcessor extends StubScopeProcessor
 {
-	public static final Key<Boolean> BREAK_RULE = Key.create("break.rule");
-
 	private final PsiElement myScopeElement;
+	private final Processor<ResolveResult> myResultProcessor;
 	private final GlobalSearchScope myResolveScope;
 	private final OverrideProcessor myOverrideProcessor;
 
-	public MemberResolveScopeProcessor(CSharpResolveOptions options, ExecuteTarget[] targets)
+	public MemberResolveScopeProcessor(@NotNull CSharpResolveOptions options,
+			@NotNull Processor<ResolveResult> resultProcessor,
+			ExecuteTarget[] targets)
 	{
-		Collections.addAll(myElements, options.getAdditionalElements());
 		myScopeElement = options.getElement();
 		myResolveScope = myScopeElement.getResolveScope();
+		myResultProcessor = resultProcessor;
 		myOverrideProcessor = OverrideProcessor.ALWAYS_TRUE;
 		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
 	}
 
-	public MemberResolveScopeProcessor(PsiElement scopeElement,
+	public MemberResolveScopeProcessor(@NotNull PsiElement scopeElement,
+			@NotNull Processor<ResolveResult> resultProcessor,
 			@Nullable ExecuteTarget[] targets,
 			@Nullable OverrideProcessor overrideProcessor)
 	{
 		myScopeElement = scopeElement;
+		myResultProcessor = resultProcessor;
 		myResolveScope = scopeElement.getResolveScope();
 		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
 		myOverrideProcessor = overrideProcessor;
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean execute(@NotNull PsiElement element, ResolveState state)
 	{
@@ -82,16 +86,14 @@ public class MemberResolveScopeProcessor extends AbstractScopeProcessor
 		PsiElement[] psiElements = selector.doSelectElement(context, state.get(CSharpResolveUtil.WALK_DEEP) == Boolean.TRUE);
 		psiElements = CSharpCompositeTypeDeclaration.wrapPartialTypes(myResolveScope, myScopeElement.getProject(), psiElements);
 
-		for(val psiElement : OverrideUtil.filterOverrideElements(this, myScopeElement, psiElements, myOverrideProcessor))
+		for(PsiElement psiElement : OverrideUtil.filterOverrideElements(this, myScopeElement, psiElements, myOverrideProcessor))
 		{
 			if(!ExecuteTargetUtil.isMyElement(this, psiElement))
 			{
 				continue;
 			}
 
-			addElement(psiElement);
-
-			if(state.get(BREAK_RULE) == Boolean.TRUE)
+			if(!myResultProcessor.process(new PsiElementResolveResult(element, true)))
 			{
 				return false;
 			}

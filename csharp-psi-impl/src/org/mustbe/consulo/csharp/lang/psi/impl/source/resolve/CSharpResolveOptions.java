@@ -24,7 +24,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpQualifiedNonReference;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
 
 /**
  * @author VISTALL
@@ -52,8 +51,6 @@ public class CSharpResolveOptions
 
 	private boolean myResolveFromParent;
 
-	private ResolveResult[] myAdditionalElements = ResolveResult.EMPTY_ARRAY;
-
 	private CSharpResolveOptions()
 	{
 	}
@@ -72,13 +69,6 @@ public class CSharpResolveOptions
 		myCallArgumentListOwner = callArgumentListOwner;
 		myCompletion = completion;
 		myResolveFromParent = resolveFromParent;
-	}
-
-	@NotNull
-	public CSharpResolveOptions additionalElements(ResolveResult[] additionalElements)
-	{
-		myAdditionalElements = additionalElements;
-		return this;
 	}
 
 	@NotNull
@@ -155,12 +145,6 @@ public class CSharpResolveOptions
 	public CSharpCallArgumentListOwner getCallArgumentListOwner()
 	{
 		return myCallArgumentListOwner;
-	}
-
-	@NotNull
-	public ResolveResult[] getAdditionalElements()
-	{
-		return myAdditionalElements;
 	}
 
 	public boolean isCompletion()
