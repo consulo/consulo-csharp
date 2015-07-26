@@ -19,7 +19,9 @@ package org.mustbe.consulo.csharp.ide.completion;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -31,6 +33,7 @@ import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 
 /**
@@ -41,24 +44,31 @@ public class CSharpMemberNameCompletionContributor extends CompletionContributor
 {
 	public CSharpMemberNameCompletionContributor()
 	{
-		extend(CompletionType.BASIC, StandardPatterns.psiElement().withElementType(CSharpTokens.IDENTIFIER).withParent(DotNetVariable.class),
+		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpIdentifier.class),
 				new CompletionProvider<CompletionParameters>()
 		{
 			@Override
+			@RequiredReadAction
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				PsiElement position = parameters.getPosition();
-				DotNetVariable variable = (DotNetVariable) position.getParent();
-				assert variable != null;
-				Set<String> suggestedNames = CSharpNameSuggesterUtil.getSuggestedNames(variable.toTypeRef(true), position);
-				DotNetExpression initializer = variable.getInitializer();
-				if(initializer != null)
+				CSharpIdentifier identifier = PsiTreeUtil.getParentOfType(position, CSharpIdentifier.class);
+				assert identifier != null;
+
+				PsiElement parent = identifier.getParent();
+				if(parent instanceof DotNetVariable)
 				{
-					suggestedNames.addAll(CSharpNameSuggesterUtil.getSuggestedNames(initializer));
-				}
-				for(String suggestedName : suggestedNames)
-				{
-					result.addElement(LookupElementBuilder.create(suggestedName));
+					DotNetVariable variable = (DotNetVariable) parent;
+					Set<String> suggestedNames = CSharpNameSuggesterUtil.getSuggestedNames(variable.toTypeRef(true), position);
+					DotNetExpression initializer = variable.getInitializer();
+					if(initializer != null)
+					{
+						suggestedNames.addAll(CSharpNameSuggesterUtil.getSuggestedNames(initializer));
+					}
+					for(String suggestedName : suggestedNames)
+					{
+						result.addElement(LookupElementBuilder.create(suggestedName));
+					}
 				}
 			}
 		});
