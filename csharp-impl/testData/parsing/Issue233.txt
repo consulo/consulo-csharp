@@ -28,7 +28,8 @@ CSHARP_FILE
     PsiWhiteSpace(' ')
     PsiElement(CLASS_KEYWORD)('class')
     PsiWhiteSpace(' ')
-    PsiElement(IDENTIFIER)('SomeStaticTest')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('SomeStaticTest')
     PsiWhiteSpace(' ')
     PsiElement(LBRACE)('{')
     PsiWhiteSpace('\n    ')
@@ -41,7 +42,8 @@ CSHARP_FILE
       CSharpStubNativeTypeImpl [NATIVE_TYPE]
         PsiElement(VOID_KEYWORD)('void')
       PsiWhiteSpace(' ')
-      PsiElement(IDENTIFIER)('test')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('test')
       CSharpStubParameterListImpl [PARAMETER_LIST]
         PsiElement(LPAR)('(')
         PsiElement(RPAR)(')')
@@ -61,7 +63,8 @@ CSHARP_FILE
                       PsiElement(IDENTIFIER)('Task')
                   PsiElement(GT)('>')
             PsiWhiteSpace(' ')
-            PsiElement(IDENTIFIER)('task')
+            CSharpIdentifierImpl(IDENTIFIER)
+              PsiElement(IDENTIFIER)('task')
             PsiWhiteSpace(' ')
             PsiElement(EQ)('=')
             PsiWhiteSpace(' ')

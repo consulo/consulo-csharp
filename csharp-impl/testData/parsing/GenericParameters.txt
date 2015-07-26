@@ -4,13 +4,15 @@ CSHARP_FILE
       <empty list>
     PsiElement(CLASS_KEYWORD)('class')
     PsiWhiteSpace(' ')
-    PsiElement(IDENTIFIER)('List')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('List')
     CSharpGenericParameterListImpl [GENERIC_PARAMETER_LIST]
       PsiElement(LT)('<')
       CSharpGenericParameterImpl [GENERIC_PARAMETER]
         CSharpStubModifierListImpl [MODIFIER_LIST]
           <empty list>
-        PsiElement(IDENTIFIER)('A')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('A')
       PsiElement(GT)('>')
     PsiWhiteSpace('\n')
     PsiElement(LBRACE)('{')
@@ -22,21 +24,24 @@ CSHARP_FILE
       <empty list>
     PsiElement(CLASS_KEYWORD)('class')
     PsiWhiteSpace(' ')
-    PsiElement(IDENTIFIER)('Test')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('Test')
     CSharpGenericParameterListImpl [GENERIC_PARAMETER_LIST]
       PsiElement(LT)('<')
       CSharpGenericParameterImpl [GENERIC_PARAMETER]
         CSharpStubModifierListImpl [MODIFIER_LIST]
           PsiElement(IN_KEYWORD)('in')
         PsiWhiteSpace(' ')
-        PsiElement(IDENTIFIER)('A')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('A')
       PsiElement(COMMA)(',')
       PsiWhiteSpace(' ')
       CSharpGenericParameterImpl [GENERIC_PARAMETER]
         CSharpStubModifierListImpl [MODIFIER_LIST]
           PsiElement(OUT_KEYWORD)('out')
         PsiWhiteSpace(' ')
-        PsiElement(IDENTIFIER)('B')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('B')
       PsiElement(GT)('>')
     PsiWhiteSpace(' ')
     CSharpGenericConstraintListImpl [GENERIC_CONSTRAINT_LIST]
@@ -68,19 +73,22 @@ CSHARP_FILE
       <empty list>
     PsiElement(CLASS_KEYWORD)('class')
     PsiWhiteSpace(' ')
-    PsiElement(IDENTIFIER)('MyClass')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('MyClass')
     CSharpGenericParameterListImpl [GENERIC_PARAMETER_LIST]
       PsiElement(LT)('<')
       CSharpGenericParameterImpl [GENERIC_PARAMETER]
         CSharpStubModifierListImpl [MODIFIER_LIST]
           <empty list>
-        PsiElement(IDENTIFIER)('T')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('T')
       PsiElement(COMMA)(',')
       PsiWhiteSpace(' ')
       CSharpGenericParameterImpl [GENERIC_PARAMETER]
         CSharpStubModifierListImpl [MODIFIER_LIST]
           <empty list>
-        PsiElement(IDENTIFIER)('U')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('U')
       PsiElement(GT)('>')
     PsiWhiteSpace(' ')
     CSharpGenericConstraintListImpl [GENERIC_CONSTRAINT_LIST]
@@ -119,13 +127,15 @@ CSHARP_FILE
       CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
         PsiElement(IDENTIFIER)('T')
     PsiWhiteSpace(' ')
-    PsiElement(IDENTIFIER)('MyDelegate')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('MyDelegate')
     CSharpGenericParameterListImpl [GENERIC_PARAMETER_LIST]
       PsiElement(LT)('<')
       CSharpGenericParameterImpl [GENERIC_PARAMETER]
         CSharpStubModifierListImpl [MODIFIER_LIST]
           <empty list>
-        PsiElement(IDENTIFIER)('T')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('T')
       PsiElement(GT)('>')
     CSharpStubParameterListImpl [PARAMETER_LIST]
       PsiElement(LPAR)('(')
