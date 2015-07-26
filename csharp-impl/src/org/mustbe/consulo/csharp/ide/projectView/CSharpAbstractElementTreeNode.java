@@ -1,12 +1,15 @@
 package org.mustbe.consulo.csharp.ide.projectView;
 
+import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.BasePsiNode;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.util.PsiUtilCore;
 
 /**
  * @author VISTALL
@@ -42,6 +45,12 @@ public abstract class CSharpAbstractElementTreeNode<T extends PsiElement> extend
 	{
 		T value = getValue();
 		return DotNetAttributeUtil.hasAttribute(value, DotNetTypes.System.ObsoleteAttribute);
+	}
+
+	@Override
+	public boolean contains(@NotNull VirtualFile file)
+	{
+		return PsiUtilCore.getVirtualFile(getValue()) == file;
 	}
 
 	private boolean canRepresent(final PsiElement psiElement, final Object element)
