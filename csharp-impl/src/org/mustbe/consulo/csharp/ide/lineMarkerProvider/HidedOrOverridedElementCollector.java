@@ -22,6 +22,7 @@ import java.util.Collection;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.CSharpIcons;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
@@ -89,6 +90,7 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 		}
 	}
 
+	@RequiredReadAction
 	@Override
 	public void collect(PsiElement psiElement, @NotNull Collection<LineMarkerInfo> lineMarkerInfos)
 	{

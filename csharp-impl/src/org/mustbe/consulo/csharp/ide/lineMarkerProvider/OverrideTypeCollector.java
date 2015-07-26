@@ -24,6 +24,7 @@ import java.util.List;
 import javax.swing.JComponent;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransformer;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -53,6 +54,7 @@ import lombok.val;
  */
 public class OverrideTypeCollector implements LineMarkerCollector
 {
+	@RequiredReadAction
 	@Override
 	public void collect(PsiElement psiElement, @NotNull Collection<LineMarkerInfo> lineMarkerInfos)
 	{

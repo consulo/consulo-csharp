@@ -21,9 +21,11 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.codeHighlighting.Pass;
@@ -42,7 +44,6 @@ import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.Function;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -81,52 +82,79 @@ public class PartialTypeCollector implements LineMarkerCollector
 		}
 	}
 
+	@RequiredReadAction
 	@Override
 	public void collect(PsiElement psiElement, @NotNull Collection<LineMarkerInfo> lineMarkerInfos)
 	{
-		if(psiElement.getParent() instanceof CSharpTypeDeclaration && psiElement.getNode().getElementType() == CSharpTokens.IDENTIFIER)
+		CSharpTypeDeclaration parent = CSharpLineMarkerUtil.getNameIdentifierAs(psiElement, CSharpTypeDeclaration.class);
+		if(parent != null)
 		{
-			CSharpTypeDeclaration parent = (CSharpTypeDeclaration) psiElement.getParent();
-
 			if(!parent.hasModifier(CSharpModifier.PARTIAL))
 			{
 				return;
 			}
 
-			val vmQName = parent.getVmQName();
-			assert vmQName != null;
-			DotNetTypeDeclaration[] types = CSharpPsiSearcher.getInstance(parent.getProject()).findTypes(vmQName, parent.getResolveScope());
-
-			if(types.length > 1 && ArrayUtil.contains(parent, types))
+			CSharpCompositeTypeDeclaration compositeType = findCompositeType(parent);
+			if(compositeType == null)
 			{
-				val lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), AllIcons.Nodes.TreeDownArrow,
-						Pass.UPDATE_OVERRIDEN_MARKERS, new Function<PsiElement, String>()
+				return;
+			}
 
+			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), AllIcons.Nodes.TreeDownArrow,
+					Pass.UPDATE_OVERRIDEN_MARKERS, new Function<PsiElement, String>()
+
+			{
+				@Override
+				public String fun(PsiElement element)
 				{
-					@Override
-					public String fun(PsiElement element)
-					{
-						return "Navigate to partial types";
-					}
-				}, new GutterIconNavigationHandler<PsiElement>()
+					return "Navigate to partial types";
+				}
+			}, new GutterIconNavigationHandler<PsiElement>()
+			{
+				@Override
+				@RequiredDispatchThread
+				public void navigate(MouseEvent mouseEvent, PsiElement element)
 				{
-					@Override
-					public void navigate(MouseEvent mouseEvent, PsiElement element)
+					final CSharpTypeDeclaration typeDeclaration = CSharpLineMarkerUtil.getNameIdentifierAs(element, CSharpTypeDeclaration.class);
+
+					assert typeDeclaration != null;
+
+					CSharpCompositeTypeDeclaration compositeType = findCompositeType(typeDeclaration);
+					if(compositeType == null)
 					{
-						val typeDeclaration = (DotNetTypeDeclaration) element.getParent();
-
-						DotNetTypeDeclaration[] types = CSharpPsiSearcher.getInstance(typeDeclaration.getProject()).findTypes(vmQName,
-								typeDeclaration.getResolveScope());
-
-						DotNetTypeDeclaration[] newArray = ArrayUtil.remove(types, typeDeclaration);
-
-						JBPopup popup = NavigationUtil.getPsiElementPopup(newArray, new OurRender(), "Open types (" + newArray.length + " items)");
-						popup.show(new RelativePoint(mouseEvent));
+						return;
 					}
-				}, GutterIconRenderer.Alignment.LEFT
-				);
-				lineMarkerInfos.add(lineMarkerInfo);
+
+					DotNetTypeDeclaration[] newArray = compositeType.getTypeDeclarations();
+
+					JBPopup popup = NavigationUtil.getPsiElementPopup(newArray, new OurRender(), "Open types (" + newArray.length + " items)");
+					popup.show(new RelativePoint(mouseEvent));
+				}
+			}, GutterIconRenderer.Alignment.LEFT
+			);
+			lineMarkerInfos.add(lineMarkerInfo);
+		}
+	}
+
+	@RequiredReadAction
+	private static CSharpCompositeTypeDeclaration findCompositeType(CSharpTypeDeclaration parent)
+	{
+		String vmQName = parent.getVmQName();
+		assert vmQName != null;
+		DotNetTypeDeclaration[] types = CSharpPsiSearcher.getInstance(parent.getProject()).findTypes(vmQName, parent.getResolveScope());
+
+		for(DotNetTypeDeclaration type : types)
+		{
+			if(type instanceof CSharpCompositeTypeDeclaration)
+			{
+				CSharpTypeDeclaration[] typeDeclarations = ((CSharpCompositeTypeDeclaration) type).getTypeDeclarations();
+				if(ArrayUtil.contains(parent, typeDeclarations))
+				{
+					return (CSharpCompositeTypeDeclaration) type;
+				}
 			}
 		}
+
+		return null;
 	}
 }

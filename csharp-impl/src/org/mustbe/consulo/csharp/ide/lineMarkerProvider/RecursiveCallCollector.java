@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.lineMarkerProvider;
 import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -38,6 +39,7 @@ import lombok.val;
  */
 public class RecursiveCallCollector implements LineMarkerCollector
 {
+	@RequiredReadAction
 	@Override
 	public void collect(PsiElement psiElement, @NotNull Collection<LineMarkerInfo> lineMarkerInfos)
 	{
