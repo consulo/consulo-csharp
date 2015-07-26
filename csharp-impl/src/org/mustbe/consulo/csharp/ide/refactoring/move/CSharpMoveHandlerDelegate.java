@@ -31,7 +31,7 @@ import com.intellij.refactoring.move.MoveHandlerDelegate;
  * @author VISTALL
  * @since 26.07.2015
  */
-public class CSharpMoveHandler extends MoveHandlerDelegate
+public class CSharpMoveHandlerDelegate extends MoveHandlerDelegate
 {
 	@Override
 	public boolean isValidTarget(PsiElement psiElement, PsiElement[] sources)
