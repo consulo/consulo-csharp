@@ -250,7 +250,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 				emptyElement(builder, CSharpStubElements.MODIFIER_LIST);
 			}
 
-			doneIdentifier(builder, 0);
+			doneIdentifier(builder, STUB_SUPPORT);
 
 			if(builder.getTokenType() == EQ)
 			{
