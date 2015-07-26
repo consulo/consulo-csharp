@@ -27,6 +27,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.psi.FileViewProvider;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNameIdentifierOwner;
 
@@ -36,6 +37,13 @@ import com.intellij.psi.PsiNameIdentifierOwner;
  */
 public class CSharpPsiUtilImpl
 {
+	@RequiredReadAction
+	public static boolean isNullOrEmpty(@NotNull PsiNameIdentifierOwner owner)
+	{
+		PsiElement nameIdentifier = owner.getNameIdentifier();
+		return nameIdentifier == null || nameIdentifier instanceof CSharpIdentifier && ((CSharpIdentifier) nameIdentifier).getValue() == null;
+	}
+
 	@Nullable
 	@RequiredReadAction
 	public static String getNameWithoutAt(@NotNull PsiNameIdentifierOwner element)

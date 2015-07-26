@@ -3,11 +3,13 @@ package org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0168;
 import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0219;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import com.intellij.codeInspection.LocalInspectionTool;
@@ -84,6 +86,7 @@ public class UnusedSymbolLocalInspection extends LocalInspectionTool
 	}
 
 	@Override
+	@RequiredReadAction
 	public void inspectionFinished(@NotNull LocalInspectionToolSession session, @NotNull ProblemsHolder problemsHolder)
 	{
 		UnusedSymbolVisitor visitor = session.getUserData(KEY);
@@ -101,11 +104,12 @@ public class UnusedSymbolLocalInspection extends LocalInspectionTool
 
 			PsiNameIdentifierOwner key = entry.getKey();
 
-			PsiElement nameIdentifier = key.getNameIdentifier();
-			if(nameIdentifier == null)
+			if(CSharpPsiUtilImpl.isNullOrEmpty(key))
 			{
 				continue;
 			}
+			PsiElement nameIdentifier = key.getNameIdentifier();
+			assert nameIdentifier != null;
 
 			LocalQuickFix[] fixes = LocalQuickFix.EMPTY_ARRAY;
 			if(key instanceof CSharpLocalVariable && !(key.getParent() instanceof CSharpForeachStatementImpl))
