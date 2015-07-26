@@ -140,7 +140,7 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 	@Override
 	public PsiElement getNameIdentifier()
 	{
-		return findNotNullChildByClass(CSharpIdentifier.class);
+		return findChildByClass(CSharpIdentifier.class);
 	}
 
 	@Override

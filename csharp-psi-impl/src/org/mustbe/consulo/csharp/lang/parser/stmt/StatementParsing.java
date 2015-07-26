@@ -339,7 +339,10 @@ public class StatementParsing extends SharedParsingHelpers
 			}
 			else
 			{
-				expect(builder, CSharpTokens.IDENTIFIER, null);
+				if(builder.getTokenType() == CSharpTokens.IDENTIFIER)
+				{
+					doneIdentifier(builder, 0);
+				}
 
 				varMarker.done(LOCAL_VARIABLE);
 			}
