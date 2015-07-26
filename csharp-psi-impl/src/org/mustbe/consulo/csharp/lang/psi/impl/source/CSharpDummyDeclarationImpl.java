@@ -43,6 +43,7 @@ public class CSharpDummyDeclarationImpl extends CSharpStubMemberImpl<CSharpDummy
 		super(stub, nodeType);
 	}
 
+	@RequiredReadAction
 	@Override
 	public String getName()
 	{

@@ -196,14 +196,8 @@ public class LinqParsing extends SharedParsingHelpers
 			parseType(builder, BRACKET_RETURN_BEFORE);
 		}
 
-		if(builder.getTokenType() == CSharpTokens.IDENTIFIER)
-		{
-			builder.advanceLexer();
-		}
-		else
-		{
-			builder.error("CSharpTokens.IDENTIFIER expected");
-		}
+		expectOrReportIdentifier(builder, 0);
+
 		variableMarker.done(LINQ_VARIABLE);
 
 		if(builder.getTokenType() == IN_KEYWORD)

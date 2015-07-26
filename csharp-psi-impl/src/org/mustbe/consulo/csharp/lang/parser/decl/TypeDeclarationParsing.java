@@ -19,7 +19,6 @@ package org.mustbe.consulo.csharp.lang.parser.decl;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.TokenSet;
 
@@ -37,7 +36,7 @@ public class TypeDeclarationParsing extends SharedParsingHelpers
 
 		builder.advanceLexer();
 
-		expect(builder, CSharpTokens.IDENTIFIER, "Name expected");
+		expectOrReportIdentifier(builder, STUB_SUPPORT);
 
 		reportErrorUntil(builder, "Expected ':', '<', '{' or 'where'", TokenSet.create(COLON, LT, LBRACE), WHERE_SET);
 

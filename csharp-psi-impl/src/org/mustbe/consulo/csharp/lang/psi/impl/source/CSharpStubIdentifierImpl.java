@@ -17,11 +17,14 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpIdentifierStub;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
 
 /**
@@ -47,7 +50,7 @@ public class CSharpStubIdentifierImpl extends CSharpStubElementImpl<CSharpIdenti
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nullable
 	@Override
 	public String getValue()
 	{
@@ -56,6 +59,8 @@ public class CSharpStubIdentifierImpl extends CSharpStubElementImpl<CSharpIdenti
 		{
 			return stub.getValue();
 		}
-		return getText();
+
+		PsiElement childByType = findChildByType(CSharpTokens.IDENTIFIER);
+		return childByType != null ? childByType.getText() : null;
 	}
 }

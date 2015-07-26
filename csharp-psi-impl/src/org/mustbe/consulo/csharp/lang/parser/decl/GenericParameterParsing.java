@@ -77,7 +77,7 @@ public class GenericParameterParsing extends SharedParsingHelpers
 
 		parseModifierListWithAttributes(builder, STUB_SUPPORT);
 
-		expect(builder, CSharpTokens.IDENTIFIER, "Name expected");
+		expectOrReportIdentifier(builder, STUB_SUPPORT);
 
 		marker.done(GENERIC_PARAMETER);
 	}

@@ -19,10 +19,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLinqVariable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
@@ -71,12 +72,14 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 		visitor.visitLinqVariable(this);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean isConstant()
 	{
 		return false;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getConstantKeywordElement()
@@ -84,6 +87,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 		return null;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolve)
@@ -141,6 +145,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 		return DotNetTypeRef.AUTO_TYPE;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetType getType()
@@ -148,6 +153,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 		return findChildByClass(DotNetType.class);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetExpression getInitializer()
@@ -155,12 +161,14 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 		return findChildByClass(DotNetExpression.class);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
 		return false;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetModifierList getModifierList()
@@ -170,16 +178,16 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 
 	@Nullable
 	@Override
-	public PsiElement getNameIdentifier()
+	public CSharpIdentifier getNameIdentifier()
 	{
-		return findChildByType(CSharpTokens.IDENTIFIER);
+		return findNotNullChildByClass(CSharpIdentifier.class);
 	}
 
 	@Override
 	public String getName()
 	{
-		PsiElement nameIdentifier = getNameIdentifier();
-		return nameIdentifier == null ? null : CSharpPsiUtilImpl.getNameWithoutAt(nameIdentifier.getText());
+		CSharpIdentifier nameIdentifier = getNameIdentifier();
+		return nameIdentifier == null ? null : CSharpPsiUtilImpl.getNameWithoutAt(nameIdentifier.getValue());
 	}
 
 	@Override

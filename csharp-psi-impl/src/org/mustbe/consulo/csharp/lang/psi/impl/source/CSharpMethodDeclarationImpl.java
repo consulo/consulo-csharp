@@ -70,6 +70,7 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 		return findChildByType(CSharpTokens.IDENTIFIER);
 	}
 
+	@RequiredReadAction
 	@Override
 	public String getName()
 	{

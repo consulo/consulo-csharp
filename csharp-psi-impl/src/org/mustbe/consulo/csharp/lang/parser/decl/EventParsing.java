@@ -18,7 +18,6 @@ package org.mustbe.consulo.csharp.lang.parser.decl;
 
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 
@@ -37,7 +36,7 @@ public class EventParsing extends MemberWithBodyParsing
 		}
 		else
 		{
-			expect(builder, CSharpTokens.IDENTIFIER, "Identifier expected");
+			expectOrReportIdentifier(builder, STUB_SUPPORT);
 			IElementType tokenType = builder.getTokenType();
 			if(tokenType == COMMA)
 			{
@@ -47,7 +46,7 @@ public class EventParsing extends MemberWithBodyParsing
 				{
 					PsiBuilder.Marker marker2 = builder.mark();
 					builder.advanceLexer();
-					expect(builder, CSharpTokens.IDENTIFIER, "Identifier expected");
+					expectOrReportIdentifier(builder, STUB_SUPPORT);
 					marker2.done(EVENT_DECLARATION);
 				}
 				expect(builder, SEMICOLON, "';' expected");

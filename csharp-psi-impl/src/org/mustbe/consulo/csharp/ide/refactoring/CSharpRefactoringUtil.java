@@ -16,7 +16,9 @@
 
 package org.mustbe.consulo.csharp.ide.refactoring;
 
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 
@@ -26,15 +28,16 @@ import com.intellij.psi.PsiNameIdentifierOwner;
  */
 public class CSharpRefactoringUtil
 {
+	@RequiredReadAction
 	public static void replaceNameIdentifier(PsiNameIdentifierOwner owner, String newName)
 	{
 		PsiElement nameIdentifier = owner.getNameIdentifier();
-		if(nameIdentifier == null)
+		if(!(nameIdentifier instanceof CSharpIdentifier))
 		{
 			return;
 		}
 
-		PsiElement newIdentifier = CSharpFileFactory.createIdentifier(owner.getProject(), newName);
+		CSharpIdentifier newIdentifier = CSharpFileFactory.createIdentifier(owner.getProject(), newName);
 
 		nameIdentifier.replace(newIdentifier);
 	}

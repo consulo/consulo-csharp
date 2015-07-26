@@ -17,10 +17,13 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -40,10 +43,11 @@ public class CSharpIdentifierImpl extends CSharpElementImpl implements CSharpIde
 	}
 
 	@RequiredReadAction
-	@NotNull
+	@Nullable
 	@Override
 	public String getValue()
 	{
-		return getText();
+		PsiElement childByType = findChildByType(CSharpTokens.IDENTIFIER);
+		return childByType != null ? childByType.getText() : null;
 	}
 }

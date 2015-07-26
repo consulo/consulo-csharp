@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.parser.decl;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.UsingStatementParsing;
@@ -205,7 +206,14 @@ public class DeclarationParsing extends SharedParsingHelpers
 
 						prevToken = builder.getTokenType();
 
-						expect(builder, NAME_TOKENS, "Name is expected");
+						if(builder.getTokenType() == THIS_KEYWORD)
+						{
+							builder.advanceLexer();
+						}
+						else
+						{
+							expectOrReportIdentifier(builder, STUB_SUPPORT);
+						}
 					}
 
 					parseAfterName(builder, marker, prevToken);
@@ -269,7 +277,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 		return true;
 	}
 
-	private static void parseAfterName(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, IElementType prevToken)
+	private static void parseAfterName(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, @Nullable IElementType prevToken)
 	{
 		if(prevToken == THIS_KEYWORD)
 		{

@@ -128,6 +128,7 @@ public class CSharpArrayMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 		return findChildByType(CSharpTokens.THIS_KEYWORD);
 	}
 
+	@RequiredReadAction
 	@Override
 	public String getName()
 	{

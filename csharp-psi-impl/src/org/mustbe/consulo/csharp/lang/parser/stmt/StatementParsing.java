@@ -616,7 +616,7 @@ public class StatementParsing extends SharedParsingHelpers
 
 			if(parseType(builder, VAR_SUPPORT) != null)
 			{
-				expect(builder, CSharpTokens.IDENTIFIER, "Identifier expected");
+				expectOrReportIdentifier(builder, 0);
 			}
 			else
 			{
