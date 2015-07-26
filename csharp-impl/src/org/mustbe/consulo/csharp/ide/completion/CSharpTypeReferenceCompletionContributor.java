@@ -138,7 +138,7 @@ public class CSharpTypeReferenceCompletionContributor extends CompletionContribu
 
 	@RequiredReadAction
 	private static void consumeType(final CompletionParameters completionParameters,
-			Consumer<LookupElement> completionResultSet,
+			Consumer<LookupElement> consumer,
 			CSharpReferenceExpression parent,
 			boolean insideUsingList,
 			DotNetTypeDeclaration maybeMsilType)
@@ -200,7 +200,8 @@ public class CSharpTypeReferenceCompletionContributor extends CompletionContribu
 				}
 			});
 		}
-		completionResultSet.consume(builder);
+
+		consumer.consume(builder);
 	}
 
 	@RequiredReadAction
