@@ -30,7 +30,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListOwner;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
@@ -58,6 +57,7 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.KeyWithDefaultValue;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.ResolveResult;
@@ -66,6 +66,7 @@ import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.NullableFunction;
+import com.intellij.util.Processor;
 
 /**
  * @author VISTALL
@@ -221,6 +222,7 @@ public class CSharpResolveUtil
 	}
 
 	public static boolean walkGenericParameterList(@NotNull final PsiScopeProcessor processor,
+			@NotNull Processor<ResolveResult> consumer,
 			@NotNull final PsiElement entrance,
 			@Nullable PsiElement maxScope,
 			@NotNull final ResolveState state)
@@ -252,10 +254,6 @@ public class CSharpResolveUtil
 			}
 		}
 
-		if(!(processor instanceof AbstractScopeProcessor))
-		{
-			return true;
-		}
 
 		while(scope != null)
 		{
@@ -277,7 +275,7 @@ public class CSharpResolveUtil
 							}
 							if(((CSharpNamedResolveSelector) selector).isNameEqual(name))
 							{
-								((AbstractScopeProcessor) processor).addElement(genericParameter);
+								consumer.process(new PsiElementResolveResult(genericParameter));
 								return false;
 							}
 						}
@@ -286,7 +284,7 @@ public class CSharpResolveUtil
 					{
 						for(DotNetGenericParameter genericParameter : genericParameters)
 						{
-							((AbstractScopeProcessor) processor).addElement(genericParameter);
+							consumer.process(new PsiElementResolveResult(genericParameter));
 						}
 					}
 				}

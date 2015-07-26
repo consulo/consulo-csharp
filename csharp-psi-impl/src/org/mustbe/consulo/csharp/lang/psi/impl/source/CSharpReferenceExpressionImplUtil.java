@@ -33,6 +33,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.PsiElementResolveResultWithExtractor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SortedMemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.extensionResolver.ExtensionResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.handlers.*;
@@ -748,6 +749,13 @@ public class CSharpReferenceExpressionImplUtil
 
 				extensionProcessor.consumeAsMethodGroup();
 			}
+			else
+			{
+				if(memberProcessor instanceof SortedMemberResolveScopeProcessor)
+				{
+					((SortedMemberResolveScopeProcessor) memberProcessor).consumeAll();
+				}
+			}
 		}
 		else
 		{
@@ -761,6 +769,7 @@ public class CSharpReferenceExpressionImplUtil
 			{
 				SimpleNamedScopeProcessor localProcessor = new SimpleNamedScopeProcessor(processor, completion,
 						ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
+
 				if(!CSharpResolveUtil.treeWalkUp(localProcessor, target, element, last, resolveState))
 				{
 					return;
@@ -774,12 +783,17 @@ public class CSharpReferenceExpressionImplUtil
 				return;
 			}
 
-			if(!CSharpResolveUtil.walkGenericParameterList(memberProcessor, element, null, resolveState))
+			if(!CSharpResolveUtil.walkGenericParameterList(memberProcessor, processor, element, null, resolveState))
 			{
 				return;
 			}
 
 			CSharpResolveUtil.walkUsing(memberProcessor, element, null, resolveState);
+
+			if(memberProcessor instanceof SortedMemberResolveScopeProcessor)
+			{
+				((SortedMemberResolveScopeProcessor) memberProcessor).consumeAll();
+			}
 		}
 	}
 
@@ -810,7 +824,7 @@ public class CSharpReferenceExpressionImplUtil
 	}
 
 	@NotNull
-	public static StubScopeProcessor createMemberProcessor(@NotNull CSharpResolveOptions options, @NotNull Processor<ResolveResult> p)
+	public static StubScopeProcessor createMemberProcessor(@NotNull CSharpResolveOptions options, @NotNull Processor<ResolveResult> resultProcessor)
 	{
 		ResolveToKind kind = options.getKind();
 		PsiElement element = options.getElement();
@@ -879,18 +893,17 @@ public class CSharpReferenceExpressionImplUtil
 
 		if(options.isCompletion())
 		{
-			return new CompletionResolveScopeProcessor(options, p, targets);
+			return new CompletionResolveScopeProcessor(options, resultProcessor, targets);
 		}
 		else
 		{
 			if(sorter != null)
 			{
-				CommonProcessors.CollectProcessor<ResolveResult> processor = new CommonProcessors.CollectProcessor<ResolveResult>();
-				return new MemberResolveScopeProcessor(options, processor, targets);
+				return new SortedMemberResolveScopeProcessor(options, resultProcessor, sorter, targets);
 			}
 			else
 			{
-				return new MemberResolveScopeProcessor(options, p, targets);
+				return new MemberResolveScopeProcessor(options, resultProcessor, targets);
 			}
 		}
 	}

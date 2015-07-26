@@ -34,6 +34,7 @@ import com.intellij.util.containers.ContainerUtil;
  * @author VISTALL
  * @since 17.12.13.
  */
+@Deprecated
 public abstract class AbstractScopeProcessor extends StubScopeProcessor
 {
 	protected final List<ResolveResult> myElements = new ArrayList<ResolveResult>();

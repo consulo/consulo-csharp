@@ -154,7 +154,9 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		{
 			return ResolveResult.EMPTY_ARRAY;
 		}
-		return CSharpResolveCache.getInstance(getProject()).resolveWithCaching(this, OurResolver.INSTANCE, true, incompleteCode, resolveFromParent);
+		return OurResolver.INSTANCE.resolve(this, incompleteCode, resolveFromParent);
+		//return CSharpResolveCache.getInstance(getProject()).resolveWithCaching(this, OurResolver.INSTANCE, true, incompleteCode,
+		// resolveFromParent);
 	}
 
 	@Override

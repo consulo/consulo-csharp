@@ -29,7 +29,10 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import org.mustbe.consulo.dotnet.libraryAnalyzer.NamespaceReference;
@@ -225,14 +228,20 @@ public class CSharpTypeReferenceCompletionContributor extends CompletionContribu
 		options.kind(CSharpReferenceExpression.ResolveToKind.TYPE_LIKE);
 		options.element(element);
 
-		StubScopeProcessor p = CSharpReferenceExpressionImplUtil.createMemberProcessor(options, CommonProcessors.<ResolveResult>alwaysFalse());
+		StubScopeProcessor p = new MemberResolveScopeProcessor(element, CommonProcessors.<ResolveResult>alwaysFalse(), new ExecuteTarget[]{
+				ExecuteTarget.GENERIC_PARAMETER,
+				ExecuteTarget.TYPE,
+				ExecuteTarget.DELEGATE_METHOD,
+				ExecuteTarget.NAMESPACE,
+				ExecuteTarget.TYPE_DEF
+		}, OverrideProcessor.ALWAYS_TRUE);
 
 		if(!CSharpResolveUtil.walkChildren(p, targetToWalkChildren, true, true, resolveState))
 		{
 			return true;
 		}
 
-		if(!CSharpResolveUtil.walkGenericParameterList(p, element, null, resolveState))
+		if(!CSharpResolveUtil.walkGenericParameterList(p, CommonProcessors.<ResolveResult>alwaysTrue(), element, null, resolveState))
 		{
 			return true;
 		}

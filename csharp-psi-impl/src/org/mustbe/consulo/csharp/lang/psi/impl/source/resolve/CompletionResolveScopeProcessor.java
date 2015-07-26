@@ -9,6 +9,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.Ove
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
@@ -59,10 +60,13 @@ public class CompletionResolveScopeProcessor extends StubScopeProcessor
 
 		for(PsiElement psiElement : OverrideUtil.getAllMembers(element, myScope, extractor, true))
 		{
+			ProgressManager.checkCanceled();
+
 			if(!ExecuteTargetUtil.isMyElement(this, psiElement))
 			{
 				continue;
 			}
+
 			addElement(psiElement);
 		}
 		return true;

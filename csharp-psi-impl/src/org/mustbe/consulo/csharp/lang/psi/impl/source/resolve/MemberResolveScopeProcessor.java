@@ -27,6 +27,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolve
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
@@ -41,7 +42,7 @@ import com.intellij.util.Processor;
 public class MemberResolveScopeProcessor extends StubScopeProcessor
 {
 	private final PsiElement myScopeElement;
-	private final Processor<ResolveResult> myResultProcessor;
+	protected Processor<ResolveResult> myResultProcessor;
 	private final GlobalSearchScope myResolveScope;
 	private final OverrideProcessor myOverrideProcessor;
 
@@ -88,12 +89,14 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor
 
 		for(PsiElement psiElement : OverrideUtil.filterOverrideElements(this, myScopeElement, psiElements, myOverrideProcessor))
 		{
+			ProgressManager.checkCanceled();
+
 			if(!ExecuteTargetUtil.isMyElement(this, psiElement))
 			{
 				continue;
 			}
 
-			if(!myResultProcessor.process(new PsiElementResolveResult(element, true)))
+			if(!myResultProcessor.process(new PsiElementResolveResult(psiElement, true)))
 			{
 				return false;
 			}

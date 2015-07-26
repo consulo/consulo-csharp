@@ -77,6 +77,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.IconDescriptorUpdaters;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.text.StringUtil;
@@ -195,6 +196,8 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 					@Override
 					public boolean process(ResolveResult resolveResult)
 					{
+						ProgressManager.checkCanceled();
+
 						PsiElement element = resolveResult.getElement();
 						if(element == null)
 						{
@@ -242,6 +245,8 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 					@Override
 					public boolean process(ResolveResult resolveResult)
 					{
+						ProgressManager.checkCanceled();
+
 						PsiElement element = resolveResult.getElement();
 						if(element == null)
 						{
