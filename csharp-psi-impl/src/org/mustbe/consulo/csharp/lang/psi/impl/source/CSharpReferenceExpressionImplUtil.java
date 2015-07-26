@@ -671,7 +671,7 @@ public class CSharpReferenceExpressionImplUtil
 		DotNetGenericExtractor extractor = defaultExtractor;
 		DotNetTypeRef qualifierTypeRef = DotNetTypeRef.ERROR_TYPE;
 
-		if(qualifier instanceof DotNetExpression)
+		if(forceQualifierElement == null && qualifier instanceof DotNetExpression)
 		{
 			qualifierTypeRef = ((DotNetExpression) qualifier).toTypeRef(false);
 
@@ -722,6 +722,7 @@ public class CSharpReferenceExpressionImplUtil
 
 			if(!CSharpResolveUtil.walkChildren(memberProcessor, target, false, true, resolveState))
 			{
+				consumeSorted(memberProcessor);
 				return;
 			}
 
@@ -742,6 +743,7 @@ public class CSharpReferenceExpressionImplUtil
 
 				if(!CSharpResolveUtil.walkChildren(extensionProcessor, targetToWalkChildren, true, false, resolveState))
 				{
+					consumeSorted(memberProcessor);
 					return;
 				}
 
@@ -749,13 +751,8 @@ public class CSharpReferenceExpressionImplUtil
 
 				extensionProcessor.consumeAsMethodGroup();
 			}
-			else
-			{
-				if(memberProcessor instanceof SortedMemberResolveScopeProcessor)
-				{
-					((SortedMemberResolveScopeProcessor) memberProcessor).consumeAll();
-				}
-			}
+
+			consumeSorted(memberProcessor);
 		}
 		else
 		{
@@ -780,20 +777,27 @@ public class CSharpReferenceExpressionImplUtil
 
 			if(!CSharpResolveUtil.walkChildren(memberProcessor, targetToWalkChildren, true, true, resolveState))
 			{
+				consumeSorted(memberProcessor);
 				return;
 			}
 
 			if(!CSharpResolveUtil.walkGenericParameterList(memberProcessor, processor, element, null, resolveState))
 			{
+				consumeSorted(memberProcessor);
 				return;
 			}
 
 			CSharpResolveUtil.walkUsing(memberProcessor, element, null, resolveState);
 
-			if(memberProcessor instanceof SortedMemberResolveScopeProcessor)
-			{
-				((SortedMemberResolveScopeProcessor) memberProcessor).consumeAll();
-			}
+			consumeSorted(memberProcessor);
+		}
+	}
+
+	private static void consumeSorted(StubScopeProcessor memberProcessor)
+	{
+		if(memberProcessor instanceof SortedMemberResolveScopeProcessor)
+		{
+			((SortedMemberResolveScopeProcessor) memberProcessor).consumeAll();
 		}
 	}
 
