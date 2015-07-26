@@ -60,6 +60,7 @@ import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
 import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixActionRegistrarImpl;
 import com.intellij.codeInsight.quickfix.UnresolvedReferenceQuickFixProvider;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiPolyVariantReference;
@@ -135,7 +136,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 					result.setHighlightInfoType(HighlightInfoType.WRONG_REF);
 
 					String unresolvedText = getUnresolvedText(callElement, range);
-					result.setText("'" + unresolvedText + "' is not resolved");
+					result.setText("'" + StringUtil.unescapeXml(unresolvedText) + "' is not resolved");
 
 					result.setTextRange(range.getTextRange());
 					list.add(result);
