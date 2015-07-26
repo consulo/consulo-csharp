@@ -30,6 +30,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.SingleRootFileViewProvider;
@@ -122,6 +123,18 @@ public class CSharpFileFactory
 	{
 		CSharpFieldDeclaration field = createField(project, "int " + name);
 		return (CSharpIdentifier) field.getNameIdentifier();
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public static PsiElement createReferenceToken(@NotNull Project project, @NotNull String name)
+	{
+		CSharpFieldDeclaration field = createField(project, "int dummy = " + name + ";");
+		CSharpReferenceExpression initializer = (CSharpReferenceExpression) field.getInitializer();
+		assert initializer != null;
+		PsiElement referenceElement = initializer.getReferenceElement();
+		assert referenceElement != null;
+		return referenceElement;
 	}
 
 	public static DotNetExpression createExpression(@NotNull Project project, @NotNull String text)

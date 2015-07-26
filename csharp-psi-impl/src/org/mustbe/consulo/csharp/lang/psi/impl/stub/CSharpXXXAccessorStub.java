@@ -28,14 +28,9 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpXXXAccessorStub extends MemberStub<DotNetXXXAccessor>
 {
-	public CSharpXXXAccessorStub(StubElement parent, StringRef name, int otherModifiers)
+	public CSharpXXXAccessorStub(StubElement parent, int otherModifiers)
 	{
-		super(parent, CSharpStubElements.XXX_ACCESSOR, name, null, otherModifiers);
-	}
-
-	public CSharpXXXAccessorStub(StubElement parent, String name, int otherModifiers)
-	{
-		super(parent, CSharpStubElements.XXX_ACCESSOR, name, null, otherModifiers);
+		super(parent, CSharpStubElements.XXX_ACCESSOR, (StringRef)null, null, otherModifiers);
 	}
 
 	public static int getOtherModifiers(DotNetXXXAccessor accessor)

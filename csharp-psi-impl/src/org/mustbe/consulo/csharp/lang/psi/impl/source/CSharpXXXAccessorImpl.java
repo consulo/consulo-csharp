@@ -19,15 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
-import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
-import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
+import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightLocalVariableBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
@@ -109,11 +101,22 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 		return findNotNullChildByType(CSharpTokenSets.XXX_ACCESSOR_START);
 	}
 
+	@RequiredReadAction
+	@Override
+	public String getName()
+	{
+		Kind accessorKind = getAccessorKind();
+		if(accessorKind == null)
+		{
+			return "null";
+		}
+		return accessorKind.name().toLowerCase();
+	}
+
 	@NotNull
 	private Pair<DotNetTypeRef, DotNetQualifiedElement> getTypeRefOfParent()
 	{
-		PsiElement element = PsiTreeUtil.getParentOfType(this, CSharpPropertyDeclaration.class, CSharpEventDeclaration.class,
-				CSharpArrayMethodDeclaration.class);
+		CSharpXXXAccessorOwner element = PsiTreeUtil.getParentOfType(this, CSharpXXXAccessorOwner.class);
 		if(element == null)
 		{
 			return Pair.create(DotNetTypeRef.ERROR_TYPE, null);

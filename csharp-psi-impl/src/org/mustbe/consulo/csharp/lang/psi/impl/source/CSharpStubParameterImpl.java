@@ -19,11 +19,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -62,12 +62,14 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 		visitor.visitParameter(this);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean isConstant()
 	{
 		return false;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getConstantKeywordElement()
@@ -75,6 +77,7 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 		return null;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
@@ -92,6 +95,7 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 		return typeRef;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetType getType()
@@ -99,6 +103,7 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 		return getRequiredStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetExpression getInitializer()
@@ -106,6 +111,7 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 		return findChildByClass(DotNetExpression.class);
 	}
 
+	@RequiredReadAction
 	@Override
 	@Nullable
 	public DotNetModifierList getModifierList()
@@ -113,6 +119,7 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 		return getStubOrPsiChild(CSharpStubElements.MODIFIER_LIST);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
@@ -122,11 +129,13 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public PsiElement getNameIdentifier()
 	{
-		return findChildByType(CSharpTokens.IDENTIFIER);
+		return getStubOrPsiChild(CSharpStubElements.IDENTIFIER);
 	}
 
+	@RequiredReadAction
 	@Override
 	public int getTextOffset()
 	{
@@ -135,6 +144,7 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 	}
 
 	@Override
+	@RequiredReadAction
 	public String getName()
 	{
 		CSharpVariableDeclStub<?> stub = getStub();
