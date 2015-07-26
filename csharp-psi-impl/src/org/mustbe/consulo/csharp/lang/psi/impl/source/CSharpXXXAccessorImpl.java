@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
@@ -84,6 +85,7 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 		return new CSharpTypeRefByQName(DotNetTypes.System.Void);
 	}
 
+	@RequiredReadAction
 	@Override
 	@Nullable
 	public DotNetModifierList getModifierList()
@@ -91,6 +93,7 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 		return findChildByClass(DotNetModifierList.class);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
@@ -98,6 +101,7 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 		return modifierList != null && modifierList.hasModifier(modifier);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public PsiElement getNameIdentifier()

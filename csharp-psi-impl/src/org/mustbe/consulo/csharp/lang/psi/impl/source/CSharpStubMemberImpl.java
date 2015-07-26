@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -61,6 +62,7 @@ public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSha
 		return PsiReferenceService.getService().getContributedReferences(this);
 	}
 
+	@RequiredReadAction
 	@Override
 	@Nullable
 	public DotNetModifierList getModifierList()
@@ -69,6 +71,7 @@ public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSha
 	}
 
 	@Override
+	@RequiredReadAction
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
 		DotNetModifierList modifierList = getModifierList();
@@ -77,11 +80,13 @@ public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSha
 
 	@Override
 	@Nullable
+	@RequiredReadAction
 	public PsiElement getNameIdentifier()
 	{
 		return findChildByType(CSharpTokens.IDENTIFIER);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableQName()
@@ -94,6 +99,7 @@ public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSha
 		return parentQName + "." + getName();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableParentQName()
@@ -111,6 +117,7 @@ public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSha
 		return "";
 	}
 
+	@RequiredReadAction
 	@Override
 	public int getTextOffset()
 	{

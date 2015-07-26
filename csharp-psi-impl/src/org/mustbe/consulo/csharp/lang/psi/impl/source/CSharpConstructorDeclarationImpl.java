@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -60,6 +61,7 @@ public class CSharpConstructorDeclarationImpl extends CSharpLikeMethodDeclaratio
 		visitor.visitConstructorDeclaration(this);
 	}
 
+	@RequiredReadAction
 	@Override
 	@Nullable
 	public PsiElement getNameIdentifier()
