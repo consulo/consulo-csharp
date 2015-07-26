@@ -144,12 +144,14 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return super.getUserData(key);
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getLeftBrace()
 	{
 		return null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getRightBrace()
 	{

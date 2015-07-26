@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayMethodDeclarationImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpArrayMethodDeclStub;
@@ -39,6 +40,7 @@ public class CSharpArrayMethodStubElementType extends CSharpAbstractStubElementT
 		super("ARRAY_METHOD_DECLARATION");
 	}
 
+	@NotNull
 	@Override
 	public CSharpArrayMethodDeclaration createElement(@NotNull ASTNode astNode)
 	{
@@ -51,18 +53,17 @@ public class CSharpArrayMethodStubElementType extends CSharpAbstractStubElementT
 		return new CSharpArrayMethodDeclarationImpl(methodStub);
 	}
 
+	@RequiredReadAction
 	@Override
 	public CSharpArrayMethodDeclStub createStub(@NotNull CSharpArrayMethodDeclaration declaration, StubElement stubElement)
 	{
-		StringRef name = StringRef.fromNullableString(declaration.getName());
 		StringRef parentQName = StringRef.fromNullableString(declaration.getPresentableParentQName());
-		return new CSharpArrayMethodDeclStub(stubElement, name, parentQName);
+		return new CSharpArrayMethodDeclStub(stubElement, parentQName);
 	}
 
 	@Override
 	public void serialize(@NotNull CSharpArrayMethodDeclStub methodStub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
-		stubOutputStream.writeName(methodStub.getName());
 		stubOutputStream.writeName(methodStub.getParentQName());
 	}
 
@@ -70,8 +71,7 @@ public class CSharpArrayMethodStubElementType extends CSharpAbstractStubElementT
 	@Override
 	public CSharpArrayMethodDeclStub deserialize(@NotNull StubInputStream inputStream, StubElement stubElement) throws IOException
 	{
-		StringRef name = inputStream.readName();
 		StringRef qname = inputStream.readName();
-		return new CSharpArrayMethodDeclStub(stubElement, name, qname);
+		return new CSharpArrayMethodDeclStub(stubElement, qname);
 	}
 }

@@ -128,11 +128,6 @@ public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSha
 	@RequiredReadAction
 	public String getName()
 	{
-		S stub = getStub();
-		if(stub != null)
-		{
-			return stub.getName();
-		}
 		return CSharpPsiUtilImpl.getNameWithoutAt(this);
 	}
 

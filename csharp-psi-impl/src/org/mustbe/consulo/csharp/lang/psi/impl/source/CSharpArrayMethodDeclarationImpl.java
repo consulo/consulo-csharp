@@ -187,12 +187,14 @@ public class CSharpArrayMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 		}
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getLeftBrace()
 	{
 		return findChildByType(CSharpTokens.LBRACE);
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getRightBrace()
 	{

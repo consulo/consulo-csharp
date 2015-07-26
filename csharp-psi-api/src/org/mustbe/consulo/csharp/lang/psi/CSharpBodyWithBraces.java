@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
+import org.mustbe.consulo.RequiredReadAction;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -24,7 +25,9 @@ import com.intellij.psi.PsiElement;
  */
 public interface CSharpBodyWithBraces extends PsiElement
 {
+	@RequiredReadAction
 	PsiElement getLeftBrace();
 
+	@RequiredReadAction
 	PsiElement getRightBrace();
 }

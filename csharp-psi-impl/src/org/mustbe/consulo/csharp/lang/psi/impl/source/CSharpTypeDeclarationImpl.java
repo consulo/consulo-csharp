@@ -68,12 +68,14 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 		visitor.visitTypeDeclaration(this);
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getLeftBrace()
 	{
 		return findChildByType(CSharpTokens.LBRACE);
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getRightBrace()
 	{

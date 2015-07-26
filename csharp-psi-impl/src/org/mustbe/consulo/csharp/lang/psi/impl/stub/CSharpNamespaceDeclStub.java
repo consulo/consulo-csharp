@@ -16,10 +16,10 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNamespaceDeclarationImpl;
+import com.intellij.psi.stubs.IStubElementType;
+import com.intellij.psi.stubs.StubBase;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.io.StringRef;
 
@@ -27,10 +27,23 @@ import com.intellij.util.io.StringRef;
  * @author VISTALL
  * @since 15.12.13.
  */
-public class CSharpNamespaceDeclStub extends MemberStub<CSharpNamespaceDeclarationImpl>
+public class CSharpNamespaceDeclStub extends StubBase<CSharpNamespaceDeclarationImpl>
 {
-	public CSharpNamespaceDeclStub(StubElement parent, @Nullable StringRef name, @NotNull StringRef parentQName)
+	private final StringRef myQualifiedName;
+
+	public CSharpNamespaceDeclStub(StubElement parent, IStubElementType elementType, @Nullable StringRef qualifiedName)
 	{
-		super(parent, CSharpStubElements.NAMESPACE_DECLARATION, name, parentQName, 0);
+		super(parent, elementType);
+		myQualifiedName = qualifiedName;
+	}
+
+	public CSharpNamespaceDeclStub(final StubElement parent, final IStubElementType elementType, @Nullable final String qualifiedName)
+	{
+		this(parent, elementType, StringRef.fromString(qualifiedName));
+	}
+
+	public String getQualifiedName()
+	{
+		return StringRef.toString(myQualifiedName);
 	}
 }

@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFieldDeclarationImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
@@ -36,6 +37,7 @@ public class CSharpFieldStubElementType extends CSharpQVariableStubElementType<D
 		super("FIELD_DECLARATION");
 	}
 
+	@NotNull
 	@Override
 	public DotNetFieldDeclaration createElement(@NotNull ASTNode astNode)
 	{
@@ -49,9 +51,10 @@ public class CSharpFieldStubElementType extends CSharpQVariableStubElementType<D
 	}
 
 	@Override
-	public void indexStub(@NotNull CSharpVariableDeclStub<DotNetFieldDeclaration> cSharpFieldStub, @NotNull IndexSink indexSink)
+	@RequiredReadAction
+	public void indexStub(@NotNull CSharpVariableDeclStub<DotNetFieldDeclaration> stub, @NotNull IndexSink indexSink)
 	{
-		String name = cSharpFieldStub.getName();
+		String name = getName(stub);
 		if(!StringUtil.isEmpty(name))
 		{
 			indexSink.occurrence(CSharpIndexKeys.FIELD_INDEX, name);

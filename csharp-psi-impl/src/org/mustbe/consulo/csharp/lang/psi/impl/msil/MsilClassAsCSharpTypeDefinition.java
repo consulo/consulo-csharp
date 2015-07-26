@@ -260,12 +260,14 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		return CSharpTypeDeclarationImplUtil.isEquivalentTo(this, another);
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getLeftBrace()
 	{
 		return null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getRightBrace()
 	{

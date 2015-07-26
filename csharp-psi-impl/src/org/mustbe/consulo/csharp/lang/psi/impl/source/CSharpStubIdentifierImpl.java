@@ -60,7 +60,7 @@ public class CSharpStubIdentifierImpl extends CSharpStubElementImpl<CSharpIdenti
 			return stub.getValue();
 		}
 
-		PsiElement childByType = findChildByType(CSharpTokens.IDENTIFIER);
-		return childByType != null ? childByType.getText() : null;
+		PsiElement psiElement = findChildByType(CSharpTokens.IDENTIFIER);
+		return psiElement != null ? psiElement.getText() : null;
 	}
 }

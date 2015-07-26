@@ -147,11 +147,6 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 	@RequiredReadAction
 	public String getName()
 	{
-		CSharpVariableDeclStub<?> stub = getStub();
-		if(stub != null)
-		{
-			return stub.getName();
-		}
 		return CSharpPsiUtilImpl.getNameWithoutAt(this);
 	}
 

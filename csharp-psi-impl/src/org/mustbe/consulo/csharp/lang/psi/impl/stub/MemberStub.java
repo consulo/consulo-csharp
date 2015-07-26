@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.stubs.NamedStubBase;
+import com.intellij.psi.stubs.StubBase;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.io.StringRef;
 
@@ -27,22 +27,14 @@ import com.intellij.util.io.StringRef;
  * @author VISTALL
  * @since 19.12.13.
  */
-public class MemberStub<T extends DotNetNamedElement> extends NamedStubBase<T>
+public class MemberStub<T extends DotNetNamedElement> extends StubBase<T>
 {
 	private final StringRef myParentQName;
 	private final int myOtherModifierMask;
 
-	public MemberStub(StubElement parent, IStubElementType elementType, @Nullable StringRef name, @Nullable StringRef namespaceQName, int otherModifierMask)
+	public MemberStub(StubElement parent, IStubElementType elementType, @Nullable StringRef namespaceQName, int otherModifierMask)
 	{
-		super(parent, elementType, name);
-		myParentQName = namespaceQName;
-		myOtherModifierMask = otherModifierMask;
-	}
-
-	public MemberStub(StubElement parent, IStubElementType elementType, @Nullable String name, @Nullable StringRef namespaceQName,
-			int otherModifierMask)
-	{
-		super(parent, elementType, name);
+		super(parent, elementType);
 		myParentQName = namespaceQName;
 		myOtherModifierMask = otherModifierMask;
 	}

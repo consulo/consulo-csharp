@@ -20,7 +20,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.ArrayUtil;
-import com.intellij.util.io.StringRef;
 
 /**
  * @author VISTALL
@@ -30,7 +29,7 @@ public class CSharpXXXAccessorStub extends MemberStub<DotNetXXXAccessor>
 {
 	public CSharpXXXAccessorStub(StubElement parent, int otherModifiers)
 	{
-		super(parent, CSharpStubElements.XXX_ACCESSOR, (StringRef)null, null, otherModifiers);
+		super(parent, CSharpStubElements.XXX_ACCESSOR, null, otherModifiers);
 	}
 
 	public static int getOtherModifiers(DotNetXXXAccessor accessor)

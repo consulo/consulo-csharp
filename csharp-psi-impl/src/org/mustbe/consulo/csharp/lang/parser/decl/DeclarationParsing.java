@@ -250,7 +250,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 				emptyElement(builder, CSharpStubElements.MODIFIER_LIST);
 			}
 
-			builder.advanceLexer();
+			doneIdentifier(builder, 0);
 
 			if(builder.getTokenType() == EQ)
 			{
@@ -268,7 +268,9 @@ public class DeclarationParsing extends SharedParsingHelpers
 			{
 				if(nameExpected)
 				{
+					PsiBuilder.Marker identifierMarker = builder.mark();
 					builder.error("Name expected");
+					identifierMarker.done(CSharpStubElements.IDENTIFIER);
 				}
 
 				done(mark, ENUM_CONSTANT_DECLARATION);

@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.light.builder;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -78,12 +79,14 @@ public class CSharpLightArrayMethodDeclarationBuilder extends CSharpLightLikeMet
 		return DotNetNamedElement.EMPTY_ARRAY;
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getLeftBrace()
 	{
 		return null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getRightBrace()
 	{

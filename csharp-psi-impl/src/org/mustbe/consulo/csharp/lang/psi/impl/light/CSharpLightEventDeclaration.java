@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.light;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -83,12 +84,14 @@ public class CSharpLightEventDeclaration extends CSharpLightVariable<CSharpEvent
 		return myOriginal.getPresentableQName();
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getLeftBrace()
 	{
 		return myOriginal.getLeftBrace();
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getRightBrace()
 	{

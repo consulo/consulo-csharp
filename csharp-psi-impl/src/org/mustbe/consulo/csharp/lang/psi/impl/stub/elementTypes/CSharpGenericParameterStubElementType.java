@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpGenericParameterImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpGenericParameterStub;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -26,7 +27,6 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
-import com.intellij.util.io.StringRef;
 
 /**
  * @author VISTALL
@@ -52,24 +52,22 @@ public class CSharpGenericParameterStubElementType extends CSharpAbstractStubEle
 		return new CSharpGenericParameterImpl(cSharpGenericParameterStub);
 	}
 
+	@RequiredReadAction
 	@Override
 	public CSharpGenericParameterStub createStub(@NotNull DotNetGenericParameter genericParameter, StubElement stubElement)
 	{
-		StringRef name = StringRef.fromNullableString(genericParameter.getName());
-		return new CSharpGenericParameterStub(stubElement, name);
+		return new CSharpGenericParameterStub(stubElement);
 	}
 
 	@Override
 	public void serialize(@NotNull CSharpGenericParameterStub cSharpGenericParameterStub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
-		stubOutputStream.writeName(cSharpGenericParameterStub.getName());
 	}
 
 	@NotNull
 	@Override
 	public CSharpGenericParameterStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
-		StringRef name = stubInputStream.readName();
-		return new CSharpGenericParameterStub(stubElement, name);
+		return new CSharpGenericParameterStub(stubElement);
 	}
 }

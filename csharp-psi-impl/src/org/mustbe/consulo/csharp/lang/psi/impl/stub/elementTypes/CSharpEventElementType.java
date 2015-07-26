@@ -49,9 +49,9 @@ public class CSharpEventElementType extends CSharpQVariableStubElementType<DotNe
 	}
 
 	@Override
-	public void indexStub(@NotNull CSharpVariableDeclStub<DotNetEventDeclaration> cSharpEventStub, @NotNull IndexSink indexSink)
+	public void indexStub(@NotNull CSharpVariableDeclStub<DotNetEventDeclaration> stub, @NotNull IndexSink indexSink)
 	{
-		String name = cSharpEventStub.getName();
+		String name = getName(stub);
 		if(!StringUtil.isEmpty(name))
 		{
 			indexSink.occurrence(CSharpIndexKeys.EVENT_INDEX, name);

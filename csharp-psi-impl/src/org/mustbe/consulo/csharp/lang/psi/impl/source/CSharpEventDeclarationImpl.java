@@ -92,12 +92,14 @@ public class CSharpEventDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 		return getAccessors();
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getLeftBrace()
 	{
 		return findChildByType(CSharpTokens.LBRACE);
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getRightBrace()
 	{

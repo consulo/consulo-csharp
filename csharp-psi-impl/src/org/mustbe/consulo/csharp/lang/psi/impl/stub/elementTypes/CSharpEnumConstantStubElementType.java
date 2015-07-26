@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpEnumConstantDeclarationImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
@@ -35,6 +36,7 @@ public class CSharpEnumConstantStubElementType extends CSharpQVariableStubElemen
 		super("ENUM_CONSTANT_DECLARATION");
 	}
 
+	@NotNull
 	@Override
 	public CSharpEnumConstantDeclarationImpl createElement(@NotNull ASTNode astNode)
 	{
@@ -42,15 +44,16 @@ public class CSharpEnumConstantStubElementType extends CSharpQVariableStubElemen
 	}
 
 	@Override
-	public CSharpEnumConstantDeclarationImpl createPsi(@NotNull CSharpVariableDeclStub<CSharpEnumConstantDeclarationImpl> fieldStub)
+	public CSharpEnumConstantDeclarationImpl createPsi(@NotNull CSharpVariableDeclStub<CSharpEnumConstantDeclarationImpl> stub)
 	{
-		return new CSharpEnumConstantDeclarationImpl(fieldStub);
+		return new CSharpEnumConstantDeclarationImpl(stub);
 	}
 
 	@Override
-	public void indexStub(@NotNull CSharpVariableDeclStub<CSharpEnumConstantDeclarationImpl> cSharpFieldStub, @NotNull IndexSink indexSink)
+	@RequiredReadAction
+	public void indexStub(@NotNull CSharpVariableDeclStub<CSharpEnumConstantDeclarationImpl> stub, @NotNull IndexSink indexSink)
 	{
-		String name = cSharpFieldStub.getName();
+		String name = getName(stub);
 		if(!StringUtil.isEmpty(name))
 		{
 			indexSink.occurrence(CSharpIndexKeys.FIELD_INDEX, name);

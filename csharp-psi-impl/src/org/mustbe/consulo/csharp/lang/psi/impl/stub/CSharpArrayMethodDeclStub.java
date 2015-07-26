@@ -28,10 +28,8 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpArrayMethodDeclStub extends MemberStub<CSharpArrayMethodDeclaration>
 {
-	public CSharpArrayMethodDeclStub(StubElement parent,
-			@Nullable StringRef name,
-			@Nullable StringRef qname)
+	public CSharpArrayMethodDeclStub(StubElement parent, @Nullable StringRef qname)
 	{
-		super(parent, CSharpStubElements.ARRAY_METHOD_DECLARATION, name, qname, 0);
+		super(parent, CSharpStubElements.ARRAY_METHOD_DECLARATION, qname, 0);
 	}
 }

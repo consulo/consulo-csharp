@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -47,12 +48,14 @@ public class CSharpBlockStatementImpl extends CSharpElementImpl implements DotNe
 		visitor.visitBlockStatement(this);
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getLeftBrace()
 	{
 		return findChildByType(CSharpTokens.LBRACE);
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getRightBrace()
 	{

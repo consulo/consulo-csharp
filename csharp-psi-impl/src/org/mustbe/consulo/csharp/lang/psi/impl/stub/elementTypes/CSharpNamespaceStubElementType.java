@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNamespaceDeclarationImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpNamespaceDeclStub;
 import com.intellij.lang.ASTNode;
@@ -51,19 +52,18 @@ public class CSharpNamespaceStubElementType extends CSharpAbstractStubElementTyp
 		return new CSharpNamespaceDeclarationImpl(astNode);
 	}
 
+	@RequiredReadAction
 	@Override
-	public CSharpNamespaceDeclStub createStub(@NotNull CSharpNamespaceDeclarationImpl cSharpNamespaceDeclaration, StubElement stubElement)
+	public CSharpNamespaceDeclStub createStub(@NotNull CSharpNamespaceDeclarationImpl declaration, StubElement stubElement)
 	{
-		StringRef name = StringRef.fromNullableString(cSharpNamespaceDeclaration.getName());
-		StringRef parentQName = StringRef.fromNullableString(cSharpNamespaceDeclaration.getPresentableParentQName());
-		return new CSharpNamespaceDeclStub(stubElement, name, parentQName);
+		String qName = declaration.getQNameFromDecl();
+		return new CSharpNamespaceDeclStub(stubElement, this, qName);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpNamespaceDeclStub cSharpNamespaceStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@NotNull CSharpNamespaceDeclStub namespaceStub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
-		stubOutputStream.writeName(cSharpNamespaceStub.getName());
-		stubOutputStream.writeName(cSharpNamespaceStub.getParentQName());
+		stubOutputStream.writeName(namespaceStub.getQualifiedName());
 	}
 
 	@NotNull
@@ -71,7 +71,6 @@ public class CSharpNamespaceStubElementType extends CSharpAbstractStubElementTyp
 	public CSharpNamespaceDeclStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
 		StringRef qname = stubInputStream.readName();
-		StringRef parentQName = stubInputStream.readName();
-		return new CSharpNamespaceDeclStub(stubElement, qname, parentQName);
+		return new CSharpNamespaceDeclStub(stubElement, this, qname);
 	}
 }

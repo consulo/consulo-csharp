@@ -62,17 +62,15 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 	@Override
 	public CSharpMethodDeclStub createStub(@NotNull CSharpMethodDeclaration methodDeclaration, StubElement stubElement)
 	{
-		StringRef name = StringRef.fromNullableString(methodDeclaration.getName());
 		StringRef parentQName = StringRef.fromNullableString(methodDeclaration.getPresentableParentQName());
 		int otherModifierMask = CSharpMethodDeclStub.getOtherModifierMask(methodDeclaration);
 		int operatorIndex = CSharpMethodDeclStub.getOperatorIndex(methodDeclaration);
-		return new CSharpMethodDeclStub(stubElement, name, parentQName, otherModifierMask, operatorIndex);
+		return new CSharpMethodDeclStub(stubElement, parentQName, otherModifierMask, operatorIndex);
 	}
 
 	@Override
 	public void serialize(@NotNull CSharpMethodDeclStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
-		stubOutputStream.writeName(stub.getName());
 		stubOutputStream.writeName(stub.getParentQName());
 		stubOutputStream.writeInt(stub.getOtherModifierMask());
 		stubOutputStream.writeInt(stub.getOperatorIndex());
@@ -82,17 +80,17 @@ public class CSharpMethodStubElementType extends CSharpAbstractStubElementType<C
 	@Override
 	public CSharpMethodDeclStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
-		StringRef name = stubInputStream.readName();
 		StringRef qname = stubInputStream.readName();
 		int otherModifierMask = stubInputStream.readInt();
 		int operatorIndex = stubInputStream.readInt();
-		return new CSharpMethodDeclStub(stubElement, name, qname, otherModifierMask, operatorIndex);
+		return new CSharpMethodDeclStub(stubElement, qname, otherModifierMask, operatorIndex);
 	}
 
 	@Override
+	@RequiredReadAction
 	public void indexStub(@NotNull CSharpMethodDeclStub stub, @NotNull IndexSink indexSink)
 	{
-		String name = stub.getName();
+		String name = getName(stub);
 		if(!StringUtil.isEmpty(name))
 		{
 			indexSink.occurrence(CSharpIndexKeys.METHOD_INDEX, name);

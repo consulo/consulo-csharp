@@ -36,11 +36,10 @@ public class CSharpVariableDeclStub<V extends DotNetVariable> extends MemberStub
 
 	public CSharpVariableDeclStub(StubElement parent,
 			CSharpAbstractStubElementType<?, ?> elementType,
-			@Nullable StringRef name,
 			@Nullable StringRef namespaceQName,
 			int flags)
 	{
-		super(parent, elementType, name, namespaceQName, flags);
+		super(parent, elementType, namespaceQName, flags);
 	}
 
 	public static int getOtherModifierMask(DotNetVariable variable)

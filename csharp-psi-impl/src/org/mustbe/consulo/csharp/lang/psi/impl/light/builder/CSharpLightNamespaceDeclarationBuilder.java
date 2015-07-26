@@ -60,12 +60,14 @@ public class CSharpLightNamespaceDeclarationBuilder extends CSharpLightElementBu
 		return null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getLeftBrace()
 	{
 		return null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getRightBrace()
 	{
