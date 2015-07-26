@@ -20,6 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiUtilCore;
@@ -31,6 +33,27 @@ import com.intellij.psi.util.PsiUtilCore;
 public class CSharpLineMarkerUtil
 {
 	@Nullable
+	public static DotNetVirtualImplementOwner findElementForLineMarker(@NotNull PsiElement element)
+	{
+		PsiElement superParent = null;
+		IElementType elementType = PsiUtilCore.getElementType(element);
+		if(elementType == CSharpTokens.THIS_KEYWORD)
+		{
+			superParent = element.getParent();
+		}
+		else if(elementType == CSharpTokens.IDENTIFIER)
+		{
+			superParent = getParentIfIsIdentifier(element);
+		}
+		if(superParent == null)
+		{
+			return null;
+		}
+
+		return OverrideUtil.isAllowForOverride(superParent) ? (DotNetVirtualImplementOwner) superParent : null;
+	}
+
+	@Nullable
 	@SuppressWarnings("unchecked")
 	public static <T> T getNameIdentifierAs(@Nullable PsiElement element, @NotNull Class<T> clazz)
 	{
@@ -38,11 +61,22 @@ public class CSharpLineMarkerUtil
 		{
 			return null;
 		}
+
+		PsiElement parentIfIsIdentifier = getParentIfIsIdentifier(element);
+		if(parentIfIsIdentifier != null)
+		{
+			return clazz.isAssignableFrom(parentIfIsIdentifier.getClass()) ? (T)parentIfIsIdentifier : null;
+		}
+		return null;
+	}
+
+	@Nullable
+	public static PsiElement getParentIfIsIdentifier(@NotNull PsiElement element)
+	{
 		IElementType elementType = PsiUtilCore.getElementType(element);
 		if(elementType == CSharpTokens.IDENTIFIER && element.getParent() instanceof CSharpIdentifier)
 		{
-			PsiElement parent = element.getParent().getParent();
-			return clazz.isAssignableFrom(parent.getClass()) ? (T)parent : null;
+			return element.getParent().getParent();
 		}
 		return null;
 	}

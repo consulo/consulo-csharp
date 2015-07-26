@@ -67,7 +67,7 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 		{
 			return findChildByFilter(CSharpTokenSets.OVERLOADING_OPERATORS);
 		}
-		return findChildByType(CSharpTokens.IDENTIFIER);
+		return getStubOrPsiChild(CSharpStubElements.IDENTIFIER);
 	}
 
 	@RequiredReadAction

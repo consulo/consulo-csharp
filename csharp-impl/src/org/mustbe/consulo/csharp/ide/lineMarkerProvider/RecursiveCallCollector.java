@@ -31,7 +31,6 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ConstantFunction;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -52,9 +51,9 @@ public class RecursiveCallCollector implements LineMarkerCollector
 				CSharpMethodDeclaration methodDeclaration = PsiTreeUtil.getParentOfType(psiElement, CSharpMethodDeclaration.class);
 				if(resolvedElement.isEquivalentTo(methodDeclaration))
 				{
-					val lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), AllIcons.Gutter.RecursiveMethod,
-							Pass.UPDATE_OVERRIDEN_MARKERS, new ConstantFunction<PsiElement, String>("Recursive call"), null,
-							GutterIconRenderer.Alignment.LEFT);
+					LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(),
+							AllIcons.Gutter.RecursiveMethod, Pass.UPDATE_OVERRIDEN_MARKERS, new ConstantFunction<PsiElement,
+							String>("Recursive call"), null, GutterIconRenderer.Alignment.LEFT);
 					lineMarkerInfos.add(lineMarkerInfo);
 				}
 			}
