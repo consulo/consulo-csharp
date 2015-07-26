@@ -40,8 +40,6 @@ public class DeclarationParsing extends SharedParsingHelpers
 		// { (
 	private static final TokenSet NAME_STOPPERS = TokenSet.create(LBRACE, LPAR, THIS_KEYWORD);
 
-	private static final TokenSet NAME_TOKENS = TokenSet.create(THIS_KEYWORD, CSharpTokens.IDENTIFIER);
-
 	public static void parseAll(@NotNull CSharpBuilderWrapper builder, boolean root, boolean isEnum)
 	{
 		if(isEnum)
@@ -195,7 +193,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 
 						prevToken = builder.getTokenType();
 
-						expect(builder, NAME_TOKENS, "Name is expected");
+						doneThisOrIdentifier(builder);
 					}
 					else
 					{
@@ -206,19 +204,24 @@ public class DeclarationParsing extends SharedParsingHelpers
 
 						prevToken = builder.getTokenType();
 
-						if(builder.getTokenType() == THIS_KEYWORD)
-						{
-							builder.advanceLexer();
-						}
-						else
-						{
-							expectOrReportIdentifier(builder, STUB_SUPPORT);
-						}
+						doneThisOrIdentifier(builder);
 					}
 
 					parseAfterName(builder, marker, prevToken);
 				}
 			}
+		}
+	}
+
+	private static void doneThisOrIdentifier(CSharpBuilderWrapper builder)
+	{
+		if(builder.getTokenType() == THIS_KEYWORD)
+		{
+			builder.advanceLexer();
+		}
+		else
+		{
+			expectOrReportIdentifier(builder, STUB_SUPPORT);
 		}
 	}
 
