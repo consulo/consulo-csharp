@@ -47,6 +47,7 @@ public class CSharpResolveOptions
 	private CSharpCallArgumentListOwner myCallArgumentListOwner;
 
 	private boolean myCompletion;
+
 	private CSharpContextUtil.ContextType myCompletionContextType;
 
 	private boolean myResolveFromParent;
