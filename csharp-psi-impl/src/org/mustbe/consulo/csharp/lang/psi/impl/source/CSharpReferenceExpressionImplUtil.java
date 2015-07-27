@@ -552,7 +552,7 @@ public class CSharpReferenceExpressionImplUtil
 	@RequiredReadAction
 	public static void collectResults(@NotNull CSharpResolveOptions options, @NotNull Processor<ResolveResult> processor)
 	{
-		collectResults(options, DotNetGenericExtractor.EMPTY, options.getElement(), processor);
+		collectResults(options, DotNetGenericExtractor.EMPTY, null, processor);
 	}
 
 	@NotNull
