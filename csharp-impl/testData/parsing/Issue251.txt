@@ -28,14 +28,16 @@ CSHARP_FILE
     PsiWhiteSpace(' ')
     PsiElement(CLASS_KEYWORD)('class')
     PsiWhiteSpace(' ')
-    PsiElement(IDENTIFIER)('Programm')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('Programm')
     PsiWhiteSpace(' ')
     PsiElement(LBRACE)('{')
     PsiWhiteSpace('\n\n    ')
     CSharpConstructorDeclarationImpl [CONSTRUCTOR_DECLARATION]
       CSharpStubModifierListImpl [MODIFIER_LIST]
         <empty list>
-      PsiElement(IDENTIFIER)('Programm')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('Programm')
       CSharpStubParameterListImpl [PARAMETER_LIST]
         PsiElement(LPAR)('(')
         PsiElement(RPAR)(')')
@@ -49,7 +51,8 @@ CSHARP_FILE
               CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
                 PsiElement(IDENTIFIER)('Object')
             PsiWhiteSpace(' ')
-            PsiElement(IDENTIFIER)('str')
+            CSharpIdentifierImpl(IDENTIFIER)
+              PsiElement(IDENTIFIER)('str')
             PsiWhiteSpace(' ')
             PsiElement(EQ)('=')
             PsiWhiteSpace(' ')
@@ -62,7 +65,8 @@ CSHARP_FILE
             CSharpNativeTypeImpl(NATIVE_TYPE)
               PsiElement(VAR_KEYWORD)('var')
             PsiWhiteSpace(' ')
-            PsiElement(IDENTIFIER)('s')
+            CSharpIdentifierImpl(IDENTIFIER)
+              PsiElement(IDENTIFIER)('s')
             PsiWhiteSpace(' ')
             PsiElement(EQ)('=')
             PsiWhiteSpace(' ')
@@ -100,7 +104,8 @@ CSHARP_FILE
             CSharpNativeTypeImpl(NATIVE_TYPE)
               PsiElement(VAR_KEYWORD)('var')
             PsiWhiteSpace(' ')
-            PsiElement(IDENTIFIER)('s2')
+            CSharpIdentifierImpl(IDENTIFIER)
+              PsiElement(IDENTIFIER)('s2')
             PsiWhiteSpace(' ')
             PsiElement(EQ)('=')
             PsiWhiteSpace(' ')
@@ -132,7 +137,8 @@ CSHARP_FILE
       CSharpStubNativeTypeImpl [NATIVE_TYPE]
         PsiElement(VOID_KEYWORD)('void')
       PsiWhiteSpace(' ')
-      PsiElement(IDENTIFIER)('Main')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('Main')
       CSharpStubParameterListImpl [PARAMETER_LIST]
         PsiElement(LPAR)('(')
         PsiElement(RPAR)(')')

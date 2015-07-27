@@ -16,21 +16,22 @@
 
 package org.mustbe.consulo.csharp.ide.liveTemplates.macro;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AsPsiElementProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CompletionResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import com.intellij.openapi.util.Couple;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 
 /**
@@ -40,18 +41,19 @@ import com.intellij.psi.ResolveState;
 public class CSharpLiveTemplateMacroUtil
 {
 	@NotNull
+	@RequiredReadAction
 	public static List<DotNetVariable> resolveAllVariables(PsiElement scope)
 	{
 		Couple<PsiElement> resolveLayers = CSharpReferenceExpressionImplUtil.getResolveLayers(scope, false);
 
-		AbstractScopeProcessor processor = new SimpleNamedScopeProcessor(true, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
+		AsPsiElementProcessor psiElementProcessor = new AsPsiElementProcessor();
+		StubScopeProcessor processor = new SimpleNamedScopeProcessor(psiElementProcessor, true, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
 		CSharpResolveUtil.treeWalkUp(processor, scope, scope, resolveLayers.getFirst());
 
 		CSharpResolveOptions options = CSharpResolveOptions.build();
 		options.element(scope);
-		options.additionalElements(processor.toResolveResults());
 
-		processor = new CompletionResolveScopeProcessor(options, new ExecuteTarget[]{
+		processor = new CompletionResolveScopeProcessor(options, psiElementProcessor, new ExecuteTarget[]{
 				ExecuteTarget.FIELD,
 				ExecuteTarget.PROPERTY,
 				ExecuteTarget.EVENT
@@ -59,12 +61,9 @@ public class CSharpLiveTemplateMacroUtil
 
 		CSharpResolveUtil.walkChildren(processor, resolveLayers.getSecond(), true, false, ResolveState.initial());
 
-		ResolveResult[] resolveResults = processor.toResolveResults();
-		List<DotNetVariable> list = new ArrayList<DotNetVariable>(resolveResults.length);
-		for(ResolveResult resolveResultWithWeight : resolveResults)
+		List<DotNetVariable> list = new LinkedList<DotNetVariable>();
+		for(PsiElement element : psiElementProcessor.getElements())
 		{
-			PsiElement element = resolveResultWithWeight.getElement();
-
 			if(element instanceof DotNetVariable)
 			{
 				list.add((DotNetVariable) element);

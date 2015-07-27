@@ -33,6 +33,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AsPsiElementProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
@@ -350,7 +351,8 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			return;
 		}
 
-		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(CSharpResolveOptions.build().element(this),
+		AsPsiElementProcessor psiElementProcessor = new AsPsiElementProcessor();
+		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(CSharpResolveOptions.build().element(this), psiElementProcessor,
 				new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
 
 		ResolveState state = ResolveState.initial();
@@ -358,8 +360,8 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		state = state.put(CSharpResolveUtil.EXTRACTOR, typeResolveResult.getGenericExtractor());
 		CSharpResolveUtil.walkChildren(processor, element, false, true, state);
 
-		PsiElement[] psiElements = processor.toPsiElements();
-		if(psiElements.length == 0)
+		List<PsiElement> psiElements = psiElementProcessor.getElements();
+		if(psiElements.isEmpty())
 		{
 			return;
 		}
@@ -485,8 +487,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			{
 				val wrapper = new ImplicitOperatorArgumentAsCallArgumentWrapper(wrapExpression, toTypeRef);
 
-				wrapper.putUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO, new ImplicitCastInfo(originalTypeRef,
-						toTypeRef));
+				wrapper.putUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO, new ImplicitCastInfo(originalTypeRef, toTypeRef));
 				array[i] = wrapper;
 			}
 			else

@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.PsiTreeChangePreprocessorBase;
@@ -35,6 +36,13 @@ public class CSharpPsiTreeChangePreprocessor extends PsiTreeChangePreprocessorBa
 	public CSharpPsiTreeChangePreprocessor(@NotNull Project project)
 	{
 		super(project);
+	}
+
+	@Override
+	protected boolean isMaybeMyElement(@Nullable PsiElement element)
+	{
+		// directories can contains c# files - need update them
+		return element instanceof PsiDirectory;
 	}
 
 	@Override

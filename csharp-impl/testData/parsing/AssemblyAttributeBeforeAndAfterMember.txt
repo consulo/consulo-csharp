@@ -51,7 +51,8 @@ CSHARP_FILE
     PsiWhiteSpace(' ')
     PsiElement(CLASS_KEYWORD)('class')
     PsiWhiteSpace(' ')
-    PsiElement(IDENTIFIER)('AssemblyAttributeBeforeAndAfterMember')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('AssemblyAttributeBeforeAndAfterMember')
     PsiWhiteSpace('\n')
     PsiElement(LBRACE)('{')
     PsiWhiteSpace('\n')

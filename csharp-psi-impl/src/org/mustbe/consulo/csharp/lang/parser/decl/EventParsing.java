@@ -36,7 +36,7 @@ public class EventParsing extends MemberWithBodyParsing
 		}
 		else
 		{
-			expect(builder, IDENTIFIER, "Identifier expected");
+			expectOrReportIdentifier(builder, STUB_SUPPORT);
 			IElementType tokenType = builder.getTokenType();
 			if(tokenType == COMMA)
 			{
@@ -46,7 +46,7 @@ public class EventParsing extends MemberWithBodyParsing
 				{
 					PsiBuilder.Marker marker2 = builder.mark();
 					builder.advanceLexer();
-					expect(builder, IDENTIFIER, "Identifier expected");
+					expectOrReportIdentifier(builder, STUB_SUPPORT);
 					marker2.done(EVENT_DECLARATION);
 				}
 				expect(builder, SEMICOLON, "';' expected");

@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
@@ -57,6 +58,7 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 		visitor.visitMethodDeclaration(this);
 	}
 
+	@RequiredReadAction
 	@Override
 	@Nullable
 	public PsiElement getNameIdentifier()
@@ -65,9 +67,10 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 		{
 			return findChildByFilter(CSharpTokenSets.OVERLOADING_OPERATORS);
 		}
-		return findChildByType(CSharpTokens.IDENTIFIER);
+		return getStubOrPsiChild(CSharpStubElements.IDENTIFIER);
 	}
 
+	@RequiredReadAction
 	@Override
 	public String getName()
 	{

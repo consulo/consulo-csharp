@@ -16,11 +16,9 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import com.intellij.psi.stubs.StubElement;
-import com.intellij.util.io.StringRef;
 
 /**
  * @author VISTALL
@@ -28,13 +26,8 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpGenericParameterStub extends MemberStub<DotNetGenericParameter>
 {
-	public CSharpGenericParameterStub(StubElement parent, @Nullable StringRef name)
+	public CSharpGenericParameterStub(StubElement parent)
 	{
-		super(parent, CSharpStubElements.GENERIC_PARAMETER, name, null, 0);
-	}
-
-	public CSharpGenericParameterStub(StubElement parent, @Nullable String name)
-	{
-		super(parent, CSharpStubElements.GENERIC_PARAMETER, name, null, 0);
+		super(parent, CSharpStubElements.GENERIC_PARAMETER, null, 0);
 	}
 }

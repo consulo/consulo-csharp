@@ -45,7 +45,9 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithInnerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
+import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.RecursionManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ObjectUtils;
@@ -194,12 +196,12 @@ public class CSharpTypeUtil
 	}
 
 	@Nullable
-	public static DotNetTypeResolveResult findTypeRefFromExtends(@NotNull DotNetTypeRef typeRef,
-			@NotNull DotNetTypeDeclaration typeDeclaration,
-			@NotNull PsiElement scope)
+	public static DotNetTypeResolveResult findTypeRefFromExtends(@NotNull final DotNetTypeRef typeRef,
+			@NotNull final DotNetTypeDeclaration typeDeclaration,
+			@NotNull final PsiElement scope)
 	{
-		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
-		PsiElement resolvedElement = typeResolveResult.getElement();
+		final DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+		final PsiElement resolvedElement = typeResolveResult.getElement();
 		if(!(resolvedElement instanceof DotNetTypeDeclaration))
 		{
 			return null;
@@ -210,17 +212,24 @@ public class CSharpTypeUtil
 			return typeResolveResult;
 		}
 
-		for(DotNetTypeRef extendTypeRef : ((DotNetTypeDeclaration) resolvedElement).getExtendTypeRefs())
+		return RecursionManager.doPreventingRecursion(typeDeclaration, false,new Computable<DotNetTypeResolveResult>()
 		{
-			extendTypeRef = GenericUnwrapTool.exchangeTypeRef(extendTypeRef, typeResolveResult.getGenericExtractor(), scope);
-
-			DotNetTypeResolveResult findTypeRefFromExtends = findTypeRefFromExtends(extendTypeRef, typeDeclaration, scope);
-			if(findTypeRefFromExtends != null)
+			@Override
+			public DotNetTypeResolveResult compute()
 			{
-				return findTypeRefFromExtends;
+				for(DotNetTypeRef extendTypeRef : ((DotNetTypeDeclaration) resolvedElement).getExtendTypeRefs())
+				{
+					extendTypeRef = GenericUnwrapTool.exchangeTypeRef(extendTypeRef, typeResolveResult.getGenericExtractor(), scope);
+
+					DotNetTypeResolveResult findTypeRefFromExtends = findTypeRefFromExtends(extendTypeRef, typeDeclaration, scope);
+					if(findTypeRefFromExtends != null)
+					{
+						return findTypeRefFromExtends;
+					}
+				}
+				return null;
 			}
-		}
-		return null;
+		}) ;
 	}
 
 	public static boolean isInheritableWithImplicit(@NotNull DotNetTypeRef top, @NotNull DotNetTypeRef target, @NotNull PsiElement scope)

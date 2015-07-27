@@ -63,17 +63,15 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 	@Override
 	public CSharpTypeDeclStub createStub(@NotNull CSharpTypeDeclaration typeDeclaration, StubElement stubElement)
 	{
-		StringRef name = StringRef.fromNullableString(typeDeclaration.getName());
 		StringRef parentQName = StringRef.fromNullableString(typeDeclaration.getPresentableParentQName());
 		StringRef vmQName = StringRef.fromNullableString(typeDeclaration.getVmQName());
 		int otherModifierMask = CSharpTypeDeclStub.getOtherModifiers(typeDeclaration);
-		return new CSharpTypeDeclStub(stubElement, name, parentQName, vmQName, otherModifierMask);
+		return new CSharpTypeDeclStub(stubElement, parentQName, vmQName, otherModifierMask);
 	}
 
 	@Override
 	public void serialize(@NotNull CSharpTypeDeclStub stub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
-		stubOutputStream.writeName(stub.getName());
 		stubOutputStream.writeName(stub.getParentQName());
 		stubOutputStream.writeName(stub.getVmQName());
 		stubOutputStream.writeInt(stub.getOtherModifierMask());
@@ -83,17 +81,17 @@ public class CSharpTypeStubElementType extends CSharpAbstractStubElementType<CSh
 	@Override
 	public CSharpTypeDeclStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
-		StringRef name = stubInputStream.readName();
 		StringRef parentQName = stubInputStream.readName();
 		StringRef vmQName = stubInputStream.readName();
 		int otherModifierMask = stubInputStream.readInt();
-		return new CSharpTypeDeclStub(stubElement, name, parentQName, vmQName, otherModifierMask);
+		return new CSharpTypeDeclStub(stubElement, parentQName, vmQName, otherModifierMask);
 	}
 
 	@Override
+	@RequiredReadAction
 	public void indexStub(@NotNull CSharpTypeDeclStub stub, @NotNull IndexSink indexSink)
 	{
-		String name = stub.getName();
+		String name = getName(stub);
 		if(!StringUtil.isEmpty(name))
 		{
 			indexSink.occurrence(CSharpIndexKeys.TYPE_INDEX, name);

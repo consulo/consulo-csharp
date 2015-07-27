@@ -17,12 +17,14 @@
 package org.mustbe.consulo.csharp.lang.parser.decl;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.UsingStatementParsing;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
@@ -37,8 +39,6 @@ public class DeclarationParsing extends SharedParsingHelpers
 {
 		// { (
 	private static final TokenSet NAME_STOPPERS = TokenSet.create(LBRACE, LPAR, THIS_KEYWORD);
-
-	private static final TokenSet NAME_TOKENS = TokenSet.create(THIS_KEYWORD, IDENTIFIER);
 
 	public static void parseAll(@NotNull CSharpBuilderWrapper builder, boolean root, boolean isEnum)
 	{
@@ -136,7 +136,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 		else
 		{
 			// MODIFIER_LIST IDENTIFIER LPAR -> CONSTRUCTOR
-			if(tokenType == IDENTIFIER && builder.lookAhead(1) == LPAR)
+			if(tokenType == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == LPAR)
 			{
 				MethodParsing.parseMethodStartAfterType(builder, marker, null, MethodParsing.Target.CONSTRUCTOR);
 			}
@@ -193,7 +193,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 
 						prevToken = builder.getTokenType();
 
-						expect(builder, NAME_TOKENS, "Name is expected");
+						doneThisOrIdentifier(builder);
 					}
 					else
 					{
@@ -204,12 +204,24 @@ public class DeclarationParsing extends SharedParsingHelpers
 
 						prevToken = builder.getTokenType();
 
-						expect(builder, NAME_TOKENS, "Name is expected");
+						doneThisOrIdentifier(builder);
 					}
 
 					parseAfterName(builder, marker, prevToken);
 				}
 			}
+		}
+	}
+
+	private static void doneThisOrIdentifier(CSharpBuilderWrapper builder)
+	{
+		if(builder.getTokenType() == THIS_KEYWORD)
+		{
+			builder.advanceLexer();
+		}
+		else
+		{
+			expectOrReportIdentifier(builder, STUB_SUPPORT);
 		}
 	}
 
@@ -231,14 +243,14 @@ public class DeclarationParsing extends SharedParsingHelpers
 			nameExpected = true;
 		}
 
-		if(builder.getTokenType() == IDENTIFIER)
+		if(builder.getTokenType() == CSharpTokens.IDENTIFIER)
 		{
 			if(!nameExpected)
 			{
 				emptyElement(builder, CSharpStubElements.MODIFIER_LIST);
 			}
 
-			builder.advanceLexer();
+			doneIdentifier(builder, STUB_SUPPORT);
 
 			if(builder.getTokenType() == EQ)
 			{
@@ -256,7 +268,9 @@ public class DeclarationParsing extends SharedParsingHelpers
 			{
 				if(nameExpected)
 				{
+					PsiBuilder.Marker identifierMarker = builder.mark();
 					builder.error("Name expected");
+					identifierMarker.done(CSharpStubElements.IDENTIFIER);
 				}
 
 				done(mark, ENUM_CONSTANT_DECLARATION);
@@ -268,7 +282,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 		return true;
 	}
 
-	private static void parseAfterName(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, IElementType prevToken)
+	private static void parseAfterName(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, @Nullable IElementType prevToken)
 	{
 		if(prevToken == THIS_KEYWORD)
 		{

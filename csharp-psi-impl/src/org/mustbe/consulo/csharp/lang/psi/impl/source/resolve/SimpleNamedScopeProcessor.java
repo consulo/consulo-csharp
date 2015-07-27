@@ -1,32 +1,34 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpNamedResolveSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
+import com.intellij.util.Processor;
 
 /**
  * @author VISTALL
  * @since 09.10.14
  */
-public class SimpleNamedScopeProcessor extends AbstractScopeProcessor
+public class SimpleNamedScopeProcessor extends StubScopeProcessor
 {
-	private final boolean myCompletion;
+	private Processor<ResolveResult> myCompletionProcessor;
+	private boolean myCompletion;
 
-	public SimpleNamedScopeProcessor(ExecuteTarget... targets)
+	public SimpleNamedScopeProcessor(@NotNull Processor<ResolveResult> completionProcessor, boolean completion, ExecuteTarget... targets)
 	{
-		this(false, targets);
-	}
-
-	public SimpleNamedScopeProcessor(boolean completion, ExecuteTarget... targets)
-	{
+		myCompletionProcessor = completionProcessor;
 		myCompletion = completion;
 		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean execute(@NotNull PsiElement element, ResolveState state)
 	{
@@ -43,7 +45,7 @@ public class SimpleNamedScopeProcessor extends AbstractScopeProcessor
 
 		if(myCompletion)
 		{
-			addElement(element);
+			return myCompletionProcessor.process(new PsiElementResolveResult(element, true));
 		}
 		else
 		{
@@ -55,7 +57,7 @@ public class SimpleNamedScopeProcessor extends AbstractScopeProcessor
 
 			if(((CSharpNamedResolveSelector) selector).isNameEqual(name))
 			{
-				addElement(element);
+				myCompletionProcessor.process(new PsiElementResolveResult(element, true));
 				return false;
 			}
 		}

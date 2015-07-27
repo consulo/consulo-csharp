@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
@@ -46,6 +47,7 @@ public class CSharpConversionMethodDeclarationImpl extends CSharpLikeMethodDecla
 		super(stub, CSharpStubElements.CONVERSION_METHOD_DECLARATION);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getNameIdentifier()

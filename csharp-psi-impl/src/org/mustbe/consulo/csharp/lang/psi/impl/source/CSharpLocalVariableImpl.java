@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -59,6 +60,7 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 		visitor.visitLocalVariable(this);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetType getType()
@@ -104,12 +106,14 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 		}
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
 		return false;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetModifierList getModifierList()
@@ -117,6 +121,7 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 		return null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public int getTextOffset()
 	{
@@ -124,6 +129,7 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 		return nameIdentifier != null ? nameIdentifier.getTextOffset() : super.getTextOffset();
 	}
 
+	@RequiredReadAction
 	@Override
 	public String getName()
 	{
@@ -134,7 +140,7 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 	@Override
 	public PsiElement getNameIdentifier()
 	{
-		return findChildByType(CSharpTokens.IDENTIFIER);
+		return findChildByClass(CSharpIdentifier.class);
 	}
 
 	@Override

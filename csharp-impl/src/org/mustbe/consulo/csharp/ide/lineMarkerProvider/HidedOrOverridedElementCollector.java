@@ -22,11 +22,12 @@ import java.util.Collection;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.CSharpIcons;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
@@ -37,7 +38,6 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
 import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.ConstantFunction;
 import com.intellij.util.containers.ContainerUtil;
@@ -56,13 +56,13 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 		@Override
 		public void navigate(MouseEvent mouseEvent, PsiElement element)
 		{
-			PsiElement parent = element.getParent();
-			if(!(parent instanceof DotNetVirtualImplementOwner) || !OverrideUtil.isAllowForOverride(parent))
+			DotNetVirtualImplementOwner virtualImplementOwner = CSharpLineMarkerUtil.findElementForLineMarker(element);
+			if(virtualImplementOwner == null)
 			{
 				return;
 			}
 
-			Collection<DotNetVirtualImplementOwner> members = OverrideUtil.collectOverridenMembers(((DotNetVirtualImplementOwner) parent));
+			Collection<DotNetVirtualImplementOwner> members = OverrideUtil.collectOverridenMembers(virtualImplementOwner);
 
 			if(members.isEmpty())
 			{
@@ -89,14 +89,18 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 		}
 	}
 
+	@RequiredReadAction
 	@Override
 	public void collect(PsiElement psiElement, @NotNull Collection<LineMarkerInfo> lineMarkerInfos)
 	{
-		PsiElement parent = psiElement.getParent();
-		IElementType elementType = psiElement.getNode().getElementType();
-		if((elementType == CSharpTokens.IDENTIFIER || elementType == CSharpTokens.THIS_KEYWORD) && OverrideUtil.isAllowForOverride(parent))
+		DotNetVirtualImplementOwner virtualImplementOwner = CSharpLineMarkerUtil.findElementForLineMarker(psiElement);
+		if(virtualImplementOwner != null)
 		{
-			DotNetVirtualImplementOwner virtualImplementOwner = (DotNetVirtualImplementOwner) parent;
+			PsiElement parentParent = virtualImplementOwner.getParent();
+			if(!(parentParent instanceof DotNetTypeDeclaration))
+			{
+				return;
+			}
 
 			Collection<DotNetVirtualImplementOwner> overrideElements = OverrideUtil.collectOverridenMembers(virtualImplementOwner);
 

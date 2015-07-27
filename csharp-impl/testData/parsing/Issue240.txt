@@ -5,7 +5,8 @@ CSHARP_FILE
     PsiWhiteSpace(' ')
     PsiElement(CLASS_KEYWORD)('class')
     PsiWhiteSpace(' ')
-    PsiElement(IDENTIFIER)('Test')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('Test')
     PsiWhiteSpace('\n')
     PsiElement(LBRACE)('{')
     PsiWhiteSpace('\n    ')
@@ -17,7 +18,8 @@ CSHARP_FILE
         CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
           PsiElement(IDENTIFIER)('AsyncOperation')
       PsiWhiteSpace(' ')
-      PsiElement(IDENTIFIER)('async')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('async')
       PsiElement(SEMICOLON)(';')
     PsiWhiteSpace('\n\n    ')
     CSharpMethodDeclarationImpl [METHOD_DECLARATION]
@@ -27,7 +29,8 @@ CSHARP_FILE
         CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
           PsiElement(IDENTIFIER)('IEnumerator')
       PsiWhiteSpace(' ')
-      PsiElement(IDENTIFIER)('LoadLevelSliderBad')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('LoadLevelSliderBad')
       CSharpStubParameterListImpl [PARAMETER_LIST]
         PsiElement(LPAR)('(')
         CSharpStubParameterImpl [PARAMETER]
@@ -36,7 +39,8 @@ CSHARP_FILE
           CSharpStubNativeTypeImpl [NATIVE_TYPE]
             PsiElement(INT_KEYWORD)('int')
           PsiWhiteSpace(' ')
-          PsiElement(IDENTIFIER)('level')
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('level')
         PsiElement(RPAR)(')')
       PsiWhiteSpace('\n    ')
       CSharpBlockStatementImpl(BLOCK_STATEMENT)

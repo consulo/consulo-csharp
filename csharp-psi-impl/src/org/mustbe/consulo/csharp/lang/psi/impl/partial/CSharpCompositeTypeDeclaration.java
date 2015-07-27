@@ -46,6 +46,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.pom.Navigatable;
@@ -64,6 +65,7 @@ import com.intellij.util.containers.MultiMap;
 public class CSharpCompositeTypeDeclaration extends LightElement implements CSharpTypeDeclaration
 {
 	@NotNull
+	@RequiredReadAction
 	public static PsiElement[] wrapPartialTypes(@NotNull GlobalSearchScope scope, @NotNull Project project, @NotNull PsiElement[] psiElements)
 	{
 		MultiMap<String, CSharpTypeDeclaration> partialTypes = null;
@@ -72,6 +74,8 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 
 		for(int i = 0; i < psiElements.length; i++)
 		{
+			ProgressManager.checkCanceled();
+
 			PsiElement psiElement = psiElements[i];
 			if(psiElement instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) psiElement).hasModifier(CSharpModifier.PARTIAL))
 			{
@@ -108,6 +112,8 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 
 		for(Map.Entry<String, Collection<CSharpTypeDeclaration>> entry : partialTypes.entrySet())
 		{
+			ProgressManager.checkCanceled();
+
 			Collection<CSharpTypeDeclaration> value = entry.getValue();
 			// partial modifier is useless, only one class with name
 			if(value.size() == 1)
@@ -144,12 +150,14 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return super.getUserData(key);
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getLeftBrace()
 	{
 		return null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getRightBrace()
 	{

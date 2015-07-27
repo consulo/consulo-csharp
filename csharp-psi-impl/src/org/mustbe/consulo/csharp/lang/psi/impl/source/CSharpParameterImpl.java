@@ -19,10 +19,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
@@ -57,12 +58,14 @@ public class CSharpParameterImpl extends CSharpElementImpl implements DotNetPara
 		visitor.visitParameter(this);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean isConstant()
 	{
 		return false;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getConstantKeywordElement()
@@ -70,6 +73,7 @@ public class CSharpParameterImpl extends CSharpElementImpl implements DotNetPara
 		return null;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
@@ -87,6 +91,7 @@ public class CSharpParameterImpl extends CSharpElementImpl implements DotNetPara
 		return typeRef;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetType getType()
@@ -94,6 +99,7 @@ public class CSharpParameterImpl extends CSharpElementImpl implements DotNetPara
 		return findChildByClass(DotNetType.class);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetExpression getInitializer()
@@ -101,6 +107,7 @@ public class CSharpParameterImpl extends CSharpElementImpl implements DotNetPara
 		return findChildByClass(DotNetExpression.class);
 	}
 
+	@RequiredReadAction
 	@Override
 	@Nullable
 	public DotNetModifierList getModifierList()
@@ -108,6 +115,7 @@ public class CSharpParameterImpl extends CSharpElementImpl implements DotNetPara
 		return findChildByClass(DotNetModifierList.class);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
@@ -119,9 +127,10 @@ public class CSharpParameterImpl extends CSharpElementImpl implements DotNetPara
 	@Override
 	public PsiElement getNameIdentifier()
 	{
-		return findChildByType(CSharpTokens.IDENTIFIER);
+		return findNotNullChildByClass(CSharpIdentifier.class);
 	}
 
+	@RequiredReadAction
 	@Override
 	public int getTextOffset()
 	{
@@ -130,12 +139,14 @@ public class CSharpParameterImpl extends CSharpElementImpl implements DotNetPara
 	}
 
 	@Override
+	@RequiredReadAction
 	public String getName()
 	{
 		return CSharpPsiUtilImpl.getNameWithoutAt(this);
 	}
 
 	@Override
+	@RequiredReadAction
 	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
 	{
 		CSharpRefactoringUtil.replaceNameIdentifier(this, s);

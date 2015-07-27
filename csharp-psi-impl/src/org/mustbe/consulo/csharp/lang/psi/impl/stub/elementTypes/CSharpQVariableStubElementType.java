@@ -43,16 +43,14 @@ public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & 
 	@Override
 	public CSharpVariableDeclStub<P> createStub(@NotNull P declaration, StubElement stubElement)
 	{
-		StringRef name = StringRef.fromNullableString(declaration.getName());
 		StringRef namespaceQName = StringRef.fromNullableString(declaration.getPresentableParentQName());
 		int otherModifierMask = CSharpVariableDeclStub.getOtherModifierMask(declaration);
-		return new CSharpVariableDeclStub<P>(stubElement, this, name, namespaceQName, otherModifierMask);
+		return new CSharpVariableDeclStub<P>(stubElement, this, namespaceQName, otherModifierMask);
 	}
 
 	@Override
 	public void serialize(@NotNull CSharpVariableDeclStub<P> variableStub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
-		stubOutputStream.writeName(variableStub.getName());
 		stubOutputStream.writeName(variableStub.getParentQName());
 		stubOutputStream.writeVarInt(variableStub.getOtherModifierMask());
 	}
@@ -61,9 +59,8 @@ public abstract class CSharpQVariableStubElementType<P extends DotNetVariable & 
 	@Override
 	public CSharpVariableDeclStub<P> deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
-		StringRef name = stubInputStream.readName();
 		StringRef parentQName = stubInputStream.readName();
 		int otherModifierMask = stubInputStream.readVarInt();
-		return new CSharpVariableDeclStub<P>(stubElement, this, name, parentQName, otherModifierMask);
+		return new CSharpVariableDeclStub<P>(stubElement, this,  parentQName, otherModifierMask);
 	}
 }

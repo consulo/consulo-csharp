@@ -24,7 +24,7 @@ import java.util.List;
 import javax.swing.JComponent;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransformer;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -54,14 +54,14 @@ import lombok.val;
  */
 public class OverrideTypeCollector implements LineMarkerCollector
 {
+	@RequiredReadAction
 	@Override
 	public void collect(PsiElement psiElement, @NotNull Collection<LineMarkerInfo> lineMarkerInfos)
 	{
-		if(psiElement.getParent() instanceof CSharpTypeDeclaration && psiElement.getNode().getElementType() == CSharpTokens.IDENTIFIER)
+		CSharpTypeDeclaration parent = CSharpLineMarkerUtil.getNameIdentifierAs(psiElement, CSharpTypeDeclaration.class);
+		if(parent != null)
 		{
-			CSharpTypeDeclaration parent = (CSharpTypeDeclaration) psiElement.getParent();
-			boolean b = hasChild(parent);
-			if(b)
+			if(hasChild(parent))
 			{
 				val icon = parent.isInterface() ? AllIcons.Gutter.ImplementedMethod : AllIcons.Gutter.OverridenMethod;
 				val lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.UPDATE_OVERRIDEN_MARKERS,
@@ -78,7 +78,8 @@ public class OverrideTypeCollector implements LineMarkerCollector
 					@Override
 					public void navigate(MouseEvent mouseEvent, PsiElement element)
 					{
-						final DotNetTypeDeclaration typeDeclaration = (DotNetTypeDeclaration) element.getParent();
+						final DotNetTypeDeclaration typeDeclaration = CSharpLineMarkerUtil.getNameIdentifierAs(element, CSharpTypeDeclaration.class);
+						assert typeDeclaration != null;
 						final CommonProcessors.CollectProcessor<DotNetTypeDeclaration> collectProcessor = new CommonProcessors
 								.CollectProcessor<DotNetTypeDeclaration>();
 						if(!ProgressManager.getInstance().runProcessWithProgressSynchronously(new Runnable()

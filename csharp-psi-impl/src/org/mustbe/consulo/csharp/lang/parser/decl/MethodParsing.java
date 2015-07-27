@@ -65,7 +65,7 @@ public class MethodParsing extends MemberWithBodyParsing
 	{
 		if(target == Target.CONSTRUCTOR || target == Target.DECONSTRUCTOR)
 		{
-			expect(builder, IDENTIFIER, "Name expected");
+			expectOrReportIdentifier(builder, STUB_SUPPORT);
 		}
 		else
 		{
@@ -98,7 +98,7 @@ public class MethodParsing extends MemberWithBodyParsing
 			}
 			else
 			{
-				expect(builder, IDENTIFIER, "Name expected");
+				expectOrReportIdentifier(builder, STUB_SUPPORT);
 			}
 		}
 
@@ -211,7 +211,7 @@ public class MethodParsing extends MemberWithBodyParsing
 
 	private static void parseParameter(CSharpBuilderWrapper builder, IElementType end, int flags)
 	{
-		val mark = builder.mark();
+		PsiBuilder.Marker mark = builder.mark();
 
 		Pair<PsiBuilder.Marker, Boolean> modifierPair = parseModifierListWithAttributes(builder, flags);
 
@@ -233,7 +233,7 @@ public class MethodParsing extends MemberWithBodyParsing
 		{
 			if(typeInfo.nativeElementType != CSharpTokens.__ARGLIST_KEYWORD)
 			{
-				expect(builder, IDENTIFIER, "Name expected");
+				expectOrReportIdentifier(builder, flags);
 
 				if(expect(builder, EQ, null))
 				{

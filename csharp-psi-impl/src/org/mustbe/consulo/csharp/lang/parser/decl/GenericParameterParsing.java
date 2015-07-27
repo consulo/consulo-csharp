@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.parser.decl;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
@@ -76,7 +77,7 @@ public class GenericParameterParsing extends SharedParsingHelpers
 
 		parseModifierListWithAttributes(builder, STUB_SUPPORT);
 
-		expect(builder, IDENTIFIER, "Name expected");
+		expectOrReportIdentifier(builder, STUB_SUPPORT);
 
 		marker.done(GENERIC_PARAMETER);
 	}
@@ -130,7 +131,7 @@ public class GenericParameterParsing extends SharedParsingHelpers
 
 		builder.advanceLexer();
 
-		doneOneElement(builder, IDENTIFIER, REFERENCE_EXPRESSION, "Identifier expected");
+		doneOneElement(builder, CSharpTokens.IDENTIFIER, REFERENCE_EXPRESSION, "Identifier expected");
 		if(expect(builder, COLON, "Colon expected"))
 		{
 			while(!builder.eof())

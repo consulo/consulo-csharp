@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -31,7 +32,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightMethodDeclaratio
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameterList;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpElementGroupImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AbstractScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -48,7 +49,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
-import com.intellij.util.ArrayUtil;
 import com.intellij.util.Processor;
 import com.intellij.util.SmartList;
 import lombok.val;
@@ -57,10 +57,11 @@ import lombok.val;
  * @author VISTALL
  * @since 26.03.14
  */
-public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
+public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 {
 	private final CSharpReferenceExpression myExpression;
 	private final boolean myCompletion;
+	private final Processor<ResolveResult> myProcessor;
 	@Nullable
 	private final CSharpCallArgumentListOwner myCallArgumentListOwner;
 	private final DotNetTypeRef myQualifierTypeRef;
@@ -72,15 +73,18 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 	public ExtensionResolveScopeProcessor(@NotNull DotNetTypeRef qualifierTypeRef,
 			@NotNull CSharpReferenceExpression expression,
 			boolean completion,
+			@NotNull Processor<ResolveResult> processor,
 			@Nullable CSharpCallArgumentListOwner callArgumentListOwner)
 	{
 		myQualifierTypeRef = qualifierTypeRef;
 		myExpression = expression;
 		myCompletion = completion;
+		myProcessor = processor;
 		myCallArgumentListOwner = callArgumentListOwner;
 		myArgumentWrapper = new ExtensionQualifierAsCallArgumentWrapper(expression.getProject(), qualifierTypeRef);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean execute(@NotNull PsiElement element, ResolveState state)
 	{
@@ -97,7 +101,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 				public boolean process(CSharpElementGroup<CSharpMethodDeclaration> elementGroup)
 				{
 					Collection<CSharpMethodDeclaration> elements = elementGroup.getElements();
-					groupIteration:for(CSharpMethodDeclaration psiElement : elements)
+					for(CSharpMethodDeclaration psiElement : elements)
 					{
 						GenericInferenceUtil.GenericInferenceResult inferenceResult = inferenceGenericExtractor(psiElement);
 
@@ -108,7 +112,7 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 							continue;
 						}
 
-						addElement(transform(psiElement, inferenceResult));
+						myProcessor.process(new PsiElementResolveResult(transform(psiElement, inferenceResult)));
 					}
 					return true;
 				}
@@ -177,19 +181,16 @@ public class ExtensionResolveScopeProcessor extends AbstractScopeProcessor
 		return GenericInferenceUtil.inferenceGenericExtractor(newArguments, typeArgumentRefs, myExpression, methodDeclaration);
 	}
 
-	@NotNull
-	@Override
-	public ResolveResult[] toResolveResults()
+	public void consumeAsMethodGroup()
 	{
-		ResolveResult[] resolveResults = super.toResolveResults();
 		if(myResolvedElements.isEmpty())
 		{
-			return resolveResults;
+			return;
 		}
 
-		val element = new CSharpElementGroupImpl<CSharpMethodDeclaration>(myExpression.getProject(), myResolvedElements.get(0).getName(),
+		CSharpElementGroupImpl element = new CSharpElementGroupImpl<CSharpMethodDeclaration>(myExpression.getProject(), myResolvedElements.get(0).getName(),
 				myResolvedElements);
-		return ArrayUtil.mergeArrays(resolveResults, new ResolveResult[]{new PsiElementResolveResult(element)});
+		myProcessor.process(new PsiElementResolveResult(element, true));
 	}
 
 	@NotNull

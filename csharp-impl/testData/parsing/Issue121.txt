@@ -5,7 +5,8 @@ CSHARP_FILE
     PsiWhiteSpace(' ')
     PsiElement(CLASS_KEYWORD)('class')
     PsiWhiteSpace(' ')
-    PsiElement(IDENTIFIER)('Test')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('Test')
     PsiWhiteSpace('\n')
     PsiElement(LBRACE)('{')
     PsiWhiteSpace('\n    ')
@@ -17,7 +18,8 @@ CSHARP_FILE
         CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
           PsiElement(IDENTIFIER)('AttackResultPVPStructure')
       PsiWhiteSpace(' ')
-      PsiElement(IDENTIFIER)('GetResult')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('GetResult')
       CSharpStubParameterListImpl [PARAMETER_LIST]
         PsiElement(LPAR)('(')
         PsiElement(RPAR)(')')

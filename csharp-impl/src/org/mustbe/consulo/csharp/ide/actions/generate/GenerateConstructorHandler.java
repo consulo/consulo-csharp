@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.ide.actions.generate.memberChoose.ConstructorChooseMember;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AsPsiElementProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
@@ -54,6 +56,7 @@ import lombok.val;
  */
 public class GenerateConstructorHandler implements CodeInsightActionHandler
 {
+	@RequiredDispatchThread
 	@Override
 	public void invoke(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file)
 	{
@@ -75,8 +78,9 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 			return;
 		}
 
+		AsPsiElementProcessor psiElementProcessor = new AsPsiElementProcessor();
 		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(CSharpResolveOptions.build().element
-				(typeDeclaration), new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
+				(typeDeclaration), psiElementProcessor, new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
 
 		ResolveState resolveState = ResolveState.initial();
 		resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, StaticResolveSelectors.CONSTRUCTOR_GROUP);
@@ -84,10 +88,8 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 
 		CSharpResolveUtil.walkChildren(memberResolveScopeProcessor, baseType, false, false, resolveState);
 
-		PsiElement[] psiElements = memberResolveScopeProcessor.toPsiElements();
-
 		List<ConstructorChooseMember> members = new ArrayList<ConstructorChooseMember>();
-		for(PsiElement psiElement : psiElements)
+		for(PsiElement psiElement : psiElementProcessor.getElements())
 		{
 			if(psiElement instanceof CSharpElementGroup)
 			{

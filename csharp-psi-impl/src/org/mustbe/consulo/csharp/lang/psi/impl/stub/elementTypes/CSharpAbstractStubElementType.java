@@ -18,7 +18,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpIdentifierStub;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.IndexSink;
@@ -42,6 +46,18 @@ public abstract class CSharpAbstractStubElementType<S extends StubElement, P ext
 	public String getExternalId()
 	{
 		return "csharp." + toString();
+	}
+
+	@Nullable
+	@RequiredReadAction
+	public static String getName(StubElement<?> element)
+	{
+		CSharpIdentifierStub identifierStub = (CSharpIdentifierStub) element.findChildStubByType(CSharpStubElements.IDENTIFIER);
+		if(identifierStub == null)
+		{
+			return null;
+		}
+		return identifierStub.getValue();
 	}
 
 	@Override

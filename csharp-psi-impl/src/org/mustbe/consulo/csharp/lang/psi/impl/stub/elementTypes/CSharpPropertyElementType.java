@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPropertyDeclarationImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
@@ -35,6 +36,7 @@ public class CSharpPropertyElementType extends CSharpQVariableStubElementType<CS
 		super("PROPERTY_DECLARATION");
 	}
 
+	@NotNull
 	@Override
 	public CSharpPropertyDeclarationImpl createElement(@NotNull ASTNode astNode)
 	{
@@ -48,9 +50,10 @@ public class CSharpPropertyElementType extends CSharpQVariableStubElementType<CS
 	}
 
 	@Override
-	public void indexStub(@NotNull CSharpVariableDeclStub cSharpPropertyStub, @NotNull IndexSink indexSink)
+	@RequiredReadAction
+	public void indexStub(@NotNull CSharpVariableDeclStub<CSharpPropertyDeclarationImpl> stub, @NotNull IndexSink indexSink)
 	{
-		String name = cSharpPropertyStub.getName();
+		String name = getName(stub);
 		if(!StringUtil.isEmpty(name))
 		{
 			indexSink.occurrence(CSharpIndexKeys.PROPERTY_INDEX, name);

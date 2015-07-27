@@ -127,7 +127,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 			{
 				return CSharpNullTypeRef.INSTANCE;
 			}
-			else if(elementType == CSharpTokens.BOOL_LITERAL)
+			else if(elementType == CSharpTokens.TRUE_KEYWORD || elementType == CSharpTokens.FALSE_KEYWORD)
 			{
 				return new CSharpLazyTypeRefByQName(element, DotNetTypes.System.Boolean);
 			}
@@ -208,7 +208,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 		{
 			return null;
 		}
-		else if(elementType == CSharpTokens.BOOL_LITERAL)
+		else if(elementType == CSharpTokens.TRUE_KEYWORD || elementType == CSharpTokens.FALSE_KEYWORD)
 		{
 			return Boolean.parseBoolean(text);
 		}

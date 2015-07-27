@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.lineMarkerProvider;
 import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -30,7 +31,6 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ConstantFunction;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -38,6 +38,7 @@ import lombok.val;
  */
 public class RecursiveCallCollector implements LineMarkerCollector
 {
+	@RequiredReadAction
 	@Override
 	public void collect(PsiElement psiElement, @NotNull Collection<LineMarkerInfo> lineMarkerInfos)
 	{
@@ -50,9 +51,9 @@ public class RecursiveCallCollector implements LineMarkerCollector
 				CSharpMethodDeclaration methodDeclaration = PsiTreeUtil.getParentOfType(psiElement, CSharpMethodDeclaration.class);
 				if(resolvedElement.isEquivalentTo(methodDeclaration))
 				{
-					val lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), AllIcons.Gutter.RecursiveMethod,
-							Pass.UPDATE_OVERRIDEN_MARKERS, new ConstantFunction<PsiElement, String>("Recursive call"), null,
-							GutterIconRenderer.Alignment.LEFT);
+					LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(),
+							AllIcons.Gutter.RecursiveMethod, Pass.UPDATE_OVERRIDEN_MARKERS, new ConstantFunction<PsiElement,
+							String>("Recursive call"), null, GutterIconRenderer.Alignment.LEFT);
 					lineMarkerInfos.add(lineMarkerInfo);
 				}
 			}

@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.decl.FieldOrPropertyParsing;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import lombok.val;
@@ -64,7 +65,7 @@ public class StatementParsing extends SharedParsingHelpers
 		{
 			wrapper.advanceLexer();
 
-			doneOneElement(wrapper, IDENTIFIER, REFERENCE_EXPRESSION, "Identifier expected");
+			doneOneElement(wrapper, CSharpTokens.IDENTIFIER, REFERENCE_EXPRESSION, "Identifier expected");
 
 			expect(wrapper, SEMICOLON, "';' expected");
 
@@ -168,7 +169,7 @@ public class StatementParsing extends SharedParsingHelpers
 		}
 		else
 		{
-			if(tokenType == IDENTIFIER && wrapper.lookAhead(1) == COLON)
+			if(tokenType == CSharpTokens.IDENTIFIER && wrapper.lookAhead(1) == COLON)
 			{
 				parseLabeledStatement(wrapper, marker);
 				return marker;
@@ -256,7 +257,7 @@ public class StatementParsing extends SharedParsingHelpers
 				return true;
 			}
 
-			if(tokenType == IDENTIFIER)
+			if(tokenType == CSharpTokens.IDENTIFIER)
 			{
 				// example 'int test' it only local variable
 				if(typeInfo.nativeElementType != null)
@@ -264,7 +265,7 @@ public class StatementParsing extends SharedParsingHelpers
 					return true;
 				}
 				IElementType lookAhead = builder.lookAhead(1);
-				if(lookAhead == SEMICOLON || lookAhead == EQ || lookAhead == COMMA)
+				if(lookAhead == SEMICOLON || lookAhead == EQ || lookAhead == COMMA || lookAhead == RBRACE || lookAhead == LBRACE)
 				{
 					return true;
 				}
@@ -338,7 +339,10 @@ public class StatementParsing extends SharedParsingHelpers
 			}
 			else
 			{
-				expect(builder, IDENTIFIER, null);
+				if(builder.getTokenType() == CSharpTokens.IDENTIFIER)
+				{
+					doneIdentifier(builder, 0);
+				}
 
 				varMarker.done(LOCAL_VARIABLE);
 			}
@@ -615,7 +619,7 @@ public class StatementParsing extends SharedParsingHelpers
 
 			if(parseType(builder, VAR_SUPPORT) != null)
 			{
-				expect(builder, IDENTIFIER, "Identifier expected");
+				expectOrReportIdentifier(builder, 0);
 			}
 			else
 			{

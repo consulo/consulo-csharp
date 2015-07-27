@@ -89,7 +89,7 @@
 		<injectionByAttributeHelper implementation="org.mustbe.consulo.csharp.lang.CSharpMultiHostInjectorByAttributeHelper"/>
 
 		<documentationResolver implementation="org.mustbe.consulo.csharp.lang.doc.CSharpCommentDocumentationResolver"/>
-		<debugger.sourceLineResolver language="C#" implementationClass="org.mustbe.consulo.csharp.ide.debugger.CSharpDebuggerSourceLineResolver" />
+		<debugger.sourceLineResolver language="C#" implementationClass="org.mustbe.consulo.csharp.ide.debugger.CSharpDebuggerSourceLineResolver"/>
 	</extensions>
 
 	<extensions defaultExtensionNs="com.intellij">
@@ -151,17 +151,30 @@
 
 		<codeInsight.unresolvedReferenceQuickFixProvider
 				implementation="org.mustbe.consulo.csharp.ide.codeInsight.CSharpUnresolvedReferenceQuickFixProvider"/>
+
+		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpMemberNameCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpKeywordCompletionContributor"/>
+		<completion.contributor language="C#"
+								implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpOverrideOrImplementCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpAccessorCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpLinqCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpStatementCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpReferenceCompletionContributor"/>
 		<completion.contributor language="C#"
-								implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpOverrideOrImplementCompletionContributor"/>
+								implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpTypeReferenceCompletionContributor"/>
+
+		<weigher key="completion" id="csharpInheritable"
+				 implementationClass="org.mustbe.consulo.csharp.ide.completion.weighter.CSharpInheritProximityWeigher"/>
+
+		<weigher key="proximity" id="csharpObsolete"
+				 implementationClass="org.mustbe.consulo.csharp.ide.completion.weighter.CSharpObsoleteWeigher"/>
+
 		<completion.contributor language="C#Macro"
 								implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpMacroReferenceCompletionContributor"/>
+
 		<completion.contributor language="C#Doc"
 								implementationClass="org.mustbe.consulo.csharp.lang.doc.ide.competion.CSharpDocCompletionContributor"/>
+
 		<lookup.charFilter implementation="org.mustbe.consulo.csharp.ide.completion.CSharpCompletionCharFilter"/>
 
 		<lang.smartEnterProcessor language="C#"
@@ -284,6 +297,7 @@
 		<lang.documentationProvider language="C#" implementationClass="org.mustbe.consulo.csharp.ide.documentation.CSharpDocumentationProvider"/>
 		<lang.braceMatcher language="C#Doc" implementationClass="org.mustbe.consulo.csharp.lang.doc.CSharpDocBraceMatcher"/>
 		<psi.referenceContributor language="C#" implementation="org.mustbe.consulo.csharp.ide.resolve.CSharpPsiReferenceContributor"/>
+		<refactoring.moveHandler implementation="org.mustbe.consulo.csharp.ide.refactoring.move.CSharpMoveHandlerDelegate"/>
 
 		<highlightUsagesHandlerFactory implementation="org.mustbe.consulo.csharp.lang.doc.ide.highlight.CSharpDocHighlightUsagesHandlerFactory"/>
 		<newModuleBuilder implementation="org.mustbe.consulo.csharp.ide.newProjectOrModule.CSharpNewModuleBuilder"/>

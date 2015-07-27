@@ -24,7 +24,7 @@ import java.util.List;
 import org.consulo.ide.eap.EarlyAccessProgramDescriptor;
 import org.consulo.ide.eap.EarlyAccessProgramManager;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
@@ -49,7 +49,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -104,7 +103,7 @@ public class CSharpLookupElementBuilder
 		List<LookupElement> list = new ArrayList<LookupElement>(arguments.length);
 		for(PsiElement argument : arguments)
 		{
-			ContainerUtil.addIfNotNull(list, buildLookupElementImpl(argument));
+			ContainerUtil.addIfNotNull(list, buildLookupElement(argument));
 		}
 		return list.toArray(new LookupElement[list.size()]);
 	}
@@ -126,12 +125,12 @@ public class CSharpLookupElementBuilder
 			{
 				for(DotNetXXXAccessor accessor : ((CSharpXXXAccessorOwner) element).getAccessors())
 				{
-					ContainerUtil.addIfNotNull(list, buildLookupElementImpl(accessor));
+					ContainerUtil.addIfNotNull(list, buildLookupElement(accessor));
 				}
 			}
 			else
 			{
-				ContainerUtil.addIfNotNull(list, buildLookupElementImpl(element));
+				ContainerUtil.addIfNotNull(list, buildLookupElement(element));
 			}
 		}
 		return list;
@@ -148,32 +147,13 @@ public class CSharpLookupElementBuilder
 		List<LookupElement> list = new ArrayList<LookupElement>(arguments.size());
 		for(PsiElement element : arguments)
 		{
-			ContainerUtil.addIfNotNull(list, buildLookupElementImpl(element));
+			ContainerUtil.addIfNotNull(list, buildLookupElement(element));
 		}
 
 		return list.toArray(new LookupElement[list.size()]);
 	}
 
-
-	@Nullable
-	public static LookupElement buildLookupElementImpl(PsiElement element)
-	{
-		LookupElementBuilder builder = buildLookupElement(element);
-		if(builder == null)
-		{
-			return null;
-		}
-
-		if(DotNetAttributeUtil.hasAttribute(element, DotNetTypes.System.ObsoleteAttribute))
-		{
-			builder = builder.withStrikeoutness(true);
-
-			return PrioritizedLookupElement.withPriority(builder, -1.0);
-		}
-
-		return builder;
-	}
-
+	@RequiredReadAction
 	public static LookupElementBuilder buildLookupElement(final PsiElement element)
 	{
 		LookupElementBuilder builder = null;
@@ -404,6 +384,10 @@ public class CSharpLookupElementBuilder
 			builder = withGenericInsertHandler(element, builder);
 		}
 
+		if(builder != null && DotNetAttributeUtil.hasAttribute(element, DotNetTypes.System.ObsoleteAttribute))
+		{
+			builder = builder.withStrikeoutness(true);
+		}
 		return builder;
 	}
 

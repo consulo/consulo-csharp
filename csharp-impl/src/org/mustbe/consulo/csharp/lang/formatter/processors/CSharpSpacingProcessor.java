@@ -153,7 +153,7 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.afterInside(CSharpTokens.LPAR, CSharpStubElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_PARENTHESES);
 		myBuilder.afterInside(CSharpTokens.LPAR, CSharpElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_PARENTHESES);
 		myBuilder.afterInside(CSharpTokens.LPAR, CSharpElements.LAMBDA_PARAMETER_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_PARENTHESES);
-		// , type identifier)
+		// , type CSharpTokens.IDENTIFIER)
 		myBuilder.afterInside(CSharpTokens.COMMA, CSharpStubElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_AFTER_COMMA);
 		myBuilder.afterInside(CSharpTokens.COMMA, CSharpElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_AFTER_COMMA);
 		myBuilder.afterInside(CSharpTokens.COMMA, CSharpElements.LAMBDA_PARAMETER_LIST).spaceIf(commonSettings.SPACE_AFTER_COMMA);
@@ -191,19 +191,19 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		// delegate(parameterList)
 		myBuilder.between(CSharpTokens.DELEGATE_KEYWORD, CSharpElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_BEFORE_METHOD_PARENTHESES);
 
-		myBuilder.beforeInside(IDENTIFIER, TYPE_DECLARATION).spaces(1);
-		myBuilder.beforeInside(IDENTIFIER, LOCAL_VARIABLE).spaces(1);
-		myBuilder.beforeInside(IDENTIFIER, FIELD_DECLARATION).spaces(1);
-		myBuilder.betweenInside(DOT, IDENTIFIER, EVENT_DECLARATION).spaces(0);
-		myBuilder.beforeInside(IDENTIFIER, EVENT_DECLARATION).spaces(1);
-		myBuilder.betweenInside(DOT, IDENTIFIER, PROPERTY_DECLARATION).spaces(0);
-		myBuilder.beforeInside(IDENTIFIER, PROPERTY_DECLARATION).spaces(1);
-		myBuilder.betweenInside(DOT, IDENTIFIER, METHOD_DECLARATION).spaces(0);
-		myBuilder.beforeInside(IDENTIFIER, METHOD_DECLARATION).spaces(1);
-		myBuilder.beforeInside(IDENTIFIER, CONSTRUCTOR_DECLARATION).spaces(1);
+		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, TYPE_DECLARATION).spaces(1);
+		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, LOCAL_VARIABLE).spaces(1);
+		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, FIELD_DECLARATION).spaces(1);
+		myBuilder.betweenInside(DOT, CSharpTokens.IDENTIFIER, EVENT_DECLARATION).spaces(0);
+		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, EVENT_DECLARATION).spaces(1);
+		myBuilder.betweenInside(DOT, CSharpTokens.IDENTIFIER, PROPERTY_DECLARATION).spaces(0);
+		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, PROPERTY_DECLARATION).spaces(1);
+		myBuilder.betweenInside(DOT, CSharpTokens.IDENTIFIER, METHOD_DECLARATION).spaces(0);
+		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, METHOD_DECLARATION).spaces(1);
+		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, CONSTRUCTOR_DECLARATION).spaces(1);
 		myBuilder.beforeInside(THIS_KEYWORD, ARRAY_METHOD_DECLARATION).spaces(1);
-		myBuilder.beforeInside(IDENTIFIER, CSharpElements.PARAMETER).spaces(1);
-		myBuilder.beforeInside(IDENTIFIER, CSharpStubElements.PARAMETER).spaces(1);
+		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, CSharpElements.PARAMETER).spaces(1);
+		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, CSharpStubElements.PARAMETER).spaces(1);
 
 		myBuilder.afterInside(COLON, CSharpStubElements.EXTENDS_LIST).spaces(1);
 		myBuilder.before(CSharpStubElements.EXTENDS_LIST).spaces(1);

@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AsPsiElementProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideProcessor;
@@ -69,7 +70,8 @@ public class CSharpSearchUtil
 			@Nullable String parentQName,
 			@NotNull DotNetGenericExtractor extractor)
 	{
-		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner,
+		AsPsiElementProcessor psiElementProcessor = new AsPsiElementProcessor();
+		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner, psiElementProcessor,
 				new ExecuteTarget[]{ExecuteTarget.PROPERTY}, OverrideProcessor.ALWAYS_TRUE);
 
 		ResolveState state = ResolveState.initial();
@@ -77,7 +79,7 @@ public class CSharpSearchUtil
 		state = state.put(CSharpResolveUtil.SELECTOR, new MemberByNameSelector(name));
 
 		CSharpResolveUtil.walkChildren(memberResolveScopeProcessor, owner, false, true, state);
-		for(PsiElement element : memberResolveScopeProcessor.toPsiElements())
+		for(PsiElement element : psiElementProcessor.getElements())
 		{
 			if(isMyElement(element, parentQName))
 			{
@@ -131,7 +133,8 @@ public class CSharpSearchUtil
 			}
 		}
 
-		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner,
+		AsPsiElementProcessor psiElementProcessor = new AsPsiElementProcessor();
+		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner, psiElementProcessor,
 				new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP}, OverrideProcessor.ALWAYS_TRUE);
 
 		ResolveState state = ResolveState.initial();
@@ -140,9 +143,7 @@ public class CSharpSearchUtil
 
 		CSharpResolveUtil.walkChildren(memberResolveScopeProcessor, owner, false, true, state);
 
-		PsiElement[] psiElements = memberResolveScopeProcessor.toPsiElements();
-
-		for(PsiElement psiElement : psiElements)
+		for(PsiElement psiElement : psiElementProcessor.getElements())
 		{
 			if(psiElement instanceof CSharpElementGroup)
 			{

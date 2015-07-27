@@ -118,10 +118,23 @@ public class CSharpFileFactory
 	}
 
 	@NotNull
-	public static PsiElement createIdentifier(@NotNull Project project, @NotNull String name)
+	@RequiredReadAction
+	public static CSharpIdentifier createIdentifier(@NotNull Project project, @NotNull String name)
 	{
 		CSharpFieldDeclaration field = createField(project, "int " + name);
-		return field.getNameIdentifier();
+		return (CSharpIdentifier) field.getNameIdentifier();
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public static PsiElement createReferenceToken(@NotNull Project project, @NotNull String name)
+	{
+		CSharpFieldDeclaration field = createField(project, "int dummy = " + name + ";");
+		CSharpReferenceExpression initializer = (CSharpReferenceExpression) field.getInitializer();
+		assert initializer != null;
+		PsiElement referenceElement = initializer.getReferenceElement();
+		assert referenceElement != null;
+		return referenceElement;
 	}
 
 	public static DotNetExpression createExpression(@NotNull Project project, @NotNull String text)

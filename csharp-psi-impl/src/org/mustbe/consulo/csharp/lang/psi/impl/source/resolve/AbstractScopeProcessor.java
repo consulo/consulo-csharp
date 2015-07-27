@@ -24,12 +24,9 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
-import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
-import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -37,7 +34,8 @@ import com.intellij.util.containers.ContainerUtil;
  * @author VISTALL
  * @since 17.12.13.
  */
-public abstract class AbstractScopeProcessor extends UserDataHolderBase implements PsiScopeProcessor
+@Deprecated
+public abstract class AbstractScopeProcessor extends StubScopeProcessor
 {
 	protected final List<ResolveResult> myElements = new ArrayList<ResolveResult>();
 	private Comparator<ResolveResult> myComparator;
@@ -99,18 +97,6 @@ public abstract class AbstractScopeProcessor extends UserDataHolderBase implemen
 				return resolveResultWithWeight.getElement();
 			}
 		}, PsiElement.EMPTY_ARRAY);
-	}
-
-	@Nullable
-	@Override
-	public <T> T getHint(@NotNull Key<T> tKey)
-	{
-		return getUserData(tKey);
-	}
-
-	@Override
-	public void handleEvent(Event event, @Nullable Object o)
-	{
 	}
 
 	public void setComparator(@Nullable Comparator<ResolveResult> comparator)

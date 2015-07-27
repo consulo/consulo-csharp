@@ -5,7 +5,8 @@ CSHARP_FILE
     PsiWhiteSpace(' ')
     PsiElement(CLASS_KEYWORD)('class')
     PsiWhiteSpace(' ')
-    PsiElement(IDENTIFIER)('Test')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('Test')
     PsiWhiteSpace('\n')
     PsiElement(LBRACE)('{')
     PsiWhiteSpace('\n    ')
@@ -16,7 +17,8 @@ CSHARP_FILE
       CSharpStubNativeTypeImpl [NATIVE_TYPE]
         PsiElement(INT_KEYWORD)('int')
       PsiWhiteSpace(' ')
-      PsiElement(IDENTIFIER)('b')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('b')
       PsiElement(SEMICOLON)(';')
     PsiWhiteSpace('\n\n    ')
     CSharpNamespaceDeclarationImpl [NAMESPACE_DECLARATION]
@@ -38,7 +40,8 @@ CSHARP_FILE
         PsiWhiteSpace(' ')
         PsiElement(CLASS_KEYWORD)('class')
         PsiWhiteSpace(' ')
-        PsiElement(IDENTIFIER)('AA')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('AA')
         PsiWhiteSpace('\n        ')
         PsiElement(LBRACE)('{')
         PsiWhiteSpace('\n\n        ')

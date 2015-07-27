@@ -15,13 +15,15 @@ CSHARP_FILE
     PsiWhiteSpace(' ')
     PsiElement(CLASS_KEYWORD)('class')
     PsiWhiteSpace(' ')
-    PsiElement(IDENTIFIER)('Class1')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('Class1')
     CSharpGenericParameterListImpl [GENERIC_PARAMETER_LIST]
       PsiElement(LT)('<')
       CSharpGenericParameterImpl [GENERIC_PARAMETER]
         CSharpStubModifierListImpl [MODIFIER_LIST]
           <empty list>
-        PsiElement(IDENTIFIER)('T')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('T')
       PsiElement(GT)('>')
     PsiWhiteSpace('\n')
     PsiElement(LBRACE)('{')
@@ -34,19 +36,22 @@ CSHARP_FILE
     PsiWhiteSpace(' ')
     PsiElement(CLASS_KEYWORD)('class')
     PsiWhiteSpace(' ')
-    PsiElement(IDENTIFIER)('ClassWithGeneric')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('ClassWithGeneric')
     CSharpGenericParameterListImpl [GENERIC_PARAMETER_LIST]
       PsiElement(LT)('<')
       CSharpGenericParameterImpl [GENERIC_PARAMETER]
         CSharpStubModifierListImpl [MODIFIER_LIST]
           <empty list>
-        PsiElement(IDENTIFIER)('T')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('T')
       PsiElement(COMMA)(',')
       PsiWhiteSpace(' ')
       CSharpGenericParameterImpl [GENERIC_PARAMETER]
         CSharpStubModifierListImpl [MODIFIER_LIST]
           <empty list>
-        PsiElement(IDENTIFIER)('A')
+        CSharpStubIdentifierImpl [IDENTIFIER]
+          PsiElement(IDENTIFIER)('A')
       PsiElement(GT)('>')
     PsiWhiteSpace('\n')
     PsiElement(LBRACE)('{')
@@ -57,7 +62,8 @@ CSHARP_FILE
       PsiWhiteSpace(' ')
       PsiElement(CLASS_KEYWORD)('class')
       PsiWhiteSpace(' ')
-      PsiElement(IDENTIFIER)('D')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('D')
       PsiWhiteSpace('\n    ')
       PsiElement(LBRACE)('{')
       PsiWhiteSpace('\n\n    ')
@@ -72,7 +78,8 @@ CSHARP_FILE
       CSharpStubNativeTypeImpl [NATIVE_TYPE]
         PsiElement(VOID_KEYWORD)('void')
       PsiWhiteSpace(' ')
-      PsiElement(IDENTIFIER)('helloWorld')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('helloWorld')
       CSharpStubParameterListImpl [PARAMETER_LIST]
         PsiElement(LPAR)('(')
         CSharpStubParameterImpl [PARAMETER]
@@ -82,7 +89,8 @@ CSHARP_FILE
             CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
               PsiElement(IDENTIFIER)('T')
           PsiWhiteSpace(' ')
-          PsiElement(IDENTIFIER)('t')
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('t')
         PsiElement(RPAR)(')')
       PsiWhiteSpace('\n    ')
       CSharpBlockStatementImpl(BLOCK_STATEMENT)
@@ -98,7 +106,8 @@ CSHARP_FILE
     PsiWhiteSpace(' ')
     PsiElement(CLASS_KEYWORD)('class')
     PsiWhiteSpace(' ')
-    PsiElement(IDENTIFIER)('Program')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('Program')
     PsiWhiteSpace('\n')
     PsiElement(LBRACE)('{')
     PsiWhiteSpace('\n    ')
@@ -111,7 +120,8 @@ CSHARP_FILE
       CSharpStubNativeTypeImpl [NATIVE_TYPE]
         PsiElement(VOID_KEYWORD)('void')
       PsiWhiteSpace(' ')
-      PsiElement(IDENTIFIER)('Main')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('Main')
       CSharpStubParameterListImpl [PARAMETER_LIST]
         PsiElement(LPAR)('(')
         CSharpStubParameterImpl [PARAMETER]
@@ -123,7 +133,8 @@ CSHARP_FILE
             PsiElement(LBRACKET)('[')
             PsiElement(RBRACKET)(']')
           PsiWhiteSpace(' ')
-          PsiElement(IDENTIFIER)('args')
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('args')
         PsiElement(RPAR)(')')
       PsiWhiteSpace('\n    ')
       CSharpBlockStatementImpl(BLOCK_STATEMENT)
@@ -134,7 +145,8 @@ CSHARP_FILE
             CSharpNativeTypeImpl(NATIVE_TYPE)
               PsiElement(VAR_KEYWORD)('var')
             PsiWhiteSpace(' ')
-            PsiElement(IDENTIFIER)('t')
+            CSharpIdentifierImpl(IDENTIFIER)
+              PsiElement(IDENTIFIER)('t')
             PsiWhiteSpace(' ')
             PsiElement(EQ)('=')
             PsiWhiteSpace(' ')
@@ -159,7 +171,8 @@ CSHARP_FILE
             CSharpNativeTypeImpl(NATIVE_TYPE)
               PsiElement(VAR_KEYWORD)('var')
             PsiWhiteSpace(' ')
-            PsiElement(IDENTIFIER)('t2')
+            CSharpIdentifierImpl(IDENTIFIER)
+              PsiElement(IDENTIFIER)('t2')
             PsiWhiteSpace(' ')
             PsiElement(EQ)('=')
             PsiWhiteSpace(' ')
@@ -188,7 +201,8 @@ CSHARP_FILE
             CSharpNativeTypeImpl(NATIVE_TYPE)
               PsiElement(VAR_KEYWORD)('var')
             PsiWhiteSpace(' ')
-            PsiElement(IDENTIFIER)('t3')
+            CSharpIdentifierImpl(IDENTIFIER)
+              PsiElement(IDENTIFIER)('t3')
             PsiElement(EQ)('=')
             PsiWhiteSpace(' ')
             CSharpTypeOfExpressionImpl(TYPE_OF_EXPRESSION)

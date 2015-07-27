@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.lineMarkerProvider;
 import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
 import com.intellij.psi.PsiElement;
 
@@ -28,5 +29,6 @@ import com.intellij.psi.PsiElement;
  */
 public interface LineMarkerCollector
 {
+	@RequiredReadAction
 	void collect(PsiElement psiElement, @NotNull Collection<LineMarkerInfo> lineMarkerInfos);
 }

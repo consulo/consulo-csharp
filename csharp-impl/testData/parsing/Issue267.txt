@@ -15,7 +15,8 @@ CSHARP_FILE
     PsiWhiteSpace(' ')
     PsiElement(CLASS_KEYWORD)('class')
     PsiWhiteSpace(' ')
-    PsiElement(IDENTIFIER)('Program')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('Program')
     PsiWhiteSpace('\n')
     PsiElement(LBRACE)('{')
     PsiWhiteSpace('\n    ')
@@ -28,7 +29,8 @@ CSHARP_FILE
       CSharpStubNativeTypeImpl [NATIVE_TYPE]
         PsiElement(VOID_KEYWORD)('void')
       PsiWhiteSpace(' ')
-      PsiElement(IDENTIFIER)('Main')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('Main')
       CSharpStubParameterListImpl [PARAMETER_LIST]
         PsiElement(LPAR)('(')
         CSharpStubParameterImpl [PARAMETER]
@@ -40,7 +42,8 @@ CSHARP_FILE
             PsiElement(LBRACKET)('[')
             PsiElement(RBRACKET)(']')
           PsiWhiteSpace(' ')
-          PsiElement(IDENTIFIER)('myArguments')
+          CSharpStubIdentifierImpl [IDENTIFIER]
+            PsiElement(IDENTIFIER)('myArguments')
         PsiElement(RPAR)(')')
       PsiWhiteSpace('\n    ')
       CSharpBlockStatementImpl(BLOCK_STATEMENT)
@@ -52,7 +55,8 @@ CSHARP_FILE
               CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
                 PsiElement(IDENTIFIER)('String')
             PsiWhiteSpace(' ')
-            PsiElement(IDENTIFIER)('template')
+            CSharpIdentifierImpl(IDENTIFIER)
+              PsiElement(IDENTIFIER)('template')
             PsiWhiteSpace(' ')
             PsiElement(EQ)('=')
             PsiWhiteSpace(' ')
@@ -65,7 +69,8 @@ CSHARP_FILE
             CSharpNativeTypeImpl(NATIVE_TYPE)
               PsiElement(INT_KEYWORD)('int')
             PsiWhiteSpace(' ')
-            PsiElement(IDENTIFIER)('value')
+            CSharpIdentifierImpl(IDENTIFIER)
+              PsiElement(IDENTIFIER)('value')
             PsiWhiteSpace(' ')
             PsiElement(EQ)('=')
             PsiWhiteSpace(' ')
@@ -78,7 +83,8 @@ CSHARP_FILE
             CSharpNativeTypeImpl(NATIVE_TYPE)
               PsiElement(VAR_KEYWORD)('var')
             PsiWhiteSpace(' ')
-            PsiElement(IDENTIFIER)('o')
+            CSharpIdentifierImpl(IDENTIFIER)
+              PsiElement(IDENTIFIER)('o')
             PsiWhiteSpace(' ')
             PsiElement(EQ)('=')
             PsiWhiteSpace(' ')

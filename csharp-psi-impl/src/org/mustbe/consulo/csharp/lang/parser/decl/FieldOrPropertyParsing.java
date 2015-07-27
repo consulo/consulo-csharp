@@ -56,17 +56,13 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 			int typeFlags,
 			boolean semicolonEat)
 	{
-		if(builder.getTokenType() == IDENTIFIER)
+		if(expectOrReportIdentifier(builder, typeFlags))
 		{
-			builder.advanceLexer();
-
 			parseFieldAfterName(builder, marker, to, typeFlags, semicolonEat);
 			return true;
 		}
 		else
 		{
-			builder.error("Name expected");
-
 			if(semicolonEat)
 			{
 				expect(builder, SEMICOLON, "';' expected");

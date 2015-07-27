@@ -19,11 +19,15 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter;
 import java.util.Comparator;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
@@ -79,6 +83,7 @@ public class VariableOrTypeComparator implements Comparator<ResolveResult>
 		return false;
 	}
 
+	@RequiredReadAction
 	private int getWeight(ResolveResult resolveResult)
 	{
 		final PsiElement element = resolveResult.getElement();
@@ -99,8 +104,14 @@ public class VariableOrTypeComparator implements Comparator<ResolveResult>
 				parentContext = CSharpContextUtil.ContextType.INSTANCE;
 			}
 
+			DotNetTypeDeclaration forceTarget = resolveTargetElement(element, myParent);
+			if(forceTarget == null)
+			{
+				return 0;
+			}
+
 			// region Some code
-			ResolveResult[] resolveResults = myParent.tryResolveFromQualifier(element);
+			ResolveResult[] resolveResults = myParent.tryResolveFromQualifier(forceTarget);
 			if(resolveResults.length == 0)
 			{
 				return 0;
@@ -138,5 +149,26 @@ public class VariableOrTypeComparator implements Comparator<ResolveResult>
 			// endregion
 		}
 		return myComparator.getWeight(resolveResult);
+	}
+
+	@Nullable
+	@RequiredReadAction
+	private static DotNetTypeDeclaration resolveTargetElement(@NotNull PsiElement element, @NotNull PsiElement scope)
+	{
+		if(element instanceof CSharpTypeDeclaration)
+		{
+			return (DotNetTypeDeclaration) element;
+		}
+		else if(element instanceof DotNetVariable)
+		{
+			DotNetTypeRef typeRef = ((DotNetVariable) element).toTypeRef(true);
+			PsiElement resolvedElement = typeRef.resolve(scope).getElement();
+			if(resolvedElement == null)
+			{
+				return null;
+			}
+			return resolveTargetElement(resolvedElement, scope);
+		}
+		return null;
 	}
 }

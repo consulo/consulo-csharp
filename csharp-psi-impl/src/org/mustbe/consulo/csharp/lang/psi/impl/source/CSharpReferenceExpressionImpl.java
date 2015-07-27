@@ -213,7 +213,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	{
 		PsiElement element = getReferenceElement();
 
-		PsiElement newIdentifier = CSharpFileFactory.createIdentifier(getProject(), s);
+		PsiElement newIdentifier = CSharpFileFactory.createReferenceToken(getProject(), s);
 
 		element.replace(newIdentifier);
 		return this;

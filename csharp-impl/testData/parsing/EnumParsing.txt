@@ -5,20 +5,23 @@ CSHARP_FILE
     PsiWhiteSpace(' ')
     PsiElement(ENUM_KEYWORD)('enum')
     PsiWhiteSpace(' ')
-    PsiElement(IDENTIFIER)('EnumParsing')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('EnumParsing')
     PsiWhiteSpace('\n')
     PsiElement(LBRACE)('{')
     PsiWhiteSpace('\n    ')
     CSharpEnumConstantDeclarationImpl [ENUM_CONSTANT_DECLARATION]
       CSharpStubModifierListImpl [MODIFIER_LIST]
         <empty list>
-      PsiElement(IDENTIFIER)('Test')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('Test')
     PsiElement(COMMA)(',')
     PsiWhiteSpace('\n    ')
     CSharpEnumConstantDeclarationImpl [ENUM_CONSTANT_DECLARATION]
       CSharpStubModifierListImpl [MODIFIER_LIST]
         <empty list>
-      PsiElement(IDENTIFIER)('Test2')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('Test2')
     PsiWhiteSpace('\n')
     PsiElement(RBRACE)('}')
   PsiWhiteSpace('\n\n')
@@ -28,7 +31,8 @@ CSHARP_FILE
     PsiWhiteSpace(' ')
     PsiElement(ENUM_KEYWORD)('enum')
     PsiWhiteSpace(' ')
-    PsiElement(IDENTIFIER)('EnumParsingWithComma')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('EnumParsingWithComma')
     PsiWhiteSpace('\n')
     PsiElement(LBRACE)('{')
     PsiWhiteSpace('\n    ')
@@ -43,7 +47,8 @@ CSHARP_FILE
               <empty list>
           PsiElement(RBRACKET)(']')
       PsiWhiteSpace('\n    ')
-      PsiElement(IDENTIFIER)('Test')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('Test')
       PsiWhiteSpace(' ')
       PsiElement(EQ)('=')
       PsiWhiteSpace(' ')
@@ -54,7 +59,8 @@ CSHARP_FILE
     CSharpEnumConstantDeclarationImpl [ENUM_CONSTANT_DECLARATION]
       CSharpStubModifierListImpl [MODIFIER_LIST]
         <empty list>
-      PsiElement(IDENTIFIER)('Test2')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('Test2')
       PsiWhiteSpace(' ')
       PsiElement(EQ)('=')
       PsiWhiteSpace(' ')

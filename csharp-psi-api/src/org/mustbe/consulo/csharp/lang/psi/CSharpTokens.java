@@ -184,6 +184,10 @@ public interface CSharpTokens extends TokenType
 
 	IElementType ELSE_KEYWORD = new IElementType("ELSE_KEYWORD", CSharpLanguage.INSTANCE);
 
+	IElementType FALSE_KEYWORD = new IElementType("FALSE_KEYWORD", CSharpLanguage.INSTANCE);
+
+	IElementType TRUE_KEYWORD = new IElementType("TRUE_KEYWORD", CSharpLanguage.INSTANCE);
+
 	IElementType LBRACE = new IElementType("LBRACE", CSharpLanguage.INSTANCE);
 
 	IElementType RBRACE = new IElementType("RBRACE", CSharpLanguage.INSTANCE);
@@ -303,8 +307,6 @@ public interface CSharpTokens extends TokenType
 	IElementType DECIMAL_LITERAL = new IElementType("DECIMAL_LITERAL", CSharpLanguage.INSTANCE);
 
 	IElementType CHARACTER_LITERAL = new IElementType("CHARACTER_LITERAL", CSharpLanguage.INSTANCE);
-
-	IElementType BOOL_LITERAL = new IElementType("BOOL_LITERAL", CSharpLanguage.INSTANCE);
 
 	IElementType NULL_LITERAL = new IElementType("NULL_LITERAL", CSharpLanguage.INSTANCE);
 

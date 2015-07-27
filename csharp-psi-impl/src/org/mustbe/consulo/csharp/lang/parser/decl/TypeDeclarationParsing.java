@@ -36,7 +36,7 @@ public class TypeDeclarationParsing extends SharedParsingHelpers
 
 		builder.advanceLexer();
 
-		expect(builder, IDENTIFIER, "Name expected");
+		expectOrReportIdentifier(builder, STUB_SUPPORT);
 
 		reportErrorUntil(builder, "Expected ':', '<', '{' or 'where'", TokenSet.create(COLON, LT, LBRACE), WHERE_SET);
 

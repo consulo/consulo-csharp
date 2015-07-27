@@ -5,7 +5,8 @@ CSHARP_FILE
     PsiWhiteSpace(' ')
     PsiElement(CLASS_KEYWORD)('class')
     PsiWhiteSpace(' ')
-    PsiElement(IDENTIFIER)('PartialClass')
+    CSharpStubIdentifierImpl [IDENTIFIER]
+      PsiElement(IDENTIFIER)('PartialClass')
     PsiWhiteSpace('\n')
     PsiElement(LBRACE)('{')
     PsiWhiteSpace('\n\t')
@@ -16,7 +17,8 @@ CSHARP_FILE
       CSharpStubNativeTypeImpl [NATIVE_TYPE]
         PsiElement(VOID_KEYWORD)('void')
       PsiWhiteSpace(' ')
-      PsiElement(IDENTIFIER)('partialMethod')
+      CSharpStubIdentifierImpl [IDENTIFIER]
+        PsiElement(IDENTIFIER)('partialMethod')
       CSharpStubParameterListImpl [PARAMETER_LIST]
         PsiElement(LPAR)('(')
         PsiElement(RPAR)(')')
@@ -29,7 +31,8 @@ CSHARP_FILE
             CSharpNativeTypeImpl(NATIVE_TYPE)
               PsiElement(INT_KEYWORD)('int')
             PsiWhiteSpace(' ')
-            PsiElement(IDENTIFIER)('partial')
+            CSharpIdentifierImpl(IDENTIFIER)
+              PsiElement(IDENTIFIER)('partial')
             PsiWhiteSpace(' ')
             PsiElement(EQ)('=')
             PsiWhiteSpace(' ')

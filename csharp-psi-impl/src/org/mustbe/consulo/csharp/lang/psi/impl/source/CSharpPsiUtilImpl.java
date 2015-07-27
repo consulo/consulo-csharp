@@ -18,8 +18,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import com.intellij.openapi.util.Comparing;
@@ -35,15 +37,28 @@ import com.intellij.psi.PsiNameIdentifierOwner;
  */
 public class CSharpPsiUtilImpl
 {
+	@RequiredReadAction
+	public static boolean isNullOrEmpty(@NotNull PsiNameIdentifierOwner owner)
+	{
+		PsiElement nameIdentifier = owner.getNameIdentifier();
+		return nameIdentifier == null || nameIdentifier instanceof CSharpIdentifier && ((CSharpIdentifier) nameIdentifier).getValue() == null;
+	}
+
 	@Nullable
+	@RequiredReadAction
 	public static String getNameWithoutAt(@NotNull PsiNameIdentifierOwner element)
 	{
-		PsiElement nameIdentifier = element.getNameIdentifier();
+		CSharpIdentifier nameIdentifier = (CSharpIdentifier) element.getNameIdentifier();
 		if(nameIdentifier == null)
 		{
 			return null;
 		}
-		return getNameWithoutAt(nameIdentifier.getText());
+		String value = nameIdentifier.getValue();
+		if(value == null)
+		{
+			return null;
+		}
+		return getNameWithoutAt(value);
 	}
 
 	@NotNull

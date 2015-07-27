@@ -18,12 +18,7 @@ package org.mustbe.consulo.csharp.ide.completion;
 
 import static com.intellij.patterns.StandardPatterns.psiElement;
 
-import java.util.List;
-
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
-import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -33,13 +28,8 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
-import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
@@ -49,14 +39,11 @@ import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetUserType;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -75,10 +62,10 @@ import lombok.val;
  */
 public class CSharpKeywordCompletionContributor extends CompletionContributor
 {
-	private static final TokenSet ourExpressionLiterals = TokenSet.create(CSharpTokens.NULL_LITERAL, CSharpTokens.BOOL_LITERAL,
-			CSharpTokens.DEFAULT_KEYWORD, CSharpTokens.TYPEOF_KEYWORD, CSharpTokens.SIZEOF_KEYWORD, CSharpTokens.THIS_KEYWORD,
-			CSharpTokens.BASE_KEYWORD, CSharpSoftTokens.AWAIT_KEYWORD, CSharpTokens.NEW_KEYWORD, CSharpTokens.__MAKEREF_KEYWORD,
-			CSharpTokens.__REFTYPE_KEYWORD, CSharpTokens.__REFVALUE_KEYWORD, CSharpSoftTokens.NAMEOF_KEYWORD);
+	private static final TokenSet ourExpressionLiterals = TokenSet.create(CSharpTokens.NULL_LITERAL, CSharpTokens.FALSE_KEYWORD,
+			CSharpTokens.TRUE_KEYWORD, CSharpTokens.DEFAULT_KEYWORD, CSharpTokens.TYPEOF_KEYWORD, CSharpTokens.SIZEOF_KEYWORD,
+			CSharpTokens.THIS_KEYWORD, CSharpTokens.BASE_KEYWORD, CSharpSoftTokens.AWAIT_KEYWORD, CSharpTokens.NEW_KEYWORD,
+			CSharpTokens.__MAKEREF_KEYWORD, CSharpTokens.__REFTYPE_KEYWORD, CSharpTokens.__REFVALUE_KEYWORD, CSharpSoftTokens.NAMEOF_KEYWORD);
 
 	public CSharpKeywordCompletionContributor()
 	{
@@ -112,41 +99,6 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 									else if(elementType == CSharpTokens.NEW_KEYWORD)
 									{
 										t = t.withInsertHandler(SpaceInsertHandler.INSTANCE);
-									}
-
-									List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(parent);
-									if(!expectedTypeRefs.isEmpty())
-									{
-										if(elementType == CSharpTokens.NULL_LITERAL)
-										{
-											for(ExpectedTypeInfo expectedTypeRef : expectedTypeRefs)
-											{
-												DotNetTypeResolveResult typeResolveResult = expectedTypeRef.getTypeRef().resolve(parent);
-												if(typeResolveResult.isNullable())
-												{
-													return PrioritizedLookupElement.withPriority(t, CSharpCompletionUtil.EXPR_KEYWORD_PRIORITY);
-												}
-											}
-										}
-										else if(elementType == CSharpTokens.NEW_KEYWORD)
-										{
-											return PrioritizedLookupElement.withPriority(t, CSharpCompletionUtil.EXPR_KEYWORD_PRIORITY);
-										}
-										else
-										{
-											DotNetTypeRef typeRefForToken = typeRefFromTokeType(elementType, parent);
-											if(typeRefForToken == null)
-											{
-												return t;
-											}
-											for(ExpectedTypeInfo expectedTypeRef : expectedTypeRefs)
-											{
-												if(CSharpTypeUtil.isInheritable(expectedTypeRef.getTypeRef(), typeRefForToken, parent))
-												{
-													return PrioritizedLookupElement.withPriority(t, CSharpCompletionUtil.EXPR_KEYWORD_PRIORITY);
-												}
-											}
-										}
 									}
 									return t;
 								}
@@ -311,53 +263,5 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 		});
 	}
 
-	@Nullable
-	private static DotNetTypeRef typeRefFromTokeType(@NotNull IElementType e, CSharpReferenceExpressionEx parent)
-	{
-		if(e == CSharpTokens.BOOL_LITERAL)
-		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.Boolean);
-		}
-		else if(e == CSharpTokens.TYPEOF_KEYWORD)
-		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.Type);
-		}
-		else if(e == CSharpSoftTokens.NAMEOF_KEYWORD)
-		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.String);
-		}
-		else if(e == CSharpTokens.SIZEOF_KEYWORD)
-		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.Int32);
-		}
-		else if(e == CSharpTokens.__MAKEREF_KEYWORD)
-		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.TypedReference);
-		}
-		else if(e == CSharpTokens.__REFTYPE_KEYWORD)
-		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.Type);
-		}
-		else if(e == CSharpTokens.THIS_KEYWORD)
-		{
-			DotNetTypeDeclaration thisTypeDeclaration = PsiTreeUtil.getParentOfType(parent, DotNetTypeDeclaration.class);
-			if(thisTypeDeclaration != null)
-			{
-				return new CSharpTypeRefByTypeDeclaration(thisTypeDeclaration);
-			}
-		}
-		else if(e == CSharpTokens.BASE_KEYWORD)
-		{
-			DotNetTypeDeclaration thisTypeDeclaration = PsiTreeUtil.getParentOfType(parent, DotNetTypeDeclaration.class);
-			if(thisTypeDeclaration != null)
-			{
-				val pair = CSharpTypeDeclarationImplUtil.resolveBaseType(thisTypeDeclaration, parent);
-				if(pair != null)
-				{
-					return new CSharpTypeRefByTypeDeclaration(pair.getFirst(), pair.getSecond());
-				}
-			}
-		}
-		return null;
-	}
+
 }

@@ -131,6 +131,8 @@ public interface CSharpElements
 
 	IElementType NEW_EXPRESSION = new ElementTypeAsPsiFactory("NEW_EXPRESSION", CSharpLanguage.INSTANCE, CSharpNewExpressionImpl.class);
 
+	IElementType IDENTIFIER = new ElementTypeAsPsiFactory("IDENTIFIER", CSharpLanguage.INSTANCE, CSharpIdentifierImpl.class);
+
 	IElementType __ARGLIST_EXPRESSION = new ElementTypeAsPsiFactory("__ARGLIST_EXPRESSION", CSharpLanguage.INSTANCE,
 			CSharpArglistExpressionImpl.class);
 

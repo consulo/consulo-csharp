@@ -19,7 +19,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
@@ -39,6 +40,7 @@ public abstract class CSharpMemberImpl extends CSharpElementImpl implements PsiN
 		super(node);
 	}
 
+	@RequiredReadAction
 	@Override
 	public int getTextOffset()
 	{
@@ -46,6 +48,7 @@ public abstract class CSharpMemberImpl extends CSharpElementImpl implements PsiN
 		return nameIdentifier != null ? nameIdentifier.getTextOffset() : super.getTextOffset();
 	}
 
+	@RequiredReadAction
 	@Override
 	@Nullable
 	public DotNetModifierList getModifierList()
@@ -53,6 +56,7 @@ public abstract class CSharpMemberImpl extends CSharpElementImpl implements PsiN
 		return findChildByClass(DotNetModifierList.class);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
@@ -64,10 +68,11 @@ public abstract class CSharpMemberImpl extends CSharpElementImpl implements PsiN
 	@Nullable
 	public PsiElement getNameIdentifier()
 	{
-		return findChildByType(CSharpTokens.IDENTIFIER);
+		return findNotNullChildByClass(CSharpIdentifier.class);
 	}
 
 	@Override
+	@RequiredReadAction
 	public String getName()
 	{
 		return CSharpPsiUtilImpl.getNameWithoutAt(this);
