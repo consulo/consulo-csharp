@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
 import org.mustbe.consulo.csharp.lang.psi.*;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilElementWrapper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAnonymousMethodExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
@@ -225,10 +226,15 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 			iconDescriptor.addLayerIcon(AllIcons.Nodes.FinalMark);
 		}
 
-		if(element instanceof DotNetTypeDeclaration && DotNetRunUtil.hasEntryPoint((DotNetTypeDeclaration) element) || element instanceof
-				DotNetMethodDeclaration && DotNetRunUtil.isEntryPoint((DotNetMethodDeclaration) element))
+		// dont check it for msil wrappers
+		if(!(element instanceof MsilElementWrapper))
 		{
-			iconDescriptor.addLayerIcon(AllIcons.Nodes.RunnableMark);
+			if(element instanceof DotNetTypeDeclaration && DotNetRunUtil.hasEntryPoint((DotNetTypeDeclaration) element) || element instanceof
+					DotNetMethodDeclaration && DotNetRunUtil.isEntryPoint((DotNetMethodDeclaration) element))
+
+			{
+				iconDescriptor.addLayerIcon(AllIcons.Nodes.RunnableMark);
+			}
 		}
 	}
 }
