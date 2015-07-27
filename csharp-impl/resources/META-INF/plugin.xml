@@ -163,7 +163,7 @@
 		<completion.contributor language="C#"
 								implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpTypeReferenceCompletionContributor"/>
 
-		<weigher key="proximity" id="csharpInheritable"
+		<weigher key="completion" id="csharpInheritable"
 				 implementationClass="org.mustbe.consulo.csharp.ide.completion.weighter.CSharpInheritProximityWeigher"/>
 
 		<weigher key="proximity" id="csharpObsolete"

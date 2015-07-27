@@ -31,7 +31,6 @@ import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.intellij.util.ArrayUtil;
 import com.intellij.util.NotNullPairFunction;
 import com.intellij.util.containers.ConcurrentFactoryMap;
 
@@ -41,27 +40,22 @@ import com.intellij.util.containers.ConcurrentFactoryMap;
  */
 public class CSharpCompletionUtil
 {
+	@Deprecated
 	public static final double EXPR_KEYWORD_PRIORITY = 1;
+	@Deprecated
 	public static final double EXPR_REF_PRIORITY = 2;
 
-	private static Map<IElementType, String[]> ourCache = new ConcurrentFactoryMap<IElementType, String[]>()
+	private static Map<IElementType, String> ourCache = new ConcurrentFactoryMap<IElementType, String>()
 	{
 		@Nullable
 		@Override
-		protected String[] create(IElementType elementType)
+		protected String create(IElementType elementType)
 		{
-			if(elementType == CSharpTokens.BOOL_LITERAL)
-			{
-				return new String[]{
-						"true",
-						"false"
-				};
-			}
 			if(elementType == CSharpTokens.NULL_LITERAL)
 			{
-				return new String[]{"null"};
+				return "null";
 			}
-			return new String[]{elementType.toString().replace("_KEYWORD", "").toLowerCase()};
+			return elementType.toString().replace("_KEYWORD", "").toLowerCase();
 		}
 	};
 
@@ -72,15 +66,9 @@ public class CSharpCompletionUtil
 	}
 
 	@NotNull
-	public static String[] textsOfKeyword(IElementType elementType)
-	{
-		return ourCache.get(elementType);
-	}
-
-	@NotNull
 	public static String textOfKeyword(IElementType elementType)
 	{
-		String firstElement = ArrayUtil.getFirstElement(textsOfKeyword(elementType));
+		String firstElement = ourCache.get(elementType);
 		assert firstElement != null;
 		return firstElement;
 	}
@@ -106,18 +94,16 @@ public class CSharpCompletionUtil
 			return;
 		}
 
-		for(String keyword : ourCache.get(elementType))
+		String keyword = ourCache.get(elementType);
+		LookupElementBuilder builder = LookupElementBuilder.create(elementType, keyword);
+		builder = builder.bold();
+		if(decorator != null)
 		{
-			LookupElementBuilder builder = LookupElementBuilder.create(keyword);
-			builder = builder.bold();
-			if(decorator != null)
-			{
-				resultSet.addElement(decorator.fun(builder, elementType));
-			}
-			else
-			{
-				resultSet.addElement(builder);
-			}
+			resultSet.addElement(decorator.fun(builder, elementType));
+		}
+		else
+		{
+			resultSet.addElement(builder);
 		}
 	}
 }

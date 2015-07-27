@@ -344,9 +344,9 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 
 	"??"                      { return CSharpTokens.QUESTQUEST; }
 
-	"false"                   { return CSharpTokens.BOOL_LITERAL; }
+	"false"                   { return CSharpTokens.FALSE_KEYWORD; }
 
-	"true"                    { return CSharpTokens.BOOL_LITERAL; }
+	"true"                    { return CSharpTokens.TRUE_KEYWORD; }
 
 	"null"                    { return CSharpTokens.NULL_LITERAL; }
 
