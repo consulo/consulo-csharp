@@ -547,7 +547,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 			}
 		}, ", ") + ")";
 
-		LookupElementBuilder builder = LookupElementBuilder.create(parent, lookupString);
+		LookupElementBuilder builder = LookupElementBuilder.create(declaration, lookupString);
 		builder = builder.withIcon(IconDescriptorUpdaters.getIcon(parent, Iconable.ICON_FLAG_VISIBILITY));
 		builder = builder.withTailText(parameterText, true);
 		builder = builder.withInsertHandler(ParenthesesInsertHandler.getInstance(parameters.length > 0));

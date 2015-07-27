@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.completion.CSharpCompletionUtil;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -57,6 +58,7 @@ public class CSharpInheritProximityWeigher extends Weigher<LookupElement, Comple
 		NONE,
 		UP_KEYWORD,
 		UP_REF,
+		HIGH
 	}
 
 	@Nullable
@@ -67,6 +69,11 @@ public class CSharpInheritProximityWeigher extends Weigher<LookupElement, Comple
 		if(!(position.getContainingFile() instanceof CSharpFile))
 		{
 			return Position.NONE;
+		}
+
+		if(element.getPsiElement() instanceof CSharpConstructorDeclaration)
+		{
+			return null;
 		}
 
 		PsiElement parent = position.getParent();
