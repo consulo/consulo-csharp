@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAnonymousMethodExpression;
@@ -50,6 +51,7 @@ import com.intellij.util.BitUtil;
 public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 {
 	@Override
+	@RequiredReadAction
 	public void updateIcon(@NotNull IconDescriptor iconDescriptor, @NotNull PsiElement element, int flags)
 	{
 		if(element instanceof DotNetNamespaceAsElement)
@@ -193,6 +195,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 		}
 	}
 
+	@RequiredReadAction
 	private static void processModifierListOwner(PsiElement element, IconDescriptor iconDescriptor, int flags)
 	{
 		DotNetModifierListOwner owner = (DotNetModifierListOwner) element;
@@ -214,12 +217,6 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 			{
 				iconDescriptor.setRightIcon(AllIcons.Nodes.C_plocal);
 			}
-		}
-
-		DotNetModifierList modifierList = owner.getModifierList();
-		if(modifierList != null && modifierList.hasModifierInTree(DotNetModifier.STATIC))
-		{
-			iconDescriptor.addLayerIcon(AllIcons.Nodes.StaticMark);
 		}
 
 		if(owner.hasModifier(CSharpModifier.SEALED) || owner.hasModifier(CSharpModifier.READONLY) || element instanceof DotNetVariable && (

@@ -11,6 +11,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
@@ -161,6 +162,8 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 	{
 		for(CSharpResolveContext context : myContexts)
 		{
+			ProgressManager.checkCanceled();
+
 			if(!context.processElements(processor, deep))
 			{
 				return false;

@@ -26,6 +26,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
@@ -193,6 +194,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 
 		for(PsiElement element : children)
 		{
+			ProgressManager.checkCanceled();
 			if(!processor.process(element))
 			{
 				return false;
