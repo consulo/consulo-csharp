@@ -67,6 +67,7 @@ import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.tree.IElementType;
@@ -145,8 +146,11 @@ public class CSharpReferenceExpressionImplUtil
 				case PARAMETER_FROM_PARENT:
 					kindProcessor = new ParameterFromParentKindProcessor();
 					break;
+				case EXPRESSION_OR_TYPE_LIKE:
+					kindProcessor = new ExpressionOrTypeLikeKindProcessor();
+					break;
 				default:
-					kindProcessor = new DummyKindProcessor();
+					kindProcessor = new DummyKindProcessor(value);
 					break;
 			}
 			ourProcessors[i] = kindProcessor;
@@ -277,6 +281,7 @@ public class CSharpReferenceExpressionImplUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static ResolveToKind kind(@NotNull CSharpReferenceExpression referenceExpression)
 	{
 		if(referenceExpression.isGlobalElement())
@@ -305,13 +310,17 @@ public class CSharpReferenceExpressionImplUtil
 		}
 		else if(tempElement instanceof DotNetUserType)
 		{
-			PsiElement parentOfParent = tempElement.getParent();
-			if(parentOfParent instanceof DotNetTypeWithTypeArguments)
+			PsiElement parent = tempElement.getParent();
+
+			if(parent instanceof CSharpLocalVariable)
 			{
-				parentOfParent = parentOfParent.getParent();
+				if(CSharpPsiUtilImpl.isNullOrEmpty((CSharpLocalVariable) parent))
+				{
+					return ResolveToKind.EXPRESSION_OR_TYPE_LIKE;
+				}
 			}
 
-			if(parentOfParent instanceof CSharpCallArgumentListOwner && ((CSharpCallArgumentListOwner) parentOfParent).canResolve())
+			if(parent instanceof CSharpCallArgumentListOwner && ((CSharpCallArgumentListOwner) parent).canResolve())
 			{
 				return ResolveToKind.CONSTRUCTOR;
 			}
@@ -376,8 +385,16 @@ public class CSharpReferenceExpressionImplUtil
 				return ResolveToKind.QUALIFIED_NAMESPACE;
 			}
 
-			if(PsiTreeUtil.getParentOfType(referenceExpression, CSharpUserType.class) != null)
+			CSharpUserType userType = PsiTreeUtil.getParentOfType(referenceExpression, CSharpUserType.class);
+			if(userType != null)
 			{
+				if(userType.getParent() instanceof CSharpLocalVariable)
+				{
+					if(CSharpPsiUtilImpl.isNullOrEmpty((CSharpLocalVariable) userType.getParent()))
+					{
+						return ResolveToKind.EXPRESSION_OR_TYPE_LIKE;
+					}
+				}
 				return ResolveToKind.TYPE_LIKE;
 			}
 

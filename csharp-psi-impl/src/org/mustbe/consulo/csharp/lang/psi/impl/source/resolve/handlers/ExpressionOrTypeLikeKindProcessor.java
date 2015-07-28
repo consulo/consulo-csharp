@@ -28,17 +28,10 @@ import com.intellij.util.Processor;
 
 /**
  * @author VISTALL
- * @since 27.07.2015
+ * @since 28.07.2015
  */
-public class DummyKindProcessor implements KindProcessor
+public class ExpressionOrTypeLikeKindProcessor implements KindProcessor
 {
-	private CSharpReferenceExpression.ResolveToKind myValue;
-
-	public DummyKindProcessor(CSharpReferenceExpression.ResolveToKind value)
-	{
-		myValue = value;
-	}
-
 	@RequiredReadAction
 	@Override
 	public void process(@NotNull CSharpResolveOptions options,
@@ -46,6 +39,10 @@ public class DummyKindProcessor implements KindProcessor
 			@Nullable PsiElement forceQualifierElement,
 			@NotNull Processor<ResolveResult> processor)
 	{
-		throw new UnsupportedOperationException(myValue.name());
+		options.kind(CSharpReferenceExpression.ResolveToKind.ANY_MEMBER);
+		new AnyMemberKindProcessor().process(options, defaultExtractor, forceQualifierElement, processor);
+
+		options.kind(CSharpReferenceExpression.ResolveToKind.TYPE_LIKE);
+		new TypeLikeKindProcessor().process(options, defaultExtractor, forceQualifierElement, processor);
 	}
 }

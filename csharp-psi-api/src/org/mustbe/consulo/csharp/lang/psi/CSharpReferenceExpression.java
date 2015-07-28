@@ -53,7 +53,8 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 		BASE_CONSTRUCTOR,
 		THIS_CONSTRUCTOR,
 		PARAMETER_FROM_PARENT,
-		NAMEOF;
+		NAMEOF,
+		EXPRESSION_OR_TYPE_LIKE;
 
 		@NotNull
 		@Immutable

@@ -25,6 +25,7 @@ import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.PsiBuilder;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.tree.IElementType;
 import lombok.val;
 
@@ -192,85 +193,107 @@ public class StatementParsing extends SharedParsingHelpers
 	@Nullable
 	private static ParseVariableOrExpressionResult parseVariableOrExpression(CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker someMarker)
 	{
-		boolean canParseAsVariable = canParseAsVariable(builder);
+		LocalVarType localVarType = canParseAsVariable(builder);
 		// need for example remap global keyword to identifier when it try to parse
 		builder.remapBackIfSoft();
 
-		if(canParseAsVariable)
+		switch(localVarType)
 		{
-			PsiBuilder.Marker mark = builder.mark();
-			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, mark, LOCAL_VARIABLE, VAR_SUPPORT, false);
-			if(someMarker != null)
-			{
-				expect(builder, SEMICOLON, "';' expected");
-				someMarker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
-			}
-			return ParseVariableOrExpressionResult.VARIABLE;
-		}
-		else
-		{
-			PsiBuilder.Marker expressionMarker = ExpressionParsing.parse(builder);
-			if(expressionMarker == null)
-			{
+
+			case NONE:
+				PsiBuilder.Marker expressionMarker = ExpressionParsing.parse(builder);
+				if(expressionMarker == null)
+				{
+					if(someMarker != null)
+					{
+						someMarker.drop();
+					}
+					return null;
+				}
+				else
+				{
+					if(someMarker != null)
+					{
+						expect(builder, SEMICOLON, "';' expected");
+					}
+				}
+
 				if(someMarker != null)
 				{
-					someMarker.drop();
+					someMarker.done(EXPRESSION_STATEMENT);
 				}
-				return null;
-			}
-			else
-			{
+				return ParseVariableOrExpressionResult.EXPRESSION;
+			case WITH_NAME:
+				PsiBuilder.Marker mark = builder.mark();
+				FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, mark, LOCAL_VARIABLE, VAR_SUPPORT, false);
 				if(someMarker != null)
 				{
 					expect(builder, SEMICOLON, "';' expected");
+					someMarker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
 				}
-			}
+				return ParseVariableOrExpressionResult.VARIABLE;
+			case NO_NAME:
+				PsiBuilder.Marker newMarker = builder.mark();
+				TypeInfo typeInfo = parseType(builder, BRACKET_RETURN_BEFORE | VAR_SUPPORT);
+				assert typeInfo != null;
+				expectOrReportIdentifier(builder, NONE);
+				newMarker.done(LOCAL_VARIABLE);
 
-			if(someMarker != null)
-			{
-				someMarker.done(EXPRESSION_STATEMENT);
-			}
-			return ParseVariableOrExpressionResult.EXPRESSION;
+				if(someMarker != null)
+				{
+					expect(builder, SEMICOLON, "';' expected");
+					someMarker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
+				}
+				return ParseVariableOrExpressionResult.VARIABLE;
+			default:
+				throw new UnsupportedOperationException();
 		}
 	}
 
-	private static boolean canParseAsVariable(CSharpBuilderWrapper builder)
+	enum LocalVarType
+	{
+		NONE,
+		WITH_NAME,
+		NO_NAME
+	}
+
+	@NotNull
+	private static LocalVarType canParseAsVariable(CSharpBuilderWrapper builder)
 	{
 		PsiBuilder.Marker newMarker = builder.mark();
 
 		try
 		{
+			int currentOffset = builder.getCurrentOffset();
 			TypeInfo typeInfo = parseType(builder, BRACKET_RETURN_BEFORE | VAR_SUPPORT);
 			if(typeInfo == null)
 			{
-				return false;
+				return LocalVarType.NONE;
 			}
 
 			IElementType tokenType = builder.getTokenType();
 			if(tokenType == LPAR)
 			{
-				return false;
-			}
-			// binary expression cant be at statement
-			if(typeInfo.isParameterized)
-			{
-				return true;
+				return LocalVarType.NONE;
 			}
 
+			CharSequence sequence = builder.getOriginalText().subSequence(currentOffset, builder.getCurrentOffset());
 			if(tokenType == CSharpTokens.IDENTIFIER)
 			{
-				// example 'int test' it only local variable
-				if(typeInfo.nativeElementType != null)
+				if(StringUtil.containsLineBreak(sequence))
 				{
-					return true;
+					return LocalVarType.NO_NAME;
 				}
-				IElementType lookAhead = builder.lookAhead(1);
-				if(lookAhead == SEMICOLON || lookAhead == EQ || lookAhead == COMMA || lookAhead == RBRACE || lookAhead == LBRACE)
+				return LocalVarType.WITH_NAME;
+			}
+			else
+			{
+				if(StringUtil.containsLineBreak(sequence))
 				{
-					return true;
+					return LocalVarType.NO_NAME;
 				}
 			}
-			return false;
+			return LocalVarType.NONE;
 		}
 		finally
 		{

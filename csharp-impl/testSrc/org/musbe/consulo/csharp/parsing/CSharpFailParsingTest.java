@@ -32,4 +32,10 @@ public class CSharpFailParsingTest extends CSharpParsingTestCase
 	{
 		doTest(true);
 	}
+
+	@SetLanguageVersion
+	public void testLocalVarParsing()
+	{
+		doTest(true);
+	}
 }
