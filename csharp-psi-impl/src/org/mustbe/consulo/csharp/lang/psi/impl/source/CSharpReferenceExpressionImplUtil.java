@@ -67,7 +67,6 @@ import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.tree.IElementType;
@@ -312,9 +311,11 @@ public class CSharpReferenceExpressionImplUtil
 		{
 			PsiElement parent = tempElement.getParent();
 
-			if(parent instanceof CSharpLocalVariable)
+			CSharpLocalVariable localVariable = PsiTreeUtil.getParentOfType(tempElement, CSharpLocalVariable.class);
+
+			if(localVariable != null)
 			{
-				if(CSharpPsiUtilImpl.isNullOrEmpty((CSharpLocalVariable) parent))
+				if(CSharpPsiUtilImpl.isNullOrEmpty(localVariable))
 				{
 					return ResolveToKind.EXPRESSION_OR_TYPE_LIKE;
 				}
@@ -388,9 +389,10 @@ public class CSharpReferenceExpressionImplUtil
 			CSharpUserType userType = PsiTreeUtil.getParentOfType(referenceExpression, CSharpUserType.class);
 			if(userType != null)
 			{
-				if(userType.getParent() instanceof CSharpLocalVariable)
+				CSharpLocalVariable localVariable = PsiTreeUtil.getParentOfType(userType, CSharpLocalVariable.class);
+				if(localVariable != null)
 				{
-					if(CSharpPsiUtilImpl.isNullOrEmpty((CSharpLocalVariable) userType.getParent()))
+					if(CSharpPsiUtilImpl.isNullOrEmpty(localVariable))
 					{
 						return ResolveToKind.EXPRESSION_OR_TYPE_LIKE;
 					}
