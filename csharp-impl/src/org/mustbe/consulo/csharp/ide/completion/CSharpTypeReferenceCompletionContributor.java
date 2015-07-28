@@ -83,6 +83,7 @@ public class CSharpTypeReferenceCompletionContributor extends CompletionContribu
 				CSharpReferenceExpression.ResolveToKind kind = parent.kind();
 				if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE ||
 						kind == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR ||
+						kind == CSharpReferenceExpression.ResolveToKind.EXPRESSION_OR_TYPE_LIKE ||
 						kind == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
 				{
 					final PrefixMatcher matcher = completionResultSet.getPrefixMatcher();
