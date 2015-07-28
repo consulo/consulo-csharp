@@ -13,4 +13,19 @@ public class Program
 
         return;
     }
+
+    public void test()
+    {
+        int
+           i ;
+
+        System.String.Compare("", "");
+    }
+
+    public void test()
+    {
+        int
+
+        System.String.Compare("", "");
+    }
 }

@@ -508,12 +508,17 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		}
 		else
 		{
-			PsiBuilder.Marker mark = builder.mark();
-			builder.error("Expected identifier");
-			mark.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.IDENTIFIER : CSharpElements.IDENTIFIER);
-			mark.setCustomEdgeTokenBinders(WhitespacesBinders.GREEDY_LEFT_BINDER, null);
+			reportIdentifier(builder, flags);
 			return false;
 		}
+	}
+
+	public static void reportIdentifier(PsiBuilder builder, int flags)
+	{
+		PsiBuilder.Marker mark = builder.mark();
+		builder.error("Expected identifier");
+		mark.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.IDENTIFIER : CSharpElements.IDENTIFIER);
+		mark.setCustomEdgeTokenBinders(WhitespacesBinders.GREEDY_LEFT_BINDER, null);
 	}
 
 	protected static boolean expect(PsiBuilder builder, TokenSet tokenSet, String message)

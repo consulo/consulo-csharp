@@ -236,7 +236,7 @@ public class StatementParsing extends SharedParsingHelpers
 				PsiBuilder.Marker newMarker = builder.mark();
 				TypeInfo typeInfo = parseType(builder, BRACKET_RETURN_BEFORE | VAR_SUPPORT);
 				assert typeInfo != null;
-				expectOrReportIdentifier(builder, NONE);
+				reportIdentifier(builder, NONE);
 				newMarker.done(LOCAL_VARIABLE);
 
 				if(someMarker != null)
@@ -280,6 +280,11 @@ public class StatementParsing extends SharedParsingHelpers
 			CharSequence sequence = builder.getOriginalText().subSequence(currentOffset, builder.getCurrentOffset());
 			if(tokenType == CSharpTokens.IDENTIFIER)
 			{
+				if(builder.lookAhead(1) == CSharpTokens.SEMICOLON || builder.lookAhead(1) == CSharpTokens.EQ)
+				{
+					return LocalVarType.WITH_NAME;
+				}
+
 				if(StringUtil.containsLineBreak(sequence))
 				{
 					return LocalVarType.NO_NAME;
