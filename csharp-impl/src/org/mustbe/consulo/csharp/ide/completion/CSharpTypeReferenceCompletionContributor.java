@@ -40,6 +40,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetShortNameSearcher;
+import org.mustbe.consulo.dotnet.resolve.GlobalSearchScopeFilter;
 import org.mustbe.dotnet.msil.decompiler.util.MsilHelper;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
@@ -104,7 +105,7 @@ public class CSharpTypeReferenceCompletionContributor extends CompletionContribu
 					final GlobalSearchScope resolveScope = parent.getResolveScope();
 
 					final DotNetShortNameSearcher shortNameSearcher = DotNetShortNameSearcher.getInstance(project);
-					final IdFilter projectIdFilter = IdFilter.getProjectIdFilter(project, false);
+					final IdFilter projectIdFilter = new GlobalSearchScopeFilter(resolveScope);
 
 					final boolean insideUsingList = PsiTreeUtil.getParentOfType(parent, CSharpUsingList.class) != null;
 

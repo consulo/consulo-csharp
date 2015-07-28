@@ -42,6 +42,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetShortNameSearcher;
+import org.mustbe.consulo.dotnet.resolve.GlobalSearchScopeFilter;
 import com.intellij.codeInsight.daemon.impl.ShowAutoImportPass;
 import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.codeInsight.intention.HighPriorityAction;
@@ -61,7 +62,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ArrayListSet;
-import com.intellij.util.indexing.IdFilter;
 import lombok.val;
 
 /**
@@ -213,8 +213,8 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 	{
 		CommonProcessors.CollectProcessor<DotNetTypeDeclaration> processor = new CommonProcessors.CollectProcessor<DotNetTypeDeclaration>();
 
-		DotNetShortNameSearcher.getInstance(ref.getProject()).collectTypes(refName, ref.getResolveScope(), IdFilter.getProjectIdFilter(ref.getProject
-				(), true), processor);
+		GlobalSearchScopeFilter filter = new GlobalSearchScopeFilter(ref.getResolveScope());
+		DotNetShortNameSearcher.getInstance(ref.getProject()).collectTypes(refName, ref.getResolveScope(), filter, processor);
 
 		return processor.getResults();
 	}
