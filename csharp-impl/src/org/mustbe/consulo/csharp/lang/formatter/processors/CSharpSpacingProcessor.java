@@ -205,8 +205,12 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, CSharpElements.PARAMETER).spaces(1);
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, CSharpStubElements.PARAMETER).spaces(1);
 
-		myBuilder.afterInside(COLON, CSharpStubElements.EXTENDS_LIST).spaces(1);
-		myBuilder.before(CSharpStubElements.EXTENDS_LIST).spaces(1);
+		spaceIfNoBlankLines(myBuilder.afterInside(COLON, CSharpStubElements.EXTENDS_LIST), true);
+		spaceIfNoBlankLines(myBuilder.before(CSharpStubElements.EXTENDS_LIST), true);
+
+		// constructor declaration
+		spaceIfNoBlankLines(myBuilder.afterInside(COLON, CSharpStubElements.CONSTRUCTOR_DECLARATION), true);
+		spaceIfNoBlankLines(myBuilder.beforeInside(COLON, CSharpStubElements.CONSTRUCTOR_DECLARATION), true);
 
 		myBuilder.around(COLONCOLON).spaces(0);
 		myBuilder.around(DARROW).spaces(1);

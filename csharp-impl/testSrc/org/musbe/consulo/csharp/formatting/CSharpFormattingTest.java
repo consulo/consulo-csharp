@@ -28,4 +28,8 @@ public class CSharpFormattingTest extends FormattingTestCase
 	public void testIssue270()
 	{
 	}
+
+	public void testIssue291()
+	{
+	}
 }
