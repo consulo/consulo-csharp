@@ -179,8 +179,12 @@ public class CSharpTypeReferenceCompletionContributor extends CompletionContribu
 						ltGtInsertHandler.handleInsert(context, item);
 					}
 
-					new AddUsingAction(completionParameters.getEditor(), context.getFile(), Collections.<NamespaceReference>singleton(new
-							NamespaceReference(parentQName, null))).execute();
+					if(!StringUtil.isEmptyOrSpaces(parentQName))
+					{
+						new AddUsingAction(completionParameters.getEditor(), context.getFile(), Collections.<NamespaceReference>singleton(new
+								NamespaceReference(parentQName, null))).execute();
+
+					}
 				}
 			});
 		}
