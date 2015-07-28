@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import com.intellij.codeInsight.CodeInsightActionHandler;
@@ -45,6 +47,7 @@ public class GeneratePropertyAction extends CSharpGenerateAction
 	}
 
 	@Override
+	@RequiredReadAction
 	protected boolean isValidForFile(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file)
 	{
 		CSharpTypeDeclaration typeDeclaration = findTypeDeclaration(editor, file);
@@ -52,6 +55,7 @@ public class GeneratePropertyAction extends CSharpGenerateAction
 		return typeDeclaration != null && !getFields(typeDeclaration).isEmpty();
 	}
 
+	@RequiredReadAction
 	public static List<DotNetFieldDeclaration> getFields(CSharpTypeDeclaration typeDeclaration)
 	{
 		List<DotNetFieldDeclaration> fieldDeclarations = new ArrayList<DotNetFieldDeclaration>(5);
@@ -59,7 +63,12 @@ public class GeneratePropertyAction extends CSharpGenerateAction
 		{
 			if(dotNetNamedElement instanceof DotNetFieldDeclaration)
 			{
-				fieldDeclarations.add((DotNetFieldDeclaration) dotNetNamedElement);
+				DotNetFieldDeclaration fieldDeclaration = (DotNetFieldDeclaration) dotNetNamedElement;
+				if(CSharpPsiUtilImpl.isNullOrEmpty(fieldDeclaration))
+				{
+					continue;
+				}
+				fieldDeclarations.add(fieldDeclaration);
 			}
 		}
 		return fieldDeclarations;
