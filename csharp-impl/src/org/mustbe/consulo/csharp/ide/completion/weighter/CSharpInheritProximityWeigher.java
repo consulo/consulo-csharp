@@ -39,6 +39,7 @@ import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.completion.CompletionLocation;
+import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.Weigher;
@@ -65,6 +66,10 @@ public class CSharpInheritProximityWeigher extends Weigher<LookupElement, Comple
 	@Override
 	public Comparable weigh(@NotNull LookupElement element, @NotNull CompletionLocation completionLocation)
 	{
+		if(element instanceof PrioritizedLookupElement)
+		{
+			return null;
+		}
 		PsiElement position = completionLocation.getCompletionParameters().getPosition();
 		if(!(position.getContainingFile() instanceof CSharpFile))
 		{
