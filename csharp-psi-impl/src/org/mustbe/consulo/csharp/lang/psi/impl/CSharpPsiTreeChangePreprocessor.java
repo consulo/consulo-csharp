@@ -18,12 +18,16 @@ package org.mustbe.consulo.csharp.lang.psi.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.impl.PsiTreeChangePreprocessorBase;
 import com.intellij.psi.util.PsiTreeUtil;
 
@@ -52,8 +56,14 @@ public class CSharpPsiTreeChangePreprocessor extends PsiTreeChangePreprocessorBa
 	}
 
 	@Override
+	@RequiredReadAction
 	protected boolean isInsideCodeBlock(@Nullable PsiElement element)
 	{
-		return PsiTreeUtil.getParentOfType(element, DotNetStatement.class, false) != null;
+		if(PsiTreeUtil.getParentOfType(element, DotNetStatement.class, false) != null)
+		{
+			return true;
+		}
+		DotNetQualifiedElement qualifiedElement = PsiTreeUtil.getParentOfType(element, DotNetQualifiedElement.class);
+		return qualifiedElement != null && CSharpPsiUtilImpl.isNullOrEmpty((PsiNameIdentifierOwner) qualifiedElement);
 	}
 }
