@@ -25,6 +25,7 @@ import org.consulo.ide.eap.EarlyAccessProgramDescriptor;
 import org.consulo.ide.eap.EarlyAccessProgramManager;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLookupElement;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
@@ -93,6 +94,7 @@ public class CSharpLookupElementBuilder
 	public static final boolean PROPERTY_AND_EVENT_ACCESSOR_COMPLETION = EarlyAccessProgramManager.is(PropertyAndEventCompletionNew.class);
 
 	@NotNull
+	@RequiredReadAction
 	public static LookupElement[] buildToLookupElements(@NotNull PsiElement[] arguments)
 	{
 		if(arguments.length == 0)
@@ -109,6 +111,7 @@ public class CSharpLookupElementBuilder
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static List<LookupElement> buildToLookupElements(@NotNull ResolveResult[] arguments)
 	{
 		if(arguments.length == 0)
@@ -125,18 +128,19 @@ public class CSharpLookupElementBuilder
 			{
 				for(DotNetXXXAccessor accessor : ((CSharpXXXAccessorOwner) element).getAccessors())
 				{
-					ContainerUtil.addIfNotNull(list, buildLookupElement(accessor));
+					ContainerUtil.addIfNotNull(list, createLookupElementBuilder(accessor));
 				}
 			}
 			else
 			{
-				ContainerUtil.addIfNotNull(list, buildLookupElement(element));
+				ContainerUtil.addIfNotNull(list, createLookupElementBuilder(element));
 			}
 		}
 		return list;
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static LookupElement[] buildToLookupElements(@NotNull Collection<? extends PsiElement> arguments)
 	{
 		if(arguments.isEmpty())
@@ -147,14 +151,25 @@ public class CSharpLookupElementBuilder
 		List<LookupElement> list = new ArrayList<LookupElement>(arguments.size());
 		for(PsiElement element : arguments)
 		{
-			ContainerUtil.addIfNotNull(list, buildLookupElement(element));
+			ContainerUtil.addIfNotNull(list, createLookupElementBuilder(element));
 		}
 
 		return list.toArray(new LookupElement[list.size()]);
 	}
 
 	@RequiredReadAction
-	public static LookupElementBuilder buildLookupElement(final PsiElement element)
+	public static LookupElement buildLookupElement(final PsiElement element)
+	{
+		LookupElementBuilder builder = createLookupElementBuilder(element);
+		if(element instanceof CSharpTypeDeclaration)
+		{
+			return new ReplaceableTypeLookupElement(builder);
+		}
+		return builder;
+	}
+
+	@RequiredReadAction
+	public static LookupElementBuilder createLookupElementBuilder(final PsiElement element)
 	{
 		LookupElementBuilder builder = null;
 		if(element instanceof CSharpMethodDeclaration)

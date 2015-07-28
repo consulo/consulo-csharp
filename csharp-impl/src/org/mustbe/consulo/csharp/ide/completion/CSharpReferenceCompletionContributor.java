@@ -31,6 +31,7 @@ import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
+import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLookupElement;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
@@ -200,7 +201,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 						{
 							return true;
 						}
-						LookupElementBuilder builder = CSharpLookupElementBuilder.buildLookupElement(element);
+						LookupElement builder = CSharpLookupElementBuilder.buildLookupElement(element);
 						if(builder == null)
 						{
 							return true;
@@ -249,11 +250,11 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 						{
 							return true;
 						}
-						LookupElementBuilder lookupElement = CSharpLookupElementBuilder.buildLookupElement(element);
-						if(lookupElement != null)
+						LookupElementBuilder lookupElementBuilder = CSharpLookupElementBuilder.createLookupElementBuilder(element);
+						if(lookupElementBuilder != null)
 						{
-							lookupElement = lookupElement.withTailText(" = ", true);
-							lookupElement = lookupElement.withInsertHandler(new InsertHandler<LookupElement>()
+							lookupElementBuilder = lookupElementBuilder.withTailText(" = ", true);
+							lookupElementBuilder = lookupElementBuilder.withInsertHandler(new InsertHandler<LookupElement>()
 							{
 								@Override
 								public void handleInsert(InsertionContext context, LookupElement item)
@@ -269,7 +270,15 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 									}
 								}
 							});
-							result.consume(lookupElement);
+
+							if(element instanceof CSharpTypeDeclaration)
+							{
+								result.consume(new ReplaceableTypeLookupElement(lookupElementBuilder));
+							}
+							else
+							{
+								result.consume(lookupElementBuilder);
+							}
 						}
 						return true;
 					}
