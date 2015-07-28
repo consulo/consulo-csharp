@@ -64,6 +64,10 @@ public class CSharpPsiTreeChangePreprocessor extends PsiTreeChangePreprocessorBa
 			return true;
 		}
 		DotNetQualifiedElement qualifiedElement = PsiTreeUtil.getParentOfType(element, DotNetQualifiedElement.class);
-		return qualifiedElement != null && CSharpPsiUtilImpl.isNullOrEmpty((PsiNameIdentifierOwner) qualifiedElement);
+		if(!(qualifiedElement instanceof PsiNameIdentifierOwner))
+		{
+			return false;
+		}
+		return CSharpPsiUtilImpl.isNullOrEmpty((PsiNameIdentifierOwner) qualifiedElement);
 	}
 }
