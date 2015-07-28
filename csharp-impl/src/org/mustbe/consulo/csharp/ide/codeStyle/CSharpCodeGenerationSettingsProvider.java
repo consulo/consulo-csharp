@@ -4,17 +4,31 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import com.intellij.lang.Language;
+import com.intellij.openapi.application.ApplicationBundle;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CodeStyleSettingsProvider;
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
+import com.intellij.psi.codeStyle.DisplayPriority;
 
 /**
  * @author VISTALL
- * @since 11.11.14
+ * @since 28.07.2015
  */
-public class CSharpCodeStyleSettingsProvider extends CodeStyleSettingsProvider
+public class CSharpCodeGenerationSettingsProvider extends CodeStyleSettingsProvider
 {
+	@Override
+	public boolean hasSettingsPage()
+	{
+		return false;
+	}
+
+	@Override
+	public String getConfigurableDisplayName()
+	{
+		return ApplicationBundle.message("title.code.generation");
+	}
+
 	@Nullable
 	@Override
 	public Language getLanguage()
@@ -22,17 +36,23 @@ public class CSharpCodeStyleSettingsProvider extends CodeStyleSettingsProvider
 		return CSharpLanguage.INSTANCE;
 	}
 
+	@Override
+	public DisplayPriority getPriority()
+	{
+		return DisplayPriority.CODE_SETTINGS;
+	}
+
 	@Nullable
 	@Override
 	public CustomCodeStyleSettings createCustomSettings(CodeStyleSettings settings)
 	{
-		return new CSharpCodeStyleSettings(settings);
+		return new CSharpCodeGenerationSettings(settings);
 	}
 
 	@NotNull
 	@Override
 	public Configurable createSettingsPage(CodeStyleSettings settings, CodeStyleSettings originalSettings)
 	{
-		return new CSharpCodeStyleConfigurable(settings, originalSettings);
+		return new CSharpCodeGenerationSettingsConfigurable(settings);
 	}
 }

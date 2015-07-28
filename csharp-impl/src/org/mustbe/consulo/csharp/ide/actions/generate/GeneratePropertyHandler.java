@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
@@ -39,6 +40,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleManager;
+import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
 import com.intellij.util.Function;
 
 /**
@@ -121,6 +123,45 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 		});
 	}
 
+	@NotNull
+	public static String getClearFieldName(@NotNull Project project, boolean isStatic, @NotNull String name)
+	{
+		CodeStyleSettingsManager settingsManager = CodeStyleSettingsManager.getInstance(project);
+
+		CSharpCodeGenerationSettings customSettings = settingsManager.getCurrentSettings().getCustomSettings(CSharpCodeGenerationSettings.class);
+
+		String prefix = isStatic ? customSettings.STATIC_FIELD_PREFIX : customSettings.FIELD_PREFIX;
+		String suffix = isStatic? customSettings.STATIC_FIELD_SUFFIX : customSettings.FIELD_SUFFIX;
+
+		if(!prefix.isEmpty())
+		{
+			if(name.startsWith(prefix))
+			{
+				name = name.substring(prefix.length(), name.length());
+			}
+		}
+
+		if(!suffix.isEmpty())
+		{
+			if(name.endsWith(suffix))
+			{
+				name = name.substring(0, name.length() - suffix.length());
+			}
+		}
+		return name;
+	}
+
+	public static String getPropertyName(@NotNull Project project, boolean isStatic, @NotNull String fieldName)
+	{
+		CodeStyleSettingsManager settingsManager = CodeStyleSettingsManager.getInstance(project);
+
+		CSharpCodeGenerationSettings customSettings = settingsManager.getCurrentSettings().getCustomSettings(CSharpCodeGenerationSettings.class);
+
+		String prefix = isStatic ? customSettings.STATIC_PROPERTY_PREFIX : customSettings.PROPERTY_PREFIX;
+		String suffix = isStatic ? customSettings.STATIC_PROPERTY_SUFFIX : customSettings.PROPERTY_SUFFIX;
+		return prefix + StringUtil.toTitleCase(getClearFieldName(project, isStatic, fieldName)) + suffix;
+	}
+
 	@RequiredReadAction
 	private String generatePropertyTextFromField(String lineIndent, DotNetFieldDeclaration fieldDeclaration)
 	{
@@ -139,7 +180,7 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 
 		builder.append(fieldDeclaration.getType().getText()).append(" ");
 		String fieldName = fieldDeclaration.getName();
-		builder.append(StringUtil.toTitleCase(fieldName));
+		builder.append(getPropertyName(fieldDeclaration.getProject(), fieldDeclaration.hasModifier(DotNetModifier.STATIC), fieldName));
 		builder.append("{get { return ").append(fieldName).append("; }");
 		if(!myReadonly)
 		{

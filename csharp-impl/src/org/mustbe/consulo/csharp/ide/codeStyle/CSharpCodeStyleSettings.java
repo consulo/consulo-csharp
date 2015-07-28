@@ -16,8 +16,6 @@
 
 package org.mustbe.consulo.csharp.ide.codeStyle;
 
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
@@ -136,8 +134,8 @@ public class CSharpCodeStyleSettings extends CustomCodeStyleSettings
 	 */
 	public boolean SPACE_BEFORE_FIXED_LBRACE = true;
 
-	public CSharpCodeStyleSettings(@NonNls @NotNull String tagName, CodeStyleSettings container)
+	public CSharpCodeStyleSettings(CodeStyleSettings container)
 	{
-		super(tagName, container);
+		super("csharp-settings", container);
 	}
 }

@@ -265,6 +265,7 @@
 		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.ForeachComponentTypeMacro"/>
 
 		<codeStyleSettingsProvider implementation="org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettingsProvider"/>
+		<codeStyleSettingsProvider implementation="org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettingsProvider"/>
 		<langCodeStyleSettingsProvider implementation="org.mustbe.consulo.csharp.ide.codeStyle.CSharpLanguageCodeStyleSettingsProvider"/>
 
 		<readWriteAccessDetector implementation="org.mustbe.consulo.csharp.ide.codeInsight.highlighting.CSharpReadWriteAccessDetector"/>
