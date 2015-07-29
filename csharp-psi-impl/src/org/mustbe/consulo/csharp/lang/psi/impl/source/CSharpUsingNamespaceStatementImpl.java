@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
@@ -30,6 +31,9 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.text.CharFilter;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 
 /**
  * @author VISTALL
@@ -63,6 +67,7 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 		return namespaceReference == null ? null : namespaceReference.getText();
 	}
 
+	@RequiredReadAction
 	@Override
 	@Nullable
 	public DotNetNamespaceAsElement resolve()
@@ -72,8 +77,18 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 		{
 			return null;
 		}
-		String qName = StringUtil.strip(referenceText, CharFilter.NOT_WHITESPACE_FILTER);
-		return DotNetPsiSearcher.getInstance(getProject()).findNamespace(qName, getResolveScope());
+		final String qName = StringUtil.strip(referenceText, CharFilter.NOT_WHITESPACE_FILTER);
+		return CachedValuesManager.getManager(getProject()).createCachedValue(new CachedValueProvider<DotNetNamespaceAsElement>()
+		{
+			@Nullable
+			@Override
+			@RequiredReadAction
+			public Result<DotNetNamespaceAsElement> compute()
+			{
+				return Result.create(DotNetPsiSearcher.getInstance(getProject()).findNamespace(qName, getResolveScope()),
+						PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+			}
+		}, false).getValue();
 	}
 
 	@Override
