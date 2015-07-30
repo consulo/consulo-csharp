@@ -32,10 +32,12 @@ import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpNamedResolveSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -433,6 +435,7 @@ public class CSharpResolveUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static DotNetTypeRef resolveIterableType(@NotNull CSharpForeachStatementImpl foreachStatement)
 	{
 		DotNetExpression iterableExpression = foreachStatement.getIterableExpression();
@@ -445,6 +448,7 @@ public class CSharpResolveUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static DotNetTypeRef resolveIterableType(@NotNull PsiElement scope, @NotNull DotNetTypeRef typeRef)
 	{
 		if(typeRef instanceof DotNetArrayTypeRef)
@@ -467,7 +471,7 @@ public class CSharpResolveUtil
 
 		if(DotNetInheritUtil.isParentOrSelf(DotNetTypes2.System.Collections.IEnumerable, typeRef, scope, true))
 		{
-			return DotNetTypeRef.UNKNOWN_TYPE;
+			return new CSharpTypeRefByQName(DotNetTypes.System.Object);
 		}
 		else
 		{

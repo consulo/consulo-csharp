@@ -24,7 +24,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.openapi.util.Ref;
 import com.intellij.psi.PsiElement;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -54,10 +53,11 @@ public class CS0030 extends CompilerCheck<PsiElement>
 	@Override
 	public CompilerCheckBuilder checkImpl(@NotNull final CSharpLanguageVersion languageVersion, @NotNull PsiElement element)
 	{
-		val ref = new Ref<CompilerCheckBuilder>();
+		final Ref<CompilerCheckBuilder> ref = new Ref<CompilerCheckBuilder>();
 		element.accept(new CSharpElementVisitor()
 		{
 			@Override
+			@RequiredReadAction
 			public void visitForeachStatement(CSharpForeachStatementImpl statement)
 			{
 				CSharpLocalVariable variable = statement.getVariable();
@@ -77,13 +77,14 @@ public class CS0030 extends CompilerCheck<PsiElement>
 					return;
 				}
 				DotNetTypeRef iterableTypeRef = CSharpResolveUtil.resolveIterableType(statement);
-				if(iterableTypeRef == DotNetTypeRef.ERROR_TYPE || iterableTypeRef == DotNetTypeRef.UNKNOWN_TYPE)
+				if(iterableTypeRef == DotNetTypeRef.ERROR_TYPE)
 				{
 					return;
 				}
 
-				CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(variableTypeRef, iterableTypeRef, statement, null);
-				if(!inheritResult.isSuccess())
+				boolean success = CSharpTypeUtil.isInheritable(iterableTypeRef, variableTypeRef, statement) ||
+						CSharpTypeUtil.isInheritable(variableTypeRef, iterableTypeRef, statement);
+				if(!success)
 				{
 					CompilerCheckBuilder builder = newBuilder(type, CSharpTypeRefPresentationUtil.buildTextWithKeyword(iterableTypeRef, statement),
 							CSharpTypeRefPresentationUtil.buildTextWithKeyword(variableTypeRef, statement));
@@ -99,6 +100,7 @@ public class CS0030 extends CompilerCheck<PsiElement>
 			}
 
 			@Override
+			@RequiredReadAction
 			public void visitTypeCastExpression(CSharpTypeCastExpressionImpl expression)
 			{
 				DotNetType type = expression.getType();
