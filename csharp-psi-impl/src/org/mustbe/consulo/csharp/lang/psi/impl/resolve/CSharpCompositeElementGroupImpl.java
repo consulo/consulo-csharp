@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
@@ -14,6 +15,7 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.impl.light.LightElement;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
@@ -35,6 +37,16 @@ public class CSharpCompositeElementGroupImpl<T extends PsiElement> extends Light
 	public String getName()
 	{
 		return myGroups.get(0).getName();
+	}
+
+	@Override
+	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	{
+		for(CSharpElementGroup<T> group : myGroups)
+		{
+			group.setName(name);
+		}
+		return this;
 	}
 
 	@Override

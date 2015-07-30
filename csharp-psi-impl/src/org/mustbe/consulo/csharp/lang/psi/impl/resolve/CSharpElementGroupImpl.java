@@ -2,6 +2,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
 import java.util.Collection;
 
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
@@ -10,10 +11,12 @@ import com.intellij.openapi.project.Project;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.impl.light.LightElement;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
@@ -56,6 +59,19 @@ public class CSharpElementGroupImpl<T extends PsiElement> extends LightElement i
 			return CSharpOperatorNameHelper.getOperatorName((IElementType) myKey);
 		}
 		return myKey.toString();
+	}
+
+	@Override
+	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	{
+		for(T element : myElements)
+		{
+			if(element instanceof PsiNamedElement)
+			{
+				((PsiNamedElement) element).setName(name);
+			}
+		}
+		return this;
 	}
 
 	@NotNull

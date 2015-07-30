@@ -27,6 +27,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
@@ -148,6 +149,14 @@ public class StaticVsInstanceComparator implements Comparator<ResolveResult>
 				}
 			}
 			// endregion
+		}
+		else
+		{
+			// if expression is single - types and namespaces are in the end of queue
+			if(element instanceof CSharpTypeDeclaration || element instanceof DotNetNamespaceAsElement)
+			{
+				return -1;
+			}
 		}
 		return myComparator.getWeight(resolveResult);
 	}

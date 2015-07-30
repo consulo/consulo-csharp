@@ -5,6 +5,7 @@ import java.util.Comparator;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
@@ -45,7 +46,7 @@ public class TypeLikeComparator implements Comparator<ResolveResult>
 	{
 		PsiElement element = resolveResult.getElement();
 
-		if(element instanceof DotNetVariable)
+		if(element instanceof DotNetVariable || element instanceof CSharpElementGroup)
 		{
 			return 1000;
 		}
