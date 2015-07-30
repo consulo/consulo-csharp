@@ -19,11 +19,12 @@ package org.mustbe.consulo.csharp.ide.completion.expected;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamedFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
@@ -37,6 +38,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.ar
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Condition;
@@ -199,6 +201,7 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitAssignmentExpression(CSharpAssignmentExpressionImpl parent)
 	{
 		DotNetExpression[] expressions = parent.getParameterExpressions();
@@ -233,9 +236,13 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 					}
 					myExpectedTypeInfos.add(new ExpectedTypeInfo(expression.toTypeRef(false), typeProvider));
 				}
-				else if(element instanceof CSharpEventDeclaration)
+				else if(element instanceof CSharpMethodDeclaration)
 				{
-					myExpectedTypeInfos.add(new ExpectedTypeInfo(((CSharpEventDeclaration) element).toTypeRef(false), element));
+					if(((CSharpMethodDeclaration) element).isOperator())
+					{
+						DotNetParameter dotNetParameter = ((CSharpMethodDeclaration) element).getParameters()[1];
+						myExpectedTypeInfos.add(new ExpectedTypeInfo(dotNetParameter.toTypeRef(true), element));
+					}
 				}
 			}
 		}
