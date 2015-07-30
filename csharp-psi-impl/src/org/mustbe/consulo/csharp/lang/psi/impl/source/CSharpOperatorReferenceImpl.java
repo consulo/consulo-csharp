@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -337,6 +338,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		return CSharpOperatorNameHelper.mergeTwiceOperatorIfNeed(getFirstOperator());
 	}
 
+	@RequiredReadAction
 	public void resolveUserDefinedOperators(@NotNull IElementType elementType,
 			@NotNull DotNetTypeRef originalTypeRef,
 			@NotNull DotNetTypeRef typeRef,
