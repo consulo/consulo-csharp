@@ -37,10 +37,10 @@ import com.intellij.psi.ResolveResult;
  * @author VISTALL
  * @since 28.02.2015
  */
-public class VariableOrTypeComparator implements Comparator<ResolveResult>
+public class StaticVsInstanceComparator implements Comparator<ResolveResult>
 {
 	@NotNull
-	public static VariableOrTypeComparator create(@NotNull PsiElement element)
+	public static StaticVsInstanceComparator create(@NotNull PsiElement element)
 	{
 		CSharpReferenceExpressionEx parent = null;
 		if(element instanceof CSharpReferenceExpression)
@@ -50,19 +50,20 @@ public class VariableOrTypeComparator implements Comparator<ResolveResult>
 				parent = (CSharpReferenceExpressionEx) element.getParent();
 			}
 		}
-		return new VariableOrTypeComparator(element, parent);
+		return new StaticVsInstanceComparator(element, parent);
 	}
 
 	private final TypeLikeComparator myComparator;
 	private final CSharpReferenceExpressionEx myParent;
 
-	public VariableOrTypeComparator(PsiElement element, CSharpReferenceExpressionEx parent)
+	public StaticVsInstanceComparator(PsiElement element, CSharpReferenceExpressionEx parent)
 	{
 		myComparator = TypeLikeComparator.create(element);
 		myParent = parent;
 	}
 
 	@Override
+	@RequiredReadAction
 	public int compare(ResolveResult o1, ResolveResult o2)
 	{
 		if(isNameEqual(o1, o2))

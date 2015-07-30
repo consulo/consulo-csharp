@@ -37,8 +37,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SortedMemberResolv
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.extensionResolver.ExtensionResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.handlers.*;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.StaticVsInstanceComparator;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.TypeLikeComparator;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.VariableOrTypeComparator;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpElementGroupTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
@@ -905,7 +905,7 @@ public class CSharpReferenceExpressionImplUtil
 						ExecuteTarget.TYPE_DEF,
 						ExecuteTarget.ELEMENT_GROUP
 				};
-				sorter = VariableOrTypeComparator.create(element);
+				sorter = StaticVsInstanceComparator.create(element);
 				if(completion)
 				{
 					// append generic when completion due at ANY_MEMBER it dont resolved
