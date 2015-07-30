@@ -164,7 +164,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				return null;
 			}
-			return Trinity.create(expressions[0].toTypeRef(false), expressions[1].toTypeRef(false), expressions[1]);
+			return Trinity.create(expressions[0].toTypeRef(true), expressions[1].toTypeRef(true), expressions[1]);
 		}
 		else if(element instanceof CSharpWhileStatementImpl)
 		{

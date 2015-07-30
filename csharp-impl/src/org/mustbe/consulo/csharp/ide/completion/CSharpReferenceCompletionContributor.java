@@ -521,7 +521,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 	private static LookupElement buildForMethodReference(final CSharpMethodDeclaration methodDeclaration)
 	{
 		LookupElementBuilder builder = LookupElementBuilder.create(methodDeclaration.getName());
-		builder = builder.withIcon(IconDescriptorUpdaters.getIcon(methodDeclaration, Iconable.ICON_FLAG_VISIBILITY));
+		builder = builder.withIcon(AllIcons.Nodes.Lambda);
 
 		final DotNetTypeRef[] parameterTypes = methodDeclaration.getParameterTypeRefs();
 
