@@ -133,6 +133,12 @@ public class CSharpTypeReferenceCompletionContributor extends CompletionContribu
 			boolean insideUsingList,
 			DotNetTypeDeclaration maybeMsilType)
 	{
+		final String parentQName = maybeMsilType.getPresentableParentQName();
+		if(StringUtil.isEmpty(parentQName))
+		{
+			return;
+		}
+
 		String presentationText = MsilHelper.cutGenericMarker(maybeMsilType.getName());
 
 		int genericCount = 0;
@@ -161,7 +167,6 @@ public class CSharpTypeReferenceCompletionContributor extends CompletionContribu
 		builder = builder.withPresentableText(presentationText);
 		builder = builder.withIcon(IconDescriptorUpdaters.getIcon(maybeMsilType, Iconable.ICON_FLAG_VISIBILITY));
 
-		final String parentQName = maybeMsilType.getPresentableParentQName();
 		builder = builder.withTypeText(parentQName, true);
 		final InsertHandler<LookupElement> ltGtInsertHandler = genericCount == 0 ? null : LtGtInsertHandler.getInstance(genericCount > 0);
 		if(insideUsingList)
@@ -180,12 +185,8 @@ public class CSharpTypeReferenceCompletionContributor extends CompletionContribu
 						ltGtInsertHandler.handleInsert(context, item);
 					}
 
-					if(!StringUtil.isEmptyOrSpaces(parentQName))
-					{
-						new AddUsingAction(completionParameters.getEditor(), context.getFile(), Collections.<NamespaceReference>singleton(new
-								NamespaceReference(parentQName, null))).execute();
-
-					}
+					new AddUsingAction(completionParameters.getEditor(), context.getFile(), Collections.<NamespaceReference>singleton(new
+							NamespaceReference(parentQName, null))).execute();
 				}
 			});
 		}
