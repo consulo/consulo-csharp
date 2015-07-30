@@ -293,6 +293,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
+		String text = getText();
 		return CSharpReferenceExpressionImplUtil.toTypeRef(this, resolveFromParent);
 	}
 

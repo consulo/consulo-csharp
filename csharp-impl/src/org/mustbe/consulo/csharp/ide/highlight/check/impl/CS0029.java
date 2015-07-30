@@ -78,10 +78,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		}
 
 		DotNetTypeRef firstTypeRef = resolve.getFirst();
-		if(firstTypeRef == DotNetTypeRef.AUTO_TYPE)
-		{
-			return null;
-		}
+
 
 		DotNetTypeRef secondTypeRef = resolve.getSecond();
 		PsiElement elementToHighlight = resolve.getThird();
@@ -124,6 +121,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		return null;
 	}
 
+	@RequiredReadAction
 	private Trinity<? extends DotNetTypeRef, ? extends DotNetTypeRef, ? extends PsiElement> resolve(PsiElement element)
 	{
 		if(element instanceof DotNetVariable)
@@ -133,7 +131,12 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				return null;
 			}
-			return Trinity.create(((DotNetVariable) element).toTypeRef(false), initializer.toTypeRef(false), initializer);
+			DotNetTypeRef variableTypRef = ((DotNetVariable) element).toTypeRef(false);
+			if(variableTypRef == DotNetTypeRef.AUTO_TYPE)
+			{
+				return null;
+			}
+			return Trinity.create(variableTypRef, initializer.toTypeRef(true), initializer);
 		}
 		else if(element instanceof DotNetExpression && element.getParent() instanceof CSharpMethodDeclaration)
 		{
