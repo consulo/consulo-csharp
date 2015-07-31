@@ -41,6 +41,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -240,8 +241,13 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 				{
 					if(((CSharpMethodDeclaration) element).isOperator())
 					{
-						DotNetParameter dotNetParameter = ((CSharpMethodDeclaration) element).getParameters()[1];
-						myExpectedTypeInfos.add(new ExpectedTypeInfo(dotNetParameter.toTypeRef(true), element));
+						DotNetParameter[] parameters = ((CSharpMethodDeclaration) element).getParameters();
+						DotNetParameter parameter = ArrayUtil2.safeGet(parameters, 1);
+						if(parameter == null)
+						{
+							return;
+						}
+						myExpectedTypeInfos.add(new ExpectedTypeInfo(parameter.toTypeRef(true), element));
 					}
 				}
 			}
