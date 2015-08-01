@@ -364,6 +364,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		}
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef, boolean deep)
@@ -392,6 +393,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		}
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
@@ -403,12 +405,14 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		return myExtensionMap.get(name);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean processExtensionMethodGroups(@NotNull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
 	{
 		return myExtensionMap == null || ContainerUtil.process(myExtensionMap.values(), processor);
 	}
 
+	@RequiredReadAction
 	@Override
 	@NotNull
 	public PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
@@ -438,6 +442,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		return selectedElements;
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
 	{

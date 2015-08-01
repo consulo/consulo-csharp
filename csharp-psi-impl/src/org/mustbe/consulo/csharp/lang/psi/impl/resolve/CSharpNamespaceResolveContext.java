@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
@@ -80,6 +81,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		return null;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef, boolean deep)
@@ -87,6 +89,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		return null;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
@@ -127,6 +130,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		return new CSharpCompositeElementGroupImpl<CSharpMethodDeclaration>(myNamespaceAsElement.getProject(), list);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean processExtensionMethodGroups(@NotNull final Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
 	{
@@ -134,6 +138,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 				processor);
 	}
 
+	@RequiredReadAction
 	public static boolean processExtensionMethodGroups(@Nullable final String qName,
 			@NotNull final Project project,
 			@NotNull final GlobalSearchScope scope,
@@ -151,6 +156,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 				DotNetTypeDeclaration.class, new Processor<DotNetTypeDeclaration>()
 		{
 			@Override
+			@RequiredReadAction
 			public boolean process(DotNetTypeDeclaration typeDeclaration)
 			{
 				PsiElement wrappedDeclaration = MsilToCSharpUtil.wrap(typeDeclaration);
@@ -172,6 +178,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		});
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
@@ -185,6 +192,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		return myNamespaceAsElement.findChildren(name, myResolveScope, CSharpTransformer.INSTANCE, filter);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
 	{

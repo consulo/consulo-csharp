@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
@@ -99,6 +100,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl<CSharpMethodDeclaration>(myProject, groups);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef, boolean deep)
@@ -115,6 +117,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl<CSharpConversionMethodDeclaration>(myProject, groups);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
@@ -131,6 +134,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl<CSharpMethodDeclaration>(myProject, groups);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean processExtensionMethodGroups(@NotNull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
 	{
@@ -144,6 +148,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 		return true;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
@@ -157,6 +162,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 		return array;
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
 	{

@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.resolve;
 import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
@@ -50,6 +51,7 @@ public interface CSharpResolveContext
 			return null;
 		}
 
+		@RequiredReadAction
 		@Nullable
 		@Override
 		public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef, boolean deep)
@@ -57,6 +59,7 @@ public interface CSharpResolveContext
 			return null;
 		}
 
+		@RequiredReadAction
 		@Nullable
 		@Override
 		public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
@@ -64,12 +67,14 @@ public interface CSharpResolveContext
 			return null;
 		}
 
+		@RequiredReadAction
 		@Override
 		public boolean processExtensionMethodGroups(@NotNull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
 		{
 			return true;
 		}
 
+		@RequiredReadAction
 		@NotNull
 		@Override
 		public PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
@@ -77,6 +82,7 @@ public interface CSharpResolveContext
 			return PsiElement.EMPTY_ARRAY;
 		}
 
+		@RequiredReadAction
 		@Override
 		public boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
 		{
@@ -98,18 +104,22 @@ public interface CSharpResolveContext
 
 	/**
 	 * @param typeRef is {@link CSharpStaticTypeRef#IMPLICIT} or {@link CSharpStaticTypeRef#EXPLICIT}
-	 * @param deep
 	 */
 	@Nullable
+	@RequiredReadAction
 	CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef, boolean deep);
 
 	@Nullable
+	@RequiredReadAction
 	CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name);
 
+	@RequiredReadAction
 	boolean processExtensionMethodGroups(@NotNull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor);
 
 	@NotNull
+	@RequiredReadAction
 	PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder);
 
+	@RequiredReadAction
 	boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep);
 }

@@ -11,6 +11,7 @@ import java.util.Map;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
@@ -72,6 +73,7 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 		return null;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef, boolean deep)
@@ -79,6 +81,7 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 		return null;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
@@ -100,6 +103,7 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 		return new CSharpCompositeElementGroupImpl<CSharpMethodDeclaration>(myUsingList.getProject(), Arrays.asList(groupByName1, groupByName2));
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean processExtensionMethodGroups(@NotNull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
 	{
@@ -119,6 +123,7 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 		return getCachedTypeContext().processExtensionMethodGroups(processor);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
@@ -144,6 +149,7 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 		return cachedNamespaceContext.findByName(name, deep, holder);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
 	{
