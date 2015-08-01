@@ -336,8 +336,9 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 					return;
 				}
 
-				if(parent.kind() == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || parent.kind() == CSharpReferenceExpression.ResolveToKind
-						.ANY_MEMBER)
+				if(parent.kind() == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE ||
+						parent.kind() == CSharpReferenceExpression.ResolveToKind.EXPRESSION_OR_TYPE_LIKE ||
+						parent.kind() == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
 				{
 					CSharpCompletionUtil.tokenSetToLookup(completionResultSet, CSharpTokenSets.NATIVE_TYPES, null, new Condition<IElementType>()
 					{
