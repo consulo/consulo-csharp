@@ -213,6 +213,7 @@ public class CSharpTypeRefPresentationUtil
 						{
 							@Nullable
 							@Override
+							@RequiredReadAction
 							public Void fun(StringBuilder t, DotNetGenericParameter v)
 							{
 								DotNetTypeRef extractedTypeRef = genericExtractor.extract(v);
