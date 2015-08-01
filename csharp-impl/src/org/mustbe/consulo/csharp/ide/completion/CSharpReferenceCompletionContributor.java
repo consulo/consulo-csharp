@@ -29,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
+import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLookupElement;
@@ -330,7 +331,13 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 					ProcessingContext processingContext,
 					@NotNull CompletionResultSet completionResultSet)
 			{
-				val parent = (CSharpReferenceExpression) completionParameters.getPosition().getParent();
+				CSharpCodeGenerationSettings codeGenerationSettings = CSharpCodeGenerationSettings.getInstance(completionParameters.getPosition().getProject());
+				if(!codeGenerationSettings.USE_LANGUAGE_DATA_TYPES)
+				{
+					return;
+				}
+
+				final CSharpReferenceExpression parent = (CSharpReferenceExpression) completionParameters.getPosition().getParent();
 				if(parent.getQualifier() != null)
 				{
 					return;

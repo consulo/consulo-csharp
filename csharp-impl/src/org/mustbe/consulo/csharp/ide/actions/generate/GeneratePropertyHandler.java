@@ -40,7 +40,6 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
 import com.intellij.util.Function;
 
 /**
@@ -126,9 +125,7 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 	@NotNull
 	public static String getClearFieldName(@NotNull Project project, boolean isStatic, @NotNull String name)
 	{
-		CodeStyleSettingsManager settingsManager = CodeStyleSettingsManager.getInstance(project);
-
-		CSharpCodeGenerationSettings customSettings = settingsManager.getCurrentSettings().getCustomSettings(CSharpCodeGenerationSettings.class);
+		CSharpCodeGenerationSettings customSettings = CSharpCodeGenerationSettings.getInstance(project);
 
 		String prefix = isStatic ? customSettings.STATIC_FIELD_PREFIX : customSettings.FIELD_PREFIX;
 		String suffix = isStatic? customSettings.STATIC_FIELD_SUFFIX : customSettings.FIELD_SUFFIX;
@@ -153,9 +150,7 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 
 	public static String getPropertyName(@NotNull Project project, boolean isStatic, @NotNull String fieldName)
 	{
-		CodeStyleSettingsManager settingsManager = CodeStyleSettingsManager.getInstance(project);
-
-		CSharpCodeGenerationSettings customSettings = settingsManager.getCurrentSettings().getCustomSettings(CSharpCodeGenerationSettings.class);
+		CSharpCodeGenerationSettings customSettings = CSharpCodeGenerationSettings.getInstance(project);
 
 		String prefix = isStatic ? customSettings.STATIC_PROPERTY_PREFIX : customSettings.PROPERTY_PREFIX;
 		String suffix = isStatic ? customSettings.STATIC_PROPERTY_SUFFIX : customSettings.PROPERTY_SUFFIX;
