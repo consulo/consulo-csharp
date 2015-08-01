@@ -21,6 +21,8 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpEmptyGenericWrapperTypeRef;
@@ -75,6 +77,7 @@ public class CSharpTypeRefPresentationUtil
 	public static final int QUALIFIED_NAME_WITH_KEYWORD = QUALIFIED_NAME | TYPE_KEYWORD;
 
 	@NotNull
+	@RequiredReadAction
 	public static String buildShortText(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
 		StringBuilder builder = new StringBuilder();
@@ -83,6 +86,7 @@ public class CSharpTypeRefPresentationUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static String buildText(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
 		StringBuilder builder = new StringBuilder();
@@ -91,6 +95,7 @@ public class CSharpTypeRefPresentationUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static String buildTextWithKeyword(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
 		StringBuilder builder = new StringBuilder();
@@ -98,9 +103,8 @@ public class CSharpTypeRefPresentationUtil
 		return builder.toString();
 	}
 
-	public static void appendTypeRef(@NotNull final PsiElement scope,
-			@NotNull StringBuilder builder,
-			@NotNull DotNetTypeRef typeRef,
+	@RequiredReadAction
+	public static void appendTypeRef(@NotNull final PsiElement scope, @NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef,
 			final int flags)
 	{
 		if(typeRef == DotNetTypeRef.AUTO_TYPE)
@@ -158,7 +162,8 @@ public class CSharpTypeRefPresentationUtil
 				String qName = ((DotNetQualifiedElement) element).getPresentableQName();
 				String name = ((DotNetQualifiedElement) element).getName();
 
-				String typeAsKeyword = ourTypesAsKeywords.get(qName);
+				String typeAsKeyword = CSharpCodeGenerationSettings.getInstance(scope.getProject()).USE_LANGUAGE_DATA_TYPES ? ourTypesAsKeywords.get
+						(qName) : null;
 
 				if(BitUtil.isSet(flags, QUALIFIED_NAME))
 				{
