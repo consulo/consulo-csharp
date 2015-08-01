@@ -20,9 +20,12 @@ import static com.intellij.patterns.StandardPatterns.or;
 import static com.intellij.patterns.StandardPatterns.psiElement;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
+import org.mustbe.consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import org.mustbe.consulo.csharp.ide.completion.util.ExpressionOrStatementInsertHandler;
 import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
+import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
@@ -49,7 +52,6 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.util.Condition;
-import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.tree.IElementType;
@@ -108,23 +110,12 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 
 	private static final TokenSet ourCatchFinallyKeywords = TokenSet.create(CATCH_KEYWORD, FINALLY_KEYWORD);
 
-	private static final ElementPattern<? extends PsiElement> ourStatementStart = or(psiElement().withElementType(CSharpTokens.SEMICOLON).inside
-			(DotNetStatement.class), psiElement().withElementType(CSharpTokens.LBRACE).inside(DotNetStatement.class),
-			psiElement().withElementType(CSharpTokens.RBRACE).inside(DotNetStatement.class));
-
-	private static final ElementPattern<? extends PsiElement> ourContinueAndBreakPattern = psiElement().afterLeaf(ourStatementStart).inside(or
-			(psiElement().inside(CSharpForeachStatementImpl.class), psiElement().inside(CSharpForStatementImpl.class),
-					psiElement().inside(CSharpWhileStatementImpl.class), psiElement().inside(CSharpDoWhileStatementImpl.class)));
-
-	private static final ElementPattern<? extends PsiElement> ourGotoPattern = psiElement().afterLeaf(ourStatementStart).inside(psiElement().inside
-			(CSharpLabeledStatementImpl.class));
-
-	private static final ElementPattern<? extends PsiElement> ourReturnPattern = psiElement().afterLeaf(ourStatementStart).inside(psiElement()
-			.inside(CSharpSimpleLikeMethodAsElement.class)).andNot(psiElement().inside(CSharpFinallyStatementImpl.class));
 
 	public CSharpStatementCompletionContributor()
 	{
-		extend(CompletionType.BASIC, ourContinueAndBreakPattern, new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, CSharpPatterns.statementStart().inside(or(psiElement().inside(CSharpForeachStatementImpl.class),
+				psiElement().inside(CSharpForStatementImpl.class), psiElement().inside(CSharpWhileStatementImpl.class),
+				psiElement().inside(CSharpDoWhileStatementImpl.class))), new CompletionProvider<CompletionParameters>()
 		{
 			@Override
 			protected void addCompletions(@NotNull final CompletionParameters parameters,
@@ -155,7 +146,8 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
-		extend(CompletionType.BASIC, ourReturnPattern, new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, CSharpPatterns.statementStart().inside(psiElement().inside(CSharpSimpleLikeMethodAsElement.class)).andNot
+				(psiElement().inside(CSharpFinallyStatementImpl.class)), new CompletionProvider<CompletionParameters>()
 		{
 			@Override
 			protected void addCompletions(@NotNull final CompletionParameters parameters,
@@ -179,7 +171,8 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
-		extend(CompletionType.BASIC, ourGotoPattern, new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, CSharpPatterns.statementStart().inside(CSharpLabeledStatementImpl.class),
+				new CompletionProvider<CompletionParameters>()
 		{
 			@Override
 			protected void addCompletions(@NotNull final CompletionParameters parameters,
@@ -244,12 +237,18 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement().afterLeaf(ourStatementStart).withSuperParent(2, CSharpExpressionStatementImpl.class),
-				new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, CSharpPatterns.statementStart(), new CompletionProvider<CompletionParameters>()
 		{
 			@Override
+			@RequiredReadAction
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
+				CSharpLocalVariable localVariable = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpLocalVariable.class);
+				assert localVariable != null;
+				if(!CSharpPsiUtilImpl.isNullOrEmpty(localVariable))
+				{
+					return;
+				}
 				CSharpCompletionUtil.tokenSetToLookup(result, ourParStatementKeywords, new NotNullPairFunction<LookupElementBuilder, IElementType,
 						LookupElement>()
 				{
@@ -276,13 +275,12 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement().afterLeaf(ourStatementStart).withSuperParent(2, CSharpExpressionStatementImpl.class),
-				new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, CSharpPatterns.statementStart(), new CompletionProvider<CompletionParameters>()
 		{
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
-				val position = parameters.getPosition();
+				final PsiElement position = parameters.getPosition();
 				CSharpCompletionUtil.elementToLookup(result, CSharpSoftTokens.YIELD_KEYWORD, new NotNullPairFunction<LookupElementBuilder,
 								IElementType, LookupElement>()
 						{
