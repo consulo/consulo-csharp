@@ -12,6 +12,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerCompositeValueImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerValue;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpImplicitArrayInitializationExpressionImpl;
@@ -76,7 +77,9 @@ public class CSharpWrappingProcessor
 			{
 				braceStyle = myCodeStyleSettings.METHOD_BRACE_STYLE;
 			}
-			else if(psi instanceof CSharpImplicitArrayInitializationExpressionImpl || psi instanceof CSharpArrayInitializerCompositeValueImpl)
+			else if(parentPsi instanceof CSharpImplicitArrayInitializationExpressionImpl ||
+					parentPsi instanceof CSharpArrayInitializerImpl ||
+					parentPsi instanceof CSharpArrayInitializerCompositeValueImpl)
 			{
 				braceStyle = myCodeStyleSettings.ARRAY_INITIALIZER_LBRACE_ON_NEXT_LINE ? CommonCodeStyleSettings.NEXT_LINE : CommonCodeStyleSettings
 						.END_OF_LINE;
@@ -95,7 +98,9 @@ public class CSharpWrappingProcessor
 
 		if(elementType == CSharpTokens.RBRACE)
 		{
-			if(parentPsi instanceof CSharpImplicitArrayInitializationExpressionImpl || parentPsi instanceof CSharpArrayInitializerCompositeValueImpl)
+			if(parentPsi instanceof CSharpImplicitArrayInitializationExpressionImpl ||
+					parentPsi instanceof CSharpArrayInitializerCompositeValueImpl ||
+					parentPsi instanceof CSharpArrayInitializerImpl)
 			{
 				if(myCodeStyleSettings.ARRAY_INITIALIZER_RBRACE_ON_NEXT_LINE)
 				{
