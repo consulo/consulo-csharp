@@ -42,6 +42,9 @@ namespace Test {
         try {
           for(;;) {
             String[] array = new [] {
+               "test",
+               "test2",
+               "test3"
             };
             foreach(var item in array) {
               while(true) {

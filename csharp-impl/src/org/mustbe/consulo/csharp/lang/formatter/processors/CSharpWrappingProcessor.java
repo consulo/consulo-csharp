@@ -2,7 +2,15 @@ package org.mustbe.consulo.csharp.lang.formatter.processors;
 
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
-import org.mustbe.consulo.csharp.lang.psi.*;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
+import org.mustbe.consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerCompositeValueImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerValue;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
@@ -67,6 +75,11 @@ public class CSharpWrappingProcessor
 			else if(parentPsi instanceof CSharpBlockStatementImpl && parentPsi.getParent() instanceof DotNetLikeMethodDeclaration)
 			{
 				braceStyle = myCodeStyleSettings.METHOD_BRACE_STYLE;
+			}
+			else if(psi instanceof CSharpImplicitArrayInitializationExpressionImpl)
+			{
+				braceStyle = myCodeStyleSettings.ARRAY_INITIALIZER_LBRACE_ON_NEXT_LINE ? CommonCodeStyleSettings.NEXT_LINE : CommonCodeStyleSettings
+						.END_OF_LINE;
 			}
 
 			switch(braceStyle)
