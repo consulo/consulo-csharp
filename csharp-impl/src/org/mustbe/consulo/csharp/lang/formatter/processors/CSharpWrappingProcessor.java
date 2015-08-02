@@ -97,6 +97,10 @@ public class CSharpWrappingProcessor
 		{
 			if(parentPsi instanceof CSharpImplicitArrayInitializationExpressionImpl || parentPsi instanceof CSharpArrayInitializerCompositeValueImpl)
 			{
+				if(myCodeStyleSettings.ARRAY_INITIALIZER_RBRACE_ON_NEXT_LINE)
+				{
+					return Wrap.createWrap(WrapType.ALWAYS, true);
+				}
 				return Wrap.createWrap(WrapType.NONE, true);
 			}
 
