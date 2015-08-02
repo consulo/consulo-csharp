@@ -96,8 +96,24 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.between(CSharpTokens.LOCK_KEYWORD, CSharpTokens.LPAR).spaceIf(customSettings.SPACE_BEFORE_LOCK_PARENTHESES);
 		myBuilder.between(CSharpTokens.FIXED_KEYWORD, CSharpTokens.LPAR).spaceIf(customSettings.SPACE_BEFORE_FIXED_PARENTHESES);
 
-		myBuilder.afterInside(CSharpTokens.LBRACE, CSharpElements.ARRAY_INITIALIZER_COMPOSITE_VALUE).spaces(0);
-		myBuilder.beforeInside(CSharpTokens.RBRACE, CSharpElements.ARRAY_INITIALIZER_COMPOSITE_VALUE).spaces(0);
+		IElementType[] arrayInitializerElementsTypes = {
+				CSharpElements.ARRAY_INITIALIZER,
+				CSharpElements.IMPLICIT_ARRAY_INITIALIZATION_EXPRESSION,
+				CSharpElements.ARRAY_INITIALIZER_COMPOSITE_VALUE
+		};
+		//myBuilder.afterInside(CSharpTokens.LBRACE, CSharpElements.ARRAY_INITIALIZER).none();
+		//myBuilder.afterInside(CSharpTokens.LBRACE, CSharpElements.IMPLICIT_ARRAY_INITIALIZATION_EXPRESSION).none();
+		//myBuilder.afterInside(CSharpTokens.LBRACE, CSharpElements.ARRAY_INITIALIZER_COMPOSITE_VALUE).none();
+
+		//myBuilder.beforeInside(CSharpTokens.RBRACE, CSharpElements.ARRAY_INITIALIZER).none();
+		//myBuilder.beforeInside(CSharpTokens.RBRACE, CSharpElements.IMPLICIT_ARRAY_INITIALIZATION_EXPRESSION).none();
+		//myBuilder.beforeInside(CSharpTokens.RBRACE, CSharpElements.ARRAY_INITIALIZER_COMPOSITE_VALUE).none();
+
+		for(IElementType arrayInitializerElementsType : arrayInitializerElementsTypes)
+		{
+			myBuilder.betweenInside(CSharpTokens.COMMA, CSharpElements.ARRAY_INITIALIZER_SINGLE_VALUE, arrayInitializerElementsType).spaces(1);
+			myBuilder.betweenInside(CSharpTokens.COMMA, CSharpElements.ARRAY_INITIALIZER_COMPOSITE_VALUE, arrayInitializerElementsType).spaces(1);
+		}
 
 		spaceIfNoBlankLines(myBuilder.beforeInside(LBRACE, TYPE_DECLARATION), commonSettings.SPACE_BEFORE_CLASS_LBRACE);
 		spaceIfNoBlankLines(myBuilder.beforeInside(LBRACE, PROPERTY_DECLARATION), customSettings.SPACE_BEFORE_PROPERTY_LBRACE);
@@ -166,14 +182,14 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.beforeInside(CSharpTokens.RPAR, CSharpElements.LAMBDA_PARAMETER_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_PARENTHESES);
 
 		// <Type
-		myBuilder.afterInside(CSharpTokens.LT, CSharpElements.TYPE_ARGUMENTS).spaces(0);
-		myBuilder.afterInside(CSharpTokens.LT, CSharpStubElements.TYPE_ARGUMENTS).spaces(0);
+		myBuilder.afterInside(CSharpTokens.LT, CSharpElements.TYPE_ARGUMENTS).none();
+		myBuilder.afterInside(CSharpTokens.LT, CSharpStubElements.TYPE_ARGUMENTS).none();
 		// <Type, Type
 		myBuilder.afterInside(CSharpTokens.COMMA, CSharpElements.TYPE_ARGUMENTS).spaceIf(commonSettings.SPACE_AFTER_COMMA_IN_TYPE_ARGUMENTS);
 		myBuilder.afterInside(CSharpTokens.COMMA, CSharpStubElements.TYPE_ARGUMENTS).spaceIf(commonSettings.SPACE_AFTER_COMMA_IN_TYPE_ARGUMENTS);
 		// Type>
-		myBuilder.beforeInside(CSharpTokens.GT, CSharpElements.TYPE_ARGUMENTS).spaces(0);
-		myBuilder.beforeInside(CSharpTokens.GT, CSharpStubElements.TYPE_ARGUMENTS).spaces(0);
+		myBuilder.beforeInside(CSharpTokens.GT, CSharpElements.TYPE_ARGUMENTS).none();
+		myBuilder.beforeInside(CSharpTokens.GT, CSharpStubElements.TYPE_ARGUMENTS).none();
 
 		// <modifier-list> <type>
 		myBuilder.between(CSharpStubElements.MODIFIER_LIST, CSharpStubElements.TYPE_SET).spaces(1);
@@ -194,11 +210,11 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, TYPE_DECLARATION).spaces(1);
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, LOCAL_VARIABLE).spaces(1);
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, FIELD_DECLARATION).spaces(1);
-		myBuilder.betweenInside(DOT, CSharpTokens.IDENTIFIER, EVENT_DECLARATION).spaces(0);
+		myBuilder.betweenInside(DOT, CSharpTokens.IDENTIFIER, EVENT_DECLARATION).none();
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, EVENT_DECLARATION).spaces(1);
-		myBuilder.betweenInside(DOT, CSharpTokens.IDENTIFIER, PROPERTY_DECLARATION).spaces(0);
+		myBuilder.betweenInside(DOT, CSharpTokens.IDENTIFIER, PROPERTY_DECLARATION).none();
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, PROPERTY_DECLARATION).spaces(1);
-		myBuilder.betweenInside(DOT, CSharpTokens.IDENTIFIER, METHOD_DECLARATION).spaces(0);
+		myBuilder.betweenInside(DOT, CSharpTokens.IDENTIFIER, METHOD_DECLARATION).none();
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, METHOD_DECLARATION).spaces(1);
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, CONSTRUCTOR_DECLARATION).spaces(1);
 		myBuilder.beforeInside(THIS_KEYWORD, ARRAY_METHOD_DECLARATION).spaces(1);
@@ -212,9 +228,9 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		spaceIfNoBlankLines(myBuilder.afterInside(COLON, CSharpStubElements.CONSTRUCTOR_DECLARATION), true);
 		spaceIfNoBlankLines(myBuilder.beforeInside(COLON, CSharpStubElements.CONSTRUCTOR_DECLARATION), true);
 
-		myBuilder.around(COLONCOLON).spaces(0);
+		myBuilder.around(COLONCOLON).none();
 		myBuilder.around(DARROW).spaces(1);
-		myBuilder.around(ARROW).spaces(0);
+		myBuilder.around(ARROW).none();
 
 		myBuilder.before(CSharpTokens.ELSE_KEYWORD).spaceIf(commonSettings.SPACE_BEFORE_ELSE_KEYWORD);
 		myBuilder.betweenInside(CSharpTokens.ELSE_KEYWORD, CSharpElements.BLOCK_STATEMENT, CSharpElements.IF_STATEMENT).spaceIf(commonSettings
