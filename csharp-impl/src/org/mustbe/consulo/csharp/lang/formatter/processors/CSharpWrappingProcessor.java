@@ -76,7 +76,7 @@ public class CSharpWrappingProcessor
 			{
 				braceStyle = myCodeStyleSettings.METHOD_BRACE_STYLE;
 			}
-			else if(psi instanceof CSharpImplicitArrayInitializationExpressionImpl)
+			else if(psi instanceof CSharpImplicitArrayInitializationExpressionImpl || psi instanceof CSharpArrayInitializerCompositeValueImpl)
 			{
 				braceStyle = myCodeStyleSettings.ARRAY_INITIALIZER_LBRACE_ON_NEXT_LINE ? CommonCodeStyleSettings.NEXT_LINE : CommonCodeStyleSettings
 						.END_OF_LINE;
