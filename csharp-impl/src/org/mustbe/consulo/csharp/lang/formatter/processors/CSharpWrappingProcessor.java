@@ -121,7 +121,15 @@ public class CSharpWrappingProcessor
 
 		if(psi instanceof CSharpArrayInitializerValue)
 		{
-			return Wrap.createWrap(WrapType.ALWAYS, true);
+			int initializerWrap = myCodeStyleSettings.ARRAY_INITIALIZER_WRAP;
+			switch(initializerWrap)
+			{
+				case CommonCodeStyleSettings.DO_NOT_WRAP:
+					return Wrap.createWrap(WrapType.NONE, true);
+				case CommonCodeStyleSettings.WRAP_ALWAYS:
+				case CommonCodeStyleSettings.WRAP_AS_NEEDED:
+					return Wrap.createWrap(WrapType.ALWAYS, true);
+			}
 		}
 
 		if(elementType == CSharpElements.XXX_ACCESSOR)
