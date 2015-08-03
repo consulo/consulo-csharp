@@ -133,7 +133,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 			}
 			else
 			{
-				throw new UnsupportedOperationException(element.toString());
+				throw new UnsupportedOperationException(elementType.toString());
 			}
 		}
 	}
