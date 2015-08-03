@@ -123,6 +123,10 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 			{
 				return new CSharpLazyTypeRefByQName(element, DotNetTypes.System.Single);
 			}
+			else if(elementType == CSharpTokens.DECIMAL_LITERAL)
+			{
+				return new CSharpLazyTypeRefByQName(element, DotNetTypes.System.Decimal);
+			}
 			else if(elementType == CSharpTokens.NULL_LITERAL)
 			{
 				return CSharpNullTypeRef.INSTANCE;
