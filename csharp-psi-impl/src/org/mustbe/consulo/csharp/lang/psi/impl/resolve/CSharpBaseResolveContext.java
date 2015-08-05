@@ -1,12 +1,14 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
 import gnu.trove.THashMap;
+import gnu.trove.THashSet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
@@ -184,6 +186,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	protected final T myElement;
 	@NotNull
 	protected final DotNetGenericExtractor myExtractor;
+	private Set<PsiElement> myRecursiveGuardSet;
 	@Nullable
 	private CSharpElementGroup<CSharpArrayMethodDeclaration> myIndexMethodGroup;
 	@Nullable
@@ -201,10 +204,11 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	private final Map<String, CSharpElementGroup<PsiElement>> myOtherElements;
 
 	@RequiredReadAction
-	public CSharpBaseResolveContext(@NotNull T element, @NotNull DotNetGenericExtractor extractor)
+	public CSharpBaseResolveContext(@NotNull T element, @NotNull DotNetGenericExtractor extractor, @Nullable Set<PsiElement> recursiveGuardSet)
 	{
 		myElement = element;
 		myExtractor = extractor;
+		myRecursiveGuardSet = recursiveGuardSet;
 		val project = element.getProject();
 
 		val collector = new Collector(extractor);
@@ -239,9 +243,22 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	@NotNull
 	protected abstract List<DotNetTypeRef> getExtendTypeRefs();
 
-	@LazyInstance
 	@NotNull
-	protected CSharpResolveContext getSuperContext()
+	@RequiredReadAction
+	private CSharpResolveContext getSuperContext()
+	{
+		THashSet<PsiElement> alreadyProcessedItem = new THashSet<PsiElement>();
+		if(myRecursiveGuardSet != null)
+		{
+			alreadyProcessedItem.addAll(myRecursiveGuardSet);
+		}
+		return getSuperContextImpl(alreadyProcessedItem);
+	}
+
+
+	@NotNull
+	@RequiredReadAction
+	private CSharpResolveContext getSuperContextImpl(Set<PsiElement> alreadyProcessedItem)
 	{
 		List<DotNetTypeRef> superTypes = getExtendTypeRefs();
 
@@ -254,13 +271,14 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		for(DotNetTypeRef dotNetTypeRef : superTypes)
 		{
 			DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(myElement);
-			PsiElement resolve = typeResolveResult.getElement();
+			PsiElement resolvedElement = typeResolveResult.getElement();
 
-			if(resolve != null && !resolve.isEquivalentTo(myElement))
+			if(resolvedElement != null && alreadyProcessedItem.add(resolvedElement))
 			{
 				DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
 
-				contexts.add(CSharpResolveContextUtil.createContext(genericExtractor, myElement.getResolveScope(), resolve));
+				contexts.add(CSharpResolveContextUtil.createContext(genericExtractor, myElement.getResolveScope(), resolvedElement,
+						alreadyProcessedItem));
 			}
 		}
 
@@ -444,9 +462,21 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
 	@RequiredReadAction
 	@Override
-	public boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
+	public boolean processElements(@NotNull final Processor<PsiElement> processor, boolean deep)
 	{
-		return processElementsImpl(processor) && (!deep || getSuperContext().processElements(processor, deep));
+		if(processElementsImpl(processor))
+		{
+			if(!deep)
+			{
+				return true;
+			}
+
+			return getSuperContext().processElements(processor, true);
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	public boolean processElementsImpl(@NotNull Processor<PsiElement> processor)

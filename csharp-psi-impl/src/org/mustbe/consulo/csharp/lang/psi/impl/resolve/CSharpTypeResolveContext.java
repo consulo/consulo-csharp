@@ -2,14 +2,17 @@ package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -18,9 +21,11 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 public class CSharpTypeResolveContext extends CSharpBaseResolveContext<CSharpTypeDeclaration>
 {
 	@RequiredReadAction
-	public CSharpTypeResolveContext(@NotNull CSharpTypeDeclaration element, @NotNull DotNetGenericExtractor genericExtractor)
+	public CSharpTypeResolveContext(@NotNull CSharpTypeDeclaration element,
+			@NotNull DotNetGenericExtractor genericExtractor,
+			@Nullable Set<PsiElement> recursiveGuardSet)
 	{
-		super(element, genericExtractor);
+		super(element, genericExtractor, recursiveGuardSet);
 	}
 
 	@NotNull

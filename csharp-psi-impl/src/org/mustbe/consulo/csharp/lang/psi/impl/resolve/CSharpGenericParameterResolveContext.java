@@ -18,7 +18,7 @@ public class CSharpGenericParameterResolveContext extends CSharpBaseResolveConte
 	@RequiredReadAction
 	public CSharpGenericParameterResolveContext(@NotNull DotNetGenericParameter element)
 	{
-		super(element, DotNetGenericExtractor.EMPTY);
+		super(element, DotNetGenericExtractor.EMPTY, null);
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
+import java.util.Set;
+
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,6 +35,7 @@ public class CSharpResolveContextUtil
 	private static final Key<CachedValue<CSharpResolveContext>> RESOLVE_CONTEXT = Key.create("resolve-context");
 
 	@NotNull
+	@RequiredReadAction
 	public static CSharpResolveContext createContext(@NotNull DotNetGenericExtractor genericExtractor,
 			@NotNull GlobalSearchScope resolveScope,
 			@NotNull PsiElement... elements)
@@ -57,9 +60,19 @@ public class CSharpResolveContextUtil
 			@NotNull GlobalSearchScope resolveScope,
 			@NotNull PsiElement element)
 	{
+		return createContext(genericExtractor, resolveScope, element, null);
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public static CSharpResolveContext createContext(@NotNull DotNetGenericExtractor genericExtractor,
+			@NotNull GlobalSearchScope resolveScope,
+			@NotNull PsiElement element,
+			@Nullable Set<PsiElement> recursiveGuardSet)
+	{
 		if(element instanceof CSharpTypeDeclaration)
 		{
-			return cacheTypeContext(genericExtractor, resolveScope, (CSharpTypeDeclaration) element);
+			return cacheTypeContext(genericExtractor, resolveScope, (CSharpTypeDeclaration) element, recursiveGuardSet);
 		}
 		else if(element instanceof DotNetNamespaceAsElement)
 		{
@@ -79,7 +92,7 @@ public class CSharpResolveContextUtil
 		}
 		else if(element instanceof DotNetGenericParameter)
 		{
-			return cacheSimple((DotNetGenericParameter)element, new NotNullFunction<DotNetGenericParameter, CSharpResolveContext>()
+			return cacheSimple((DotNetGenericParameter) element, new NotNullFunction<DotNetGenericParameter, CSharpResolveContext>()
 			{
 				@NotNull
 				@Override
@@ -97,7 +110,8 @@ public class CSharpResolveContextUtil
 	@RequiredReadAction
 	private static CSharpResolveContext cacheTypeContext(@NotNull DotNetGenericExtractor genericExtractor,
 			GlobalSearchScope resolveScope,
-			@NotNull CSharpTypeDeclaration typeDeclaration)
+			@NotNull CSharpTypeDeclaration typeDeclaration,
+			@Nullable Set<PsiElement> recursiveGuardSet)
 	{
 		if(typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
 		{
@@ -114,15 +128,16 @@ public class CSharpResolveContextUtil
 			}
 		}
 
-		return cacheTypeContextImpl(genericExtractor, typeDeclaration);
+		return cacheTypeContextImpl(genericExtractor, typeDeclaration, recursiveGuardSet);
 	}
 
 	@NotNull
 	@RequiredReadAction
 	private static CSharpResolveContext cacheTypeContextImpl(@NotNull DotNetGenericExtractor genericExtractor,
-			@NotNull final CSharpTypeDeclaration typeDeclaration)
+			@NotNull final CSharpTypeDeclaration typeDeclaration,
+			@Nullable final Set<PsiElement> recursiveGuardSet)
 	{
-		if(genericExtractor == DotNetGenericExtractor.EMPTY)
+		if(genericExtractor == DotNetGenericExtractor.EMPTY && recursiveGuardSet == null)
 		{
 			CachedValue<CSharpResolveContext> provider = typeDeclaration.getUserData(RESOLVE_CONTEXT);
 			if(provider != null)
@@ -138,8 +153,8 @@ public class CSharpResolveContextUtil
 				@RequiredReadAction
 				public Result<CSharpResolveContext> compute()
 				{
-					return Result.<CSharpResolveContext>create(new CSharpTypeResolveContext(typeDeclaration, DotNetGenericExtractor.EMPTY),
-							typeDeclaration, PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+					return Result.<CSharpResolveContext>create(new CSharpTypeResolveContext(typeDeclaration, DotNetGenericExtractor.EMPTY,
+							null), typeDeclaration, PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
 				}
 			}, false);
 			typeDeclaration.putUserData(RESOLVE_CONTEXT, cachedValue);
@@ -147,7 +162,7 @@ public class CSharpResolveContextUtil
 		}
 		else
 		{
-			return new CSharpTypeResolveContext(typeDeclaration, genericExtractor);
+			return new CSharpTypeResolveContext(typeDeclaration, genericExtractor, recursiveGuardSet);
 		}
 	}
 
