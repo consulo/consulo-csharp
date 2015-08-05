@@ -79,8 +79,6 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 				if(((CSharpFieldDeclaration) resolvedElement).hasModifier(DotNetModifier.STATIC))
 				{
 					typeDeclaration = (CSharpTypeDeclaration) resolvedElement.getParent();
-
-					//myEvaluators.add(NullValueEvaluator.INSTANCE);
 				}
 				else
 				{
@@ -97,9 +95,9 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 			PsiElement resolvedElement = expression.resolve();
 			if(resolvedElement instanceof CSharpFieldDeclaration)
 			{
-
+				CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) resolvedElement.getParent();
+				myEvaluators.add(new FieldEvaluator(typeDeclaration, (CSharpFieldDeclaration)resolvedElement));
 			}
-			System.out.println("some");
 		}
 	}
 
