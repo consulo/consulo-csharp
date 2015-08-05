@@ -312,6 +312,10 @@ public class OverrideUtil
 				PsiElement[] elements = selector.doSelectElement(context, false);
 				for(PsiElement element : CSharpResolveUtil.mergeGroupsToIterable(elements))
 				{
+					if(element == target)
+					{
+						continue;
+					}
 					if(CSharpElementCompareUtil.isEqual(element, target, CSharpElementCompareUtil.CHECK_RETURN_TYPE, target))
 					{
 						list.add((DotNetVirtualImplementOwner) element);
