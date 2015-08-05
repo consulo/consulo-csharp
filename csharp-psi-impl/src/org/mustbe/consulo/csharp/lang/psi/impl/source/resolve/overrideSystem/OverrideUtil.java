@@ -329,6 +329,7 @@ public class OverrideUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static Collection<DotNetModifierListOwner> collectMembersWithModifier(@NotNull PsiElement element,
 			@NotNull DotNetGenericExtractor extractor,
 			@NotNull CSharpModifier modifier)
@@ -345,21 +346,31 @@ public class OverrideUtil
 	}
 
 	@NotNull
-	public static Collection<PsiElement> getAllMembers(@NotNull PsiElement element,
+	@RequiredReadAction
+	public static Collection<PsiElement> getAllMembers(@NotNull final PsiElement targetTypeDeclaration,
 			@NotNull GlobalSearchScope scope,
 			@NotNull DotNetGenericExtractor extractor,
-			boolean allowTypes)
+			boolean completion)
 	{
 		CommonProcessors.CollectProcessor<PsiElement> collectProcessor = new CommonProcessors.CollectProcessor<PsiElement>();
-		CSharpResolveContextUtil.createContext(extractor, scope, element).processElements(collectProcessor, true);
+		CSharpResolveContextUtil.createContext(extractor, scope, targetTypeDeclaration).processElements(collectProcessor, true);
 
 		Collection<PsiElement> results = collectProcessor.getResults();
 
 		List<PsiElement> mergedElements = CSharpResolveUtil.mergeGroupsToIterable(results);
-		PsiElement[] psiElements = OverrideUtil.filterOverrideElements(element, mergedElements, OverrideProcessor.ALWAYS_TRUE);
+		PsiElement[] psiElements = OverrideUtil.filterOverrideElements(targetTypeDeclaration, mergedElements, OverrideProcessor.ALWAYS_TRUE);
 
 		List<PsiElement> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
-		return allowTypes ? elements : ContainerUtil.filter(elements, new Condition<PsiElement>()
+		// filter self methods, we need it in circular extends
+		elements = ContainerUtil.filter(elements, new Condition<PsiElement>()
+		{
+			@Override
+			public boolean value(PsiElement element)
+			{
+				return  element.getParent() != targetTypeDeclaration;
+			}
+		});
+		return completion ? elements : ContainerUtil.filter(elements, new Condition<PsiElement>()
 		{
 			@Override
 			public boolean value(PsiElement element)
