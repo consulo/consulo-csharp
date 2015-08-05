@@ -18,39 +18,22 @@ package org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
-import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import mono.debugger.LocalVariableMirror;
-import mono.debugger.Value;
 
 /**
  * @author VISTALL
  * @since 05.08.2015
  */
-public class LocalVariableEvaluator extends Evaluator
+public class ThisObjectEvaluator extends Evaluator
 {
-	private CSharpLocalVariable myLocalVariable;
+	public static final ThisObjectEvaluator INSTANCE = new ThisObjectEvaluator();
 
-	public LocalVariableEvaluator(CSharpLocalVariable localVariable)
+	private ThisObjectEvaluator()
 	{
-		myLocalVariable = localVariable;
 	}
 
 	@Override
 	public void evaluate(@NotNull CSharpEvaluateContext context)
 	{
-		LocalVariableMirror[] locals = context.getFrame().location().method().locals();
-
-		for(LocalVariableMirror local : locals)
-		{
-			if(myLocalVariable.getName().equals(local.name()))
-			{
-				Value value = context.getFrame().localOrParameterValue(local);
-				if(value != null)
-				{
-					context.pull(value);
-				}
-				break;
-			}
-		}
+		context.pull(context.getFrame().thisObject());
 	}
 }

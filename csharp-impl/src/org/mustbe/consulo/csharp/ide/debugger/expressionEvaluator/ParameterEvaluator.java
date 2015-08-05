@@ -27,7 +27,7 @@ import mono.debugger.Value;
  * @author VISTALL
  * @since 05.08.2015
  */
-public class ParameterEvaluator implements Evaluator
+public class ParameterEvaluator extends Evaluator
 {
 	private DotNetParameter myParameter;
 

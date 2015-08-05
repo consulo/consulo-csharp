@@ -21,15 +21,21 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.Evaluator;
+import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.FieldEvaluator;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.IsExpressionEvaluator;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.LocalVariableEvaluator;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.ParameterEvaluator;
+import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.ThisObjectEvaluator;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIsExpressionImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import com.intellij.psi.PsiElement;
 
@@ -52,24 +58,48 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitReferenceExpression(CSharpReferenceExpression expression)
 	{
 		PsiElement qualifier = expression.getQualifier();
 		if(qualifier == null)
 		{
-			PsiElement resolve = expression.resolve();
-			if(resolve instanceof DotNetParameter)
+			PsiElement resolvedElement = expression.resolve();
+			if(resolvedElement instanceof DotNetParameter)
 			{
-				myEvaluators.add(new ParameterEvaluator((DotNetParameter)resolve));
+				myEvaluators.add(new ParameterEvaluator((DotNetParameter)resolvedElement));
 			}
-			else if(resolve instanceof CSharpLocalVariable)
+			else if(resolvedElement instanceof CSharpLocalVariable)
 			{
-				myEvaluators.add(new LocalVariableEvaluator((CSharpLocalVariable)resolve));
+				myEvaluators.add(new LocalVariableEvaluator((CSharpLocalVariable)resolvedElement));
+			}
+			else if(resolvedElement instanceof CSharpFieldDeclaration)
+			{
+				CSharpTypeDeclaration typeDeclaration = null;
+				if(((CSharpFieldDeclaration) resolvedElement).hasModifier(DotNetModifier.STATIC))
+				{
+					typeDeclaration = (CSharpTypeDeclaration) resolvedElement.getParent();
+
+					//myEvaluators.add(NullValueEvaluator.INSTANCE);
+				}
+				else
+				{
+					myEvaluators.add(ThisObjectEvaluator.INSTANCE);
+				}
+
+				myEvaluators.add(new FieldEvaluator(typeDeclaration, (CSharpFieldDeclaration)resolvedElement));
 			}
 		}
 		else
 		{
 			qualifier.accept(this);
+
+			PsiElement resolvedElement = expression.resolve();
+			if(resolvedElement instanceof CSharpFieldDeclaration)
+			{
+
+			}
+			System.out.println("some");
 		}
 	}
 

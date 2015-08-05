@@ -18,10 +18,7 @@ package org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIsExpressionImpl;
-import org.mustbe.consulo.dotnet.debugger.DotNetDebugContext;
-import org.mustbe.consulo.dotnet.debugger.TypeMirrorUnloadedException;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 import mono.debugger.BooleanValueMirror;
@@ -32,7 +29,7 @@ import mono.debugger.Value;
  * @author VISTALL
  * @since 05.08.2015
  */
-public class IsExpressionEvaluator implements Evaluator
+public class IsExpressionEvaluator extends Evaluator
 {
 	private CSharpIsExpressionImpl myExpression;
 
@@ -52,34 +49,19 @@ public class IsExpressionEvaluator implements Evaluator
 		}
 
 		TypeMirror type = pop.type();
+		if(type == null)
+		{
+			return;
+		}
 
 		DotNetTypeRef typeRef = myExpression.getIsTypeRef();
 		PsiElement element = typeRef.resolve(context.getElementAt()).getElement();
-		if(element instanceof CSharpTypeDeclaration)
+
+		TypeMirror typeMirror = findTypeMirror(context, element);
+		if(typeMirror == null)
 		{
-			if(type == null)
-			{
-				return;
-			}
-
-			try
-			{
-				DotNetDebugContext debuggerContext = context.getDebuggerContext();
-				TypeMirror typeMirror = debuggerContext.getVirtualMachine().findTypeMirror(null,
-						((CSharpTypeDeclaration) element).getVmQName());
-
-				if(typeMirror == null)
-				{
-					return;
-				}
-				context.pull(new BooleanValueMirror(debuggerContext.getVirtualMachine().getDelegate(),
-						typeMirror.isAssignableFrom(type)));
-			}
-			catch(TypeMirrorUnloadedException e)
-			{
-				e.printStackTrace();
-			}
-
+			return;
 		}
+		context.pull(new BooleanValueMirror(context.getDebuggerContext().getVirtualMachine().getDelegate(), typeMirror.isAssignableFrom(type)));
 	}
 }

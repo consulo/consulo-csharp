@@ -17,13 +17,38 @@
 package org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.dotnet.debugger.DotNetDebugContext;
+import org.mustbe.consulo.dotnet.debugger.TypeMirrorUnloadedException;
+import com.intellij.psi.PsiElement;
+import mono.debugger.TypeMirror;
 
 /**
  * @author VISTALL
  * @since 05.08.2015
  */
-public interface Evaluator
+public abstract class Evaluator
 {
-	void evaluate(@NotNull CSharpEvaluateContext context);
+	public abstract void evaluate(@NotNull CSharpEvaluateContext context);
+
+	@Nullable
+	public TypeMirror findTypeMirror(@NotNull CSharpEvaluateContext context, @Nullable PsiElement element)
+	{
+		if(element instanceof CSharpTypeDeclaration)
+		{
+			try
+			{
+				DotNetDebugContext debuggerContext = context.getDebuggerContext();
+
+				return debuggerContext.getVirtualMachine().findTypeMirror(null, ((CSharpTypeDeclaration) element).getVmQName());
+			}
+			catch(TypeMirrorUnloadedException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 }

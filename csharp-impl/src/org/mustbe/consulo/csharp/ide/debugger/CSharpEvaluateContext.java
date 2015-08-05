@@ -65,7 +65,7 @@ public class CSharpEvaluateContext
 	@Nullable
 	public Value<?> pop()
 	{
-		return myStack.poll();
+		return myStack.remove();
 	}
 
 	public void pull(@NotNull Value<?> o)
