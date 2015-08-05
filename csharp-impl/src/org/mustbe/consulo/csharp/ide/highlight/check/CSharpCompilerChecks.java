@@ -48,6 +48,7 @@ public enum CSharpCompilerChecks
 	//CS0136(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // lambda parameter redeclaration check
 	CS0144(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // abstract types or interfaces cant created by new expression
 	CS0145(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // const cant be without value
+	CS0146(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // circular extends check
 	CS0155(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // throw object must be child of System.Exception
 	CS0157(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // return is not allowed inside finally blocks
 	//CS0168(CSharpLanguageVersion._1_0, HighlightInfoType.UNUSED_SYMBOL), // local variable usage check
