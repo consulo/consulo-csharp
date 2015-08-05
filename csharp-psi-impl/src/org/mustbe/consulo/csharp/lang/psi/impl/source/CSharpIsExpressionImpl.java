@@ -17,10 +17,12 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 
@@ -33,6 +35,20 @@ public class CSharpIsExpressionImpl extends CSharpElementImpl implements DotNetE
 	public CSharpIsExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	@NotNull
+	@RequiredDispatchThread
+	public DotNetTypeRef getIsTypeRef()
+	{
+		DotNetType type = findChildByClass(DotNetType.class);
+		return type == null ? DotNetTypeRef.ERROR_TYPE : type.toTypeRef();
+	}
+
+	@NotNull
+	public DotNetExpression getExpression()
+	{
+		return findNotNullChildByClass(DotNetExpression.class);
 	}
 
 	@Override

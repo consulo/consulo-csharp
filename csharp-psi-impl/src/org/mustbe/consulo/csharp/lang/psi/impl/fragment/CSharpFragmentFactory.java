@@ -30,13 +30,13 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilderFactory;
 import com.intellij.lang.PsiParser;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.SingleRootFileViewProvider;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.testFramework.LightVirtualFile;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -92,7 +92,7 @@ public class CSharpFragmentFactory
 			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion,
 					chameleon.getChars());
 
-			return ourExpressionParser.parse(this, builder, languageVersion).getFirstChildNode();
+			return ourExpressionParser.parse(this, builder, languageVersion);
 		}
 	};
 
@@ -113,11 +113,22 @@ public class CSharpFragmentFactory
 	};
 
 	@NotNull
-	public static CSharpFragmentFileImpl createExpressionFragment(Project project, String text, @Nullable PsiElement context)
+	public static CSharpFragmentFileImpl createExpressionFragment(Project project, String text, @Nullable final PsiElement context)
 	{
-		val virtualFile = new LightVirtualFile("dummy.cs", CSharpFileType.INSTANCE, text, System.currentTimeMillis());
-		val viewProvider = new SingleRootFileViewProvider(PsiManager.getInstance(project), virtualFile, true);
-
+		LightVirtualFile virtualFile = new LightVirtualFile("dummy.cs", CSharpFileType.INSTANCE, text, System.currentTimeMillis());
+		SingleRootFileViewProvider viewProvider = new SingleRootFileViewProvider(PsiManager.getInstance(project), virtualFile, true)
+		{
+			@NotNull
+			@Override
+			public SingleRootFileViewProvider createCopy(@NotNull final VirtualFile copy)
+			{
+				SingleRootFileViewProvider provider = new SingleRootFileViewProvider(getManager(), copy, false);
+				CSharpFragmentFileImpl psiFile = new CSharpFragmentFileImpl(ourExpressionFileElementType, ourExpressionFileElementType, provider, context);
+				provider.forceCachedPsi(psiFile);
+				psiFile.getNode();
+				return provider;
+			}
+		};
 		CSharpFragmentFileImpl file = new CSharpFragmentFileImpl(ourExpressionFileElementType, ourExpressionFileElementType, viewProvider, context);
 		viewProvider.forceCachedPsi(file);
 		file.getNode();
@@ -125,10 +136,10 @@ public class CSharpFragmentFactory
 	}
 
 	@NotNull
-	public static CSharpFragmentFileImpl createTypeFragment(Project project, String text, @Nullable PsiElement context)
+	public static CSharpFragmentFileImpl createTypeFragment(Project project, String text, @Nullable final PsiElement context)
 	{
-		val virtualFile = new LightVirtualFile("dummy.cs", CSharpFileType.INSTANCE, text, System.currentTimeMillis());
-		val viewProvider = new SingleRootFileViewProvider(PsiManager.getInstance(project), virtualFile, true);
+		LightVirtualFile virtualFile = new LightVirtualFile("dummy.cs", CSharpFileType.INSTANCE, text, System.currentTimeMillis());
+		SingleRootFileViewProvider viewProvider = new SingleRootFileViewProvider(PsiManager.getInstance(project), virtualFile, true);
 
 		CSharpFragmentFileImpl file = new CSharpFragmentFileImpl(ourTypeFileElementType, ourTypeFileElementType, viewProvider, context);
 		viewProvider.forceCachedPsi(file);

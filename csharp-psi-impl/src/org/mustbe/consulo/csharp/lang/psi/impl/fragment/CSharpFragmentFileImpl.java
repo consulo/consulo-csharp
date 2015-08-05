@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.fragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCodeFragment;
@@ -47,6 +48,7 @@ public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFra
 		myContext = context;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public Language getLanguage()

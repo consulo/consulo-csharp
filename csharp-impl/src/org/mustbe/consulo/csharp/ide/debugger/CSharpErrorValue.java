@@ -27,11 +27,11 @@ import com.intellij.xdebugger.frame.presentation.XValuePresentation;
  * @author VISTALL
  * @since 06.06.14
  */
-public class ErrorValue extends XValue
+public class CSharpErrorValue extends XValue
 {
 	private final String myError;
 
-	public ErrorValue(String error)
+	public CSharpErrorValue(String error)
 	{
 		myError = error;
 	}
@@ -45,7 +45,7 @@ public class ErrorValue extends XValue
 			@Override
 			public void renderValue(@NotNull XValueTextRenderer renderer)
 			{
-				renderer.renderValue(myError);
+				renderer.renderError(myError);
 			}
 		}, false);
 	}
