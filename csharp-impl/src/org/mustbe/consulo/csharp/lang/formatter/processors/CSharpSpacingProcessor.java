@@ -20,6 +20,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import com.intellij.psi.util.PsiUtilCore;
 
 /**
  * @author VISTALL
@@ -30,12 +31,14 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 	private static class OperatorReferenceSpacingBuilder
 	{
 		private final CommonCodeStyleSettings myCommonSettings;
+		private TokenSet myParentSet;
 		private final TokenSet myTokenSet;
 		private final boolean myCondition;
 
-		OperatorReferenceSpacingBuilder(CommonCodeStyleSettings commonSettings, IElementType[] types, boolean condition)
+		OperatorReferenceSpacingBuilder(CommonCodeStyleSettings commonSettings, @NotNull TokenSet parentSet, IElementType[] types, boolean condition)
 		{
 			myCommonSettings = commonSettings;
+			myParentSet = parentSet;
 			myTokenSet = TokenSet.create(types);
 			myCondition = condition;
 		}
@@ -43,6 +46,14 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		public boolean match(@Nullable ASTBlock child1, @NotNull ASTBlock child2)
 		{
 			CSharpOperatorReferenceImpl operatorReference = findOperatorReference(child1, child2);
+			if(operatorReference != null && myParentSet != TokenSet.EMPTY)
+			{
+				IElementType elementType = PsiUtilCore.getElementType(operatorReference.getParent());
+				if(!myParentSet.contains(elementType))
+				{
+					return false;
+				}
+			}
 			return operatorReference != null && myTokenSet.contains(operatorReference.getOperatorElementType());
 		}
 
@@ -251,6 +262,10 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 
 		operatorReferenceSpacing(commonSettings.SPACE_AROUND_SHIFT_OPERATORS, CSharpTokens.GTGT, CSharpTokens.GTGTEQ, CSharpTokens.LTLT,
 				CSharpTokens.LTLTEQ);
+
+		operatorReferenceSpacingWithParent(commonSettings.SPACE_AROUND_UNARY_OPERATOR, TokenSet.create(POSTFIX_EXPRESSION, PREFIX_EXPRESSION),
+				CSharpTokens.PLUS, CSharpTokens.MINUS, CSharpTokens.PLUSPLUS, CSharpTokens.MINUSMINUS, CSharpTokens.MUL, CSharpTokens.AND);
+
 		operatorReferenceSpacing(commonSettings.SPACE_AROUND_ADDITIVE_OPERATORS, CSharpTokens.PLUS, CSharpTokens.MINUS);
 		operatorReferenceSpacing(commonSettings.SPACE_AROUND_MULTIPLICATIVE_OPERATORS, CSharpTokens.MUL, CSharpTokens.DIV, CSharpTokens.PERC);
 		operatorReferenceSpacing(commonSettings.SPACE_AROUND_BITWISE_OPERATORS, CSharpTokens.XOR, CSharpTokens.AND, CSharpTokens.OR);
@@ -267,7 +282,12 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 
 	public void operatorReferenceSpacing(boolean ifCondition, IElementType... types)
 	{
-		myOperatorReferenceSpacingBuilders.add(new OperatorReferenceSpacingBuilder(myCommonSettings, types, ifCondition));
+		operatorReferenceSpacingWithParent(ifCondition, TokenSet.EMPTY, types);
+	}
+
+	public void operatorReferenceSpacingWithParent(boolean ifCondition, @NotNull TokenSet parents, IElementType... types)
+	{
+		myOperatorReferenceSpacingBuilders.add(new OperatorReferenceSpacingBuilder(myCommonSettings, parents, types, ifCondition));
 	}
 
 	@Nullable
