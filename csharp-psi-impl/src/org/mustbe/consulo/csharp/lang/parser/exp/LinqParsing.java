@@ -90,7 +90,7 @@ public class LinqParsing extends SharedParsingHelpers
 		IElementType tokenType = builder.getTokenType();
 		if(tokenType == CSharpTokens.IDENTIFIER)
 		{
-			builder.advanceLexer();
+			doneIdentifier(builder, NONE);
 		}
 		else
 		{
@@ -102,7 +102,7 @@ public class LinqParsing extends SharedParsingHelpers
 			}
 			else
 			{
-				variableMarker.error("CSharpTokens.IDENTIFIER expected");
+				variableMarker.error("Identifier expected");
 				variableMarker = null;
 			}
 		}
@@ -247,7 +247,10 @@ public class LinqParsing extends SharedParsingHelpers
 			PsiBuilder.Marker tempMarker = builder.mark();
 			builder.advanceLexer();
 
-			doneOneElement(builder, CSharpTokens.IDENTIFIER, LINQ_VARIABLE, "CSharpTokens.IDENTIFIER expected");
+			PsiBuilder.Marker varMarker = builder.mark();
+			expectOrReportIdentifier(builder, NONE);
+			varMarker.done(LINQ_VARIABLE);
+
 			tempMarker.done(LINQ_INTRO_CLAUSE);
 		}
 
@@ -279,7 +282,7 @@ public class LinqParsing extends SharedParsingHelpers
 		if(builder.getTokenType() == CSharpTokens.IDENTIFIER)
 		{
 			PsiBuilder.Marker varMarker = builder.mark();
-			builder.advanceLexer();
+			doneIdentifier(builder, NONE);
 			if(expect(builder, EQ, "'=' expected"))
 			{
 				if(ExpressionParsing.parse(builder) == null)
@@ -291,7 +294,7 @@ public class LinqParsing extends SharedParsingHelpers
 		}
 		else
 		{
-			builder.error("CSharpTokens.IDENTIFIER expected");
+			builder.error("Identifier expected");
 		}
 
 		mark.done(LINQ_LET_CLAUSE);

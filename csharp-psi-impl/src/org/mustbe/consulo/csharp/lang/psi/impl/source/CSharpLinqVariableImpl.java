@@ -180,7 +180,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 	@Override
 	public CSharpIdentifier getNameIdentifier()
 	{
-		return findNotNullChildByClass(CSharpIdentifier.class);
+		return findChildByClass(CSharpIdentifier.class);
 	}
 
 	@Override
