@@ -335,7 +335,7 @@ public class OverrideUtil
 			@NotNull CSharpModifier modifier)
 	{
 		List<DotNetModifierListOwner> psiElements = new SmartList<DotNetModifierListOwner>();
-		for(PsiElement psiElement : getAllMembers(element, element.getResolveScope(), extractor, false))
+		for(PsiElement psiElement : getAllMembers(element, element.getResolveScope(), extractor, false, true))
 		{
 			if(psiElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) psiElement).hasModifier(modifier))
 			{
@@ -350,7 +350,8 @@ public class OverrideUtil
 	public static Collection<PsiElement> getAllMembers(@NotNull final PsiElement targetTypeDeclaration,
 			@NotNull GlobalSearchScope scope,
 			@NotNull DotNetGenericExtractor extractor,
-			boolean completion)
+			boolean completion,
+			boolean overrideTool)
 	{
 		CommonProcessors.CollectProcessor<PsiElement> collectProcessor = new CommonProcessors.CollectProcessor<PsiElement>();
 		CSharpResolveContextUtil.createContext(extractor, scope, targetTypeDeclaration).processElements(collectProcessor, true);
@@ -361,15 +362,18 @@ public class OverrideUtil
 		PsiElement[] psiElements = OverrideUtil.filterOverrideElements(targetTypeDeclaration, mergedElements, OverrideProcessor.ALWAYS_TRUE);
 
 		List<PsiElement> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
-		// filter self methods, we need it in circular extends
-		elements = ContainerUtil.filter(elements, new Condition<PsiElement>()
+		if(overrideTool)
 		{
-			@Override
-			public boolean value(PsiElement element)
+			// filter self methods, we need it in circular extends
+			elements = ContainerUtil.filter(elements, new Condition<PsiElement>()
 			{
-				return  element.getParent() != targetTypeDeclaration;
-			}
-		});
+				@Override
+				public boolean value(PsiElement element)
+				{
+					return element.getParent() != targetTypeDeclaration;
+				}
+			});
+		}
 		return completion ? elements : ContainerUtil.filter(elements, new Condition<PsiElement>()
 		{
 			@Override

@@ -58,7 +58,7 @@ public class CompletionResolveScopeProcessor extends StubScopeProcessor
 		DotNetGenericExtractor extractor = state.get(CSharpResolveUtil.EXTRACTOR);
 		assert extractor != null;
 
-		for(PsiElement psiElement : OverrideUtil.getAllMembers(element, myScope, extractor, true))
+		for(PsiElement psiElement : OverrideUtil.getAllMembers(element, myScope, extractor, true, false))
 		{
 			ProgressManager.checkCanceled();
 

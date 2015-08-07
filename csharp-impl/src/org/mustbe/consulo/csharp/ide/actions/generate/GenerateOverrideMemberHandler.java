@@ -98,7 +98,7 @@ public class GenerateOverrideMemberHandler extends GenerateImplementOrOverrideMe
 	public Collection<PsiElement> getItems(@NotNull CSharpTypeDeclaration typeDeclaration)
 	{
 		Collection<PsiElement> allMembers = OverrideUtil.getAllMembers(typeDeclaration, typeDeclaration.getResolveScope(),
-				DotNetGenericExtractor.EMPTY, false);
+				DotNetGenericExtractor.EMPTY, false, true);
 
 		boolean isInterface = typeDeclaration.isInterface();
 
