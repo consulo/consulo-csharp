@@ -2,7 +2,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResultUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetShortNameSearcher;
@@ -27,15 +29,27 @@ public class CSharpShortNameSearcher extends DotNetShortNameSearcher
 	public void collectTypeNames(@NotNull Processor<String> processor, @NotNull GlobalSearchScope searchScope, @Nullable IdFilter filter)
 	{
 		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.TYPE_INDEX, processor, searchScope, filter);
+		StubIndex.getInstance().processAllKeys(CSharpIndexKeys.DELEGATE_METHOD_BY_NAME_INDEX, processor, searchScope, filter);
 	}
 
 	@Override
 	public void collectTypes(@NotNull String s,
 			@NotNull GlobalSearchScope searchScope,
 			@Nullable IdFilter filter,
-			@NotNull Processor<DotNetTypeDeclaration> processor)
+			@NotNull final Processor<DotNetTypeDeclaration> processor)
 	{
 		StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_INDEX, s, myProject, searchScope, filter, CSharpTypeDeclaration.class,
 				processor);
+
+		StubIndex.getInstance().processElements(CSharpIndexKeys.DELEGATE_METHOD_BY_NAME_INDEX, s, myProject, searchScope, filter,
+				CSharpMethodDeclaration.class, new Processor<CSharpMethodDeclaration>()
+		{
+			@Override
+			public boolean process(CSharpMethodDeclaration methodDeclaration)
+			{
+				CSharpTypeDeclaration typeFromDelegate = CSharpLambdaResolveResultUtil.createTypeFromDelegate(methodDeclaration);
+				return processor.process(typeFromDelegate);
+			}
+		});
 	}
 }

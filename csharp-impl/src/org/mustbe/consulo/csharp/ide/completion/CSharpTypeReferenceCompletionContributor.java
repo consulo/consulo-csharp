@@ -25,11 +25,14 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.AddUsingAction;
 import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLikeLookupElement;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.libraryAnalyzer.NamespaceReference;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetShortNameSearcher;
 import org.mustbe.consulo.dotnet.resolve.GlobalSearchScopeFilter;
@@ -131,18 +134,18 @@ public class CSharpTypeReferenceCompletionContributor extends CompletionContribu
 	private static void consumeType(final CompletionParameters completionParameters,
 			Consumer<LookupElement> consumer,
 			boolean insideUsingList,
-			DotNetTypeDeclaration maybeMsilType)
+			DotNetTypeDeclaration someType)
 	{
-		final String parentQName = maybeMsilType.getPresentableParentQName();
+		final String parentQName = someType.getPresentableParentQName();
 		if(StringUtil.isEmpty(parentQName))
 		{
 			return;
 		}
 
-		String presentationText = MsilHelper.cutGenericMarker(maybeMsilType.getName());
+		String presentationText = MsilHelper.cutGenericMarker(someType.getName());
 
 		int genericCount = 0;
-		DotNetGenericParameter[] genericParameters = maybeMsilType.getGenericParameters();
+		DotNetGenericParameter[] genericParameters = someType.getGenericParameters();
 		if((genericCount = genericParameters.length) > 0)
 		{
 			presentationText += "<" + StringUtil.join(genericParameters, new Function<DotNetGenericParameter, String>()
@@ -156,16 +159,22 @@ public class CSharpTypeReferenceCompletionContributor extends CompletionContribu
 			presentationText += ">";
 		}
 
-		String lookupString = insideUsingList ? maybeMsilType.getPresentableQName() : maybeMsilType.getName();
+		String lookupString = insideUsingList ? someType.getPresentableQName() : someType.getName();
 		if(lookupString == null)
 		{
 			return;
 		}
 		lookupString = MsilHelper.cutGenericMarker(lookupString);
 
-		LookupElementBuilder builder = LookupElementBuilder.create(maybeMsilType, lookupString);
+		DotNetQualifiedElement targetElementForLookup = someType;
+		CSharpMethodDeclaration methodDeclaration = someType.getUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE);
+		if(methodDeclaration != null)
+		{
+			targetElementForLookup = methodDeclaration;
+		}
+		LookupElementBuilder builder = LookupElementBuilder.create(targetElementForLookup, lookupString);
 		builder = builder.withPresentableText(presentationText);
-		builder = builder.withIcon(IconDescriptorUpdaters.getIcon(maybeMsilType, Iconable.ICON_FLAG_VISIBILITY));
+		builder = builder.withIcon(IconDescriptorUpdaters.getIcon(targetElementForLookup, Iconable.ICON_FLAG_VISIBILITY));
 
 		builder = builder.withTypeText(parentQName, true);
 		final InsertHandler<LookupElement> ltGtInsertHandler = genericCount == 0 ? null : LtGtInsertHandler.getInstance(genericCount > 0);
