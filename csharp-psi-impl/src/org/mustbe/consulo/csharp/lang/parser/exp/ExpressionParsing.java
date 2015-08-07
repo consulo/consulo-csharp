@@ -950,7 +950,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(builder.getTokenType() != CSharpTokens.IDENTIFIER)
 		{
-			builder.error("CSharpTokens.IDENTIFIER expected");
+			builder.error("Identifier expected");
 		}
 		else
 		{
@@ -1537,7 +1537,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				{
 					PsiBuilder.Marker errorMarker = builder.mark();
 					builder.advanceLexer();
-					errorMarker.error("CSharpTokens.IDENTIFIER expected");
+					errorMarker.error("Identifier expected");
 				}
 
 				if(builder.getTokenType() == COMMA)
@@ -1561,7 +1561,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
-		if(doneOneElement(builder, CSharpTokens.IDENTIFIER, REFERENCE_EXPRESSION, "CSharpTokens.IDENTIFIER expected"))
+		if(doneOneElement(builder, CSharpTokens.IDENTIFIER, REFERENCE_EXPRESSION, "Identifier expected"))
 		{
 			if(expect(builder, EQ, "'=' expected"))
 			{
@@ -1740,7 +1740,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			}
 		}
 
-		if(expect(builder, CSharpTokens.IDENTIFIER, "CSharpTokens.IDENTIFIER expected"))
+		if(expect(builder, CSharpTokens.IDENTIFIER, "Identifier expected"))
 		{
 			referenceInfo.isParameterized = parseReferenceTypeArgumentList(builder, flags) != null;
 
