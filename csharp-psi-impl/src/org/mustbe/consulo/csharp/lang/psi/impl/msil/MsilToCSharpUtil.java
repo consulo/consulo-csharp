@@ -209,11 +209,12 @@ public class MsilToCSharpUtil
 	}
 
 	@Nullable
+	@RequiredReadAction
 	public static CSharpMethodDeclaration wrapToDelegateMethod(@NotNull DotNetTypeDeclaration typeDeclaration, @Nullable PsiElement parent)
 	{
-		if(DotNetInheritUtil.isInheritor(typeDeclaration, DotNetTypes.System.MulticastDelegate, true))
+		if(DotNetInheritUtil.isInheritor(typeDeclaration, DotNetTypes.System.MulticastDelegate, false))
 		{
-			val msilMethodEntry = (MsilMethodEntry) ContainerUtil.find((typeDeclaration).getMembers(), new Condition<DotNetNamedElement>()
+			MsilMethodEntry msilMethodEntry = (MsilMethodEntry) ContainerUtil.find((typeDeclaration).getMembers(), new Condition<DotNetNamedElement>()
 			{
 				@Override
 				public boolean value(DotNetNamedElement element)

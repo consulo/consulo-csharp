@@ -23,7 +23,7 @@ import java.util.Collections;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.AddUsingAction;
-import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLookupElement;
+import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLikeLookupElement;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -191,6 +191,6 @@ public class CSharpTypeReferenceCompletionContributor extends CompletionContribu
 			});
 		}
 
-		consumer.consume(new ReplaceableTypeLookupElement(builder));
+		consumer.consume(new ReplaceableTypeLikeLookupElement(builder));
 	}
 }

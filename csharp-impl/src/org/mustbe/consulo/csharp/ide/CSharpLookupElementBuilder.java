@@ -25,7 +25,8 @@ import org.consulo.ide.eap.EarlyAccessProgramDescriptor;
 import org.consulo.ide.eap.EarlyAccessProgramManager;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLookupElement;
+import org.mustbe.consulo.csharp.ide.completion.CSharpCompletionUtil;
+import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLikeLookupElement;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
@@ -161,9 +162,9 @@ public class CSharpLookupElementBuilder
 	public static LookupElement buildLookupElement(final PsiElement element)
 	{
 		LookupElementBuilder builder = createLookupElementBuilder(element);
-		if(element instanceof CSharpTypeDeclaration)
+		if(CSharpCompletionUtil.isTypeLikeElement(element))
 		{
-			return new ReplaceableTypeLookupElement(builder);
+			return new ReplaceableTypeLikeLookupElement(builder);
 		}
 		return builder;
 	}
@@ -197,6 +198,7 @@ public class CSharpLookupElementBuilder
 				String parameterText = genericText + "(" + StringUtil.join(parameterTypes, new Function<DotNetTypeRef, String>()
 				{
 					@Override
+					@RequiredReadAction
 					public String fun(DotNetTypeRef parameter)
 					{
 						return CSharpTypeRefPresentationUtil.buildShortText(parameter, element);
@@ -234,6 +236,7 @@ public class CSharpLookupElementBuilder
 				builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 				builder = builder.withTailText(DotNetElementPresentationUtil.formatGenericParameters((DotNetGenericParameterListOwner) element),
 						true);
+				builder = builder.withTypeText(methodDeclaration.getPresentableParentQName());
 
 				builder = withGenericInsertHandler(element, builder);
 			}

@@ -127,7 +127,7 @@ public class CSharpInheritProximityWeigher extends Weigher<LookupElement, Comple
 			@NotNull Position upPosition)
 	{
 		// if we have not type declaration, make types lower, dont allow int i = Int32 completion more high
-		if(referenceExpressionEx.kind() != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE && CSharpCompletionUtil.isTypeLikeElement(psiElement)
+		if(referenceExpressionEx.kind() != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE && CSharpCompletionUtil.isTypeLikeElementWithNamespace(psiElement)
 				&& upPosition == Position.UP_REF)
 		{
 			return Position.DOWN;

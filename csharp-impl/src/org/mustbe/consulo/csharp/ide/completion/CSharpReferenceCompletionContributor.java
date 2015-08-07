@@ -32,7 +32,7 @@ import org.mustbe.consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
-import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLookupElement;
+import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLikeLookupElement;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
@@ -307,9 +307,9 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 								}
 							});
 
-							if(element instanceof CSharpTypeDeclaration)
+							if(CSharpCompletionUtil.isTypeLikeElement(element))
 							{
-								result.consume(new ReplaceableTypeLookupElement(lookupElementBuilder));
+								result.consume(new ReplaceableTypeLikeLookupElement(lookupElementBuilder));
 							}
 							else
 							{

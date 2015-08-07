@@ -61,8 +61,13 @@ public class CSharpCompletionUtil
 
 	public static boolean isTypeLikeElement(@NotNull PsiElement element)
 	{
-		return element instanceof CSharpTypeDeclaration || element instanceof DotNetNamespaceAsElement || element instanceof CSharpMethodDeclaration
+		return element instanceof CSharpTypeDeclaration || element instanceof CSharpMethodDeclaration
 				&& ((CSharpMethodDeclaration) element).isDelegate();
+	}
+
+	public static boolean isTypeLikeElementWithNamespace(@NotNull PsiElement element)
+	{
+		return isTypeLikeElement(element) || element instanceof DotNetNamespaceAsElement;
 	}
 
 	@NotNull
