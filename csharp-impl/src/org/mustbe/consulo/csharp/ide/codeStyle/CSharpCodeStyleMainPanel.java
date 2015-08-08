@@ -27,7 +27,6 @@ public class CSharpCodeStyleMainPanel extends TabbedLanguageCodeStylePanel
 			{
 				createTab(provider);
 			}
-
 		}
 	}
 }
