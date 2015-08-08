@@ -16,7 +16,9 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
 
@@ -85,7 +87,8 @@ public class LambdaToDelegateExpressionFix extends PsiElementBaseIntentionAction
 	@Override
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element)
 	{
-		if(element.getNode().getElementType() == CSharpTokens.DARROW)
+		IElementType elementType = PsiUtilCore.getElementType(element);
+		if(elementType == CSharpTokens.DARROW)
 		{
 			CSharpLambdaExpressionImpl lambdaExpression = PsiTreeUtil.getParentOfType(element, CSharpLambdaExpressionImpl.class);
 			return lambdaExpression != null && lambdaExpression.toTypeRef(true) != DotNetTypeRef.ERROR_TYPE;
