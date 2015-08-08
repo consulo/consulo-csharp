@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
+import com.intellij.util.Processor;
 
 /**
  * @author VISTALL
@@ -14,6 +15,8 @@ public interface CSharpElementGroup<T extends PsiElement> extends PsiNamedElemen
 {
 	@NotNull
 	Collection<T> getElements();
+
+	boolean process(@NotNull Processor<T> processor);
 
 	@Override
 	@NotNull

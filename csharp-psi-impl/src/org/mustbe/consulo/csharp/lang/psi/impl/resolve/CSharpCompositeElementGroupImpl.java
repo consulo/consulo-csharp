@@ -16,6 +16,7 @@ import com.intellij.psi.ResolveState;
 import com.intellij.psi.impl.light.LightElement;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.Processor;
 
 /**
  * @author VISTALL
@@ -62,16 +63,21 @@ public class CSharpCompositeElementGroupImpl<T extends PsiElement> extends Light
 	}
 
 	@Override
-	public void navigate(boolean requestFocus)
+	public void navigate(final boolean requestFocus)
 	{
-		for(PsiElement element : getElements())
+		process(new Processor<T>()
 		{
-			if(element instanceof Navigatable)
+			@Override
+			public boolean process(T t)
 			{
-				((Navigatable) element).navigate(requestFocus);
-				break;
+				if(t instanceof Navigatable)
+				{
+					((Navigatable) t).navigate(requestFocus);
+					return false;
+				}
+				return true;
 			}
-		}
+		});
 	}
 
 	@Override
@@ -102,5 +108,18 @@ public class CSharpCompositeElementGroupImpl<T extends PsiElement> extends Light
 			list.addAll(group.getElements());
 		}
 		return list;
+	}
+
+	@Override
+	public boolean process(@NotNull Processor<T> processor)
+	{
+		for(CSharpElementGroup<T> group : myGroups)
+		{
+			if(!group.process(processor))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 }

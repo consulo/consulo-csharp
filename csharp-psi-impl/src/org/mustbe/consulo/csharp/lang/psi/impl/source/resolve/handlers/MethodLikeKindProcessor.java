@@ -75,33 +75,39 @@ public class MethodLikeKindProcessor implements KindProcessor
 				PsiElement maybeElementGroup = result.getElement();
 				if(maybeElementGroup instanceof CSharpElementGroup)
 				{
-					for(PsiElement psiElement : ((CSharpElementGroup<?>) maybeElementGroup).getElements())
+					//noinspection unchecked
+					((CSharpElementGroup<PsiElement>) maybeElementGroup).process(new Processor<PsiElement>()
 					{
-						if(psiElement instanceof DotNetLikeMethodDeclaration)
+						@Override
+						public boolean process(PsiElement psiElement)
 						{
-							GenericInferenceUtil.GenericInferenceResult inferenceResult = psiElement.getUserData(GenericInferenceUtil
-									.INFERENCE_RESULT);
-
-							if(inferenceResult == null && !CSharpReferenceExpressionImplUtil.isConstructorKind(kind))
+							if(psiElement instanceof DotNetLikeMethodDeclaration)
 							{
-								inferenceResult = GenericInferenceUtil.inferenceGenericExtractor(element, callArgumentListOwner,
-										(DotNetLikeMethodDeclaration) psiElement);
-								psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, inferenceResult.getExtractor());
-							}
+								GenericInferenceUtil.GenericInferenceResult inferenceResult = psiElement.getUserData(GenericInferenceUtil
+										.INFERENCE_RESULT);
 
-							MethodCalcResult calcResult = MethodResolver.calc(callArgumentListOwner, (DotNetLikeMethodDeclaration) psiElement,
-									element);
+								if(inferenceResult == null && !CSharpReferenceExpressionImplUtil.isConstructorKind(kind))
+								{
+									inferenceResult = GenericInferenceUtil.inferenceGenericExtractor(element, callArgumentListOwner,
+											(DotNetLikeMethodDeclaration) psiElement);
+									psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, inferenceResult.getExtractor());
+								}
 
-							if(inferenceResult == null || inferenceResult.isSuccess())
-							{
-								methodResolveResults.add(Pair.create(calcResult, psiElement));
+								MethodCalcResult calcResult = MethodResolver.calc(callArgumentListOwner, (DotNetLikeMethodDeclaration) psiElement,
+										element);
+
+								if(inferenceResult == null || inferenceResult.isSuccess())
+								{
+									methodResolveResults.add(Pair.create(calcResult, psiElement));
+								}
+								else
+								{
+									methodResolveResults.add(Pair.create(calcResult.dup(Short.MIN_VALUE), psiElement));
+								}
 							}
-							else
-							{
-								methodResolveResults.add(Pair.create(calcResult.dup(Short.MIN_VALUE), psiElement));
-							}
+							return true;
 						}
-					}
+					});
 				}
 				else if(maybeElementGroup instanceof DotNetVariable)
 				{

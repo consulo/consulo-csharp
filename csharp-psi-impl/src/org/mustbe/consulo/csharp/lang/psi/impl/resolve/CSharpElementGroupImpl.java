@@ -17,6 +17,7 @@ import com.intellij.psi.impl.light.LightElement;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.Processor;
 
 /**
  * @author VISTALL
@@ -79,6 +80,19 @@ public class CSharpElementGroupImpl<T extends PsiElement> extends LightElement i
 	public Collection<T> getElements()
 	{
 		return myElements;
+	}
+
+	@Override
+	public boolean process(@NotNull Processor<T> processor)
+	{
+		for(T element : myElements)
+		{
+			if(!processor.process(element))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
