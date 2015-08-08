@@ -45,6 +45,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImp
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NErrorCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -223,6 +224,12 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		List<NCallArgument> arguments = calcResult.getArguments();
 		for(NCallArgument argument : arguments)
 		{
+			// missed arguments returning error type too - but we dont need to hide call error
+			if(argument instanceof NErrorCallArgument)
+			{
+				continue;
+			}
+
 			DotNetTypeRef typeRef = argument.getTypeRef();
 			if(typeRef == DotNetTypeRef.ERROR_TYPE)
 			{
