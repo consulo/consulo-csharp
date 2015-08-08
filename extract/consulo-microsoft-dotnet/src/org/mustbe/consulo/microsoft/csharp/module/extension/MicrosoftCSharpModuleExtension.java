@@ -55,7 +55,10 @@ public class MicrosoftCSharpModuleExtension extends BaseCSharpModuleExtension<Mi
 		DotNetModuleExtension extension = getModuleRootLayer().getExtension(DotNetModuleExtension.class);
 		assert extension != null;
 		Sdk sdk = extension.getSdk();
-		assert sdk != null;
+		if(sdk == null)
+		{
+			throw new DotNetCompileFailedException(".NET SDK is not set");
+		}
 
 		VirtualFile compilerFile = null;
 		if(getCustomCompilerSdkPointer().isNull())
