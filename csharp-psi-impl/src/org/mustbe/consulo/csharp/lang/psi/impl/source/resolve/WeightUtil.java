@@ -38,7 +38,10 @@ public class WeightUtil
 
 		for(Pair<MethodCalcResult, PsiElement> pair : list)
 		{
-			processor.process(new MethodResolveResult(pair.getSecond(), pair.getFirst()));
+			if(!processor.process(new MethodResolveResult(pair.getSecond(), pair.getFirst())))
+			{
+				return;
+			}
 		}
 	}
 }
