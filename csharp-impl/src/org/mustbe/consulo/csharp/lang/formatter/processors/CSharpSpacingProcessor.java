@@ -240,7 +240,7 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		spaceIfNoBlankLines(myBuilder.beforeInside(COLON, CSharpStubElements.CONSTRUCTOR_DECLARATION), true);
 
 		myBuilder.around(COLONCOLON).none();
-		myBuilder.around(DARROW).spaces(1);
+		myBuilder.around(DARROW).spaceIf(commonSettings.SPACE_AROUND_LAMBDA_ARROW);
 		myBuilder.around(ARROW).none();
 
 		myBuilder.before(CSharpTokens.ELSE_KEYWORD).spaceIf(commonSettings.SPACE_BEFORE_ELSE_KEYWORD);
