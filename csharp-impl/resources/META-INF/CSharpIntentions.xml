@@ -16,7 +16,9 @@
 
 <idea-plugin>
 	<extensions defaultExtensionNs="com.intellij">
-
+		<intentionAction>
+			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.IntroduceLocalVariableIntention</className>
+		</intentionAction>
 		<intentionAction>
 			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.AddProtectedInternalModifierFix</className>
 		</intentionAction>

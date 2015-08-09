@@ -16,7 +16,7 @@
 
 package org.mustbe.consulo.csharp.ide.refactoring.introduceVariable;
 
-import org.jetbrains.annotations.NotNull;
+import com.intellij.refactoring.RefactoringBundle;
 
 /**
  * @author VISTALL
@@ -24,9 +24,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public class CSharpIntroduceVariableHandler extends CSharpIntroduceHandler
 {
-	public CSharpIntroduceVariableHandler(@NotNull String dialogTitle)
+	public CSharpIntroduceVariableHandler()
 	{
-		super(dialogTitle);
+		super(RefactoringBundle.message("introduce.variable.title"));
 	}
 
 	@Override
