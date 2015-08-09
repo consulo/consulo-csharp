@@ -43,6 +43,7 @@ public enum CSharpCompilerChecks
 	CS0106(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // modifier check
 	CS0107(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // modifier protection check
 	CS0120(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // instance members required instance object reference
+	CS0122(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // visibility checks
 	CS0128(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // local variable redeclaration check
 	CS0132(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // static constructors are parameterless
 	//CS0136(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // lambda parameter redeclaration check
@@ -52,8 +53,8 @@ public enum CSharpCompilerChecks
 	CS0155(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // throw object must be child of System.Exception
 	CS0157(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // return is not allowed inside finally blocks
 	//CS0168(CSharpLanguageVersion._1_0, HighlightInfoType.UNUSED_SYMBOL), // local variable usage check
+	CS0201(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // expression statement can be only call, etc
 	CS0214(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // fixed can be used inside unsafe context
-	CS0122(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // visibility checks
 	//CS0219(CSharpLanguageVersion._1_0, HighlightInfoType.UNUSED_SYMBOL), // local variable usage check
 	CS0227(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // 'unsafe' modifier check
 	CS0231(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // 'params' modifier must be last
