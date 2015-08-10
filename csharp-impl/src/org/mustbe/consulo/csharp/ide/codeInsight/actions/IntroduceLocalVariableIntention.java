@@ -65,12 +65,7 @@ public class IntroduceLocalVariableIntention extends BaseRefactoringIntentionAct
 		}
 
 		DotNetTypeRef ref = expression.toTypeRef(true);
-		if(DotNetTypeRefUtil.isVmQNameEqual(ref, expression, DotNetTypes.System.Void))
-		{
-			return false;
-		}
-
-		return true;
+		return !(ref == DotNetTypeRef.ERROR_TYPE || DotNetTypeRefUtil.isVmQNameEqual(ref, expression, DotNetTypes.System.Void));
 	}
 
 	@NotNull
