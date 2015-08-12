@@ -76,7 +76,8 @@ public class CSharpConfigurationPanel extends JPanel
 					setIcon(AllIcons.Nodes.Module);
 					append(((Module) value).getName(), SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES);
 
-					final CSharpModuleExtension extension = ModuleUtilCore.getExtension((Module) value, CSharpModuleExtension.class);
+					final CSharpModuleExtension extension = ModuleUtilCore.getExtension((Module) value,
+							CSharpModuleExtension.class);
 					if(extension != null)
 					{
 						final CSharpLanguageVersion languageLevel = extension.getLanguageVersion();
@@ -104,14 +105,16 @@ public class CSharpConfigurationPanel extends JPanel
 				continue;
 			}
 
-			final CSharpModuleExtension extension = (CSharpModuleExtension) ModuleUtilCore.getExtension(module, ext.getId());
+			final CSharpModuleExtension extension = (CSharpModuleExtension) ModuleUtilCore.getExtension(module,
+					ext.getId());
 			if(extension != null)
 			{
 				levelComboBox.addItem(module);
 			}
 		}
 
-		final MutableModuleInheritableNamedPointer<CSharpLanguageVersion> languageVersionPointer = ext.getLanguageVersionPointer();
+		final MutableModuleInheritableNamedPointer<CSharpLanguageVersion> languageVersionPointer = ext
+				.getLanguageVersionPointer();
 		final String moduleName = languageVersionPointer.getModuleName();
 		if(moduleName != null)
 		{
@@ -172,11 +175,13 @@ public class CSharpConfigurationPanel extends JPanel
 
 		add(new TitledSeparator("Compiler Options"));
 
-		DotNetSimpleModuleExtension extension = ext.getModuleRootLayer().getExtension(DotNetSimpleModuleExtension.class);
+		DotNetSimpleModuleExtension extension = ext.getModuleRootLayer().getExtension(DotNetSimpleModuleExtension
+				.class);
 		final Set<SdkType> compilerBundleTypes = new LinkedHashSet<SdkType>();
 		if(extension != null)
 		{
-			for(CSharpCompilerBundleTypeProvider typeProvider : CSharpCompilerBundleTypeProvider.EP_NAME.getExtensions())
+			for(CSharpCompilerBundleTypeProvider typeProvider : CSharpCompilerBundleTypeProvider.EP_NAME
+					.getExtensions())
 			{
 				SdkType bundleType = typeProvider.getBundleType(extension);
 				if(bundleType != null)
@@ -186,7 +191,8 @@ public class CSharpConfigurationPanel extends JPanel
 			}
 		}
 
-		ModuleExtensionSdkBoxBuilder customCompilerBundleBoxBuilder = ModuleExtensionSdkBoxBuilder.create(ext, EmptyRunnable.getInstance());
+		ModuleExtensionSdkBoxBuilder<CSharpMutableModuleExtension<?>> customCompilerBundleBoxBuilder =
+				ModuleExtensionSdkBoxBuilder.<CSharpMutableModuleExtension<?>>create(ext, EmptyRunnable.getInstance());
 		customCompilerBundleBoxBuilder.sdkTypes(compilerBundleTypes);
 		customCompilerBundleBoxBuilder.sdkPointerFunc(new NullableFunction<CSharpMutableModuleExtension<?>,
 				MutableModuleInheritableNamedPointer<Sdk>>()
@@ -194,11 +200,13 @@ public class CSharpConfigurationPanel extends JPanel
 		{
 			@Nullable
 			@Override
-			public MutableModuleInheritableNamedPointer<Sdk> fun(CSharpMutableModuleExtension<?> cSharpMutableModuleExtension)
+			public MutableModuleInheritableNamedPointer<Sdk> fun(CSharpMutableModuleExtension<?>
+					cSharpMutableModuleExtension)
 			{
 				return ext.getCustomCompilerSdkPointer();
 			}
 		});
+		customCompilerBundleBoxBuilder.nullItem("Auto Select", AllIcons.Actions.FindPlain);
 		customCompilerBundleBoxBuilder.labelText("Compiler");
 
 		add(customCompilerBundleBoxBuilder.build());
