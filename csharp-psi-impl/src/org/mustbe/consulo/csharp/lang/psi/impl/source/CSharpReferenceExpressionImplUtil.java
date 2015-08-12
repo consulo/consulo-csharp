@@ -631,6 +631,10 @@ public class CSharpReferenceExpressionImplUtil
 		if(codeFragment != null)
 		{
 			scopeElement = codeFragment.getScopeElement();
+			if(scopeElement == null)
+			{
+				scopeElement = element;
+			}
 		}
 
 		if(isConstructorKind(kind))
@@ -935,7 +939,7 @@ public class CSharpReferenceExpressionImplUtil
 	 * @return couple of psieelement, first is the last element for walk, second is the stub member for walk
 	 */
 	@NotNull
-	public static Couple<PsiElement> getResolveLayers(PsiElement element, boolean strict)
+	public static Couple<PsiElement> getResolveLayers(final PsiElement element, boolean strict)
 	{
 		PsiElement last = null;
 		PsiElement targetToWalkChildren = null;
