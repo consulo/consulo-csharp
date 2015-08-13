@@ -32,7 +32,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.util.ObjectUtils;
+import com.intellij.util.ObjectUtil;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import lombok.val;
@@ -87,7 +87,7 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 				if(findTarget instanceof PsiNameIdentifierOwner)
 				{
 					PsiElement nameIdentifier = ((PsiNameIdentifierOwner) findTarget).getNameIdentifier();
-					toHighlight = ObjectUtils.notNull(nameIdentifier, findTarget);
+					toHighlight = ObjectUtil.notNull(nameIdentifier, findTarget);
 				}
 
 				results.add(compilerCheck.newBuilder(toHighlight, element.getPresentableQName(), findTarget.getName()));

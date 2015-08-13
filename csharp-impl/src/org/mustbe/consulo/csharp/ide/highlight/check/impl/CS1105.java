@@ -25,7 +25,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
-import com.intellij.util.ObjectUtils;
+import com.intellij.util.ObjectUtil;
 
 /**
  * @author VISTALL
@@ -43,7 +43,7 @@ public class CS1105 extends CompilerCheck<CSharpMethodDeclaration>
 		{
 			if(!element.hasModifier(DotNetModifier.STATIC))
 			{
-				return newBuilder(ObjectUtils.notNull(element.getNameIdentifier(), element), formatElement(element));
+				return newBuilder(ObjectUtil.notNull(element.getNameIdentifier(), element), formatElement(element));
 			}
 		}
 		return null;

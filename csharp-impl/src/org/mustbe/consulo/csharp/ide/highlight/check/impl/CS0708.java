@@ -27,7 +27,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.util.ObjectUtils;
+import com.intellij.util.ObjectUtil;
 
 /**
  * @author VISTALL
@@ -46,7 +46,7 @@ public class CS0708 extends CompilerCheck<DotNetModifierListOwner>
 			if(!element.hasModifier(DotNetModifier.STATIC))
 			{
 				PsiElement nameIdentifier = ((PsiNameIdentifierOwner) element).getNameIdentifier();
-				return newBuilder(ObjectUtils.notNull(nameIdentifier, element), formatElement(element)).addQuickFix(new AddModifierFix
+				return newBuilder(ObjectUtil.notNull(nameIdentifier, element), formatElement(element)).addQuickFix(new AddModifierFix
 						(DotNetModifier.STATIC, element));
 			}
 		}

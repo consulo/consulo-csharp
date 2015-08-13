@@ -31,7 +31,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.ObjectUtils;
+import com.intellij.util.ObjectUtil;
 
 /**
  * @author VISTALL
@@ -109,7 +109,7 @@ public enum CSharpImplicitReturnModel
 	@NotNull
 	public DotNetTypeRef extractTypeRef(@NotNull DotNetTypeRef expectedTypeRef, @NotNull PsiElement scope)
 	{
-		return ObjectUtils.notNull(extractTypeRefImpl(expectedTypeRef, scope), DotNetTypeRef.ERROR_TYPE);
+		return ObjectUtil.notNull(extractTypeRefImpl(expectedTypeRef, scope), DotNetTypeRef.ERROR_TYPE);
 	}
 
 	@Nullable

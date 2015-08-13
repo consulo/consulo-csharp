@@ -47,7 +47,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.Function;
-import com.intellij.util.ObjectUtils;
+import com.intellij.util.ObjectUtil;
 
 /**
  * @author VISTALL
@@ -294,7 +294,7 @@ public class GenericUnwrapTool
 
 			if(typeArgumentListRefs.length == 0)
 			{
-				return ObjectUtils.notNull(pair.getFirst(), typeRef);
+				return ObjectUtil.notNull(pair.getFirst(), typeRef);
 			}
 
 			DotNetTypeRef innerTypeRef;

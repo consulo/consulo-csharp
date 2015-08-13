@@ -41,7 +41,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ObjectUtils;
+import com.intellij.util.ObjectUtil;
 
 /**
  * @author VISTALL
@@ -61,7 +61,7 @@ public class CSharpLambdaExpressionImplUtil
 		}
 		DotNetTypeRef[] leftTypeParameters = leftTypeRef.getParameterTypeRefs();
 		DotNetTypeRef typeRef = ArrayUtil2.safeGet(leftTypeParameters, parameterIndex);
-		return ObjectUtils.notNull(typeRef, DotNetTypeRef.UNKNOWN_TYPE);
+		return ObjectUtil.notNull(typeRef, DotNetTypeRef.UNKNOWN_TYPE);
 	}
 
 	@Nullable

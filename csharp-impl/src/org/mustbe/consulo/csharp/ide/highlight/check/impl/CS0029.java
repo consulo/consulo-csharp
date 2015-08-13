@@ -57,7 +57,7 @@ import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.openapi.util.Trinity;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ObjectUtils;
+import com.intellij.util.ObjectUtil;
 import lombok.val;
 
 /**
@@ -278,7 +278,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				expected = typeRef;
 			}
-			return Trinity.create(expected, actual, ObjectUtils.notNull(expression, element));
+			return Trinity.create(expected, actual, ObjectUtil.notNull(expression, element));
 		}
 		return null;
 	}

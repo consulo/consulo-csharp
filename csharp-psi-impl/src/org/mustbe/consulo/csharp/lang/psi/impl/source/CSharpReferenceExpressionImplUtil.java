@@ -74,7 +74,7 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.CommonProcessors;
-import com.intellij.util.ObjectUtils;
+import com.intellij.util.ObjectUtil;
 import com.intellij.util.Processor;
 import lombok.val;
 
@@ -690,7 +690,7 @@ public class CSharpReferenceExpressionImplUtil
 			return;
 		}
 
-		PsiElement target = ObjectUtils.notNull(forceQualifierElement, element);
+		PsiElement target = ObjectUtil.notNull(forceQualifierElement, element);
 		DotNetGenericExtractor extractor = defaultExtractor;
 		DotNetTypeRef qualifierTypeRef = DotNetTypeRef.ERROR_TYPE;
 

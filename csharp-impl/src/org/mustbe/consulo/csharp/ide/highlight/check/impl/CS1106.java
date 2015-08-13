@@ -27,7 +27,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplU
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.ObjectUtils;
+import com.intellij.util.ObjectUtil;
 
 /**
  * @author VISTALL
@@ -48,7 +48,7 @@ public class CS1106 extends CompilerCheck<CSharpMethodDeclaration>
 			{
 				if(((CSharpTypeDeclaration) parent).getGenericParametersCount() > 0 || !CSharpTypeDeclarationImplUtil.isExplicitStaticType(parent))
 				{
-					return newBuilder(ObjectUtils.notNull(element.getNameIdentifier(), element), formatElement(element));
+					return newBuilder(ObjectUtil.notNull(element.getNameIdentifier(), element), formatElement(element));
 				}
 			}
 		}

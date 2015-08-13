@@ -50,7 +50,7 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.RecursionManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.util.ObjectUtils;
+import com.intellij.util.ObjectUtil;
 import com.intellij.util.SmartList;
 import lombok.val;
 
@@ -683,7 +683,7 @@ public class CSharpTypeUtil
 					continue;
 				}
 
-				if(!isTypeEqual(ObjectUtils.notNull(extractedRef1, DotNetTypeRef.ERROR_TYPE), ObjectUtils.notNull(extractedRef2,
+				if(!isTypeEqual(ObjectUtil.notNull(extractedRef1, DotNetTypeRef.ERROR_TYPE), ObjectUtil.notNull(extractedRef2,
 						DotNetTypeRef.ERROR_TYPE), scope))
 				{
 					return false;
