@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.completion;
 import static com.intellij.patterns.StandardPatterns.psiElement;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -72,6 +73,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class),
 				new CompletionProvider<CompletionParameters>()
 		{
+			@RequiredReadAction
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
@@ -140,6 +142,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.USING_KEYWORD)).inside
 				(CSharpUsingNamespaceStatement.class), new CompletionProvider<CompletionParameters>()
 		{
+			@RequiredReadAction
 			@Override
 			protected void addCompletions(@NotNull final CompletionParameters parameters,
 					ProcessingContext context,
@@ -158,6 +161,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 
 		extend(CompletionType.BASIC, psiElement().inside(DotNetGenericParameter.class), new CompletionProvider<CompletionParameters>()
 		{
+			@RequiredReadAction
 			@Override
 			protected void addCompletions(@NotNull final CompletionParameters parameters,
 					ProcessingContext context,
@@ -187,6 +191,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 
 		extend(CompletionType.BASIC, psiElement(), new CompletionProvider<CompletionParameters>()
 		{
+			@RequiredReadAction
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters completionParameters,
 					ProcessingContext processingContext,
