@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
@@ -55,12 +56,26 @@ public class CSharpConversionMethodDeclarationImpl extends CSharpLikeMethodDecla
 		return getReturnType();
 	}
 
+	@RequiredReadAction
+	@Override
+	public String getName()
+	{
+		DotNetType returnType = getReturnType();
+		if(returnType == null)
+		{
+			return null;
+		}
+
+		return CSharpTypeRefPresentationUtil.buildText(getReturnTypeRef(), this);
+	}
+
 	@Override
 	public boolean isImplicit()
 	{
 		return getConversionTypeRef() == CSharpStaticTypeRef.IMPLICIT;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetType getReturnType()

@@ -169,6 +169,42 @@ public class CSharpReferenceExpressionImplUtil
 		}
 	}
 
+	@NotNull
+	public static String getReferenceText(@NotNull CSharpReferenceExpression referenceExpression)
+	{
+		StringBuilder builder = new StringBuilder();
+		PsiElement qualifier = referenceExpression.getQualifier();
+		if(qualifier instanceof CSharpReferenceExpression)
+		{
+			if(((CSharpReferenceExpression) qualifier).isGlobalElement())
+			{
+				builder.append("global");
+			}
+			else
+			{
+				builder.append(((CSharpReferenceExpression) qualifier).getReferenceText());
+			}
+			switch(referenceExpression.getMemberAccessType())
+			{
+				case NONE:
+					break;
+				case DOT:
+					builder.append(".");
+					break;
+				case ARROW:
+					builder.append("->");
+					break;
+				case COLONCOLON:
+					builder.append("::");
+					break;
+				case NULLABLE_CALL:
+					builder.append(".?");
+					break;
+			}
+		}
+		return builder.toString();
+	}
+
 	@Nullable
 	public static CSharpCallArgumentListOwner findCallArgumentListOwner(ResolveToKind kind, CSharpReferenceExpression referenceExpression)
 	{
