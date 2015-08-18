@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -38,4 +39,7 @@ public interface CSharpConversionMethodDeclaration extends DotNetLikeMethodDecla
 
 	@Nullable
 	DotNetType getConversionType();
+
+	@Nullable
+	PsiElement getOperatorElement();
 }

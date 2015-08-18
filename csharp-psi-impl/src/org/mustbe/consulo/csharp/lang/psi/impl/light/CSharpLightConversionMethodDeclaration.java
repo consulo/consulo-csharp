@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -60,6 +61,13 @@ public class CSharpLightConversionMethodDeclaration extends CSharpLightLikeMetho
 	public DotNetType getConversionType()
 	{
 		return myOriginal.getConversionType();
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getOperatorElement()
+	{
+		return null;
 	}
 
 	@Override

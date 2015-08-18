@@ -97,4 +97,11 @@ public class MsilMethodAsCSharpConversionMethodDeclaration extends MsilMethodAsC
 	{
 		return null;
 	}
+
+	@Nullable
+	@Override
+	public PsiElement getOperatorElement()
+	{
+		return null;
+	}
 }

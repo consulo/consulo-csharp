@@ -24,6 +24,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticT
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -56,6 +57,13 @@ public class CSharpLightConversionMethodDeclarationBuilder  extends
 	@Nullable
 	@Override
 	public DotNetType getConversionType()
+	{
+		return null;
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getOperatorElement()
 	{
 		return null;
 	}

@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
@@ -96,6 +97,13 @@ public class CSharpConversionMethodDeclarationImpl extends CSharpLikeMethodDecla
 	public DotNetType getConversionType()
 	{
 		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
+	}
+
+	@Nullable
+	@Override
+	public PsiElement getOperatorElement()
+	{
+		return findChildByType(CSharpTokens.OPERATOR_KEYWORD);
 	}
 
 	@Override
