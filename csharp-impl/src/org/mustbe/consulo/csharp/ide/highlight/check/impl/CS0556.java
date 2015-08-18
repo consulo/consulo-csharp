@@ -49,6 +49,10 @@ public class CS0556 extends CompilerCheck<CSharpConversionMethodDeclaration>
 
 		DotNetTypeRef typeRef1 = element.getReturnTypeRef();
 		DotNetTypeRef typeRef2 = ArrayUtil2.safeGet(element.getParameterTypeRefs(), 0);
+		if(typeRef2 == null)
+		{
+			return null;
+		}
 
 		if(!DotNetTypeRefUtil.isVmQNameEqual(typeRef1, element, typeDeclaration.getVmQName()) && !DotNetTypeRefUtil
 				.isVmQNameEqual(typeRef2, element, typeDeclaration.getVmQName()))
