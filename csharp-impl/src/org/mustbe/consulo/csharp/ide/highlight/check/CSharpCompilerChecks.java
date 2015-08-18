@@ -74,6 +74,7 @@ public enum CSharpCompilerChecks
 	//CS0535(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // checks for missed impl of abstract members
 	CS0539(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // checks for private impl of abstract methods
 	CS0542(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // members cant be named as parent
+	CS0555(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // implict and explicit cant convert to itself
 	CS0556(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // implict and explicit cant be hold type without owner
 	CS0568(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // structs cant have parameterless constructor
 	CS0693(CSharpLanguageVersion._2_0, HighlightInfoType.WARNING), // check by generic
