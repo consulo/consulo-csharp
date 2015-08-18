@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
@@ -37,11 +38,12 @@ public class CS0542 extends CompilerCheck<DotNetQualifiedElement>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetQualifiedElement element)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion,
+			@NotNull DotNetQualifiedElement element)
 	{
 		PsiElement parent = element.getParent();
-		if(!(parent instanceof CSharpTypeDeclaration) | !(element instanceof PsiNameIdentifierOwner) || element instanceof
-				CSharpConstructorDeclaration)
+		if(!(parent instanceof CSharpTypeDeclaration) | !(element instanceof PsiNameIdentifierOwner) || element
+				instanceof CSharpConstructorDeclaration || element instanceof CSharpConversionMethodDeclaration)
 		{
 			return null;
 		}
