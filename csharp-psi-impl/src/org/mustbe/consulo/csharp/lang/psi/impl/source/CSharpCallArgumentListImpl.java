@@ -89,7 +89,10 @@ public class CSharpCallArgumentListImpl extends CSharpElementImpl implements CSh
 			if(!(callArgument instanceof CSharpNamedCallArgument))
 			{
 				DotNetExpression argumentExpression = callArgument.getArgumentExpression();
-				assert argumentExpression != null;
+				if(argumentExpression == null)
+				{
+					continue;
+				}
 				list.add(argumentExpression);
 			}
 		}
