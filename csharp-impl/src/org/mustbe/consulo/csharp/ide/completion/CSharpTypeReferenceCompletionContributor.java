@@ -16,18 +16,14 @@
 
 package org.mustbe.consulo.csharp.ide.completion;
 
-import static com.intellij.patterns.StandardPatterns.psiElement;
-
 import java.util.Collections;
 
-import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.AddUsingAction;
 import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLikeLookupElement;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.libraryAnalyzer.NamespaceReference;
@@ -37,11 +33,8 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetShortNameSearcher;
 import org.mustbe.consulo.dotnet.resolve.GlobalSearchScopeFilter;
 import org.mustbe.dotnet.msil.decompiler.util.MsilHelper;
-import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.completion.PrefixMatcher;
@@ -56,7 +49,6 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Consumer;
 import com.intellij.util.Function;
-import com.intellij.util.ProcessingContext;
 import com.intellij.util.Processor;
 import com.intellij.util.indexing.IdFilter;
 
@@ -64,70 +56,55 @@ import com.intellij.util.indexing.IdFilter;
  * @author VISTALL
  * @since 27.07.2015
  */
-public class CSharpTypeReferenceCompletionContributor extends CompletionContributor
+public class CSharpTypeReferenceCompletionContributor
 {
-	public CSharpTypeReferenceCompletionContributor()
+	public static void addTypesForUsing(final CompletionParameters parameters,
+			final CompletionResultSet result,
+			final InheritorsHolder inheritorsHolder)
 	{
-		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class),
-				new CompletionProvider<CompletionParameters>()
+		final PrefixMatcher matcher = result.getPrefixMatcher();
+		CSharpReferenceExpression parent = (CSharpReferenceExpression) parameters.getPosition().getParent();
+
+		final Project project = parent.getProject();
+		final GlobalSearchScope resolveScope = parent.getResolveScope();
+
+		final DotNetShortNameSearcher shortNameSearcher = DotNetShortNameSearcher.getInstance(project);
+		final IdFilter projectIdFilter = new GlobalSearchScopeFilter(resolveScope);
+
+		final boolean insideUsingList = PsiTreeUtil.getParentOfType(parent, CSharpUsingList.class) != null;
+
+		shortNameSearcher.collectTypeNames(new Processor<String>()
 		{
 			@Override
-			@RequiredReadAction
-			protected void addCompletions(@NotNull final CompletionParameters completionParameters,
-					ProcessingContext processingContext,
-					@NotNull final CompletionResultSet completionResultSet)
+			public boolean process(String key)
 			{
-				CSharpReferenceExpression parent = (CSharpReferenceExpression) completionParameters.getPosition().getParent();
-				if(parent.getQualifier() != null)
+				ProgressManager.checkCanceled();
+
+				if(matcher.prefixMatches(key))
 				{
-					return;
-				}
-
-				CSharpReferenceExpression.ResolveToKind kind = parent.kind();
-				if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE ||
-						kind == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR ||
-						kind == CSharpReferenceExpression.ResolveToKind.EXPRESSION_OR_TYPE_LIKE ||
-						kind == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
-				{
-					final PrefixMatcher matcher = completionResultSet.getPrefixMatcher();
-
-					final Project project = parent.getProject();
-					final GlobalSearchScope resolveScope = parent.getResolveScope();
-
-					final DotNetShortNameSearcher shortNameSearcher = DotNetShortNameSearcher.getInstance(project);
-					final IdFilter projectIdFilter = new GlobalSearchScopeFilter(resolveScope);
-
-					final boolean insideUsingList = PsiTreeUtil.getParentOfType(parent, CSharpUsingList.class) != null;
-
-					shortNameSearcher.collectTypeNames(new Processor<String>()
+					shortNameSearcher.collectTypes(key, resolveScope, projectIdFilter,
+							new Processor<DotNetTypeDeclaration>()
 					{
 						@Override
-						public boolean process(String key)
+						@RequiredReadAction
+						public boolean process(DotNetTypeDeclaration typeDeclaration)
 						{
 							ProgressManager.checkCanceled();
 
-							if(matcher.prefixMatches(key))
+							if(inheritorsHolder.alreadyProcessed(typeDeclaration))
 							{
-								shortNameSearcher.collectTypes(key, resolveScope, projectIdFilter, new Processor<DotNetTypeDeclaration>()
-								{
-									@Override
-									@RequiredReadAction
-									public boolean process(DotNetTypeDeclaration typeDeclaration)
-									{
-										ProgressManager.checkCanceled();
-
-										consumeType(completionParameters, completionResultSet, insideUsingList, typeDeclaration);
-
-										return true;
-									}
-								});
+								return true;
 							}
+
+							consumeType(parameters, result, insideUsingList, typeDeclaration);
+
 							return true;
 						}
-					}, resolveScope, projectIdFilter);
+					});
 				}
+				return true;
 			}
-		});
+		}, resolveScope, projectIdFilter);
 	}
 
 	@RequiredReadAction
@@ -174,10 +151,12 @@ public class CSharpTypeReferenceCompletionContributor extends CompletionContribu
 		}
 		LookupElementBuilder builder = LookupElementBuilder.create(targetElementForLookup, lookupString);
 		builder = builder.withPresentableText(presentationText);
-		builder = builder.withIcon(IconDescriptorUpdaters.getIcon(targetElementForLookup, Iconable.ICON_FLAG_VISIBILITY));
+		builder = builder.withIcon(IconDescriptorUpdaters.getIcon(targetElementForLookup,
+				Iconable.ICON_FLAG_VISIBILITY));
 
 		builder = builder.withTypeText(parentQName, true);
-		final InsertHandler<LookupElement> ltGtInsertHandler = genericCount == 0 ? null : LtGtInsertHandler.getInstance(genericCount > 0);
+		final InsertHandler<LookupElement> ltGtInsertHandler = genericCount == 0 ? null : LtGtInsertHandler
+				.getInstance(genericCount > 0);
 		if(insideUsingList)
 		{
 			builder = builder.withInsertHandler(ltGtInsertHandler);
@@ -194,8 +173,9 @@ public class CSharpTypeReferenceCompletionContributor extends CompletionContribu
 						ltGtInsertHandler.handleInsert(context, item);
 					}
 
-					new AddUsingAction(completionParameters.getEditor(), context.getFile(), Collections.<NamespaceReference>singleton(new
-							NamespaceReference(parentQName, null))).execute();
+					new AddUsingAction(completionParameters.getEditor(), context.getFile(),
+							Collections.<NamespaceReference>singleton(new NamespaceReference(parentQName,
+									null))).execute();
 				}
 			});
 		}

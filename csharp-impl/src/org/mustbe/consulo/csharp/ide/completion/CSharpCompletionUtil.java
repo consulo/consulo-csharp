@@ -21,13 +21,16 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.Condition;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
@@ -58,6 +61,37 @@ public class CSharpCompletionUtil
 			return elementType.toString().replace("_KEYWORD", "").toLowerCase();
 		}
 	};
+
+	public static boolean mayStartClassName(CompletionResultSet result)
+	{
+		return StringUtil.isNotEmpty(result.getPrefixMatcher().getPrefix());
+	}
+
+	public static boolean isClassNamePossible(CompletionParameters parameters)
+	{
+		PsiElement position = parameters.getPosition();
+		if(position.getNode().getElementType() == CSharpTokens.IDENTIFIER)
+		{
+			PsiElement parent = position.getParent();
+			if(parent instanceof CSharpReferenceExpression)
+			{
+				if(((CSharpReferenceExpression) parent).getQualifier() != null)
+				{
+					return false;
+				}
+
+				CSharpReferenceExpression.ResolveToKind kind = ((CSharpReferenceExpression) parent).kind();
+				if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE ||
+						kind == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR ||
+						kind == CSharpReferenceExpression.ResolveToKind.EXPRESSION_OR_TYPE_LIKE ||
+						kind == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 	public static boolean isTypeLikeElement(@NotNull PsiElement element)
 	{
