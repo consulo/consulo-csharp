@@ -18,7 +18,9 @@ package org.mustbe.consulo.csharp.ide.refactoring.changeSignature;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -39,6 +41,7 @@ public class CSharpChangeSignatureHandler implements ChangeSignatureHandler
 {
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public PsiElement findTargetMember(PsiFile file, Editor editor)
 	{
 		return findTargetMember(file.findElementAt(editor.getCaretModel().getOffset()));
@@ -46,6 +49,7 @@ public class CSharpChangeSignatureHandler implements ChangeSignatureHandler
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public PsiElement findTargetMember(PsiElement element)
 	{
 		if(element == null)
@@ -73,10 +77,14 @@ public class CSharpChangeSignatureHandler implements ChangeSignatureHandler
 			{
 				return parent;
 			}
-			/*else if(parent instanceof CSharpReferenceExpression)
+			else if(parent instanceof CSharpIdentifier)
 			{
-				return findTargetMember(((CSharpReferenceExpression) parent).resolve());
-			}    */
+				PsiElement maybeMethod = parent.getParent();
+				if(maybeMethod instanceof DotNetLikeMethodDeclaration)
+				{
+					return maybeMethod;
+				}
+			}
 			return parent;
 		}
 		return null;
@@ -108,6 +116,6 @@ public class CSharpChangeSignatureHandler implements ChangeSignatureHandler
 	@Override
 	public String getTargetNotFoundMessage()
 	{
-		return "Method not found";
+		return "Method or index property not found";
 	}
 }
