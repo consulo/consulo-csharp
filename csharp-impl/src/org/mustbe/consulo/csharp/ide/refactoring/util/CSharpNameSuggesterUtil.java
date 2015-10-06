@@ -28,6 +28,8 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithInnerTypeRef;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -185,32 +187,32 @@ public class CSharpNameSuggesterUtil
 		return new THashSet<String>(result);
 	}
 
-	public static boolean isKeyword(String str)
+	public static boolean isKeyword(String text)
 	{
-		try
-		{
-			CSharpLexer cSharpLexer = new CSharpLexer();
-			cSharpLexer.start(str);
-			return CSharpTokenSets.KEYWORDS.contains(cSharpLexer.getTokenType());
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			return false;
-		}
+		return wantOnlyThisTokens(CSharpTokenSets.KEYWORDS, text);
+
 	}
 
-	public static boolean isIdentifier(String str)
+	public static boolean isIdentifier(String text)
+	{
+		return wantOnlyThisTokens(TokenSet.create(CSharpTokens.IDENTIFIER), text);
+	}
+
+	private static boolean wantOnlyThisTokens(@NotNull TokenSet tokenSet, @NotNull CharSequence text)
 	{
 		try
 		{
-			CSharpLexer cSharpLexer = new CSharpLexer();
-			cSharpLexer.start(str);
-			return CSharpTokens.IDENTIFIER == cSharpLexer.getTokenType();
+			CSharpLexer lexer = new CSharpLexer();
+			lexer.start(text);
+			if(lexer.getTokenEnd() != text.length())
+			{
+				return false;
+			}
+			IElementType tokenType = lexer.getTokenType();
+			return tokenSet.contains(tokenType);
 		}
-		catch(Exception e)
+		catch(Exception ignored)
 		{
-			e.printStackTrace();
 			return false;
 		}
 	}
