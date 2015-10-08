@@ -72,7 +72,7 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 		{
 			if(type instanceof CSharpUserType)
 			{
-				typeRefs.add(StringRef.fromString(((CSharpUserType) type).getReferenceExpression().getReferenceName()));
+				ContainerUtil.addIfNotNull(typeRefs, StringRef.fromString(((CSharpUserType) type).getReferenceExpression().getReferenceName()));
 			}
 		}
 
@@ -108,9 +108,9 @@ public class CSharpTypeListElementType extends CSharpAbstractStubElementType<CSh
 	{
 		if(cSharpTypeListStub.getStubType() == CSharpStubElements.EXTENDS_LIST)
 		{
-			for(String s : cSharpTypeListStub.geShortReferences())
+			for(String ref : cSharpTypeListStub.geShortReferences())
 			{
-				indexSink.occurrence(CSharpIndexKeys.EXTENDS_LIST_INDEX, s);
+				indexSink.occurrence(CSharpIndexKeys.EXTENDS_LIST_INDEX, ref);
 			}
 		}
 	}
