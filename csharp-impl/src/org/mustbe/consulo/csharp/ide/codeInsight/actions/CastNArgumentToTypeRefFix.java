@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -37,6 +38,7 @@ public class CastNArgumentToTypeRefFix extends CastExpressionToTypeRef
 		myParameterName = parameterName;
 	}
 
+	@RequiredDispatchThread
 	@NotNull
 	@Override
 	public String getText()

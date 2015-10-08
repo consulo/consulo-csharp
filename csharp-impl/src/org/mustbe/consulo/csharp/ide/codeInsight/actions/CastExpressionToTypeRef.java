@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -51,6 +52,7 @@ public class CastExpressionToTypeRef extends BaseIntentionAction
 
 	@NotNull
 	@Override
+	@RequiredDispatchThread
 	public String getText()
 	{
 		DotNetExpression element = myExpressionPointer.getElement();
@@ -69,8 +71,13 @@ public class CastExpressionToTypeRef extends BaseIntentionAction
 	}
 
 	@Override
+	@RequiredDispatchThread
 	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
 	{
+		if(myExpectedTypeRef == DotNetTypeRef.UNKNOWN_TYPE)
+		{
+			return false;
+		}
 		DotNetExpression element = myExpressionPointer.getElement();
 		if(element == null)
 		{
@@ -85,6 +92,7 @@ public class CastExpressionToTypeRef extends BaseIntentionAction
 	}
 
 	@Override
+	@RequiredDispatchThread
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 	{
 		DotNetExpression element = myExpressionPointer.getElement();
