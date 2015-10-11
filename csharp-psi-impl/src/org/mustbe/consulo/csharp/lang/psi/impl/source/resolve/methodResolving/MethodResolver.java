@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
@@ -49,6 +50,7 @@ public class MethodResolver
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static List<NCallArgument> buildCallArguments(@NotNull CSharpCallArgument[] callArguments,
 			@NotNull DotNetParameterListOwner parameterListOwner,
 			@NotNull PsiElement scope)
@@ -57,6 +59,7 @@ public class MethodResolver
 	}
 
 	@NotNull
+	@RequiredReadAction
 	private static List<NCallArgument> buildCallArguments(@NotNull CSharpCallArgument[] callArguments,
 			@NotNull PsiElement scope,
 			@NotNull ParameterResolveContext<?> context)
