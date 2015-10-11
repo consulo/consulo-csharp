@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -219,6 +220,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		return processor.getResults();
 	}
 
+	@RequiredReadAction
 	private static void collectAvailableNamespacesForMethodExtensions(CSharpReferenceExpression ref,
 			Set<NamespaceReference> set,
 			String referenceName)

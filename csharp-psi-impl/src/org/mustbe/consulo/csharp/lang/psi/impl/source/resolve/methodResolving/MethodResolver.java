@@ -253,6 +253,7 @@ public class MethodResolver
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static MethodCalcResult calc(@NotNull CSharpCallArgument[] callArguments,
 			@NotNull DotNetParameterListOwner parameterListOwner,
 			@NotNull PsiElement scope)
@@ -262,6 +263,7 @@ public class MethodResolver
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static MethodCalcResult calc(@NotNull CSharpCallArgumentListOwner callArgumentListOwner,
 			@NotNull CSharpSimpleParameterInfo[] p,
 			@NotNull PsiElement scope)
@@ -271,6 +273,7 @@ public class MethodResolver
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static MethodCalcResult calc(@NotNull DotNetTypeRef[] expressionTypeRefs,
 			@NotNull DotNetTypeRef[] parameterTypeRefs,
 			@NotNull PsiElement scope)
@@ -280,6 +283,7 @@ public class MethodResolver
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static MethodCalcResult calc(@NotNull CSharpCallArgumentListOwner callArgumentListOwner,
 			@NotNull DotNetParameterListOwner parameterListOwner,
 			@NotNull PsiElement scope)

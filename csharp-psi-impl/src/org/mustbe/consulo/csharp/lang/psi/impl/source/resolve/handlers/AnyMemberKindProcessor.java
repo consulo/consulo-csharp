@@ -57,6 +57,7 @@ public class AnyMemberKindProcessor implements KindProcessor
 		CSharpReferenceExpressionImplUtil.processAnyMember(options, defaultExtractor, forceQualifierElement, new Processor<ResolveResult>()
 		{
 			@Override
+			@RequiredReadAction
 			public boolean process(ResolveResult result)
 			{
 				PsiElement resolvedElement = result.getElement();

@@ -70,6 +70,7 @@ public class MethodLikeKindProcessor implements KindProcessor
 		CSharpReferenceExpressionImplUtil.processAnyMember(options, defaultExtractor, forceQualifierElement, new Processor<ResolveResult>()
 		{
 			@Override
+			@RequiredReadAction
 			public boolean process(ResolveResult result)
 			{
 				PsiElement maybeElementGroup = result.getElement();
@@ -79,6 +80,7 @@ public class MethodLikeKindProcessor implements KindProcessor
 					((CSharpElementGroup<PsiElement>) maybeElementGroup).process(new Processor<PsiElement>()
 					{
 						@Override
+						@RequiredReadAction
 						public boolean process(PsiElement psiElement)
 						{
 							if(psiElement instanceof DotNetLikeMethodDeclaration)
