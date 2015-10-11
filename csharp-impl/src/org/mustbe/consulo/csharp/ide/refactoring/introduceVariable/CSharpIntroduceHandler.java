@@ -301,13 +301,19 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 		operation.setInitializer(initializer);
 
 		operation.setOccurrences(getOccurrences(element, initializer));
-		operation.setSuggestedNames(CSharpNameSuggesterUtil.getSuggestedNames(initializer));
+		operation.setSuggestedNames(getSuggestedNames(initializer));
 		if(operation.getOccurrences().size() == 0)
 		{
 			operation.setReplaceAll(false);
 		}
 
 		performActionOnElementOccurrences(operation);
+	}
+
+	@NotNull
+	protected Collection<String> getSuggestedNames(@NotNull DotNetExpression initializer)
+	{
+		return CSharpNameSuggesterUtil.getSuggestedNames(initializer);
 	}
 
 	protected void performActionOnElementOccurrences(final CSharpIntroduceOperation operation)

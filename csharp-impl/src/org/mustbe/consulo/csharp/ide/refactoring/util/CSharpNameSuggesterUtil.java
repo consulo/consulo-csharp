@@ -190,7 +190,6 @@ public class CSharpNameSuggesterUtil
 	public static boolean isKeyword(String text)
 	{
 		return wantOnlyThisTokens(CSharpTokenSets.KEYWORDS, text);
-
 	}
 
 	public static boolean isIdentifier(String text)

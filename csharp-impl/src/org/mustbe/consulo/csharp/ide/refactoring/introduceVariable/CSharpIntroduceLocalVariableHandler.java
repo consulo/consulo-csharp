@@ -16,9 +16,13 @@
 
 package org.mustbe.consulo.csharp.ide.refactoring.introduceVariable;
 
+import java.util.Collection;
+
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import com.intellij.psi.PsiElement;
 import com.intellij.refactoring.RefactoringBundle;
@@ -27,11 +31,45 @@ import com.intellij.refactoring.RefactoringBundle;
  * @author VISTALL
  * @since 26.03.14
  */
-public class CSharpIntroduceVariableHandler extends CSharpIntroduceHandler
+public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 {
-	public CSharpIntroduceVariableHandler()
+	public CSharpIntroduceLocalVariableHandler()
 	{
 		super(RefactoringBundle.message("introduce.variable.title"));
+	}
+
+	@NotNull
+	@Override
+	protected Collection<String> getSuggestedNames(@NotNull DotNetExpression initializer)
+	{
+		Collection<String> suggestedNames = super.getSuggestedNames(initializer);
+		if(initializer instanceof CSharpMethodCallExpressionImpl)
+		{
+			DotNetExpression callExpression = ((CSharpMethodCallExpressionImpl) initializer).getCallExpression();
+			if(callExpression instanceof CSharpReferenceExpression && ((CSharpReferenceExpression) callExpression).getQualifier() == null)
+			{
+				removeCollisionOnNonQualifiedReferenceExpressions(suggestedNames, (CSharpReferenceExpression) callExpression);
+			}
+		}
+		else if(initializer instanceof CSharpReferenceExpression && ((CSharpReferenceExpression) initializer).getQualifier() == null)
+		{
+			removeCollisionOnNonQualifiedReferenceExpressions(suggestedNames, (CSharpReferenceExpression) initializer);
+		}
+		return suggestedNames;
+	}
+
+	private void removeCollisionOnNonQualifiedReferenceExpressions(Collection<String> suggestedNames, CSharpReferenceExpression referenceExpression)
+	{
+		String referenceName = referenceExpression.getReferenceName();
+		suggestedNames.remove(referenceName);
+
+		int index = 1;
+		String lastName = null;
+		while(suggestedNames.contains(lastName = (referenceName + index)))
+		{
+			index ++;
+		}
+		suggestedNames.add(lastName);
 	}
 
 	@RequiredReadAction

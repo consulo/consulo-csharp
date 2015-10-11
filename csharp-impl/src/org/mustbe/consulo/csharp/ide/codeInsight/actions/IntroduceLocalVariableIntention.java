@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredDispatchThread;
-import org.mustbe.consulo.csharp.ide.refactoring.introduceVariable.CSharpIntroduceVariableHandler;
+import org.mustbe.consulo.csharp.ide.refactoring.introduceVariable.CSharpIntroduceLocalVariableHandler;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -45,7 +45,7 @@ public class IntroduceLocalVariableIntention extends BaseRefactoringIntentionAct
 			Editor editor,
 			@NotNull PsiElement element) throws IncorrectOperationException
 	{
-		new CSharpIntroduceVariableHandler().invoke(project, editor, element.getContainingFile(), null);
+		new CSharpIntroduceLocalVariableHandler().invoke(project, editor, element.getContainingFile(), null);
 	}
 
 	@Override
