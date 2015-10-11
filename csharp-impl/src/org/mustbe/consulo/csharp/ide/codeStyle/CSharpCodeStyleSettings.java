@@ -16,7 +16,10 @@
 
 package org.mustbe.consulo.csharp.ide.codeStyle;
 
+import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
+import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
 
@@ -26,6 +29,13 @@ import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
  */
 public class CSharpCodeStyleSettings extends CustomCodeStyleSettings
 {
+	@NotNull
+	public static CSharpCodeStyleSettings getInstance(@NotNull Project project)
+	{
+		CodeStyleSettingsManager codeStyleSettingsManager = CodeStyleSettingsManager.getInstance(project);
+		return codeStyleSettingsManager.getCurrentSettings().getCustomSettings(CSharpCodeStyleSettings.class);
+	}
+
 	// Wrapping settings
 	@CommonCodeStyleSettings.BraceStyleConstant
 	public int NAMESPACE_BRACE_STYLE = CommonCodeStyleSettings.END_OF_LINE;

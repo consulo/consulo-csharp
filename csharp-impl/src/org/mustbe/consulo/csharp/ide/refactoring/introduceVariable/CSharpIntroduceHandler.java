@@ -450,13 +450,13 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 		final DotNetExpression initializer = operation.getInitializer();
 		InitializerTextBuilder builder = new InitializerTextBuilder();
 		initializer.accept(builder);
-		String assignmentText = getDeclarationString(operation, initializer, builder.result());
+		String assignmentText = getDeclarationString(operation, builder.result());
 		return CSharpFileFactory.createStatement(project, assignmentText);
 	}
 
 	@NotNull
 	@RequiredReadAction
-	protected abstract String getDeclarationString(CSharpIntroduceOperation operation, DotNetExpression initializer, String initExpression);
+	protected abstract String getDeclarationString(CSharpIntroduceOperation operation, String initExpression);
 
 	@Nullable
 	private PsiElement performReplace(@NotNull final PsiElement declaration, final CSharpIntroduceOperation operation)

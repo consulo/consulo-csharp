@@ -20,10 +20,15 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.refactoring.RefactoringBundle;
 
@@ -75,10 +80,28 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 	@RequiredReadAction
 	@NotNull
 	@Override
-	protected String getDeclarationString(CSharpIntroduceOperation operation, DotNetExpression initializer, String initExpression)
+	protected String getDeclarationString(CSharpIntroduceOperation operation, String initExpression)
 	{
 		StringBuilder builder = new StringBuilder();
-		builder.append("var ").append(operation.getName()).append(" = ").append(initExpression);
+		CSharpCodeGenerationSettings generationSettings = CSharpCodeGenerationSettings.getInstance(operation.getProject());
+		DotNetExpression initializer = operation.getInitializer();
+		if(generationSettings.USE_VAR_FOR_EXTRACT_LOCAL_VARIABLE)
+		{
+			builder.append("var");
+		}
+		else
+		{
+			DotNetTypeRef typeRef = initializer.toTypeRef(true);
+			if(typeRef == DotNetTypeRef.AUTO_TYPE || typeRef == DotNetTypeRef.ERROR_TYPE || typeRef == DotNetTypeRef.UNKNOWN_TYPE)
+			{
+				builder.append(StringUtil.getShortName(DotNetTypes.System.Object));
+			}
+			else
+			{
+				CSharpTypeRefPresentationUtil.appendTypeRef(initializer, builder, typeRef, CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
+			}
+		}
+		builder.append(" ").append(operation.getName()).append(" = ").append(initExpression);
 		PsiElement parent = initializer.getParent();
 		if(!(parent instanceof CSharpExpressionStatementImpl) || ((CSharpExpressionStatementImpl) parent).getExpression() != initializer)
 		{

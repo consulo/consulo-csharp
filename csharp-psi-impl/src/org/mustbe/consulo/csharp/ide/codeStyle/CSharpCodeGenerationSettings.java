@@ -42,6 +42,8 @@ public class CSharpCodeGenerationSettings extends CustomCodeStyleSettings
 	 */
 	public boolean USE_LANGUAGE_DATA_TYPES = true;
 
+	public boolean USE_VAR_FOR_EXTRACT_LOCAL_VARIABLE = true;
+
 	public CSharpCodeGenerationSettings(CodeStyleSettings container)
 	{
 		super("csharp-code-generation-settings", container);

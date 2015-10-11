@@ -17,9 +17,7 @@
 
 package org.mustbe.consulo.csharp.ide.completion.util;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -29,7 +27,6 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
 
 /**
  * @author peter
@@ -149,11 +146,6 @@ public abstract class ExpressionOrStatementInsertHandler<T extends LookupElement
 	protected boolean canAddSpaceBeforePair(final InsertionContext insertionContext, final T item)
 	{
 		return false;
-	}
-
-	protected static CSharpCodeStyleSettings getCustomCodeStyleSettings(@NotNull InsertionContext context)
-	{
-		return CodeStyleSettingsManager.getSettings(context.getProject()).getCustomSettings(CSharpCodeStyleSettings.class);
 	}
 
 	private static String getSpace(boolean needSpace)

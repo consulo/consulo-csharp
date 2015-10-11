@@ -481,7 +481,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			protected boolean canAddSpaceBeforePair(InsertionContext insertionContext, LookupElement item)
 			{
 				CommonCodeStyleSettings codeStyleSettings = insertionContext.getCodeStyleSettings();
-				CSharpCodeStyleSettings customCodeStyleSettings = getCustomCodeStyleSettings(insertionContext);
+				CSharpCodeStyleSettings customCodeStyleSettings = CSharpCodeStyleSettings.getInstance(insertionContext.getProject());
 
 				if(elementType == DO_KEYWORD)
 				{
