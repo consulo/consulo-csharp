@@ -13,13 +13,13 @@ public class NNamedCallArgument extends NCallArgument
 {
 	private String myName;
 
-	public NNamedCallArgument(@NotNull DotNetTypeRef typeRef, @Nullable CSharpCallArgument callArgument,
-			@Nullable Object parameter, @NotNull String name)
+	public NNamedCallArgument(@NotNull DotNetTypeRef typeRef, @Nullable CSharpCallArgument callArgument, @Nullable Object parameter, @Nullable String name)
 	{
 		super(typeRef, callArgument, parameter);
 		myName = name;
 	}
 
+	@Nullable
 	public String getName()
 	{
 		return myName;

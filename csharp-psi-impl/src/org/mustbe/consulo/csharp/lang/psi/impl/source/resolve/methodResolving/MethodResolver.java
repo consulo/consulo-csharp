@@ -215,8 +215,13 @@ public class MethodResolver
 	}
 
 	@Nullable
-	private static NCallArgument findByName(List<NCallArgument> arguments, String name)
+	private static NCallArgument findByName(List<NCallArgument> arguments, @Nullable String name)
 	{
+		if(name == null)
+		{
+			return null;
+		}
+
 		for(NCallArgument argument : arguments)
 		{
 			if(argument instanceof NNamedCallArgument && Comparing.equal(((NNamedCallArgument) argument).getName(), name))
