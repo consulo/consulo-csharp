@@ -16,6 +16,11 @@
 
 package org.mustbe.consulo.csharp.ide.refactoring.introduceVariable;
 
+import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import com.intellij.psi.PsiElement;
 import com.intellij.refactoring.RefactoringBundle;
 
 /**
@@ -29,9 +34,19 @@ public class CSharpIntroduceVariableHandler extends CSharpIntroduceHandler
 		super(RefactoringBundle.message("introduce.variable.title"));
 	}
 
+	@RequiredReadAction
+	@NotNull
 	@Override
-	protected String getDeclarationString(CSharpIntroduceOperation operation, String initExpression)
+	protected String getDeclarationString(CSharpIntroduceOperation operation, DotNetExpression initializer, String initExpression)
 	{
-		return "var " + operation.getName() + " = " + initExpression + ";\n";
+		StringBuilder builder = new StringBuilder();
+		builder.append("var ").append(operation.getName()).append(" = ").append(initExpression);
+		PsiElement parent = initializer.getParent();
+		if(!(parent instanceof CSharpExpressionStatementImpl) || ((CSharpExpressionStatementImpl) parent).getExpression() != initializer)
+		{
+			builder.append(";");
+		}
+		builder.append('\n');
+		return builder.toString();
 	}
 }

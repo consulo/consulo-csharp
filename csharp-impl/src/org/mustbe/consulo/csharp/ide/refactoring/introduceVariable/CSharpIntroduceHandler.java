@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpRefactoringUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
@@ -436,17 +437,20 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 	}
 
 	@Nullable
+	@RequiredReadAction
 	public PsiElement createDeclaration(CSharpIntroduceOperation operation)
 	{
 		final Project project = operation.getProject();
 		final DotNetExpression initializer = operation.getInitializer();
 		InitializerTextBuilder builder = new InitializerTextBuilder();
 		initializer.accept(builder);
-		String assignmentText = getDeclarationString(operation, builder.result());
+		String assignmentText = getDeclarationString(operation, initializer, builder.result());
 		return CSharpFileFactory.createStatement(project, assignmentText);
 	}
 
-	protected abstract String getDeclarationString(CSharpIntroduceOperation operation, String initExpression);
+	@NotNull
+	@RequiredReadAction
+	protected abstract String getDeclarationString(CSharpIntroduceOperation operation, DotNetExpression initializer, String initExpression);
 
 	@Nullable
 	private PsiElement performReplace(@NotNull final PsiElement declaration, final CSharpIntroduceOperation operation)
