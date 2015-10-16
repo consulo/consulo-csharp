@@ -22,7 +22,9 @@ import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.debugger.DotNetDebugContext;
 import org.mustbe.consulo.dotnet.debugger.TypeMirrorUnloadedException;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiUtilCore;
 import mono.debugger.TypeMirror;
 
 /**
@@ -42,7 +44,12 @@ public abstract class Evaluator
 			{
 				DotNetDebugContext debuggerContext = context.getDebuggerContext();
 
-				return debuggerContext.getVirtualMachine().findTypeMirror(null, ((CSharpTypeDeclaration) element).getVmQName());
+				VirtualFile virtualFile = PsiUtilCore.getVirtualFile(element);
+				if(virtualFile == null)
+				{
+					return null;
+				}
+				return debuggerContext.getVirtualMachine().findTypeMirror(element.getProject(), virtualFile, ((CSharpTypeDeclaration) element).getVmQName());
 			}
 			catch(TypeMirrorUnloadedException e)
 			{
