@@ -24,11 +24,11 @@ import com.intellij.psi.tree.TokenSet;
  * @author VISTALL
  * @since 23.01.14
  */
-public class CSharpMacroLexer extends MergingLexerAdapter
+public class CSharpPreprocessorLexer extends MergingLexerAdapter
 {
-	private static final TokenSet ourMergeSet = TokenSet.create(CSharpMacroTokens.CSHARP_FRAGMENT);
+	private static final TokenSet ourMergeSet = TokenSet.create(CSharpMacroTokens.CSHARP_FRAGMENT, CSharpMacroTokens.SIMPLE_VALUE, CSharpMacroTokens.BAD_CHARACTER);
 
-	public CSharpMacroLexer()
+	public CSharpPreprocessorLexer()
 	{
 		super(new _CSharpMacroLexer(), ourMergeSet);
 	}

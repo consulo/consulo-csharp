@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
+import org.mustbe.consulo.DeprecationInfo;
 import org.mustbe.consulo.csharp.lang.CSharpMacroLanguage;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
@@ -26,24 +27,30 @@ import com.intellij.psi.tree.IElementType;
  */
 public interface CSharpMacroTokens extends TokenType
 {
-	IElementType MACRO_IF_KEYWORD = new IElementType("MACRO_IF_KEYWORD", CSharpMacroLanguage.INSTANCE);
+	IElementType IF_KEYWORD = new IElementType("IF_KEYWORD", CSharpMacroLanguage.INSTANCE);
 
-	IElementType MACRO_ELSE_KEYWORD = new IElementType("MACRO_IF_KEYWORD", CSharpMacroLanguage.INSTANCE);
+	IElementType ELSE_KEYWORD = new IElementType("ELSE_KEYWORD", CSharpMacroLanguage.INSTANCE);
 
-	IElementType MACRO_ELIF_KEYWORD = new IElementType("MACRO_ELIF_KEYWORD", CSharpMacroLanguage.INSTANCE);
+	IElementType ELIF_KEYWORD = new IElementType("ELIF_KEYWORD", CSharpMacroLanguage.INSTANCE);
 
-	IElementType MACRO_ENDIF_KEYWORD = new IElementType("MACRO_ENDIF_KEYWORD", CSharpMacroLanguage.INSTANCE);
+	IElementType ENDIF_KEYWORD = new IElementType("ENDIF_KEYWORD", CSharpMacroLanguage.INSTANCE);
 
-	IElementType MACRO_REGION_KEYWORD = new IElementType("MACRO_REGION_KEYWORD", CSharpMacroLanguage.INSTANCE);
+	IElementType REGION_KEYWORD = new IElementType("REGION_KEYWORD", CSharpMacroLanguage.INSTANCE);
 
-	IElementType MACRO_ENDREGION_KEYWORD = new IElementType("MACRO_ENDREGION_KEYWORD", CSharpMacroLanguage.INSTANCE);
+	IElementType ENDREGION_KEYWORD = new IElementType("ENDREGION_KEYWORD", CSharpMacroLanguage.INSTANCE);
 
-	IElementType MACRO_DEFINE_KEYWORD = new IElementType("MACRO_DEFINE_KEYWORD", CSharpMacroLanguage.INSTANCE);
+	IElementType DEFINE_KEYWORD = new IElementType("DEFINE_KEYWORD", CSharpMacroLanguage.INSTANCE);
 
-	IElementType MACRO_UNDEF_KEYWORD = new IElementType("MACRO_UNDEF_KEYWORD", CSharpMacroLanguage.INSTANCE);
+	IElementType UNDEF_KEYWORD = new IElementType("UNDEF_KEYWORD", CSharpMacroLanguage.INSTANCE);
 
-	IElementType MACRO_VALUE = new IElementType("MACRO_VALUE", CSharpMacroLanguage.INSTANCE);
+	IElementType SHARP = new IElementType("SHARP", CSharpMacroLanguage.INSTANCE);
 
+	IElementType COMMENT = new IElementType("COMMENT", CSharpMacroLanguage.INSTANCE);
+
+	IElementType SIMPLE_VALUE = new IElementType("SIMPLE_VALUE", CSharpMacroLanguage.INSTANCE);
+
+	@Deprecated
+	@DeprecationInfo("Unused")
 	IElementType MACRO_STOP = new IElementType("MACRO_STOP", CSharpMacroLanguage.INSTANCE);
 
 	IElementType IDENTIFIER = new IElementType("IDENTIFIER", CSharpMacroLanguage.INSTANCE);

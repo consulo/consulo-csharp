@@ -44,14 +44,14 @@ public class CSharpMacroBlockStartImpl extends CSharpMacroElementImpl
 	@NotNull
 	public PsiElement getKeywordElement()
 	{
-		TokenSet tokenSet = TokenSet.create(CSharpMacroTokens.MACRO_IF_KEYWORD, CSharpMacroTokens.MACRO_REGION_KEYWORD,
-				CSharpMacroTokens.MACRO_ELIF_KEYWORD, CSharpMacroTokens.MACRO_ELSE_KEYWORD);
+		TokenSet tokenSet = TokenSet.create(CSharpMacroTokens.IF_KEYWORD, CSharpMacroTokens.REGION_KEYWORD,
+				CSharpMacroTokens.ELIF_KEYWORD, CSharpMacroTokens.ELSE_KEYWORD);
 		return findNotNullChildByType(tokenSet);
 	}
 
 	public boolean isElse()
 	{
-		return findChildByType(CSharpMacroTokens.MACRO_ELSE_KEYWORD) != null;
+		return findChildByType(CSharpMacroTokens.ELSE_KEYWORD) != null;
 	}
 
 	@Nullable

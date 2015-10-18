@@ -29,18 +29,18 @@ import lombok.val;
  */
 public class MacroParsing implements CSharpMacroTokens, CSharpMacroElements
 {
-	private static final TokenSet COND_STOPPERS = TokenSet.create(MACRO_ENDIF_KEYWORD, MACRO_ELSE_KEYWORD, MACRO_ELIF_KEYWORD);
+	private static final TokenSet COND_STOPPERS = TokenSet.create(ENDIF_KEYWORD, ELSE_KEYWORD, ELIF_KEYWORD);
 
 	public static boolean parse(PsiBuilder builder)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
 		val token = builder.getTokenType();
-		if(token == MACRO_DEFINE_KEYWORD || token == MACRO_UNDEF_KEYWORD)
+		if(token == DEFINE_KEYWORD || token == UNDEF_KEYWORD)
 		{
 			builder.advanceLexer();
 
-			if(builder.getTokenType() == MACRO_VALUE)
+			if(builder.getTokenType() == SIMPLE_VALUE)
 			{
 				builder.advanceLexer();
 			}
@@ -49,10 +49,10 @@ public class MacroParsing implements CSharpMacroTokens, CSharpMacroElements
 				builder.error("Identifier expected");
 			}
 			skipUntilStop(builder);
-			mark.done(token == MACRO_UNDEF_KEYWORD ? MACRO_UNDEF : MACRO_DEFINE);
+			mark.done(token == UNDEF_KEYWORD ? MACRO_UNDEF : MACRO_DEFINE);
 			return true;
 		}
-		else if(token == MACRO_IF_KEYWORD)
+		else if(token == IF_KEYWORD)
 		{
 			PsiBuilder.Marker condBlock = builder.mark();
 
@@ -73,21 +73,21 @@ public class MacroParsing implements CSharpMacroTokens, CSharpMacroElements
 
 			while(!builder.eof())
 			{
-				if(builder.getTokenType() == MACRO_ELIF_KEYWORD)
+				if(builder.getTokenType() == ELIF_KEYWORD)
 				{
 					parseElIf(builder, startMarker);
 				}
-				else if(builder.getTokenType() == MACRO_ELSE_KEYWORD)
+				else if(builder.getTokenType() == ELSE_KEYWORD)
 				{
 					parseElse(builder, startMarker);
 				}
-				else if(builder.getTokenType() == MACRO_ENDIF_KEYWORD)
+				else if(builder.getTokenType() == ENDIF_KEYWORD)
 				{
 					break;
 				}
 			}
 
-			if(builder.getTokenType() == MACRO_ENDIF_KEYWORD)
+			if(builder.getTokenType() == ENDIF_KEYWORD)
 			{
 				PsiBuilder.Marker endIfMarker = builder.mark();
 				builder.advanceLexer();
@@ -105,7 +105,7 @@ public class MacroParsing implements CSharpMacroTokens, CSharpMacroElements
 
 			return true;
 		}
-		else if(token == MACRO_REGION_KEYWORD)
+		else if(token == REGION_KEYWORD)
 		{
 			PsiBuilder.Marker startMarker = builder.mark();
 			builder.advanceLexer();
@@ -114,14 +114,14 @@ public class MacroParsing implements CSharpMacroTokens, CSharpMacroElements
 
 			while(!builder.eof())
 			{
-				if(builder.getTokenType() == MACRO_ENDREGION_KEYWORD)
+				if(builder.getTokenType() == ENDREGION_KEYWORD)
 				{
 					break;
 				}
 				builder.advanceLexer();
 			}
 
-			if(builder.getTokenType() == MACRO_ENDREGION_KEYWORD)
+			if(builder.getTokenType() == ENDREGION_KEYWORD)
 			{
 				PsiBuilder.Marker endIfMarker = builder.mark();
 				builder.advanceLexer();
@@ -137,7 +137,7 @@ public class MacroParsing implements CSharpMacroTokens, CSharpMacroElements
 
 			return true;
 		}
-		else if(token == MACRO_ENDREGION_KEYWORD)
+		else if(token == ENDREGION_KEYWORD)
 		{
 			builder.advanceLexer();
 
@@ -147,7 +147,7 @@ public class MacroParsing implements CSharpMacroTokens, CSharpMacroElements
 			mark.done(MACRO_BLOCK_STOP);
 			return true;
 		}
-		else if(token == MACRO_ENDIF_KEYWORD)
+		else if(token == ENDIF_KEYWORD)
 		{
 			builder.advanceLexer();
 			builder.error("'#endif' without '#if'");

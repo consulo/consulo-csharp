@@ -7,6 +7,10 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 
 %%
 
+%{
+  private boolean myEnteredNewLine = true;
+%}
+
 %class _CSharpMacroLexer
 %extends LexerBase
 %unicode
@@ -15,76 +19,22 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 %eof{  return;
 %eof}
 
-%state MACRO
-%state MACRO_ENTERED
-%state MACRO_EXPRESSION
+%state EXPRESSION_DIRECTIVE_VALUE
+%state SIMPLE_DIRECTIVE_VALUE
+%state NO_DIRECTIVE_VALUE
+%state DIRECTIVE
 
-DIGIT=[0-9]
-LETTER=[a-z]|[A-Z]
-WHITE_SPACE=[ \n\r\t\f]+
 SINGLE_LINE_COMMENT="/""/"[^\r\n]*
-SINGLE_LINE_DOC_COMMENT="/""/""/"[^\r\n]*
 MULTI_LINE_STYLE_COMMENT=("/*"[^"*"]{COMMENT_TAIL})|"/*"
-
 COMMENT_TAIL=([^"*"]*("*"+[^"*""/"])?)*("*"+"/")?
-CHARACTER_LITERAL="'"([^\\\'\r\n]|{ESCAPE_SEQUENCE})*("'"|\\)?
-STRING_LITERAL=\"([^\\\"\r\n]|{ESCAPE_SEQUENCE})*(\"|\\)?
-ESCAPE_SEQUENCE=\\[^\r\n]
 
+WHITE_SPACE_NO_NEW_LINE=[ \t\f]+
+NEW_LINE=\r\n|\n|\r
 
 IDENTIFIER=[:jletter:] [:jletterdigit:]*
-
-MACRO_WHITE_SPACE=[ \t\f]+
-MACRO_NEW_LINE=\r\n|\n|\r
-
-MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
-MACRO_DEFINE={MACRO_START}"define"
-MACRO_UNDEF={MACRO_START}"undef"
-MACRO_IF={MACRO_START}"if"
-MACRO_ENDIF={MACRO_START}"endif"
-MACRO_REGION={MACRO_START}"region"
-MACRO_ENDREGION={MACRO_START}"endregion"
-MACRO_ELSE={MACRO_START}"else"
-MACRO_ELIF={MACRO_START}"elif"
 %%
 
-<MACRO>
-{
-	{MACRO_IF}           { yybegin(MACRO_EXPRESSION); return CSharpMacroTokens.MACRO_IF_KEYWORD; }
-
-	{MACRO_ELIF}         { yybegin(MACRO_EXPRESSION); return CSharpMacroTokens.MACRO_ELIF_KEYWORD; }
-
-	{MACRO_ELSE}         { yybegin(MACRO_ENTERED); return CSharpMacroTokens.MACRO_ELSE_KEYWORD; }
-
-	{MACRO_ENDIF}        { yybegin(MACRO_ENTERED); return CSharpMacroTokens.MACRO_ENDIF_KEYWORD; }
-
-	{MACRO_DEFINE}       { yybegin(MACRO_ENTERED); return CSharpMacroTokens.MACRO_DEFINE_KEYWORD; }
-
-	{MACRO_UNDEF}        { yybegin(MACRO_ENTERED); return CSharpMacroTokens.MACRO_UNDEF_KEYWORD; }
-
-	{MACRO_REGION}       { yybegin(MACRO_ENTERED); return CSharpMacroTokens.MACRO_REGION_KEYWORD; }
-
-	{MACRO_ENDREGION}    { yybegin(MACRO_ENTERED); return CSharpMacroTokens.MACRO_ENDREGION_KEYWORD; }
-
-	{MACRO_NEW_LINE}     { yybegin(YYINITIAL); return CSharpMacroTokens.MACRO_STOP; }
-
-	{MACRO_WHITE_SPACE}  {  return CSharpMacroTokens.WHITE_SPACE; }
-
-	.                    { return CSharpMacroTokens.BAD_CHARACTER; }
-}
-
-<MACRO_ENTERED>
-{
-	{IDENTIFIER}         { return CSharpMacroTokens.MACRO_VALUE; }
-
-	{MACRO_NEW_LINE}     { yybegin(YYINITIAL); return CSharpMacroTokens.MACRO_STOP; }
-
-	{MACRO_WHITE_SPACE}  { return CSharpMacroTokens.WHITE_SPACE; }
-
-	.                    { return CSharpMacroTokens.BAD_CHARACTER; }
-}
-
-<MACRO_EXPRESSION>
+<EXPRESSION_DIRECTIVE_VALUE>
 {
 	"("                  { return CSharpMacroTokens.LPAR; }
 
@@ -98,22 +48,178 @@ MACRO_ELIF={MACRO_START}"elif"
 
 	{IDENTIFIER}         { return CSharpMacroTokens.IDENTIFIER; }
 
-	{MACRO_NEW_LINE}     { yybegin(YYINITIAL); return CSharpMacroTokens.MACRO_STOP; }
+	{NEW_LINE}
+	{
+		myEnteredNewLine = true;
+		yybegin(YYINITIAL);
+		return CSharpMacroTokens.CSHARP_FRAGMENT;
+	}
 
-	{MACRO_WHITE_SPACE}  { return CSharpMacroTokens.WHITE_SPACE; }
+	{WHITE_SPACE_NO_NEW_LINE}
+	{
+		return CSharpMacroTokens.WHITE_SPACE;
+	}
 
-	.                    { return CSharpMacroTokens.BAD_CHARACTER; }
+	[^]
+	{
+		return CSharpMacroTokens.SIMPLE_VALUE;
+	}
+}
+
+<SIMPLE_DIRECTIVE_VALUE>
+{
+	{NEW_LINE}
+	{
+		myEnteredNewLine = true;
+		yybegin(YYINITIAL);
+		return CSharpMacroTokens.CSHARP_FRAGMENT;
+	}
+
+	{WHITE_SPACE_NO_NEW_LINE}
+	{
+		return CSharpMacroTokens.WHITE_SPACE;
+	}
+
+	[^]
+	{
+		return CSharpMacroTokens.SIMPLE_VALUE;
+	}
+}
+
+<NO_DIRECTIVE_VALUE>
+{
+	{NEW_LINE}
+	{
+		myEnteredNewLine = true;
+		yybegin(YYINITIAL);
+		return CSharpMacroTokens.CSHARP_FRAGMENT;
+	}
+
+	{SINGLE_LINE_COMMENT}
+	{
+		return CSharpMacroTokens.COMMENT;
+	}
+
+	[^]
+	{
+		return CSharpMacroTokens.SIMPLE_VALUE;
+	}
+}
+
+<DIRECTIVE>
+{
+	{WHITE_SPACE_NO_NEW_LINE}
+	{
+		return CSharpMacroTokens.WHITE_SPACE;
+	}
+
+	{SINGLE_LINE_COMMENT}
+	{
+		return CSharpMacroTokens.COMMENT;
+	}
+
+	"region"
+	{
+		yybegin(SIMPLE_DIRECTIVE_VALUE);
+		return CSharpMacroTokens.REGION_KEYWORD;
+	}
+
+	"endregion"
+	{
+		yybegin(NO_DIRECTIVE_VALUE);
+		return CSharpMacroTokens.ENDREGION_KEYWORD;
+	}
+
+	"define"
+	{
+		yybegin(SIMPLE_DIRECTIVE_VALUE);
+		return CSharpMacroTokens.DEFINE_KEYWORD;
+	}
+
+	"undef"
+	{
+		yybegin(SIMPLE_DIRECTIVE_VALUE);
+		return CSharpMacroTokens.UNDEF_KEYWORD;
+	}
+
+	"if"
+	{
+		yybegin(EXPRESSION_DIRECTIVE_VALUE);
+		return CSharpMacroTokens.IF_KEYWORD;
+	}
+
+	"endif"
+	{
+		yybegin(NO_DIRECTIVE_VALUE);
+		return CSharpMacroTokens.ENDIF_KEYWORD;
+	}
+
+	"else"
+	{
+		yybegin(EXPRESSION_DIRECTIVE_VALUE);
+		return CSharpMacroTokens.ELSE_KEYWORD;
+	}
+
+	"elif"
+	{
+		yybegin(EXPRESSION_DIRECTIVE_VALUE);
+		return CSharpMacroTokens.ELIF_KEYWORD;
+	}
+
+	{NEW_LINE}
+	{
+		myEnteredNewLine = true;
+		yybegin(YYINITIAL);
+		return CSharpMacroTokens.CSHARP_FRAGMENT;
+	}
+
+	[^]
+	{
+		return CSharpMacroTokens.BAD_CHARACTER;
+	}
 }
 
 <YYINITIAL>
 {
-	{MACRO_START}
+	{NEW_LINE}
 	{
-		yypushback(yylength());
-		yybegin(MACRO);
+		myEnteredNewLine = true;
+		return CSharpMacroTokens.CSHARP_FRAGMENT;
 	}
 
-	{WHITE_SPACE}             { return CSharpMacroTokens.CSHARP_FRAGMENT; }
+	{MULTI_LINE_STYLE_COMMENT}
+	{
+		myEnteredNewLine = false;
+		return CSharpMacroTokens.CSHARP_FRAGMENT;
+	}
 
-	.                         { return CSharpMacroTokens.CSHARP_FRAGMENT; }
+	{SINGLE_LINE_COMMENT}
+	{
+		myEnteredNewLine = false;
+		return CSharpMacroTokens.CSHARP_FRAGMENT;
+	}
+
+	"#"
+	{
+		if(myEnteredNewLine)
+		{
+			yybegin(DIRECTIVE);
+			return CSharpMacroTokens.SHARP;
+		}
+		else
+		{
+			return CSharpMacroTokens.BAD_CHARACTER;
+		}
+	}
+
+	{WHITE_SPACE_NO_NEW_LINE}
+	{
+		return CSharpMacroTokens.CSHARP_FRAGMENT;
+	}
+
+	.
+	{
+		myEnteredNewLine = false;
+		return CSharpMacroTokens.CSHARP_FRAGMENT;
+	}
 }

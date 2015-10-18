@@ -12,7 +12,7 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 23.01.14
  */
-public class CSharpMacroParser implements PsiParser
+public class CSharpPreprocessorParser implements PsiParser
 {
 	@NotNull
 	@Override

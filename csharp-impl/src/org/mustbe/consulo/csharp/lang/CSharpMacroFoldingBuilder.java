@@ -62,7 +62,7 @@ public class CSharpMacroFoldingBuilder implements FoldingBuilder
 					return;
 				}
 
-				if(startElement.getKeywordElement().getNode().getElementType() != CSharpMacroTokens.MACRO_REGION_KEYWORD)
+				if(startElement.getKeywordElement().getNode().getElementType() != CSharpMacroTokens.REGION_KEYWORD)
 				{
 					return;
 				}

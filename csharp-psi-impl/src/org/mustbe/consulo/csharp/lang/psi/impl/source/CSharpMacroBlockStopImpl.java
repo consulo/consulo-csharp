@@ -37,7 +37,7 @@ public class CSharpMacroBlockStopImpl extends CSharpMacroElementImpl
 
 	public PsiElement getKeywordElement()
 	{
-		TokenSet tokenSet = TokenSet.create(CSharpMacroTokens.MACRO_ENDIF_KEYWORD, CSharpMacroTokens.MACRO_ENDREGION_KEYWORD);
+		TokenSet tokenSet = TokenSet.create(CSharpMacroTokens.ENDIF_KEYWORD, CSharpMacroTokens.ENDREGION_KEYWORD);
 		return findNotNullChildByType(tokenSet);
 	}
 

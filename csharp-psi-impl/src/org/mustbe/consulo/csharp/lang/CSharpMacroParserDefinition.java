@@ -18,8 +18,8 @@ package org.mustbe.consulo.csharp.lang;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.lexer.CSharpMacroLexer;
-import org.mustbe.consulo.csharp.lang.parser.CSharpMacroParser;
+import org.mustbe.consulo.csharp.lang.lexer.CSharpPreprocessorLexer;
+import org.mustbe.consulo.csharp.lang.parser.CSharpPreprocessorParser;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroFileImpl;
@@ -46,14 +46,14 @@ public class CSharpMacroParserDefinition implements ParserDefinition
 	@Override
 	public Lexer createLexer(@Nullable Project project, @NotNull LanguageVersion languageVersion)
 	{
-		return new CSharpMacroLexer();
+		return new CSharpPreprocessorLexer();
 	}
 
 	@NotNull
 	@Override
 	public PsiParser createParser(@Nullable Project project, @NotNull LanguageVersion languageVersion)
 	{
-		return new CSharpMacroParser();
+		return new CSharpPreprocessorParser();
 	}
 
 	@NotNull

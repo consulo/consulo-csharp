@@ -60,7 +60,7 @@ public class CSharpMacroDefineImpl extends CSharpMacroElementImpl implements CSh
 	@Override
 	public PsiElement getNameIdentifier()
 	{
-		return findChildByType(CSharpMacroTokens.MACRO_VALUE);
+		return findChildByType(CSharpMacroTokens.SIMPLE_VALUE);
 	}
 
 	@Override
@@ -73,6 +73,6 @@ public class CSharpMacroDefineImpl extends CSharpMacroElementImpl implements CSh
 	@Override
 	public boolean isUnDef()
 	{
-		return findChildByType(CSharpMacroTokens.MACRO_UNDEF_KEYWORD) != null;
+		return findChildByType(CSharpMacroTokens.UNDEF_KEYWORD) != null;
 	}
 }

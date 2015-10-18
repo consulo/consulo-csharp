@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.lexer.CSharpMacroLexer;
+import org.mustbe.consulo.csharp.lang.lexer.CSharpPreprocessorLexer;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
@@ -37,21 +37,21 @@ public class CSharpMacroSyntaxHighlighter extends SyntaxHighlighterBase
 
 	static
 	{
-		safeMap(ourKeys, CSharpMacroTokens.MACRO_DEFINE_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpMacroTokens.MACRO_UNDEF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpMacroTokens.MACRO_IF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpMacroTokens.MACRO_ELSE_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpMacroTokens.MACRO_ELIF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpMacroTokens.MACRO_REGION_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpMacroTokens.MACRO_ENDIF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpMacroTokens.MACRO_ENDREGION_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpMacroTokens.DEFINE_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpMacroTokens.UNDEF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpMacroTokens.IF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpMacroTokens.ELSE_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpMacroTokens.ELIF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpMacroTokens.REGION_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpMacroTokens.ENDIF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpMacroTokens.ENDREGION_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
 	}
 
 	@NotNull
 	@Override
 	public Lexer getHighlightingLexer()
 	{
-		return new CSharpMacroLexer();
+		return new CSharpPreprocessorLexer();
 	}
 
 	@NotNull
