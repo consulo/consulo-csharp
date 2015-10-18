@@ -1,7 +1,7 @@
 package org.mustbe.consulo.csharp.lang.parser;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.parser.macro.MacroParsing;
+import org.mustbe.consulo.csharp.lang.parser.macro.PreprocessorParsing;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.LanguageVersion;
 import com.intellij.lang.PsiBuilder;
@@ -22,7 +22,7 @@ public class CSharpPreprocessorParser implements PsiParser
 
 		while(!builder.eof())
 		{
-			MacroParsing.parse(builder);
+			PreprocessorParsing.parse(builder);
 		}
 
 		mark.done(elementType);

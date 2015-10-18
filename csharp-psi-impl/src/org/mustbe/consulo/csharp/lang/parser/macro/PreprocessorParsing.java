@@ -27,7 +27,7 @@ import lombok.val;
  * @author VISTALL
  * @since 18.12.13.
  */
-public class MacroParsing implements CSharpMacroTokens, CSharpMacroElements
+public class PreprocessorParsing implements CSharpMacroTokens, CSharpMacroElements
 {
 	private static final TokenSet COND_STOPPERS = TokenSet.create(ENDIF_KEYWORD, ELSE_KEYWORD, ELIF_KEYWORD);
 
@@ -193,7 +193,7 @@ public class MacroParsing implements CSharpMacroTokens, CSharpMacroElements
 				break;
 			}
 
-			MacroParsing.parse(builder);
+			PreprocessorParsing.parse(builder);
 		}
 
 		marker.done(MACRO_IF_CONDITION_BLOCK);
@@ -229,7 +229,7 @@ public class MacroParsing implements CSharpMacroTokens, CSharpMacroElements
 				break;
 			}
 
-			MacroParsing.parse(builder);
+			PreprocessorParsing.parse(builder);
 		}
 
 		mark.done(MACRO_IF_CONDITION_BLOCK);
