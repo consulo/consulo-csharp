@@ -57,14 +57,6 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 		root.accept(new CSharpRecursiveElementVisitor()
 		{
 			@Override
-			public void visitTypeDeclaration(CSharpTypeDeclaration declaration)
-			{
-				super.visitTypeDeclaration(declaration);
-
-				addBodyWithBraces(descriptors, declaration);
-			}
-
-			@Override
 			public void visitPropertyDeclaration(CSharpPropertyDeclaration declaration)
 			{
 				super.visitPropertyDeclaration(declaration);
