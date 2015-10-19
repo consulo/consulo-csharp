@@ -65,23 +65,16 @@ public class CSharpPreprocessorParsing
 	public static boolean parseDirective(@NotNull PsiBuilder builder, @NotNull PsiBuilder.Marker mark, @NotNull Deque<PsiBuilder.Marker> regionMarkers)
 	{
 		IElementType tokenType = builder.getTokenType();
-		/*if(token == DEFINE_KEYWORD || token == UNDEF_KEYWORD)
+		if(tokenType == CSharpMacroTokens.DEFINE_KEYWORD || tokenType == CSharpMacroTokens.UNDEF_KEYWORD)
 		{
 			builder.advanceLexer();
 
-			if(builder.getTokenType() == SIMPLE_VALUE)
-			{
-				builder.advanceLexer();
-			}
-			else
-			{
-				builder.error("Identifier expected");
-			}
-			skipUntilStop(builder);
-			mark.done(token == UNDEF_KEYWORD ? MACRO_UNDEF : MACRO_DEFINE);
+			advanceUntilFragment(builder);
+
+			doneWithBinder(mark, tokenType == CSharpMacroTokens.UNDEF_KEYWORD ? CSharpMacroElements.MACRO_UNDEF : CSharpMacroElements.MACRO_DEFINE);
 			return true;
 		}
-		else if(token == IF_KEYWORD)
+		/*else if(token == IF_KEYWORD)
 		{
 			PsiBuilder.Marker condBlock = builder.mark();
 
@@ -133,9 +126,8 @@ public class CSharpPreprocessorParsing
 			mark.done(MACRO_IF);
 
 			return true;
-		}
-		else */
-		if(tokenType == CSharpMacroTokens.REGION_KEYWORD)
+		}  */
+		else if(tokenType == CSharpMacroTokens.REGION_KEYWORD)
 		{
 			builder.advanceLexer();
 
@@ -158,8 +150,7 @@ public class CSharpPreprocessorParsing
 			{
 				advanceUntilFragment(builder);
 
-				mark.done(CSharpMacroElements.MACRO_BLOCK_STOP);
-				mark.setCustomEdgeTokenBinders(null, WhitespacesBinders.GREEDY_RIGHT_BINDER);
+				doneWithBinder(mark, CSharpMacroElements.MACRO_BLOCK_STOP);
 
 				mainMarker.done(CSharpMacroElements.MACRO_BLOCK);
 			}
@@ -167,8 +158,7 @@ public class CSharpPreprocessorParsing
 			{
 				advanceUntilFragment(builder);
 
-				mark.done(CSharpMacroElements.MACRO_BLOCK_STOP);
-				mark.setCustomEdgeTokenBinders(null, WhitespacesBinders.GREEDY_RIGHT_BINDER);
+				doneWithBinder(mark, CSharpMacroElements.MACRO_BLOCK_STOP);
 
 				mark.precede().done(CSharpMacroElements.MACRO_BLOCK);
 			}
@@ -193,6 +183,12 @@ public class CSharpPreprocessorParsing
 			mark.precede().done(CSharpMacroElements.MACRO_BLOCK);
 			return false;
 		}
+	}
+
+	private static void doneWithBinder(PsiBuilder.Marker mark, IElementType elementType)
+	{
+		mark.done(elementType);
+		mark.setCustomEdgeTokenBinders(null, WhitespacesBinders.GREEDY_RIGHT_BINDER);
 	}
 
 /*	private static void parseElse(PsiBuilder builder, PsiBuilder.Marker parentMarker)

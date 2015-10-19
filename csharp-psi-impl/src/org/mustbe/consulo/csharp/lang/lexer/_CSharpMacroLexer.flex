@@ -21,6 +21,7 @@ import com.intellij.psi.tree.IElementType;
 %state EXPRESSION_DIRECTIVE_VALUE
 %state SIMPLE_DIRECTIVE_VALUE
 %state NO_DIRECTIVE_VALUE
+%state REGION_DIRECTIVE_VALUE
 %state DIRECTIVE
 
 SINGLE_LINE_COMMENT="/""/"[^\r\n]*
@@ -65,7 +66,7 @@ IDENTIFIER=[:jletter:] [:jletterdigit:]*
 	}
 }
 
-<SIMPLE_DIRECTIVE_VALUE>
+<REGION_DIRECTIVE_VALUE>
 {
 	{NEW_LINE}
 	{
@@ -94,6 +95,11 @@ IDENTIFIER=[:jletter:] [:jletterdigit:]*
 		return CSharpMacroTokens.WHITE_SPACE;
 	}
 
+	{WHITE_SPACE_NO_NEW_LINE}
+	{
+		return CSharpMacroTokens.WHITE_SPACE;
+	}
+
 	{SINGLE_LINE_COMMENT}
 	{
 		return CSharpMacroTokens.COMMENT;
@@ -119,7 +125,7 @@ IDENTIFIER=[:jletter:] [:jletterdigit:]*
 
 	"region"
 	{
-		yybegin(SIMPLE_DIRECTIVE_VALUE);
+		yybegin(REGION_DIRECTIVE_VALUE);
 		return CSharpMacroTokens.REGION_KEYWORD;
 	}
 
@@ -131,13 +137,13 @@ IDENTIFIER=[:jletter:] [:jletterdigit:]*
 
 	"define"
 	{
-		yybegin(SIMPLE_DIRECTIVE_VALUE);
+		yybegin(NO_DIRECTIVE_VALUE);
 		return CSharpMacroTokens.DEFINE_KEYWORD;
 	}
 
 	"undef"
 	{
-		yybegin(SIMPLE_DIRECTIVE_VALUE);
+		yybegin(NO_DIRECTIVE_VALUE);
 		return CSharpMacroTokens.UNDEF_KEYWORD;
 	}
 
