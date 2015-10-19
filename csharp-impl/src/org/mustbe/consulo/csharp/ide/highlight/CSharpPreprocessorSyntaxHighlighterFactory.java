@@ -17,19 +17,22 @@
 package org.mustbe.consulo.csharp.ide.highlight;
 
 import org.jetbrains.annotations.NotNull;
-import com.intellij.openapi.fileTypes.SingleLazyInstanceSyntaxHighlighterFactory;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
+import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 
 /**
  * @author VISTALL
  * @since 24.01.14
  */
-public class CSharpMacroSyntaxHighlighterFactory extends SingleLazyInstanceSyntaxHighlighterFactory
+public class CSharpPreprocessorSyntaxHighlighterFactory extends SyntaxHighlighterFactory
 {
 	@NotNull
 	@Override
-	protected SyntaxHighlighter createHighlighter()
+	public SyntaxHighlighter getSyntaxHighlighter(@Nullable Project project, @Nullable VirtualFile virtualFile)
 	{
-		return new CSharpMacroSyntaxHighlighter();
+		return new CSharpPreprocessorSyntaxHighlighter();
 	}
 }

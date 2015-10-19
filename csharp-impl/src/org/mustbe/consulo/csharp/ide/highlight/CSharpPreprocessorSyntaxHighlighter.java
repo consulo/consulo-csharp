@@ -31,7 +31,7 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 24.01.14
  */
-public class CSharpMacroSyntaxHighlighter extends SyntaxHighlighterBase
+public class CSharpPreprocessorSyntaxHighlighter extends SyntaxHighlighterBase
 {
 	private static Map<IElementType, TextAttributesKey> ourKeys = new HashMap<IElementType, TextAttributesKey>();
 

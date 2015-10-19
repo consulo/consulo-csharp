@@ -43,7 +43,7 @@ public class CSharpEditorHighlighter extends LayeredLexerEditorHighlighter
 	public CSharpEditorHighlighter(@Nullable final VirtualFile virtualFile, @NotNull final EditorColorsScheme colors)
 	{
 		super(new CSharpSyntaxHighlighter(), colors);
-		registerLayer(CSharpTemplateTokens.PREPROCESSOR_DIRECTIVE, new LayerDescriptor(new CSharpMacroSyntaxHighlighter(), ""));
+		registerLayer(CSharpTemplateTokens.PREPROCESSOR_DIRECTIVE, new LayerDescriptor(new CSharpPreprocessorSyntaxHighlighter(), ""));
 		registerLayer(CSharpTokens.STRING_LITERAL, new LayerDescriptor(new CSharpSyntaxHighlighter()
 		{
 			@NotNull

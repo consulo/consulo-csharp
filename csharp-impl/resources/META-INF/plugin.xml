@@ -128,7 +128,7 @@
 		<typeDeclarationProvider implementation="org.mustbe.consulo.csharp.ide.actions.navigate.GotoTypeDeclarationProvider"/>
 		<projectService serviceImplementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher"/>
 		<syntaxHighlighter key="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpSyntaxHighlighter"/>
-		<syntaxHighlighter key="C#Macro" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpMacroSyntaxHighlighter"/>
+		<syntaxHighlighter key="C#Macro" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpPreprocessorSyntaxHighlighter"/>
 		<copyright.updater filetype="C#" implementationClass="org.mustbe.consulo.csharp.ide.copyright.CSharpUpdateCopyrightsProvider"/>
 		<highlightVisitor implementation="org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightVisitor"/>
 		<highlightVisitor implementation="org.mustbe.consulo.csharp.ide.highlight.check.CSharpCompilerCheckVisitor"/>
@@ -285,7 +285,7 @@
 		<lang.foldingBuilder language="C#Macro" implementationClass="org.mustbe.consulo.csharp.lang.CSharpPreprocessorFoldingBuilder"/>
 		<lang.syntaxHighlighterFactory key="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpSyntaxHighlighterFactory"/>
 		<lang.syntaxHighlighterFactory key="C#Macro"
-									   implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpMacroSyntaxHighlighterFactory"/>
+									   implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpPreprocessorSyntaxHighlighterFactory"/>
 		<lang.refactoringSupport language="C#" implementationClass="org.mustbe.consulo.csharp.ide.refactoring.CSharpRefactoringSupportProvider"/>
 		<refactoring.changeSignatureUsageProcessor
 				implementation="org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureUsageProcessor"/>
