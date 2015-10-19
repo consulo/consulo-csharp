@@ -186,9 +186,11 @@ public class CSharpPreprocessorParsing
 		} */
 		else
 		{
-			builder.advanceLexer();
+			advanceUntilFragment(builder);
 
-			mark.drop();
+			mark.done(CSharpMacroElements.MACRO_BLOCK_START);
+
+			mark.precede().done(CSharpMacroElements.MACRO_BLOCK);
 			return false;
 		}
 	}

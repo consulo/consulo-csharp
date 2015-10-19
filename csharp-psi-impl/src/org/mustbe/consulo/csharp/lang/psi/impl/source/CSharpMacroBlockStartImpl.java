@@ -64,9 +64,10 @@ public class CSharpMacroBlockStartImpl extends CSharpMacroElementImpl
 	}
 
 	@Nullable
+	@Deprecated
 	public PsiElement getStopElement()
 	{
-		return findChildByType(CSharpMacroTokens.MACRO_STOP);
+		return null;
 	}
 
 	@Override

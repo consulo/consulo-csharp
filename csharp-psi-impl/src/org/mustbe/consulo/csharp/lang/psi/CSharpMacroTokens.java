@@ -16,7 +16,6 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
-import org.mustbe.consulo.DeprecationInfo;
 import org.mustbe.consulo.csharp.lang.CSharpMacroLanguage;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
@@ -48,10 +47,6 @@ public interface CSharpMacroTokens extends TokenType
 	IElementType COMMENT = new IElementType("COMMENT", CSharpMacroLanguage.INSTANCE);
 
 	IElementType SIMPLE_VALUE = new IElementType("SIMPLE_VALUE", CSharpMacroLanguage.INSTANCE);
-
-	@Deprecated
-	@DeprecationInfo("Unused")
-	IElementType MACRO_STOP = new IElementType("MACRO_STOP", CSharpMacroLanguage.INSTANCE);
 
 	IElementType IDENTIFIER = new IElementType("IDENTIFIER", CSharpMacroLanguage.INSTANCE);
 
