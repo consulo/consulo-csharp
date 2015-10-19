@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
 import com.intellij.lexer.Lexer;
@@ -37,7 +38,7 @@ import com.intellij.psi.tree.TokenSet;
  */
 public class CSharpLexer extends MergingLexerAdapterBase
 {
-	private static final TokenSet ourMergeSet = TokenSet.create(CSharpTokens.NON_ACTIVE_SYMBOL, CSharpTokensImpl.LINE_DOC_COMMENT);
+	private static final TokenSet ourMergeSet = TokenSet.create(CSharpTemplateTokens.PREPROCESSOR_DIRECTIVE, CSharpTokens.NON_ACTIVE_SYMBOL, CSharpTokensImpl.LINE_DOC_COMMENT);
 	private static final TokenSet ourWhitespaceSet = TokenSet.create(CSharpTokens.WHITE_SPACE);
 
 	private static class MyMergeFunction implements MergeFunction
