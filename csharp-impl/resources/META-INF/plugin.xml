@@ -44,6 +44,11 @@
 			<add-to-group group-id="NewGroup1" anchor="after" relative-to-action="NewClass"/>
 		</action>
 
+		<action id="CSharpDebugControlFlowAction" text="Debug ControlFlow" class="org.mustbe.consulo.csharp.ide.actions.DebugControlFlowAction"
+				internal="true">
+			<add-to-group group-id="EditorPopupMenu" />
+		</action>
+
 		<group id="CSharp.GenerateActions">
 			<action id="CSharp.GenerateReadOnlyProperty" class="org.mustbe.consulo.csharp.ide.actions.generate.GenerateReadOnlyPropertyAction"/>
 			<action id="CSharp.GenerateProperty" class="org.mustbe.consulo.csharp.ide.actions.generate.GeneratePropertyAction"/>
