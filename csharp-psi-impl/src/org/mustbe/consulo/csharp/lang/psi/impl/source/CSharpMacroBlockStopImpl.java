@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 import com.intellij.lang.ASTNode;
@@ -35,17 +35,12 @@ public class CSharpMacroBlockStopImpl extends CSharpMacroElementImpl
 		super(node);
 	}
 
+	@NotNull
+	@RequiredReadAction
 	public PsiElement getKeywordElement()
 	{
 		TokenSet tokenSet = TokenSet.create(CSharpMacroTokens.ENDIF_KEYWORD, CSharpMacroTokens.ENDREGION_KEYWORD);
 		return findNotNullChildByType(tokenSet);
-	}
-
-	@Nullable
-	@Deprecated
-	public PsiElement getStopElement()
-	{
-		return findChildByType(CSharpMacroTokens.MACRO_STOP);
 	}
 
 	@Override

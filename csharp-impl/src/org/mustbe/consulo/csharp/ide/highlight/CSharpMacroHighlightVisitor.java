@@ -18,10 +18,17 @@ package org.mustbe.consulo.csharp.ide.highlight;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroBlockImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroBlockStartImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroBlockStopImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroReferenceExpressionImpl;
+import com.intellij.codeInsight.daemon.impl.HighlightInfo;
+import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.daemon.impl.HighlightVisitor;
 import com.intellij.codeInsight.daemon.impl.analysis.HighlightInfoHolder;
 import com.intellij.psi.PsiElement;
@@ -53,6 +60,31 @@ public class CSharpMacroHighlightVisitor extends CSharpMacroElementVisitor imple
 		myHighlightInfoHolder = highlightInfoHolder;
 		runnable.run();
 		return true;
+	}
+
+	@Override
+	@RequiredReadAction
+	public void visitMacroBlock(CSharpMacroBlockImpl block)
+	{
+		CSharpMacroBlockStartImpl startElement = block.getStartElement();
+		CSharpMacroBlockStopImpl stopElement = block.getStopElement();
+
+		if(startElement == null && stopElement != null)
+		{
+			PsiElement keywordElement = stopElement.getKeywordElement();
+			if(keywordElement.getNode().getElementType() == CSharpMacroTokens.ENDREGION_KEYWORD)
+			{
+				myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR).range(keywordElement).descriptionAndTooltip("Required region start").create());
+			}
+		}
+		else if(startElement != null && stopElement == null)
+		{
+			PsiElement keywordElement = startElement.getKeywordElement();
+			if(keywordElement != null && keywordElement.getNode().getElementType() == CSharpMacroTokens.REGION_KEYWORD)
+			{
+				myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR).range(keywordElement).descriptionAndTooltip("Required region end").create());
+			}
+		}
 	}
 
 	@Override
