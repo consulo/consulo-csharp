@@ -15,6 +15,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.util.codeInsight.CommentUtilCore;
 import lombok.val;
 
@@ -140,8 +141,8 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 
 	public Indent getChildIndent()
 	{
-		val elementType = myNode.getElementType();
-		if(elementType == CSharpStubElements.FILE)
+		IElementType elementType = myNode.getElementType();
+		if(elementType == CSharpStubElements.FILE || elementType == CSharpElements.USING_LIST)
 		{
 			return Indent.getNoneIndent();
 		}
