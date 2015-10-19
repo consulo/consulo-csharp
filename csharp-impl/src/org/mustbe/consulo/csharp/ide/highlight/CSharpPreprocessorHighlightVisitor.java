@@ -84,6 +84,10 @@ public class CSharpPreprocessorHighlightVisitor extends CSharpMacroElementVisito
 			{
 				myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR).range(keywordElement).descriptionAndTooltip("Required region end").create());
 			}
+			else if(keywordElement == null)
+			{
+				myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR).range(startElement.getSharpElement()).descriptionAndTooltip("Expected directive name").create());
+			}
 		}
 	}
 
