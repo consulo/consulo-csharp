@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 import com.intellij.lang.ASTNode;
@@ -42,11 +43,19 @@ public class CSharpMacroBlockStartImpl extends CSharpMacroElementImpl
 	}
 
 	@NotNull
+	@RequiredReadAction
+	public PsiElement getSharpElement()
+	{
+		return findNotNullChildByType(CSharpMacroTokens.SHARP);
+	}
+
+	@Nullable
+	@RequiredReadAction
 	public PsiElement getKeywordElement()
 	{
 		TokenSet tokenSet = TokenSet.create(CSharpMacroTokens.IF_KEYWORD, CSharpMacroTokens.REGION_KEYWORD,
 				CSharpMacroTokens.ELIF_KEYWORD, CSharpMacroTokens.ELSE_KEYWORD);
-		return findNotNullChildByType(tokenSet);
+		return findChildByType(tokenSet);
 	}
 
 	public boolean isElse()

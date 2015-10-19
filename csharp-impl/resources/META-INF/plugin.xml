@@ -282,7 +282,7 @@
 		<lang.braceMatcher language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpPairedBraceMatcher"/>
 		<lang.importOptimizer language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpImportOptimizer"/>
 		<lang.foldingBuilder language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpFoldingBuilder"/>
-		<lang.foldingBuilder language="C#Macro" implementationClass="org.mustbe.consulo.csharp.lang.CSharpMacroFoldingBuilder"/>
+		<lang.foldingBuilder language="C#Macro" implementationClass="org.mustbe.consulo.csharp.lang.CSharpPreprocessorFoldingBuilder"/>
 		<lang.syntaxHighlighterFactory key="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpSyntaxHighlighterFactory"/>
 		<lang.syntaxHighlighterFactory key="C#Macro"
 									   implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpMacroSyntaxHighlighterFactory"/>

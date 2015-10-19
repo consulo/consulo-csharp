@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 import com.intellij.lang.PsiBuilder;
+import com.intellij.lang.WhitespacesBinders;
 import com.intellij.psi.tree.IElementType;
 
 /**
@@ -157,7 +158,8 @@ public class CSharpPreprocessorParsing
 			{
 				advanceUntilFragment(builder);
 
-				mark.done(CSharpMacroElements.MACRO_BLOCK_START);
+				mark.done(CSharpMacroElements.MACRO_BLOCK_STOP);
+				mark.setCustomEdgeTokenBinders(null, WhitespacesBinders.GREEDY_RIGHT_BINDER);
 
 				mainMarker.done(CSharpMacroElements.MACRO_BLOCK);
 			}
@@ -165,7 +167,8 @@ public class CSharpPreprocessorParsing
 			{
 				advanceUntilFragment(builder);
 
-				mark.done(CSharpMacroElements.MACRO_BLOCK_START);
+				mark.done(CSharpMacroElements.MACRO_BLOCK_STOP);
+				mark.setCustomEdgeTokenBinders(null, WhitespacesBinders.GREEDY_RIGHT_BINDER);
 
 				mark.precede().done(CSharpMacroElements.MACRO_BLOCK);
 			}

@@ -16,10 +16,12 @@
 
 package org.mustbe.consulo.csharp.lang;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroBlockImpl;
@@ -30,27 +32,30 @@ import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.templateLanguages.OuterLanguageElement;
-import lombok.val;
 
 /**
  * @author VISTALL
  * @since 30.11.13.
  */
-public class CSharpMacroFoldingBuilder implements FoldingBuilder
+public class CSharpPreprocessorFoldingBuilder implements FoldingBuilder
 {
 	@NotNull
 	@Override
 	public FoldingDescriptor[] buildFoldRegions(@NotNull ASTNode astNode, @NotNull Document document)
 	{
-		val foldingList = new ArrayList<FoldingDescriptor>();
+		final List<FoldingDescriptor> foldingList = new LinkedList<FoldingDescriptor>();
 
 		PsiElement psi = astNode.getPsi();
+
+		assert psi != null;
 
 		psi.accept(new CSharpMacroRecursiveElementVisitor()
 		{
 			@Override
+			@RequiredReadAction
 			public void visitMacroBlock(CSharpMacroBlockImpl block)
 			{
 				super.visitMacroBlock(block);
@@ -62,23 +67,23 @@ public class CSharpMacroFoldingBuilder implements FoldingBuilder
 					return;
 				}
 
-				if(startElement.getKeywordElement().getNode().getElementType() != CSharpMacroTokens.REGION_KEYWORD)
+				PsiElement keywordElement = startElement.getKeywordElement();
+				if(keywordElement == null || keywordElement.getNode().getElementType() != CSharpMacroTokens.REGION_KEYWORD)
 				{
 					return;
 				}
 
-				PsiElement stopElementStopElement = stopElement.getStopElement();
-				if(stopElementStopElement == null)
+				PsiElement startElementKeywordElement = startElement.getSharpElement();
+				int startOffset = startElementKeywordElement.getTextOffset();
+				int endOffset = stopElement.getTextOffset() + stopElement.getTextLength();
+				if((endOffset - startOffset) > 0)
 				{
-					return;
-				}
+					// we need remove new lines from folding
+					String text = stopElement.getText();
+					String anotherString = StringUtil.trimEnd(text, '\n');
+					endOffset -= text.length() - anotherString.length();
 
-				PsiElement startElementKeywordElement = startElement.getKeywordElement();
-				int textOffset = startElementKeywordElement.getTextOffset();
-				int textOffset1 = stopElementStopElement.getTextOffset();
-				if((textOffset1 - textOffset) > 0)
-				{
-					foldingList.add(new FoldingDescriptor(block, new TextRange(textOffset, textOffset1)));
+					foldingList.add(new FoldingDescriptor(block, new TextRange(startOffset, endOffset)));
 				}
 			}
 		});
@@ -87,6 +92,7 @@ public class CSharpMacroFoldingBuilder implements FoldingBuilder
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public String getPlaceholderText(@NotNull ASTNode astNode)
 	{
 		PsiElement psi = astNode.getPsi();
@@ -105,6 +111,7 @@ public class CSharpMacroFoldingBuilder implements FoldingBuilder
 		return null;
 	}
 
+	@RequiredReadAction
 	private String getTextWithoutOuterElements(PsiElement element)
 	{
 		StringBuilder builder = new StringBuilder();
