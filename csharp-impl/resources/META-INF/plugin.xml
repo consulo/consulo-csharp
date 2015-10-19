@@ -170,7 +170,7 @@
 				 implementationClass="org.mustbe.consulo.csharp.ide.completion.weighter.CSharpObsoleteWeigher"/>
 
 		<completion.contributor language="C#Macro"
-								implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpMacroReferenceCompletionContributor"/>
+								implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpPreprocessorCompletionContributor"/>
 
 		<completion.contributor language="C#Doc"
 								implementationClass="org.mustbe.consulo.csharp.lang.doc.ide.competion.CSharpDocCompletionContributor"/>
