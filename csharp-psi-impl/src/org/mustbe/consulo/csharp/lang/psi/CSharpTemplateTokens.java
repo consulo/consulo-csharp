@@ -36,11 +36,11 @@ import com.intellij.psi.tree.IElementType;
  */
 public interface CSharpTemplateTokens
 {
-	IElementType MACRO_FRAGMENT = new IElementType("MACRO_FRAGMENT", CSharpLanguage.INSTANCE);
+	IElementType PREPROCESSOR_DIRECTIVE = new IElementType("PREPROCESSOR_DIRECTIVE", CSharpLanguage.INSTANCE);
 
 	IElementType OUTER_ELEMENT_TYPE = new IElementType("OUTER_ELEMENT_TYPE", CSharpLanguage.INSTANCE);
 
-	TemplateDataElementType TEMPLATE_DATA = new TemplateDataElementType("TEMPLATE_DATA", CSharpLanguage.INSTANCE, MACRO_FRAGMENT, OUTER_ELEMENT_TYPE)
+	TemplateDataElementType TEMPLATE_DATA = new TemplateDataElementType("TEMPLATE_DATA", CSharpLanguage.INSTANCE, PREPROCESSOR_DIRECTIVE, OUTER_ELEMENT_TYPE)
 	{
 		@Override
 		protected Lexer createBaseLexer(PsiFile file, TemplateLanguageFileViewProvider viewProvider)

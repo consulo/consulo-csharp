@@ -51,7 +51,7 @@ IDENTIFIER=[:jletter:] [:jletterdigit:]*
 	{
 		myEnteredNewLine = true;
 		yybegin(YYINITIAL);
-		return CSharpMacroTokens.CSHARP_FRAGMENT;
+		return CSharpMacroTokens.WHITE_SPACE;
 	}
 
 	{WHITE_SPACE_NO_NEW_LINE}
@@ -71,7 +71,7 @@ IDENTIFIER=[:jletter:] [:jletterdigit:]*
 	{
 		myEnteredNewLine = true;
 		yybegin(YYINITIAL);
-		return CSharpMacroTokens.CSHARP_FRAGMENT;
+		return CSharpMacroTokens.WHITE_SPACE;
 	}
 
 	{WHITE_SPACE_NO_NEW_LINE}
@@ -91,7 +91,7 @@ IDENTIFIER=[:jletter:] [:jletterdigit:]*
 	{
 		myEnteredNewLine = true;
 		yybegin(YYINITIAL);
-		return CSharpMacroTokens.CSHARP_FRAGMENT;
+		return CSharpMacroTokens.WHITE_SPACE;
 	}
 
 	{SINGLE_LINE_COMMENT}
@@ -169,7 +169,7 @@ IDENTIFIER=[:jletter:] [:jletterdigit:]*
 	{
 		myEnteredNewLine = true;
 		yybegin(YYINITIAL);
-		return CSharpMacroTokens.CSHARP_FRAGMENT;
+		return CSharpMacroTokens.WHITE_SPACE;
 	}
 
 	[^]
@@ -183,7 +183,7 @@ IDENTIFIER=[:jletter:] [:jletterdigit:]*
 	{NEW_LINE}
 	{
 		myEnteredNewLine = true;
-		return CSharpMacroTokens.CSHARP_FRAGMENT;
+		return CSharpMacroTokens.WHITE_SPACE;
 	}
 
 	{MULTI_LINE_STYLE_COMMENT}

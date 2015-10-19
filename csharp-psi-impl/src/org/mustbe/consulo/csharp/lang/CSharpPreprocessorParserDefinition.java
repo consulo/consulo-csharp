@@ -40,7 +40,7 @@ import com.intellij.psi.tree.TokenSet;
  * @author VISTALL
  * @since 23.01.14
  */
-public class CSharpMacroParserDefinition implements ParserDefinition
+public class CSharpPreprocessorParserDefinition implements ParserDefinition
 {
 	@NotNull
 	@Override
@@ -74,7 +74,7 @@ public class CSharpMacroParserDefinition implements ParserDefinition
 	@Override
 	public TokenSet getCommentTokens(@NotNull LanguageVersion languageVersion)
 	{
-		return TokenSet.EMPTY;
+		return TokenSet.create(CSharpMacroTokens.COMMENT);
 	}
 
 	@NotNull

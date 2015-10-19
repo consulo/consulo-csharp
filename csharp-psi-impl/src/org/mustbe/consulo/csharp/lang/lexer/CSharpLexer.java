@@ -37,7 +37,7 @@ import lombok.val;
  */
 public class CSharpLexer extends MergingLexerAdapterBase
 {
-	private static final TokenSet ourMergeSet = TokenSet.create(CSharpTemplateTokens.MACRO_FRAGMENT, CSharpTokens.NON_ACTIVE_SYMBOL,
+	private static final TokenSet ourMergeSet = TokenSet.create(CSharpTemplateTokens.PREPROCESSOR_DIRECTIVE, CSharpTokens.NON_ACTIVE_SYMBOL,
 			CSharpTokensImpl.LINE_DOC_COMMENT);
 
 	private static class MyMergeFunction implements MergeFunction

@@ -96,6 +96,6 @@ public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSha
 	@Override
 	protected IElementType getTemplateTextElementType()
 	{
-		return CSharpTemplateTokens.MACRO_FRAGMENT;
+		return CSharpTemplateTokens.PREPROCESSOR_DIRECTIVE;
 	}
 }

@@ -47,6 +47,7 @@ public class CSharpMacroSyntaxHighlighter extends SyntaxHighlighterBase
 		safeMap(ourKeys, CSharpMacroTokens.REGION_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
 		safeMap(ourKeys, CSharpMacroTokens.ENDIF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
 		safeMap(ourKeys, CSharpMacroTokens.ENDREGION_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpMacroTokens.COMMENT, CSharpHighlightKey.LINE_COMMENT);
 	}
 
 	@NotNull
