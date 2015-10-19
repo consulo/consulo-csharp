@@ -1,9 +1,8 @@
 package org.mustbe.consulo.csharp.lang.lexer;
 
-import java.util.*;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 import com.intellij.lexer.LexerBase;
 import com.intellij.psi.tree.IElementType;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 
 %%
 

@@ -1,7 +1,7 @@
 package org.mustbe.consulo.csharp.lang.parser;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.parser.macro.PreprocessorParsing;
+import org.mustbe.consulo.csharp.lang.parser.macro.CSharpPreprocessorParsing;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.LanguageVersion;
 import com.intellij.lang.PsiBuilder;
@@ -19,12 +19,7 @@ public class CSharpPreprocessorParser implements PsiParser
 	public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
 	{
 		PsiBuilder.Marker mark = builder.mark();
-
-		while(!builder.eof())
-		{
-			PreprocessorParsing.parse(builder);
-		}
-
+		CSharpPreprocessorParsing.parseTree(builder);
 		mark.done(elementType);
 		return builder.getTreeBuilt();
 	}

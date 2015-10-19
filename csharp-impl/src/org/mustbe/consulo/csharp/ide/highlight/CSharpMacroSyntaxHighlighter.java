@@ -37,6 +37,8 @@ public class CSharpMacroSyntaxHighlighter extends SyntaxHighlighterBase
 
 	static
 	{
+		//safeMap(ourKeys, CSharpMacroTokens.BAD_CHARACTER, HighlighterColors.BAD_CHARACTER);
+		safeMap(ourKeys, CSharpMacroTokens.SHARP, CSharpHighlightKey.MACRO_KEYWORD);
 		safeMap(ourKeys, CSharpMacroTokens.DEFINE_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
 		safeMap(ourKeys, CSharpMacroTokens.UNDEF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
 		safeMap(ourKeys, CSharpMacroTokens.IF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
