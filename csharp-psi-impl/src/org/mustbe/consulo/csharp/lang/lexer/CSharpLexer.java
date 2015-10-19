@@ -20,16 +20,16 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
 import com.intellij.lexer.Lexer;
+import com.intellij.lexer.LexerPosition;
 import com.intellij.lexer.MergeFunction;
+import com.intellij.lexer.MergingLexerAdapter;
 import com.intellij.lexer.MergingLexerAdapterBase;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -37,8 +37,8 @@ import lombok.val;
  */
 public class CSharpLexer extends MergingLexerAdapterBase
 {
-	private static final TokenSet ourMergeSet = TokenSet.create(CSharpTemplateTokens.PREPROCESSOR_DIRECTIVE, CSharpTokens.NON_ACTIVE_SYMBOL,
-			CSharpTokensImpl.LINE_DOC_COMMENT);
+	private static final TokenSet ourMergeSet = TokenSet.create(CSharpTokens.NON_ACTIVE_SYMBOL, CSharpTokensImpl.LINE_DOC_COMMENT);
+	private static final TokenSet ourWhitespaceSet = TokenSet.create(CSharpTokens.WHITE_SPACE);
 
 	private static class MyMergeFunction implements MergeFunction
 	{
@@ -66,7 +66,7 @@ public class CSharpLexer extends MergingLexerAdapterBase
 				{
 					if(hasOnlyOneLine(originalLexer.getTokenSequence()))
 					{
-						val currentPosition = originalLexer.getCurrentPosition();
+						LexerPosition currentPosition = originalLexer.getCurrentPosition();
 						originalLexer.advance();
 						boolean docIsNext = originalLexer.getTokenType() == CSharpTokensImpl.LINE_DOC_COMMENT;
 						originalLexer.restore(currentPosition);
@@ -148,7 +148,7 @@ public class CSharpLexer extends MergingLexerAdapterBase
 
 	public CSharpLexer(List<TextRange> ranges)
 	{
-		super(new _CSharpLexer());
+		super(new MergingLexerAdapter(new _CSharpLexer(), ourWhitespaceSet));
 		myMergeFunction = new MyMergeFunction(ranges);
 	}
 
