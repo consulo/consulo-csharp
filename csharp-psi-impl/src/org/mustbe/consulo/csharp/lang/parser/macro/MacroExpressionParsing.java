@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.lang.parser.macro;
 
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
@@ -32,7 +32,7 @@ import lombok.val;
  *        Base on code from java plugin - class ExpressionParser
  *        License Apache 2, Copyright 2000-2013 JetBrains s.r.o
  */
-public class MacroExpressionParsing implements CSharpMacroTokens, CSharpMacroElements
+public class MacroExpressionParsing implements CSharpMacroTokens, CSharpPreprocessorElements
 {
 	private enum ExprType
 	{

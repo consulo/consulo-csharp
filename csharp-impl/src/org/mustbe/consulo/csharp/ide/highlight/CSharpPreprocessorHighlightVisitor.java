@@ -23,9 +23,9 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroBlockImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroBlockStartImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroBlockStopImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorCloseTagImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorOpenTagImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorRegionBlockImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroReferenceExpressionImpl;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
@@ -64,10 +64,10 @@ public class CSharpPreprocessorHighlightVisitor extends CSharpMacroElementVisito
 
 	@Override
 	@RequiredReadAction
-	public void visitMacroBlock(CSharpMacroBlockImpl block)
+	public void visitPreprocessorRegionBlock(CSharpPreprocessorRegionBlockImpl block)
 	{
-		CSharpMacroBlockStartImpl startElement = block.getStartElement();
-		CSharpMacroBlockStopImpl stopElement = block.getStopElement();
+		CSharpPreprocessorOpenTagImpl startElement = block.getOpenDirective();
+		CSharpPreprocessorCloseTagImpl stopElement = block.getCloseDirective();
 
 		if(startElement == null && stopElement != null)
 		{

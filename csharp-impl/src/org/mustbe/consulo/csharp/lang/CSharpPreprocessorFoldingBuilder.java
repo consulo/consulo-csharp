@@ -24,9 +24,9 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroBlockImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroBlockStartImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroBlockStopImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorCloseTagImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorOpenTagImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorRegionBlockImpl;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
@@ -56,12 +56,12 @@ public class CSharpPreprocessorFoldingBuilder implements FoldingBuilder
 		{
 			@Override
 			@RequiredReadAction
-			public void visitMacroBlock(CSharpMacroBlockImpl block)
+			public void visitPreprocessorRegionBlock(CSharpPreprocessorRegionBlockImpl block)
 			{
-				super.visitMacroBlock(block);
+				super.visitPreprocessorRegionBlock(block);
 
-				CSharpMacroBlockStartImpl startElement = block.getStartElement();
-				CSharpMacroBlockStopImpl stopElement = block.getStopElement();
+				CSharpPreprocessorOpenTagImpl startElement = block.getOpenDirective();
+				CSharpPreprocessorCloseTagImpl stopElement = block.getCloseDirective();
 				if(startElement == null || stopElement == null)
 				{
 					return;
@@ -98,9 +98,9 @@ public class CSharpPreprocessorFoldingBuilder implements FoldingBuilder
 		PsiElement psi = astNode.getPsi();
 
 
-		if(psi instanceof CSharpMacroBlockImpl)
+		if(psi instanceof CSharpPreprocessorRegionBlockImpl)
 		{
-			CSharpMacroBlockStartImpl startElement = ((CSharpMacroBlockImpl) psi).getStartElement();
+			CSharpPreprocessorOpenTagImpl startElement = ((CSharpPreprocessorRegionBlockImpl) psi).getOpenDirective();
 
 			if(startElement != null)
 			{

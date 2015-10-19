@@ -30,17 +30,17 @@ public class CSharpMacroElementVisitor extends PsiElementVisitor
 		visitElement(cSharpMacroDefine);
 	}
 
-	public void visitMacroBlockStart(CSharpMacroBlockStartImpl start)
+	public void visitMacroBlockStart(CSharpPreprocessorOpenTagImpl start)
 	{
 		visitElement(start);
 	}
 
-	public void visitMacroBlockStop(CSharpMacroBlockStopImpl stop)
+	public void visitMacroBlockStop(CSharpPreprocessorCloseTagImpl stop)
 	{
 		visitElement(stop);
 	}
 
-	public void visitMacroBlock(CSharpMacroBlockImpl block)
+	public void visitPreprocessorRegionBlock(CSharpPreprocessorRegionBlockImpl block)
 	{
 		visitElement(block);
 	}

@@ -39,9 +39,9 @@ public class CSharpMacroIfImpl extends CSharpMacroElementImpl
 	}
 
 	@Nullable
-	public CSharpMacroBlockStopImpl getCloseTag()
+	public CSharpPreprocessorCloseTagImpl getCloseTag()
 	{
-		return findChildByClass(CSharpMacroBlockStopImpl.class);
+		return findChildByClass(CSharpPreprocessorCloseTagImpl.class);
 	}
 
 	@Override

@@ -32,9 +32,9 @@ public class CSharpMacroIfConditionBlockImpl extends CSharpMacroElementImpl
 	}
 
 	@NotNull
-	public CSharpMacroBlockStartImpl getDeclarationTag()
+	public CSharpPreprocessorOpenTagImpl getDeclarationTag()
 	{
-		return findNotNullChildByClass(CSharpMacroBlockStartImpl.class);
+		return findNotNullChildByClass(CSharpPreprocessorOpenTagImpl.class);
 	}
 
 	@Override

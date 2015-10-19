@@ -17,7 +17,6 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
@@ -29,50 +28,24 @@ import com.intellij.psi.tree.TokenSet;
  * @author VISTALL
  * @since 18.12.13.
  */
-public class CSharpMacroBlockStartImpl extends CSharpMacroElementImpl
+public class CSharpPreprocessorCloseTagImpl extends CSharpMacroElementImpl
 {
-	public CSharpMacroBlockStartImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorCloseTagImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	@Nullable
-	public CSharpMacroExpression getValue()
-	{
-		return findChildByClass(CSharpMacroExpression.class);
-	}
-
 	@NotNull
-	@RequiredReadAction
-	public PsiElement getSharpElement()
-	{
-		return findNotNullChildByType(CSharpMacroTokens.SHARP);
-	}
-
-	@Nullable
 	@RequiredReadAction
 	public PsiElement getKeywordElement()
 	{
-		TokenSet tokenSet = TokenSet.create(CSharpMacroTokens.IF_KEYWORD, CSharpMacroTokens.REGION_KEYWORD,
-				CSharpMacroTokens.ELIF_KEYWORD, CSharpMacroTokens.ELSE_KEYWORD);
-		return findChildByType(tokenSet);
-	}
-
-	public boolean isElse()
-	{
-		return findChildByType(CSharpMacroTokens.ELSE_KEYWORD) != null;
-	}
-
-	@Nullable
-	@Deprecated
-	public PsiElement getStopElement()
-	{
-		return null;
+		TokenSet tokenSet = TokenSet.create(CSharpMacroTokens.ENDIF_KEYWORD, CSharpMacroTokens.ENDREGION_KEYWORD);
+		return findNotNullChildByType(tokenSet);
 	}
 
 	@Override
 	public void accept(@NotNull CSharpMacroElementVisitor visitor)
 	{
-		visitor.visitMacroBlockStart(this);
+		visitor.visitMacroBlockStop(this);
 	}
 }

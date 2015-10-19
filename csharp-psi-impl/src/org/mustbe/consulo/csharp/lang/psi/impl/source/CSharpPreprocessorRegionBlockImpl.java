@@ -25,28 +25,28 @@ import com.intellij.lang.ASTNode;
  * @author VISTALL
  * @since 18.12.13.
  */
-public class CSharpMacroBlockImpl extends CSharpMacroElementImpl
+public class CSharpPreprocessorRegionBlockImpl extends CSharpMacroElementImpl
 {
-	public CSharpMacroBlockImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorRegionBlockImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Nullable
-	public CSharpMacroBlockStartImpl getStartElement()
+	public CSharpPreprocessorOpenTagImpl getOpenDirective()
 	{
-		return findChildByClass(CSharpMacroBlockStartImpl.class);
+		return findChildByClass(CSharpPreprocessorOpenTagImpl.class);
 	}
 
 	@Nullable
-	public CSharpMacroBlockStopImpl getStopElement()
+	public CSharpPreprocessorCloseTagImpl getCloseDirective()
 	{
-		return findChildByClass(CSharpMacroBlockStopImpl.class);
+		return findChildByClass(CSharpPreprocessorCloseTagImpl.class);
 	}
 
 	@Override
 	public void accept(@NotNull CSharpMacroElementVisitor visitor)
 	{
-		visitor.visitMacroBlock(this);
+		visitor.visitPreprocessorRegionBlock(this);
 	}
 }

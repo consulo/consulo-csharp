@@ -30,8 +30,8 @@ import org.mustbe.consulo.csharp.lang.CSharpMacroLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroBlockStartImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroBlockStopImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorCloseTagImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorOpenTagImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroIfConditionBlockImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroIfImpl;
@@ -169,7 +169,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 				CSharpMacroIfConditionBlockImpl block;
 				while((block = queue.poll()) != null)
 				{
-					CSharpMacroBlockStartImpl declarationTag = block.getDeclarationTag();
+					CSharpPreprocessorOpenTagImpl declarationTag = block.getDeclarationTag();
 					if(forceDisable)
 					{
 						addTextRange(declarationTag, queue, element, textRanges);
@@ -209,7 +209,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 				}
 			}
 
-			private void addTextRange(CSharpMacroBlockStartImpl start, Queue<CSharpMacroIfConditionBlockImpl> queue, CSharpMacroIfImpl macroIf,
+			private void addTextRange(CSharpPreprocessorOpenTagImpl start, Queue<CSharpMacroIfConditionBlockImpl> queue, CSharpMacroIfImpl macroIf,
 					List<TextRange> textRanges)
 			{
 				// find next element
@@ -218,7 +218,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 				int endOffset;
 				if(element == null)
 				{
-					CSharpMacroBlockStopImpl closeTag = macroIf.getCloseTag();
+					CSharpPreprocessorCloseTagImpl closeTag = macroIf.getCloseTag();
 					if(closeTag == null)
 					{
 						endOffset = macroIf.getContainingFile().getTextLength();

@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.lang.parser.macro;
 import java.util.Deque;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.WhitespacesBinders;
@@ -71,7 +71,7 @@ public class CSharpPreprocessorParsing
 
 			advanceUntilFragment(builder);
 
-			doneWithBinder(mark, tokenType == CSharpMacroTokens.UNDEF_KEYWORD ? CSharpMacroElements.MACRO_UNDEF : CSharpMacroElements.MACRO_DEFINE);
+			doneWithBinder(mark, tokenType == CSharpMacroTokens.UNDEF_KEYWORD ? CSharpPreprocessorElements.MACRO_UNDEF : CSharpPreprocessorElements.MACRO_DEFINE);
 			return true;
 		}
 		/*else if(token == IF_KEYWORD)
@@ -133,7 +133,7 @@ public class CSharpPreprocessorParsing
 
 			advanceUntilFragment(builder);
 
-			mark.done(CSharpMacroElements.MACRO_BLOCK_START);
+			mark.done(CSharpPreprocessorElements.OPEN_TAG);
 
 			regionMarkers.add(mark.precede());
 
@@ -150,17 +150,17 @@ public class CSharpPreprocessorParsing
 			{
 				advanceUntilFragment(builder);
 
-				doneWithBinder(mark, CSharpMacroElements.MACRO_BLOCK_STOP);
+				doneWithBinder(mark, CSharpPreprocessorElements.CLOSE_TAG);
 
-				mainMarker.done(CSharpMacroElements.MACRO_BLOCK);
+				mainMarker.done(CSharpPreprocessorElements.REGION_BLOCK);
 			}
 			else
 			{
 				advanceUntilFragment(builder);
 
-				doneWithBinder(mark, CSharpMacroElements.MACRO_BLOCK_STOP);
+				doneWithBinder(mark, CSharpPreprocessorElements.CLOSE_TAG);
 
-				mark.precede().done(CSharpMacroElements.MACRO_BLOCK);
+				mark.precede().done(CSharpPreprocessorElements.REGION_BLOCK);
 			}
 
 			return regionMarkers.isEmpty();
@@ -178,9 +178,7 @@ public class CSharpPreprocessorParsing
 		{
 			advanceUntilFragment(builder);
 
-			mark.done(CSharpMacroElements.MACRO_BLOCK_START);
-
-			mark.precede().done(CSharpMacroElements.MACRO_BLOCK);
+			mark.done(CSharpPreprocessorElements.OPEN_TAG);
 			return false;
 		}
 	}
