@@ -38,7 +38,7 @@ import com.intellij.psi.PsiFile;
  * @author VISTALL
  * @since 06.02.14
  */
-public class CSharpMacroHighlightVisitor extends CSharpMacroElementVisitor implements HighlightVisitor
+public class CSharpPreprocessorHighlightVisitor extends CSharpMacroElementVisitor implements HighlightVisitor
 {
 	private HighlightInfoHolder myHighlightInfoHolder;
 
@@ -116,7 +116,7 @@ public class CSharpMacroHighlightVisitor extends CSharpMacroElementVisitor imple
 	@Override
 	public HighlightVisitor clone()
 	{
-		return new CSharpMacroHighlightVisitor();
+		return new CSharpPreprocessorHighlightVisitor();
 	}
 
 	@Override
