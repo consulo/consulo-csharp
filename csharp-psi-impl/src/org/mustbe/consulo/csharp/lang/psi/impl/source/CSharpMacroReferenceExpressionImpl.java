@@ -21,9 +21,9 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightMacroDefine;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightPreprocessorDefineDirective;
 import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -83,18 +83,18 @@ public class CSharpMacroReferenceExpressionImpl extends CSharpMacroElementImpl i
 
 		val text = getText();
 
-		Map<String, CSharpMacroDefine> map = new HashMap<String, CSharpMacroDefine>();
+		Map<String, CSharpPreprocessorDefineDirective> map = new HashMap<String, CSharpPreprocessorDefineDirective>();
 
 		DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(containingFile, DotNetSimpleModuleExtension.class);
 		if(extension != null)
 		{
 			for(String var : extension.getVariables())
 			{
-				map.put(var, new CSharpLightMacroDefine(extension.getModule(), text));
+				map.put(var, new CSharpLightPreprocessorDefineDirective(extension.getModule(), text));
 			}
 		}
 
-		for(CSharpMacroDefine macroDefine : ((CSharpMacroFileImpl) containingFile).getDefines())
+		for(CSharpPreprocessorDefineDirective macroDefine : ((CSharpMacroFileImpl) containingFile).getDefines())
 		{
 			String name = macroDefine.getName();
 			if(name == null)

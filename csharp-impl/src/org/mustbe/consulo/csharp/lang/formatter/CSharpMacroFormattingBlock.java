@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.CSharpMacroLanguage;
+import org.mustbe.consulo.csharp.lang.CSharpPreprocessorLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import com.intellij.formatting.Alignment;
 import com.intellij.formatting.Block;
@@ -38,8 +38,8 @@ public class CSharpMacroFormattingBlock extends AbstractBlock
 
 		List<Block> blocks = new ArrayList<Block>();
 
-		ParserDefinition parserDefinition = LanguageParserDefinitions.INSTANCE.forLanguage(CSharpMacroLanguage.INSTANCE);
-		TokenSet whitespaceTokens = parserDefinition.getWhitespaceTokens(CSharpMacroLanguage.INSTANCE.getVersions()[0]);
+		ParserDefinition parserDefinition = LanguageParserDefinitions.INSTANCE.forLanguage(CSharpPreprocessorLanguage.INSTANCE);
+		TokenSet whitespaceTokens = parserDefinition.getWhitespaceTokens(CSharpPreprocessorLanguage.INSTANCE.getVersions()[0]);
 
 
 		ASTNode temp = thisNode.getFirstChildNode();

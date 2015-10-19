@@ -26,8 +26,8 @@ import java.util.Queue;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.CSharpLanguageVersionWrapper;
-import org.mustbe.consulo.csharp.lang.CSharpMacroLanguage;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
+import org.mustbe.consulo.csharp.lang.CSharpPreprocessorLanguage;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorCloseTagImpl;
@@ -97,7 +97,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 				tempLanguageVersion);
 
 		FileViewProvider viewProvider = ((PsiFile) psi).getViewProvider();
-		PsiFile macroFile = viewProvider.getPsi(CSharpMacroLanguage.INSTANCE);
+		PsiFile macroFile = viewProvider.getPsi(CSharpPreprocessorLanguage.INSTANCE);
 		List<TextRange> textRanges = Collections.emptyList();
 		if(macroFile != null)
 		{
@@ -129,7 +129,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 		templateFile.accept(new CSharpMacroRecursiveElementVisitor()
 		{
 			@Override
-			public void visitMacroDefine(CSharpMacroDefine def)
+			public void visitPreprocessorDefineDirective(CSharpPreprocessorDefineDirective def)
 			{
 				List<String> redefs = redefined.get();
 				if(redefs == null)

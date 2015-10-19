@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 import com.intellij.lang.ASTNode;
@@ -30,9 +30,9 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 18.12.13.
  */
-public class CSharpMacroDefineImpl extends CSharpMacroElementImpl implements CSharpMacroDefine
+public class CSharpPreprocessorDefineDirectiveImpl extends CSharpMacroElementImpl implements CSharpPreprocessorDefineDirective
 {
-	public CSharpMacroDefineImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorDefineDirectiveImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
@@ -40,7 +40,7 @@ public class CSharpMacroDefineImpl extends CSharpMacroElementImpl implements CSh
 	@Override
 	public void accept(@NotNull CSharpMacroElementVisitor visitor)
 	{
-		visitor.visitMacroDefine(this);
+		visitor.visitPreprocessorDefineDirective(this);
 	}
 
 	@Override

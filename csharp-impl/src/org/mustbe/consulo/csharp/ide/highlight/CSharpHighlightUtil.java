@@ -150,7 +150,7 @@ public class CSharpHighlightUtil
 						.INSTANCE_METHOD_CALL;
 			}
 		}
-		else if(element instanceof CSharpMacroDefine)
+		else if(element instanceof CSharpPreprocessorDefineDirective)
 		{
 			key = CSharpHighlightKey.MACRO_VARIABLE;
 		}

@@ -25,9 +25,9 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightMacroDefine;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightPreprocessorDefineDirective;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroReferenceExpressionImpl;
 import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
@@ -95,18 +95,18 @@ public class CSharpPreprocessorCompletionContributor extends CompletionContribut
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				CSharpMacroReferenceExpressionImpl expression = (CSharpMacroReferenceExpressionImpl) parameters.getPosition().getParent();
-				Map<String, CSharpMacroDefine> map = new HashMap<String, CSharpMacroDefine>();
+				Map<String, CSharpPreprocessorDefineDirective> map = new HashMap<String, CSharpPreprocessorDefineDirective>();
 
 				DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(expression, DotNetSimpleModuleExtension.class);
 				if(extension != null)
 				{
 					for(String varName : extension.getVariables())
 					{
-						map.put(varName, new CSharpLightMacroDefine(extension.getModule(), varName));
+						map.put(varName, new CSharpLightPreprocessorDefineDirective(extension.getModule(), varName));
 					}
 				}
 
-				for(CSharpMacroDefine macroDefine : ((CSharpMacroFileImpl) expression.getContainingFile()).getDefines())
+				for(CSharpPreprocessorDefineDirective macroDefine : ((CSharpMacroFileImpl) expression.getContainingFile()).getDefines())
 				{
 					String name = macroDefine.getName();
 					if(name == null)

@@ -39,7 +39,7 @@ import com.intellij.psi.templateLanguages.TemplateLanguageFileViewProvider;
  */
 public class CSharpFileViewProvider extends MultiplePsiFilesPerDocumentFileViewProvider implements TemplateLanguageFileViewProvider
 {
-	private static final THashSet<Language> ourLanguages = new THashSet<Language>(Arrays.asList(CSharpMacroLanguage.INSTANCE, CSharpLanguage.INSTANCE));
+	private static final THashSet<Language> ourLanguages = new THashSet<Language>(Arrays.asList(CSharpPreprocessorLanguage.INSTANCE, CSharpLanguage.INSTANCE));
 
 	public CSharpFileViewProvider(PsiManager manager, VirtualFile virtualFile, boolean eventSystemEnabled)
 	{
@@ -57,7 +57,7 @@ public class CSharpFileViewProvider extends MultiplePsiFilesPerDocumentFileViewP
 	@Override
 	public Language getTemplateDataLanguage()
 	{
-		return CSharpMacroLanguage.INSTANCE;
+		return CSharpPreprocessorLanguage.INSTANCE;
 	}
 
 	@NotNull

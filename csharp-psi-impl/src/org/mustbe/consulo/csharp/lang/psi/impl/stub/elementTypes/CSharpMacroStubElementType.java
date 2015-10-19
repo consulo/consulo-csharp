@@ -3,7 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.CSharpMacroLanguage;
+import org.mustbe.consulo.csharp.lang.CSharpPreprocessorLanguage;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMacroFileStub;
 import com.intellij.psi.PsiFile;
@@ -21,7 +21,7 @@ public class CSharpMacroStubElementType  extends IStubFileElementType<CSharpMacr
 {
 	public CSharpMacroStubElementType()
 	{
-		super("CSHARP_MACRO_FILE", CSharpMacroLanguage.INSTANCE);
+		super("CSHARP_MACRO_FILE", CSharpPreprocessorLanguage.INSTANCE);
 	}
 
 	@Override

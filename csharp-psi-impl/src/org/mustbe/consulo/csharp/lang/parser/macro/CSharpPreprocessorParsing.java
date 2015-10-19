@@ -71,7 +71,7 @@ public class CSharpPreprocessorParsing
 
 			advanceUntilFragment(builder);
 
-			doneWithBinder(mark, tokenType == CSharpMacroTokens.UNDEF_KEYWORD ? CSharpPreprocessorElements.MACRO_UNDEF : CSharpPreprocessorElements.MACRO_DEFINE);
+			doneWithBinder(mark, tokenType == CSharpMacroTokens.UNDEF_KEYWORD ? CSharpPreprocessorElements.UNDEF_DIRECTIVE : CSharpPreprocessorElements.DEFINE_DIRECTIVE);
 			return true;
 		}
 		/*else if(token == IF_KEYWORD)

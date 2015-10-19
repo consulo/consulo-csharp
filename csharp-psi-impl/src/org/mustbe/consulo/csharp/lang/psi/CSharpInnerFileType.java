@@ -21,7 +21,7 @@ import javax.swing.Icon;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.CSharpIcons;
-import org.mustbe.consulo.csharp.lang.CSharpMacroLanguage;
+import org.mustbe.consulo.csharp.lang.CSharpPreprocessorLanguage;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 
 /**
@@ -34,7 +34,7 @@ public class CSharpInnerFileType extends LanguageFileType
 
 	private CSharpInnerFileType()
 	{
-		super(CSharpMacroLanguage.INSTANCE);
+		super(CSharpPreprocessorLanguage.INSTANCE);
 	}
 
 	@NotNull

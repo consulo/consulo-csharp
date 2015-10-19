@@ -2,7 +2,7 @@ package org.mustbe.consulo.csharp.lang.formatter;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.CSharpMacroLanguage;
+import org.mustbe.consulo.csharp.lang.CSharpPreprocessorLanguage;
 import com.intellij.formatting.FormattingModel;
 import com.intellij.formatting.FormattingModelBuilder;
 import com.intellij.formatting.FormattingModelProvider;
@@ -24,7 +24,7 @@ public class CSharpMacroFormattingBuilder implements FormattingModelBuilder
 	{
 		ASTNode node = psiElement.getNode();
 		assert node != null;
-		PsiFile containingFile = psiElement.getContainingFile().getViewProvider().getPsi(CSharpMacroLanguage.INSTANCE);
+		PsiFile containingFile = psiElement.getContainingFile().getViewProvider().getPsi(CSharpPreprocessorLanguage.INSTANCE);
 		assert containingFile != null : psiElement.getContainingFile();
 		ASTNode fileNode = containingFile.getNode();
 		assert fileNode != null;

@@ -14,33 +14,15 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang;
+package org.mustbe.consulo.csharp.lang.psi;
 
-import com.intellij.lang.Language;
-import com.intellij.psi.templateLanguages.TemplateLanguage;
+import com.intellij.psi.PsiNameIdentifierOwner;
 
 /**
  * @author VISTALL
- * @since 23.01.14
+ * @since 26.01.14
  */
-public class CSharpMacroLanguage extends Language implements TemplateLanguage
+public interface CSharpPreprocessorDefineDirective extends PsiNameIdentifierOwner
 {
-	public static final CSharpMacroLanguage INSTANCE = new CSharpMacroLanguage();
-
-	private CSharpMacroLanguage()
-	{
-		super("C#Macro");
-	}
-
-	@Override
-	public String getDisplayName()
-	{
-		return "C# Preprocessor";
-	}
-
-	@Override
-	public boolean isCaseSensitive()
-	{
-		return true;
-	}
+	boolean isUnDef();
 }

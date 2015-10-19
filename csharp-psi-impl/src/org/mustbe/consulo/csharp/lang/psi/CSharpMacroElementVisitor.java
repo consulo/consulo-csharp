@@ -25,7 +25,7 @@ import com.intellij.psi.PsiElementVisitor;
  */
 public class CSharpMacroElementVisitor extends PsiElementVisitor
 {
-	public void visitMacroDefine(CSharpMacroDefine cSharpMacroDefine)
+	public void visitPreprocessorDefineDirective(CSharpPreprocessorDefineDirective cSharpMacroDefine)
 	{
 		visitElement(cSharpMacroDefine);
 	}

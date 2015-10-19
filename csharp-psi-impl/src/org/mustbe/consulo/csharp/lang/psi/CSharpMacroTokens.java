@@ -16,7 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
-import org.mustbe.consulo.csharp.lang.CSharpMacroLanguage;
+import org.mustbe.consulo.csharp.lang.CSharpPreprocessorLanguage;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 
@@ -26,39 +26,39 @@ import com.intellij.psi.tree.IElementType;
  */
 public interface CSharpMacroTokens extends TokenType
 {
-	IElementType IF_KEYWORD = new IElementType("IF_KEYWORD", CSharpMacroLanguage.INSTANCE);
+	IElementType IF_KEYWORD = new IElementType("IF_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
 
-	IElementType ELSE_KEYWORD = new IElementType("ELSE_KEYWORD", CSharpMacroLanguage.INSTANCE);
+	IElementType ELSE_KEYWORD = new IElementType("ELSE_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
 
-	IElementType ELIF_KEYWORD = new IElementType("ELIF_KEYWORD", CSharpMacroLanguage.INSTANCE);
+	IElementType ELIF_KEYWORD = new IElementType("ELIF_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
 
-	IElementType ENDIF_KEYWORD = new IElementType("ENDIF_KEYWORD", CSharpMacroLanguage.INSTANCE);
+	IElementType ENDIF_KEYWORD = new IElementType("ENDIF_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
 
-	IElementType REGION_KEYWORD = new IElementType("REGION_KEYWORD", CSharpMacroLanguage.INSTANCE);
+	IElementType REGION_KEYWORD = new IElementType("REGION_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
 
-	IElementType ENDREGION_KEYWORD = new IElementType("ENDREGION_KEYWORD", CSharpMacroLanguage.INSTANCE);
+	IElementType ENDREGION_KEYWORD = new IElementType("ENDREGION_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
 
-	IElementType DEFINE_KEYWORD = new IElementType("DEFINE_KEYWORD", CSharpMacroLanguage.INSTANCE);
+	IElementType DEFINE_KEYWORD = new IElementType("DEFINE_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
 
-	IElementType UNDEF_KEYWORD = new IElementType("UNDEF_KEYWORD", CSharpMacroLanguage.INSTANCE);
+	IElementType UNDEF_KEYWORD = new IElementType("UNDEF_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
 
-	IElementType SHARP = new IElementType("SHARP", CSharpMacroLanguage.INSTANCE);
+	IElementType SHARP = new IElementType("SHARP", CSharpPreprocessorLanguage.INSTANCE);
 
-	IElementType COMMENT = new IElementType("COMMENT", CSharpMacroLanguage.INSTANCE);
+	IElementType COMMENT = new IElementType("COMMENT", CSharpPreprocessorLanguage.INSTANCE);
 
-	IElementType SIMPLE_VALUE = new IElementType("SIMPLE_VALUE", CSharpMacroLanguage.INSTANCE);
+	IElementType SIMPLE_VALUE = new IElementType("SIMPLE_VALUE", CSharpPreprocessorLanguage.INSTANCE);
 
-	IElementType IDENTIFIER = new IElementType("IDENTIFIER", CSharpMacroLanguage.INSTANCE);
+	IElementType IDENTIFIER = new IElementType("IDENTIFIER", CSharpPreprocessorLanguage.INSTANCE);
 
-	IElementType OROR = new IElementType("OROR", CSharpMacroLanguage.INSTANCE);
+	IElementType OROR = new IElementType("OROR", CSharpPreprocessorLanguage.INSTANCE);
 
-	IElementType ANDAND = new IElementType("ANDAND", CSharpMacroLanguage.INSTANCE);
+	IElementType ANDAND = new IElementType("ANDAND", CSharpPreprocessorLanguage.INSTANCE);
 
-	IElementType LPAR = new IElementType("LPAR", CSharpMacroLanguage.INSTANCE);
+	IElementType LPAR = new IElementType("LPAR", CSharpPreprocessorLanguage.INSTANCE);
 
-	IElementType RPAR = new IElementType("RPAR =", CSharpMacroLanguage.INSTANCE);
+	IElementType RPAR = new IElementType("RPAR =", CSharpPreprocessorLanguage.INSTANCE);
 
-	IElementType EXCL = new IElementType("EXCL", CSharpMacroLanguage.INSTANCE);
+	IElementType EXCL = new IElementType("EXCL", CSharpPreprocessorLanguage.INSTANCE);
 
-	IElementType CSHARP_FRAGMENT = new IElementType("CSHARP_FRAGMENT", CSharpMacroLanguage.INSTANCE);
+	IElementType CSHARP_FRAGMENT = new IElementType("CSHARP_FRAGMENT", CSharpPreprocessorLanguage.INSTANCE);
 }

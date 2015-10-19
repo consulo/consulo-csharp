@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.ide.highlight;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
@@ -102,7 +102,7 @@ public class CSharpPreprocessorHighlightVisitor extends CSharpMacroElementVisito
 	}
 
 	@Override
-	public void visitMacroDefine(CSharpMacroDefine cSharpMacroDefine)
+	public void visitPreprocessorDefineDirective(CSharpPreprocessorDefineDirective cSharpMacroDefine)
 	{
 		if(cSharpMacroDefine.isUnDef())
 		{
