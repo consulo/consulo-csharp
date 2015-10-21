@@ -16,9 +16,9 @@ public interface CSharpPreprocessorElements
 
 	IElementType UNDEF_DIRECTIVE = new ElementTypeAsPsiFactory("UNDEF_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorDefineDirectiveImpl.class);
 
-	IElementType IF_BLOCK = new ElementTypeAsPsiFactory("IF_BLOCK", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorIfImpl.class);
+	IElementType CONDITION_BLOCK = new ElementTypeAsPsiFactory("CONDITION_BLOCK", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorConditionImpl.class);
 
-	IElementType MACRO_IF_CONDITION_BLOCK = new ElementTypeAsPsiFactory("MACRO_IF_CONDITION_BLOCK", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorIfConditionBlockImpl.class);
+	IElementType IF_ELSE_BLOCK = new ElementTypeAsPsiFactory("IF_ELSE_BLOCK", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorIfElseBlockImpl.class);
 
 	IElementType OPEN_TAG = new ElementTypeAsPsiFactory("OPEN_TAG", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorOpenTagImpl.class);
 

@@ -46,7 +46,7 @@ public class CSharpNonActiveAnnotator extends ExternalAnnotator<List<TextRange>,
 			{
 				return null;
 			}
-			return CSharpFileStubElementType.collectDisabledBlocks(file, extension);
+			return CSharpFileStubElementType.collectDisabledBlocks(file.getText(), extension);
 		}
 		return null;
 	}

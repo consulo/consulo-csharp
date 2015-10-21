@@ -36,6 +36,13 @@ public class CSharpPreprocessorCloseTagImpl extends CSharpPreprocessorElementImp
 
 	@NotNull
 	@RequiredReadAction
+	public PsiElement getSharpElement()
+	{
+		return findNotNullChildByType(CSharpPreprocessorTokens.SHARP);
+	}
+
+	@NotNull
+	@RequiredReadAction
 	public PsiElement getKeywordElement()
 	{
 		return findNotNullChildByType(CSharpPreprocessorTokens.KEYWORDS);

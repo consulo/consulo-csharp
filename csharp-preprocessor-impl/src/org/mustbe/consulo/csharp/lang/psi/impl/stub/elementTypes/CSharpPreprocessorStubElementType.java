@@ -21,7 +21,7 @@ public class CSharpPreprocessorStubElementType extends IStubFileElementType<CSha
 {
 	public CSharpPreprocessorStubElementType()
 	{
-		super("CSHARP_MACRO_FILE", CSharpPreprocessorLanguage.INSTANCE);
+		super("CSHARP_PREPROCESSOR_FILE", CSharpPreprocessorLanguage.INSTANCE);
 	}
 
 	@Override

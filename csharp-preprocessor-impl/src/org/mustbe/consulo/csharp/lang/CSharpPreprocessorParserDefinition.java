@@ -60,7 +60,7 @@ public class CSharpPreprocessorParserDefinition implements ParserDefinition
 	@Override
 	public IFileElementType getFileNodeType()
 	{
-		return CSharpPreprocessorStubElements.MACRO_FILE;
+		return CSharpPreprocessorStubElements.PREPROCESSOR_FILE;
 	}
 
 	@NotNull

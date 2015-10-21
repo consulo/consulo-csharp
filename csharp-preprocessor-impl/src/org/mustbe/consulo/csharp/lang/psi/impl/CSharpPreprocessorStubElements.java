@@ -24,5 +24,5 @@ import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.CSharpPreproces
  */
 public interface CSharpPreprocessorStubElements
 {
-	CSharpPreprocessorStubElementType MACRO_FILE = new CSharpPreprocessorStubElementType();
+	CSharpPreprocessorStubElementType PREPROCESSOR_FILE = new CSharpPreprocessorStubElementType();
 }

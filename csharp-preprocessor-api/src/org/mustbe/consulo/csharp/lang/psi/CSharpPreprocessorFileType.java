@@ -20,8 +20,8 @@ import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.CSharpIcons;
 import org.mustbe.consulo.csharp.lang.CSharpPreprocessorLanguage;
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 
 /**
@@ -48,20 +48,20 @@ public class CSharpPreprocessorFileType extends LanguageFileType
 	@Override
 	public String getDescription()
 	{
-		return "C# files";
+		return "C# Preprocessor files";
 	}
 
 	@NotNull
 	@Override
 	public String getDefaultExtension()
 	{
-		return "";
+		return "spf";
 	}
 
 	@Nullable
 	@Override
 	public Icon getIcon()
 	{
-		return CSharpIcons.FileType;
+		return AllIcons.FileTypes.Any_type;
 	}
 }

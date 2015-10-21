@@ -17,6 +17,8 @@
 package org.mustbe.consulo.csharp.lang;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorFileType;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileTypes.FileTypeConsumer;
 import com.intellij.openapi.fileTypes.FileTypeFactory;
 
@@ -30,5 +32,9 @@ public class CSharpFileTypeFactory extends FileTypeFactory
 	public void createFileTypes(@NotNull FileTypeConsumer fileTypeConsumer)
 	{
 		fileTypeConsumer.consume(CSharpFileType.INSTANCE);
+		if(ApplicationManager.getApplication().isInternal())
+		{
+			fileTypeConsumer.consume(CSharpPreprocessorFileType.INSTANCE);
+		}
 	}
 }

@@ -17,26 +17,18 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import java.io.IOException;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Queue;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.CSharpLanguageVersionWrapper;
-import org.mustbe.consulo.csharp.lang.CSharpPreprocessorLanguage;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorRecursiveElementVisitor;
+import org.mustbe.consulo.csharp.lang.lexer.CSharpPreprocessorLexer;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorCloseTagImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorExpression;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorIfConditionBlockImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorIfImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorOpenTagImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpFileStub;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.macro.MacroEvaluator;
 import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
@@ -45,10 +37,12 @@ import com.intellij.lang.LanguageVersion;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilderFactory;
 import com.intellij.lang.PsiParser;
+import com.intellij.lexer.Lexer;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -56,7 +50,10 @@ import com.intellij.psi.StubBuilder;
 import com.intellij.psi.stubs.DefaultStubBuilder;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IStubFileElementType;
+import com.intellij.testFramework.LightVirtualFile;
+import com.intellij.util.indexing.IndexingDataKeys;
 
 /**
  * @author VISTALL
@@ -88,174 +85,128 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 	}
 
 	@Override
+	@RequiredReadAction
 	protected ASTNode doParseContents(@NotNull ASTNode chameleon, @NotNull PsiElement psi)
 	{
 		final Project project = psi.getProject();
 		final Language languageForParser = getLanguageForParser(psi);
 		final LanguageVersion tempLanguageVersion = chameleon.getUserData(LanguageVersion.KEY);
-		final CSharpLanguageVersionWrapper languageVersion = (CSharpLanguageVersionWrapper) (tempLanguageVersion == null ? psi.getLanguageVersion() :
-				tempLanguageVersion);
+		final CSharpLanguageVersionWrapper languageVersion = (CSharpLanguageVersionWrapper) (tempLanguageVersion == null ? psi.getLanguageVersion() : tempLanguageVersion);
 
 		FileViewProvider viewProvider = ((PsiFile) psi).getViewProvider();
-		PsiFile macroFile = viewProvider.getPsi(CSharpPreprocessorLanguage.INSTANCE);
-		List<TextRange> textRanges = Collections.emptyList();
-		if(macroFile != null)
+		VirtualFile virtualFile = viewProvider.getVirtualFile();
+		if(virtualFile instanceof LightVirtualFile)
 		{
-			DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(((PsiFile) psi).getOriginalFile(), DotNetSimpleModuleExtension.class);
-			if(extension != null)
+			virtualFile = ((LightVirtualFile) virtualFile).getOriginalFile();
+		}
+
+		if(virtualFile == null)
+		{
+			virtualFile = psi.getUserData(IndexingDataKeys.VIRTUAL_FILE);
+		}
+
+		List<TextRange> textRanges = Collections.emptyList();
+		CharSequence chars = chameleon.getChars();
+		if(virtualFile != null)
+		{
+			Module moduleForFile = ModuleUtilCore.findModuleForFile(virtualFile, project);
+			if(moduleForFile != null)
 			{
-				textRanges = collectDisabledBlocks(macroFile, extension);
+				DotNetSimpleModuleExtension extension = ModuleUtilCore.getExtension(moduleForFile, DotNetSimpleModuleExtension.class);
+				if(extension != null)
+				{
+					textRanges = collectDisabledBlocks(chars, extension);
+				}
 			}
 		}
 
-		final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, languageVersion.createLexer(textRanges),
-				languageForParser,
-				languageVersion, chameleon.getChars());
+		Lexer lexer = languageVersion.createLexer(textRanges);
+		final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, lexer, languageForParser, languageVersion, chars);
 		final PsiParser parser = LanguageParserDefinitions.INSTANCE.forLanguage(languageForParser).createParser(project, languageVersion);
 		return parser.parse(this, builder, languageVersion).getFirstChildNode();
 	}
 
 	@NotNull
-	public static List<TextRange> collectDisabledBlocks(PsiFile macroFile, @NotNull DotNetSimpleModuleExtension<?> extension)
+	public static List<TextRange> collectDisabledBlocks(@NotNull CharSequence text, @NotNull DotNetSimpleModuleExtension<?> extension)
 	{
-		return collectDisabledBlocks(macroFile, extension.getVariables());
+		return collectDisabledBlocks(text, extension.getVariables());
+	}
+
+	static enum State
+	{
+		unknown,
+		define,
+		undef
 	}
 
 	@NotNull
-	private static List<TextRange> collectDisabledBlocks(PsiFile templateFile, @NotNull final List<String> baseVariables)
+	private static List<TextRange> collectDisabledBlocks(@NotNull CharSequence text, @NotNull final List<String> baseVariables)
 	{
-		final Ref<List<TextRange>> listRef = Ref.create();
-		final Ref<List<String>> redefined = Ref.create();
-		templateFile.accept(new CSharpPreprocessorRecursiveElementVisitor()
+		CSharpPreprocessorLexer lexer = new CSharpPreprocessorLexer();
+		lexer.start(text);
+
+		List<TextRange> textRanges = null;
+		List<String> variables = null;
+
+		State state = State.unknown;
+		IElementType elementType = null;
+		while((elementType = lexer.getTokenType()) != null)
 		{
-			@Override
-			public void visitDefineDirective(CSharpPreprocessorDefineDirective define)
+			loop:
 			{
-				List<String> redefs = redefined.get();
-				if(redefs == null)
+				if(elementType == CSharpPreprocessorTokens.WHITE_SPACE || elementType == CSharpPreprocessorTokens.COMMENT)
 				{
-					redefined.set(redefs = new ArrayList<String>(baseVariables));
-				}
-				String name = define.getName();
-				if(name != null)
-				{
-					if(define.isUnDef())
-					{
-						redefs.remove(name) ;
-					}
-					else
-					{
-						redefs.add(name);
-					}
-				}
-			}
-
-			@Override
-			public void visitIf(CSharpPreprocessorIfImpl element)
-			{
-				List<TextRange> textRanges = listRef.get();
-				if(textRanges == null)
-				{
-					listRef.set(textRanges = new ArrayList<TextRange>());
+					break loop;
 				}
 
-				CSharpPreprocessorIfConditionBlockImpl[] conditionBlocks = element.getConditionBlocks();
-				Queue<CSharpPreprocessorIfConditionBlockImpl> queue = new ArrayDeque<CSharpPreprocessorIfConditionBlockImpl>(conditionBlocks.length);
-				Collections.addAll(queue, conditionBlocks);
-
-				CSharpPreprocessorIfConditionBlockImpl activeBlock = null;
-
-				boolean forceDisable = false;
-				CSharpPreprocessorIfConditionBlockImpl block;
-				while((block = queue.poll()) != null)
+				switch(state)
 				{
-					CSharpPreprocessorOpenTagImpl declarationTag = block.getDeclarationTag();
-					if(forceDisable)
-					{
-						addTextRange(declarationTag, queue, element, textRanges);
-						continue;
-					}
-
-					if(!declarationTag.isElse()) // if / elif
-					{
-						CSharpPreprocessorExpression value = declarationTag.getValue();
-						if(value == null) //if not expression - disabled
+					case unknown:
+						if(elementType == CSharpPreprocessorTokens.DEFINE_KEYWORD)
 						{
-							addTextRange(declarationTag, queue, element, textRanges);
+							if(variables == null)
+							{
+								variables = new ArrayList<String>(baseVariables);
+							}
+							state = State.define;
 						}
-						else
+						else if(elementType == CSharpPreprocessorTokens.UNDEF_KEYWORD)
 						{
-							String text = value.getText();
-							if(isDefined(text))
+							if(variables == null)
 							{
-								forceDisable = true;
-								activeBlock = block;
+								variables = new ArrayList<String>(baseVariables);
 							}
-							else
-							{
-								addTextRange(declarationTag, queue, element, textRanges);
-							}
+							state = State.undef;
 						}
-					}
-					else
-					{
-						activeBlock = block;
-					}
-				}
+						else if(elementType == CSharpPreprocessorTokens.CSHARP_FRAGMENT)
+						{
+							state = State.unknown;
+						}
+						break;
+					case define:
+						if(elementType == CSharpPreprocessorTokens.SIMPLE_VALUE)
+						{
+							String tokenText = lexer.getTokenText();
+							variables.add(tokenText);
 
-				if(activeBlock != null)
-				{
-					activeBlock.accept(this);
+							state = State.unknown;
+						}
+						break;
+					case undef:
+						if(elementType == CSharpPreprocessorTokens.SIMPLE_VALUE)
+						{
+							String tokenText = lexer.getTokenText();
+							variables.remove(tokenText);
+
+							state = State.unknown;
+						}
+						break;
 				}
 			}
 
-			private void addTextRange(CSharpPreprocessorOpenTagImpl start, Queue<CSharpPreprocessorIfConditionBlockImpl> queue, CSharpPreprocessorIfImpl macroIf,
-					List<TextRange> textRanges)
-			{
-				// find next element
-				CSharpPreprocessorIfConditionBlockImpl element = queue.peek();
-
-				int endOffset;
-				if(element == null)
-				{
-					CSharpPreprocessorCloseTagImpl closeTag = macroIf.getCloseTag();
-					if(closeTag == null)
-					{
-						endOffset = macroIf.getContainingFile().getTextLength();
-					}
-					else
-					{
-						endOffset = closeTag.getKeywordElement().getTextRange().getStartOffset();
-					}
-				}
-				else
-				{
-					endOffset = element.getDeclarationTag().getKeywordElement().getTextRange().getStartOffset();
-				}
-
-				PsiElement stopElement = start.getStopElement();
-				if(stopElement == null)
-				{
-					textRanges.add(new TextRange(start.getTextRange().getEndOffset(), endOffset));
-				}
-				else
-				{
-					textRanges.add(new TextRange(stopElement.getTextRange().getEndOffset(), endOffset));
-				}
-			}
-
-			private boolean isDefined(String text)
-			{
-				List<String> defs = redefined.get();
-				if(defs == null)
-				{
-					defs = baseVariables;
-				}
-
-				return MacroEvaluator.evaluate(text, defs);
-			}
-		}); List<TextRange> list = listRef.get();
-		return list == null ? Collections.<TextRange>emptyList() : list;
+			lexer.advance();
+		}
+		return textRanges == null ? Collections.<TextRange>emptyList() : textRanges;
 	}
 
 	@NotNull

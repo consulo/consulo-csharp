@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElementVisitor;
 import com.intellij.lang.ASTNode;
 
@@ -24,22 +25,28 @@ import com.intellij.lang.ASTNode;
  * @author VISTALL
  * @since 26.01.14
  */
-public class CSharpPreprocessorIfConditionBlockImpl extends CSharpPreprocessorElementImpl
+public class CSharpPreprocessorConditionImpl extends CSharpPreprocessorElementImpl
 {
-	public CSharpPreprocessorIfConditionBlockImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorConditionImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
 	@NotNull
-	public CSharpPreprocessorOpenTagImpl getDeclarationTag()
+	public CSharpPreprocessorIfElseBlockImpl[] getIfElseBlocks()
 	{
-		return findNotNullChildByClass(CSharpPreprocessorOpenTagImpl.class);
+		return findChildrenByClass(CSharpPreprocessorIfElseBlockImpl.class);
+	}
+
+	@Nullable
+	public CSharpPreprocessorCloseTagImpl getCloseTag()
+	{
+		return findChildByClass(CSharpPreprocessorCloseTagImpl.class);
 	}
 
 	@Override
 	public void accept(@NotNull CSharpPreprocessorElementVisitor visitor)
 	{
-		visitor.visitIfConditionBlock(this);
+		visitor.visitConditionBlock(this);
 	}
 }

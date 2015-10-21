@@ -55,6 +55,7 @@ public class CSharpPreprocessorOpenTagImpl extends CSharpPreprocessorElementImpl
 		return findChildByType(CSharpPreprocessorTokens.KEYWORDS);
 	}
 
+	@RequiredReadAction
 	public boolean isElse()
 	{
 		return findChildByType(CSharpPreprocessorTokens.ELSE_KEYWORD) != null;

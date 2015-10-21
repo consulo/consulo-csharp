@@ -35,6 +35,6 @@ public class CSharpPreprocessorFileStub extends PsiFileStubImpl<CSharpPreprocess
 	@Override
 	public IStubFileElementType getType()
 	{
-		return CSharpPreprocessorStubElements.MACRO_FILE;
+		return CSharpPreprocessorStubElements.PREPROCESSOR_FILE;
 	}
 }

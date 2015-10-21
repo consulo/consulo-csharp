@@ -70,12 +70,12 @@ public class CSharpPreprocessorElementVisitor extends PsiElementVisitor
 		visitElement(expression);
 	}
 
-	public void visitIf(CSharpPreprocessorIfImpl element)
+	public void visitConditionBlock(CSharpPreprocessorConditionImpl element)
 	{
 		visitElement(element);
 	}
 
-	public void visitIfConditionBlock(CSharpPreprocessorIfConditionBlockImpl element)
+	public void visitIfElseBlock(CSharpPreprocessorIfElseBlockImpl element)
 	{
 		visitElement(element);
 	}
