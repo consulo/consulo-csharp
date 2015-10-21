@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.parser;
 
 import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Iterator;
 
 import org.jetbrains.annotations.NotNull;
@@ -24,14 +25,22 @@ public class CSharpPreprocessorParser implements PsiParser
 		builder.setDebugMode(true);
 
 		PsiBuilder.Marker mark = builder.mark();
-		ArrayDeque<PsiBuilder.Marker> regionMarkers = new ArrayDeque<PsiBuilder.Marker>();
-		CSharpPreprocessorParsing.parseDirectives(builder, regionMarkers, false);
+		Deque<PsiBuilder.Marker> regionMarkers = new ArrayDeque<PsiBuilder.Marker>();
+		Deque<PsiBuilder.Marker> ifMarkers = new ArrayDeque<PsiBuilder.Marker>();
+		CSharpPreprocessorParsing.parseDirectives(builder, regionMarkers, ifMarkers, false);
 
 		Iterator<PsiBuilder.Marker> markerIterator = regionMarkers.descendingIterator();
 		while(markerIterator.hasNext())
 		{
 			PsiBuilder.Marker next = markerIterator.next();
 			next.done(CSharpPreprocessorElements.REGION_BLOCK);
+		}
+
+		markerIterator = ifMarkers.descendingIterator();
+		while(markerIterator.hasNext())
+		{
+			PsiBuilder.Marker next = markerIterator.next();
+			next.done(CSharpPreprocessorElements.IF_BLOCK);
 		}
 
 		mark.done(elementType);

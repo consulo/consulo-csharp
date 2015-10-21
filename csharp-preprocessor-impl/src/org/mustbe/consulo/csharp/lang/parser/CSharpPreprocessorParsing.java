@@ -31,13 +31,11 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CSharpPreprocessorParsing
 {
-	//private static final TokenSet COND_STOPPERS = TokenSet.create(ENDIF_KEYWORD, ELSE_KEYWORD, ELIF_KEYWORD);
-
-	public static boolean parseDirectives(PsiBuilder builder, Deque<PsiBuilder.Marker> regionMarkers, boolean wantBreak)
+	public static boolean parseDirectives(PsiBuilder builder, @NotNull Deque<PsiBuilder.Marker> regionMarkers, @NotNull Deque<PsiBuilder.Marker> ifMarkers, boolean wantBreak)
 	{
 		while(!builder.eof())
 		{
-			boolean needBreak = wantParseSharp(builder, regionMarkers);
+			boolean needBreak = wantParseSharp(builder, regionMarkers, ifMarkers);
 			if(wantBreak && needBreak)
 			{
 				break;
@@ -46,14 +44,14 @@ public class CSharpPreprocessorParsing
 		return false;
 	}
 
-	public static boolean wantParseSharp(PsiBuilder builder, Deque<PsiBuilder.Marker> regionMarkers)
+	private static boolean wantParseSharp(PsiBuilder builder, @NotNull Deque<PsiBuilder.Marker> regionMarkers, @NotNull Deque<PsiBuilder.Marker> ifMarkers)
 	{
 		IElementType tokenType = builder.getTokenType();
 		if(tokenType == CSharpPreprocessorTokens.SHARP)
 		{
 			PsiBuilder.Marker mark = builder.mark();
 			builder.advanceLexer();
-			return parseDirective(builder, mark, regionMarkers);
+			return parseDirective(builder, mark, regionMarkers, ifMarkers);
 		}
 		else
 		{
@@ -62,7 +60,7 @@ public class CSharpPreprocessorParsing
 		return false;
 	}
 
-	public static boolean parseDirective(@NotNull PsiBuilder builder, @NotNull PsiBuilder.Marker mark, @NotNull Deque<PsiBuilder.Marker> regionMarkers)
+	public static boolean parseDirective(@NotNull PsiBuilder builder, @NotNull PsiBuilder.Marker mark, @NotNull Deque<PsiBuilder.Marker> regionMarkers, Deque<PsiBuilder.Marker> ifMarkers)
 	{
 		IElementType tokenType = builder.getTokenType();
 		if(tokenType == CSharpPreprocessorTokens.DEFINE_KEYWORD || tokenType == CSharpPreprocessorTokens.UNDEF_KEYWORD)
@@ -74,59 +72,26 @@ public class CSharpPreprocessorParsing
 			doneWithBinder(mark, tokenType == CSharpPreprocessorTokens.UNDEF_KEYWORD ? CSharpPreprocessorElements.UNDEF_DIRECTIVE : CSharpPreprocessorElements.DEFINE_DIRECTIVE);
 			return true;
 		}
-		/*else if(token == IF_KEYWORD)
+		else if(tokenType == CSharpPreprocessorTokens.IF_KEYWORD)
 		{
-			PsiBuilder.Marker condBlock = builder.mark();
-
-			PsiBuilder.Marker startMarker = builder.mark();
-
 			builder.advanceLexer();
 
-			PsiBuilder.Marker parse = MacroExpressionParsing.parse(builder);
-			if(parse == null)
+			PsiBuilder.Marker expressionMarker = CSharpPreprocessorExpressionParsing.parse(builder);
+			if(expressionMarker == null)
 			{
 				builder.error("Expression expected");
 			}
+			advanceUntilFragment(builder);
 
-			SharedParsingHelpers.expect(builder, MACRO_STOP, null);
-			startMarker.done(MACRO_BLOCK_START);
+			mark.done(CSharpPreprocessorElements.OPEN_TAG);
 
-			parseAndDoneUntilCondStoppers(builder, condBlock);
+			ifMarkers.add(mark.precede());
 
-			while(!builder.eof())
-			{
-				if(builder.getTokenType() == ELIF_KEYWORD)
-				{
-					parseElIf(builder, startMarker);
-				}
-				else if(builder.getTokenType() == ELSE_KEYWORD)
-				{
-					parseElse(builder, startMarker);
-				}
-				else if(builder.getTokenType() == ENDIF_KEYWORD)
-				{
-					break;
-				}
-			}
-
-			if(builder.getTokenType() == ENDIF_KEYWORD)
-			{
-				PsiBuilder.Marker endIfMarker = builder.mark();
-				builder.advanceLexer();
-
-				SharedParsingHelpers.expect(builder, MACRO_STOP, null);
-
-				endIfMarker.done(MACRO_BLOCK_STOP);
-			}
-			else
-			{
-				builder.error("'#endif' expected");
-			}
-
-			mark.done(MACRO_IF);
+			parseDirectives(builder, regionMarkers, ifMarkers, true);
 
 			return true;
-		}  */
+		}
+		// TODO [VISTALL] handle ELSE & ELIF
 		else if(tokenType == CSharpPreprocessorTokens.REGION_KEYWORD)
 		{
 			builder.advanceLexer();
@@ -137,43 +102,18 @@ public class CSharpPreprocessorParsing
 
 			regionMarkers.add(mark.precede());
 
-			parseDirectives(builder, regionMarkers, true);
+			parseDirectives(builder, regionMarkers, ifMarkers, true);
 
 			return true;
 		}
 		else if(tokenType == CSharpPreprocessorTokens.ENDREGION_KEYWORD)
 		{
-			builder.advanceLexer();
-
-			PsiBuilder.Marker mainMarker = regionMarkers.pollLast();
-			if(mainMarker != null)
-			{
-				advanceUntilFragment(builder);
-
-				doneWithBinder(mark, CSharpPreprocessorElements.CLOSE_TAG);
-
-				mainMarker.done(CSharpPreprocessorElements.REGION_BLOCK);
-			}
-			else
-			{
-				advanceUntilFragment(builder);
-
-				doneWithBinder(mark, CSharpPreprocessorElements.CLOSE_TAG);
-
-				mark.precede().done(CSharpPreprocessorElements.REGION_BLOCK);
-			}
-
-			return regionMarkers.isEmpty();
-		}  /*
-		else if(token == ENDIF_KEYWORD)
+			return doneEndTag(builder, mark, CSharpPreprocessorElements.REGION_BLOCK, regionMarkers);
+		}
+		else if(tokenType == CSharpPreprocessorTokens.ENDIF_KEYWORD)
 		{
-			builder.advanceLexer();
-			builder.error("'#endif' without '#if'");
-
-			skipUntilStop(builder);
-			mark.done(MACRO_BLOCK_STOP);
-			return true;
-		} */
+			return doneEndTag(builder, mark, CSharpPreprocessorElements.IF_BLOCK, ifMarkers);
+		}
 		else
 		{
 			advanceUntilFragment(builder);
@@ -181,6 +121,31 @@ public class CSharpPreprocessorParsing
 			mark.done(CSharpPreprocessorElements.OPEN_TAG);
 			return false;
 		}
+	}
+
+	private static boolean doneEndTag(PsiBuilder builder, PsiBuilder.Marker mark, IElementType doneTo, Deque<PsiBuilder.Marker> deque)
+	{
+		builder.advanceLexer();
+
+		PsiBuilder.Marker mainMarker = deque.pollLast();
+		if(mainMarker != null)
+		{
+			advanceUntilFragment(builder);
+
+			doneWithBinder(mark, CSharpPreprocessorElements.CLOSE_TAG);
+
+			mainMarker.done(doneTo);
+		}
+		else
+		{
+			advanceUntilFragment(builder);
+
+			doneWithBinder(mark, CSharpPreprocessorElements.CLOSE_TAG);
+
+			mark.precede().done(doneTo);
+		}
+
+		return deque.isEmpty();
 	}
 
 	private static void doneWithBinder(PsiBuilder.Marker mark, IElementType elementType)
