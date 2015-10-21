@@ -128,12 +128,12 @@
 		<typeDeclarationProvider implementation="org.mustbe.consulo.csharp.ide.actions.navigate.GotoTypeDeclarationProvider"/>
 		<projectService serviceImplementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher"/>
 		<syntaxHighlighter key="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpSyntaxHighlighter"/>
-		<syntaxHighlighter key="C#Macro" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpPreprocessorSyntaxHighlighter"/>
+		<syntaxHighlighter key="C#Preprocessor" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpPreprocessorSyntaxHighlighter"/>
 		<copyright.updater filetype="C#" implementationClass="org.mustbe.consulo.csharp.ide.copyright.CSharpUpdateCopyrightsProvider"/>
 		<highlightVisitor implementation="org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightVisitor"/>
 		<highlightVisitor implementation="org.mustbe.consulo.csharp.ide.highlight.check.CSharpCompilerCheckVisitor"/>
 		<highlightVisitor implementation="org.mustbe.consulo.csharp.ide.highlight.CSharpPreprocessorHighlightVisitor"/>
-		<externalAnnotator language="C#Macro" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpNonActiveAnnotator"/>
+		<externalAnnotator language="C#Preprocessor" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpNonActiveAnnotator"/>
 		<iconDescriptorUpdater implementation="org.mustbe.consulo.csharp.lang.CSharpIconDescriptorUpdater"/>
 		<treeStructureProvider implementation="org.mustbe.consulo.csharp.ide.projectView.CSharpProjectViewProvider"/>
 		<applicationConfigurable id="editor.preferences.import.csharp"
@@ -169,7 +169,7 @@
 		<weigher key="proximity" id="csharpObsolete"
 				 implementationClass="org.mustbe.consulo.csharp.ide.completion.weighter.CSharpObsoleteWeigher"/>
 
-		<completion.contributor language="C#Macro"
+		<completion.contributor language="C#Preprocessor"
 								implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpPreprocessorCompletionContributor"/>
 
 		<completion.contributor language="C#Doc"
@@ -275,23 +275,23 @@
 		<psi.treeChangePreprocessor implementation="org.mustbe.consulo.csharp.lang.psi.impl.CSharpPsiTreeChangePreprocessor"/>
 		<lang.psiStructureViewFactory language="C#" implementationClass="org.mustbe.consulo.csharp.ide.structureView.CSharpStructureViewFactory"/>
 		<lang.formatter language="C#" implementationClass="org.mustbe.consulo.csharp.lang.formatter.CSharpFormattingModelBuilder"/>
-		<lang.formatter language="C#Macro" implementationClass="org.mustbe.consulo.csharp.lang.formatter.CSharpPreprocessorFormattingBuilder"/>
+		<lang.formatter language="C#Preprocessor" implementationClass="org.mustbe.consulo.csharp.lang.formatter.CSharpPreprocessorFormattingBuilder"/>
 		<lang.elementIcon language="C#" file="/icons/csharpLang.png"/>
 		<lang.commenter language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpCommenter"/>
 		<lang.namesValidator language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpNamesValidator"/>
 		<lang.braceMatcher language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpPairedBraceMatcher"/>
 		<lang.importOptimizer language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpImportOptimizer"/>
 		<lang.foldingBuilder language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpFoldingBuilder"/>
-		<lang.foldingBuilder language="C#Macro" implementationClass="org.mustbe.consulo.csharp.lang.CSharpPreprocessorFoldingBuilder"/>
+		<lang.foldingBuilder language="C#Preprocessor" implementationClass="org.mustbe.consulo.csharp.lang.CSharpPreprocessorFoldingBuilder"/>
 		<lang.syntaxHighlighterFactory key="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpSyntaxHighlighterFactory"/>
-		<lang.syntaxHighlighterFactory key="C#Macro"
+		<lang.syntaxHighlighterFactory key="C#Preprocessor"
 									   implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpPreprocessorSyntaxHighlighterFactory"/>
 		<lang.refactoringSupport language="C#" implementationClass="org.mustbe.consulo.csharp.ide.refactoring.CSharpRefactoringSupportProvider"/>
 		<refactoring.changeSignatureUsageProcessor
 				implementation="org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureUsageProcessor"/>
 		<inlineActionHandler implementation="org.mustbe.consulo.csharp.ide.refactoring.inlineAction.CSharpLocalVariableInlineActionHandler"/>
 		<lang.parserDefinition language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpParserDefinition"/>
-		<lang.parserDefinition language="C#Macro" implementationClass="org.mustbe.consulo.csharp.lang.CSharpPreprocessorParserDefinition"/>
+		<lang.parserDefinition language="C#Preprocessor" implementationClass="org.mustbe.consulo.csharp.lang.CSharpPreprocessorParserDefinition"/>
 		<lang.parserDefinition language="C#Doc" implementationClass="org.mustbe.consulo.csharp.lang.doc.CSharpDocParserDefinition"/>
 		<lang.fileViewProviderFactory language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpFileViewProviderFactory"/>
 		<lang.versionResolver language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpLanguageVersionResolver"/>

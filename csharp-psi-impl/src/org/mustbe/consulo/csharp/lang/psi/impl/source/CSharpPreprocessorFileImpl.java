@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.CSharpPreprocessorLanguage;
-import org.mustbe.consulo.csharp.lang.psi.CSharpInnerFileType;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorFileType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
@@ -45,6 +45,6 @@ public class CSharpPreprocessorFileImpl extends PsiFileBase
 	@Override
 	public FileType getFileType()
 	{
-		return CSharpInnerFileType.INSTANCE;
+		return CSharpPreprocessorFileType.INSTANCE;
 	}
 }

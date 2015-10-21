@@ -28,11 +28,11 @@ import com.intellij.openapi.fileTypes.LanguageFileType;
  * @author VISTALL
  * @since 23.01.14
  */
-public class CSharpInnerFileType extends LanguageFileType
+public class CSharpPreprocessorFileType extends LanguageFileType
 {
-	public static final CSharpInnerFileType INSTANCE = new CSharpInnerFileType();
+	public static final CSharpPreprocessorFileType INSTANCE = new CSharpPreprocessorFileType();
 
-	private CSharpInnerFileType()
+	private CSharpPreprocessorFileType()
 	{
 		super(CSharpPreprocessorLanguage.INSTANCE);
 	}
@@ -41,7 +41,7 @@ public class CSharpInnerFileType extends LanguageFileType
 	@Override
 	public String getName()
 	{
-		return "C#";
+		return "C#Preprocessor";
 	}
 
 	@NotNull
@@ -55,7 +55,7 @@ public class CSharpInnerFileType extends LanguageFileType
 	@Override
 	public String getDefaultExtension()
 	{
-		return "cs";
+		return "";
 	}
 
 	@Nullable

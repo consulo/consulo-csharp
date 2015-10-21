@@ -28,7 +28,7 @@ public class CSharpPreprocessorLanguage extends Language
 
 	private CSharpPreprocessorLanguage()
 	{
-		super("C#Macro");
+		super("C#Preprocessor");
 	}
 
 	@Override

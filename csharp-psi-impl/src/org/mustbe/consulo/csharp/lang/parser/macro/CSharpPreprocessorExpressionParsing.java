@@ -32,7 +32,7 @@ import lombok.val;
  *        Base on code from java plugin - class ExpressionParser
  *        License Apache 2, Copyright 2000-2013 JetBrains s.r.o
  */
-public class MacroExpressionParsing implements CSharpPreprocessorTokens, CSharpPreprocessorElements
+public class CSharpPreprocessorExpressionParsing implements CSharpPreprocessorTokens, CSharpPreprocessorElements
 {
 	private enum ExprType
 	{
