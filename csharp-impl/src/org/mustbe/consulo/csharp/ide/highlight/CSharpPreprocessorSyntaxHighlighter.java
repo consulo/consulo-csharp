@@ -39,14 +39,7 @@ public class CSharpPreprocessorSyntaxHighlighter extends SyntaxHighlighterBase
 	{
 		//safeMap(ourKeys, CSharpMacroTokens.BAD_CHARACTER, HighlighterColors.BAD_CHARACTER);
 		safeMap(ourKeys, CSharpPreprocessorTokens.SHARP, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpPreprocessorTokens.DEFINE_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpPreprocessorTokens.UNDEF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpPreprocessorTokens.IF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpPreprocessorTokens.ELSE_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpPreprocessorTokens.ELIF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpPreprocessorTokens.REGION_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpPreprocessorTokens.ENDIF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpPreprocessorTokens.ENDREGION_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.KEYWORDS, CSharpHighlightKey.MACRO_KEYWORD);
 		safeMap(ourKeys, CSharpPreprocessorTokens.COMMENT, CSharpHighlightKey.LINE_COMMENT);
 	}
 

@@ -16,7 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
-import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpPreprocessorStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorFileImpl;
 import com.intellij.psi.stubs.PsiFileStubImpl;
 import com.intellij.psi.tree.IStubFileElementType;
@@ -35,6 +35,6 @@ public class CSharpPreprocessorFileStub extends PsiFileStubImpl<CSharpPreprocess
 	@Override
 	public IStubFileElementType getType()
 	{
-		return CSharpStubElements.MACRO_FILE;
+		return CSharpPreprocessorStubElements.MACRO_FILE;
 	}
 }

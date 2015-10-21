@@ -4,7 +4,6 @@ import java.util.ArrayDeque;
 import java.util.Iterator;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.parser.macro.CSharpPreprocessorParsing;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElements;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.LanguageVersion;

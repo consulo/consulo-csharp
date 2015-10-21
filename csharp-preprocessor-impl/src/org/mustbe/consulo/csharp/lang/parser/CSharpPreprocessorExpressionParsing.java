@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.parser.macro;
+package org.mustbe.consulo.csharp.lang.parser;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorTokens;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -163,7 +161,7 @@ public class CSharpPreprocessorExpressionParsing implements CSharpPreprocessorTo
 
 		if(tokenType == IDENTIFIER)
 		{
-			val refExpr = builder.mark();
+			PsiBuilder.Marker refExpr = builder.mark();
 
 			builder.advanceLexer();
 			refExpr.done(REFERENCE_EXPRESSION);
@@ -181,7 +179,7 @@ public class CSharpPreprocessorExpressionParsing implements CSharpPreprocessorTo
 				builder.error("Expression expected");
 			}
 
-			if(!SharedParsingHelpers.expect(builder, RPAR, null))
+			if(!expect(builder, RPAR, null))
 			{
 				if(inner != null)
 				{
@@ -193,5 +191,22 @@ public class CSharpPreprocessorExpressionParsing implements CSharpPreprocessorTo
 			return parenth;
 		}
 		return null;
+	}
+
+	public static boolean expect(PsiBuilder builder, IElementType elementType, String message)
+	{
+		if(builder.getTokenType() == elementType)
+		{
+			builder.advanceLexer();
+			return true;
+		}
+		else
+		{
+			if(message != null)
+			{
+				builder.error(message);
+			}
+			return false;
+		}
 	}
 }

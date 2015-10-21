@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.parser.macro;
+package org.mustbe.consulo.csharp.lang.parser;
 
 import java.util.Deque;
 

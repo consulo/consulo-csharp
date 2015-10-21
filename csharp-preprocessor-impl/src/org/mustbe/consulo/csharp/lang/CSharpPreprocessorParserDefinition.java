@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.lexer.CSharpPreprocessorLexer;
 import org.mustbe.consulo.csharp.lang.parser.CSharpPreprocessorParser;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpPreprocessorStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorFileImpl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
@@ -60,7 +60,7 @@ public class CSharpPreprocessorParserDefinition implements ParserDefinition
 	@Override
 	public IFileElementType getFileNodeType()
 	{
-		return CSharpStubElements.MACRO_FILE;
+		return CSharpPreprocessorStubElements.MACRO_FILE;
 	}
 
 	@NotNull

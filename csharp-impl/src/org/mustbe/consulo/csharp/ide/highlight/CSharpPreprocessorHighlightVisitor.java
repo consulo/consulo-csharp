@@ -84,10 +84,17 @@ public class CSharpPreprocessorHighlightVisitor extends CSharpPreprocessorElemen
 			{
 				myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR).range(keywordElement).descriptionAndTooltip("Required region end").create());
 			}
-			else if(keywordElement == null)
-			{
-				myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR).range(startElement.getSharpElement()).descriptionAndTooltip("Expected directive name").create());
-			}
+		}
+	}
+
+	@Override
+	@RequiredReadAction
+	public void visitOpenTag(CSharpPreprocessorOpenTagImpl start)
+	{
+		PsiElement keywordElement = start.getKeywordElement();
+		if(keywordElement == null)
+		{
+			myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR).range(start.getSharpElement()).descriptionAndTooltip("Expected directive name").create());
 		}
 	}
 

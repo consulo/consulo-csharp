@@ -23,7 +23,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorTokens;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.TokenSet;
 
 /**
  * @author VISTALL
@@ -53,9 +52,7 @@ public class CSharpPreprocessorOpenTagImpl extends CSharpPreprocessorElementImpl
 	@RequiredReadAction
 	public PsiElement getKeywordElement()
 	{
-		TokenSet tokenSet = TokenSet.create(CSharpPreprocessorTokens.IF_KEYWORD, CSharpPreprocessorTokens.REGION_KEYWORD,
-				CSharpPreprocessorTokens.ELIF_KEYWORD, CSharpPreprocessorTokens.ELSE_KEYWORD);
-		return findChildByType(tokenSet);
+		return findChildByType(CSharpPreprocessorTokens.KEYWORDS);
 	}
 
 	public boolean isElse()

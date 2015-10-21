@@ -22,7 +22,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorTokens;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.TokenSet;
 
 /**
  * @author VISTALL
@@ -39,8 +38,7 @@ public class CSharpPreprocessorCloseTagImpl extends CSharpPreprocessorElementImp
 	@RequiredReadAction
 	public PsiElement getKeywordElement()
 	{
-		TokenSet tokenSet = TokenSet.create(CSharpPreprocessorTokens.ENDIF_KEYWORD, CSharpPreprocessorTokens.ENDREGION_KEYWORD);
-		return findNotNullChildByType(tokenSet);
+		return findNotNullChildByType(CSharpPreprocessorTokens.KEYWORDS);
 	}
 
 	@Override

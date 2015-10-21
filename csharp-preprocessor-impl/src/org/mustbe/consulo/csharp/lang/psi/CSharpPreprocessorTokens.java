@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi;
 import org.mustbe.consulo.csharp.lang.CSharpPreprocessorLanguage;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
 
 /**
  * @author VISTALL
@@ -61,4 +62,6 @@ public interface CSharpPreprocessorTokens extends TokenType
 	IElementType EXCL = new IElementType("EXCL", CSharpPreprocessorLanguage.INSTANCE);
 
 	IElementType CSHARP_FRAGMENT = new IElementType("CSHARP_FRAGMENT", CSharpPreprocessorLanguage.INSTANCE);
+
+	TokenSet KEYWORDS = TokenSet.create(IF_KEYWORD, ELSE_KEYWORD, ELIF_KEYWORD, ENDIF_KEYWORD, REGION_KEYWORD, ENDREGION_KEYWORD, DEFINE_KEYWORD, UNDEF_KEYWORD);
 }
