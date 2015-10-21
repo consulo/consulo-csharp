@@ -193,7 +193,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 						}
 						break;
 					case undef:
-						if(elementType == CSharpPreprocessorTokens.SIMPLE_VALUE)
+						if(elementType == CSharpPreprocessorTokens.IDENTIFIER)
 						{
 							String tokenText = lexer.getTokenText();
 							variables.remove(tokenText);

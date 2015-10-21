@@ -143,7 +143,7 @@ IDENTIFIER=[:jletter:] [:jletterdigit:]*
 
 	"undef"
 	{
-		yybegin(NO_DIRECTIVE_VALUE);
+		yybegin(EXPRESSION_DIRECTIVE_VALUE);
 		return CSharpPreprocessorTokens.UNDEF_KEYWORD;
 	}
 

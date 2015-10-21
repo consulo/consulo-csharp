@@ -101,10 +101,4 @@ public class CSharpLightPreprocessorDefineDirective extends LightElement impleme
 	{
 		return null;
 	}
-
-	@Override
-	public boolean isUnDef()
-	{
-		return false;
-	}
 }

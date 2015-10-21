@@ -16,24 +16,19 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightPreprocessorDefineDirective;
-import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -73,6 +68,7 @@ public class CSharpPreprocessorReferenceExpressionImpl extends CSharpPreprocesso
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public PsiElement resolve()
 	{
 		PsiFile containingFile = getContainingFile();
@@ -81,38 +77,17 @@ public class CSharpPreprocessorReferenceExpressionImpl extends CSharpPreprocesso
 			return null;
 		}
 
-		val text = getText();
+		String text = getText();
 
-		Map<String, CSharpPreprocessorDefineDirective> map = new HashMap<String, CSharpPreprocessorDefineDirective>();
-
-		DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(containingFile, DotNetSimpleModuleExtension.class);
-		if(extension != null)
+		for(CSharpPreprocessorDefineDirective directive : ((CSharpPreprocessorFileImpl) containingFile).getVariables(true))
 		{
-			for(String var : extension.getVariables())
+			if(Comparing.equal(text, directive.getName()))
 			{
-				map.put(var, new CSharpLightPreprocessorDefineDirective(extension.getModule(), text));
+				return directive;
 			}
 		}
 
-		for(CSharpPreprocessorDefineDirective macroDefine : ((CSharpPreprocessorFileImpl) containingFile).getDefines())
-		{
-			String name = macroDefine.getName();
-			if(name == null)
-			{
-				continue;
-			}
-
-			if(macroDefine.isUnDef())
-			{
-				map.remove(name);
-			}
-			else
-			{
-				map.put(name, macroDefine);
-			}
-		}
-
-		return map.get(text);
+		return null;
 	}
 
 	@NotNull

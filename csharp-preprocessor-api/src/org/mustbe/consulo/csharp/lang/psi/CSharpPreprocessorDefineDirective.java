@@ -24,5 +24,4 @@ import com.intellij.psi.PsiNameIdentifierOwner;
  */
 public interface CSharpPreprocessorDefineDirective extends PsiNameIdentifierOwner
 {
-	boolean isUnDef();
 }

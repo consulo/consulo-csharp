@@ -14,7 +14,7 @@ public interface CSharpPreprocessorElements
 
 	IElementType DEFINE_DIRECTIVE = new ElementTypeAsPsiFactory("DEFINE_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorDefineDirectiveImpl.class);
 
-	IElementType UNDEF_DIRECTIVE = new ElementTypeAsPsiFactory("UNDEF_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorDefineDirectiveImpl.class);
+	IElementType UNDEF_DIRECTIVE = new ElementTypeAsPsiFactory("UNDEF_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorUndefDirectiveImpl.class);
 
 	IElementType CONDITION_BLOCK = new ElementTypeAsPsiFactory("CONDITION_BLOCK", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorConditionImpl.class);
 

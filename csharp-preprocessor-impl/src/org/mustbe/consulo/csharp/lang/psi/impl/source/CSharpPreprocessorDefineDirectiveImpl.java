@@ -69,10 +69,4 @@ public class CSharpPreprocessorDefineDirectiveImpl extends CSharpPreprocessorEle
 		PsiElement nameIdentifier = getNameIdentifier();
 		return nameIdentifier == null ? super.getTextOffset() : nameIdentifier.getTextOffset();
 	}
-
-	@Override
-	public boolean isUnDef()
-	{
-		return findChildByType(CSharpPreprocessorTokens.UNDEF_KEYWORD) != null;
-	}
 }

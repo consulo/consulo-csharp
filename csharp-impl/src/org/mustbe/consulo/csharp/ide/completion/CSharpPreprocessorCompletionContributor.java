@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.ide.completion;
 import static com.intellij.patterns.StandardPatterns.psiElement;
 
 import java.util.Arrays;
-import java.util.Map;
+import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
@@ -27,10 +27,8 @@ import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightPreprocessorDefineDirective;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorReferenceExpressionImpl;
-import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
@@ -39,10 +37,8 @@ import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.util.Pair;
 import com.intellij.util.ProcessingContext;
-import com.intellij.util.containers.HashMap;
 
 /**
  * @author VISTALL
@@ -94,37 +90,9 @@ public class CSharpPreprocessorCompletionContributor extends CompletionContribut
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
-				CSharpPreprocessorReferenceExpressionImpl expression = (CSharpPreprocessorReferenceExpressionImpl) parameters.getPosition().getParent();
-				Map<String, CSharpPreprocessorDefineDirective> map = new HashMap<String, CSharpPreprocessorDefineDirective>();
+				Collection<CSharpPreprocessorDefineDirective> variables = ((CSharpPreprocessorFileImpl) parameters.getOriginalFile()).getVariables(true);
 
-				DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(expression, DotNetSimpleModuleExtension.class);
-				if(extension != null)
-				{
-					for(String varName : extension.getVariables())
-					{
-						map.put(varName, new CSharpLightPreprocessorDefineDirective(extension.getModule(), varName));
-					}
-				}
-
-				for(CSharpPreprocessorDefineDirective macroDefine : ((CSharpPreprocessorFileImpl) expression.getContainingFile()).getDefines())
-				{
-					String name = macroDefine.getName();
-					if(name == null)
-					{
-						continue;
-					}
-
-					if(macroDefine.isUnDef())
-					{
-						map.remove(name);
-					}
-					else
-					{
-						map.put(name, macroDefine);
-					}
-				}
-
-				LookupElement[] lookupElements = CSharpLookupElementBuilder.buildToLookupElements(map.values());
+				LookupElement[] lookupElements = CSharpLookupElementBuilder.buildToLookupElements(variables);
 				result.addAllElements(Arrays.asList(lookupElements));
 			}
 		});

@@ -63,13 +63,28 @@ public class CSharpPreprocessorParsing
 	public static boolean parseDirective(@NotNull PsiBuilder builder, @NotNull PsiBuilder.Marker mark, @NotNull Deque<PsiBuilder.Marker> regionMarkers, Deque<PsiBuilder.Marker> ifMarkers)
 	{
 		IElementType tokenType = builder.getTokenType();
-		if(tokenType == CSharpPreprocessorTokens.DEFINE_KEYWORD || tokenType == CSharpPreprocessorTokens.UNDEF_KEYWORD)
+		if(tokenType == CSharpPreprocessorTokens.DEFINE_KEYWORD )
 		{
 			builder.advanceLexer();
 
 			advanceUntilFragment(builder);
 
-			doneWithBinder(mark, tokenType == CSharpPreprocessorTokens.UNDEF_KEYWORD ? CSharpPreprocessorElements.UNDEF_DIRECTIVE : CSharpPreprocessorElements.DEFINE_DIRECTIVE);
+			doneWithBinder(mark, CSharpPreprocessorElements.DEFINE_DIRECTIVE);
+			return true;
+		}
+		else if( tokenType == CSharpPreprocessorTokens.UNDEF_KEYWORD)
+		{
+			builder.advanceLexer();
+
+			PsiBuilder.Marker expressionMarker = CSharpPreprocessorExpressionParsing.parse(builder);
+			if(expressionMarker == null)
+			{
+				builder.error("Variable name expected");
+			}
+
+			advanceUntilFragment(builder);
+
+			doneWithBinder(mark, CSharpPreprocessorElements.UNDEF_DIRECTIVE);
 			return true;
 		}
 		else if(tokenType == CSharpPreprocessorTokens.IF_KEYWORD ||

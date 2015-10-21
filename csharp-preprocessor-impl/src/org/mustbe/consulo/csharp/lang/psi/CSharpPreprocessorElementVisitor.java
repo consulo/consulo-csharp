@@ -30,6 +30,11 @@ public class CSharpPreprocessorElementVisitor extends PsiElementVisitor
 		visitElement(define);
 	}
 
+	public void visitUndefDirective(CSharpPreprocessorUndefDirectiveImpl undefDirective)
+	{
+		visitElement(undefDirective);
+	}
+
 	public void visitOpenTag(CSharpPreprocessorOpenTagImpl start)
 	{
 		visitElement(start);

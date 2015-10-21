@@ -16,12 +16,20 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.TreeMap;
+
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpPreprocessorLanguage;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorFileType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorFileType;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightPreprocessorDefineDirective;
+import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.psi.FileViewProvider;
 
 /**
@@ -36,9 +44,45 @@ public class CSharpPreprocessorFileImpl extends PsiFileBase
 	}
 
 	@NotNull
-	public CSharpPreprocessorDefineDirective[] getDefines()
+	@RequiredReadAction
+	public Collection<CSharpPreprocessorDefineDirective> getVariables(boolean skipUndef)
 	{
-		return findChildrenByClass(CSharpPreprocessorDefineDirective.class);
+		Map<String, CSharpPreprocessorDefineDirective> directives = new TreeMap<String, CSharpPreprocessorDefineDirective>();
+
+		CSharpPreprocessorDefineDirective[] defines = findChildrenByClass(CSharpPreprocessorDefineDirective.class);
+		CSharpPreprocessorUndefDirectiveImpl[] undef = findChildrenByClass(CSharpPreprocessorUndefDirectiveImpl.class);
+
+		for(CSharpPreprocessorDefineDirective define : defines)
+		{
+			String name = define.getName();
+			if(name != null)
+			{
+				directives.put(name, define);
+			}
+		}
+
+		DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(this, DotNetSimpleModuleExtension.class);
+		if(extension != null)
+		{
+			for(String varName : extension.getVariables())
+			{
+				directives.put(varName, new CSharpLightPreprocessorDefineDirective(extension.getModule(), varName));
+			}
+		}
+
+		if(!skipUndef)
+		{
+			for(CSharpPreprocessorUndefDirectiveImpl undefDirective : undef)
+			{
+				String variable = undefDirective.getVariable();
+				if(variable != null)
+				{
+					directives.remove(variable);
+				}
+			}
+		}
+
+		return directives.values();
 	}
 
 	@NotNull

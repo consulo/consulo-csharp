@@ -99,6 +99,7 @@ public class CSharpPreprocessorHighlightVisitor extends CSharpPreprocessorElemen
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitReferenceExpression(CSharpPreprocessorReferenceExpressionImpl expression)
 	{
 		PsiElement resolve = expression.resolve();
@@ -109,15 +110,13 @@ public class CSharpPreprocessorHighlightVisitor extends CSharpPreprocessorElemen
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitDefineDirective(CSharpPreprocessorDefineDirective define)
 	{
-		if(define.isUnDef())
-		{
-			return;
-		}
 		highlightNamed(define, define.getNameIdentifier());
 	}
 
+	@RequiredReadAction
 	public void highlightNamed(@Nullable PsiElement element, @Nullable PsiElement target)
 	{
 		CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, element, target, null);
