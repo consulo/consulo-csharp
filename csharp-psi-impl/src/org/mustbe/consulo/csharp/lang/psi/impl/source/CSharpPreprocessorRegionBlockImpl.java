@@ -18,14 +18,14 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElementVisitor;
 import com.intellij.lang.ASTNode;
 
 /**
  * @author VISTALL
  * @since 18.12.13.
  */
-public class CSharpPreprocessorRegionBlockImpl extends CSharpMacroElementImpl
+public class CSharpPreprocessorRegionBlockImpl extends CSharpPreprocessorElementImpl
 {
 	public CSharpPreprocessorRegionBlockImpl(@NotNull ASTNode node)
 	{
@@ -45,8 +45,8 @@ public class CSharpPreprocessorRegionBlockImpl extends CSharpMacroElementImpl
 	}
 
 	@Override
-	public void accept(@NotNull CSharpMacroElementVisitor visitor)
+	public void accept(@NotNull CSharpPreprocessorElementVisitor visitor)
 	{
-		visitor.visitPreprocessorRegionBlock(this);
+		visitor.visitRegionBlock(this);
 	}
 }

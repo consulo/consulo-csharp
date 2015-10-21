@@ -1,6 +1,6 @@
 package org.mustbe.consulo.csharp.lang.lexer;
 
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorTokens;
 import com.intellij.lexer.LexerBase;
 import com.intellij.psi.tree.IElementType;
 
@@ -10,7 +10,7 @@ import com.intellij.psi.tree.IElementType;
   private boolean myEnteredNewLine = true;
 %}
 
-%class _CSharpMacroLexer
+%class _CSharpPreprocessorLexer
 %extends LexerBase
 %unicode
 %function advanceImpl
@@ -36,33 +36,33 @@ IDENTIFIER=[:jletter:] [:jletterdigit:]*
 
 <EXPRESSION_DIRECTIVE_VALUE>
 {
-	"("                  { return CSharpMacroTokens.LPAR; }
+	"("                  { return CSharpPreprocessorTokens.LPAR; }
 
-	")"                  { return CSharpMacroTokens.RPAR; }
+	")"                  { return CSharpPreprocessorTokens.RPAR; }
 
-	"!"                  { return CSharpMacroTokens.EXCL; }
+	"!"                  { return CSharpPreprocessorTokens.EXCL; }
 
-	"&&"                 { return CSharpMacroTokens.ANDAND; }
+	"&&"                 { return CSharpPreprocessorTokens.ANDAND; }
 
-	"||"                 { return CSharpMacroTokens.OROR; }
+	"||"                 { return CSharpPreprocessorTokens.OROR; }
 
-	{IDENTIFIER}         { return CSharpMacroTokens.IDENTIFIER; }
+	{IDENTIFIER}         { return CSharpPreprocessorTokens.IDENTIFIER; }
 
 	{NEW_LINE}
 	{
 		myEnteredNewLine = true;
 		yybegin(YYINITIAL);
-		return CSharpMacroTokens.WHITE_SPACE;
+		return CSharpPreprocessorTokens.WHITE_SPACE;
 	}
 
 	{WHITE_SPACE_NO_NEW_LINE}
 	{
-		return CSharpMacroTokens.WHITE_SPACE;
+		return CSharpPreprocessorTokens.WHITE_SPACE;
 	}
 
 	[^]
 	{
-		return CSharpMacroTokens.SIMPLE_VALUE;
+		return CSharpPreprocessorTokens.SIMPLE_VALUE;
 	}
 }
 
@@ -72,17 +72,17 @@ IDENTIFIER=[:jletter:] [:jletterdigit:]*
 	{
 		myEnteredNewLine = true;
 		yybegin(YYINITIAL);
-		return CSharpMacroTokens.WHITE_SPACE;
+		return CSharpPreprocessorTokens.WHITE_SPACE;
 	}
 
 	{WHITE_SPACE_NO_NEW_LINE}
 	{
-		return CSharpMacroTokens.WHITE_SPACE;
+		return CSharpPreprocessorTokens.WHITE_SPACE;
 	}
 
 	[^]
 	{
-		return CSharpMacroTokens.SIMPLE_VALUE;
+		return CSharpPreprocessorTokens.SIMPLE_VALUE;
 	}
 }
 
@@ -92,22 +92,22 @@ IDENTIFIER=[:jletter:] [:jletterdigit:]*
 	{
 		myEnteredNewLine = true;
 		yybegin(YYINITIAL);
-		return CSharpMacroTokens.WHITE_SPACE;
+		return CSharpPreprocessorTokens.WHITE_SPACE;
 	}
 
 	{WHITE_SPACE_NO_NEW_LINE}
 	{
-		return CSharpMacroTokens.WHITE_SPACE;
+		return CSharpPreprocessorTokens.WHITE_SPACE;
 	}
 
 	{SINGLE_LINE_COMMENT}
 	{
-		return CSharpMacroTokens.COMMENT;
+		return CSharpPreprocessorTokens.COMMENT;
 	}
 
 	[^]
 	{
-		return CSharpMacroTokens.SIMPLE_VALUE;
+		return CSharpPreprocessorTokens.SIMPLE_VALUE;
 	}
 }
 
@@ -115,72 +115,72 @@ IDENTIFIER=[:jletter:] [:jletterdigit:]*
 {
 	{WHITE_SPACE_NO_NEW_LINE}
 	{
-		return CSharpMacroTokens.WHITE_SPACE;
+		return CSharpPreprocessorTokens.WHITE_SPACE;
 	}
 
 	{SINGLE_LINE_COMMENT}
 	{
-		return CSharpMacroTokens.COMMENT;
+		return CSharpPreprocessorTokens.COMMENT;
 	}
 
 	"region"
 	{
 		yybegin(REGION_DIRECTIVE_VALUE);
-		return CSharpMacroTokens.REGION_KEYWORD;
+		return CSharpPreprocessorTokens.REGION_KEYWORD;
 	}
 
 	"endregion"
 	{
 		yybegin(NO_DIRECTIVE_VALUE);
-		return CSharpMacroTokens.ENDREGION_KEYWORD;
+		return CSharpPreprocessorTokens.ENDREGION_KEYWORD;
 	}
 
 	"define"
 	{
 		yybegin(NO_DIRECTIVE_VALUE);
-		return CSharpMacroTokens.DEFINE_KEYWORD;
+		return CSharpPreprocessorTokens.DEFINE_KEYWORD;
 	}
 
 	"undef"
 	{
 		yybegin(NO_DIRECTIVE_VALUE);
-		return CSharpMacroTokens.UNDEF_KEYWORD;
+		return CSharpPreprocessorTokens.UNDEF_KEYWORD;
 	}
 
 	"if"
 	{
 		yybegin(EXPRESSION_DIRECTIVE_VALUE);
-		return CSharpMacroTokens.IF_KEYWORD;
+		return CSharpPreprocessorTokens.IF_KEYWORD;
 	}
 
 	"endif"
 	{
 		yybegin(NO_DIRECTIVE_VALUE);
-		return CSharpMacroTokens.ENDIF_KEYWORD;
+		return CSharpPreprocessorTokens.ENDIF_KEYWORD;
 	}
 
 	"else"
 	{
 		yybegin(EXPRESSION_DIRECTIVE_VALUE);
-		return CSharpMacroTokens.ELSE_KEYWORD;
+		return CSharpPreprocessorTokens.ELSE_KEYWORD;
 	}
 
 	"elif"
 	{
 		yybegin(EXPRESSION_DIRECTIVE_VALUE);
-		return CSharpMacroTokens.ELIF_KEYWORD;
+		return CSharpPreprocessorTokens.ELIF_KEYWORD;
 	}
 
 	{NEW_LINE}
 	{
 		myEnteredNewLine = true;
 		yybegin(YYINITIAL);
-		return CSharpMacroTokens.WHITE_SPACE;
+		return CSharpPreprocessorTokens.WHITE_SPACE;
 	}
 
 	[^]
 	{
-		return CSharpMacroTokens.BAD_CHARACTER;
+		return CSharpPreprocessorTokens.BAD_CHARACTER;
 	}
 }
 
@@ -189,19 +189,19 @@ IDENTIFIER=[:jletter:] [:jletterdigit:]*
 	{NEW_LINE}
 	{
 		myEnteredNewLine = true;
-		return CSharpMacroTokens.WHITE_SPACE;
+		return CSharpPreprocessorTokens.WHITE_SPACE;
 	}
 
 	{MULTI_LINE_STYLE_COMMENT}
 	{
 		myEnteredNewLine = false;
-		return CSharpMacroTokens.CSHARP_FRAGMENT;
+		return CSharpPreprocessorTokens.CSHARP_FRAGMENT;
 	}
 
 	{SINGLE_LINE_COMMENT}
 	{
 		myEnteredNewLine = false;
-		return CSharpMacroTokens.CSHARP_FRAGMENT;
+		return CSharpPreprocessorTokens.CSHARP_FRAGMENT;
 	}
 
 	"#"
@@ -209,22 +209,22 @@ IDENTIFIER=[:jletter:] [:jletterdigit:]*
 		if(myEnteredNewLine)
 		{
 			yybegin(DIRECTIVE);
-			return CSharpMacroTokens.SHARP;
+			return CSharpPreprocessorTokens.SHARP;
 		}
 		else
 		{
-			return CSharpMacroTokens.BAD_CHARACTER;
+			return CSharpPreprocessorTokens.BAD_CHARACTER;
 		}
 	}
 
 	{WHITE_SPACE_NO_NEW_LINE}
 	{
-		return CSharpMacroTokens.CSHARP_FRAGMENT;
+		return CSharpPreprocessorTokens.CSHARP_FRAGMENT;
 	}
 
 	.
 	{
 		myEnteredNewLine = false;
-		return CSharpMacroTokens.CSHARP_FRAGMENT;
+		return CSharpPreprocessorTokens.CSHARP_FRAGMENT;
 	}
 }

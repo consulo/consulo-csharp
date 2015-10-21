@@ -19,8 +19,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorTokens;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
@@ -29,7 +29,7 @@ import com.intellij.psi.tree.TokenSet;
  * @author VISTALL
  * @since 18.12.13.
  */
-public class CSharpPreprocessorOpenTagImpl extends CSharpMacroElementImpl
+public class CSharpPreprocessorOpenTagImpl extends CSharpPreprocessorElementImpl
 {
 	public CSharpPreprocessorOpenTagImpl(@NotNull ASTNode node)
 	{
@@ -37,30 +37,30 @@ public class CSharpPreprocessorOpenTagImpl extends CSharpMacroElementImpl
 	}
 
 	@Nullable
-	public CSharpMacroExpression getValue()
+	public CSharpPreprocessorExpression getValue()
 	{
-		return findChildByClass(CSharpMacroExpression.class);
+		return findChildByClass(CSharpPreprocessorExpression.class);
 	}
 
 	@NotNull
 	@RequiredReadAction
 	public PsiElement getSharpElement()
 	{
-		return findNotNullChildByType(CSharpMacroTokens.SHARP);
+		return findNotNullChildByType(CSharpPreprocessorTokens.SHARP);
 	}
 
 	@Nullable
 	@RequiredReadAction
 	public PsiElement getKeywordElement()
 	{
-		TokenSet tokenSet = TokenSet.create(CSharpMacroTokens.IF_KEYWORD, CSharpMacroTokens.REGION_KEYWORD,
-				CSharpMacroTokens.ELIF_KEYWORD, CSharpMacroTokens.ELSE_KEYWORD);
+		TokenSet tokenSet = TokenSet.create(CSharpPreprocessorTokens.IF_KEYWORD, CSharpPreprocessorTokens.REGION_KEYWORD,
+				CSharpPreprocessorTokens.ELIF_KEYWORD, CSharpPreprocessorTokens.ELSE_KEYWORD);
 		return findChildByType(tokenSet);
 	}
 
 	public boolean isElse()
 	{
-		return findChildByType(CSharpMacroTokens.ELSE_KEYWORD) != null;
+		return findChildByType(CSharpPreprocessorTokens.ELSE_KEYWORD) != null;
 	}
 
 	@Nullable
@@ -71,8 +71,8 @@ public class CSharpPreprocessorOpenTagImpl extends CSharpMacroElementImpl
 	}
 
 	@Override
-	public void accept(@NotNull CSharpMacroElementVisitor visitor)
+	public void accept(@NotNull CSharpPreprocessorElementVisitor visitor)
 	{
-		visitor.visitMacroBlockStart(this);
+		visitor.visitOpenTag(this);
 	}
 }

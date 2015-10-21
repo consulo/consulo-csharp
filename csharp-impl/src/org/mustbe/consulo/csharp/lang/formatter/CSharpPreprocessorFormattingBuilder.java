@@ -16,7 +16,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettings;
  * @author VISTALL
  * @since 21.03.14
  */
-public class CSharpMacroFormattingBuilder implements FormattingModelBuilder
+public class CSharpPreprocessorFormattingBuilder implements FormattingModelBuilder
 {
 	@NotNull
 	@Override
@@ -28,7 +28,7 @@ public class CSharpMacroFormattingBuilder implements FormattingModelBuilder
 		assert containingFile != null : psiElement.getContainingFile();
 		ASTNode fileNode = containingFile.getNode();
 		assert fileNode != null;
-		CSharpMacroFormattingBlock block = new CSharpMacroFormattingBlock(fileNode, null, null);
+		CSharpPreprocessorFormattingBlock block = new CSharpPreprocessorFormattingBlock(fileNode, null, null);
 		return FormattingModelProvider.createFormattingModelForPsiFile(containingFile, block, settings);
 	}
 

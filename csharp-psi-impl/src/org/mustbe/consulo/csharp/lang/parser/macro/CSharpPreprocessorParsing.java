@@ -20,7 +20,7 @@ import java.util.Deque;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElements;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorTokens;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.WhitespacesBinders;
 import com.intellij.psi.tree.IElementType;
@@ -49,7 +49,7 @@ public class CSharpPreprocessorParsing
 	public static boolean wantParseSharp(PsiBuilder builder, Deque<PsiBuilder.Marker> regionMarkers)
 	{
 		IElementType tokenType = builder.getTokenType();
-		if(tokenType == CSharpMacroTokens.SHARP)
+		if(tokenType == CSharpPreprocessorTokens.SHARP)
 		{
 			PsiBuilder.Marker mark = builder.mark();
 			builder.advanceLexer();
@@ -65,13 +65,13 @@ public class CSharpPreprocessorParsing
 	public static boolean parseDirective(@NotNull PsiBuilder builder, @NotNull PsiBuilder.Marker mark, @NotNull Deque<PsiBuilder.Marker> regionMarkers)
 	{
 		IElementType tokenType = builder.getTokenType();
-		if(tokenType == CSharpMacroTokens.DEFINE_KEYWORD || tokenType == CSharpMacroTokens.UNDEF_KEYWORD)
+		if(tokenType == CSharpPreprocessorTokens.DEFINE_KEYWORD || tokenType == CSharpPreprocessorTokens.UNDEF_KEYWORD)
 		{
 			builder.advanceLexer();
 
 			advanceUntilFragment(builder);
 
-			doneWithBinder(mark, tokenType == CSharpMacroTokens.UNDEF_KEYWORD ? CSharpPreprocessorElements.UNDEF_DIRECTIVE : CSharpPreprocessorElements.DEFINE_DIRECTIVE);
+			doneWithBinder(mark, tokenType == CSharpPreprocessorTokens.UNDEF_KEYWORD ? CSharpPreprocessorElements.UNDEF_DIRECTIVE : CSharpPreprocessorElements.DEFINE_DIRECTIVE);
 			return true;
 		}
 		/*else if(token == IF_KEYWORD)
@@ -127,7 +127,7 @@ public class CSharpPreprocessorParsing
 
 			return true;
 		}  */
-		else if(tokenType == CSharpMacroTokens.REGION_KEYWORD)
+		else if(tokenType == CSharpPreprocessorTokens.REGION_KEYWORD)
 		{
 			builder.advanceLexer();
 
@@ -141,7 +141,7 @@ public class CSharpPreprocessorParsing
 
 			return true;
 		}
-		else if(tokenType == CSharpMacroTokens.ENDREGION_KEYWORD)
+		else if(tokenType == CSharpPreprocessorTokens.ENDREGION_KEYWORD)
 		{
 			builder.advanceLexer();
 
@@ -264,7 +264,7 @@ public class CSharpPreprocessorParsing
 		while(!builder.eof())
 		{
 			IElementType tokenType = builder.getTokenType();
-			if(tokenType == CSharpMacroTokens.CSHARP_FRAGMENT || tokenType == CSharpMacroTokens.SHARP)
+			if(tokenType == CSharpPreprocessorTokens.CSHARP_FRAGMENT || tokenType == CSharpPreprocessorTokens.SHARP)
 			{
 				break;
 			}

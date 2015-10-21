@@ -24,7 +24,7 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 23.01.14
  */
-public interface CSharpMacroTokens extends TokenType
+public interface CSharpPreprocessorTokens extends TokenType
 {
 	IElementType IF_KEYWORD = new IElementType("IF_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
 

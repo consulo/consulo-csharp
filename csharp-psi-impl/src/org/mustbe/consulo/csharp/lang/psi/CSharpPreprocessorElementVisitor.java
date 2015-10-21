@@ -23,59 +23,59 @@ import com.intellij.psi.PsiElementVisitor;
  * @author VISTALL
  * @since 24.01.14
  */
-public class CSharpMacroElementVisitor extends PsiElementVisitor
+public class CSharpPreprocessorElementVisitor extends PsiElementVisitor
 {
-	public void visitPreprocessorDefineDirective(CSharpPreprocessorDefineDirective cSharpMacroDefine)
+	public void visitDefineDirective(CSharpPreprocessorDefineDirective define)
 	{
-		visitElement(cSharpMacroDefine);
+		visitElement(define);
 	}
 
-	public void visitMacroBlockStart(CSharpPreprocessorOpenTagImpl start)
+	public void visitOpenTag(CSharpPreprocessorOpenTagImpl start)
 	{
 		visitElement(start);
 	}
 
-	public void visitMacroBlockStop(CSharpPreprocessorCloseTagImpl stop)
+	public void visitCloseTag(CSharpPreprocessorCloseTagImpl stop)
 	{
 		visitElement(stop);
 	}
 
-	public void visitPreprocessorRegionBlock(CSharpPreprocessorRegionBlockImpl block)
+	public void visitRegionBlock(CSharpPreprocessorRegionBlockImpl block)
 	{
 		visitElement(block);
 	}
 
-	public void visitPrefixExpression(CSharpMacroPrefixExpressionImpl expression)
+	public void visitPrefixExpression(CSharpPreprocessorPrefixExpressionImpl expression)
 	{
 		visitElement(expression);
 	}
 
-	public void visitPolyadicExpression(CSharpMacroPolyadicExpressionImpl expression)
+	public void visitPolyadicExpression(CSharpPreprocessorPolyadicExpressionImpl expression)
 	{
 		visitElement(expression);
 	}
 
-	public void visitBinaryExpression(CSharpMacroBinaryExpressionImpl expression)
+	public void visitBinaryExpression(CSharpPreprocessorBinaryExpressionImpl expression)
 	{
 		visitElement(expression);
 	}
 
-	public void visitReferenceExpression(CSharpMacroReferenceExpressionImpl expression)
+	public void visitReferenceExpression(CSharpPreprocessorReferenceExpressionImpl expression)
 	{
 		visitElement(expression);
 	}
 
-	public void visitParenthesesExpression(CSharpMacroParenthesesExpressionImpl expression)
+	public void visitParenthesesExpression(CSharpPreprocessorParenthesesExpressionImpl expression)
 	{
 		visitElement(expression);
 	}
 
-	public void visitMacroIf(CSharpMacroIfImpl element)
+	public void visitIf(CSharpPreprocessorIfImpl element)
 	{
 		visitElement(element);
 	}
 
-	public void visitMacroIfConditionBlock(CSharpMacroIfConditionBlockImpl element)
+	public void visitIfConditionBlock(CSharpPreprocessorIfConditionBlockImpl element)
 	{
 		visitElement(element);
 	}

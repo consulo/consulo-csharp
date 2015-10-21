@@ -275,7 +275,7 @@
 		<psi.treeChangePreprocessor implementation="org.mustbe.consulo.csharp.lang.psi.impl.CSharpPsiTreeChangePreprocessor"/>
 		<lang.psiStructureViewFactory language="C#" implementationClass="org.mustbe.consulo.csharp.ide.structureView.CSharpStructureViewFactory"/>
 		<lang.formatter language="C#" implementationClass="org.mustbe.consulo.csharp.lang.formatter.CSharpFormattingModelBuilder"/>
-		<lang.formatter language="C#Macro" implementationClass="org.mustbe.consulo.csharp.lang.formatter.CSharpMacroFormattingBuilder"/>
+		<lang.formatter language="C#Macro" implementationClass="org.mustbe.consulo.csharp.lang.formatter.CSharpPreprocessorFormattingBuilder"/>
 		<lang.elementIcon language="C#" file="/icons/csharpLang.png"/>
 		<lang.commenter language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpCommenter"/>
 		<lang.namesValidator language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpNamesValidator"/>

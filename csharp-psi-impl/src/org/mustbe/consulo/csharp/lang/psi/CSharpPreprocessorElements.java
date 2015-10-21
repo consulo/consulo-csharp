@@ -16,9 +16,9 @@ public interface CSharpPreprocessorElements
 
 	IElementType UNDEF_DIRECTIVE = new ElementTypeAsPsiFactory("UNDEF_DIRECTIVE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorDefineDirectiveImpl.class);
 
-	IElementType MACRO_IF = new ElementTypeAsPsiFactory("MACRO_IF", CSharpPreprocessorLanguage.INSTANCE, CSharpMacroIfImpl.class);
+	IElementType MACRO_IF = new ElementTypeAsPsiFactory("MACRO_IF", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorIfImpl.class);
 
-	IElementType MACRO_IF_CONDITION_BLOCK = new ElementTypeAsPsiFactory("MACRO_IF_CONDITION_BLOCK", CSharpPreprocessorLanguage.INSTANCE, CSharpMacroIfConditionBlockImpl.class);
+	IElementType MACRO_IF_CONDITION_BLOCK = new ElementTypeAsPsiFactory("MACRO_IF_CONDITION_BLOCK", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorIfConditionBlockImpl.class);
 
 	IElementType OPEN_TAG = new ElementTypeAsPsiFactory("OPEN_TAG", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorOpenTagImpl.class);
 
@@ -26,13 +26,13 @@ public interface CSharpPreprocessorElements
 
 	IElementType CLOSE_TAG = new ElementTypeAsPsiFactory("CLOSE_TAG", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorCloseTagImpl.class);
 
-	IElementType PREFIX_EXPRESSION = new ElementTypeAsPsiFactory("PREFIX_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpMacroPrefixExpressionImpl.class);
+	IElementType PREFIX_EXPRESSION = new ElementTypeAsPsiFactory("PREFIX_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorPrefixExpressionImpl.class);
 
-	IElementType POLYADIC_EXPRESSION = new ElementTypeAsPsiFactory("POLYADIC_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpMacroPolyadicExpressionImpl.class);
+	IElementType POLYADIC_EXPRESSION = new ElementTypeAsPsiFactory("POLYADIC_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorPolyadicExpressionImpl.class);
 
-	IElementType BINARY_EXPRESSION = new ElementTypeAsPsiFactory("BINARY_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpMacroBinaryExpressionImpl.class);
+	IElementType BINARY_EXPRESSION = new ElementTypeAsPsiFactory("BINARY_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorBinaryExpressionImpl.class);
 
-	IElementType REFERENCE_EXPRESSION = new ElementTypeAsPsiFactory("REFERENCE_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpMacroReferenceExpressionImpl.class);
+	IElementType REFERENCE_EXPRESSION = new ElementTypeAsPsiFactory("REFERENCE_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorReferenceExpressionImpl.class);
 
-	IElementType PARENTHESES_EXPRESSION = new ElementTypeAsPsiFactory("PARENTHESES_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpMacroParenthesesExpressionImpl.class);
+	IElementType PARENTHESES_EXPRESSION = new ElementTypeAsPsiFactory("PARENTHESES_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorParenthesesExpressionImpl.class);
 }

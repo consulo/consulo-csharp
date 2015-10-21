@@ -28,13 +28,13 @@ import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.CSharpLanguageVersionWrapper;
 import org.mustbe.consulo.csharp.lang.CSharpPreprocessorLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroRecursiveElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorCloseTagImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorExpression;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorIfConditionBlockImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorIfImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorOpenTagImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroExpression;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroIfConditionBlockImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroIfImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpFileStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.macro.MacroEvaluator;
 import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
@@ -126,20 +126,20 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 	{
 		final Ref<List<TextRange>> listRef = Ref.create();
 		final Ref<List<String>> redefined = Ref.create();
-		templateFile.accept(new CSharpMacroRecursiveElementVisitor()
+		templateFile.accept(new CSharpPreprocessorRecursiveElementVisitor()
 		{
 			@Override
-			public void visitPreprocessorDefineDirective(CSharpPreprocessorDefineDirective def)
+			public void visitDefineDirective(CSharpPreprocessorDefineDirective define)
 			{
 				List<String> redefs = redefined.get();
 				if(redefs == null)
 				{
 					redefined.set(redefs = new ArrayList<String>(baseVariables));
 				}
-				String name = def.getName();
+				String name = define.getName();
 				if(name != null)
 				{
-					if(def.isUnDef())
+					if(define.isUnDef())
 					{
 						redefs.remove(name) ;
 					}
@@ -151,7 +151,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 			}
 
 			@Override
-			public void visitMacroIf(CSharpMacroIfImpl element)
+			public void visitIf(CSharpPreprocessorIfImpl element)
 			{
 				List<TextRange> textRanges = listRef.get();
 				if(textRanges == null)
@@ -159,14 +159,14 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 					listRef.set(textRanges = new ArrayList<TextRange>());
 				}
 
-				CSharpMacroIfConditionBlockImpl[] conditionBlocks = element.getConditionBlocks();
-				Queue<CSharpMacroIfConditionBlockImpl> queue = new ArrayDeque<CSharpMacroIfConditionBlockImpl>(conditionBlocks.length);
+				CSharpPreprocessorIfConditionBlockImpl[] conditionBlocks = element.getConditionBlocks();
+				Queue<CSharpPreprocessorIfConditionBlockImpl> queue = new ArrayDeque<CSharpPreprocessorIfConditionBlockImpl>(conditionBlocks.length);
 				Collections.addAll(queue, conditionBlocks);
 
-				CSharpMacroIfConditionBlockImpl activeBlock = null;
+				CSharpPreprocessorIfConditionBlockImpl activeBlock = null;
 
 				boolean forceDisable = false;
-				CSharpMacroIfConditionBlockImpl block;
+				CSharpPreprocessorIfConditionBlockImpl block;
 				while((block = queue.poll()) != null)
 				{
 					CSharpPreprocessorOpenTagImpl declarationTag = block.getDeclarationTag();
@@ -178,7 +178,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 
 					if(!declarationTag.isElse()) // if / elif
 					{
-						CSharpMacroExpression value = declarationTag.getValue();
+						CSharpPreprocessorExpression value = declarationTag.getValue();
 						if(value == null) //if not expression - disabled
 						{
 							addTextRange(declarationTag, queue, element, textRanges);
@@ -209,11 +209,11 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 				}
 			}
 
-			private void addTextRange(CSharpPreprocessorOpenTagImpl start, Queue<CSharpMacroIfConditionBlockImpl> queue, CSharpMacroIfImpl macroIf,
+			private void addTextRange(CSharpPreprocessorOpenTagImpl start, Queue<CSharpPreprocessorIfConditionBlockImpl> queue, CSharpPreprocessorIfImpl macroIf,
 					List<TextRange> textRanges)
 			{
 				// find next element
-				CSharpMacroIfConditionBlockImpl element = queue.peek();
+				CSharpPreprocessorIfConditionBlockImpl element = queue.peek();
 
 				int endOffset;
 				if(element == null)

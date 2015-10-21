@@ -20,9 +20,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.lexer.CSharpPreprocessorLexer;
 import org.mustbe.consulo.csharp.lang.parser.CSharpPreprocessorParser;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroFileImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorFileImpl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.LanguageVersion;
@@ -67,14 +67,14 @@ public class CSharpPreprocessorParserDefinition implements ParserDefinition
 	@Override
 	public TokenSet getWhitespaceTokens(@NotNull LanguageVersion languageVersion)
 	{
-		return TokenSet.create(CSharpMacroTokens.WHITE_SPACE);
+		return TokenSet.create(CSharpPreprocessorTokens.WHITE_SPACE);
 	}
 
 	@NotNull
 	@Override
 	public TokenSet getCommentTokens(@NotNull LanguageVersion languageVersion)
 	{
-		return TokenSet.create(CSharpMacroTokens.COMMENT);
+		return TokenSet.create(CSharpPreprocessorTokens.COMMENT);
 	}
 
 	@NotNull
@@ -94,7 +94,7 @@ public class CSharpPreprocessorParserDefinition implements ParserDefinition
 	@Override
 	public PsiFile createFile(FileViewProvider fileViewProvider)
 	{
-		return new CSharpMacroFileImpl(fileViewProvider);
+		return new CSharpPreprocessorFileImpl(fileViewProvider);
 	}
 
 	@Override

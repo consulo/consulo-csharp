@@ -17,23 +17,23 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElementVisitor;
 import com.intellij.lang.ASTNode;
 
 /**
  * @author VISTALL
  * @since 24.01.14
  */
-public class CSharpMacroPrefixExpressionImpl extends CSharpMacroElementImpl implements CSharpMacroExpression
+public class CSharpPreprocessorParenthesesExpressionImpl extends CSharpPreprocessorElementImpl implements CSharpPreprocessorExpression
 {
-	public CSharpMacroPrefixExpressionImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorParenthesesExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpMacroElementVisitor visitor)
+	public void accept(@NotNull CSharpPreprocessorElementVisitor visitor)
 	{
-		visitor.visitPrefixExpression(this);
+		visitor.visitParenthesesExpression(this);
 	}
 }

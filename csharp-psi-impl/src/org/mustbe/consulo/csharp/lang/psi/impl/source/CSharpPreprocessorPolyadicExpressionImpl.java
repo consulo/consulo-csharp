@@ -17,36 +17,23 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElementVisitor;
 import com.intellij.lang.ASTNode;
 
 /**
  * @author VISTALL
- * @since 26.01.14
+ * @since 24.01.14
  */
-public class CSharpMacroIfImpl extends CSharpMacroElementImpl
+public class CSharpPreprocessorPolyadicExpressionImpl extends CSharpPreprocessorElementImpl implements CSharpPreprocessorExpression
 {
-	public CSharpMacroIfImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorPolyadicExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	@NotNull
-	public CSharpMacroIfConditionBlockImpl[] getConditionBlocks()
-	{
-		return findChildrenByClass(CSharpMacroIfConditionBlockImpl.class);
-	}
-
-	@Nullable
-	public CSharpPreprocessorCloseTagImpl getCloseTag()
-	{
-		return findChildByClass(CSharpPreprocessorCloseTagImpl.class);
-	}
-
 	@Override
-	public void accept(@NotNull CSharpMacroElementVisitor visitor)
+	public void accept(@NotNull CSharpPreprocessorElementVisitor visitor)
 	{
-		visitor.visitMacroIf(this);
+		visitor.visitPolyadicExpression(this);
 	}
 }

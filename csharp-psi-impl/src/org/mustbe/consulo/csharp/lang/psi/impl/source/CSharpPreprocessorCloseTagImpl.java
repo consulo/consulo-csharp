@@ -18,8 +18,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorTokens;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
@@ -28,7 +28,7 @@ import com.intellij.psi.tree.TokenSet;
  * @author VISTALL
  * @since 18.12.13.
  */
-public class CSharpPreprocessorCloseTagImpl extends CSharpMacroElementImpl
+public class CSharpPreprocessorCloseTagImpl extends CSharpPreprocessorElementImpl
 {
 	public CSharpPreprocessorCloseTagImpl(@NotNull ASTNode node)
 	{
@@ -39,13 +39,13 @@ public class CSharpPreprocessorCloseTagImpl extends CSharpMacroElementImpl
 	@RequiredReadAction
 	public PsiElement getKeywordElement()
 	{
-		TokenSet tokenSet = TokenSet.create(CSharpMacroTokens.ENDIF_KEYWORD, CSharpMacroTokens.ENDREGION_KEYWORD);
+		TokenSet tokenSet = TokenSet.create(CSharpPreprocessorTokens.ENDIF_KEYWORD, CSharpPreprocessorTokens.ENDREGION_KEYWORD);
 		return findNotNullChildByType(tokenSet);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpMacroElementVisitor visitor)
+	public void accept(@NotNull CSharpPreprocessorElementVisitor visitor)
 	{
-		visitor.visitMacroBlockStop(this);
+		visitor.visitCloseTag(this);
 	}
 }

@@ -23,10 +23,9 @@ import com.intellij.psi.tree.TokenSet;
  * @author VISTALL
  * @since 21.03.14
  */
-public class CSharpMacroFormattingBlock extends AbstractBlock
+public class CSharpPreprocessorFormattingBlock extends AbstractBlock
 {
-	public CSharpMacroFormattingBlock(
-			@NotNull ASTNode node, @Nullable Wrap wrap, @Nullable Alignment alignment)
+	public CSharpPreprocessorFormattingBlock(@NotNull ASTNode node, @Nullable Wrap wrap, @Nullable Alignment alignment)
 	{
 		super(node, wrap, alignment);
 	}
@@ -48,7 +47,7 @@ public class CSharpMacroFormattingBlock extends AbstractBlock
 
 			if(!whitespaceTokens.contains(temp.getElementType()))
 			{
-				blocks.add(new CSharpMacroFormattingBlock(temp, myWrap, myAlignment));
+				blocks.add(new CSharpPreprocessorFormattingBlock(temp, myWrap, myAlignment));
 			}
 
 			temp = temp.getTreeNext();

@@ -20,8 +20,8 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorTokens;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
@@ -30,7 +30,7 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 18.12.13.
  */
-public class CSharpPreprocessorDefineDirectiveImpl extends CSharpMacroElementImpl implements CSharpPreprocessorDefineDirective
+public class CSharpPreprocessorDefineDirectiveImpl extends CSharpPreprocessorElementImpl implements CSharpPreprocessorDefineDirective
 {
 	public CSharpPreprocessorDefineDirectiveImpl(@NotNull ASTNode node)
 	{
@@ -38,9 +38,9 @@ public class CSharpPreprocessorDefineDirectiveImpl extends CSharpMacroElementImp
 	}
 
 	@Override
-	public void accept(@NotNull CSharpMacroElementVisitor visitor)
+	public void accept(@NotNull CSharpPreprocessorElementVisitor visitor)
 	{
-		visitor.visitPreprocessorDefineDirective(this);
+		visitor.visitDefineDirective(this);
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class CSharpPreprocessorDefineDirectiveImpl extends CSharpMacroElementImp
 	@Override
 	public PsiElement getNameIdentifier()
 	{
-		return findChildByType(CSharpMacroTokens.SIMPLE_VALUE);
+		return findChildByType(CSharpPreprocessorTokens.SIMPLE_VALUE);
 	}
 
 	@Override
@@ -73,6 +73,6 @@ public class CSharpPreprocessorDefineDirectiveImpl extends CSharpMacroElementImp
 	@Override
 	public boolean isUnDef()
 	{
-		return findChildByType(CSharpMacroTokens.UNDEF_KEYWORD) != null;
+		return findChildByType(CSharpPreprocessorTokens.UNDEF_KEYWORD) != null;
 	}
 }

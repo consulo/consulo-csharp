@@ -17,34 +17,36 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.CSharpPreprocessorLanguage;
-import org.mustbe.consulo.csharp.lang.psi.CSharpInnerFileType;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
-import com.intellij.extapi.psi.PsiFileBase;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.psi.FileViewProvider;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElementVisitor;
+import com.intellij.lang.ASTNode;
 
 /**
  * @author VISTALL
- * @since 23.01.14
+ * @since 26.01.14
  */
-public class CSharpMacroFileImpl extends PsiFileBase
+public class CSharpPreprocessorIfImpl extends CSharpPreprocessorElementImpl
 {
-	public CSharpMacroFileImpl(@NotNull FileViewProvider viewProvider)
+	public CSharpPreprocessorIfImpl(@NotNull ASTNode node)
 	{
-		super(viewProvider, CSharpPreprocessorLanguage.INSTANCE);
+		super(node);
 	}
 
 	@NotNull
-	public CSharpPreprocessorDefineDirective[] getDefines()
+	public CSharpPreprocessorIfConditionBlockImpl[] getConditionBlocks()
 	{
-		return findChildrenByClass(CSharpPreprocessorDefineDirective.class);
+		return findChildrenByClass(CSharpPreprocessorIfConditionBlockImpl.class);
 	}
 
-	@NotNull
+	@Nullable
+	public CSharpPreprocessorCloseTagImpl getCloseTag()
+	{
+		return findChildByClass(CSharpPreprocessorCloseTagImpl.class);
+	}
+
 	@Override
-	public FileType getFileType()
+	public void accept(@NotNull CSharpPreprocessorElementVisitor visitor)
 	{
-		return CSharpInnerFileType.INSTANCE;
+		visitor.visitIf(this);
 	}
 }

@@ -14,32 +14,27 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi.impl.source;
+package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
-import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
-import com.intellij.lang.ASTNode;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorFileImpl;
+import com.intellij.psi.stubs.PsiFileStubImpl;
+import com.intellij.psi.tree.IStubFileElementType;
 
 /**
  * @author VISTALL
- * @since 26.01.14
+ * @since 23.01.14
  */
-public class CSharpMacroIfConditionBlockImpl extends CSharpMacroElementImpl
+public class CSharpPreprocessorFileStub extends PsiFileStubImpl<CSharpPreprocessorFileImpl>
 {
-	public CSharpMacroIfConditionBlockImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorFileStub(CSharpPreprocessorFileImpl file)
 	{
-		super(node);
-	}
-
-	@NotNull
-	public CSharpPreprocessorOpenTagImpl getDeclarationTag()
-	{
-		return findNotNullChildByClass(CSharpPreprocessorOpenTagImpl.class);
+		super(file);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpMacroElementVisitor visitor)
+	public IStubFileElementType getType()
 	{
-		visitor.visitMacroIfConditionBlock(this);
+		return CSharpStubElements.MACRO_FILE;
 	}
 }

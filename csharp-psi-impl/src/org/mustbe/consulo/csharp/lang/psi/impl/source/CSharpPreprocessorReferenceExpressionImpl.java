@@ -22,7 +22,7 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightPreprocessorDefineDirective;
 import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.lang.ASTNode;
@@ -39,9 +39,9 @@ import lombok.val;
  * @author VISTALL
  * @since 24.01.14
  */
-public class CSharpMacroReferenceExpressionImpl extends CSharpMacroElementImpl implements CSharpMacroExpression, PsiReference
+public class CSharpPreprocessorReferenceExpressionImpl extends CSharpPreprocessorElementImpl implements CSharpPreprocessorExpression, PsiReference
 {
-	public CSharpMacroReferenceExpressionImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorReferenceExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
@@ -53,7 +53,7 @@ public class CSharpMacroReferenceExpressionImpl extends CSharpMacroElementImpl i
 	}
 
 	@Override
-	public void accept(@NotNull CSharpMacroElementVisitor visitor)
+	public void accept(@NotNull CSharpPreprocessorElementVisitor visitor)
 	{
 		visitor.visitReferenceExpression(this);
 	}
@@ -76,7 +76,7 @@ public class CSharpMacroReferenceExpressionImpl extends CSharpMacroElementImpl i
 	public PsiElement resolve()
 	{
 		PsiFile containingFile = getContainingFile();
-		if(!(containingFile instanceof CSharpMacroFileImpl))
+		if(!(containingFile instanceof CSharpPreprocessorFileImpl))
 		{
 			return null;
 		}
@@ -94,7 +94,7 @@ public class CSharpMacroReferenceExpressionImpl extends CSharpMacroElementImpl i
 			}
 		}
 
-		for(CSharpPreprocessorDefineDirective macroDefine : ((CSharpMacroFileImpl) containingFile).getDefines())
+		for(CSharpPreprocessorDefineDirective macroDefine : ((CSharpPreprocessorFileImpl) containingFile).getDefines())
 		{
 			String name = macroDefine.getName();
 			if(name == null)

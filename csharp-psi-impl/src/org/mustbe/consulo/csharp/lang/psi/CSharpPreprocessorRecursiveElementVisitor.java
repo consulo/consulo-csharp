@@ -14,26 +14,19 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi.impl.source;
+package org.mustbe.consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
-import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
  * @since 24.01.14
  */
-public class CSharpMacroPolyadicExpressionImpl extends CSharpMacroElementImpl implements CSharpMacroExpression
+public class CSharpPreprocessorRecursiveElementVisitor extends CSharpPreprocessorElementVisitor
 {
-	public CSharpMacroPolyadicExpressionImpl(@NotNull ASTNode node)
-	{
-		super(node);
-	}
-
 	@Override
-	public void accept(@NotNull CSharpMacroElementVisitor visitor)
+	public void visitElement(PsiElement element)
 	{
-		visitor.visitPolyadicExpression(this);
+		element.acceptChildren(this);
 	}
 }

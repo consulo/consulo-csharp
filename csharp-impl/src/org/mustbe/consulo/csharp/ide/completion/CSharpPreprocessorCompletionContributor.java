@@ -26,10 +26,10 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightPreprocessorDefineDirective;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroFileImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroReferenceExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorFileImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorReferenceExpressionImpl;
 import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
@@ -64,7 +64,7 @@ public class CSharpPreprocessorCompletionContributor extends CompletionContribut
 
 	public CSharpPreprocessorCompletionContributor()
 	{
-		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement(CSharpMacroTokens.SHARP)), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement(CSharpPreprocessorTokens.SHARP)), new CompletionProvider<CompletionParameters>()
 		{
 			@RequiredReadAction
 			@Override
@@ -88,13 +88,13 @@ public class CSharpPreprocessorCompletionContributor extends CompletionContribut
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement(CSharpMacroTokens.IDENTIFIER).withParent(CSharpMacroReferenceExpressionImpl.class), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, psiElement(CSharpPreprocessorTokens.IDENTIFIER).withParent(CSharpPreprocessorReferenceExpressionImpl.class), new CompletionProvider<CompletionParameters>()
 		{
 			@RequiredReadAction
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
-				CSharpMacroReferenceExpressionImpl expression = (CSharpMacroReferenceExpressionImpl) parameters.getPosition().getParent();
+				CSharpPreprocessorReferenceExpressionImpl expression = (CSharpPreprocessorReferenceExpressionImpl) parameters.getPosition().getParent();
 				Map<String, CSharpPreprocessorDefineDirective> map = new HashMap<String, CSharpPreprocessorDefineDirective>();
 
 				DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(expression, DotNetSimpleModuleExtension.class);
@@ -106,7 +106,7 @@ public class CSharpPreprocessorCompletionContributor extends CompletionContribut
 					}
 				}
 
-				for(CSharpPreprocessorDefineDirective macroDefine : ((CSharpMacroFileImpl) expression.getContainingFile()).getDefines())
+				for(CSharpPreprocessorDefineDirective macroDefine : ((CSharpPreprocessorFileImpl) expression.getContainingFile()).getDefines())
 				{
 					String name = macroDefine.getName();
 					if(name == null)

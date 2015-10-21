@@ -14,27 +14,14 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi.impl.stub;
+package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
-import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroFileImpl;
-import com.intellij.psi.stubs.PsiFileStubImpl;
-import com.intellij.psi.tree.IStubFileElementType;
+import org.mustbe.consulo.dotnet.psi.DotNetElement;
 
 /**
  * @author VISTALL
- * @since 23.01.14
+ * @since 24.01.14
  */
-public class CSharpMacroFileStub extends PsiFileStubImpl<CSharpMacroFileImpl>
+public interface CSharpPreprocessorExpression extends DotNetElement
 {
-	public CSharpMacroFileStub(CSharpMacroFileImpl file)
-	{
-		super(file);
-	}
-
-	@Override
-	public IStubFileElementType getType()
-	{
-		return CSharpStubElements.MACRO_FILE;
-	}
 }

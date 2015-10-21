@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.lexer.CSharpPreprocessorLexer;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorTokens;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
@@ -38,16 +38,16 @@ public class CSharpPreprocessorSyntaxHighlighter extends SyntaxHighlighterBase
 	static
 	{
 		//safeMap(ourKeys, CSharpMacroTokens.BAD_CHARACTER, HighlighterColors.BAD_CHARACTER);
-		safeMap(ourKeys, CSharpMacroTokens.SHARP, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpMacroTokens.DEFINE_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpMacroTokens.UNDEF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpMacroTokens.IF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpMacroTokens.ELSE_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpMacroTokens.ELIF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpMacroTokens.REGION_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpMacroTokens.ENDIF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpMacroTokens.ENDREGION_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
-		safeMap(ourKeys, CSharpMacroTokens.COMMENT, CSharpHighlightKey.LINE_COMMENT);
+		safeMap(ourKeys, CSharpPreprocessorTokens.SHARP, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.DEFINE_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.UNDEF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.IF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.ELSE_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.ELIF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.REGION_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.ENDIF_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.ENDREGION_KEYWORD, CSharpHighlightKey.MACRO_KEYWORD);
+		safeMap(ourKeys, CSharpPreprocessorTokens.COMMENT, CSharpHighlightKey.LINE_COMMENT);
 	}
 
 	@NotNull

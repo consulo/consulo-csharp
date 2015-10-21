@@ -22,8 +22,8 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroRecursiveElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorRecursiveElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorCloseTagImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorOpenTagImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorRegionBlockImpl;
@@ -52,13 +52,13 @@ public class CSharpPreprocessorFoldingBuilder implements FoldingBuilder
 
 		assert psi != null;
 
-		psi.accept(new CSharpMacroRecursiveElementVisitor()
+		psi.accept(new CSharpPreprocessorRecursiveElementVisitor()
 		{
 			@Override
 			@RequiredReadAction
-			public void visitPreprocessorRegionBlock(CSharpPreprocessorRegionBlockImpl block)
+			public void visitRegionBlock(CSharpPreprocessorRegionBlockImpl block)
 			{
-				super.visitPreprocessorRegionBlock(block);
+				super.visitRegionBlock(block);
 
 				CSharpPreprocessorOpenTagImpl startElement = block.getOpenDirective();
 				CSharpPreprocessorCloseTagImpl stopElement = block.getCloseDirective();
@@ -68,7 +68,7 @@ public class CSharpPreprocessorFoldingBuilder implements FoldingBuilder
 				}
 
 				PsiElement keywordElement = startElement.getKeywordElement();
-				if(keywordElement == null || keywordElement.getNode().getElementType() != CSharpMacroTokens.REGION_KEYWORD)
+				if(keywordElement == null || keywordElement.getNode().getElementType() != CSharpPreprocessorTokens.REGION_KEYWORD)
 				{
 					return;
 				}

@@ -20,13 +20,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorCloseTagImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorOpenTagImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorRegionBlockImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroReferenceExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorReferenceExpressionImpl;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.daemon.impl.HighlightVisitor;
@@ -38,7 +38,7 @@ import com.intellij.psi.PsiFile;
  * @author VISTALL
  * @since 06.02.14
  */
-public class CSharpPreprocessorHighlightVisitor extends CSharpMacroElementVisitor implements HighlightVisitor
+public class CSharpPreprocessorHighlightVisitor extends CSharpPreprocessorElementVisitor implements HighlightVisitor
 {
 	private HighlightInfoHolder myHighlightInfoHolder;
 
@@ -64,7 +64,7 @@ public class CSharpPreprocessorHighlightVisitor extends CSharpMacroElementVisito
 
 	@Override
 	@RequiredReadAction
-	public void visitPreprocessorRegionBlock(CSharpPreprocessorRegionBlockImpl block)
+	public void visitRegionBlock(CSharpPreprocessorRegionBlockImpl block)
 	{
 		CSharpPreprocessorOpenTagImpl startElement = block.getOpenDirective();
 		CSharpPreprocessorCloseTagImpl stopElement = block.getCloseDirective();
@@ -72,7 +72,7 @@ public class CSharpPreprocessorHighlightVisitor extends CSharpMacroElementVisito
 		if(startElement == null && stopElement != null)
 		{
 			PsiElement keywordElement = stopElement.getKeywordElement();
-			if(keywordElement.getNode().getElementType() == CSharpMacroTokens.ENDREGION_KEYWORD)
+			if(keywordElement.getNode().getElementType() == CSharpPreprocessorTokens.ENDREGION_KEYWORD)
 			{
 				myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR).range(keywordElement).descriptionAndTooltip("Required region start").create());
 			}
@@ -80,7 +80,7 @@ public class CSharpPreprocessorHighlightVisitor extends CSharpMacroElementVisito
 		else if(startElement != null && stopElement == null)
 		{
 			PsiElement keywordElement = startElement.getKeywordElement();
-			if(keywordElement != null && keywordElement.getNode().getElementType() == CSharpMacroTokens.REGION_KEYWORD)
+			if(keywordElement != null && keywordElement.getNode().getElementType() == CSharpPreprocessorTokens.REGION_KEYWORD)
 			{
 				myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR).range(keywordElement).descriptionAndTooltip("Required region end").create());
 			}
@@ -92,7 +92,7 @@ public class CSharpPreprocessorHighlightVisitor extends CSharpMacroElementVisito
 	}
 
 	@Override
-	public void visitReferenceExpression(CSharpMacroReferenceExpressionImpl expression)
+	public void visitReferenceExpression(CSharpPreprocessorReferenceExpressionImpl expression)
 	{
 		PsiElement resolve = expression.resolve();
 		if(resolve != null)
@@ -102,13 +102,13 @@ public class CSharpPreprocessorHighlightVisitor extends CSharpMacroElementVisito
 	}
 
 	@Override
-	public void visitPreprocessorDefineDirective(CSharpPreprocessorDefineDirective cSharpMacroDefine)
+	public void visitDefineDirective(CSharpPreprocessorDefineDirective define)
 	{
-		if(cSharpMacroDefine.isUnDef())
+		if(define.isUnDef())
 		{
 			return;
 		}
-		highlightNamed(cSharpMacroDefine, cSharpMacroDefine.getNameIdentifier());
+		highlightNamed(define, define.getNameIdentifier());
 	}
 
 	public void highlightNamed(@Nullable PsiElement element, @Nullable PsiElement target)

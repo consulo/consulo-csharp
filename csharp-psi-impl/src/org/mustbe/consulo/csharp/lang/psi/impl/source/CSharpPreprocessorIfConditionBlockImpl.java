@@ -17,23 +17,29 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElementVisitor;
 import com.intellij.lang.ASTNode;
 
 /**
  * @author VISTALL
- * @since 24.01.14
+ * @since 26.01.14
  */
-public class CSharpMacroBinaryExpressionImpl extends CSharpMacroElementImpl implements CSharpMacroExpression
+public class CSharpPreprocessorIfConditionBlockImpl extends CSharpPreprocessorElementImpl
 {
-	public CSharpMacroBinaryExpressionImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorIfConditionBlockImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	@Override
-	public void accept(@NotNull CSharpMacroElementVisitor visitor)
+	@NotNull
+	public CSharpPreprocessorOpenTagImpl getDeclarationTag()
 	{
-		visitor.visitBinaryExpression(this);
+		return findNotNullChildByClass(CSharpPreprocessorOpenTagImpl.class);
+	}
+
+	@Override
+	public void accept(@NotNull CSharpPreprocessorElementVisitor visitor)
+	{
+		visitor.visitIfConditionBlock(this);
 	}
 }

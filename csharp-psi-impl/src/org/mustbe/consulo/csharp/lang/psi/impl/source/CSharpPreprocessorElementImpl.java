@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElementVisitor;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
@@ -29,9 +29,9 @@ import com.intellij.psi.search.GlobalSearchScope;
  * @author VISTALL
  * @since 24.01.14
  */
-public abstract class CSharpMacroElementImpl extends ASTWrapperPsiElement
+public abstract class CSharpPreprocessorElementImpl extends ASTWrapperPsiElement
 {
-	public CSharpMacroElementImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorElementImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
@@ -52,9 +52,9 @@ public abstract class CSharpMacroElementImpl extends ASTWrapperPsiElement
 	@Override
 	public void accept(@NotNull PsiElementVisitor visitor)
 	{
-		if(visitor instanceof CSharpMacroElementVisitor)
+		if(visitor instanceof CSharpPreprocessorElementVisitor)
 		{
-			accept((CSharpMacroElementVisitor)visitor);
+			accept((CSharpPreprocessorElementVisitor)visitor);
 		}
 		else
 		{
@@ -62,6 +62,6 @@ public abstract class CSharpMacroElementImpl extends ASTWrapperPsiElement
 		}
 	}
 
-	public abstract void accept(@NotNull CSharpMacroElementVisitor visitor);
+	public abstract void accept(@NotNull CSharpPreprocessorElementVisitor visitor);
 }
 

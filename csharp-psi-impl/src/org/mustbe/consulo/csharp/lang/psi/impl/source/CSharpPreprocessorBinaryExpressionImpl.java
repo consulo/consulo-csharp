@@ -14,19 +14,26 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi;
+package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
-import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorElementVisitor;
+import com.intellij.lang.ASTNode;
 
 /**
  * @author VISTALL
  * @since 24.01.14
  */
-public class CSharpMacroRecursiveElementVisitor extends CSharpMacroElementVisitor
+public class CSharpPreprocessorBinaryExpressionImpl extends CSharpPreprocessorElementImpl implements CSharpPreprocessorExpression
 {
-	@Override
-	public void visitElement(PsiElement element)
+	public CSharpPreprocessorBinaryExpressionImpl(@NotNull ASTNode node)
 	{
-		element.acceptChildren(this);
+		super(node);
+	}
+
+	@Override
+	public void accept(@NotNull CSharpPreprocessorElementVisitor visitor)
+	{
+		visitor.visitBinaryExpression(this);
 	}
 }
