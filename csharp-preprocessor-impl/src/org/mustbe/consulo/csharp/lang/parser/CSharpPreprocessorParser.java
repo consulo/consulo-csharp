@@ -40,7 +40,8 @@ public class CSharpPreprocessorParser implements PsiParser
 		while(markerIterator.hasNext())
 		{
 			PsiBuilder.Marker next = markerIterator.next();
-			next.done(CSharpPreprocessorElements.CONDITION_BLOCK);
+			next.done(CSharpPreprocessorElements.IF_ELSE_BLOCK);
+			next.precede().done(CSharpPreprocessorElements.CONDITION_BLOCK);
 		}
 
 		mark.done(elementType);

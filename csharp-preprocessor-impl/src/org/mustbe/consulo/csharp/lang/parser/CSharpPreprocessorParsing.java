@@ -49,6 +49,19 @@ public class CSharpPreprocessorParsing
 		IElementType tokenType = builder.getTokenType();
 		if(tokenType == CSharpPreprocessorTokens.SHARP)
 		{
+			IElementType nextElementType = builder.lookAhead(1);
+			if(nextElementType == CSharpPreprocessorTokens.ELIF_KEYWORD ||
+					nextElementType == CSharpPreprocessorTokens.ELSE_KEYWORD ||
+					nextElementType == CSharpPreprocessorTokens.ENDIF_KEYWORD)
+			{
+				PsiBuilder.Marker lastIfMarker = ifMarkers.pollLast();
+				if(lastIfMarker != null)
+				{
+					lastIfMarker.done(CSharpPreprocessorElements.IF_ELSE_BLOCK);
+					ifMarkers.add(lastIfMarker.precede());
+				}
+			}
+
 			PsiBuilder.Marker mark = builder.mark();
 			builder.advanceLexer();
 			return parseDirective(builder, mark, regionMarkers, ifMarkers);
@@ -63,7 +76,7 @@ public class CSharpPreprocessorParsing
 	public static boolean parseDirective(@NotNull PsiBuilder builder, @NotNull PsiBuilder.Marker mark, @NotNull Deque<PsiBuilder.Marker> regionMarkers, Deque<PsiBuilder.Marker> ifMarkers)
 	{
 		IElementType tokenType = builder.getTokenType();
-		if(tokenType == CSharpPreprocessorTokens.DEFINE_KEYWORD )
+		if(tokenType == CSharpPreprocessorTokens.DEFINE_KEYWORD || tokenType == CSharpPreprocessorTokens.UNDEF_KEYWORD)
 		{
 			builder.advanceLexer();
 
@@ -87,28 +100,26 @@ public class CSharpPreprocessorParsing
 			doneWithBinder(mark, CSharpPreprocessorElements.UNDEF_DIRECTIVE);
 			return true;
 		}
-		else if(tokenType == CSharpPreprocessorTokens.IF_KEYWORD ||
-				tokenType == CSharpPreprocessorTokens.ELIF_KEYWORD ||
-				tokenType == CSharpPreprocessorTokens.ELSE_KEYWORD ||
-				tokenType == CSharpPreprocessorTokens.ENDIF_KEYWORD)
+		else if(tokenType == CSharpPreprocessorTokens.IF_KEYWORD)
 		{
 			builder.advanceLexer();
 
-			if(tokenType == CSharpPreprocessorTokens.IF_KEYWORD || tokenType == CSharpPreprocessorTokens.ELIF_KEYWORD)
+			PsiBuilder.Marker expressionMarker = CSharpPreprocessorExpressionParsing.parse(builder);
+			if(expressionMarker == null)
 			{
-				PsiBuilder.Marker expressionMarker = CSharpPreprocessorExpressionParsing.parse(builder);
-				if(expressionMarker == null)
-				{
-					builder.error("Expression expected");
-				}
+				builder.error("Expression expected");
 			}
-
 			advanceUntilFragment(builder);
 
 			mark.done(CSharpPreprocessorElements.OPEN_TAG);
 
+			ifMarkers.add(mark.precede());
+
+			parseDirectives(builder, regionMarkers, ifMarkers, true);
+
 			return true;
 		}
+		// TODO [VISTALL] handle ELSE & ELIF
 		else if(tokenType == CSharpPreprocessorTokens.REGION_KEYWORD)
 		{
 			builder.advanceLexer();

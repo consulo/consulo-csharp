@@ -21,7 +21,7 @@ import gnu.jel.DVMap;
 import gnu.jel.Evaluator;
 import gnu.jel.Library;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author VISTALL
@@ -38,7 +38,7 @@ public class MacroEvaluator
 		}
 	}, null);
 
-	public static boolean evaluate(String text, List<String> variables)
+	public static boolean evaluate(String text, Collection<String> variables)
 	{
 		try
 		{

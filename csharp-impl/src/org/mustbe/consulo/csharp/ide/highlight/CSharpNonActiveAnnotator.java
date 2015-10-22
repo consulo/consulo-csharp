@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.CSharpFileStubElementType;
 import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
@@ -37,6 +38,7 @@ public class CSharpNonActiveAnnotator extends ExternalAnnotator<List<TextRange>,
 {
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public List<TextRange> collectInformation(@NotNull PsiFile file)
 	{
 		if(file instanceof CSharpPreprocessorFileImpl)
@@ -46,7 +48,7 @@ public class CSharpNonActiveAnnotator extends ExternalAnnotator<List<TextRange>,
 			{
 				return null;
 			}
-			return CSharpFileStubElementType.collectDisabledBlocks(file.getText(), extension);
+			return CSharpFileStubElementType.collectDisabledBlocks(file.getProject(), file.getText(), extension);
 		}
 		return null;
 	}

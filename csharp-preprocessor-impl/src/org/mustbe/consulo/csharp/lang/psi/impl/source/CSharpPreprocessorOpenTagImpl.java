@@ -55,19 +55,6 @@ public class CSharpPreprocessorOpenTagImpl extends CSharpPreprocessorElementImpl
 		return findChildByType(CSharpPreprocessorTokens.KEYWORDS);
 	}
 
-	@RequiredReadAction
-	public boolean isElse()
-	{
-		return findChildByType(CSharpPreprocessorTokens.ELSE_KEYWORD) != null;
-	}
-
-	@Nullable
-	@Deprecated
-	public PsiElement getStopElement()
-	{
-		return null;
-	}
-
 	@Override
 	public void accept(@NotNull CSharpPreprocessorElementVisitor visitor)
 	{

@@ -82,6 +82,11 @@ public class CSharpLexer extends MergingLexerAdapterBase
 					}
 				}
 
+				if(currentToken == CSharpTokens.NON_ACTIVE_SYMBOL)
+				{
+					return currentToken;
+				}
+
 				if(currentToken != mergeToken)
 				{
 					break;
