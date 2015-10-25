@@ -27,6 +27,7 @@ import org.mustbe.consulo.dotnet.documentation.DotNetDocumentationResolver;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
@@ -43,10 +44,10 @@ public class CSharpCommentDocumentationResolver implements DotNetDocumentationRe
 			return null;
 		}
 
-		PsiElement prevSibling = UsefulPsiTreeUtil.getPrevSiblingSkipWhiteSpaces(element, true);
-		if(prevSibling instanceof CSharpDocRoot)
+		CSharpDocRoot docRoot = PsiTreeUtil.getChildOfType(element, CSharpDocRoot.class);
+		if(docRoot != null)
 		{
-			return new CSharpDocAsIDocumentation((CSharpDocRoot)prevSibling);
+			return new CSharpDocAsIDocumentation(docRoot);
 		}
 		return null;
 	}
