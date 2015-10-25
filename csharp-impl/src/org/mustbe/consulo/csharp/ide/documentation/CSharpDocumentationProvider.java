@@ -27,6 +27,7 @@ import org.mustbe.consulo.csharp.ide.parameterInfo.CSharpParametersInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.dotnet.documentation.DotNetDocumentationCache;
 import org.mustbe.consulo.dotnet.psi.*;
@@ -61,6 +62,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public String getQuickNavigateInfo(PsiElement element, PsiElement element2)
 	{
 		if(element instanceof DotNetTypeDeclaration)
@@ -75,7 +77,27 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 		{
 			return generateQuickLikeMethodDeclarationInfo((DotNetLikeMethodDeclaration) element);
 		}
+		else if(element instanceof CSharpTypeDefStatement)
+		{
+			return generateQuickTypeAliasInfo((CSharpTypeDefStatement) element);
+		}
 		return null;
+	}
+
+	@RequiredReadAction
+	private static String generateQuickTypeAliasInfo(CSharpTypeDefStatement typeDefStatement)
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append("type alias ");
+		builder.append(typeDefStatement.getName());
+
+		DotNetTypeRef typeRef = typeDefStatement.toTypeRef();
+		if(typeRef != DotNetTypeRef.ERROR_TYPE)
+		{
+			builder.append(" = ");
+			builder.append(generateLinksForType(typeRef, typeDefStatement, true));
+		}
+		return builder.toString();
 	}
 
 	@RequiredReadAction
@@ -100,7 +122,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 		}
 		else
 		{
-			builder.append(generateLinksForType(element.getReturnTypeRef(), element));
+			builder.append(generateLinksForType(element.getReturnTypeRef(), element, false));
 			builder.append(" ");
 			if(element instanceof CSharpArrayMethodDeclaration)
 			{
@@ -124,13 +146,14 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 				{
 					return typeRef.getPresentableText();
 				}
-				return generateLinksForType(typeRef, dotNetParameter) + " " + dotNetParameter.getName();
+				return generateLinksForType(typeRef, dotNetParameter, false) + " " + dotNetParameter.getName();
 			}
 		}, ", "));
 		builder.append(openAndCloseTokens[1]);
 		return builder.toString();
 	}
 
+	@RequiredReadAction
 	private static String generateQuickVariableInfo(DotNetVariable element)
 	{
 		StringBuilder builder = new StringBuilder();
@@ -140,7 +163,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 		{
 			builder.append("event ");
 		}
-		builder.append(generateLinksForType(element.toTypeRef(true), element));
+		builder.append(generateLinksForType(element.toTypeRef(true), element, false));
 		builder.append(" ");
 		builder.append(element.getName());
 		DotNetExpression initializer = element.getInitializer();
@@ -153,6 +176,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 		return builder.toString();
 	}
 
+	@RequiredReadAction
 	private static String generateQuickTypeDeclarationInfo(DotNetTypeDeclaration element)
 	{
 		StringBuilder builder = new StringBuilder();
@@ -209,6 +233,14 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 	@Override
 	public String generateDoc(PsiElement element, @Nullable PsiElement element2)
 	{
+		if(element instanceof CSharpTypeDefStatement)
+		{
+			PsiElement resolvedElement = ((CSharpTypeDefStatement) element).toTypeRef().resolve(element).getElement();
+			if(resolvedElement != null)
+			{
+				element = resolvedElement;
+			}
+		}
 		IDocumentation documentation = DotNetDocumentationCache.getInstance().findDocumentation(element);
 		if(documentation == null)
 		{
@@ -237,6 +269,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 		}
 	}
 
+	@RequiredReadAction
 	private static void appendModifiers(DotNetModifierListOwner owner, StringBuilder builder)
 	{
 		DotNetModifierList modifierList = owner.getModifierList();
@@ -260,6 +293,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public PsiElement getDocumentationElementForLink(PsiManager psiManager, String s, PsiElement element)
 	{
 		if(s.startsWith(TYPE_PREFIX))
@@ -272,7 +306,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 	}
 
 	@RequiredReadAction
-	private static String generateLinksForType(DotNetTypeRef dotNetTypeRef, PsiElement element)
+	private static String generateLinksForType(DotNetTypeRef dotNetTypeRef, PsiElement element, boolean qualified)
 	{
 		StringBuilder builder = new StringBuilder();
 		if(dotNetTypeRef == DotNetTypeRef.AUTO_TYPE)
@@ -281,12 +315,12 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 		}
 		else if(dotNetTypeRef instanceof DotNetArrayTypeRef)
 		{
-			builder.append(generateLinksForType(((DotNetArrayTypeRef) dotNetTypeRef).getInnerTypeRef(), element));
+			builder.append(generateLinksForType(((DotNetArrayTypeRef) dotNetTypeRef).getInnerTypeRef(), element, qualified));
 			builder.append("[]");
 		}
 		else if(dotNetTypeRef instanceof DotNetPointerTypeRef)
 		{
-			builder.append(generateLinksForType(((DotNetPointerTypeRef) dotNetTypeRef).getInnerTypeRef(), element));
+			builder.append(generateLinksForType(((DotNetPointerTypeRef) dotNetTypeRef).getInnerTypeRef(), element, qualified));
 			builder.append("*");
 		}
 		else
@@ -297,7 +331,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 			{
 				if(resolved instanceof DotNetGenericParameterListOwner)
 				{
-					wrapToLink(resolved, builder);
+					wrapToLink(resolved, builder, qualified);
 
 					DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) resolved).getGenericParameters();
 					if(genericParameters.length > 0)
@@ -315,7 +349,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 							DotNetTypeRef extractedTypeRef = genericExtractor.extract(parameter);
 							if(extractedTypeRef != null)
 							{
-								builder.append(generateLinksForType(extractedTypeRef, element));
+								builder.append(generateLinksForType(extractedTypeRef, element, qualified));
 							}
 							else
 							{
@@ -340,8 +374,15 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 	}
 
 	@RequiredReadAction
-	private static void wrapToLink(@NotNull PsiElement resolved, StringBuilder builder)
+	private static void wrapToLink(@NotNull PsiElement resolved, StringBuilder builder, boolean qualified)
 	{
+		String parentQName = qualified ? resolved instanceof DotNetQualifiedElement ? ((DotNetQualifiedElement) resolved).getPresentableParentQName() : null : null;
+
+		if(!StringUtil.isEmpty(parentQName))
+		{
+			builder.append(parentQName).append('.');
+		}
+
 		builder.append("<a href=\"psi_element://").append(TYPE_PREFIX);
 		if(resolved instanceof DotNetTypeDeclaration)
 		{

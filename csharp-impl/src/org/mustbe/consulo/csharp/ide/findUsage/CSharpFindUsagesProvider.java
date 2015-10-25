@@ -102,7 +102,7 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		}
 		else if(element instanceof CSharpTypeDefStatement)
 		{
-			return "type def";
+			return "type alias";
 		}
 		else if(element instanceof CSharpPropertyDeclaration)
 		{
