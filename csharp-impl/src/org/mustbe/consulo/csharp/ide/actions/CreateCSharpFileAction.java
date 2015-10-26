@@ -124,6 +124,16 @@ public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
 			return null;
 		}
 
+		Module resolve = findModuleByPsiDirectory(project, orChooseDirectory);
+		if(resolve != null)
+			return resolve;
+		return LangDataKeys.MODULE.getData(dataContext);
+	}
+
+	@Nullable
+	@RequiredReadAction
+	private static Module findModuleByPsiDirectory(Project project, final PsiDirectory orChooseDirectory)
+	{
 		LightVirtualFile l = new LightVirtualFile("test.cs", CSharpFileType.INSTANCE, "")
 		{
 			@Override
@@ -147,14 +157,22 @@ public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
 				return resolve;
 			}
 		}
-		return LangDataKeys.MODULE.getData(dataContext);
+		return null;
 	}
 
 	@Override
 	@RequiredReadAction
-	protected PsiFile createFile(String name, String templateName, PsiDirectory dir)
+	protected PsiFile createFile(String name, String templateName, final PsiDirectory dir)
 	{
-		DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(dir, DotNetModuleExtension.class);
+		DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(dir, DotNetSimpleModuleExtension.class);
+		if(extension == null)
+		{
+			Module moduleByPsiDirectory = findModuleByPsiDirectory(dir.getProject(), dir);
+			if(moduleByPsiDirectory != null)
+			{
+				extension = ModuleUtilCore.getExtension(moduleByPsiDirectory, DotNetSimpleModuleExtension.class);
+			}
+		}
 
 		String namespace = null;
 		if(extension != null)
