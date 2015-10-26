@@ -62,7 +62,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.util.IncorrectOperationException;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -79,7 +78,7 @@ public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
 	@RequiredDispatchThread
 	protected boolean isAvailable(DataContext dataContext)
 	{
-		val module = findModule(dataContext);
+		Module module = findModule(dataContext);
 		if(module != null)
 		{
 			DotNetModuleExtension extension = ModuleUtilCore.getExtension(module, DotNetModuleExtension.class);
@@ -118,7 +117,7 @@ public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
 			return null;
 		}
 
-		val orChooseDirectory = view.getOrChooseDirectory();
+		final PsiDirectory orChooseDirectory = view.getOrChooseDirectory();
 		if(orChooseDirectory == null)
 		{
 			return null;
@@ -139,7 +138,7 @@ public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
 				return LocalFileSystem.getInstance();
 			}
 		};
-		for(val o : ContentEntryFileListener.PossibleModuleForFileResolver.EP_NAME.getExtensions())
+		for(ContentEntryFileListener.PossibleModuleForFileResolver o : ContentEntryFileListener.PossibleModuleForFileResolver.EP_NAME.getExtensions())
 		{
 			Module resolve = o.resolve(project, l);
 			if(resolve != null)
@@ -151,6 +150,7 @@ public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
 	}
 
 	@Override
+	@RequiredReadAction
 	protected PsiFile createFile(String name, String templateName, PsiDirectory dir)
 	{
 		PsiPackage aPackage = PsiPackageManager.getInstance(dir.getProject()).findPackage(dir, DotNetModuleExtension.class);
@@ -199,12 +199,13 @@ public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
 			}
 		}
 
-		val template = FileTemplateManager.getInstance().getInternalTemplate(templateName);
+		FileTemplate template = FileTemplateManager.getInstance().getInternalTemplate(templateName);
 		return createFileFromTemplate(name, namespace, template, dir);
 	}
 
 	@SuppressWarnings("DialogTitleCapitalization")
 	@Nullable
+	@RequiredReadAction
 	public static PsiFile createFileFromTemplate(@Nullable String name,
 			@Nullable String namespaceName,
 			@NotNull FileTemplate template,
@@ -240,7 +241,7 @@ public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
 				CodeStyleManager.getInstance(project).reformat(psiFile);
 			}
 
-			val virtualFile = psiFile.getVirtualFile();
+			VirtualFile virtualFile = psiFile.getVirtualFile();
 			if(virtualFile != null)
 			{
 				FileEditorManager.getInstance(project).openFile(virtualFile, true);
@@ -266,6 +267,7 @@ public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
 	}
 
 	@Override
+	@RequiredDispatchThread
 	protected void buildDialog(Project project, PsiDirectory psiDirectory, CreateFileFromTemplateDialog.Builder builder)
 	{
 		builder.addKind("Class", new IconDescriptor(AllIcons.Nodes.Class).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpClass");
@@ -280,6 +282,7 @@ public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
 		builder.addKind("Empty File", CSharpFileType.INSTANCE.getIcon(), "CSharpFile");
 	}
 
+	@RequiredReadAction
 	private static boolean isCreationOfAssemblyFileAvailable(PsiDirectory directory)
 	{
 		Module module = ModuleUtilCore.findModuleForPsiElement(directory);
@@ -297,7 +300,12 @@ public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
 		}
 
 		final Ref<VirtualFile> ref = Ref.create();
-		VfsUtil.visitChildrenRecursively(module.getModuleDir(), new VirtualFileVisitor<Object>()
+		VirtualFile moduleDir = module.getModuleDir();
+		if(moduleDir == null)
+		{
+			return false;
+		}
+		VfsUtil.visitChildrenRecursively(moduleDir, new VirtualFileVisitor<Object>()
 		{
 			@Override
 			public boolean visitFile(@NotNull VirtualFile file)
