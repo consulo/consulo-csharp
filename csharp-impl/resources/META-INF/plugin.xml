@@ -40,7 +40,7 @@
 	</xi:include>
 
 	<actions>
-		<action id="CSharp.File" class="org.mustbe.consulo.csharp.ide.actions.CreateCSharpFileAction">
+		<action id="CSharp.File" class="org.mustbe.consulo.csharp.ide.actions.CSharpCreateFileAction">
 			<add-to-group group-id="NewGroup1" anchor="after" relative-to-action="NewClass"/>
 		</action>
 

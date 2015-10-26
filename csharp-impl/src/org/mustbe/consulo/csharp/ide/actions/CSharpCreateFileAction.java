@@ -68,9 +68,9 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 15.12.13.
  */
-public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
+public class CSharpCreateFileAction extends CreateFromTemplateAction<PsiFile>
 {
-	public CreateCSharpFileAction()
+	public CSharpCreateFileAction()
 	{
 		super(null, null, CSharpFileType.INSTANCE.getIcon());
 	}
