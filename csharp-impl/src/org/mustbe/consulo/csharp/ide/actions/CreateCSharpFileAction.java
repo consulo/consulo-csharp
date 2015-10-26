@@ -31,6 +31,7 @@ import org.mustbe.consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
+import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import org.mustbe.consulo.roots.ContentEntryFileListener;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.IconDescriptor;
@@ -153,50 +154,12 @@ public class CreateCSharpFileAction extends CreateFromTemplateAction<PsiFile>
 	@RequiredReadAction
 	protected PsiFile createFile(String name, String templateName, PsiDirectory dir)
 	{
-		PsiPackage aPackage = PsiPackageManager.getInstance(dir.getProject()).findPackage(dir, DotNetModuleExtension.class);
+		DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(dir, DotNetModuleExtension.class);
+
 		String namespace = null;
-		if(aPackage != null)
+		if(extension != null)
 		{
-			namespace = aPackage.getQualifiedName();
-		}
-		else
-		{
-			int index = name.lastIndexOf('.');
-
-			if(index > 0)
-			{
-				namespace = name.substring(0, index);
-				name = name.substring(index + 1, name.length());
-			}
-			else
-			{
-				Module moduleForPsiElement = ModuleUtilCore.findModuleForPsiElement(dir);
-				if(moduleForPsiElement != null)
-				{
-					DotNetModuleExtension extension = ModuleUtilCore.getExtension(moduleForPsiElement, DotNetModuleExtension.class);
-					if(extension != null)
-					{
-						String relativePath = VfsUtil.getRelativePath(dir.getVirtualFile(), moduleForPsiElement.getModuleDir(), '.');
-
-						if(!StringUtil.isEmpty(relativePath))
-						{
-							String namespacePrefix = extension.getNamespacePrefix();
-							if(!StringUtil.isEmpty(namespacePrefix))
-							{
-								namespace = namespacePrefix + "." + relativePath;
-							}
-							else
-							{
-								namespace = relativePath;
-							}
-						}
-						else
-						{
-							namespace = extension.getNamespacePrefix();
-						}
-					}
-				}
-			}
+			namespace = extension.getNamespaceGeneratePolicy().calculateNamespace(dir);
 		}
 
 		FileTemplate template = FileTemplateManager.getInstance().getInternalTemplate(templateName);
