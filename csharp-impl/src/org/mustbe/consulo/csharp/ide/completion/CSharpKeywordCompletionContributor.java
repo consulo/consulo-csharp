@@ -236,6 +236,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 								}, new Condition<IElementType>()
 								{
 									@Override
+									@RequiredReadAction
 									public boolean value(IElementType elementType)
 									{
 										if(elementType == CSharpTokens.IN_KEYWORD)
@@ -244,7 +245,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 										}
 										if(elementType == CSharpSoftTokens.ASYNC_KEYWORD)
 										{
-											if(CSharpModuleUtil.findLanguageVersion(position).isAtLeast(CSharpLanguageVersion._5_0))
+											if(!CSharpModuleUtil.findLanguageVersion(position).isAtLeast(CSharpLanguageVersion._6_0))
 											{
 												return false;
 											}
