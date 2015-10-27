@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.parser.decl;
 
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
+import org.mustbe.consulo.csharp.lang.parser.ModifierSet;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
@@ -27,7 +28,7 @@ import com.intellij.psi.tree.IElementType;
  */
 public class EventParsing extends MemberWithBodyParsing
 {
-	public static void parse(CSharpBuilderWrapper builder, PsiBuilder.Marker marker)
+	public static void parse(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, ModifierSet set)
 	{
 		if(parseType(builder, STUB_SUPPORT) == null)
 		{
@@ -59,7 +60,7 @@ public class EventParsing extends MemberWithBodyParsing
 			else if(tokenType == EQ)
 			{
 				builder.advanceLexer();
-				if(ExpressionParsing.parse(builder) == null)
+				if(ExpressionParsing.parse(builder, set) == null)
 				{
 					builder.error("Expression expected");
 				}

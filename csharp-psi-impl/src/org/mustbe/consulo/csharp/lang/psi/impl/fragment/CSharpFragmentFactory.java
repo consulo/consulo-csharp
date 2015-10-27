@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
+import org.mustbe.consulo.csharp.lang.parser.ModifierSet;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import com.intellij.lang.ASTNode;
@@ -51,7 +52,7 @@ public class CSharpFragmentFactory
 		public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
 		{
 			PsiBuilder.Marker mark = builder.mark();
-			ExpressionParsing.parse(new CSharpBuilderWrapper(builder, languageVersion));
+			ExpressionParsing.parse(new CSharpBuilderWrapper(builder, languageVersion), ModifierSet.EMPTY);
 			while(!builder.eof())
 			{
 				builder.error("Unexpected token");

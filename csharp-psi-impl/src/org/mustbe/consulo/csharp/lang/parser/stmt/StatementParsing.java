@@ -19,11 +19,13 @@ package org.mustbe.consulo.csharp.lang.parser.stmt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
+import org.mustbe.consulo.csharp.lang.parser.ModifierSet;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.decl.FieldOrPropertyParsing;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import com.intellij.lang.LighterASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.tree.IElementType;
@@ -35,24 +37,26 @@ import lombok.val;
  */
 public class StatementParsing extends SharedParsingHelpers
 {
-	public static PsiBuilder.Marker parse(CSharpBuilderWrapper wrapper)
+	private static final String AWAIT_KEYWORD = "await";
+
+	public static PsiBuilder.Marker parse(CSharpBuilderWrapper wrapper, ModifierSet set)
 	{
-		return parseStatement(wrapper);
+		return parseStatement(wrapper, set);
 	}
 
-	private static PsiBuilder.Marker parseStatement(CSharpBuilderWrapper wrapper)
+	private static PsiBuilder.Marker parseStatement(CSharpBuilderWrapper wrapper, ModifierSet set)
 	{
-		val marker = wrapper.mark();
+		PsiBuilder.Marker marker = wrapper.mark();
 
 		wrapper.enableSoftKeyword(CSharpSoftTokens.YIELD_KEYWORD);
 
-		val tokenType = wrapper.getTokenType();
+		IElementType tokenType = wrapper.getTokenType();
 
 		wrapper.disableSoftKeyword(CSharpSoftTokens.YIELD_KEYWORD);
 
 		if(tokenType == LOCK_KEYWORD)
 		{
-			parseStatementWithParenthesesExpression(wrapper, marker, LOCK_STATEMENT);
+			parseStatementWithParenthesesExpression(wrapper, marker, LOCK_STATEMENT, set);
 		}
 		else if(tokenType == BREAK_KEYWORD)
 		{
@@ -82,76 +86,76 @@ public class StatementParsing extends SharedParsingHelpers
 		}
 		else if(tokenType == FOR_KEYWORD)
 		{
-			parseForStatement(wrapper, marker);
+			parseForStatement(wrapper, marker, set);
 		}
 		else if(tokenType == DO_KEYWORD)
 		{
-			parseDoWhileStatement(wrapper, marker);
+			parseDoWhileStatement(wrapper, marker, set);
 		}
 		else if(tokenType == RETURN_KEYWORD)
 		{
-			parseReturnStatement(wrapper, marker);
+			parseReturnStatement(wrapper, marker, set);
 		}
 		else if(tokenType == THROW_KEYWORD)
 		{
-			parseThrowStatement(wrapper, marker);
+			parseThrowStatement(wrapper, marker, set);
 		}
 		else if(tokenType == FOREACH_KEYWORD)
 		{
-			parseForeachStatement(wrapper, marker);
+			parseForeachStatement(wrapper, marker, set);
 		}
 		else if(tokenType == YIELD_KEYWORD)
 		{
-			parseYieldStatement(wrapper, marker);
+			parseYieldStatement(wrapper, marker, set);
 		}
 		else if(tokenType == TRY_KEYWORD)
 		{
-			parseTryStatement(wrapper, marker);
+			parseTryStatement(wrapper, marker, set);
 		}
 		else if(tokenType == CATCH_KEYWORD)
 		{
-			parseCatchStatement(wrapper, marker);
+			parseCatchStatement(wrapper, marker, set);
 		}
 		else if(tokenType == FINALLY_KEYWORD)
 		{
-			parseFinallyStatement(wrapper, marker);
+			parseFinallyStatement(wrapper, marker, set);
 		}
 		else if(tokenType == UNSAFE_KEYWORD)
 		{
-			parseUnsafeStatement(wrapper, marker);
+			parseUnsafeStatement(wrapper, marker, set);
 		}
 		else if(tokenType == IF_KEYWORD)
 		{
-			parseIfStatement(wrapper, marker);
+			parseIfStatement(wrapper, marker, set);
 		}
 		else if(tokenType == LBRACE)
 		{
-			parseBlockStatement(wrapper, marker);
+			parseBlockStatement(wrapper, marker, set);
 		}
 		else if(tokenType == WHILE_KEYWORD)
 		{
-			parseStatementWithParenthesesExpression(wrapper, marker, WHILE_STATEMENT);
+			parseStatementWithParenthesesExpression(wrapper, marker, WHILE_STATEMENT, set);
 		}
 		else if(tokenType == CHECKED_KEYWORD || tokenType == UNCHECKED_KEYWORD)
 		{
-			parseCheckedStatement(wrapper, marker);
+			parseCheckedStatement(wrapper, marker, set);
 		}
 		else if(tokenType == USING_KEYWORD)
 		{
-			parseUsingOrFixed(wrapper, marker, USING_STATEMENT);
+			parseUsingOrFixed(wrapper, marker, USING_STATEMENT, set);
 		}
 		else if(tokenType == FIXED_KEYWORD)
 		{
-			parseUsingOrFixed(wrapper, marker, FIXED_STATEMENT);
+			parseUsingOrFixed(wrapper, marker, FIXED_STATEMENT, set);
 		}
 		else if(tokenType == CASE_KEYWORD || tokenType == DEFAULT_KEYWORD && wrapper.lookAhead(1) == COLON)  // accept with colon only,
 		// default can be expression
 		{
-			parseSwitchLabel(wrapper, marker, tokenType == CASE_KEYWORD);
+			parseSwitchLabel(wrapper, marker, tokenType == CASE_KEYWORD, set);
 		}
 		else if(tokenType == SWITCH_KEYWORD)
 		{
-			parseSwitchStatement(wrapper, marker);
+			parseSwitchStatement(wrapper, marker, set);
 		}
 		else if(tokenType == CONST_KEYWORD)
 		{
@@ -159,7 +163,7 @@ public class StatementParsing extends SharedParsingHelpers
 
 			wrapper.advanceLexer();
 
-			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(wrapper, varMark, LOCAL_VARIABLE, NONE, true);
+			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(wrapper, varMark, LOCAL_VARIABLE, NONE, true, set);
 
 			marker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
 		}
@@ -172,11 +176,11 @@ public class StatementParsing extends SharedParsingHelpers
 		{
 			if(tokenType == CSharpTokens.IDENTIFIER && wrapper.lookAhead(1) == COLON)
 			{
-				parseLabeledStatement(wrapper, marker);
+				parseLabeledStatement(wrapper, marker, set);
 				return marker;
 			}
 
-			if(parseVariableOrExpression(wrapper, marker) == null)
+			if(parseVariableOrExpression(wrapper, marker, set) == null)
 			{
 				return null;
 			}
@@ -191,9 +195,9 @@ public class StatementParsing extends SharedParsingHelpers
 	}
 
 	@Nullable
-	private static ParseVariableOrExpressionResult parseVariableOrExpression(CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker someMarker)
+	private static ParseVariableOrExpressionResult parseVariableOrExpression(CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker someMarker, ModifierSet set)
 	{
-		LocalVarType localVarType = canParseAsVariable(builder);
+		LocalVarType localVarType = canParseAsVariable(builder, set);
 		// need for example remap global keyword to identifier when it try to parse
 		builder.remapBackIfSoft();
 
@@ -201,7 +205,7 @@ public class StatementParsing extends SharedParsingHelpers
 		{
 
 			case NONE:
-				PsiBuilder.Marker expressionMarker = ExpressionParsing.parse(builder);
+				PsiBuilder.Marker expressionMarker = ExpressionParsing.parse(builder, set);
 				if(expressionMarker == null)
 				{
 					if(someMarker != null)
@@ -225,7 +229,7 @@ public class StatementParsing extends SharedParsingHelpers
 				return ParseVariableOrExpressionResult.EXPRESSION;
 			case WITH_NAME:
 				PsiBuilder.Marker mark = builder.mark();
-				FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, mark, LOCAL_VARIABLE, VAR_SUPPORT, false);
+				FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, mark, LOCAL_VARIABLE, VAR_SUPPORT, false, set);
 				if(someMarker != null)
 				{
 					expect(builder, SEMICOLON, "';' expected");
@@ -258,7 +262,7 @@ public class StatementParsing extends SharedParsingHelpers
 	}
 
 	@NotNull
-	private static LocalVarType canParseAsVariable(CSharpBuilderWrapper builder)
+	private static LocalVarType canParseAsVariable(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		PsiBuilder.Marker newMarker = builder.mark();
 
@@ -269,6 +273,19 @@ public class StatementParsing extends SharedParsingHelpers
 			if(typeInfo == null)
 			{
 				return LocalVarType.NONE;
+			}
+
+			if(set.contains(CSharpSoftTokens.ASYNC_KEYWORD))
+			{
+				int startOffset = ((LighterASTNode) typeInfo.marker).getStartOffset();
+				int endOffset = ((LighterASTNode) typeInfo.marker).getEndOffset();
+
+				CharSequence sequence = builder.getOriginalText().subSequence(startOffset, endOffset);
+
+				if(isAwait(sequence))
+				{
+					return LocalVarType.NONE;
+				}
 			}
 
 			IElementType tokenType = builder.getTokenType();
@@ -306,13 +323,47 @@ public class StatementParsing extends SharedParsingHelpers
 		}
 	}
 
-	private static void parseTryStatement(@NotNull CSharpBuilderWrapper builder, final PsiBuilder.Marker marker)
+	private static boolean isAwait(CharSequence sequence)
+	{
+		if(sequence.length() < AWAIT_KEYWORD.length())
+		{
+			return false;
+		}
+
+		// check for await
+		for(int i = 0; i < AWAIT_KEYWORD.length(); i++)
+		{
+			char expectedChar = AWAIT_KEYWORD.charAt(i);
+			char actualChar = sequence.charAt(i);
+			if(actualChar != expectedChar)
+			{
+				return false;
+			}
+		}
+
+		if(sequence.length() == AWAIT_KEYWORD.length())
+		{
+			return true;
+		}
+
+		for(int i = AWAIT_KEYWORD.length(); i < sequence.length(); i++)
+		{
+			char c = sequence.charAt(i);
+			if(!StringUtil.isWhiteSpace(c))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static void parseTryStatement(@NotNull CSharpBuilderWrapper builder, final PsiBuilder.Marker marker, ModifierSet set)
 	{
 		builder.advanceLexer();
 
 		if(builder.getTokenType() == LBRACE)
 		{
-			parseStatement(builder);
+			parseStatement(builder, set);
 		}
 		else
 		{
@@ -322,13 +373,13 @@ public class StatementParsing extends SharedParsingHelpers
 		boolean has = false;
 		while(builder.getTokenType() == CATCH_KEYWORD)
 		{
-			parseCatchStatement(builder, null);
+			parseCatchStatement(builder, null, set);
 			has = true;
 		}
 
 		if(builder.getTokenType() == FINALLY_KEYWORD)
 		{
-			parseFinallyStatement(builder, null);
+			parseFinallyStatement(builder, null, set);
 			has = true;
 		}
 
@@ -339,7 +390,7 @@ public class StatementParsing extends SharedParsingHelpers
 		marker.done(TRY_STATEMENT);
 	}
 
-	private static void parseCatchStatement(@NotNull CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker marker)
+	private static void parseCatchStatement(@NotNull CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker marker, ModifierSet set)
 	{
 		PsiBuilder.Marker mark;
 		if(marker != null)
@@ -386,12 +437,12 @@ public class StatementParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 
-			parseExpressionInParenth(builder);
+			parseExpressionInParenth(builder, set);
 		}
 
 		if(builder.getTokenType() == LBRACE)
 		{
-			parseStatement(builder);
+			parseStatement(builder, set);
 		}
 		else
 		{
@@ -401,7 +452,7 @@ public class StatementParsing extends SharedParsingHelpers
 		mark.done(CATCH_STATEMENT);
 	}
 
-	private static void parseFinallyStatement(@NotNull CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker marker)
+	private static void parseFinallyStatement(@NotNull CSharpBuilderWrapper builder, @Nullable PsiBuilder.Marker marker, ModifierSet set)
 	{
 		PsiBuilder.Marker mark;
 		if(marker != null)
@@ -418,7 +469,7 @@ public class StatementParsing extends SharedParsingHelpers
 
 		if(builder.getTokenType() == LBRACE)
 		{
-			parseStatement(builder);
+			parseStatement(builder, set);
 		}
 		else
 		{
@@ -428,13 +479,13 @@ public class StatementParsing extends SharedParsingHelpers
 		mark.done(FINALLY_STATEMENT);
 	}
 
-	private static void parseUnsafeStatement(@NotNull CSharpBuilderWrapper builder, @NotNull PsiBuilder.Marker marker)
+	private static void parseUnsafeStatement(@NotNull CSharpBuilderWrapper builder, @NotNull PsiBuilder.Marker marker, ModifierSet set)
 	{
 		builder.advanceLexer();
 
 		if(builder.getTokenType() == LBRACE)
 		{
-			parseStatement(builder);
+			parseStatement(builder, set);
 		}
 		else
 		{
@@ -444,14 +495,14 @@ public class StatementParsing extends SharedParsingHelpers
 		marker.done(UNSAFE_STATEMENT);
 	}
 
-	private static void parseLabeledStatement(@NotNull CSharpBuilderWrapper builder, final PsiBuilder.Marker marker)
+	private static void parseLabeledStatement(@NotNull CSharpBuilderWrapper builder, final PsiBuilder.Marker marker, ModifierSet set)
 	{
 		builder.advanceLexer();
 		builder.advanceLexer();
 
 		boolean empty = true;
 
-		while(parseStatement(builder) != null)
+		while(parseStatement(builder, set) != null)
 		{
 			empty = false;
 		}
@@ -463,24 +514,24 @@ public class StatementParsing extends SharedParsingHelpers
 		marker.done(LABELED_STATEMENT);
 	}
 
-	private static void parseThrowStatement(@NotNull CSharpBuilderWrapper builder, final PsiBuilder.Marker marker)
+	private static void parseThrowStatement(@NotNull CSharpBuilderWrapper builder, final PsiBuilder.Marker marker, ModifierSet set)
 	{
 		builder.advanceLexer();
 
-		ExpressionParsing.parse(builder);
+		ExpressionParsing.parse(builder, set);
 
 		expect(builder, SEMICOLON, "';' expected");
 		marker.done(THROW_STATEMENT);
 	}
 
-	private static void parseForStatement(@NotNull CSharpBuilderWrapper builder, final PsiBuilder.Marker marker)
+	private static void parseForStatement(@NotNull CSharpBuilderWrapper builder, final PsiBuilder.Marker marker, ModifierSet modifierSet)
 	{
 		builder.advanceLexer();
 		if(expect(builder, LPAR, "'(' expected"))
 		{
 			if(builder.getTokenType() != SEMICOLON)
 			{
-				ParseVariableOrExpressionResult parseVariableOrExpressionResult = parseVariableOrExpression(builder, null);
+				ParseVariableOrExpressionResult parseVariableOrExpressionResult = parseVariableOrExpression(builder, null, modifierSet);
 
 				if(parseVariableOrExpressionResult == ParseVariableOrExpressionResult.EXPRESSION)
 				{
@@ -488,7 +539,7 @@ public class StatementParsing extends SharedParsingHelpers
 					{
 						builder.advanceLexer();
 
-						PsiBuilder.Marker nextMarker = ExpressionParsing.parse(builder);
+						PsiBuilder.Marker nextMarker = ExpressionParsing.parse(builder, modifierSet);
 						if(nextMarker == null)
 						{
 							builder.error("Expression expected");
@@ -503,37 +554,37 @@ public class StatementParsing extends SharedParsingHelpers
 
 			if(builder.getTokenType() != SEMICOLON)
 			{
-				ExpressionParsing.parse(builder);
+				ExpressionParsing.parse(builder, modifierSet);
 			}
 			else
 			{
 				builder.advanceLexer();
 
-				ExpressionParsing.parse(builder);
+				ExpressionParsing.parse(builder, modifierSet);
 			}
 
 			if(builder.getTokenType() != SEMICOLON)
 			{
-				ExpressionParsing.parse(builder);
+				ExpressionParsing.parse(builder, modifierSet);
 			}
 			else
 			{
 				builder.advanceLexer();
 
-				ExpressionParsing.parse(builder);
+				ExpressionParsing.parse(builder, modifierSet);
 
 				while(builder.getTokenType() == COMMA)
 				{
 					builder.advanceLexer();
 
-					ExpressionParsing.parse(builder);
+					ExpressionParsing.parse(builder, modifierSet);
 				}
 			}
 
 			expect(builder, RPAR, "')' expected");
 		}
 
-		if(parseStatement(builder) == null)
+		if(parseStatement(builder, modifierSet) == null)
 		{
 			builder.error("Statement expected");
 		}
@@ -541,18 +592,18 @@ public class StatementParsing extends SharedParsingHelpers
 		marker.done(FOR_STATEMENT);
 	}
 
-	private static void parseSwitchStatement(@NotNull CSharpBuilderWrapper builder, PsiBuilder.Marker marker)
+	private static void parseSwitchStatement(@NotNull CSharpBuilderWrapper builder, PsiBuilder.Marker marker, ModifierSet set)
 	{
 		builder.advanceLexer();
 
-		if(!parseExpressionInParenth(builder))
+		if(!parseExpressionInParenth(builder, set))
 		{
 			builder.error("Expression expected");
 		}
 
 		if(builder.getTokenType() == LBRACE)
 		{
-			parseStatement(builder);
+			parseStatement(builder, set);
 		}
 		else
 		{
@@ -561,13 +612,13 @@ public class StatementParsing extends SharedParsingHelpers
 		marker.done(SWITCH_STATEMENT);
 	}
 
-	private static void parseSwitchLabel(@NotNull CSharpBuilderWrapper builder, PsiBuilder.Marker marker, boolean caseLabel)
+	private static void parseSwitchLabel(@NotNull CSharpBuilderWrapper builder, PsiBuilder.Marker marker, boolean caseLabel, ModifierSet set)
 	{
 		builder.advanceLexer();
 
 		if(caseLabel)
 		{
-			if(ExpressionParsing.parse(builder) == null)
+			if(ExpressionParsing.parse(builder, set) == null)
 			{
 				builder.error("Expression expected");
 			}
@@ -578,13 +629,13 @@ public class StatementParsing extends SharedParsingHelpers
 		marker.done(SWITCH_LABEL_STATEMENT);
 	}
 
-	private static void parseUsingOrFixed(@NotNull CSharpBuilderWrapper builder, final PsiBuilder.Marker marker, IElementType to)
+	private static void parseUsingOrFixed(@NotNull CSharpBuilderWrapper builder, final PsiBuilder.Marker marker, IElementType to, ModifierSet set)
 	{
 		builder.advanceLexer();
 
 		if(expect(builder, LPAR, "'(' expected"))
 		{
-			if(parseVariableOrExpression(builder, null) == null)
+			if(parseVariableOrExpression(builder, null, set) == null)
 			{
 				builder.error("Variable or expression expected");
 			}
@@ -592,7 +643,7 @@ public class StatementParsing extends SharedParsingHelpers
 			expect(builder, RPAR, "')' expected");
 		}
 
-		if(parseStatement(builder) == null)
+		if(parseStatement(builder, set) == null)
 		{
 			builder.error("Statement expected");
 		}
@@ -601,17 +652,17 @@ public class StatementParsing extends SharedParsingHelpers
 	}
 
 	@NotNull
-	private static PsiBuilder.Marker parseIfStatement(final CSharpBuilderWrapper builder, final PsiBuilder.Marker mark)
+	private static PsiBuilder.Marker parseIfStatement(final CSharpBuilderWrapper builder, final PsiBuilder.Marker mark, ModifierSet set)
 	{
 		builder.advanceLexer();
 
-		if(!parseExpressionInParenth(builder))
+		if(!parseExpressionInParenth(builder, set))
 		{
 			mark.done(IF_STATEMENT);
 			return mark;
 		}
 
-		val thenStatement = parseStatement(builder);
+		val thenStatement = parseStatement(builder, set);
 		if(thenStatement == null)
 		{
 			builder.error("Expected statement");
@@ -625,7 +676,7 @@ public class StatementParsing extends SharedParsingHelpers
 			return mark;
 		}
 
-		val elseStatement = parseStatement(builder);
+		val elseStatement = parseStatement(builder, set);
 		if(elseStatement == null)
 		{
 			builder.error("Expected statement");
@@ -635,7 +686,7 @@ public class StatementParsing extends SharedParsingHelpers
 		return mark;
 	}
 
-	private static void parseForeachStatement(CSharpBuilderWrapper builder, PsiBuilder.Marker marker)
+	private static void parseForeachStatement(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, ModifierSet set)
 	{
 		assert builder.getTokenType() == FOREACH_KEYWORD;
 
@@ -658,7 +709,7 @@ public class StatementParsing extends SharedParsingHelpers
 
 			if(expect(builder, IN_KEYWORD, "'in' expected"))
 			{
-				if(ExpressionParsing.parse(builder) == null)
+				if(ExpressionParsing.parse(builder, set) == null)
 				{
 					builder.error("Expression expected");
 				}
@@ -667,7 +718,7 @@ public class StatementParsing extends SharedParsingHelpers
 			expect(builder, RPAR, "')' expected");
 		}
 
-		if(parseStatement(builder) == null)
+		if(parseStatement(builder, set) == null)
 		{
 			builder.error("Statement expected");
 		}
@@ -675,7 +726,7 @@ public class StatementParsing extends SharedParsingHelpers
 		marker.done(FOREACH_STATEMENT);
 	}
 
-	private static PsiBuilder.Marker parseBlockStatement(CSharpBuilderWrapper builder, PsiBuilder.Marker marker)
+	private static PsiBuilder.Marker parseBlockStatement(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, ModifierSet set)
 	{
 		if(builder.getTokenType() == LBRACE)
 		{
@@ -689,7 +740,7 @@ public class StatementParsing extends SharedParsingHelpers
 				}
 				else
 				{
-					PsiBuilder.Marker anotherMarker = parse(builder);
+					PsiBuilder.Marker anotherMarker = parse(builder, set);
 					if(anotherMarker == null)
 					{
 						PsiBuilder.Marker mark = builder.mark();
@@ -710,7 +761,7 @@ public class StatementParsing extends SharedParsingHelpers
 		}
 	}
 
-	private static boolean parseExpressionInParenth(final CSharpBuilderWrapper builder)
+	private static boolean parseExpressionInParenth(final CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		if(!expect(builder, LPAR, "'(' expected"))
 		{
@@ -718,7 +769,7 @@ public class StatementParsing extends SharedParsingHelpers
 		}
 
 		final PsiBuilder.Marker beforeExpr = builder.mark();
-		final PsiBuilder.Marker expr = ExpressionParsing.parse(builder);
+		final PsiBuilder.Marker expr = ExpressionParsing.parse(builder, set);
 		if(expr == null || builder.getTokenType() == SEMICOLON)
 		{
 			beforeExpr.rollbackTo();
@@ -742,7 +793,7 @@ public class StatementParsing extends SharedParsingHelpers
 		return true;
 	}
 
-	private static void parseYieldStatement(CSharpBuilderWrapper builder, PsiBuilder.Marker marker)
+	private static void parseYieldStatement(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, ModifierSet set)
 	{
 		assert builder.getTokenType() == YIELD_KEYWORD;
 
@@ -758,7 +809,7 @@ public class StatementParsing extends SharedParsingHelpers
 		{
 			PsiBuilder.Marker mark = builder.mark();
 			builder.advanceLexer();
-			ExpressionParsing.parse(builder);
+			ExpressionParsing.parse(builder, set);
 			mark.done(RETURN_STATEMENT);
 		}
 		else
@@ -776,26 +827,26 @@ public class StatementParsing extends SharedParsingHelpers
 		marker.done(YIELD_STATEMENT);
 	}
 
-	private static void parseReturnStatement(CSharpBuilderWrapper wrapper, PsiBuilder.Marker marker)
+	private static void parseReturnStatement(CSharpBuilderWrapper wrapper, PsiBuilder.Marker marker, ModifierSet set)
 	{
 		assert wrapper.getTokenType() == RETURN_KEYWORD;
 
 		wrapper.advanceLexer();
 
-		ExpressionParsing.parse(wrapper);
+		ExpressionParsing.parse(wrapper, set);
 
 		expect(wrapper, SEMICOLON, "';' expected");
 
 		marker.done(RETURN_STATEMENT);
 	}
 
-	private static void parseDoWhileStatement(CSharpBuilderWrapper wrapper, PsiBuilder.Marker marker)
+	private static void parseDoWhileStatement(CSharpBuilderWrapper wrapper, PsiBuilder.Marker marker, ModifierSet set)
 	{
 		wrapper.advanceLexer();
 
 		if(wrapper.getTokenType() == LBRACE)
 		{
-			parseStatement(wrapper);
+			parseStatement(wrapper, set);
 		}
 		else
 		{
@@ -804,7 +855,7 @@ public class StatementParsing extends SharedParsingHelpers
 
 		if(expect(wrapper, WHILE_KEYWORD, "'while' expected"))
 		{
-			parseExpressionInParenth(wrapper);
+			parseExpressionInParenth(wrapper, set);
 
 			expect(wrapper, SEMICOLON, null);
 		}
@@ -812,11 +863,11 @@ public class StatementParsing extends SharedParsingHelpers
 		marker.done(DO_WHILE_STATEMENT);
 	}
 
-	private static void parseCheckedStatement(CSharpBuilderWrapper wrapper, PsiBuilder.Marker marker)
+	private static void parseCheckedStatement(CSharpBuilderWrapper wrapper, PsiBuilder.Marker marker, ModifierSet set)
 	{
 		if(wrapper.lookAhead(1) == LPAR)
 		{
-			ExpressionParsing.parse(wrapper);
+			ExpressionParsing.parse(wrapper, set);
 
 			marker.done(EXPRESSION_STATEMENT);
 		}
@@ -826,7 +877,7 @@ public class StatementParsing extends SharedParsingHelpers
 
 			if(wrapper.getTokenType() == LBRACE)
 			{
-				parseStatement(wrapper);
+				parseStatement(wrapper, set);
 			}
 			else
 			{
@@ -837,13 +888,13 @@ public class StatementParsing extends SharedParsingHelpers
 		}
 	}
 
-	private static void parseStatementWithParenthesesExpression(CSharpBuilderWrapper wrapper, PsiBuilder.Marker marker, IElementType doneElement)
+	private static void parseStatementWithParenthesesExpression(CSharpBuilderWrapper wrapper, PsiBuilder.Marker marker, IElementType doneElement, ModifierSet set)
 	{
 		wrapper.advanceLexer();
 
-		parseExpressionInParenth(wrapper);
+		parseExpressionInParenth(wrapper, set);
 
-		StatementParsing.parse(wrapper);
+		StatementParsing.parse(wrapper, set);
 
 		expect(wrapper, SEMICOLON, null);
 

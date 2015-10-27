@@ -84,18 +84,18 @@ public class GenericParameterParsing extends SharedParsingHelpers
 
 	public static PsiBuilder.Marker parseGenericConstraintList(CSharpBuilderWrapper builder)
 	{
-		val marker = builder.mark();
+		PsiBuilder.Marker marker = builder.mark();
 
 		boolean empty = true;
 		while(true)
 		{
-			val p = parseWithSoftElements(new NotNullFunction<CSharpBuilderWrapper, Pair<PsiBuilder.Marker,Boolean>>()
+			Pair<PsiBuilder.Marker, Void> p = parseWithSoftElements(new NotNullFunction<CSharpBuilderWrapper, Pair<PsiBuilder.Marker, Void>>()
 			{
 				@NotNull
 				@Override
-				public Pair<PsiBuilder.Marker,Boolean> fun(CSharpBuilderWrapper builderWrapper)
+				public Pair<PsiBuilder.Marker, Void> fun(CSharpBuilderWrapper builderWrapper)
 				{
-					return new Pair<PsiBuilder.Marker, Boolean>(parseGenericConstraint(builderWrapper), Boolean.TRUE);
+					return new Pair<PsiBuilder.Marker, Void>(parseGenericConstraint(builderWrapper), null);
 				}
 			}, builder, WHERE_KEYWORD);
 

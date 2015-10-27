@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.parser.exp;
 
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
+import org.mustbe.consulo.csharp.lang.parser.ModifierSet;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.PsiBuilder;
@@ -33,7 +34,7 @@ public class LinqParsing extends SharedParsingHelpers
 	public static final TokenSet LINQ_KEYWORDS = TokenSet.create(LET_KEYWORD, FROM_KEYWORD, SELECT_KEYWORD, GROUP_KEYWORD, BY_KEYWORD,
 	INTO_KEYWORD, ORDERBY_KEYWORD, WHERE_KEYWORD, ASCENDING_KEYWORD, DESCENDING_KEYWORD, JOIN_KEYWORD, ON_KEYWORD, EQUALS_KEYWORD);
 
-	public static PsiBuilder.Marker parseLinqExpression(final CSharpBuilderWrapper builder)
+	public static PsiBuilder.Marker parseLinqExpression(final CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		builder.enableSoftKeywords(LINQ_KEYWORDS);
 
@@ -41,7 +42,7 @@ public class LinqParsing extends SharedParsingHelpers
 		{
 			PsiBuilder.Marker linqExpressionMarker = builder.mark();
 
-			PsiBuilder.Marker marker = parseFromClause(builder, true);
+			PsiBuilder.Marker marker = parseFromClause(builder, true, set);
 			if(marker == null)
 			{
 				linqExpressionMarker.rollbackTo();
@@ -51,14 +52,14 @@ public class LinqParsing extends SharedParsingHelpers
 			PsiBuilder.Marker queryBody = builder.mark();
 			while(!builder.eof())
 			{
-				PsiBuilder.Marker qMarker = parseQueryBodyClause(builder);
+				PsiBuilder.Marker qMarker = parseQueryBodyClause(builder, set);
 				if(qMarker == null)
 				{
 					break;
 				}
 			}
 
-			parseSelectOrGroupClause(builder);
+			parseSelectOrGroupClause(builder, set);
 
 			//TODO [VISTALL] QueryContinuation?
 
@@ -74,7 +75,7 @@ public class LinqParsing extends SharedParsingHelpers
 	}
 
 	@Nullable
-	private static PsiBuilder.Marker parseFromClause(final CSharpBuilderWrapper builder, boolean rollback)
+	private static PsiBuilder.Marker parseFromClause(final CSharpBuilderWrapper builder, boolean rollback, ModifierSet set)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
@@ -115,7 +116,7 @@ public class LinqParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 
-			if(ExpressionParsing.parse(builder) == null)
+			if(ExpressionParsing.parse(builder, set) == null)
 			{
 				builder.error("Expression expected");
 			}
@@ -156,34 +157,34 @@ public class LinqParsing extends SharedParsingHelpers
 	}
 
 	@Nullable
-	private static PsiBuilder.Marker parseQueryBodyClause(CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseQueryBodyClause(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		IElementType tokenType = builder.getTokenType();
 		if(tokenType == FROM_KEYWORD)
 		{
-			return parseFromClause(builder, false);
+			return parseFromClause(builder, false, set);
 		}
 		else if(tokenType == WHERE_KEYWORD)
 		{
-			return parseWhereClause(builder);
+			return parseWhereClause(builder, set);
 		}
 		else if(tokenType == ORDERBY_KEYWORD)
 		{
-			return parseOrderByClause(builder);
+			return parseOrderByClause(builder, set);
 		}
 		else if(tokenType == LET_KEYWORD)
 		{
-			return parseLetClause(builder);
+			return parseLetClause(builder, set);
 		}
 		else if(tokenType == JOIN_KEYWORD)
 		{
-			return parseJoinClause(builder);
+			return parseJoinClause(builder, set);
 		}
 		return null;
 	}
 
 	@Nullable
-	private static PsiBuilder.Marker parseJoinClause(final CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseJoinClause(final CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
@@ -204,7 +205,7 @@ public class LinqParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 
-			if(ExpressionParsing.parse(builder) == null)
+			if(ExpressionParsing.parse(builder, set) == null)
 			{
 				builder.error("Expression expected");
 			}
@@ -218,7 +219,7 @@ public class LinqParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 
-			if(ExpressionParsing.parse(builder) == null)
+			if(ExpressionParsing.parse(builder, set) == null)
 			{
 				builder.error("Expression expected");
 			}
@@ -232,7 +233,7 @@ public class LinqParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 
-			if(ExpressionParsing.parse(builder) == null)
+			if(ExpressionParsing.parse(builder, set) == null)
 			{
 				builder.error("Expression expected");
 			}
@@ -259,13 +260,13 @@ public class LinqParsing extends SharedParsingHelpers
 		return mark;
 	}
 
-	private static PsiBuilder.Marker parseWhereClause(CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseWhereClause(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
 		builder.advanceLexer();
 
-		if(ExpressionParsing.parse(builder) == null)
+		if(ExpressionParsing.parse(builder, set) == null)
 		{
 			builder.error("Expression expected");
 		}
@@ -273,7 +274,7 @@ public class LinqParsing extends SharedParsingHelpers
 		return mark;
 	}
 
-	private static PsiBuilder.Marker parseLetClause(CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseLetClause(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
@@ -285,7 +286,7 @@ public class LinqParsing extends SharedParsingHelpers
 			doneIdentifier(builder, NONE);
 			if(expect(builder, EQ, "'=' expected"))
 			{
-				if(ExpressionParsing.parse(builder) == null)
+				if(ExpressionParsing.parse(builder, set) == null)
 				{
 					builder.error("Expression expected");
 				}
@@ -301,7 +302,7 @@ public class LinqParsing extends SharedParsingHelpers
 		return mark;
 	}
 
-	private static PsiBuilder.Marker parseOrderByClause(CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseOrderByClause(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
@@ -310,7 +311,7 @@ public class LinqParsing extends SharedParsingHelpers
 		while(!builder.eof())
 		{
 			PsiBuilder.Marker subMarker = builder.mark();
-			if(ExpressionParsing.parse(builder) == null)
+			if(ExpressionParsing.parse(builder, set) == null)
 			{
 				subMarker.drop();
 				subMarker = null;
@@ -340,7 +341,7 @@ public class LinqParsing extends SharedParsingHelpers
 		return mark;
 	}
 
-	private static void parseSelectOrGroupClause(CSharpBuilderWrapper builder)
+	private static void parseSelectOrGroupClause(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
@@ -348,7 +349,7 @@ public class LinqParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 
-			if(ExpressionParsing.parse(builder) == null)
+			if(ExpressionParsing.parse(builder, set) == null)
 			{
 				builder.error("Expression expected");
 			}
@@ -356,14 +357,14 @@ public class LinqParsing extends SharedParsingHelpers
 		else if(builder.getTokenType() == GROUP_KEYWORD)
 		{
 			builder.advanceLexer();
-			if(ExpressionParsing.parse(builder) == null)
+			if(ExpressionParsing.parse(builder, set) == null)
 			{
 				builder.error("Expression expected");
 			}
 			if(builder.getTokenType() == BY_KEYWORD)
 			{
 				builder.advanceLexer();
-				if(ExpressionParsing.parse(builder) == null)
+				if(ExpressionParsing.parse(builder, set) == null)
 				{
 					builder.error("Expression expected");
 				}

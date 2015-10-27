@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.parser.decl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
+import org.mustbe.consulo.csharp.lang.parser.ModifierSet;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.UsingStatementParsing;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
@@ -37,7 +38,7 @@ import com.intellij.util.NotNullFunction;
  */
 public class DeclarationParsing extends SharedParsingHelpers
 {
-		// { (
+	// { (
 	private static final TokenSet NAME_STOPPERS = TokenSet.create(LBRACE, LPAR, THIS_KEYWORD);
 
 	public static void parseAll(@NotNull CSharpBuilderWrapper builder, boolean root, boolean isEnum)
@@ -49,7 +50,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 			{
 				prevToken = builder.getTokenType();
 
-				parseEnumConstant(builder);
+				parseEnumConstant(builder, ModifierSet.EMPTY);
 
 				if(builder.getTokenType() == COMMA)
 				{
@@ -89,18 +90,18 @@ public class DeclarationParsing extends SharedParsingHelpers
 	{
 		PsiBuilder.Marker marker = builder.mark();
 
-		Pair<PsiBuilder.Marker, Boolean> modifierListPair = parseWithSoftElements(new NotNullFunction<CSharpBuilderWrapper, Pair<PsiBuilder.Marker,
-				Boolean>>()
+		Pair<PsiBuilder.Marker, ModifierSet> modifierListPair = parseWithSoftElements(new NotNullFunction<CSharpBuilderWrapper, Pair<PsiBuilder.Marker, ModifierSet>>()
 		{
 			@NotNull
 			@Override
-			public Pair<PsiBuilder.Marker, Boolean> fun(CSharpBuilderWrapper builderWrapper)
+			public Pair<PsiBuilder.Marker, ModifierSet> fun(CSharpBuilderWrapper builderWrapper)
 			{
 				return parseModifierListWithAttributes(builderWrapper, STUB_SUPPORT);
 			}
 		}, builder, PARTIAL_KEYWORD, ASYNC_KEYWORD);
 
 		PsiBuilder.Marker modifierListMarker = modifierListPair.getFirst();
+		ModifierSet modifierSet = modifierListPair.getSecond();
 
 		IElementType tokenType = builder.getTokenType();
 		if(tokenType == NAMESPACE_KEYWORD)
@@ -115,13 +116,13 @@ public class DeclarationParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 
-			EventParsing.parse(builder, marker);
+			EventParsing.parse(builder, marker, modifierSet);
 		}
 		else if(tokenType == DELEGATE_KEYWORD)
 		{
 			builder.advanceLexer();
 
-			MethodParsing.parseMethodStartAtType(builder, marker);
+			MethodParsing.parseMethodStartAtType(builder, marker, modifierSet);
 		}
 		else if(tokenType == USING_KEYWORD)
 		{
@@ -131,27 +132,27 @@ public class DeclarationParsing extends SharedParsingHelpers
 		{
 			builder.advanceLexer();
 
-			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, marker, FIELD_DECLARATION, STUB_SUPPORT, true);
+			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, marker, FIELD_DECLARATION, STUB_SUPPORT, true, modifierSet);
 		}
 		else
 		{
 			// MODIFIER_LIST IDENTIFIER LPAR -> CONSTRUCTOR
 			if(tokenType == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == LPAR)
 			{
-				MethodParsing.parseMethodStartAfterType(builder, marker, null, MethodParsing.Target.CONSTRUCTOR);
+				MethodParsing.parseMethodStartAfterType(builder, marker, null, MethodParsing.Target.CONSTRUCTOR, modifierSet);
 			}
 			else if(tokenType == TILDE)
 			{
 				builder.advanceLexer();
 
-				MethodParsing.parseMethodStartAfterType(builder, marker, null, MethodParsing.Target.DECONSTRUCTOR);
+				MethodParsing.parseMethodStartAfterType(builder, marker, null, MethodParsing.Target.DECONSTRUCTOR, modifierSet);
 			}
 			else
 			{
 				TypeInfo typeInfo = parseType(builder, STUB_SUPPORT);
 				if(typeInfo == null)
 				{
-					if(!modifierListPair.getSecond())
+					if(!modifierSet.isEmpty())
 					{
 						if(root)
 						{
@@ -172,7 +173,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 				}
 				else if(builder.getTokenType() == OPERATOR_KEYWORD)
 				{
-					MethodParsing.parseMethodStartAfterType(builder, marker, typeInfo, MethodParsing.Target.METHOD);
+					MethodParsing.parseMethodStartAfterType(builder, marker, typeInfo, MethodParsing.Target.METHOD, modifierSet);
 				}
 				else
 				{
@@ -182,7 +183,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 						builder.error("Name is expected");
 
 						// if we dont have name but we have lbracket - parse as index method
-						parseAfterName(builder, marker, builder.getTokenType() == LBRACKET ? THIS_KEYWORD : null);
+						parseAfterName(builder, marker, builder.getTokenType() == LBRACKET ? THIS_KEYWORD : null, modifierSet);
 						return;
 					}
 
@@ -207,7 +208,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 						doneThisOrIdentifier(builder);
 					}
 
-					parseAfterName(builder, marker, prevToken);
+					parseAfterName(builder, marker, prevToken, modifierSet);
 				}
 			}
 		}
@@ -225,7 +226,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 		}
 	}
 
-	private static boolean parseEnumConstant(CSharpBuilderWrapper builder)
+	private static boolean parseEnumConstant(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		if(builder.getTokenType() == RBRACE)
 		{
@@ -237,7 +238,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 		if(builder.getTokenType() == LBRACKET)
 		{
 			PsiBuilder.Marker modMark = builder.mark();
-			parseAttributeList(builder, STUB_SUPPORT);
+			parseAttributeList(builder, set, STUB_SUPPORT);
 			modMark.done(CSharpStubElements.MODIFIER_LIST);
 
 			nameExpected = true;
@@ -256,7 +257,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 			{
 				builder.advanceLexer();
 
-				if(ExpressionParsing.parse(builder) == null)
+				if(ExpressionParsing.parse(builder, set) == null)
 				{
 					builder.error("Expression expected");
 				}
@@ -282,19 +283,19 @@ public class DeclarationParsing extends SharedParsingHelpers
 		return true;
 	}
 
-	private static void parseAfterName(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, @Nullable IElementType prevToken)
+	private static void parseAfterName(CSharpBuilderWrapper builder, PsiBuilder.Marker marker, @Nullable IElementType prevToken, ModifierSet set)
 	{
 		if(prevToken == THIS_KEYWORD)
 		{
-			FieldOrPropertyParsing.parseArrayAfterThis(builder, marker);
+			FieldOrPropertyParsing.parseArrayAfterThis(builder, marker, set);
 		}
 		else if(builder.getTokenType() == LPAR || builder.getTokenType() == LT) // MODIFIER_LIST TYPE IDENTIFIER LPAR -> METHOD
 		{
-			MethodParsing.parseMethodStartAfterName(builder, marker, MethodParsing.Target.METHOD);
+			MethodParsing.parseMethodStartAfterName(builder, marker, MethodParsing.Target.METHOD, set);
 		}
 		else
 		{
-			FieldOrPropertyParsing.parseFieldOrPropertyAfterName(builder, marker);
+			FieldOrPropertyParsing.parseFieldOrPropertyAfterName(builder, marker, set);
 		}
 	}
 
