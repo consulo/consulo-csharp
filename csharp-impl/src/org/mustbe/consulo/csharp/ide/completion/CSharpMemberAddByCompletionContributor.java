@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.completion;
 import static com.intellij.patterns.StandardPatterns.psiElement;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
@@ -40,6 +41,7 @@ public abstract class CSharpMemberAddByCompletionContributor extends CompletionC
 	{
 		extend(CompletionType.BASIC, psiElement().withSuperParent(4, CSharpTypeDeclaration.class), new CompletionProvider<CompletionParameters>()
 		{
+			@RequiredReadAction
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
@@ -60,6 +62,7 @@ public abstract class CSharpMemberAddByCompletionContributor extends CompletionC
 		});
 	}
 
+	@RequiredReadAction
 	public abstract void processCompletion(@NotNull CompletionParameters parameters,
 			ProcessingContext context,
 			@NotNull CompletionResultSet result,

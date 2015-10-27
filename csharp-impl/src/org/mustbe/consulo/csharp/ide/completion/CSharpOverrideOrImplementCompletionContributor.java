@@ -71,6 +71,7 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 	private static final int ourMethodFlags = CSharpElementPresentationUtil.METHOD_WITH_RETURN_TYPE | CSharpElementPresentationUtil
 			.METHOD_PARAMETER_NAME;
 
+	@RequiredReadAction
 	@Override
 	public void processCompletion(@NotNull CompletionParameters parameters,
 			ProcessingContext context,
@@ -259,6 +260,7 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static Collection<DotNetModifierListOwner> getItemsImpl(@NotNull CSharpTypeDeclaration typeDeclaration)
 	{
 		Collection<PsiElement> allMembers = OverrideUtil.getAllMembers(typeDeclaration, typeDeclaration.getResolveScope(),
@@ -274,7 +276,7 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 					continue;
 				}
 
-				if(!CSharpVisibilityUtil.isVisible((DotNetModifierListOwner) element, typeDeclaration))
+				if(!CSharpVisibilityUtil.isVisible(typeDeclaration, element))
 				{
 					continue;
 				}
