@@ -245,7 +245,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 										}
 										if(elementType == CSharpSoftTokens.ASYNC_KEYWORD)
 										{
-											if(!CSharpModuleUtil.findLanguageVersion(position).isAtLeast(CSharpLanguageVersion._6_0))
+											if(!CSharpModuleUtil.findLanguageVersion(position).isAtLeast(CSharpLanguageVersion._5_0))
 											{
 												return false;
 											}
