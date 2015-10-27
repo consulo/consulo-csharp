@@ -17,7 +17,9 @@
 package org.mustbe.consulo.csharp.ide.structureView;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.csharp.ide.structureView.sorters.CSharpMemberSorter;
 import com.intellij.ide.structureView.StructureViewModelBase;
+import com.intellij.ide.util.treeView.smartTree.Sorter;
 import com.intellij.psi.PsiFile;
 
 /**
@@ -29,5 +31,7 @@ public class CSharpStructureViewModel extends StructureViewModelBase
 	public CSharpStructureViewModel(@NotNull PsiFile psiFile)
 	{
 		super(psiFile, new CSharpElementStructureViewTreeElement(psiFile));
+
+		withSorters(CSharpMemberSorter.INSTANCE, Sorter.ALPHA_SORTER);
 	}
 }

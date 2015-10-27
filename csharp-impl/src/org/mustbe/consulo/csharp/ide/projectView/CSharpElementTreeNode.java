@@ -29,6 +29,7 @@ import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.util.Iconable;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 
 /**
@@ -37,23 +38,8 @@ import com.intellij.psi.PsiNamedElement;
  */
 public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetNamedElement>
 {
-	public CSharpElementTreeNode(DotNetNamedElement dotNetMemberOwner, ViewSettings viewSettings)
+	public static int getWeight(PsiElement element)
 	{
-		super(dotNetMemberOwner.getProject(), dotNetMemberOwner, viewSettings);
-	}
-
-	@Override
-	public int getWeight()
-	{
-		// namespace
-		// type
-		// field
-		// property
-		// event
-		// constructor
-		// method
-
-		DotNetNamedElement element = getValue();
 		if(element instanceof DotNetNamespaceDeclaration)
 		{
 			return 100;
@@ -76,16 +62,38 @@ public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetN
 		}
 		else if(element instanceof DotNetConstructorDeclaration)
 		{
-			return 600;
+			return 700;
 		}
 		else if(element instanceof DotNetLikeMethodDeclaration)
 		{
-			return 700;
+			return 600;
 		}
-		else
+		return 0;
+	}
+
+	public CSharpElementTreeNode(DotNetNamedElement dotNetMemberOwner, ViewSettings viewSettings)
+	{
+		super(dotNetMemberOwner.getProject(), dotNetMemberOwner, viewSettings);
+	}
+
+	@Override
+	public int getWeight()
+	{
+		// namespace
+		// type
+		// field
+		// property
+		// event
+		// constructor
+		// method
+
+		DotNetNamedElement element = getValue();
+		int weight = getWeight(element);
+		if(weight != 0)
 		{
-			return super.getWeight();
+			return weight;
 		}
+		return super.getWeight();
 	}
 
 	@Nullable
