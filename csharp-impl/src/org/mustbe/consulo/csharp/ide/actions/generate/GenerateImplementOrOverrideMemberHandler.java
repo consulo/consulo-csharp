@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.actions.generate.memberChoose.CSharpMemberChooseObject;
 import org.mustbe.consulo.csharp.ide.actions.generate.memberChoose.MethodChooseMember;
@@ -47,6 +48,7 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public abstract class GenerateImplementOrOverrideMemberHandler implements LanguageCodeInsightActionHandler
 {
+	@RequiredDispatchThread
 	@Override
 	public void invoke(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file)
 	{
@@ -126,6 +128,7 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 	@NotNull
 	public abstract Collection<? extends PsiElement> getItems(@NotNull CSharpTypeDeclaration typeDeclaration);
 
+	@RequiredReadAction
 	private static void generateMember(@NotNull final CSharpTypeDeclaration typeDeclaration,
 			@NotNull final Editor editor,
 			@NotNull final PsiFile file,
@@ -154,7 +157,11 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 				final PsiElement psiElement = typeDeclaration.addAfter(method, temp);
 				typeDeclaration.addAfter(PsiParserFacade.SERVICE.getInstance(file.getProject()).createWhiteSpaceFromText("\n"), psiElement);
 
-				PsiDocumentManager.getInstance(getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+				PsiDocumentManager documentManager = PsiDocumentManager.getInstance(getProject());
+
+				documentManager.doPostponedOperationsAndUnblockDocument(editor.getDocument());
+
+				documentManager.commitDocument(editor.getDocument());
 
 				CodeStyleManager.getInstance(getProject()).reformat(psiElement);
 			}
