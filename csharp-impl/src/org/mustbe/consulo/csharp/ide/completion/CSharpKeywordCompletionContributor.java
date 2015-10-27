@@ -62,25 +62,23 @@ import com.intellij.util.ProcessingContext;
  */
 public class CSharpKeywordCompletionContributor extends CompletionContributor
 {
-	private static final TokenSet ourExpressionLiterals = TokenSet.create(CSharpTokens.NULL_LITERAL, CSharpTokens.FALSE_KEYWORD,
-			CSharpTokens.TRUE_KEYWORD, CSharpTokens.DEFAULT_KEYWORD, CSharpTokens.TYPEOF_KEYWORD, CSharpTokens.SIZEOF_KEYWORD,
-			CSharpTokens.THIS_KEYWORD, CSharpTokens.BASE_KEYWORD, CSharpSoftTokens.AWAIT_KEYWORD, CSharpTokens.NEW_KEYWORD,
+	private static final TokenSet ourExpressionLiterals = TokenSet.create(CSharpTokens.NULL_LITERAL, CSharpTokens.FALSE_KEYWORD, CSharpTokens.TRUE_KEYWORD, CSharpTokens.DEFAULT_KEYWORD,
+			CSharpTokens.TYPEOF_KEYWORD, CSharpTokens.SIZEOF_KEYWORD, CSharpTokens.THIS_KEYWORD, CSharpTokens.BASE_KEYWORD, CSharpSoftTokens.AWAIT_KEYWORD, CSharpTokens.NEW_KEYWORD,
 			CSharpTokens.__MAKEREF_KEYWORD, CSharpTokens.__REFTYPE_KEYWORD, CSharpTokens.__REFVALUE_KEYWORD, CSharpSoftTokens.NAMEOF_KEYWORD);
 
 	public CSharpKeywordCompletionContributor()
 	{
-		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class),
-				new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class), new CompletionProvider<CompletionParameters>()
 		{
 			@RequiredReadAction
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				final CSharpReferenceExpressionEx parent = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
-				if(parent.getQualifier() == null && parent.kind() == CSharpReferenceExpression.ResolveToKind.EXPRESSION_OR_TYPE_LIKE)
+				if(parent.getQualifier() == null && (parent.kind() == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER || parent.kind() == CSharpReferenceExpression.ResolveToKind
+						.EXPRESSION_OR_TYPE_LIKE))
 				{
-					CSharpCompletionUtil.tokenSetToLookup(result, ourExpressionLiterals, new NotNullPairFunction<LookupElementBuilder, IElementType,
-									LookupElement>()
+					CSharpCompletionUtil.tokenSetToLookup(result, ourExpressionLiterals, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
 							{
 								@NotNull
 								@Override
@@ -139,14 +137,12 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.USING_KEYWORD)).inside
-				(CSharpUsingNamespaceStatement.class), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.USING_KEYWORD)).inside(CSharpUsingNamespaceStatement.class),
+				new CompletionProvider<CompletionParameters>()
 		{
 			@RequiredReadAction
 			@Override
-			protected void addCompletions(@NotNull final CompletionParameters parameters,
-					ProcessingContext context,
-					@NotNull CompletionResultSet result)
+			protected void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.STATIC_KEYWORD, null, new Condition<IElementType>()
 				{
@@ -164,19 +160,15 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			protected void addCompletions(@NotNull final CompletionParameters parameters,
-					ProcessingContext context,
-					@NotNull CompletionResultSet result)
+			protected void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
-				CSharpCompletionUtil.tokenSetToLookup(result, TokenSet.create(CSharpTokens.IN_KEYWORD, CSharpTokens.OUT_KEYWORD), null,
-						new Condition<IElementType>()
+				CSharpCompletionUtil.tokenSetToLookup(result, TokenSet.create(CSharpTokens.IN_KEYWORD, CSharpTokens.OUT_KEYWORD), null, new Condition<IElementType>()
 				{
 					@Override
 					@RequiredReadAction
 					public boolean value(IElementType elementType)
 					{
-						DotNetQualifiedElement qualifiedElement = PsiTreeUtil.getParentOfType(parameters.getPosition(),
-								CSharpMethodDeclaration.class, DotNetTypeDeclaration.class);
+						DotNetQualifiedElement qualifiedElement = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpMethodDeclaration.class, DotNetTypeDeclaration.class);
 						if(qualifiedElement instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) qualifiedElement).isDelegate())
 						{
 							return true;
@@ -195,9 +187,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			protected void addCompletions(@NotNull CompletionParameters completionParameters,
-					ProcessingContext processingContext,
-					@NotNull CompletionResultSet completionResultSet)
+			protected void addCompletions(@NotNull CompletionParameters completionParameters, ProcessingContext processingContext, @NotNull CompletionResultSet completionResultSet)
 			{
 				final PsiElement position = completionParameters.getPosition();
 				if(position.getParent() instanceof DotNetReferenceExpression && position.getParent().getParent() instanceof DotNetUserType)
@@ -221,11 +211,10 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 							prevSibling.getNode().getElementType() == CSharpTokens.SEMICOLON ||
 							CSharpTokenSets.MODIFIERS.contains(prevSibling.getNode().getElementType()))
 					{
-						TokenSet tokenVal = TokenSet.orSet(CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START,
-								TokenSet.create(CSharpTokens.DELEGATE_KEYWORD, CSharpTokens.NAMESPACE_KEYWORD));
+						TokenSet tokenVal = TokenSet.orSet(CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START, TokenSet.create(CSharpTokens.DELEGATE_KEYWORD,
+								CSharpTokens.NAMESPACE_KEYWORD));
 
-						CSharpCompletionUtil.tokenSetToLookup(completionResultSet, tokenVal, new NotNullPairFunction<LookupElementBuilder,
-										IElementType, LookupElement>()
+						CSharpCompletionUtil.tokenSetToLookup(completionResultSet, tokenVal, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
 
 								{
 									@NotNull
@@ -255,8 +244,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 
 										boolean isParameter = PsiTreeUtil.getParentOfType(position, DotNetParameter.class) != null;
 
-										if(elementType == CSharpTokens.REF_KEYWORD || elementType == CSharpTokens.OUT_KEYWORD || elementType ==
-												CSharpTokens.PARAMS_KEYWORD)
+										if(elementType == CSharpTokens.REF_KEYWORD || elementType == CSharpTokens.OUT_KEYWORD || elementType == CSharpTokens.PARAMS_KEYWORD)
 										{
 											return isParameter;
 										}
