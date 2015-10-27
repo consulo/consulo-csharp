@@ -18,7 +18,9 @@ package org.mustbe.consulo.csharp.ide.actions.generate;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import com.intellij.codeInsight.CodeInsightActionHandler;
 import com.intellij.codeInsight.actions.CodeInsightAction;
@@ -33,6 +35,7 @@ import com.intellij.psi.PsiFile;
 public abstract class CSharpGenerateAction extends CodeInsightAction
 {
 	@Nullable
+	@RequiredReadAction
 	public static CSharpTypeDeclaration findTypeDeclaration(@NotNull Editor editor, @NotNull PsiFile file)
 	{
 		if(file.getFileType() != CSharpFileType.INSTANCE)
@@ -45,7 +48,12 @@ public abstract class CSharpGenerateAction extends CodeInsightAction
 		{
 			return null;
 		}
-		final PsiElement parent = elementAt.getParent();
+
+		PsiElement parent = elementAt.getParent();
+		if(parent instanceof CSharpIdentifier)
+		{
+			parent = parent.getParent();
+		}
 		return parent instanceof CSharpTypeDeclaration ? (CSharpTypeDeclaration) parent : null;
 	}
 
