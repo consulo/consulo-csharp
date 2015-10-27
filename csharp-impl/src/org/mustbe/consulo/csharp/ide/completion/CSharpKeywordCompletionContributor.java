@@ -21,14 +21,7 @@ import static com.intellij.patterns.StandardPatterns.psiElement;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
-import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
+import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -117,10 +110,8 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 									}
 									if(elementType == CSharpSoftTokens.AWAIT_KEYWORD)
 									{
-										if(!CSharpModuleUtil.findLanguageVersion(parent).isAtLeast(CSharpLanguageVersion._4_0))
-										{
-											return false;
-										}
+										CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(parent, CSharpSimpleLikeMethodAsElement.class);
+										return methodAsElement != null && methodAsElement.hasModifier(CSharpModifier.ASYNC);
 									}
 									if(elementType == CSharpSoftTokens.NAMEOF_KEYWORD)
 									{
