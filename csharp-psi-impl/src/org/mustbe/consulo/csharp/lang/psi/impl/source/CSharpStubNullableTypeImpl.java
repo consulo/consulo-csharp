@@ -18,14 +18,13 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNullableType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNullableTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
-import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -57,6 +56,7 @@ public class CSharpStubNullableTypeImpl extends CSharpStubTypeElementImpl<CSharp
 
 	@Override
 	@NotNull
+	@RequiredReadAction
 	public DotNetTypeRef toTypeRefImpl()
 	{
 		DotNetType innerType = getInnerType();
@@ -64,7 +64,7 @@ public class CSharpStubNullableTypeImpl extends CSharpStubTypeElementImpl<CSharp
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
-		return new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(DotNetTypes.System.Nullable$1), innerType.toTypeRef());
+		return CSharpNullableTypeUtil.box(innerType.toTypeRef());
 	}
 
 	@Override
