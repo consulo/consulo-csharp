@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
@@ -28,6 +29,7 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpPropertyUtil
 {
+	@RequiredReadAction
 	public static boolean isAutoProperty(@NotNull PsiElement element)
 	{
 		if(element instanceof CSharpPropertyDeclaration)
@@ -40,8 +42,7 @@ public class CSharpPropertyUtil
 			}
 
 			// C# 6.0 specific readonly auto property
-			if(accessors.length == 1 && accessors[0].getAccessorKind() == DotNetXXXAccessor.Kind.GET && accessors[0].getCodeBlock() == null &&
-					propertyDeclaration.getInitializer() != null)
+			if(accessors.length == 1 && accessors[0].getAccessorKind() == DotNetXXXAccessor.Kind.GET && accessors[0].getCodeBlock() == null)
 			{
 				return CSharpModuleUtil.findLanguageVersion(element).isAtLeast(CSharpLanguageVersion._6_0);
 			}

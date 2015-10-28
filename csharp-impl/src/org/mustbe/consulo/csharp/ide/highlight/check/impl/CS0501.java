@@ -165,6 +165,7 @@ public class CS0501 extends CompilerCheck<DotNetCodeBlockOwner>
 	}
 
 
+	@RequiredReadAction
 	private boolean isAllowEmptyCodeBlock(DotNetCodeBlockOwner declaration)
 	{
 		DotNetModifierListOwner owner = (DotNetModifierListOwner) declaration;
