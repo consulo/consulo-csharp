@@ -214,7 +214,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 		}
 	}
 
-	private static void doneThisOrIdentifier(CSharpBuilderWrapper builder)
+	public static void doneThisOrIdentifier(CSharpBuilderWrapper builder)
 	{
 		if(builder.getTokenType() == THIS_KEYWORD)
 		{
@@ -299,7 +299,8 @@ public class DeclarationParsing extends SharedParsingHelpers
 		}
 	}
 
-	private static TypeInfo parseImplementType(CSharpBuilderWrapper builder)
+	@Nullable
+	public static TypeInfo parseImplementType(CSharpBuilderWrapper builder)
 	{
 		IElementType tokenType = builder.getTokenType();
 		if(tokenType == THIS_KEYWORD)

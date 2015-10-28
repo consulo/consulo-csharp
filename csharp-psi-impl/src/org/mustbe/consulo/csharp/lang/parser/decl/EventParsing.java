@@ -37,7 +37,28 @@ public class EventParsing extends MemberWithBodyParsing
 		}
 		else
 		{
-			expectOrReportIdentifier(builder, STUB_SUPPORT);
+			TypeInfo implementType = DeclarationParsing.parseImplementType(builder);
+			if(implementType == null)
+			{
+				DeclarationParsing.reportIdentifier(builder, STUB_SUPPORT);
+				marker.done(EVENT_DECLARATION);
+				return;
+			}
+
+			if(builder.getTokenType() == DOT)
+			{
+				builder.advanceLexer();
+			}
+			else
+			{
+				if(implementType.marker != null)
+				{
+					implementType.marker.rollbackTo();
+				}
+			}
+
+			DeclarationParsing.doneThisOrIdentifier(builder);
+
 			IElementType tokenType = builder.getTokenType();
 			if(tokenType == COMMA)
 			{
