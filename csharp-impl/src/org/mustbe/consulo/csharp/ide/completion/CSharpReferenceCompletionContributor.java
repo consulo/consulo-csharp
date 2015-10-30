@@ -33,6 +33,7 @@ import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLikeLookupElement;
+import org.mustbe.consulo.csharp.ide.completion.util.CSharpParenthesesInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
@@ -74,7 +75,6 @@ import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.completion.PrioritizedLookupElement;
-import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.icons.AllIcons;
@@ -558,6 +558,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 	}
 
 	@Nullable
+	@RequiredReadAction
 	private static LookupElementBuilder buildForConstructor(final CSharpConstructorDeclaration declaration, final DotNetGenericExtractor extractor)
 	{
 		PsiElement parent = declaration.getParent();
@@ -576,6 +577,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 				lookupString += "<" + StringUtil.join(genericParameters, new Function<DotNetGenericParameter, String>()
 				{
 					@Override
+					@RequiredReadAction
 					public String fun(DotNetGenericParameter parameter)
 					{
 						DotNetTypeRef extract = extractor.extract(parameter);
@@ -599,6 +601,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 		String parameterText = "(" + StringUtil.join(parameters, new Function<DotNetTypeRef, String>()
 		{
 			@Override
+			@RequiredReadAction
 			public String fun(DotNetTypeRef parameter)
 			{
 				return CSharpTypeRefPresentationUtil.buildShortText(parameter, declaration);
@@ -608,7 +611,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 		LookupElementBuilder builder = LookupElementBuilder.create(declaration, lookupString);
 		builder = builder.withIcon(IconDescriptorUpdaters.getIcon(parent, Iconable.ICON_FLAG_VISIBILITY));
 		builder = builder.withTailText(parameterText, true);
-		builder = builder.withInsertHandler(ParenthesesInsertHandler.getInstance(parameters.length > 0));
+		builder = builder.withInsertHandler(new CSharpParenthesesInsertHandler(declaration));
 		return builder;
 	}
 }

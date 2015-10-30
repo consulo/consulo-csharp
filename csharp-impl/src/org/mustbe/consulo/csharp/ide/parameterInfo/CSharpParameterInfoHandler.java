@@ -22,6 +22,7 @@ import java.util.List;
 import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -83,7 +84,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 
 		if(object instanceof DotNetLikeMethodDeclaration)
 		{
-			return new ItemToShow[] {new ItemToShow((CSharpSimpleLikeMethod) object, context.getFile())};
+			return new ItemToShow[]{new ItemToShow((CSharpSimpleLikeMethod) object, context.getFile())};
 		}
 		if(object instanceof DotNetVariable)
 		{
@@ -93,7 +94,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 			DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(variable);
 			if(typeResolveResult instanceof CSharpLambdaResolveResult)
 			{
-				return new ItemToShow[] {new ItemToShow((CSharpSimpleLikeMethod) typeResolveResult, variable)};
+				return new ItemToShow[]{new ItemToShow((CSharpSimpleLikeMethod) typeResolveResult, variable)};
 			}
 		}
 		return ItemToShow.EMPTY_ARRAY;
@@ -108,6 +109,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public PsiElement findElementForParameterInfo(CreateParameterInfoContext context)
 	{
 		final PsiElement at = context.getFile().findElementAt(context.getEditor().getCaretModel().getOffset());
@@ -115,9 +117,10 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	}
 
 	@Override
+	@RequiredReadAction
 	public void showParameterInfo(@NotNull PsiElement element, CreateParameterInfoContext context)
 	{
-		ItemToShow[] itemsToShow = resolveToCallables(element);
+		ItemToShow[] itemsToShow = resolveToCallables(element, context);
 
 		if(itemsToShow.length > 0)
 		{
@@ -127,8 +130,13 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	}
 
 	@NotNull
-	private static ItemToShow[] resolveToCallables(PsiElement element)
+	private static ItemToShow[] resolveToCallables(PsiElement element, CreateParameterInfoContext context)
 	{
+		PsiElement highlightedElement = context.getHighlightedElement();
+		if(highlightedElement instanceof CSharpSimpleLikeMethod)
+		{
+			return new ItemToShow[] {new ItemToShow((CSharpSimpleLikeMethod) highlightedElement, element)};
+		}
 		List<ItemToShow> list = new SmartList<ItemToShow>();
 		if(element instanceof CSharpCallArgumentListOwner)
 		{
@@ -266,7 +274,6 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 
 		TextRange parameterRange = build.getParameterRange(context.getCurrentParameterIndex());
 
-		context.setupUIComponentPresentation(text, parameterRange.getStartOffset(), parameterRange.getEndOffset(), !context.isUIComponentEnabled(),
-				false, false, context.getDefaultParameterColor());
+		context.setupUIComponentPresentation(text, parameterRange.getStartOffset(), parameterRange.getEndOffset(), !context.isUIComponentEnabled(), false, false, context.getDefaultParameterColor());
 	}
 }
