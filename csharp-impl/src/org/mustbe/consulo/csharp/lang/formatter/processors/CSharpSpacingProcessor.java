@@ -244,27 +244,24 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.around(ARROW).none();
 
 		myBuilder.before(CSharpTokens.ELSE_KEYWORD).spaceIf(commonSettings.SPACE_BEFORE_ELSE_KEYWORD);
-		myBuilder.betweenInside(CSharpTokens.ELSE_KEYWORD, CSharpElements.BLOCK_STATEMENT, CSharpElements.IF_STATEMENT).spaceIf(commonSettings
-				.SPACE_BEFORE_ELSE_LBRACE);
+		myBuilder.betweenInside(CSharpTokens.ELSE_KEYWORD, CSharpElements.BLOCK_STATEMENT, CSharpElements.IF_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_ELSE_LBRACE);
 
 		// need be after else declaration
 		myBuilder.beforeInside(BLOCK_STATEMENT, IF_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_IF_LBRACE);
 
 		operatorReferenceSpacing(commonSettings.SPACE_AROUND_EQUALITY_OPERATORS, CSharpTokens.EQEQ, CSharpTokens.NTEQ);
 		operatorReferenceSpacing(commonSettings.SPACE_AROUND_LOGICAL_OPERATORS, CSharpTokens.ANDAND, CSharpTokens.OROR);
-		operatorReferenceSpacing(commonSettings.SPACE_AROUND_RELATIONAL_OPERATORS, CSharpTokens.LT, CSharpTokens.GT, CSharpTokens.LTEQ,
-				CSharpTokens.GTEQ);
-		operatorReferenceSpacing(commonSettings.SPACE_AROUND_ASSIGNMENT_OPERATORS, CSharpTokens.EQ, CSharpTokens.PLUSEQ, CSharpTokens.MINUSEQ,
-				CSharpTokens.MULEQ, CSharpTokens.DIVEQ, CSharpTokens.PERCEQ);
+		operatorReferenceSpacing(commonSettings.SPACE_AROUND_RELATIONAL_OPERATORS, CSharpTokens.LT, CSharpTokens.GT, CSharpTokens.LTEQ, CSharpTokens.GTEQ);
+		operatorReferenceSpacing(commonSettings.SPACE_AROUND_ASSIGNMENT_OPERATORS, CSharpTokens.EQ, CSharpTokens.PLUSEQ, CSharpTokens.MINUSEQ, CSharpTokens.MULEQ, CSharpTokens.DIVEQ,
+				CSharpTokens.PERCEQ);
 
 		// field, local var, etc initialization
 		myBuilder.around(CSharpTokens.EQ).spaceIf(commonSettings.SPACE_AROUND_ASSIGNMENT_OPERATORS);
 
-		operatorReferenceSpacing(commonSettings.SPACE_AROUND_SHIFT_OPERATORS, CSharpTokens.GTGT, CSharpTokens.GTGTEQ, CSharpTokens.LTLT,
-				CSharpTokens.LTLTEQ);
+		operatorReferenceSpacing(commonSettings.SPACE_AROUND_SHIFT_OPERATORS, CSharpTokens.GTGT, CSharpTokens.GTGTEQ, CSharpTokens.LTLT, CSharpTokens.LTLTEQ);
 
-		operatorReferenceSpacingWithParent(commonSettings.SPACE_AROUND_UNARY_OPERATOR, TokenSet.create(POSTFIX_EXPRESSION, PREFIX_EXPRESSION),
-				CSharpTokens.PLUS, CSharpTokens.MINUS, CSharpTokens.PLUSPLUS, CSharpTokens.MINUSMINUS, CSharpTokens.MUL, CSharpTokens.AND);
+		operatorReferenceSpacingWithParent(commonSettings.SPACE_AROUND_UNARY_OPERATOR, TokenSet.create(POSTFIX_EXPRESSION, PREFIX_EXPRESSION), CSharpTokens.PLUS, CSharpTokens.MINUS,
+				CSharpTokens.PLUSPLUS, CSharpTokens.MINUSMINUS, CSharpTokens.MUL, CSharpTokens.AND);
 
 		operatorReferenceSpacing(commonSettings.SPACE_AROUND_ADDITIVE_OPERATORS, CSharpTokens.PLUS, CSharpTokens.MINUS);
 		operatorReferenceSpacing(commonSettings.SPACE_AROUND_MULTIPLICATIVE_OPERATORS, CSharpTokens.MUL, CSharpTokens.DIV, CSharpTokens.PERC);
