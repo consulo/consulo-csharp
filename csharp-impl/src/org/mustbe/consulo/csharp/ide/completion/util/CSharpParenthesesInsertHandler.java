@@ -17,6 +17,7 @@ package org.mustbe.consulo.csharp.ide.completion.util;
 
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.csharp.ide.parameterInfo.CSharpParameterInfoHandler;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import com.intellij.codeInsight.AutoPopupController;
@@ -106,7 +107,7 @@ public class CSharpParenthesesInsertHandler implements InsertHandler<LookupEleme
 				}
 				else
 				{
-					AutoPopupController.getInstance(context.getProject()).autoPopupParameterInfo(editor, myLikeMethodDeclaration);
+					AutoPopupController.getInstance(context.getProject()).autoPopupParameterInfo(editor, CSharpParameterInfoHandler.item(myLikeMethodDeclaration));
 
 					editor.getCaretModel().moveToOffset(lparenthOffset + 1);
 				}
@@ -136,7 +137,7 @@ public class CSharpParenthesesInsertHandler implements InsertHandler<LookupEleme
 		}
 		else
 		{
-			AutoPopupController.getInstance(context.getProject()).autoPopupParameterInfo(editor, myLikeMethodDeclaration);
+			AutoPopupController.getInstance(context.getProject()).autoPopupParameterInfo(editor, CSharpParameterInfoHandler.item(myLikeMethodDeclaration));
 		}
 	}
 
