@@ -1,5 +1,6 @@
 package org.mustbe.consulo.csharp.lang.formatter.processors;
 
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
@@ -15,6 +16,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.util.codeInsight.CommentUtilCore;
 import lombok.val;
 
@@ -33,6 +35,7 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 		myCodeStyleSettings = codeStyleSettings;
 	}
 
+	@RequiredReadAction
 	public Indent getIndent()
 	{
 		PsiElement psi = myNode.getPsi();
@@ -102,6 +105,11 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 		} */
 		else
 		{
+			if(CSharpFormattingUtil.wantContinuationIndent(psi))
+			{
+				return Indent.getContinuationIndent();
+			}
+
 			if(psi instanceof CSharpBlockStatementImpl)
 			{
 				if(parent instanceof CSharpBlockStatementImpl)
@@ -140,7 +148,7 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 
 	public Indent getChildIndent()
 	{
-		val elementType = myNode.getElementType();
+		IElementType elementType = myNode.getElementType();
 		if(elementType == CSharpStubElements.FILE)
 		{
 			return Indent.getNoneIndent();

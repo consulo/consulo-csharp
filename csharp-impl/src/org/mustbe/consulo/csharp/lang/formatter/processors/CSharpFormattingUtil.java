@@ -17,9 +17,18 @@
 package org.mustbe.consulo.csharp.lang.formatter.processors;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpXXXAccessorOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
+import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.TokenSet;
 
 /**
  * @author VISTALL
@@ -27,6 +36,45 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpFormattingUtil
 {
+	@RequiredReadAction
+	public static boolean wantContinuationIndent(@Nullable PsiElement element)
+	{
+		PsiElement parent = element == null ? null : element.getParent();
+
+		if(element instanceof CSharpCallArgument)
+		{
+			return wantContinuationIndentByParent(parent);
+		}
+		else if(element instanceof DotNetParameter)
+		{
+			return wantContinuationIndentByParent(parent);
+		}
+		return false;
+	}
+
+	public static boolean wantContinuationIndentByParent(@Nullable PsiElement parent)
+	{
+		if(parent instanceof CSharpCallArgumentList)
+		{
+			//PsiElement openElement = ((CSharpCallArgumentList) parent).getOpenElement();
+			//PsiElement closeElement = ((CSharpCallArgumentList) parent).getCloseElement();
+
+			return true;
+		}
+		else if(parent instanceof DotNetParameterList)
+		{
+			//ASTNode openElement = parent.getNode().findChildByType(TokenSet.create(CSharpTokens.LPAR, CSharpTokens.LBRACKET));
+			ASTNode closeElement = parent.getNode().findChildByType(TokenSet.create(CSharpTokens.RPAR, CSharpTokens.RBRACKET));
+			if(closeElement == null)
+			{
+				return false;
+			}
+
+			return true;
+		}
+		return false;
+	}
+
 	public static boolean isAutoAccessorOwner(@NotNull PsiElement element)
 	{
 		if(element instanceof CSharpXXXAccessorOwner)
