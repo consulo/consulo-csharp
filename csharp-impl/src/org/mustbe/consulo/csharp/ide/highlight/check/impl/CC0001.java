@@ -90,7 +90,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		}
 
 		// if parent is call skip
-		if(expression.getParent() instanceof CSharpMethodCallExpressionImpl)
+		if(expression.getParent() instanceof CSharpCallArgumentListOwner)
 		{
 			return Collections.emptyList();
 		}
@@ -423,11 +423,12 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		PsiElement parent = element.getParent();
 		if(element instanceof CSharpOperatorReferenceImpl ||
 				element instanceof CSharpMethodCallExpressionImpl ||
+				element instanceof CSharpConstructorSuperCallImpl ||
 				element instanceof CSharpArrayAccessExpressionImpl)
 		{
 			return (CSharpCallArgumentListOwner) element;
 		}
-		else if(parent instanceof CSharpConstructorSuperCallImpl || parent instanceof CSharpAttribute)
+		else if(parent instanceof CSharpAttribute)
 		{
 			return (CSharpCallArgumentListOwner) parent;
 		}
