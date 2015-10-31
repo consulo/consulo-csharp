@@ -42,6 +42,7 @@ public class CSharpSyntaxHighlighter extends SyntaxHighlighterBase
 
 	static
 	{
+		safeMap(ourKeys, CSharpPreprocessorLazyTokens.PREPROCESSOR_DIRECTIVE, DefaultLanguageHighlighterColors.LINE_COMMENT);
 		safeMap(ourKeys, CSharpTokens.LINE_COMMENT, CSharpHighlightKey.LINE_COMMENT);
 		safeMap(ourKeys, CSharpTokens.BLOCK_COMMENT, CSharpHighlightKey.BLOCK_COMMENT);
 		safeMap(ourKeys, CSharpTokenSets.STRINGS, CSharpHighlightKey.STRING);
@@ -67,7 +68,6 @@ public class CSharpSyntaxHighlighter extends SyntaxHighlighterBase
 		safeMap(ourKeys, CSharpTokens.DOT, CSharpHighlightKey.DOT);
 		safeMap(ourKeys, CSharpTokens.DARROW, CSharpHighlightKey.ARROW);
 		safeMap(ourKeys, CSharpTokens.ARROW, CSharpHighlightKey.ARROW);
-		safeMap(ourKeys, CSharpPreprocessorLazyTokens.PREPROCESSOR_DIRECTIVE, DefaultLanguageHighlighterColors.LINE_COMMENT);
 		safeMap(ourKeys, CSharpTokenSets.OVERLOADING_OPERATORS, CSharpHighlightKey.OPERATION_SIGN);
 		safeMap(ourKeys, StringEscapesTokenTypes.VALID_STRING_ESCAPE_TOKEN, DefaultLanguageHighlighterColors.VALID_STRING_ESCAPE);
 		safeMap(ourKeys, StringEscapesTokenTypes.INVALID_CHARACTER_ESCAPE_TOKEN, DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE);

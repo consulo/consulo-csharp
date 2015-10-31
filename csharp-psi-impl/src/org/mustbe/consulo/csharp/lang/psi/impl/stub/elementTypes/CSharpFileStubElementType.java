@@ -16,18 +16,33 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
+import gnu.trove.THashSet;
+
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.CSharpLanguageVersionWrapper;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorFileType;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorRecursiveElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorConditionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorExpression;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorIfElseBlockImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorOpenTagImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorUndefDirectiveImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpFileStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.macro.MacroEvaluator;
 import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
@@ -51,7 +66,9 @@ import com.intellij.psi.StubBuilder;
 import com.intellij.psi.stubs.DefaultStubBuilder;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IStubFileElementType;
+import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.util.indexing.IndexingDataKeys;
 
@@ -135,11 +152,12 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 	@NotNull
 	private static List<TextRange> collectDisabledBlocks(@NotNull Project project, @NotNull final CharSequence text, @NotNull final List<String> baseVariables)
 	{
+		final Ref<List<TextRange>> listRef = Ref.create();
+
 		PsiFile templateFile = PsiFileFactory.getInstance(project).createFileFromText("temp", CSharpPreprocessorFileType.INSTANCE, text);
 
-		final Ref<List<TextRange>> listRef = Ref.create();
 		final Ref<Set<String>> redefined = Ref.create();
-		/*templateFile.accept(new CSharpPreprocessorRecursiveElementVisitor()
+		templateFile.accept(new CSharpPreprocessorRecursiveElementVisitor()
 		{
 			@Override
 			@RequiredReadAction
@@ -204,7 +222,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 
 					IElementType elementType = PsiUtilCore.getElementType(declarationTag.getKeywordElement());
 					assert  elementType != null;
-					if(elementType != CSharpPreprocessorTokens2.ELSE_KEYWORD) // if / elif
+					if(elementType != CSharpPreprocessorTokens.ELSE_KEYWORD) // if / elif
 					{
 						CSharpPreprocessorExpression value = declarationTag.getValue();
 						if(value == null) //if not expression - disabled
@@ -253,7 +271,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 
 				return MacroEvaluator.evaluate(text, defs);
 			}
-		});   */
+		});
 		List<TextRange> list = listRef.get();
 		return list == null ? Collections.<TextRange>emptyList() : list;
 	}
@@ -268,7 +286,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 	@Override
 	public int getStubVersion()
 	{
-		return 71;
+		return 72;
 	}
 
 	@NotNull
