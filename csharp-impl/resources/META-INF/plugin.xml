@@ -128,11 +128,9 @@
 		<typeDeclarationProvider implementation="org.mustbe.consulo.csharp.ide.actions.navigate.GotoTypeDeclarationProvider"/>
 		<projectService serviceImplementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher"/>
 		<syntaxHighlighter key="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpSyntaxHighlighter"/>
-		<syntaxHighlighter key="C#Preprocessor" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpPreprocessorSyntaxHighlighter"/>
 		<copyright.updater filetype="C#" implementationClass="org.mustbe.consulo.csharp.ide.copyright.CSharpUpdateCopyrightsProvider"/>
 		<highlightVisitor implementation="org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightVisitor"/>
 		<highlightVisitor implementation="org.mustbe.consulo.csharp.ide.highlight.check.CSharpCompilerCheckVisitor"/>
-		<highlightVisitor implementation="org.mustbe.consulo.csharp.ide.highlight.CSharpPreprocessorHighlightVisitor"/>
 		<externalAnnotator language="C#Preprocessor" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpNonActiveAnnotator"/>
 		<iconDescriptorUpdater implementation="org.mustbe.consulo.csharp.lang.CSharpIconDescriptorUpdater"/>
 		<treeStructureProvider implementation="org.mustbe.consulo.csharp.ide.projectView.CSharpProjectViewProvider"/>
@@ -282,10 +280,9 @@
 		<lang.braceMatcher language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpPairedBraceMatcher"/>
 		<lang.importOptimizer language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpImportOptimizer"/>
 		<lang.foldingBuilder language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpFoldingBuilder"/>
-		<lang.foldingBuilder language="C#Preprocessor" implementationClass="org.mustbe.consulo.csharp.lang.CSharpPreprocessorFoldingBuilder"/>
+
 		<lang.syntaxHighlighterFactory key="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpSyntaxHighlighterFactory"/>
-		<lang.syntaxHighlighterFactory key="C#Preprocessor"
-									   implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpPreprocessorSyntaxHighlighterFactory"/>
+
 		<lang.refactoringSupport language="C#" implementationClass="org.mustbe.consulo.csharp.ide.refactoring.CSharpRefactoringSupportProvider"/>
 		<refactoring.changeSignatureUsageProcessor
 				implementation="org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureUsageProcessor"/>
