@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocRoot;
 import org.mustbe.consulo.csharp.lang.psi.*;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNullableTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.injection.CSharpForInjectionFragmentHolder;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CompletionResolveScopeProcessor;
@@ -41,9 +42,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.StaticVsIns
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.TypeLikeComparator;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpElementGroupTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromNamespace;
@@ -54,7 +53,6 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.ExtensionMethodByNameSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
-import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
@@ -214,7 +212,7 @@ public class CSharpReferenceExpressionImplUtil
 				}
 				else
 				{
-					return new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(DotNetTypes.System.Nullable$1), typeRef);
+					return CSharpNullableTypeUtil.box(typeRef);
 				}
 			default:
 

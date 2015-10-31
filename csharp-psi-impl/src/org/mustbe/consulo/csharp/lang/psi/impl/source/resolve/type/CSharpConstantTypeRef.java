@@ -58,6 +58,11 @@ public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSh
 		DotNetTypeRef anotherTypeRef = testNumberConstant(myElement, "", another, scope);
 		if(anotherTypeRef != null)
 		{
+			DotNetTypeRef defaultConstantTypeRef = myElement.getDefaultConstantTypeRef();
+			if(defaultConstantTypeRef != null && CSharpTypeUtil.isTypeEqual(anotherTypeRef, defaultConstantTypeRef, myElement))
+			{
+				return null;
+			}
 			return anotherTypeRef;
 		}
 		return null;

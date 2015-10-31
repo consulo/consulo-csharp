@@ -18,7 +18,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNullableTypeUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -42,12 +44,14 @@ public class CSharpNullCoalescingExpressionImpl extends CSharpElementImpl implem
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public DotNetExpression getCondition()
 	{
 		return (DotNetExpression) getFirstChild();
 	}
 
 	@Nullable
+	@RequiredReadAction
 	public DotNetExpression getResult()
 	{
 		PsiElement[] children = getChildren();
@@ -67,9 +71,11 @@ public class CSharpNullCoalescingExpressionImpl extends CSharpElementImpl implem
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
 		DotNetExpression condition = getCondition();
-		return condition.toTypeRef(resolveFromParent);
+		DotNetTypeRef typeRef = condition.toTypeRef(resolveFromParent);
+		return CSharpNullableTypeUtil.unbox(typeRef, this);
 	}
 }

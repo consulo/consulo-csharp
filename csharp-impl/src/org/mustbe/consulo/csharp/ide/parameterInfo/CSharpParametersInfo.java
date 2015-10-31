@@ -145,6 +145,10 @@ public class CSharpParametersInfo
 			}
 			return EMPTY;
 		}
+		if(myParameterCount == 0)
+		{
+			return EMPTY;
+		}
 		TextRange textRange = ArrayUtil2.safeGet(myParameterRanges, i);
 		return textRange == null ? EMPTY : textRange;
 	}

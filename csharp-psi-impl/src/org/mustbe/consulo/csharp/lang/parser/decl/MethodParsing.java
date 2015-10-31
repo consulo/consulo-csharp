@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.parser.decl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
+import org.mustbe.consulo.csharp.lang.parser.ModifierSet;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import org.mustbe.consulo.csharp.lang.parser.stmt.StatementParsing;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
@@ -44,12 +45,12 @@ public class MethodParsing extends MemberWithBodyParsing
 		CONVERSION_METHOD
 	}
 
-	public static void parseMethodStartAtType(@NotNull CSharpBuilderWrapper builder, @NotNull PsiBuilder.Marker marker)
+	public static void parseMethodStartAtType(@NotNull CSharpBuilderWrapper builder, @NotNull PsiBuilder.Marker marker, @NotNull ModifierSet set)
 	{
 		TypeInfo typeInfo = parseType(builder, STUB_SUPPORT);
 		if(typeInfo != null)
 		{
-			parseMethodStartAfterType(builder, marker, typeInfo, Target.METHOD);
+			parseMethodStartAfterType(builder, marker, typeInfo, Target.METHOD, set);
 		}
 		else
 		{
@@ -61,7 +62,8 @@ public class MethodParsing extends MemberWithBodyParsing
 	public static void parseMethodStartAfterType(@NotNull CSharpBuilderWrapper builder,
 			@NotNull PsiBuilder.Marker marker,
 			@Nullable TypeInfo typeInfo,
-			@NotNull Target target)
+			@NotNull Target target,
+			@NotNull ModifierSet set)
 	{
 		if(target == Target.CONSTRUCTOR || target == Target.DECONSTRUCTOR)
 		{
@@ -102,10 +104,10 @@ public class MethodParsing extends MemberWithBodyParsing
 			}
 		}
 
-		parseMethodStartAfterName(builder, marker, target);
+		parseMethodStartAfterName(builder, marker, target, set);
 	}
 
-	public static void parseMethodStartAfterName(@NotNull CSharpBuilderWrapper builder, @NotNull PsiBuilder.Marker marker, @NotNull Target target)
+	public static void parseMethodStartAfterName(@NotNull CSharpBuilderWrapper builder, @NotNull PsiBuilder.Marker marker, @NotNull Target target, @NotNull ModifierSet set)
 	{
 		GenericParameterParsing.parseList(builder);
 
@@ -121,7 +123,7 @@ public class MethodParsing extends MemberWithBodyParsing
 			}
 			else
 			{
-				parseParameterList(builder, STUB_SUPPORT, RPAR);
+				parseParameterList(builder, STUB_SUPPORT, RPAR, set);
 			}
 		}
 		else
@@ -135,7 +137,7 @@ public class MethodParsing extends MemberWithBodyParsing
 			{
 				builder.advanceLexer();
 
-				ExpressionParsing.parseConstructorSuperCall(builder);
+				ExpressionParsing.parseConstructorSuperCall(builder, set);
 			}
 		}
 		else if(target != Target.DECONSTRUCTOR)
@@ -147,12 +149,12 @@ public class MethodParsing extends MemberWithBodyParsing
 		{
 			if(builder.getTokenType() == LBRACE)
 			{
-				StatementParsing.parse(builder);
+				StatementParsing.parse(builder, set);
 			}
 			else if(builder.getTokenType() == DARROW)
 			{
 				builder.advanceLexer();
-				ExpressionParsing.parse(builder);
+				ExpressionParsing.parse(builder, set);
 				expect(builder, SEMICOLON, "';' expected");
 			}
 			else
@@ -176,7 +178,7 @@ public class MethodParsing extends MemberWithBodyParsing
 		}
 	}
 
-	public static void parseParameterList(CSharpBuilderWrapper builder, int flags, IElementType end)
+	public static void parseParameterList(CSharpBuilderWrapper builder, int flags, IElementType end, ModifierSet set)
 	{
 		val mark = builder.mark();
 
@@ -186,7 +188,7 @@ public class MethodParsing extends MemberWithBodyParsing
 		{
 			while(!builder.eof())
 			{
-				parseParameter(builder, end, flags);
+				parseParameter(builder, end, flags, set);
 
 				if(builder.getTokenType() == COMMA)
 				{
@@ -209,16 +211,16 @@ public class MethodParsing extends MemberWithBodyParsing
 		mark.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.PARAMETER_LIST : CSharpElements.PARAMETER_LIST);
 	}
 
-	private static void parseParameter(CSharpBuilderWrapper builder, IElementType end, int flags)
+	private static void parseParameter(CSharpBuilderWrapper builder, IElementType end, int flags, ModifierSet set)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
-		Pair<PsiBuilder.Marker, Boolean> modifierPair = parseModifierListWithAttributes(builder, flags);
+		Pair<PsiBuilder.Marker, ModifierSet> modifierPair = parseModifierListWithAttributes(builder, flags);
 
 		TypeInfo typeInfo = parseType(builder, flags);
 		if(typeInfo == null)
 		{
-			if(modifierPair.getSecond() == Boolean.TRUE)
+			if(modifierPair.getSecond().isEmpty())
 			{
 				// if no modifiers but we failed parse type - need go advance, due ill infinity loop inside parseParameterList,
 				// but dont eat close brace
@@ -237,7 +239,7 @@ public class MethodParsing extends MemberWithBodyParsing
 
 				if(expect(builder, EQ, null))
 				{
-					if(ExpressionParsing.parse(builder) == null)
+					if(ExpressionParsing.parse(builder, set) == null)
 					{
 						builder.error("Expression expected.");
 					}

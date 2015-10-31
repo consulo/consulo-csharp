@@ -82,58 +82,10 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 				}
 			}
 
-			if(elementType == CSharpTokens.INTEGER_LITERAL)
+			DotNetTypeRef defaultConstantTypeRef = element.getDefaultConstantTypeRef();
+			if(defaultConstantTypeRef != null)
 			{
-				return new CSharpConstantTypeRef(element, new CSharpLazyTypeRefByQName(element, DotNetTypes.System.Int32));
-			}
-			else if(elementType == CSharpTokens.DOUBLE_LITERAL)
-			{
-				String text = element.getText();
-				// explicit type
-				if(text.endsWith("d") || text.endsWith("D"))
-				{
-					return new CSharpConstantTypeRef(element, new CSharpLazyTypeRefByQName(element, DotNetTypes.System.Double));
-				}
-
-				return new CSharpConstantTypeRef(element, new CSharpLazyTypeRefByQName(element, DotNetTypes.System.Double));
-			}
-
-			if(elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL ||
-					elementType == CSharpTokensImpl.INTERPOLATION_STRING_LITERAL)
-			{
-				return new CSharpLazyTypeRefByQName(element, DotNetTypes.System.String);
-			}
-			else if(elementType == CSharpTokens.CHARACTER_LITERAL)
-			{
-				return new CSharpLazyTypeRefByQName(element, DotNetTypes.System.Char);
-			}
-			else if(elementType == CSharpTokens.UINTEGER_LITERAL)
-			{
-				return new CSharpLazyTypeRefByQName(element, DotNetTypes.System.UInt32);
-			}
-			else if(elementType == CSharpTokens.ULONG_LITERAL)
-			{
-				return new CSharpLazyTypeRefByQName(element, DotNetTypes.System.UInt64);
-			}
-			else if(elementType == CSharpTokens.LONG_LITERAL)
-			{
-				return new CSharpLazyTypeRefByQName(element, DotNetTypes.System.Int64);
-			}
-			else if(elementType == CSharpTokens.FLOAT_LITERAL)
-			{
-				return new CSharpLazyTypeRefByQName(element, DotNetTypes.System.Single);
-			}
-			else if(elementType == CSharpTokens.DECIMAL_LITERAL)
-			{
-				return new CSharpLazyTypeRefByQName(element, DotNetTypes.System.Decimal);
-			}
-			else if(elementType == CSharpTokens.NULL_LITERAL)
-			{
-				return CSharpNullTypeRef.INSTANCE;
-			}
-			else if(elementType == CSharpTokens.TRUE_KEYWORD || elementType == CSharpTokens.FALSE_KEYWORD)
-			{
-				return new CSharpLazyTypeRefByQName(element, DotNetTypes.System.Boolean);
+				return defaultConstantTypeRef;
 			}
 			else
 			{
@@ -159,6 +111,66 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
 		return CSharpResolveCache.getInstance(getProject()).resolveTypeRef(this, OurTypeRefResolver.INSTANCE, resolveFromParent);
+	}
+
+	@RequiredReadAction
+	@Nullable
+	public DotNetTypeRef getDefaultConstantTypeRef()
+	{
+		IElementType elementType = getLiteralType();
+		if(elementType == CSharpTokens.INTEGER_LITERAL)
+		{
+			return new CSharpConstantTypeRef(this, new CSharpLazyTypeRefByQName(this, DotNetTypes.System.Int32));
+		}
+		else if(elementType == CSharpTokens.DOUBLE_LITERAL)
+		{
+			String text = this.getText();
+			// explicit type
+			if(text.endsWith("d") || text.endsWith("D"))
+			{
+				return new CSharpConstantTypeRef(this, new CSharpLazyTypeRefByQName(this, DotNetTypes.System.Double));
+			}
+
+			return new CSharpConstantTypeRef(this, new CSharpLazyTypeRefByQName(this, DotNetTypes.System.Double));
+		}
+		else if(elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL ||
+				elementType == CSharpTokensImpl.INTERPOLATION_STRING_LITERAL)
+		{
+			return new CSharpLazyTypeRefByQName(this, DotNetTypes.System.String);
+		}
+		else if(elementType == CSharpTokens.CHARACTER_LITERAL)
+		{
+			return new CSharpLazyTypeRefByQName(this, DotNetTypes.System.Char);
+		}
+		else if(elementType == CSharpTokens.UINTEGER_LITERAL)
+		{
+			return new CSharpLazyTypeRefByQName(this, DotNetTypes.System.UInt32);
+		}
+		else if(elementType == CSharpTokens.ULONG_LITERAL)
+		{
+			return new CSharpLazyTypeRefByQName(this, DotNetTypes.System.UInt64);
+		}
+		else if(elementType == CSharpTokens.LONG_LITERAL)
+		{
+			return new CSharpLazyTypeRefByQName(this, DotNetTypes.System.Int64);
+		}
+		else if(elementType == CSharpTokens.FLOAT_LITERAL)
+		{
+			return new CSharpLazyTypeRefByQName(this, DotNetTypes.System.Single);
+		}
+		else if(elementType == CSharpTokens.DECIMAL_LITERAL)
+		{
+			return new CSharpLazyTypeRefByQName(this, DotNetTypes.System.Decimal);
+		}
+		else if(elementType == CSharpTokens.NULL_LITERAL)
+		{
+			return CSharpNullTypeRef.INSTANCE;
+		}
+		else if(elementType == CSharpTokens.TRUE_KEYWORD || elementType == CSharpTokens.FALSE_KEYWORD)
+		{
+			return new CSharpLazyTypeRefByQName(this, DotNetTypes.System.Boolean);
+		}
+		return null;
 	}
 
 	@Nullable

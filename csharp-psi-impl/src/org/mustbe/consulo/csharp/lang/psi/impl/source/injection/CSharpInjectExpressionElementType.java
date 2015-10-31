@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
+import org.mustbe.consulo.csharp.lang.parser.ModifierSet;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import com.intellij.lang.ASTNode;
@@ -31,7 +32,7 @@ public class CSharpInjectExpressionElementType extends ILazyParseableElementType
 		public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
 		{
 			PsiBuilder.Marker mark = builder.mark();
-			ExpressionParsing.parse(new CSharpBuilderWrapper(builder, languageVersion));
+			ExpressionParsing.parse(new CSharpBuilderWrapper(builder, languageVersion), ModifierSet.EMPTY);
 			while(!builder.eof())
 			{
 				builder.error("Unexpected token");

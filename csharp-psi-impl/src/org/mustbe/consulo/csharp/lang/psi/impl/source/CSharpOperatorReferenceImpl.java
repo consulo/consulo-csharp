@@ -88,6 +88,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
 		@NotNull
 		@Override
+		@RequiredReadAction
 		public ResolveResult[] resolve(@NotNull CSharpOperatorReferenceImpl reference, boolean incompleteCode)
 		{
 			if(!incompleteCode)
@@ -111,6 +112,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		}
 
 		@NotNull
+		@RequiredReadAction
 		private ResolveResult[] multiResolveImpl(CSharpOperatorReferenceImpl reference)
 		{
 			Object o = reference.resolveImpl();
@@ -210,6 +212,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		return CSharpResolveUtil.findFirstValidElement(resolveResults);
 	}
 
+	@RequiredReadAction
 	private Object resolveImpl()
 	{
 		IElementType elementType = getOperatorElementType();
@@ -273,7 +276,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
 			for(DotNetExpression dotNetExpression : parameterExpressions)
 			{
-				DotNetTypeRef expressionTypeRef = dotNetExpression.toTypeRef(false);
+				DotNetTypeRef expressionTypeRef = dotNetExpression.toTypeRef(true);
 
 				resolveUserDefinedOperators(elementType, expressionTypeRef, expressionTypeRef, pairs, null);
 
@@ -305,6 +308,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public DotNetTypeRef resolveToTypeRef()
 	{
 		ResolveResult[] resolveResults = multiResolve(true);

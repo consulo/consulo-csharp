@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.parser.exp;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
+import org.mustbe.consulo.csharp.lang.parser.ModifierSet;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.parser.decl.MethodParsing;
 import org.mustbe.consulo.csharp.lang.parser.stmt.StatementParsing;
@@ -68,30 +69,30 @@ public class ExpressionParsing extends SharedParsingHelpers
 	private static final TokenSet THIS_OR_BASE = TokenSet.create(THIS_KEYWORD, BASE_KEYWORD);
 
 	@Nullable
-	public static PsiBuilder.Marker parseVariableInitializer(@NotNull CSharpBuilderWrapper builder)
+	public static PsiBuilder.Marker parseVariableInitializer(@NotNull CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		IElementType tokenType = builder.getTokenType();
 
 		if(tokenType == LBRACE)
 		{
-			return parseArrayInitializer(builder, IMPLICIT_ARRAY_INITIALIZATION_EXPRESSION);
+			return parseArrayInitializer(builder, IMPLICIT_ARRAY_INITIALIZATION_EXPRESSION, set);
 		}
 		else
 		{
-			return parse(builder);
+			return parse(builder, set);
 		}
 	}
 
 	@Nullable
-	public static PsiBuilder.Marker parse(final CSharpBuilderWrapper builder)
+	public static PsiBuilder.Marker parse(final CSharpBuilderWrapper builder, ModifierSet set)
 	{
-		return parseAssignment(builder);
+		return parseAssignment(builder, set);
 	}
 
 	@Nullable
-	private static PsiBuilder.Marker parseAssignment(final CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseAssignment(final CSharpBuilderWrapper builder, ModifierSet set)
 	{
-		final PsiBuilder.Marker left = parseConditional(builder);
+		final PsiBuilder.Marker left = parseConditional(builder, set);
 		if(left == null)
 		{
 			return null;
@@ -105,7 +106,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 			doneOneElementGGLL(builder, tokenType, OPERATOR_REFERENCE, null);
 
-			final PsiBuilder.Marker right = parse(builder);
+			final PsiBuilder.Marker right = parse(builder, set);
 			if(right == null)
 			{
 				builder.error("Expression expected");
@@ -119,9 +120,9 @@ public class ExpressionParsing extends SharedParsingHelpers
 	}
 
 	@Nullable
-	private static PsiBuilder.Marker parseConditional(final CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseConditional(final CSharpBuilderWrapper builder, ModifierSet set)
 	{
-		final PsiBuilder.Marker condition = parseExpression(builder, ExprType.CONDITIONAL_OR);
+		final PsiBuilder.Marker condition = parseExpression(builder, ExprType.CONDITIONAL_OR, set);
 		if(condition == null)
 		{
 			return null;
@@ -132,7 +133,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			final PsiBuilder.Marker nullCoalescing = condition.precede();
 			builder.advanceLexer();
 
-			final PsiBuilder.Marker ifNullPart = parse(builder);
+			final PsiBuilder.Marker ifNullPart = parse(builder, set);
 			if(ifNullPart == null)
 			{
 				builder.error("Expression expected");
@@ -145,7 +146,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			final PsiBuilder.Marker ternary = condition.precede();
 			builder.advanceLexer();
 
-			final PsiBuilder.Marker truePart = parse(builder);
+			final PsiBuilder.Marker truePart = parse(builder, set);
 			if(truePart == null)
 			{
 				builder.error("Expression expected");
@@ -161,7 +162,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			}
 			builder.advanceLexer();
 
-			final PsiBuilder.Marker falsePart = parseConditional(builder);
+			final PsiBuilder.Marker falsePart = parseConditional(builder, set);
 			if(falsePart == null)
 			{
 				builder.error("Expression expected");
@@ -178,42 +179,42 @@ public class ExpressionParsing extends SharedParsingHelpers
 	}
 
 	@Nullable
-	private static PsiBuilder.Marker parseExpression(final CSharpBuilderWrapper builder, final ExprType type)
+	private static PsiBuilder.Marker parseExpression(final CSharpBuilderWrapper builder, final ExprType type, ModifierSet set)
 	{
 		switch(type)
 		{
 			case CONDITIONAL_OR:
-				return parseBinary(builder, ExprType.CONDITIONAL_AND, CONDITIONAL_OR_OPS);
+				return parseBinary(builder, ExprType.CONDITIONAL_AND, CONDITIONAL_OR_OPS, set);
 
 			case CONDITIONAL_AND:
-				return parseBinary(builder, ExprType.OR, CONDITIONAL_AND_OPS);
+				return parseBinary(builder, ExprType.OR, CONDITIONAL_AND_OPS, set);
 
 			case OR:
-				return parseBinary(builder, ExprType.XOR, OR_OPS);
+				return parseBinary(builder, ExprType.XOR, OR_OPS, set);
 
 			case XOR:
-				return parseBinary(builder, ExprType.AND, XOR_OPS);
+				return parseBinary(builder, ExprType.AND, XOR_OPS, set);
 
 			case AND:
-				return parseBinary(builder, ExprType.EQUALITY, AND_OPS);
+				return parseBinary(builder, ExprType.EQUALITY, AND_OPS, set);
 
 			case EQUALITY:
-				return parseBinary(builder, ExprType.RELATIONAL, EQUALITY_OPS);
+				return parseBinary(builder, ExprType.RELATIONAL, EQUALITY_OPS, set);
 
 			case RELATIONAL:
-				return parseRelational(builder);
+				return parseRelational(builder, set);
 
 			case SHIFT:
-				return parseBinary(builder, ExprType.ADDITIVE, SHIFT_OPS);
+				return parseBinary(builder, ExprType.ADDITIVE, SHIFT_OPS, set);
 
 			case ADDITIVE:
-				return parseBinary(builder, ExprType.MULTIPLICATIVE, ADDITIVE_OPS);
+				return parseBinary(builder, ExprType.MULTIPLICATIVE, ADDITIVE_OPS, set);
 
 			case MULTIPLICATIVE:
-				return parseBinary(builder, ExprType.UNARY, MULTIPLICATIVE_OPS);
+				return parseBinary(builder, ExprType.UNARY, MULTIPLICATIVE_OPS, set);
 
 			case UNARY:
-				return parseUnary(builder);
+				return parseUnary(builder, set);
 
 			case MAYBE_NULLABLE_TYPE:
 				TypeInfo typeInfo = parseType(builder, NONE);
@@ -230,7 +231,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 						return typeInfo.marker;
 					}
 					// o is int? "true" : "false"
-					PsiBuilder.Marker marker = parseConditional(builder);
+					PsiBuilder.Marker marker = parseConditional(builder, set);
 					if(marker != null)
 					{
 						IElementType tokenType = builder.getTokenType();
@@ -258,7 +259,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 	}
 
 	@Nullable
-	private static PsiBuilder.Marker parseUnary(final CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseUnary(final CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		final IElementType tokenType = builder.getTokenType();
 
@@ -268,7 +269,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 			doneOneElementGGLL(builder, tokenType, OPERATOR_REFERENCE, null);
 
-			final PsiBuilder.Marker operand = parseUnary(builder);
+			final PsiBuilder.Marker operand = parseUnary(builder, set);
 			if(operand == null)
 			{
 				builder.error("Expression expected");
@@ -286,22 +287,22 @@ public class ExpressionParsing extends SharedParsingHelpers
 			if(typeInfo == null || !expect(builder, RPAR, null))
 			{
 				typeCast.rollbackTo();
-				return parsePostfix(builder);
+				return parsePostfix(builder, set);
 			}
 
 			if(PREF_ARITHMETIC_OPS.contains(builder.getTokenType()) && typeInfo.nativeElementType == null)
 			{
 				typeCast.rollbackTo();
-				return parsePostfix(builder);
+				return parsePostfix(builder, set);
 			}
 
-			final PsiBuilder.Marker expr = parseUnary(builder);
+			final PsiBuilder.Marker expr = parseUnary(builder, set);
 			if(expr == null)
 			{
 				if(!typeInfo.isParameterized)
 				{  // cannot parse correct parenthesized expression after correct parameterized type
 					typeCast.rollbackTo();
-					return parsePostfix(builder);
+					return parsePostfix(builder, set);
 				}
 				else
 				{
@@ -314,14 +315,14 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 		else
 		{
-			return parsePostfix(builder);
+			return parsePostfix(builder, set);
 		}
 	}
 
 	@Nullable
-	private static PsiBuilder.Marker parsePostfix(final CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parsePostfix(final CSharpBuilderWrapper builder, ModifierSet set)
 	{
-		PsiBuilder.Marker operand = parsePrimary(builder);
+		PsiBuilder.Marker operand = parsePrimary(builder, set);
 		if(operand == null)
 		{
 			return null;
@@ -341,9 +342,9 @@ public class ExpressionParsing extends SharedParsingHelpers
 	}
 
 	@Nullable
-	private static PsiBuilder.Marker parseBinary(final CSharpBuilderWrapper builder, final ExprType type, final TokenSet ops)
+	private static PsiBuilder.Marker parseBinary(final CSharpBuilderWrapper builder, final ExprType type, final TokenSet ops, ModifierSet set)
 	{
-		PsiBuilder.Marker result = parseExpression(builder, type);
+		PsiBuilder.Marker result = parseExpression(builder, type, set);
 		if(result == null)
 		{
 			return null;
@@ -359,7 +360,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 			doneOneElementGGLL(builder, tokenType, OPERATOR_REFERENCE, null);
 
-			final PsiBuilder.Marker right = parseExpression(builder, type);
+			final PsiBuilder.Marker right = parseExpression(builder, type, set);
 
 			tokenType = builder.getTokenType();
 			if(tokenType != null && ops.contains(tokenType) || tokenType == null || !ops.contains(tokenType) || tokenType != currentExprTokenType ||
@@ -384,9 +385,9 @@ public class ExpressionParsing extends SharedParsingHelpers
 	}
 
 	@Nullable
-	private static PsiBuilder.Marker parseRelational(final CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseRelational(final CSharpBuilderWrapper builder, ModifierSet set)
 	{
-		PsiBuilder.Marker left = parseExpression(builder, ExprType.SHIFT);
+		PsiBuilder.Marker left = parseExpression(builder, ExprType.SHIFT, set);
 		if(left == null)
 		{
 			return null;
@@ -429,7 +430,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				builder.advanceLexerGGLL();
 			}
 
-			final PsiBuilder.Marker right = parseExpression(builder, toParse);
+			final PsiBuilder.Marker right = parseExpression(builder, toParse, set);
 			if(right == null)
 			{
 				builder.error(toParse == ExprType.MAYBE_NULLABLE_TYPE ? "Type expected" : "Expression expected");
@@ -446,11 +447,11 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 
 	@Nullable
-	private static PsiBuilder.Marker parsePrimary(final CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parsePrimary(final CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		PsiBuilder.Marker startMarker = builder.mark();
 
-		PsiBuilder.Marker expr = parsePrimaryExpressionStart(builder);
+		PsiBuilder.Marker expr = parsePrimaryExpressionStart(builder, set);
 		if(expr == null)
 		{
 			startMarker.drop();
@@ -470,12 +471,12 @@ public class ExpressionParsing extends SharedParsingHelpers
 				if(dotTokenType == NEW_KEYWORD)
 				{
 					dotPos.drop();
-					expr = parseNewExpression(builder, expr);
+					expr = parseNewExpression(builder, expr, set);
 				}
 				else if(dotTokenType == STACKALLOC_KEYWORD)
 				{
 					dotPos.drop();
-					expr = parseStackAllocExpression(builder, expr);
+					expr = parseStackAllocExpression(builder, expr, set);
 				}
 				else if(dotTokenType == BASE_KEYWORD)
 				{
@@ -544,7 +545,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				}
 
 				final PsiBuilder.Marker callExpr = expr.precede();
-				parseArgumentList(builder, false);
+				parseArgumentList(builder, false, set);
 				callExpr.done(METHOD_CALL_EXPRESSION);
 				expr = callExpr;
 			}
@@ -554,7 +555,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				PsiBuilder.Marker argumentListMarker = builder.mark();
 				builder.advanceLexer();
 
-				parseArguments(builder, RBRACKET, false);
+				parseArguments(builder, RBRACKET, false, set);
 
 				if(builder.getTokenType() != RBRACKET)
 				{
@@ -578,7 +579,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 	}
 
-	public static void parseArgumentList(CSharpBuilderWrapper builder, boolean fieldSet)
+	public static void parseArgumentList(CSharpBuilderWrapper builder, boolean fieldSet, ModifierSet set)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
@@ -597,13 +598,13 @@ public class ExpressionParsing extends SharedParsingHelpers
 			return;
 		}
 
-		parseArguments(builder, RPAR, fieldSet);
+		parseArguments(builder, RPAR, fieldSet, set);
 
 		expect(builder, RPAR, "')' expected");
 		mark.done(CALL_ARGUMENT_LIST);
 	}
 
-	private static void parseArguments(CSharpBuilderWrapper builder, IElementType stopElement, boolean fieldSet)
+	private static void parseArguments(CSharpBuilderWrapper builder, IElementType stopElement, boolean fieldSet, ModifierSet set)
 	{
 		TokenSet stoppers = TokenSet.create(stopElement, CSharpTokens.RBRACE, CSharpTokens.SEMICOLON);
 
@@ -628,7 +629,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				PsiBuilder.Marker marker = builder.mark();
 				doneOneElement(builder, CSharpTokens.IDENTIFIER, REFERENCE_EXPRESSION, null);
 				builder.advanceLexer(); // eq
-				PsiBuilder.Marker expressionParser = parse(builder);
+				PsiBuilder.Marker expressionParser = parse(builder, set);
 				if(expressionParser == null)
 				{
 					builder.error("Expression expected");
@@ -640,7 +641,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				PsiBuilder.Marker marker = builder.mark();
 				doneOneElement(builder, CSharpTokens.IDENTIFIER, REFERENCE_EXPRESSION, null);
 				builder.advanceLexer(); // eq
-				PsiBuilder.Marker expressionParser = parse(builder);
+				PsiBuilder.Marker expressionParser = parse(builder, set);
 				if(expressionParser == null)
 				{
 					builder.error("Expression expected");
@@ -650,7 +651,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			else
 			{
 				PsiBuilder.Marker argumentMarker = builder.mark();
-				PsiBuilder.Marker marker = parse(builder);
+				PsiBuilder.Marker marker = parse(builder, set);
 				if(marker == null)
 				{
 					PsiBuilder.Marker errorMarker = builder.mark();
@@ -674,7 +675,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 	}
 
 	@Nullable
-	private static PsiBuilder.Marker parsePrimaryExpressionStart(final CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parsePrimaryExpressionStart(final CSharpBuilderWrapper builder, ModifierSet modifierSet)
 	{
 		CSharpLanguageVersion version = builder.getVersion();
 		builder.enableSoftKeyword(CSharpSoftTokens.GLOBAL_KEYWORD);
@@ -684,7 +685,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		{
 			linqState = builder.enableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
 		}
-		if(version.isAtLeast(CSharpLanguageVersion._4_0))
+		if(modifierSet.contains(CSharpSoftTokens.ASYNC_KEYWORD))
 		{
 			builder.enableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);
 			builder.enableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
@@ -698,7 +699,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		{
 			builder.disableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
 		}
-		if(version.isAtLeast(CSharpLanguageVersion._4_0))
+		if(modifierSet.contains(CSharpSoftTokens.ASYNC_KEYWORD))
 		{
 			builder.disableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);
 			builder.disableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
@@ -721,7 +722,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		{
 			PsiBuilder.Marker tempMarker = builder.mark();
 			builder.advanceLexer();
-			boolean isLambdaNext = builder.getTokenType() == CSharpTokens.DELEGATE_KEYWORD || parseLambdaExpression(builder, null) != null;
+			boolean isLambdaNext = builder.getTokenType() == CSharpTokens.DELEGATE_KEYWORD || parseLambdaExpression(builder, null, modifierSet.add(CSharpSoftTokens.ASYNC_KEYWORD)) != null;
 			tempMarker.rollbackTo();
 			if(!isLambdaNext)
 			{
@@ -740,12 +741,12 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(tokenType == NEW_KEYWORD)
 		{
-			return parseNewExpression(builder, null);
+			return parseNewExpression(builder, null, modifierSet);
 		}
 
 		if(tokenType == STACKALLOC_KEYWORD)
 		{
-			return parseStackAllocExpression(builder, null);
+			return parseStackAllocExpression(builder, null, modifierSet);
 		}
 
 		if(tokenType == TYPEOF_KEYWORD)
@@ -755,7 +756,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(tokenType == NAMEOF_KEYWORD)
 		{
-			return parseExpressionWithExpressionInLParRPar(builder, null, NAMEOF_EXPRESSION);
+			return parseExpressionWithExpressionInLParRPar(builder, null, NAMEOF_EXPRESSION, modifierSet);
 		}
 
 		if(tokenType == DEFAULT_KEYWORD)
@@ -770,56 +771,56 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(tokenType == CHECKED_KEYWORD || tokenType == UNCHECKED_KEYWORD)
 		{
-			return parseExpressionWithExpressionInLParRPar(builder, null, CHECKED_EXPRESSION);
+			return parseExpressionWithExpressionInLParRPar(builder, null, CHECKED_EXPRESSION, modifierSet);
 		}
 
 		if(tokenType == __MAKEREF_KEYWORD)
 		{
-			return parseExpressionWithExpressionInLParRPar(builder, null, __MAKEREF_EXPRESSION);
+			return parseExpressionWithExpressionInLParRPar(builder, null, __MAKEREF_EXPRESSION, modifierSet);
 		}
 
 		if(tokenType == __ARGLIST_KEYWORD)
 		{
-			return parseArglistExpression(builder);
+			return parseArglistExpression(builder, modifierSet);
 		}
 
 		if(tokenType == __REFTYPE_KEYWORD)
 		{
-			return parseExpressionWithExpressionInLParRPar(builder, null, __REFTYPE_EXPRESSION);
+			return parseExpressionWithExpressionInLParRPar(builder, null, __REFTYPE_EXPRESSION, modifierSet);
 		}
 
 		if(tokenType == __REFVALUE_KEYWORD)
 		{
-			return parseRefValueExpression(builder);
+			return parseRefValueExpression(builder, modifierSet);
 		}
 
 		if(tokenType == DELEGATE_KEYWORD)
 		{
-			return parseDelegateExpression(builder);
+			return parseDelegateExpression(builder, modifierSet.remove(CSharpSoftTokens.ASYNC_KEYWORD));
 		}
 
 		if(tokenType == REF_KEYWORD || tokenType == OUT_KEYWORD)
 		{
-			return parseOutRefWrapExpression(builder);
+			return parseOutRefWrapExpression(builder, modifierSet);
 		}
 
 		if(tokenType == AWAIT_KEYWORD)
 		{
-			return parseAwaitExpression(builder);
+			return parseAwaitExpression(builder, modifierSet);
 		}
 
 		if(tokenType == ASYNC_KEYWORD)
 		{
 			if(builder.lookAhead(1) == CSharpTokens.DELEGATE_KEYWORD)
 			{
-				return parseDelegateExpression(builder);
+				return parseDelegateExpression(builder, modifierSet.add(CSharpSoftTokens.ASYNC_KEYWORD));
 			}
-			return parseLambdaExpression(builder, null);
+			return parseLambdaExpression(builder, null, modifierSet.add(CSharpSoftTokens.ASYNC_KEYWORD));
 		}
 
 		if(tokenType == LPAR)
 		{
-			final PsiBuilder.Marker lambda = parseLambdaAfterParenth(builder, null);
+			final PsiBuilder.Marker lambda = parseLambdaAfterParenth(builder, null, modifierSet.remove(CSharpSoftTokens.ASYNC_KEYWORD));
 			if(lambda != null)
 			{
 				return lambda;
@@ -828,7 +829,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			final PsiBuilder.Marker parenth = builder.mark();
 			builder.advanceLexer();
 
-			final PsiBuilder.Marker inner = parse(builder);
+			final PsiBuilder.Marker inner = parse(builder, modifierSet);
 			if(inner == null)
 			{
 				builder.error("Expression expected");
@@ -848,7 +849,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(tokenType == FROM_KEYWORD)
 		{
-			PsiBuilder.Marker marker = LinqParsing.parseLinqExpression(builder);
+			PsiBuilder.Marker marker = LinqParsing.parseLinqExpression(builder, modifierSet);
 			if(marker == null)
 			{
 				assert builder.getTokenType() == FROM_KEYWORD : builder.getTokenText() + ":" + builder.getTokenType();
@@ -873,10 +874,10 @@ public class ExpressionParsing extends SharedParsingHelpers
 		{
 			if(builder.lookAhead(1) == DARROW)
 			{
-				return parseLambdaExpression(builder, null);
+				return parseLambdaExpression(builder, null, modifierSet.remove(CSharpSoftTokens.ASYNC_KEYWORD));
 			}
 
-			val refExpr = builder.mark();
+			PsiBuilder.Marker refExpr = builder.mark();
 
 			builder.advanceLexer();
 			parseReferenceTypeArgumentList(builder, NONE);
@@ -904,28 +905,28 @@ public class ExpressionParsing extends SharedParsingHelpers
 		return null;
 	}
 
-	private static PsiBuilder.Marker parseArglistExpression(CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseArglistExpression(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 		builder.advanceLexer();
 
 		if(builder.getTokenType() == LPAR)
 		{
-			parseArgumentList(builder, false);
+			parseArgumentList(builder, false, set);
 		}
 
 		mark.done(__ARGLIST_EXPRESSION);
 		return mark;
 	}
 
-	private static PsiBuilder.Marker parseRefValueExpression(CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseRefValueExpression(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 		builder.advanceLexer();
 
 		if(expect(builder, LPAR, "'(' expected"))
 		{
-			if(parse(builder) == null)
+			if(parse(builder, set) == null)
 			{
 				builder.error("Expression expected");
 			}
@@ -943,7 +944,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		return mark;
 	}
 
-	private static PsiBuilder.Marker parseOutRefWrapExpression(CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseOutRefWrapExpression(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 		builder.advanceLexer();
@@ -954,18 +955,18 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 		else
 		{
-			parse(builder);
+			parse(builder, set);
 		}
 		mark.done(OUT_REF_WRAP_EXPRESSION);
 		return mark;
 	}
 
-	private static PsiBuilder.Marker parseAwaitExpression(@NotNull CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseAwaitExpression(@NotNull CSharpBuilderWrapper builder, ModifierSet set)
 	{
-		val marker = builder.mark();
+		PsiBuilder.Marker marker = builder.mark();
 		builder.advanceLexer();
 
-		if(parse(builder) == null)
+		if(parse(builder, set) == null)
 		{
 			builder.error("Expression expected");
 		}
@@ -974,9 +975,9 @@ public class ExpressionParsing extends SharedParsingHelpers
 		return marker;
 	}
 
-	private static PsiBuilder.Marker parseDelegateExpression(@NotNull CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseDelegateExpression(@NotNull CSharpBuilderWrapper builder, ModifierSet set)
 	{
-		val marker = builder.mark();
+		PsiBuilder.Marker marker = builder.mark();
 
 		if(builder.getTokenType() == CSharpSoftTokens.ASYNC_KEYWORD)
 		{
@@ -986,12 +987,12 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(builder.getTokenType() == LPAR)
 		{
-			MethodParsing.parseParameterList(builder, NONE, RPAR);
+			MethodParsing.parseParameterList(builder, NONE, RPAR, set);
 		}
 
 		if(builder.getTokenType() == LBRACE)
 		{
-			StatementParsing.parse(builder);
+			StatementParsing.parse(builder, set);
 		}
 		else
 		{
@@ -1003,7 +1004,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 	}
 
 	@Nullable
-	private static PsiBuilder.Marker parseLambdaAfterParenth(final CSharpBuilderWrapper builder, @Nullable final PsiBuilder.Marker typeList)
+	private static PsiBuilder.Marker parseLambdaAfterParenth(final CSharpBuilderWrapper builder, @Nullable final PsiBuilder.Marker typeList, ModifierSet set)
 	{
 		final boolean isLambda;
 
@@ -1054,13 +1055,13 @@ public class ExpressionParsing extends SharedParsingHelpers
 			}
 		}
 
-		return isLambda ? parseLambdaExpression(builder, typeList) : null;
+		return isLambda ? parseLambdaExpression(builder, typeList, set) : null;
 	}
 
 	@Nullable
-	private static PsiBuilder.Marker parseLambdaExpression(final CSharpBuilderWrapper builder, @Nullable final PsiBuilder.Marker typeList)
+	private static PsiBuilder.Marker parseLambdaExpression(final CSharpBuilderWrapper builder, @Nullable final PsiBuilder.Marker typeList, ModifierSet set)
 	{
-		val start = typeList != null ? typeList.precede() : builder.mark();
+		PsiBuilder.Marker start = typeList != null ? typeList.precede() : builder.mark();
 
 		if(builder.getTokenType() == ASYNC_KEYWORD)
 		{
@@ -1078,11 +1079,11 @@ public class ExpressionParsing extends SharedParsingHelpers
 		final PsiBuilder.Marker body;
 		if(builder.getTokenType() == LBRACE)
 		{
-			body = StatementParsing.parse(builder);
+			body = StatementParsing.parse(builder, set);
 		}
 		else
 		{
-			body = parse(builder);
+			body = parse(builder, set);
 		}
 
 		if(body == null)
@@ -1167,12 +1168,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		mark.done(LAMBDA_PARAMETER);
 	}
 
-	private static void emptyExpression(final PsiBuilder builder)
-	{
-		emptyElement(builder, ERROR_EXPRESSION);
-	}
-
-	public static void parseConstructorSuperCall(CSharpBuilderWrapper builder)
+	public static void parseConstructorSuperCall(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		PsiBuilder.Marker marker = builder.mark();
 		if(THIS_OR_BASE.contains(builder.getTokenType()))
@@ -1181,7 +1177,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 			if(builder.getTokenType() == LPAR)
 			{
-				parseArgumentList(builder, false);
+				parseArgumentList(builder, false, set);
 			}
 			else
 			{
@@ -1206,7 +1202,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		DICTIONARY_INITIALZER
 	}
 
-	private static PsiBuilder.Marker parseNewExpression(CSharpBuilderWrapper builder, PsiBuilder.Marker mark)
+	private static PsiBuilder.Marker parseNewExpression(CSharpBuilderWrapper builder, PsiBuilder.Marker mark, ModifierSet set)
 	{
 		PsiBuilder.Marker newExpr = (mark != null ? mark.precede() : builder.mark());
 
@@ -1216,7 +1212,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		boolean forceArray = false;
 
-		while(parseArrayLength(builder))
+		while(parseArrayLength(builder, set))
 		{
 			forceArray = true;
 
@@ -1230,7 +1226,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		boolean argumentsPassed = false;
 		if(builder.getTokenType() == LPAR)
 		{
-			parseArgumentList(builder, false);
+			parseArgumentList(builder, false, set);
 			argumentsPassed = true;
 		}
 
@@ -1244,16 +1240,16 @@ public class ExpressionParsing extends SharedParsingHelpers
 				}
 				break;
 			case PROPERTY_SET_LIST:
-				parseNamedFieldOrPropertySetBlock(builder);
+				parseNamedFieldOrPropertySetBlock(builder, set);
 				break;
 			case ANONYM_PROPERTY_SET_LIST:
-				parseAnonymFieldOrPropertySetBlock(builder);
+				parseAnonymFieldOrPropertySetBlock(builder, set);
 				break;
 			case DICTIONARY_INITIALZER:
-				parseDictionaryInitializerList(builder);
+				parseDictionaryInitializerList(builder, set);
 				break;
 			case ARRAY_INITIALZER:
-				parseArrayInitializer(builder, ARRAY_INITIALIZER);
+				parseArrayInitializer(builder, ARRAY_INITIALIZER, set);
 				break;
 		}
 
@@ -1261,7 +1257,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		return newExpr;
 	}
 
-	private static boolean parseArrayLength(@NotNull CSharpBuilderWrapper builder)
+	private static boolean parseArrayLength(@NotNull CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		if(builder.getTokenType() == LBRACKET)
 		{
@@ -1270,7 +1266,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 			while(true)
 			{
-				parse(builder);
+				parse(builder, set);
 				if(builder.getTokenType() != COMMA)
 				{
 					break;
@@ -1288,7 +1284,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		return false;
 	}
 
-	private static PsiBuilder.Marker parseStackAllocExpression(CSharpBuilderWrapper builder, PsiBuilder.Marker mark)
+	private static PsiBuilder.Marker parseStackAllocExpression(CSharpBuilderWrapper builder, PsiBuilder.Marker mark, ModifierSet set)
 	{
 		PsiBuilder.Marker newExpr = (mark != null ? mark.precede() : builder.mark());
 
@@ -1307,7 +1303,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 			while(true)
 			{
-				parse(builder);
+				parse(builder, set);
 				if(builder.getTokenType() != COMMA)
 				{
 					break;
@@ -1365,7 +1361,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 	}
 
-	private static PsiBuilder.Marker parseArrayInitializer(CSharpBuilderWrapper builderWrapper, IElementType to)
+	private static PsiBuilder.Marker parseArrayInitializer(CSharpBuilderWrapper builderWrapper, IElementType to, ModifierSet set)
 	{
 		if(builderWrapper.getTokenType() != LBRACE)
 		{
@@ -1386,13 +1382,13 @@ public class ExpressionParsing extends SharedParsingHelpers
 			boolean enteredValue = false;
 			if(builderWrapper.getTokenType() == LBRACE)
 			{
-				parseArrayInitializerCompositeValue(builderWrapper);
+				parseArrayInitializerCompositeValue(builderWrapper, set);
 				enteredValue = true;
 			}
 			else
 			{
 				PsiBuilder.Marker temp = builderWrapper.mark();
-				if(parse(builderWrapper) != null)
+				if(parse(builderWrapper, set) != null)
 				{
 					enteredValue = true;
 					temp.done(ARRAY_INITIALIZER_SINGLE_VALUE);
@@ -1433,7 +1429,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		return marker;
 	}
 
-	private static PsiBuilder.Marker parseArrayInitializerCompositeValue(CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseArrayInitializerCompositeValue(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		if(builder.getTokenType() != LBRACE)
 		{
@@ -1450,7 +1446,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 		else
 		{
-			parseArguments(builder, RBRACE, false);
+			parseArguments(builder, RBRACE, false, set);
 
 			expect(builder, RBRACE, "'}' expected");
 		}
@@ -1459,7 +1455,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		return headerMarker;
 	}
 
-	private static void parseAnonymFieldOrPropertySetBlock(CSharpBuilderWrapper builder)
+	private static void parseAnonymFieldOrPropertySetBlock(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
@@ -1475,14 +1471,14 @@ public class ExpressionParsing extends SharedParsingHelpers
 				}
 
 				PsiBuilder.Marker tempMarker = builder.mark();
-				PsiBuilder.Marker expressionMarker = parse(builder);
+				PsiBuilder.Marker expressionMarker = parse(builder, set);
 				if(expressionMarker != null)
 				{
 					IElementType elementType = SharedParsingHelpers.exprType(expressionMarker);
 					if(elementType == CSharpElements.ASSIGNMENT_EXPRESSION)
 					{
 						tempMarker.rollbackTo();
-						parseNamedFieldOrPropertySet(builder);
+						parseNamedFieldOrPropertySet(builder, set);
 					}
 					else
 					{
@@ -1518,7 +1514,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		mark.done(FIELD_OR_PROPERTY_SET_BLOCK);
 	}
 
-	private static void parseNamedFieldOrPropertySetBlock(CSharpBuilderWrapper builder)
+	private static void parseNamedFieldOrPropertySetBlock(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
@@ -1533,7 +1529,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 					break;
 				}
 
-				if(parseNamedFieldOrPropertySet(builder) == null)
+				if(parseNamedFieldOrPropertySet(builder, set) == null)
 				{
 					PsiBuilder.Marker errorMarker = builder.mark();
 					builder.advanceLexer();
@@ -1557,7 +1553,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		mark.done(FIELD_OR_PROPERTY_SET_BLOCK);
 	}
 
-	private static PsiBuilder.Marker parseNamedFieldOrPropertySet(CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseNamedFieldOrPropertySet(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
@@ -1565,7 +1561,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		{
 			if(expect(builder, EQ, "'=' expected"))
 			{
-				if(parse(builder) == null)
+				if(parse(builder, set) == null)
 				{
 					builder.error("Expression expected");
 				}
@@ -1580,7 +1576,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 	}
 
-	private static void parseDictionaryInitializerList(CSharpBuilderWrapper builder)
+	private static void parseDictionaryInitializerList(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
@@ -1595,7 +1591,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 					break;
 				}
 
-				if(parseDictionaryInitializer(builder) == null)
+				if(parseDictionaryInitializer(builder, set) == null)
 				{
 					PsiBuilder.Marker errorMarker = builder.mark();
 					builder.advanceLexer();
@@ -1619,7 +1615,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		mark.done(DICTIONARY_INITIALIZER_LIST);
 	}
 
-	private static PsiBuilder.Marker parseDictionaryInitializer(CSharpBuilderWrapper builder)
+	private static PsiBuilder.Marker parseDictionaryInitializer(CSharpBuilderWrapper builder, ModifierSet set)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
@@ -1627,7 +1623,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		{
 			PsiBuilder.Marker firstArgumentMarker = builder.mark();
 			builder.advanceLexer();
-			if(parse(builder) == null)
+			if(parse(builder, set) == null)
 			{
 				builder.error("Expression expected");
 			}
@@ -1637,7 +1633,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			if(expect(builder, EQ, "'=' expected"))
 			{
 				PsiBuilder.Marker valueArgumentMarker = builder.mark();
-				if(parse(builder) == null)
+				if(parse(builder, set) == null)
 				{
 					builder.error("Expression expected");
 				}
@@ -1672,14 +1668,14 @@ public class ExpressionParsing extends SharedParsingHelpers
 		return newMarker;
 	}
 
-	private static PsiBuilder.Marker parseExpressionWithExpressionInLParRPar(CSharpBuilderWrapper builder, PsiBuilder.Marker mark, IElementType to)
+	private static PsiBuilder.Marker parseExpressionWithExpressionInLParRPar(CSharpBuilderWrapper builder, PsiBuilder.Marker mark, IElementType to, ModifierSet set)
 	{
 		PsiBuilder.Marker newMarker = mark == null ? builder.mark() : mark.precede();
 		builder.advanceLexer();
 
 		if(expect(builder, LPAR, "'(' expected"))
 		{
-			if(parse(builder) == null)
+			if(parse(builder, set) == null)
 			{
 				builder.error("Expression expected");
 			}

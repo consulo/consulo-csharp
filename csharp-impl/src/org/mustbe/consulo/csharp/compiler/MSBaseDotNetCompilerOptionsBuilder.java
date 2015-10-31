@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,7 +46,6 @@ import com.intellij.openapi.vfs.StandardFileSystems;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.util.Function;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -150,7 +150,7 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 		String outputFile = DotNetMacroUtil.expandOutputFile(extension);
 		addArgument("/out:" + StringUtil.QUOTER.fun(outputFile));
 
-		val libraryFiles = DotNetCompilerUtil.collectDependencies(module, DotNetTarget.LIBRARY, true, DotNetCompilerUtil.ACCEPT_ALL);
+		Set<File> libraryFiles = DotNetCompilerUtil.collectDependencies(module, DotNetTarget.LIBRARY, false, DotNetCompilerUtil.ACCEPT_ALL);
 		if(!libraryFiles.isEmpty())
 		{
 			addArgument("/reference:" + StringUtil.join(libraryFiles, new Function<File, String>()
@@ -163,7 +163,7 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 			}, ","));
 		}
 
-		val moduleFiles = DotNetCompilerUtil.collectDependencies(module, DotNetTarget.NET_MODULE, true, DotNetCompilerUtil.ACCEPT_ALL);
+		Set<File> moduleFiles = DotNetCompilerUtil.collectDependencies(module, DotNetTarget.NET_MODULE, false, DotNetCompilerUtil.ACCEPT_ALL);
 		if(!moduleFiles.isEmpty())
 		{
 			addArgument("/addmodule:" + StringUtil.join(moduleFiles, new Function<File, String>()

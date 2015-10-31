@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.completion.CSharpCompletionUtil;
 import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLikeLookupElement;
+import org.mustbe.consulo.csharp.ide.completion.util.CSharpParenthesesInsertHandler;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
@@ -51,7 +52,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.ide.IconDescriptorUpdaters;
@@ -220,7 +220,7 @@ public class CSharpLookupElementBuilder
 				}
 				else
 				{
-					builder = builder.withInsertHandler(ParenthesesInsertHandler.getInstance(parameterTypes.length > 0));
+					builder = builder.withInsertHandler(new CSharpParenthesesInsertHandler(methodDeclaration));
 				}
 
 				if(CSharpMethodImplUtil.isExtensionWrapper(methodDeclaration))

@@ -40,7 +40,7 @@
 	</xi:include>
 
 	<actions>
-		<action id="CSharp.File" class="org.mustbe.consulo.csharp.ide.actions.CreateCSharpFileAction">
+		<action id="CSharp.File" class="org.mustbe.consulo.csharp.ide.actions.CSharpCreateFileAction">
 			<add-to-group group-id="NewGroup1" anchor="after" relative-to-action="NewClass"/>
 		</action>
 
@@ -298,6 +298,7 @@
 		<lang.braceMatcher language="C#Doc" implementationClass="org.mustbe.consulo.csharp.lang.doc.CSharpDocBraceMatcher"/>
 		<psi.referenceContributor language="C#" implementation="org.mustbe.consulo.csharp.ide.resolve.CSharpPsiReferenceContributor"/>
 		<refactoring.moveHandler implementation="org.mustbe.consulo.csharp.ide.refactoring.move.CSharpMoveHandlerDelegate"/>
+		<refactoring.copyHandler implementation="org.mustbe.consulo.csharp.ide.refactoring.copy.CSharpCopyClassHandlerDelegate" />
 
 		<highlightUsagesHandlerFactory implementation="org.mustbe.consulo.csharp.lang.doc.ide.highlight.CSharpDocHighlightUsagesHandlerFactory"/>
 		<newModuleBuilder implementation="org.mustbe.consulo.csharp.ide.newProjectOrModule.CSharpNewModuleBuilder"/>

@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
@@ -256,6 +257,7 @@ public class CSharpTypeUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static InheritResult isInheritable(@NotNull DotNetTypeRef top,
 			@NotNull DotNetTypeRef target,
 			@NotNull PsiElement scope,
