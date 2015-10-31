@@ -33,11 +33,11 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CSharpPrefixExpressionImpl extends CSharpExpressionWithOperatorImpl implements DotNetExpression
 {
-	private static class PrefixTypeRef extends CSharpConstantBaseTypeRef
+	public static class PrefixTypeRef extends CSharpConstantBaseTypeRef
 	{
 		private CSharpPrefixExpressionImpl myPrefixExpression;
 
-		PrefixTypeRef(CSharpPrefixExpressionImpl prefixExpression, CSharpConstantExpressionImpl constantExpression, DotNetTypeRef delegate)
+		public PrefixTypeRef(CSharpPrefixExpressionImpl prefixExpression, CSharpConstantExpressionImpl constantExpression, DotNetTypeRef delegate)
 		{
 			super(constantExpression, delegate);
 			myPrefixExpression = prefixExpression;

@@ -69,6 +69,14 @@ public class CSharpBinaryExpressionImpl extends CSharpExpressionWithOperatorImpl
 			{
 				return new BinaryTypeRef((CSharpConstantExpressionImpl) leftExpression, delegate);
 			}
+			else if(leftExpression instanceof CSharpPrefixExpressionImpl)
+			{
+				DotNetExpression expression = ((CSharpPrefixExpressionImpl) leftExpression).getExpression();
+				if(expression instanceof CSharpConstantExpressionImpl)
+				{
+					return new CSharpPrefixExpressionImpl.PrefixTypeRef((CSharpPrefixExpressionImpl)leftExpression, (CSharpConstantExpressionImpl)expression, delegate);
+				}
+			}
 		}
 		return delegate;
 	}
