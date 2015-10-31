@@ -377,7 +377,12 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		List<DotNetLikeMethodDeclaration> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
 		for(DotNetLikeMethodDeclaration psiElement : elements)
 		{
-			MethodCalcResult calc = MethodResolver.calc(arguments, psiElement, this);
+			MethodCalcResult calc = MethodResolver.calc(arguments, psiElement, this, true);
+			if(implicitExpression != null)
+			{
+				calc = calc.dup(Short.MAX_VALUE);
+			}
+
 			last.add(Pair.<MethodCalcResult, PsiElement>create(calc, psiElement));
 		}
 	}
