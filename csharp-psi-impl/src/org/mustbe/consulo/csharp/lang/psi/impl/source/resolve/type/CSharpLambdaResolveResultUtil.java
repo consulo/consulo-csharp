@@ -1,6 +1,8 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -12,6 +14,7 @@ import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -19,6 +22,12 @@ import com.intellij.openapi.project.Project;
  */
 public class CSharpLambdaResolveResultUtil
 {
+	@Contract("null -> null")
+	public static CSharpMethodDeclaration getDelegateMethodTypeWrapper(@Nullable PsiElement element)
+	{
+		return element != null ? element.getUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE) : null;
+	}
+
 	@NotNull
 	public static CSharpTypeDeclaration createTypeFromDelegate(@NotNull CSharpMethodDeclaration declaration)
 	{

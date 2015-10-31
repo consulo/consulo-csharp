@@ -110,7 +110,8 @@ public enum CSharpCompilerChecks
 
 	CC0001(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //reference checks
 	CC0002(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //operator reference checks
-	CC0003(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF); //array access expression checks
+	CC0003(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), //array access expression checks
+	CC0004(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR); // method call checks
 
 	public static final CSharpCompilerChecks[] VALUES = CSharpCompilerChecks.values();
 

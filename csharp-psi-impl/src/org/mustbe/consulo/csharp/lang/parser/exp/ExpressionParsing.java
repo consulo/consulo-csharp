@@ -538,7 +538,10 @@ public class ExpressionParsing extends SharedParsingHelpers
 			}
 			else if(tokenType == LPAR)
 			{
-				if(exprType(expr) != REFERENCE_EXPRESSION && exprType(expr) != ARRAY_ACCESS_EXPRESSION)
+				IElementType expType = exprType(expr);
+				if(expType != REFERENCE_EXPRESSION &&
+						expType != ARRAY_ACCESS_EXPRESSION &&
+						expType != METHOD_CALL_EXPRESSION)
 				{
 					startMarker.drop();
 					return expr;

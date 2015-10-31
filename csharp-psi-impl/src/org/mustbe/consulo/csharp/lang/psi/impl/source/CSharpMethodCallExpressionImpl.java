@@ -19,13 +19,20 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.DeprecationInfo;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResultUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -90,6 +97,7 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 
 	@Override
 	@Nullable
+	@RequiredReadAction
 	public PsiElement resolveToCallable()
 	{
 		DotNetExpression callExpression = getCallExpression();
@@ -108,11 +116,27 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 				return resolveResults[0].getElement();
 			}
 		}
+		else if(callExpression instanceof CSharpMethodCallExpressionImpl)
+		{
+			ResolveResult[] resolveResults = multiResolve(false);
+
+			PsiElement firstValidElement = CSharpResolveUtil.findFirstValidElement(resolveResults);
+			if(firstValidElement != null)
+			{
+				return firstValidElement;
+			}
+
+			if(resolveResults.length > 0)
+			{
+				return resolveResults[0].getElement();
+			}
+		}
 		return null;
 	}
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
 		DotNetExpression callExpression = getCallExpression();
@@ -121,11 +145,35 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 		{
 			return ((CSharpReferenceExpression) callExpression).multiResolve(incompleteCode);
 		}
+		else if(callExpression instanceof CSharpMethodCallExpressionImpl)
+		{
+			if(!incompleteCode)
+			{
+				DotNetTypeRef typeRef = callExpression.toTypeRef(true);
+
+				DotNetTypeResolveResult typeResolveResult = typeRef.resolve(this);
+
+				PsiElement element = typeResolveResult.getElement();
+				CSharpMethodDeclaration delegateMethodTypeWrapper = CSharpLambdaResolveResultUtil.getDelegateMethodTypeWrapper(element);
+				if(delegateMethodTypeWrapper != null)
+				{
+					MethodCalcResult calcResult = MethodResolver.calc(this, delegateMethodTypeWrapper, this);
+
+					return new ResolveResult[] {new MethodResolveResult(delegateMethodTypeWrapper, calcResult)};
+				}
+			}
+			else
+			{
+				return CSharpResolveUtil.filterValidResults(multiResolve(false));
+			}
+
+		}
 		return ResolveResult.EMPTY_ARRAY;
 	}
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
 		PsiElement resolvedElement = resolveToCallable();

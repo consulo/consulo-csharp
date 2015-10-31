@@ -69,6 +69,8 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.NullableFunction;
 import com.intellij.util.Processor;
+import com.intellij.util.SmartList;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -550,5 +552,19 @@ public class CSharpResolveUtil
 			return firstValidResult;
 		}
 		return ArrayUtil2.safeGet(resolveResults, 0);
+	}
+
+	@NotNull
+	public static ResolveResult[] filterValidResults(@NotNull ResolveResult[] resolveResults)
+	{
+		List<ResolveResult> filter = new SmartList<ResolveResult>();
+		for(ResolveResult resolveResult : resolveResults)
+		{
+			if(resolveResult.isValidResult())
+			{
+				filter.add(resolveResult);
+			}
+		}
+		return ContainerUtil.toArray(filter, ResolveResult.EMPTY_ARRAY);
 	}
 }

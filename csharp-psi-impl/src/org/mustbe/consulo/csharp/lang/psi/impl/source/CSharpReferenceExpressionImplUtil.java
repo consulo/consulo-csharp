@@ -36,6 +36,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.PsiElementResolveR
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SortedMemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.extensionResolver.ExtensionResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.handlers.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.StaticVsInstanceComparator;
@@ -82,6 +83,25 @@ import lombok.val;
  */
 public class CSharpReferenceExpressionImplUtil
 {
+	public static class OurResolver implements CSharpResolveCache.PolyVariantResolver<CSharpReferenceExpressionEx>
+	{
+		public static final OurResolver INSTANCE = new OurResolver();
+
+		@NotNull
+		@Override
+		public ResolveResult[] resolve(@NotNull CSharpReferenceExpressionEx ref, boolean incompleteCode, boolean resolveFromParent)
+		{
+			if(!incompleteCode)
+			{
+				return ref.multiResolveImpl(ref.kind(), resolveFromParent);
+			}
+			else
+			{
+				return CSharpResolveUtil.filterValidResults(ref.multiResolve(false, resolveFromParent));
+			}
+		}
+	}
+
 	public static final TokenSet ourReferenceElements = TokenSet.orSet(CSharpTokenSets.NATIVE_TYPES, TokenSet.create(CSharpTokens.THIS_KEYWORD,
 			CSharpTokens.BASE_KEYWORD, CSharpTokens.IDENTIFIER, CSharpSoftTokens.GLOBAL_KEYWORD));
 

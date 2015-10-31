@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
@@ -88,6 +89,12 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 			return Collections.emptyList();
 		}
 
+		// if parent is call skip
+		if(expression.getParent() instanceof CSharpMethodCallExpressionImpl)
+		{
+			return Collections.emptyList();
+		}
+
 		return checkReference(expression, Arrays.asList(referenceElement));
 	}
 
@@ -105,9 +112,9 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		{
 			resolveResults = ((PsiPolyVariantReference) callElement).multiResolve(false);
 		}
-		else if(callElement instanceof CSharpArrayAccessExpressionImpl)
+		else if(callElement instanceof CSharpCallArgumentListOwner)
 		{
-			resolveResults = ((CSharpArrayAccessExpressionImpl) callElement).multiResolve(false);
+			resolveResults = ((CSharpCallArgumentListOwner) callElement).multiResolve(false);
 		}
 
 		ResolveResult goodResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
@@ -128,8 +135,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 							HighlightInfo highlightInfo = super.create();
 							if(highlightInfo != null && callElement instanceof PsiReference)
 							{
-								UnresolvedReferenceQuickFixProvider.registerReferenceFixes((PsiReference) callElement,
-										new QuickFixActionRegistrarImpl(highlightInfo));
+								UnresolvedReferenceQuickFixProvider.registerReferenceFixes((PsiReference) callElement, new QuickFixActionRegistrarImpl(highlightInfo));
 							}
 							return highlightInfo;
 						}
@@ -137,7 +143,16 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 					result.setHighlightInfoType(HighlightInfoType.WRONG_REF);
 
 					String unresolvedText = getUnresolvedText(callElement, range);
-					result.setText("'" + StringUtil.unescapeXml(unresolvedText) + "' is not resolved");
+					if(isCalleInsideCalle(callElement))
+					{
+						result.setText("Expression cant be invoked");
+						// remap to error, due we want make all exp red
+						result.setHighlightInfoType(HighlightInfoType.ERROR);
+					}
+					else
+					{
+						result.setText("'" + StringUtil.unescapeXml(unresolvedText) + "' is not resolved");
+					}
 
 					result.setTextRange(range.getTextRange());
 					list.add(result);
@@ -145,7 +160,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 			}
 			else
 			{
-				final HighlightInfo highlightInfo = CC0001.createHighlightInfo(callElement, resolveResults[0]);
+				final HighlightInfo highlightInfo = createHighlightInfo(callElement, resolveResults[0]);
 				if(highlightInfo == null)
 				{
 					return list;
@@ -163,6 +178,12 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 			}
 		}
 		return list;
+	}
+
+	@Contract("null -> false")
+	public static boolean isCalleInsideCalle(@Nullable PsiElement callElement)
+	{
+		return callElement instanceof CSharpMethodCallExpressionImpl && ((CSharpMethodCallExpressionImpl) callElement).getCallExpression() instanceof CSharpMethodCallExpressionImpl;
 	}
 
 	@RequiredReadAction
@@ -347,8 +368,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 
 					if(resolveElement instanceof CSharpConstructorDeclaration)
 					{
-						QuickFixAction.registerQuickFixAction(highlightInfo, new CreateUnresolvedConstructorFix((CSharpReferenceExpression)
-								element));
+						QuickFixAction.registerQuickFixAction(highlightInfo, new CreateUnresolvedConstructorFix((CSharpReferenceExpression) element));
 					}
 
 					for(NCallArgument argument : arguments)
@@ -375,8 +395,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 							{
 								continue;
 							}
-							QuickFixAction.registerQuickFixAction(highlightInfo, new CastNArgumentToTypeRefFix(argumentExpression, parameterTypeRef,
-									parameterName));
+							QuickFixAction.registerQuickFixAction(highlightInfo, new CastNArgumentToTypeRefFix(argumentExpression, parameterTypeRef, parameterName));
 						}
 					}
 				}
@@ -402,16 +421,13 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 	private static CSharpCallArgumentListOwner findCallOwner(PsiElement element)
 	{
 		PsiElement parent = element.getParent();
-		if(element instanceof CSharpOperatorReferenceImpl)
+		if(element instanceof CSharpOperatorReferenceImpl ||
+				element instanceof CSharpMethodCallExpressionImpl ||
+				element instanceof CSharpArrayAccessExpressionImpl)
 		{
 			return (CSharpCallArgumentListOwner) element;
 		}
-		else if(element instanceof CSharpArrayAccessExpressionImpl)
-		{
-			return (CSharpCallArgumentListOwner) element;
-		}
-		else if(parent instanceof CSharpMethodCallExpressionImpl || parent instanceof CSharpConstructorSuperCallImpl || parent instanceof
-				CSharpAttribute)
+		else if(parent instanceof CSharpConstructorSuperCallImpl || parent instanceof CSharpAttribute)
 		{
 			return (CSharpCallArgumentListOwner) parent;
 		}
