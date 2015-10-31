@@ -293,7 +293,6 @@
 		<lang.parserDefinition language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpParserDefinition"/>
 		<lang.parserDefinition language="C#Preprocessor" implementationClass="org.mustbe.consulo.csharp.lang.CSharpPreprocessorParserDefinition"/>
 		<lang.parserDefinition language="C#Doc" implementationClass="org.mustbe.consulo.csharp.lang.doc.CSharpDocParserDefinition"/>
-		<lang.fileViewProviderFactory language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpFileViewProviderFactory"/>
 		<lang.versionResolver language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpLanguageVersionResolver"/>
 		<lang.documentationProvider language="C#" implementationClass="org.mustbe.consulo.csharp.ide.documentation.CSharpDocumentationProvider"/>
 		<lang.braceMatcher language="C#Doc" implementationClass="org.mustbe.consulo.csharp.lang.doc.CSharpDocBraceMatcher"/>

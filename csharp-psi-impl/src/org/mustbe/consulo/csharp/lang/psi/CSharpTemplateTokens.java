@@ -16,47 +16,17 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
-import org.mustbe.consulo.csharp.lang.CSharpLanguageVersionWrapper;
-import com.intellij.lang.Language;
-import com.intellij.lang.LanguageVersionResolvers;
-import com.intellij.lexer.Lexer;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.templateLanguages.TemplateDataElementType;
-import com.intellij.psi.templateLanguages.TemplateLanguageFileViewProvider;
 import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
  * @since 24.01.14
  */
+@Deprecated
 public interface CSharpTemplateTokens
 {
 	IElementType PREPROCESSOR_DIRECTIVE = new IElementType("PREPROCESSOR_DIRECTIVE", CSharpLanguage.INSTANCE);
 
 	IElementType OUTER_ELEMENT_TYPE = new IElementType("OUTER_ELEMENT_TYPE", CSharpLanguage.INSTANCE);
-
-	TemplateDataElementType TEMPLATE_DATA = new TemplateDataElementType("TEMPLATE_DATA", CSharpLanguage.INSTANCE, PREPROCESSOR_DIRECTIVE, OUTER_ELEMENT_TYPE)
-	{
-		@Override
-		protected Lexer createBaseLexer(PsiFile file, TemplateLanguageFileViewProvider viewProvider)
-		{
-			final Language baseLanguage = viewProvider.getBaseLanguage();
-			final CSharpLanguageVersionWrapper languageVersion = (CSharpLanguageVersionWrapper) LanguageVersionResolvers.INSTANCE.forLanguage
-					(baseLanguage).getLanguageVersion(baseLanguage, file);
-
-			List<TextRange> disabledBlocks = Collections.emptyList();
-			/*DotNetModuleExtension extension = ModuleUtilCore.getExtension(file, DotNetModuleExtension.class);
-			if(extension != null)
-			{
-				assert file.getOriginalFile() == file;
-				disabledBlocks = CSharpFileStubElementType.collectDisabledBlocks(file.getOriginalFile(), extension);
-			}     */
-			return languageVersion.createLexer(disabledBlocks);
-		}
-	};
 }
