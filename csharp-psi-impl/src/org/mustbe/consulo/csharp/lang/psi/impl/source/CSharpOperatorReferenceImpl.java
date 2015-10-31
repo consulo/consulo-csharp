@@ -73,7 +73,6 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -496,7 +495,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			DotNetExpression parameterExpression = parameterExpressions[i];
 			if(parameterExpression == wrapExpression)
 			{
-				val wrapper = new ImplicitOperatorArgumentAsCallArgumentWrapper(wrapExpression, toTypeRef);
+				ImplicitOperatorArgumentAsCallArgumentWrapper wrapper = new ImplicitOperatorArgumentAsCallArgumentWrapper(wrapExpression, toTypeRef);
 
 				wrapper.putUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO, new ImplicitCastInfo(originalTypeRef, toTypeRef));
 				array[i] = wrapper;

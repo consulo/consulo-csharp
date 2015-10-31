@@ -29,6 +29,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpConstantBaseTypeRef;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
@@ -38,40 +39,13 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 31.08.14
  */
-public class CSharpConstantTypeRef extends DotNetTypeRef.Delegate implements CSharpFastImplicitTypeRef
+public class CSharpConstantTypeRef extends CSharpConstantBaseTypeRef
 {
 	private static final DotNetTypeRef ourEnumTypeRef = new CSharpTypeRefByQName(DotNetTypes.System.Enum);
 
-	private CSharpConstantExpressionImpl myElement;
-
 	public CSharpConstantTypeRef(CSharpConstantExpressionImpl element, @NotNull DotNetTypeRef defaultTypeRef)
 	{
-		super(defaultTypeRef);
-		myElement = element;
-	}
-
-	@Nullable
-	@Override
-	@RequiredReadAction
-	public DotNetTypeRef doMirror(@NotNull DotNetTypeRef another, PsiElement scope)
-	{
-		DotNetTypeRef anotherTypeRef = testNumberConstant(myElement, "", another, scope);
-		if(anotherTypeRef != null)
-		{
-			DotNetTypeRef defaultConstantTypeRef = myElement.getDefaultConstantTypeRef();
-			if(defaultConstantTypeRef != null && CSharpTypeUtil.isTypeEqual(anotherTypeRef, defaultConstantTypeRef, myElement))
-			{
-				return null;
-			}
-			return anotherTypeRef;
-		}
-		return null;
-	}
-
-	@Override
-	public boolean isConversion()
-	{
-		return false;
+		super(element, defaultTypeRef);
 	}
 
 	@RequiredReadAction

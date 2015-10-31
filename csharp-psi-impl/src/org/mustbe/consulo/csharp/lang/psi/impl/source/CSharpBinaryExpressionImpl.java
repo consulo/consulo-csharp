@@ -18,11 +18,16 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpConstantBaseTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
@@ -30,6 +35,14 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpBinaryExpressionImpl extends CSharpExpressionWithOperatorImpl implements DotNetExpression, CSharpCallArgumentListOwner
 {
+	private static class BinaryTypeRef extends CSharpConstantBaseTypeRef
+	{
+		BinaryTypeRef(CSharpConstantExpressionImpl leftExpression, DotNetTypeRef delegate)
+		{
+			super(leftExpression, delegate);
+		}
+	}
+
 	public CSharpBinaryExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
@@ -41,6 +54,25 @@ public class CSharpBinaryExpressionImpl extends CSharpExpressionWithOperatorImpl
 		visitor.visitBinaryExpression(this);
 	}
 
+	@NotNull
+	@Override
+	@RequiredReadAction
+	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	{
+		DotNetTypeRef delegate = super.toTypeRef(resolveFromParent);
+
+		IElementType operatorElementType = getOperatorElement().getOperatorElementType();
+		if(operatorElementType == CSharpTokenSets.LTLT || operatorElementType == CSharpTokenSets.GTGT)
+		{
+			DotNetExpression leftExpression = getLeftExpression();
+			if(leftExpression instanceof CSharpConstantExpressionImpl)
+			{
+				return new BinaryTypeRef((CSharpConstantExpressionImpl) leftExpression, delegate);
+			}
+		}
+		return delegate;
+	}
+
 	@Nullable
 	public DotNetExpression getLeftExpression()
 	{
@@ -48,6 +80,7 @@ public class CSharpBinaryExpressionImpl extends CSharpExpressionWithOperatorImpl
 	}
 
 	@Nullable
+	@RequiredReadAction
 	public DotNetExpression getRightExpression()
 	{
 		PsiElement operatorElement = getOperatorElement();
