@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.lang.formatter.processors;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorLazyTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -75,6 +76,10 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 			return Indent.getNoneIndent();
 		}
 		else if(elementType == DICTIONARY_INITIALIZER)
+		{
+			return Indent.getNormalIndent();
+		}
+		else if(elementType == CSharpPreprocessorLazyTokens.PREPROCESSOR_DIRECTIVE)
 		{
 			return Indent.getNormalIndent();
 		}

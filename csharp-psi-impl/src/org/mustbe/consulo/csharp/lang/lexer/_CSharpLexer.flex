@@ -5,7 +5,7 @@ import com.intellij.lexer.LexerBase;
 import com.intellij.psi.tree.IElementType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorLazyTokens;
 
 %%
 
@@ -80,12 +80,12 @@ HEX_EXPONENT = [Pp] [+-]? {DIGIT_OR_UNDERSCORE}*
 	{
 		myEnteredNewLine = true;
 		yybegin(YYINITIAL);
-		return CSharpTemplateTokens.PREPROCESSOR_DIRECTIVE;
+		return CSharpPreprocessorLazyTokens.PREPROCESSOR_DIRECTIVE;
 	}
 
-	{WHITE_SPACE_NO_NEW_LINE}  {  return CSharpTemplateTokens.PREPROCESSOR_DIRECTIVE; }
+	{WHITE_SPACE_NO_NEW_LINE}  {  return CSharpPreprocessorLazyTokens.PREPROCESSOR_DIRECTIVE; }
 
-	.                          { return CSharpTemplateTokens.PREPROCESSOR_DIRECTIVE; }
+	.                          { return CSharpPreprocessorLazyTokens.PREPROCESSOR_DIRECTIVE; }
 }
 
 <YYINITIAL>

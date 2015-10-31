@@ -273,7 +273,6 @@
 		<psi.treeChangePreprocessor implementation="org.mustbe.consulo.csharp.lang.psi.impl.CSharpPsiTreeChangePreprocessor"/>
 		<lang.psiStructureViewFactory language="C#" implementationClass="org.mustbe.consulo.csharp.ide.structureView.CSharpStructureViewFactory"/>
 		<lang.formatter language="C#" implementationClass="org.mustbe.consulo.csharp.lang.formatter.CSharpFormattingModelBuilder"/>
-		<lang.formatter language="C#Preprocessor" implementationClass="org.mustbe.consulo.csharp.lang.formatter.CSharpPreprocessorFormattingBuilder"/>
 		<lang.elementIcon language="C#" file="/icons/csharpLang.png"/>
 		<lang.commenter language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpCommenter"/>
 		<lang.namesValidator language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpNamesValidator"/>
@@ -289,6 +288,7 @@
 		<inlineActionHandler implementation="org.mustbe.consulo.csharp.ide.refactoring.inlineAction.CSharpLocalVariableInlineActionHandler"/>
 		<lang.parserDefinition language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpParserDefinition"/>
 		<lang.parserDefinition language="C#Preprocessor" implementationClass="org.mustbe.consulo.csharp.lang.CSharpPreprocessorParserDefinition"/>
+		<lang.ast.leafFactory implementation="org.mustbe.consulo.csharp.lang.CSharpASTLeafFactory" />
 		<lang.parserDefinition language="C#Doc" implementationClass="org.mustbe.consulo.csharp.lang.doc.CSharpDocParserDefinition"/>
 		<lang.versionResolver language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpLanguageVersionResolver"/>
 		<lang.documentationProvider language="C#" implementationClass="org.mustbe.consulo.csharp.ide.documentation.CSharpDocumentationProvider"/>

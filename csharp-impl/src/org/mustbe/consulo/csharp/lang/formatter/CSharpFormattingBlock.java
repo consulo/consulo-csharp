@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.formatter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +27,6 @@ import org.mustbe.consulo.csharp.lang.formatter.processors.CSharpIndentProcessor
 import org.mustbe.consulo.csharp.lang.formatter.processors.CSharpSpacingProcessor;
 import org.mustbe.consulo.csharp.lang.formatter.processors.CSharpWrappingProcessor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.formatting.ASTBlock;
@@ -34,30 +34,27 @@ import com.intellij.formatting.Block;
 import com.intellij.formatting.Indent;
 import com.intellij.formatting.Spacing;
 import com.intellij.formatting.Wrap;
-import com.intellij.formatting.templateLanguages.DataLanguageBlockWrapper;
-import com.intellij.formatting.templateLanguages.TemplateLanguageBlock;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.formatter.FormatterUtil;
+import com.intellij.psi.formatter.common.AbstractBlock;
 
 /**
  * @author VISTALL
  * @since 15.12.13.
  */
-public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSharpElements, CSharpTokens, CSharpTokenSets
+public class CSharpFormattingBlock extends AbstractBlock implements CSharpElements, CSharpTokens, CSharpTokenSets
 {
 	private final CSharpWrappingProcessor myWrappingProcessor;
 	private final CSharpIndentProcessor myIndentProcessor;
 	private final CSharpSpacingProcessor mySpacingProcessor;
+	private final CodeStyleSettings mySettings;
 
-	public CSharpFormattingBlock(
-			@NotNull CSharpFormattingModelBuilder blockFactory,
-			@NotNull CodeStyleSettings settings,
-			@NotNull ASTNode node,
-			@Nullable List<DataLanguageBlockWrapper> foreignChildren)
+	public CSharpFormattingBlock(@NotNull CodeStyleSettings settings, @NotNull ASTNode node)
 	{
-		super(blockFactory, settings, node, foreignChildren);
+		super(node, null, null);
+		mySettings = settings;
 		CommonCodeStyleSettings commonSettings = settings.getCommonSettings(CSharpLanguage.INSTANCE);
 		CSharpCodeStyleSettings customSettings = settings.getCustomSettings(CSharpCodeStyleSettings.class);
 
@@ -70,7 +67,34 @@ public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSha
 	@Override
 	public Spacing getSpacing(@Nullable Block child1, @NotNull Block child2)
 	{
-		return mySpacingProcessor.getSpacing((ASTBlock)child1, (ASTBlock)child2);
+		return mySpacingProcessor.getSpacing((ASTBlock) child1, (ASTBlock) child2);
+	}
+
+	@Override
+	public boolean isLeaf()
+	{
+		return false;
+	}
+
+	@Override
+	protected List<Block> buildChildren()
+	{
+		if(isLeaf())
+		{
+			return EMPTY;
+		}
+		final List<Block> blocks = new ArrayList<Block>(5);
+		for(ASTNode childNode = getNode().getFirstChildNode(); childNode != null; childNode = childNode.getTreeNext())
+		{
+			if(FormatterUtil.containsWhiteSpacesOnly(childNode))
+			{
+				continue;
+			}
+
+			final CSharpFormattingBlock childBlock = new CSharpFormattingBlock(mySettings, childNode);
+			blocks.add(childBlock);
+		}
+		return blocks;
 	}
 
 	@Nullable
@@ -91,11 +115,5 @@ public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSha
 	protected Indent getChildIndent()
 	{
 		return myIndentProcessor.getChildIndent();
-	}
-
-	@Override
-	protected IElementType getTemplateTextElementType()
-	{
-		return CSharpTemplateTokens.PREPROCESSOR_DIRECTIVE;
 	}
 }

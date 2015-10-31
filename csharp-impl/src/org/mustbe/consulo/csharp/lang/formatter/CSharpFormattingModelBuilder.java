@@ -16,32 +16,35 @@
 
 package org.mustbe.consulo.csharp.lang.formatter;
 
-import java.util.List;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.intellij.formatting.Alignment;
-import com.intellij.formatting.Wrap;
-import com.intellij.formatting.templateLanguages.DataLanguageBlockWrapper;
-import com.intellij.formatting.templateLanguages.TemplateLanguageBlock;
-import com.intellij.formatting.templateLanguages.TemplateLanguageFormattingModelBuilder;
+import org.mustbe.consulo.csharp.lang.CSharpFileType;
+import com.intellij.formatting.FormattingModel;
+import com.intellij.formatting.FormattingModelBuilder;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
+import com.intellij.psi.formatter.DocumentBasedFormattingModel;
 
 /**
  * @author VISTALL
  * @since 15.12.13.
  */
-public class CSharpFormattingModelBuilder extends TemplateLanguageFormattingModelBuilder
+public class CSharpFormattingModelBuilder implements FormattingModelBuilder
 {
+	@NotNull
 	@Override
-	public TemplateLanguageBlock createTemplateLanguageBlock(
-			@NotNull ASTNode node,
-			@Nullable Wrap wrap,
-			@Nullable Alignment alignment,
-			@Nullable List<DataLanguageBlockWrapper> foreignChildren,
-			@NotNull CodeStyleSettings codeStyleSettings)
+	public FormattingModel createModel(PsiElement element, CodeStyleSettings settings)
 	{
-		return new CSharpFormattingBlock(this, codeStyleSettings, node, foreignChildren);
+		return new DocumentBasedFormattingModel(new CSharpFormattingBlock(settings, element.getNode()), element.getProject(), settings, CSharpFileType.INSTANCE, element.getContainingFile()) ;
+	}
+
+	@Nullable
+	@Override
+	public TextRange getRangeAffectingIndent(PsiFile file, int offset, ASTNode elementAtOffset)
+	{
+		return null;
 	}
 }

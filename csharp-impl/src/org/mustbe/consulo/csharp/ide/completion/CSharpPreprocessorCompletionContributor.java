@@ -16,29 +16,8 @@
 
 package org.mustbe.consulo.csharp.ide.completion;
 
-import static com.intellij.patterns.StandardPatterns.psiElement;
-
-import java.util.Arrays;
-import java.util.Collection;
-
-import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
-import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorFileImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorReferenceExpressionImpl;
 import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.util.Pair;
-import com.intellij.util.ProcessingContext;
 
 /**
  * @author VISTALL
@@ -60,7 +39,7 @@ public class CSharpPreprocessorCompletionContributor extends CompletionContribut
 
 	public CSharpPreprocessorCompletionContributor()
 	{
-		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement(CSharpPreprocessorTokens.SHARP)), new CompletionProvider<CompletionParameters>()
+		/*extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement(CSharpPreprocessorTokens2.SHARP)), new CompletionProvider<CompletionParameters>()
 		{
 			@RequiredReadAction
 			@Override
@@ -84,7 +63,7 @@ public class CSharpPreprocessorCompletionContributor extends CompletionContribut
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement(CSharpPreprocessorTokens.IDENTIFIER).withParent(CSharpPreprocessorReferenceExpressionImpl.class), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, psiElement(CSharpPreprocessorTokens2.IDENTIFIER).withParent(CSharpPreprocessorReferenceExpressionImpl.class), new CompletionProvider<CompletionParameters>()
 		{
 			@RequiredReadAction
 			@Override
@@ -95,6 +74,6 @@ public class CSharpPreprocessorCompletionContributor extends CompletionContribut
 				LookupElement[] lookupElements = CSharpLookupElementBuilder.buildToLookupElements(variables);
 				result.addAllElements(Arrays.asList(lookupElements));
 			}
-		});
+		}); */
 	}
 }

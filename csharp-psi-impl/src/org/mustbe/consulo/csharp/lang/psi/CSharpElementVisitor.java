@@ -634,4 +634,9 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	{
 		visitElement(identifier);
 	}
+
+	public void visitPreprocessorDirective(CSharpPreprocessorDirectiveImpl preprocessorDirective)
+	{
+		visitElement(preprocessorDirective);
+	}
 }

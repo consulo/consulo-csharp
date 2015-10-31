@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 must-be.org
+ * Copyright 2013-2015 must-be.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,10 @@ import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
- * @since 24.01.14
+ * @since 31.10.2015
  */
-@Deprecated
-public interface CSharpTemplateTokens
+public interface CSharpPreprocessorLazyTokens
 {
 	IElementType PREPROCESSOR_DIRECTIVE = new IElementType("PREPROCESSOR_DIRECTIVE", CSharpLanguage.INSTANCE);
 
-	IElementType OUTER_ELEMENT_TYPE = new IElementType("OUTER_ELEMENT_TYPE", CSharpLanguage.INSTANCE);
 }
