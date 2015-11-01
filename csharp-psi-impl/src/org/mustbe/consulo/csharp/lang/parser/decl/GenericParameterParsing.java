@@ -25,7 +25,6 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.NotNullFunction;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -47,16 +46,15 @@ public class GenericParameterParsing extends SharedParsingHelpers
 
 		while(!builder.eof())
 		{
-			if(ourGenericStoppers.contains(builder.getTokenType()))
-			{
-				break;
-			}
-
-			parse(builder);
+			parseGenericParameter(builder);
 
 			if(builder.getTokenType() == COMMA)
 			{
 				builder.advanceLexer();
+			}
+			else if(ourGenericStoppers.contains(builder.getTokenType()))
+			{
+				break;
 			}
 			else if(!ourGenericStoppers.contains(builder.getTokenType()))
 			{
@@ -71,15 +69,20 @@ public class GenericParameterParsing extends SharedParsingHelpers
 		mark.done(GENERIC_PARAMETER_LIST);
 	}
 
-	public static void parse(CSharpBuilderWrapper builder)
+	public static void parseGenericParameter(CSharpBuilderWrapper builder)
 	{
-		val marker = builder.mark();
+		PsiBuilder.Marker marker = builder.mark();
 
 		parseModifierListWithAttributes(builder, STUB_SUPPORT);
 
-		expectOrReportIdentifier(builder, STUB_SUPPORT);
-
-		marker.done(GENERIC_PARAMETER);
+		if(!expectOrReportIdentifier(builder, STUB_SUPPORT))
+		{
+			marker.drop();
+		}
+		else
+		{
+			marker.done(GENERIC_PARAMETER);
+		}
 	}
 
 	public static PsiBuilder.Marker parseGenericConstraintList(CSharpBuilderWrapper builder)
