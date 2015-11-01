@@ -87,6 +87,7 @@ public class CSharpReferenceExpressionImplUtil
 	{
 		public static final OurResolver INSTANCE = new OurResolver();
 
+		@RequiredReadAction
 		@NotNull
 		@Override
 		public ResolveResult[] resolve(@NotNull CSharpReferenceExpressionEx ref, boolean incompleteCode, boolean resolveFromParent)

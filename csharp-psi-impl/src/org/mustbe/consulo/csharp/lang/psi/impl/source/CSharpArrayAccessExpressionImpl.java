@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
@@ -54,6 +55,7 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 	{
 		public static final OurResolver INSTANCE = new OurResolver();
 
+		@RequiredReadAction
 		@NotNull
 		@Override
 		public ResolveResult[] resolve(@NotNull CSharpArrayAccessExpressionImpl expression, boolean incompleteCode, boolean resolveFromParent)

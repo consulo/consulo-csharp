@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
@@ -64,6 +65,7 @@ public class CSharpResolveCache
 
 	public interface AbstractResolver<TRef extends PsiElement, TResult>
 	{
+		@RequiredReadAction
 		TResult resolve(@NotNull TRef ref, boolean incompleteCode, boolean resolveFromParent);
 	}
 
@@ -71,11 +73,13 @@ public class CSharpResolveCache
 	{
 		@Override
 		@NotNull
+		@RequiredReadAction
 		ResolveResult[] resolve(@NotNull T t, boolean incompleteCode, boolean resolveFromParent);
 	}
 
 	public static abstract class TypeRefResolver<TElement extends PsiElement> implements AbstractResolver<TElement, DotNetTypeRef>
 	{
+		@RequiredReadAction
 		@Override
 		@NotNull
 		public final DotNetTypeRef resolve(@NotNull TElement ref, boolean incompleteCode, boolean resolveFromParent)
@@ -85,10 +89,6 @@ public class CSharpResolveCache
 
 		@NotNull
 		public abstract DotNetTypeRef resolveTypeRef(@NotNull TElement element, boolean resolveFromParent);
-	}
-
-	public interface Resolver extends AbstractResolver<PsiElement, PsiElement>
-	{
 	}
 
 	public CSharpResolveCache(@NotNull MessageBus messageBus)
@@ -138,6 +138,7 @@ public class CSharpResolveCache
 	}
 
 	@Nullable
+	@RequiredReadAction
 	private <TRef extends PsiElement, TResult> TResult resolve(@NotNull final TRef ref,
 			@NotNull final AbstractResolver<TRef, TResult> resolver,
 			boolean needToPreventRecursion,
@@ -162,6 +163,7 @@ public class CSharpResolveCache
 				new Computable<TResult>()
 		{
 			@Override
+			@RequiredReadAction
 			public TResult compute()
 			{
 				return resolver.resolve(ref, incompleteCode, resolveFromParent);
@@ -178,6 +180,7 @@ public class CSharpResolveCache
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public <T extends PsiElement> ResolveResult[] resolveWithCaching(@NotNull T ref,
 			@NotNull PolyVariantResolver<T> resolver,
 			boolean needToPreventRecursion,
@@ -188,6 +191,7 @@ public class CSharpResolveCache
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public <T extends PsiElement> ResolveResult[] resolveWithCaching(@NotNull T ref,
 			@NotNull PolyVariantResolver<T> resolver,
 			boolean needToPreventRecursion,
@@ -213,6 +217,7 @@ public class CSharpResolveCache
 	}
 
 	@Nullable
+	@RequiredReadAction
 	public <TRef extends PsiElement, TResult> TResult resolveWithCaching(@NotNull TRef ref,
 			@NotNull AbstractResolver<TRef, TResult> resolver,
 			boolean needToPreventRecursion,
@@ -223,6 +228,7 @@ public class CSharpResolveCache
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public <TElement extends PsiElement> DotNetTypeRef resolveTypeRef(@NotNull TElement ref,
 			@NotNull TypeRefResolver<TElement> resolver,
 			boolean resolveFromParent)
