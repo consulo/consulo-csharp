@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.consulo.annotations.Immutable;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -411,6 +412,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 	}
 
 	@NotNull
+	@Immutable
 	public CSharpTypeDeclaration[] getTypeDeclarations()
 	{
 		return myTypeDeclarations;
