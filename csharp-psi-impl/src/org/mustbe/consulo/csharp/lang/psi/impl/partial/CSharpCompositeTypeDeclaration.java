@@ -283,6 +283,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return myTypeDeclarations[0].getName();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getVmQName()
@@ -290,6 +291,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return myTypeDeclarations[0].getVmQName();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getVmName()
@@ -308,13 +310,13 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 	@Override
 	public DotNetGenericParameter[] getGenericParameters()
 	{
-		return new DotNetGenericParameter[0];
+		return myTypeDeclarations[0].getGenericParameters();
 	}
 
 	@Override
 	public int getGenericParametersCount()
 	{
-		return 0;
+		return myTypeDeclarations[0].getGenericParametersCount();
 	}
 
 	@NotNull
@@ -329,6 +331,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return ContainerUtil.toArray(elements, DotNetNamedElement.ARRAY_FACTORY);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
@@ -347,6 +350,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return false;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetModifierList getModifierList()
@@ -354,6 +358,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return null;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableParentQName()
@@ -361,6 +366,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return myTypeDeclarations[0].getPresentableParentQName();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableQName()
