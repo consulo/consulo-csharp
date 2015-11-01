@@ -351,6 +351,6 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	@Override
 	public int order()
 	{
-		return 0;
+		return 1;
 	}
 }
