@@ -21,6 +21,7 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
+import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.ProximityLocation;
 import com.intellij.psi.util.proximity.ProximityWeigher;
@@ -41,6 +42,11 @@ public class CSharpObsoleteWeigher extends ProximityWeigher
 	@RequiredReadAction
 	public Comparable weigh(@NotNull PsiElement element, @NotNull ProximityLocation location)
 	{
+		if(element instanceof PrioritizedLookupElement)
+		{
+			return null;
+		}
+
 		PsiElement position = location.getPosition();
 		if(position == null || !(position.getContainingFile() instanceof CSharpFile))
 		{
