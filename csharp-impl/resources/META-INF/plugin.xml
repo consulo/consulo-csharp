@@ -311,5 +311,7 @@
 		<xdebugger.lineBreakpointResolver filetype="C#"
 										  implementationClass="org.mustbe.consulo.dotnet.debugger.linebreakType.DotNetLineBreakpointResolver"
 										  id="csharp"/>
+
+		<smartPointerAnchorProvider implementation="org.mustbe.consulo.csharp.lang.psi.impl.CSharpAnchorProvider" />
 	</extensions>
 </idea-plugin>
