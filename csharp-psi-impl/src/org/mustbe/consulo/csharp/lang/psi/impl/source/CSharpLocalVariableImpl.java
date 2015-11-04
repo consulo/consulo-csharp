@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import java.util.List;
 
+import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -47,6 +48,7 @@ import com.intellij.util.SmartList;
  * @author VISTALL
  * @since 16.12.13.
  */
+@Logger
 public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CSharpLocalVariable
 {
 	public CSharpLocalVariableImpl(@NotNull ASTNode node)
@@ -174,6 +176,15 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 		{
 			return new LocalSearchScope(parent.getParent());
 		}
+		else if(parent instanceof CSharpForeachStatementImpl ||
+				parent instanceof CSharpUsingStatementImpl ||
+				parent instanceof CSharpFixedStatementImpl ||
+				parent instanceof CSharpForStatementImpl ||
+				parent instanceof CSharpCatchStatementImpl)
+		{
+			return new LocalSearchScope(parent);
+		}
+		LOGGER.error("Global usage scope for local variable, parent: " + parent.getClass().getName());
 		return super.getUseScope();
 	}
 
