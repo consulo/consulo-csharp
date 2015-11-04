@@ -2,6 +2,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
@@ -26,6 +27,8 @@ public class CSharpAnchorProvider implements SmartPointerAnchorProvider
 				element instanceof CSharpFieldDeclaration ||
 				element instanceof CSharpMethodDeclaration ||
 				element instanceof CSharpConstructorDeclaration ||
+				element instanceof CSharpArrayMethodDeclaration ||
+				//element instanceof CSharpConversionMethodDeclaration ||
 				element instanceof CSharpPropertyDeclaration ||
 				element instanceof CSharpEventDeclaration)
 		{
