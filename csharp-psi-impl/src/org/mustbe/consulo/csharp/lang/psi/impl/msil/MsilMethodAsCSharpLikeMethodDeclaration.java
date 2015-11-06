@@ -20,6 +20,7 @@ import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightGenericConstraintList;
@@ -83,6 +84,7 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 		return myOriginal.getContainingFile();
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetType getReturnType()
@@ -90,6 +92,7 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 		throw new IllegalArgumentException();
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	@LazyInstance
@@ -125,12 +128,14 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 		return myGenericParameterList == null ? 0 : myGenericParameterList.getGenericParametersCount();
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
 		return myModifierList.hasModifier(modifier);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetModifierList getModifierList()
@@ -161,6 +166,7 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public DotNetParameter[] getParameters()
 	{
 		DotNetParameter[] parameters = myOriginal.getParameters();
@@ -178,6 +184,7 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 		return newParameters;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableParentQName()
@@ -185,6 +192,7 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 		return myOriginal.getPresentableParentQName();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableQName()

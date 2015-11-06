@@ -66,8 +66,11 @@ import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
+import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtil;
+import com.intellij.psi.impl.source.tree.injected.Place;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -964,7 +967,7 @@ public class CSharpReferenceExpressionImplUtil
 		PsiElement targetToWalkChildren = null;
 
 		PsiElement temp = strict ? element : element.getParent();
-		while(temp != null)
+		loop:while(temp != null)
 		{
 			ProgressIndicatorProvider.checkCanceled();
 
@@ -993,6 +996,7 @@ public class CSharpReferenceExpressionImplUtil
 			{
 				last = temp;
 				targetToWalkChildren = PsiTreeUtil.getParentOfType(temp, DotNetModifierListOwner.class);
+				break;
 			}
 			else if(temp instanceof DotNetFieldDeclaration ||
 					temp instanceof DotNetPropertyDeclaration ||
@@ -1014,6 +1018,18 @@ public class CSharpReferenceExpressionImplUtil
 				last = temp;
 				targetToWalkChildren = temp.getParent();
 				break;
+			}
+			else if(temp instanceof CSharpForInjectionFragmentHolder)
+			{
+				Place shreds = InjectedLanguageUtil.getShreds(temp.getContainingFile());
+				if(shreds != null)
+				{
+					for(PsiLanguageInjectionHost.Shred shred : shreds)
+					{
+						temp = shred.getHost();
+						continue loop;
+					}
+				}
 			}
 			temp = temp.getParent();
 		}
