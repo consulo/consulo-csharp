@@ -22,7 +22,6 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.NotNullFunction;
 
 /**
@@ -36,9 +35,7 @@ public class CSharpResolveContextUtil
 
 	@NotNull
 	@RequiredReadAction
-	public static CSharpResolveContext createContext(@NotNull DotNetGenericExtractor genericExtractor,
-			@NotNull GlobalSearchScope resolveScope,
-			@NotNull PsiElement... elements)
+	public static CSharpResolveContext createContext(@NotNull DotNetGenericExtractor genericExtractor, @NotNull GlobalSearchScope resolveScope, @NotNull PsiElement... elements)
 	{
 		if(elements.length == 0)
 		{
@@ -56,9 +53,7 @@ public class CSharpResolveContextUtil
 
 	@NotNull
 	@RequiredReadAction
-	public static CSharpResolveContext createContext(@NotNull DotNetGenericExtractor genericExtractor,
-			@NotNull GlobalSearchScope resolveScope,
-			@NotNull PsiElement element)
+	public static CSharpResolveContext createContext(@NotNull DotNetGenericExtractor genericExtractor, @NotNull GlobalSearchScope resolveScope, @NotNull PsiElement element)
 	{
 		return createContext(genericExtractor, resolveScope, element, null);
 	}
@@ -115,8 +110,9 @@ public class CSharpResolveContextUtil
 	{
 		if(typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
 		{
-			DotNetTypeDeclaration[] types = DotNetPsiSearcher.getInstance(typeDeclaration.getProject()).findTypes(typeDeclaration.getVmQName(),
-					resolveScope);
+			String vmQName = typeDeclaration.getVmQName();
+			assert vmQName != null;
+			DotNetTypeDeclaration[] types = DotNetPsiSearcher.getInstance(typeDeclaration.getProject()).findTypes(vmQName, resolveScope);
 
 			for(DotNetTypeDeclaration type : types)
 			{
@@ -145,16 +141,14 @@ public class CSharpResolveContextUtil
 				return provider.getValue();
 			}
 
-			CachedValue<CSharpResolveContext> cachedValue = CachedValuesManager.getManager(typeDeclaration.getProject()).createCachedValue(new
-																																				   CachedValueProvider<CSharpResolveContext>()
+			CachedValue<CSharpResolveContext> cachedValue = CachedValuesManager.getManager(typeDeclaration.getProject()).createCachedValue(new CachedValueProvider<CSharpResolveContext>()
 			{
 				@Nullable
 				@Override
 				@RequiredReadAction
 				public Result<CSharpResolveContext> compute()
 				{
-					return Result.<CSharpResolveContext>create(new CSharpTypeResolveContext(typeDeclaration, DotNetGenericExtractor.EMPTY,
-							null), typeDeclaration, PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+					return Result.<CSharpResolveContext>create(new CSharpTypeResolveContext(typeDeclaration, DotNetGenericExtractor.EMPTY, null), typeDeclaration);
 				}
 			}, false);
 			typeDeclaration.putUserData(RESOLVE_CONTEXT, cachedValue);
@@ -167,8 +161,7 @@ public class CSharpResolveContextUtil
 	}
 
 	@NotNull
-	private static <T extends PsiElement> CSharpResolveContext cacheSimple(@NotNull final T element,
-			final NotNullFunction<T, CSharpResolveContext> fun)
+	private static <T extends PsiElement> CSharpResolveContext cacheSimple(@NotNull final T element, final NotNullFunction<T, CSharpResolveContext> fun)
 	{
 		CachedValue<CSharpResolveContext> provider = element.getUserData(RESOLVE_CONTEXT);
 		if(provider != null)
@@ -176,14 +169,13 @@ public class CSharpResolveContextUtil
 			return provider.getValue();
 		}
 
-		CachedValue<CSharpResolveContext> cachedValue = CachedValuesManager.getManager(element.getProject()).createCachedValue(new
-																																	   CachedValueProvider<CSharpResolveContext>()
+		CachedValue<CSharpResolveContext> cachedValue = CachedValuesManager.getManager(element.getProject()).createCachedValue(new CachedValueProvider<CSharpResolveContext>()
 		{
 			@Nullable
 			@Override
 			public Result<CSharpResolveContext> compute()
 			{
-				return Result.create(fun.fun(element), element, PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+				return Result.create(fun.fun(element), element);
 			}
 		}, false);
 		element.putUserData(RESOLVE_CONTEXT, cachedValue);

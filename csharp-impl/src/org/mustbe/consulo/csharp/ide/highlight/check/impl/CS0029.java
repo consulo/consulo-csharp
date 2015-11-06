@@ -268,7 +268,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			}
 			else
 			{
-				actual = expression.toTypeRef(false);
+				actual = expression.toTypeRef(true);
 			}
 
 			CSharpImplicitReturnModel implicitReturnModel = CSharpImplicitReturnModel.getImplicitReturnModel((CSharpReturnStatementImpl) element,

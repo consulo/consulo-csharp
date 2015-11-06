@@ -21,11 +21,13 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamedFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
@@ -52,6 +54,7 @@ public class CSharpLambdaExpressionImplUtil
 	public static final Key<DotNetTypeRef> TYPE_REF_OF_LAMBDA = Key.create("type.ref.of.lambda");
 
 	@NotNull
+	@RequiredReadAction
 	public static DotNetTypeRef resolveTypeForParameter(CSharpLambdaExpressionImpl target, int parameterIndex)
 	{
 		CSharpLambdaResolveResult leftTypeRef = resolveLeftLambdaTypeRef(target);
@@ -65,6 +68,7 @@ public class CSharpLambdaExpressionImplUtil
 	}
 
 	@Nullable
+	@RequiredReadAction
 	public static CSharpLambdaResolveResult resolveLeftLambdaTypeRef(PsiElement target)
 	{
 		DotNetTypeRef typeRefOfLambda = target.getUserData(TYPE_REF_OF_LAMBDA);
@@ -172,6 +176,19 @@ public class CSharpLambdaExpressionImplUtil
 				return (CSharpLambdaResolveResult) typeResolveResult;
 			}
 		}
+		else if(parent instanceof CSharpReturnStatementImpl)
+		{
+			CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(parent, CSharpSimpleLikeMethodAsElement.class);
+			if(methodAsElement == null)
+			{
+				return null;
+			}
+			DotNetTypeResolveResult typeResolveResult = methodAsElement.getReturnTypeRef().resolve(parent);
+			if(typeResolveResult instanceof CSharpLambdaResolveResult)
+			{
+				return (CSharpLambdaResolveResult) typeResolveResult;
+			}
+		}
 		else if(parent instanceof CSharpConditionalExpressionImpl)
 		{
 			DotNetExpression expression = ((CSharpConditionalExpressionImpl) parent).getTrueExpression();
@@ -198,33 +215,7 @@ public class CSharpLambdaExpressionImplUtil
 	}
 
 	@Nullable
-	public static DotNetVariable resolveLambdaVariableInsideAssignmentExpression(@NotNull PsiElement parent)
-	{
-		if(parent instanceof CSharpAssignmentExpressionImpl)
-		{
-			IElementType operatorElementType = ((CSharpAssignmentExpressionImpl) parent).getOperatorElement().getOperatorElementType();
-
-			if(operatorElementType == CSharpTokens.PLUSEQ || operatorElementType == CSharpTokens.MINUSEQ || operatorElementType == CSharpTokens.EQ)
-			{
-				DotNetExpression expression = ((CSharpAssignmentExpressionImpl) parent).getParameterExpressions()[0];
-				if(expression instanceof CSharpReferenceExpression)
-				{
-					PsiElement resolve = ((CSharpReferenceExpression) expression).resolve();
-					if(resolve instanceof DotNetVariable)
-					{
-						DotNetTypeResolveResult typeResolveResult = ((DotNetVariable) resolve).toTypeRef(true).resolve(parent);
-						if(typeResolveResult instanceof CSharpLambdaResolveResult)
-						{
-							return (DotNetVariable) resolve;
-						}
-					}
-				}
-			}
-		}
-		return null;
-	}
-
-	@Nullable
+	@RequiredReadAction
 	public static CSharpLambdaResolveResult resolveLeftLambdaTypeRefForVariable(DotNetVariable variable)
 	{
 		DotNetTypeRef leftTypeRef = variable.toTypeRef(false);
