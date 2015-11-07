@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -32,6 +33,7 @@ import com.intellij.psi.PsiElement;
 public class MethodGenerateUtil
 {
 	@Nullable
+	@RequiredReadAction
 	public static String getDefaultValueForType(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);

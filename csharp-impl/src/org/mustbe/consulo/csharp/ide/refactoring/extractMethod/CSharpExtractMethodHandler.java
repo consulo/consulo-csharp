@@ -19,11 +19,13 @@ package org.mustbe.consulo.csharp.ide.refactoring.extractMethod;
 import java.util.List;
 import java.util.Set;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.RequiredWriteAction;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import org.mustbe.consulo.csharp.ide.msil.representation.builder.CSharpStubBuilderVisitor;
 import org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpMethodDescriptor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
@@ -32,15 +34,21 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
+import org.mustbe.consulo.csharp.lang.psi.UsefulPsiTreeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import org.mustbe.dotnet.msil.decompiler.textBuilder.block.StubBlock;
 import org.mustbe.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 import com.intellij.openapi.actionSystem.DataContext;
@@ -49,6 +57,7 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
@@ -60,6 +69,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.refactoring.RefactoringActionHandler;
 import com.intellij.refactoring.RefactoringBundle;
 import com.intellij.refactoring.util.CommonRefactoringUtil;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.PairFunction;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.ArrayListSet;
@@ -100,7 +110,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 			return;
 		}
 
-		CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(statements[0], CSharpSimpleLikeMethodAsElement.class);
+		final CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(statements[0], CSharpSimpleLikeMethodAsElement.class);
 		if(methodAsElement == null)
 		{
 			CommonRefactoringUtil.showErrorHint(project, editor, RefactoringBundle.getCannotRefactorMessage("No parent method"), "Extract Method", null);
@@ -111,10 +121,21 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 
 		final MultiMap<DotNetVariable, CSharpReferenceExpression> variables = MultiMap.createLinkedSet();
 
+		final Ref<DotNetTypeRef> returnTypeRef = Ref.create();
 		for(DotNetStatement statement : statements)
 		{
 			statement.accept(new CSharpRecursiveElementVisitor()
 			{
+				@Override
+				public void visitReturnStatement(CSharpReturnStatementImpl statement)
+				{
+					DotNetExpression expression = statement.getExpression();
+					if(expression != null)
+					{
+						returnTypeRef.set(methodAsElement.getReturnTypeRef());
+					}
+				}
+
 				@Override
 				public void visitReferenceExpression(CSharpReferenceExpression expression)
 				{
@@ -143,7 +164,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 		}
 
 		CSharpLightMethodDeclarationBuilder builder = new CSharpLightMethodDeclarationBuilder(project);
-		builder.withReturnType(new CSharpTypeRefByQName(DotNetTypes.System.Void));
+		builder.withReturnType(returnTypeRef.get() == null ? new CSharpTypeRefByQName(DotNetTypes.System.Void) : returnTypeRef.get());
 		builder.addModifier(CSharpModifier.PRIVATE);
 		if(methodAsElement.hasModifier(CSharpModifier.STATIC))
 		{
@@ -190,6 +211,10 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 						document.deleteString(extractRange.getStartOffset(), extractRange.getEndOffset());
 
 						StringBuilder callStatementBuilder = new StringBuilder();
+						if(returnTypeRef.get() != null && !(UsefulPsiTreeUtil.getNextSiblingSkippingWhiteSpacesAndComments(ArrayUtil.getLastElement(statements)) instanceof DotNetStatement))
+						{
+							callStatementBuilder.append("return ");
+						}
 						callStatementBuilder.append(builder.getName());
 						callStatementBuilder.append("(");
 						StubBlockUtil.join(callStatementBuilder, variables.keySet().toArray(new DotNetVariable[]{}), new PairFunction<StringBuilder, DotNetVariable, Void>()
@@ -206,7 +231,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 
 						document.insertString(extractRange.getStartOffset(), callStatementBuilder);
 
-						CharSequence methodText = buildText(builder, text);
+						CharSequence methodText = buildText(builder, statements, text);
 
 						// insert method
 						PsiElement qualifiedParent = qualifiedElement.getParent();
@@ -235,13 +260,23 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 	}
 
 	@RequiredReadAction
-	public static CharSequence buildText(@NotNull DotNetLikeMethodDeclaration methodDeclaration, @NotNull String statements)
+	public static CharSequence buildText(@NotNull DotNetLikeMethodDeclaration methodDeclaration, DotNetStatement[] statements, @NotNull String statementsText)
 	{
 		List<StubBlock> stubBlocks = CSharpStubBuilderVisitor.buildBlocks(methodDeclaration, false);
 		StringBuilder builder = (StringBuilder) DeprecatedStubBlockUtil.buildText(stubBlocks);
 
 		builder.append("{\n");
-		builder.append(statements);
+		builder.append(statementsText);
+
+		if(!(statements[statements.length - 1] instanceof CSharpReturnStatementImpl) && !DotNetTypeRefUtil.isVmQNameEqual(methodDeclaration.getReturnTypeRef(), statements[0],
+				DotNetTypes.System.Void))
+		{
+			String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(methodDeclaration.getReturnTypeRef(), statements[0]);
+			if(defaultValueForType != null)
+			{
+				builder.append("\nreturn ").append(defaultValueForType).append(";");
+			}
+		}
 		builder.append("}");
 		return builder;
 	}
@@ -264,13 +299,13 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 			element2 = file.findElementAt(endOffset - 1);
 		}
 
-		PsiElement statement1 = PsiTreeUtil.getParentOfType(element1, DotNetStatement.class);
+		PsiElement statement1 = getTopmostParentOfType(element1, DotNetStatement.class);
 		if(statement1 == null)
 		{
 			return EMPTY_ARRAY;
 		}
 
-		PsiElement statement2 = PsiTreeUtil.getParentOfType(element2, DotNetStatement.class);
+		PsiElement statement2 = getTopmostParentOfType(element2, DotNetStatement.class);
 		if(statement2 == null)
 		{
 			return EMPTY_ARRAY;
@@ -292,5 +327,30 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 			temp = temp.getNextSibling();
 		}
 		return EMPTY_ARRAY;
+	}
+
+	@Nullable
+	@Contract("null, _ -> null")
+	public static <T extends PsiElement> T getTopmostParentOfType(@Nullable PsiElement element, @NotNull Class<T> aClass)
+	{
+		T answer = PsiTreeUtil.getParentOfType(element, aClass);
+
+		do
+		{
+			T next = PsiTreeUtil.getParentOfType(answer, aClass);
+			if(next == null)
+			{
+				break;
+			}
+			if(next instanceof CSharpBlockStatementImpl && next.getParent() instanceof DotNetLikeMethodDeclaration)
+			{
+				return answer;
+			}
+
+			answer = next;
+		}
+		while(true);
+
+		return answer;
 	}
 }
