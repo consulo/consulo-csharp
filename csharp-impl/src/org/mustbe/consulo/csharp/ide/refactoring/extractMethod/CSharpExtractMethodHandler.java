@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.Action;
+import javax.swing.JComponent;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -71,6 +72,7 @@ import com.intellij.refactoring.util.CommonRefactoringUtil;
 import com.intellij.util.PairFunction;
 import com.intellij.util.containers.ArrayListSet;
 import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.containers.MultiMap;
 
 /**
  * @author VISTALL
@@ -115,7 +117,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 
 		final TextRange extractRange = new TextRange(statements[0].getTextRange().getStartOffset(), statements[statements.length - 1].getTextRange().getEndOffset());
 
-		final Set<DotNetVariable> variables = new ArrayListSet<DotNetVariable>();
+		final MultiMap<DotNetVariable, CSharpReferenceExpression> variables = MultiMap.createLinkedSet();
 
 		for(DotNetStatement statement : statements)
 		{
@@ -135,13 +137,13 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 					// parameters always extracted as new parameter
 					if(resolvedElement instanceof DotNetParameter)
 					{
-						variables.add((DotNetVariable) resolvedElement);
+						variables.putValue((DotNetVariable) resolvedElement, expression);
 					}
 					else if(resolvedElement instanceof CSharpLocalVariable)
 					{
 						if(!extractRange.contains(resolvedElement.getTextOffset()))
 						{
-							variables.add((DotNetVariable) resolvedElement);
+							variables.putValue((DotNetVariable) resolvedElement, expression);
 						}
 					}
 				}
@@ -157,7 +159,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 		}
 		builder.withName("");
 
-		for(DotNetVariable variable : variables)
+		for(DotNetVariable variable : variables.keySet())
 		{
 			CSharpLightParameterBuilder parameterBuilder = new CSharpLightParameterBuilder(project);
 			parameterBuilder.withName(variable.getName());
@@ -192,6 +194,12 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 			protected BaseRefactoringProcessor createRefactoringProcessor()
 			{
 				return null;
+			}
+
+			@Override
+			public JComponent getPreferredFocusedComponent()
+			{
+				return myNameField;
 			}
 
 			@Nullable
@@ -233,7 +241,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 						StringBuilder callStatementBuilder = new StringBuilder();
 						callStatementBuilder.append(getMethodName());
 						callStatementBuilder.append("(");
-						StubBlockUtil.join(callStatementBuilder, variables.toArray(new DotNetVariable[]{}), new PairFunction<StringBuilder, DotNetVariable, Void>()
+						StubBlockUtil.join(callStatementBuilder, variables.keySet().toArray(new DotNetVariable[]{}), new PairFunction<StringBuilder, DotNetVariable, Void>()
 						{
 							@Nullable
 							@Override
