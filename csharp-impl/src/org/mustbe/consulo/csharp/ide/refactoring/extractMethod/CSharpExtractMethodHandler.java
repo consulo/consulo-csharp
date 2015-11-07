@@ -19,20 +19,15 @@ package org.mustbe.consulo.csharp.ide.refactoring.extractMethod;
 import java.util.List;
 import java.util.Set;
 
-import javax.swing.Action;
-import javax.swing.JComponent;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.RequiredWriteAction;
 import org.mustbe.consulo.csharp.ide.msil.representation.builder.CSharpStubBuilderVisitor;
-import org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureDialog;
 import org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpMethodDescriptor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -48,16 +43,13 @@ import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.dotnet.msil.decompiler.textBuilder.block.StubBlock;
 import org.mustbe.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
-import com.intellij.CommonBundle;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -65,11 +57,11 @@ import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.BaseRefactoringProcessor;
 import com.intellij.refactoring.RefactoringActionHandler;
 import com.intellij.refactoring.RefactoringBundle;
 import com.intellij.refactoring.util.CommonRefactoringUtil;
 import com.intellij.util.PairFunction;
+import com.intellij.util.Processor;
 import com.intellij.util.containers.ArrayListSet;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.MultiMap;
@@ -170,56 +162,15 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 
 		CSharpMethodDescriptor descriptor = new CSharpMethodDescriptor(builder);
 
-		new CSharpChangeSignatureDialog(project, descriptor, false, statements[0])
+		new CSharpExtractMethodDialog(project, descriptor, false, statements[0], new Processor<DotNetLikeMethodDeclaration>()
 		{
-			{
-				setOKButtonText(CommonBundle.getOkButtonText());
-				setTitle("Extract Method");
-				getRefactorAction().putValue(Action.NAME, CommonBundle.getOkButtonText());
-			}
-
 			@Override
-			protected boolean hasPreviewButton()
-			{
-				return false;
-			}
-
-			@Override
-			protected boolean areButtonsValid()
-			{
-				return !StringUtil.isEmpty(getMethodName());
-			}
-
-			@Override
-			protected BaseRefactoringProcessor createRefactoringProcessor()
-			{
-				return null;
-			}
-
-			@Override
-			public JComponent getPreferredFocusedComponent()
-			{
-				return myNameField;
-			}
-
-			@Nullable
-			@Override
-			protected String validateAndCommitData()
-			{
-				if(StringUtil.isEmpty(getMethodName()))
-				{
-					return "Method name cant be empty";
-				}
-				return super.validateAndCommitData();
-			}
-
-			@Override
-			protected void invokeRefactoring(BaseRefactoringProcessor processor)
+			public boolean process(final DotNetLikeMethodDeclaration builder)
 			{
 				final DotNetQualifiedElement qualifiedElement = PsiTreeUtil.getParentOfType(statements[0], DotNetQualifiedElement.class);
 				if(qualifiedElement == null)
 				{
-					return;
+					return true;
 				}
 
 				final Document document = PsiDocumentManager.getInstance(project).getDocument(file);
@@ -232,14 +183,14 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 					@RequiredWriteAction
 					protected void run() throws Throwable
 					{
-						builder.withName(getMethodName());
-
 						selectionModel.removeSelection();
+
+						String text = document.getText(extractRange);
 
 						document.deleteString(extractRange.getStartOffset(), extractRange.getEndOffset());
 
 						StringBuilder callStatementBuilder = new StringBuilder();
-						callStatementBuilder.append(getMethodName());
+						callStatementBuilder.append(builder.getName());
 						callStatementBuilder.append("(");
 						StubBlockUtil.join(callStatementBuilder, variables.keySet().toArray(new DotNetVariable[]{}), new PairFunction<StringBuilder, DotNetVariable, Void>()
 						{
@@ -255,7 +206,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 
 						document.insertString(extractRange.getStartOffset(), callStatementBuilder);
 
-						CharSequence methodText = buildText(builder, statements);
+						CharSequence methodText = buildText(builder, text);
 
 						// insert method
 						PsiElement qualifiedParent = qualifiedElement.getParent();
@@ -278,22 +229,19 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 					}
 				}.execute();
 
-				close(DialogWrapper.OK_EXIT_CODE);
+				return true;
 			}
-		}.show();
+		}).show();
 	}
 
 	@RequiredReadAction
-	public static CharSequence buildText(CSharpMethodDeclaration methodDeclaration, DotNetStatement[] statements)
+	public static CharSequence buildText(DotNetLikeMethodDeclaration methodDeclaration, String statements)
 	{
 		List<StubBlock> stubBlocks = CSharpStubBuilderVisitor.buildBlocks(methodDeclaration, false);
 		StringBuilder builder = (StringBuilder) DeprecatedStubBlockUtil.buildText(stubBlocks);
 
 		builder.append("{\n");
-		for(DotNetStatement statement : statements)
-		{
-			builder.append(statement.getText().trim()).append("\n");
-		}
+		builder.append(statements);
 		builder.append("}");
 		return builder;
 	}

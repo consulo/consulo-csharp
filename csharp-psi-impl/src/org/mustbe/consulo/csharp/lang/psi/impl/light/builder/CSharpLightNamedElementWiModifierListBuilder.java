@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
@@ -33,11 +34,11 @@ import com.intellij.psi.PsiElement;
  * @since 11.08.14
  */
 @SuppressWarnings("unchecked")
-public abstract class CSharpLightNamedElementWiModifierListBuilder<T extends CSharpLightNamedElementWiModifierListBuilder<T>> extends
-		CSharpLightNamedElementBuilder<T> implements DotNetModifierListOwner
+public abstract class CSharpLightNamedElementWiModifierListBuilder<T extends CSharpLightNamedElementWiModifierListBuilder<T>> extends CSharpLightNamedElementBuilder<T> implements
+		DotNetModifierListOwner
 {
 	private CSharpLightModifierListBuilder myModifierListBuilder;
-	private List<DotNetModifier> myModifiers = new ArrayList<DotNetModifier>();
+	private List<CSharpModifier> myModifiers = new ArrayList<CSharpModifier>();
 
 	public CSharpLightNamedElementWiModifierListBuilder(Project project)
 	{
@@ -50,18 +51,27 @@ public abstract class CSharpLightNamedElementWiModifierListBuilder<T extends CSh
 	}
 
 	@NotNull
-	public T addModifier(DotNetModifier modifierWithMask)
+	public T addModifier(DotNetModifier modifier)
 	{
-		myModifiers.add(modifierWithMask);
+		myModifiers.add(CSharpModifier.as(modifier));
 		return (T) this;
 	}
 
+	@NotNull
+	public T removeModifier(@NotNull DotNetModifier modifier)
+	{
+		myModifiers.remove(CSharpModifier.as(modifier));
+		return (T) this;
+	}
+
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
 		return myModifiers.contains(CSharpModifier.as(modifier));
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetModifierList getModifierList()

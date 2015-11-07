@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
@@ -36,9 +37,9 @@ import com.intellij.psi.impl.light.LightElement;
  */
 public class CSharpLightModifierListBuilder extends LightElement implements DotNetModifierList
 {
-	private final List<DotNetModifier> myModifiers;
+	private final List<CSharpModifier> myModifiers;
 
-	public CSharpLightModifierListBuilder(List<DotNetModifier> modifiers, PsiManager manager, Language language)
+	public CSharpLightModifierListBuilder(List<CSharpModifier> modifiers, PsiManager manager, Language language)
 	{
 		super(manager, language);
 		myModifiers = modifiers;
@@ -47,13 +48,13 @@ public class CSharpLightModifierListBuilder extends LightElement implements DotN
 	@Override
 	public void addModifier(@NotNull DotNetModifier modifier)
 	{
-		myModifiers.add(modifier);
+		myModifiers.add(CSharpModifier.as(modifier));
 	}
 
 	@Override
 	public void removeModifier(@NotNull DotNetModifier modifier)
 	{
-		myModifiers.remove(modifier);
+		myModifiers.remove(CSharpModifier.as(modifier));
 	}
 
 	@NotNull
@@ -63,11 +64,12 @@ public class CSharpLightModifierListBuilder extends LightElement implements DotN
 		return myModifiers.toArray(new DotNetModifier[myModifiers.size()]);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetAttribute[] getAttributes()
 	{
-		return new DotNetAttribute[0];
+		return DotNetAttribute.EMPTY_ARRAY;
 	}
 
 	@Override
@@ -99,6 +101,6 @@ public class CSharpLightModifierListBuilder extends LightElement implements DotN
 	@Override
 	public String toString()
 	{
-		return null;
+		return "CSharpLightModifierListBuilder: " + myModifiers;
 	}
 }
