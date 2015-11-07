@@ -16,11 +16,25 @@
 
 package org.mustbe.consulo.csharp.ide.refactoring.changeSignature;
 
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableColumn;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,11 +52,15 @@ import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.colors.EditorColorsManager;
+import com.intellij.openapi.editor.colors.EditorFontType;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiCodeFragment;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.refactoring.BaseRefactoringProcessor;
@@ -54,19 +72,27 @@ import com.intellij.refactoring.changeSignature.ParameterInfo;
 import com.intellij.refactoring.changeSignature.ParameterTableModelItemBase;
 import com.intellij.refactoring.ui.ComboBoxVisibilityPanel;
 import com.intellij.refactoring.ui.VisibilityPanelBase;
+import com.intellij.ui.EditorTextField;
 import com.intellij.ui.ListCellRendererWrapper;
+import com.intellij.ui.TableColumnAnimator;
+import com.intellij.ui.table.TableView;
 import com.intellij.ui.treeStructure.Tree;
 import com.intellij.usageView.UsageInfo;
 import com.intellij.usageView.UsageViewDescriptor;
 import com.intellij.util.Consumer;
 import com.intellij.util.Function;
+import com.intellij.util.ui.DialogUtil;
+import com.intellij.util.ui.UIUtil;
+import com.intellij.util.ui.table.JBListTable;
+import com.intellij.util.ui.table.JBTableRow;
+import com.intellij.util.ui.table.JBTableRowEditor;
 
 /**
  * @author VISTALL
  * @since 20.05.14
  */
-public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CSharpParameterInfo, DotNetLikeMethodDeclaration, CSharpAccessModifier,
-		CSharpMethodDescriptor, CSharpParameterTableModelItem, CSharpParameterTableModel>
+public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CSharpParameterInfo, DotNetLikeMethodDeclaration, CSharpAccessModifier, CSharpMethodDescriptor,
+		CSharpParameterTableModelItem, CSharpParameterTableModel>
 {
 	public CSharpChangeSignatureDialog(Project project, CSharpMethodDescriptor method, boolean allowDelegation, PsiElement defaultValueContext)
 	{
@@ -86,6 +112,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	}
 
 	@Override
+	@RequiredDispatchThread
 	protected BaseRefactoringProcessor createRefactoringProcessor()
 	{
 		CSharpChangeInfo changeInfo = generateChangeInfo();
@@ -99,6 +126,242 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 				return new ChangeSignatureViewDescriptor(myMethod.getMethod());
 			}
 		};
+	}
+
+	@Override
+	protected boolean isListTableViewSupported()
+	{
+		return true;
+	}
+
+	@Nullable
+	@Override
+	protected JBTableRowEditor getTableEditor(final JTable t, final ParameterTableModelItemBase<CSharpParameterInfo> item)
+	{
+		return new JBTableRowEditor()
+		{
+			private EditorTextField myTypeEditor;
+			private EditorTextField myNameEditor;
+			private EditorTextField myDefaultValueEditor;
+			private JCheckBox myAnyVar;
+
+			@Override
+			public void prepareEditor(JTable table, int row)
+			{
+				setLayout(new BorderLayout());
+				final Document document = PsiDocumentManager.getInstance(getProject()).getDocument(item.typeCodeFragment);
+				myTypeEditor = new EditorTextField(document, getProject(), getFileType());
+				myTypeEditor.addDocumentListener(getSignatureUpdater());
+				myTypeEditor.setPreferredWidth(t.getWidth() / 2);
+				myTypeEditor.addDocumentListener(new RowEditorChangeListener(0));
+				add(createLabeledPanel("Type:", myTypeEditor), BorderLayout.WEST);
+
+				myNameEditor = new EditorTextField(item.parameter.getName(), getProject(), getFileType());
+				myNameEditor.addDocumentListener(getSignatureUpdater());
+				myNameEditor.addDocumentListener(new RowEditorChangeListener(1));
+				add(createLabeledPanel("Name:", myNameEditor), BorderLayout.CENTER);
+
+
+				if(!item.isEllipsisType() && item.parameter.getOldIndex() == -1)
+				{
+					final JPanel additionalPanel = new JPanel(new BorderLayout());
+					final Document doc = PsiDocumentManager.getInstance(getProject()).getDocument(item.defaultValueCodeFragment);
+					myDefaultValueEditor = new EditorTextField(doc, getProject(), getFileType());
+					myDefaultValueEditor.setPreferredWidth(t.getWidth() / 2);
+					myDefaultValueEditor.addDocumentListener(new RowEditorChangeListener(2));
+					additionalPanel.add(createLabeledPanel("Default value:", myDefaultValueEditor), BorderLayout.WEST);
+
+					if(!isGenerateDelegate())
+					{
+						myAnyVar = new JCheckBox("&Use Any Var");
+						UIUtil.applyStyle(UIUtil.ComponentStyle.SMALL, myAnyVar);
+						DialogUtil.registerMnemonic(myAnyVar, '&');
+						myAnyVar.addActionListener(new ActionListener()
+						{
+							@Override
+							public void actionPerformed(ActionEvent e)
+							{
+								item.parameter.setUseAnySingleVariable(myAnyVar.isSelected());
+							}
+						});
+						final JPanel anyVarPanel = new JPanel(new BorderLayout());
+						anyVarPanel.add(myAnyVar, BorderLayout.SOUTH);
+						UIUtil.addInsets(anyVarPanel, new Insets(0, 0, 8, 0));
+						additionalPanel.add(anyVarPanel, BorderLayout.CENTER);
+						//additionalPanel.setPreferredSize(new Dimension(t.getWidth() / 3, -1));
+					}
+					add(additionalPanel, BorderLayout.SOUTH);
+				}
+			}
+
+			@Override
+			public JBTableRow getValue()
+			{
+				return new JBTableRow()
+				{
+					@Override
+					public Object getValueAt(int column)
+					{
+						switch(column)
+						{
+							case 0:
+								return item.typeCodeFragment;
+							case 1:
+								return myNameEditor.getText().trim();
+							case 2:
+								return item.defaultValueCodeFragment;
+							case 3:
+								return myAnyVar != null && myAnyVar.isSelected();
+						}
+						return null;
+					}
+				};
+			}
+
+			@Override
+			public JComponent getPreferredFocusedComponent()
+			{
+				final MouseEvent me = getMouseEvent();
+				if(me == null)
+				{
+					return myTypeEditor.getFocusTarget();
+				}
+				final double x = me.getPoint().getX();
+				return x <= getTypesColumnWidth() ? myTypeEditor.getFocusTarget() : myDefaultValueEditor == null || x <= getNamesColumnWidth() ? myNameEditor.getFocusTarget() : myDefaultValueEditor
+						.getFocusTarget();
+			}
+
+			@Override
+			public JComponent[] getFocusableComponents()
+			{
+				final List<JComponent> focusable = new ArrayList<JComponent>();
+				focusable.add(myTypeEditor.getFocusTarget());
+				focusable.add(myNameEditor.getFocusTarget());
+				if(myDefaultValueEditor != null)
+				{
+					focusable.add(myDefaultValueEditor.getFocusTarget());
+				}
+				if(myAnyVar != null)
+				{
+					focusable.add(myAnyVar);
+				}
+				return focusable.toArray(new JComponent[focusable.size()]);
+			}
+		};
+	}
+
+	@Override
+	protected boolean isEmptyRow(ParameterTableModelItemBase<CSharpParameterInfo> row)
+	{
+		if(!StringUtil.isEmpty(row.parameter.getName()))
+		{
+			return false;
+		}
+		if(!StringUtil.isEmpty(row.parameter.getTypeText()))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	protected JComponent getRowPresentation(ParameterTableModelItemBase<CSharpParameterInfo> item, boolean selected, final boolean focused)
+	{
+		final String typeText = item.typeCodeFragment.getText();
+		final String separator = StringUtil.repeatSymbol(' ', getTypesMaxLength() - typeText.length() + 1);
+		String text = typeText + separator + item.parameter.getName();
+		final String defaultValue = item.defaultValueCodeFragment.getText();
+		String tail = "";
+		if(StringUtil.isNotEmpty(defaultValue))
+		{
+			tail += " default value = " + defaultValue;
+		}
+		if(item.parameter.isUseAnySingleVariable())
+		{
+			if(StringUtil.isNotEmpty(defaultValue))
+			{
+				tail += ";";
+			}
+			tail += " Use any var.";
+		}
+		if(!StringUtil.isEmpty(tail))
+		{
+			text += " //" + tail;
+		}
+		return JBListTable.createEditorTextFieldPresentation(getProject(), getFileType(), " " + text, selected, focused);
+	}
+
+	@Override
+	protected void customizeParametersTable(TableView<CSharpParameterTableModelItem> table)
+	{
+		final JTable t = table.getComponent();
+		final TableColumn defaultValue = t.getColumnModel().getColumn(2);
+		final TableColumn varArg = t.getColumnModel().getColumn(3);
+		t.removeColumn(defaultValue);
+		t.removeColumn(varArg);
+		t.getModel().addTableModelListener(new TableModelListener()
+		{
+			@Override
+			public void tableChanged(TableModelEvent e)
+			{
+				if(e.getType() == TableModelEvent.INSERT)
+				{
+					t.getModel().removeTableModelListener(this);
+					final TableColumnAnimator animator = new TableColumnAnimator(t);
+					animator.setStep(48);
+					animator.addColumn(defaultValue, (t.getWidth() - 48) / 3);
+					animator.addColumn(varArg, 48);
+					animator.startAndDoWhenDone(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							t.editCellAt(t.getRowCount() - 1, 0);
+						}
+					});
+					animator.start();
+				}
+			}
+		});	}
+
+	private int getTypesColumnWidth()
+	{
+		return getColumnWidth(0);
+	}
+
+	private int getNamesColumnWidth()
+	{
+		return getColumnWidth(1);
+	}
+
+	private int getTypesMaxLength()
+	{
+		int len = 0;
+		for(ParameterTableModelItemBase<CSharpParameterInfo> item : myParametersTableModel.getItems())
+		{
+			final String text = item.typeCodeFragment == null ? null : item.typeCodeFragment.getText();
+			len = Math.max(len, text == null ? 0 : text.length());
+		}
+		return len;
+	}
+
+	private int getNamesMaxLength()
+	{
+		int len = 0;
+		for(ParameterTableModelItemBase<CSharpParameterInfo> item : myParametersTableModel.getItems())
+		{
+			final String text = item.parameter.getName();
+			len = Math.max(len, text == null ? 0 : text.length());
+		}
+		return len;
+	}
+
+	private int getColumnWidth(int index)
+	{
+		int letters = getTypesMaxLength() + (index == 0 ? 1 : getNamesMaxLength() + 2);
+		Font font = EditorColorsManager.getInstance().getGlobalScheme().getFont(EditorFontType.PLAIN);
+		font = new Font(font.getFontName(), font.getStyle(), 12);
+		return letters * Toolkit.getDefaultToolkit().getFontMetrics(font).stringWidth("W");
 	}
 
 	@NotNull
@@ -208,8 +471,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 
 	@Nullable
 	@Override
-	protected CallerChooserBase<DotNetLikeMethodDeclaration> createCallerChooser(
-			String title, Tree treeToReuse, Consumer<Set<DotNetLikeMethodDeclaration>> callback)
+	protected CallerChooserBase<DotNetLikeMethodDeclaration> createCallerChooser(String title, Tree treeToReuse, Consumer<Set<DotNetLikeMethodDeclaration>> callback)
 	{
 		return null;
 	}

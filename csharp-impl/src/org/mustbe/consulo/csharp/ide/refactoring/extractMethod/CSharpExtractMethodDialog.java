@@ -115,6 +115,7 @@ public class CSharpExtractMethodDialog extends CSharpChangeSignatureDialog
 		return !StringUtil.isEmpty(getMethodName());
 	}
 
+	@RequiredDispatchThread
 	@Override
 	protected BaseRefactoringProcessor createRefactoringProcessor()
 	{
