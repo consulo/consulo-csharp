@@ -313,10 +313,10 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			List<DotNetTypeRef> temp = ContainerUtil.filter(extendTypeRefs, new Condition<DotNetTypeRef>()
 			{
 				@Override
+				@RequiredReadAction
 				public boolean value(DotNetTypeRef typeRef)
 				{
-					return !DotNetTypeRefUtil.isVmQNameEqual(typeRef, declaration, DotNetTypes.System.Object) && !DotNetTypeRefUtil.isVmQNameEqual
-							(typeRef, declaration, DotNetTypes.System.ValueType);
+					return !DotNetTypeRefUtil.isVmQNameEqual(typeRef, declaration, DotNetTypes.System.Object) && !DotNetTypeRefUtil.isVmQNameEqual(typeRef, declaration, DotNetTypes.System.ValueType);
 				}
 			});
 
@@ -328,6 +328,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 				{
 					@Nullable
 					@Override
+					@RequiredReadAction
 					public Void fun(StringBuilder builder, DotNetTypeRef typeRef)
 					{
 						appendTypeRef(declaration, builder, typeRef);
@@ -346,12 +347,13 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		}
 	}
 
+	@RequiredReadAction
 	public static void appendTypeRef(@NotNull final PsiElement scope, @NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef)
 	{
-		CSharpTypeRefPresentationUtil.appendTypeRef(scope, builder, typeRef, CSharpTypeRefPresentationUtil.QUALIFIED_NAME |
-				CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
+		CSharpTypeRefPresentationUtil.appendTypeRef(scope, builder, typeRef, CSharpTypeRefPresentationUtil.QUALIFIED_NAME | CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
 	}
 
+	@RequiredReadAction
 	private static <T extends DotNetVirtualImplementOwner & DotNetNamedElement> void appendName(T element, StringBuilder builder)
 	{
 		DotNetTypeRef typeRefForImplement = element.getTypeRefForImplement();
@@ -458,6 +460,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 						}
 
 						@Override
+						@RequiredReadAction
 						public void visitGenericConstraintTypeValue(CSharpGenericConstraintTypeValue value)
 						{
 							appendTypeRef(owner, builder, value.toTypeRef());
@@ -507,10 +510,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	}
 
 	@RequiredReadAction
-	public static void processAttributeListAsLine(PsiElement scope,
-			List<StubBlock> blocks,
-			DotNetAttributeTargetType targetType,
-			DotNetAttribute[] attributes)
+	public static void processAttributeListAsLine(PsiElement scope, List<StubBlock> blocks, DotNetAttributeTargetType targetType, DotNetAttribute[] attributes)
 	{
 		for(DotNetAttribute dotNetAttribute : attributes)
 		{

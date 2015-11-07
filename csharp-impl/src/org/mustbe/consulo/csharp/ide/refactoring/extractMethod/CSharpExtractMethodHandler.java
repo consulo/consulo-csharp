@@ -142,7 +142,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 			});
 		}
 
-		final CSharpLightMethodDeclarationBuilder builder = new CSharpLightMethodDeclarationBuilder(project);
+		CSharpLightMethodDeclarationBuilder builder = new CSharpLightMethodDeclarationBuilder(project);
 		builder.withReturnType(new CSharpTypeRefByQName(DotNetTypes.System.Void));
 		builder.addModifier(CSharpModifier.PRIVATE);
 		if(methodAsElement.hasModifier(CSharpModifier.STATIC))
@@ -235,7 +235,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 	}
 
 	@RequiredReadAction
-	public static CharSequence buildText(DotNetLikeMethodDeclaration methodDeclaration, String statements)
+	public static CharSequence buildText(@NotNull DotNetLikeMethodDeclaration methodDeclaration, @NotNull String statements)
 	{
 		List<StubBlock> stubBlocks = CSharpStubBuilderVisitor.buildBlocks(methodDeclaration, false);
 		StringBuilder builder = (StringBuilder) DeprecatedStubBlockUtil.buildText(stubBlocks);

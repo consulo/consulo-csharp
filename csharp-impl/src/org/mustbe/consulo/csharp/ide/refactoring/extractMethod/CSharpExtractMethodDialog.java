@@ -16,22 +16,32 @@
 
 package org.mustbe.consulo.csharp.ide.refactoring.extractMethod;
 
+import java.util.List;
+
 import javax.swing.Action;
 import javax.swing.JComponent;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureDialog;
 import org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpMethodDescriptor;
+import org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDeclarationBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.CommonBundle;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.refactoring.BaseRefactoringProcessor;
 import com.intellij.util.Processor;
 
@@ -55,12 +65,11 @@ public class CSharpExtractMethodDialog extends CSharpChangeSignatureDialog
 	}
 
 	@Override
+	@RequiredDispatchThread
 	protected void invokeRefactoring(BaseRefactoringProcessor processor)
 	{
-		CSharpLightMethodDeclarationBuilder builder = (CSharpLightMethodDeclarationBuilder) getMethodDeclaration();
-
+		CSharpLightMethodDeclarationBuilder builder = new CSharpLightMethodDeclarationBuilder(getProject());
 		builder.withName(getMethodName());
-		builder.removeModifier(CSharpModifier.PRIVATE); // we need remove old modifier
 		CSharpAccessModifier visibility = getVisibility();
 		if(visibility != null)
 		{
@@ -70,7 +79,26 @@ public class CSharpExtractMethodDialog extends CSharpChangeSignatureDialog
 			}
 		}
 
-		myProcessor.process(getMethodDeclaration());
+		DotNetTypeRef returnTypeRef = new CSharpTypeRefByQName(DotNetTypes.System.Void);
+		DotNetType returnType = PsiTreeUtil.getChildOfType(myReturnTypeCodeFragment, DotNetType.class);
+		if(returnType != null)
+		{
+			returnTypeRef = returnType.toTypeRef();
+		}
+
+		builder.withReturnType(returnTypeRef);
+
+		List<CSharpParameterInfo> parameters = getParameters();
+		for(CSharpParameterInfo parameter : parameters)
+		{
+			CSharpLightParameterBuilder parameterBuilder = new CSharpLightParameterBuilder(getProject());
+			parameterBuilder.withName(parameter.getName());
+			parameterBuilder.withTypeRef(parameter.getTypeRef());
+
+			builder.addParameter(parameterBuilder);
+		}
+
+		myProcessor.process(builder);
 
 		close(DialogWrapper.OK_EXIT_CODE);
 	}

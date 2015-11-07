@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.refactoring.extractMethod;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.DeprecationInfo;
 import org.mustbe.dotnet.msil.decompiler.textBuilder.block.LineStubBlock;
 import org.mustbe.dotnet.msil.decompiler.textBuilder.block.StubBlock;
 
@@ -26,6 +27,8 @@ import org.mustbe.dotnet.msil.decompiler.textBuilder.block.StubBlock;
  * @author VISTALL
  * @since 02.06.14
  */
+@Deprecated
+@DeprecationInfo("Need removed header from StubBlockUtil and use it")
 public class DeprecatedStubBlockUtil
 {
 	@NotNull

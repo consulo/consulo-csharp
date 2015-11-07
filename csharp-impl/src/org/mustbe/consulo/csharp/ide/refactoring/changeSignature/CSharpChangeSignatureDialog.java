@@ -24,16 +24,20 @@ import javax.swing.JList;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Comparing;
@@ -103,6 +107,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 		return myMethod.getMethod();
 	}
 
+	@RequiredDispatchThread
 	private CSharpChangeInfo generateChangeInfo()
 	{
 		DotNetLikeMethodDeclaration methodDeclaration = getMethodDeclaration();
@@ -120,7 +125,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 		if(myMethod.canChangeReturnType() == MethodDescriptor.ReadWriteOption.ReadWrite)
 		{
 			String returnType = myReturnTypeField.getText();
-			if(!Comparing.equal(methodDeclaration.getReturnTypeRef().getPresentableText(), returnType))
+			if(!Comparing.equal(typeText(methodDeclaration.getReturnTypeRef()), returnType))
 			{
 				newReturnType = returnType;
 			}
@@ -154,7 +159,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 					parametersChanged = true;
 					break;
 				}
-				if(!Comparing.equal(newParameter.getTypeText(), psiParameter.toTypeRef(false).getPresentableText()))
+				if(!Comparing.equal(newParameter.getTypeText(), typeText(psiParameter.toTypeRef(false))))
 				{
 					parametersChanged = true;
 					break;
@@ -164,8 +169,15 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 		return new CSharpChangeInfo(methodDeclaration, parameters, parametersChanged, newName, newReturnType, newVisibility);
 	}
 
+	@RequiredReadAction
+	private String typeText(@NotNull DotNetTypeRef typeRef)
+	{
+		return CSharpTypeRefPresentationUtil.buildShortText(typeRef, myDefaultValueContext);
+	}
+
 	@Override
 	@NotNull
+	@RequiredDispatchThread
 	public List<CSharpParameterInfo> getParameters()
 	{
 		List<CSharpParameterInfo> result = new ArrayList<CSharpParameterInfo>(myParametersTableModel.getRowCount());
@@ -173,20 +185,25 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 		for(ParameterTableModelItemBase<CSharpParameterInfo> item : myParametersTableModel.getItems())
 		{
 			CSharpParameterInfo e = new CSharpParameterInfo(item.parameter.getName(), item.parameter.getParameter(), i++);
+
 			DotNetType type = PsiTreeUtil.getChildOfType(item.typeCodeFragment, DotNetType.class);
 			e.setTypeText(type == null ? DotNetTypes.System.Object : type.getText());
+			e.setTypeRef(type == null ? new CSharpTypeRefByQName(DotNetTypes.System.Object) : type.toTypeRef());
+
 			DotNetExpression expression = PsiTreeUtil.getChildOfType(item.defaultValueCodeFragment, DotNetExpression.class);
 			e.setDefaultValue(expression == null ? "" : expression.getText());
+
 			result.add(e);
 		}
 		return result;
 	}
 
 	@Override
+	@RequiredDispatchThread
 	protected PsiCodeFragment createReturnTypeCodeFragment()
 	{
-		return CSharpFragmentFactory.createTypeFragment(getProject(), myMethod.getMethod().getReturnTypeRef().getPresentableText(),
-				myDefaultValueContext);
+		String text = CSharpTypeRefPresentationUtil.buildShortText(myMethod.getMethod().getReturnTypeRef(), myDefaultValueContext);
+		return CSharpFragmentFactory.createTypeFragment(getProject(), text, myDefaultValueContext);
 	}
 
 	@Nullable
@@ -205,6 +222,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	}
 
 	@Override
+	@RequiredDispatchThread
 	protected String calculateSignature()
 	{
 		DotNetLikeMethodDeclaration methodDeclaration = getMethodDeclaration();
@@ -228,7 +246,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 			}
 			else
 			{
-				builder.append(CSharpTypeRefPresentationUtil.buildShortText(methodDeclaration.getReturnTypeRef(), methodDeclaration)).append(" ");
+				builder.append(typeText(methodDeclaration.getReturnTypeRef())).append(" ");
 			}
 		}
 

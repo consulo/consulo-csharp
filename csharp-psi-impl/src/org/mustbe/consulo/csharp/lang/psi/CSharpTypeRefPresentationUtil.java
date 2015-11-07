@@ -33,6 +33,7 @@ import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -40,7 +41,6 @@ import org.mustbe.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.BitUtil;
 import com.intellij.util.PairFunction;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -207,7 +207,7 @@ public class CSharpTypeRefPresentationUtil
 					DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) element).getGenericParameters();
 					if(genericParameters.length > 0)
 					{
-						val genericExtractor = typeResolveResult.getGenericExtractor();
+						final DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
 						builder.append("<");
 						StubBlockUtil.join(builder, genericParameters, new PairFunction<StringBuilder, DotNetGenericParameter, Void>()
 						{
