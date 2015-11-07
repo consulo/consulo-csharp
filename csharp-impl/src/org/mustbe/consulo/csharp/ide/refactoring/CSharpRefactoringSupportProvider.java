@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.refactoring;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureHandler;
+import org.mustbe.consulo.csharp.ide.refactoring.extractMethod.CSharpExtractMethodHandler;
 import org.mustbe.consulo.csharp.ide.refactoring.introduceVariable.CSharpIntroduceLocalVariableHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
@@ -56,6 +57,13 @@ public class CSharpRefactoringSupportProvider extends RefactoringSupportProvider
 	public RefactoringActionHandler getIntroduceVariableHandler()
 	{
 		return new CSharpIntroduceLocalVariableHandler();
+	}
+
+	@Nullable
+	@Override
+	public RefactoringActionHandler getExtractMethodHandler()
+	{
+		return new CSharpExtractMethodHandler();
 	}
 
 	@Override

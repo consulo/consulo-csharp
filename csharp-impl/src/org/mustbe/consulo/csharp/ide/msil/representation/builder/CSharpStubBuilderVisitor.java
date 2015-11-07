@@ -51,12 +51,26 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	@RequiredReadAction
 	public static List<StubBlock> buildBlocks(PsiElement qualifiedElement)
 	{
-		CSharpStubBuilderVisitor visitor = new CSharpStubBuilderVisitor();
+		return buildBlocks(qualifiedElement, true);
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public static List<StubBlock> buildBlocks(PsiElement qualifiedElement, boolean compiled)
+	{
+		CSharpStubBuilderVisitor visitor = new CSharpStubBuilderVisitor(compiled);
 		qualifiedElement.accept(visitor);
 		return visitor.getBlocks();
 	}
 
+	private boolean myCompiled;
+
 	private List<StubBlock> myBlocks = new ArrayList<StubBlock>(2);
+
+	public CSharpStubBuilderVisitor(boolean compiled)
+	{
+		myCompiled = compiled;
+	}
 
 	@Override
 	@RequiredReadAction
@@ -71,7 +85,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		StubBlock e = new StubBlock(builder, null, StubBlock.BRACES);
 		for(DotNetXXXAccessor dotNetXXXAccessor : declaration.getAccessors())
 		{
-			e.getBlocks().addAll(buildBlocks(dotNetXXXAccessor));
+			e.getBlocks().addAll(buildBlocks(dotNetXXXAccessor, myCompiled));
 		}
 		myBlocks.add(e);
 	}
@@ -151,7 +165,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		StubBlock e = new StubBlock(builder, null, StubBlock.BRACES);
 		for(DotNetXXXAccessor dotNetXXXAccessor : declaration.getAccessors())
 		{
-			e.getBlocks().addAll(buildBlocks(dotNetXXXAccessor));
+			e.getBlocks().addAll(buildBlocks(dotNetXXXAccessor, myCompiled));
 		}
 		myBlocks.add(e);
 	}
@@ -172,7 +186,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		StubBlock e = new StubBlock(builder, null, StubBlock.BRACES);
 		for(DotNetXXXAccessor dotNetXXXAccessor : declaration.getAccessors())
 		{
-			e.getBlocks().addAll(buildBlocks(dotNetXXXAccessor));
+			e.getBlocks().addAll(buildBlocks(dotNetXXXAccessor, myCompiled));
 		}
 		myBlocks.add(e);
 	}
@@ -240,15 +254,18 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		processParameterList(declaration, builder, '(', ')');
 		processGenericConstraintList(builder, declaration);
 
-		boolean canHaveBody = !declaration.hasModifier(CSharpModifier.ABSTRACT) && !declaration.isDelegate();
+		if(myCompiled)
+		{
+			boolean canHaveBody = !declaration.hasModifier(CSharpModifier.ABSTRACT) && !declaration.isDelegate();
 
-		if(canHaveBody)
-		{
-			builder.append("; //compiled code\n");
-		}
-		else
-		{
-			builder.append(";\n");
+			if(canHaveBody)
+			{
+				builder.append("; //compiled code\n");
+			}
+			else
+			{
+				builder.append(";\n");
+			}
 		}
 		myBlocks.add(new LineStubBlock(builder));
 	}
@@ -325,7 +342,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 		for(DotNetNamedElement dotNetNamedElement : declaration.getMembers())
 		{
-			e.getBlocks().addAll(buildBlocks(dotNetNamedElement));
+			e.getBlocks().addAll(buildBlocks(dotNetNamedElement, myCompiled));
 		}
 	}
 
