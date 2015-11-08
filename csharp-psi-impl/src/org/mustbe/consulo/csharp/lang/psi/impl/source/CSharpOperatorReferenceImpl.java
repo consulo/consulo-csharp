@@ -70,6 +70,7 @@ import com.intellij.psi.ResolveState;
 import com.intellij.psi.impl.source.resolve.ResolveCache;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
@@ -183,24 +184,25 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	}
 
 	@Override
+	@RequiredReadAction
 	public TextRange getRangeInElement()
 	{
-		PsiElement operator = getFirstOperator();
-
-		int len = operator.getTextLength();
-
-		IElementType operatorElementType = getOperatorElementType();
-		if(operatorElementType == CSharpTokens.LTLT || operatorElementType == CSharpTokens.GTGT)
-		{
-			len += 1;
-		}
-		return new TextRange(0, len);
+		PsiElement operator = getOperatorElement();
+		return new TextRange(0, operator.getTextLength());
 	}
 
 	@NotNull
-	public PsiElement getFirstOperator()
+	@RequiredReadAction
+	public PsiElement getOperatorElement()
 	{
 		return findNotNullChildByFilter(ourMergeSet);
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public IElementType getOperatorElementType()
+	{
+		return PsiUtilCore.getElementType(getOperatorElement());
 	}
 
 	@Nullable
@@ -333,12 +335,6 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		{
 			return CSharpReferenceExpressionImplUtil.toTypeRef(element);
 		}
-	}
-
-	@NotNull
-	public IElementType getOperatorElementType()
-	{
-		return CSharpOperatorNameHelper.mergeTwiceOperatorIfNeed(getFirstOperator());
 	}
 
 	@RequiredReadAction

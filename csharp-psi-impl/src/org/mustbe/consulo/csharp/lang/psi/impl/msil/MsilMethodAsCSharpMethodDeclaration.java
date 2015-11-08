@@ -156,6 +156,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 		return ourOperatorNames.containsKey(myOriginal.getName());
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public IElementType getOperatorElementType()

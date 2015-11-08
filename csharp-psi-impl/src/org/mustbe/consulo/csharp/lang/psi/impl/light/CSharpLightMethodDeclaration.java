@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.light;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
@@ -55,6 +56,7 @@ public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclarati
 		return myOriginal.isOperator();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public IElementType getOperatorElementType()

@@ -34,6 +34,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.BitUtil;
 
 /**
@@ -108,6 +109,7 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 		return findChildByType(CSharpTokens.OPERATOR_KEYWORD) != null;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public IElementType getOperatorElementType()
@@ -117,8 +119,8 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 		{
 			return  stub.getOperator();
 		}
-		PsiElement childByType = findChildByType(CSharpTokenSets.OVERLOADING_OPERATORS);
-		return childByType == null ? null : CSharpOperatorNameHelper.mergeTwiceOperatorIfNeed(childByType);
+		PsiElement element = findChildByType(CSharpTokenSets.OVERLOADING_OPERATORS);
+		return PsiUtilCore.getElementType(element);
 	}
 
 	@Override

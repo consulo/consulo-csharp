@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
@@ -66,6 +67,7 @@ public class CSharpLightMethodDeclarationBuilder extends CSharpLightLikeMethodDe
 		return myOperatorElementType != null;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public IElementType getOperatorElementType()
