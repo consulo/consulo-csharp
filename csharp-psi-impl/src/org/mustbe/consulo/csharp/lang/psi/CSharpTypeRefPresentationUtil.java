@@ -73,6 +73,7 @@ public class CSharpTypeRefPresentationUtil
 	public static final int QUALIFIED_NAME = 1 << 0;
 	public static final int TYPE_KEYWORD = 1 << 1;
 	public static final int NO_GENERIC_ARGUMENTS = 1 << 2;
+	public static final int NO_REF = 1 << 3;
 
 	public static final int QUALIFIED_NAME_WITH_KEYWORD = QUALIFIED_NAME | TYPE_KEYWORD;
 
@@ -91,6 +92,15 @@ public class CSharpTypeRefPresentationUtil
 	{
 		StringBuilder builder = new StringBuilder();
 		appendTypeRef(scope, builder, typeRef, QUALIFIED_NAME);
+		return builder.toString();
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public static String buildText(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope, int flags)
+	{
+		StringBuilder builder = new StringBuilder();
+		appendTypeRef(scope, builder, typeRef, flags);
 		return builder.toString();
 	}
 
@@ -135,8 +145,11 @@ public class CSharpTypeRefPresentationUtil
 		}
 		else if(typeRef instanceof CSharpRefTypeRef)
 		{
-			builder.append(((CSharpRefTypeRef) typeRef).getType().name());
-			builder.append(" ");
+			if(!BitUtil.isSet(flags, NO_REF))
+			{
+				builder.append(((CSharpRefTypeRef) typeRef).getType().name());
+				builder.append(" ");
+			}
 			appendTypeRef(scope, builder, ((CSharpRefTypeRef) typeRef).getInnerTypeRef(), flags);
 		}
 		else if(typeRef instanceof CSharpEmptyGenericWrapperTypeRef)

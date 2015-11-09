@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
@@ -33,6 +34,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
+import org.mustbe.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 import com.intellij.openapi.application.ReadActionProcessor;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.TextRange;
@@ -42,10 +44,9 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.refactoring.changeSignature.ChangeInfo;
 import com.intellij.refactoring.changeSignature.ChangeSignatureUsageProcessor;
-import com.intellij.refactoring.changeSignature.ParameterInfo;
 import com.intellij.refactoring.rename.ResolveSnapshotProvider;
 import com.intellij.usageView.UsageInfo;
-import com.intellij.util.Function;
+import com.intellij.util.PairFunction;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.MultiMap;
 
@@ -196,14 +197,23 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 		builder.append(method.getName());
 		builder.append("(");
 
-		builder.append(StringUtil.join(sharpChangeInfo.getNewParameters(), new Function<ParameterInfo, String>()
+		StubBlockUtil.join(builder, sharpChangeInfo.getNewParameters(), new PairFunction<StringBuilder, CSharpParameterInfo, Void>()
 		{
+			@Nullable
 			@Override
-			public String fun(ParameterInfo parameterInfo)
+			public Void fun(StringBuilder stringBuilder, CSharpParameterInfo parameterInfo)
 			{
-				return parameterInfo.getTypeText() + " " + parameterInfo.getName();
+				CSharpModifier modifier = parameterInfo.getModifier();
+				if(modifier != null)
+				{
+					stringBuilder.append(modifier.getPresentableText()).append(" ");
+				}
+				stringBuilder.append(parameterInfo.getTypeText());
+				stringBuilder.append(" ");
+				stringBuilder.append(parameterInfo.getName());
+				return null;
 			}
-		}, ", "));
+		}, ", ");
 
 		builder.append(");");
 

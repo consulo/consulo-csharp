@@ -26,7 +26,9 @@ import javax.swing.table.TableCellRenderer;
 
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiCodeFragment;
 import com.intellij.psi.PsiElement;
@@ -127,15 +129,52 @@ public class CSharpParameterTableModel extends ParameterTableModelBase<CSharpPar
 		}
 	}
 
+	private static class ModifierColumn extends ColumnInfoBase<CSharpParameterInfo, CSharpParameterTableModelItem, CSharpModifier>
+	{
+		public ModifierColumn()
+		{
+			super("Modifier");
+		}
+
+		@Nullable
+		@Override
+		public CSharpModifier valueOf(CSharpParameterTableModelItem item)
+		{
+			return item.parameter.getModifier();
+		}
+
+		@Override
+		public void setValue(CSharpParameterTableModelItem tableModelItem, CSharpModifier value)
+		{
+			tableModelItem.parameter.setModifier(value);
+		}
+
+		@Override
+		protected TableCellRenderer doCreateRenderer(CSharpParameterTableModelItem tableModelItem)
+		{
+			return new ColoredTableCellRenderer()
+			{
+				@Override
+				protected void customizeCellRenderer(JTable table, Object value, boolean selected, boolean hasFocus, int row, int column)
+				{
+					append(value == null ? "" : value.toString());
+				}
+			};
+		}
+
+		@Override
+		protected TableCellEditor doCreateEditor(CSharpParameterTableModelItem item)
+		{
+			throw new UnsupportedOperationException();
+		}
+	}
+
 	private final Project myProject;
 
 	public CSharpParameterTableModel(Project project, PsiElement typeContext, PsiElement defaultValueContext)
 	{
-		super(typeContext, defaultValueContext,
-				new TypeColumn<CSharpParameterInfo, CSharpParameterTableModelItem>(project, CSharpFileType.INSTANCE),
-				new MyNameColumn(project),
-				new DefaultValueColumn<CSharpParameterInfo, CSharpParameterTableModelItem>(project, CSharpFileType.INSTANCE, "Place value:"),
-				new AnyVarColumn());
+		super(typeContext, defaultValueContext, new TypeColumn<CSharpParameterInfo, CSharpParameterTableModelItem>(project, CSharpFileType.INSTANCE), new MyNameColumn(project),
+				new DefaultValueColumn<CSharpParameterInfo, CSharpParameterTableModelItem>(project, CSharpFileType.INSTANCE, "Place value:"), new ModifierColumn());
 		myProject = project;
 	}
 
@@ -144,7 +183,7 @@ public class CSharpParameterTableModel extends ParameterTableModelBase<CSharpPar
 	{
 		if(parameterInfo == null)
 		{
-			parameterInfo = new CSharpParameterInfo("p" + getRowCount(), null, getRowCount());
+			parameterInfo = new CSharpParameterInfo("", null, getRowCount());
 		}
 		PsiCodeFragment fragment = CSharpFragmentFactory.createTypeFragment(myProject, parameterInfo.getTypeText(), myDefaultValueContext);
 

@@ -16,21 +16,16 @@
 
 package org.mustbe.consulo.csharp.ide.refactoring.changeSignature;
 
-import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.Insets;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -43,6 +38,7 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
@@ -52,11 +48,13 @@ import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.colors.EditorFontType;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiCodeFragment;
@@ -68,7 +66,6 @@ import com.intellij.refactoring.changeSignature.CallerChooserBase;
 import com.intellij.refactoring.changeSignature.ChangeSignatureDialogBase;
 import com.intellij.refactoring.changeSignature.ChangeSignatureProcessorBase;
 import com.intellij.refactoring.changeSignature.MethodDescriptor;
-import com.intellij.refactoring.changeSignature.ParameterInfo;
 import com.intellij.refactoring.changeSignature.ParameterTableModelItemBase;
 import com.intellij.refactoring.ui.ComboBoxVisibilityPanel;
 import com.intellij.refactoring.ui.VisibilityPanelBase;
@@ -80,9 +77,7 @@ import com.intellij.ui.treeStructure.Tree;
 import com.intellij.usageView.UsageInfo;
 import com.intellij.usageView.UsageViewDescriptor;
 import com.intellij.util.Consumer;
-import com.intellij.util.Function;
-import com.intellij.util.ui.DialogUtil;
-import com.intellij.util.ui.UIUtil;
+import com.intellij.util.PairFunction;
 import com.intellij.util.ui.table.JBListTable;
 import com.intellij.util.ui.table.JBTableRow;
 import com.intellij.util.ui.table.JBTableRowEditor;
@@ -143,55 +138,53 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 			private EditorTextField myTypeEditor;
 			private EditorTextField myNameEditor;
 			private EditorTextField myDefaultValueEditor;
-			private JCheckBox myAnyVar;
+			private ComboBox myModifierComboBox;
 
 			@Override
 			public void prepareEditor(JTable table, int row)
 			{
-				setLayout(new BorderLayout());
+				setLayout(new GridLayout(1, 3));
+
+				myModifierComboBox = new ComboBox();
+				myModifierComboBox.addItem(null);
+				for(CSharpModifier modifier : CSharpParameterInfo.ourParameterModifiers)
+				{
+					myModifierComboBox.addItem(modifier);
+				}
+				myModifierComboBox.setRenderer(new ListCellRendererWrapper<CSharpModifier>()
+				{
+					@Override
+					public void customize(JList list, CSharpModifier value, int index, boolean selected, boolean hasFocus)
+					{
+						setText(value == null ? "" : value.getPresentableText());
+					}
+				});
+
+				myModifierComboBox.setSelectedItem(item.parameter.getModifier());
+
+				add(createLabeledPanel("Modifier:", myModifierComboBox));
+
 				final Document document = PsiDocumentManager.getInstance(getProject()).getDocument(item.typeCodeFragment);
 				myTypeEditor = new EditorTextField(document, getProject(), getFileType());
 				myTypeEditor.addDocumentListener(getSignatureUpdater());
 				myTypeEditor.setPreferredWidth(t.getWidth() / 2);
 				myTypeEditor.addDocumentListener(new RowEditorChangeListener(0));
-				add(createLabeledPanel("Type:", myTypeEditor), BorderLayout.WEST);
+				add(createLabeledPanel("Type:", myTypeEditor));
 
 				myNameEditor = new EditorTextField(item.parameter.getName(), getProject(), getFileType());
 				myNameEditor.addDocumentListener(getSignatureUpdater());
 				myNameEditor.addDocumentListener(new RowEditorChangeListener(1));
-				add(createLabeledPanel("Name:", myNameEditor), BorderLayout.CENTER);
+				add(createLabeledPanel("Name:", myNameEditor));
 
-
-				if(!item.isEllipsisType() && item.parameter.getOldIndex() == -1)
+				/*if(!item.isEllipsisType() && item.parameter.getOldIndex() == -1)
 				{
 					final JPanel additionalPanel = new JPanel(new BorderLayout());
 					final Document doc = PsiDocumentManager.getInstance(getProject()).getDocument(item.defaultValueCodeFragment);
 					myDefaultValueEditor = new EditorTextField(doc, getProject(), getFileType());
 					myDefaultValueEditor.setPreferredWidth(t.getWidth() / 2);
 					myDefaultValueEditor.addDocumentListener(new RowEditorChangeListener(2));
-					additionalPanel.add(createLabeledPanel("Default value:", myDefaultValueEditor), BorderLayout.WEST);
-
-					if(!isGenerateDelegate())
-					{
-						myAnyVar = new JCheckBox("&Use Any Var");
-						UIUtil.applyStyle(UIUtil.ComponentStyle.SMALL, myAnyVar);
-						DialogUtil.registerMnemonic(myAnyVar, '&');
-						myAnyVar.addActionListener(new ActionListener()
-						{
-							@Override
-							public void actionPerformed(ActionEvent e)
-							{
-								item.parameter.setUseAnySingleVariable(myAnyVar.isSelected());
-							}
-						});
-						final JPanel anyVarPanel = new JPanel(new BorderLayout());
-						anyVarPanel.add(myAnyVar, BorderLayout.SOUTH);
-						UIUtil.addInsets(anyVarPanel, new Insets(0, 0, 8, 0));
-						additionalPanel.add(anyVarPanel, BorderLayout.CENTER);
-						//additionalPanel.setPreferredSize(new Dimension(t.getWidth() / 3, -1));
-					}
-					add(additionalPanel, BorderLayout.SOUTH);
-				}
+					additionalPanel.add(createLabeledPanel("Place value:", myDefaultValueEditor), BorderLayout.WEST);
+				} */
 			}
 
 			@Override
@@ -211,7 +204,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 							case 2:
 								return item.defaultValueCodeFragment;
 							case 3:
-								return myAnyVar != null && myAnyVar.isSelected();
+								return myModifierComboBox.getSelectedItem();
 						}
 						return null;
 					}
@@ -241,13 +234,16 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 				{
 					focusable.add(myDefaultValueEditor.getFocusTarget());
 				}
-				if(myAnyVar != null)
-				{
-					focusable.add(myAnyVar);
-				}
+				focusable.add(myModifierComboBox);
 				return focusable.toArray(new JComponent[focusable.size()]);
 			}
 		};
+	}
+
+	@Override
+	protected boolean mayPropagateParameters()
+	{
+		return false;
 	}
 
 	@Override
@@ -265,24 +261,24 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	}
 
 	@Override
+	@RequiredDispatchThread
 	protected JComponent getRowPresentation(ParameterTableModelItemBase<CSharpParameterInfo> item, boolean selected, final boolean focused)
 	{
 		final String typeText = item.typeCodeFragment.getText();
+		CSharpModifier modifier = item.parameter.getModifier();
+		String text = "";
+		if(modifier != null)
+		{
+			text = modifier.getPresentableText() + " ";
+		}
 		final String separator = StringUtil.repeatSymbol(' ', getTypesMaxLength() - typeText.length() + 1);
-		String text = typeText + separator + item.parameter.getName();
+
+		text += typeText + separator + item.parameter.getName();
 		final String defaultValue = item.defaultValueCodeFragment.getText();
 		String tail = "";
 		if(StringUtil.isNotEmpty(defaultValue))
 		{
-			tail += " default value = " + defaultValue;
-		}
-		if(item.parameter.isUseAnySingleVariable())
-		{
-			if(StringUtil.isNotEmpty(defaultValue))
-			{
-				tail += ";";
-			}
-			tail += " Use any var.";
+			tail += " place value = " + defaultValue;
 		}
 		if(!StringUtil.isEmpty(tail))
 		{
@@ -427,6 +423,11 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 					parametersChanged = true;
 					break;
 				}
+				if(!Comparing.equal(newParameter.getModifier(), CSharpParameterInfo.findModifier(psiParameter)))
+				{
+					parametersChanged = true;
+					break;
+				}
 			}
 		}
 		return new CSharpChangeInfo(methodDeclaration, parameters, parametersChanged, newName, newReturnType, newVisibility);
@@ -451,6 +452,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 
 			DotNetType type = PsiTreeUtil.getChildOfType(item.typeCodeFragment, DotNetType.class);
 			e.setTypeText(type == null ? DotNetTypes.System.Object : type.getText());
+			e.setModifier(item.parameter.getModifier());
 			e.setTypeRef(type == null ? new CSharpTypeRefByQName(DotNetTypes.System.Object) : type.toTypeRef());
 
 			DotNetExpression expression = PsiTreeUtil.getChildOfType(item.defaultValueCodeFragment, DotNetExpression.class);
@@ -521,14 +523,24 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 			builder.append(methodDeclaration.getName());
 		}
 		builder.append("(");
-		builder.append(StringUtil.join(sharpChangeInfo.getNewParameters(), new Function<ParameterInfo, String>()
+		StubBlockUtil.join(builder, sharpChangeInfo.getNewParameters(), new PairFunction<StringBuilder, CSharpParameterInfo, Void>()
 		{
+			@Nullable
 			@Override
-			public String fun(ParameterInfo parameterInfo)
+			public Void fun(StringBuilder b, CSharpParameterInfo parameterInfo)
 			{
-				return parameterInfo.getTypeText() + " " + parameterInfo.getName();
+				CSharpModifier modifier = parameterInfo.getModifier();
+				if(modifier != null)
+				{
+					b.append(modifier.getPresentableText()).append(" ");
+				}
+				b.append(parameterInfo.getTypeText());
+				b.append(" ");
+				b.append(parameterInfo.getName());
+				return null;
 			}
-		}, ", "));
+		}, ", ");
+
 		builder.append(");");
 
 		return builder.toString();

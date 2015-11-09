@@ -16,14 +16,18 @@
 
 package org.mustbe.consulo.csharp.ide.refactoring.changeSignature;
 
+import java.util.List;
+
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.refactoring.changeSignature.ParameterInfo;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -31,6 +35,21 @@ import com.intellij.refactoring.changeSignature.ParameterInfo;
  */
 public class CSharpParameterInfo implements ParameterInfo
 {
+	public static final List<CSharpModifier> ourParameterModifiers = ContainerUtil.newArrayList(CSharpModifier.REF, CSharpModifier.OUT, CSharpModifier.PARAMS);
+
+	@RequiredReadAction
+	public static CSharpModifier findModifier(DotNetParameter parameter)
+	{
+		for(CSharpModifier mod : ourParameterModifiers)
+		{
+			if(parameter.hasModifier(mod))
+			{
+				return mod;
+			}
+		}
+		return null;
+	}
+
 	private final DotNetParameter myParameter;
 	private String myName;
 	private String myTypeText;
@@ -39,23 +58,25 @@ public class CSharpParameterInfo implements ParameterInfo
 	private final int myOldIndex;
 
 	private DotNetTypeRef myTypeRef = DotNetTypeRef.ERROR_TYPE;
+	private CSharpModifier myModifier;
 
 	@RequiredReadAction
 	public CSharpParameterInfo(DotNetParameter parameter, int newIndex)
 	{
 		myParameter = parameter;
 		myName = parameter.getName();
-		myTypeText = CSharpTypeRefPresentationUtil.buildShortText(parameter.toTypeRef(false), parameter);
+		myTypeText = CSharpTypeRefPresentationUtil.buildText(parameter.toTypeRef(false), parameter, CSharpTypeRefPresentationUtil.TYPE_KEYWORD | CSharpTypeRefPresentationUtil.NO_REF);
 		myTypeRef = parameter.toTypeRef(false);
 		myNewIndex = newIndex;
 		myOldIndex = parameter.getIndex();
+		myModifier = findModifier(parameter);
 	}
 
 	public CSharpParameterInfo(String name, DotNetParameter parameter, int newIndex)
 	{
 		myParameter = parameter;
 		myName = name;
-		myTypeText = "object";
+		myTypeText = "";
 		myTypeRef = new CSharpTypeRefByQName(DotNetTypes.System.Object);
 		myNewIndex = newIndex;
 		myOldIndex = parameter == null ? -1 : parameter.getIndex();
@@ -102,6 +123,16 @@ public class CSharpParameterInfo implements ParameterInfo
 	public void setUseAnySingleVariable(boolean b)
 	{
 
+	}
+
+	public CSharpModifier getModifier()
+	{
+		return myModifier;
+	}
+
+	public void setModifier(CSharpModifier modifier)
+	{
+		myModifier = modifier;
 	}
 
 	public int getNewIndex()
