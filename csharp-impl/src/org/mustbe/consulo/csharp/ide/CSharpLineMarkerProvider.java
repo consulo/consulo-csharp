@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.lineMarkerProvider.HidedOrOverridedElementCollector;
 import org.mustbe.consulo.csharp.ide.lineMarkerProvider.HidingOrOverridingElementCollector;
 import org.mustbe.consulo.csharp.ide.lineMarkerProvider.LineMarkerCollector;
@@ -68,6 +69,7 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 		editorColorsManager = colorsManager;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull PsiElement element)
@@ -101,6 +103,7 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 		return null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public void collectSlowLineMarkers(@NotNull List<PsiElement> elements, @NotNull Collection<LineMarkerInfo> lineMarkerInfos)
 	{
