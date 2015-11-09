@@ -133,9 +133,26 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 						public HighlightInfo create()
 						{
 							HighlightInfo highlightInfo = super.create();
-							if(highlightInfo != null && callElement instanceof PsiReference)
+							if(highlightInfo != null)
 							{
-								UnresolvedReferenceQuickFixProvider.registerReferenceFixes((PsiReference) callElement, new QuickFixActionRegistrarImpl(highlightInfo));
+								PsiReference reference = null;
+								if(callElement instanceof PsiReference)
+								{
+									reference = (PsiReference) callElement;
+								}
+								else if(callElement instanceof CSharpMethodCallExpressionImpl)
+								{
+									DotNetExpression callExpression = ((CSharpMethodCallExpressionImpl) callElement).getCallExpression();
+									if(callExpression instanceof PsiReference)
+									{
+										reference = (PsiReference) callExpression;
+									}
+								}
+
+								if(reference != null)
+								{
+									UnresolvedReferenceQuickFixProvider.registerReferenceFixes(reference, new QuickFixActionRegistrarImpl(highlightInfo));
+								}
 							}
 							return highlightInfo;
 						}
