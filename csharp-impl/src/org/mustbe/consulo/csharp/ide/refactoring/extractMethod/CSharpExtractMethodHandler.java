@@ -37,12 +37,15 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.UsefulPsiTreeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetLocalVariable;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
@@ -117,9 +120,17 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 			return;
 		}
 
+		final DotNetQualifiedElement qualifiedElement = PsiTreeUtil.getParentOfType(statements[0], DotNetQualifiedElement.class);
+		if(qualifiedElement == null)
+		{
+			CommonRefactoringUtil.showErrorHint(project, editor, RefactoringBundle.getCannotRefactorMessage("No parent method"), "Extract Method", null);
+			return;
+		}
+
 		final TextRange extractRange = new TextRange(statements[0].getTextRange().getStartOffset(), statements[statements.length - 1].getTextRange().getEndOffset());
 
 		final MultiMap<DotNetVariable, CSharpReferenceExpression> variables = MultiMap.createLinkedSet();
+		final Set<DotNetVariable> assignmentVariables = new ArrayListSet<DotNetVariable>();
 
 		final Ref<DotNetTypeRef> returnTypeRef = Ref.create();
 		for(DotNetStatement statement : statements)
@@ -133,6 +144,26 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 					if(expression != null)
 					{
 						returnTypeRef.set(methodAsElement.getReturnTypeRef());
+					}
+				}
+
+				@Override
+				public void visitAssignmentExpression(CSharpAssignmentExpressionImpl expression)
+				{
+					super.visitAssignmentExpression(expression);
+
+					DotNetExpression[] parameterExpressions = expression.getParameterExpressions();
+					if(parameterExpressions.length > 0)
+					{
+						DotNetExpression parameterExpression = parameterExpressions[0];
+						if(parameterExpression instanceof CSharpReferenceExpression)
+						{
+							PsiElement resolvedElement = ((CSharpReferenceExpression) parameterExpression).resolve();
+							if(resolvedElement instanceof DotNetLocalVariable || resolvedElement instanceof DotNetParameter)
+							{
+								assignmentVariables.add((DotNetVariable) resolvedElement);
+							}
+						}
 					}
 				}
 
@@ -166,7 +197,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 		CSharpLightMethodDeclarationBuilder builder = new CSharpLightMethodDeclarationBuilder(project);
 		builder.withReturnType(returnTypeRef.get() == null ? new CSharpTypeRefByQName(DotNetTypes.System.Void) : returnTypeRef.get());
 		builder.addModifier(CSharpModifier.PRIVATE);
-		if(methodAsElement.hasModifier(CSharpModifier.STATIC))
+		if(qualifiedElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) qualifiedElement).hasModifier(CSharpModifier.STATIC))
 		{
 			builder.addModifier(CSharpModifier.STATIC);
 		}
@@ -175,6 +206,10 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 		for(DotNetVariable variable : variables.keySet())
 		{
 			CSharpLightParameterBuilder parameterBuilder = new CSharpLightParameterBuilder(project);
+			if(assignmentVariables.contains(variable))
+			{
+				parameterBuilder.addModifier(CSharpModifier.REF);
+			}
 			parameterBuilder.withName(variable.getName());
 			parameterBuilder.withTypeRef(variable.toTypeRef(true));
 
@@ -188,12 +223,6 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 			@Override
 			public boolean process(final DotNetLikeMethodDeclaration builder)
 			{
-				final DotNetQualifiedElement qualifiedElement = PsiTreeUtil.getParentOfType(statements[0], DotNetQualifiedElement.class);
-				if(qualifiedElement == null)
-				{
-					return true;
-				}
-
 				final Document document = PsiDocumentManager.getInstance(project).getDocument(file);
 
 				assert document != null;
@@ -223,6 +252,10 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 							@Override
 							public Void fun(StringBuilder stringBuilder, DotNetVariable o)
 							{
+								if(assignmentVariables.contains(o))
+								{
+									stringBuilder.append("ref ");
+								}
 								stringBuilder.append(o.getName());
 								return null;
 							}

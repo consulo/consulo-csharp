@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
@@ -37,7 +38,6 @@ import com.intellij.psi.PsiElement;
 public class CSharpLightFieldDeclarationBuilder extends CSharpLightVariableBuilder<CSharpLightFieldDeclarationBuilder> implements
 		CSharpFieldDeclaration
 {
-	private List<DotNetModifier> myModifiers = new ArrayList<DotNetModifier>();
 	private PsiElement myNameIdentifier;
 
 	public CSharpLightFieldDeclarationBuilder(PsiElement element)
@@ -102,17 +102,6 @@ public class CSharpLightFieldDeclarationBuilder extends CSharpLightVariableBuild
 	public void withNameIdentifier(@NotNull PsiElement element)
 	{
 		myNameIdentifier = element;
-	}
-
-	@Override
-	public boolean hasModifier(@NotNull DotNetModifier modifier)
-	{
-		return myModifiers.contains(CSharpModifier.as(modifier));
-	}
-
-	public void addModifier(DotNetModifier modifierWithMask)
-	{
-		myModifiers.add(modifierWithMask);
 	}
 
 	@Override

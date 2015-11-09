@@ -78,6 +78,11 @@ public class CSharpExtractMethodDialog extends CSharpChangeSignatureDialog
 			}
 		}
 
+		if(myMethod.getMethod().hasModifier(CSharpModifier.STATIC))
+		{
+			builder.addModifier(CSharpModifier.STATIC);
+		}
+
 		DotNetTypeRef returnTypeRef = new CSharpTypeRefByQName(DotNetTypes.System.Void);
 		DotNetType returnType = PsiTreeUtil.getChildOfType(myReturnTypeCodeFragment, DotNetType.class);
 		if(returnType != null)
@@ -93,6 +98,11 @@ public class CSharpExtractMethodDialog extends CSharpChangeSignatureDialog
 			CSharpLightParameterBuilder parameterBuilder = new CSharpLightParameterBuilder(getProject());
 			parameterBuilder.withName(parameter.getName());
 			parameterBuilder.withTypeRef(parameter.getTypeRef());
+			CSharpModifier modifier = parameter.getModifier();
+			if(modifier != null)
+			{
+				parameterBuilder.addModifier(modifier);
+			}
 
 			builder.addParameter(parameterBuilder);
 		}

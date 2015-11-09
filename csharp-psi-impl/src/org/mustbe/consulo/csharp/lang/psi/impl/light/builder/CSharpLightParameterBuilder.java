@@ -18,10 +18,15 @@ package org.mustbe.consulo.csharp.lang.psi.impl.light.builder;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 
@@ -41,6 +46,23 @@ public class CSharpLightParameterBuilder extends CSharpLightVariableBuilder<CSha
 	public CSharpLightParameterBuilder(PsiElement element)
 	{
 		super(element);
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
+	{
+		DotNetTypeRef typeRef = super.toTypeRef(resolveFromInitializer);
+		if(hasModifier(CSharpModifier.REF))
+		{
+			return new CSharpRefTypeRef(CSharpRefTypeRef.Type.ref, typeRef);
+		}
+		else if(hasModifier(CSharpModifier.OUT))
+		{
+			return new CSharpRefTypeRef(CSharpRefTypeRef.Type.out, typeRef);
+		}
+		return typeRef;
 	}
 
 	@Override

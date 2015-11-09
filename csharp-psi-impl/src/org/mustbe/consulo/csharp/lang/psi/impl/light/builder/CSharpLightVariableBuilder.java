@@ -16,8 +16,13 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.light.builder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
@@ -34,6 +39,7 @@ import com.intellij.psi.PsiElement;
 public abstract class CSharpLightVariableBuilder<T extends CSharpLightVariableBuilder<T>> extends CSharpLightNamedElementBuilder<T> implements
 		DotNetVariable
 {
+	private List<DotNetModifier> myModifiers = new ArrayList<DotNetModifier>();
 	private boolean myConstant;
 	private DotNetTypeRef myTypeRef;
 
@@ -47,12 +53,14 @@ public abstract class CSharpLightVariableBuilder<T extends CSharpLightVariableBu
 		super(element);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean isConstant()
 	{
 		return myConstant;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getConstantKeywordElement()
@@ -67,6 +75,7 @@ public abstract class CSharpLightVariableBuilder<T extends CSharpLightVariableBu
 		return (T) this;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
@@ -81,6 +90,7 @@ public abstract class CSharpLightVariableBuilder<T extends CSharpLightVariableBu
 		return (T) this;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetType getType()
@@ -88,6 +98,7 @@ public abstract class CSharpLightVariableBuilder<T extends CSharpLightVariableBu
 		return null;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetExpression getInitializer()
@@ -95,12 +106,20 @@ public abstract class CSharpLightVariableBuilder<T extends CSharpLightVariableBu
 		return null;
 	}
 
+
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		return false;
+		return myModifiers.contains(CSharpModifier.as(modifier));
 	}
 
+	public void addModifier(DotNetModifier modifierWithMask)
+	{
+		myModifiers.add(modifierWithMask);
+	}
+
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetModifierList getModifierList()
