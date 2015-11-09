@@ -16,9 +16,12 @@
 
 package org.mustbe.consulo.csharp.ide.refactoring.changeSignature;
 
+import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +29,7 @@ import java.util.Set;
 
 import javax.swing.JComponent;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -35,14 +39,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
-import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
@@ -143,7 +146,10 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 			@Override
 			public void prepareEditor(JTable table, int row)
 			{
-				setLayout(new GridLayout(1, 3));
+				setLayout(new BorderLayout());
+
+				JPanel topPanel = new JPanel(new GridLayout(1, 3));
+				add(topPanel, BorderLayout.NORTH);
 
 				myModifierComboBox = new ComboBox();
 				myModifierComboBox.addItem(null);
@@ -151,6 +157,18 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 				{
 					myModifierComboBox.addItem(modifier);
 				}
+				myModifierComboBox.addItemListener(new ItemListener()
+				{
+					@Override
+					public void itemStateChanged(ItemEvent e)
+					{
+						if(e.getStateChange() == ItemEvent.SELECTED)
+						{
+							item.parameter.setModifier((CSharpModifier) myModifierComboBox.getSelectedItem());
+							updateSignature();
+						}
+					}
+				});
 				myModifierComboBox.setRenderer(new ListCellRendererWrapper<CSharpModifier>()
 				{
 					@Override
@@ -162,29 +180,31 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 
 				myModifierComboBox.setSelectedItem(item.parameter.getModifier());
 
-				add(createLabeledPanel("Modifier:", myModifierComboBox));
+				topPanel.add(createLabeledPanel("Modifier:", myModifierComboBox));
 
 				final Document document = PsiDocumentManager.getInstance(getProject()).getDocument(item.typeCodeFragment);
 				myTypeEditor = new EditorTextField(document, getProject(), getFileType());
 				myTypeEditor.addDocumentListener(getSignatureUpdater());
 				myTypeEditor.setPreferredWidth(t.getWidth() / 2);
 				myTypeEditor.addDocumentListener(new RowEditorChangeListener(0));
-				add(createLabeledPanel("Type:", myTypeEditor));
+				topPanel.add(createLabeledPanel("Type:", myTypeEditor));
 
 				myNameEditor = new EditorTextField(item.parameter.getName(), getProject(), getFileType());
 				myNameEditor.addDocumentListener(getSignatureUpdater());
 				myNameEditor.addDocumentListener(new RowEditorChangeListener(1));
-				add(createLabeledPanel("Name:", myNameEditor));
+				topPanel.add(createLabeledPanel("Name:", myNameEditor));
 
-				/*if(!item.isEllipsisType() && item.parameter.getOldIndex() == -1)
+				if(item.parameter.getOldIndex() == -1)
 				{
 					final JPanel additionalPanel = new JPanel(new BorderLayout());
 					final Document doc = PsiDocumentManager.getInstance(getProject()).getDocument(item.defaultValueCodeFragment);
 					myDefaultValueEditor = new EditorTextField(doc, getProject(), getFileType());
-					myDefaultValueEditor.setPreferredWidth(t.getWidth() / 2);
+					myDefaultValueEditor.setPreferredWidth(t.getWidth() / 3);
 					myDefaultValueEditor.addDocumentListener(new RowEditorChangeListener(2));
-					additionalPanel.add(createLabeledPanel("Place value:", myDefaultValueEditor), BorderLayout.WEST);
-				} */
+					additionalPanel.add(createLabeledPanel("Argument value:", myDefaultValueEditor), BorderLayout.EAST);
+
+					add(additionalPanel, BorderLayout.SOUTH);
+				}
 			}
 
 			@Override
@@ -241,6 +261,12 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	}
 
 	@Override
+	protected boolean postponeValidation()
+	{
+		return false;
+	}
+
+	@Override
 	protected boolean mayPropagateParameters()
 	{
 		return false;
@@ -278,7 +304,7 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 		String tail = "";
 		if(StringUtil.isNotEmpty(defaultValue))
 		{
-			tail += " place value = " + defaultValue;
+			tail += " argument value = " + defaultValue;
 		}
 		if(!StringUtil.isEmpty(tail))
 		{
@@ -451,9 +477,9 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 			CSharpParameterInfo e = new CSharpParameterInfo(item.parameter.getName(), item.parameter.getParameter(), i++);
 
 			DotNetType type = PsiTreeUtil.getChildOfType(item.typeCodeFragment, DotNetType.class);
-			e.setTypeText(type == null ? DotNetTypes.System.Object : type.getText());
+			e.setTypeText(type == null ? "" : type.getText());
 			e.setModifier(item.parameter.getModifier());
-			e.setTypeRef(type == null ? new CSharpTypeRefByQName(DotNetTypes.System.Object) : type.toTypeRef());
+			e.setTypeRef(type == null ? null : type.toTypeRef());
 
 			DotNetExpression expression = PsiTreeUtil.getChildOfType(item.defaultValueCodeFragment, DotNetExpression.class);
 			e.setDefaultValue(expression == null ? "" : expression.getText());
@@ -480,8 +506,28 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 
 	@Nullable
 	@Override
+	@RequiredDispatchThread
 	protected String validateAndCommitData()
 	{
+		String methodName = getMethodName();
+		if(StringUtil.isEmpty(methodName) || CSharpNameSuggesterUtil.isKeyword(methodName))
+		{
+			return "Bad method name";
+		}
+
+		for(CSharpParameterInfo parameterInfo : getParameters())
+		{
+			String name = parameterInfo.getName();
+			if(StringUtil.isEmpty(name) || CSharpNameSuggesterUtil.isKeyword(name))
+			{
+				return "Bad parameter name";
+			}
+
+			if(parameterInfo.getTypeRef() == null)
+			{
+				return "Parameter '" + name + "' have bad type";
+			}
+		}
 		return null;
 	}
 

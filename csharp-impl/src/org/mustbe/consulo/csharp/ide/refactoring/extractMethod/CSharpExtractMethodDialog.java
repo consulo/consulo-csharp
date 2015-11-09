@@ -22,7 +22,6 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureDialog;
 import org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpMethodDescriptor;
@@ -126,16 +125,5 @@ public class CSharpExtractMethodDialog extends CSharpChangeSignatureDialog
 	public JComponent getPreferredFocusedComponent()
 	{
 		return myNameField;
-	}
-
-	@Nullable
-	@Override
-	protected String validateAndCommitData()
-	{
-		if(StringUtil.isEmpty(getMethodName()))
-		{
-			return "Method name cant be empty";
-		}
-		return super.validateAndCommitData();
 	}
 }

@@ -57,7 +57,7 @@ public class CSharpParameterInfo implements ParameterInfo
 	private final int myNewIndex;
 	private final int myOldIndex;
 
-	private DotNetTypeRef myTypeRef = DotNetTypeRef.ERROR_TYPE;
+	private DotNetTypeRef myTypeRef;
 	private CSharpModifier myModifier;
 
 	@RequiredReadAction
@@ -72,7 +72,7 @@ public class CSharpParameterInfo implements ParameterInfo
 		myModifier = findModifier(parameter);
 	}
 
-	public CSharpParameterInfo(String name, DotNetParameter parameter, int newIndex)
+	public CSharpParameterInfo(String name, @Nullable DotNetParameter parameter, int newIndex)
 	{
 		myParameter = parameter;
 		myName = name;
@@ -156,11 +156,12 @@ public class CSharpParameterInfo implements ParameterInfo
 		myDefaultValue = defaultValue;
 	}
 
-	public void setTypeRef(DotNetTypeRef typeRef)
+	public void setTypeRef(@Nullable DotNetTypeRef typeRef)
 	{
 		myTypeRef = typeRef;
 	}
 
+	@Nullable
 	public DotNetTypeRef getTypeRef()
 	{
 		return myTypeRef;
