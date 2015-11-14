@@ -35,6 +35,6 @@ public class NullValueEvaluator extends Evaluator
 	@Override
 	public void evaluate(@NotNull CSharpEvaluateContext context)
 	{
-		context.pull(new NoObjectValueMirror(context.getDebuggerContext().getVirtualMachine().getDelegate()));
+		context.pull(new NoObjectValueMirror(context.getDebuggerContext().getVirtualMachine().getDelegate()), null);
 	}
 }

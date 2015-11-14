@@ -47,7 +47,7 @@ public class LocalVariableEvaluator extends Evaluator
 				Value value = context.getFrame().localOrParameterValue(local);
 				if(value != null)
 				{
-					context.pull(value);
+					context.pull(value, local);
 				}
 				break;
 			}

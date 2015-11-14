@@ -34,6 +34,6 @@ public class ThisObjectEvaluator extends Evaluator
 	@Override
 	public void evaluate(@NotNull CSharpEvaluateContext context)
 	{
-		context.pull(context.getFrame().thisObject());
+		context.pull(context.getFrame().thisObject(), null);
 	}
 }

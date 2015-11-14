@@ -48,7 +48,7 @@ public class ParameterEvaluator extends Evaluator
 		Value value = context.getFrame().localOrParameterValue(methodParameterMirror);
 		if(value != null)
 		{
-			context.pull(value);
+			context.pull(value, methodParameterMirror);
 		}
 	}
 }
