@@ -17,6 +17,8 @@
 package org.mustbe.consulo.csharp.ide.liveTemplates.context;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUserType;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import com.intellij.codeInsight.template.TemplateContextType;
 import com.intellij.psi.PsiElement;
@@ -35,10 +37,15 @@ public class CSharpExpressionContextType extends TemplateContextType
 	}
 
 	@Override
+	@RequiredReadAction
 	public boolean isInContext(@NotNull PsiFile file, int offset)
 	{
 		PsiElement elementAt = file.findElementAt(offset);
 
+		if(PsiTreeUtil.getParentOfType(elementAt, CSharpUserType.class) != null)
+		{
+			return false;
+		}
 		return PsiTreeUtil.getParentOfType(elementAt, DotNetExpression.class) != null;
 	}
 }
