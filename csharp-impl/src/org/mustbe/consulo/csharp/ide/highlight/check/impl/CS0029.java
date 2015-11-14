@@ -58,7 +58,6 @@ import com.intellij.openapi.util.Trinity;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ObjectUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -71,7 +70,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 	@Override
 	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull PsiElement element)
 	{
-		val resolve = resolve(element);
+		Trinity<? extends DotNetTypeRef, ? extends DotNetTypeRef, ? extends PsiElement> resolve = resolve(element);
 		if(resolve == null)
 		{
 			return null;
@@ -81,14 +80,17 @@ public class CS0029 extends CompilerCheck<PsiElement>
 
 
 		DotNetTypeRef secondTypeRef = resolve.getSecond();
+		if(firstTypeRef == DotNetTypeRef.ERROR_TYPE || secondTypeRef == DotNetTypeRef.ERROR_TYPE)
+		{
+			return null;
+		}
 		PsiElement elementToHighlight = resolve.getThird();
 
-		CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(firstTypeRef, secondTypeRef, element,
-				CSharpStaticTypeRef.IMPLICIT);
+		CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(firstTypeRef, secondTypeRef, element, CSharpStaticTypeRef.IMPLICIT);
 		if(!inheritResult.isSuccess())
 		{
-			CompilerCheckBuilder builder = newBuilder(elementToHighlight, CSharpTypeRefPresentationUtil.buildTextWithKeyword(secondTypeRef,
-					element), CSharpTypeRefPresentationUtil.buildTextWithKeyword(firstTypeRef, element));
+			CompilerCheckBuilder builder = newBuilder(elementToHighlight, CSharpTypeRefPresentationUtil.buildTextWithKeyword(secondTypeRef, element),
+					CSharpTypeRefPresentationUtil.buildTextWithKeyword(firstTypeRef, element));
 
 			if(elementToHighlight instanceof DotNetExpression)
 			{
@@ -112,10 +114,9 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		}
 		else if(inheritResult.isConversion())
 		{
-			String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildTextWithKeyword(secondTypeRef,
-					element), CSharpTypeRefPresentationUtil.buildTextWithKeyword(firstTypeRef, element));
-			return newBuilder(elementToHighlight).setText(text).setHighlightInfoType(HighlightInfoType.INFORMATION).setTextAttributesKey
-					(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
+			String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildTextWithKeyword(secondTypeRef, element),
+					CSharpTypeRefPresentationUtil.buildTextWithKeyword(firstTypeRef, element));
+			return newBuilder(elementToHighlight).setText(text).setHighlightInfoType(HighlightInfoType.INFORMATION).setTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
 		}
 
 		return null;
@@ -260,7 +261,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				return null;
 			}
 
-			DotNetTypeRef actual = null;
+			DotNetTypeRef actual;
 			DotNetExpression expression = ((CSharpReturnStatementImpl) element).getExpression();
 			if(expression == null)
 			{
@@ -271,8 +272,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				actual = expression.toTypeRef(true);
 			}
 
-			CSharpImplicitReturnModel implicitReturnModel = CSharpImplicitReturnModel.getImplicitReturnModel((CSharpReturnStatementImpl) element,
-					pseudoMethod);
+			CSharpImplicitReturnModel implicitReturnModel = CSharpImplicitReturnModel.getImplicitReturnModel((CSharpReturnStatementImpl) element, pseudoMethod);
 			DotNetTypeRef typeRef = implicitReturnModel.extractTypeRef(expected, element);
 			if(typeRef != DotNetTypeRef.ERROR_TYPE)
 			{
