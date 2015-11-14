@@ -24,15 +24,7 @@ import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetStatement;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetUserType;
+import org.mustbe.consulo.dotnet.psi.*;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
@@ -46,6 +38,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.NotNullPairFunction;
 import com.intellij.util.ProcessingContext;
 
@@ -233,14 +226,30 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 											}
 										}
 
-										boolean isParameter = PsiTreeUtil.getParentOfType(position, DotNetParameter.class) != null;
+										DotNetParameter parameter = PsiTreeUtil.getParentOfType(position, DotNetParameter.class);
 
-										if(elementType == CSharpTokens.REF_KEYWORD || elementType == CSharpTokens.OUT_KEYWORD || elementType == CSharpTokens.PARAMS_KEYWORD)
+										if(elementType == CSharpTokens.REF_KEYWORD ||
+												elementType == CSharpTokens.OUT_KEYWORD ||
+												elementType == CSharpTokens.THIS_KEYWORD ||
+												elementType == CSharpTokens.PARAMS_KEYWORD)
 										{
-											return isParameter;
+											if(parameter == null)
+											{
+												return false;
+											}
+											if(elementType == CSharpTokenSets.THIS_KEYWORD)
+											{
+												return parameter.getIndex() == 0;
+											}
+											else if(elementType == CSharpTokens.PARAMS_KEYWORD)
+											{
+												DotNetParameterListOwner owner = parameter.getOwner();
+												return owner != null && ArrayUtil.getLastElement(owner.getParameters()) == parameter;
+											}
+											return true;
 										}
 
-										return !isParameter;
+										return parameter == null;
 									}
 								}
 						);
