@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
@@ -43,13 +42,6 @@ public class CSharpLightArrayMethodDeclaration extends CSharpLightLikeMethodDecl
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
 		visitor.visitArrayMethodDeclaration(this);
-	}
-
-	@RequiredReadAction
-	@Override
-	public void addModifier(@NotNull DotNetModifier modifier)
-	{
-		myOriginal.addModifier(modifier);
 	}
 
 	@NotNull

@@ -20,14 +20,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
-import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
@@ -44,6 +43,8 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  */
 public class CSharpDelegateExpressionImpl extends CSharpElementImpl implements CSharpAnonymousMethodExpression, DotNetParameterListOwner
 {
+	private CSharpAnonymousModifierListImpl myModifierList = new CSharpAnonymousModifierListImpl(this);
+
 	public CSharpDelegateExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
@@ -138,28 +139,15 @@ public class CSharpDelegateExpressionImpl extends CSharpElementImpl implements C
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		return getModifierElement(modifier) != null;
+		return myModifierList.hasModifier(modifier);
 	}
 
 	@RequiredReadAction
+	@NotNull
 	@Override
-	public void addModifier(@NotNull DotNetModifier modifier)
+	public DotNetModifierList getModifierList()
 	{
-		CSharpLambdaExpressionImplUtil.addModifier(this, CSharpModifier.as(modifier));
-	}
-
-	@RequiredReadAction
-	@Override
-	@Nullable
-	public PsiElement getModifierElement(@NotNull DotNetModifier modifier)
-	{
-		CSharpModifier as = CSharpModifier.as(modifier);
-		switch(as)
-		{
-			case ASYNC:
-				return findChildByType(CSharpSoftTokens.ASYNC_KEYWORD);
-		}
-		return null;
+		return myModifierList;
 	}
 
 	@Nullable

@@ -24,11 +24,9 @@ import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStoppableRecursiveElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAnonymousMethodExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAwaitExpressionImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -42,7 +40,12 @@ public class CS1998 extends CompilerCheck<CSharpSimpleLikeMethodAsElement>
 	@Override
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpSimpleLikeMethodAsElement element)
 	{
-		PsiElement modifierElement = getAsyncModifier(element);
+		DotNetModifierList modifierList = element.getModifierList();
+		if(modifierList == null)
+		{
+			return null;
+		}
+		PsiElement modifierElement = modifierList.getModifierElement(CSharpModifier.ASYNC);
 		if(modifierElement == null)
 		{
 			return null;
@@ -64,39 +67,9 @@ public class CS1998 extends CompilerCheck<CSharpSimpleLikeMethodAsElement>
 
 		if(visitor.getValue() == null)
 		{
-			CompilerCheckBuilder builder = newBuilder(modifierElement);
-			if(element instanceof DotNetModifierListOwner)
-			{
-				builder.addQuickFix(new RemoveModifierFix(CSharpModifier.ASYNC, (DotNetModifierListOwner) element));
-			}
-			return builder;
+			return newBuilder(modifierElement).addQuickFix(new RemoveModifierFix(CSharpModifier.ASYNC, element));
 		}
 
-		return null;
-	}
-
-	@Nullable
-	@RequiredReadAction
-	public static PsiElement getAsyncModifier(PsiElement element)
-	{
-		if(!(element instanceof CSharpSimpleLikeMethodAsElement))
-		{
-			return null;
-		}
-
-		if(element instanceof DotNetModifierListOwner)
-		{
-			DotNetModifierList modifierList = ((DotNetModifierListOwner) element).getModifierList();
-			if(modifierList == null)
-			{
-				return null;
-			}
-			return modifierList.getModifierElement(CSharpModifier.ASYNC);
-		}
-		else if(element instanceof CSharpAnonymousMethodExpression)
-		{
-			return ((CSharpAnonymousMethodExpression) element).getModifierElement(CSharpModifier.ASYNC);
-		}
 		return null;
 	}
 }

@@ -72,6 +72,7 @@ public class CSharpModifierListImplUtil
 		}
 	};
 
+	@RequiredReadAction
 	public static boolean hasModifier(@NotNull CSharpModifierList modifierList, @NotNull DotNetModifier modifier)
 	{
 		if(modifierList.hasModifierInTree(modifier))
@@ -84,8 +85,7 @@ public class CSharpModifierListImplUtil
 		switch(cSharpModifier)
 		{
 			case PUBLIC:
-				if(parent instanceof DotNetVirtualImplementOwner && parent.getParent() instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration)
-						parent.getParent()).isInterface())
+				if(parent instanceof DotNetVirtualImplementOwner && parent.getParent() instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) parent.getParent()).isInterface())
 				{
 					return true;
 				}
@@ -111,13 +111,11 @@ public class CSharpModifierListImplUtil
 				if(parent instanceof DotNetXXXAccessor)
 				{
 					PsiElement superParent = parent.getParent();
-					return superParent instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) superParent).hasModifier(DotNetModifier
-							.STATIC);
+					return superParent instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) superParent).hasModifier(DotNetModifier.STATIC);
 				}
 				break;
 			case INTERFACE_ABSTRACT:
-				if(parent instanceof DotNetVirtualImplementOwner && parent.getParent() instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration)
-						parent.getParent()).isInterface())
+				if(parent instanceof DotNetVirtualImplementOwner && parent.getParent() instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) parent.getParent()).isInterface())
 				{
 					return true;
 				}
@@ -145,8 +143,7 @@ public class CSharpModifierListImplUtil
 				if(parent instanceof DotNetXXXAccessor)
 				{
 					PsiElement superParent = parent.getParent();
-					return superParent instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) superParent).hasModifier(DotNetModifier
-							.ABSTRACT);
+					return superParent instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) superParent).hasModifier(DotNetModifier.ABSTRACT);
 				}
 				break;
 		}
@@ -167,7 +164,8 @@ public class CSharpModifierListImplUtil
 
 	public static void removeModifier(@NotNull CSharpModifierList modifierList, @NotNull DotNetModifier modifier)
 	{
-		PsiElement modifierElement = modifierList.getModifierElement(modifier);
+		CSharpModifier as = CSharpModifier.as(modifier);
+		PsiElement modifierElement = modifierList.getModifierElement(as);
 		if(modifierElement != null)
 		{
 			PsiElement next = modifierElement.getNextSibling();

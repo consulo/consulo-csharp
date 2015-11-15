@@ -25,7 +25,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRef
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import com.intellij.psi.PsiElement;
@@ -45,12 +44,6 @@ public class MsilMethodAsCSharpConstructorDeclaration extends MsilMethodAsCSharp
 		super(parent, methodEntry);
 		myTypeDefinition = typeDefinition;
 		myDeConstructor = deConstructor;
-	}
-
-	@RequiredReadAction
-	@Override
-	public void addModifier(@NotNull DotNetModifier modifier)
-	{
 	}
 
 	@RequiredReadAction

@@ -48,18 +48,6 @@ public class CSharpLambdaExpressionImplUtil
 {
 	public static final Key<DotNetTypeRef> TYPE_REF_OF_LAMBDA = Key.create("type.ref.of.lambda");
 
-	@RequiredReadAction
-	public static void addModifier(@NotNull CSharpAnonymousMethodExpression expression, @NotNull CSharpModifier modifier)
-	{
-		PsiElement anchor = expression.getFirstChild();
-
-		CSharpFieldDeclaration field = CSharpFileFactory.createField(expression.getProject(), modifier.getPresentableText() + " int b");
-		PsiElement modifierElement = field.getModifierList().getModifierElement(modifier);
-		assert modifierElement != null;
-		PsiElement psiElement = expression.addBefore(modifierElement, anchor);
-		expression.addAfter(PsiParserFacade.SERVICE.getInstance(expression.getProject()).createWhiteSpaceFromText(" "), psiElement);
-	}
-
 	@NotNull
 	@RequiredReadAction
 	public static DotNetTypeRef resolveTypeForParameter(CSharpLambdaExpressionImpl target, int parameterIndex)

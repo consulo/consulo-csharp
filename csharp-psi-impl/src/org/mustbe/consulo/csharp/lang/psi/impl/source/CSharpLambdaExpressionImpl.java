@@ -24,10 +24,8 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameterList;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
-import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
@@ -37,6 +35,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRef
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
@@ -52,6 +51,8 @@ import lombok.val;
  */
 public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements CSharpAnonymousMethodExpression
 {
+	private CSharpAnonymousModifierListImpl myModifierList = new CSharpAnonymousModifierListImpl(this);
+
 	public CSharpLambdaExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
@@ -61,28 +62,15 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements CSh
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		return getModifierElement(modifier) != null;
+		return myModifierList.hasModifier(modifier);
 	}
 
 	@RequiredReadAction
+	@NotNull
 	@Override
-	public void addModifier(@NotNull DotNetModifier modifier)
+	public DotNetModifierList getModifierList()
 	{
-		CSharpLambdaExpressionImplUtil.addModifier(this, CSharpModifier.as(modifier));
-	}
-
-	@RequiredReadAction
-	@Override
-	@Nullable
-	public PsiElement getModifierElement(@NotNull DotNetModifier modifier)
-	{
-		CSharpModifier as = CSharpModifier.as(modifier);
-		switch(as)
-		{
-			case ASYNC:
-				return findChildByType(CSharpSoftTokens.ASYNC_KEYWORD);
-		}
-		return null;
+		return myModifierList;
 	}
 
 	@Nullable

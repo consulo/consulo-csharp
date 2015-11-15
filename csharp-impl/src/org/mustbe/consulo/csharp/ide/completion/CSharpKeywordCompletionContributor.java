@@ -101,7 +101,9 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 												CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(parameters.getOriginalPosition(), CSharpSimpleLikeMethodAsElement.class);
 												if(methodAsElement != null && ! methodAsElement.hasModifier(CSharpModifier.ASYNC))
 												{
-													methodAsElement.addModifier(CSharpModifier.ASYNC);
+													DotNetModifierList modifierList = methodAsElement.getModifierList();
+													assert modifierList != null;
+													modifierList.addModifier(CSharpModifier.ASYNC);
 													PsiDocumentManager.getInstance(context.getProject()).doPostponedOperationsAndUnblockDocument(context.getDocument());
 												}
 

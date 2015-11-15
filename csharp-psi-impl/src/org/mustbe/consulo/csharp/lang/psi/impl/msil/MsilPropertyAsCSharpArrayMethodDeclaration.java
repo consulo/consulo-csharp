@@ -80,12 +80,6 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 		myParameters = new DotNetParameter[]{new MsilParameterAsCSharpParameter(this, firstParameter, this, 0)};
 	}
 
-	@RequiredReadAction
-	@Override
-	public void addModifier(@NotNull DotNetModifier modifier)
-	{
-	}
-
 	@Override
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{

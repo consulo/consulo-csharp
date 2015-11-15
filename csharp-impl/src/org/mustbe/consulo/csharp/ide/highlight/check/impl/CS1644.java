@@ -331,9 +331,19 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			add(new Feature("asynchronous functions", CSharpLanguageVersion._4_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
+				@RequiredReadAction
 				public PsiElement fun(PsiElement element)
 				{
-					return CS1998.getAsyncModifier(element);
+					if(element instanceof CSharpSimpleLikeMethodAsElement)
+					{
+						DotNetModifierList modifierList = ((CSharpSimpleLikeMethodAsElement) element).getModifierList();
+						if(modifierList == null)
+						{
+							return null;
+						}
+						return modifierList.getModifierElement(CSharpModifier.ASYNC);
+					}
+					return null;
 				}
 			}));
 			add(new Feature("named arguments", CSharpLanguageVersion._4_0, new Function<PsiElement, PsiElement>()
