@@ -99,12 +99,11 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 											public void handleInsert(InsertionContext context, LookupElement item)
 											{
 												CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(parameters.getOriginalPosition(), CSharpSimpleLikeMethodAsElement.class);
-												if(methodAsElement == null || methodAsElement.hasModifier(CSharpModifier.ASYNC))
+												if(methodAsElement != null && ! methodAsElement.hasModifier(CSharpModifier.ASYNC))
 												{
-													return;
+													methodAsElement.addModifier(CSharpModifier.ASYNC);
+													PsiDocumentManager.getInstance(context.getProject()).doPostponedOperationsAndUnblockDocument(context.getDocument());
 												}
-												methodAsElement.addModifier(CSharpModifier.ASYNC);
-												PsiDocumentManager.getInstance(context.getProject()).doPostponedOperationsAndUnblockDocument(context.getDocument());
 
 												SpaceInsertHandler.INSTANCE.handleInsert(context, item);
 											}
