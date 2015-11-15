@@ -50,18 +50,15 @@ public abstract class CSharpLightNamedElementWiModifierListBuilder<T extends CSh
 		super(element);
 	}
 
-	@NotNull
-	public T addModifier(DotNetModifier modifier)
+	@RequiredReadAction
+	public void addModifier(@NotNull DotNetModifier modifier)
 	{
 		myModifiers.add(CSharpModifier.as(modifier));
-		return (T) this;
 	}
 
-	@NotNull
-	public T removeModifier(@NotNull DotNetModifier modifier)
+	public void removeModifier(@NotNull DotNetModifier modifier)
 	{
 		myModifiers.remove(CSharpModifier.as(modifier));
-		return (T) this;
 	}
 
 	@RequiredReadAction

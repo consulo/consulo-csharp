@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
@@ -152,6 +153,7 @@ public class CSharpModifierListImplUtil
 		return false;
 	}
 
+	@RequiredReadAction
 	public static void addModifier(@NotNull CSharpModifierList modifierList, @NotNull DotNetModifier modifier)
 	{
 		PsiElement anchor = modifierList.getLastChild();

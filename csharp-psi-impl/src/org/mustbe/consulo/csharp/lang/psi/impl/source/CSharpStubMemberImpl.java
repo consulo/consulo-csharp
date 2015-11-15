@@ -77,6 +77,16 @@ public abstract class CSharpStubMemberImpl<S extends MemberStub<?>> extends CSha
 		return modifierList != null && modifierList.hasModifier(modifier);
 	}
 
+	@RequiredReadAction
+	public void addModifier(@NotNull DotNetModifier modifier)
+	{
+		DotNetModifierList modifierList = getModifierList();
+		if(modifierList != null)
+		{
+			modifierList.addModifier(modifier);
+		}
+	}
+
 	@Override
 	@Nullable
 	@RequiredReadAction

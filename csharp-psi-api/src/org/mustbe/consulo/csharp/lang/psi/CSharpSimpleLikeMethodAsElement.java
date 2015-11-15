@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import com.intellij.psi.PsiElement;
@@ -28,7 +29,11 @@ import com.intellij.psi.PsiElement;
  */
 public interface CSharpSimpleLikeMethodAsElement extends DotNetElement, CSharpSimpleLikeMethod
 {
+	@RequiredReadAction
 	boolean hasModifier(@NotNull DotNetModifier modifier);
+
+	@RequiredReadAction
+	void addModifier(@NotNull DotNetModifier modifier);
 
 	@Nullable
 	PsiElement getCodeBlock();

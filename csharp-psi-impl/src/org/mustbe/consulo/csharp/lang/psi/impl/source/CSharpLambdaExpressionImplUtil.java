@@ -22,13 +22,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
-import org.mustbe.consulo.csharp.lang.psi.CSharpNamedFieldOrPropertySet;
-import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
@@ -40,6 +34,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -52,6 +47,18 @@ import com.intellij.util.ObjectUtil;
 public class CSharpLambdaExpressionImplUtil
 {
 	public static final Key<DotNetTypeRef> TYPE_REF_OF_LAMBDA = Key.create("type.ref.of.lambda");
+
+	@RequiredReadAction
+	public static void addModifier(@NotNull CSharpAnonymousMethodExpression expression, @NotNull CSharpModifier modifier)
+	{
+		PsiElement anchor = expression.getFirstChild();
+
+		CSharpFieldDeclaration field = CSharpFileFactory.createField(expression.getProject(), modifier.getPresentableText() + " int b");
+		PsiElement modifierElement = field.getModifierList().getModifierElement(modifier);
+		assert modifierElement != null;
+		PsiElement psiElement = expression.addBefore(modifierElement, anchor);
+		expression.addAfter(PsiParserFacade.SERVICE.getInstance(expression.getProject()).createWhiteSpaceFromText(" "), psiElement);
+	}
 
 	@NotNull
 	@RequiredReadAction

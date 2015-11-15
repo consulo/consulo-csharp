@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameterList;
@@ -56,12 +57,21 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements CSh
 		super(node);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
 		return getModifierElement(modifier) != null;
 	}
 
+	@RequiredReadAction
+	@Override
+	public void addModifier(@NotNull DotNetModifier modifier)
+	{
+		CSharpLambdaExpressionImplUtil.addModifier(this, CSharpModifier.as(modifier));
+	}
+
+	@RequiredReadAction
 	@Override
 	@Nullable
 	public PsiElement getModifierElement(@NotNull DotNetModifier modifier)

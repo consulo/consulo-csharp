@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
@@ -133,12 +134,21 @@ public class CSharpDelegateExpressionImpl extends CSharpElementImpl implements C
 		return type.getReturnTypeRef();
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
 		return getModifierElement(modifier) != null;
 	}
 
+	@RequiredReadAction
+	@Override
+	public void addModifier(@NotNull DotNetModifier modifier)
+	{
+		CSharpLambdaExpressionImplUtil.addModifier(this, CSharpModifier.as(modifier));
+	}
+
+	@RequiredReadAction
 	@Override
 	@Nullable
 	public PsiElement getModifierElement(@NotNull DotNetModifier modifier)

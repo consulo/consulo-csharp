@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import com.intellij.psi.PsiElement;
@@ -96,5 +97,12 @@ public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclarati
 	public DotNetType getTypeForImplement()
 	{
 		return myOriginal.getTypeForImplement();
+	}
+
+	@RequiredReadAction
+	@Override
+	public void addModifier(@NotNull DotNetModifier modifier)
+	{
+		myOriginal.addModifier(modifier);
 	}
 }

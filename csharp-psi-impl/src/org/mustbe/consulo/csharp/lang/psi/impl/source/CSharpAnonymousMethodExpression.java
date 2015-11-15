@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
@@ -30,5 +31,6 @@ import com.intellij.psi.PsiElement;
 public interface CSharpAnonymousMethodExpression extends DotNetExpression, CSharpSimpleLikeMethodAsElement
 {
 	@Nullable
+	@RequiredReadAction
 	PsiElement getModifierElement(@NotNull DotNetModifier modifier);
 }
