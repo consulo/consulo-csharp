@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
@@ -63,13 +64,19 @@ public class CS1998 extends CompilerCheck<CSharpSimpleLikeMethodAsElement>
 
 		if(visitor.getValue() == null)
 		{
-			return newBuilder(modifierElement);
+			CompilerCheckBuilder builder = newBuilder(modifierElement);
+			if(element instanceof DotNetModifierListOwner)
+			{
+				builder.addQuickFix(new RemoveModifierFix(CSharpModifier.ASYNC, (DotNetModifierListOwner) element));
+			}
+			return builder;
 		}
 
 		return null;
 	}
 
 	@Nullable
+	@RequiredReadAction
 	public static PsiElement getAsyncModifier(PsiElement element)
 	{
 		if(!(element instanceof CSharpSimpleLikeMethodAsElement))
