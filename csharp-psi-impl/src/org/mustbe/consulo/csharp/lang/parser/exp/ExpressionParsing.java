@@ -688,10 +688,13 @@ public class ExpressionParsing extends SharedParsingHelpers
 		{
 			linqState = builder.enableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
 		}
+		if(version.isAtLeast(CSharpLanguageVersion._4_0))
+		{
+			builder.enableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
+		}
 		if(modifierSet.contains(CSharpSoftTokens.ASYNC_KEYWORD))
 		{
 			builder.enableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);
-			builder.enableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
 		}
 		if(version.isAtLeast(CSharpLanguageVersion._6_0))
 		{
@@ -702,10 +705,13 @@ public class ExpressionParsing extends SharedParsingHelpers
 		{
 			builder.disableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
 		}
+		if(version.isAtLeast(CSharpLanguageVersion._4_0))
+		{
+			builder.disableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
+		}
 		if(modifierSet.contains(CSharpSoftTokens.ASYNC_KEYWORD))
 		{
 			builder.disableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);
-			builder.disableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
 		}
 		if(version.isAtLeast(CSharpLanguageVersion._6_0))
 		{
