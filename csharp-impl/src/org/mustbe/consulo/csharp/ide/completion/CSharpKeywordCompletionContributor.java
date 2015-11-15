@@ -130,11 +130,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 									{
 										CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(parameters.getOriginalPosition(), CSharpSimpleLikeMethodAsElement.class);
 
-										if(methodAsElement instanceof DotNetMethodDeclaration && DotNetRunUtil.isEntryPoint((DotNetMethodDeclaration) methodAsElement))
-										{
-											return false;
-										}
-										if(methodAsElement == null)
+										if(methodAsElement == null || methodAsElement instanceof DotNetMethodDeclaration && DotNetRunUtil.isEntryPoint((DotNetMethodDeclaration) methodAsElement))
 										{
 											return false;
 										}
