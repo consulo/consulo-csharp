@@ -36,6 +36,8 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
 
 /**
  * @author VISTALL
@@ -43,8 +45,6 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  */
 public class CSharpDelegateExpressionImpl extends CSharpElementImpl implements CSharpAnonymousMethodExpression, DotNetParameterListOwner
 {
-	private CSharpAnonymousModifierListImpl myModifierList = new CSharpAnonymousModifierListImpl(this);
-
 	public CSharpDelegateExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
@@ -86,8 +86,7 @@ public class CSharpDelegateExpressionImpl extends CSharpElementImpl implements C
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement
-			place)
+	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place)
 	{
 		if(ExecuteTargetUtil.canProcess(processor, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER))
 		{
@@ -139,7 +138,7 @@ public class CSharpDelegateExpressionImpl extends CSharpElementImpl implements C
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		return myModifierList.hasModifier(modifier);
+		return getModifierList().hasModifier(modifier);
 	}
 
 	@RequiredReadAction
@@ -147,7 +146,15 @@ public class CSharpDelegateExpressionImpl extends CSharpElementImpl implements C
 	@Override
 	public DotNetModifierList getModifierList()
 	{
-		return myModifierList;
+		return CachedValuesManager.getManager(getProject()).createCachedValue(new CachedValueProvider<DotNetModifierList>()
+		{
+			@Nullable
+			@Override
+			public Result<DotNetModifierList> compute()
+			{
+				return Result.<DotNetModifierList>create(new CSharpAnonymousModifierListImpl(CSharpDelegateExpressionImpl.this), CSharpDelegateExpressionImpl.this);
+			}
+		}, false).getValue();
 	}
 
 	@Nullable

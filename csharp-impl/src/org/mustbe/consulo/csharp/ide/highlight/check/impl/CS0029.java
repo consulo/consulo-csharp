@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.AddModifierFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CastExpressionToTypeRef;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.ChangeReturnToTypeRefFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.ChangeVariableToTypeRefFix;
@@ -30,6 +31,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
@@ -46,8 +48,10 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaR
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -108,6 +112,21 @@ public class CS0029 extends CompilerCheck<PsiElement>
 				if(methodElement instanceof CSharpConversionMethodDeclaration || methodElement instanceof CSharpMethodDeclaration)
 				{
 					builder.addQuickFix(new ChangeReturnToTypeRefFix((DotNetLikeMethodDeclaration) methodElement, secondTypeRef));
+				}
+
+				if(CSharpModuleUtil.findLanguageVersion(element).isAtLeast(CSharpLanguageVersion._4_0))
+				{
+					DotNetTypeResolveResult typeResolveResult = firstTypeRef.resolve(element);
+					PsiElement firstElement = typeResolveResult.getElement();
+					if(firstElement instanceof CSharpTypeDeclaration && DotNetTypes.System.Threading.Tasks.Task$1.equals(((CSharpTypeDeclaration) firstElement).getVmQName()))
+					{
+						DotNetGenericParameter[] genericParameters = ((CSharpTypeDeclaration) firstElement).getGenericParameters();
+						DotNetTypeRef genericParameterTypeRef = typeResolveResult.getGenericExtractor().extract(genericParameters[0]);
+						if(genericParameterTypeRef != null && CSharpTypeUtil.isInheritable(genericParameterTypeRef, secondTypeRef, element))
+						{
+							builder.addQuickFix(new AddModifierFix(CSharpModifier.ASYNC, methodElement));
+						}
+					}
 				}
 			}
 			return builder;

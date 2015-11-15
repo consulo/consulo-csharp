@@ -43,6 +43,8 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
 import lombok.val;
 
 /**
@@ -51,8 +53,6 @@ import lombok.val;
  */
 public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements CSharpAnonymousMethodExpression
 {
-	private CSharpAnonymousModifierListImpl myModifierList = new CSharpAnonymousModifierListImpl(this);
-
 	public CSharpLambdaExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
@@ -62,7 +62,7 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements CSh
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		return myModifierList.hasModifier(modifier);
+		return getModifierList().hasModifier(modifier);
 	}
 
 	@RequiredReadAction
@@ -70,7 +70,15 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements CSh
 	@Override
 	public DotNetModifierList getModifierList()
 	{
-		return myModifierList;
+		return CachedValuesManager.getManager(getProject()).createCachedValue(new CachedValueProvider<DotNetModifierList>()
+		{
+			@Nullable
+			@Override
+			public Result<DotNetModifierList> compute()
+			{
+				return Result.<DotNetModifierList>create(new CSharpAnonymousModifierListImpl(CSharpLambdaExpressionImpl.this), CSharpLambdaExpressionImpl.this);
+			}
+		}, false).getValue();
 	}
 
 	@Nullable
