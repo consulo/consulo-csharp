@@ -25,6 +25,8 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
@@ -69,12 +71,32 @@ public class StaticVsInstanceComparator implements Comparator<ResolveResult>
 	{
 		if(isNameEqual(o1, o2))
 		{
-			return getWeight(o2) - getWeight(o1);
+			int i = getWeight(o2) - getWeight(o1);
+			if(i == 0)
+			{
+				return getWeightByTypeArguments(o2) - getWeightByTypeArguments(o1);
+			}
+			return i;
 		}
 		return myComparator.compare(o1, o2);
 	}
 
-	private boolean isNameEqual(ResolveResult o1, ResolveResult o2)
+	@RequiredReadAction
+	private int getWeightByTypeArguments(ResolveResult o1)
+	{
+		PsiElement element = o1.getElement();
+		if(element instanceof DotNetGenericParameterListOwner)
+		{
+			int genericParametersCount = ((DotNetGenericParameterListOwner) element).getGenericParametersCount();
+			if(genericParametersCount == CSharpReferenceExpressionImplUtil.getTypeArgumentListSize(myParent))
+			{
+				return 500;
+			}
+		}
+		return 0;
+	}
+
+	private static boolean isNameEqual(ResolveResult o1, ResolveResult o2)
 	{
 		PsiElement e1 = o1.getElement();
 		PsiElement e2 = o2.getElement();
