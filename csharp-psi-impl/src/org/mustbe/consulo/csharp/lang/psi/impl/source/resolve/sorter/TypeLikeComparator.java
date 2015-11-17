@@ -48,15 +48,15 @@ public class TypeLikeComparator implements Comparator<ResolveResult>
 
 		if(element instanceof DotNetVariable || element instanceof CSharpElementGroup)
 		{
-			return 1000;
+			return 100000;
 		}
 		if(element instanceof DotNetGenericParameterListOwner)
 		{
 			if(((DotNetGenericParameterListOwner) element).getGenericParametersCount() == myGenericCount)
 			{
-				return 500;
+				return 50000;
 			}
-			return 250;
+			return -((DotNetGenericParameterListOwner) element).getGenericParametersCount() * 100;
 		}
 
 		if(element instanceof DotNetNamespaceAsElement)
@@ -64,6 +64,6 @@ public class TypeLikeComparator implements Comparator<ResolveResult>
 			return 0;
 		}
 
-		return 50;
+		return 10;
 	}
 }
