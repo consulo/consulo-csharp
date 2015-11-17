@@ -309,7 +309,6 @@
 
 		<eapDescriptor implementation="org.mustbe.consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent$EapDescriptor"/>
 		<eapDescriptor implementation="org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0030$CS0030TypeCast"/>
-		<eapDescriptor implementation="org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder$PropertyAndEventCompletionNew"/>
 
 		<xdebugger.lineBreakpointResolver filetype="C#"
 										  implementationClass="org.mustbe.consulo.dotnet.debugger.linebreakType.DotNetLineBreakpointResolver"

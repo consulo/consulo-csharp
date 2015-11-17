@@ -264,7 +264,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 		{
 			@Override
 			@RequiredReadAction
-			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull final CompletionResultSet result)
+			protected void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull final CompletionResultSet result)
 			{
 				final CSharpReferenceExpressionEx expression = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
 				CSharpReferenceExpression.ResolveToKind kind = expression.kind();
@@ -338,7 +338,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 		{
 			@Override
 			@RequiredReadAction
-			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull final CompletionResultSet result)
+			protected void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull final CompletionResultSet result)
 			{
 				CSharpReferenceExpressionEx expression = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
 
@@ -359,6 +359,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 				CSharpReferenceExpressionImplUtil.collectResults(options, new Processor<ResolveResult>()
 				{
 					@Override
+					@RequiredReadAction
 					public boolean process(ResolveResult resolveResult)
 					{
 						ProgressManager.checkCanceled();

@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.ide.liveTemplates.macro;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -43,6 +44,7 @@ public abstract class VariableTypeMacroBase extends Macro
 	protected abstract PsiElement[] getVariables(Expression[] params, final ExpressionContext context);
 
 	@Override
+	@RequiredReadAction
 	public LookupElement[] calculateLookupItems(@NotNull Expression[] params, final ExpressionContext context)
 	{
 		final PsiElement[] vars = getVariables(params, context);
