@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.ide.debugger;
 
 import java.util.List;
+import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,9 +23,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.Consumer;
 import com.intellij.xdebugger.XDebugSession;
 import com.intellij.xdebugger.XSourcePosition;
 import com.intellij.xdebugger.evaluation.XDebuggerEvaluator;
+import com.intellij.xdebugger.frame.XNamedValue;
 import mono.debugger.FieldOrPropertyMirror;
 import mono.debugger.StackFrameMirror;
 import mono.debugger.Value;
@@ -128,7 +131,8 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 	public void evaluate(@NotNull StackFrameMirror frame,
 			@NotNull DotNetDebugContext debuggerContext,
 			@NotNull DotNetReferenceExpression referenceExpression,
-			@NotNull XDebuggerEvaluator.XEvaluationCallback callback)
+			@NotNull Set<Object> visitedVariables,
+			@NotNull Consumer<XNamedValue> consumer)
 	{
 		CSharpExpressionEvaluator expressionEvaluator = new CSharpExpressionEvaluator();
 		try
@@ -147,13 +151,21 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 			Pair<Value<?>, Object> objectPair = evaluateContext.pop();
 			if(objectPair != null && objectPair.getSecond() instanceof FieldOrPropertyMirror)
 			{
-				callback.evaluated(new CSharpWatcherNode(debuggerContext, referenceExpression.getText(), frame.thread(), objectPair.getFirst()));
+				FieldOrPropertyMirror fieldOrPropertyMirror = (FieldOrPropertyMirror) objectPair.getSecond();
+				if(visitedVariables.contains(fieldOrPropertyMirror))
+				{
+					return;
+				}
+				visitedVariables.add(fieldOrPropertyMirror);
+				consumer.consume(new CSharpWatcherNode(debuggerContext, referenceExpression.getText(), frame.thread(), objectPair.getFirst()));
 			}
 		}
 		catch(Exception e)
 		{
+			// ignored
 		}
 	}
+
 
 	@Override
 	public boolean isSupported(@NotNull PsiFile psiFile)
