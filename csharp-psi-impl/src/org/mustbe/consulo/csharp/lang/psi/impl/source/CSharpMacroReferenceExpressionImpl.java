@@ -33,7 +33,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -81,7 +80,7 @@ public class CSharpMacroReferenceExpressionImpl extends CSharpMacroElementImpl i
 			return null;
 		}
 
-		val text = getText();
+		String text = getText();
 
 		Map<String, CSharpMacroDefine> map = new HashMap<String, CSharpMacroDefine>();
 

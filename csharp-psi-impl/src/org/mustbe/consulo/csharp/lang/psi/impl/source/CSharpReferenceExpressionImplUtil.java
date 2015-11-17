@@ -20,6 +20,7 @@ import static org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression.Resol
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -78,7 +79,6 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.ObjectUtil;
 import com.intellij.util.Processor;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -502,7 +502,7 @@ public class CSharpReferenceExpressionImplUtil
 					PsiElement resolveResultElement = resolveResult.getElement();
 					if(resolveResultElement instanceof CSharpTypeDeclaration)
 					{
-						val map = new HashMap<DotNetGenericParameter, DotNetTypeRef>();
+						Map<DotNetGenericParameter, DotNetTypeRef> map = new HashMap<DotNetGenericParameter, DotNetTypeRef>();
 						DotNetGenericParameter[] genericParameters = ((CSharpTypeDeclaration) resolveResultElement).getGenericParameters();
 						for(int j = 0; j < typeArgumentListRefs.length; j++)
 						{
@@ -564,7 +564,7 @@ public class CSharpReferenceExpressionImplUtil
 				}
 			default:
 			case ATTRIBUTE:
-				val referenceName = element.getReferenceName();
+				String referenceName = element.getReferenceName();
 				if(referenceName == null)
 				{
 					return ResolveResult.EMPTY_ARRAY;

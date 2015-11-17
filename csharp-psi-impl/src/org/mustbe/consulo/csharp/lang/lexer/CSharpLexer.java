@@ -24,12 +24,12 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
 import com.intellij.lexer.Lexer;
+import com.intellij.lexer.LexerPosition;
 import com.intellij.lexer.MergeFunction;
 import com.intellij.lexer.MergingLexerAdapterBase;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -66,7 +66,7 @@ public class CSharpLexer extends MergingLexerAdapterBase
 				{
 					if(hasOnlyOneLine(originalLexer.getTokenSequence()))
 					{
-						val currentPosition = originalLexer.getCurrentPosition();
+						LexerPosition currentPosition = originalLexer.getCurrentPosition();
 						originalLexer.advance();
 						boolean docIsNext = originalLexer.getTokenType() == CSharpTokensImpl.LINE_DOC_COMMENT;
 						originalLexer.restore(currentPosition);

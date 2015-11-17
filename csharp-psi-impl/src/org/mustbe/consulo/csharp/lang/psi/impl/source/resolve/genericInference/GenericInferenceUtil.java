@@ -30,7 +30,6 @@ import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -102,7 +101,7 @@ public class GenericInferenceUtil
 			return new GenericInferenceResult(true, DotNetGenericExtractor.EMPTY);
 		}
 
-		val map = new THashMap<DotNetGenericParameter, DotNetTypeRef>();
+		final Map<DotNetGenericParameter, DotNetTypeRef> map = new THashMap<DotNetGenericParameter, DotNetTypeRef>();
 
 		for(NCallArgument nCallArgument : methodCallArguments)
 		{
@@ -251,7 +250,7 @@ public class GenericInferenceUtil
 	@NotNull
 	private static DotNetTypeRef unwrapPossibleGenericTypeRefs(@NotNull NCallArgument nCallArgument,
 			@NotNull DotNetTypeRef parameterTypeRef,
-			@NotNull THashMap<DotNetGenericParameter, DotNetTypeRef> map,
+			@NotNull Map<DotNetGenericParameter, DotNetTypeRef> map,
 			@NotNull PsiElement scope)
 	{
 		DotNetTypeRef expressionTypeRef = nCallArgument.getTypeRef();

@@ -36,7 +36,6 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.SingleRootFileViewProvider;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.testFramework.LightVirtualFile;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -46,7 +45,7 @@ public class CSharpFileFactory
 {
 	public static CSharpUsingListImpl createUsingList(@NotNull Project project, @NotNull String qName)
 	{
-		val fileFromText = (CSharpFileImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy.cs", CSharpFileType.INSTANCE,
+		CSharpFileImpl fileFromText = (CSharpFileImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy.cs", CSharpFileType.INSTANCE,
 				"using " + qName + ";");
 
 		return (CSharpUsingListImpl) fileFromText.getFirstChild();
@@ -54,14 +53,14 @@ public class CSharpFileFactory
 
 	public static CSharpUsingListImpl createUsingListFromText(@NotNull Project project, @NotNull String text)
 	{
-		val fileFromText = (CSharpFileImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy.cs", CSharpFileType.INSTANCE, text);
+		CSharpFileImpl fileFromText = (CSharpFileImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy.cs", CSharpFileType.INSTANCE, text);
 
 		return (CSharpUsingListImpl) fileFromText.getFirstChild();
 	}
 
 	public static CSharpUsingNamespaceStatement createUsingStatement(@NotNull Project project, @NotNull String qName)
 	{
-		val fileFromText = (CSharpFileImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy.cs", CSharpFileType.INSTANCE,
+		CSharpFileImpl fileFromText = (CSharpFileImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy.cs", CSharpFileType.INSTANCE,
 				"using " + qName + ";");
 
 		CSharpUsingListImpl firstChild = (CSharpUsingListImpl) fileFromText.getFirstChild();
@@ -78,7 +77,7 @@ public class CSharpFileFactory
 		}
 		else
 		{
-			val statement = (CSharpLocalVariableDeclarationStatement) createStatement(project, typeText + " i;");
+			CSharpLocalVariableDeclarationStatement statement = (CSharpLocalVariableDeclarationStatement) createStatement(project, typeText + " i;");
 			CSharpLocalVariable localVariable = statement.getVariables()[0];
 			return localVariable.getType();
 		}
@@ -146,7 +145,7 @@ public class CSharpFileFactory
 
 	public static DotNetStatement createStatement(@NotNull Project project, @NotNull String text)
 	{
-		val clazz = "class _Dummy { " +
+		String clazz = "class _Dummy { " +
 				"void test() {" +
 				text +
 				"}" +
@@ -168,8 +167,8 @@ public class CSharpFileFactory
 
 	private static CSharpFileImpl createTypeDeclarationWithScope(Project project, CharSequence text)
 	{
-		val virtualFile = new LightVirtualFile("dummy.cs", CSharpFileType.INSTANCE, text, System.currentTimeMillis());
-		val viewProvider = new SingleRootFileViewProvider(PsiManager.getInstance(project), virtualFile, false);
+		LightVirtualFile virtualFile = new LightVirtualFile("dummy.cs", CSharpFileType.INSTANCE, text, System.currentTimeMillis());
+		SingleRootFileViewProvider viewProvider = new SingleRootFileViewProvider(PsiManager.getInstance(project), virtualFile, false);
 		return new CSharpFileImpl(viewProvider);
 	}
 }

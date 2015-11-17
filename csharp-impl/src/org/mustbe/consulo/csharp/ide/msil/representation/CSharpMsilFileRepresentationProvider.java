@@ -43,6 +43,7 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
@@ -50,7 +51,6 @@ import com.intellij.psi.SingleRootFileViewProvider;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.impl.PsiManagerEx;
 import com.intellij.util.containers.ContainerUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -146,11 +146,11 @@ public class CSharpMsilFileRepresentationProvider implements MsilFileRepresentat
 
 		CharSequence charSequence = StubBlockUtil.buildText(list);
 
-		val virtualFile = new MsilFileRepresentationVirtualFile(fileName, CSharpFileType.INSTANCE, charSequence);
+		final VirtualFile virtualFile = new MsilFileRepresentationVirtualFile(fileName, CSharpFileType.INSTANCE, charSequence);
 
 		SingleRootFileViewProvider viewProvider = new SingleRootFileViewProvider(PsiManager.getInstance(msilFile.getProject()), virtualFile, true);
 
-		val file = new CSharpFileImpl(viewProvider);
+		final PsiFile file = new CSharpFileImpl(viewProvider);
 
 		viewProvider.forceCachedPsi(file);
 

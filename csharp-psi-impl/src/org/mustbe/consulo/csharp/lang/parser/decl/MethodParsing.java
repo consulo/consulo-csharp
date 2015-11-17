@@ -29,7 +29,6 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.BitUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -180,7 +179,7 @@ public class MethodParsing extends MemberWithBodyParsing
 
 	public static void parseParameterList(CSharpBuilderWrapper builder, int flags, IElementType end, ModifierSet set)
 	{
-		val mark = builder.mark();
+		PsiBuilder.Marker mark = builder.mark();
 
 		builder.advanceLexer();
 

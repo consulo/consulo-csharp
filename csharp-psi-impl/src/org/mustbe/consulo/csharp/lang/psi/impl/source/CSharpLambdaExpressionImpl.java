@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,7 +46,6 @@ import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -161,7 +161,7 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements CSh
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 
-		val typeRefs = new ArrayList<DotNetTypeRef>();
+		final List<DotNetTypeRef> typeRefs = new ArrayList<DotNetTypeRef>();
 		codeBlock.accept(new CSharpRecursiveElementVisitor()
 		{
 			@Override

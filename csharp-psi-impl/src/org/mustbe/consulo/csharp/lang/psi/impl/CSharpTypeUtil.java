@@ -53,7 +53,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ObjectUtil;
 import com.intellij.util.SmartList;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -399,7 +398,7 @@ public class CSharpTypeUtil
 		if(topGenericExtractor != DotNetGenericExtractor.EMPTY && topElement instanceof DotNetTypeDeclaration)
 		{
 			DotNetTypeDeclaration topTypeDeclaration = (DotNetTypeDeclaration) topElement;
-			val typeFromSuper = findTypeRefFromExtends(target, topTypeDeclaration, scope);
+			DotNetTypeResolveResult typeFromSuper = findTypeRefFromExtends(target, topTypeDeclaration, scope);
 
 			if(typeFromSuper == null)
 			{

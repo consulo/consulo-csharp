@@ -23,7 +23,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -163,7 +162,7 @@ public class MacroExpressionParsing implements CSharpMacroTokens, CSharpMacroEle
 
 		if(tokenType == IDENTIFIER)
 		{
-			val refExpr = builder.mark();
+			PsiBuilder.Marker refExpr = builder.mark();
 
 			builder.advanceLexer();
 			refExpr.done(REFERENCE_EXPRESSION);

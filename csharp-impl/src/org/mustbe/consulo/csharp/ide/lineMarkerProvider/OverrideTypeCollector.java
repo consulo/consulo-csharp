@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.swing.Icon;
 import javax.swing.JComponent;
 
 import org.jetbrains.annotations.NotNull;
@@ -46,7 +47,6 @@ import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -63,9 +63,9 @@ public class OverrideTypeCollector implements LineMarkerCollector
 		{
 			if(hasChild(parent))
 			{
-				val icon = parent.isInterface() ? AllIcons.Gutter.ImplementedMethod : AllIcons.Gutter.OverridenMethod;
-				val lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.UPDATE_OVERRIDEN_MARKERS,
-						new Function<PsiElement, String>()
+				final Icon icon = parent.isInterface() ? AllIcons.Gutter.ImplementedMethod : AllIcons.Gutter.OverridenMethod;
+				LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.UPDATE_OVERRIDEN_MARKERS, new Function<PsiElement,
+						String>()
 
 				{
 					@Override
@@ -80,8 +80,7 @@ public class OverrideTypeCollector implements LineMarkerCollector
 					{
 						final DotNetTypeDeclaration typeDeclaration = CSharpLineMarkerUtil.getNameIdentifierAs(element, CSharpTypeDeclaration.class);
 						assert typeDeclaration != null;
-						final CommonProcessors.CollectProcessor<DotNetTypeDeclaration> collectProcessor = new CommonProcessors
-								.CollectProcessor<DotNetTypeDeclaration>();
+						final CommonProcessors.CollectProcessor<DotNetTypeDeclaration> collectProcessor = new CommonProcessors.CollectProcessor<DotNetTypeDeclaration>();
 						if(!ProgressManager.getInstance().runProcessWithProgressSynchronously(new Runnable()
 						{
 							@Override
@@ -109,8 +108,8 @@ public class OverrideTypeCollector implements LineMarkerCollector
 						PsiNamedElement[] inheritors = ContainerUtil.toArray(typeDeclarations, PsiNamedElement.EMPTY_ARRAY);
 						ContainerUtil.sort(inheritors, PsiNamedElementComparator.INSTANCE);
 
-						JBPopup popup = NavigationUtil.getPsiElementPopup(inheritors, new DefaultPsiElementCellRenderer(),
-								"Open types (" + inheritors.length + " items)", new PsiElementProcessor<PsiElement>()
+						JBPopup popup = NavigationUtil.getPsiElementPopup(inheritors, new DefaultPsiElementCellRenderer(), "Open types (" + inheritors.length + " items)",
+								new PsiElementProcessor<PsiElement>()
 						{
 							@Override
 							public boolean execute(@NotNull PsiElement element)

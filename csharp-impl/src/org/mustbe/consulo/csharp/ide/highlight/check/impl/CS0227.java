@@ -37,11 +37,11 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -85,7 +85,7 @@ public class CS0227 extends CompilerCheck<DotNetElement>
 
 			ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(moduleForPsiElement);
 
-			val modifiableModel = moduleRootManager.getModifiableModel();
+			final ModifiableRootModel modifiableModel = moduleRootManager.getModifiableModel();
 			CSharpSimpleMutableModuleExtension cSharpModuleExtension = modifiableModel.getExtension(CSharpSimpleMutableModuleExtension.class);
 			if(cSharpModuleExtension != null)
 			{

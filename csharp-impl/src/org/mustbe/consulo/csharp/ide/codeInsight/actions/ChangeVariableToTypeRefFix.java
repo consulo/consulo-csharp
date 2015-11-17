@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
@@ -31,7 +32,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.util.IncorrectOperationException;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -76,6 +76,7 @@ public class ChangeVariableToTypeRefFix extends BaseIntentionAction
 	}
 
 	@Override
+	@RequiredDispatchThread
 	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 	{
 		PsiDocumentManager.getInstance(project).commitAllDocuments();
@@ -93,7 +94,7 @@ public class ChangeVariableToTypeRefFix extends BaseIntentionAction
 		}
 		String typeText = CSharpTypeRefPresentationUtil.buildShortText(myToTypeRef, element);
 
-		val type = CSharpFileFactory.createStubType(project, typeText, typeOfVariable);
+		DotNetType type = CSharpFileFactory.createStubType(project, typeText, typeOfVariable);
 
 		typeOfVariable.replace(type);
 	}

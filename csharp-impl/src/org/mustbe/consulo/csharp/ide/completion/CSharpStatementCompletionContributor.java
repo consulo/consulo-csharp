@@ -59,7 +59,6 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.NotNullPairFunction;
 import com.intellij.util.ProcessingContext;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -117,6 +116,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 				psiElement().inside(CSharpForStatementImpl.class), psiElement().inside(CSharpWhileStatementImpl.class),
 				psiElement().inside(CSharpDoWhileStatementImpl.class))), new CompletionProvider<CompletionParameters>()
 		{
+			@RequiredReadAction
 			@Override
 			protected void addCompletions(@NotNull final CompletionParameters parameters,
 					ProcessingContext context,
@@ -149,12 +149,13 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 		extend(CompletionType.BASIC, CSharpPatterns.statementStart().inside(psiElement().inside(CSharpSimpleLikeMethodAsElement.class)).andNot
 				(psiElement().inside(CSharpFinallyStatementImpl.class)), new CompletionProvider<CompletionParameters>()
 		{
+			@RequiredReadAction
 			@Override
 			protected void addCompletions(@NotNull final CompletionParameters parameters,
 					ProcessingContext context,
 					@NotNull CompletionResultSet result)
 			{
-				val pseudoMethod = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpSimpleLikeMethodAsElement.class);
+				final CSharpSimpleLikeMethodAsElement pseudoMethod = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpSimpleLikeMethodAsElement.class);
 				assert pseudoMethod != null;
 				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.RETURN_KEYWORD, new NotNullPairFunction<LookupElementBuilder,
 						IElementType, LookupElement>()
@@ -174,7 +175,8 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 		extend(CompletionType.BASIC, CSharpPatterns.statementStart().inside(CSharpLabeledStatementImpl.class),
 				new CompletionProvider<CompletionParameters>()
 		{
-			@Override
+					@RequiredReadAction
+					@Override
 			protected void addCompletions(@NotNull final CompletionParameters parameters,
 					ProcessingContext context,
 					@NotNull CompletionResultSet result)
@@ -209,6 +211,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 		extend(CompletionType.BASIC, psiElement().withSuperParent(4, CSharpSwitchStatementImpl.class), new CompletionProvider<CompletionParameters>()
 
 		{
+			@RequiredReadAction
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
@@ -277,6 +280,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 
 		extend(CompletionType.BASIC, CSharpPatterns.statementStart(), new CompletionProvider<CompletionParameters>()
 		{
+			@RequiredReadAction
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
@@ -346,11 +350,12 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpSoftTokens.YIELD_KEYWORD)),
 				new CompletionProvider<CompletionParameters>()
 		{
-			@Override
+					@RequiredReadAction
+					@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
-				val position = parameters.getPosition();
-				val methodAsElement = PsiTreeUtil.getParentOfType(position, CSharpSimpleLikeMethodAsElement.class);
+				final PsiElement position = parameters.getPosition();
+				final CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(position, CSharpSimpleLikeMethodAsElement.class);
 				if(methodAsElement == null)
 				{
 					return;
@@ -374,6 +379,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.ELSE_KEYWORD)).withSuperParent(2,
 				CSharpExpressionStatementImpl.class), new CompletionProvider<CompletionParameters>()
 		{
+			@RequiredReadAction
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
@@ -394,6 +400,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 
 		extend(CompletionType.BASIC, psiElement(), new CompletionProvider<CompletionParameters>()
 		{
+			@RequiredReadAction
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
@@ -437,6 +444,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.RPAR).withParent(CSharpCatchStatementImpl
 				.class)), new CompletionProvider<CompletionParameters>()
 		{
+			@RequiredReadAction
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{

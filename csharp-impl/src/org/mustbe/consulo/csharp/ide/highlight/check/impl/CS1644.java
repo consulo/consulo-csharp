@@ -55,7 +55,6 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -87,7 +86,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 
 			ModifiableRootModel modifiableModel = rootManager.getModifiableModel();
 
-			val mutable = modifiableModel.getExtension(CSharpMutableModuleExtension.class);
+			final CSharpMutableModuleExtension mutable = modifiableModel.getExtension(CSharpMutableModuleExtension.class);
 			assert mutable != null;
 			mutable.setLanguageVersion(myLanguageVersion);
 

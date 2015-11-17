@@ -51,7 +51,6 @@ import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.util.Processor;
 import com.intellij.util.SmartList;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -170,14 +169,14 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 	@NotNull
 	public GenericInferenceUtil.GenericInferenceResult inferenceGenericExtractor(CSharpMethodDeclaration methodDeclaration)
 	{
-		val arguments = myCallArgumentListOwner == null ? CSharpCallArgument.EMPTY_ARRAY : myCallArgumentListOwner.getCallArguments();
+		CSharpCallArgument[] arguments = myCallArgumentListOwner == null ? CSharpCallArgument.EMPTY_ARRAY : myCallArgumentListOwner.getCallArguments();
 
 		CSharpCallArgument[] newArguments = new CSharpCallArgument[arguments.length + 1];
 		System.arraycopy(arguments, 0, newArguments, 1, arguments.length);
 
 		newArguments[0] = myArgumentWrapper;
 
-		val typeArgumentRefs = myExpression.getTypeArgumentListRefs();
+		DotNetTypeRef[] typeArgumentRefs = myExpression.getTypeArgumentListRefs();
 		return GenericInferenceUtil.inferenceGenericExtractor(newArguments, typeArgumentRefs, myExpression, methodDeclaration);
 	}
 

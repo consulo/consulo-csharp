@@ -24,7 +24,6 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -49,7 +48,7 @@ public class CSharpParenthesesPostfixTemplate extends PostfixTemplate
 	@Override
 	public void expand(@NotNull PsiElement context, @NotNull Editor editor)
 	{
-		val newExpression = CSharpFileFactory.createExpression(context.getProject(), "(" + context.getText() + ")");
+		DotNetExpression newExpression = CSharpFileFactory.createExpression(context.getProject(), "(" + context.getText() + ")");
 
 		context.replace(newExpression);
 	}

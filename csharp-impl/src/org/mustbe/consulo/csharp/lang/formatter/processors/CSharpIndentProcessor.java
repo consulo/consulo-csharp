@@ -18,7 +18,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.codeInsight.CommentUtilCore;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -45,7 +44,7 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 			return Indent.getNoneIndent();
 		}
 
-		val elementType = myNode.getElementType();
+		final IElementType elementType = myNode.getElementType();
 		if(elementType == NAMESPACE_DECLARATION ||
 				elementType == TYPE_DECLARATION ||
 				elementType == METHOD_DECLARATION ||

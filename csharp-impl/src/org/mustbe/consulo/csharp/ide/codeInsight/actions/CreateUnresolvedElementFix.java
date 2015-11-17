@@ -45,7 +45,6 @@ import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -89,7 +88,7 @@ public abstract class CreateUnresolvedElementFix extends BaseIntentionAction
 	public void invoke(@NotNull Project project, final Editor editor, PsiFile file) throws IncorrectOperationException
 	{
 		PsiDocumentManager.getInstance(project).commitAllDocuments();
-		val generateContext = createGenerateContext();
+		final CreateUnresolvedElementFixContext generateContext = createGenerateContext();
 		if(generateContext == null)
 		{
 			return;
@@ -97,8 +96,8 @@ public abstract class CreateUnresolvedElementFix extends BaseIntentionAction
 
 		CSharpContextUtil.ContextType contextType = CSharpContextUtil.getParentContextTypeForReference(generateContext.getExpression());
 
-		val templateManager = TemplateManager.getInstance(project);
-		val template = templateManager.createTemplate("", "");
+		final TemplateManager templateManager = TemplateManager.getInstance(project);
+		final Template template = templateManager.createTemplate("", "");
 		template.setToReformat(true);
 
 		template.addTextSegment("\n\n");

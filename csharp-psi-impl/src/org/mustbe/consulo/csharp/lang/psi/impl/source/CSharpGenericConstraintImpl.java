@@ -30,7 +30,6 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -71,7 +70,7 @@ public class CSharpGenericConstraintImpl extends CSharpStubElementImpl<CSharpWit
 			}
 			return null;
 		}
-		val genericParameterReference = getGenericParameterReference();
+		CSharpReferenceExpression genericParameterReference = getGenericParameterReference();
 		if(genericParameterReference == null)
 		{
 			return null;

@@ -17,9 +17,11 @@
 package org.mustbe.consulo.csharp.lang;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroBlockImpl;
@@ -32,7 +34,6 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.templateLanguages.OuterLanguageElement;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -42,15 +43,17 @@ public class CSharpMacroFoldingBuilder implements FoldingBuilder
 {
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public FoldingDescriptor[] buildFoldRegions(@NotNull ASTNode astNode, @NotNull Document document)
 	{
-		val foldingList = new ArrayList<FoldingDescriptor>();
+		final List<FoldingDescriptor> foldingList = new ArrayList<FoldingDescriptor>();
 
 		PsiElement psi = astNode.getPsi();
-
+		assert psi != null;
 		psi.accept(new CSharpMacroRecursiveElementVisitor()
 		{
 			@Override
+			@RequiredReadAction
 			public void visitMacroBlock(CSharpMacroBlockImpl block)
 			{
 				super.visitMacroBlock(block);

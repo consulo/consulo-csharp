@@ -20,8 +20,8 @@ import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
 import com.intellij.lang.PsiBuilder;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -35,7 +35,7 @@ public class MacroParsing implements CSharpMacroTokens, CSharpMacroElements
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
-		val token = builder.getTokenType();
+		IElementType token = builder.getTokenType();
 		if(token == MACRO_DEFINE_KEYWORD || token == MACRO_UNDEF_KEYWORD)
 		{
 			builder.advanceLexer();

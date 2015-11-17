@@ -27,7 +27,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.SmartList;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -43,7 +42,7 @@ public class CSharpGenericConstraintUtil
 			return Collections.<DotNetTypeRef>singletonList(new CSharpTypeRefByQName(DotNetTypes.System.Object));
 		}
 
-		val superTypes = new SmartList<DotNetTypeRef>();
+		List<DotNetTypeRef> superTypes = new SmartList<DotNetTypeRef>();
 		for(CSharpGenericConstraintValue value : genericConstraint.getGenericConstraintValues())
 		{
 			if(value instanceof CSharpGenericConstraintTypeValue)

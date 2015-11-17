@@ -41,7 +41,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.ConstantFunction;
 import com.intellij.util.containers.ContainerUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -124,16 +123,14 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 				boolean allAbstract = true;
 				for(DotNetVirtualImplementOwner overrideElement : overrideElements)
 				{
-					if(!(overrideElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) overrideElement).hasModifier
-							(DotNetModifier.ABSTRACT)))
+					if(!(overrideElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) overrideElement).hasModifier(DotNetModifier.ABSTRACT)))
 					{
 						allAbstract = false;
 						break;
 					}
 				}
 
-				boolean abstractMe = virtualImplementOwner instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) virtualImplementOwner)
-						.hasModifier(DotNetModifier.ABSTRACT);
+				boolean abstractMe = virtualImplementOwner instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) virtualImplementOwner).hasModifier(DotNetModifier.ABSTRACT);
 
 				if(allAbstract && abstractMe)
 				{
@@ -148,13 +145,10 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 					icon = AllIcons.Gutter.OverridenMethod;
 				}
 			}
-			val lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.UPDATE_OVERRIDEN_MARKERS,
-					new ConstantFunction<PsiElement, String>("Searching for overrided"), OurHandler.INSTANCE, GutterIconRenderer.Alignment.LEFT);
+			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.UPDATE_OVERRIDEN_MARKERS, new ConstantFunction<PsiElement,
+					String>("Searching for overrided"), OurHandler.INSTANCE, GutterIconRenderer.Alignment.LEFT);
 
 			lineMarkerInfos.add(lineMarkerInfo);
 		}
 	}
-
-
-
 }

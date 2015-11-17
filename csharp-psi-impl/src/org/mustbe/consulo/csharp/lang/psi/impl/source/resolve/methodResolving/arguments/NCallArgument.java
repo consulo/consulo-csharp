@@ -14,7 +14,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -100,7 +99,7 @@ public class NCallArgument extends UserDataHolderBase
 
 	public int calcValid(@NotNull PsiElement scope)
 	{
-		val parameterTypeRef = getParameterTypeRef();
+		DotNetTypeRef parameterTypeRef = getParameterTypeRef();
 		int newVal = FAIL;
 		if(parameterTypeRef != null)
 		{

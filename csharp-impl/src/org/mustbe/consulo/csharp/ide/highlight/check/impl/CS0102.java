@@ -35,7 +35,6 @@ import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.util.ObjectUtil;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -59,7 +58,7 @@ public class CS0102 extends CompilerCheck<CSharpTypeDeclaration>
 
 		final DotNetNamedElement[] members = element.getMembers();
 
-		for(val namedElement : members)
+		for(final DotNetNamedElement namedElement : members)
 		{
 			DotNetNamedElement findTarget = ContainerUtil.find(members, new Condition<DotNetNamedElement>()
 			{

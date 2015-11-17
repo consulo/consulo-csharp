@@ -41,7 +41,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.ConstantFunction;
 import com.intellij.util.containers.ContainerUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -126,8 +125,8 @@ public class HidingOrOverridingElementCollector implements LineMarkerCollector
 				}
 			}
 
-			val lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.UPDATE_OVERRIDEN_MARKERS,
-					new ConstantFunction<PsiElement, String>("Searching for overriding"), OurHandler.INSTANCE, GutterIconRenderer.Alignment.LEFT);
+			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.UPDATE_OVERRIDEN_MARKERS, new ConstantFunction<PsiElement,
+					String>("Searching for overriding"), OurHandler.INSTANCE, GutterIconRenderer.Alignment.LEFT);
 
 			lineMarkerInfos.add(lineMarkerInfo);
 		}

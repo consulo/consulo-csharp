@@ -48,7 +48,6 @@ import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -180,7 +179,7 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 			return;
 		}
 
-		val implicitReturnModel = CSharpImplicitReturnModel.getImplicitReturnModel(statement, methodAsElement);
+		CSharpImplicitReturnModel implicitReturnModel = CSharpImplicitReturnModel.getImplicitReturnModel(statement, methodAsElement);
 
 		DotNetTypeRef extractedTypeRef = implicitReturnModel.extractTypeRef(methodAsElement.getReturnTypeRef(), statement);
 		myExpectedTypeInfos.add(new ExpectedTypeInfo(extractedTypeRef, methodAsElement));

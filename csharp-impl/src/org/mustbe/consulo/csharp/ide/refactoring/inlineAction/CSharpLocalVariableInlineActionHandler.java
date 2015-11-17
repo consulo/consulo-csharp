@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.ide.refactoring.inlineAction;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
@@ -33,7 +34,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.Processor;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -64,11 +64,11 @@ public class CSharpLocalVariableInlineActionHandler extends InlineActionHandler
 	@Override
 	public void inlineElement(final Project project, Editor editor, PsiElement element)
 	{
-		val variable = (CSharpLocalVariable) element;
-		val initializer = variable.getInitializer();
+		final CSharpLocalVariable variable = (CSharpLocalVariable) element;
+		final DotNetExpression initializer = variable.getInitializer();
 		assert initializer != null;
 
-		val elementsToReplace = new ArrayList<PsiElement>();
+		final List<PsiElement> elementsToReplace = new ArrayList<PsiElement>();
 
 		ReferencesSearch.search(new ReferencesSearch.SearchParameters(variable, variable.getUseScope(), false)).forEach(new Processor<PsiReference>()
 		{
