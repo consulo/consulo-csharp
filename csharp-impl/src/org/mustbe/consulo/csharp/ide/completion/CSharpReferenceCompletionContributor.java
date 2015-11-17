@@ -169,6 +169,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 				builder.append(" => ");
 
 				LookupElementBuilder lookupElementBuilder = LookupElementBuilder.create(builder.toString());
+				lookupElementBuilder = lookupElementBuilder.withIcon(AllIcons.Nodes.Lambda);
 
 				result.addElement(PrioritizedLookupElement.withPriority(lookupElementBuilder, CSharpCompletionUtil.NORMAL_PRIORITY));
 
@@ -183,6 +184,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 
 				lookupElementBuilder = LookupElementBuilder.create(builder.toString());
 				lookupElementBuilder = reformatInsertHandler(lookupElementBuilder);
+				lookupElementBuilder = lookupElementBuilder.withIcon(AllIcons.Nodes.Lambda);
 
 				result.addElement(PrioritizedLookupElement.withPriority(lookupElementBuilder, CSharpCompletionUtil.NORMAL_PRIORITY));
 			}
@@ -228,6 +230,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 				builder.append(" }");
 
 				LookupElementBuilder lookupElementBuilder = LookupElementBuilder.create(builder.toString());
+				lookupElementBuilder = lookupElementBuilder.withIcon(AllIcons.Nodes.Lambda);
 				lookupElementBuilder = reformatInsertHandler(lookupElementBuilder);
 
 				result.addElement(PrioritizedLookupElement.withPriority(lookupElementBuilder, CSharpCompletionUtil.NORMAL_PRIORITY));
@@ -603,7 +606,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 	private static LookupElement buildForMethodReference(final CSharpMethodDeclaration methodDeclaration)
 	{
 		LookupElementBuilder builder = LookupElementBuilder.create(methodDeclaration.getName());
-		builder = builder.withIcon(AllIcons.Nodes.Lambda);
+		builder = builder.withIcon(AllIcons.Nodes.MethodReference);
 
 		final DotNetTypeRef[] parameterTypes = methodDeclaration.getParameterTypeRefs();
 
@@ -612,6 +615,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 		String parameterText = genericText + "(" + StringUtil.join(parameterTypes, new Function<DotNetTypeRef, String>()
 		{
 			@Override
+			@RequiredReadAction
 			public String fun(DotNetTypeRef parameter)
 			{
 				return CSharpTypeRefPresentationUtil.buildShortText(parameter, methodDeclaration);
