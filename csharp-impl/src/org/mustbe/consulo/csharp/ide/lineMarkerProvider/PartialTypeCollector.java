@@ -31,17 +31,16 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
-import com.intellij.codeInsight.navigation.NavigationUtil;
+import com.intellij.codeInsight.daemon.impl.PsiElementListNavigator;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.util.PsiElementListCellRenderer;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
-import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.presentation.java.SymbolPresentationUtil;
 import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.Function;
 
 /**
@@ -99,8 +98,8 @@ public class PartialTypeCollector implements LineMarkerCollector
 				return;
 			}
 
-			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), AllIcons.Nodes.TreeDownArrow,
-					Pass.UPDATE_OVERRIDEN_MARKERS, new Function<PsiElement, String>()
+			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), AllIcons.Nodes.TreeDownArrow, Pass.UPDATE_OVERRIDEN_MARKERS,
+					new Function<PsiElement, String>()
 
 			{
 				@Override
@@ -125,9 +124,12 @@ public class PartialTypeCollector implements LineMarkerCollector
 					}
 
 					DotNetTypeDeclaration[] newArray = compositeType.getTypeDeclarations();
-
-					JBPopup popup = NavigationUtil.getPsiElementPopup(newArray, new OurRender(), "Open types (" + newArray.length + " items)");
-					popup.show(new RelativePoint(mouseEvent));
+					NavigatablePsiElement[] navigatablePsiElements = new NavigatablePsiElement[newArray.length];
+					for(int i = 0; i < newArray.length; i++)
+					{
+						navigatablePsiElements[i] = (NavigatablePsiElement) newArray[i];
+					}
+					PsiElementListNavigator.openTargets(mouseEvent, navigatablePsiElements, "Navigate to partial types", "Navigate to partial types", new OurRender());
 				}
 			}, GutterIconRenderer.Alignment.LEFT
 			);

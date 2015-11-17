@@ -32,13 +32,13 @@ import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
-import com.intellij.codeInsight.navigation.NavigationUtil;
+import com.intellij.codeInsight.daemon.impl.PsiElementListNavigator;
 import com.intellij.icons.AllIcons;
+import com.intellij.ide.util.DefaultPsiElementCellRenderer;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
-import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.pom.Navigatable;
+import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
-import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.ConstantFunction;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -78,12 +78,9 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 			}
 			else
 			{
-				PsiElement[] elements = members.toArray(new PsiElement[members.size()]);
+				NavigatablePsiElement[] navigatablePsiElements = members.toArray(new NavigatablePsiElement[0]);
 
-				JBPopup popup = NavigationUtil.getPsiElementPopup(elements, new ElementGutterRender(), "Open elements (" + elements.length + " " +
-						"items)" +
-						"");
-				popup.show(new RelativePoint(mouseEvent));
+				PsiElementListNavigator.openTargets(mouseEvent, navigatablePsiElements, "Searching for overrided", "Searching for overrided", new DefaultPsiElementCellRenderer());
 			}
 		}
 	}
