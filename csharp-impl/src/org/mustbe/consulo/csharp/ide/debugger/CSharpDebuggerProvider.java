@@ -166,7 +166,6 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 		}
 	}
 
-
 	@Override
 	public boolean isSupported(@NotNull PsiFile psiFile)
 	{
