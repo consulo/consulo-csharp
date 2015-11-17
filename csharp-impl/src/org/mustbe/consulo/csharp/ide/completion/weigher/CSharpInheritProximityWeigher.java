@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.ide.completion.weighter;
+package org.mustbe.consulo.csharp.ide.completion.weigher;
 
 import java.util.List;
 

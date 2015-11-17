@@ -14,49 +14,30 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.ide.completion.weighter;
+package org.mustbe.consulo.csharp.ide.completion.weigher;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
-import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
-import com.intellij.codeInsight.completion.PrioritizedLookupElement;
+import org.mustbe.consulo.csharp.lang.CSharpLanguage;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.ProximityLocation;
 import com.intellij.psi.util.proximity.ProximityWeigher;
 
 /**
  * @author VISTALL
- * @since 27.07.2015
+ * @since 17.11.2015
  */
-public class CSharpObsoleteWeigher extends ProximityWeigher
+public class CSharpByGenericParameterWeigher extends ProximityWeigher
 {
-	public enum Access
-	{
-		OBSOLETE,
-		NORMAL
-	}
-
 	@Override
 	@RequiredReadAction
 	public Comparable weigh(@NotNull PsiElement element, @NotNull ProximityLocation location)
 	{
-		if(element instanceof PrioritizedLookupElement)
+		if(element instanceof DotNetGenericParameterListOwner && element.getLanguage() == CSharpLanguage.INSTANCE)
 		{
-			return null;
+			return -((DotNetGenericParameterListOwner) element).getGenericParametersCount();
 		}
-
-		PsiElement position = location.getPosition();
-		if(position == null || !(position.getContainingFile() instanceof CSharpFile))
-		{
-			return null;
-		}
-
-		if(DotNetAttributeUtil.hasAttribute(element, DotNetTypes.System.ObsoleteAttribute))
-		{
-			return Access.OBSOLETE;
-		}
-		return Access.NORMAL;
+		return null;
 	}
 }
