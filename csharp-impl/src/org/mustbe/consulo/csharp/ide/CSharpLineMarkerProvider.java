@@ -60,13 +60,13 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 			new HidedOrOverridedElementCollector()
 	};
 
-	protected final DaemonCodeAnalyzerSettings daemonCodeAnalyzerSettings;
-	protected final EditorColorsManager editorColorsManager;
+	protected final DaemonCodeAnalyzerSettings myDaemonCodeAnalyzerSettings;
+	protected final EditorColorsManager myEditorColorsManager;
 
 	public CSharpLineMarkerProvider(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager)
 	{
-		daemonCodeAnalyzerSettings = daemonSettings;
-		editorColorsManager = colorsManager;
+		myDaemonCodeAnalyzerSettings = daemonSettings;
+		myEditorColorsManager = colorsManager;
 	}
 
 	@RequiredReadAction
@@ -74,7 +74,7 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull PsiElement element)
 	{
-		if(daemonCodeAnalyzerSettings.SHOW_METHOD_SEPARATORS && (element instanceof DotNetQualifiedElement))
+		if(myDaemonCodeAnalyzerSettings.SHOW_METHOD_SEPARATORS && (element instanceof DotNetQualifiedElement))
 		{
 			if(element.getNode().getTreeParent() == null)
 			{
@@ -94,7 +94,7 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 
 			LineMarkerInfo info = new LineMarkerInfo<PsiElement>(element, element.getTextRange(), null, Pass.UPDATE_ALL, FunctionUtil.<Object,
 					String>nullConstant(), null, GutterIconRenderer.Alignment.RIGHT);
-			EditorColorsScheme scheme = editorColorsManager.getGlobalScheme();
+			EditorColorsScheme scheme = myEditorColorsManager.getGlobalScheme();
 			info.separatorColor = scheme.getColor(CodeInsightColors.METHOD_SEPARATORS_COLOR);
 			info.separatorPlacement = SeparatorPlacement.TOP;
 			return info;
