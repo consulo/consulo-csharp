@@ -57,9 +57,10 @@ public class StaticVsInstanceComparator implements Comparator<ResolveResult>
 	}
 
 	private final TypeLikeComparator myComparator;
+	@Nullable
 	private final CSharpReferenceExpressionEx myParent;
 
-	public StaticVsInstanceComparator(PsiElement element, CSharpReferenceExpressionEx parent)
+	public StaticVsInstanceComparator(@NotNull PsiElement element, @Nullable CSharpReferenceExpressionEx parent)
 	{
 		myComparator = TypeLikeComparator.create(element);
 		myParent = parent;
