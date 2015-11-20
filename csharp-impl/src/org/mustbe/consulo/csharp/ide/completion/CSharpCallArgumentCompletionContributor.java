@@ -64,6 +64,10 @@ public class CSharpCallArgumentCompletionContributor extends CompletionContribut
 			{
 				CSharpReferenceExpression referenceExpression = (CSharpReferenceExpression) parameters.getPosition()
 						.getParent();
+				if(referenceExpression.getQualifier() != null)
+				{
+					return;
+				}
 
 				CSharpCallArgument callArgument = (CSharpCallArgument) referenceExpression.getParent();
 				if(callArgument instanceof CSharpNamedCallArgument)
