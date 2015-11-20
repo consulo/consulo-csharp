@@ -81,13 +81,15 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 			myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(element).textAttributes(CSharpHighlightKey
 					.SOFT_KEYWORD).create());
 		}
+	}
 
-		if(element.getNode().getElementType() == CSharpTokens.IDENTIFIER)
-		{
-			PsiElement parent = element.getParent();
+	@Override
+	@RequiredReadAction
+	public void visitIdentifier(CSharpIdentifier identifier)
+	{
+		PsiElement parent = identifier.getParent();
 
-			parent.accept(this);
-		}
+		CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, parent, identifier, null);
 	}
 
 	@Override
@@ -95,8 +97,6 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	public void visitGenericParameter(DotNetGenericParameter parameter)
 	{
 		super.visitGenericParameter(parameter);
-
-		CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, parameter, parameter.getNameIdentifier(), null);
 
 		GenericParameterHighlightUtil.checkInAndOutModifiers(parameter, myHighlightInfoHolder);
 	}
@@ -135,8 +135,6 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	public void visitTypeDeclaration(CSharpTypeDeclaration declaration)
 	{
 		super.visitTypeDeclaration(declaration);
-
-		CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, declaration, declaration.getNameIdentifier(), null);
 	}
 
 	@Override
@@ -144,8 +142,6 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	public void visitFieldDeclaration(CSharpFieldDeclaration declaration)
 	{
 		super.visitFieldDeclaration(declaration);
-
-		CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, declaration, declaration.getNameIdentifier(), null);
 	}
 
 	@Override
@@ -153,8 +149,48 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	public void visitLocalVariable(CSharpLocalVariable variable)
 	{
 		super.visitLocalVariable(variable);
+	}
 
-		CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, variable, variable.getNameIdentifier(), null);
+	@Override
+	@RequiredReadAction
+	public void visitEnumConstantDeclaration(CSharpEnumConstantDeclaration declaration)
+	{
+		super.visitEnumConstantDeclaration(declaration);
+	}
+
+	@Override
+	@RequiredReadAction
+	public void visitTypeDefStatement(CSharpTypeDefStatement statement)
+	{
+		super.visitTypeDefStatement(statement);
+	}
+
+	@Override
+	@RequiredReadAction
+	public void visitParameter(DotNetParameter parameter)
+	{
+		super.visitParameter(parameter);
+	}
+
+	@Override
+	@RequiredReadAction
+	public void visitPropertyDeclaration(CSharpPropertyDeclaration declaration)
+	{
+		super.visitPropertyDeclaration(declaration);
+	}
+
+	@Override
+	@RequiredReadAction
+	public void visitEventDeclaration(CSharpEventDeclaration declaration)
+	{
+		super.visitEventDeclaration(declaration);
+	}
+
+	@Override
+	@RequiredReadAction
+	public void visitMethodDeclaration(CSharpMethodDeclaration declaration)
+	{
+		super.visitMethodDeclaration(declaration);
 	}
 
 	@Override
@@ -177,65 +213,6 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 
 	@Override
 	@RequiredReadAction
-	public void visitEnumConstantDeclaration(CSharpEnumConstantDeclaration declaration)
-	{
-		super.visitEnumConstantDeclaration(declaration);
-
-		CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, declaration, declaration.getNameIdentifier(), null);
-	}
-
-	@Override
-	@RequiredReadAction
-	public void visitTypeDefStatement(CSharpTypeDefStatement statement)
-	{
-		super.visitTypeDefStatement(statement);
-
-		CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, statement, statement.getNameIdentifier(), null);
-	}
-
-	@Override
-	@RequiredReadAction
-	public void visitParameter(DotNetParameter parameter)
-	{
-		super.visitParameter(parameter);
-
-		CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, parameter, parameter.getNameIdentifier(), null);
-	}
-
-	@Override
-	@RequiredReadAction
-	public void visitPropertyDeclaration(CSharpPropertyDeclaration declaration)
-	{
-		super.visitPropertyDeclaration(declaration);
-
-		CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, declaration, declaration.getNameIdentifier(), null);
-	}
-
-	@Override
-	@RequiredReadAction
-	public void visitEventDeclaration(CSharpEventDeclaration declaration)
-	{
-		super.visitEventDeclaration(declaration);
-
-		CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, declaration, declaration.getNameIdentifier(), null);
-	}
-
-	@Override
-	@RequiredReadAction
-	public void visitMethodDeclaration(CSharpMethodDeclaration declaration)
-	{
-		super.visitMethodDeclaration(declaration);
-		if(declaration.isDelegate())
-		{
-			CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, declaration, declaration.getNameIdentifier(), null);
-		}
-		else
-		{
-			CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, declaration, declaration.getNameIdentifier(), null);
-		}
-	}
-
-	@Override
 	public void visitArrayAccessExpression(CSharpArrayAccessExpressionImpl expression)
 	{
 		super.visitArrayAccessExpression(expression);
@@ -257,6 +234,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitMethodCallExpression(CSharpMethodCallExpressionImpl expression)
 	{
 		super.visitMethodCallExpression(expression);
@@ -264,6 +242,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitOperatorReference(CSharpOperatorReferenceImpl referenceExpression)
 	{
 		super.visitOperatorReference(referenceExpression);
@@ -287,6 +266,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 		}
 	}
 
+	@RequiredReadAction
 	private void highlightMaybeImplicit(@NotNull CSharpCallArgumentListOwner scope)
 	{
 		MethodCalcResult methodCalcResult = null;
