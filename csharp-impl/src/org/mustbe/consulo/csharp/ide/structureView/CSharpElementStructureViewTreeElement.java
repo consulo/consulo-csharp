@@ -27,6 +27,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.structureView.impl.common.PsiTreeElementBase;
 import com.intellij.psi.PsiElement;
@@ -67,6 +68,10 @@ public class CSharpElementStructureViewTreeElement extends PsiTreeElementBase<Ps
 		if(value instanceof DotNetLikeMethodDeclaration)
 		{
 			return DotNetElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) value, DotNetElementPresentationUtil.METHOD_SCALA_LIKE_FULL);
+		}
+		else if(value instanceof DotNetTypeDeclaration)
+		{
+			return DotNetElementPresentationUtil.formatTypeWithGenericParameters((DotNetTypeDeclaration)value);
 		}
 		else if(value instanceof DotNetFieldDeclaration)
 		{
