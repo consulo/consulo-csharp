@@ -69,6 +69,12 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor
 		myOverrideProcessor = overrideProcessor;
 	}
 
+	@Override
+	public void pushResultExternally(@NotNull ResolveResult resolveResult)
+	{
+		myResultProcessor.process(resolveResult);
+	}
+
 	@RequiredReadAction
 	@Override
 	public boolean execute(@NotNull PsiElement element, ResolveState state)

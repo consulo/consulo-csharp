@@ -47,7 +47,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
-import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.util.Processor;
 import com.intellij.util.SmartList;
@@ -60,7 +59,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 {
 	private final CSharpReferenceExpression myExpression;
 	private final boolean myCompletion;
-	private final Processor<ResolveResult> myProcessor;
+	private final StubScopeProcessor myProcessor;
 	@Nullable
 	private final CSharpCallArgumentListOwner myCallArgumentListOwner;
 	private final DotNetTypeRef myQualifierTypeRef;
@@ -72,7 +71,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 	public ExtensionResolveScopeProcessor(@NotNull DotNetTypeRef qualifierTypeRef,
 			@NotNull CSharpReferenceExpression expression,
 			boolean completion,
-			@NotNull Processor<ResolveResult> processor,
+			@NotNull StubScopeProcessor processor,
 			@Nullable CSharpCallArgumentListOwner callArgumentListOwner)
 	{
 		myQualifierTypeRef = qualifierTypeRef;
@@ -97,6 +96,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 			context.processExtensionMethodGroups(new Processor<CSharpElementGroup<CSharpMethodDeclaration>>()
 			{
 				@Override
+				@RequiredReadAction
 				public boolean process(CSharpElementGroup<CSharpMethodDeclaration> elementGroup)
 				{
 					Collection<CSharpMethodDeclaration> elements = elementGroup.getElements();
@@ -111,7 +111,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 							continue;
 						}
 
-						myProcessor.process(new PsiElementResolveResult(transform(psiElement, inferenceResult)));
+						myProcessor.pushResultExternally(new PsiElementResolveResult(transform(psiElement, inferenceResult)));
 					}
 					return true;
 				}
@@ -136,7 +136,8 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 			{
 				CSharpElementGroup<?> elementGroup = (CSharpElementGroup<?>) e;
 
-				groupIteration:for(PsiElement psiElement : elementGroup.getElements())
+				groupIteration:
+				for(PsiElement psiElement : elementGroup.getElements())
 				{
 					CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) psiElement;
 
@@ -187,12 +188,14 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 			return;
 		}
 
-		CSharpElementGroupImpl element = new CSharpElementGroupImpl<CSharpMethodDeclaration>(myExpression.getProject(), myResolvedElements.get(0).getName(),
-				myResolvedElements);
-		myProcessor.process(new PsiElementResolveResult(element, true));
+		CSharpMethodDeclaration methodDeclaration = myResolvedElements.get(0);
+		assert methodDeclaration != null;
+		CSharpElementGroupImpl element = new CSharpElementGroupImpl<CSharpMethodDeclaration>(myExpression.getProject(), methodDeclaration.getName(), myResolvedElements);
+		myProcessor.pushResultExternally(new PsiElementResolveResult(element, true));
 	}
 
 	@NotNull
+	@RequiredReadAction
 	private DotNetTypeRef getFirstTypeRefOrParameter(DotNetParameterListOwner owner, DotNetGenericExtractor extractor)
 	{
 		DotNetParameter[] parameters = owner.getParameters();
@@ -201,8 +204,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 		return GenericUnwrapTool.exchangeTypeRef(parameters[0].toTypeRef(false), extractor, myExpression);
 	}
 
-	private static CSharpMethodDeclaration transform(final CSharpMethodDeclaration methodDeclaration,
-			@NotNull GenericInferenceUtil.GenericInferenceResult inferenceResult)
+	private static CSharpMethodDeclaration transform(final CSharpMethodDeclaration methodDeclaration, @NotNull GenericInferenceUtil.GenericInferenceResult inferenceResult)
 	{
 		DotNetParameterList parameterList = methodDeclaration.getParameterList();
 		assert parameterList != null;

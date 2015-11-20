@@ -22,6 +22,7 @@ import org.mustbe.consulo.RequiredReadAction;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 
@@ -31,6 +32,11 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  */
 public class StubScopeProcessor extends UserDataHolderBase implements PsiScopeProcessor
 {
+	public void pushResultExternally(@NotNull ResolveResult resolveResult)
+	{
+
+	}
+
 	@Override
 	@RequiredReadAction
 	public boolean execute(@NotNull PsiElement element, ResolveState state)

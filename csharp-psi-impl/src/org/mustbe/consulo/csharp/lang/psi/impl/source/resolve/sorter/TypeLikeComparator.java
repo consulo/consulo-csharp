@@ -46,10 +46,16 @@ public class TypeLikeComparator implements Comparator<ResolveResult>
 	{
 		PsiElement element = resolveResult.getElement();
 
-		if(element instanceof DotNetVariable || element instanceof CSharpElementGroup)
+		if(element instanceof DotNetVariable)
+		{
+			return 200000;
+		}
+
+		if(element instanceof CSharpElementGroup)
 		{
 			return 100000;
 		}
+
 		if(element instanceof DotNetGenericParameterListOwner)
 		{
 			if(((DotNetGenericParameterListOwner) element).getGenericParametersCount() == myGenericCount)

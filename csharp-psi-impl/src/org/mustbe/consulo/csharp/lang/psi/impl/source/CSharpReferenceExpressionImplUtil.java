@@ -779,7 +779,7 @@ public class CSharpReferenceExpressionImplUtil
 			{
 				// walk for extensions
 				ExtensionResolveScopeProcessor extensionProcessor = new ExtensionResolveScopeProcessor(qualifierTypeRef, (CSharpReferenceExpression) element,
-						completion, processor, callArgumentListOwner);
+						completion, memberProcessor, callArgumentListOwner);
 
 				resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR, extractor);
 				resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, new ExtensionMethodByNameSelector(((CSharpReferenceExpression) element)
