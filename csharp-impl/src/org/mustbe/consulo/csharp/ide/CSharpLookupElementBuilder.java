@@ -18,26 +18,20 @@ package org.mustbe.consulo.csharp.ide;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-import org.consulo.ide.eap.EarlyAccessProgramDescriptor;
-import org.consulo.ide.eap.EarlyAccessProgramManager;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.completion.CSharpCompletionUtil;
 import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLikeLookupElement;
 import org.mustbe.consulo.csharp.ide.completion.util.CSharpParenthesesInsertHandler;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
-import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodUtil;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import org.mustbe.consulo.csharp.lang.psi.CSharpXXXAccessorOwner;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -59,7 +53,6 @@ import com.intellij.openapi.editor.CaretModel;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -69,31 +62,6 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class CSharpLookupElementBuilder
 {
-	public static class PropertyAndEventCompletionNew extends EarlyAccessProgramDescriptor
-	{
-		@NotNull
-		@Override
-		public String getName()
-		{
-			return "C#: property & event accessor completion";
-		}
-
-		@NotNull
-		@Override
-		public String getDescription()
-		{
-			return "";
-		}
-
-		@Override
-		public boolean isRestartRequired()
-		{
-			return true;
-		}
-	}
-
-	public static final boolean PROPERTY_AND_EVENT_ACCESSOR_COMPLETION = EarlyAccessProgramManager.is(PropertyAndEventCompletionNew.class);
-
 	@NotNull
 	@RequiredReadAction
 	public static LookupElement[] buildToLookupElements(@NotNull PsiElement[] arguments)
@@ -109,35 +77,6 @@ public class CSharpLookupElementBuilder
 			ContainerUtil.addIfNotNull(list, buildLookupElement(argument));
 		}
 		return list.toArray(new LookupElement[list.size()]);
-	}
-
-	@NotNull
-	@RequiredReadAction
-	public static List<LookupElement> buildToLookupElements(@NotNull ResolveResult[] arguments)
-	{
-		if(arguments.length == 0)
-		{
-			return Collections.emptyList();
-		}
-
-		List<LookupElement> list = new ArrayList<LookupElement>(arguments.length);
-		for(ResolveResult argument : arguments)
-		{
-			PsiElement element = argument.getElement();
-
-			if((element instanceof CSharpPropertyDeclaration || element instanceof CSharpEventDeclaration) && PROPERTY_AND_EVENT_ACCESSOR_COMPLETION)
-			{
-				for(DotNetXXXAccessor accessor : ((CSharpXXXAccessorOwner) element).getAccessors())
-				{
-					ContainerUtil.addIfNotNull(list, createLookupElementBuilder(accessor));
-				}
-			}
-			else
-			{
-				ContainerUtil.addIfNotNull(list, createLookupElementBuilder(element));
-			}
-		}
-		return list;
 	}
 
 	@NotNull
