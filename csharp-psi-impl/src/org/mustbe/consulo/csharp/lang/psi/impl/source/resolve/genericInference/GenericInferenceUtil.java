@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -62,10 +63,8 @@ public class GenericInferenceUtil
 		}
 	}
 
-	public static final GenericInferenceResult FAIL = new GenericInferenceResult(false, DotNetGenericExtractor.EMPTY);
-	public static final GenericInferenceResult SUCCESS = new GenericInferenceResult(true, DotNetGenericExtractor.EMPTY);
-
 	@NotNull
+	@RequiredReadAction
 	public static GenericInferenceResult inferenceGenericExtractor(@NotNull PsiElement referenceElement,
 			@NotNull CSharpCallArgumentListOwner callArgumentListOwner,
 			@NotNull DotNetLikeMethodDeclaration methodDeclaration)
@@ -81,6 +80,7 @@ public class GenericInferenceUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static GenericInferenceResult inferenceGenericExtractor(@NotNull CSharpCallArgument[] callArguments,
 			@NotNull DotNetTypeRef[] typeArgumentListRefs,
 			@NotNull PsiElement scope,
@@ -246,6 +246,7 @@ public class GenericInferenceUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	private static DotNetTypeRef unwrapPossibleGenericTypeRefs(@NotNull NCallArgument nCallArgument,
 			@NotNull DotNetTypeRef parameterTypeRef,
 			@NotNull Map<DotNetGenericParameter, DotNetTypeRef> map,
