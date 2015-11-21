@@ -194,7 +194,7 @@ public class GenericInferenceUtil
 					continue;
 				}
 
-				int indexOfGeneric = findIndexOfGeneric(parameterTypeRef, genericParameter, scope);
+				int indexOfGeneric = findIndexOfGeneric(parameterTypeResolveResult, genericParameter, scope);
 				if(indexOfGeneric == -1)
 				{
 					continue;
@@ -215,11 +215,9 @@ public class GenericInferenceUtil
 		}
 	}
 
-	private static int findIndexOfGeneric(DotNetTypeRef parameterTypeRef, DotNetGenericParameter parameter, PsiElement scope)
+	private static int findIndexOfGeneric(DotNetTypeResolveResult parameterTypeResolveResult, DotNetGenericParameter parameter, PsiElement scope)
 	{
-		DotNetTypeResolveResult typeResolveResult = parameterTypeRef.resolve(scope);
-
-		PsiElement element = typeResolveResult.getElement();
+		PsiElement element = parameterTypeResolveResult.getElement();
 		if(element instanceof DotNetGenericParameterListOwner)
 		{
 			DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) element).getGenericParameters();
@@ -228,7 +226,7 @@ public class GenericInferenceUtil
 				return -1;
 			}
 
-			DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
+			DotNetGenericExtractor genericExtractor = parameterTypeResolveResult.getGenericExtractor();
 
 			for(int i = 0; i < genericParameters.length; i++)
 			{
