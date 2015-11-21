@@ -16,6 +16,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -71,6 +72,10 @@ public class CSharpResolveContextUtil
 		}
 		else if(element instanceof DotNetNamespaceAsElement)
 		{
+			if(DumbService.isDumb(element.getProject()))
+			{
+				return CSharpResolveContext.EMPTY;
+			}
 			return new CSharpNamespaceResolveContext((DotNetNamespaceAsElement) element, resolveScope);
 		}
 		else if(element instanceof CSharpUsingList)
