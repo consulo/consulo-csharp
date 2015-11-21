@@ -70,4 +70,10 @@ public abstract class CSharpConstantBaseTypeRef extends DotNetTypeRef.Delegate i
 	{
 		return false;
 	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		return getDelegate().equals(obj);
+	}
 }

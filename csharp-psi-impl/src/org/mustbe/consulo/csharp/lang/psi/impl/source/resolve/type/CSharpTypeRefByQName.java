@@ -60,4 +60,14 @@ public class CSharpTypeRefByQName extends DotNetTypeRef.Adapter
 
 		return new CSharpReferenceTypeRef.Result<DotNetTypeDeclaration>(type, DotNetGenericExtractor.EMPTY);
 	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if(obj instanceof Delegate)
+		{
+			obj = ((Delegate) obj).getDelegate();
+		}
+		return obj instanceof CSharpTypeRefByQName && ((CSharpTypeRefByQName) obj).myQualifiedName.equals(myQualifiedName);
+	}
 }

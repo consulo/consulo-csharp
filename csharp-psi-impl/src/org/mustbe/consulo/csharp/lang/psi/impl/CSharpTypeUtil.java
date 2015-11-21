@@ -250,6 +250,7 @@ public class CSharpTypeUtil
 	 * int - int type, ill 'top'
 	 * return false due it not be casted
 	 */
+	@RequiredReadAction
 	public static boolean isInheritable(@NotNull DotNetTypeRef top, @NotNull DotNetTypeRef target, @NotNull PsiElement scope)
 	{
 		return isInheritable(top, target, scope, null).isSuccess();
