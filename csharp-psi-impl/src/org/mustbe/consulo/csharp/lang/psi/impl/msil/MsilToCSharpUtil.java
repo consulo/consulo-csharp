@@ -58,7 +58,6 @@ import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ContainerUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -264,7 +263,7 @@ public class MsilToCSharpUtil
 			DotNetTypeRef innerTypeRef = ((DotNetGenericWrapperTypeRef) typeRef).getInnerTypeRef();
 			DotNetTypeRef[] arguments = ((DotNetGenericWrapperTypeRef) typeRef).getArgumentTypeRefs();
 
-			val inner = extractToCSharp(innerTypeRef, scope);
+			DotNetTypeRef inner = extractToCSharp(innerTypeRef, scope);
 			DotNetTypeRef[] newArguments = new DotNetTypeRef[arguments.length];
 			for(int i = 0; i < newArguments.length; i++)
 			{

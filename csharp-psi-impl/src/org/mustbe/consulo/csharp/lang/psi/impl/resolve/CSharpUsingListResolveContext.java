@@ -26,6 +26,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -168,8 +169,14 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 
 	@NotNull
 	@LazyInstance
+	@RequiredReadAction
 	public CSharpResolveContext getCachedNamespaceContext()
 	{
+		if(DumbService.isDumb(myUsingList.getProject()))
+		{
+			return CSharpResolveContext.EMPTY;
+		}
+
 		DotNetNamespaceAsElement[] usingNamespaces = myUsingList.getUsingNamespaces();
 		if(usingNamespaces.length == 0)
 		{
@@ -180,6 +187,7 @@ public class CSharpUsingListResolveContext implements CSharpResolveContext
 
 	@NotNull
 	@LazyInstance
+	@RequiredReadAction
 	public CSharpResolveContext getCachedTypeContext()
 	{
 		DotNetTypeRef[] usingTypeRefs = myUsingList.getUsingTypeRefs();

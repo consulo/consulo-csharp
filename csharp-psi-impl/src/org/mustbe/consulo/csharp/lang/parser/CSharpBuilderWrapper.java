@@ -120,9 +120,15 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 		IElementType tokenTypeGGLL = getTokenTypeGGLL();
 		if(tokenTypeGGLL == CSharpTokens.GTGT || tokenTypeGGLL == CSharpTokens.LTLT)
 		{
+			Marker mark = mark();
+			advanceLexer();
+			advanceLexer();
+			mark.collapse(tokenTypeGGLL);
+		}
+		else
+		{
 			advanceLexer();
 		}
-		advanceLexer();
 	}
 
 	public void remapBackIfSoft()

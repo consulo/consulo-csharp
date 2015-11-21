@@ -68,6 +68,11 @@ public interface DotNetTypes2
 			String IEnumerator = "System.Collections.IEnumerator";
 		}
 
+		interface Diagnostics
+		{
+			String DebuggerDisplayAttribute = "System.Diagnostics.DebuggerDisplayAttribute";
+		}
+
 		String RuntimeArgumentHandle = "System.RuntimeArgumentHandle";
 		String FlagsAttribute  = "System.FlagsAttribute";
 	}

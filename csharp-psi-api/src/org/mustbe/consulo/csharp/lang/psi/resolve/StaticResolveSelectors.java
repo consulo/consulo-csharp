@@ -17,7 +17,7 @@ public enum StaticResolveSelectors implements CSharpResolveSelector
 				@Override
 				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
 				{
-					return null;
+					throw new UnsupportedOperationException();
 				}
 			},
 	INDEX_METHOD_GROUP

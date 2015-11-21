@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.completion;
 import static com.intellij.patterns.StandardPatterns.psiElement;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
@@ -32,7 +33,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -45,7 +45,8 @@ public class CSharpLinqCompletionContributor extends CompletionContributor
 		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class),
 				new CompletionProvider<CompletionParameters>()
 		{
-			@Override
+					@RequiredReadAction
+					@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				PsiElement position = parameters.getPosition();
@@ -53,7 +54,7 @@ public class CSharpLinqCompletionContributor extends CompletionContributor
 				{
 					return;
 				}
-				val parent = (CSharpReferenceExpressionEx) position.getParent();
+				CSharpReferenceExpressionEx parent = (CSharpReferenceExpressionEx) position.getParent();
 				if(parent.getQualifier() != null || parent.kind() != CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
 				{
 					return;

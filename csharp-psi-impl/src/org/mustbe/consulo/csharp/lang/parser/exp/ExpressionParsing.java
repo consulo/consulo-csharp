@@ -32,7 +32,6 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.BitUtil;
-import lombok.val;
 
 public class ExpressionParsing extends SharedParsingHelpers
 {
@@ -283,7 +282,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			final PsiBuilder.Marker typeCast = builder.mark();
 			builder.advanceLexer();
 
-			val typeInfo = parseType(builder, LT_GT_HARD_REQUIRE);
+			TypeInfo typeInfo = parseType(builder, LT_GT_HARD_REQUIRE);
 			if(typeInfo == null || !expect(builder, RPAR, null))
 			{
 				typeCast.rollbackTo();
@@ -538,7 +537,10 @@ public class ExpressionParsing extends SharedParsingHelpers
 			}
 			else if(tokenType == LPAR)
 			{
-				if(exprType(expr) != REFERENCE_EXPRESSION && exprType(expr) != ARRAY_ACCESS_EXPRESSION)
+				IElementType expType = exprType(expr);
+				if(expType != REFERENCE_EXPRESSION &&
+						expType != ARRAY_ACCESS_EXPRESSION &&
+						expType != METHOD_CALL_EXPRESSION)
 				{
 					startMarker.drop();
 					return expr;
@@ -685,10 +687,13 @@ public class ExpressionParsing extends SharedParsingHelpers
 		{
 			linqState = builder.enableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
 		}
+		if(version.isAtLeast(CSharpLanguageVersion._4_0))
+		{
+			builder.enableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
+		}
 		if(modifierSet.contains(CSharpSoftTokens.ASYNC_KEYWORD))
 		{
 			builder.enableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);
-			builder.enableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
 		}
 		if(version.isAtLeast(CSharpLanguageVersion._6_0))
 		{
@@ -699,10 +704,13 @@ public class ExpressionParsing extends SharedParsingHelpers
 		{
 			builder.disableSoftKeyword(CSharpSoftTokens.FROM_KEYWORD);
 		}
+		if(version.isAtLeast(CSharpLanguageVersion._4_0))
+		{
+			builder.disableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
+		}
 		if(modifierSet.contains(CSharpSoftTokens.ASYNC_KEYWORD))
 		{
 			builder.disableSoftKeyword(CSharpSoftTokens.AWAIT_KEYWORD);
-			builder.disableSoftKeyword(CSharpSoftTokens.ASYNC_KEYWORD);
 		}
 		if(version.isAtLeast(CSharpLanguageVersion._6_0))
 		{
@@ -864,7 +872,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(tokenType == GLOBAL_KEYWORD)
 		{
-			val refExpr = builder.mark();
+			PsiBuilder.Marker refExpr = builder.mark();
 			builder.advanceLexer();
 			refExpr.done(REFERENCE_EXPRESSION);
 			return refExpr;
@@ -887,7 +895,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(NATIVE_TYPES.contains(tokenType))
 		{
-			val refExpr = builder.mark();
+			PsiBuilder.Marker refExpr = builder.mark();
 
 			builder.advanceLexer();
 			refExpr.done(REFERENCE_EXPRESSION);
@@ -896,7 +904,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(THIS_OR_BASE.contains(tokenType))
 		{
-			val expr = builder.mark();
+			PsiBuilder.Marker expr = builder.mark();
 			builder.advanceLexer();
 			expr.done(REFERENCE_EXPRESSION);
 			return expr;
@@ -1097,7 +1105,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 	private static void parseLambdaParameterList(final CSharpBuilderWrapper builder)
 	{
-		val mark = builder.mark();
+		PsiBuilder.Marker mark = builder.mark();
 
 		boolean lpar = expect(builder, LPAR, null);
 
@@ -1128,7 +1136,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 	private static void parseLambdaParameter(CSharpBuilderWrapper builder)
 	{
-		val mark = builder.mark();
+		PsiBuilder.Marker mark = builder.mark();
 
 		// typed
 		if(MODIFIERS.contains(builder.getTokenType()))
@@ -1208,7 +1216,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		builder.advanceLexer();
 
-		val typeInfo = parseType(builder, BRACKET_RETURN_BEFORE);
+		TypeInfo typeInfo = parseType(builder, BRACKET_RETURN_BEFORE);
 
 		boolean forceArray = false;
 
@@ -1261,7 +1269,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 	{
 		if(builder.getTokenType() == LBRACKET)
 		{
-			val arrayMarker = builder.mark();
+			PsiBuilder.Marker arrayMarker = builder.mark();
 			builder.advanceLexer();
 
 			while(true)
@@ -1290,7 +1298,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		builder.advanceLexer();
 
-		val typeMarker = parseType(builder, BRACKET_RETURN_BEFORE);
+		TypeInfo typeMarker = parseType(builder, BRACKET_RETURN_BEFORE);
 		if(typeMarker == null)
 		{
 			builder.error("Expected type");
@@ -1298,7 +1306,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		while(builder.getTokenType() == LBRACKET)
 		{
-			val arrayMarker = builder.mark();
+			PsiBuilder.Marker arrayMarker = builder.mark();
 			builder.advanceLexer();
 
 			while(true)
@@ -1846,7 +1854,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 		{
 			while(!builder.eof())
 			{
-				val marker = parseType(builder, flags);
+				TypeInfo marker = parseType(builder, flags);
 				if(marker == null)
 				{
 					builder.error("Expected type");

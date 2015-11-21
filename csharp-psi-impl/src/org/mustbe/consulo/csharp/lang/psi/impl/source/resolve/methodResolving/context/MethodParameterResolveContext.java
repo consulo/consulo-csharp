@@ -20,12 +20,14 @@ import com.intellij.util.ArrayUtil;
 public class MethodParameterResolveContext implements ParameterResolveContext<DotNetParameter>
 {
 	private final PsiElement myScope;
-	private DotNetParameter[] myParameters;
+	private final boolean myResolveFromParent;
+	private final DotNetParameter[] myParameters;
 	private DotNetParameter myParamsParameter;
 
-	public MethodParameterResolveContext(DotNetParameterListOwner parameterListOwner, PsiElement scope)
+	public MethodParameterResolveContext(DotNetParameterListOwner parameterListOwner, PsiElement scope, boolean resolveFromParent)
 	{
 		myScope = scope;
+		myResolveFromParent = resolveFromParent;
 		myParameters = parameterListOwner.getParameters();
 		myParamsParameter = ArrayUtil.getLastElement(myParameters);
 		if(myParamsParameter != null && !myParamsParameter.hasModifier(CSharpModifier.PARAMS))
@@ -88,5 +90,11 @@ public class MethodParameterResolveContext implements ParameterResolveContext<Do
 	public DotNetParameter[] getParameters()
 	{
 		return myParameters;
+	}
+
+	@Override
+	public boolean isResolveFromParentTypeRef()
+	{
+		return myResolveFromParent;
 	}
 }

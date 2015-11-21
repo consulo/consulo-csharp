@@ -40,7 +40,6 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.BitUtil;
 import com.intellij.util.NotNullFunction;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -153,7 +152,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		boolean empty = true;
 		while(!builder.eof())
 		{
-			val marker = parseType(builder, flags, nameStopperSet);
+			TypeInfo marker = parseType(builder, flags, nameStopperSet);
 			if(marker == null)
 			{
 				if(!empty)

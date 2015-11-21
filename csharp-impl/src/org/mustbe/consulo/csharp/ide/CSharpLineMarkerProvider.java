@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.lineMarkerProvider.HidedOrOverridedElementCollector;
 import org.mustbe.consulo.csharp.ide.lineMarkerProvider.HidingOrOverridingElementCollector;
 import org.mustbe.consulo.csharp.ide.lineMarkerProvider.LineMarkerCollector;
@@ -59,20 +60,21 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 			new HidedOrOverridedElementCollector()
 	};
 
-	protected final DaemonCodeAnalyzerSettings daemonCodeAnalyzerSettings;
-	protected final EditorColorsManager editorColorsManager;
+	protected final DaemonCodeAnalyzerSettings myDaemonCodeAnalyzerSettings;
+	protected final EditorColorsManager myEditorColorsManager;
 
 	public CSharpLineMarkerProvider(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager)
 	{
-		daemonCodeAnalyzerSettings = daemonSettings;
-		editorColorsManager = colorsManager;
+		myDaemonCodeAnalyzerSettings = daemonSettings;
+		myEditorColorsManager = colorsManager;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public LineMarkerInfo getLineMarkerInfo(@NotNull PsiElement element)
 	{
-		if(daemonCodeAnalyzerSettings.SHOW_METHOD_SEPARATORS && (element instanceof DotNetQualifiedElement))
+		if(myDaemonCodeAnalyzerSettings.SHOW_METHOD_SEPARATORS && (element instanceof DotNetQualifiedElement))
 		{
 			if(element.getNode().getTreeParent() == null)
 			{
@@ -92,7 +94,7 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 
 			LineMarkerInfo info = new LineMarkerInfo<PsiElement>(element, element.getTextRange(), null, Pass.UPDATE_ALL, FunctionUtil.<Object,
 					String>nullConstant(), null, GutterIconRenderer.Alignment.RIGHT);
-			EditorColorsScheme scheme = editorColorsManager.getGlobalScheme();
+			EditorColorsScheme scheme = myEditorColorsManager.getGlobalScheme();
 			info.separatorColor = scheme.getColor(CodeInsightColors.METHOD_SEPARATORS_COLOR);
 			info.separatorPlacement = SeparatorPlacement.TOP;
 			return info;
@@ -101,6 +103,7 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 		return null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public void collectSlowLineMarkers(@NotNull List<PsiElement> elements, @NotNull Collection<LineMarkerInfo> lineMarkerInfos)
 	{

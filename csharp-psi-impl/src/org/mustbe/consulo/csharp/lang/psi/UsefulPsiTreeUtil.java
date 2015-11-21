@@ -101,7 +101,7 @@ public class UsefulPsiTreeUtil
 	}
 
 	@Nullable
-	public static PsiElement getNextSiblingSkippingWhiteSpacesAndComments(PsiElement sibling)
+	public static PsiElement getNextSiblingSkippingWhiteSpacesAndComments(@NotNull PsiElement sibling)
 	{
 		return getSiblingSkippingCondition(sibling, new Function<PsiElement, PsiElement>()
 				{

@@ -19,10 +19,13 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.csharp.lang.doc.CSharpDocUtil;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocAttributeValue;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTag;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocText;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTokenType;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import com.intellij.codeInsight.editorActions.TypedHandlerDelegate;
 import com.intellij.codeInsight.highlighting.BraceMatchingUtil;
 import com.intellij.lang.ASTNode;
@@ -65,8 +68,14 @@ public class CSharpDocGtTypedHandler extends TypedHandlerDelegate
 	};
 
 	@Override
+	@RequiredDispatchThread
 	public Result beforeCharTyped(final char c, final Project project, final Editor editor, final PsiFile editedFile, final FileType fileType)
 	{
+		if(!(editedFile instanceof CSharpFile))
+		{
+			return Result.CONTINUE;
+		}
+
 		if(c == '>')
 		{
 			PsiDocumentManager.getInstance(project).commitAllDocuments();
@@ -171,14 +180,6 @@ public class CSharpDocGtTypedHandler extends TypedHandlerDelegate
 				element = element.getParent();
 			}
 
-			if(offset > 0 && offset <= editor.getDocument().getTextLength())
-			{
-				if(editor.getDocument().getCharsSequence().charAt(offset - 1) == '/')
-				{ // Some languages (e.g. GSP) allow character '/' in tag name.
-					return Result.CONTINUE;
-				}
-			}
-
 			if(element instanceof CSharpDocAttributeValue)
 			{
 				element = element.getParent().getParent();
@@ -193,6 +194,12 @@ public class CSharpDocGtTypedHandler extends TypedHandlerDelegate
 			{
 				return Result.CONTINUE;
 			}
+
+			if(!CSharpDocUtil.isInsideDoc(element))
+			{
+				return Result.CONTINUE;
+			}
+
 			if(!(element instanceof CSharpDocTag))
 			{
 				if(element.getPrevSibling() != null &&

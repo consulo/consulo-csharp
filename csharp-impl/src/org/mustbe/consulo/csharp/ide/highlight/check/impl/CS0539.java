@@ -23,9 +23,9 @@ import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLikeMethodDeclarationImplUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -43,7 +43,7 @@ public class CS0539 extends CompilerCheck<DotNetVirtualImplementOwner>
 		{
 			return null;
 		}
-		val resultPair = CSharpLikeMethodDeclarationImplUtil.resolveVirtualImplementation(element, element);
+		final Pair<CSharpLikeMethodDeclarationImplUtil.ResolveVirtualImplementResult, PsiElement> resultPair = CSharpLikeMethodDeclarationImplUtil.resolveVirtualImplementation(element, element);
 		switch(resultPair.getFirst())
 		{
 			case CANT_HAVE:

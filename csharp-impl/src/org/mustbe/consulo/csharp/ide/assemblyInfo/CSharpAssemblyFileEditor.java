@@ -30,6 +30,7 @@ import javax.swing.tree.DefaultTreeModel;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.ide.assemblyInfo.blocks.CSharpAssemblyBlock;
 import org.mustbe.consulo.csharp.ide.assemblyInfo.blocks.CSharpSimpleStringAssemblyBlock;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -53,7 +54,6 @@ import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.treeStructure.SimpleTree;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.ui.tree.TreeUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -105,10 +105,11 @@ public class CSharpAssemblyFileEditor extends UserDataHolderBase implements File
 			root.add(newChild);
 		}
 
-		val simpleTree = new SimpleTree(new DefaultTreeModel(root));
+		final SimpleTree simpleTree = new SimpleTree(new DefaultTreeModel(root));
 		simpleTree.setRootVisible(false);
 		simpleTree.setCellRenderer(new ColoredTreeCellRenderer()
 		{
+			@RequiredDispatchThread
 			@Override
 			public void customizeCellRenderer(JTree jTree, Object o, boolean b, boolean b2, boolean b3, int i, boolean b4)
 			{
@@ -120,7 +121,7 @@ public class CSharpAssemblyFileEditor extends UserDataHolderBase implements File
 			}
 		});
 
-		val splitter = new OnePixelSplitter();
+		final OnePixelSplitter splitter = new OnePixelSplitter();
 		simpleTree.addTreeSelectionListener(new TreeSelectionListener()
 		{
 			@Override

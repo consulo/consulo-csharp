@@ -17,7 +17,6 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.resolve.DotNetRefTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 
@@ -35,7 +34,7 @@ public class CSharpRefTypeRef extends DotNetTypeRef.Delegate implements DotNetRe
 
 	private final Type myType;
 
-	public CSharpRefTypeRef(Type type, DotNetTypeRef typeRef)
+	public CSharpRefTypeRef(@NotNull Type type, @NotNull DotNetTypeRef typeRef)
 	{
 		super(typeRef);
 		myType = type;

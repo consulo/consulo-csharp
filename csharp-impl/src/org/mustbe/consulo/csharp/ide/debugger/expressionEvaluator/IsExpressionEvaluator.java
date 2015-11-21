@@ -41,7 +41,7 @@ public class IsExpressionEvaluator extends Evaluator
 	@Override
 	public void evaluate(@NotNull CSharpEvaluateContext context)
 	{
-		Value<?> pop = context.pop();
+		Value<?> pop = context.popValue();
 
 		if(pop == null)
 		{
@@ -62,6 +62,6 @@ public class IsExpressionEvaluator extends Evaluator
 		{
 			return;
 		}
-		context.pull(new BooleanValueMirror(context.getDebuggerContext().getVirtualMachine().getDelegate(), typeMirror.isAssignableFrom(type)));
+		context.pull(new BooleanValueMirror(context.getDebuggerContext().getVirtualMachine().getDelegate(), typeMirror.isAssignableFrom(type)), null);
 	}
 }

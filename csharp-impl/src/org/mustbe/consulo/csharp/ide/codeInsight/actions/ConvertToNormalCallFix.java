@@ -38,7 +38,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -69,7 +68,7 @@ public class ConvertToNormalCallFix extends PsiElementBaseIntentionAction
 			return;
 		}
 
-		val builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 
 		CSharpTypeDeclaration parentTypeOfMethod = (CSharpTypeDeclaration) resolve.getParent();
 

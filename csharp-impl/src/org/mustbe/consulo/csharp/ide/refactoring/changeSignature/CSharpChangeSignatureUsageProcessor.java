@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -32,6 +34,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
+import org.mustbe.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 import com.intellij.openapi.application.ReadActionProcessor;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.TextRange;
@@ -41,13 +44,11 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.refactoring.changeSignature.ChangeInfo;
 import com.intellij.refactoring.changeSignature.ChangeSignatureUsageProcessor;
-import com.intellij.refactoring.changeSignature.ParameterInfo;
 import com.intellij.refactoring.rename.ResolveSnapshotProvider;
 import com.intellij.usageView.UsageInfo;
-import com.intellij.util.Function;
+import com.intellij.util.PairFunction;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.MultiMap;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -63,10 +64,11 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 		{
 			return UsageInfo.EMPTY_ARRAY;
 		}
-		val list = new ArrayList<UsageInfo>();
+		final List<UsageInfo> list = new ArrayList<UsageInfo>();
 
 		final ReadActionProcessor<PsiReference> refProcessor = new ReadActionProcessor<PsiReference>()
 		{
+			@RequiredReadAction
 			@Override
 			public boolean processInReadAction(final PsiReference ref)
 			{
@@ -76,13 +78,12 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 					return true;
 				}
 				TextRange rangeInElement = ref.getRangeInElement();
-				list.add(new UsageInfo(ref.getElement(), rangeInElement.getStartOffset(), rangeInElement.getEndOffset(),false));
+				list.add(new UsageInfo(ref.getElement(), rangeInElement.getStartOffset(), rangeInElement.getEndOffset(), false));
 				return true;
 			}
 		};
 
-		ReferencesSearch.search(new ReferencesSearch.SearchParameters(info.getMethod(), info.getMethod().getResolveScope(),
-				false)).forEach(refProcessor);
+		ReferencesSearch.search(new ReferencesSearch.SearchParameters(info.getMethod(), info.getMethod().getResolveScope(), false)).forEach(refProcessor);
 		return list.toArray(UsageInfo.EMPTY_ARRAY);
 	}
 
@@ -94,8 +95,8 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 	}
 
 	@Override
-	public boolean processUsage(
-			@NotNull ChangeInfo changeInfo, @NotNull UsageInfo usageInfo, boolean beforeMethodChange, @NotNull UsageInfo[] usages)
+	@RequiredReadAction
+	public boolean processUsage(@NotNull ChangeInfo changeInfo, @NotNull UsageInfo usageInfo, boolean beforeMethodChange, @NotNull UsageInfo[] usages)
 	{
 		if(!(changeInfo instanceof CSharpChangeInfo))
 		{
@@ -149,7 +150,7 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 				builder.append(StringUtil.join(newArguments, ", "));
 				builder.append(");");
 
-				val call = (CSharpCallArgumentListOwner) CSharpFileFactory.createExpression(usageInfo.getProject(), builder.toString());
+				CSharpCallArgumentListOwner call = (CSharpCallArgumentListOwner) CSharpFileFactory.createExpression(usageInfo.getProject(), builder.toString());
 				parameterList.replace(call.getParameterList());
 			}
 			return true;
@@ -158,6 +159,7 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 	}
 
 	@Override
+	@RequiredReadAction
 	public boolean processPrimaryMethod(@NotNull ChangeInfo changeInfo)
 	{
 		if(!(changeInfo instanceof CSharpChangeInfo))
@@ -195,14 +197,23 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 		builder.append(method.getName());
 		builder.append("(");
 
-		builder.append(StringUtil.join(sharpChangeInfo.getNewParameters(), new Function<ParameterInfo, String>()
+		StubBlockUtil.join(builder, sharpChangeInfo.getNewParameters(), new PairFunction<StringBuilder, CSharpParameterInfo, Void>()
 		{
+			@Nullable
 			@Override
-			public String fun(ParameterInfo parameterInfo)
+			public Void fun(StringBuilder stringBuilder, CSharpParameterInfo parameterInfo)
 			{
-				return parameterInfo.getTypeText() + " " + parameterInfo.getName();
+				CSharpModifier modifier = parameterInfo.getModifier();
+				if(modifier != null)
+				{
+					stringBuilder.append(modifier.getPresentableText()).append(" ");
+				}
+				stringBuilder.append(parameterInfo.getTypeText());
+				stringBuilder.append(" ");
+				stringBuilder.append(parameterInfo.getName());
+				return null;
 			}
-		}, ", "));
+		}, ", ");
 
 		builder.append(");");
 
@@ -241,8 +252,7 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 				DotNetParameter originalParameter = newParameter.getParameter();
 				if(originalParameter != null)
 				{
-					ReferencesSearch.search(new ReferencesSearch.SearchParameters(originalParameter, originalParameter.getUseScope(),
-							false)).forEach(new Processor<PsiReference>()
+					ReferencesSearch.search(new ReferencesSearch.SearchParameters(originalParameter, originalParameter.getUseScope(), false)).forEach(new Processor<PsiReference>()
 					{
 						@Override
 						public boolean process(PsiReference reference)
@@ -272,8 +282,7 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 	}
 
 	@Override
-	public void registerConflictResolvers(
-			@NotNull List<ResolveSnapshotProvider.ResolveSnapshot> snapshots,
+	public void registerConflictResolvers(@NotNull List<ResolveSnapshotProvider.ResolveSnapshot> snapshots,
 			@NotNull ResolveSnapshotProvider resolveSnapshotProvider,
 			@NotNull UsageInfo[] usages,
 			@NotNull ChangeInfo changeInfo)

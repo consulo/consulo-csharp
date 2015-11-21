@@ -46,17 +46,23 @@ public class TypeLikeComparator implements Comparator<ResolveResult>
 	{
 		PsiElement element = resolveResult.getElement();
 
-		if(element instanceof DotNetVariable || element instanceof CSharpElementGroup)
+		if(element instanceof DotNetVariable)
 		{
-			return 1000;
+			return 200000;
 		}
+
+		if(element instanceof CSharpElementGroup)
+		{
+			return 100000;
+		}
+
 		if(element instanceof DotNetGenericParameterListOwner)
 		{
 			if(((DotNetGenericParameterListOwner) element).getGenericParametersCount() == myGenericCount)
 			{
-				return 500;
+				return 50000;
 			}
-			return 250;
+			return -((DotNetGenericParameterListOwner) element).getGenericParametersCount() * 100;
 		}
 
 		if(element instanceof DotNetNamespaceAsElement)
@@ -64,6 +70,6 @@ public class TypeLikeComparator implements Comparator<ResolveResult>
 			return 0;
 		}
 
-		return 50;
+		return 10;
 	}
 }

@@ -20,6 +20,7 @@ import static com.intellij.patterns.StandardPatterns.psiElement;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
@@ -43,7 +44,6 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -55,13 +55,14 @@ public class CSharpAccessorCompletionContributor extends CompletionContributor
 	{
 		extend(CompletionType.BASIC, psiElement().andNot(psiElement().inside(DotNetXXXAccessor.class)), new CompletionProvider<CompletionParameters>()
 		{
+			@RequiredReadAction
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters completionParameters,
 					ProcessingContext processingContext,
 					@NotNull CompletionResultSet resultSet)
 			{
 				PsiElement position = completionParameters.getPosition();
-				val accessorOwner = PsiTreeUtil.getParentOfType(position, CSharpXXXAccessorOwner.class);
+				final CSharpXXXAccessorOwner accessorOwner = PsiTreeUtil.getParentOfType(position, CSharpXXXAccessorOwner.class);
 				if(accessorOwner == null)
 				{
 					return;

@@ -29,9 +29,9 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDelegateExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpCatchStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDelegateExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
@@ -43,7 +43,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import com.intellij.psi.PsiElement;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -61,11 +60,12 @@ public class CS0128 extends CompilerCheck<CSharpBlockStatementImpl>
 		{
 			return Collections.emptyList();
 		}
-		val results = new ArrayList<CompilerCheckBuilder>();
-		val names = new THashSet<String>();
+		final List<CompilerCheckBuilder> results = new ArrayList<CompilerCheckBuilder>();
+		final Set<String> names = new THashSet<String>();
 		parent.accept(new CSharpRecursiveElementVisitor()
 		{
 			@Override
+			@RequiredReadAction
 			public void visitLocalVariable(CSharpLocalVariable variable)
 			{
 				String name = variable.getName();

@@ -51,12 +51,26 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	@RequiredReadAction
 	public static List<StubBlock> buildBlocks(PsiElement qualifiedElement)
 	{
-		CSharpStubBuilderVisitor visitor = new CSharpStubBuilderVisitor();
+		return buildBlocks(qualifiedElement, true);
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public static List<StubBlock> buildBlocks(PsiElement qualifiedElement, boolean compiled)
+	{
+		CSharpStubBuilderVisitor visitor = new CSharpStubBuilderVisitor(compiled);
 		qualifiedElement.accept(visitor);
 		return visitor.getBlocks();
 	}
 
+	private boolean myCompiled;
+
 	private List<StubBlock> myBlocks = new ArrayList<StubBlock>(2);
+
+	public CSharpStubBuilderVisitor(boolean compiled)
+	{
+		myCompiled = compiled;
+	}
 
 	@Override
 	@RequiredReadAction
@@ -71,7 +85,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		StubBlock e = new StubBlock(builder, null, StubBlock.BRACES);
 		for(DotNetXXXAccessor dotNetXXXAccessor : declaration.getAccessors())
 		{
-			e.getBlocks().addAll(buildBlocks(dotNetXXXAccessor));
+			e.getBlocks().addAll(buildBlocks(dotNetXXXAccessor, myCompiled));
 		}
 		myBlocks.add(e);
 	}
@@ -151,7 +165,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		StubBlock e = new StubBlock(builder, null, StubBlock.BRACES);
 		for(DotNetXXXAccessor dotNetXXXAccessor : declaration.getAccessors())
 		{
-			e.getBlocks().addAll(buildBlocks(dotNetXXXAccessor));
+			e.getBlocks().addAll(buildBlocks(dotNetXXXAccessor, myCompiled));
 		}
 		myBlocks.add(e);
 	}
@@ -172,7 +186,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		StubBlock e = new StubBlock(builder, null, StubBlock.BRACES);
 		for(DotNetXXXAccessor dotNetXXXAccessor : declaration.getAccessors())
 		{
-			e.getBlocks().addAll(buildBlocks(dotNetXXXAccessor));
+			e.getBlocks().addAll(buildBlocks(dotNetXXXAccessor, myCompiled));
 		}
 		myBlocks.add(e);
 	}
@@ -240,15 +254,18 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		processParameterList(declaration, builder, '(', ')');
 		processGenericConstraintList(builder, declaration);
 
-		boolean canHaveBody = !declaration.hasModifier(CSharpModifier.ABSTRACT) && !declaration.isDelegate();
+		if(myCompiled)
+		{
+			boolean canHaveBody = !declaration.hasModifier(CSharpModifier.ABSTRACT) && !declaration.isDelegate();
 
-		if(canHaveBody)
-		{
-			builder.append("; //compiled code\n");
-		}
-		else
-		{
-			builder.append(";\n");
+			if(canHaveBody)
+			{
+				builder.append("; //compiled code\n");
+			}
+			else
+			{
+				builder.append(";\n");
+			}
 		}
 		myBlocks.add(new LineStubBlock(builder));
 	}
@@ -296,10 +313,10 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			List<DotNetTypeRef> temp = ContainerUtil.filter(extendTypeRefs, new Condition<DotNetTypeRef>()
 			{
 				@Override
+				@RequiredReadAction
 				public boolean value(DotNetTypeRef typeRef)
 				{
-					return !DotNetTypeRefUtil.isVmQNameEqual(typeRef, declaration, DotNetTypes.System.Object) && !DotNetTypeRefUtil.isVmQNameEqual
-							(typeRef, declaration, DotNetTypes.System.ValueType);
+					return !DotNetTypeRefUtil.isVmQNameEqual(typeRef, declaration, DotNetTypes.System.Object) && !DotNetTypeRefUtil.isVmQNameEqual(typeRef, declaration, DotNetTypes.System.ValueType);
 				}
 			});
 
@@ -311,6 +328,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 				{
 					@Nullable
 					@Override
+					@RequiredReadAction
 					public Void fun(StringBuilder builder, DotNetTypeRef typeRef)
 					{
 						appendTypeRef(declaration, builder, typeRef);
@@ -325,16 +343,17 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 		for(DotNetNamedElement dotNetNamedElement : declaration.getMembers())
 		{
-			e.getBlocks().addAll(buildBlocks(dotNetNamedElement));
+			e.getBlocks().addAll(buildBlocks(dotNetNamedElement, myCompiled));
 		}
 	}
 
+	@RequiredReadAction
 	public static void appendTypeRef(@NotNull final PsiElement scope, @NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef)
 	{
-		CSharpTypeRefPresentationUtil.appendTypeRef(scope, builder, typeRef, CSharpTypeRefPresentationUtil.QUALIFIED_NAME |
-				CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
+		CSharpTypeRefPresentationUtil.appendTypeRef(scope, builder, typeRef, CSharpTypeRefPresentationUtil.QUALIFIED_NAME | CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
 	}
 
+	@RequiredReadAction
 	private static <T extends DotNetVirtualImplementOwner & DotNetNamedElement> void appendName(T element, StringBuilder builder)
 	{
 		DotNetTypeRef typeRefForImplement = element.getTypeRefForImplement();
@@ -441,6 +460,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 						}
 
 						@Override
+						@RequiredReadAction
 						public void visitGenericConstraintTypeValue(CSharpGenericConstraintTypeValue value)
 						{
 							appendTypeRef(owner, builder, value.toTypeRef());
@@ -490,10 +510,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 	}
 
 	@RequiredReadAction
-	public static void processAttributeListAsLine(PsiElement scope,
-			List<StubBlock> blocks,
-			DotNetAttributeTargetType targetType,
-			DotNetAttribute[] attributes)
+	public static void processAttributeListAsLine(PsiElement scope, List<StubBlock> blocks, DotNetAttributeTargetType targetType, DotNetAttribute[] attributes)
 	{
 		for(DotNetAttribute dotNetAttribute : attributes)
 		{

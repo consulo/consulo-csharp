@@ -53,7 +53,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ObjectUtil;
 import com.intellij.util.SmartList;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -251,6 +250,7 @@ public class CSharpTypeUtil
 	 * int - int type, ill 'top'
 	 * return false due it not be casted
 	 */
+	@RequiredReadAction
 	public static boolean isInheritable(@NotNull DotNetTypeRef top, @NotNull DotNetTypeRef target, @NotNull PsiElement scope)
 	{
 		return isInheritable(top, target, scope, null).isSuccess();
@@ -399,7 +399,7 @@ public class CSharpTypeUtil
 		if(topGenericExtractor != DotNetGenericExtractor.EMPTY && topElement instanceof DotNetTypeDeclaration)
 		{
 			DotNetTypeDeclaration topTypeDeclaration = (DotNetTypeDeclaration) topElement;
-			val typeFromSuper = findTypeRefFromExtends(target, topTypeDeclaration, scope);
+			DotNetTypeResolveResult typeFromSuper = findTypeRefFromExtends(target, topTypeDeclaration, scope);
 
 			if(typeFromSuper == null)
 			{

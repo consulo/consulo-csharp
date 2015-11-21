@@ -17,16 +17,16 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameterList;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
-import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
@@ -36,6 +36,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRef
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
@@ -43,7 +44,8 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
-import lombok.val;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
 
 /**
  * @author VISTALL
@@ -56,23 +58,27 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements CSh
 		super(node);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		return getModifierElement(modifier) != null;
+		return getModifierList().hasModifier(modifier);
 	}
 
+	@RequiredReadAction
+	@NotNull
 	@Override
-	@Nullable
-	public PsiElement getModifierElement(@NotNull DotNetModifier modifier)
+	public DotNetModifierList getModifierList()
 	{
-		CSharpModifier as = CSharpModifier.as(modifier);
-		switch(as)
+		return CachedValuesManager.getManager(getProject()).createCachedValue(new CachedValueProvider<DotNetModifierList>()
 		{
-			case ASYNC:
-				return findChildByType(CSharpSoftTokens.ASYNC_KEYWORD);
-		}
-		return null;
+			@Nullable
+			@Override
+			public Result<DotNetModifierList> compute()
+			{
+				return Result.<DotNetModifierList>create(new CSharpAnonymousModifierListImpl(CSharpLambdaExpressionImpl.this), CSharpLambdaExpressionImpl.this);
+			}
+		}, false).getValue();
 	}
 
 	@Nullable
@@ -155,7 +161,7 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements CSh
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 
-		val typeRefs = new ArrayList<DotNetTypeRef>();
+		final List<DotNetTypeRef> typeRefs = new ArrayList<DotNetTypeRef>();
 		codeBlock.accept(new CSharpRecursiveElementVisitor()
 		{
 			@Override

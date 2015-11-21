@@ -66,6 +66,7 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 		return type.toTypeRef();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetType getType()
@@ -74,6 +75,7 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 	}
 
 	@NotNull
+	@RequiredReadAction
 	private DotNetTypeRef resolveTypeForParameter()
 	{
 		CSharpLambdaExpressionImpl lambdaExpression = PsiTreeUtil.getParentOfType(this, CSharpLambdaExpressionImpl.class);

@@ -22,7 +22,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -55,7 +54,7 @@ public class UsingStatementParsing extends SharedParsingHelpers
 
 	public static void parseUsing(CSharpBuilderWrapper builder)
 	{
-		val marker = builder.mark();
+		PsiBuilder.Marker marker = builder.mark();
 
 		builder.advanceLexer();
 

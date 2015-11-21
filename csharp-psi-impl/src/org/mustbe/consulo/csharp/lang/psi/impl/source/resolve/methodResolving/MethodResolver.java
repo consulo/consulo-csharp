@@ -53,9 +53,19 @@ public class MethodResolver
 	@RequiredReadAction
 	public static List<NCallArgument> buildCallArguments(@NotNull CSharpCallArgument[] callArguments,
 			@NotNull DotNetParameterListOwner parameterListOwner,
+			@NotNull PsiElement scope,
+			boolean resolveFromParent)
+	{
+		return buildCallArguments(callArguments, scope, new MethodParameterResolveContext(parameterListOwner, scope, resolveFromParent));
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public static List<NCallArgument> buildCallArguments(@NotNull CSharpCallArgument[] callArguments,
+			@NotNull DotNetParameterListOwner parameterListOwner,
 			@NotNull PsiElement scope)
 	{
-		return buildCallArguments(callArguments, scope, new MethodParameterResolveContext(parameterListOwner, scope));
+		return buildCallArguments(callArguments, parameterListOwner, scope, false);
 	}
 
 	@NotNull
@@ -77,7 +87,7 @@ public class MethodResolver
 			DotNetExpression argumentExpression = argument.getArgumentExpression();
 			if(argumentExpression != null)
 			{
-				expressionTypeRef = argumentExpression.toTypeRef(false);
+				expressionTypeRef = argumentExpression.toTypeRef(context.isResolveFromParentTypeRef());
 			}
 
 			if(argument instanceof CSharpNamedCallArgument)
@@ -256,10 +266,20 @@ public class MethodResolver
 	@RequiredReadAction
 	public static MethodCalcResult calc(@NotNull CSharpCallArgument[] callArguments,
 			@NotNull DotNetParameterListOwner parameterListOwner,
+			@NotNull PsiElement scope,
+			boolean resolveFromParent)
+	{
+		List<NCallArgument> list = buildCallArguments(callArguments, parameterListOwner, scope, resolveFromParent);
+		return calc(list, scope);
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public static MethodCalcResult calc(@NotNull CSharpCallArgument[] callArguments,
+			@NotNull DotNetParameterListOwner parameterListOwner,
 			@NotNull PsiElement scope)
 	{
-		List<NCallArgument> list = buildCallArguments(callArguments, parameterListOwner, scope);
-		return calc(list, scope);
+		return calc(callArguments, parameterListOwner, scope, false);
 	}
 
 	@NotNull

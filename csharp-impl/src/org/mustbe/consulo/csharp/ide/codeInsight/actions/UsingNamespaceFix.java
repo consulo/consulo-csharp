@@ -63,7 +63,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ArrayListSet;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -164,7 +163,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		PsiElement parent = ref.getParent();
 		if(parent instanceof CSharpAttribute)
 		{
-			val cond = new Condition<DotNetTypeDeclaration>()
+			final Condition<DotNetTypeDeclaration> cond = new Condition<DotNetTypeDeclaration>()
 			{
 				@Override
 				public boolean value(DotNetTypeDeclaration typeDeclaration)
@@ -244,7 +243,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		newCallArguments[0] = new CSharpLightCallArgument((DotNetExpression) qualifier);
 		System.arraycopy(callArguments, 0, newCallArguments, 1, callArguments.length);
 
-		val list = ExtensionMethodIndex.getInstance().get(referenceName, ref.getProject(), ref.getResolveScope());
+		Collection<DotNetLikeMethodDeclaration> list = ExtensionMethodIndex.getInstance().get(referenceName, ref.getProject(), ref.getResolveScope());
 
 		for(DotNetLikeMethodDeclaration possibleMethod : list)
 		{
@@ -261,7 +260,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 
 	private static <T extends DotNetQualifiedElement> void collect(Set<NamespaceReference> result, Collection<T> element, Condition<T> condition)
 	{
-		for(val type : element)
+		for(T type : element)
 		{
 			String presentableParentQName = type.getPresentableParentQName();
 			if(StringUtil.isEmpty(presentableParentQName))

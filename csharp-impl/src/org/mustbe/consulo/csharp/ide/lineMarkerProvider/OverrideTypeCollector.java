@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.swing.Icon;
 import javax.swing.JComponent;
 
 import org.jetbrains.annotations.NotNull;
@@ -32,21 +33,15 @@ import org.mustbe.consulo.dotnet.psi.search.searches.TypeInheritorsSearch;
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
-import com.intellij.codeInsight.navigation.NavigationUtil;
+import com.intellij.codeInsight.daemon.impl.PsiElementListNavigator;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.util.DefaultPsiElementCellRenderer;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.ui.popup.JBPopup;
-import com.intellij.pom.Navigatable;
+import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.search.PsiElementProcessor;
-import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -63,9 +58,9 @@ public class OverrideTypeCollector implements LineMarkerCollector
 		{
 			if(hasChild(parent))
 			{
-				val icon = parent.isInterface() ? AllIcons.Gutter.ImplementedMethod : AllIcons.Gutter.OverridenMethod;
-				val lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.UPDATE_OVERRIDEN_MARKERS,
-						new Function<PsiElement, String>()
+				final Icon icon = parent.isInterface() ? AllIcons.Gutter.ImplementedMethod : AllIcons.Gutter.OverridenMethod;
+				LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.UPDATE_OVERRIDEN_MARKERS, new Function<PsiElement,
+						String>()
 
 				{
 					@Override
@@ -80,8 +75,7 @@ public class OverrideTypeCollector implements LineMarkerCollector
 					{
 						final DotNetTypeDeclaration typeDeclaration = CSharpLineMarkerUtil.getNameIdentifierAs(element, CSharpTypeDeclaration.class);
 						assert typeDeclaration != null;
-						final CommonProcessors.CollectProcessor<DotNetTypeDeclaration> collectProcessor = new CommonProcessors
-								.CollectProcessor<DotNetTypeDeclaration>();
+						final CommonProcessors.CollectProcessor<DotNetTypeDeclaration> collectProcessor = new CommonProcessors.CollectProcessor<DotNetTypeDeclaration>();
 						if(!ProgressManager.getInstance().runProcessWithProgressSynchronously(new Runnable()
 						{
 							@Override
@@ -96,33 +90,18 @@ public class OverrideTypeCollector implements LineMarkerCollector
 
 						Collection<DotNetTypeDeclaration> results = collectProcessor.getResults();
 
-						List<PsiNamedElement> typeDeclarations = new ArrayList<PsiNamedElement>(results.size());
+						List<NavigatablePsiElement> typeDeclarations = new ArrayList<NavigatablePsiElement>(results.size());
 						for(DotNetTypeDeclaration result : results)
 						{
 							PsiElement fun = CSharpTransformer.INSTANCE.fun(result);
-							if(fun instanceof PsiNamedElement)
+							if(fun instanceof NavigatablePsiElement)
 							{
-								typeDeclarations.add((PsiNamedElement) fun);
+								typeDeclarations.add((NavigatablePsiElement) fun);
 							}
 						}
 
-						PsiNamedElement[] inheritors = ContainerUtil.toArray(typeDeclarations, PsiNamedElement.EMPTY_ARRAY);
-						ContainerUtil.sort(inheritors, PsiNamedElementComparator.INSTANCE);
-
-						JBPopup popup = NavigationUtil.getPsiElementPopup(inheritors, new DefaultPsiElementCellRenderer(),
-								"Open types (" + inheritors.length + " items)", new PsiElementProcessor<PsiElement>()
-						{
-							@Override
-							public boolean execute(@NotNull PsiElement element)
-							{
-								if(element instanceof Navigatable)
-								{
-									((Navigatable) element).navigate(true);
-								}
-								return true;
-							}
-						});
-						popup.show(new RelativePoint(mouseEvent));
+						PsiElementListNavigator.openTargets(mouseEvent, typeDeclarations.toArray(new NavigatablePsiElement[0]), "Navigate to inheritors", "Navigate to inheritors",
+								new DefaultPsiElementCellRenderer());
 					}
 				}, GutterIconRenderer.Alignment.LEFT
 				);

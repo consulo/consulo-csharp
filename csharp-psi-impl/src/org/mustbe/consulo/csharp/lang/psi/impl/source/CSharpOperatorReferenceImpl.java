@@ -70,10 +70,10 @@ import com.intellij.psi.ResolveState;
 import com.intellij.psi.impl.source.resolve.ResolveCache;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -184,24 +184,25 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	}
 
 	@Override
+	@RequiredReadAction
 	public TextRange getRangeInElement()
 	{
-		PsiElement operator = getFirstOperator();
-
-		int len = operator.getTextLength();
-
-		IElementType operatorElementType = getOperatorElementType();
-		if(operatorElementType == CSharpTokens.LTLT || operatorElementType == CSharpTokens.GTGT)
-		{
-			len += 1;
-		}
-		return new TextRange(0, len);
+		PsiElement operator = getOperatorElement();
+		return new TextRange(0, operator.getTextLength());
 	}
 
 	@NotNull
-	public PsiElement getFirstOperator()
+	@RequiredReadAction
+	public PsiElement getOperatorElement()
 	{
 		return findNotNullChildByFilter(ourMergeSet);
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public IElementType getOperatorElementType()
+	{
+		return PsiUtilCore.getElementType(getOperatorElement());
 	}
 
 	@Nullable
@@ -336,12 +337,6 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		}
 	}
 
-	@NotNull
-	public IElementType getOperatorElementType()
-	{
-		return CSharpOperatorNameHelper.mergeTwiceOperatorIfNeed(getFirstOperator());
-	}
-
 	@RequiredReadAction
 	public void resolveUserDefinedOperators(@NotNull IElementType elementType,
 			@NotNull DotNetTypeRef originalTypeRef,
@@ -377,7 +372,12 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		List<DotNetLikeMethodDeclaration> elements = CSharpResolveUtil.mergeGroupsToIterable(psiElements);
 		for(DotNetLikeMethodDeclaration psiElement : elements)
 		{
-			MethodCalcResult calc = MethodResolver.calc(arguments, psiElement, this);
+			MethodCalcResult calc = MethodResolver.calc(arguments, psiElement, this, true);
+			if(implicitExpression != null)
+			{
+				calc = calc.dup(Short.MAX_VALUE);
+			}
+
 			last.add(Pair.<MethodCalcResult, PsiElement>create(calc, psiElement));
 		}
 	}
@@ -491,7 +491,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			DotNetExpression parameterExpression = parameterExpressions[i];
 			if(parameterExpression == wrapExpression)
 			{
-				val wrapper = new ImplicitOperatorArgumentAsCallArgumentWrapper(wrapExpression, toTypeRef);
+				ImplicitOperatorArgumentAsCallArgumentWrapper wrapper = new ImplicitOperatorArgumentAsCallArgumentWrapper(wrapExpression, toTypeRef);
 
 				wrapper.putUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO, new ImplicitCastInfo(originalTypeRef, toTypeRef));
 				array[i] = wrapper;

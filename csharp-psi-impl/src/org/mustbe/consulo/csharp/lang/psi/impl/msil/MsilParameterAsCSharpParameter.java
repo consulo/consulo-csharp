@@ -16,19 +16,24 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeArgumentNode;
 import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeHolder;
 import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeNode;
 import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeSimpleNode;
 import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeWithChildrenNode;
+import org.mustbe.consulo.dotnet.externalAttributes.nodes.ExternalAttributeNodeImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
@@ -44,6 +49,7 @@ import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import org.mustbe.consulo.msil.lang.psi.impl.MsilTypeByRefImpl;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -54,6 +60,7 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 	private final DotNetLikeMethodDeclaration myMethodDeclaration;
 	private final int myIndex;
 
+	@RequiredReadAction
 	public MsilParameterAsCSharpParameter(PsiElement parent, DotNetVariable variable, DotNetLikeMethodDeclaration methodDeclaration, int index)
 	{
 		super(parent, getAdditionalModifiers(index, methodDeclaration, variable), variable);
@@ -61,6 +68,7 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 		myIndex = index;
 	}
 
+	@RequiredReadAction
 	private static CSharpModifier[] getAdditionalModifiers(int index, DotNetLikeMethodDeclaration parent, DotNetVariable variable)
 	{
 		if(index == 0)
@@ -94,6 +102,7 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 		{
 			@NotNull
 			@Override
+			@RequiredReadAction
 			public List<ExternalAttributeNode> findAttributes(ExternalAttributeHolder holder)
 			{
 				PsiElement parent = myMethodDeclaration.getParent();
@@ -103,6 +112,34 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 				}
 
 				String vmQName = ((DotNetTypeDeclaration) parent).getVmQName();
+				assert vmQName != null;
+
+
+				List<ExternalAttributeNode> attributesFromExternal = getAttributesFromExternal(holder, vmQName);
+				if(DotNetTypes2.System.Diagnostics.DebuggerDisplayAttribute.equals(vmQName))
+				{
+					if(getIndex() == 0)
+					{
+						ExternalAttributeNodeImpl externalAttributeNode = new ExternalAttributeNodeImpl("MustBe.Consulo.Attributes.InjectLanguageAttribute");
+						externalAttributeNode.addArgument(new ExternalAttributeArgumentNode(DotNetTypes.System.String, "CFS:C#_EXPRESSION"));
+						if(attributesFromExternal.isEmpty())
+						{
+							return Arrays.<ExternalAttributeNode>asList(externalAttributeNode);
+						}
+						else
+						{
+							List<ExternalAttributeNode> list = ContainerUtil.newArrayList(attributesFromExternal);
+							list.add(externalAttributeNode);
+							return list;
+						}
+					}
+				}
+				return attributesFromExternal;
+			}
+
+			@NotNull
+			private List<ExternalAttributeNode> getAttributesFromExternal(ExternalAttributeHolder holder, String vmQName)
+			{
 				ExternalAttributeWithChildrenNode classNode = holder.findClassNode(vmQName);
 				if(classNode == null)
 				{

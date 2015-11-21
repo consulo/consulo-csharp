@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.Evaluator;
 import org.mustbe.consulo.dotnet.debugger.DotNetDebugContext;
+import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import mono.debugger.StackFrameMirror;
 import mono.debugger.Value;
@@ -34,7 +35,7 @@ import mono.debugger.Value;
  */
 public class CSharpEvaluateContext
 {
-	private Deque<Value<?>> myStack = new ArrayDeque<Value<?>>();
+	private Deque<Pair<Value<?>, Object>> myStack = new ArrayDeque<Pair<Value<?>, Object>>();
 	private DotNetDebugContext myDebuggerContext;
 	private StackFrameMirror myFrame;
 	private PsiElement myElementAt;
@@ -63,14 +64,21 @@ public class CSharpEvaluateContext
 	}
 
 	@Nullable
-	public Value<?> pop()
+	public Value<?> popValue()
+	{
+		Pair<Value<?>, Object> pair = myStack.remove();
+		return pair == null ? null : pair.getFirst();
+	}
+
+	@Nullable
+	public Pair<Value<?>, Object> pop()
 	{
 		return myStack.remove();
 	}
 
-	public void pull(@NotNull Value<?> o)
+	public void pull(@NotNull Value<?> o, @Nullable Object provider)
 	{
-		myStack.addFirst(o);
+		myStack.addFirst(Pair.<Value<?>, Object>create(o, provider));
 	}
 
 	public void evaluate(List<Evaluator> evaluators)

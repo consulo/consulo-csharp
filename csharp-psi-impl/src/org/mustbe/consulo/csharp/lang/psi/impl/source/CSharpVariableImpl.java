@@ -73,7 +73,7 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 				@Override
 				public DotNetTypeRef compute()
 				{
-					return initializer.toTypeRef(false);
+					return initializer.toTypeRef(true);
 				}
 			});
 			return resolvedTypeRef == null ? DotNetTypeRef.AUTO_TYPE : resolvedTypeRef;

@@ -51,7 +51,7 @@ public class FieldEvaluator extends Evaluator
 		ObjectValueMirror value = null;
 		if(myTypeDeclaration == null)
 		{
-			value = (ObjectValueMirror) context.pop();
+			value = (ObjectValueMirror) context.popValue();
 			typeMirror = value.type();
 		}
 		else
@@ -74,7 +74,7 @@ public class FieldEvaluator extends Evaluator
 				Value<?> loadedValue = fieldOrPropertyMirror.value(context.getFrame().thread(), value);
 				if(loadedValue != null)
 				{
-					context.pull(loadedValue);
+					context.pull(loadedValue, fieldOrPropertyMirror);
 				}
 				break;
 			}

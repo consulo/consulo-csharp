@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -30,7 +31,6 @@ import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -63,10 +63,8 @@ public class GenericInferenceUtil
 		}
 	}
 
-	public static final GenericInferenceResult FAIL = new GenericInferenceResult(false, DotNetGenericExtractor.EMPTY);
-	public static final GenericInferenceResult SUCCESS = new GenericInferenceResult(true, DotNetGenericExtractor.EMPTY);
-
 	@NotNull
+	@RequiredReadAction
 	public static GenericInferenceResult inferenceGenericExtractor(@NotNull PsiElement referenceElement,
 			@NotNull CSharpCallArgumentListOwner callArgumentListOwner,
 			@NotNull DotNetLikeMethodDeclaration methodDeclaration)
@@ -82,6 +80,7 @@ public class GenericInferenceUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static GenericInferenceResult inferenceGenericExtractor(@NotNull CSharpCallArgument[] callArguments,
 			@NotNull DotNetTypeRef[] typeArgumentListRefs,
 			@NotNull PsiElement scope,
@@ -102,7 +101,7 @@ public class GenericInferenceUtil
 			return new GenericInferenceResult(true, DotNetGenericExtractor.EMPTY);
 		}
 
-		val map = new THashMap<DotNetGenericParameter, DotNetTypeRef>();
+		final Map<DotNetGenericParameter, DotNetTypeRef> map = new THashMap<DotNetGenericParameter, DotNetTypeRef>();
 
 		for(NCallArgument nCallArgument : methodCallArguments)
 		{
@@ -195,7 +194,7 @@ public class GenericInferenceUtil
 					continue;
 				}
 
-				int indexOfGeneric = findIndexOfGeneric(parameterTypeRef, genericParameter, scope);
+				int indexOfGeneric = findIndexOfGeneric(parameterTypeResolveResult, genericParameter, scope);
 				if(indexOfGeneric == -1)
 				{
 					continue;
@@ -216,11 +215,9 @@ public class GenericInferenceUtil
 		}
 	}
 
-	private static int findIndexOfGeneric(DotNetTypeRef parameterTypeRef, DotNetGenericParameter parameter, PsiElement scope)
+	private static int findIndexOfGeneric(DotNetTypeResolveResult parameterTypeResolveResult, DotNetGenericParameter parameter, PsiElement scope)
 	{
-		DotNetTypeResolveResult typeResolveResult = parameterTypeRef.resolve(scope);
-
-		PsiElement element = typeResolveResult.getElement();
+		PsiElement element = parameterTypeResolveResult.getElement();
 		if(element instanceof DotNetGenericParameterListOwner)
 		{
 			DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) element).getGenericParameters();
@@ -229,7 +226,7 @@ public class GenericInferenceUtil
 				return -1;
 			}
 
-			DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
+			DotNetGenericExtractor genericExtractor = parameterTypeResolveResult.getGenericExtractor();
 
 			for(int i = 0; i < genericParameters.length; i++)
 			{
@@ -249,9 +246,10 @@ public class GenericInferenceUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	private static DotNetTypeRef unwrapPossibleGenericTypeRefs(@NotNull NCallArgument nCallArgument,
 			@NotNull DotNetTypeRef parameterTypeRef,
-			@NotNull THashMap<DotNetGenericParameter, DotNetTypeRef> map,
+			@NotNull Map<DotNetGenericParameter, DotNetTypeRef> map,
 			@NotNull PsiElement scope)
 	{
 		DotNetTypeRef expressionTypeRef = nCallArgument.getTypeRef();

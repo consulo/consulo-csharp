@@ -20,6 +20,7 @@ import static org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression.Resol
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,6 +37,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.PsiElementResolveR
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SortedMemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.extensionResolver.ExtensionResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.handlers.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.StaticVsInstanceComparator;
@@ -65,8 +67,11 @@ import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
+import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtil;
+import com.intellij.psi.impl.source.tree.injected.Place;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -74,7 +79,6 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.ObjectUtil;
 import com.intellij.util.Processor;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -82,6 +86,26 @@ import lombok.val;
  */
 public class CSharpReferenceExpressionImplUtil
 {
+	public static class OurResolver implements CSharpResolveCache.PolyVariantResolver<CSharpReferenceExpressionEx>
+	{
+		public static final OurResolver INSTANCE = new OurResolver();
+
+		@RequiredReadAction
+		@NotNull
+		@Override
+		public ResolveResult[] resolve(@NotNull CSharpReferenceExpressionEx ref, boolean incompleteCode, boolean resolveFromParent)
+		{
+			if(!incompleteCode)
+			{
+				return ref.multiResolveImpl(ref.kind(), resolveFromParent);
+			}
+			else
+			{
+				return CSharpResolveUtil.filterValidResults(ref.multiResolve(false, resolveFromParent));
+			}
+		}
+	}
+
 	public static final TokenSet ourReferenceElements = TokenSet.orSet(CSharpTokenSets.NATIVE_TYPES, TokenSet.create(CSharpTokens.THIS_KEYWORD,
 			CSharpTokens.BASE_KEYWORD, CSharpTokens.IDENTIFIER, CSharpSoftTokens.GLOBAL_KEYWORD));
 
@@ -241,8 +265,12 @@ public class CSharpReferenceExpressionImplUtil
 	}
 
 	@RequiredReadAction
-	public static int getTypeArgumentListSize(@NotNull CSharpReferenceExpression referenceExpression)
+	public static int getTypeArgumentListSize(@Nullable CSharpReferenceExpression referenceExpression)
 	{
+		if(referenceExpression == null)
+		{
+			return 0;
+		}
 		DotNetTypeList typeArgumentList = referenceExpression.getTypeArgumentList();
 		if(typeArgumentList == null)
 		{
@@ -478,7 +506,7 @@ public class CSharpReferenceExpressionImplUtil
 					PsiElement resolveResultElement = resolveResult.getElement();
 					if(resolveResultElement instanceof CSharpTypeDeclaration)
 					{
-						val map = new HashMap<DotNetGenericParameter, DotNetTypeRef>();
+						Map<DotNetGenericParameter, DotNetTypeRef> map = new HashMap<DotNetGenericParameter, DotNetTypeRef>();
 						DotNetGenericParameter[] genericParameters = ((CSharpTypeDeclaration) resolveResultElement).getGenericParameters();
 						for(int j = 0; j < typeArgumentListRefs.length; j++)
 						{
@@ -540,7 +568,7 @@ public class CSharpReferenceExpressionImplUtil
 				}
 			default:
 			case ATTRIBUTE:
-				val referenceName = element.getReferenceName();
+				String referenceName = element.getReferenceName();
 				if(referenceName == null)
 				{
 					return ResolveResult.EMPTY_ARRAY;
@@ -751,7 +779,7 @@ public class CSharpReferenceExpressionImplUtil
 			{
 				// walk for extensions
 				ExtensionResolveScopeProcessor extensionProcessor = new ExtensionResolveScopeProcessor(qualifierTypeRef, (CSharpReferenceExpression) element,
-						completion, processor, callArgumentListOwner);
+						completion, memberProcessor, callArgumentListOwner);
 
 				resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR, extractor);
 				resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, new ExtensionMethodByNameSelector(((CSharpReferenceExpression) element)
@@ -943,7 +971,7 @@ public class CSharpReferenceExpressionImplUtil
 		PsiElement targetToWalkChildren = null;
 
 		PsiElement temp = strict ? element : element.getParent();
-		while(temp != null)
+		loop:while(temp != null)
 		{
 			ProgressIndicatorProvider.checkCanceled();
 
@@ -972,6 +1000,7 @@ public class CSharpReferenceExpressionImplUtil
 			{
 				last = temp;
 				targetToWalkChildren = PsiTreeUtil.getParentOfType(temp, DotNetModifierListOwner.class);
+				break;
 			}
 			else if(temp instanceof DotNetFieldDeclaration ||
 					temp instanceof DotNetPropertyDeclaration ||
@@ -993,6 +1022,18 @@ public class CSharpReferenceExpressionImplUtil
 				last = temp;
 				targetToWalkChildren = temp.getParent();
 				break;
+			}
+			else if(temp instanceof CSharpForInjectionFragmentHolder)
+			{
+				Place shreds = InjectedLanguageUtil.getShreds(temp.getContainingFile());
+				if(shreds != null)
+				{
+					for(PsiLanguageInjectionHost.Shred shred : shreds)
+					{
+						temp = shred.getHost();
+						continue loop;
+					}
+				}
 			}
 			temp = temp.getParent();
 		}

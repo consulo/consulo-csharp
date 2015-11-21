@@ -18,16 +18,20 @@ package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
  * @since 12.06.14
  */
-public interface CSharpSimpleLikeMethodAsElement extends DotNetElement, CSharpSimpleLikeMethod
+public interface CSharpSimpleLikeMethodAsElement extends DotNetElement, CSharpSimpleLikeMethod, DotNetModifierListOwner
 {
+	@Override
+	@RequiredReadAction
 	boolean hasModifier(@NotNull DotNetModifier modifier);
 
 	@Nullable

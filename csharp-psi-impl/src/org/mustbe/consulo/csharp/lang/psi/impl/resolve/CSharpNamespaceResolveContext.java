@@ -4,6 +4,7 @@ import gnu.trove.THashSet;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,7 +37,6 @@ import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.Processor;
 import com.intellij.util.SmartList;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -104,7 +104,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 			return null;
 		}
 		List<CSharpElementGroup<CSharpMethodDeclaration>> list = new SmartList<CSharpElementGroup<CSharpMethodDeclaration>>();
-		val processed = new THashSet<String>();
+		Set<String> processed = new THashSet<String>();
 		for(DotNetTypeDeclaration typeDeclaration : decls)
 		{
 			PsiElement wrappedDeclaration = MsilToCSharpUtil.wrap(typeDeclaration);
@@ -150,7 +150,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		}
 		String indexableName = DotNetNamespaceStubUtil.getIndexableNamespace(qName);
 
-		val processed = new THashSet<String>();
+		final Set<String> processed = new THashSet<String>();
 
 		return StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_WITH_EXTENSION_METHODS_INDEX, indexableName, project, scope,
 				DotNetTypeDeclaration.class, new Processor<DotNetTypeDeclaration>()

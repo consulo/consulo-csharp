@@ -16,16 +16,23 @@
 
 package org.mustbe.consulo.csharp.ide.refactoring.move;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.refactoring.move.MoveCallback;
 import com.intellij.refactoring.move.MoveHandlerDelegate;
+import com.intellij.refactoring.move.moveFilesOrDirectories.MoveFilesOrDirectoriesUtil;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -75,5 +82,30 @@ public class CSharpMoveHandlerDelegate extends MoveHandlerDelegate
 				filesOrDirs.add(containingFile);
 			}
 		}
+	}
+
+	@Override
+	public void doMove(Project project, PsiElement[] elements, @Nullable PsiElement targetContainer, @Nullable MoveCallback callback)
+	{
+		MoveFilesOrDirectoriesUtil.doMove(project, adjustForMove(project, elements, targetContainer), new PsiElement[] {targetContainer}, callback);
+	}
+
+	@Nullable
+	@Override
+	public PsiElement[] adjustForMove(Project project, PsiElement[] sourceElements, PsiElement targetElement)
+	{
+		List<PsiElement> elements = new ArrayList<PsiElement>(sourceElements.length);
+		for(PsiElement sourceElement : sourceElements)
+		{
+			if(sourceElement instanceof CSharpTypeDeclaration)
+			{
+				elements.add(sourceElement.getContainingFile());
+			}
+			else
+			{
+				elements.add(sourceElement);
+			}
+		}
+		return ContainerUtil.toArray(elements, PsiElement.ARRAY_FACTORY);
 	}
 }

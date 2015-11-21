@@ -30,4 +30,6 @@ public interface ParameterResolveContext<T>
 
 	@NotNull
 	DotNetTypeRef getInnerParamsParameterTypeRef();
+
+	boolean isResolveFromParentTypeRef();
 }

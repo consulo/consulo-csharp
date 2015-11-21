@@ -39,8 +39,7 @@ public class CSharpWatcherNode extends DotNetAbstractVariableMirrorNode
 {
 	private Value<?> myValue;
 
-	public CSharpWatcherNode(@NotNull DotNetDebugContext debuggerContext, @NotNull String name, @NotNull ThreadMirror threadMirror,
-			@NotNull Value<?> value)
+	public CSharpWatcherNode(@NotNull DotNetDebugContext debuggerContext, @NotNull String name, @NotNull ThreadMirror threadMirror, @NotNull Value<?> value)
 	{
 		super(debuggerContext, name, threadMirror);
 		myValue = value;

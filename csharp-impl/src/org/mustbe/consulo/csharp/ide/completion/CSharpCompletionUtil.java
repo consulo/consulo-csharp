@@ -43,10 +43,11 @@ import com.intellij.util.containers.ConcurrentFactoryMap;
  */
 public class CSharpCompletionUtil
 {
-	@Deprecated
-	public static final double EXPR_KEYWORD_PRIORITY = 1;
-	@Deprecated
-	public static final double EXPR_REF_PRIORITY = 2;
+	public static final double MIN_PRIORITY = 5;
+
+	public static final double NORMAL_PRIORITY = 5;
+
+	public static final double MAX_PRIORITY = 10;
 
 	private static Map<IElementType, String> ourCache = new ConcurrentFactoryMap<IElementType, String>()
 	{

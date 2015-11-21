@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.ide.completion.weighter;
+package org.mustbe.consulo.csharp.ide.completion.weigher;
 
 import java.util.List;
 
@@ -37,15 +37,16 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRef
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.completion.CompletionLocation;
 import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.Weigher;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -226,7 +227,7 @@ public class CSharpInheritProximityWeigher extends Weigher<LookupElement, Comple
 			DotNetTypeDeclaration thisTypeDeclaration = PsiTreeUtil.getParentOfType(parent, DotNetTypeDeclaration.class);
 			if(thisTypeDeclaration != null)
 			{
-				val pair = CSharpTypeDeclarationImplUtil.resolveBaseType(thisTypeDeclaration, parent);
+				Pair<DotNetTypeDeclaration, DotNetGenericExtractor> pair = CSharpTypeDeclarationImplUtil.resolveBaseType(thisTypeDeclaration, parent);
 				if(pair != null)
 				{
 					return new CSharpTypeRefByTypeDeclaration(pair.getFirst(), pair.getSecond());

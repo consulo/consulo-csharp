@@ -33,7 +33,6 @@ import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -125,7 +124,7 @@ public class CSharpAnonymTypeRef extends DotNetTypeRef.Adapter
 		builder.withType(CSharpLightTypeDeclarationBuilder.Type.STRUCT);
 		builder.addExtendType(new CSharpTypeRefByQName(DotNetTypes.System.ValueType));
 
-		for(val set : mySets)
+		for(CSharpFieldOrPropertySet set : mySets)
 		{
 			String name = set.getName();
 			if(name == null)

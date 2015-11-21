@@ -16,8 +16,6 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
-import java.util.List;
-
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,8 +41,6 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.SmartList;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -53,35 +49,6 @@ import com.intellij.util.containers.ContainerUtil;
 @Logger
 public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSharpReferenceExpressionStub> implements CSharpReferenceExpressionEx
 {
-	private static class OurResolver implements CSharpResolveCache.PolyVariantResolver<CSharpStubReferenceExpressionImpl>
-	{
-		private static final OurResolver INSTANCE = new OurResolver();
-
-		@NotNull
-		@Override
-		public ResolveResult[] resolve(@NotNull CSharpStubReferenceExpressionImpl ref, boolean incompleteCode, boolean resolveFromParent)
-		{
-			if(!incompleteCode)
-			{
-				return ref.multiResolveImpl(ref.kind(), resolveFromParent);
-			}
-			else
-			{
-				ResolveResult[] resolveResults = ref.multiResolve(false, resolveFromParent);
-
-				List<ResolveResult> filter = new SmartList<ResolveResult>();
-				for(ResolveResult resolveResult : resolveResults)
-				{
-					if(resolveResult.isValidResult())
-					{
-						filter.add(resolveResult);
-					}
-				}
-				return ContainerUtil.toArray(filter, ResolveResult.EMPTY_ARRAY);
-			}
-		}
-	}
-
 	public CSharpStubReferenceExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
@@ -168,7 +135,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		{
 			return ResolveResult.EMPTY_ARRAY;
 		}
-		return CSharpResolveCache.getInstance(getProject()).resolveWithCaching(this, OurResolver.INSTANCE, true, incompleteCode, resolveFromParent);
+		return CSharpResolveCache.getInstance(getProject()).resolveWithCaching(this, CSharpReferenceExpressionImplUtil.OurResolver.INSTANCE, true, incompleteCode, resolveFromParent);
 	}
 
 	@Override

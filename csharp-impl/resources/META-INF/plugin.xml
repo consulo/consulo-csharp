@@ -162,10 +162,13 @@
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpCallArgumentCompletionContributor"/>
 
 		<weigher key="completion" id="csharpInheritable"
-				 implementationClass="org.mustbe.consulo.csharp.ide.completion.weighter.CSharpInheritProximityWeigher"/>
+				 implementationClass="org.mustbe.consulo.csharp.ide.completion.weigher.CSharpInheritProximityWeigher"/>
 
 		<weigher key="proximity" id="csharpObsolete"
-				 implementationClass="org.mustbe.consulo.csharp.ide.completion.weighter.CSharpObsoleteWeigher"/>
+				 implementationClass="org.mustbe.consulo.csharp.ide.completion.weigher.CSharpObsoleteWeigher"/>
+
+		<weigher key="proximity" id="csharpByGenericParameter"
+				 implementationClass="org.mustbe.consulo.csharp.ide.completion.weigher.CSharpByGenericParameterWeigher"/>
 
 		<completion.contributor language="C#Preprocessor"
 								implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpPreprocessorCompletionContributor"/>
@@ -302,10 +305,11 @@
 
 		<eapDescriptor implementation="org.mustbe.consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent$EapDescriptor"/>
 		<eapDescriptor implementation="org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0030$CS0030TypeCast"/>
-		<eapDescriptor implementation="org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder$PropertyAndEventCompletionNew"/>
 
 		<xdebugger.lineBreakpointResolver filetype="C#"
 										  implementationClass="org.mustbe.consulo.dotnet.debugger.linebreakType.DotNetLineBreakpointResolver"
 										  id="csharp"/>
+
+		<smartPointerAnchorProvider implementation="org.mustbe.consulo.csharp.lang.psi.impl.CSharpAnchorProvider" />
 	</extensions>
 </idea-plugin>

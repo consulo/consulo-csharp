@@ -16,11 +16,9 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
@@ -41,7 +39,6 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -54,6 +51,7 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 	{
 		public static final OurResolver INSTANCE = new OurResolver();
 
+		@RequiredReadAction
 		@NotNull
 		@Override
 		public ResolveResult[] resolve(@NotNull CSharpArrayAccessExpressionImpl expression, boolean incompleteCode, boolean resolveFromParent)
@@ -73,19 +71,7 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 
 			ResolveResult[] resolveResults = CSharpReferenceExpressionImplUtil.multiResolveImpl(CSharpReferenceExpression.ResolveToKind.ARRAY_METHOD,
 					expression, expression, true);
-			if(!incompleteCode)
-			{
-				return resolveResults;
-			}
-			List<ResolveResult> filter = new ArrayList<ResolveResult>();
-			for(ResolveResult resolveResult : resolveResults)
-			{
-				if(resolveResult.isValidResult())
-				{
-					filter.add(resolveResult);
-				}
-			}
-			return ContainerUtil.toArray(filter, ResolveResult.EMPTY_ARRAY);
+			return !incompleteCode ? resolveResults : CSharpResolveUtil.filterValidResults(resolveResults);
 		}
 	}
 

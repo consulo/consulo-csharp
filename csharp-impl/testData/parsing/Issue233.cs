@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 
 public class SomeStaticTest {
-    public static void test() {
+    public static async void test() {
 
 
 

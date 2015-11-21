@@ -160,6 +160,7 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 		return getAccessors();
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{

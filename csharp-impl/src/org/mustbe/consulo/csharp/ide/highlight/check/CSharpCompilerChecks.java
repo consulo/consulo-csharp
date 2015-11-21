@@ -58,6 +58,7 @@ public enum CSharpCompilerChecks
 	//CS0219(CSharpLanguageVersion._1_0, HighlightInfoType.UNUSED_SYMBOL), // local variable usage check
 	CS0227(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // 'unsafe' modifier check
 	CS0231(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // 'params' modifier must be last
+	CS0264(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // generic parameter names must be equal for partial types
 	CS0304(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // generic cant be new without new() constraint
 	CS0305(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // check for generic count
 	CS0401(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // new() constraint must be last
@@ -77,6 +78,7 @@ public enum CSharpCompilerChecks
 	CS0555(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // implict and explicit cant convert to itself
 	CS0556(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // implict and explicit cant be hold type without owner
 	CS0568(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // structs cant have parameterless constructor
+	CS0692(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // duplicate parameter name
 	CS0693(CSharpLanguageVersion._2_0, HighlightInfoType.WARNING), // check by generic
 	CS0702(CSharpLanguageVersion._2_0, HighlightInfoType.ERROR), // System.Object or System.ValueType cant use by constraints
 	CS0708(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // members inside static type need define static modifier
@@ -110,7 +112,9 @@ public enum CSharpCompilerChecks
 
 	CC0001(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //reference checks
 	CC0002(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //operator reference checks
-	CC0003(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF); //array access expression checks
+	CC0003(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), //array access expression checks
+	CC0004(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // method call checks
+	CC0005(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR); // super constructor call checks
 
 	public static final CSharpCompilerChecks[] VALUES = CSharpCompilerChecks.values();
 

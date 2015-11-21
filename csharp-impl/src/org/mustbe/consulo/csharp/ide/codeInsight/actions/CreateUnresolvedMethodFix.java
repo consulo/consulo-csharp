@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.ide.liveTemplates.expression.ReturnStatementExp
 import org.mustbe.consulo.csharp.ide.liveTemplates.expression.TypeRefExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -105,10 +106,15 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
 	@Override
 	public void buildTemplate(@NotNull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @NotNull PsiFile file, @NotNull Template template)
 	{
-		template.addTextSegment("public ");
-		if(contextType == CSharpContextUtil.ContextType.STATIC)
+		boolean forInterface = context.getTargetForGenerate() instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) context.getTargetForGenerate()).isInterface();
+
+		if(!forInterface)
 		{
-			template.addTextSegment("static ");
+			template.addTextSegment("public ");
+			if(contextType == CSharpContextUtil.ContextType.STATIC)
+			{
+				template.addTextSegment("static ");
+			}
 		}
 
 		// get expected from method call expression not reference
@@ -128,11 +134,18 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
 
 		buildParameterList(context, file, template);
 
-		template.addTextSegment("{\n");
+		if(forInterface)
+		{
+			template.addTextSegment(";");
+		}
+		else
+		{
+			template.addTextSegment("{\n");
 
-		template.addVariable("$RETURN_STATEMENT$", new ReturnStatementExpression(), false);
-		template.addEndVariable();
+			template.addVariable("$RETURN_STATEMENT$", new ReturnStatementExpression(), false);
+			template.addEndVariable();
 
-		template.addTextSegment("}");
+			template.addTextSegment("}");
+		}
 	}
 }

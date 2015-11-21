@@ -32,16 +32,15 @@ import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
-import com.intellij.codeInsight.navigation.NavigationUtil;
+import com.intellij.codeInsight.daemon.impl.PsiElementListNavigator;
 import com.intellij.icons.AllIcons;
+import com.intellij.ide.util.DefaultPsiElementCellRenderer;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
-import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.pom.Navigatable;
+import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
-import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.ConstantFunction;
 import com.intellij.util.containers.ContainerUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -79,12 +78,9 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 			}
 			else
 			{
-				PsiElement[] elements = members.toArray(new PsiElement[members.size()]);
+				NavigatablePsiElement[] navigatablePsiElements = members.toArray(new NavigatablePsiElement[0]);
 
-				JBPopup popup = NavigationUtil.getPsiElementPopup(elements, new ElementGutterRender(), "Open elements (" + elements.length + " " +
-						"items)" +
-						"");
-				popup.show(new RelativePoint(mouseEvent));
+				PsiElementListNavigator.openTargets(mouseEvent, navigatablePsiElements, "Searching for overrided", "Searching for overrided", new DefaultPsiElementCellRenderer());
 			}
 		}
 	}
@@ -124,16 +120,14 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 				boolean allAbstract = true;
 				for(DotNetVirtualImplementOwner overrideElement : overrideElements)
 				{
-					if(!(overrideElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) overrideElement).hasModifier
-							(DotNetModifier.ABSTRACT)))
+					if(!(overrideElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) overrideElement).hasModifier(DotNetModifier.ABSTRACT)))
 					{
 						allAbstract = false;
 						break;
 					}
 				}
 
-				boolean abstractMe = virtualImplementOwner instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) virtualImplementOwner)
-						.hasModifier(DotNetModifier.ABSTRACT);
+				boolean abstractMe = virtualImplementOwner instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) virtualImplementOwner).hasModifier(DotNetModifier.ABSTRACT);
 
 				if(allAbstract && abstractMe)
 				{
@@ -148,13 +142,10 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 					icon = AllIcons.Gutter.OverridenMethod;
 				}
 			}
-			val lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.UPDATE_OVERRIDEN_MARKERS,
-					new ConstantFunction<PsiElement, String>("Searching for overrided"), OurHandler.INSTANCE, GutterIconRenderer.Alignment.LEFT);
+			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.UPDATE_OVERRIDEN_MARKERS, new ConstantFunction<PsiElement,
+					String>("Searching for overrided"), OurHandler.INSTANCE, GutterIconRenderer.Alignment.LEFT);
 
 			lineMarkerInfos.add(lineMarkerInfo);
 		}
 	}
-
-
-
 }

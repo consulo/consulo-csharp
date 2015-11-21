@@ -22,6 +22,7 @@ import javax.swing.Icon;
 
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.CSharpCodeInsightSettings;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
@@ -45,6 +46,7 @@ import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.impl.ModuleRootLayerImpl;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
@@ -56,7 +58,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiParserFacade;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -162,6 +163,7 @@ public class AddUsingAction implements QuestionAction
 		new WriteCommandAction<Object>(myProject, myFile)
 		{
 			@Override
+			@RequiredReadAction
 			protected void run(Result<Object> objectResult) throws Throwable
 			{
 				addUsing(namespaceReference.getNamespace());
@@ -174,7 +176,7 @@ public class AddUsingAction implements QuestionAction
 					{
 						ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(moduleForFile);
 
-						val modifiableModel = moduleRootManager.getModifiableModel();
+						final ModifiableRootModel modifiableModel = moduleRootManager.getModifiableModel();
 
 						modifiableModel.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) moduleRootManager.getCurrentLayer(), libraryName));
 

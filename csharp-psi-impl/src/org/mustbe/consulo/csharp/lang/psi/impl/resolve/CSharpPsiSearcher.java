@@ -103,14 +103,21 @@ public class CSharpPsiSearcher extends IndexBasedDotNetPsiSearcher
 			return declarations;
 		}
 
-		CSharpTypeDeclaration typeDeclaration = CSharpPartialElementManager.getInstance(myProject).getOrCreateCompositeType(scope, vmQName, partials);
+		if(partials.size() == 1)
+		{
+			return declarations;
+		}
+		else
+		{
+			CSharpTypeDeclaration typeDeclaration = CSharpPartialElementManager.getInstance(myProject).getOrCreateCompositeType(scope, vmQName, partials);
 
-		List<DotNetTypeDeclaration> newList = new ArrayList<DotNetTypeDeclaration>(declarations.size() - partials.size() + 1);
-		newList.add(typeDeclaration);
+			List<DotNetTypeDeclaration> anotherList = new ArrayList<DotNetTypeDeclaration>(declarations.size() - partials.size() + 1);
+			anotherList.add(typeDeclaration);
 
-		declarations.removeAll(partials);
-		newList.addAll(declarations);
+			declarations.removeAll(partials);
+			anotherList.addAll(declarations);
 
-		return newList;
+			return anotherList;
+		}
 	}
 }

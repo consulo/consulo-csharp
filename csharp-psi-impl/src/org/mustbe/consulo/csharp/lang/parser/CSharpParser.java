@@ -23,7 +23,6 @@ import com.intellij.lang.LanguageVersion;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
 import com.intellij.psi.tree.IElementType;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -36,9 +35,9 @@ public class CSharpParser extends SharedParsingHelpers implements PsiParser
 	public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
 	{
 		//builder.setDebugMode(true);
-		val builderWrapper = new CSharpBuilderWrapper(builder, languageVersion);
+		CSharpBuilderWrapper builderWrapper = new CSharpBuilderWrapper(builder, languageVersion);
 
-		val marker = builderWrapper.mark();
+		PsiBuilder.Marker marker = builderWrapper.mark();
 
 		DeclarationParsing.parseAll(builderWrapper, true, false);
 

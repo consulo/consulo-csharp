@@ -26,7 +26,6 @@ import com.intellij.codeInsight.template.Expression;
 import com.intellij.codeInsight.template.ExpressionContext;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.SmartList;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -38,7 +37,7 @@ public class ArrayVariableMacro extends VariableTypeMacroBase
 	@Override
 	protected PsiElement[] getVariables(Expression[] params, ExpressionContext context)
 	{
-		val psiElementAtStartOffset = context.getPsiElementAtStartOffset();
+		final PsiElement psiElementAtStartOffset = context.getPsiElementAtStartOffset();
 		if(psiElementAtStartOffset == null)
 		{
 			return PsiElement.EMPTY_ARRAY;

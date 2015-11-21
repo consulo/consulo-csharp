@@ -38,6 +38,8 @@ CSHARP_FILE
         PsiElement(PUBLIC_KEYWORD)('public')
         PsiWhiteSpace(' ')
         PsiElement(STATIC_KEYWORD)('static')
+        PsiWhiteSpace(' ')
+        PsiElement(ASYNC_KEYWORD)('async')
       PsiWhiteSpace(' ')
       CSharpStubNativeTypeImpl [NATIVE_TYPE]
         PsiElement(VOID_KEYWORD)('void')

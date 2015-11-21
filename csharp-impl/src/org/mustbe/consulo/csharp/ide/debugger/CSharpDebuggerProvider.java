@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.ide.debugger;
 
 import java.util.List;
+import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,16 +14,21 @@ import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
 import org.mustbe.consulo.dotnet.debugger.DotNetDebugContext;
 import org.mustbe.consulo.dotnet.debugger.DotNetDebuggerProvider;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import com.intellij.lang.Language;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.Consumer;
 import com.intellij.xdebugger.XDebugSession;
 import com.intellij.xdebugger.XSourcePosition;
 import com.intellij.xdebugger.evaluation.XDebuggerEvaluator;
+import com.intellij.xdebugger.frame.XNamedValue;
+import mono.debugger.FieldOrPropertyMirror;
 import mono.debugger.StackFrameMirror;
 import mono.debugger.Value;
 
@@ -104,7 +110,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 			}
 
 			evaluateContext.evaluate(evaluators);
-			Value<?> targetValue = evaluateContext.pop();
+			Value<?> targetValue = evaluateContext.popValue();
 			if(targetValue != null)
 			{
 				callback.evaluated(new CSharpWatcherNode(debuggerContext, expression, frame.thread(), targetValue));
@@ -114,9 +120,49 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 				callback.evaluated(new CSharpErrorValue("no value"));
 			}
 		}
-		catch(UnsupportedOperationException e)
+		catch(Exception e)
 		{
 			callback.evaluated(new CSharpErrorValue(e.getMessage()));
+		}
+	}
+
+	@Override
+	@RequiredReadAction
+	public void evaluate(@NotNull StackFrameMirror frame,
+			@NotNull DotNetDebugContext debuggerContext,
+			@NotNull DotNetReferenceExpression referenceExpression,
+			@NotNull Set<Object> visitedVariables,
+			@NotNull Consumer<XNamedValue> consumer)
+	{
+		CSharpExpressionEvaluator expressionEvaluator = new CSharpExpressionEvaluator();
+		try
+		{
+			referenceExpression.accept(expressionEvaluator);
+
+			CSharpEvaluateContext evaluateContext = new CSharpEvaluateContext(debuggerContext, frame, referenceExpression);
+
+			List<Evaluator> evaluators = expressionEvaluator.getEvaluators();
+			if(evaluators.isEmpty())
+			{
+				return;
+			}
+
+			evaluateContext.evaluate(evaluators);
+			Pair<Value<?>, Object> objectPair = evaluateContext.pop();
+			if(objectPair != null && objectPair.getSecond() instanceof FieldOrPropertyMirror)
+			{
+				FieldOrPropertyMirror fieldOrPropertyMirror = (FieldOrPropertyMirror) objectPair.getSecond();
+				if(visitedVariables.contains(fieldOrPropertyMirror))
+				{
+					return;
+				}
+				visitedVariables.add(fieldOrPropertyMirror);
+				consumer.consume(new CSharpWatcherNode(debuggerContext, referenceExpression.getText(), frame.thread(), objectPair.getFirst()));
+			}
+		}
+		catch(Exception e)
+		{
+			// ignored
 		}
 	}
 

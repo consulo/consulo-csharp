@@ -76,4 +76,10 @@ public class SimpleParameterResolveContext implements ParameterResolveContext<CS
 	{
 		return DotNetTypeRef.ERROR_TYPE;
 	}
+
+	@Override
+	public boolean isResolveFromParentTypeRef()
+	{
+		return false;
+	}
 }

@@ -36,7 +36,6 @@ import com.intellij.util.Processor;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.MultiMap;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -209,9 +208,9 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		myElement = element;
 		myExtractor = extractor;
 		myRecursiveGuardSet = recursiveGuardSet;
-		val project = element.getProject();
+		final Project project = element.getProject();
 
-		val collector = new Collector(extractor);
+		final Collector collector = new Collector(extractor);
 
 		processMembers(element, collector);
 

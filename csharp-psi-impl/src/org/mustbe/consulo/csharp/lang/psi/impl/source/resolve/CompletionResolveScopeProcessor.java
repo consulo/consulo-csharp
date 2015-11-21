@@ -52,6 +52,12 @@ public class CompletionResolveScopeProcessor extends StubScopeProcessor
 	}
 
 	@Override
+	public void pushResultExternally(@NotNull ResolveResult resolveResult)
+	{
+		myProcessor.process(resolveResult);
+	}
+
+	@Override
 	@RequiredReadAction
 	public boolean execute(@NotNull PsiElement element, ResolveState state)
 	{

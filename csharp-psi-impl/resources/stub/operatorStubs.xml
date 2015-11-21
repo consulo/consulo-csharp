@@ -774,6 +774,21 @@
 		<operator name="IMPLICIT_KEYWORD" type="System.Double">
 			<parameter/>
 		</operator>
+
+		<!-- 'uint' can be converted to 'short' (explicit) -->
+		<operator name="EXPLICIT_KEYWORD" type="System.Int16">
+			<parameter/>
+		</operator>
+
+		<!-- 'uint' can be converted to 'ushort' (explicit) -->
+		<operator name="EXPLICIT_KEYWORD" type="System.UInt16">
+			<parameter/>
+		</operator>
+
+		<!-- 'uint' can be converted to 'int' (explicit) -->
+		<operator name="EXPLICIT_KEYWORD" type="System.Int32">
+			<parameter/>
+		</operator>
 	</type>
 
 	<type name="System.Int64">
@@ -956,9 +971,60 @@
 			<parameter/>
 			<parameter/>
 		</operator>
+
+		<operator name="GTGT">
+			<parameter/>
+			<parameter type="System.SByte"/>
+		</operator>
+
+		<operator name="GTGT">
+			<parameter/>
+			<parameter type="System.Byte"/>
+		</operator>
+
+		<operator name="GTGT">
+			<parameter/>
+			<parameter type="System.Int16"/>
+		</operator>
+
+		<operator name="GTGT">
+			<parameter/>
+			<parameter type="System.UInt16"/>
+		</operator>
+
+		<operator name="GTGT">
+			<parameter/>
+			<parameter type="System.Int32"/>
+		</operator>
+
 		<operator name="LTLT">
 			<parameter/>
 			<parameter/>
+		</operator>
+
+		<operator name="LTLT">
+			<parameter/>
+			<parameter type="System.SByte"/>
+		</operator>
+
+		<operator name="LTLT">
+			<parameter/>
+			<parameter type="System.Byte"/>
+		</operator>
+
+		<operator name="LTLT">
+			<parameter/>
+			<parameter type="System.Int16"/>
+		</operator>
+
+		<operator name="LTLT">
+			<parameter/>
+			<parameter type="System.UInt16"/>
+		</operator>
+
+		<operator name="LTLT">
+			<parameter/>
+			<parameter type="System.Int32"/>
 		</operator>
 
 		<!-- 'ulong' can be converted to 'float' (implicit) -->

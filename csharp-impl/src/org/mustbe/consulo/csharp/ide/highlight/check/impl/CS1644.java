@@ -55,7 +55,6 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -87,7 +86,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 
 			ModifiableRootModel modifiableModel = rootManager.getModifiableModel();
 
-			val mutable = modifiableModel.getExtension(CSharpMutableModuleExtension.class);
+			final CSharpMutableModuleExtension mutable = modifiableModel.getExtension(CSharpMutableModuleExtension.class);
 			assert mutable != null;
 			mutable.setLanguageVersion(myLanguageVersion);
 
@@ -331,9 +330,19 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			add(new Feature("asynchronous functions", CSharpLanguageVersion._4_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
+				@RequiredReadAction
 				public PsiElement fun(PsiElement element)
 				{
-					return CS1998.getAsyncModifier(element);
+					if(element instanceof CSharpSimpleLikeMethodAsElement)
+					{
+						DotNetModifierList modifierList = ((CSharpSimpleLikeMethodAsElement) element).getModifierList();
+						if(modifierList == null)
+						{
+							return null;
+						}
+						return modifierList.getModifierElement(CSharpModifier.ASYNC);
+					}
+					return null;
 				}
 			}));
 			add(new Feature("named arguments", CSharpLanguageVersion._4_0, new Function<PsiElement, PsiElement>()

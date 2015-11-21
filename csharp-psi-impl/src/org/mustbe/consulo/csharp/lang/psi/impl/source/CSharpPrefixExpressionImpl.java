@@ -21,12 +21,10 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpConstantTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpFastImplicitTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpConstantBaseTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 
 /**
@@ -35,45 +33,22 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CSharpPrefixExpressionImpl extends CSharpExpressionWithOperatorImpl implements DotNetExpression
 {
-	public static class PrefixTypeRef extends DotNetTypeRef.Delegate implements CSharpFastImplicitTypeRef
+	public static class PrefixTypeRef extends CSharpConstantBaseTypeRef
 	{
 		private CSharpPrefixExpressionImpl myPrefixExpression;
 
-		public PrefixTypeRef(CSharpPrefixExpressionImpl prefixExpression, DotNetTypeRef delegate)
+		public PrefixTypeRef(CSharpPrefixExpressionImpl prefixExpression, CSharpConstantExpressionImpl constantExpression, DotNetTypeRef delegate)
 		{
-			super(delegate);
+			super(constantExpression, delegate);
 			myPrefixExpression = prefixExpression;
 		}
 
 		@RequiredReadAction
-		@Nullable
+		@NotNull
 		@Override
-		public DotNetTypeRef doMirror(@NotNull DotNetTypeRef another, PsiElement scope)
+		public String getPrefix()
 		{
-			DotNetExpression expression = myPrefixExpression.getExpression();
-			if(!(expression instanceof CSharpConstantExpressionImpl))
-			{
-				return null;
-			}
-
-			DotNetTypeRef anotherTypeRef = CSharpConstantTypeRef.testNumberConstant((CSharpConstantExpressionImpl) expression,
-					getPrefix(myPrefixExpression), another, scope);
-			if(anotherTypeRef != null)
-			{
-				return anotherTypeRef;
-			}
-			return null;
-		}
-
-		@Override
-		public boolean isConversion()
-		{
-			return false;
-		}
-
-		private static String getPrefix(CSharpPrefixExpressionImpl prefixExpression)
-		{
-			IElementType operatorElementType = prefixExpression.getOperatorElement().getOperatorElementType();
+			IElementType operatorElementType = myPrefixExpression.getOperatorElement().getOperatorElementType();
 			if(operatorElementType == CSharpTokenSets.MINUS)
 			{
 				return "-";
@@ -90,9 +65,18 @@ public class CSharpPrefixExpressionImpl extends CSharpExpressionWithOperatorImpl
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
-		return new PrefixTypeRef(this, super.toTypeRef(resolveFromParent));
+		DotNetTypeRef delegate = super.toTypeRef(resolveFromParent);
+
+		DotNetExpression expression = getExpression();
+		if(!(expression instanceof CSharpConstantExpressionImpl))
+		{
+			return delegate;
+		}
+
+		return new PrefixTypeRef(this, (CSharpConstantExpressionImpl) expression, delegate);
 	}
 
 	@Override

@@ -35,4 +35,10 @@ public class CSharpLazyTypeRefWrapper extends DotNetTypeRef.Delegate
 		// need write CSharpLazyTypeRefWrapper due bad wrap via LazyInstance
 		return CSharpLazyTypeRefWrapper.super.resolve(myScope);
 	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		return getDelegate().equals(obj);
+	}
 }

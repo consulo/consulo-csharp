@@ -29,7 +29,6 @@ import com.intellij.lang.LighterASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.tree.IElementType;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -662,7 +661,7 @@ public class StatementParsing extends SharedParsingHelpers
 			return mark;
 		}
 
-		val thenStatement = parseStatement(builder, set);
+		PsiBuilder.Marker thenStatement = parseStatement(builder, set);
 		if(thenStatement == null)
 		{
 			builder.error("Expected statement");
@@ -676,7 +675,7 @@ public class StatementParsing extends SharedParsingHelpers
 			return mark;
 		}
 
-		val elseStatement = parseStatement(builder, set);
+		PsiBuilder.Marker elseStatement = parseStatement(builder, set);
 		if(elseStatement == null)
 		{
 			builder.error("Expected statement");

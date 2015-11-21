@@ -17,8 +17,9 @@
 package org.mustbe.consulo.csharp.ide.liveTemplates.context;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.codeInsight.template.TemplateContextType;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -36,6 +37,7 @@ public class CSharpClassBodyContextType extends TemplateContextType
 	}
 
 	@Override
+	@RequiredReadAction
 	public boolean isInContext(@NotNull PsiFile file, int offset)
 	{
 		PsiElement elementAt = file.findElementAt(offset);
@@ -46,10 +48,11 @@ public class CSharpClassBodyContextType extends TemplateContextType
 			return false;
 		}
 
-		if(PsiTreeUtil.getParentOfType(elementAt, DotNetStatement.class) != null)
+		CSharpFieldDeclaration fieldDeclaration = PsiTreeUtil.getParentOfType(elementAt, CSharpFieldDeclaration.class);
+		if(fieldDeclaration != null && fieldDeclaration.getNameIdentifier() == null)
 		{
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 }

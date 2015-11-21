@@ -10,7 +10,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import lombok.val;
 
 /**
  * @author VISTALL
@@ -35,11 +34,11 @@ public class CSharpWithParenthesesSurrounder implements Surrounder
 	public TextRange surroundElements(
 			@NotNull Project project, @NotNull Editor editor, @NotNull PsiElement[] elements) throws IncorrectOperationException
 	{
-		val oldExpression = (DotNetExpression) elements[0];
+		DotNetExpression oldExpression = (DotNetExpression) elements[0];
 
-		val newExpression = CSharpFileFactory.createExpression(project, "(" + oldExpression.getText() + ")");
+		DotNetExpression newExpression = CSharpFileFactory.createExpression(project, "(" + oldExpression.getText() + ")");
 
-		val replace = oldExpression.replace(newExpression);
+		PsiElement replace = oldExpression.replace(newExpression);
 
 		int offset = replace.getTextRange().getEndOffset();
 		return new TextRange(offset, offset);
