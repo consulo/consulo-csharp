@@ -999,7 +999,11 @@ public class CSharpReferenceExpressionImplUtil
 			else if(temp instanceof CSharpAttribute)
 			{
 				last = temp;
-				targetToWalkChildren = PsiTreeUtil.getParentOfType(temp, DotNetModifierListOwner.class);
+				targetToWalkChildren = PsiTreeUtil.getParentOfType(temp, DotNetTypeDeclaration.class);
+				if(targetToWalkChildren == null)
+				{
+					targetToWalkChildren = PsiTreeUtil.getParentOfType(temp, DotNetModifierListOwner.class);
+				}
 				break;
 			}
 			else if(temp instanceof DotNetFieldDeclaration ||
