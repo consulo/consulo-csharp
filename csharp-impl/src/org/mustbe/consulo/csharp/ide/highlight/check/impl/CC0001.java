@@ -201,7 +201,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 	@Contract("null -> false")
 	public static boolean isCalleInsideCalle(@Nullable PsiElement callElement)
 	{
-		return callElement instanceof CSharpMethodCallExpressionImpl && ((CSharpMethodCallExpressionImpl) callElement).getCallExpression() instanceof CSharpMethodCallExpressionImpl;
+		return callElement instanceof CSharpMethodCallExpressionImpl && ((CSharpMethodCallExpressionImpl) callElement).getCallExpression() instanceof CSharpCallArgumentListOwner;
 	}
 
 	@RequiredReadAction
@@ -210,7 +210,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		CSharpCallArgumentListOwner callOwner = findCallOwner(element);
 		if(callOwner != null)
 		{
-			String name = null;
+			String name;
 			if(element instanceof CSharpArrayAccessExpressionImpl)
 			{
 				name = "this";
@@ -258,6 +258,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		char[] openAndCloseTokens = CSharpParametersInfo.getOpenAndCloseTokens(element);
 
 		PsiElement resolveElement = resolveResult.getElement();
+		assert resolveElement != null;
 
 		MethodCalcResult calcResult = ((MethodResolveResult) resolveResult).getCalcResult();
 		List<NCallArgument> arguments = calcResult.getArguments();
@@ -423,7 +424,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		return null;
 	}
 
-
+	@RequiredReadAction
 	private static void appendType(@NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
 		if(typeRef == DotNetTypeRef.ERROR_TYPE)

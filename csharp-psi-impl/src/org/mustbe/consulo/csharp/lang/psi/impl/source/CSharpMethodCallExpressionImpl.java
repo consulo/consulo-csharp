@@ -116,7 +116,7 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 				return resolveResults[0].getElement();
 			}
 		}
-		else if(callExpression instanceof CSharpMethodCallExpressionImpl)
+		else if(callExpression instanceof CSharpCallArgumentListOwner)
 		{
 			ResolveResult[] resolveResults = multiResolve(false);
 
@@ -145,7 +145,7 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 		{
 			return ((CSharpReferenceExpression) callExpression).multiResolve(incompleteCode);
 		}
-		else if(callExpression instanceof CSharpMethodCallExpressionImpl)
+		else if(callExpression instanceof CSharpCallArgumentListOwner)
 		{
 			if(!incompleteCode)
 			{
