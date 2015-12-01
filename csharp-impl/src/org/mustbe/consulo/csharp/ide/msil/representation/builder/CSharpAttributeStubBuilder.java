@@ -18,7 +18,6 @@ import org.mustbe.consulo.msil.lang.stubbing.MsilCustomAttributeStubber;
 import org.mustbe.consulo.msil.lang.stubbing.values.MsiCustomAttributeValue;
 import org.mustbe.consulo.msil.lang.stubbing.values.MsilCustomAttributeEnumValue;
 import org.mustbe.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
-import org.mustbe.dotnet.msil.decompiler.textBuilder.util.XStubUtil;
 import org.mustbe.dotnet.msil.decompiler.util.MsilHelper;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -108,10 +107,10 @@ public class CSharpAttributeStubBuilder
 		else
 		{
 			Object realValue = value.getValue();
-			if(realValue instanceof String)
+			if(realValue instanceof CharSequence)
 			{
 				builder.append("\"");
-				builder.append(XStubUtil.escapeChars((CharSequence) realValue));
+				builder.append((CharSequence) realValue);
 				builder.append("\"");
 			}
 			else if(realValue instanceof TypeSignature)
