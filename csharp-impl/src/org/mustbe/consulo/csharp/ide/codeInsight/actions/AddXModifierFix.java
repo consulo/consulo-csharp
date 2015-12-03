@@ -18,6 +18,9 @@ package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
@@ -26,7 +29,6 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
@@ -78,12 +80,14 @@ public class AddXModifierFix extends PsiElementBaseIntentionAction
 	}
 
 	@Override
+	@RequiredDispatchThread
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element)
 	{
 		DotNetModifierListOwner owner = findOwner(element);
 		return owner != null && !hasModifiers(owner) && isAllow(owner, myModifiers) && owner.isWritable();
 	}
 
+	@RequiredReadAction
 	protected boolean hasModifiers(DotNetModifierListOwner owner)
 	{
 		for(CSharpModifier modifier : myModifiers)
@@ -100,16 +104,9 @@ public class AddXModifierFix extends PsiElementBaseIntentionAction
 	public DotNetModifierListOwner findOwner(@NotNull PsiElement element)
 	{
 		PsiElement parent = element.getParent();
-		if(parent instanceof DotNetModifierList)
+		if(parent instanceof CSharpIdentifier && parent.getParent() instanceof DotNetModifierListOwner)
 		{
 			return (DotNetModifierListOwner) parent.getParent();
-		}
-		else if(parent instanceof DotNetModifierListOwner && parent instanceof PsiNameIdentifierOwner)
-		{
-			if(((PsiNameIdentifierOwner) parent).getNameIdentifier() == element)
-			{
-				return (DotNetModifierListOwner) parent;
-			}
 		}
 		return null;
 	}

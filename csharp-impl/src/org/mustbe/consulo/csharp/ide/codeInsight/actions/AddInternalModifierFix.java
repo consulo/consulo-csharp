@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
@@ -31,6 +32,7 @@ public class AddInternalModifierFix extends AddAccessModifierFix
 		super(CSharpModifier.INTERNAL);
 	}
 
+	@RequiredReadAction
 	@Override
 	protected boolean hasModifiers(DotNetModifierListOwner owner)
 	{
