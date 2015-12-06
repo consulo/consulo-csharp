@@ -28,6 +28,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.refactoring.move.MoveCallback;
 import com.intellij.refactoring.move.MoveHandlerDelegate;
@@ -43,6 +44,10 @@ public class CSharpMoveHandlerDelegate extends MoveHandlerDelegate
 	@Override
 	public boolean isValidTarget(PsiElement psiElement, PsiElement[] sources)
 	{
+		if(!(psiElement instanceof PsiDirectory))
+		{
+			return false;
+		}
 		for(PsiElement source : sources)
 		{
 			if(source instanceof CSharpTypeDeclaration)
