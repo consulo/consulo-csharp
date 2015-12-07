@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNativeTypeImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
@@ -29,7 +28,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
-import com.intellij.psi.tree.IElementType;
 import com.intellij.util.Processor;
 
 /**
@@ -50,13 +48,7 @@ public class NativeTypeWrapperKindProcessor implements KindProcessor
 		PsiElement nativeElement = ((CSharpReferenceExpression) element).getReferenceElement();
 		assert nativeElement != null;
 
-		IElementType elementType = nativeElement.getNode().getElementType();
-		if(elementType == CSharpTokenSets.VOID_KEYWORD)
-		{
-			return;
-		}
-
-		String nativeRuntimeType = CSharpNativeTypeImplUtil.ourElementToQTypes.get(elementType);
+		String nativeRuntimeType = CSharpNativeTypeImplUtil.ourElementToQTypes.get(nativeElement.getNode().getElementType());
 		if(nativeRuntimeType == null)
 		{
 			return;
