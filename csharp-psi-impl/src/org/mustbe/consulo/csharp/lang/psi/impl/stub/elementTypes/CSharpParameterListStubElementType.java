@@ -18,9 +18,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubParameterListImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.stubs.EmptyStub;
 
 /**
  * @author VISTALL
@@ -41,7 +41,7 @@ public class CSharpParameterListStubElementType extends CSharpEmptyStubElementTy
 	}
 
 	@Override
-	public DotNetParameterList createPsi(@NotNull CSharpEmptyStub<DotNetParameterList> cSharpParameterListStub)
+	public DotNetParameterList createPsi(@NotNull EmptyStub<DotNetParameterList> cSharpParameterListStub)
 	{
 		return new CSharpStubParameterListImpl(cSharpParameterListStub);
 	}

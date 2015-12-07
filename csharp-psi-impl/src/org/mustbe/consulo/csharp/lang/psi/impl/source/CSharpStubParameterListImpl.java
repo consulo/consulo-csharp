@@ -19,25 +19,25 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.lang.psi.impl.DotNetPsiCountUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.stubs.EmptyStub;
 
 /**
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpStubParameterListImpl extends CSharpStubElementImpl<CSharpEmptyStub<DotNetParameterList>> implements DotNetParameterList
+public class CSharpStubParameterListImpl extends CSharpStubElementImpl<EmptyStub<DotNetParameterList>> implements DotNetParameterList
 {
 	public CSharpStubParameterListImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubParameterListImpl(@NotNull CSharpEmptyStub<DotNetParameterList> stub)
+	public CSharpStubParameterListImpl(@NotNull EmptyStub<DotNetParameterList> stub)
 	{
 		super(stub, CSharpStubElements.PARAMETER_LIST);
 	}

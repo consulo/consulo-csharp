@@ -28,26 +28,26 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingTypeStatement;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
+import com.intellij.psi.stubs.EmptyStub;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpUsingListImpl extends CSharpStubElementImpl<CSharpEmptyStub<CSharpUsingList>> implements CSharpUsingList
+public class CSharpUsingListImpl extends CSharpStubElementImpl<EmptyStub<CSharpUsingList>> implements CSharpUsingList
 {
 	public CSharpUsingListImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpUsingListImpl(@NotNull CSharpEmptyStub<CSharpUsingList> stub)
+	public CSharpUsingListImpl(@NotNull EmptyStub<CSharpUsingList> stub)
 	{
 		super(stub, CSharpStubElements.USING_LIST);
 	}

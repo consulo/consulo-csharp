@@ -19,8 +19,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.stubs.EmptyStub;
 
 /**
  * @author VISTALL
@@ -41,7 +41,7 @@ public class CSharpUsingListStubElementType extends CSharpEmptyStubElementType<C
 	}
 
 	@Override
-	public CSharpUsingListImpl createPsi(@NotNull CSharpEmptyStub<CSharpUsingList> stub)
+	public CSharpUsingListImpl createPsi(@NotNull EmptyStub<CSharpUsingList> stub)
 	{
 		return new CSharpUsingListImpl(stub);
 	}

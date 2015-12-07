@@ -24,26 +24,26 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpNullableType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNullableTypeUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.stubs.EmptyStub;
 import com.intellij.psi.stubs.IStubElementType;
 
 /**
  * @author VISTALL
  * @since 17.04.14
  */
-public class CSharpStubNullableTypeImpl extends CSharpStubTypeElementImpl<CSharpEmptyStub<CSharpNullableType>> implements CSharpNullableType
+public class CSharpStubNullableTypeImpl extends CSharpStubTypeElementImpl<EmptyStub<CSharpNullableType>> implements CSharpNullableType
 {
 	public CSharpStubNullableTypeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubNullableTypeImpl(@NotNull CSharpEmptyStub<CSharpNullableType> stub,
-			@NotNull IStubElementType<? extends CSharpEmptyStub<CSharpNullableType>, ?> nodeType)
+	public CSharpStubNullableTypeImpl(@NotNull EmptyStub<CSharpNullableType> stub,
+			@NotNull IStubElementType<? extends EmptyStub<CSharpNullableType>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}

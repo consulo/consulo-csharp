@@ -19,8 +19,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.stubs.EmptyStub;
 
 /**
  * @author VISTALL
@@ -41,7 +41,7 @@ public class CSharpTypeDefStubElementType extends CSharpEmptyStubElementType<CSh
 	}
 
 	@Override
-	public CSharpTypeDefStatement createPsi(@NotNull CSharpEmptyStub<CSharpTypeDefStatement> stub)
+	public CSharpTypeDefStatement createPsi(@NotNull EmptyStub<CSharpTypeDefStatement> stub)
 	{
 		return new CSharpTypeDefStatementImpl(stub);
 	}

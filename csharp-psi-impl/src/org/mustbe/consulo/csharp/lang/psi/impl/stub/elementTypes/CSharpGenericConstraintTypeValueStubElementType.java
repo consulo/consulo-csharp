@@ -3,9 +3,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpGenericConstraintTypeValueImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.stubs.EmptyStub;
 
 /**
  * @author VISTALL
@@ -26,7 +26,7 @@ public class CSharpGenericConstraintTypeValueStubElementType extends CSharpEmpty
 	}
 
 	@Override
-	public CSharpGenericConstraintTypeValue createPsi(@NotNull CSharpEmptyStub<CSharpGenericConstraintTypeValue> stub)
+	public CSharpGenericConstraintTypeValue createPsi(@NotNull EmptyStub<CSharpGenericConstraintTypeValue> stub)
 	{
 		return new CSharpGenericConstraintTypeValueImpl(stub, this);
 	}

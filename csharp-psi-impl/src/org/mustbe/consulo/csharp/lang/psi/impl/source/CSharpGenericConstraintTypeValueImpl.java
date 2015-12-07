@@ -21,25 +21,25 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.stubs.EmptyStub;
 import com.intellij.psi.stubs.IStubElementType;
 
 /**
  * @author VISTALL
  * @since 11.03.14
  */
-public class CSharpGenericConstraintTypeValueImpl extends CSharpStubElementImpl<CSharpEmptyStub<CSharpGenericConstraintTypeValue>> implements CSharpGenericConstraintTypeValue
+public class CSharpGenericConstraintTypeValueImpl extends CSharpStubElementImpl<EmptyStub<CSharpGenericConstraintTypeValue>> implements CSharpGenericConstraintTypeValue
 {
 	public CSharpGenericConstraintTypeValueImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpGenericConstraintTypeValueImpl(@NotNull CSharpEmptyStub<CSharpGenericConstraintTypeValue> stub,
-			@NotNull IStubElementType<? extends CSharpEmptyStub<CSharpGenericConstraintTypeValue>, ?> nodeType)
+	public CSharpGenericConstraintTypeValueImpl(@NotNull EmptyStub<CSharpGenericConstraintTypeValue> stub,
+			@NotNull IStubElementType<? extends EmptyStub<CSharpGenericConstraintTypeValue>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}

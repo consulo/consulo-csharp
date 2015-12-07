@@ -19,24 +19,24 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.lang.psi.impl.DotNetPsiCountUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.stubs.EmptyStub;
 
 /**
  * @author VISTALL
  * @since 30.11.13.
  */
-public class CSharpGenericParameterListImpl extends CSharpStubElementImpl<CSharpEmptyStub<DotNetGenericParameterList>> implements DotNetGenericParameterList
+public class CSharpGenericParameterListImpl extends CSharpStubElementImpl<EmptyStub<DotNetGenericParameterList>> implements DotNetGenericParameterList
 {
 	public CSharpGenericParameterListImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpGenericParameterListImpl(@NotNull CSharpEmptyStub<DotNetGenericParameterList> stub)
+	public CSharpGenericParameterListImpl(@NotNull EmptyStub<DotNetGenericParameterList> stub)
 	{
 		super(stub, CSharpStubElements.GENERIC_PARAMETER_LIST);
 	}

@@ -21,15 +21,15 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.stubs.EmptyStub;
 import com.intellij.psi.stubs.IStubElementType;
 
 /**
  * @author VISTALL
  * @since 30.11.13.
  */
-public class CSharpGenericConstraintListImpl extends CSharpStubElementImpl<CSharpEmptyStub<CSharpGenericConstraintList>> implements
+public class CSharpGenericConstraintListImpl extends CSharpStubElementImpl<EmptyStub<CSharpGenericConstraintList>> implements
 		CSharpGenericConstraintList
 {
 	public CSharpGenericConstraintListImpl(@NotNull ASTNode node)
@@ -37,8 +37,8 @@ public class CSharpGenericConstraintListImpl extends CSharpStubElementImpl<CShar
 		super(node);
 	}
 
-	public CSharpGenericConstraintListImpl(@NotNull CSharpEmptyStub<CSharpGenericConstraintList> stub,
-			@NotNull IStubElementType<? extends CSharpEmptyStub<CSharpGenericConstraintList>, ?> nodeType)
+	public CSharpGenericConstraintListImpl(@NotNull EmptyStub<CSharpGenericConstraintList> stub,
+			@NotNull IStubElementType<? extends EmptyStub<CSharpGenericConstraintList>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}

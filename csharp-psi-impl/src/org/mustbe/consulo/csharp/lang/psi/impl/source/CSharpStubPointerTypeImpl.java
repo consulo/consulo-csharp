@@ -18,31 +18,32 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpPointerTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.stubs.EmptyStub;
 import com.intellij.psi.stubs.IStubElementType;
 
 /**
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpStubPointerTypeImpl extends CSharpStubElementImpl<CSharpEmptyStub<DotNetPointerType>> implements DotNetPointerType
+public class CSharpStubPointerTypeImpl extends CSharpStubElementImpl<EmptyStub<DotNetPointerType>> implements DotNetPointerType
 {
 	public CSharpStubPointerTypeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpStubPointerTypeImpl(@NotNull CSharpEmptyStub<DotNetPointerType> stub,
-			@NotNull IStubElementType<? extends CSharpEmptyStub<DotNetPointerType>, ?> nodeType)
+	public CSharpStubPointerTypeImpl(@NotNull EmptyStub<DotNetPointerType> stub,
+			@NotNull IStubElementType<? extends EmptyStub<DotNetPointerType>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -53,6 +54,7 @@ public class CSharpStubPointerTypeImpl extends CSharpStubElementImpl<CSharpEmpty
 		visitor.visitPointerType(this);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef()

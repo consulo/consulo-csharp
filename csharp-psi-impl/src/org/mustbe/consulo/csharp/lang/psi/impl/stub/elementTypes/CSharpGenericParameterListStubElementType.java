@@ -18,9 +18,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpGenericParameterListImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.stubs.EmptyStub;
 
 /**
  * @author VISTALL
@@ -41,7 +41,7 @@ public class CSharpGenericParameterListStubElementType extends CSharpEmptyStubEl
 	}
 
 	@Override
-	public DotNetGenericParameterList createPsi(@NotNull CSharpEmptyStub<DotNetGenericParameterList> cSharpGenericParameterListStub)
+	public DotNetGenericParameterList createPsi(@NotNull EmptyStub<DotNetGenericParameterList> cSharpGenericParameterListStub)
 	{
 		return new CSharpGenericParameterListImpl(cSharpGenericParameterListStub);
 	}

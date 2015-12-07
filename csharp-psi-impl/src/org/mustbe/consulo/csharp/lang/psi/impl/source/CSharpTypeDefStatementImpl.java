@@ -25,11 +25,11 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.stubs.EmptyStub;
 import com.intellij.util.IncorrectOperationException;
 
 /**
@@ -37,14 +37,14 @@ import com.intellij.util.IncorrectOperationException;
  * @since 11.02.14
  */
 @ArrayFactoryFields
-public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<CSharpEmptyStub<CSharpTypeDefStatement>> implements CSharpTypeDefStatement
+public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<EmptyStub<CSharpTypeDefStatement>> implements CSharpTypeDefStatement
 {
 	public CSharpTypeDefStatementImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpTypeDefStatementImpl(@NotNull CSharpEmptyStub<CSharpTypeDefStatement> stub)
+	public CSharpTypeDefStatementImpl(@NotNull EmptyStub<CSharpTypeDefStatement> stub)
 	{
 		super(stub, CSharpStubElements.TYPE_DEF_STATEMENT);
 	}

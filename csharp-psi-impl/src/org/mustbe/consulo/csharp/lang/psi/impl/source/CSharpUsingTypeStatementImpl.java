@@ -22,26 +22,26 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingTypeStatement;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.stubs.EmptyStub;
 import com.intellij.psi.stubs.IStubElementType;
 
 /**
  * @author VISTALL
  * @since 11.12.14
  */
-public class CSharpUsingTypeStatementImpl extends CSharpStubElementImpl<CSharpEmptyStub<CSharpUsingTypeStatement>> implements CSharpUsingTypeStatement
+public class CSharpUsingTypeStatementImpl extends CSharpStubElementImpl<EmptyStub<CSharpUsingTypeStatement>> implements CSharpUsingTypeStatement
 {
 	public CSharpUsingTypeStatementImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpUsingTypeStatementImpl(@NotNull CSharpEmptyStub<CSharpUsingTypeStatement> stub,
-			@NotNull IStubElementType<? extends CSharpEmptyStub<CSharpUsingTypeStatement>, ?> nodeType)
+	public CSharpUsingTypeStatementImpl(@NotNull EmptyStub<CSharpUsingTypeStatement> stub,
+			@NotNull IStubElementType<? extends EmptyStub<CSharpUsingTypeStatement>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
