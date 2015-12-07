@@ -26,13 +26,10 @@ import org.mustbe.consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import org.mustbe.consulo.csharp.ide.completion.util.ExpressionOrStatementInsertHandler;
 import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
-import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpUserType;
 import org.mustbe.consulo.csharp.lang.psi.UsefulPsiTreeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.*;
@@ -40,7 +37,6 @@ import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
-import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.codeInsight.AutoPopupController;
@@ -103,9 +99,8 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 		}
 	}
 
-	private static final TokenSet ourParStatementKeywords = TokenSet.create(IF_KEYWORD, FOR_KEYWORD, FOREACH_KEYWORD, FOREACH_KEYWORD,
-			FIXED_KEYWORD, UNCHECKED_KEYWORD, CHECKED_KEYWORD, SWITCH_KEYWORD, USING_KEYWORD, WHILE_KEYWORD, DO_KEYWORD, UNSAFE_KEYWORD,
-			TRY_KEYWORD, LOCK_KEYWORD);
+	private static final TokenSet ourParStatementKeywords = TokenSet.create(IF_KEYWORD, FOR_KEYWORD, FOREACH_KEYWORD, FOREACH_KEYWORD, FIXED_KEYWORD, UNCHECKED_KEYWORD, CHECKED_KEYWORD,
+			SWITCH_KEYWORD, USING_KEYWORD, WHILE_KEYWORD, DO_KEYWORD, UNSAFE_KEYWORD, TRY_KEYWORD, LOCK_KEYWORD);
 
 	private static final TokenSet ourCaseAndDefaultKeywords = TokenSet.create(CASE_KEYWORD, DEFAULT_KEYWORD);
 
@@ -116,18 +111,14 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 
 	public CSharpStatementCompletionContributor()
 	{
-		extend(CompletionType.BASIC, CSharpPatterns.statementStart().inside(or(psiElement().inside(CSharpForeachStatementImpl.class),
-				psiElement().inside(CSharpForStatementImpl.class), psiElement().inside(CSharpWhileStatementImpl.class),
-				psiElement().inside(CSharpDoWhileStatementImpl.class))), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, CSharpPatterns.statementStart().inside(or(psiElement().inside(CSharpForeachStatementImpl.class), psiElement().inside(CSharpForStatementImpl.class),
+				psiElement().inside(CSharpWhileStatementImpl.class), psiElement().inside(CSharpDoWhileStatementImpl.class))), new CompletionProvider<CompletionParameters>()
 		{
 			@RequiredReadAction
 			@Override
-			protected void addCompletions(@NotNull final CompletionParameters parameters,
-					ProcessingContext context,
-					@NotNull CompletionResultSet result)
+			protected void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
-				CSharpCompletionUtil.tokenSetToLookup(result, ourContinueAndBreakKeywords, new NotNullPairFunction<LookupElementBuilder,
-						IElementType, LookupElement>()
+				CSharpCompletionUtil.tokenSetToLookup(result, ourContinueAndBreakKeywords, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
 
 				{
 					@NotNull
@@ -150,19 +141,16 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
-		extend(CompletionType.BASIC, CSharpPatterns.statementStart().inside(psiElement().inside(CSharpSimpleLikeMethodAsElement.class)).andNot
-				(psiElement().inside(CSharpFinallyStatementImpl.class)), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, CSharpPatterns.statementStart().inside(psiElement().inside(CSharpSimpleLikeMethodAsElement.class)).andNot(psiElement().inside(CSharpFinallyStatementImpl.class)),
+				new CompletionProvider<CompletionParameters>()
 		{
 			@RequiredReadAction
 			@Override
-			protected void addCompletions(@NotNull final CompletionParameters parameters,
-					ProcessingContext context,
-					@NotNull CompletionResultSet result)
+			protected void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				final CSharpSimpleLikeMethodAsElement pseudoMethod = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpSimpleLikeMethodAsElement.class);
 				assert pseudoMethod != null;
-				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.RETURN_KEYWORD, new NotNullPairFunction<LookupElementBuilder,
-						IElementType, LookupElement>()
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.RETURN_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
 
 				{
 					@NotNull
@@ -176,17 +164,13 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
-		extend(CompletionType.BASIC, CSharpPatterns.statementStart().inside(CSharpLabeledStatementImpl.class),
-				new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, CSharpPatterns.statementStart().inside(CSharpLabeledStatementImpl.class), new CompletionProvider<CompletionParameters>()
 		{
-					@RequiredReadAction
-					@Override
-			protected void addCompletions(@NotNull final CompletionParameters parameters,
-					ProcessingContext context,
-					@NotNull CompletionResultSet result)
+			@RequiredReadAction
+			@Override
+			protected void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
-				CSharpCompletionUtil.tokenSetToLookup(result, ourContinueAndBreakKeywords, new NotNullPairFunction<LookupElementBuilder,
-						IElementType, LookupElement>()
+				CSharpCompletionUtil.tokenSetToLookup(result, ourContinueAndBreakKeywords, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
 
 				{
 					@NotNull
@@ -219,8 +203,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
-				CSharpCompletionUtil.tokenSetToLookup(result, ourCaseAndDefaultKeywords, new NotNullPairFunction<LookupElementBuilder, IElementType,
-						LookupElement>()
+				CSharpCompletionUtil.tokenSetToLookup(result, ourCaseAndDefaultKeywords, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
 				{
 					@NotNull
 					@Override
@@ -256,8 +239,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 				{
 					return;
 				}
-				CSharpCompletionUtil.tokenSetToLookup(result, ourParStatementKeywords, new NotNullPairFunction<LookupElementBuilder, IElementType,
-						LookupElement>()
+				CSharpCompletionUtil.tokenSetToLookup(result, ourParStatementKeywords, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
 				{
 					@NotNull
 					@Override
@@ -267,8 +249,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 						return t;
 					}
 				}, null);
-				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.THROW_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType,
-						LookupElement>()
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.THROW_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
 
 				{
 					@NotNull
@@ -289,8 +270,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				final PsiElement position = parameters.getPosition();
-				CSharpCompletionUtil.elementToLookup(result, CSharpSoftTokens.YIELD_KEYWORD, new NotNullPairFunction<LookupElementBuilder,
-								IElementType, LookupElement>()
+				CSharpCompletionUtil.elementToLookup(result, CSharpSoftTokens.YIELD_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
 						{
 							@NotNull
 							@Override
@@ -329,8 +309,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 							@Override
 							public boolean value(IElementType elementType)
 							{
-								CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(position,
-										CSharpSimpleLikeMethodAsElement.class);
+								CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(position, CSharpSimpleLikeMethodAsElement.class);
 								if(methodAsElement == null)
 								{
 									return false;
@@ -351,11 +330,10 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpSoftTokens.YIELD_KEYWORD)),
-				new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpSoftTokens.YIELD_KEYWORD)), new CompletionProvider<CompletionParameters>()
 		{
-					@RequiredReadAction
-					@Override
+			@RequiredReadAction
+			@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				final PsiElement position = parameters.getPosition();
@@ -365,8 +343,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 					return;
 				}
 				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.BREAK_KEYWORD, null, null);
-				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.RETURN_KEYWORD, new NotNullPairFunction<LookupElementBuilder,
-						IElementType, LookupElement>()
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.RETURN_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
 
 				{
 					@NotNull
@@ -380,15 +357,14 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.ELSE_KEYWORD)).withSuperParent(2,
-				CSharpExpressionStatementImpl.class), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.ELSE_KEYWORD)).withSuperParent(2, CSharpExpressionStatementImpl.class),
+				new CompletionProvider<CompletionParameters>()
 		{
 			@RequiredReadAction
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
-				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.IF_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType,
-						LookupElement>()
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.IF_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
 				{
 					@NotNull
 					@Override
@@ -417,8 +393,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 				final PsiElement maybeTryStatement = UsefulPsiTreeUtil.getPrevSiblingSkipWhiteSpacesAndComments(statement, true);
 				if(maybeTryStatement instanceof CSharpTryStatementImpl)
 				{
-					CSharpCompletionUtil.tokenSetToLookup(result, ourCatchFinallyKeywords, new NotNullPairFunction<LookupElementBuilder,
-									IElementType, LookupElement>()
+					CSharpCompletionUtil.tokenSetToLookup(result, ourCatchFinallyKeywords, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
 							{
 								@NotNull
 								@Override
@@ -454,8 +429,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			{
 				if(CSharpModuleUtil.findLanguageVersion(parameters.getPosition()).isAtLeast(CSharpLanguageVersion._6_0))
 				{
-					CSharpCompletionUtil.elementToLookup(result, CSharpSoftTokens.WHEN_KEYWORD, new NotNullPairFunction<LookupElementBuilder,
-							IElementType, LookupElement>()
+					CSharpCompletionUtil.elementToLookup(result, CSharpSoftTokens.WHEN_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
 
 					{
 						@NotNull
