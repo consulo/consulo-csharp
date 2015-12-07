@@ -16,6 +16,8 @@
             <element id="module-output" name="csharp-api" />
             <element id="module-production-resource-output" name="csharp-api" />
             <element id="module-output" name="csharp-msbuild-impl" />
+            <element id="module-output" name="csharp-preprocessor-impl" />
+            <element id="module-output" name="csharp-preprocessor-api" />
           </element>
           <element id="file-copy" path="$PROJECT_DIR$/csharp-psi-impl/lib/jel.jar" />
           <element id="zip-archive" name="microsoft-csharp.jar">

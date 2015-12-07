@@ -16,7 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.macro;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,9 +26,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public class MacroValueProvider
 {
-	private final List<String> myVariables;
+	private final Collection<String> myVariables;
 
-	public MacroValueProvider(List<String> variables)
+	public MacroValueProvider(Collection<String> variables)
 	{
 		myVariables = variables;
 	}

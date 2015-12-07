@@ -20,12 +20,13 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorLazyTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
 import com.intellij.lexer.Lexer;
 import com.intellij.lexer.LexerPosition;
 import com.intellij.lexer.MergeFunction;
+import com.intellij.lexer.MergingLexerAdapter;
 import com.intellij.lexer.MergingLexerAdapterBase;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.tree.IElementType;
@@ -37,8 +38,8 @@ import com.intellij.psi.tree.TokenSet;
  */
 public class CSharpLexer extends MergingLexerAdapterBase
 {
-	private static final TokenSet ourMergeSet = TokenSet.create(CSharpTemplateTokens.MACRO_FRAGMENT, CSharpTokens.NON_ACTIVE_SYMBOL,
-			CSharpTokensImpl.LINE_DOC_COMMENT);
+	private static final TokenSet ourMergeSet = TokenSet.create(CSharpPreprocessorLazyTokens.PREPROCESSOR_DIRECTIVE, CSharpTokens.NON_ACTIVE_SYMBOL, CSharpTokensImpl.LINE_DOC_COMMENT);
+	private static final TokenSet ourWhitespaceSet = TokenSet.create(CSharpTokens.WHITE_SPACE);
 
 	private static class MyMergeFunction implements MergeFunction
 	{
@@ -79,6 +80,11 @@ public class CSharpLexer extends MergingLexerAdapterBase
 							break;
 						}
 					}
+				}
+
+				if(currentToken == CSharpTokens.NON_ACTIVE_SYMBOL)
+				{
+					return currentToken;
 				}
 
 				if(currentToken != mergeToken)
@@ -148,7 +154,7 @@ public class CSharpLexer extends MergingLexerAdapterBase
 
 	public CSharpLexer(List<TextRange> ranges)
 	{
-		super(new _CSharpLexer());
+		super(new MergingLexerAdapter(new _CSharpLexer(), ourWhitespaceSet));
 		myMergeFunction = new MyMergeFunction(ranges);
 	}
 

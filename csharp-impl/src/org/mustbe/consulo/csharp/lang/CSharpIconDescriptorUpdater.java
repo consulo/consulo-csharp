@@ -65,7 +65,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 			iconDescriptor.setMainIcon(AllIcons.Nodes.Lambda);
 			return;
 		}
-		else if(element instanceof CSharpMacroDefine)
+		else if(element instanceof CSharpPreprocessorDefineDirective)
 		{
 			iconDescriptor.setMainIcon(AllIcons.Nodes.Value);
 			return;

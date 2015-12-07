@@ -16,25 +16,31 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
+import gnu.trove.THashSet;
+
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.CSharpLanguageVersionWrapper;
-import org.mustbe.consulo.csharp.lang.CSharpMacroLanguage;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroRecursiveElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorDefineDirective;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorFileType;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorRecursiveElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroBlockStartImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroBlockStopImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroExpression;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroIfConditionBlockImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroIfImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorConditionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorExpression;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorIfElseBlockImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorOpenTagImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorUndefDirectiveImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpFileStub;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.macro.MacroEvaluator;
 import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
@@ -45,18 +51,26 @@ import com.intellij.lang.LanguageVersion;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilderFactory;
 import com.intellij.lang.PsiParser;
+import com.intellij.lexer.Lexer;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.StubBuilder;
 import com.intellij.psi.stubs.DefaultStubBuilder;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IStubFileElementType;
+import com.intellij.psi.util.PsiUtilCore;
+import com.intellij.testFramework.LightVirtualFile;
+import com.intellij.util.indexing.IndexingDataKeys;
 
 /**
  * @author VISTALL
@@ -88,70 +102,100 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 	}
 
 	@Override
+	@RequiredReadAction
 	protected ASTNode doParseContents(@NotNull ASTNode chameleon, @NotNull PsiElement psi)
 	{
 		final Project project = psi.getProject();
 		final Language languageForParser = getLanguageForParser(psi);
 		final LanguageVersion tempLanguageVersion = chameleon.getUserData(LanguageVersion.KEY);
-		final CSharpLanguageVersionWrapper languageVersion = (CSharpLanguageVersionWrapper) (tempLanguageVersion == null ? psi.getLanguageVersion() :
-				tempLanguageVersion);
+		final CSharpLanguageVersionWrapper languageVersion = (CSharpLanguageVersionWrapper) (tempLanguageVersion == null ? psi.getLanguageVersion() : tempLanguageVersion);
 
 		FileViewProvider viewProvider = ((PsiFile) psi).getViewProvider();
-		PsiFile macroFile = viewProvider.getPsi(CSharpMacroLanguage.INSTANCE);
-		List<TextRange> textRanges = Collections.emptyList();
-		if(macroFile != null)
+		VirtualFile virtualFile = viewProvider.getVirtualFile();
+		if(virtualFile instanceof LightVirtualFile)
 		{
-			DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(((PsiFile) psi).getOriginalFile(), DotNetSimpleModuleExtension.class);
-			if(extension != null)
+			virtualFile = ((LightVirtualFile) virtualFile).getOriginalFile();
+		}
+
+		if(virtualFile == null)
+		{
+			virtualFile = psi.getUserData(IndexingDataKeys.VIRTUAL_FILE);
+		}
+
+		List<TextRange> textRanges = Collections.emptyList();
+		CharSequence chars = chameleon.getChars();
+		if(virtualFile != null)
+		{
+			Module moduleForFile = ModuleUtilCore.findModuleForFile(virtualFile, project);
+			if(moduleForFile != null)
 			{
-				textRanges = collectDisabledBlocks(macroFile, extension);
+				DotNetSimpleModuleExtension extension = ModuleUtilCore.getExtension(moduleForFile, DotNetSimpleModuleExtension.class);
+				if(extension != null)
+				{
+					textRanges = collectDisabledBlocks(project, chars, extension);
+				}
 			}
 		}
 
-		final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, languageVersion.createLexer(textRanges),
-				languageForParser,
-				languageVersion, chameleon.getChars());
+		Lexer lexer = languageVersion.createLexer(textRanges);
+		final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, lexer, languageForParser, languageVersion, chars);
 		final PsiParser parser = LanguageParserDefinitions.INSTANCE.forLanguage(languageForParser).createParser(project, languageVersion);
 		return parser.parse(this, builder, languageVersion).getFirstChildNode();
 	}
 
 	@NotNull
-	public static List<TextRange> collectDisabledBlocks(PsiFile macroFile, @NotNull DotNetSimpleModuleExtension<?> extension)
+	public static List<TextRange> collectDisabledBlocks(@NotNull Project project, @NotNull CharSequence text, @NotNull DotNetSimpleModuleExtension<?> extension)
 	{
-		return collectDisabledBlocks(macroFile, extension.getVariables());
+		return collectDisabledBlocks(project, text, extension.getVariables());
 	}
 
 	@NotNull
-	private static List<TextRange> collectDisabledBlocks(PsiFile templateFile, @NotNull final List<String> baseVariables)
+	private static List<TextRange> collectDisabledBlocks(@NotNull Project project, @NotNull final CharSequence text, @NotNull final List<String> baseVariables)
 	{
 		final Ref<List<TextRange>> listRef = Ref.create();
-		final Ref<List<String>> redefined = Ref.create();
-		templateFile.accept(new CSharpMacroRecursiveElementVisitor()
+
+		PsiFile templateFile = PsiFileFactory.getInstance(project).createFileFromText("temp", CSharpPreprocessorFileType.INSTANCE, text);
+
+		final Ref<Set<String>> redefined = Ref.create();
+		templateFile.accept(new CSharpPreprocessorRecursiveElementVisitor()
 		{
 			@Override
-			public void visitMacroDefine(CSharpMacroDefine def)
+			@RequiredReadAction
+			public void visitDefineDirective(CSharpPreprocessorDefineDirective define)
 			{
-				List<String> redefs = redefined.get();
-				if(redefs == null)
-				{
-					redefined.set(redefs = new ArrayList<String>(baseVariables));
-				}
-				String name = def.getName();
+				String name = define.getName();
 				if(name != null)
 				{
-					if(def.isUnDef())
+					Set<String> redefs = redefined.get();
+					if(redefs == null)
 					{
-						redefs.remove(name) ;
+						redefined.set(redefs = new THashSet<String>(baseVariables));
 					}
-					else
-					{
-						redefs.add(name);
-					}
+
+					redefs.add(name);
 				}
 			}
 
 			@Override
-			public void visitMacroIf(CSharpMacroIfImpl element)
+			@RequiredReadAction
+			public void visitUndefDirective(CSharpPreprocessorUndefDirectiveImpl undefDirective)
+			{
+				String name = undefDirective.getVariable();
+				if(name != null)
+				{
+					Set<String> redefs = redefined.get();
+					if(redefs == null)
+					{
+						redefined.set(redefs = new THashSet<String>(baseVariables));
+					}
+
+					redefs.remove(name);
+				}
+			}
+
+			@Override
+			@RequiredReadAction
+			public void visitConditionBlock(CSharpPreprocessorConditionImpl element)
 			{
 				List<TextRange> textRanges = listRef.get();
 				if(textRanges == null)
@@ -159,41 +203,43 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 					listRef.set(textRanges = new ArrayList<TextRange>());
 				}
 
-				CSharpMacroIfConditionBlockImpl[] conditionBlocks = element.getConditionBlocks();
-				Queue<CSharpMacroIfConditionBlockImpl> queue = new ArrayDeque<CSharpMacroIfConditionBlockImpl>(conditionBlocks.length);
+				CSharpPreprocessorIfElseBlockImpl[] conditionBlocks = element.getIfElseBlocks();
+				Queue<CSharpPreprocessorIfElseBlockImpl> queue = new ArrayDeque<CSharpPreprocessorIfElseBlockImpl>(conditionBlocks.length);
 				Collections.addAll(queue, conditionBlocks);
 
-				CSharpMacroIfConditionBlockImpl activeBlock = null;
+				CSharpPreprocessorIfElseBlockImpl activeBlock = null;
 
 				boolean forceDisable = false;
-				CSharpMacroIfConditionBlockImpl block;
+				CSharpPreprocessorIfElseBlockImpl block;
 				while((block = queue.poll()) != null)
 				{
-					CSharpMacroBlockStartImpl declarationTag = block.getDeclarationTag();
+					CSharpPreprocessorOpenTagImpl declarationTag = block.getDeclarationTag();
 					if(forceDisable)
 					{
-						addTextRange(declarationTag, queue, element, textRanges);
+						addTextRange(declarationTag, block, textRanges);
 						continue;
 					}
 
-					if(!declarationTag.isElse()) // if / elif
+					IElementType elementType = PsiUtilCore.getElementType(declarationTag.getKeywordElement());
+					assert  elementType != null;
+					if(elementType != CSharpPreprocessorTokens.ELSE_KEYWORD) // if / elif
 					{
-						CSharpMacroExpression value = declarationTag.getValue();
+						CSharpPreprocessorExpression value = declarationTag.getValue();
 						if(value == null) //if not expression - disabled
 						{
-							addTextRange(declarationTag, queue, element, textRanges);
+							addTextRange(declarationTag, block, textRanges);
 						}
 						else
 						{
 							String text = value.getText();
-							if(isDefined(text))
+							if(evaluateExpression(text))
 							{
 								forceDisable = true;
 								activeBlock = block;
 							}
 							else
 							{
-								addTextRange(declarationTag, queue, element, textRanges);
+								addTextRange(declarationTag, block, textRanges);
 							}
 						}
 					}
@@ -209,44 +255,15 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 				}
 			}
 
-			private void addTextRange(CSharpMacroBlockStartImpl start, Queue<CSharpMacroIfConditionBlockImpl> queue, CSharpMacroIfImpl macroIf,
-					List<TextRange> textRanges)
+			@RequiredReadAction
+			private void addTextRange(CSharpPreprocessorOpenTagImpl start, CSharpPreprocessorIfElseBlockImpl block, List<TextRange> textRanges)
 			{
-				// find next element
-				CSharpMacroIfConditionBlockImpl element = queue.peek();
-
-				int endOffset;
-				if(element == null)
-				{
-					CSharpMacroBlockStopImpl closeTag = macroIf.getCloseTag();
-					if(closeTag == null)
-					{
-						endOffset = macroIf.getContainingFile().getTextLength();
-					}
-					else
-					{
-						endOffset = closeTag.getKeywordElement().getTextRange().getStartOffset();
-					}
-				}
-				else
-				{
-					endOffset = element.getDeclarationTag().getKeywordElement().getTextRange().getStartOffset();
-				}
-
-				PsiElement stopElement = start.getStopElement();
-				if(stopElement == null)
-				{
-					textRanges.add(new TextRange(start.getTextRange().getEndOffset(), endOffset));
-				}
-				else
-				{
-					textRanges.add(new TextRange(stopElement.getTextRange().getEndOffset(), endOffset));
-				}
+				textRanges.add(new TextRange(start.getTextRange().getEndOffset(), block.getTextRange().getEndOffset()));
 			}
 
-			private boolean isDefined(String text)
+			private boolean evaluateExpression(String text)
 			{
-				List<String> defs = redefined.get();
+				Collection<String> defs = redefined.get();
 				if(defs == null)
 				{
 					defs = baseVariables;
@@ -254,7 +271,8 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 
 				return MacroEvaluator.evaluate(text, defs);
 			}
-		}); List<TextRange> list = listRef.get();
+		});
+		List<TextRange> list = listRef.get();
 		return list == null ? Collections.<TextRange>emptyList() : list;
 	}
 

@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.ide.completion;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocRoot;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -83,9 +84,17 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 	}
 
 	@Override
+	@RequiredDispatchThread
 	public Result charTyped(char c, Project project, Editor editor, @NotNull PsiFile file)
 	{
-		if(c == '/')
+		if(c == '#')
+		{
+			if(file instanceof CSharpFile)
+			{
+				AutoPopupController.getInstance(project).scheduleAutoPopup(editor);
+			}
+		}
+		else if(c == '/')
 		{
 			if(DumbService.isDumb(file.getProject()))
 			{

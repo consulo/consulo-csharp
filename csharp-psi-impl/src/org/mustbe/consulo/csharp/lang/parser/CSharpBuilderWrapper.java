@@ -23,8 +23,8 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguageVersionWrapper;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorLazyTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.lang.LanguageVersion;
@@ -159,7 +159,7 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 				return elementType;
 			}
 		}
-		else if(tokenType == CSharpTemplateTokens.MACRO_FRAGMENT)
+		else if(tokenType == CSharpPreprocessorLazyTokens.PREPROCESSOR_DIRECTIVE)
 		{
 			super.advanceLexer();
 			tokenType = getTokenType();

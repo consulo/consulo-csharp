@@ -5,9 +5,19 @@ import com.intellij.lexer.LexerBase;
 import com.intellij.psi.tree.IElementType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorLazyTokens;
 
 %%
+
+%{
+  private boolean myEnteredNewLine = true;
+
+  private IElementType returnElementType(IElementType type)
+  {
+    myEnteredNewLine = false;
+    return type;
+  }
+%}
 
 %public
 %class _CSharpLexer
@@ -18,13 +28,15 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 %eof{  return;
 %eof}
 
-%state MACRO
+%state PREPROCESSOR_DIRECTIVE
 
 DIGIT=[0-9]
-WHITE_SPACE=[ \n\r\t\f]+
 SINGLE_LINE_COMMENT="/""/"[^\r\n]*
 SINGLE_LINE_DOC_COMMENT="/""/""/"[^\r\n]*
 MULTI_LINE_STYLE_COMMENT=("/*"{COMMENT_TAIL})|"/*"
+
+WHITE_SPACE_NO_NEW_LINE=[ \t\f]+
+NEW_LINE=\r\n|\n|\r
 
 COMMENT_TAIL=([^"*"]*("*"+[^"*""/"])?)*("*"+"/")?
 CHARACTER_LITERAL="'"([^\\\'\r\n]|{ESCAPE_SEQUENCE})*("'"|\\)?
@@ -60,323 +72,333 @@ DEC_EXPONENT = [Ee] [+-]? {DIGIT_OR_UNDERSCORE}*
 HEX_FP_LITERAL = {HEX_SIGNIFICAND} {HEX_EXPONENT}
 HEX_SIGNIFICAND = 0 [Xx] ({HEX_DIGIT_OR_UNDERSCORE}+ "."? | {HEX_DIGIT_OR_UNDERSCORE}* "." {HEX_DIGIT_OR_UNDERSCORE}+)
 HEX_EXPONENT = [Pp] [+-]? {DIGIT_OR_UNDERSCORE}*
-
-MACRO_WHITE_SPACE=[ \t\f]+
-MACRO_NEW_LINE=\r\n|\n|\r
-MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 %%
 
-<MACRO>
+<PREPROCESSOR_DIRECTIVE>
 {
-	{MACRO_NEW_LINE}     { yybegin(YYINITIAL); return CSharpTemplateTokens.MACRO_FRAGMENT; }
+	{NEW_LINE}
+	{
+		myEnteredNewLine = true;
+		yybegin(YYINITIAL);
+		return CSharpPreprocessorLazyTokens.PREPROCESSOR_DIRECTIVE;
+	}
 
-	{MACRO_WHITE_SPACE}  {  return CSharpTemplateTokens.MACRO_FRAGMENT; }
+	{WHITE_SPACE_NO_NEW_LINE}  {  return CSharpPreprocessorLazyTokens.PREPROCESSOR_DIRECTIVE; }
 
-	.                    { return CSharpTemplateTokens.MACRO_FRAGMENT; }
+	.                          { return CSharpPreprocessorLazyTokens.PREPROCESSOR_DIRECTIVE; }
 }
 
 <YYINITIAL>
 {
-	{MACRO_START}
+	"#"
 	{
-		yypushback(yylength());
-		yybegin(MACRO);
+		if(myEnteredNewLine)
+		{
+			yypushback(yylength());
+			yybegin(PREPROCESSOR_DIRECTIVE);
+		}
+		else
+		{
+			return CSharpTokens.BAD_CHARACTER;
+		}
 	}
 
-	{VERBATIM_STRING_LITERAL} { return CSharpTokens.VERBATIM_STRING_LITERAL; }
+	{VERBATIM_STRING_LITERAL} { return returnElementType(CSharpTokens.VERBATIM_STRING_LITERAL); }
 
 	{INTERPOLATION_STRING_LITERAL} { return CSharpTokensImpl.INTERPOLATION_STRING_LITERAL; }
 
-	"__arglist"               { return CSharpTokens.__ARGLIST_KEYWORD; }
+	"__arglist"               { return returnElementType(CSharpTokens.__ARGLIST_KEYWORD); }
 
-	"__makeref"               { return CSharpTokens.__MAKEREF_KEYWORD; }
+	"__makeref"               { return returnElementType(CSharpTokens.__MAKEREF_KEYWORD); }
 
-	"__reftype"               { return CSharpTokens.__REFTYPE_KEYWORD; }
+	"__reftype"               { return returnElementType(CSharpTokens.__REFTYPE_KEYWORD); }
 
-	"__refvalue"              { return CSharpTokens.__REFVALUE_KEYWORD; }
+	"__refvalue"              { return returnElementType(CSharpTokens.__REFVALUE_KEYWORD); }
 
-	"using"                   { return CSharpTokens.USING_KEYWORD; }
+	"using"                   { return returnElementType(CSharpTokens.USING_KEYWORD); }
 
 // native types
-	"string"                  { return CSharpTokens.STRING_KEYWORD; }
+	"string"                  { return returnElementType(CSharpTokens.STRING_KEYWORD); }
 
-	"void"                    { return CSharpTokens.VOID_KEYWORD; }
+	"void"                    { return returnElementType(CSharpTokens.VOID_KEYWORD); }
 
-	"int"                     { return CSharpTokens.INT_KEYWORD; }
+	"int"                     { return returnElementType(CSharpTokens.INT_KEYWORD); }
 
-	"bool"                    { return CSharpTokens.BOOL_KEYWORD; }
+	"bool"                    { return returnElementType(CSharpTokens.BOOL_KEYWORD); }
 
-	"byte"                    { return CSharpTokens.BYTE_KEYWORD; }
+	"byte"                    { return returnElementType(CSharpTokens.BYTE_KEYWORD); }
 
-	"char"                    { return CSharpTokens.CHAR_KEYWORD; }
+	"char"                    { return returnElementType(CSharpTokens.CHAR_KEYWORD); }
 
-	"decimal"                 { return CSharpTokens.DECIMAL_KEYWORD; }
+	"decimal"                 { return returnElementType(CSharpTokens.DECIMAL_KEYWORD); }
 
-	"double"                  { return CSharpTokens.DOUBLE_KEYWORD; }
+	"double"                  { return returnElementType(CSharpTokens.DOUBLE_KEYWORD); }
 
-	"float"                   { return CSharpTokens.FLOAT_KEYWORD; }
+	"float"                   { return returnElementType(CSharpTokens.FLOAT_KEYWORD); }
 
-	"long"                    { return CSharpTokens.LONG_KEYWORD; }
+	"long"                    { return returnElementType(CSharpTokens.LONG_KEYWORD); }
 
-	"object"                  { return CSharpTokens.OBJECT_KEYWORD; }
+	"object"                  { return returnElementType(CSharpTokens.OBJECT_KEYWORD); }
 
-	"sbyte"                   { return CSharpTokens.SBYTE_KEYWORD; }
+	"sbyte"                   { return returnElementType(CSharpTokens.SBYTE_KEYWORD); }
 
-	"short"                   { return CSharpTokens.SHORT_KEYWORD; }
+	"short"                   { return returnElementType(CSharpTokens.SHORT_KEYWORD); }
 
-	"uint"                    { return CSharpTokens.UINT_KEYWORD; }
+	"uint"                    { return returnElementType(CSharpTokens.UINT_KEYWORD); }
 
-	"ulong"                   { return CSharpTokens.ULONG_KEYWORD; }
+	"ulong"                   { return returnElementType(CSharpTokens.ULONG_KEYWORD); }
 
-	"ushort"                  { return CSharpTokens.USHORT_KEYWORD; }
+	"ushort"                  { return returnElementType(CSharpTokens.USHORT_KEYWORD); }
 
-	"dynamic"                 { return CSharpTokens.DYNAMIC_KEYWORD; }
+	"dynamic"                 { return returnElementType(CSharpTokens.DYNAMIC_KEYWORD); }
 
-	"explicit"                { return CSharpTokens.EXPLICIT_KEYWORD; }
+	"explicit"                { return returnElementType(CSharpTokens.EXPLICIT_KEYWORD); }
 
-	"implicit"                { return CSharpTokens.IMPLICIT_KEYWORD; }
+	"implicit"                { return returnElementType(CSharpTokens.IMPLICIT_KEYWORD); }
 
 // modifier tokens
-	"static"                  { return CSharpTokens.STATIC_KEYWORD; }
+	"static"                  { return returnElementType(CSharpTokens.STATIC_KEYWORD); }
 
-	"public"                  { return CSharpTokens.PUBLIC_KEYWORD; }
+	"public"                  { return returnElementType(CSharpTokens.PUBLIC_KEYWORD); }
 
-	"in"                      { return CSharpTokens.IN_KEYWORD; }
+	"in"                      { return returnElementType(CSharpTokens.IN_KEYWORD); }
 
-	"out"                     { return CSharpTokens.OUT_KEYWORD; }
+	"out"                     { return returnElementType(CSharpTokens.OUT_KEYWORD); }
 
-	"abstract"                { return CSharpTokens.ABSTRACT_KEYWORD; }
+	"abstract"                { return returnElementType(CSharpTokens.ABSTRACT_KEYWORD); }
 
-	"extern"                  { return CSharpTokens.EXTERN_KEYWORD; }
+	"extern"                  { return returnElementType(CSharpTokens.EXTERN_KEYWORD); }
 
-	"internal"                { return CSharpTokens.INTERNAL_KEYWORD; }
+	"internal"                { return returnElementType(CSharpTokens.INTERNAL_KEYWORD); }
 
-	"override"                { return CSharpTokens.OVERRIDE_KEYWORD; }
+	"override"                { return returnElementType(CSharpTokens.OVERRIDE_KEYWORD); }
 
-	"params"                  { return CSharpTokens.PARAMS_KEYWORD; }
+	"params"                  { return returnElementType(CSharpTokens.PARAMS_KEYWORD); }
 
-	"private"                 { return CSharpTokens.PRIVATE_KEYWORD; }
+	"private"                 { return returnElementType(CSharpTokens.PRIVATE_KEYWORD); }
 
-	"protected"               { return CSharpTokens.PROTECTED_KEYWORD; }
+	"protected"               { return returnElementType(CSharpTokens.PROTECTED_KEYWORD); }
 
-	"ref"                     { return CSharpTokens.REF_KEYWORD; }
+	"ref"                     { return returnElementType(CSharpTokens.REF_KEYWORD); }
 
-	"readonly"                { return CSharpTokens.READONLY_KEYWORD; }
+	"readonly"                { return returnElementType(CSharpTokens.READONLY_KEYWORD); }
 
-	"operator"                { return CSharpTokens.OPERATOR_KEYWORD; }
+	"operator"                { return returnElementType(CSharpTokens.OPERATOR_KEYWORD); }
 
-	"sealed"                  { return CSharpTokens.SEALED_KEYWORD; }
+	"sealed"                  { return returnElementType(CSharpTokens.SEALED_KEYWORD); }
 
-	"unsafe"                  { return CSharpTokens.UNSAFE_KEYWORD; }
+	"unsafe"                  { return returnElementType(CSharpTokens.UNSAFE_KEYWORD); }
 
-	"checked"                 { return CSharpTokens.CHECKED_KEYWORD; }
+	"checked"                 { return returnElementType(CSharpTokens.CHECKED_KEYWORD); }
 
-	"unchecked"               { return CSharpTokens.UNCHECKED_KEYWORD; }
+	"unchecked"               { return returnElementType(CSharpTokens.UNCHECKED_KEYWORD); }
 
-	"virtual"                 { return CSharpTokens.VIRTUAL_KEYWORD; }
+	"virtual"                 { return returnElementType(CSharpTokens.VIRTUAL_KEYWORD); }
 
-	"volatile"                { return CSharpTokens.VOLATILE_KEYWORD; }
+	"volatile"                { return returnElementType(CSharpTokens.VOLATILE_KEYWORD); }
 
 // declaration tokens
-	"namespace"               { return CSharpTokens.NAMESPACE_KEYWORD; }
+	"namespace"               { return returnElementType(CSharpTokens.NAMESPACE_KEYWORD); }
 
-	"class"                   { return CSharpTokens.CLASS_KEYWORD; }
+	"class"                   { return returnElementType(CSharpTokens.CLASS_KEYWORD); }
 
-	"interface"               { return CSharpTokens.INTERFACE_KEYWORD; }
+	"interface"               { return returnElementType(CSharpTokens.INTERFACE_KEYWORD); }
 
-	"struct"                  { return CSharpTokens.STRUCT_KEYWORD; }
+	"struct"                  { return returnElementType(CSharpTokens.STRUCT_KEYWORD); }
 
-	"enum"                    { return CSharpTokens.ENUM_KEYWORD; }
+	"enum"                    { return returnElementType(CSharpTokens.ENUM_KEYWORD); }
 
-	"event"                   { return CSharpTokens.EVENT_KEYWORD; }
+	"event"                   { return returnElementType(CSharpTokens.EVENT_KEYWORD); }
 
-	"delegate"                { return CSharpTokens.DELEGATE_KEYWORD; }
+	"delegate"                { return returnElementType(CSharpTokens.DELEGATE_KEYWORD); }
 
-	"const"                   { return CSharpTokens.CONST_KEYWORD; }
+	"const"                   { return returnElementType(CSharpTokens.CONST_KEYWORD); }
 
 // expression tokens
-	"new"                     { return CSharpTokens.NEW_KEYWORD; }
+	"new"                     { return returnElementType(CSharpTokens.NEW_KEYWORD); }
 
-	"stackalloc"              { return CSharpTokens.STACKALLOC_KEYWORD; }
+	"stackalloc"              { return returnElementType(CSharpTokens.STACKALLOC_KEYWORD); }
 
-	"typeof"                  { return CSharpTokens.TYPEOF_KEYWORD; }
+	"typeof"                  { return returnElementType(CSharpTokens.TYPEOF_KEYWORD); }
 
-	"sizeof"                  { return CSharpTokens.SIZEOF_KEYWORD; }
+	"sizeof"                  { return returnElementType(CSharpTokens.SIZEOF_KEYWORD); }
 
-	"fixed"                   { return CSharpTokens.FIXED_KEYWORD; }
+	"fixed"                   { return returnElementType(CSharpTokens.FIXED_KEYWORD); }
 
-	"is"                      { return CSharpTokens.IS_KEYWORD; }
+	"is"                      { return returnElementType(CSharpTokens.IS_KEYWORD); }
 
-	"switch"                  { return CSharpTokens.SWITCH_KEYWORD; }
+	"switch"                  { return returnElementType(CSharpTokens.SWITCH_KEYWORD); }
 
-	"case"                    { return CSharpTokens.CASE_KEYWORD; }
+	"case"                    { return returnElementType(CSharpTokens.CASE_KEYWORD); }
 
-	"default"                 { return CSharpTokens.DEFAULT_KEYWORD; }
+	"default"                 { return returnElementType(CSharpTokens.DEFAULT_KEYWORD); }
 
-	"as"                      { return CSharpTokens.AS_KEYWORD; }
+	"as"                      { return returnElementType(CSharpTokens.AS_KEYWORD); }
 
-	"lock"                    { return CSharpTokens.LOCK_KEYWORD; }
+	"lock"                    { return returnElementType(CSharpTokens.LOCK_KEYWORD); }
 
-	"return"                  { return CSharpTokens.RETURN_KEYWORD; }
+	"return"                  { return returnElementType(CSharpTokens.RETURN_KEYWORD); }
 
-	"do"                      { return CSharpTokens.DO_KEYWORD; }
+	"do"                      { return returnElementType(CSharpTokens.DO_KEYWORD); }
 
-	"while"                   { return CSharpTokens.WHILE_KEYWORD; }
+	"while"                   { return returnElementType(CSharpTokens.WHILE_KEYWORD); }
 
-	"try"                     { return CSharpTokens.TRY_KEYWORD; }
+	"try"                     { return returnElementType(CSharpTokens.TRY_KEYWORD); }
 
-	"catch"                   { return CSharpTokens.CATCH_KEYWORD; }
+	"catch"                   { return returnElementType(CSharpTokens.CATCH_KEYWORD); }
 
-	"finally"                 { return CSharpTokens.FINALLY_KEYWORD; }
+	"finally"                 { return returnElementType(CSharpTokens.FINALLY_KEYWORD); }
 
-	"throw"                   { return CSharpTokens.THROW_KEYWORD; }
+	"throw"                   { return returnElementType(CSharpTokens.THROW_KEYWORD); }
 
-	"goto"                    { return CSharpTokens.GOTO_KEYWORD; }
+	"goto"                    { return returnElementType(CSharpTokens.GOTO_KEYWORD); }
 
-	"foreach"                 { return CSharpTokens.FOREACH_KEYWORD; }
+	"foreach"                 { return returnElementType(CSharpTokens.FOREACH_KEYWORD); }
 
-	"for"                     { return CSharpTokens.FOR_KEYWORD; }
+	"for"                     { return returnElementType(CSharpTokens.FOR_KEYWORD); }
 
-	"break"                   { return CSharpTokens.BREAK_KEYWORD; }
+	"break"                   { return returnElementType(CSharpTokens.BREAK_KEYWORD); }
 
-	"continue"                { return CSharpTokens.CONTINUE_KEYWORD; }
+	"continue"                { return returnElementType(CSharpTokens.CONTINUE_KEYWORD); }
 
-	"base"                    { return CSharpTokens.BASE_KEYWORD; }
+	"base"                    { return returnElementType(CSharpTokens.BASE_KEYWORD); }
 
-	"this"                    { return CSharpTokens.THIS_KEYWORD; }
+	"this"                    { return returnElementType(CSharpTokens.THIS_KEYWORD); }
 
-	"if"                      { return CSharpTokens.IF_KEYWORD; }
+	"if"                      { return returnElementType(CSharpTokens.IF_KEYWORD); }
 
-	"else"                    { return CSharpTokens.ELSE_KEYWORD; }
+	"else"                    { return returnElementType(CSharpTokens.ELSE_KEYWORD); }
 
 //
-	"{"                       { return CSharpTokens.LBRACE; }
+	"{"                       { return returnElementType(CSharpTokens.LBRACE); }
 
-	"}"                       { return CSharpTokens.RBRACE; }
+	"}"                       { return returnElementType(CSharpTokens.RBRACE); }
 
-	"["                       { return CSharpTokens.LBRACKET; }
+	"["                       { return returnElementType(CSharpTokens.LBRACKET); }
 
-	"]"                       { return CSharpTokens.RBRACKET; }
+	"]"                       { return returnElementType(CSharpTokens.RBRACKET); }
 
-	"("                       { return CSharpTokens.LPAR; }
+	"("                       { return returnElementType(CSharpTokens.LPAR); }
 
-	")"                       { return CSharpTokens.RPAR; }
+	")"                       { return returnElementType(CSharpTokens.RPAR); }
 
-	"*="                      { return CSharpTokens.MULEQ; }
+	"*="                      { return returnElementType(CSharpTokens.MULEQ); }
 
-	"/="                      { return CSharpTokens.DIVEQ; }
+	"/="                      { return returnElementType(CSharpTokens.DIVEQ); }
 
-	"%="                      { return CSharpTokens.PERCEQ; }
+	"%="                      { return returnElementType(CSharpTokens.PERCEQ); }
 
-	"+="                      { return CSharpTokens.PLUSEQ; }
+	"+="                      { return returnElementType(CSharpTokens.PLUSEQ); }
 
-	"-="                      { return CSharpTokens.MINUSEQ; }
+	"-="                      { return returnElementType(CSharpTokens.MINUSEQ); }
 
-	"&="                      { return CSharpTokens.ANDEQ; }
+	"&="                      { return returnElementType(CSharpTokens.ANDEQ); }
 
-	"^="                      { return CSharpTokens.XOREQ; }
+	"^="                      { return returnElementType(CSharpTokens.XOREQ); }
 
-	"|="                      { return CSharpTokens.OREQ; }
+	"|="                      { return returnElementType(CSharpTokens.OREQ); }
 
-	"<<="                     { return CSharpTokens.LTLTEQ; }
+	"<<="                     { return returnElementType(CSharpTokens.LTLTEQ); }
 
-	">>="                     { return CSharpTokens.GTGTEQ; }
+	">>="                     { return returnElementType(CSharpTokens.GTGTEQ); }
 
-	"<="                      { return CSharpTokens.LTEQ; }
+	"<="                      { return returnElementType(CSharpTokens.LTEQ); }
 
-	">="                      { return CSharpTokens.GTEQ; }
+	">="                      { return returnElementType(CSharpTokens.GTEQ); }
 
-	"<"                       { return CSharpTokens.LT; }
+	"<"                       { return returnElementType(CSharpTokens.LT); }
 
-	">"                       { return CSharpTokens.GT; }
+	">"                       { return returnElementType(CSharpTokens.GT); }
 
-	"="                       { return CSharpTokens.EQ; }
+	"="                       { return returnElementType(CSharpTokens.EQ); }
 
-	":"                       { return CSharpTokens.COLON; }
+	":"                       { return returnElementType(CSharpTokens.COLON); }
 
-	"::"                      { return CSharpTokens.COLONCOLON; }
+	"::"                      { return returnElementType(CSharpTokens.COLONCOLON); }
 
-	";"                       { return CSharpTokens.SEMICOLON; }
+	";"                       { return returnElementType(CSharpTokens.SEMICOLON); }
 
-	"*"                       { return CSharpTokens.MUL; }
+	"*"                       { return returnElementType(CSharpTokens.MUL); }
 
-	"=>"                      { return CSharpTokens.DARROW; }
+	"=>"                      { return returnElementType(CSharpTokens.DARROW); }
 
-	"->"                      { return CSharpTokens.ARROW; }
+	"->"                      { return returnElementType(CSharpTokens.ARROW); }
 
-	"=="                      { return CSharpTokens.EQEQ; }
+	"=="                      { return returnElementType(CSharpTokens.EQEQ); }
 
-	"++"                      { return CSharpTokens.PLUSPLUS; }
+	"++"                      { return returnElementType(CSharpTokens.PLUSPLUS); }
 
-	"+"                       { return CSharpTokens.PLUS; }
+	"+"                       { return returnElementType(CSharpTokens.PLUS); }
 
-	"--"                      { return CSharpTokens.MINUSMINUS; }
+	"--"                      { return returnElementType(CSharpTokens.MINUSMINUS); }
 
-	"-"                       { return CSharpTokens.MINUS; }
+	"-"                       { return returnElementType(CSharpTokens.MINUS); }
 
-	"/"                       { return CSharpTokens.DIV; }
+	"/"                       { return returnElementType(CSharpTokens.DIV); }
 
-	"%"                       { return CSharpTokens.PERC; }
+	"%"                       { return returnElementType(CSharpTokens.PERC); }
 
-	"&&"                      { return CSharpTokens.ANDAND; }
+	"&&"                      { return returnElementType(CSharpTokens.ANDAND); }
 
-	"&"                       { return CSharpTokens.AND; }
+	"&"                       { return returnElementType(CSharpTokens.AND); }
 
-	"||"                      { return CSharpTokens.OROR; }
+	"||"                      { return returnElementType(CSharpTokens.OROR); }
 
-	"|"                       { return CSharpTokens.OR; }
+	"|"                       { return returnElementType(CSharpTokens.OR); }
 
-	"~"                       { return CSharpTokens.TILDE; }
+	"~"                       { return returnElementType(CSharpTokens.TILDE); }
 
-	"!="                      { return CSharpTokens.NTEQ; }
+	"!="                      { return returnElementType(CSharpTokens.NTEQ); }
 
-	"!"                       { return CSharpTokens.EXCL; }
+	"!"                       { return returnElementType(CSharpTokens.EXCL); }
 
-	"^"                       { return CSharpTokens.XOR; }
+	"^"                       { return returnElementType(CSharpTokens.XOR); }
 
-	"."                       { return CSharpTokens.DOT; }
+	"."                       { return returnElementType(CSharpTokens.DOT); }
 
-	","                       { return CSharpTokens.COMMA; }
+	","                       { return returnElementType(CSharpTokens.COMMA); }
 
-	"?."                      { return CSharpTokens.NULLABE_CALL; }
+	"?."                      { return returnElementType(CSharpTokens.NULLABE_CALL); }
 
-	"?"                       { return CSharpTokens.QUEST; }
+	"?"                       { return returnElementType(CSharpTokens.QUEST); }
 
-	"??"                      { return CSharpTokens.QUESTQUEST; }
+	"??"                      { return returnElementType(CSharpTokens.QUESTQUEST); }
 
-	"false"                   { return CSharpTokens.FALSE_KEYWORD; }
+	"false"                   { return returnElementType(CSharpTokens.FALSE_KEYWORD); }
 
-	"true"                    { return CSharpTokens.TRUE_KEYWORD; }
+	"true"                    { return returnElementType(CSharpTokens.TRUE_KEYWORD); }
 
-	"null"                    { return CSharpTokens.NULL_LITERAL; }
+	"null"                    { return returnElementType(CSharpTokens.NULL_LITERAL); }
 
 	{SINGLE_LINE_DOC_COMMENT} { return CSharpTokensImpl.LINE_DOC_COMMENT; }
 
-	{SINGLE_LINE_COMMENT}     { return CSharpTokens.LINE_COMMENT; }
+	{SINGLE_LINE_COMMENT}     { return returnElementType(CSharpTokens.LINE_COMMENT); }
 
-	{MULTI_LINE_STYLE_COMMENT} { return CSharpTokens.BLOCK_COMMENT; }
+	{MULTI_LINE_STYLE_COMMENT} { return returnElementType(CSharpTokens.BLOCK_COMMENT); }
 
-	{UINTEGER_LITERAL}        { return CSharpTokens.UINTEGER_LITERAL; }
+	{UINTEGER_LITERAL}        { return returnElementType(CSharpTokens.UINTEGER_LITERAL); }
 
-	{ULONG_LITERAL}           { return CSharpTokens.ULONG_LITERAL; }
+	{ULONG_LITERAL}           { return returnElementType(CSharpTokens.ULONG_LITERAL); }
 
-	{INTEGER_LITERAL}         { return CSharpTokens.INTEGER_LITERAL; }
+	{INTEGER_LITERAL}         { return returnElementType(CSharpTokens.INTEGER_LITERAL); }
 
-	{LONG_LITERAL}            { return CSharpTokens.LONG_LITERAL; }
+	{LONG_LITERAL}            { return returnElementType(CSharpTokens.LONG_LITERAL); }
 
-	{DECIMAL_LITERAL}         { return CSharpTokens.DECIMAL_LITERAL; }
+	{DECIMAL_LITERAL}         { return returnElementType(CSharpTokens.DECIMAL_LITERAL); }
 
-	{DOUBLE_LITERAL}          { return CSharpTokens.DOUBLE_LITERAL; }
+	{DOUBLE_LITERAL}          { return returnElementType(CSharpTokens.DOUBLE_LITERAL); }
 
-	{FLOAT_LITERAL}           { return CSharpTokens.FLOAT_LITERAL; }
+	{FLOAT_LITERAL}           { return returnElementType(CSharpTokens.FLOAT_LITERAL); }
 
-	{CHARACTER_LITERAL}       { return CSharpTokens.CHARACTER_LITERAL; }
+	{CHARACTER_LITERAL}       { return returnElementType(CSharpTokens.CHARACTER_LITERAL); }
 
-	{STRING_LITERAL}          { return CSharpTokens.STRING_LITERAL; }
+	{STRING_LITERAL}          { return returnElementType(CSharpTokens.STRING_LITERAL); }
 
-	{IDENTIFIER}              { return CSharpTokens.IDENTIFIER; }
+	{IDENTIFIER}              { return returnElementType(CSharpTokens.IDENTIFIER); }
 
-	{WHITE_SPACE}             { return CSharpTokens.WHITE_SPACE; }
+	{WHITE_SPACE_NO_NEW_LINE} { return CSharpTokens.WHITE_SPACE; }
 
-	.                         { return CSharpTokens.BAD_CHARACTER; }
+	{NEW_LINE}                { myEnteredNewLine = true; return CSharpTokens.WHITE_SPACE; }
+
+	.                         { return returnElementType(CSharpTokens.BAD_CHARACTER); }
 }

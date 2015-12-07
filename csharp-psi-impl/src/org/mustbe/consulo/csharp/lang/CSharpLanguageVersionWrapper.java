@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.lexer.CSharpLexer;
 import org.mustbe.consulo.csharp.lang.parser.CSharpParser;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.lang.LanguageVersion;
 import com.intellij.lang.LanguageVersionWithParsing;
@@ -38,6 +39,8 @@ import com.intellij.psi.tree.TokenSet;
  */
 public class CSharpLanguageVersionWrapper implements LanguageVersion<CSharpLanguage>, LanguageVersionWithParsing<CSharpLanguage>
 {
+	private static final TokenSet COMMENTS = TokenSet.orSet(CSharpTokenSets.COMMENTS, TokenSet.create(CSharpTokens.NON_ACTIVE_SYMBOL));
+
 	private final CSharpLanguageVersion myLanguageVersion;
 
 	public CSharpLanguageVersionWrapper(CSharpLanguageVersion languageVersion)
@@ -69,7 +72,7 @@ public class CSharpLanguageVersionWrapper implements LanguageVersion<CSharpLangu
 	@Override
 	public TokenSet getCommentTokens()
 	{
-		return CSharpTokenSets.COMMENTS;
+		return COMMENTS;
 	}
 
 	@NotNull

@@ -16,9 +16,13 @@
 
 package org.mustbe.consulo.csharp.lang;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Iterator;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
@@ -28,6 +32,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPreprocessorDirectiveImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import com.intellij.codeInsight.folding.CodeFoldingSettings;
@@ -36,6 +41,7 @@ import com.intellij.lang.folding.CustomFoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -48,12 +54,17 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CSharpFoldingBuilder extends CustomFoldingBuilder
 {
-	@Override
-	protected void buildLanguageFoldRegions(@NotNull final List<FoldingDescriptor> descriptors,
-			@NotNull PsiElement root,
-			@NotNull Document document,
-			boolean quick)
+	public static class Region
 	{
+		public PsiElement open;
+		public PsiElement close;
+	}
+
+	@Override
+	@RequiredReadAction
+	protected void buildLanguageFoldRegions(@NotNull final List<FoldingDescriptor> descriptors, @NotNull PsiElement root, @NotNull Document document, boolean quick)
+	{
+		final Deque<Region> regions = new ArrayDeque<Region>();
 		root.accept(new CSharpRecursiveElementVisitor()
 		{
 			@Override
@@ -62,6 +73,37 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 				super.visitPropertyDeclaration(declaration);
 
 				addBodyWithBraces(descriptors, declaration);
+			}
+
+			@Override
+			@RequiredReadAction
+			public void visitPreprocessorDirective(CSharpPreprocessorDirectiveImpl preprocessorDirective)
+			{
+				String text = preprocessorDirective.getText();
+				text = text.trim();
+				assert text.charAt(0) == '#';
+				text = text.substring(1, text.length());
+				text = StringUtil.trimLeading(text);
+
+				if(text.startsWith("region"))
+				{
+					Region region = new Region();
+					region.open = preprocessorDirective;
+					regions.add(region);
+				}
+				else if(text.startsWith("endregion"))
+				{
+					Iterator<Region> coupleIterator = regions.descendingIterator();
+					while(coupleIterator.hasNext())
+					{
+						Region next = coupleIterator.next();
+						if(next.close == null)
+						{
+							next.close = preprocessorDirective;
+							break;
+						}
+					}
+				}
 			}
 
 			@Override
@@ -131,9 +173,30 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 				}
 			}
 		});
+
+		for(Region region : regions)
+		{
+			PsiElement open = region.open;
+			PsiElement close = region.close;
+			if(open != null && close != null)
+			{
+				int startOffset = open.getTextOffset();
+				int endOffset = close.getTextOffset() + close.getTextLength();
+				if((endOffset - startOffset) > 0)
+				{
+					// we need remove new lines from folding
+					String text = close.getText();
+					String anotherString = StringUtil.trimEnd(text, '\n');
+					endOffset -= text.length() - anotherString.length();
+
+					descriptors.add(new FoldingDescriptor(open, new TextRange(startOffset, endOffset)));
+				}
+			}
+		}
 	}
 
 	@Override
+	@RequiredReadAction
 	protected String getLanguagePlaceholderText(@NotNull ASTNode node, @NotNull TextRange range)
 	{
 		PsiElement psi = node.getPsi();
@@ -141,8 +204,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 		{
 			return "...";
 		}
-		else if(psi instanceof CSharpBlockStatementImpl || psi instanceof CSharpPropertyDeclaration || psi instanceof CSharpTypeDeclaration || psi
-				instanceof CSharpEventDeclaration)
+		else if(psi instanceof CSharpBlockStatementImpl || psi instanceof CSharpPropertyDeclaration || psi instanceof CSharpTypeDeclaration || psi instanceof CSharpEventDeclaration)
 		{
 			return "{...}";
 		}
@@ -161,6 +223,18 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 			{
 				return "/** ... */";
 			}
+		}
+		else if(psi instanceof CSharpPreprocessorDirectiveImpl)
+		{
+			String text = psi.getText();
+			text = text.trim();
+			assert text.charAt(0) == '#';
+			text = text.substring(1, text.length());
+			text = text.trim();
+			text = text.substring("region".length(), text.length());
+			text = text.trim();
+
+			return text;
 		}
 		return null;
 	}
@@ -197,8 +271,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 		{
 			return false;
 		}
-		return nextSibling instanceof PsiWhiteSpace || (nextSibling instanceof PsiComment && ((PsiComment) nextSibling).getTokenType() ==
-				elementType);
+		return nextSibling instanceof PsiWhiteSpace || (nextSibling instanceof PsiComment && ((PsiComment) nextSibling).getTokenType() == elementType);
 	}
 
 	private static void addBodyWithBraces(List<FoldingDescriptor> list, CSharpBodyWithBraces bodyWithBraces)
@@ -210,8 +283,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 			return;
 		}
 
-		list.add(new FoldingDescriptor(bodyWithBraces, new TextRange(leftBrace.getTextRange().getStartOffset(),
-				rightBrace.getTextRange().getStartOffset() + rightBrace.getTextLength())));
+		list.add(new FoldingDescriptor(bodyWithBraces, new TextRange(leftBrace.getTextRange().getStartOffset(), rightBrace.getTextRange().getStartOffset() + rightBrace.getTextLength())));
 	}
 
 	@Override

@@ -47,12 +47,9 @@
                 <root url="jar://$MODULE_DIR$/../dep/dotnet/lib/joou-0.9.2-SNAPSHOT.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/dotnet/lib/mono-soft-debugging.jar!/" />
               </binaries>
-              <sources>
-                <root url="file://$MODULE_DIR$/../../consulo-dotnet/dotnet-psi-impl/src" />
-                <root url="file://$MODULE_DIR$/../../consulo-dotnet/dotnet-impl/src" />
-              </sources>
             </library>
           </orderEntry>
+          <orderEntry type="module" module-name="csharp-preprocessor-impl" />
         </module-layer>
       </module>
       <module name="csharp-psi-api" dirurl="file://$PROJECT_DIR$/csharp-psi-api" current-layer="Default">
@@ -124,6 +121,7 @@
               </binaries>
             </library>
           </orderEntry>
+          <orderEntry type="module" module-name="csharp-preprocessor-impl" />
         </module-layer>
       </module>
       <module name="csharp-spellchecker" dirurl="file://$PROJECT_DIR$/csharp-spellchecker" current-layer="Default">
@@ -278,6 +276,44 @@
               </binaries>
             </library>
           </orderEntry>
+        </module-layer>
+      </module>
+      <module name="csharp-preprocessor-api" dirurl="file://$PROJECT_DIR$/csharp-preprocessor-api" current-layer="Default">
+        <module-layer name="Default">
+          <extension id="consulo-plugin" sdk-module-name="consulo-csharp" sdk-name="" custom-plugin-dir-url="file://$MODULE_DIR$/../dep" />
+          <extension id="java" sdk-module-name="consulo-csharp" sdk-name="" language-level-module-name="consulo-csharp" language-level-name="" special-dir-location="SOURCE_DIR" />
+          <content url="file://$MODULE_DIR$">
+            <content-folder type="PRODUCTION" url="file://$MODULE_DIR$/src" />
+          </content>
+          <orderEntry type="module-extension-sdk" extension-id="consulo-plugin" />
+          <orderEntry type="module-extension-sdk" extension-id="java" />
+          <orderEntry type="sourceFolder" />
+          <orderEntry type="module" module-name="csharp-api" exported="" />
+          <orderEntry type="module" module-name="csharp-psi-api" exported="" />
+          <orderEntry type="module-library" exported="">
+            <library name="consulo:.NET Core">
+              <binaries>
+                <root url="jar://$MODULE_DIR$/../dep/dotnet/lib/dotnet-asm.jar!/" />
+                <root url="jar://$MODULE_DIR$/../dep/dotnet/lib/dotnet-msil-decompiler.jar!/" />
+                <root url="jar://$MODULE_DIR$/../dep/dotnet/lib/dotnet.jar!/" />
+                <root url="jar://$MODULE_DIR$/../dep/dotnet/lib/joou-0.9.2-SNAPSHOT.jar!/" />
+                <root url="jar://$MODULE_DIR$/../dep/dotnet/lib/mono-soft-debugging.jar!/" />
+              </binaries>
+            </library>
+          </orderEntry>
+        </module-layer>
+      </module>
+      <module name="csharp-preprocessor-impl" dirurl="file://$PROJECT_DIR$/csharp-preprocessor-impl" current-layer="Default">
+        <module-layer name="Default">
+          <extension id="consulo-plugin" sdk-module-name="consulo-csharp" sdk-name="" />
+          <extension id="java" sdk-module-name="consulo-csharp" sdk-name="" language-level-module-name="consulo-csharp" language-level-name="" special-dir-location="SOURCE_DIR" />
+          <content url="file://$MODULE_DIR$">
+            <content-folder type="PRODUCTION" url="file://$MODULE_DIR$/src" />
+          </content>
+          <orderEntry type="module-extension-sdk" extension-id="consulo-plugin" />
+          <orderEntry type="module-extension-sdk" extension-id="java" />
+          <orderEntry type="sourceFolder" />
+          <orderEntry type="module" module-name="csharp-preprocessor-api" exported="" />
         </module-layer>
       </module>
     </modules>

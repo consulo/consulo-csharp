@@ -34,7 +34,6 @@ import com.intellij.psi.tree.TokenSet;
 public interface CSharpStubElements
 {
 	CSharpFileStubElementType FILE = new CSharpFileStubElementType();
-	CSharpMacroStubElementType MACRO_FILE = new CSharpMacroStubElementType();
 	CSharpDummyDefElementType DUMMY_DECLARATION = new CSharpDummyDefElementType();
 	CSharpNamespaceStubElementType NAMESPACE_DECLARATION = new CSharpNamespaceStubElementType();
 	CSharpTypeStubElementType TYPE_DECLARATION = new CSharpTypeStubElementType();

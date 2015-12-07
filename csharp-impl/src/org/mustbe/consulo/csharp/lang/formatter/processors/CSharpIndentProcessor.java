@@ -2,7 +2,9 @@ package org.mustbe.consulo.csharp.lang.formatter.processors;
 
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
+import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPreprocessorLazyTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -77,6 +79,14 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 		{
 			return Indent.getNormalIndent();
 		}
+		else if(elementType == CSharpPreprocessorLazyTokens.PREPROCESSOR_DIRECTIVE)
+		{
+			if(parent instanceof CSharpBlockStatementImpl)
+			{
+				return Indent.getNormalIndent();
+			}
+			return Indent.getNoneIndent();
+		}
 		else if(CommentUtilCore.isComment(myNode))
 		{
 			return Indent.getNormalIndent();
@@ -147,14 +157,10 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 
 	public Indent getChildIndent()
 	{
-		IElementType elementType = myNode.getElementType();
-		if(elementType == CSharpStubElements.FILE)
+		PsiElement psi = myNode.getPsi();
+		if(psi instanceof CSharpBodyWithBraces)
 		{
-			return Indent.getNoneIndent();
-		}
-		else if(elementType == CSharpElements.TRY_STATEMENT)
-		{
-			return Indent.getNoneIndent();
+			return Indent.getNormalIndent();
 		}
 		return Indent.getNormalIndent();
 	}
