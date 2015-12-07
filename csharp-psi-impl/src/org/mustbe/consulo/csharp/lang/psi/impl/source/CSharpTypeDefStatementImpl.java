@@ -20,11 +20,12 @@ import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeDefStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -36,28 +37,24 @@ import com.intellij.util.IncorrectOperationException;
  * @since 11.02.14
  */
 @ArrayFactoryFields
-public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<CSharpTypeDefStub> implements CSharpTypeDefStatement
+public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<CSharpEmptyStub<CSharpTypeDefStatement>> implements CSharpTypeDefStatement
 {
 	public CSharpTypeDefStatementImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpTypeDefStatementImpl(@NotNull CSharpTypeDefStub stub)
+	public CSharpTypeDefStatementImpl(@NotNull CSharpEmptyStub<CSharpTypeDefStatement> stub)
 	{
 		super(stub, CSharpStubElements.TYPE_DEF_STATEMENT);
 	}
 
 	@Override
+	@RequiredReadAction
 	public String getName()
 	{
-		CSharpTypeDefStub stub = getStub();
-		if(stub != null)
-		{
-			return stub.getName();
-		}
-		PsiElement nameIdentifier = getNameIdentifier();
-		return nameIdentifier == null ? null : nameIdentifier.getText();
+		CSharpIdentifier nameIdentifier = getNameIdentifier();
+		return nameIdentifier == null ? null : nameIdentifier.getValue();
 	}
 
 	@Override
@@ -72,6 +69,7 @@ public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<CSharpType
 		return null;
 	}
 
+	@RequiredReadAction
 	@Override
 	@Nullable
 	public DotNetType getType()
@@ -79,6 +77,7 @@ public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<CSharpType
 		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
 	}
 
+	@RequiredReadAction
 	@Override
 	@NotNull
 	public DotNetTypeRef toTypeRef()
@@ -89,18 +88,21 @@ public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<CSharpType
 
 	@Nullable
 	@Override
-	public PsiElement getNameIdentifier()
+	@RequiredReadAction
+	public CSharpIdentifier getNameIdentifier()
 	{
-		return findChildByType(CSharpTokens.IDENTIFIER);
+		return getStubOrPsiChild(CSharpStubElements.IDENTIFIER);
 	}
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public PsiElement getReferenceElement()
 	{
 		return getType();
 	}
 
+	@RequiredReadAction
 	@Override
 	public int getTextOffset()
 	{

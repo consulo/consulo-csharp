@@ -16,29 +16,24 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
-import java.io.IOException;
-
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpTypeDefStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpEmptyStub;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
-import com.intellij.util.io.StringRef;
 
 /**
  * @author VISTALL
  * @since 11.02.14
  */
-public class CSharpTypeDefStubElementType extends CSharpAbstractStubElementType<CSharpTypeDefStub, CSharpTypeDefStatement>
+public class CSharpTypeDefStubElementType extends CSharpEmptyStubElementType<CSharpTypeDefStatement>
 {
 	public CSharpTypeDefStubElementType()
 	{
 		super("TYPE_DEF");
 	}
 
+	@NotNull
 	@Override
 	public CSharpTypeDefStatement createElement(@NotNull ASTNode astNode)
 	{
@@ -46,28 +41,8 @@ public class CSharpTypeDefStubElementType extends CSharpAbstractStubElementType<
 	}
 
 	@Override
-	public CSharpTypeDefStatement createPsi(@NotNull CSharpTypeDefStub cSharpTypeDefStub)
+	public CSharpTypeDefStatement createPsi(@NotNull CSharpEmptyStub<CSharpTypeDefStatement> stub)
 	{
-		return new CSharpTypeDefStatementImpl(cSharpTypeDefStub);
-	}
-
-	@Override
-	public CSharpTypeDefStub createStub(@NotNull CSharpTypeDefStatement defStatement, StubElement stubElement)
-	{
-		return new CSharpTypeDefStub(stubElement, this, defStatement.getName());
-	}
-
-	@Override
-	public void serialize(@NotNull CSharpTypeDefStub cSharpTypeDefStub, @NotNull StubOutputStream stubOutputStream) throws IOException
-	{
-		stubOutputStream.writeName(cSharpTypeDefStub.getName());
-	}
-
-	@NotNull
-	@Override
-	public CSharpTypeDefStub deserialize(@NotNull StubInputStream inputStream, StubElement stubElement) throws IOException
-	{
-		StringRef ref = inputStream.readName();
-		return new CSharpTypeDefStub(stubElement, this, ref);
+		return new CSharpTypeDefStatementImpl(stub);
 	}
 }

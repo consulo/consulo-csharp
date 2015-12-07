@@ -61,7 +61,8 @@ public class UsingStatementParsing extends SharedParsingHelpers
 		IElementType to = null;
 		if(builder.getTokenType() == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == CSharpTokens.EQ)
 		{
-			builder.advanceLexer();
+			doneIdentifier(builder, STUB_SUPPORT);
+
 			builder.advanceLexer();
 
 			if(parseType(builder, STUB_SUPPORT) == null)

@@ -103,6 +103,7 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 		visitor.visitUsingNamespaceStatement(this);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getReferenceElement()
