@@ -1,6 +1,9 @@
 package org.mustbe.consulo.csharp.ide.completion;
 
+import gnu.trove.THashSet;
+
 import java.util.Collections;
+import java.util.Set;
 
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.AddUsingAction;
@@ -68,8 +71,7 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 			myResult.passResult(plainResult);
 
 			LookupElement element = plainResult.getLookupElement();
-			if(containsOnlyNamespaces && !(CompletionUtil.getTargetElement(element) instanceof
-					DotNetNamespaceAsElement))
+			if(containsOnlyNamespaces && !(CompletionUtil.getTargetElement(element) instanceof DotNetNamespaceAsElement))
 			{
 				containsOnlyNamespaces = false;
 			}
@@ -117,15 +119,12 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 					CSharpCompletionUtil.mayStartClassName(result) &&
 					CSharpCompletionUtil.isClassNamePossible(parameters))
 			{
-				addTypesForUsing(parameters, result.withPrefixMatcher(tracker
-						.betterMatcher), holder);
+				addTypesForUsing(parameters, result.withPrefixMatcher(tracker.betterMatcher), holder);
 			}
 		}
 	}
 
-	private static void delegate(CompletionParameters parameters,
-			final CompletionResultSet result,
-			final InheritorsHolder inheritorsHolder)
+	private static void delegate(CompletionParameters parameters, final CompletionResultSet result, final InheritorsHolder inheritorsHolder)
 	{
 		if(parameters.getCompletionType() == CompletionType.BASIC)
 		{
@@ -147,9 +146,7 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 		}
 	}
 
-	public static void addTypesForUsing(final CompletionParameters parameters,
-			final CompletionResultSet result,
-			final InheritorsHolder inheritorsHolder)
+	public static void addTypesForUsing(final CompletionParameters parameters, final CompletionResultSet result, final InheritorsHolder inheritorsHolder)
 	{
 		final PrefixMatcher matcher = result.getPrefixMatcher();
 		CSharpReferenceExpression parent = (CSharpReferenceExpression) parameters.getPosition().getParent();
@@ -162,45 +159,56 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 
 		final boolean insideUsingList = PsiTreeUtil.getParentOfType(parent, CSharpUsingList.class) != null;
 
+		final Set<String> names = new THashSet<String>(1000);
 		shortNameSearcher.collectTypeNames(new Processor<String>()
 		{
+			private int count = 0;
+
 			@Override
 			public boolean process(String key)
 			{
-				ProgressManager.checkCanceled();
+				if(count++ % 512 == 0)
+				{
+					ProgressManager.checkCanceled();
+				}
 
 				if(matcher.prefixMatches(key))
 				{
-					shortNameSearcher.collectTypes(key, resolveScope, projectIdFilter,
-							new Processor<DotNetTypeDeclaration>()
-							{
-								@Override
-								@RequiredReadAction
-								public boolean process(DotNetTypeDeclaration typeDeclaration)
-								{
-									ProgressManager.checkCanceled();
-
-									if(inheritorsHolder.alreadyProcessed(typeDeclaration))
-									{
-										return true;
-									}
-
-									consumeType(parameters, result, insideUsingList, typeDeclaration);
-
-									return true;
-								}
-							});
+					names.add(key);
 				}
 				return true;
 			}
 		}, resolveScope, projectIdFilter);
+
+		int i = 0;
+		for(String key : names)
+		{
+			if(i++ % 512 == 0)
+			{
+				ProgressManager.checkCanceled();
+			}
+
+			shortNameSearcher.collectTypes(key, resolveScope, projectIdFilter, new Processor<DotNetTypeDeclaration>()
+			{
+				@Override
+				@RequiredReadAction
+				public boolean process(DotNetTypeDeclaration typeDeclaration)
+				{
+					if(inheritorsHolder.alreadyProcessed(typeDeclaration))
+					{
+						return true;
+					}
+
+					consumeType(parameters, result, insideUsingList, typeDeclaration);
+
+					return true;
+				}
+			});
+		}
 	}
 
 	@RequiredReadAction
-	private static void consumeType(final CompletionParameters completionParameters,
-			Consumer<LookupElement> consumer,
-			boolean insideUsingList,
-			DotNetTypeDeclaration someType)
+	private static void consumeType(final CompletionParameters completionParameters, Consumer<LookupElement> consumer, boolean insideUsingList, DotNetTypeDeclaration someType)
 	{
 		final String parentQName = someType.getPresentableParentQName();
 		if(StringUtil.isEmpty(parentQName))
@@ -240,12 +248,10 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 		}
 		LookupElementBuilder builder = LookupElementBuilder.create(targetElementForLookup, lookupString);
 		builder = builder.withPresentableText(presentationText);
-		builder = builder.withIcon(IconDescriptorUpdaters.getIcon(targetElementForLookup,
-				Iconable.ICON_FLAG_VISIBILITY));
+		builder = builder.withIcon(IconDescriptorUpdaters.getIcon(targetElementForLookup, Iconable.ICON_FLAG_VISIBILITY));
 
 		builder = builder.withTypeText(parentQName, true);
-		final InsertHandler<LookupElement> ltGtInsertHandler = genericCount == 0 ? null : LtGtInsertHandler
-				.getInstance(genericCount > 0);
+		final InsertHandler<LookupElement> ltGtInsertHandler = genericCount == 0 ? null : LtGtInsertHandler.getInstance(genericCount > 0);
 		if(insideUsingList)
 		{
 			builder = builder.withInsertHandler(ltGtInsertHandler);
@@ -262,9 +268,7 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 						ltGtInsertHandler.handleInsert(context, item);
 					}
 
-					new AddUsingAction(completionParameters.getEditor(), context.getFile(),
-							Collections.<NamespaceReference>singleton(new NamespaceReference(parentQName,
-									null))).execute();
+					new AddUsingAction(completionParameters.getEditor(), context.getFile(), Collections.<NamespaceReference>singleton(new NamespaceReference(parentQName, null))).execute();
 				}
 			});
 		}
