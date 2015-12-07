@@ -18,14 +18,17 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.editor.Editor;
@@ -119,12 +122,14 @@ public class CS0145 extends CompilerCheck<DotNetVariable>
 		}
 
 		@Override
+		@RequiredDispatchThread
 		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
 		{
 			return myVariablePointer.getElement() != null;
 		}
 
 		@Override
+		@RequiredDispatchThread
 		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			DotNetVariable element = myVariablePointer.getElement();
@@ -180,6 +185,11 @@ public class CS0145 extends CompilerCheck<DotNetVariable>
 			}
 			if(element.getInitializer() == null)
 			{
+				// special case for void type
+				if(DotNetTypeRefUtil.isVmQNameEqual(element.toTypeRef(false), element, DotNetTypes.System.Void))
+				{
+					return null;
+				}
 				return newBuilder(nameIdentifier).addQuickFix(new RemoveConstKeywordFix(element)).addQuickFix(new InitializeConstantFix(element));
 			}
 		}

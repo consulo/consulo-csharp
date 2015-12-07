@@ -34,6 +34,7 @@ import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLikeLookupElement;
 import org.mustbe.consulo.csharp.ide.completion.util.CSharpParenthesesInsertHandler;
+import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
@@ -59,11 +60,14 @@ import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -91,6 +95,7 @@ import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Function;
+import com.intellij.util.NotNullPairFunction;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.Processor;
 
@@ -428,31 +433,69 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 						parent.kind() == CSharpReferenceExpression.ResolveToKind.EXPRESSION_OR_TYPE_LIKE ||
 						parent.kind() == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
 				{
-					CSharpCompletionUtil.tokenSetToLookup(completionResultSet, CSharpTokenSets.NATIVE_TYPES, null, new Condition<IElementType>()
-					{
-						@Override
-						public boolean value(IElementType elementType)
-						{
-							if(elementType == CSharpTokens.EXPLICIT_KEYWORD || elementType == CSharpTokens.IMPLICIT_KEYWORD)
+					CSharpCompletionUtil.tokenSetToLookup(completionResultSet, CSharpTokenSets.NATIVE_TYPES, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
 							{
-								PsiElement invalidParent = PsiTreeUtil.getParentOfType(parent, DotNetStatement.class, DotNetParameterList
-										.class);
-								return invalidParent == null;
-							}
-							if(elementType == CSharpSoftTokens.VAR_KEYWORD)
+								@NotNull
+								@Override
+								public LookupElement fun(LookupElementBuilder lookupElementBuilder, IElementType elementType)
+								{
+									if(elementType == CSharpTokens.VOID_KEYWORD)
+									{
+										return lookupElementBuilder.withInsertHandler(SpaceInsertHandler.INSTANCE);
+									}
+									return lookupElementBuilder;
+								}
+							}, new Condition<IElementType>()
 							{
-								if(PsiTreeUtil.getParentOfType(parent, DotNetStatement.class) == null)
+								@Override
+								@RequiredReadAction
+								public boolean value(IElementType elementType)
 								{
-									return false;
-								}
-								if(!CSharpModuleUtil.findLanguageVersion(parent).isAtLeast(CSharpLanguageVersion._2_0))
-								{
-									return false;
+									if(elementType == CSharpTokens.EXPLICIT_KEYWORD || elementType == CSharpTokens.IMPLICIT_KEYWORD)
+									{
+										PsiElement invalidParent = PsiTreeUtil.getParentOfType(parent, DotNetStatement.class, DotNetParameterList
+												.class);
+										return invalidParent == null;
+									}
+									else if(elementType == CSharpTokens.VOID_KEYWORD)
+									{
+										DotNetType userType = PsiTreeUtil.getParentOfType(parent, DotNetType.class);
+										if(userType == null)
+										{
+											return false;
+										}
+										PsiElement userTypeParent = userType.getParent();
+										if(userTypeParent instanceof DotNetLikeMethodDeclaration)
+										{
+											DotNetLikeMethodDeclaration methodDeclaration = (DotNetLikeMethodDeclaration) userType.getParent();
+											return methodDeclaration.getReturnType() == userType;
+										}
+										else if(userTypeParent instanceof DotNetFieldDeclaration)
+										{
+											DotNetFieldDeclaration fieldDeclaration = (DotNetFieldDeclaration) userTypeParent;
+											if(fieldDeclaration.isConstant() || fieldDeclaration.getInitializer() != null)
+											{
+												return false;
+											}
+											return fieldDeclaration.getType() == userType;
+										}
+										return false;
+									}
+									else if(elementType == CSharpSoftTokens.VAR_KEYWORD)
+									{
+										if(PsiTreeUtil.getParentOfType(parent, DotNetStatement.class) == null)
+										{
+											return false;
+										}
+										if(!CSharpModuleUtil.findLanguageVersion(parent).isAtLeast(CSharpLanguageVersion._2_0))
+										{
+											return false;
+										}
+									}
+									return true;
 								}
 							}
-							return true;
-						}
-					});
+					);
 				}
 			}
 		});

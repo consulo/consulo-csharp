@@ -49,7 +49,8 @@ public class CSharpPatterns
 			public boolean accepts(@NotNull PsiElement element, ProcessingContext context)
 			{
 				CSharpLocalVariable localVariable = PsiTreeUtil.getParentOfType(element, CSharpLocalVariable.class);
-				if(localVariable == null)
+				// we cant use it when 'const <exp>'
+				if(localVariable == null || localVariable.isConstant())
 				{
 					return false;
 				}

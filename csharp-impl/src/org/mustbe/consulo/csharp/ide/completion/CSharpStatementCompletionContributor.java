@@ -330,6 +330,25 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
+		extend(CompletionType.BASIC, CSharpPatterns.statementStart(), new CompletionProvider<CompletionParameters>()
+		{
+			@RequiredReadAction
+			@Override
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			{
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.CONST_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
+				{
+					@NotNull
+					@Override
+					public LookupElement fun(LookupElementBuilder lookupElementBuilder, IElementType elementType)
+					{
+						lookupElementBuilder = lookupElementBuilder.withInsertHandler(SpaceInsertHandler.INSTANCE);
+						return lookupElementBuilder;
+					}
+				}, null);
+			}
+		});
+
 		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpSoftTokens.YIELD_KEYWORD)), new CompletionProvider<CompletionParameters>()
 		{
 			@RequiredReadAction

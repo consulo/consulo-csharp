@@ -165,7 +165,16 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 					return;
 				}
 
-				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.CONST_KEYWORD, null, null);
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.CONST_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
+				{
+					@NotNull
+					@Override
+					public LookupElement fun(LookupElementBuilder lookupElementBuilder, IElementType elementType)
+					{
+						lookupElementBuilder = lookupElementBuilder.withInsertHandler(SpaceInsertHandler.INSTANCE);
+						return lookupElementBuilder;
+					}
+				}, null);
 			}
 		});
 
