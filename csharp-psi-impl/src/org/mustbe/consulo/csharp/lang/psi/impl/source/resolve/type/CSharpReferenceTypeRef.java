@@ -3,9 +3,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -187,12 +189,18 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 	{
 		PsiElement resolve = myReferenceExpression.resolve();
 		if(resolve instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) resolve).isDelegate())
 		{
 			return new LambdaResult(scope, (CSharpMethodDeclaration) resolve, createExtractor(resolve));
+		}
+		else if(resolve instanceof CSharpTypeDefStatement)
+		{
+			DotNetTypeRef typeRef = ((CSharpTypeDefStatement) resolve).toTypeRef();
+			return typeRef.resolve(resolve);
 		}
 		return new Result<PsiElement>(resolve, createExtractor(resolve));
 	}
