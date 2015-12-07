@@ -375,7 +375,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			MethodCalcResult calc = MethodResolver.calc(arguments, psiElement, this, true);
 			if(implicitExpression != null)
 			{
-				calc = calc.dup(Short.MAX_VALUE);
+				calc = calc.dupWithResult(Short.MAX_VALUE);
 			}
 
 			last.add(Pair.<MethodCalcResult, PsiElement>create(calc, psiElement));
@@ -384,6 +384,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public String getCanonicalText()
 	{
 		String operatorName = CSharpOperatorNameHelper.getOperatorName(getOperatorElementType());

@@ -28,9 +28,15 @@ public class MethodCalcResult extends UserDataHolderBase
 	}
 
 	@NotNull
-	public MethodCalcResult dup(int weight)
+	public MethodCalcResult dupNoResult(int weight)
 	{
 		return new MethodCalcResult(false, getWeight() + weight, getArguments());
+	}
+
+	@NotNull
+	public MethodCalcResult dupWithResult(int weight)
+	{
+		return new MethodCalcResult(myValid, getWeight() + weight, getArguments());
 	}
 
 	public boolean isValidResult()

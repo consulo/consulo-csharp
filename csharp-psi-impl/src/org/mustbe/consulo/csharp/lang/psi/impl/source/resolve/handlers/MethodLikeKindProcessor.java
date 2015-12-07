@@ -104,7 +104,7 @@ public class MethodLikeKindProcessor implements KindProcessor
 								}
 								else
 								{
-									methodResolveResults.add(Pair.create(calcResult.dup(Short.MIN_VALUE), psiElement));
+									methodResolveResults.add(Pair.create(calcResult.dupNoResult(Short.MIN_VALUE), psiElement));
 								}
 							}
 							return true;
