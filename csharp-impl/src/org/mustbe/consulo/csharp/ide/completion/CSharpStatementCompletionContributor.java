@@ -402,7 +402,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement(), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, CSharpPatterns.statementStart(), new CompletionProvider<CompletionParameters>()
 		{
 			@RequiredReadAction
 			@Override
@@ -412,30 +412,6 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 				if(statement == null)
 				{
 					return;
-				}
-
-				if(!(statement instanceof CSharpLocalVariableDeclarationStatement))
-				{
-					return;
-				}
-				else
-				{
-					CSharpLocalVariable[] variables = ((CSharpLocalVariableDeclarationStatement) statement).getVariables();
-					if(variables.length != 1)
-					{
-						return;
-					}
-					CSharpLocalVariable variable = variables[0];
-					DotNetType type = variable.getType();
-					if(!(type instanceof CSharpUserType))
-					{
-						return;
-					}
-					CSharpReferenceExpression referenceExpression = ((CSharpUserType) type).getReferenceExpression();
-					if(referenceExpression.getQualifier() != null)
-					{
-						return;
-					}
 				}
 
 				final PsiElement maybeTryStatement = UsefulPsiTreeUtil.getPrevSiblingSkipWhiteSpacesAndComments(statement, true);
