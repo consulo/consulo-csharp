@@ -895,6 +895,11 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		if(NATIVE_TYPES.contains(tokenType))
 		{
+			if(tokenType == CSharpTokens.VOID_KEYWORD)
+			{
+				return null;
+			}
+
 			PsiBuilder.Marker refExpr = builder.mark();
 
 			builder.advanceLexer();
