@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.ide.completion.patterns;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -40,8 +41,7 @@ public class CSharpPatterns
 	@NotNull
 	public static PsiElementPattern.Capture<PsiElement> statementStart()
 	{
-		return StandardPatterns.psiElement().withElementType(CSharpTokens.IDENTIFIER).withSuperParent(3,
-				CSharpLocalVariable.class).with(new PatternCondition<PsiElement>("null-identifier-local-var")
+		return StandardPatterns.psiElement().withElementType(CSharpTokens.IDENTIFIER).withSuperParent(3, CSharpLocalVariable.class).with(new PatternCondition<PsiElement>("null-identifier-local-var")
 
 		{
 			@Override
@@ -66,5 +66,11 @@ public class CSharpPatterns
 				return CSharpPsiUtilImpl.isNullOrEmpty(localVariable);
 			}
 		});
+	}
+
+	@NotNull
+	public static PsiElementPattern.Capture<PsiElement> field()
+	{
+		return StandardPatterns.psiElement().withElementType(CSharpTokens.IDENTIFIER).withSuperParent(3, CSharpFieldDeclaration.class);
 	}
 }

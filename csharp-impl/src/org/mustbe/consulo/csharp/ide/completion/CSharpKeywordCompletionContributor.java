@@ -21,6 +21,7 @@ import static com.intellij.patterns.StandardPatterns.psiElement;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -99,7 +100,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 											public void handleInsert(InsertionContext context, LookupElement item)
 											{
 												CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(parameters.getOriginalPosition(), CSharpSimpleLikeMethodAsElement.class);
-												if(methodAsElement != null && ! methodAsElement.hasModifier(CSharpModifier.ASYNC))
+												if(methodAsElement != null && !methodAsElement.hasModifier(CSharpModifier.ASYNC))
 												{
 													DotNetModifierList modifierList = methodAsElement.getModifierList();
 													assert modifierList != null;
@@ -148,6 +149,23 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 							}
 					);
 				}
+			}
+		});
+
+		extend(CompletionType.BASIC, CSharpPatterns.field(), new CompletionProvider<CompletionParameters>()
+		{
+			@RequiredReadAction
+			@Override
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			{
+				CSharpFieldDeclaration fieldDeclaration = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpFieldDeclaration.class);
+				assert fieldDeclaration != null;
+				if(fieldDeclaration.isConstant())
+				{
+					return;
+				}
+
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.CONST_KEYWORD, null, null);
 			}
 		});
 
