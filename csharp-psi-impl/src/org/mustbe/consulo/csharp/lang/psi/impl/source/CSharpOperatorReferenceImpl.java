@@ -71,6 +71,7 @@ import com.intellij.psi.impl.source.resolve.ResolveCache;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiUtilCore;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
@@ -375,7 +376,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			MethodCalcResult calc = MethodResolver.calc(arguments, psiElement, this, true);
 			if(implicitExpression != null)
 			{
-				calc = calc.dupWithResult(Short.MAX_VALUE);
+				calc = calc.dupWithResult(Short.MIN_VALUE);
 			}
 
 			last.add(Pair.<MethodCalcResult, PsiElement>create(calc, psiElement));
@@ -414,7 +415,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@Override
 	public Object[] getVariants()
 	{
-		return new Object[0];
+		return ArrayUtil.EMPTY_OBJECT_ARRAY;
 	}
 
 	@Override
