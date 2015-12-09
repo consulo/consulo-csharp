@@ -181,7 +181,7 @@ public class StaticVsInstanceComparator implements Comparator<ResolveResult>
 				return -1;
 			}
 		}
-		return myComparator.getWeight(resolveResult);
+		return 0;
 	}
 
 	@Nullable

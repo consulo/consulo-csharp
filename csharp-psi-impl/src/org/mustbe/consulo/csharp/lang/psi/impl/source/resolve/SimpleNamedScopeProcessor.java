@@ -21,6 +21,19 @@ public class SimpleNamedScopeProcessor extends StubScopeProcessor
 	private Processor<ResolveResult> myCompletionProcessor;
 	private boolean myCompletion;
 
+	public SimpleNamedScopeProcessor(@NotNull final StubScopeProcessor completionProcessor, boolean completion, ExecuteTarget... targets)
+	{
+		this(new Processor<ResolveResult>()
+		{
+			@Override
+			public boolean process(ResolveResult resolveResult)
+			{
+				completionProcessor.pushResultExternally(resolveResult);
+				return true;
+			}
+		}, completion, targets);
+	}
+
 	public SimpleNamedScopeProcessor(@NotNull Processor<ResolveResult> completionProcessor, boolean completion, ExecuteTarget... targets)
 	{
 		myCompletionProcessor = completionProcessor;

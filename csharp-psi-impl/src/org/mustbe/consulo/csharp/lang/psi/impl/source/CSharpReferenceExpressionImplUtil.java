@@ -106,11 +106,10 @@ public class CSharpReferenceExpressionImplUtil
 		}
 	}
 
-	public static final TokenSet ourReferenceElements = TokenSet.orSet(CSharpTokenSets.NATIVE_TYPES, TokenSet.create(CSharpTokens.THIS_KEYWORD,
-			CSharpTokens.BASE_KEYWORD, CSharpTokens.IDENTIFIER, CSharpSoftTokens.GLOBAL_KEYWORD));
+	public static final TokenSet ourReferenceElements = TokenSet.orSet(CSharpTokenSets.NATIVE_TYPES, TokenSet.create(CSharpTokens.THIS_KEYWORD, CSharpTokens.BASE_KEYWORD, CSharpTokens.IDENTIFIER,
+			CSharpSoftTokens.GLOBAL_KEYWORD));
 
-	public static final TokenSet ourAccessTokens = TokenSet.create(CSharpTokens.ARROW, CSharpTokens.DOT, CSharpTokens.COLONCOLON,
-			CSharpTokens.NULLABE_CALL);
+	public static final TokenSet ourAccessTokens = TokenSet.create(CSharpTokens.ARROW, CSharpTokens.DOT, CSharpTokens.COLONCOLON, CSharpTokens.NULLABE_CALL);
 
 	private static KindProcessor[] ourProcessors = new KindProcessor[ResolveToKind.VALUES.length];
 
@@ -246,9 +245,7 @@ public class CSharpReferenceExpressionImplUtil
 
 	@NotNull
 	@RequiredReadAction
-	public static DotNetTypeRef toTypeRefWithoutCaching(@NotNull CSharpReferenceExpressionEx referenceExpressionEx,
-			@NotNull ResolveToKind kind,
-			boolean resolveFromParent)
+	public static DotNetTypeRef toTypeRefWithoutCaching(@NotNull CSharpReferenceExpressionEx referenceExpressionEx, @NotNull ResolveToKind kind, boolean resolveFromParent)
 	{
 		ResolveResult[] resolveResults = referenceExpressionEx.multiResolveImpl(kind, resolveFromParent);
 		if(resolveResults.length == 0)
@@ -316,8 +313,7 @@ public class CSharpReferenceExpressionImplUtil
 		PsiElement tempElement = referenceExpression.getParent();
 		if(tempElement instanceof CSharpGenericConstraintImpl)
 		{
-			DotNetGenericParameterListOwner parameterListOwner = PsiTreeUtil.getParentOfType(referenceExpression,
-					DotNetGenericParameterListOwner.class);
+			DotNetGenericParameterListOwner parameterListOwner = PsiTreeUtil.getParentOfType(referenceExpression, DotNetGenericParameterListOwner.class);
 			if(parameterListOwner == null)
 			{
 				return ResolveToKind.ANY_MEMBER;
@@ -396,8 +392,7 @@ public class CSharpReferenceExpressionImplUtil
 		}
 		else if(tempElement instanceof CSharpReferenceExpression)
 		{
-			CSharpNamespaceDeclarationImpl netNamespaceDeclaration = PsiTreeUtil.getParentOfType(referenceExpression,
-					CSharpNamespaceDeclarationImpl.class);
+			CSharpNamespaceDeclarationImpl netNamespaceDeclaration = PsiTreeUtil.getParentOfType(referenceExpression, CSharpNamespaceDeclarationImpl.class);
 			if(netNamespaceDeclaration != null)
 			{
 				DotNetReferenceExpression namespaceReference = netNamespaceDeclaration.getNamespaceReference();
@@ -486,10 +481,7 @@ public class CSharpReferenceExpressionImplUtil
 
 	@NotNull
 	@RequiredReadAction
-	public static ResolveResult[] multiResolveImpl(ResolveToKind kind,
-			final CSharpCallArgumentListOwner callArgumentListOwner,
-			final CSharpQualifiedNonReference element,
-			boolean resolveFromParent)
+	public static ResolveResult[] multiResolveImpl(ResolveToKind kind, final CSharpCallArgumentListOwner callArgumentListOwner, final CSharpQualifiedNonReference element, boolean resolveFromParent)
 	{
 		ResolveResult[] resolveResults = buildSelectorAndMultiResolve(kind, callArgumentListOwner, element, resolveFromParent);
 		if(element instanceof CSharpReferenceExpression)
@@ -589,8 +581,7 @@ public class CSharpReferenceExpressionImplUtil
 		}
 
 		CommonProcessors.CollectProcessor<ResolveResult> processor = new CommonProcessors.CollectProcessor<ResolveResult>();
-		collectResults(new CSharpResolveOptions(kind, selector, element, callArgumentListOwner, false, resolveFromParent),
-				DotNetGenericExtractor.EMPTY, forceQualifierElement, processor);
+		collectResults(new CSharpResolveOptions(kind, selector, element, callArgumentListOwner, false, resolveFromParent), DotNetGenericExtractor.EMPTY, forceQualifierElement, processor);
 		return processor.toArray(ResolveResult.ARRAY_FACTORY);
 	}
 
@@ -631,12 +622,10 @@ public class CSharpReferenceExpressionImplUtil
 
 	@NotNull
 	@RequiredReadAction
-	public static ResolveResult[] tryResolveFromQualifier(@NotNull CSharpReferenceExpressionEx referenceExpressionEx,
-			@NotNull PsiElement qualifierElement)
+	public static ResolveResult[] tryResolveFromQualifier(@NotNull CSharpReferenceExpressionEx referenceExpressionEx, @NotNull PsiElement qualifierElement)
 	{
 		ResolveToKind kind = referenceExpressionEx.kind();
-		return buildSelectorAndMultiResolve(kind, findCallArgumentListOwner(kind, referenceExpressionEx), referenceExpressionEx, qualifierElement,
-				false);
+		return buildSelectorAndMultiResolve(kind, findCallArgumentListOwner(kind, referenceExpressionEx), referenceExpressionEx, qualifierElement, false);
 	}
 
 	@RequiredReadAction
@@ -778,12 +767,11 @@ public class CSharpReferenceExpressionImplUtil
 			if((kind == ResolveToKind.METHOD || kind == ResolveToKind.ANY_MEMBER) && element instanceof CSharpReferenceExpression)
 			{
 				// walk for extensions
-				ExtensionResolveScopeProcessor extensionProcessor = new ExtensionResolveScopeProcessor(qualifierTypeRef, (CSharpReferenceExpression) element,
-						completion, memberProcessor, callArgumentListOwner);
+				ExtensionResolveScopeProcessor extensionProcessor = new ExtensionResolveScopeProcessor(qualifierTypeRef, (CSharpReferenceExpression) element, completion, memberProcessor,
+						callArgumentListOwner);
 
 				resolveState = resolveState.put(CSharpResolveUtil.EXTRACTOR, extractor);
-				resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, new ExtensionMethodByNameSelector(((CSharpReferenceExpression) element)
-						.getReferenceName()));
+				resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, new ExtensionMethodByNameSelector(((CSharpReferenceExpression) element).getReferenceName()));
 
 				Couple<PsiElement> resolveLayers = getResolveLayers(scopeElement, scopeElement != element);
 
@@ -810,19 +798,15 @@ public class CSharpReferenceExpressionImplUtil
 			PsiElement last = resolveLayers.getFirst();
 			PsiElement targetToWalkChildren = resolveLayers.getSecond();
 
+			StubScopeProcessor memberProcessor = createMemberProcessor(options, processor);
+
 			// if resolving is any member, first we need process locals and then go to fields and other
 			if(kind == ResolveToKind.ANY_MEMBER || kind == ResolveToKind.METHOD || kind == ResolveToKind.NAMEOF)
 			{
-				SimpleNamedScopeProcessor localProcessor = new SimpleNamedScopeProcessor(processor, completion,
-						ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
+				SimpleNamedScopeProcessor localProcessor = new SimpleNamedScopeProcessor(memberProcessor, completion, ExecuteTarget.LOCAL_VARIABLE_OR_PARAMETER);
 
-				if(!CSharpResolveUtil.treeWalkUp(localProcessor, target, element, last, resolveState))
-				{
-					return;
-				}
+				CSharpResolveUtil.treeWalkUp(localProcessor, target, element, last, resolveState);
 			}
-
-			StubScopeProcessor memberProcessor = createMemberProcessor(options, processor);
 
 			if(!CSharpResolveUtil.walkChildren(memberProcessor, targetToWalkChildren, true, true, resolveState))
 			{
@@ -971,7 +955,8 @@ public class CSharpReferenceExpressionImplUtil
 		PsiElement targetToWalkChildren = null;
 
 		PsiElement temp = strict ? element : element.getParent();
-		loop:while(temp != null)
+		loop:
+		while(temp != null)
 		{
 			ProgressIndicatorProvider.checkCanceled();
 

@@ -113,7 +113,7 @@ public class CSharpResolveUtil
 	{
 		if(!entrance.isValid())
 		{
-			CSharpResolveUtil.LOGGER.error(new PsiInvalidElementAccessException(entrance));
+			LOGGER.error(new PsiInvalidElementAccessException(entrance));
 		}
 
 		PsiElement prevParent = entrance;
@@ -238,7 +238,7 @@ public class CSharpResolveUtil
 
 		if(!entrance.isValid())
 		{
-			CSharpResolveUtil.LOGGER.error(new PsiInvalidElementAccessException(entrance));
+			LOGGER.error(new PsiInvalidElementAccessException(entrance));
 		}
 
 		PsiElement prevParent = entrance;
