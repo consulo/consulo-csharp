@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
@@ -63,6 +64,7 @@ public class CSharpContextUtil
 
 
 	@NotNull
+	@RequiredReadAction
 	public static CSharpContextUtil.ContextType getContextForResolved(@NotNull PsiElement element)
 	{
 		if(!(element instanceof DotNetModifierListOwner))
@@ -93,6 +95,7 @@ public class CSharpContextUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static ContextType getParentContextTypeForReference(@NotNull CSharpReferenceExpression referenceExpression)
 	{
 		PsiElement qualifier = referenceExpression.getQualifier();
