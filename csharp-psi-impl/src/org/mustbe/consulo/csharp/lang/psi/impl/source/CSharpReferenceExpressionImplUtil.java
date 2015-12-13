@@ -223,24 +223,12 @@ public class CSharpReferenceExpressionImplUtil
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 
-		CSharpReferenceExpression.AccessType memberAccessType = referenceExpressionEx.getMemberAccessType();
-
 		DotNetTypeRef typeRef = CSharpReferenceExpressionImplUtil.toTypeRef(resolveResult);
-		switch(memberAccessType)
+		if(CSharpNullableTypeUtil.containsNullableCalls(referenceExpressionEx))
 		{
-			case NULLABLE_CALL:
-				if(typeRef.resolve(referenceExpressionEx).isNullable())
-				{
-					return typeRef;
-				}
-				else
-				{
-					return CSharpNullableTypeUtil.box(typeRef);
-				}
-			default:
-
-				return typeRef;
+			return CSharpNullableTypeUtil.boxIfNeed(typeRef, referenceExpressionEx);
 		}
+		return typeRef;
 	}
 
 	@NotNull

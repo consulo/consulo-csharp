@@ -19,13 +19,15 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpQualifiedNonReference;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNullableTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightIndexMethodDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
@@ -88,18 +90,25 @@ public class CSharpIndexAccessExpressionImpl extends CSharpElementImpl implement
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
 		PsiElement resolve = resolveToCallable();
 		if(resolve instanceof CSharpIndexMethodDeclaration)
 		{
-			return ((CSharpIndexMethodDeclaration) resolve).getReturnTypeRef();
+			DotNetTypeRef returnTypeRef = ((CSharpIndexMethodDeclaration) resolve).getReturnTypeRef();
+			if(CSharpNullableTypeUtil.containsNullableCalls(this))
+			{
+				return CSharpNullableTypeUtil.boxIfNeed(returnTypeRef, this);
+			}
+			return returnTypeRef;
 		}
 		return DotNetTypeRef.ERROR_TYPE;
 	}
 
 	@Override
 	@NotNull
+	@RequiredReadAction
 	public DotNetExpression getQualifier()
 	{
 		return (DotNetExpression) getFirstChild();
@@ -165,5 +174,11 @@ public class CSharpIndexAccessExpressionImpl extends CSharpElementImpl implement
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
 		return CSharpResolveCache.getInstance(getProject()).resolveWithCaching(this, OurResolver.INSTANCE, true, incompleteCode, true);
+	}
+
+	@RequiredReadAction
+	public boolean isNullable()
+	{
+		return findChildByType(CSharpTokens.QUEST) != null;
 	}
 }
