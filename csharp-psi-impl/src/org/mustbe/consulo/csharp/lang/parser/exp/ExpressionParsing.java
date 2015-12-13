@@ -551,10 +551,14 @@ public class ExpressionParsing extends SharedParsingHelpers
 				callExpr.done(METHOD_CALL_EXPRESSION);
 				expr = callExpr;
 			}
-			else if(tokenType == LBRACKET)
+			else if(tokenType == QUEST && builder.lookAhead(1) == LBRACKET || tokenType == LBRACKET)
 			{
 				final PsiBuilder.Marker arrayAccess = expr.precede();
 				PsiBuilder.Marker argumentListMarker = builder.mark();
+				if(tokenType == QUEST)
+				{
+					builder.advanceLexer();
+				}
 				builder.advanceLexer();
 
 				parseArguments(builder, RBRACKET, false, set);
