@@ -52,7 +52,7 @@ public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 
 	public CSharpIndexMethodDeclarationImpl(@NotNull CSharpIndexMethodDeclStub stub)
 	{
-		super(stub, CSharpStubElements.ARRAY_METHOD_DECLARATION);
+		super(stub, CSharpStubElements.INDEX_METHOD_DECLARATION);
 	}
 
 	@Override

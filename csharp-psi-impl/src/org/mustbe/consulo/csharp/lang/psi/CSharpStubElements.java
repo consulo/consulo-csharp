@@ -39,7 +39,7 @@ public interface CSharpStubElements
 	CSharpNamespaceStubElementType NAMESPACE_DECLARATION = new CSharpNamespaceStubElementType();
 	CSharpTypeStubElementType TYPE_DECLARATION = new CSharpTypeStubElementType();
 	CSharpMethodStubElementType METHOD_DECLARATION = new CSharpMethodStubElementType();
-	CSharpIndexMethodStubElementType ARRAY_METHOD_DECLARATION = new CSharpIndexMethodStubElementType();
+	CSharpIndexMethodStubElementType INDEX_METHOD_DECLARATION = new CSharpIndexMethodStubElementType();
 	CSharpConstructorStubElementType CONSTRUCTOR_DECLARATION = new CSharpConstructorStubElementType();
 	CSharpConversionMethodStubElementType CONVERSION_METHOD_DECLARATION = new CSharpConversionMethodStubElementType();
 	CSharpPropertyElementType PROPERTY_DECLARATION = new CSharpPropertyElementType();
@@ -129,6 +129,5 @@ public interface CSharpStubElements
 	TokenSet TYPE_SET = TokenSet.create(NULLABLE_TYPE, POINTER_TYPE, NATIVE_TYPE, ARRAY_TYPE, USER_TYPE);
 
 	TokenSet QUALIFIED_MEMBERS = TokenSet.create(NAMESPACE_DECLARATION, TYPE_DECLARATION, METHOD_DECLARATION, CONSTRUCTOR_DECLARATION,
-			PROPERTY_DECLARATION, EVENT_DECLARATION, FIELD_DECLARATION, ENUM_CONSTANT_DECLARATION, CONVERSION_METHOD_DECLARATION,
-			ARRAY_METHOD_DECLARATION);
+			PROPERTY_DECLARATION, EVENT_DECLARATION, FIELD_DECLARATION, ENUM_CONSTANT_DECLARATION, CONVERSION_METHOD_DECLARATION, INDEX_METHOD_DECLARATION);
 }

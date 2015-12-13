@@ -30,6 +30,6 @@ public class CSharpIndexMethodDeclStub extends MemberStub<CSharpIndexMethodDecla
 {
 	public CSharpIndexMethodDeclStub(StubElement parent, @Nullable StringRef qname)
 	{
-		super(parent, CSharpStubElements.ARRAY_METHOD_DECLARATION, qname, 0);
+		super(parent, CSharpStubElements.INDEX_METHOD_DECLARATION, qname, 0);
 	}
 }
