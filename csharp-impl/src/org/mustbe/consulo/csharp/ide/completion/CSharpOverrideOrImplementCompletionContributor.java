@@ -30,7 +30,7 @@ import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
 import org.mustbe.consulo.csharp.ide.actions.generate.GenerateImplementMemberHandler;
 import org.mustbe.consulo.csharp.ide.actions.generate.GenerateOverrideMemberHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -241,7 +241,7 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 			builder.append("~");
 		}
 
-		if(methodDeclaration instanceof CSharpArrayMethodDeclaration)
+		if(methodDeclaration instanceof CSharpIndexMethodDeclaration)
 		{
 			builder.append("this");
 		}

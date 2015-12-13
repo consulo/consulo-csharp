@@ -300,7 +300,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(expression);
 	}
 
-	public void visitArrayAccessExpression(CSharpArrayAccessExpressionImpl expression)
+	public void visitIndexAccessExpression(CSharpIndexAccessExpressionImpl expression)
 	{
 		visitElement(expression);
 	}
@@ -475,7 +475,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(statement);
 	}
 
-	public void visitArrayMethodDeclaration(CSharpArrayMethodDeclaration methodDeclaration)
+	public void visitArrayMethodDeclaration(CSharpIndexMethodDeclaration methodDeclaration)
 	{
 		visitElement(methodDeclaration);
 	}

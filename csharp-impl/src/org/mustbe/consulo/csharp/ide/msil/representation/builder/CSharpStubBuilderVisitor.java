@@ -172,7 +172,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 	@Override
 	@RequiredReadAction
-	public void visitArrayMethodDeclaration(CSharpArrayMethodDeclaration declaration)
+	public void visitArrayMethodDeclaration(CSharpIndexMethodDeclaration declaration)
 	{
 		StringBuilder builder = new StringBuilder();
 
@@ -361,7 +361,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		{
 			appendTypeRef(element, builder, typeRefForImplement);
 			builder.append(".");
-			if(element instanceof CSharpArrayMethodDeclaration)
+			if(element instanceof CSharpIndexMethodDeclaration)
 			{
 				builder.append("this");
 			}
@@ -372,7 +372,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 		}
 		else
 		{
-			if(element instanceof CSharpArrayMethodDeclaration)
+			if(element instanceof CSharpIndexMethodDeclaration)
 			{
 				builder.append("this");
 			}

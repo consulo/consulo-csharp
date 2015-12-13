@@ -110,7 +110,7 @@ public class CSharpElementCompareUtil
 			return compareParameterList(element, element2, scope);
 		}
 
-		if(element instanceof CSharpArrayMethodDeclaration && element2 instanceof CSharpArrayMethodDeclaration)
+		if(element instanceof CSharpIndexMethodDeclaration && element2 instanceof CSharpIndexMethodDeclaration)
 		{
 			if(!compareVirtualImpl(element, element2, flags, scope))
 			{

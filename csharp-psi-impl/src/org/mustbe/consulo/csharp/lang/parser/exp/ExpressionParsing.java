@@ -539,7 +539,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 			{
 				IElementType expType = exprType(expr);
 				if(expType != REFERENCE_EXPRESSION &&
-						expType != ARRAY_ACCESS_EXPRESSION &&
+						expType != INDEX_ACCESS_EXPRESSION &&
 						expType != METHOD_CALL_EXPRESSION)
 				{
 					startMarker.drop();
@@ -567,14 +567,14 @@ public class ExpressionParsing extends SharedParsingHelpers
 				{
 					builder.error("']' expected");
 					argumentListMarker.done(CALL_ARGUMENT_LIST);
-					arrayAccess.done(ARRAY_ACCESS_EXPRESSION);
+					arrayAccess.done(INDEX_ACCESS_EXPRESSION);
 					startMarker.drop();
 					return arrayAccess;
 				}
 				builder.advanceLexer();
 				argumentListMarker.done(CALL_ARGUMENT_LIST);
 
-				arrayAccess.done(ARRAY_ACCESS_EXPRESSION);
+				arrayAccess.done(INDEX_ACCESS_EXPRESSION);
 				expr = arrayAccess;
 			}
 			else

@@ -4,7 +4,7 @@ import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -25,7 +25,7 @@ public interface CSharpResolveContext
 	{
 		@Nullable
 		@Override
-		public CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup(boolean deep)
+		public CSharpElementGroup<CSharpIndexMethodDeclaration> indexMethodGroup(boolean deep)
 		{
 			return null;
 		}
@@ -91,7 +91,7 @@ public interface CSharpResolveContext
 	};
 
 	@Nullable
-	CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup(boolean deep);
+	CSharpElementGroup<CSharpIndexMethodDeclaration> indexMethodGroup(boolean deep);
 
 	@Nullable
 	CSharpElementGroup<CSharpConstructorDeclaration> constructorGroup();

@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi;
+package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import com.intellij.psi.stubs.StubElement;
+import com.intellij.util.io.StringRef;
 
 /**
  * @author VISTALL
  * @since 01.03.14
  */
-public interface CSharpArrayMethodDeclaration extends DotNetLikeMethodDeclaration, DotNetVirtualImplementOwner, DotNetMemberOwner,
-		CSharpSimpleLikeMethodAsElement, CSharpBodyWithBraces, CSharpXXXAccessorOwner
+public class CSharpIndexMethodDeclStub extends MemberStub<CSharpIndexMethodDeclaration>
 {
+	public CSharpIndexMethodDeclStub(StubElement parent, @Nullable StringRef qname)
+	{
+		super(parent, CSharpStubElements.ARRAY_METHOD_DECLARATION, qname, 0);
+	}
 }

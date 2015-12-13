@@ -19,12 +19,12 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpArrayMethodDeclStub;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpIndexMethodDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -43,14 +43,14 @@ import com.intellij.psi.scope.PsiScopeProcessor;
  * @author VISTALL
  * @since 01.03.14
  */
-public class CSharpArrayMethodDeclarationImpl extends CSharpStubMemberImpl<CSharpArrayMethodDeclStub> implements CSharpArrayMethodDeclaration
+public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CSharpIndexMethodDeclStub> implements CSharpIndexMethodDeclaration
 {
-	public CSharpArrayMethodDeclarationImpl(@NotNull ASTNode node)
+	public CSharpIndexMethodDeclarationImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpArrayMethodDeclarationImpl(@NotNull CSharpArrayMethodDeclStub stub)
+	public CSharpIndexMethodDeclarationImpl(@NotNull CSharpIndexMethodDeclStub stub)
 	{
 		super(stub, CSharpStubElements.ARRAY_METHOD_DECLARATION);
 	}

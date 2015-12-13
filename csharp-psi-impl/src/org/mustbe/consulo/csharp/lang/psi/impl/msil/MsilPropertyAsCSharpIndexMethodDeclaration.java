@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightAttributeBuilder;
@@ -47,7 +47,7 @@ import com.intellij.util.IncorrectOperationException;
  * @author VISTALL
  * @since 28.05.14
  */
-public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapper<MsilPropertyEntry> implements CSharpArrayMethodDeclaration
+public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapper<MsilPropertyEntry> implements CSharpIndexMethodDeclaration
 {
 	private final MsilModifierListToCSharpModifierList myModifierList;
 
@@ -55,8 +55,7 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 
 	private final DotNetXXXAccessor[] myAccessors;
 
-	public MsilPropertyAsCSharpArrayMethodDeclaration(PsiElement parent, MsilPropertyEntry propertyEntry, List<Pair<DotNetXXXAccessor,
-			MsilMethodEntry>> pairs)
+	public MsilPropertyAsCSharpIndexMethodDeclaration(PsiElement parent, MsilPropertyEntry propertyEntry, List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
 	{
 		super(parent, propertyEntry);
 
@@ -240,7 +239,7 @@ public class MsilPropertyAsCSharpArrayMethodDeclaration extends MsilElementWrapp
 		SomeType someType = SomeTypeParser.parseType(typeBeforeDot, nameFromBytecode);
 		if(someType != null)
 		{
-			return new DummyType(getProject(), MsilPropertyAsCSharpArrayMethodDeclaration.this, someType);
+			return new DummyType(getProject(), MsilPropertyAsCSharpIndexMethodDeclaration.this, someType);
 		}
 		return null;
 	}

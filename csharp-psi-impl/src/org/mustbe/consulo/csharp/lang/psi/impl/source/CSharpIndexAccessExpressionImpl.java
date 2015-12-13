@@ -19,14 +19,14 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpQualifiedNonReference;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightArrayMethodDeclarationBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightIndexMethodDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
@@ -44,17 +44,17 @@ import com.intellij.psi.ResolveResult;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpCallArgumentListOwner,
+public class CSharpIndexAccessExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpCallArgumentListOwner,
 		CSharpQualifiedNonReference
 {
-	public static class OurResolver implements CSharpResolveCache.PolyVariantResolver<CSharpArrayAccessExpressionImpl>
+	public static class OurResolver implements CSharpResolveCache.PolyVariantResolver<CSharpIndexAccessExpressionImpl>
 	{
 		public static final OurResolver INSTANCE = new OurResolver();
 
 		@RequiredReadAction
 		@NotNull
 		@Override
-		public ResolveResult[] resolve(@NotNull CSharpArrayAccessExpressionImpl expression, boolean incompleteCode, boolean resolveFromParent)
+		public ResolveResult[] resolve(@NotNull CSharpIndexAccessExpressionImpl expression, boolean incompleteCode, boolean resolveFromParent)
 		{
 			DotNetExpression qualifier = expression.getQualifier();
 			DotNetTypeRef typeRef = qualifier.toTypeRef(true);
@@ -62,7 +62,7 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 			{
 				DotNetTypeRef innerTypeRef = ((DotNetPointerTypeRef) typeRef).getInnerTypeRef();
 
-				CSharpLightArrayMethodDeclarationBuilder builder = new CSharpLightArrayMethodDeclarationBuilder(expression.getProject());
+				CSharpLightIndexMethodDeclarationBuilder builder = new CSharpLightIndexMethodDeclarationBuilder(expression.getProject());
 				builder.withReturnType(innerTypeRef);
 				builder.addParameter(new CSharpLightParameterBuilder(expression.getProject()).withName("p").withTypeRef(new CSharpTypeRefByQName
 						(DotNetTypes.System.Int32)));
@@ -75,7 +75,7 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 		}
 	}
 
-	public CSharpArrayAccessExpressionImpl(@NotNull ASTNode node)
+	public CSharpIndexAccessExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
@@ -83,7 +83,7 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 	@Override
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		visitor.visitArrayAccessExpression(this);
+		visitor.visitIndexAccessExpression(this);
 	}
 
 	@NotNull
@@ -91,9 +91,9 @@ public class CSharpArrayAccessExpressionImpl extends CSharpElementImpl implement
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
 		PsiElement resolve = resolveToCallable();
-		if(resolve instanceof CSharpArrayMethodDeclaration)
+		if(resolve instanceof CSharpIndexMethodDeclaration)
 		{
-			return ((CSharpArrayMethodDeclaration) resolve).getReturnTypeRef();
+			return ((CSharpIndexMethodDeclaration) resolve).getReturnTypeRef();
 		}
 		return DotNetTypeRef.ERROR_TYPE;
 	}

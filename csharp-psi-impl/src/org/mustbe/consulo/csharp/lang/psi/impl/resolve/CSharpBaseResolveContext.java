@@ -51,7 +51,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		private MultiMap<IElementType, CSharpMethodDeclaration> myOperatorsMap;
 		private MultiMap<String, CSharpMethodDeclaration> myExtensionMap;
 		private MultiMap<DotNetTypeRef, CSharpConversionMethodDeclaration> myConversionMap;
-		private List<CSharpArrayMethodDeclaration> myIndexMethods;
+		private List<CSharpIndexMethodDeclaration> myIndexMethods;
 		private MultiMap<String, PsiElement> myOtherElements = new MultiMap<String, PsiElement>();
 
 		public Collector(DotNetGenericExtractor genericExtractor)
@@ -132,11 +132,11 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		}
 
 		@Override
-		public void visitArrayMethodDeclaration(CSharpArrayMethodDeclaration declaration)
+		public void visitArrayMethodDeclaration(CSharpIndexMethodDeclaration declaration)
 		{
 			if(myIndexMethods == null)
 			{
-				myIndexMethods = new SmartList<CSharpArrayMethodDeclaration>();
+				myIndexMethods = new SmartList<CSharpIndexMethodDeclaration>();
 			}
 			myIndexMethods.add(GenericUnwrapTool.extract(declaration, myGenericExtractor));
 		}
@@ -187,7 +187,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	protected final DotNetGenericExtractor myExtractor;
 	private Set<PsiElement> myRecursiveGuardSet;
 	@Nullable
-	private CSharpElementGroup<CSharpArrayMethodDeclaration> myIndexMethodGroup;
+	private CSharpElementGroup<CSharpIndexMethodDeclaration> myIndexMethodGroup;
 	@Nullable
 	private CSharpElementGroup<CSharpConstructorDeclaration> myConstructorGroup;
 	@Nullable
@@ -322,7 +322,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup(boolean deep)
+	public CSharpElementGroup<CSharpIndexMethodDeclaration> indexMethodGroup(boolean deep)
 	{
 		if(myIndexMethodGroup == null)
 		{
@@ -330,13 +330,13 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		}
 		else
 		{
-			CSharpElementGroup<CSharpArrayMethodDeclaration> deepGroup = deep ? getSuperContext().indexMethodGroup(deep) : null;
+			CSharpElementGroup<CSharpIndexMethodDeclaration> deepGroup = deep ? getSuperContext().indexMethodGroup(deep) : null;
 
 			if(deepGroup == null)
 			{
 				return myIndexMethodGroup;
 			}
-			return new CSharpCompositeElementGroupImpl<CSharpArrayMethodDeclaration>(myElement.getProject(), Arrays.asList(myIndexMethodGroup,
+			return new CSharpCompositeElementGroupImpl<CSharpIndexMethodDeclaration>(myElement.getProject(), Arrays.asList(myIndexMethodGroup,
 					deepGroup));
 		}
 	}

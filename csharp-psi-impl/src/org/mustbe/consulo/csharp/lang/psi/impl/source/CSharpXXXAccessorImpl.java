@@ -131,9 +131,9 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 		{
 			typeRef = ((CSharpEventDeclaration) element).toTypeRef(false);
 		}
-		else if(element instanceof CSharpArrayMethodDeclaration)
+		else if(element instanceof CSharpIndexMethodDeclaration)
 		{
-			typeRef = ((CSharpArrayMethodDeclaration) element).getReturnTypeRef();
+			typeRef = ((CSharpIndexMethodDeclaration) element).getReturnTypeRef();
 		}
 		return Pair.create(typeRef, (DotNetQualifiedElement) element);
 	}

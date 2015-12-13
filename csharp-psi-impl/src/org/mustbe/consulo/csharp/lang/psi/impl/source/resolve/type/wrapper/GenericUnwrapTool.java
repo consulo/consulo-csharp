@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
@@ -122,9 +122,9 @@ public class GenericUnwrapTool
 			exchangeMethodTypeRefs(copy, methodDeclaration, extractor);
 			return (T) copy;
 		}
-		else if(namedElement instanceof CSharpArrayMethodDeclaration)
+		else if(namedElement instanceof CSharpIndexMethodDeclaration)
 		{
-			CSharpArrayMethodDeclaration arrayMethodDeclaration = (CSharpArrayMethodDeclaration) namedElement;
+			CSharpIndexMethodDeclaration arrayMethodDeclaration = (CSharpIndexMethodDeclaration) namedElement;
 
 			DotNetParameterList parameterList = arrayMethodDeclaration.getParameterList();
 
@@ -139,7 +139,7 @@ public class GenericUnwrapTool
 
 			parameterList = new CSharpLightParameterList(parameterList == null ? namedElement : parameterList, newParameters);
 
-			CSharpLightArrayMethodDeclaration copy = new CSharpLightArrayMethodDeclaration(arrayMethodDeclaration, parameterList);
+			CSharpLightIndexMethodDeclaration copy = new CSharpLightIndexMethodDeclaration(arrayMethodDeclaration, parameterList);
 			exchangeMethodTypeRefs(copy, arrayMethodDeclaration, extractor);
 			return (T) copy;
 		}

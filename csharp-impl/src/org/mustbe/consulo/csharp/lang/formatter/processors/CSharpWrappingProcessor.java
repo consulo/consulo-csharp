@@ -2,7 +2,7 @@ package org.mustbe.consulo.csharp.lang.formatter.processors;
 
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
@@ -69,7 +69,7 @@ public class CSharpWrappingProcessor
 			{
 				braceStyle = myCustomSettings.EVENT_BRACE_STYLE;
 			}
-			else if(parentPsi instanceof CSharpArrayMethodDeclaration)
+			else if(parentPsi instanceof CSharpIndexMethodDeclaration)
 			{
 				braceStyle = myCustomSettings.INDEX_METHOD_BRACE_STYLE;
 			}

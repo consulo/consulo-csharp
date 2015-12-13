@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.ide;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -59,7 +59,7 @@ public class CSharpElementPresentationUtil
 			builder.append("~");
 		}
 
-		if(methodDeclaration instanceof CSharpArrayMethodDeclaration)
+		if(methodDeclaration instanceof CSharpIndexMethodDeclaration)
 		{
 			builder.append("this");
 		}
@@ -74,7 +74,7 @@ public class CSharpElementPresentationUtil
 
 	public static void formatParameters(@NotNull DotNetLikeMethodDeclaration methodDeclaration, @NotNull StringBuilder builder, final int flags)
 	{
-		boolean indexMethod = methodDeclaration instanceof CSharpArrayMethodDeclaration;
+		boolean indexMethod = methodDeclaration instanceof CSharpIndexMethodDeclaration;
 
 		DotNetParameter[] parameters = methodDeclaration.getParameters();
 		if(parameters.length == 0)

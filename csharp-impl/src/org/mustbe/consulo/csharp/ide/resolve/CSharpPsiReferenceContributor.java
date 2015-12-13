@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.ide.resolve;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayAccessExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
@@ -39,13 +39,13 @@ public class CSharpPsiReferenceContributor extends PsiReferenceContributor
 	public void registerReferenceProviders(PsiReferenceRegistrar psiReferenceRegistrar)
 	{
 		psiReferenceRegistrar.registerReferenceProvider(StandardPatterns.psiElement(CSharpCallArgumentList.class).withParent
-				(CSharpArrayAccessExpressionImpl.class), new PsiReferenceProvider()
+				(CSharpIndexAccessExpressionImpl.class), new PsiReferenceProvider()
 		{
 			@NotNull
 			@Override
 			public PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext processingContext)
 			{
-				CSharpArrayAccessExpressionImpl parent = (CSharpArrayAccessExpressionImpl) element.getParent();
+				CSharpIndexAccessExpressionImpl parent = (CSharpIndexAccessExpressionImpl) element.getParent();
 				PsiElement callable = parent.resolveToCallable();
 				if(callable == null)
 				{

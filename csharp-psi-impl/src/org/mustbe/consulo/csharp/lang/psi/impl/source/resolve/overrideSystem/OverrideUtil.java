@@ -9,7 +9,7 @@ import java.util.ListIterator;
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementCompareUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
@@ -193,7 +193,7 @@ public class OverrideUtil
 		{
 			return ((DotNetVariable) element).getName();
 		}
-		else if(element instanceof CSharpArrayMethodDeclaration)
+		else if(element instanceof CSharpIndexMethodDeclaration)
 		{
 			return "this[]";
 		}
@@ -237,7 +237,7 @@ public class OverrideUtil
 		}, overrideProcessor);
 
 		ResolveState state = ResolveState.initial();
-		if(target instanceof CSharpArrayMethodDeclaration)
+		if(target instanceof CSharpIndexMethodDeclaration)
 		{
 			state = state.put(CSharpResolveUtil.SELECTOR, StaticResolveSelectors.INDEX_METHOD_GROUP);
 		}
@@ -277,7 +277,7 @@ public class OverrideUtil
 			return Collections.emptyList();
 		}
 		final CSharpResolveSelector selector;
-		if(target instanceof CSharpArrayMethodDeclaration)
+		if(target instanceof CSharpIndexMethodDeclaration)
 		{
 			selector = StaticResolveSelectors.INDEX_METHOD_GROUP;
 		}

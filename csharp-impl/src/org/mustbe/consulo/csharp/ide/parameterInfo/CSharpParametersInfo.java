@@ -18,11 +18,11 @@ package org.mustbe.consulo.csharp.ide.parameterInfo;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayAccessExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
@@ -52,7 +52,7 @@ public class CSharpParametersInfo
 	@NotNull
 	public static char[] getOpenAndCloseTokens(@Nullable Object callable)
 	{
-		if(callable instanceof CSharpArrayAccessExpressionImpl || callable instanceof CSharpArrayMethodDeclaration)
+		if(callable instanceof CSharpIndexAccessExpressionImpl || callable instanceof CSharpIndexMethodDeclaration)
 		{
 			return ourBrackets;
 		}

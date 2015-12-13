@@ -20,9 +20,9 @@ import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayMethodDeclarationImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpArrayMethodDeclStub;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIndexMethodDeclarationImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpIndexMethodDeclStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
@@ -33,45 +33,45 @@ import com.intellij.util.io.StringRef;
  * @author VISTALL
  * @since 01.03.14
  */
-public class CSharpArrayMethodStubElementType extends CSharpAbstractStubElementType<CSharpArrayMethodDeclStub, CSharpArrayMethodDeclaration>
+public class CSharpIndexMethodStubElementType extends CSharpAbstractStubElementType<CSharpIndexMethodDeclStub, CSharpIndexMethodDeclaration>
 {
-	public CSharpArrayMethodStubElementType()
+	public CSharpIndexMethodStubElementType()
 	{
-		super("ARRAY_METHOD_DECLARATION");
+		super("INDEX_METHOD_DECLARATION");
 	}
 
 	@NotNull
 	@Override
-	public CSharpArrayMethodDeclaration createElement(@NotNull ASTNode astNode)
+	public CSharpIndexMethodDeclaration createElement(@NotNull ASTNode astNode)
 	{
-		return new CSharpArrayMethodDeclarationImpl(astNode);
+		return new CSharpIndexMethodDeclarationImpl(astNode);
 	}
 
 	@Override
-	public CSharpArrayMethodDeclaration createPsi(@NotNull CSharpArrayMethodDeclStub methodStub)
+	public CSharpIndexMethodDeclaration createPsi(@NotNull CSharpIndexMethodDeclStub methodStub)
 	{
-		return new CSharpArrayMethodDeclarationImpl(methodStub);
+		return new CSharpIndexMethodDeclarationImpl(methodStub);
 	}
 
 	@RequiredReadAction
 	@Override
-	public CSharpArrayMethodDeclStub createStub(@NotNull CSharpArrayMethodDeclaration declaration, StubElement stubElement)
+	public CSharpIndexMethodDeclStub createStub(@NotNull CSharpIndexMethodDeclaration declaration, StubElement stubElement)
 	{
 		StringRef parentQName = StringRef.fromNullableString(declaration.getPresentableParentQName());
-		return new CSharpArrayMethodDeclStub(stubElement, parentQName);
+		return new CSharpIndexMethodDeclStub(stubElement, parentQName);
 	}
 
 	@Override
-	public void serialize(@NotNull CSharpArrayMethodDeclStub methodStub, @NotNull StubOutputStream stubOutputStream) throws IOException
+	public void serialize(@NotNull CSharpIndexMethodDeclStub methodStub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
 		stubOutputStream.writeName(methodStub.getParentQName());
 	}
 
 	@NotNull
 	@Override
-	public CSharpArrayMethodDeclStub deserialize(@NotNull StubInputStream inputStream, StubElement stubElement) throws IOException
+	public CSharpIndexMethodDeclStub deserialize(@NotNull StubInputStream inputStream, StubElement stubElement) throws IOException
 	{
 		StringRef qname = inputStream.readName();
-		return new CSharpArrayMethodDeclStub(stubElement, qname);
+		return new CSharpIndexMethodDeclStub(stubElement, qname);
 	}
 }

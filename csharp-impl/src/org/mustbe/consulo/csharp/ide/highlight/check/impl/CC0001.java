@@ -39,7 +39,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNewExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayAccessExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
@@ -211,7 +211,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		if(callOwner != null)
 		{
 			String name;
-			if(element instanceof CSharpArrayAccessExpressionImpl)
+			if(element instanceof CSharpIndexAccessExpressionImpl)
 			{
 				name = "this";
 			}
@@ -288,7 +288,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 				String canonicalText = ((CSharpOperatorReferenceImpl) element).getCanonicalText();
 				tooltipBuilder.append(XmlStringUtil.escapeString(canonicalText));
 			}
-			else if(element instanceof CSharpArrayAccessExpressionImpl)
+			else if(element instanceof CSharpIndexAccessExpressionImpl)
 			{
 				tooltipBuilder.append(""); //FIXME [VISTALL] some name?
 			}
@@ -443,7 +443,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 		if(element instanceof CSharpOperatorReferenceImpl ||
 				element instanceof CSharpMethodCallExpressionImpl ||
 				element instanceof CSharpConstructorSuperCallImpl ||
-				element instanceof CSharpArrayAccessExpressionImpl)
+				element instanceof CSharpIndexAccessExpressionImpl)
 		{
 			return (CSharpCallArgumentListOwner) element;
 		}

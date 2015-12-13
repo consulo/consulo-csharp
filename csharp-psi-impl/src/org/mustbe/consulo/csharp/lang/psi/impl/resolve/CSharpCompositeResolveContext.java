@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -38,18 +38,18 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpArrayMethodDeclaration> indexMethodGroup(boolean deep)
+	public CSharpElementGroup<CSharpIndexMethodDeclaration> indexMethodGroup(boolean deep)
 	{
-		List<CSharpElementGroup<CSharpArrayMethodDeclaration>> groups = new SmartList<CSharpElementGroup<CSharpArrayMethodDeclaration>>();
+		List<CSharpElementGroup<CSharpIndexMethodDeclaration>> groups = new SmartList<CSharpElementGroup<CSharpIndexMethodDeclaration>>();
 		for(CSharpResolveContext context : myContexts)
 		{
-			CSharpElementGroup<CSharpArrayMethodDeclaration> elementGroup = context.indexMethodGroup(deep);
+			CSharpElementGroup<CSharpIndexMethodDeclaration> elementGroup = context.indexMethodGroup(deep);
 			if(elementGroup != null)
 			{
 				groups.add(elementGroup);
 			}
 		}
-		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl<CSharpArrayMethodDeclaration>(myProject, groups);
+		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl<CSharpIndexMethodDeclaration>(myProject, groups);
 	}
 
 	@Nullable

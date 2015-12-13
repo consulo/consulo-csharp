@@ -23,7 +23,7 @@ import org.mustbe.consulo.csharp.ide.codeInsight.actions.ConvertToNormalCallFix;
 import org.mustbe.consulo.csharp.ide.highlight.util.ConstructorHighlightUtil;
 import org.mustbe.consulo.csharp.ide.highlight.util.GenericParameterHighlightUtil;
 import org.mustbe.consulo.csharp.lang.psi.*;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayAccessExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLinqExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
@@ -213,9 +213,9 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 
 	@Override
 	@RequiredReadAction
-	public void visitArrayAccessExpression(CSharpArrayAccessExpressionImpl expression)
+	public void visitIndexAccessExpression(CSharpIndexAccessExpressionImpl expression)
 	{
-		super.visitArrayAccessExpression(expression);
+		super.visitIndexAccessExpression(expression);
 		highlightMaybeImplicit(expression);
 	}
 

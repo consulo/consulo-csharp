@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayAccessExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ContainerUtil;
@@ -33,12 +33,12 @@ import com.intellij.util.containers.ContainerUtil;
  * @author VISTALL
  * @since 19.11.14
  */
-public class CC0003 extends CompilerCheck<CSharpArrayAccessExpressionImpl>
+public class CC0003 extends CompilerCheck<CSharpIndexAccessExpressionImpl>
 {
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public List<HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpArrayAccessExpressionImpl expression)
+	public List<HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpIndexAccessExpressionImpl expression)
 	{
 		List<PsiElement> ranges = new ArrayList<PsiElement>(2);
 		CSharpCallArgumentList parameterList = expression.getParameterList();

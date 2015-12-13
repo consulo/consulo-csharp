@@ -14,28 +14,29 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi.impl.light;
+package org.mustbe.consulo.csharp.lang.psi.impl.light.builder;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
- * @since 01.03.14
+ * @since 07.12.2014
  */
-public class CSharpLightArrayMethodDeclaration extends CSharpLightLikeMethodDeclarationWithImplType<CSharpArrayMethodDeclaration> implements CSharpArrayMethodDeclaration
+public class CSharpLightIndexMethodDeclarationBuilder extends CSharpLightLikeMethodDeclarationBuilder<CSharpLightIndexMethodDeclarationBuilder> implements CSharpIndexMethodDeclaration
 {
-	public CSharpLightArrayMethodDeclaration(CSharpArrayMethodDeclaration arrayMethodDeclaration, DotNetParameterList parameterList)
+	public CSharpLightIndexMethodDeclarationBuilder(Project project)
 	{
-		super(arrayMethodDeclaration, parameterList);
+		super(project);
 	}
 
 	@Override
@@ -44,25 +45,38 @@ public class CSharpLightArrayMethodDeclaration extends CSharpLightLikeMethodDecl
 		visitor.visitArrayMethodDeclaration(this);
 	}
 
+	@Nullable
+	@Override
+	public DotNetType getTypeForImplement()
+	{
+		return null;
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef getTypeRefForImplement()
+	{
+		return DotNetTypeRef.ERROR_TYPE;
+	}
+
+	@Override
+	public String getName()
+	{
+		return "[]";
+	}
+
 	@NotNull
 	@Override
 	public DotNetXXXAccessor[] getAccessors()
 	{
-		return myOriginal.getAccessors();
+		return DotNetXXXAccessor.EMPTY_ARRAY;
 	}
 
 	@NotNull
 	@Override
 	public DotNetNamedElement[] getMembers()
 	{
-		return myOriginal.getMembers();
-	}
-
-	@Nullable
-	@Override
-	public DotNetType getTypeForImplement()
-	{
-		return myOriginal.getTypeForImplement();
+		return DotNetNamedElement.EMPTY_ARRAY;
 	}
 
 	@RequiredReadAction

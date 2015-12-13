@@ -1,7 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.resolve;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpArrayMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import com.intellij.psi.PsiElement;
 
@@ -26,7 +26,7 @@ public enum StaticResolveSelectors implements CSharpResolveSelector
 				@Override
 				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
 				{
-					CSharpElementGroup<CSharpArrayMethodDeclaration> group = context.indexMethodGroup(deep);
+					CSharpElementGroup<CSharpIndexMethodDeclaration> group = context.indexMethodGroup(deep);
 					if(group == null)
 					{
 						return PsiElement.EMPTY_ARRAY;
