@@ -9,14 +9,14 @@ import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.ToNativeElementTransformers;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransformer;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeWithExtensionMethodsIndex;
@@ -107,7 +107,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		Set<String> processed = new THashSet<String>();
 		for(DotNetTypeDeclaration typeDeclaration : decls)
 		{
-			PsiElement wrappedDeclaration = MsilToCSharpUtil.wrap(typeDeclaration);
+			PsiElement wrappedDeclaration = ToNativeElementTransformers.transform(typeDeclaration);
 
 			if(typeDeclaration instanceof CSharpTypeDeclaration && typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
 			{
@@ -159,7 +159,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 			@RequiredReadAction
 			public boolean process(DotNetTypeDeclaration typeDeclaration)
 			{
-				PsiElement wrappedDeclaration = MsilToCSharpUtil.wrap(typeDeclaration);
+				PsiElement wrappedDeclaration = ToNativeElementTransformers.transform(typeDeclaration);
 
 				if(typeDeclaration instanceof CSharpTypeDeclaration && typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
 				{

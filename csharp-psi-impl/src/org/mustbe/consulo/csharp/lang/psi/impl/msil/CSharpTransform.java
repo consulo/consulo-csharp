@@ -18,6 +18,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.DeprecationInfo;
+import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.ToNativeElementTransformers;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.NotNullFunction;
@@ -35,9 +37,10 @@ public class CSharpTransform implements NotNullFunction<DotNetTypeDeclaration, D
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public DotNetTypeDeclaration fun(DotNetTypeDeclaration typeDeclaration)
 	{
-		PsiElement wrap = MsilToCSharpUtil.wrap(typeDeclaration);
+		PsiElement wrap = ToNativeElementTransformers.transform(typeDeclaration);
 		if(wrap instanceof DotNetTypeDeclaration)
 		{
 			return (DotNetTypeDeclaration) wrap;

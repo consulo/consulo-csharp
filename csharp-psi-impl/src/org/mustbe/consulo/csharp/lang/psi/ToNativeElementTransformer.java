@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 must-be.org
+ * Copyright 2013-2015 must-be.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi.impl.msil;
+package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.ToNativeElementTransformers;
+import org.mustbe.consulo.extensions.CompositeExtensionPointName;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.NotNullFunction;
 
 /**
  * @author VISTALL
- * @since 23.10.14
+ * @since 18.12.2015
  */
-public class CSharpTransformer implements NotNullFunction<PsiElement, PsiElement>
+public interface ToNativeElementTransformer
 {
-	public static final CSharpTransformer INSTANCE = new CSharpTransformer();
+	CompositeExtensionPointName<ToNativeElementTransformer> EP_NAME = CompositeExtensionPointName.applicationPoint("org.mustbe.consulo.csharp.toNativeElementTransformer",
+			ToNativeElementTransformer.class);
 
-	@NotNull
-	@Override
+	@Nullable
 	@RequiredReadAction
-	public PsiElement fun(PsiElement element)
-	{
-		return ToNativeElementTransformers.transform(element);
-	}
+	PsiElement transform(@NotNull PsiElement element);
 }

@@ -102,7 +102,7 @@ public class CSharpMsilFileRepresentationProvider implements MsilFileRepresentat
 			List<DotNetQualifiedElement> wrapped = new ArrayList<DotNetQualifiedElement>(msilFileMembers.length);
 			for(DotNetNamedElement member : msilFileMembers)
 			{
-				PsiElement wrap = MsilToCSharpUtil.wrap(member);
+				PsiElement wrap = MsilToCSharpUtil.wrap(member, null);
 				if(wrap != member)  // wrapped
 				{
 					wrapped.add((DotNetQualifiedElement) wrap);

@@ -170,13 +170,6 @@ public class MsilToCSharpUtil
 
 	@NotNull
 	@RequiredReadAction
-	public static PsiElement wrap(PsiElement element)
-	{
-		return wrap(element, null);
-	}
-
-	@NotNull
-	@RequiredReadAction
 	public static PsiElement wrap(PsiElement element, @Nullable PsiElement parent)
 	{
 		if(element instanceof MsilClassEntry)

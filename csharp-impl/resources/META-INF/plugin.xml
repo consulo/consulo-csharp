@@ -64,6 +64,8 @@
 						interface="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalMemberProvider"/>
 		<extensionPoint name="compilerBundleTypeProvider"
 						interface="org.mustbe.consulo.csharp.compiler.CSharpCompilerBundleTypeProvider"/>
+		<extensionPoint name="toNativeElementTransformer"
+						interface="org.mustbe.consulo.csharp.lang.psi.ToNativeElementTransformer" />
 	</extensionPoints>
 
 	<extensions defaultExtensionNs="org.mustbe.consulo.csharp">
@@ -74,6 +76,8 @@
 				implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl.StructOrGenericParameterConstructorProvider"/>
 		<additionalMemberProvider
 				implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl.OperatorsProvider"/>
+
+		<toNativeElementTransformer implementation="org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToNativeElementTransformer" />
 	</extensions>
 
 

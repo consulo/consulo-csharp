@@ -19,6 +19,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.ToNativeElementTransformers;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.SingleNullableStateResolveResult;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -73,6 +75,7 @@ public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 
 			@Nullable
 			@Override
+			@RequiredReadAction
 			public PsiElement getElement()
 			{
 				PsiElement element = cachedResult.getElement();
@@ -80,7 +83,7 @@ public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 				{
 					return null;
 				}
-				return MsilToCSharpUtil.wrap(cachedResult.getElement());
+				return ToNativeElementTransformers.transform(cachedResult.getElement());
 			}
 
 			@NotNull
@@ -91,6 +94,7 @@ public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 			}
 
 			@Override
+			@RequiredReadAction
 			public boolean isNullableImpl()
 			{
 				return CSharpTypeUtil.isNullableElement(getElement());
