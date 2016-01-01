@@ -23,10 +23,10 @@ import org.mustbe.consulo.csharp.module.extension.BaseCSharpModuleExtension;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompileFailedException;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
+import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import org.mustbe.consulo.mono.dotnet.sdk.MonoSdkType;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ModuleRootLayer;
-import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFile;
 
 /**
@@ -38,6 +38,29 @@ public class MonoCSharpModuleExtension extends BaseCSharpModuleExtension<MonoCSh
 	public MonoCSharpModuleExtension(@NotNull String id, @NotNull ModuleRootLayer module)
 	{
 		super(id, module);
+	}
+
+	@Override
+	public void setCompilerExecutable(@NotNull DotNetCompilerOptionsBuilder builder, @NotNull VirtualFile executable)
+	{
+		DotNetSimpleModuleExtension extension = getModuleRootLayer().getExtension(DotNetSimpleModuleExtension.class);
+		if(extension == null)
+		{
+			super.setCompilerExecutable(builder, executable);
+			return;
+		}
+
+		Sdk sdk = extension.getSdk();
+		if(sdk == null)
+		{
+			super.setCompilerExecutable(builder, executable);
+			return;
+		}
+
+		MSBaseDotNetCompilerOptionsBuilder msBuilder = (MSBaseDotNetCompilerOptionsBuilder) builder;
+
+		msBuilder.setExecutable(MonoSdkType.getInstance().getExecutable(sdk));
+		msBuilder.addProgramArgument(executable.getPath());
 	}
 
 	@NotNull
@@ -56,34 +79,7 @@ public class MonoCSharpModuleExtension extends BaseCSharpModuleExtension<MonoCSh
 		assert extension != null;
 		Sdk sdk = extension.getSdk();
 		assert sdk != null;
-
-		if(getCustomCompilerSdkPointer().isNull())
-		{
-			if(SystemInfo.isWindows)
-			{
-				optionsBuilder.setExecutableFromSdk(sdk, "/../../../bin/mcs.bat");
-			}
-			else if(SystemInfo.isMac)
-			{
-				optionsBuilder.setExecutableFromSdk(sdk, "/../../../bin/mcs");
-			}
-			else if(SystemInfo.isLinux)
-			{
-				optionsBuilder.setExecutable(MonoSdkType.LINUX_COMPILER);
-			}
-		}
-		else
-		{
-			VirtualFile compilerFile = CSharpCompilerUtil.findCompilerInSdk(extension, this);
-			if(compilerFile == null)
-			{
-				throw new DotNetCompileFailedException("Compiler 'csc.exe' is not found");
-			}
-
-			optionsBuilder.setExecutable(MonoSdkType.getInstance().getExecutable(sdk));
-			optionsBuilder.addArgument(compilerFile.getPath());
-		}
-
+		CSharpCompilerUtil.setupCompiler(extension, this, optionsBuilder);
 		return optionsBuilder;
 	}
 }

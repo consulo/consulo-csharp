@@ -13,10 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 
 import org.consulo.module.extension.MutableModuleInheritableNamedPointer;
-import org.consulo.module.extension.ui.ModuleExtensionSdkBoxBuilder;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredDispatchThread;
-import org.mustbe.consulo.csharp.compiler.CSharpCompilerBundleTypeProvider;
+import org.mustbe.consulo.csharp.compiler.CSharpCompilerProvider;
 import org.mustbe.consulo.csharp.compiler.CSharpPlatform;
 import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.icons.AllIcons;
@@ -25,10 +23,14 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkType;
+import com.intellij.openapi.projectRoots.SdkTypeId;
+import com.intellij.openapi.roots.ui.configuration.ProjectStructureConfigurable;
+import com.intellij.openapi.roots.ui.configuration.SdkComboBox;
+import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.VerticalFlowLayout;
-import com.intellij.openapi.util.EmptyRunnable;
+import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.ColoredListCellRendererWrapper;
 import com.intellij.ui.DocumentAdapter;
@@ -36,7 +38,6 @@ import com.intellij.ui.SimpleTextAttributes;
 import com.intellij.ui.TextFieldWithHistory;
 import com.intellij.ui.TitledSeparator;
 import com.intellij.ui.components.JBCheckBox;
-import com.intellij.util.NullableFunction;
 
 /**
  * @author VISTALL
@@ -76,8 +77,7 @@ public class CSharpConfigurationPanel extends JPanel
 					setIcon(AllIcons.Nodes.Module);
 					append(((Module) value).getName(), SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES);
 
-					final CSharpModuleExtension extension = ModuleUtilCore.getExtension((Module) value,
-							CSharpModuleExtension.class);
+					final CSharpModuleExtension extension = ModuleUtilCore.getExtension((Module) value, CSharpModuleExtension.class);
 					if(extension != null)
 					{
 						final CSharpLanguageVersion languageLevel = extension.getLanguageVersion();
@@ -105,16 +105,14 @@ public class CSharpConfigurationPanel extends JPanel
 				continue;
 			}
 
-			final CSharpModuleExtension extension = (CSharpModuleExtension) ModuleUtilCore.getExtension(module,
-					ext.getId());
+			final CSharpModuleExtension extension = (CSharpModuleExtension) ModuleUtilCore.getExtension(module, ext.getId());
 			if(extension != null)
 			{
 				levelComboBox.addItem(module);
 			}
 		}
 
-		final MutableModuleInheritableNamedPointer<CSharpLanguageVersion> languageVersionPointer = ext
-				.getLanguageVersionPointer();
+		final MutableModuleInheritableNamedPointer<CSharpLanguageVersion> languageVersionPointer = ext.getLanguageVersionPointer();
 		final String moduleName = languageVersionPointer.getModuleName();
 		if(moduleName != null)
 		{
@@ -175,15 +173,14 @@ public class CSharpConfigurationPanel extends JPanel
 
 		add(new TitledSeparator("Compiler Options"));
 
-		DotNetSimpleModuleExtension extension = ext.getModuleRootLayer().getExtension(DotNetSimpleModuleExtension
-				.class);
+		CSharpCompilerProvider[] extensions = CSharpCompilerProvider.EP_NAME.getExtensions();
+		DotNetSimpleModuleExtension netExtension = ext.getModuleRootLayer().getExtension(DotNetSimpleModuleExtension.class);
 		final Set<SdkType> compilerBundleTypes = new LinkedHashSet<SdkType>();
-		if(extension != null)
+		if(netExtension != null)
 		{
-			for(CSharpCompilerBundleTypeProvider typeProvider : CSharpCompilerBundleTypeProvider.EP_NAME
-					.getExtensions())
+			for(CSharpCompilerProvider typeProvider : extensions)
 			{
-				SdkType bundleType = typeProvider.getBundleType(extension);
+				SdkType bundleType = typeProvider.getBundleType(netExtension);
 				if(bundleType != null)
 				{
 					compilerBundleTypes.add(bundleType);
@@ -191,26 +188,45 @@ public class CSharpConfigurationPanel extends JPanel
 			}
 		}
 
-		ModuleExtensionSdkBoxBuilder<CSharpMutableModuleExtension<?>> customCompilerBundleBoxBuilder =
-				ModuleExtensionSdkBoxBuilder.<CSharpMutableModuleExtension<?>>create(ext, EmptyRunnable.getInstance());
-		customCompilerBundleBoxBuilder.sdkTypes(compilerBundleTypes);
-		customCompilerBundleBoxBuilder.sdkPointerFunc(new NullableFunction<CSharpMutableModuleExtension<?>,
-				MutableModuleInheritableNamedPointer<Sdk>>()
+		final ProjectSdksModel projectSdksModel = ProjectStructureConfigurable.getInstance(ext.getProject()).getProjectSdksModel();
 
+		final SdkComboBox compilerComboBox = new SdkComboBox(projectSdksModel, new Condition<SdkTypeId>()
 		{
-			@Nullable
 			@Override
-			public MutableModuleInheritableNamedPointer<Sdk> fun(CSharpMutableModuleExtension<?>
-					cSharpMutableModuleExtension)
+			public boolean value(SdkTypeId sdkTypeId)
 			{
-				return ext.getCustomCompilerSdkPointer();
+				return compilerBundleTypes.contains(sdkTypeId);
+			}
+		}, null, "Auto Select", AllIcons.Actions.FindPlain);
+
+		for(CSharpCompilerProvider provider : extensions)
+		{
+			provider.insertCustomSdkItems(netExtension, compilerComboBox);
+		}
+
+		final MutableModuleInheritableNamedPointer<Sdk> customCompilerSdkPointer = ext.getCustomCompilerSdkPointer();
+		if(customCompilerSdkPointer.isNull())
+		{
+			compilerComboBox.setSelectedNoneSdk();
+		}
+		else
+		{
+			compilerComboBox.setSelectedSdk(customCompilerSdkPointer.getName());
+		}
+
+		compilerComboBox.addItemListener(new ItemListener()
+		{
+			@Override
+			public void itemStateChanged(ItemEvent e)
+			{
+				if(e.getStateChange() == ItemEvent.SELECTED)
+				{
+					customCompilerSdkPointer.set(compilerComboBox.getSelectedModuleName(), compilerComboBox.getSelectedSdkName());
+				}
 			}
 		});
-		customCompilerBundleBoxBuilder.nullItem("Auto Select", AllIcons.Actions.FindPlain);
-		customCompilerBundleBoxBuilder.labelText("Compiler");
 
-		add(customCompilerBundleBoxBuilder.build());
-
+		add(LabeledComponent.left(compilerComboBox, "Compiler"));
 		add(LabeledComponent.left(compileLevelField, "Compiler Target (/langversion):"));
 
 		final ComboBox platformComboBox = new ComboBox(CSharpPlatform.values());

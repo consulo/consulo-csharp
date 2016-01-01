@@ -62,7 +62,7 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 	private String myExecutable;
 
 	private final List<String> myArguments = new ArrayList<String>();
-
+	private final List<String> myProgramArguments = new ArrayList<String>();
 
 	public MSBaseDotNetCompilerOptionsBuilder addArgument(@NotNull String arg)
 	{
@@ -70,9 +70,16 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 		return this;
 	}
 
+	public MSBaseDotNetCompilerOptionsBuilder addProgramArgument(@NotNull String arg)
+	{
+		myProgramArguments.add(arg);
+		return this;
+	}
+
 	@Override
 	public DotNetCompilerMessage convertToMessage(Module module, String line)
 	{
+		System.out.println(line);
 		if(line.startsWith("error"))
 		{
 			return new DotNetCompilerMessage(CompilerMessageCategory.ERROR, line, null, -1, 1);
@@ -145,6 +152,7 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 		GeneralCommandLine commandLine = new GeneralCommandLine();
 		commandLine.setExePath(myExecutable);
 		commandLine.setWorkDirectory(module.getModuleDirPath());
+		commandLine.addParameters(myProgramArguments);
 
 		addArgument("/target:" + target);
 		String outputFile = DotNetMacroUtil.expandOutputFile(extension);

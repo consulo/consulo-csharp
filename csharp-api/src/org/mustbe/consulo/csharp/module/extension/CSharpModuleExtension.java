@@ -21,7 +21,9 @@ import org.consulo.module.extension.ModuleInheritableNamedPointer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.compiler.CSharpPlatform;
+import org.mustbe.consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.vfs.VirtualFile;
 
 /**
  * @author VISTALL
@@ -29,6 +31,8 @@ import com.intellij.openapi.projectRoots.Sdk;
  */
 public interface CSharpModuleExtension<T extends ModuleExtension<T>> extends CSharpSimpleModuleExtension<T>
 {
+	String INTERNAL_SDK_KEY = "<internal>";
+
 	boolean isOptimizeCode();
 
 	@NotNull
@@ -39,4 +43,6 @@ public interface CSharpModuleExtension<T extends ModuleExtension<T>> extends CSh
 
 	@NotNull
 	ModuleInheritableNamedPointer<Sdk> getCustomCompilerSdkPointer();
+
+	void setCompilerExecutable(@NotNull DotNetCompilerOptionsBuilder builder, @NotNull VirtualFile executable);
 }

@@ -25,7 +25,6 @@ import org.mustbe.consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ModuleRootLayer;
-import com.intellij.openapi.vfs.VirtualFile;
 
 /**
  * @author VISTALL
@@ -60,27 +59,7 @@ public class MicrosoftCSharpModuleExtension extends BaseCSharpModuleExtension<Mi
 			throw new DotNetCompileFailedException(".NET SDK is not set");
 		}
 
-		VirtualFile compilerFile = null;
-		if(getCustomCompilerSdkPointer().isNull())
-		{
-			VirtualFile homeDirectory = sdk.getHomeDirectory();
-			compilerFile = homeDirectory == null ? null : homeDirectory.findChild(CSharpCompilerUtil.COMPILER_NAME);
-			if(compilerFile == null)
-			{
-				compilerFile = CSharpCompilerUtil.findDefaultCompilerFromProvilders(extension);
-			}
-		}
-		else
-		{
-			compilerFile = CSharpCompilerUtil.findCompilerInSdk(extension, this);
-		}
-
-		if(compilerFile == null)
-		{
-			throw new DotNetCompileFailedException("Compiler 'csc.exe' is not found");
-		}
-
-		optionsBuilder.setExecutable(compilerFile.getPath());
+		CSharpCompilerUtil.setupCompiler(extension, this, optionsBuilder);
 		return optionsBuilder;
 	}
 }

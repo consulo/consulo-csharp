@@ -23,4 +23,8 @@
 								 immutableClass="org.mustbe.consulo.microsoft.csharp.module.extension.MicrosoftCSharpModuleExtension"
 								 mutableClass="org.mustbe.consulo.microsoft.csharp.module.extension.MicrosoftCSharpMutableModuleExtension"/>
 	</extensions>
+
+	<extensions defaultExtensionNs="org.mustbe.consulo.csharp">
+		<compilerProvider id="ms-internal" implementation="org.mustbe.consulo.microsoft.csharp.compiler.MicrosoftInternalCompilerProvider" order="first"/>
+	</extensions>
 </idea-plugin>
