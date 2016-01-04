@@ -18,6 +18,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import com.intellij.lang.Language;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -122,7 +123,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 		}
 		catch(Exception e)
 		{
-			callback.evaluated(new CSharpErrorValue(e.getMessage()));
+			callback.evaluated(new CSharpErrorValue(StringUtil.notNullize(e.getMessage(), "exception throw " + e.getClass().getSimpleName())));
 		}
 	}
 

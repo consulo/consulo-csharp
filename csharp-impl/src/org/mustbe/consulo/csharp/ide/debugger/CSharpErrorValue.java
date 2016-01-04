@@ -31,14 +31,13 @@ public class CSharpErrorValue extends XValue
 {
 	private final String myError;
 
-	public CSharpErrorValue(String error)
+	public CSharpErrorValue(@NotNull String error)
 	{
 		myError = error;
 	}
 
 	@Override
-	public void computePresentation(
-			@NotNull XValueNode node, @NotNull XValuePlace place)
+	public void computePresentation(@NotNull XValueNode node, @NotNull XValuePlace place)
 	{
 		node.setPresentation(AllIcons.Debugger.Watch, new XValuePresentation()
 		{
