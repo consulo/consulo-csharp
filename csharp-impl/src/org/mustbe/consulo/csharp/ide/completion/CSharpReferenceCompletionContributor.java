@@ -265,11 +265,11 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 
 		});
 
-		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class), new DumbCompletionProvider()
 		{
 			@Override
 			@RequiredReadAction
-			protected void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull final CompletionResultSet result)
+			protected void addLookupElements(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull final CompletionResultSet result)
 			{
 				final CSharpReferenceExpressionEx expression = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
 				CSharpReferenceExpression.ResolveToKind kind = expression.kind();
