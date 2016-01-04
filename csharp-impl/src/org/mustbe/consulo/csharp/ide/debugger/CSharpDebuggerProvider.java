@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.ide.debugger;
 import java.util.List;
 import java.util.Set;
 
+import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
@@ -18,7 +19,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import com.intellij.lang.Language;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -37,6 +37,7 @@ import mono.debugger.Value;
  * @author VISTALL
  * @since 10.04.14
  */
+@Logger
 public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 {
 	@NotNull
@@ -123,7 +124,13 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 		}
 		catch(Exception e)
 		{
-			callback.evaluated(new CSharpErrorValue(StringUtil.notNullize(e.getMessage(), "exception throw " + e.getClass().getSimpleName())));
+			String message = e.getMessage();
+			if(message == null)
+			{
+				message = e.getClass().getSimpleName() + " was throw";
+				LOGGER.error("Exception have null message", e);
+			}
+			callback.evaluated(new CSharpErrorValue(message));
 		}
 	}
 

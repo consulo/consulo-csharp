@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.Evaluator;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.FieldEvaluator;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.IsExpressionEvaluator;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.LocalVariableEvaluator;
+import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.NullValueEvaluator;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.ParameterEvaluator;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.ThisObjectEvaluator;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -79,6 +80,7 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 				if(((CSharpFieldDeclaration) resolvedElement).hasModifier(DotNetModifier.STATIC))
 				{
 					typeDeclaration = (CSharpTypeDeclaration) resolvedElement.getParent();
+					myEvaluators.add(NullValueEvaluator.INSTANCE); // push null
 				}
 				else
 				{
