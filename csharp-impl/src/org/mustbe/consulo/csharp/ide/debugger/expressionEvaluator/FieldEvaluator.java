@@ -21,10 +21,13 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import mono.debugger.FieldOrPropertyMirror;
+import mono.debugger.NoObjectValueMirror;
 import mono.debugger.ObjectValueMirror;
 import mono.debugger.StructValueMirror;
 import mono.debugger.TypeMirror;
@@ -47,6 +50,7 @@ public class FieldEvaluator extends Evaluator
 	}
 
 	@Override
+	@RequiredReadAction
 	public void evaluate(@NotNull CSharpEvaluateContext context)
 	{
 		Value<?> popValue = context.popValue();
@@ -85,14 +89,14 @@ public class FieldEvaluator extends Evaluator
 				}
 			}
 		}
-		else if(popValue instanceof ObjectValueMirror)
+		else if(popValue instanceof ObjectValueMirror || popValue instanceof NoObjectValueMirror && myFieldDeclaration.hasModifier(DotNetModifier.STATIC))
 		{
 			List<FieldOrPropertyMirror> fieldOrPropertyMirrors = typeMirror.fieldAndProperties(true);
 			for(FieldOrPropertyMirror fieldOrPropertyMirror : fieldOrPropertyMirrors)
 			{
 				if(fieldOrPropertyMirror.name().equals(myFieldDeclaration.getName()))
 				{
-					Value<?> loadedValue = fieldOrPropertyMirror.value(context.getFrame().thread(), (ObjectValueMirror) popValue);
+					Value<?> loadedValue = fieldOrPropertyMirror.value(context.getFrame().thread(), popValue instanceof NoObjectValueMirror ? null : (ObjectValueMirror) popValue);
 					if(loadedValue != null)
 					{
 						context.pull(loadedValue, fieldOrPropertyMirror);

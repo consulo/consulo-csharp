@@ -89,6 +89,10 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 
 				myEvaluators.add(new FieldEvaluator(typeDeclaration, (CSharpFieldDeclaration)resolvedElement));
 			}
+			else if(resolvedElement instanceof CSharpTypeDeclaration)
+			{
+				myEvaluators.add(NullValueEvaluator.INSTANCE);
+			}
 		}
 		else
 		{
