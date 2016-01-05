@@ -76,7 +76,7 @@ public class FieldEvaluator extends Evaluator
 
 		if(popValue instanceof StructValueMirror)
 		{
-			Map<FieldOrPropertyMirror, Value<?>> values = ((StructValueMirror) popValue).values();
+			Map<FieldOrPropertyMirror, Value<?>> values = ((StructValueMirror) popValue).map();
 
 			for(Map.Entry<FieldOrPropertyMirror, Value<?>> entry : values.entrySet())
 			{
