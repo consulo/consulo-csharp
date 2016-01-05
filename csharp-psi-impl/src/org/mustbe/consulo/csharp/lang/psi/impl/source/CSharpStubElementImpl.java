@@ -60,7 +60,6 @@ public abstract class CSharpStubElementImpl<S extends StubElement> extends StubB
 		T element = getStubOrPsiChildByIndex(set, index);
 		if(element == null)
 		{
-			System.out.println(getStub());
 			throw new IllegalArgumentException("Element by set: " + set + " and index:" + index + " is not found. Tree:\n " + new
 					PsiTreeDebugBuilder().psiToString(this, false, false));
 		}
