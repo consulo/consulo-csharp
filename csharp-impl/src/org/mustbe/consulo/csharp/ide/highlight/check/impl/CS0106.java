@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
@@ -51,6 +52,7 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 	{
 		Constructor(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL),
 		StaticConstructor(CSharpModifier.STATIC),
+		Constant(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL),
 		DeConstructor,
 		InterfaceMember(CSharpModifier.NEW),
 		GenericParameter(CSharpModifier.IN, CSharpModifier.OUT),
@@ -121,8 +123,14 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 		return list;
 	}
 
+	@RequiredReadAction
 	public static Owners toOwners(DotNetModifierListOwner owner)
 	{
+		if(owner instanceof CSharpFieldDeclaration && ((CSharpFieldDeclaration) owner).isConstant())
+		{
+			return Owners.Constant;
+		}
+
 		if(owner instanceof CSharpConstructorDeclaration)
 		{
 			if(owner.hasModifier(DotNetModifier.STATIC))

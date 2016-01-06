@@ -160,7 +160,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 			{
 				CSharpFieldDeclaration fieldDeclaration = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpFieldDeclaration.class);
 				assert fieldDeclaration != null;
-				if(fieldDeclaration.isConstant())
+				if(fieldDeclaration.isConstant() || fieldDeclaration.hasModifier(CSharpModifier.STATIC))
 				{
 					return;
 				}
