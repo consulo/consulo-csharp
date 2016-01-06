@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.ide.completion.smartEnter;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
@@ -41,12 +42,13 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 {
 	public interface Fixer
 	{
+		@RequiredReadAction
 		boolean process(@NotNull Editor editor, @NotNull PsiFile psiFile);
 	}
 
 	public class VariableSemicolonFixer implements Fixer
 	{
-
+		@RequiredReadAction
 		@Override
 		public boolean process(@NotNull Editor editor, @NotNull PsiFile psiFile)
 		{
@@ -78,7 +80,7 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 
 	public class StatementSemicolonFixer implements Fixer
 	{
-
+		@RequiredReadAction
 		@Override
 		public boolean process(@NotNull Editor editor, @NotNull PsiFile psiFile)
 		{
@@ -126,6 +128,7 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 	};
 
 	@Override
+	@RequiredReadAction
 	public boolean process(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile psiFile)
 	{
 		for(Fixer fixer : myFixers)
@@ -138,6 +141,7 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 		return false;
 	}
 
+	@RequiredReadAction
 	private void insertStringAtEndWithReformat(@NotNull String text, @NotNull PsiElement anchor, @NotNull Editor editor, int moveOffset,
 			boolean commit)
 	{
