@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.codeInsight.completion.CompletionProvider;
 import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroTokens;
@@ -32,7 +33,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMacroReferenceExpres
 import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -48,7 +48,7 @@ public class CSharpMacroReferenceCompletionContributor extends CompletionContrib
 {
 	public CSharpMacroReferenceCompletionContributor()
 	{
-		extend(CompletionType.BASIC, psiElement(CSharpMacroTokens.IDENTIFIER).withParent(CSharpMacroReferenceExpressionImpl.class), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, psiElement(CSharpMacroTokens.IDENTIFIER).withParent(CSharpMacroReferenceExpressionImpl.class), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override

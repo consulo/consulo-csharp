@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.codeInsight.completion.CompletionProvider;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamedCallArgument;
@@ -33,7 +34,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -53,17 +53,13 @@ public class CSharpCallArgumentCompletionContributor extends CompletionContribut
 {
 	public CSharpCallArgumentCompletionContributor()
 	{
-		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class)
-				.withSuperParent(2, CSharpCallArgument.class), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class).withSuperParent(2, CSharpCallArgument.class), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
-			protected void addCompletions(@NotNull CompletionParameters parameters,
-					ProcessingContext context,
-					@NotNull CompletionResultSet result)
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
-				CSharpReferenceExpression referenceExpression = (CSharpReferenceExpression) parameters.getPosition()
-						.getParent();
+				CSharpReferenceExpression referenceExpression = (CSharpReferenceExpression) parameters.getPosition().getParent();
 				if(referenceExpression.getQualifier() != null)
 				{
 					return;
@@ -75,8 +71,7 @@ public class CSharpCallArgumentCompletionContributor extends CompletionContribut
 					return;
 				}
 
-				CSharpCallArgumentListOwner argumentListOwner = PsiTreeUtil.getParentOfType(referenceExpression,
-						CSharpCallArgumentListOwner.class);
+				CSharpCallArgumentListOwner argumentListOwner = PsiTreeUtil.getParentOfType(referenceExpression, CSharpCallArgumentListOwner.class);
 
 				assert argumentListOwner != null;
 				ResolveResult[] resolveResults = argumentListOwner.multiResolve(false);
@@ -107,8 +102,7 @@ public class CSharpCallArgumentCompletionContributor extends CompletionContribut
 					PsiElement element = resolveResult.getElement();
 					if(element instanceof CSharpSimpleLikeMethodAsElement)
 					{
-						CSharpSimpleParameterInfo[] parameterInfos = ((CSharpSimpleLikeMethodAsElement) element)
-								.getParameterInfos();
+						CSharpSimpleParameterInfo[] parameterInfos = ((CSharpSimpleLikeMethodAsElement) element).getParameterInfos();
 
 						if(thisCallArgumentPosition != -1)
 						{

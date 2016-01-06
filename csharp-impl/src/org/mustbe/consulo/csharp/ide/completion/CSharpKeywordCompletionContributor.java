@@ -21,6 +21,7 @@ import static com.intellij.patterns.StandardPatterns.psiElement;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.codeInsight.completion.CompletionProvider;
 import org.mustbe.consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.*;
@@ -30,7 +31,6 @@ import org.mustbe.consulo.dotnet.DotNetRunUtil;
 import org.mustbe.consulo.dotnet.psi.*;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.completion.InsertHandler;
@@ -60,7 +60,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 
 	public CSharpKeywordCompletionContributor()
 	{
-		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -152,7 +152,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, CSharpPatterns.field(), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, CSharpPatterns.field(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -178,8 +178,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.USING_KEYWORD)).inside(CSharpUsingNamespaceStatement.class),
-				new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.USING_KEYWORD)).inside(CSharpUsingNamespaceStatement.class), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -197,7 +196,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement().inside(DotNetGenericParameter.class), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, psiElement().inside(DotNetGenericParameter.class), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -224,7 +223,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement(), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, psiElement(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override

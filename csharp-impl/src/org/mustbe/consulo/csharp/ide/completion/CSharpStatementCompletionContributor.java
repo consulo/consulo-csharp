@@ -21,6 +21,7 @@ import static com.intellij.patterns.StandardPatterns.psiElement;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.codeInsight.completion.CompletionProvider;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import org.mustbe.consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import org.mustbe.consulo.csharp.ide.completion.util.ExpressionOrStatementInsertHandler;
@@ -43,7 +44,6 @@ import com.intellij.codeInsight.AutoPopupController;
 import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.completion.InsertHandler;
@@ -112,7 +112,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 	public CSharpStatementCompletionContributor()
 	{
 		extend(CompletionType.BASIC, CSharpPatterns.statementStart().inside(or(psiElement().inside(CSharpForeachStatementImpl.class), psiElement().inside(CSharpForStatementImpl.class),
-				psiElement().inside(CSharpWhileStatementImpl.class), psiElement().inside(CSharpDoWhileStatementImpl.class))), new CompletionProvider<CompletionParameters>()
+				psiElement().inside(CSharpWhileStatementImpl.class), psiElement().inside(CSharpDoWhileStatementImpl.class))), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -142,7 +142,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 		});
 
 		extend(CompletionType.BASIC, CSharpPatterns.statementStart().inside(psiElement().inside(CSharpSimpleLikeMethodAsElement.class)).andNot(psiElement().inside(CSharpFinallyStatementImpl.class)),
-				new CompletionProvider<CompletionParameters>()
+				new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -164,7 +164,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
-		extend(CompletionType.BASIC, CSharpPatterns.statementStart().inside(CSharpLabeledStatementImpl.class), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, CSharpPatterns.statementStart().inside(CSharpLabeledStatementImpl.class), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -196,7 +196,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement().withSuperParent(4, CSharpSwitchStatementImpl.class), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, psiElement().withSuperParent(4, CSharpSwitchStatementImpl.class), new CompletionProvider()
 
 		{
 			@RequiredReadAction
@@ -227,7 +227,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
-		extend(CompletionType.BASIC, CSharpPatterns.statementStart(), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, CSharpPatterns.statementStart(), new CompletionProvider()
 		{
 			@Override
 			@RequiredReadAction
@@ -330,7 +330,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
-		extend(CompletionType.BASIC, CSharpPatterns.statementStart(), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, CSharpPatterns.statementStart(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -349,7 +349,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpSoftTokens.YIELD_KEYWORD)), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpSoftTokens.YIELD_KEYWORD)), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -376,8 +376,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.ELSE_KEYWORD)).withSuperParent(2, CSharpExpressionStatementImpl.class),
-				new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.ELSE_KEYWORD)).withSuperParent(2, CSharpExpressionStatementImpl.class), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -397,7 +396,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
-		extend(CompletionType.BASIC, CSharpPatterns.statementStart(), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, CSharpPatterns.statementStart(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -440,7 +439,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 		});
 
 		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.RPAR).withParent(CSharpCatchStatementImpl
-				.class)), new CompletionProvider<CompletionParameters>()
+				.class)), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override

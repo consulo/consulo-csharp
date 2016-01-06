@@ -21,6 +21,7 @@ import static com.intellij.patterns.StandardPatterns.psiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.codeInsight.completion.CompletionProvider;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
@@ -30,7 +31,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.completion.InsertHandler;
@@ -53,13 +53,11 @@ public class CSharpAccessorCompletionContributor extends CompletionContributor
 {
 	public CSharpAccessorCompletionContributor()
 	{
-		extend(CompletionType.BASIC, psiElement().andNot(psiElement().inside(DotNetXXXAccessor.class)), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, psiElement().andNot(psiElement().inside(DotNetXXXAccessor.class)), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
-			protected void addCompletions(@NotNull CompletionParameters completionParameters,
-					ProcessingContext processingContext,
-					@NotNull CompletionResultSet resultSet)
+			protected void addCompletions(@NotNull CompletionParameters completionParameters, ProcessingContext processingContext, @NotNull CompletionResultSet resultSet)
 			{
 				PsiElement position = completionParameters.getPosition();
 				final CSharpXXXAccessorOwner accessorOwner = PsiTreeUtil.getParentOfType(position, CSharpXXXAccessorOwner.class);
@@ -79,8 +77,7 @@ public class CSharpAccessorCompletionContributor extends CompletionContributor
 
 				if((rightTextRange == -1 || textOffset < rightTextRange) && textOffset > leftBrace.getTextOffset())
 				{
-					if(accessorOwner instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) accessorOwner).hasModifier(DotNetModifier
-							.ABSTRACT))
+					if(accessorOwner instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) accessorOwner).hasModifier(DotNetModifier.ABSTRACT))
 					{
 						buildAccessorKeywordsCompletion(resultSet, accessorOwner, null, null);
 					}
@@ -109,12 +106,11 @@ public class CSharpAccessorCompletionContributor extends CompletionContributor
 		});
 	}
 
-	private void buildAccessorKeywordsCompletion(CompletionResultSet resultSet, final CSharpXXXAccessorOwner accessorOwner,
-			@Nullable String tail,
+	private void buildAccessorKeywordsCompletion(CompletionResultSet resultSet, final CSharpXXXAccessorOwner accessorOwner, @Nullable String tail,
 			@Nullable InsertHandler<LookupElement> insertHandler)
 	{
-		TokenSet tokenSet = accessorOwner instanceof CSharpEventDeclaration ? TokenSet.create(CSharpSoftTokens.ADD_KEYWORD,
-				CSharpSoftTokens.REMOVE_KEYWORD) : TokenSet.create(CSharpSoftTokens.GET_KEYWORD, CSharpSoftTokens.SET_KEYWORD);
+		TokenSet tokenSet = accessorOwner instanceof CSharpEventDeclaration ? TokenSet.create(CSharpSoftTokens.ADD_KEYWORD, CSharpSoftTokens.REMOVE_KEYWORD) : TokenSet.create(CSharpSoftTokens
+				.GET_KEYWORD, CSharpSoftTokens.SET_KEYWORD);
 
 		for(IElementType elementType : tokenSet.getTypes())
 		{
@@ -147,7 +143,7 @@ public class CSharpAccessorCompletionContributor extends CompletionContributor
 			{
 				continue;
 			}
-			IElementType expectedElementType = null;
+			IElementType expectedElementType;
 			switch(accessorKind)
 			{
 				case GET:

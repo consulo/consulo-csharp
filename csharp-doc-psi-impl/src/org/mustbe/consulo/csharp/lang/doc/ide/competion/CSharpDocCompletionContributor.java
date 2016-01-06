@@ -19,6 +19,8 @@ package org.mustbe.consulo.csharp.lang.doc.ide.competion;
 import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.codeInsight.completion.CompletionProvider;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocAttribute;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTag;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTokenType;
@@ -27,7 +29,6 @@ import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocTagInfo;
 import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocTagManager;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -43,8 +44,9 @@ public class CSharpDocCompletionContributor extends CompletionContributor
 {
 	public CSharpDocCompletionContributor()
 	{
-		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpDocTokenType.XML_NAME), new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.BASIC, StandardPatterns.psiElement(CSharpDocTokenType.XML_NAME), new CompletionProvider()
 		{
+			@RequiredReadAction
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
