@@ -173,6 +173,11 @@ public class CSharpLookupElementBuilder
 						{
 							new CSharpParenthesesInsertHandler(methodDeclaration).handleInsert(context, item);
 
+							if(context.getCompletionChar() != '\n')
+							{
+								return;
+							}
+
 							// for void method we always insert semicolon
 							if(DotNetTypeRefUtil.isVmQNameEqual(methodDeclaration.getReturnTypeRef(), element, DotNetTypes.System.Void))
 							{
@@ -397,5 +402,4 @@ public class CSharpLookupElementBuilder
 		builder = builder.withInsertHandler(LtGtInsertHandler.getInstance(true));
 		return builder;
 	}
-
 }
