@@ -1211,6 +1211,11 @@
 			<parameter/>
 		</operator>
 
+		<operator name="XOR">
+			<parameter/>
+			<parameter/>
+		</operator>
+
 		<operator name="OR">
 			<parameter/>
 			<parameter/>
