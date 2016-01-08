@@ -12,6 +12,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightTypeDecl
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -36,6 +37,7 @@ public class CSharpLambdaResolveResultUtil
 		CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(project);
 		builder.withParentQName(declaration.getPresentableParentQName());
 		builder.withName(declaration.getName());
+		builder.addModifier(DotNetModifier.SEALED);
 		builder.setNavigationElement(declaration);
 
 		builder.putUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE, declaration);

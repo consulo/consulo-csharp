@@ -265,9 +265,9 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 	}
 
 	@NotNull
-	public CSharpLightTypeDeclarationBuilder addModifier(DotNetModifier modifierWithMask)
+	public CSharpLightTypeDeclarationBuilder addModifier(DotNetModifier modifier)
 	{
-		myModifiers.add(modifierWithMask);
+		myModifiers.add(CSharpModifier.as(modifier));
 		return this;
 	}
 

@@ -146,6 +146,12 @@ public class CSharpModifierListImplUtil
 					return superParent instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) superParent).hasModifier(DotNetModifier.ABSTRACT);
 				}
 				break;
+			case SEALED:
+				if(parent instanceof DotNetTypeDeclaration && (((DotNetTypeDeclaration) parent).isEnum() || ((DotNetTypeDeclaration) parent).isStruct()))
+				{
+					return true;
+				}
+				break;
 		}
 		return false;
 	}
