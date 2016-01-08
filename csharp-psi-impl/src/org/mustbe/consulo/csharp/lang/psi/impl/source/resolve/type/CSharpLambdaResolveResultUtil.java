@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -38,6 +39,12 @@ public class CSharpLambdaResolveResultUtil
 		builder.withParentQName(declaration.getPresentableParentQName());
 		builder.withName(declaration.getName());
 		builder.addModifier(DotNetModifier.SEALED);
+		CSharpAccessModifier accessModifier = CSharpAccessModifier.findModifier(declaration);
+		for(CSharpModifier modifier : accessModifier.getModifiers())
+		{
+			builder.addModifier(modifier);
+		}
+
 		builder.setNavigationElement(declaration);
 
 		builder.putUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE, declaration);

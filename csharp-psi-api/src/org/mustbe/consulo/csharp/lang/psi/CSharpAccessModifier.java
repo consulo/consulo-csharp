@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi;
 import org.consulo.annotations.Immutable;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 
 /**
@@ -54,6 +55,7 @@ public enum CSharpAccessModifier
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static CSharpAccessModifier findModifier(@NotNull DotNetModifierListOwner owner)
 	{
 		loop: for(CSharpAccessModifier value : VALUES)
