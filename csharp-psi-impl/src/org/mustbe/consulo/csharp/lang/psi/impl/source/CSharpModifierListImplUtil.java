@@ -24,7 +24,6 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifierList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
@@ -104,7 +103,7 @@ public class CSharpModifierListImplUtil
 						return true;
 					}
 				}
-				if(CSharpMethodUtil.isDelegate(parent) || parent instanceof CSharpTypeDeclaration || parent instanceof CSharpEnumConstantDeclaration)
+				if(parent instanceof CSharpEnumConstantDeclaration)
 				{
 					return true;
 				}
