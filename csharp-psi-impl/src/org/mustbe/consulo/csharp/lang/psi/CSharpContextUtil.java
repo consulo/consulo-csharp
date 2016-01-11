@@ -72,6 +72,11 @@ public class CSharpContextUtil
 			return ContextType.ANY;
 		}
 
+		if(element instanceof CSharpTypeDeclaration)
+		{
+			return ContextType.STATIC;
+		}
+
 		if(element instanceof CSharpConstructorDeclaration)
 		{
 			return CSharpContextUtil.ContextType.ANY;
