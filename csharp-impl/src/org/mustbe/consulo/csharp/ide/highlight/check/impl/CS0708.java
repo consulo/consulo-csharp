@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.AddModifierFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
@@ -43,6 +44,10 @@ public class CS0708 extends CompilerCheck<DotNetModifierListOwner>
 		PsiElement parent = element.getParent();
 		if(CSharpTypeDeclarationImplUtil.isExplicitStaticType(parent))
 		{
+			if(element instanceof CSharpTypeDeclaration)
+			{
+				return null;
+			}
 			if(!element.hasModifier(DotNetModifier.STATIC))
 			{
 				PsiElement nameIdentifier = ((PsiNameIdentifierOwner) element).getNameIdentifier();
