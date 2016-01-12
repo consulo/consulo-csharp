@@ -133,13 +133,14 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 
 		if(owner instanceof CSharpConstructorDeclaration)
 		{
-			if(owner.hasModifier(DotNetModifier.STATIC))
-			{
-				return Owners.StaticConstructor;
-			}
 			if(((CSharpConstructorDeclaration) owner).isDeConstructor())
 			{
 				return Owners.DeConstructor;
+			}
+
+			if(owner.hasModifier(DotNetModifier.STATIC))
+			{
+				return Owners.StaticConstructor;
 			}
 			return Owners.Constructor;
 		}
