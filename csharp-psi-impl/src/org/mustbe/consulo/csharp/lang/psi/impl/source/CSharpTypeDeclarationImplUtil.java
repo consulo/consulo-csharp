@@ -18,12 +18,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
@@ -42,20 +41,7 @@ import com.intellij.util.ArrayUtil;
  */
 public class CSharpTypeDeclarationImplUtil
 {
-	public static boolean isExplicitStaticType(@Nullable PsiElement maybeTypeDeclaration)
-	{
-		if(!(maybeTypeDeclaration instanceof DotNetTypeDeclaration))
-		{
-			return false;
-		}
-		if(((DotNetTypeDeclaration) maybeTypeDeclaration).hasModifier(DotNetModifier.STATIC))
-		{
-			DotNetModifierList modifierList = ((DotNetTypeDeclaration) maybeTypeDeclaration).getModifierList();
-			return modifierList != null && modifierList.hasModifierInTree(DotNetModifier.STATIC);
-		}
-		return false;
-	}
-
+	@RequiredReadAction
 	public static boolean isInheritOrSelf(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope, @NotNull String... vmQNames)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
@@ -68,6 +54,7 @@ public class CSharpTypeDeclarationImplUtil
 		return isInheritOrSelf0((DotNetTypeDeclaration) typeResolveResultElement, scope, vmQNames);
 	}
 
+	@RequiredReadAction
 	private static boolean isInheritOrSelf0(DotNetTypeDeclaration typeDeclaration, PsiElement scope, String... vmQNames)
 	{
 		if(ArrayUtil.contains(typeDeclaration.getVmQName(), vmQNames))
@@ -103,6 +90,7 @@ public class CSharpTypeDeclarationImplUtil
 		return false;
 	}
 
+	@RequiredReadAction
 	public static boolean isEquivalentTo(@NotNull DotNetTypeDeclaration thisType, @Nullable PsiElement another)
 	{
 		return another instanceof DotNetTypeDeclaration && Comparing.equal(thisType.getVmQName(), ((DotNetTypeDeclaration) another).getVmQName());
@@ -120,6 +108,7 @@ public class CSharpTypeDeclarationImplUtil
 		return false;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	public static DotNetTypeRef[] getExtendTypeRefs(@NotNull DotNetTypeDeclaration t)
 	{
@@ -143,6 +132,7 @@ public class CSharpTypeDeclarationImplUtil
 	}
 
 	@Nullable
+	@RequiredReadAction
 	public static Pair<DotNetTypeDeclaration, DotNetGenericExtractor> resolveBaseType(@NotNull DotNetTypeDeclaration typeDeclaration,
 			@NotNull PsiElement scope)
 	{
@@ -174,6 +164,7 @@ public class CSharpTypeDeclarationImplUtil
 	}
 
 	@Nullable
+	@RequiredReadAction
 	public static String getDefaultSuperType(@NotNull DotNetTypeDeclaration typeDeclaration)
 	{
 		String vmQName = typeDeclaration.getVmQName();

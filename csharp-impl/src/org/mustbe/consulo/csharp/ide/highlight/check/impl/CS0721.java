@@ -21,12 +21,12 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.psi.PsiElement;
 
@@ -42,10 +42,10 @@ public class CS0721 extends CompilerCheck<DotNetParameter>
 	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetParameter element)
 	{
 		DotNetType type = element.getType();
-		PsiElement resolve = DotNetTypeRefUtil.resolve(type);
-		if(CSharpTypeDeclarationImplUtil.isExplicitStaticType(resolve))
+		PsiElement resolved = DotNetTypeRefUtil.resolve(type);
+		if(resolved instanceof DotNetTypeDeclaration && ((DotNetTypeDeclaration) resolved).hasModifier(DotNetModifier.STATIC))
 		{
-			return newBuilder(type, formatElement(resolve)).addQuickFix(new RemoveModifierFix(DotNetModifier.STATIC, (DotNetModifierListOwner) resolve));
+			return newBuilder(type, formatElement(resolved)).addQuickFix(new RemoveModifierFix(DotNetModifier.STATIC, (DotNetModifierListOwner) resolved));
 		}
 		return null;
 	}
