@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
@@ -72,7 +73,7 @@ public class CSharpContextUtil
 			return ContextType.ANY;
 		}
 
-		if(element instanceof CSharpTypeDeclaration)
+		if(CSharpPsiUtilImpl.isTypeLikeElement(element))
 		{
 			return ContextType.STATIC;
 		}

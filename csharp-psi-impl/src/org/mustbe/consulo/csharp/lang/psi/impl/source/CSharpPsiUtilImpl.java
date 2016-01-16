@@ -22,6 +22,8 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
 import com.intellij.openapi.util.Comparing;
@@ -37,6 +39,11 @@ import com.intellij.psi.PsiNameIdentifierOwner;
  */
 public class CSharpPsiUtilImpl
 {
+	public static boolean isTypeLikeElement(@NotNull PsiElement element)
+	{
+		return element instanceof CSharpTypeDeclaration || element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isDelegate();
+	}
+
 	@RequiredReadAction
 	public static boolean isNullOrEmpty(@NotNull PsiNameIdentifierOwner owner)
 	{
