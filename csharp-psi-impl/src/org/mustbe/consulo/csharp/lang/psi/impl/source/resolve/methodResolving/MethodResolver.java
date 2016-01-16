@@ -313,6 +313,7 @@ public class MethodResolver
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static MethodCalcResult calc(@NotNull List<NCallArgument> arguments, @NotNull PsiElement scope)
 	{
 		int weight = 0;
@@ -325,8 +326,14 @@ public class MethodResolver
 				case NCallArgument.EQUAL:
 					weight -= 50000;
 					break;
+				case NCallArgument.PARAMS:
+					weight -= 100000;
+					break;
 				case NCallArgument.INSTANCE_OF:
 					weight -= 1000000;
+					break;
+				case NCallArgument.PARAMS_INSTANCE_OF:
+					weight -= 2000000;
 					break;
 				default:
 					valid = false;

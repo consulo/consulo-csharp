@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
@@ -25,6 +26,8 @@ public class NCallArgument extends UserDataHolderBase
 	public static final int FAIL = 0;
 	public static final int EQUAL = 1;
 	public static final int INSTANCE_OF = 2;
+	public static final int PARAMS = 3;
+	public static final int PARAMS_INSTANCE_OF = 4;
 
 	private final DotNetTypeRef myTypeRef;
 	@Nullable
@@ -35,7 +38,7 @@ public class NCallArgument extends UserDataHolderBase
 	 */
 	private final Object myParameterObject;
 
-	private int myValid = NOT_CALCULATED;
+	protected int myValid = NOT_CALCULATED;
 
 	public NCallArgument(@NotNull DotNetTypeRef typeRef, @Nullable CSharpCallArgument callArgument, @Nullable Object parameterObject)
 	{
@@ -97,6 +100,7 @@ public class NCallArgument extends UserDataHolderBase
 		return myValid != FAIL;
 	}
 
+	@RequiredReadAction
 	public int calcValid(@NotNull PsiElement scope)
 	{
 		DotNetTypeRef parameterTypeRef = getParameterTypeRef();

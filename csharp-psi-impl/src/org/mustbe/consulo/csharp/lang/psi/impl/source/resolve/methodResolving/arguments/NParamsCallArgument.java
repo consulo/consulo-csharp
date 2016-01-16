@@ -7,11 +7,16 @@ import java.util.List;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.ImplicitCastInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -26,6 +31,37 @@ public class NParamsCallArgument extends NCallArgument
 	{
 		super(DotNetTypeRef.ERROR_TYPE, null, parameter);
 		myCallArguments = callArguments;
+	}
+
+	@Override
+	@RequiredReadAction
+	public int calcValid(@NotNull PsiElement scope)
+	{
+		DotNetTypeRef parameterTypeRef = getParameterTypeRef();
+		int newVal = FAIL;
+		if(parameterTypeRef != null)
+		{
+			if(CSharpTypeUtil.isTypeEqual(parameterTypeRef, getTypeRef(), scope))
+			{
+				newVal = PARAMS;
+			}
+			else
+			{
+				CSharpTypeUtil.InheritResult inheritable = CSharpTypeUtil.isInheritable(parameterTypeRef, getTypeRef(), scope, CSharpStaticTypeRef.IMPLICIT);
+				if(inheritable.isSuccess())
+				{
+					if(inheritable.isConversion())
+					{
+						putUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO, new ImplicitCastInfo(getTypeRef(), parameterTypeRef));
+					}
+
+					newVal = PARAMS_INSTANCE_OF;
+				}
+			}
+		}
+
+		myValid = newVal;
+		return myValid;
 	}
 
 	@NotNull

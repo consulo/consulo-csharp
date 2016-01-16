@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.a
 import java.util.Collections;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -25,10 +26,11 @@ public class NEmptyParamsCallArgument extends NParamsCallArgument
 		return true;
 	}
 
+	@RequiredReadAction
 	@Override
 	public int calcValid(@NotNull PsiElement scope)
 	{
-		return INSTANCE_OF;
+		return PARAMS;
 	}
 
 	@NotNull
