@@ -154,7 +154,14 @@ public class CSharpConstantTypeRef extends CSharpConstantBaseTypeRef
 
 			if(testDouble(DotNetTypes.System.Single, qName, numberValue, Float.MIN_VALUE, Float.MAX_VALUE))
 			{
-				return another;
+				if(numberValue instanceof Double)
+				{
+					double fraction = numberValue.doubleValue() % 1.0d;
+					if(fraction == 0)
+					{
+						return another;
+					}
+				}
 			}
 
 			if(testDouble(DotNetTypes.System.Double, qName, numberValue, Double.MIN_VALUE, Double.MAX_VALUE))
