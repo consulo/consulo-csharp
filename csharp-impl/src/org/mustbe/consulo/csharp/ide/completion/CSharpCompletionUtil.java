@@ -103,7 +103,7 @@ public class CSharpCompletionUtil
 
 	public static boolean isTypeLikeElementWithNamespace(@NotNull PsiElement element)
 	{
-		return isTypeLikeElement(element) || element instanceof DotNetNamespaceAsElement;
+		return CSharpPsiUtilImpl.isTypeLikeElement(element) || element instanceof DotNetNamespaceAsElement;
 	}
 
 	@NotNull

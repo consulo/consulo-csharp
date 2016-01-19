@@ -12,6 +12,7 @@ import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.libraryAnalyzer.NamespaceReference;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -94,7 +95,7 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 
 				LookupElement element = plainResult.getLookupElement();
 				Object o = element.getObject();
-				if(o instanceof PsiElement && CSharpCompletionUtil.isTypeLikeElement((PsiElement) o))
+				if(o instanceof PsiElement && CSharpPsiUtilImpl.isTypeLikeElement((PsiElement) o))
 				{
 					holder.registerTypeLike((DotNetQualifiedElement) o);
 				}

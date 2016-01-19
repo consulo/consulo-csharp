@@ -40,15 +40,7 @@ import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAnonymousMethodExpression;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerSingleValueImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerValue;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAsExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIsExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNewExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeCastExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
@@ -395,7 +387,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 								}
 							});
 
-							if(CSharpCompletionUtil.isTypeLikeElement(element))
+							if(CSharpPsiUtilImpl.isTypeLikeElement(element))
 							{
 								result.consume(new ReplaceableTypeLikeLookupElement(lookupElementBuilder));
 							}

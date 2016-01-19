@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -48,7 +49,7 @@ public class InheritorsHolder implements Consumer<LookupElement>
 	public void consume(LookupElement lookupElement)
 	{
 		final Object object = lookupElement.getObject();
-		if(object instanceof PsiElement && CSharpCompletionUtil.isTypeLikeElement((PsiElement) object))
+		if(object instanceof PsiElement && CSharpPsiUtilImpl.isTypeLikeElement((PsiElement) object))
 		{
 			registerTypeLike((DotNetQualifiedElement) object);
 		}
