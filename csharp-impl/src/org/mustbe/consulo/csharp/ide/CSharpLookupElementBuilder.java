@@ -29,6 +29,7 @@ import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodUtil;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
@@ -45,7 +46,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.completion.InsertHandler;
@@ -136,17 +136,17 @@ public class CSharpLookupElementBuilder
 				builder = LookupElementBuilder.create(methodDeclaration, lookupString);
 				builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 
-				final DotNetTypeRef[] parameterTypes = methodDeclaration.getParameterTypeRefs();
+				final CSharpSimpleParameterInfo[] parameterInfos = methodDeclaration.getParameterInfos();
 
 				String genericText = DotNetElementPresentationUtil.formatGenericParameters((DotNetGenericParameterListOwner) element);
 
-				String parameterText = genericText + "(" + StringUtil.join(parameterTypes, new Function<DotNetTypeRef, String>()
+				String parameterText = genericText + "(" + StringUtil.join(parameterInfos, new Function<CSharpSimpleParameterInfo, String>()
 				{
 					@Override
 					@RequiredReadAction
-					public String fun(DotNetTypeRef parameter)
+					public String fun(CSharpSimpleParameterInfo parameter)
 					{
-						return CSharpTypeRefPresentationUtil.buildShortText(parameter, element);
+						return CSharpTypeRefPresentationUtil.buildShortText(parameter.getTypeRef(), element) + " " + parameter.getNotNullName();
 					}
 				}, ", ") + ")";
 
