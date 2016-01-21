@@ -23,18 +23,30 @@ import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiUtilCore;
+import com.intellij.util.ArrayUtil;
 
 /**
  * @author VISTALL
- * @since 08.01.2016
+ * @since 21.01.2016
  */
-public class CS0509 extends CompilerCheck<DotNetType>
+public class CS1008 extends CompilerCheck<DotNetType>
 {
+	private static final String[] ourEnumSuperTypes = new String[] {
+			DotNetTypes.System.SByte,
+			DotNetTypes.System.Byte,
+			DotNetTypes.System.Int16,
+			DotNetTypes.System.UInt16,
+			DotNetTypes.System.Int32,
+			DotNetTypes.System.UInt32,
+			DotNetTypes.System.Int64,
+			DotNetTypes.System.UInt64,
+	};
+
 	@RequiredReadAction
 	@Nullable
 	@Override
@@ -46,14 +58,13 @@ public class CS0509 extends CompilerCheck<DotNetType>
 			PsiElement superParent = parent.getParent();
 			if(superParent instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) superParent).isEnum())
 			{
-				return null;
-			}
-			PsiElement psiElement = element.toTypeRef().resolve(element).getElement();
-			if(psiElement instanceof CSharpTypeDeclaration)
-			{
-				if(((CSharpTypeDeclaration) psiElement).hasModifier(DotNetModifier.SEALED))
+				PsiElement psiElement = element.toTypeRef().resolve(element).getElement();
+				if(psiElement instanceof CSharpTypeDeclaration)
 				{
-					return newBuilder(element, formatElement(parent.getParent()), ((CSharpTypeDeclaration) psiElement).getVmQName());
+					if(!ArrayUtil.contains(((CSharpTypeDeclaration) psiElement).getVmQName(), ourEnumSuperTypes))
+					{
+						return newBuilder(element);
+					}
 				}
 			}
 		}
