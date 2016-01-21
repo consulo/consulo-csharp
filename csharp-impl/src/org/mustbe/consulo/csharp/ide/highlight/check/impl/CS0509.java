@@ -43,6 +43,11 @@ public class CS0509 extends CompilerCheck<DotNetType>
 		PsiElement parent = element.getParent();
 		if(parent instanceof DotNetTypeList && PsiUtilCore.getElementType(parent) == CSharpElements.EXTENDS_LIST)
 		{
+			PsiElement superParent = parent.getParent();
+			if(superParent instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) superParent).isEnum())
+			{
+				return null;
+			}
 			PsiElement psiElement = element.toTypeRef().resolve(element).getElement();
 			if(psiElement instanceof CSharpTypeDeclaration)
 			{
