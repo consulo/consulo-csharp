@@ -124,15 +124,14 @@ public class CSharpContextUtil
 			{
 				return ContextType.ANY;
 			}
-			DotNetModifierListOwner qualifiedElement = (DotNetModifierListOwner) PsiTreeUtil.getParentOfType(referenceExpression,
-					DotNetQualifiedElement.class);
+			DotNetModifierListOwner qualifiedElement = (DotNetModifierListOwner) PsiTreeUtil.getParentOfType(referenceExpression, DotNetQualifiedElement.class);
 
 			if(qualifiedElement == null)
 			{
 				return ContextType.ANY;
 			}
 
-			if(qualifiedElement.hasModifier(DotNetModifier.STATIC))
+			if(qualifiedElement.hasModifier(DotNetModifier.STATIC) || CSharpPsiUtilImpl.isTypeLikeElement(qualifiedElement))
 			{
 				return ContextType.STATIC;
 			}
@@ -167,8 +166,7 @@ public class CSharpContextUtil
 
 	private static boolean isLikeType(PsiElement element)
 	{
-		return element instanceof CSharpTypeDeclaration ||
-				CSharpMethodUtil.isDelegate(element) ||
+		return CSharpPsiUtilImpl.isTypeLikeElement(element)||
 				element instanceof DotNetNamespaceAsElement ||
 				element instanceof CSharpTypeDefStatement;
 	}
