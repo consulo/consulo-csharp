@@ -40,29 +40,19 @@ public class CSharpContextUtil
 		ANY,
 		STATIC,
 		// without qualifier we can access to static members
-		INSTANCE_WITH_STATIC
-				{
-					@Override
-					public boolean isAllowInstance()
-					{
-						return true;
-					}
-				},
-		INSTANCE
-				{
-					@Override
-					public boolean isAllowInstance()
-					{
-						return true;
-					}
-				};
+		INSTANCE_WITH_STATIC,
+		INSTANCE;
 
-		public boolean isAllowInstance()
+		public final boolean isAllowInstance()
 		{
-			return false;
+			return this == INSTANCE || this == INSTANCE_WITH_STATIC;
+		}
+
+		public final boolean isAllowStatic()
+		{
+			return this == ANY || this == STATIC || this == INSTANCE_WITH_STATIC;
 		}
 	}
-
 
 	@NotNull
 	@RequiredReadAction

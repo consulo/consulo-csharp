@@ -48,8 +48,7 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx>
 
 		public ReplaceQualifierByTypeFix(CSharpReferenceExpressionEx referenceExpressionEx)
 		{
-			myReferenceExpressionPointer = SmartPointerManager.getInstance(referenceExpressionEx.getProject()).createSmartPsiElementPointer
-					(referenceExpressionEx);
+			myReferenceExpressionPointer = SmartPointerManager.getInstance(referenceExpressionEx.getProject()).createSmartPsiElementPointer(referenceExpressionEx);
 		}
 
 		@NotNull
@@ -137,10 +136,9 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx>
 		{
 			return newBuilder(referenceElement, formatElement(resolvedElement));
 		}
-		else if(contextForResolved == CSharpContextUtil.ContextType.STATIC && parentContextType.isAllowInstance())
+		else if(contextForResolved == CSharpContextUtil.ContextType.STATIC && !parentContextType.isAllowStatic())
 		{
-			return newBuilderImpl(CS0176.class, referenceElement, formatElement(resolvedElement)).addQuickFix(new ReplaceQualifierByTypeFix
-					(element));
+			return newBuilderImpl(CS0176.class, referenceElement, formatElement(resolvedElement)).addQuickFix(new ReplaceQualifierByTypeFix(element));
 		}
 		return null;
 	}
