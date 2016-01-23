@@ -1,7 +1,9 @@
 package org.mustbe.consulo.csharp.lang.formatter.processors;
 
+import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
+import org.mustbe.consulo.csharp.lang.formatter.CSharpFormattingBlock;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
@@ -12,6 +14,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.formatting.Indent;
+import com.intellij.formatting.templateLanguages.BlockWithParent;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -25,26 +28,27 @@ import com.intellij.util.codeInsight.CommentUtilCore;
  */
 public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 {
-	private final ASTNode myNode;
+	private final CSharpFormattingBlock myBlock;
 	private final CommonCodeStyleSettings myCodeStyleSettings;
 
-	public CSharpIndentProcessor(ASTNode node, CommonCodeStyleSettings codeStyleSettings, CSharpCodeStyleSettings customSettings)
+	public CSharpIndentProcessor(CSharpFormattingBlock block, CommonCodeStyleSettings codeStyleSettings, CSharpCodeStyleSettings customSettings)
 	{
-		myNode = node;
+		myBlock = block;
 		myCodeStyleSettings = codeStyleSettings;
 	}
 
 	@RequiredReadAction
 	public Indent getIndent()
 	{
-		PsiElement psi = myNode.getPsi();
+		ASTNode node = myBlock.getNode();
+		PsiElement psi = node.getPsi();
 		PsiElement parent = psi.getParent();
 		if(parent instanceof PsiFile)
 		{
 			return Indent.getNoneIndent();
 		}
 
-		final IElementType elementType = myNode.getElementType();
+		final IElementType elementType = node.getElementType();
 		if(elementType == NAMESPACE_DECLARATION ||
 				elementType == TYPE_DECLARATION ||
 				elementType == METHOD_DECLARATION ||
@@ -77,7 +81,7 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 		{
 			return Indent.getNormalIndent();
 		}
-		else if(CommentUtilCore.isComment(myNode))
+		else if(CommentUtilCore.isComment(node))
 		{
 			return Indent.getNormalIndent();
 		}
@@ -111,6 +115,12 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 
 			if(psi instanceof CSharpBlockStatementImpl)
 			{
+				BlockWithParent parentBlock = myBlock.getParent();
+				if(parentBlock != null && ((CSharpFormattingBlock) parentBlock).getElementType() == CSharpElements.SWITCH_LABEL_STATEMENT)
+				{
+					return Indent.getNoneIndent();
+				}
+
 				if(parent instanceof CSharpBlockStatementImpl)
 				{
 					return Indent.getNormalIndent();
@@ -145,9 +155,11 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 		}
 	}
 
+	@RequiredReadAction
+	@NotNull
 	public Indent getChildIndent()
 	{
-		IElementType elementType = myNode.getElementType();
+		IElementType elementType = myBlock.getNode().getElementType();
 		if(elementType == CSharpStubElements.FILE)
 		{
 			return Indent.getNoneIndent();

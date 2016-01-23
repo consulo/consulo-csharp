@@ -16,53 +16,62 @@
 
 package org.mustbe.consulo.csharp.lang.formatter;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.formatter.processors.CSharpIndentProcessor;
 import org.mustbe.consulo.csharp.lang.formatter.processors.CSharpSpacingProcessor;
 import org.mustbe.consulo.csharp.lang.formatter.processors.CSharpWrappingProcessor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.formatting.ASTBlock;
+import com.intellij.formatting.Alignment;
 import com.intellij.formatting.Block;
 import com.intellij.formatting.Indent;
 import com.intellij.formatting.Spacing;
 import com.intellij.formatting.Wrap;
-import com.intellij.formatting.templateLanguages.DataLanguageBlockWrapper;
-import com.intellij.formatting.templateLanguages.TemplateLanguageBlock;
+import com.intellij.formatting.templateLanguages.BlockWithParent;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
+import com.intellij.psi.formatter.FormatterUtil;
+import com.intellij.psi.formatter.common.AbstractBlock;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
  * @since 15.12.13.
  */
-public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSharpElements, CSharpTokens, CSharpTokenSets
+public class CSharpFormattingBlock extends AbstractBlock implements CSharpElements, CSharpTokens, CSharpTokenSets, BlockWithParent
 {
 	private final CSharpWrappingProcessor myWrappingProcessor;
 	private final CSharpIndentProcessor myIndentProcessor;
 	private final CSharpSpacingProcessor mySpacingProcessor;
+	private CodeStyleSettings mySettings;
 
-	public CSharpFormattingBlock(
-			@NotNull CSharpFormattingModelBuilder blockFactory,
-			@NotNull CodeStyleSettings settings,
-			@NotNull ASTNode node,
-			@Nullable List<DataLanguageBlockWrapper> foreignChildren)
+	private List<ASTNode> myAdditionalNodes = Collections.emptyList();
+	private CSharpFormattingBlock myParent;
+
+	public CSharpFormattingBlock(@NotNull ASTNode node, @Nullable Wrap wrap, @Nullable Alignment alignment, @NotNull CodeStyleSettings settings)
 	{
-		super(blockFactory, settings, node, foreignChildren);
+		super(node, wrap, alignment);
+		mySettings = settings;
 		CommonCodeStyleSettings commonSettings = settings.getCommonSettings(CSharpLanguage.INSTANCE);
 		CSharpCodeStyleSettings customSettings = settings.getCustomSettings(CSharpCodeStyleSettings.class);
 
 		myWrappingProcessor = new CSharpWrappingProcessor(node, commonSettings, customSettings);
-		myIndentProcessor = new CSharpIndentProcessor(node, commonSettings, customSettings);
+		myIndentProcessor = new CSharpIndentProcessor(this, commonSettings, customSettings);
 		mySpacingProcessor = new CSharpSpacingProcessor(this, commonSettings, customSettings);
 	}
 
@@ -70,7 +79,83 @@ public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSha
 	@Override
 	public Spacing getSpacing(@Nullable Block child1, @NotNull Block child2)
 	{
-		return mySpacingProcessor.getSpacing((ASTBlock)child1, (ASTBlock)child2);
+		return mySpacingProcessor.getSpacing((ASTBlock) child1, (ASTBlock) child2);
+	}
+
+	@Override
+	public boolean isLeaf()
+	{
+		return getNode().getFirstChildNode() == null;
+	}
+
+	@NotNull
+	@Override
+	public TextRange getTextRange()
+	{
+		TextRange textRange = super.getTextRange();
+		if(!myAdditionalNodes.isEmpty())
+		{
+			return new TextRange(textRange.getStartOffset(), ContainerUtil.getLastItem(myAdditionalNodes).getTextRange().getEndOffset());
+		}
+		return textRange;
+	}
+
+	@Override
+	protected List<Block> buildChildren()
+	{
+		if(isLeaf())
+		{
+			return EMPTY;
+		}
+
+		List<Block> children = new ArrayList<Block>(5);
+		Deque<ASTNode> nodes = new ArrayDeque<ASTNode>(5);
+
+		for(ASTNode childNode = getNode().getFirstChildNode(); childNode != null; childNode = childNode.getTreeNext())
+		{
+			if(FormatterUtil.containsWhiteSpacesOnly(childNode))
+			{
+				continue;
+			}
+
+			nodes.add(childNode);
+		}
+		nodes.addAll(myAdditionalNodes);
+
+		ASTNode next;
+		while((next = nodes.poll()) != null)
+		{
+			final CSharpFormattingBlock childBlock = new CSharpFormattingBlock(next, null, null, mySettings);
+			childBlock.setParent(this);
+
+			IElementType elementType = next.getElementType();
+			if(elementType == SWITCH_LABEL_STATEMENT)
+			{
+				ASTNode someNextElement;
+				while((someNextElement = nodes.poll()) != null)
+				{
+					IElementType someNextElementType = someNextElement.getElementType();
+					if(someNextElementType == SWITCH_LABEL_STATEMENT || someNextElementType == RBRACE)
+					{
+						nodes.addFirst(someNextElement);
+						break;
+					}
+					childBlock.addAdditionalNode(someNextElement);
+				}
+			}
+
+			children.add(childBlock);
+		}
+		return children;
+	}
+
+	public void addAdditionalNode(ASTNode node)
+	{
+		if(myAdditionalNodes.isEmpty())
+		{
+			myAdditionalNodes = new ArrayList<ASTNode>(5);
+		}
+		myAdditionalNodes.add(node);
 	}
 
 	@Nullable
@@ -81,6 +166,7 @@ public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSha
 	}
 
 	@Override
+	@RequiredReadAction
 	public Indent getIndent()
 	{
 		return myIndentProcessor.getIndent();
@@ -94,8 +180,23 @@ public class CSharpFormattingBlock extends TemplateLanguageBlock implements CSha
 	}
 
 	@Override
-	protected IElementType getTemplateTextElementType()
+	public CSharpFormattingBlock getParent()
 	{
-		return CSharpTemplateTokens.MACRO_FRAGMENT;
+		return myParent;
+	}
+
+	@Override
+	public void setParent(BlockWithParent newParent)
+	{
+		myParent = (CSharpFormattingBlock) newParent;
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public IElementType getElementType()
+	{
+		IElementType elementType = getNode().getElementType();
+		assert elementType != null : getNode().getText();
+		return elementType;
 	}
 }
