@@ -96,7 +96,8 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		CSharpReferenceExpression.ResolveToKind kind = element.kind();
 		if(kind != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE &&
 				kind != CSharpReferenceExpression.ResolveToKind.METHOD &&
-				element.getQualifier() != null)
+				element.getQualifier() != null ||
+				kind == CSharpReferenceExpression.ResolveToKind.FIELD_OR_PROPERTY)
 		{
 			return PopupResult.NOT_AVAILABLE;
 		}
