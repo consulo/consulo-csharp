@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.resolve;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
@@ -29,6 +30,7 @@ public class AttributeByNameSelector implements CSharpResolveSelector
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
 	{
 		if(myNameWithAt.isEmpty())
@@ -47,14 +49,12 @@ public class AttributeByNameSelector implements CSharpResolveSelector
 		{
 			PsiElement[] array = context.findByName(myNameWithAt, deep, options);
 
-			if(!myNameWithAt.endsWith(AttributeSuffix))
-			{
-				array = ArrayUtil.mergeArrays(array, context.findByName(myNameWithAt + AttributeSuffix, deep, options));
-			}
+			array = ArrayUtil.mergeArrays(array, context.findByName(myNameWithAt + AttributeSuffix, deep, options));
 
 			return ContainerUtil.findAllAsArray(array, new Condition<PsiElement>()
 			{
 				@Override
+				@RequiredReadAction
 				public boolean value(PsiElement element)
 				{
 					return element instanceof CSharpTypeDeclaration && DotNetInheritUtil.isAttribute((DotNetTypeDeclaration) element);
