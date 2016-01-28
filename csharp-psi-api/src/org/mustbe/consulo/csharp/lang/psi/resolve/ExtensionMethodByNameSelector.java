@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.resolve;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import com.intellij.psi.PsiElement;
 
@@ -17,6 +18,7 @@ public class ExtensionMethodByNameSelector implements CSharpResolveSelector
 		myName = name;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)

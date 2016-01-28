@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.resolve;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import com.intellij.psi.PsiElement;
@@ -13,6 +14,7 @@ public enum StaticResolveSelectors implements CSharpResolveSelector
 {
 	NONE
 			{
+				@RequiredReadAction
 				@NotNull
 				@Override
 				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
@@ -22,6 +24,7 @@ public enum StaticResolveSelectors implements CSharpResolveSelector
 			},
 	INDEX_METHOD_GROUP
 			{
+				@RequiredReadAction
 				@NotNull
 				@Override
 				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
@@ -37,6 +40,7 @@ public enum StaticResolveSelectors implements CSharpResolveSelector
 
 	CONSTRUCTOR_GROUP
 			{
+				@RequiredReadAction
 				@NotNull
 				@Override
 				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
@@ -52,6 +56,7 @@ public enum StaticResolveSelectors implements CSharpResolveSelector
 
 	DE_CONSTRUCTOR_GROUP
 			{
+				@RequiredReadAction
 				@NotNull
 				@Override
 				public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)

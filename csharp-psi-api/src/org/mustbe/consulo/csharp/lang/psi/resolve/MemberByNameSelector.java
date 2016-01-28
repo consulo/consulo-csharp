@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.resolve;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
@@ -18,6 +19,7 @@ public class MemberByNameSelector extends UserDataHolderBase implements CSharpNa
 		myName = name;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)

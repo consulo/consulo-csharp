@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.resolve;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -18,6 +19,7 @@ public class OperatorByTokenSelector implements CSharpResolveSelector
 		myToken = token;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public PsiElement[] doSelectElement(@NotNull CSharpResolveContext context, boolean deep)
