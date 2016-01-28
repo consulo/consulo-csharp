@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.codeInsight;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.UsingNamespaceFix;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -37,6 +38,7 @@ import com.intellij.psi.PsiReference;
 public class CSharpReferenceImporter implements ReferenceImporter
 {
 	@Override
+	@RequiredReadAction
 	public boolean autoImportReferenceAtCursor(@NotNull Editor editor, @NotNull PsiFile file)
 	{
 		if(!file.getViewProvider().getLanguages().contains(CSharpLanguage.INSTANCE))
@@ -53,12 +55,10 @@ public class CSharpReferenceImporter implements ReferenceImporter
 		List<PsiElement> elements = CollectHighlightsUtil.getElementsInRange(file, startOffset, endOffset);
 		for(PsiElement element : elements)
 		{
-			if(element instanceof CSharpReferenceExpression)
+			if(element instanceof PsiReference)
 			{
-				CSharpReferenceExpression ref = (CSharpReferenceExpression) element;
-				if(ref.kind() == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE && ref.resolve() == null)
+				if(handleReference((PsiReference) element, editor))
 				{
-					new UsingNamespaceFix(ref).doFix(editor);
 					return true;
 				}
 			}
@@ -68,6 +68,7 @@ public class CSharpReferenceImporter implements ReferenceImporter
 	}
 
 	@Override
+	@RequiredReadAction
 	public boolean autoImportReferenceAt(@NotNull Editor editor, @NotNull PsiFile file, int offset)
 	{
 		if(!file.getViewProvider().getLanguages().contains(CSharpLanguage.INSTANCE))
@@ -76,16 +77,20 @@ public class CSharpReferenceImporter implements ReferenceImporter
 		}
 
 		PsiReference element = file.findReferenceAt(offset);
-		if(element instanceof CSharpReferenceExpression)
+		return handleReference(element, editor);
+	}
+
+	@RequiredReadAction
+	private static boolean handleReference(PsiReference reference, Editor editor)
+	{
+		if(reference instanceof CSharpReferenceExpression)
 		{
-			CSharpReferenceExpression ref = (CSharpReferenceExpression) element;
-			if(ref.kind() == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE && ref.resolve() == null)
+			if(UsingNamespaceFix.isValidReference(((CSharpReferenceExpression) reference).kind(), (CSharpReferenceExpression) reference))
 			{
-				new UsingNamespaceFix(ref).doFix(editor);
+				new UsingNamespaceFix((CSharpReferenceExpression) reference).doFix(editor);
 				return true;
 			}
 		}
-
 		return false;
 	}
 }

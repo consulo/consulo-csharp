@@ -25,7 +25,9 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpNewExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUserType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
@@ -85,6 +87,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public PopupResult doFix(Editor editor)
 	{
 		CSharpReferenceExpression element = myRefPointer.getElement();
@@ -94,15 +97,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		}
 
 		CSharpReferenceExpression.ResolveToKind kind = element.kind();
-		if(kind != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE &&
-				kind != CSharpReferenceExpression.ResolveToKind.METHOD &&
-				element.getQualifier() != null ||
-				kind == CSharpReferenceExpression.ResolveToKind.FIELD_OR_PROPERTY)
-		{
-			return PopupResult.NOT_AVAILABLE;
-		}
-		PsiElement resolve = element.resolve();
-		if(resolve != null && resolve.isValid())
+		if(!isValidReference(kind, element))
 		{
 			return PopupResult.NOT_AVAILABLE;
 		}
@@ -122,7 +117,52 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		return PopupResult.SHOW_HIT;
 	}
 
+	public static boolean isValidReference(CSharpReferenceExpression.ResolveToKind kind, CSharpReferenceExpression expression)
+	{
+		PsiElement resolvedElement = expression.resolve();
+		if(resolvedElement != null)
+		{
+			return false;
+		}
+
+		switch(kind)
+		{
+			case TYPE_LIKE:
+				if(expression.getQualifier() != null)
+				{
+					return false;
+				}
+				return true;
+			case CONSTRUCTOR:
+				if(expression.getQualifier() != null)
+				{
+					return false;
+				}
+				PsiElement parent = expression.getParent();
+				if(parent instanceof CSharpAttribute)
+				{
+					return true;
+				}
+				else if(parent instanceof CSharpUserType)
+				{
+					if(!(parent.getParent() instanceof CSharpNewExpression))
+					{
+						return false;
+					}
+					else
+					{
+						return true;
+					}
+				}
+				return false;
+			case METHOD:
+				return expression.getQualifier() != null;
+		}
+		return false;
+	}
+
 	@NotNull
+	@RequiredReadAction
 	private static Set<NamespaceReference> collectAllAvailableNamespaces(CSharpReferenceExpression ref, CSharpReferenceExpression.ResolveToKind kind)
 	{
 		if(PsiTreeUtil.getParentOfType(ref, CSharpUsingListChild.class) != null || !ref.isValid())
@@ -135,7 +175,9 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 			return Collections.emptySet();
 		}
 		Set<NamespaceReference> resultSet = new ArrayListSet<NamespaceReference>();
-		if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || ref.getQualifier() == null)
+		if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE ||
+				kind == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR ||
+				ref.getQualifier() == null)
 		{
 			collectAvailableNamespaces(ref, resultSet, referenceName);
 		}
@@ -172,23 +214,12 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 					return DotNetInheritUtil.isAttribute(typeDeclaration);
 				}
 			};
-			// if attribute endwith Attribute - collect only with
-			if(referenceName.endsWith(AttributeByNameSelector.AttributeSuffix))
-			{
-				tempTypes = getTypesWithGeneric(ref, referenceName);
 
-				collect(set, tempTypes, cond);
-			}
-			else
-			{
-				tempTypes = getTypesWithGeneric(ref, referenceName);
+			tempTypes = getTypesWithGeneric(ref, referenceName);
+			collect(set, tempTypes, cond);
 
-				collect(set, tempTypes, cond);
-
-				tempTypes = getTypesWithGeneric(ref, referenceName + AttributeByNameSelector.AttributeSuffix);
-
-				collect(set, tempTypes, cond);
-			}
+			tempTypes = getTypesWithGeneric(ref, referenceName + AttributeByNameSelector.AttributeSuffix);
+			collect(set, tempTypes, cond);
 		}
 		else
 		{
