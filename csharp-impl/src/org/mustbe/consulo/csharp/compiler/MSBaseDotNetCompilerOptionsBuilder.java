@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
 import org.mustbe.consulo.dotnet.DotNetTarget;
+import org.mustbe.consulo.dotnet.compiler.DotNetCompileFailedException;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerMessage;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerUtil;
@@ -59,6 +60,7 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 	// added support for column parsing by VISTALL
 	private static Pattern LINE_ERROR_PATTERN = Pattern.compile("(.+)\\((\\d+),(\\d+)\\):\\s(error|warning) (\\w+\\d+):\\s(.+)");
 
+	@Nullable
 	private String myExecutable;
 
 	private final List<String> myArguments = new ArrayList<String>();
@@ -125,8 +127,12 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 	@NotNull
 	public GeneralCommandLine createCommandLine(@NotNull Module module,
 			@NotNull VirtualFile[] results,
-			@NotNull DotNetModuleExtension<?> extension) throws IOException
+			@NotNull DotNetModuleExtension<?> extension) throws Exception
 	{
+		if(myExecutable == null)
+		{
+			throw new DotNetCompileFailedException("C# compiler is not found");
+		}
 		CSharpModuleExtension csharpExtension = ModuleUtilCore.getExtension(module, CSharpModuleExtension.class);
 
 		assert csharpExtension != null;
