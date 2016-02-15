@@ -76,7 +76,7 @@ public class CSharpLanguageVersionWrapper implements LanguageVersion<CSharpLangu
 	@Override
 	public TokenSet getStringLiteralElements()
 	{
-		return CSharpTokenSets.STRINGS;
+		return CSharpTokenSets.LITERALS;
 	}
 
 	@NotNull
