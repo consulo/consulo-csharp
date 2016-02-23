@@ -22,7 +22,12 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.*;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
+import org.mustbe.consulo.csharp.lang.psi.CSharpNamedFieldOrPropertySet;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
@@ -34,7 +39,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -105,10 +109,6 @@ public class CSharpLambdaExpressionImplUtil
 		}
 		else if(parent instanceof CSharpCallArgument)
 		{
-			if(parent instanceof CSharpNamedCallArgument)
-			{
-				return null;
-			}
 			CSharpCallArgumentListOwner argumentListOwner = PsiTreeUtil.getParentOfType(parent, CSharpCallArgumentListOwner.class, false);
 			if(argumentListOwner == null)
 			{
