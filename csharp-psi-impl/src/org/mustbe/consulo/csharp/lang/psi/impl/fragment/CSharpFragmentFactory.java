@@ -81,7 +81,7 @@ public class CSharpFragmentFactory
 		}
 	};
 
-	private static final IFileElementType ourExpressionFileElementType = new IFileElementType("CSHARP_EXPRESSION_FRAGMENT", CSharpLanguage.INSTANCE)
+	private static final IFileElementType ourExpressionFileElementType = new IFileElementType("CSHARP_EXPRESSION_FRAGMENT_FILE", CSharpLanguage.INSTANCE)
 	{
 		@Override
 		protected ASTNode doParseContents(@NotNull final ASTNode chameleon, @NotNull final PsiElement psi)
@@ -93,11 +93,11 @@ public class CSharpFragmentFactory
 			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion,
 					chameleon.getChars());
 
-			return ourExpressionParser.parse(this, builder, languageVersion);
+			return ourExpressionParser.parse(this, builder, languageVersion).getFirstChildNode();
 		}
 	};
 
-	private static final IFileElementType ourTypeFileElementType = new IFileElementType("CSHARP_TYPE_FRAGMENT", CSharpLanguage.INSTANCE)
+	private static final IFileElementType ourTypeFileElementType = new IFileElementType("CSHARP_TYPE_FRAGMENT_FILE", CSharpLanguage.INSTANCE)
 	{
 		@Override
 		protected ASTNode doParseContents(@NotNull final ASTNode chameleon, @NotNull final PsiElement psi)

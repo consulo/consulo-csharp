@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
@@ -66,6 +67,7 @@ public class ForeachComponentTypeMacro extends Macro
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public Result calculateQuickResult(@NotNull Expression[] params, ExpressionContext context)
 	{
 		return calculateResult(params, context);
@@ -73,6 +75,7 @@ public class ForeachComponentTypeMacro extends Macro
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public LookupElement[] calculateLookupItems(@NotNull Expression[] params, ExpressionContext context)
 	{
 		Result result = calculateResult(params, context);
@@ -91,6 +94,7 @@ public class ForeachComponentTypeMacro extends Macro
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public Result calculateResult(
 			@NotNull Expression[] params, ExpressionContext context)
 	{
