@@ -28,15 +28,15 @@ import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
- * @author: Fedor.Korotkov
+ * @author Fedor.Korotkov
  *
  * from google dart
  */
 public class CSharpRefactoringUtil
 {
-	public static Set<String> collectUsedNames(PsiElement context)
+	public static Set<String> collectUsedNames(@NotNull PsiElement context, @Nullable PsiElement toSkip)
 	{
-		return new THashSet<String>(ContainerUtil.map(collectUsedComponents(context), new Function<PsiNamedElement, String>()
+		return new THashSet<String>(ContainerUtil.map(collectUsedComponents(context, toSkip), new Function<PsiNamedElement, String>()
 		{
 			@Nullable
 			@Override
@@ -47,10 +47,10 @@ public class CSharpRefactoringUtil
 		}));
 	}
 
-	public static Set<PsiNamedElement> collectUsedComponents(PsiElement context)
+	public static Set<PsiNamedElement> collectUsedComponents(@NotNull PsiElement context, @Nullable PsiElement toSkip)
 	{
 		final Set<PsiNamedElement> usedComponentNames = new THashSet<PsiNamedElement>();
-		PsiTreeUtil.treeWalkUp(new ComponentNameScopeProcessor(usedComponentNames), context, null, new ResolveState());
+		PsiTreeUtil.treeWalkUp(new ComponentNameScopeProcessor(usedComponentNames, toSkip), context, null, new ResolveState());
 		return usedComponentNames;
 	}
 

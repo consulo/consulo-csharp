@@ -20,6 +20,8 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.csharp.ide.lineMarkerProvider.CSharpLineMarkerUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import com.intellij.codeInsight.template.Expression;
 import com.intellij.codeInsight.template.ExpressionContext;
@@ -58,6 +60,7 @@ public class SuggestIndexVariableNameMacro extends Macro
 
 	@Nullable
 	@Override
+	@RequiredDispatchThread
 	public Result calculateResult(@NotNull Expression[] params, ExpressionContext context)
 	{
 		final Project project = context.getProject();
@@ -68,11 +71,19 @@ public class SuggestIndexVariableNameMacro extends Macro
 
 		List<DotNetVariable> dotNetVariables = CSharpLiveTemplateMacroUtil.resolveAllVariables(place);
 
+		DotNetVariable variable = CSharpLineMarkerUtil.getNameIdentifierAs(place, DotNetVariable.class);
+
 		ChooseLetterLoop:
 		for(char letter = 'i'; letter <= 'z'; letter++)
 		{
 			for(DotNetVariable dotNetVariable : dotNetVariables)
 			{
+				// skip self
+				if(dotNetVariable == variable)
+				{
+					continue;
+				}
+
 				String name = dotNetVariable.getName();
 				if(name != null && name.length() == 1 && name.charAt(0) == letter)
 				{

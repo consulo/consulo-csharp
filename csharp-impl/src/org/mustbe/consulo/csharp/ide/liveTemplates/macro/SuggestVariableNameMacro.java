@@ -24,6 +24,8 @@ import java.util.List;
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.csharp.ide.lineMarkerProvider.CSharpLineMarkerUtil;
 import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -40,6 +42,7 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.text.BlockSupport;
+import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -71,6 +74,7 @@ public class SuggestVariableNameMacro extends Macro
 
 	@Nullable
 	@Override
+	@RequiredDispatchThread
 	public Result calculateQuickResult(@NotNull Expression[] params, ExpressionContext context)
 	{
 		return calculateResult(params, context);
@@ -78,6 +82,7 @@ public class SuggestVariableNameMacro extends Macro
 
 	@Nullable
 	@Override
+	@RequiredDispatchThread
 	public LookupElement[] calculateLookupItems(@NotNull Expression[] params, ExpressionContext context)
 	{
 		Collection<String> suggestedVariableNames = getSuggestedVariableNames(context);
@@ -92,6 +97,7 @@ public class SuggestVariableNameMacro extends Macro
 
 	@Nullable
 	@Override
+	@RequiredDispatchThread
 	public Result calculateResult(@NotNull Expression[] params, ExpressionContext context)
 	{
 		Collection<String> suggestedVariableNames = getSuggestedVariableNames(context);
@@ -99,6 +105,7 @@ public class SuggestVariableNameMacro extends Macro
 	}
 
 	@NotNull
+	@RequiredDispatchThread
 	private Collection<String> getSuggestedVariableNames(ExpressionContext context)
 	{
 		final Project project = context.getProject();
@@ -111,12 +118,12 @@ public class SuggestVariableNameMacro extends Macro
 		PsiElement element = file.findElementAt(offset);
 
 		assert element != null;
-		if(element.getNode().getElementType() == CSharpTokens.IDENTIFIER)
+		if(PsiUtilCore.getElementType(element) == CSharpTokens.IDENTIFIER)
 		{
-			PsiElement parent = element.getParent();
-			if(parent instanceof DotNetVariable)
+			DotNetVariable variable = CSharpLineMarkerUtil.getNameIdentifierAs(element, DotNetVariable.class);
+			if(variable != null)
 			{
-				return CSharpNameSuggesterUtil.getSuggestedVariableNames((DotNetVariable) parent);
+				return CSharpNameSuggesterUtil.getSuggestedVariableNames(variable);
 			}
 		}
 		else
@@ -139,13 +146,10 @@ public class SuggestVariableNameMacro extends Macro
 				}
 			});
 			PsiElement identifierCopy = fileCopy.findElementAt(offset);
-			if(identifierCopy.getNode().getElementType() == CSharpTokens.IDENTIFIER)
+			DotNetVariable variable = CSharpLineMarkerUtil.getNameIdentifierAs(identifierCopy, DotNetVariable.class);
+			if(variable != null)
 			{
-				PsiElement parent = identifierCopy.getParent();
-				if(parent instanceof DotNetVariable)
-				{
-					return CSharpNameSuggesterUtil.getSuggestedVariableNames((DotNetVariable) identifierCopy.getParent());
-				}
+				return CSharpNameSuggesterUtil.getSuggestedVariableNames(variable);
 			}
 		}
 		return Collections.emptyList();

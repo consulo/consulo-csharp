@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.lexer.CSharpLexer;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
@@ -52,6 +53,7 @@ public class CSharpNameSuggesterUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static Set<String> getSuggestedVariableNames(final DotNetVariable variable)
 	{
 		PsiElement parent = variable.getParent();
@@ -62,7 +64,7 @@ public class CSharpNameSuggesterUtil
 			DotNetExpression iterableExpression = ((CSharpForeachStatementImpl) parent).getIterableExpression();
 			if(iterableExpression != null)
 			{
-				suggestedNames = getSuggestedNames(iterableExpression, suggestedNames);
+				suggestedNames = getSuggestedNames(iterableExpression, suggestedNames, variable);
 			}
 		}
 		return suggestedNames;
@@ -79,7 +81,7 @@ public class CSharpNameSuggesterUtil
 		}
 		candidates.addAll(generateNames(typeRef.getPresentableText()));
 
-		final Set<String> usedNames = CSharpRefactoringUtil.collectUsedNames(scope);
+		final Set<String> usedNames = CSharpRefactoringUtil.collectUsedNames(scope, scope);
 
 		final List<String> result = new ArrayList<String>();
 
@@ -112,13 +114,15 @@ public class CSharpNameSuggesterUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static Collection<String> getSuggestedNames(final DotNetExpression expression)
 	{
-		return getSuggestedNames(expression, null);
+		return getSuggestedNames(expression, null, null);
 	}
 
 	@NotNull
-	public static Set<String> getSuggestedNames(final DotNetExpression expression, @Nullable Collection<String> additionalUsedNames)
+	@RequiredReadAction
+	public static Set<String> getSuggestedNames(@NotNull DotNetExpression expression, @Nullable Collection<String> additionalUsedNames, @Nullable PsiElement toSkip)
 	{
 		Set<String> candidates = new LinkedHashSet<String>();
 
@@ -152,7 +156,7 @@ public class CSharpNameSuggesterUtil
 			candidates.addAll(generateNames(text));
 		}
 
-		final Set<String> usedNames = CSharpRefactoringUtil.collectUsedNames(expression);
+		final Set<String> usedNames = CSharpRefactoringUtil.collectUsedNames(expression, toSkip);
 		if(additionalUsedNames != null && !additionalUsedNames.isEmpty())
 		{
 			usedNames.addAll(additionalUsedNames);
@@ -240,8 +244,7 @@ public class CSharpNameSuggesterUtil
 		final Collection<String> possibleNames = new LinkedHashSet<String>();
 		for(int i = 0; i < length; i++)
 		{
-			if(Character.isLetter(name.charAt(i)) && (i == 0 || name.charAt(i - 1) == '_' || (Character.isLowerCase(name.charAt(i - 1)) && Character
-					.isUpperCase(name.charAt(i)))))
+			if(Character.isLetter(name.charAt(i)) && (i == 0 || name.charAt(i - 1) == '_' || (Character.isLowerCase(name.charAt(i - 1)) && Character.isUpperCase(name.charAt(i)))))
 			{
 				final String candidate = StringUtil.decapitalize(name.substring(i));
 				if(candidate.length() < 25)
