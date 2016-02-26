@@ -20,15 +20,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpNamedFieldOrPropertySet;
-import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
-import org.mustbe.consulo.csharp.lang.psi.CSharpUserType;
+import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.*;
@@ -294,6 +286,12 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 				}
 			}
 		}
+	}
+
+	@Override
+	public void visitNamedCallArgument(CSharpNamedCallArgument argument)
+	{
+		visitCallArgument(argument);
 	}
 
 	@Override
