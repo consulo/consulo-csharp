@@ -166,21 +166,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 				builder.append(" => ");
 
 				LookupElementBuilder lookupElementBuilder = LookupElementBuilder.create(builder.toString());
-				lookupElementBuilder = lookupElementBuilder.withIcon(AllIcons.Nodes.Lambda);
-
-				result.addElement(PrioritizedLookupElement.withPriority(lookupElementBuilder, CSharpCompletionUtil.NORMAL_PRIORITY));
-
-				DotNetTypeRef returnTypeRef = typeResolveResult.getReturnTypeRef();
-				String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(returnTypeRef, parent);
-				builder.append("{ ");
-				if(defaultValueForType != null)
-				{
-					builder.append("return ").append(defaultValueForType).append(";");
-				}
-				builder.append(" }");
-
-				lookupElementBuilder = LookupElementBuilder.create(builder.toString());
-				lookupElementBuilder = reformatInsertHandler(lookupElementBuilder);
+				lookupElementBuilder = lookupElementBuilder.withPresentableText(builder.append("{ }").toString());
 				lookupElementBuilder = lookupElementBuilder.withIcon(AllIcons.Nodes.Lambda);
 
 				result.addElement(PrioritizedLookupElement.withPriority(lookupElementBuilder, CSharpCompletionUtil.NORMAL_PRIORITY));
