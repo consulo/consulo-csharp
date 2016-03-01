@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.lineMarkerProvider.HidedOrOverridedElementCollector;
 import org.mustbe.consulo.csharp.ide.lineMarkerProvider.HidingOrOverridingElementCollector;
+import org.mustbe.consulo.csharp.ide.lineMarkerProvider.LambdaLineMarkerCollector;
 import org.mustbe.consulo.csharp.ide.lineMarkerProvider.LineMarkerCollector;
 import org.mustbe.consulo.csharp.ide.lineMarkerProvider.OverrideTypeCollector;
 import org.mustbe.consulo.csharp.ide.lineMarkerProvider.PartialTypeCollector;
@@ -57,7 +58,8 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 			new PartialTypeCollector(),
 			new RecursiveCallCollector(),
 			new HidingOrOverridingElementCollector(),
-			new HidedOrOverridedElementCollector()
+			new HidedOrOverridedElementCollector(),
+			new LambdaLineMarkerCollector()
 	};
 
 	protected final DaemonCodeAnalyzerSettings myDaemonCodeAnalyzerSettings;

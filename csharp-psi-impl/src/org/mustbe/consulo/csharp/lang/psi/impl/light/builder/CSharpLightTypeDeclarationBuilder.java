@@ -40,6 +40,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
@@ -74,6 +75,19 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 	public CSharpLightTypeDeclarationBuilder(PsiElement element)
 	{
 		super(element);
+	}
+
+	@Override
+	public void navigate(boolean requestFocus)
+	{
+		PsiElement navigationElement = getNavigationElement();
+		if(navigationElement instanceof Navigatable)
+		{
+			((Navigatable) navigationElement).navigate(requestFocus);
+			return;
+		}
+
+		super.navigate(requestFocus);
 	}
 
 	@RequiredReadAction
