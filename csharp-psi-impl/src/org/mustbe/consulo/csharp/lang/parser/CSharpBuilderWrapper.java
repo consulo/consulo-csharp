@@ -144,11 +144,6 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 	public IElementType getTokenType()
 	{
 		IElementType tokenType = super.getTokenType();
-		if(tokenType == CSharpTokens.NON_ACTIVE_SYMBOL)
-		{
-			return tokenType;
-		}
-
 		if(tokenType == CSharpTokens.IDENTIFIER)
 		{
 			IElementType elementType = ourIdentifierToSoftKeywords.get(getTokenText());
