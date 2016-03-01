@@ -16,8 +16,6 @@
 
 package org.mustbe.consulo.csharp.lang;
 
-import java.util.List;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.lexer.CSharpLexer;
@@ -29,7 +27,6 @@ import com.intellij.lang.LanguageVersionWithParsing;
 import com.intellij.lang.PsiParser;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.tree.TokenSet;
 
 /**
@@ -57,12 +54,6 @@ public class CSharpLanguageVersionWrapper implements LanguageVersion<CSharpLangu
 	public Lexer createLexer(@Nullable Project project)
 	{
 		return new CSharpLexer();
-	}
-
-	@NotNull
-	public Lexer createLexer(@NotNull List<TextRange> ranges)
-	{
-		return new CSharpLexer(ranges);
 	}
 
 	@NotNull

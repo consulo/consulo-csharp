@@ -18,7 +18,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 %eof{  return;
 %eof}
 
-%state MACRO
+%state PREPROCESSOR_DIRECTIVE
 
 DIGIT=[0-9]
 WHITE_SPACE=[ \n\r\t\f]+
@@ -66,13 +66,13 @@ MACRO_NEW_LINE=\r\n|\n|\r
 MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 %%
 
-<MACRO>
+<PREPROCESSOR_DIRECTIVE>
 {
-	{MACRO_NEW_LINE}     { yybegin(YYINITIAL); return CSharpTemplateTokens.MACRO_FRAGMENT; }
+	{MACRO_NEW_LINE}     {  yybegin(YYINITIAL); return CSharpTokens.WHITE_SPACE; }
 
 	{MACRO_WHITE_SPACE}  {  return CSharpTemplateTokens.MACRO_FRAGMENT; }
 
-	.                    { return CSharpTemplateTokens.MACRO_FRAGMENT; }
+	[^]                    {  return CSharpTemplateTokens.MACRO_FRAGMENT; }
 }
 
 <YYINITIAL>
@@ -80,7 +80,7 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 	{MACRO_START}
 	{
 		yypushback(yylength());
-		yybegin(MACRO);
+		yybegin(PREPROCESSOR_DIRECTIVE);
 	}
 
 	{VERBATIM_STRING_LITERAL} { return CSharpTokens.VERBATIM_STRING_LITERAL; }

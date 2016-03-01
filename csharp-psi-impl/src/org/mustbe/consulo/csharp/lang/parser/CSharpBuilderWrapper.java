@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguageVersionWrapper;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.lang.LanguageVersion;
@@ -158,11 +157,6 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 				remapCurrentToken(elementType);
 				return elementType;
 			}
-		}
-		else if(tokenType == CSharpTemplateTokens.MACRO_FRAGMENT)
-		{
-			super.advanceLexer();
-			tokenType = getTokenType();
 		}
 		return tokenType;
 	}
