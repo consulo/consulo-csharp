@@ -283,17 +283,13 @@
 		<psi.treeChangePreprocessor implementation="org.mustbe.consulo.csharp.lang.psi.impl.CSharpPsiTreeChangePreprocessor"/>
 		<lang.psiStructureViewFactory language="C#" implementationClass="org.mustbe.consulo.csharp.ide.structureView.CSharpStructureViewFactory"/>
 		<lang.formatter language="C#" implementationClass="org.mustbe.consulo.csharp.lang.formatter.CSharpFormattingModelBuilder"/>
-		<lang.formatter language="C#Macro" implementationClass="org.mustbe.consulo.csharp.lang.formatter.CSharpMacroFormattingBuilder"/>
 		<lang.elementIcon language="C#" file="/icons/csharpLang.png"/>
 		<lang.commenter language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpCommenter"/>
 		<lang.namesValidator language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpNamesValidator"/>
 		<lang.braceMatcher language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpPairedBraceMatcher"/>
 		<lang.importOptimizer language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpImportOptimizer"/>
 		<lang.foldingBuilder language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpFoldingBuilder"/>
-		<lang.foldingBuilder language="C#Macro" implementationClass="org.mustbe.consulo.csharp.lang.CSharpMacroFoldingBuilder"/>
 		<lang.syntaxHighlighterFactory key="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpSyntaxHighlighterFactory"/>
-		<lang.syntaxHighlighterFactory key="C#Macro"
-									   implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpMacroSyntaxHighlighterFactory"/>
 		<lang.refactoringSupport language="C#" implementationClass="org.mustbe.consulo.csharp.ide.refactoring.CSharpRefactoringSupportProvider"/>
 		<refactoring.changeSignatureUsageProcessor
 				implementation="org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureUsageProcessor"/>
