@@ -42,7 +42,9 @@ public class PreprocessorParser
 		IF,
 		ELIF,
 		ELSE,
-		ENDIF
+		ENDIF,
+		REGION,
+		ENDREGION
 	}
 
 	public static void main(String[] args)
@@ -82,6 +84,16 @@ public class PreprocessorParser
 						state = State.DIRECTIVE;
 						directive = Directive.ENDIF;
 					}
+					else if(elementType == CSharpMacroTokens.MACRO_REGION_KEYWORD)
+					{
+						state = State.DIRECTIVE;
+						directive = Directive.REGION;
+					}
+					else if(elementType == CSharpMacroTokens.MACRO_ENDREGION_KEYWORD)
+					{
+						state = State.DIRECTIVE;
+						directive = Directive.ENDREGION;
+					}
 					else if(elementType == CSharpMacroTokens.MACRO_ELSE_KEYWORD)
 					{
 						state = State.DIRECTIVE;
@@ -112,6 +124,7 @@ public class PreprocessorParser
 							break;
 						case ELIF:
 						case IF:
+						case REGION:
 							value += lexer.getTokenText();
 							break;
 						default:
@@ -139,10 +152,14 @@ public class PreprocessorParser
 				case IF:
 				case ELIF:
 					return new IfPreprocessorDirective(value, directive == Directive.ELIF);
+				case REGION:
+					return new RegionPreprocessorDirective(text);
 				case ELSE:
 					return ElsePreprocessorDirective.INSTANCE;
 				case ENDIF:
 					return EndIfPreprocessorDirective.INSTANCE;
+				case ENDREGION:
+					return EndRegionPreprocessorDirective.INSTANCE;
 			}
 		}
 

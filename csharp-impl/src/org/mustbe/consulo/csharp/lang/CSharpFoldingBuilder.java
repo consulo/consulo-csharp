@@ -16,9 +16,16 @@
 
 package org.mustbe.consulo.csharp.lang;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.parser.preprocessor.EndRegionPreprocessorDirective;
+import org.mustbe.consulo.csharp.lang.parser.preprocessor.PreprocessorDirective;
+import org.mustbe.consulo.csharp.lang.parser.preprocessor.PreprocessorParser;
+import org.mustbe.consulo.csharp.lang.parser.preprocessor.RegionPreprocessorDirective;
 import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
@@ -41,6 +48,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.PsiUtilCore;
 
 /**
  * @author VISTALL
@@ -49,14 +57,54 @@ import com.intellij.psi.tree.IElementType;
 public class CSharpFoldingBuilder extends CustomFoldingBuilder
 {
 	@Override
-	protected void buildLanguageFoldRegions(@NotNull final List<FoldingDescriptor> descriptors,
-			@NotNull PsiElement root,
-			@NotNull Document document,
-			boolean quick)
+	protected void buildLanguageFoldRegions(@NotNull final List<FoldingDescriptor> descriptors, @NotNull PsiElement root, @NotNull Document document, boolean quick)
 	{
+		final Deque<PsiElement> regions = new ArrayDeque<PsiElement>();
+
 		root.accept(new CSharpRecursiveElementVisitor()
 		{
 			@Override
+			@RequiredReadAction
+			public void visitElement(PsiElement element)
+			{
+				super.visitElement(element);
+				IElementType elementType = PsiUtilCore.getElementType(element);
+				if(elementType == CSharpTokens.PREPROCESSOR_DIRECTIVE)
+				{
+					PreprocessorDirective directive = PreprocessorParser.parse(element.getText());
+					if(directive instanceof RegionPreprocessorDirective)
+					{
+						regions.addLast(element);
+					}
+					else if(directive instanceof EndRegionPreprocessorDirective)
+					{
+						PsiElement lastRegion = regions.pollLast();
+						if(lastRegion == null)
+						{
+							return;
+						}
+
+						int startOffset = lastRegion.getTextRange().getStartOffset();
+						String text = lastRegion.getText();
+						for(int i = 0; i < text.length(); i++)
+						{
+							if(Character.isWhitespace(text.charAt(i)))
+							{
+								startOffset ++;
+							}
+							else
+							{
+								break;
+							}
+						}
+
+						descriptors.add(new FoldingDescriptor(lastRegion, new TextRange(startOffset, element.getTextRange().getEndOffset())));
+					}
+				}
+			}
+
+			@Override
+			@RequiredReadAction
 			public void visitPropertyDeclaration(CSharpPropertyDeclaration declaration)
 			{
 				super.visitPropertyDeclaration(declaration);
@@ -65,6 +113,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 			}
 
 			@Override
+			@RequiredReadAction
 			public void visitEventDeclaration(CSharpEventDeclaration declaration)
 			{
 				super.visitEventDeclaration(declaration);
@@ -73,6 +122,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 			}
 
 			@Override
+			@RequiredReadAction
 			public void visitUsingNamespaceList(CSharpUsingListImpl list)
 			{
 				CSharpUsingListChild[] statements = list.getStatements();
@@ -99,6 +149,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 			}
 
 			@Override
+			@RequiredReadAction
 			public void visitBlockStatement(CSharpBlockStatementImpl statement)
 			{
 				super.visitBlockStatement(statement);
@@ -111,6 +162,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 			}
 
 			@Override
+			@RequiredReadAction
 			public void visitComment(PsiComment comment)
 			{
 				PsiFile containingFile = comment.getContainingFile();
@@ -134,6 +186,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 	}
 
 	@Override
+	@RequiredReadAction
 	protected String getLanguagePlaceholderText(@NotNull ASTNode node, @NotNull TextRange range)
 	{
 		PsiElement psi = node.getPsi();
@@ -141,8 +194,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 		{
 			return "...";
 		}
-		else if(psi instanceof CSharpBlockStatementImpl || psi instanceof CSharpPropertyDeclaration || psi instanceof CSharpTypeDeclaration || psi
-				instanceof CSharpEventDeclaration)
+		else if(psi instanceof CSharpBlockStatementImpl || psi instanceof CSharpPropertyDeclaration || psi instanceof CSharpTypeDeclaration || psi instanceof CSharpEventDeclaration)
 		{
 			return "{...}";
 		}
@@ -162,9 +214,16 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 				return "/** ... */";
 			}
 		}
+
+		IElementType elementType = PsiUtilCore.getElementType(psi);
+		if(elementType == CSharpTokens.PREPROCESSOR_DIRECTIVE)
+		{
+			return psi.getText().trim();
+		}
 		return null;
 	}
 
+	@RequiredReadAction
 	private static PsiElement findLastComment(PsiElement element, IElementType elementType)
 	{
 		PsiElement target = element;
@@ -197,10 +256,10 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 		{
 			return false;
 		}
-		return nextSibling instanceof PsiWhiteSpace || (nextSibling instanceof PsiComment && ((PsiComment) nextSibling).getTokenType() ==
-				elementType);
+		return nextSibling instanceof PsiWhiteSpace || (nextSibling instanceof PsiComment && ((PsiComment) nextSibling).getTokenType() == elementType);
 	}
 
+	@RequiredReadAction
 	private static void addBodyWithBraces(List<FoldingDescriptor> list, CSharpBodyWithBraces bodyWithBraces)
 	{
 		PsiElement leftBrace = bodyWithBraces.getLeftBrace();
@@ -210,8 +269,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 			return;
 		}
 
-		list.add(new FoldingDescriptor(bodyWithBraces, new TextRange(leftBrace.getTextRange().getStartOffset(),
-				rightBrace.getTextRange().getStartOffset() + rightBrace.getTextLength())));
+		list.add(new FoldingDescriptor(bodyWithBraces, new TextRange(leftBrace.getTextRange().getStartOffset(), rightBrace.getTextRange().getStartOffset() + rightBrace.getTextLength())));
 	}
 
 	@Override

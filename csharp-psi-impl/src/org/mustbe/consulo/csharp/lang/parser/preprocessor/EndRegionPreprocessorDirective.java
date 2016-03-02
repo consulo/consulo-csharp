@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 must-be.org
+ * Copyright 2013-2016 must-be.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.ide.highlight;
-
-import org.jetbrains.annotations.NotNull;
-import com.intellij.openapi.fileTypes.SingleLazyInstanceSyntaxHighlighterFactory;
-import com.intellij.openapi.fileTypes.SyntaxHighlighter;
+package org.mustbe.consulo.csharp.lang.parser.preprocessor;
 
 /**
  * @author VISTALL
- * @since 24.01.14
+ * @since 02.03.2016
  */
-public class CSharpMacroSyntaxHighlighterFactory extends SingleLazyInstanceSyntaxHighlighterFactory
+public class EndRegionPreprocessorDirective extends PreprocessorDirective
 {
-	@NotNull
+	public static final EndRegionPreprocessorDirective INSTANCE = new EndRegionPreprocessorDirective();
+
 	@Override
-	protected SyntaxHighlighter createHighlighter()
+	public String toString()
 	{
-		return new CSharpMacroSyntaxHighlighter();
+		final StringBuilder sb = new StringBuilder("EndRegionPreprocessorDirective{");
+		sb.append('}');
+		return sb.toString();
 	}
 }
