@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 must-be.org
+ * Copyright 2013-2016 must-be.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi;
-
-import org.mustbe.consulo.csharp.lang.CSharpLanguage;
-import com.intellij.psi.tree.IElementType;
+package org.mustbe.consulo.csharp.lang.parser.preprocessor;
 
 /**
  * @author VISTALL
- * @since 24.01.14
+ * @since 02.03.2016
  */
-public interface CSharpTemplateTokens
+public class PreprocessorDirective
 {
-	IElementType MACRO_FRAGMENT = new IElementType("MACRO_FRAGMENT", CSharpLanguage.INSTANCE);
 }

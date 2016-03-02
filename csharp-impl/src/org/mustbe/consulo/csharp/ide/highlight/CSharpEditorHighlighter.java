@@ -22,7 +22,6 @@ import org.mustbe.consulo.csharp.cfs.ide.highlight.CfsSyntaxHighlighter;
 import org.mustbe.consulo.csharp.cfs.lang.CfsTokens;
 import org.mustbe.consulo.csharp.lang.CSharpCfsLanguageVersion;
 import org.mustbe.consulo.csharp.lang.doc.ide.highlight.CSharpDocSyntaxHighlighter;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
 import com.intellij.lexer.Lexer;
@@ -43,7 +42,6 @@ public class CSharpEditorHighlighter extends LayeredLexerEditorHighlighter
 	public CSharpEditorHighlighter(@Nullable final VirtualFile virtualFile, @NotNull final EditorColorsScheme colors)
 	{
 		super(new CSharpSyntaxHighlighter(), colors);
-		registerLayer(CSharpTemplateTokens.MACRO_FRAGMENT, new LayerDescriptor(new CSharpMacroSyntaxHighlighter(), ""));
 		registerLayer(CSharpTokens.STRING_LITERAL, new LayerDescriptor(new CSharpSyntaxHighlighter()
 		{
 			@NotNull

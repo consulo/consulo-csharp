@@ -7,7 +7,6 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpMacroLanguage;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import com.intellij.formatting.Alignment;
 import com.intellij.formatting.Block;
 import com.intellij.formatting.Indent;
@@ -75,6 +74,6 @@ public class CSharpMacroFormattingBlock extends AbstractBlock
 	@Override
 	public boolean isLeaf()
 	{
-		return getNode().getElementType() == CSharpTemplateTokens.OUTER_ELEMENT_TYPE;
+		return false;
 	}
 }

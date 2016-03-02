@@ -21,7 +21,9 @@ import gnu.jel.DVMap;
 import gnu.jel.Evaluator;
 import gnu.jel.Library;
 
-import java.util.List;
+import java.util.Set;
+
+import com.intellij.openapi.util.text.StringUtil;
 
 /**
  * @author VISTALL
@@ -38,8 +40,12 @@ public class MacroEvaluator
 		}
 	}, null);
 
-	public static boolean evaluate(String text, List<String> variables)
+	public static boolean evaluate(String text, Set<String> variables)
 	{
+		if(StringUtil.isEmpty(text))
+		{
+			return true;
+		}
 		try
 		{
 			CompiledExpression compile = Evaluator.compile(text, ourLibrary);

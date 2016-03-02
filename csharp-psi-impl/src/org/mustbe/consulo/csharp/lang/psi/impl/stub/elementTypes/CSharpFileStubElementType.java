@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.CSharpFilePropertyPusher;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.CSharpLanguageVersionWrapper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
@@ -36,10 +37,11 @@ import com.intellij.lang.LanguageVersion;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilderFactory;
 import com.intellij.lang.PsiParser;
-import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.StubBuilder;
@@ -47,6 +49,8 @@ import com.intellij.psi.stubs.DefaultStubBuilder;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.tree.IStubFileElementType;
+import com.intellij.testFramework.LightVirtualFile;
+import com.intellij.util.indexing.IndexingDataKeys;
 
 /**
  * @author VISTALL
@@ -88,12 +92,27 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 		final LanguageVersion tempLanguageVersion = chameleon.getUserData(LanguageVersion.KEY);
 		final CSharpLanguageVersionWrapper languageVersion = (CSharpLanguageVersionWrapper) (tempLanguageVersion == null ? psi.getLanguageVersion() : tempLanguageVersion);
 
-		DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(((PsiFile) psi).getOriginalFile(), DotNetSimpleModuleExtension.class);
+		FileViewProvider viewProvider = ((PsiFile) psi).getViewProvider();
+		VirtualFile virtualFile = viewProvider.getVirtualFile();
+		if(virtualFile instanceof LightVirtualFile)
+		{
+			virtualFile = ((LightVirtualFile) virtualFile).getOriginalFile();
+		}
+		if(virtualFile == null)
+		{
+			virtualFile = psi.getUserData(IndexingDataKeys.VIRTUAL_FILE);
+		}
 
 		Set<String> defVariables = Collections.emptySet();
-		if(extension != null)
+		if(virtualFile != null)
 		{
-			defVariables = new HashSet<String>(extension.getVariables());
+			List<String> variables = virtualFile.getUserData(CSharpFilePropertyPusher.ourKey);
+
+			if(variables != null)
+			{
+				defVariables = new HashSet<String>(variables);
+			}
+
 		}
 
 		final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion, chameleon.getChars());

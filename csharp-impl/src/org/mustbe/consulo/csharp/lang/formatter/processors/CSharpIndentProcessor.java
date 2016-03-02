@@ -77,6 +77,10 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 			}
 			return Indent.getNoneIndent();
 		}
+		else if(elementType == CSharpTokens.PREPROCESSOR_DIRECTIVE)
+		{
+			return Indent.getAbsoluteNoneIndent();
+		}
 		else if(elementType == DICTIONARY_INITIALIZER)
 		{
 			return Indent.getNormalIndent();

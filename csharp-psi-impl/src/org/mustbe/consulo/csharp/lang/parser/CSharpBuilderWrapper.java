@@ -18,13 +18,27 @@ package org.mustbe.consulo.csharp.lang.parser;
 
 import gnu.trove.THashMap;
 
+import java.util.ArrayDeque;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguageVersionWrapper;
+import org.mustbe.consulo.csharp.lang.parser.preprocessor.DefinePreprocessorDirective;
+import org.mustbe.consulo.csharp.lang.parser.preprocessor.ElsePreprocessorDirective;
+import org.mustbe.consulo.csharp.lang.parser.preprocessor.EndIfPreprocessorDirective;
+import org.mustbe.consulo.csharp.lang.parser.preprocessor.IfPreprocessorDirective;
+import org.mustbe.consulo.csharp.lang.parser.preprocessor.PreprocessorDirective;
+import org.mustbe.consulo.csharp.lang.parser.preprocessor.PreprocessorParser;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTemplateTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.CSharpFileStubElementType;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.macro.MacroEvaluator;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.lang.LanguageVersion;
 import com.intellij.lang.PsiBuilder;
@@ -49,13 +63,46 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 		}
 	}
 
+	static class PreprocessorState
+	{
+		Deque<Boolean> ifDirectives = new ArrayDeque<Boolean>();
+
+		public PreprocessorState(@NotNull Boolean initialValue)
+		{
+			ifDirectives.add(initialValue);
+		}
+
+		boolean haveActive()
+		{
+			for(Boolean state : ifDirectives)
+			{
+				if(state)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		boolean isActive()
+		{
+			Boolean value = ifDirectives.peekLast();
+			return value != null && value;
+		}
+	}
+
 	private TokenSet mySoftSet = TokenSet.EMPTY;
 	private LanguageVersion myLanguageVersion;
+
+	private Deque<PreprocessorState> myStates = new ArrayDeque<PreprocessorState>();
 
 	public CSharpBuilderWrapper(PsiBuilder delegate, LanguageVersion languageVersion)
 	{
 		super(delegate);
 		myLanguageVersion = languageVersion;
+
+		Set<String> variables = delegate.getUserData(CSharpFileStubElementType.PREPROCESSOR_VARIABLES);
+		putUserData(CSharpFileStubElementType.PREPROCESSOR_VARIABLES, variables == null ? Collections.<String>emptySet() : variables);
 	}
 
 	@NotNull
@@ -144,6 +191,92 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 	public IElementType getTokenType()
 	{
 		IElementType tokenType = super.getTokenType();
+		if(tokenType == null)
+		{
+			return null;
+		}
+
+		if(tokenType == CSharpTemplateTokens.MACRO_FRAGMENT)
+		{
+			Set<String> variables = getUserData(CSharpFileStubElementType.PREPROCESSOR_VARIABLES);
+
+			PreprocessorDirective directive = PreprocessorParser.parse(super.getTokenText());
+			if(directive instanceof DefinePreprocessorDirective)
+			{
+				Set<String> newVariables = new HashSet<String>(variables);
+
+				if(((DefinePreprocessorDirective) directive).isUndef())
+				{
+					newVariables.remove(((DefinePreprocessorDirective) directive).getVariable());
+				}
+				else
+				{
+					newVariables.add(((DefinePreprocessorDirective) directive).getVariable());
+				}
+				putUserData(CSharpFileStubElementType.PREPROCESSOR_VARIABLES, newVariables);
+			}
+			else if(directive instanceof IfPreprocessorDirective)
+			{
+				if(((IfPreprocessorDirective) directive).isElseIf())
+				{
+					PreprocessorState state = myStates.peekLast();
+					if(state == null)
+					{
+						boolean evaluate = MacroEvaluator.evaluate(((IfPreprocessorDirective) directive).getValue(), variables);
+
+						myStates.add(new PreprocessorState(evaluate));
+					}
+					else if(state.haveActive()) // if we already have active - disable it
+					{
+						state.ifDirectives.addLast(Boolean.FALSE);
+					}
+					else
+					{
+						boolean evaluate = MacroEvaluator.evaluate(((IfPreprocessorDirective) directive).getValue(), variables);
+
+						state.ifDirectives.addLast(evaluate);
+					}
+				}
+				else
+				{
+					boolean evaluate = MacroEvaluator.evaluate(((IfPreprocessorDirective) directive).getValue(), variables);
+					myStates.addLast(new PreprocessorState(evaluate));
+				}
+			}
+			else if(directive instanceof ElsePreprocessorDirective)
+			{
+				PreprocessorState state = myStates.peekLast();
+				if(state == null)
+				{
+					myStates.add(new PreprocessorState(Boolean.FALSE));
+				}
+				else if(state.haveActive())
+				{
+					state.ifDirectives.addLast(Boolean.FALSE);
+				}
+				else
+				{
+					state.ifDirectives.addLast(Boolean.TRUE);
+				}
+			}
+			else if(directive instanceof EndIfPreprocessorDirective)
+			{
+				myStates.pollLast();
+			}
+
+			remapCurrentToken(CSharpTokens.PREPROCESSOR_DIRECTIVE);
+			super.advanceLexer();
+			return getTokenType();
+		}
+
+		PreprocessorState preprocessorState = myStates.peekLast();
+		if(preprocessorState != null && !preprocessorState.isActive())
+		{
+			remapCurrentToken(CSharpTokens.NON_ACTIVE_SYMBOL);
+			super.advanceLexer();
+			return getTokenType();
+		}
+
 		if(tokenType == CSharpTokens.IDENTIFIER)
 		{
 			IElementType elementType = ourIdentifierToSoftKeywords.get(getTokenText());
