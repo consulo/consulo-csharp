@@ -112,7 +112,6 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 			{
 				defVariables = new HashSet<String>(variables);
 			}
-
 		}
 
 		final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion, chameleon.getChars());
@@ -146,7 +145,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 	@Override
 	public int getStubVersion()
 	{
-		return 75;
+		return 76;
 	}
 
 	@NotNull

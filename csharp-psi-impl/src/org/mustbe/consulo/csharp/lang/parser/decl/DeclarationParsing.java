@@ -104,6 +104,18 @@ public class DeclarationParsing extends SharedParsingHelpers
 		ModifierSet modifierSet = modifierListPair.getSecond();
 
 		IElementType tokenType = builder.getTokenType();
+		if(tokenType == null)
+		{
+			if(modifierListPair.getSecond().isEmpty())
+			{
+				marker.drop();
+			}
+			else
+			{
+				marker.error("Expected identifier");
+			}
+			return;
+		}
 		if(tokenType == NAMESPACE_KEYWORD)
 		{
 			NamespaceDeclarationParsing.parse(builder, marker);
