@@ -56,6 +56,12 @@ public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclarati
 		return myOriginal.isOperator();
 	}
 
+	@Override
+	public boolean isExtension()
+	{
+		return myOriginal.isExtension();
+	}
+
 	@RequiredReadAction
 	@Nullable
 	@Override

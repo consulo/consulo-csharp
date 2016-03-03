@@ -27,6 +27,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -107,6 +108,17 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 			return stub.getOperator() != null;
 		}
 		return findChildByType(CSharpTokens.OPERATOR_KEYWORD) != null;
+	}
+
+	@Override
+	public boolean isExtension()
+	{
+		CSharpMethodDeclStub stub = getStub();
+		if(stub != null)
+		{
+			return BitUtil.isSet(stub.getOtherModifierMask(), CSharpMethodDeclStub.EXTENSION_MASK);
+		}
+		return CSharpMethodImplUtil.isExtensionMethod(this);
 	}
 
 	@RequiredReadAction

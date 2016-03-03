@@ -22,7 +22,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubElement;
@@ -85,7 +84,7 @@ public class CSharpMethodDeclStub extends MemberStub<CSharpMethodDeclaration>
 		{
 			i |= DELEGATE_MASK;
 		}
-		if(CSharpMethodImplUtil.isExtensionMethod(methodDeclaration))
+		if(methodDeclaration instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) methodDeclaration).isExtension())
 		{
 			i |= EXTENSION_MASK;
 		}

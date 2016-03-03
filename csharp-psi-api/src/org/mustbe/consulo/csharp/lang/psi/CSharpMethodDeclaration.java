@@ -33,6 +33,8 @@ public interface CSharpMethodDeclaration extends DotNetMethodDeclaration, CSharp
 
 	boolean isOperator();
 
+	boolean isExtension();
+
 	@Nullable
 	@RequiredReadAction
 	IElementType getOperatorElementType();

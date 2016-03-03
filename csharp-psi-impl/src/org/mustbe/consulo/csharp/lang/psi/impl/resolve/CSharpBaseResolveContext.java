@@ -16,7 +16,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
@@ -111,7 +110,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 			}
 			else
 			{
-				if(CSharpMethodImplUtil.isExtensionMethod(declaration))
+				if(declaration.isExtension())
 				{
 					String name = declaration.getName();
 					if(name == null)
