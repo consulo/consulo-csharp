@@ -16,17 +16,30 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpElementGroupImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
@@ -91,6 +104,7 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor
 		CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myResolveScope, element);
 
 		PsiElement[] psiElements = selector.doSelectElement(context, state.get(CSharpResolveUtil.WALK_DEEP) == Boolean.TRUE);
+		applyTypeArguments(psiElements);
 		psiElements = CSharpCompositeTypeDeclaration.wrapPartialTypes(myResolveScope, myScopeElement.getProject(), psiElements);
 
 		for(PsiElement psiElement : OverrideUtil.filterOverrideElements(this, myScopeElement, psiElements, myOverrideProcessor))
@@ -108,5 +122,59 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor
 			}
 		}
 		return true;
+	}
+
+	@RequiredReadAction
+	private void applyTypeArguments(PsiElement[] psiElements)
+	{
+		if(!(myScopeElement  instanceof CSharpReferenceExpression))
+		{
+			return;
+		}
+
+		int typeArgumentListSize = CSharpReferenceExpressionImplUtil.getTypeArgumentListSize((CSharpReferenceExpression) myScopeElement);
+		if(typeArgumentListSize == 0)
+		{
+			return;
+		}
+
+		DotNetTypeRef[] typeArgumentListRefs = ((CSharpReferenceExpression) myScopeElement).getTypeArgumentListRefs();
+
+		for(int i = 0; i < psiElements.length; i++)
+		{
+			PsiElement psiElement = psiElements[i];
+			if(psiElement instanceof CSharpElementGroup)
+			{
+				@SuppressWarnings("unchecked")
+				CSharpElementGroup<PsiElement> elementGroup = (CSharpElementGroup<PsiElement>) psiElement;
+
+				Collection<PsiElement> elements = elementGroup.getElements();
+
+				boolean changed = false;
+
+				final List<PsiElement> anotherItems = new ArrayList<PsiElement>(elements.size());
+				for(PsiElement temp : elements)
+				{
+					if(temp instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) temp).getGenericParametersCount() == typeArgumentListSize)
+					{
+						DotNetGenericParameter[] genericParameters = ((CSharpMethodDeclaration) temp).getGenericParameters();
+
+						DotNetGenericExtractor extractor = CSharpGenericExtractor.create(genericParameters, typeArgumentListRefs);
+
+						anotherItems.add(GenericUnwrapTool.extract((CSharpMethodDeclaration) temp, extractor));
+						changed = true;
+					}
+					else
+					{
+						anotherItems.add(temp);
+					}
+				}
+
+				if(changed)
+				{
+					psiElements[i] = new CSharpElementGroupImpl<PsiElement>(elementGroup.getProject(), elementGroup.getKey(), anotherItems);
+				}
+			}
+		}
 	}
 }

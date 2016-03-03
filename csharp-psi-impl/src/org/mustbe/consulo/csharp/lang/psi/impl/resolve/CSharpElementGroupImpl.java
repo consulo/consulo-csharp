@@ -28,7 +28,7 @@ public class CSharpElementGroupImpl<T extends PsiElement> extends LightElement i
 	private final Object myKey;
 	private final Collection<T> myElements;
 
-	public CSharpElementGroupImpl(Project project, @NotNull Object key, Collection<T> elements)
+	public CSharpElementGroupImpl(@NotNull Project project, @NotNull Object key, Collection<T> elements)
 	{
 		super(PsiManager.getInstance(project), CSharpLanguage.INSTANCE);
 		myKey = key;
@@ -112,6 +112,13 @@ public class CSharpElementGroupImpl<T extends PsiElement> extends LightElement i
 				break;
 			}
 		}
+	}
+
+	@Override
+	@NotNull
+	public Object getKey()
+	{
+		return myKey;
 	}
 
 	@Override

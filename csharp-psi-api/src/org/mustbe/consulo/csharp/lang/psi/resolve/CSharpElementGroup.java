@@ -21,4 +21,7 @@ public interface CSharpElementGroup<T extends PsiElement> extends PsiNamedElemen
 	@Override
 	@NotNull
 	String getName();
+
+	@NotNull
+	Object getKey();
 }

@@ -40,6 +40,13 @@ public class CSharpCompositeElementGroupImpl<T extends PsiElement> extends Light
 		return myGroups.get(0).getName();
 	}
 
+	@NotNull
+	@Override
+	public Object getKey()
+	{
+		return myGroups.get(0).getKey();
+	}
+
 	@Override
 	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
 	{
