@@ -43,6 +43,8 @@ import com.intellij.util.messages.MessageBus;
  */
 public class CSharpFilePropertyPusher implements FilePropertyPusher<List<String>>
 {
+	public static final Key<Boolean> ourDisableAnyEvents = Key.create("csharp.disable.any.events");
+
 	public static final Key<List<String>> ourKey = Key.create("csharp.virtual.file.preprocessor.defines");
 	private static final FileAttribute ourFileAttribute = new FileAttribute("file_preprocessor_defines", 1, false);
 
@@ -137,6 +139,10 @@ public class CSharpFilePropertyPusher implements FilePropertyPusher<List<String>
 		writeList(oStream, newValue);
 		oStream.close();
 
+		if(project.getUserData(ourDisableAnyEvents) == Boolean.TRUE)
+		{
+			return;
+		}
 		PushedFilePropertiesUpdater.getInstance(project).filePropertiesChanged(fileOrDir);
 	}
 
@@ -172,6 +178,10 @@ public class CSharpFilePropertyPusher implements FilePropertyPusher<List<String>
 	@Override
 	public void afterRootsChanged(@NotNull Project project)
 	{
+		if(project.getUserData(ourDisableAnyEvents) == Boolean.TRUE)
+		{
+			return;
+		}
 		PushedFilePropertiesUpdater.getInstance(project).pushAll(this);
 	}
 }
