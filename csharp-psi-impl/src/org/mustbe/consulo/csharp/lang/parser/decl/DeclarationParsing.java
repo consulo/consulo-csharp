@@ -112,7 +112,14 @@ public class DeclarationParsing extends SharedParsingHelpers
 			}
 			else
 			{
-				marker.error("Expected identifier");
+				if(root)
+				{
+					marker.done(DUMMY_DECLARATION);
+				}
+				else
+				{
+					marker.error("Expected identifier");
+				}
 			}
 			return;
 		}
