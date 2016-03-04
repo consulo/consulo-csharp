@@ -39,12 +39,14 @@ import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.search.searches.AllTypesSearch;
-import com.intellij.openapi.module.impl.scopes.ModuleWithDependenciesScope;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ModuleRootLayer;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.Processor;
 import com.intellij.util.Query;
 import com.intellij.util.containers.ContainerUtil;
@@ -108,20 +110,26 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	@RequiredReadAction
 	public String getAssemblyTitle()
 	{
-		Collection<CSharpAttributeList> attributeLists = AttributeListIndex.getInstance().get(DotNetAttributeTargetType.ASSEMBLY, getProject(),
-				new ModuleWithDependenciesScope(getModule(), 0));
+		GlobalSearchScope moduleScope = getModule().getModuleScope();
+		Collection<CSharpAttributeList> attributeLists = AttributeListIndex.getInstance().get(DotNetAttributeTargetType.ASSEMBLY, getProject(), moduleScope);
 
 		loop:for(CSharpAttributeList attributeList : attributeLists)
 		{
 			for(CSharpAttribute attribute : attributeList.getAttributes())
 			{
-				DotNetTypeDeclaration dotNetTypeDeclaration = attribute.resolveToType();
-				if(dotNetTypeDeclaration == null)
+				DotNetTypeDeclaration typeDeclaration = attribute.resolveToType();
+				if(typeDeclaration == null)
 				{
 					continue;
 				}
-				if(DotNetTypes.System.Reflection.AssemblyTitleAttribute.equals(dotNetTypeDeclaration.getVmQName()))
+
+				if(DotNetTypes.System.Reflection.AssemblyTitleAttribute.equals(typeDeclaration.getVmQName()))
 				{
+					Module attributeModule = ModuleUtilCore.findModuleForPsiElement(attribute);
+					if(attributeModule == null || !attributeModule.equals(getModule()))
+					{
+						continue;
+					}
 					DotNetExpression[] parameterExpressions = attribute.getParameterExpressions();
 					if(parameterExpressions.length == 0)
 					{

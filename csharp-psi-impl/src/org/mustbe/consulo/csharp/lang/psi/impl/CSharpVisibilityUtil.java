@@ -34,7 +34,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.module.impl.scopes.ModuleWithDependenciesScope;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.SmartList;
@@ -122,14 +121,15 @@ public class CSharpVisibilityUtil
 				}
 				break;
 			}
-		} return false;
+		}
+		return false;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	public static List<String> findAllowListForInternal(@NotNull Module targetModule)
 	{
-		Collection<CSharpAttributeList> attributeLists = AttributeListIndex.getInstance().get(DotNetAttributeTargetType.ASSEMBLY, targetModule.getProject(),
-				new ModuleWithDependenciesScope(targetModule, 0));
+		Collection<CSharpAttributeList> attributeLists = AttributeListIndex.getInstance().get(DotNetAttributeTargetType.ASSEMBLY, targetModule.getProject(), targetModule.getModuleScope());
 
 		List<String> list = new SmartList<String>();
 		for(CSharpAttributeList attributeList : attributeLists)
@@ -141,8 +141,15 @@ public class CSharpVisibilityUtil
 				{
 					continue;
 				}
+
 				if(DotNetTypes2.System.Runtime.CompilerServices.InternalsVisibleToAttribute.equalsIgnoreCase(dotNetTypeDeclaration.getVmQName()))
 				{
+					Module attributeModule = ModuleUtilCore.findModuleForPsiElement(attribute);
+					if(attributeModule == null || !attributeModule.equals(targetModule))
+					{
+						continue;
+					}
+
 					DotNetExpression[] parameterExpressions = attribute.getParameterExpressions();
 					if(parameterExpressions.length == 0)
 					{
@@ -159,6 +166,7 @@ public class CSharpVisibilityUtil
 		return list;
 	}
 
+	@NotNull
 	private static List<DotNetTypeDeclaration> collectAllTypes(PsiElement place)
 	{
 		List<DotNetTypeDeclaration> typeDeclarations = new SmartList<DotNetTypeDeclaration>();
