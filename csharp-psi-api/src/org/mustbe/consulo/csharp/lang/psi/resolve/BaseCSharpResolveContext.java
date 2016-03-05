@@ -100,4 +100,11 @@ public class BaseCSharpResolveContext implements CSharpResolveContext
 	{
 		return true;
 	}
+
+	@NotNull
+	@Override
+	public PsiElement getElement()
+	{
+		throw new IllegalArgumentException();
+	}
 }

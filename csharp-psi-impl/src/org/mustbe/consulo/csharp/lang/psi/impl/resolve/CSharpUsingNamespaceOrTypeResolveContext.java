@@ -77,6 +77,13 @@ public class CSharpUsingNamespaceOrTypeResolveContext extends BaseCSharpResolveC
 		myUsingListChild = usingListChild;
 	}
 
+	@NotNull
+	@Override
+	public PsiElement getElement()
+	{
+		return myUsingListChild;
+	}
+
 	@RequiredReadAction
 	@Nullable
 	@Override

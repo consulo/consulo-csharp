@@ -179,6 +179,13 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 	}
 
 	@NotNull
+	@Override
+	public PsiElement getElement()
+	{
+		throw new IllegalArgumentException("Composite context");
+	}
+
+	@NotNull
 	public CSharpResolveContext[] getContexts()
 	{
 		return myContexts;

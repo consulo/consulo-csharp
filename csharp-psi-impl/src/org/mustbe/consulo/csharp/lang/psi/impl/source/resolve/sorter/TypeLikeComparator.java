@@ -3,7 +3,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter;
 import java.util.Comparator;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
@@ -19,6 +21,7 @@ import com.intellij.psi.ResolveResult;
 public class TypeLikeComparator implements Comparator<ResolveResult>
 {
 	@NotNull
+	@RequiredReadAction
 	public static TypeLikeComparator create(@NotNull PsiElement element)
 	{
 		int size = 0;
@@ -54,6 +57,11 @@ public class TypeLikeComparator implements Comparator<ResolveResult>
 		if(element instanceof CSharpElementGroup)
 		{
 			return 100000;
+		}
+
+		if(element instanceof CSharpTypeDefStatement)
+		{
+			return 50100;
 		}
 
 		if(element instanceof DotNetGenericParameterListOwner)

@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingTypeStatement;
@@ -35,24 +36,6 @@ import com.intellij.util.NotNullFunction;
 public class CSharpResolveContextUtil
 {
 	private static final Key<CachedValue<CSharpResolveContext>> RESOLVE_CONTEXT = Key.create("resolve-context");
-
-	@NotNull
-	@RequiredReadAction
-	public static CSharpResolveContext createContext(@NotNull DotNetGenericExtractor genericExtractor, @NotNull GlobalSearchScope resolveScope, @NotNull PsiElement... elements)
-	{
-		if(elements.length == 0)
-		{
-			throw new IllegalArgumentException();
-		}
-
-		CSharpResolveContext[] array = new CSharpResolveContext[elements.length];
-		for(int i = 0; i < elements.length; i++)
-		{
-			PsiElement element = elements[i];
-			array[i] = createContext(genericExtractor, resolveScope, element);
-		}
-		return new CSharpCompositeResolveContext(elements[0].getProject(), array);
-	}
 
 	@NotNull
 	@RequiredReadAction
@@ -89,6 +72,18 @@ public class CSharpResolveContextUtil
 				public CSharpResolveContext fun(CSharpUsingListChild usingList)
 				{
 					return new CSharpUsingNamespaceOrTypeResolveContext(usingList);
+				}
+			});
+		}
+		else if(element instanceof CSharpTypeDefStatement)
+		{
+			return cacheSimple((CSharpTypeDefStatement) element, new NotNullFunction<CSharpTypeDefStatement, CSharpResolveContext>()
+			{
+				@NotNull
+				@Override
+				public CSharpResolveContext fun(CSharpTypeDefStatement statement)
+				{
+					return new CSharpTypeDefResolveContext(statement);
 				}
 			});
 		}

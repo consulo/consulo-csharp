@@ -210,4 +210,11 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		}
 		return true;
 	}
+
+	@NotNull
+	@Override
+	public PsiElement getElement()
+	{
+		return myNamespaceAsElement;
+	}
 }

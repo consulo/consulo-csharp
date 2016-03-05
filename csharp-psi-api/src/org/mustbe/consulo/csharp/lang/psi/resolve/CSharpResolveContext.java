@@ -55,4 +55,7 @@ public interface CSharpResolveContext
 
 	@RequiredReadAction
 	boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep);
+
+	@NotNull
+	PsiElement getElement();
 }
