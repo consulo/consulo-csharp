@@ -57,7 +57,11 @@ public class UnusedUsingVisitor extends CSharpElementVisitor
 
 		Boolean defaultState = Boolean.FALSE;
 		PsiElement referenceElement = child.getReferenceElement();
-		if(referenceElement instanceof CSharpReferenceExpression)
+		if(referenceElement == null)
+		{
+			defaultState = Boolean.TRUE;
+		}
+		else if(referenceElement instanceof CSharpReferenceExpression)
 		{
 			defaultState = ((CSharpReferenceExpression) referenceElement).resolve() == null ? Boolean.TRUE : Boolean.FALSE;
 		}
