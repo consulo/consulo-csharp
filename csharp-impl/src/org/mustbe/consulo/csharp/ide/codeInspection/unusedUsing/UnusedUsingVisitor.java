@@ -20,11 +20,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingTypeStatement;
+import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLinqExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 
@@ -50,6 +58,49 @@ public class UnusedUsingVisitor extends CSharpElementVisitor
 	public Map<CSharpUsingListChild, Boolean> getUsingContext()
 	{
 		return myUsingContext;
+	}
+
+	@Override
+	@RequiredReadAction
+	public void visitLinqExpression(CSharpLinqExpressionImpl expression)
+	{
+		super.visitLinqExpression(expression);
+
+		String packageOfEnumerable = StringUtil.getPackageName(DotNetTypes2.System.Linq.Enumerable);
+		String className = StringUtil.getShortName(DotNetTypes2.System.Linq.Enumerable);
+
+		for(Map.Entry<CSharpUsingListChild, Boolean> entry : myUsingContext.entrySet())
+		{
+			if(entry.getValue())
+			{
+				continue;
+			}
+
+			CSharpUsingListChild key = entry.getKey();
+			if(key instanceof CSharpUsingTypeStatement)
+			{
+				if(DotNetTypeRefUtil.isVmQNameEqual(((CSharpUsingTypeStatement) key).getTypeRef(), expression, DotNetTypes2.System.Linq.Enumerable))
+				{
+					myUsingContext.put(key, Boolean.TRUE);
+					break;
+				}
+			}
+			else if(key instanceof CSharpUsingNamespaceStatement)
+			{
+				String referenceText = ((CSharpUsingNamespaceStatement) key).getReferenceText();
+
+				// our namespace, try find class
+				if(packageOfEnumerable.equals(referenceText))
+				{
+					DotNetNamespaceAsElement namespaceAsElement = ((CSharpUsingNamespaceStatement) key).resolve();
+					if(namespaceAsElement != null && namespaceAsElement.findChildren(className, expression.getResolveScope(), DotNetNamespaceAsElement.ChildrenFilter.ONLY_ELEMENTS).length > 0)
+					{
+						myUsingContext.put(key, Boolean.TRUE);
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	@Override

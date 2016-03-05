@@ -43,6 +43,7 @@ public interface DotNetTypes2
 		interface Linq
 		{
 			String IGrouping$2 = "System.Linq.IGrouping`2";
+			String Enumerable = "System.Linq.Enumerable";
 		}
 
 		interface Threading
