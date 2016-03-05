@@ -25,6 +25,7 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
@@ -32,7 +33,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaR
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
-import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.util.Processor;
@@ -52,7 +52,7 @@ public class AnyMemberKindProcessor implements KindProcessor
 	{
 		final PsiElement element = options.getElement();
 		final boolean resolveFromParent = options.isResolveFromParent();
-		final List<WeightUtil.WeightResult> methodResolveResults = new ArrayList<WeightUtil.WeightResult>();
+		final List<MethodResolveResult> methodResolveResults = new ArrayList<MethodResolveResult>();
 
 		CSharpReferenceExpressionImplUtil.processAnyMember(options, defaultExtractor, forceQualifierElement, new Processor<ResolveResult>()
 		{
@@ -73,19 +73,19 @@ public class AnyMemberKindProcessor implements KindProcessor
 								MethodCalcResult calc = MethodResolver.calc(lambdaResolveResult.getParameterTypeRefs(),
 										((DotNetLikeMethodDeclaration) psiElement).getParameterTypeRefs(), element);
 
-								methodResolveResults.add(WeightUtil.WeightResult.from(calc, psiElement, result));
+								methodResolveResults.add(MethodResolveResult.createResult(calc, psiElement, result));
 							}
 						}
 					}
 				}
 				else
 				{
-					methodResolveResults.add(WeightUtil.WeightResult.from(MethodCalcResult.VALID, result.getElement(), result));
+					methodResolveResults.add(MethodResolveResult.createResult(MethodCalcResult.VALID, result.getElement(), result));
 				}
 				return true;
 			}
 		});
 
-		WeightUtil.sortAndReturn(methodResolveResults, processor);
+		WeightUtil.sortAndProcess(methodResolveResults, processor);
 	}
 }

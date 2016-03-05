@@ -4,9 +4,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.ContainerUtil;
@@ -17,50 +14,18 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class WeightUtil
 {
-	//FIXME [VISTALL] we really need this?
-	public static class WeightResult
-	{
-		@NotNull
-		public static WeightUtil.WeightResult from(MethodCalcResult calcResult, PsiElement element, @Nullable ResolveResult resolveResult)
-		{
-			PsiElement providerElement = null;
-			if(resolveResult instanceof CSharpResolveResult)
-			{
-				providerElement = ((CSharpResolveResult) resolveResult).getProviderElement();
-			}
-			return new WeightResult(calcResult, element, providerElement);
-		}
-
-		private MethodCalcResult myCalcResult;
-		private PsiElement myElement;
-		private PsiElement myProviderElement;
-
-		private WeightResult(MethodCalcResult calcResult, PsiElement element, PsiElement providerElement)
-		{
-			myCalcResult = calcResult;
-			myElement = element;
-			myProviderElement = providerElement;
-		}
-
-		@NotNull
-		public MethodResolveResult make()
-		{
-			return (MethodResolveResult) new MethodResolveResult(myElement, myCalcResult).withProvider(myProviderElement);
-		}
-	}
-
 	public static final int MAX_WEIGHT = Integer.MIN_VALUE;
 
-	public static final Comparator<WeightResult> ourComparator = new Comparator<WeightResult>()
+	public static final Comparator<MethodResolveResult> ourComparator = new Comparator<MethodResolveResult>()
 	{
 		@Override
-		public int compare(WeightResult o1, WeightResult o2)
+		public int compare(MethodResolveResult o1, MethodResolveResult o2)
 		{
-			return o2.myCalcResult.getWeight() - o1.myCalcResult.getWeight();
+			return o2.getCalcResult().getWeight() - o1.getCalcResult().getWeight();
 		}
 	};
 
-	public static void sortAndReturn(@NotNull List<WeightResult> list, @NotNull Processor<ResolveResult> processor)
+	public static void sortAndProcess(@NotNull List<MethodResolveResult> list, @NotNull Processor<ResolveResult> processor)
 	{
 		if(list.isEmpty())
 		{
@@ -69,9 +34,9 @@ public class WeightUtil
 
 		ContainerUtil.sort(list, ourComparator);
 
-		for(WeightResult weightResult : list)
+		for(MethodResolveResult methodResolveResult : list)
 		{
-			if(!processor.process(weightResult.make()))
+			if(!processor.process(methodResolveResult))
 			{
 				return;
 			}

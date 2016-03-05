@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +40,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptio
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubElementResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
@@ -120,11 +122,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			if(o instanceof List)
 			{
 				//noinspection unchecked
-				List<WeightUtil.WeightResult> list = (List<WeightUtil.WeightResult>) o;
-				for(WeightUtil.WeightResult result : list)
-				{
-					elements.add(result.make());
-				}
+				elements.addAll((Collection<? extends ResolveResult>) o);
 			}
 			else if(o instanceof PsiElement)
 			{
@@ -272,22 +270,22 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 				return new CSharpTypeRefByQName(DotNetTypes.System.Void);
 			}
 
-			List<WeightUtil.WeightResult> pairs = new SmartList<WeightUtil.WeightResult>();
+			List<MethodResolveResult> resolveResults = new SmartList<MethodResolveResult>();
 
 			for(DotNetExpression dotNetExpression : parameterExpressions)
 			{
 				DotNetTypeRef expressionTypeRef = dotNetExpression.toTypeRef(true);
 
-				resolveUserDefinedOperators(elementType, expressionTypeRef, expressionTypeRef, pairs, null);
+				resolveUserDefinedOperators(elementType, expressionTypeRef, expressionTypeRef, resolveResults, null);
 
 				for(DotNetTypeRef implicitTypeRef : getAllImplicitCasts(expressionTypeRef, parent))
 				{
-					resolveUserDefinedOperators(elementType, expressionTypeRef, implicitTypeRef, pairs, dotNetExpression);
+					resolveUserDefinedOperators(elementType, expressionTypeRef, implicitTypeRef, resolveResults, dotNetExpression);
 				}
 			}
 
-			Collections.sort(pairs, WeightUtil.ourComparator);
-			return pairs;
+			Collections.sort(resolveResults, WeightUtil.ourComparator);
+			return resolveResults;
 		}
 
 		return null;
@@ -340,7 +338,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	public void resolveUserDefinedOperators(@NotNull IElementType elementType,
 			@NotNull DotNetTypeRef originalTypeRef,
 			@NotNull DotNetTypeRef typeRef,
-			@NotNull List<WeightUtil.WeightResult> last,
+			@NotNull List<MethodResolveResult> last,
 			@Nullable DotNetExpression implicitExpression)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(this);
@@ -377,7 +375,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 				calc = calc.dupWithResult(Short.MIN_VALUE);
 			}
 
-			last.add(WeightUtil.WeightResult.from(calc, psiElement, null));
+			last.add(MethodResolveResult.createResult(calc, psiElement, null));
 		}
 	}
 

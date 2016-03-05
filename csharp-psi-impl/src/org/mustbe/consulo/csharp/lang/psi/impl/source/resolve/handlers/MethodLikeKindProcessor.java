@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
@@ -64,7 +65,7 @@ public class MethodLikeKindProcessor implements KindProcessor
 			return;
 		}
 
-		final List<WeightUtil.WeightResult> methodResolveResults = new ArrayList<WeightUtil.WeightResult>();
+		final List<MethodResolveResult> methodResolveResults = new ArrayList<MethodResolveResult>();
 
 		CSharpReferenceExpressionImplUtil.processAnyMember(options, defaultExtractor, forceQualifierElement, new Processor<ResolveResult>()
 		{
@@ -99,11 +100,11 @@ public class MethodLikeKindProcessor implements KindProcessor
 
 								if(inferenceResult == null || inferenceResult.isSuccess())
 								{
-									methodResolveResults.add(WeightUtil.WeightResult.from(calcResult, psiElement, result));
+									methodResolveResults.add(MethodResolveResult.createResult(calcResult, psiElement, result));
 								}
 								else
 								{
-									methodResolveResults.add(WeightUtil.WeightResult.from(calcResult.dupNoResult(Short.MIN_VALUE), psiElement, result));
+									methodResolveResults.add(MethodResolveResult.createResult(calcResult.dupNoResult(Short.MIN_VALUE), psiElement, result));
 								}
 							}
 							return true;
@@ -123,13 +124,13 @@ public class MethodLikeKindProcessor implements KindProcessor
 						MethodCalcResult calcResult = MethodResolver.calc(callArgumentListOwner, lambdaTypeResolveResult.getParameterInfos(),
 								element);
 
-						methodResolveResults.add(WeightUtil.WeightResult.from(calcResult, maybeElementGroup, result));
+						methodResolveResults.add(MethodResolveResult.createResult(calcResult, maybeElementGroup, result));
 					}
 				}
 				return true;
 			}
 		});
 
-		WeightUtil.sortAndReturn(methodResolveResults, processor);
+		WeightUtil.sortAndProcess(methodResolveResults, processor);
 	}
 }

@@ -159,7 +159,7 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 				{
 					MethodCalcResult calcResult = MethodResolver.calc(this, delegateMethodTypeWrapper, this);
 
-					return new ResolveResult[] {new MethodResolveResult(delegateMethodTypeWrapper, calcResult)};
+					return new ResolveResult[] {MethodResolveResult.createResult(calcResult, delegateMethodTypeWrapper, null)};
 				}
 			}
 			else
