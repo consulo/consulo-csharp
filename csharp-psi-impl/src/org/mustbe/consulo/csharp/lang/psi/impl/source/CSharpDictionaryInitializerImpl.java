@@ -146,6 +146,7 @@ public class CSharpDictionaryInitializerImpl extends CSharpElementImpl implement
 		return null;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public CSharpCallArgument[] getArguments()

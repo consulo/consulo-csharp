@@ -148,6 +148,7 @@ public class CSharpArrayInitializerCompositeValueImpl extends CSharpElementImpl 
 		return findChildByType(CSharpTokens.RBRACE);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public CSharpCallArgument[] getArguments()

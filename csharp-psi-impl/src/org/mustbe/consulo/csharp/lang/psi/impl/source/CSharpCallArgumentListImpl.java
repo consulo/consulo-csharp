@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -71,6 +72,7 @@ public class CSharpCallArgumentListImpl extends CSharpElementImpl implements CSh
 		return findChildByFilter(ourCloseSet);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public CSharpCallArgument[] getArguments()
