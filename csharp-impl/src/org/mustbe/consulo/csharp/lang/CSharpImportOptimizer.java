@@ -16,11 +16,17 @@
 
 package org.mustbe.consulo.csharp.lang;
 
+import java.util.Map;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.codeInspection.unusedUsing.UnusedUsingVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import com.intellij.lang.ImportOptimizer;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiRecursiveElementVisitor;
 
 /**
  * @author VISTALL
@@ -40,18 +46,45 @@ public class CSharpImportOptimizer implements ImportOptimizer
 	{
 		return new CollectingInfoRunnable()
 		{
+			private int myCount = 0;
 			@Nullable
 			@Override
 			public String getUserNotificationInfo()
 			{
+				if(myCount > 0)
+				{
+					return "removed " + myCount + " using statement" + (myCount != 1 ? "s" : "");
+				}
 				return null;
 			}
 
 			@Override
 			public void run()
 			{
-			}
+				final UnusedUsingVisitor unusedUsingVisitor = new UnusedUsingVisitor();
+				PsiRecursiveElementVisitor visitor = new PsiRecursiveElementVisitor()
+				{
+					@Override
+					public void visitElement(PsiElement element)
+					{
+						element.accept(unusedUsingVisitor);
+						super.visitElement(element);
+					}
+				};
 
+				psiFile.accept(visitor);
+
+				for(Map.Entry<CSharpUsingListChild, Boolean> entry : unusedUsingVisitor.getUsingContext().entrySet())
+				{
+					if(entry.getValue())
+					{
+						continue;
+					}
+
+					myCount ++;
+					entry.getKey().delete();
+				}
+			}
 		};
 	}
 }
