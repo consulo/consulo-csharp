@@ -84,7 +84,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 
 
 		DotNetTypeRef secondTypeRef = resolve.getSecond();
-		if(firstTypeRef == DotNetTypeRef.ERROR_TYPE || secondTypeRef == DotNetTypeRef.ERROR_TYPE)
+		if(CSharpTypeUtil.isErrorTypeRef(firstTypeRef) || CSharpTypeUtil.isErrorTypeRef(secondTypeRef))
 		{
 			return null;
 		}
