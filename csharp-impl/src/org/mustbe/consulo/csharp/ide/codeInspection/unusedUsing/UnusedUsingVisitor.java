@@ -47,13 +47,21 @@ public class UnusedUsingVisitor extends CSharpElementVisitor
 	private Map<CSharpUsingListChild, Boolean> myUsingContext = new HashMap<CSharpUsingListChild, Boolean>();
 
 	@Override
+	@RequiredReadAction
 	public void visitUsingChild(@NotNull CSharpUsingListChild child)
 	{
 		if(myUsingContext.containsKey(child))
 		{
 			return;
 		}
-		myUsingContext.put(child, Boolean.FALSE);
+
+		Boolean defaultState = Boolean.FALSE;
+		PsiElement referenceElement = child.getReferenceElement();
+		if(referenceElement instanceof CSharpReferenceExpression)
+		{
+			defaultState = ((CSharpReferenceExpression) referenceElement).resolve() == null ? Boolean.TRUE : Boolean.FALSE;
+		}
+		myUsingContext.put(child, defaultState);
 	}
 
 	@NotNull
