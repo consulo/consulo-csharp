@@ -139,26 +139,7 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 	@Override
 	public String getPresentableText()
 	{
-		DotNetTypeRef[] argumentTypeRefs = myReferenceExpression.getTypeArgumentListRefs();
-
-		StringBuilder builder = new StringBuilder();
-		builder.append(myReferenceExpression.getReferenceName());
-
-		if(argumentTypeRefs.length > 0)
-		{
-			builder.append("<");
-			for(int i = 0; i < argumentTypeRefs.length; i++)
-			{
-				if(i != 0)
-				{
-					builder.append(", ");
-				}
-				DotNetTypeRef argument = argumentTypeRefs[i];
-				builder.append(argument.getPresentableText());
-			}
-			builder.append(">");
-		}
-		return builder.toString();
+		return getReferenceText();
 	}
 
 	@NotNull
@@ -228,5 +209,30 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 			}
 		}
 		return DotNetGenericExtractor.EMPTY;
+	}
+
+	@NotNull
+	public String getReferenceText()
+	{
+		DotNetTypeRef[] argumentTypeRefs = myReferenceExpression.getTypeArgumentListRefs();
+
+		StringBuilder builder = new StringBuilder();
+		builder.append(myReferenceExpression.getReferenceName());
+
+		if(argumentTypeRefs.length > 0)
+		{
+			builder.append("<");
+			for(int i = 0; i < argumentTypeRefs.length; i++)
+			{
+				if(i != 0)
+				{
+					builder.append(", ");
+				}
+				DotNetTypeRef argument = argumentTypeRefs[i];
+				builder.append(argument.getPresentableText());
+			}
+			builder.append(">");
+		}
+		return builder.toString();
 	}
 }

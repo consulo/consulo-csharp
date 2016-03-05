@@ -29,6 +29,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpFastImp
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpReferenceTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
@@ -359,6 +360,10 @@ public class CSharpTypeUtil
 
 		PsiElement topElement = topTypeResolveResult.getElement();
 		PsiElement targetElement = targetTypeResolveResult.getElement();
+		if(topElement == null && targetElement == null && top instanceof CSharpReferenceTypeRef && target instanceof CSharpReferenceTypeRef)
+		{
+			return ((CSharpReferenceTypeRef) top).getReferenceText().equals(((CSharpReferenceTypeRef) target).getReferenceText()) ? SIMPLE_SUCCESS : FAIL;
+		}
 
 		if(topTypeResolveResult.isNullable() && target == CSharpNullTypeRef.INSTANCE)
 		{
