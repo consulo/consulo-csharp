@@ -115,7 +115,7 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor
 				continue;
 			}
 
-			if(!myResultProcessor.process(new CSharpResolveResult(psiElement).withProvider(element)))
+			if(!myResultProcessor.process(new CSharpResolveResult(psiElement).setProvider(element)))
 			{
 				return false;
 			}

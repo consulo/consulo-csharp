@@ -33,7 +33,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptio
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CompletionResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.PsiElementResolveResultWithExtractor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResultWithExtractor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SortedMemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubScopeProcessor;
@@ -498,7 +498,7 @@ public class CSharpReferenceExpressionImplUtil
 							}
 							map.put(genericParameter, typeArgumentListRef);
 						}
-						resolveResults[i] = new PsiElementResolveResultWithExtractor(resolveResultElement, CSharpGenericExtractor.create(map));
+						resolveResults[i] = CSharpResolveResultWithExtractor.withExtractor(resolveResult, CSharpGenericExtractor.create(map));
 					}
 				}
 			}
@@ -1035,9 +1035,9 @@ public class CSharpReferenceExpressionImplUtil
 	{
 		PsiElement element = resolveResult.getElement();
 		DotNetGenericExtractor extractor = DotNetGenericExtractor.EMPTY;
-		if(resolveResult instanceof PsiElementResolveResultWithExtractor)
+		if(resolveResult instanceof CSharpResolveResultWithExtractor)
 		{
-			extractor = ((PsiElementResolveResultWithExtractor) resolveResult).getExtractor();
+			extractor = ((CSharpResolveResultWithExtractor) resolveResult).getExtractor();
 		}
 		return toTypeRef(element, extractor);
 	}

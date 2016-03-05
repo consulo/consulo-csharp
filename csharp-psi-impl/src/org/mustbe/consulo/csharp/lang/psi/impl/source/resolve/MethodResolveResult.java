@@ -21,7 +21,7 @@ public class MethodResolveResult extends CSharpResolveResult
 			providerElement = ((CSharpResolveResult) resolveResult).getProviderElement();
 		}
 		MethodResolveResult methodResolveResult = new MethodResolveResult(element, calcResult);
-		methodResolveResult.withProvider(providerElement);
+		methodResolveResult.setProvider(providerElement);
 		return methodResolveResult;
 	}
 

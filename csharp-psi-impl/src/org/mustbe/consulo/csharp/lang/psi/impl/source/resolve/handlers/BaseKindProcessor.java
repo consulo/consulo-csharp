@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.PsiElementResolveResultWithExtractor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResultWithExtractor;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.util.Pair;
@@ -50,7 +50,7 @@ public class BaseKindProcessor implements KindProcessor
 			Pair<DotNetTypeDeclaration, DotNetGenericExtractor> pair = CSharpTypeDeclarationImplUtil.resolveBaseType(thisTypeDeclaration, element);
 			if(pair != null)
 			{
-				processor.process(new PsiElementResolveResultWithExtractor(pair.getFirst(), pair.getSecond(), true));
+				processor.process(new CSharpResolveResultWithExtractor(pair.getFirst(), pair.getSecond()));
 			}
 		}
 	}

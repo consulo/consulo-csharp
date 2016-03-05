@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.PsiElementResolveResultWithExtractor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResultWithExtractor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -63,7 +63,7 @@ public class ThisKindProcessor implements KindProcessor
 				}
 				genericExtractor = CSharpGenericExtractor.create(map);
 			}
-			processor.process(new PsiElementResolveResultWithExtractor(thisTypeDeclaration, genericExtractor, true));
+			processor.process(new CSharpResolveResultWithExtractor(thisTypeDeclaration, genericExtractor));
 		}
 	}
 }
