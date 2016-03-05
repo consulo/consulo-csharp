@@ -58,7 +58,6 @@ public class UnusedUsingInspection extends LocalInspectionTool
 			return;
 		}
 
-
 		Map<CSharpUsingListChild, Boolean> usingContext = visitor.getUsingContext();
 		for(Map.Entry<CSharpUsingListChild, Boolean> entry : usingContext.entrySet())
 		{

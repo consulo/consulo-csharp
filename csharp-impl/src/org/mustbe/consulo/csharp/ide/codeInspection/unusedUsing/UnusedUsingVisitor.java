@@ -21,8 +21,10 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingTypeStatement;
@@ -108,7 +110,15 @@ public class UnusedUsingVisitor extends CSharpElementVisitor
 	{
 		super.visitReferenceExpression(expression);
 
-		ResolveResult[] resolveResults = expression.multiResolve(false);
+		ResolveResult[] resolveResults;
+		if(expression.getParent() instanceof CSharpAttribute)
+		{
+			resolveResults = ((CSharpReferenceExpressionEx) expression).multiResolveImpl(CSharpReferenceExpression.ResolveToKind.ATTRIBUTE, true);
+		}
+		else
+		{
+			resolveResults = expression.multiResolve(false);
+		}
 
 		ResolveResult firstValidResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
 		if(firstValidResult != null)
