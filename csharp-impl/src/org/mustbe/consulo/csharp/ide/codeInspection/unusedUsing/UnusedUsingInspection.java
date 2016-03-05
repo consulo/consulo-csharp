@@ -23,10 +23,15 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalInspectionToolSession;
+import com.intellij.codeInspection.LocalQuickFixOnPsiElement;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiFile;
 
 /**
  * @author VISTALL
@@ -34,6 +39,41 @@ import com.intellij.psi.PsiElementVisitor;
  */
 public class UnusedUsingInspection extends LocalInspectionTool
 {
+	public static final class DeleteStatement extends LocalQuickFixOnPsiElement
+	{
+		protected DeleteStatement(@NotNull PsiElement element)
+		{
+			super(element);
+		}
+
+		@NotNull
+		@Override
+		public String getText()
+		{
+			return "Delete statement";
+		}
+
+		@Override
+		public void invoke(@NotNull Project project, @NotNull PsiFile psiFile, @NotNull final PsiElement element, @NotNull PsiElement element2)
+		{
+			new WriteCommandAction.Simple<Object>(project, psiFile)
+			{
+				@Override
+				protected void run() throws Throwable
+				{
+					element.delete();
+				}
+			}.execute();
+		}
+
+		@NotNull
+		@Override
+		public String getFamilyName()
+		{
+			return "C#";
+		}
+	}
+
 	private static final Key<UnusedUsingVisitor> KEY = Key.create("UnusedUsingVisitor");
 
 	@NotNull
@@ -66,7 +106,8 @@ public class UnusedUsingInspection extends LocalInspectionTool
 				continue;
 			}
 
-			problemsHolder.registerProblem(entry.getKey(), "Using statement is not used", ProblemHighlightType.LIKE_UNUSED_SYMBOL);
+			CSharpUsingListChild element = entry.getKey();
+			problemsHolder.registerProblem(element, "Using statement is not used", ProblemHighlightType.LIKE_UNUSED_SYMBOL, new DeleteStatement(element));
 		}
 	}
 }
