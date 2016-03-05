@@ -384,7 +384,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 					ASTNode[] children = fun.getNode().getChildren(null);
 					for(ASTNode child : children)
 					{
-						if(CSharpTokenSets.COMMENTS.contains(child.getElementType()) || CSharpTokenSets.WHITE_SPACE == child.getElementType())
+						if(CSharpTokenSets.COMMENTS.contains(child.getElementType()) || child.getElementType() == CSharpTokenSets.WHITE_SPACE)
 						{
 							continue;
 						}
