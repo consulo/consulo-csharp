@@ -17,8 +17,11 @@
 package org.mustbe.consulo.csharp.lang;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
@@ -26,14 +29,7 @@ import org.mustbe.consulo.csharp.lang.parser.preprocessor.EndRegionPreprocessorD
 import org.mustbe.consulo.csharp.lang.parser.preprocessor.PreprocessorDirective;
 import org.mustbe.consulo.csharp.lang.parser.preprocessor.PreprocessorParser;
 import org.mustbe.consulo.csharp.lang.parser.preprocessor.RegionPreprocessorDirective;
-import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;
-import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
+import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import com.intellij.codeInsight.folding.CodeFoldingSettings;
@@ -46,8 +42,10 @@ import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiUtilCore;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -59,6 +57,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 	protected void buildLanguageFoldRegions(@NotNull final List<FoldingDescriptor> descriptors, @NotNull PsiElement root, @NotNull Document document, boolean quick)
 	{
 		final Deque<PsiElement> regions = new ArrayDeque<PsiElement>();
+		final Set<CSharpUsingListChild> processedUsingStatements = new LinkedHashSet<CSharpUsingListChild>();
 
 		root.accept(new CSharpRecursiveElementVisitor()
 		{
@@ -89,7 +88,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 						{
 							if(Character.isWhitespace(text.charAt(i)))
 							{
-								startOffset ++;
+								startOffset++;
 							}
 							else
 							{
@@ -120,32 +119,72 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 				addBodyWithBraces(descriptors, declaration);
 			}
 
-			/*@Override
+			@Override
 			@RequiredReadAction
-			public void visitUsingNamespaceList(CSharpUsingListImpl list)
+			public void visitUsingNamespaceStatement(CSharpUsingNamespaceStatement statement)
 			{
-				CSharpUsingListChild[] statements = list.getStatements();
-				if(statements.length <= 1)
+				visitUsingChild(statement);
+			}
+
+			@Override
+			@RequiredReadAction
+			public void visitUsingTypeStatement(CSharpUsingTypeStatement statement)
+			{
+				visitUsingChild(statement);
+			}
+
+			@Override
+			@RequiredReadAction
+			public void visitTypeDefStatement(CSharpTypeDefStatement statement)
+			{
+				visitUsingChild(statement);
+			}
+
+			@RequiredReadAction
+			public void visitUsingChild(@NotNull CSharpUsingListChild child)
+			{
+				if(processedUsingStatements.contains(child))
 				{
 					return;
 				}
 
-				CSharpUsingListChild statement = statements[0];
-				PsiElement refElement = statement.getReferenceElement();
-				if(refElement == null)
+				PsiElement referenceElement = child.getReferenceElement();
+				if(referenceElement == null)
 				{
 					return;
 				}
 
-				ASTNode usingKeyword = statement.getNode().findChildByType(CSharpTokens.USING_KEYWORD);
+				List<CSharpUsingListChild> children = new ArrayList<CSharpUsingListChild>(5);
 
-				assert usingKeyword != null;
+				for(ASTNode node = child.getNode(); node != null; node = node.getTreeNext())
+				{
+					IElementType elementType = node.getElementType();
+					if(elementType == TokenType.WHITE_SPACE)
+					{
+						CharSequence chars = node.getChars();
+						if(chars.length() != 1 || chars.charAt(0) != '\n')
+						{
+							break;
+						}
+					}
+					else if(CSharpStubElements.USING_CHILDREN.contains(elementType))
+					{
+						children.add(node.getPsi(CSharpUsingListChild.class));
+					}
+				}
 
+				if(children.size() <= 1)
+				{
+					return;
+				}
+
+				ASTNode usingKeyword = child.getNode().findChildByType(CSharpTokens.USING_KEYWORD);
 				int startOffset = usingKeyword.getTextRange().getEndOffset() + 1;
-				int endOffset = statements[statements.length - 1].getLastChild().getTextRange().getEndOffset();
+				int endOffset = ContainerUtil.getLastItem(children).getLastChild().getTextRange().getEndOffset();
 
-				descriptors.add(new FoldingDescriptor(list, new TextRange(startOffset, endOffset)));
-			}   */
+				processedUsingStatements.addAll(children);
+				descriptors.add(new FoldingDescriptor(child, new TextRange(startOffset, endOffset)));
+			}
 
 			@Override
 			@RequiredReadAction
