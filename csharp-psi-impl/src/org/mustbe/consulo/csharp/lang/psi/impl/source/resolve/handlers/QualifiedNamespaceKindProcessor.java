@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubScopeProcessor;
 import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
@@ -29,7 +30,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import com.intellij.openapi.util.text.CharFilter;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.util.Processor;
@@ -63,7 +63,7 @@ public class QualifiedNamespaceKindProcessor implements KindProcessor
 			{
 				return;
 			}
-			processor.process(new PsiElementResolveResult(namespace, true));
+			processor.process(new CSharpResolveResult(namespace));
 		}
 		else
 		{
@@ -93,7 +93,7 @@ public class QualifiedNamespaceKindProcessor implements KindProcessor
 						{
 							return true;
 						}
-						processor.process(new PsiElementResolveResult(element, true));
+						processor.process(new CSharpResolveResult(element));
 					}
 					return true;
 				}

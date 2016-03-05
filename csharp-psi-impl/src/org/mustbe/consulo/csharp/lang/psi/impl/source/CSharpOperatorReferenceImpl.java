@@ -36,9 +36,9 @@ import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AsPsiElementProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubElementResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.WeightUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
@@ -59,10 +59,8 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.ResolveResult;
@@ -122,15 +120,15 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			if(o instanceof List)
 			{
 				//noinspection unchecked
-				List<Pair<MethodCalcResult, PsiElement>> list = (List<Pair<MethodCalcResult, PsiElement>>) o;
-				for(Pair<MethodCalcResult, PsiElement> pair : list)
+				List<WeightUtil.WeightResult> list = (List<WeightUtil.WeightResult>) o;
+				for(WeightUtil.WeightResult result : list)
 				{
-					elements.add(new MethodResolveResult(pair.getSecond(), pair.getFirst()));
+					elements.add(result.make());
 				}
 			}
 			else if(o instanceof PsiElement)
 			{
-				elements.add(new PsiElementResolveResult((PsiElement) o, true));
+				elements.add(new CSharpResolveResult((PsiElement) o));
 			}
 			else if(o instanceof DotNetTypeRef)
 			{
@@ -274,7 +272,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 				return new CSharpTypeRefByQName(DotNetTypes.System.Void);
 			}
 
-			List<Pair<MethodCalcResult, PsiElement>> pairs = new SmartList<Pair<MethodCalcResult, PsiElement>>();
+			List<WeightUtil.WeightResult> pairs = new SmartList<WeightUtil.WeightResult>();
 
 			for(DotNetExpression dotNetExpression : parameterExpressions)
 			{
@@ -342,7 +340,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	public void resolveUserDefinedOperators(@NotNull IElementType elementType,
 			@NotNull DotNetTypeRef originalTypeRef,
 			@NotNull DotNetTypeRef typeRef,
-			@NotNull List<Pair<MethodCalcResult, PsiElement>> last,
+			@NotNull List<WeightUtil.WeightResult> last,
 			@Nullable DotNetExpression implicitExpression)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(this);
@@ -379,7 +377,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 				calc = calc.dupWithResult(Short.MIN_VALUE);
 			}
 
-			last.add(Pair.<MethodCalcResult, PsiElement>create(calc, psiElement));
+			last.add(WeightUtil.WeightResult.from(calc, psiElement, null));
 		}
 	}
 

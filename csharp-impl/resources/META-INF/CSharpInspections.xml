@@ -30,6 +30,8 @@
 				displayName="Unnecessary Named Argument" groupName="C#" enabledByDefault="true"/>
 		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.UnusedSymbolLocalInspection"
 						 displayName="Unused Symbol" groupName="C#" enabledByDefault="true"/>
+		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unusedUsing.UnusedUsingInspection"
+						 displayName="Unused using" groupName="C#" enabledByDefault="true"/>
 
 		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.lang.doc.inspection.CSharpDocInspection"
 						 displayName="C# Documentation problems" groupName="C# Documentation" enabledByDefault="true"/>

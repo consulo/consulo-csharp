@@ -3,13 +3,12 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementResolveResult;
 
 /**
  * @author VISTALL
  * @since 02.11.14
  */
-public class MethodResolveResult extends PsiElementResolveResult
+public class MethodResolveResult extends CSharpResolveResult
 {
 	@NotNull
 	private final MethodCalcResult myCalcResult;

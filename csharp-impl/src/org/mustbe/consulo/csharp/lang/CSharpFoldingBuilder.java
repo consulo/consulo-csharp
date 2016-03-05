@@ -121,26 +121,6 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 
 			@Override
 			@RequiredReadAction
-			public void visitUsingNamespaceStatement(CSharpUsingNamespaceStatement statement)
-			{
-				visitUsingChild(statement);
-			}
-
-			@Override
-			@RequiredReadAction
-			public void visitUsingTypeStatement(CSharpUsingTypeStatement statement)
-			{
-				visitUsingChild(statement);
-			}
-
-			@Override
-			@RequiredReadAction
-			public void visitTypeDefStatement(CSharpTypeDefStatement statement)
-			{
-				visitUsingChild(statement);
-			}
-
-			@RequiredReadAction
 			public void visitUsingChild(@NotNull CSharpUsingListChild child)
 			{
 				if(processedUsingStatements.contains(child))

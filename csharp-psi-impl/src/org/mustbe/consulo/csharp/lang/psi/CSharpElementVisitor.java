@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
+import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.*;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
@@ -87,7 +88,12 @@ public class CSharpElementVisitor extends PsiElementVisitor
 
 	public void visitUsingNamespaceStatement(CSharpUsingNamespaceStatement statement)
 	{
-		visitElement(statement);
+		visitUsingChild(statement);
+	}
+
+	public void visitUsingChild(@NotNull CSharpUsingListChild child)
+	{
+		visitElement(child);
 	}
 
 	public void visitGenericParameter(DotNetGenericParameter parameter)
@@ -442,7 +448,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 
 	public void visitTypeDefStatement(CSharpTypeDefStatement statement)
 	{
-		visitElement(statement);
+		visitUsingChild(statement);
 	}
 
 	public void visitCheckedStatement(CSharpCheckedStatementImpl statement)
@@ -572,7 +578,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 
 	public void visitUsingTypeStatement(CSharpUsingTypeStatement statement)
 	{
-		visitElement(statement);
+		visitUsingChild(statement);
 	}
 
 	public void visitArrayInitializerSingleValue(CSharpArrayInitializerSingleValueImpl value)

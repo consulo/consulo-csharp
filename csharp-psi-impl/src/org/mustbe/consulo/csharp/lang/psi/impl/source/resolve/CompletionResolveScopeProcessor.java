@@ -11,7 +11,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -105,6 +104,6 @@ public class CompletionResolveScopeProcessor extends StubScopeProcessor
 					break;
 			}
 		}
-		myProcessor.process(new PsiElementResolveResult(element, true));
+		myProcessor.process(new CSharpResolveResult(element));
 	}
 }

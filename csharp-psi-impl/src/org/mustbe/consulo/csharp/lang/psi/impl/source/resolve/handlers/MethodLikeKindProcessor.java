@@ -39,7 +39,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.util.Processor;
@@ -65,13 +64,13 @@ public class MethodLikeKindProcessor implements KindProcessor
 			return;
 		}
 
-		final List<Pair<MethodCalcResult, PsiElement>> methodResolveResults = new ArrayList<Pair<MethodCalcResult, PsiElement>>();
+		final List<WeightUtil.WeightResult> methodResolveResults = new ArrayList<WeightUtil.WeightResult>();
 
 		CSharpReferenceExpressionImplUtil.processAnyMember(options, defaultExtractor, forceQualifierElement, new Processor<ResolveResult>()
 		{
 			@Override
 			@RequiredReadAction
-			public boolean process(ResolveResult result)
+			public boolean process(final ResolveResult result)
 			{
 				PsiElement maybeElementGroup = result.getElement();
 				if(maybeElementGroup instanceof CSharpElementGroup)
@@ -100,11 +99,11 @@ public class MethodLikeKindProcessor implements KindProcessor
 
 								if(inferenceResult == null || inferenceResult.isSuccess())
 								{
-									methodResolveResults.add(Pair.create(calcResult, psiElement));
+									methodResolveResults.add(WeightUtil.WeightResult.from(calcResult, psiElement, result));
 								}
 								else
 								{
-									methodResolveResults.add(Pair.create(calcResult.dupNoResult(Short.MIN_VALUE), psiElement));
+									methodResolveResults.add(WeightUtil.WeightResult.from(calcResult.dupNoResult(Short.MIN_VALUE), psiElement, result));
 								}
 							}
 							return true;
@@ -124,7 +123,7 @@ public class MethodLikeKindProcessor implements KindProcessor
 						MethodCalcResult calcResult = MethodResolver.calc(callArgumentListOwner, lambdaTypeResolveResult.getParameterInfos(),
 								element);
 
-						methodResolveResults.add(Pair.create(calcResult, maybeElementGroup));
+						methodResolveResults.add(WeightUtil.WeightResult.from(calcResult, maybeElementGroup, result));
 					}
 				}
 				return true;

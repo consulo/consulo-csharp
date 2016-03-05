@@ -30,7 +30,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.Me
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.util.Pair;
@@ -53,7 +52,7 @@ public class AnyMemberKindProcessor implements KindProcessor
 	{
 		final PsiElement element = options.getElement();
 		final boolean resolveFromParent = options.isResolveFromParent();
-		final List<Pair<MethodCalcResult, PsiElement>> methodResolveResults = new ArrayList<Pair<MethodCalcResult, PsiElement>>();
+		final List<WeightUtil.WeightResult> methodResolveResults = new ArrayList<WeightUtil.WeightResult>();
 
 		CSharpReferenceExpressionImplUtil.processAnyMember(options, defaultExtractor, forceQualifierElement, new Processor<ResolveResult>()
 		{
@@ -74,14 +73,14 @@ public class AnyMemberKindProcessor implements KindProcessor
 								MethodCalcResult calc = MethodResolver.calc(lambdaResolveResult.getParameterTypeRefs(),
 										((DotNetLikeMethodDeclaration) psiElement).getParameterTypeRefs(), element);
 
-								methodResolveResults.add(Pair.create(calc, psiElement));
+								methodResolveResults.add(WeightUtil.WeightResult.from(calc, psiElement, result));
 							}
 						}
 					}
 				}
 				else
 				{
-					methodResolveResults.add(Pair.<MethodCalcResult, PsiElement>create(MethodCalcResult.VALID, result.getElement()));
+					methodResolveResults.add(WeightUtil.WeightResult.from(MethodCalcResult.VALID, result.getElement(), result));
 				}
 				return true;
 			}

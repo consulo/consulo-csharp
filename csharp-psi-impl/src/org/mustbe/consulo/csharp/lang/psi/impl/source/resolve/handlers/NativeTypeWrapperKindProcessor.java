@@ -23,10 +23,10 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpNativeTypeImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
 import com.intellij.util.Processor;
 
@@ -53,12 +53,12 @@ public class NativeTypeWrapperKindProcessor implements KindProcessor
 		{
 			return;
 		}
-		PsiElement resolve = DotNetPsiSearcher.getInstance(element.getProject()).findType(nativeRuntimeType, element.getResolveScope(),
-				DotNetPsiSearcher.TypeResoleKind.UNKNOWN, CSharpTransform.INSTANCE);
-		if(resolve == null)
+		PsiElement psiElement = DotNetPsiSearcher.getInstance(element.getProject()).findType(nativeRuntimeType, element.getResolveScope(), DotNetPsiSearcher.TypeResoleKind.UNKNOWN,
+				CSharpTransform.INSTANCE);
+		if(psiElement == null)
 		{
 			return;
 		}
-		processor.process(new PsiElementResolveResult(resolve, true));
+		processor.process(new CSharpResolveResult(psiElement, true));
 	}
 }

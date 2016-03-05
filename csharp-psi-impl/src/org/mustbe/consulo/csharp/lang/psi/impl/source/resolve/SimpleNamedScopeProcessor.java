@@ -6,7 +6,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolve
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpNamedResolveSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
@@ -58,7 +57,7 @@ public class SimpleNamedScopeProcessor extends StubScopeProcessor
 
 		if(myCompletion)
 		{
-			return myCompletionProcessor.process(new PsiElementResolveResult(element, true));
+			return myCompletionProcessor.process(new CSharpResolveResult(element));
 		}
 		else
 		{
@@ -70,7 +69,7 @@ public class SimpleNamedScopeProcessor extends StubScopeProcessor
 
 			if(((CSharpNamedResolveSelector) selector).isNameEqual(name))
 			{
-				myCompletionProcessor.process(new PsiElementResolveResult(element, true));
+				myCompletionProcessor.process(new CSharpResolveResult(element));
 				return false;
 			}
 		}

@@ -42,7 +42,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -116,7 +115,7 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor
 				continue;
 			}
 
-			if(!myResultProcessor.process(new PsiElementResolveResult(psiElement, true)))
+			if(!myResultProcessor.process(new CSharpResolveResult(psiElement).withProvider(element)))
 			{
 				return false;
 			}

@@ -3,13 +3,12 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementResolveResult;
 
 /**
  * @author VISTALL
  * @since 22.10.14
  */
-public class StubElementResolveResult extends PsiElementResolveResult
+public class StubElementResolveResult extends CSharpResolveResult
 {
 	private final DotNetTypeRef myTypeRef;
 
@@ -19,6 +18,7 @@ public class StubElementResolveResult extends PsiElementResolveResult
 		myTypeRef = typeRef;
 	}
 
+	@NotNull
 	public DotNetTypeRef getTypeRef()
 	{
 		return myTypeRef;

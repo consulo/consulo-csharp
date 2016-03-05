@@ -30,6 +30,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListOwner;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
@@ -58,7 +59,6 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.KeyWithDefaultValue;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiInvalidElementAccessException;
 import com.intellij.psi.ResolveResult;
@@ -275,7 +275,7 @@ public class CSharpResolveUtil
 							}
 							if(((CSharpNamedResolveSelector) selector).isNameEqual(name))
 							{
-								consumer.process(new PsiElementResolveResult(genericParameter));
+								consumer.process(new CSharpResolveResult(genericParameter));
 								return false;
 							}
 						}
@@ -284,7 +284,7 @@ public class CSharpResolveUtil
 					{
 						for(DotNetGenericParameter genericParameter : genericParameters)
 						{
-							consumer.process(new PsiElementResolveResult(genericParameter));
+							consumer.process(new CSharpResolveResult(genericParameter));
 						}
 					}
 				}

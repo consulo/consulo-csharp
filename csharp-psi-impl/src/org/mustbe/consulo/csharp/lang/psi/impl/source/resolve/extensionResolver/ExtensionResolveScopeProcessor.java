@@ -32,6 +32,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightMethodDeclaratio
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightParameterList;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpElementGroupImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
@@ -46,7 +47,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.util.Processor;
 import com.intellij.util.SmartList;
@@ -111,7 +111,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 							continue;
 						}
 
-						myProcessor.pushResultExternally(new PsiElementResolveResult(transform(psiElement, inferenceResult)));
+						myProcessor.pushResultExternally(new CSharpResolveResult(transform(psiElement, inferenceResult)));
 					}
 					return true;
 				}
@@ -191,7 +191,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 		CSharpMethodDeclaration methodDeclaration = myResolvedElements.get(0);
 		assert methodDeclaration != null;
 		CSharpElementGroupImpl element = new CSharpElementGroupImpl<CSharpMethodDeclaration>(myExpression.getProject(), methodDeclaration.getName(), myResolvedElements);
-		myProcessor.pushResultExternally(new PsiElementResolveResult(element, true));
+		myProcessor.pushResultExternally(new CSharpResolveResult(element, true));
 	}
 
 	@NotNull
