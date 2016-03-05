@@ -17,58 +17,33 @@
 package org.mustbe.consulo.csharp.ide.codeInspection.unusedUsing;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingTypeStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLinqExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
 
 /**
  * @author VISTALL
- * @since 05.03.2016
+ * @since 06.03.2016
  */
-public class UnusedUsingVisitor extends BaseUnusedUsingVisitor
+public abstract class BaseUnusedUsingVisitor extends CSharpElementVisitor
 {
-	private Map<CSharpUsingListChild, Boolean> myUsingContext = new HashMap<CSharpUsingListChild, Boolean>();
-
-	@Override
-	@RequiredReadAction
-	public void visitUsingChild(@NotNull CSharpUsingListChild child)
-	{
-		if(myUsingContext.containsKey(child))
-		{
-			return;
-		}
-
-		Boolean defaultState = Boolean.FALSE;
-		PsiElement referenceElement = child.getReferenceElement();
-		if(referenceElement == null)
-		{
-			defaultState = Boolean.TRUE;
-		}
-		else if(referenceElement instanceof CSharpReferenceExpression)
-		{
-			defaultState = ((CSharpReferenceExpression) referenceElement).resolve() == null ? Boolean.TRUE : Boolean.FALSE;
-		}
-		myUsingContext.put(child, defaultState);
-	}
-
-	@NotNull
-	public Map<CSharpUsingListChild, Boolean> getUsingContext()
-	{
-		return myUsingContext;
-	}
-
 	@Override
 	@RequiredReadAction
 	public void visitLinqExpression(CSharpLinqExpressionImpl expression)
@@ -78,19 +53,19 @@ public class UnusedUsingVisitor extends BaseUnusedUsingVisitor
 		String packageOfEnumerable = StringUtil.getPackageName(DotNetTypes2.System.Linq.Enumerable);
 		String className = StringUtil.getShortName(DotNetTypes2.System.Linq.Enumerable);
 
-		for(Map.Entry<CSharpUsingListChild, Boolean> entry : myUsingContext.entrySet())
+		Collection<? extends CSharpUsingListChild> statements = getStatements();
+		for(CSharpUsingListChild key : statements)
 		{
-			if(entry.getValue())
+			if(isProcessed(key))
 			{
 				continue;
 			}
 
-			CSharpUsingListChild key = entry.getKey();
 			if(key instanceof CSharpUsingTypeStatement)
 			{
 				if(DotNetTypeRefUtil.isVmQNameEqual(((CSharpUsingTypeStatement) key).getTypeRef(), expression, DotNetTypes2.System.Linq.Enumerable))
 				{
-					myUsingContext.put(key, Boolean.TRUE);
+					putElement(key, expression);
 					break;
 				}
 			}
@@ -104,7 +79,7 @@ public class UnusedUsingVisitor extends BaseUnusedUsingVisitor
 					DotNetNamespaceAsElement namespaceAsElement = ((CSharpUsingNamespaceStatement) key).resolve();
 					if(namespaceAsElement != null && namespaceAsElement.findChildren(className, expression.getResolveScope(), DotNetNamespaceAsElement.ChildrenFilter.ONLY_ELEMENTS).length > 0)
 					{
-						myUsingContext.put(key, Boolean.TRUE);
+						putElement(key, expression);
 						break;
 					}
 				}
@@ -112,22 +87,66 @@ public class UnusedUsingVisitor extends BaseUnusedUsingVisitor
 		}
 	}
 
-	@NotNull
 	@Override
-	protected Collection<? extends CSharpUsingListChild> getStatements()
+	public void visitReferenceExpression(CSharpReferenceExpression expression)
 	{
-		return myUsingContext.keySet();
+		super.visitReferenceExpression(expression);
+
+		ResolveResult[] resolveResults;
+		if(expression.kind() == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR)
+		{
+			CSharpReferenceExpression.ResolveToKind forceKind = CSharpReferenceExpression.ResolveToKind.TYPE_LIKE;
+			if(expression.getParent() instanceof CSharpAttribute)
+			{
+				forceKind = CSharpReferenceExpression.ResolveToKind.ATTRIBUTE;
+			}
+			resolveResults = ((CSharpReferenceExpressionEx) expression).multiResolveImpl(forceKind, true);
+		}
+		else
+		{
+			resolveResults = expression.multiResolve(false);
+		}
+
+		ResolveResult firstValidResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
+		if(firstValidResult != null)
+		{
+			putState(firstValidResult, expression.getReferenceElement());
+		}
+		else
+		{
+			for(ResolveResult resolveResult : resolveResults)
+			{
+				putState(resolveResult, expression.getReferenceElement());
+			}
+		}
 	}
 
-	@Override
+	private void putState(@NotNull ResolveResult firstValidResult, @Nullable PsiElement element)
+	{
+		if(element == null)
+		{
+			return;
+
+		}
+		if(firstValidResult instanceof CSharpResolveResult)
+		{
+			PsiElement providerElement = ((CSharpResolveResult) firstValidResult).getProviderElement();
+			if(providerElement instanceof CSharpUsingListChild)
+			{
+				CSharpUsingListChild child = (CSharpUsingListChild) providerElement;
+
+				putElement(child, element);
+			}
+		}
+	}
+
 	protected boolean isProcessed(@NotNull CSharpUsingListChild element)
 	{
-		return myUsingContext.get(element) == Boolean.TRUE;
+		return false;
 	}
 
-	@Override
-	protected void putElement(CSharpUsingListChild child, PsiElement targetElement)
-	{
-		myUsingContext.put(child, Boolean.TRUE);
-	}
+	@NotNull
+	protected abstract Collection<? extends CSharpUsingListChild> getStatements();
+
+	protected abstract void putElement(CSharpUsingListChild child, PsiElement targetElement);
 }

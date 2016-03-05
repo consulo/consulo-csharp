@@ -307,6 +307,7 @@
 		<filePropertyPusher implementation="org.mustbe.consulo.csharp.lang.CSharpFilePropertyPusher" />
 
 		<highlightUsagesHandlerFactory implementation="org.mustbe.consulo.csharp.lang.doc.ide.highlight.CSharpDocHighlightUsagesHandlerFactory"/>
+		<highlightUsagesHandlerFactory implementation="org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightUsagesHandlerFactory"/>
 		<newModuleBuilder implementation="org.mustbe.consulo.csharp.ide.newProjectOrModule.CSharpNewModuleBuilder"/>
 
 		<eapDescriptor implementation="org.mustbe.consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent$EapDescriptor"/>

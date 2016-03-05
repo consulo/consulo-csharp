@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2015 must-be.org
+ * Copyright 2013-2016 must-be.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.doc.ide.highlight;
+package org.mustbe.consulo.csharp.ide.highlight;
 
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTag;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTokenType;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import com.intellij.codeInsight.TargetElementUtil;
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerBase;
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerFactory;
@@ -30,9 +30,9 @@ import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
- * @since 03.03.2015
+ * @since 06.03.2016
  */
-public class CSharpDocHighlightUsagesHandlerFactory implements HighlightUsagesHandlerFactory
+public class CSharpHighlightUsagesHandlerFactory implements HighlightUsagesHandlerFactory
 {
 	@Nullable
 	@Override
@@ -41,14 +41,14 @@ public class CSharpDocHighlightUsagesHandlerFactory implements HighlightUsagesHa
 	{
 		int offset = TargetElementUtil.adjustOffset(file, editor.getDocument(), editor.getCaretModel().getOffset());
 		PsiElement target = file.findElementAt(offset);
-		if(target != null && target.getNode().getElementType() == CSharpDocTokenType.XML_NAME)
+		if(target != null && target.getNode().getElementType() == CSharpTokens.USING_KEYWORD)
 		{
-			CSharpDocTag docTag = PsiTreeUtil.getParentOfType(target, CSharpDocTag.class);
-			if(docTag == null)
+			CSharpUsingListChild listChild = PsiTreeUtil.getParentOfType(target, CSharpUsingListChild.class);
+			if(listChild == null)
 			{
 				return null;
 			}
-			return new CSharpDocTagHighlightUsagesHandler(editor, file, docTag);
+			return new CSharpUsingHighlightUsagesHandler(editor, file, listChild);
 		}
 		return null;
 	}
