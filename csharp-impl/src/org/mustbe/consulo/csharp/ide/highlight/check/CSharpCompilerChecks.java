@@ -100,6 +100,7 @@ public enum CSharpCompilerChecks
 	CS1100(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // 'this' modifier can be only set to first parameter
 	CS1105(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // 'this' modifier can be only in method with static modifier
 	CS1106(CSharpLanguageVersion._3_0, HighlightInfoType.ERROR), // 'this' modifier can be only in type with static modifier and no generic
+	CS0118(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // expected variable but found type
 	CS1511(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // 'base' inside static context
 	CS1535(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // implicit and explicit can hold only one param
 	CS1547(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // 'void' can used only in return type
