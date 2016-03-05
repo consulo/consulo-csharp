@@ -111,9 +111,14 @@ public class UnusedUsingVisitor extends CSharpElementVisitor
 		super.visitReferenceExpression(expression);
 
 		ResolveResult[] resolveResults;
-		if(expression.getParent() instanceof CSharpAttribute)
+		if(expression.kind() == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR)
 		{
-			resolveResults = ((CSharpReferenceExpressionEx) expression).multiResolveImpl(CSharpReferenceExpression.ResolveToKind.ATTRIBUTE, true);
+			CSharpReferenceExpression.ResolveToKind forceKind = CSharpReferenceExpression.ResolveToKind.TYPE_LIKE;
+			if(expression.getParent() instanceof CSharpAttribute)
+			{
+				forceKind = CSharpReferenceExpression.ResolveToKind.ATTRIBUTE;
+			}
+			resolveResults = ((CSharpReferenceExpressionEx) expression).multiResolveImpl(forceKind, true);
 		}
 		else
 		{
