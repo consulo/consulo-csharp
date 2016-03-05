@@ -84,7 +84,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 
 	@RequiredReadAction
 	@Override
-	public boolean execute(@NotNull PsiElement element, ResolveState state)
+	public boolean execute(@NotNull final PsiElement element, ResolveState state)
 	{
 		if(myCompletion)
 		{
@@ -111,7 +111,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 							continue;
 						}
 
-						myProcessor.pushResultExternally(new CSharpResolveResult(transform(psiElement, inferenceResult)));
+						myProcessor.pushResultExternally(new CSharpResolveResult(transform(psiElement, inferenceResult, null)));
 					}
 					return true;
 				}
@@ -159,7 +159,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 						continue;
 					}
 
-					myResolvedElements.add(transform(methodDeclaration, inferenceResult));
+					myResolvedElements.add(transform(methodDeclaration, inferenceResult, element));
 				}
 			}
 		}
@@ -204,7 +204,8 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 		return GenericUnwrapTool.exchangeTypeRef(parameters[0].toTypeRef(false), extractor, myExpression);
 	}
 
-	private static CSharpMethodDeclaration transform(final CSharpMethodDeclaration methodDeclaration, @NotNull GenericInferenceUtil.GenericInferenceResult inferenceResult)
+	private static CSharpMethodDeclaration transform(final CSharpMethodDeclaration methodDeclaration, @NotNull GenericInferenceUtil.GenericInferenceResult inferenceResult,
+			@Nullable PsiElement providerElement)
 	{
 		DotNetParameterList parameterList = methodDeclaration.getParameterList();
 		assert parameterList != null;
@@ -232,6 +233,10 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 		CSharpMethodDeclaration extractedMethod = GenericUnwrapTool.extract(declaration, inferenceResult.getExtractor());
 		extractedMethod.putUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER, methodDeclaration);
 		extractedMethod.putUserData(GenericInferenceUtil.INFERENCE_RESULT, inferenceResult);
+		if(providerElement != null)
+		{
+			extractedMethod.putUserData(CSharpResolveResult.FORCE_PROVIDER_ELEMENT, providerElement);
+		}
 		return extractedMethod;
 	}
 }

@@ -18,9 +18,9 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
-import com.intellij.util.ExceptionUtil;
 
 /**
  * @author VISTALL
@@ -28,8 +28,9 @@ import com.intellij.util.ExceptionUtil;
  */
 public class CSharpResolveResult extends PsiElementResolveResult
 {
+	public static final Key<PsiElement> FORCE_PROVIDER_ELEMENT = Key.create("csharp.provider.element");
+
 	private PsiElement myProviderElement;
-	private String myCreateTrace = ExceptionUtil.getThrowableText(new Exception());
 
 	public CSharpResolveResult(@NotNull PsiElement element)
 	{

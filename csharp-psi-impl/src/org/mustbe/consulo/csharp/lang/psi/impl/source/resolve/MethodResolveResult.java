@@ -13,10 +13,10 @@ import com.intellij.psi.ResolveResult;
 public class MethodResolveResult extends CSharpResolveResult
 {
 	@NotNull
-	public static MethodResolveResult createResult(MethodCalcResult calcResult, PsiElement element, @Nullable ResolveResult resolveResult)
+	public static MethodResolveResult createResult(@NotNull MethodCalcResult calcResult, @NotNull PsiElement element, @Nullable ResolveResult resolveResult)
 	{
-		PsiElement providerElement = null;
-		if(resolveResult instanceof CSharpResolveResult)
+		PsiElement providerElement = element.getUserData(FORCE_PROVIDER_ELEMENT);
+		if(providerElement == null && resolveResult instanceof CSharpResolveResult)
 		{
 			providerElement = ((CSharpResolveResult) resolveResult).getProviderElement();
 		}
