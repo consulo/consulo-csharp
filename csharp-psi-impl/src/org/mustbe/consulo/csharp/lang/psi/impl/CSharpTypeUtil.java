@@ -656,11 +656,15 @@ public class CSharpTypeUtil
 		PsiElement element1 = resolveResult1.getElement();
 		PsiElement element2 = resolveResult2.getElement();
 
+		if(element1 == null && element2 == null && t1 instanceof CSharpReferenceTypeRef && t2 instanceof CSharpReferenceTypeRef)
+		{
+			return ((CSharpReferenceTypeRef) t1).getReferenceText().equals(((CSharpReferenceTypeRef) t2).getReferenceText());
+		}
+
 		if(element1 == null || element2 == null)
 		{
 			return false;
 		}
-
 
 		if(element1 instanceof DotNetGenericParameter && element2 instanceof DotNetGenericParameter)
 		{
