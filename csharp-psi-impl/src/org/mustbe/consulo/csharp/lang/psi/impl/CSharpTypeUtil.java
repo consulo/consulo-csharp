@@ -105,6 +105,20 @@ public class CSharpTypeUtil
 	public static final InheritResult FAIL = new InheritResult(false, null);
 	public static final InheritResult SIMPLE_SUCCESS = new InheritResult(true, null);
 
+	public static boolean isErrorTypeRef(@NotNull DotNetTypeRef typeRef)
+	{
+		if(typeRef == DotNetTypeRef.ERROR_TYPE)
+		{
+			return true;
+		}
+		else if(typeRef instanceof CSharpReferenceTypeRef)
+		{
+			CSharpReferenceExpression referenceExpression = ((CSharpReferenceTypeRef) typeRef).getReferenceExpression();
+			return  typeRef.resolve(referenceExpression).getElement() == null;
+		}
+		return false;
+	}
+
 	public static boolean isNullableElement(@Nullable PsiElement element)
 	{
 		if(element instanceof DotNetTypeDeclaration)

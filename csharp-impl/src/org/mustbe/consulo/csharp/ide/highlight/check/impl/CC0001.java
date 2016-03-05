@@ -39,6 +39,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNewExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
@@ -270,8 +271,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 				continue;
 			}
 
-			DotNetTypeRef typeRef = argument.getTypeRef();
-			if(typeRef == DotNetTypeRef.ERROR_TYPE)
+			if(CSharpTypeUtil.isErrorTypeRef(argument.getTypeRef()))
 			{
 				return null;
 			}
