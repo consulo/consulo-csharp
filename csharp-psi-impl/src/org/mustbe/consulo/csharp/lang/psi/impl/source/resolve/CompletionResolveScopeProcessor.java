@@ -31,6 +31,7 @@ public class CompletionResolveScopeProcessor extends StubScopeProcessor
 	@NotNull
 	private Processor<ResolveResult> myProcessor;
 
+	@RequiredReadAction
 	public CompletionResolveScopeProcessor(@NotNull CSharpResolveOptions options, @NotNull Processor<ResolveResult> processor, @NotNull ExecuteTarget[] targets)
 	{
 		myProcessor = processor;
@@ -44,8 +45,7 @@ public class CompletionResolveScopeProcessor extends StubScopeProcessor
 		}
 		else
 		{
-			myContextType = myPlace instanceof CSharpReferenceExpression ? CSharpContextUtil.getParentContextTypeForReference(
-					(CSharpReferenceExpression) myPlace) : CSharpContextUtil.ContextType.ANY;
+			myContextType = myPlace instanceof CSharpReferenceExpression ? CSharpContextUtil.getParentContextTypeForReference((CSharpReferenceExpression) myPlace) : CSharpContextUtil.ContextType.ANY;
 		}
 		putUserData(ExecuteTargetUtil.EXECUTE_TARGETS, ExecuteTargetUtil.of(targets));
 	}
@@ -72,13 +72,13 @@ public class CompletionResolveScopeProcessor extends StubScopeProcessor
 				continue;
 			}
 
-			addElement(psiElement);
+			processElement(psiElement);
 		}
 		return true;
 	}
 
 	@RequiredReadAction
-	public void addElement(@NotNull PsiElement element)
+	private void processElement(@NotNull PsiElement element)
 	{
 		if(element instanceof DotNetModifierListOwner && !CSharpVisibilityUtil.isVisible((DotNetModifierListOwner) element, myPlace))
 		{

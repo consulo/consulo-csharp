@@ -30,10 +30,10 @@ import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNullableTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.injection.CSharpForInjectionFragmentHolder;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResultWithExtractor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CompletionResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResultWithExtractor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.SortedMemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.StubScopeProcessor;
@@ -579,16 +579,6 @@ public class CSharpReferenceExpressionImplUtil
 		collectResults(options, DotNetGenericExtractor.EMPTY, null, processor);
 	}
 
-	@NotNull
-	@RequiredReadAction
-	@Deprecated
-	public static ResolveResult[] collectResults(@NotNull CSharpResolveOptions options)
-	{
-		CommonProcessors.CollectProcessor<ResolveResult> processor = new CommonProcessors.CollectProcessor<ResolveResult>();
-		collectResults(options, processor);
-		return processor.toArray(ResolveResult.ARRAY_FACTORY);
-	}
-
 	@RequiredReadAction
 	public static void collectResults(@NotNull CSharpResolveOptions options,
 			@NotNull DotNetGenericExtractor defaultExtractor,
@@ -600,12 +590,6 @@ public class CSharpReferenceExpressionImplUtil
 		KindProcessor kindProcessor = ourProcessors[kind.ordinal()];
 
 		kindProcessor.process(options, defaultExtractor, forceQualifierElement, processor);
-	}
-
-	@RequiredReadAction
-	public static void processAnyMember(@NotNull CSharpResolveOptions options, @NotNull Processor<ResolveResult> processor)
-	{
-		processAnyMember(options, DotNetGenericExtractor.EMPTY, options.getElement(), processor);
 	}
 
 	@NotNull
@@ -849,6 +833,7 @@ public class CSharpReferenceExpressionImplUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static StubScopeProcessor createMemberProcessor(@NotNull CSharpResolveOptions options, @NotNull Processor<ResolveResult> resultProcessor)
 	{
 		ResolveToKind kind = options.getKind();

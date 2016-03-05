@@ -37,6 +37,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRef
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpNamedResolveSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
+import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -179,6 +180,12 @@ public class CSharpResolveUtil
 		if(PsiTreeUtil.getParentOfType(entrance, CSharpUsingListChild.class) != null)
 		{
 			return true;
+		}
+
+		CSharpResolveSelector selector = state.get(SELECTOR);
+		if(selector instanceof MemberByNameSelector)
+		{
+			((MemberByNameSelector) selector).putUserData(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.ONLY_ELEMENTS);
 		}
 
 		PsiElement prevParent = entrance;

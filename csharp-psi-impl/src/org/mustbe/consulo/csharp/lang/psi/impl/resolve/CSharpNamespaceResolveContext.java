@@ -31,6 +31,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.UserDataHolder;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
@@ -196,8 +197,12 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 	@Override
 	public boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
 	{
-		PsiElement[] children = myNamespaceAsElement.getChildren(myResolveScope, CSharpTransformer.INSTANCE,
-				DotNetNamespaceAsElement.ChildrenFilter.NONE);
+		DotNetNamespaceAsElement.ChildrenFilter filter = DotNetNamespaceAsElement.ChildrenFilter.ONLY_ELEMENTS;
+		if(StringUtil.isEmpty(myNamespaceAsElement.getPresentableQName()))
+		{
+			filter = DotNetNamespaceAsElement.ChildrenFilter.NONE;
+		}
+		PsiElement[] children = myNamespaceAsElement.getChildren(myResolveScope, CSharpTransformer.INSTANCE, filter);
 		children = CSharpCompositeTypeDeclaration.wrapPartialTypes(myResolveScope, myNamespaceAsElement.getProject(), children);
 
 		for(PsiElement element : children)

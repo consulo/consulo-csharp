@@ -14,9 +14,15 @@ public class MemberByNameSelector extends UserDataHolderBase implements CSharpNa
 {
 	private String myName;
 
-	public MemberByNameSelector(String name)
+	public MemberByNameSelector(@NotNull String name)
 	{
 		myName = name;
+	}
+
+	@NotNull
+	public String getName()
+	{
+		return myName;
 	}
 
 	@RequiredReadAction
