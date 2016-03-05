@@ -11,7 +11,7 @@ import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLikeLookupEl
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.libraryAnalyzer.NamespaceReference;
@@ -158,7 +158,7 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 		final DotNetShortNameSearcher shortNameSearcher = DotNetShortNameSearcher.getInstance(project);
 		final IdFilter projectIdFilter = new GlobalSearchScopeFilter(resolveScope);
 
-		final boolean insideUsingList = PsiTreeUtil.getParentOfType(parent, CSharpUsingList.class) != null;
+		final boolean insideUsing = PsiTreeUtil.getParentOfType(parent, CSharpUsingListChild.class) != null;
 
 		final Set<String> names = new THashSet<String>(1000);
 		shortNameSearcher.collectTypeNames(new Processor<String>()
@@ -200,7 +200,7 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 						return true;
 					}
 
-					consumeType(parameters, result, insideUsingList, typeDeclaration);
+					consumeType(parameters, result, insideUsing, typeDeclaration);
 
 					return true;
 				}

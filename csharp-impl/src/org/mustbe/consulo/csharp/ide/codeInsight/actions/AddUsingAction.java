@@ -22,13 +22,14 @@ import javax.swing.Icon;
 
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.CSharpCodeInsightSettings;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import org.mustbe.consulo.dotnet.DotNetBundle;
 import org.mustbe.consulo.dotnet.libraryAnalyzer.NamespaceReference;
 import org.mustbe.consulo.dotnet.module.roots.DotNetLibraryOrderEntryImpl;
@@ -56,6 +57,7 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiParserFacade;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -87,20 +89,23 @@ public class AddUsingAction implements QuestionAction
 		myElements = references;
 	}
 
+	@NotNull
+	@RequiredReadAction
 	private PsiElement getElementForBeforeAdd()
 	{
-		for(PsiElement psiElement : myFile.getChildren())
+		if(myFile instanceof CSharpFile)
 		{
-			if(psiElement instanceof CSharpUsingListImpl)
+			CSharpUsingListChild[] usingStatements = ((CSharpFile) myFile).getUsingStatements();
+			if(usingStatements.length > 0)
 			{
-				return psiElement;
+				return ArrayUtil.getLastElement(usingStatements);
 			}
 		}
-
 		return myFile;
 	}
 
 	@Override
+	@RequiredDispatchThread
 	public boolean execute()
 	{
 		PsiDocumentManager.getInstance(myProject).commitAllDocuments();
@@ -129,7 +134,8 @@ public class AddUsingAction implements QuestionAction
 					return formatMessage(value);
 				}
 
-				@Override
+				@Override@RequiredDispatchThread
+
 				public PopupStep onChosen(final NamespaceReference selectedValue, boolean finalChoice)
 				{
 					execute0(selectedValue);
@@ -156,6 +162,7 @@ public class AddUsingAction implements QuestionAction
 		return namespace + " from '" + libraryName + "'";
 	}
 
+	@RequiredDispatchThread
 	private void execute0(final NamespaceReference namespaceReference)
 	{
 		PsiDocumentManager.getInstance(myProject).commitAllDocuments();
@@ -194,13 +201,14 @@ public class AddUsingAction implements QuestionAction
 		}.execute();
 	}
 
+	@RequiredReadAction
 	private void addUsing(String qName)
 	{
 		PsiElement elementForBeforeAdd = getElementForBeforeAdd();
 
-		if(elementForBeforeAdd instanceof CSharpUsingList)
+		if(elementForBeforeAdd instanceof CSharpUsingListChild)
 		{
-			((CSharpUsingList) elementForBeforeAdd).addUsing(qName);
+			addUsingStatementAfter((CSharpUsingListChild) elementForBeforeAdd, qName);
 		}
 		else if(elementForBeforeAdd instanceof CSharpFile)
 		{
@@ -210,7 +218,7 @@ public class AddUsingAction implements QuestionAction
 
 			assert firstChild != null;
 
-			CSharpUsingListImpl usingStatement = CSharpFileFactory.createUsingList(myProject, qName);
+			CSharpUsingNamespaceStatement usingStatement = CSharpFileFactory.createUsingNamespaceStatement(myProject, qName);
 
 			PsiElement usingStatementNew = elementForBeforeAdd.addBefore(usingStatement, firstChild);
 
@@ -252,5 +260,21 @@ public class AddUsingAction implements QuestionAction
 			myEditor.getCaretModel().moveToLogicalPosition(new LogicalPosition(pos2.line, newCol));
 			myEditor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
 		}
+	}
+
+	@RequiredReadAction
+	private static void addUsingStatementAfter(@NotNull PsiElement afterElement, @NotNull String qName)
+	{
+		Project project = afterElement.getProject();
+
+		CSharpUsingNamespaceStatement newStatement = CSharpFileFactory.createUsingNamespaceStatement(project, qName);
+
+		PsiElement parent = afterElement.getParent();
+
+		PsiElement whiteSpaceFromText = PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n");
+
+		parent.addAfter(whiteSpaceFromText, afterElement);
+
+		parent.addAfter(newStatement, afterElement.getNode().getTreeNext().getPsi());
 	}
 }

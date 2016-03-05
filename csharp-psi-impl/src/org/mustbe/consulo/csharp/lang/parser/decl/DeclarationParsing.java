@@ -145,7 +145,7 @@ public class DeclarationParsing extends SharedParsingHelpers
 		}
 		else if(tokenType == USING_KEYWORD)
 		{
-			UsingStatementParsing.parseUsingList(builder, marker);
+			UsingStatementParsing.parseUsing(builder, marker);
 		}
 		else if(tokenType == CONST_KEYWORD)
 		{

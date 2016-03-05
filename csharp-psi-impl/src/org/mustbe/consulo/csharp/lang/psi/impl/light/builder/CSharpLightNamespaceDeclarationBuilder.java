@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -74,11 +74,12 @@ public class CSharpLightNamespaceDeclarationBuilder extends CSharpLightElementBu
 		return null;
 	}
 
-	@Nullable
+	@RequiredReadAction
+	@NotNull
 	@Override
-	public CSharpUsingList getUsingList()
+	public CSharpUsingListChild[] getUsingStatements()
 	{
-		return null;
+		return CSharpUsingListChild.EMPTY_ARRAY;
 	}
 
 	@NotNull

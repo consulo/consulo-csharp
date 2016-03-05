@@ -29,8 +29,6 @@ public interface CSharpElements
 {
 	IElementType NAMESPACE_DECLARATION = CSharpStubElements.NAMESPACE_DECLARATION;
 
-	IElementType USING_LIST = CSharpStubElements.USING_LIST;
-
 	IElementType USING_NAMESPACE_STATEMENT = CSharpStubElements.USING_NAMESPACE_STATEMENT;
 
 	IElementType USING_TYPE_STATEMENT = CSharpStubElements.USING_TYPE_STATEMENT;

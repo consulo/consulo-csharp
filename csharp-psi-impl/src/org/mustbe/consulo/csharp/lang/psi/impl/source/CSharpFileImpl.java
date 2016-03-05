@@ -17,16 +17,15 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
-import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
@@ -47,16 +46,16 @@ public class CSharpFileImpl extends PsiFileBase implements CSharpFile
 	}
 
 	@Override
-	@Nullable
-	public CSharpUsingList getUsingList()
+	@NotNull
+	@RequiredReadAction
+	public CSharpUsingListChild[] getUsingStatements()
 	{
 		StubElement<?> stub = getStub();
 		if(stub != null)
 		{
-			PsiElement[] elements = stub.getChildrenByType(CSharpStubElements.USING_LIST, PsiElement.ARRAY_FACTORY);
-			return (CSharpUsingList) ArrayUtil2.safeGet(elements, 0);
+			return stub.getChildrenByType(CSharpStubElements.USING_CHILDREN, CSharpUsingListChild.ARRAY_FACTORY);
 		}
-		return findChildByClass(CSharpUsingList.class);
+		return findChildrenByClass(CSharpUsingListChild.class);
 	}
 
 	@Override

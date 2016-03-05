@@ -21,74 +21,7 @@ import com.intellij.util.Processor;
 @ArrayFactoryFields
 public interface CSharpResolveContext
 {
-	CSharpResolveContext EMPTY = new CSharpResolveContext()
-	{
-		@Nullable
-		@Override
-		public CSharpElementGroup<CSharpIndexMethodDeclaration> indexMethodGroup(boolean deep)
-		{
-			return null;
-		}
-
-		@Nullable
-		@Override
-		public CSharpElementGroup<CSharpConstructorDeclaration> constructorGroup()
-		{
-			return null;
-		}
-
-		@Nullable
-		@Override
-		public CSharpElementGroup<CSharpConstructorDeclaration> deConstructorGroup()
-		{
-			return null;
-		}
-
-		@Nullable
-		@Override
-		public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type, boolean deep)
-		{
-			return null;
-		}
-
-		@RequiredReadAction
-		@Nullable
-		@Override
-		public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef, boolean deep)
-		{
-			return null;
-		}
-
-		@RequiredReadAction
-		@Nullable
-		@Override
-		public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
-		{
-			return null;
-		}
-
-		@RequiredReadAction
-		@Override
-		public boolean processExtensionMethodGroups(@NotNull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
-		{
-			return true;
-		}
-
-		@RequiredReadAction
-		@NotNull
-		@Override
-		public PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
-		{
-			return PsiElement.EMPTY_ARRAY;
-		}
-
-		@RequiredReadAction
-		@Override
-		public boolean processElements(@NotNull Processor<PsiElement> processor, boolean deep)
-		{
-			return true;
-		}
-	};
+	CSharpResolveContext EMPTY = new BaseCSharpResolveContext();
 
 	@Nullable
 	CSharpElementGroup<CSharpIndexMethodDeclaration> indexMethodGroup(boolean deep);

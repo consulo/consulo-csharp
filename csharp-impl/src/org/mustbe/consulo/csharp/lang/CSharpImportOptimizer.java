@@ -16,24 +16,10 @@
 
 package org.mustbe.consulo.csharp.lang;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
-import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
-import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
-import org.mustbe.consulo.csharp.lang.psi.CSharpUsingTypeStatement;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
-import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetType;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import com.intellij.lang.ImportOptimizer;
-import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiFile;
 
 /**
@@ -45,84 +31,27 @@ public class CSharpImportOptimizer implements ImportOptimizer
 	@Override
 	public boolean supports(PsiFile psiFile)
 	{
-		return psiFile instanceof CSharpFileImpl;
+		return psiFile instanceof CSharpFile;
 	}
 
 	@NotNull
 	@Override
 	public Runnable processFile(final PsiFile psiFile)
 	{
-		return new Runnable()
+		return new CollectingInfoRunnable()
 		{
+			@Nullable
+			@Override
+			public String getUserNotificationInfo()
+			{
+				return null;
+			}
+
 			@Override
 			public void run()
 			{
-				psiFile.accept(new CSharpRecursiveElementVisitor()
-				{
-					@Override
-					public void visitUsingNamespaceList(CSharpUsingListImpl list)
-					{
-						formatUsing(list);
-					}
-				});
 			}
+
 		};
-	}
-
-	private static void formatUsing(@NotNull CSharpUsingListImpl usingList)
-	{
-		Set<String> namespaceUse = new TreeSet<String>();
-		Set<String> typeUse = new TreeSet<String>();
-		List<Pair<String, String>> typeDef = new ArrayList<Pair<String, String>>();
-		for(CSharpUsingListChild statement : usingList.getStatements())
-		{
-			if(statement instanceof CSharpUsingNamespaceStatement)
-			{
-				DotNetReferenceExpression namespaceReference = ((CSharpUsingNamespaceStatement) statement).getNamespaceReference();
-				if(namespaceReference == null)  // if using dont have reference - dont format it
-				{
-					return;
-				}
-				namespaceUse.add(namespaceReference.getText());
-			}
-			else if(statement instanceof CSharpTypeDefStatementImpl)
-			{
-				DotNetType type = ((CSharpTypeDefStatementImpl) statement).getType();
-				if(type == null)
-				{
-					return;
-				}
-				typeDef.add(new Pair<String, String>(((CSharpTypeDefStatementImpl) statement).getName(), type.getText()));
-			}
-			else if(statement instanceof CSharpUsingTypeStatement)
-			{
-				DotNetType type = ((CSharpUsingTypeStatement) statement).getType();
-				if(type == null)
-				{
-					return;
-				}
-				typeUse.add(type.getText());
-			}
-		}
-
-		StringBuilder builder = new StringBuilder();
-		for(String qName : typeUse)
-		{
-			builder.append("using static ").append(qName).append(";\n");
-		}
-
-		for(String qName : namespaceUse)
-		{
-			builder.append("using ").append(qName).append(";\n");
-		}
-
-		for(Pair<String, String> pair : typeDef)
-		{
-			builder.append("using ").append(pair.getFirst()).append(" = ").append(pair.getSecond()).append(";\n");
-		}
-
-		CSharpUsingListImpl usingListFromText = CSharpFileFactory.createUsingListFromText(usingList.getProject(), builder.toString());
-
-		usingList.replace(usingListFromText);
 	}
 }

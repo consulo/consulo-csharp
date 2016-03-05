@@ -23,7 +23,6 @@ import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
@@ -43,28 +42,20 @@ import com.intellij.testFramework.LightVirtualFile;
  */
 public class CSharpFileFactory
 {
-	public static CSharpUsingListImpl createUsingList(@NotNull Project project, @NotNull String qName)
-	{
-		CSharpFileImpl fileFromText = (CSharpFileImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy.cs", CSharpFileType.INSTANCE,
-				"using " + qName + ";");
-
-		return (CSharpUsingListImpl) fileFromText.getFirstChild();
-	}
-
-	public static CSharpUsingListImpl createUsingListFromText(@NotNull Project project, @NotNull String text)
+	@NotNull
+	@RequiredReadAction
+	public static CSharpUsingListChild createUsingStatementFromText(@NotNull Project project, @NotNull String text)
 	{
 		CSharpFileImpl fileFromText = (CSharpFileImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy.cs", CSharpFileType.INSTANCE, text);
 
-		return (CSharpUsingListImpl) fileFromText.getFirstChild();
+		return fileFromText.getUsingStatements()[0];
 	}
 
-	public static CSharpUsingNamespaceStatement createUsingStatement(@NotNull Project project, @NotNull String qName)
+	@NotNull
+	@RequiredReadAction
+	public static CSharpUsingNamespaceStatement createUsingNamespaceStatement(@NotNull Project project, @NotNull String qName)
 	{
-		CSharpFileImpl fileFromText = (CSharpFileImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy.cs", CSharpFileType.INSTANCE,
-				"using " + qName + ";");
-
-		CSharpUsingListImpl firstChild = (CSharpUsingListImpl) fileFromText.getFirstChild();
-		return (CSharpUsingNamespaceStatement) firstChild.getStatements()[0];
+		return (CSharpUsingNamespaceStatement) createUsingStatementFromText(project, "using " + qName + ";");
 	}
 
 	@NotNull

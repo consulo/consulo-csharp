@@ -60,7 +60,9 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 				elementType == XXX_ACCESSOR ||
 				elementType == EVENT_DECLARATION ||
 				elementType == ENUM_CONSTANT_DECLARATION ||
-				elementType == USING_LIST ||
+				elementType == USING_TYPE_STATEMENT ||
+				elementType == USING_NAMESPACE_STATEMENT ||
+				elementType == TYPE_DEF_STATEMENT ||
 				elementType == CONSTRUCTOR_DECLARATION)
 		{
 			return Indent.getNormalIndent();

@@ -8,7 +8,9 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingTypeStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -78,15 +80,15 @@ public class CSharpResolveContextUtil
 			}
 			return new CSharpNamespaceResolveContext((DotNetNamespaceAsElement) element, resolveScope);
 		}
-		else if(element instanceof CSharpUsingList)
+		else if(element instanceof CSharpUsingNamespaceStatement || element instanceof CSharpUsingTypeStatement)
 		{
-			return cacheSimple((CSharpUsingList) element, new NotNullFunction<CSharpUsingList, CSharpResolveContext>()
+			return cacheSimple((CSharpUsingListChild) element, new NotNullFunction<CSharpUsingListChild, CSharpResolveContext>()
 			{
 				@NotNull
 				@Override
-				public CSharpResolveContext fun(CSharpUsingList usingList)
+				public CSharpResolveContext fun(CSharpUsingListChild usingList)
 				{
-					return new CSharpUsingListResolveContext(usingList);
+					return new CSharpUsingNamespaceOrTypeResolveContext(usingList);
 				}
 			});
 		}

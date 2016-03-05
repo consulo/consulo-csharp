@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
 
 /**
@@ -9,6 +10,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetElement;
  */
 public interface CSharpUsingListOwner extends DotNetElement
 {
-	@Nullable
-	CSharpUsingList getUsingList();
+	@NotNull
+	@RequiredReadAction
+	CSharpUsingListChild[] getUsingStatements();
 }

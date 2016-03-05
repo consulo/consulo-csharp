@@ -25,7 +25,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpNamespaceDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
@@ -169,11 +169,11 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 		return childByClass != null ? StringUtil.strip(childByClass.getText(), CharFilter.NOT_WHITESPACE_FILTER) : null;
 	}
 
-	@Nullable
+	@NotNull
 	@Override
 	@RequiredReadAction
-	public CSharpUsingList getUsingList()
+	public CSharpUsingListChild[] getUsingStatements()
 	{
-		return getStubOrPsiChild(CSharpStubElements.USING_LIST);
+		return getStubOrPsiChildren(CSharpStubElements.USING_CHILDREN, CSharpUsingListChild.ARRAY_FACTORY);
 	}
 }

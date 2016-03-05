@@ -35,7 +35,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingListImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import com.intellij.codeInsight.folding.CodeFoldingSettings;
 import com.intellij.lang.ASTNode;
@@ -121,7 +120,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 				addBodyWithBraces(descriptors, declaration);
 			}
 
-			@Override
+			/*@Override
 			@RequiredReadAction
 			public void visitUsingNamespaceList(CSharpUsingListImpl list)
 			{
@@ -146,7 +145,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 				int endOffset = statements[statements.length - 1].getLastChild().getTextRange().getEndOffset();
 
 				descriptors.add(new FoldingDescriptor(list, new TextRange(startOffset, endOffset)));
-			}
+			}   */
 
 			@Override
 			@RequiredReadAction
@@ -190,7 +189,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 	protected String getLanguagePlaceholderText(@NotNull ASTNode node, @NotNull TextRange range)
 	{
 		PsiElement psi = node.getPsi();
-		if(psi instanceof CSharpUsingListImpl)
+		if(psi instanceof CSharpUsingListChild)
 		{
 			return "...";
 		}
@@ -276,7 +275,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 	protected boolean isRegionCollapsedByDefault(@NotNull ASTNode node)
 	{
 		PsiElement psi = node.getPsi();
-		if(psi instanceof CSharpUsingListImpl)
+		if(psi instanceof CSharpUsingListChild)
 		{
 			return true;
 		}

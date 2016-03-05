@@ -40,11 +40,6 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitFile(file);
 	}
 
-	public void visitUsingNamespaceList(CSharpUsingListImpl list)
-	{
-		visitElement(list);
-	}
-
 	public void visitConstructorDeclaration(CSharpConstructorDeclaration declaration)
 	{
 		visitElement(declaration);

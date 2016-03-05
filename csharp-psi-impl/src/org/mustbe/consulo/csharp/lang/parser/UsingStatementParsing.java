@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.parser;
 
+import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.parser.exp.ExpressionParsing;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -29,33 +30,10 @@ import com.intellij.psi.tree.TokenSet;
  */
 public class UsingStatementParsing extends SharedParsingHelpers
 {
-	public static final TokenSet ourStoppers = TokenSet.orSet(ourSemicolonSet, CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START,
-			TokenSet.create(DELEGATE_KEYWORD, CONST_KEYWORD));
+	public static final TokenSet ourStoppers = TokenSet.orSet(ourSemicolonSet, CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START, TokenSet.create(DELEGATE_KEYWORD, CONST_KEYWORD));
 
-	public static void parseUsingList(CSharpBuilderWrapper builder, PsiBuilder.Marker marker)
+	public static void parseUsing(@NotNull CSharpBuilderWrapper builder, @NotNull PsiBuilder.Marker marker)
 	{
-		boolean empty = true;
-		while(builder.getTokenType() == CSharpTokens.USING_KEYWORD)
-		{
-			parseUsing(builder);
-
-			empty = false;
-		}
-
-		if(empty)
-		{
-			marker.drop();
-		}
-		else
-		{
-			marker.done(USING_LIST);
-		}
-	}
-
-	public static void parseUsing(CSharpBuilderWrapper builder)
-	{
-		PsiBuilder.Marker marker = builder.mark();
-
 		builder.advanceLexer();
 
 		IElementType to = null;

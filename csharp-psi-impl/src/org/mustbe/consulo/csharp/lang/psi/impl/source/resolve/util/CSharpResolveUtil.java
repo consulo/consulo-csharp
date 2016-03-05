@@ -26,7 +26,7 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
-import org.mustbe.consulo.csharp.lang.psi.CSharpUsingList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListOwner;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
@@ -180,7 +180,7 @@ public class CSharpResolveUtil
 		}
 
 		// we cant go to use list
-		if(PsiTreeUtil.getParentOfType(entrance, CSharpUsingList.class) != null)
+		if(PsiTreeUtil.getParentOfType(entrance, CSharpUsingListChild.class) != null)
 		{
 			return true;
 		}
@@ -199,10 +199,10 @@ public class CSharpResolveUtil
 
 			if(scope instanceof CSharpUsingListOwner)
 			{
-				CSharpUsingList usingList = ((CSharpUsingListOwner) scope).getUsingList();
-				if(usingList != null)
+				CSharpUsingListChild[] usingStatements = ((CSharpUsingListOwner) scope).getUsingStatements();
+				for(CSharpUsingListChild usingStatement : usingStatements)
 				{
-					if(!processor.execute(usingList, state))
+					if(!processor.execute(usingStatement, state))
 					{
 						return false;
 					}
