@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.DeprecationInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
@@ -92,13 +91,6 @@ public class CSharpCompletionUtil
 			}
 		}
 		return false;
-	}
-
-	@Deprecated
-	@DeprecationInfo("Use org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl#isTypeLikeElement")
-	public static boolean isTypeLikeElement(@NotNull PsiElement element)
-	{
-		return CSharpPsiUtilImpl.isTypeLikeElement(element);
 	}
 
 	public static boolean isTypeLikeElementWithNamespace(@NotNull PsiElement element)
