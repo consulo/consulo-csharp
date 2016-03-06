@@ -133,8 +133,7 @@ public class CSharpTypeDeclarationImplUtil
 
 	@Nullable
 	@RequiredReadAction
-	public static Pair<DotNetTypeDeclaration, DotNetGenericExtractor> resolveBaseType(@NotNull DotNetTypeDeclaration typeDeclaration,
-			@NotNull PsiElement scope)
+	public static Pair<DotNetTypeDeclaration, DotNetGenericExtractor> resolveBaseType(@NotNull DotNetTypeDeclaration typeDeclaration, @NotNull PsiElement scope)
 	{
 		DotNetTypeRef[] anExtends = typeDeclaration.getExtendTypeRefs();
 		if(anExtends.length != 0)
@@ -153,8 +152,7 @@ public class CSharpTypeDeclarationImplUtil
 		String defaultSuperType = getDefaultSuperType(typeDeclaration);
 		if(defaultSuperType != null)
 		{
-			DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(typeDeclaration.getProject()).findType(defaultSuperType,
-					scope.getResolveScope(), DotNetPsiSearcher.TypeResoleKind.UNKNOWN, CSharpTransform.INSTANCE);
+			DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(typeDeclaration.getProject()).findType(defaultSuperType, scope.getResolveScope(), CSharpTransform.INSTANCE);
 			if(type != null)
 			{
 				return Pair.create(type, DotNetGenericExtractor.EMPTY);

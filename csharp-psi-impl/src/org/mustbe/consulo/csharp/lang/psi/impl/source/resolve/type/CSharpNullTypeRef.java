@@ -39,8 +39,7 @@ public class CSharpNullTypeRef implements DotNetTypeRef
 	@RequiredReadAction
 	public DotNetTypeResolveResult resolve(@NotNull PsiElement element)
 	{
-		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(element.getProject()).findType(DotNetTypes.System.Object,
-				element.getResolveScope(), DotNetPsiSearcher.TypeResoleKind.CLASS, CSharpTransform.INSTANCE);
+		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(element.getProject()).findType(DotNetTypes.System.Object, element.getResolveScope(), CSharpTransform.INSTANCE);
 		if(type == null)
 		{
 			return DotNetTypeResolveResult.EMPTY;

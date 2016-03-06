@@ -50,8 +50,7 @@ public class CSharpTypeRefByQName extends DotNetTypeRef.Adapter
 		{
 			return DotNetTypeResolveResult.EMPTY;
 		}
-		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(scope.getProject()).findType(myQualifiedName, scope.getResolveScope(), DotNetPsiSearcher.TypeResoleKind.UNKNOWN,
-				CSharpTransform.INSTANCE);
+		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(scope.getProject()).findType(myQualifiedName, scope.getResolveScope(), CSharpTransform.INSTANCE);
 
 		if(type == null)
 		{

@@ -53,8 +53,7 @@ public class NativeTypeWrapperKindProcessor implements KindProcessor
 		{
 			return;
 		}
-		PsiElement psiElement = DotNetPsiSearcher.getInstance(element.getProject()).findType(nativeRuntimeType, element.getResolveScope(), DotNetPsiSearcher.TypeResoleKind.UNKNOWN,
-				CSharpTransform.INSTANCE);
+		PsiElement psiElement = DotNetPsiSearcher.getInstance(element.getProject()).findType(nativeRuntimeType, element.getResolveScope(), CSharpTransform.INSTANCE);
 		if(psiElement == null)
 		{
 			return;

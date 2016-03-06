@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
@@ -57,8 +58,7 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 		this(target, parameterInfos, returnType, false);
 	}
 
-	public CSharpLambdaTypeRef(@Nullable CSharpMethodDeclaration target, @NotNull CSharpSimpleParameterInfo[] parameterInfos,
-			@NotNull DotNetTypeRef returnType, boolean inheritParameters)
+	public CSharpLambdaTypeRef(@Nullable CSharpMethodDeclaration target, @NotNull CSharpSimpleParameterInfo[] parameterInfos, @NotNull DotNetTypeRef returnType, boolean inheritParameters)
 	{
 		myTarget = target;
 		myParameterInfos = parameterInfos;
@@ -153,6 +153,7 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 		return myTarget;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeResolveResult resolve(@NotNull final PsiElement scope)
@@ -165,8 +166,7 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 			{
 				if(myTarget == null)
 				{
-					return DotNetPsiSearcher.getInstance(scope.getProject()).findType(DotNetTypes.System.MulticastDelegate,
-							scope.getResolveScope(), DotNetPsiSearcher.TypeResoleKind.UNKNOWN, CSharpTransform.INSTANCE);
+					return DotNetPsiSearcher.getInstance(scope.getProject()).findType(DotNetTypes.System.MulticastDelegate, scope.getResolveScope(), CSharpTransform.INSTANCE);
 				}
 				return CSharpLambdaResolveResultUtil.createTypeFromDelegate(myTarget);
 			}
