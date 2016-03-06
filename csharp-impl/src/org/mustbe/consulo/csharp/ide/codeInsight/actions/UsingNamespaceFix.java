@@ -56,6 +56,7 @@ import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Conditions;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -109,10 +110,12 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		}
 
 		AddUsingAction action = new AddUsingAction(editor, element, references);
-		String message = ShowAutoImportPass.getMessage(references.size() != 1, DotNetBundle.message("use.popup",
-				AddUsingAction.formatMessage(references.iterator().next())));
+		String message = ShowAutoImportPass.getMessage(references.size() != 1, DotNetBundle.message("use.popup", AddUsingAction.formatMessage(references.iterator().next())));
 
-		HintManager.getInstance().showQuestionHint(editor, message, element.getTextOffset(), element.getTextRange().getEndOffset(), action);
+		PsiElement referenceElement = element.getReferenceElement();
+		assert referenceElement != null;
+		TextRange referenceTextRange = referenceElement.getTextRange();
+		HintManager.getInstance().showQuestionHint(editor, message, referenceTextRange.getStartOffset(), referenceTextRange.getEndOffset(), action);
 
 		return PopupResult.SHOW_HIT;
 	}
