@@ -77,7 +77,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 		public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException
 		{
 			CSharpSimpleModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpSimpleModuleExtension.class);
-			if(extension == null)
+			if(extension == null || !extension.isSupportedLanguageVersion(myLanguageVersion))
 			{
 				return;
 			}
@@ -98,7 +98,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 		public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element)
 		{
 			CSharpSimpleModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpSimpleModuleExtension.class);
-			return extension != null && extension.getLanguageVersion().ordinal() < myLanguageVersion.ordinal();
+			return extension != null && extension.isSupportedLanguageVersion(myLanguageVersion) && extension.getLanguageVersion().ordinal() < myLanguageVersion.ordinal();
 		}
 
 		@NotNull

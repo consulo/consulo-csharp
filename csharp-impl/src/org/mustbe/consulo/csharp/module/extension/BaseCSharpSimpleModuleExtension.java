@@ -30,6 +30,13 @@ public class BaseCSharpSimpleModuleExtension<T extends BaseCSharpSimpleModuleExt
 		myLanguageVersionPointer = new CSharpLanguageVersionPointer(getProject(), id);
 	}
 
+	@Override
+	public boolean isSupportedLanguageVersion(@NotNull CSharpLanguageVersion languageVersion)
+	{
+		// for default we support all language versions
+		return true;
+	}
+
 	@NotNull
 	@Override
 	@RequiredReadAction

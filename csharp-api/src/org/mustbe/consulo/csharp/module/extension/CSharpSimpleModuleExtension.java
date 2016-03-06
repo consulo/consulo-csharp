@@ -13,4 +13,6 @@ public interface CSharpSimpleModuleExtension<T extends ModuleExtension<T>> exten
 
 	@NotNull
 	CSharpLanguageVersion getLanguageVersion();
+
+	boolean isSupportedLanguageVersion(@NotNull CSharpLanguageVersion languageVersion);
 }
