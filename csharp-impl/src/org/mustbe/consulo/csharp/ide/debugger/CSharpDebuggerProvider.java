@@ -23,7 +23,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Consumer;
 import com.intellij.xdebugger.XDebugSession;
 import com.intellij.xdebugger.XSourcePosition;
@@ -89,7 +88,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 
 		PsiElement fragmentElement = expressionFragment.getChildren()[0];
 
-		DotNetExpression expressionPsi = PsiTreeUtil.getChildOfType(fragmentElement, DotNetExpression.class);
+		DotNetExpression expressionPsi = fragmentElement instanceof DotNetExpression ? (DotNetExpression) fragmentElement : null;
 
 		if(expressionPsi == null)
 		{
