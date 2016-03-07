@@ -27,6 +27,7 @@ import org.mustbe.consulo.csharp.ide.codeInspection.unusedUsing.BaseUnusedUsingV
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerBase;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiRecursiveElementVisitor;
@@ -45,7 +46,6 @@ public class CSharpUsingHighlightUsagesHandler extends HighlightUsagesHandlerBas
 
 		public OurVisitor(CSharpUsingListChild listChild)
 		{
-			myElements.add(listChild);
 			myListChild = listChild;
 		}
 
@@ -107,7 +107,11 @@ public class CSharpUsingHighlightUsagesHandler extends HighlightUsagesHandlerBas
 	{
 		for(PsiElement target : targets)
 		{
-			addOccurrence(target);
+			myWriteUsages.add(target.getTextRange());
 		}
+
+		// we need ignored inner elements before using keyword(for example region directive)
+		int textOffset = myListChild.getUsingKeywordElement().getTextOffset();
+		myReadUsages.add(new TextRange(textOffset, myListChild.getTextRange().getEndOffset()));
 	}
 }

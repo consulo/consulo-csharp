@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingTypeStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -44,6 +45,14 @@ public class CSharpUsingTypeStatementImpl extends CSharpStubElementImpl<EmptyStu
 			@NotNull IStubElementType<? extends EmptyStub<CSharpUsingTypeStatement>, ?> nodeType)
 	{
 		super(stub, nodeType);
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	public PsiElement getUsingKeywordElement()
+	{
+		return findNotNullChildByType(CSharpTokens.USING_KEYWORD);
 	}
 
 	@Override

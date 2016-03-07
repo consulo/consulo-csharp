@@ -24,6 +24,7 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -47,6 +48,14 @@ public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<EmptyStub<
 	public CSharpTypeDefStatementImpl(@NotNull EmptyStub<CSharpTypeDefStatement> stub)
 	{
 		super(stub, CSharpStubElements.TYPE_DEF_STATEMENT);
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	public PsiElement getUsingKeywordElement()
+	{
+		return findNotNullChildByType(CSharpTokens.USING_KEYWORD);
 	}
 
 	@Override

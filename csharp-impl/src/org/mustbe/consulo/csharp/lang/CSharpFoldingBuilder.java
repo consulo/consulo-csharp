@@ -160,7 +160,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 					return;
 				}
 
-				ASTNode usingKeyword = child.getNode().findChildByType(CSharpTokens.USING_KEYWORD);
+				PsiElement usingKeyword = child.getUsingKeywordElement();
 				int startOffset = usingKeyword.getTextRange().getEndOffset() + 1;
 				int endOffset = ContainerUtil.getLastItem(children).getLastChild().getTextRange().getEndOffset();
 

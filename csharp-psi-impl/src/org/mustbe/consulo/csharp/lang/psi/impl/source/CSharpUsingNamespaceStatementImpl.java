@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
@@ -51,6 +52,14 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 	public CSharpUsingNamespaceStatementImpl(@NotNull CSharpWithStringValueStub<CSharpUsingNamespaceStatement> stub)
 	{
 		super(stub, CSharpStubElements.USING_NAMESPACE_STATEMENT);
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	public PsiElement getUsingKeywordElement()
+	{
+		return findNotNullChildByType(CSharpTokens.USING_KEYWORD);
 	}
 
 	@Override
