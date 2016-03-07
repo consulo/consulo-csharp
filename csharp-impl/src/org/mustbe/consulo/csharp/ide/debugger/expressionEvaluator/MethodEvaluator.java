@@ -16,9 +16,13 @@
 
 package org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import mono.debugger.InvokeFlags;
 import mono.debugger.MethodMirror;
 import mono.debugger.TypeMirror;
@@ -32,11 +36,13 @@ public class MethodEvaluator extends Evaluator
 {
 	private String myMethodName;
 	private CSharpTypeDeclaration myTypeDeclaration;
+	private List<DotNetTypeDeclaration> myParameterTypes;
 
-	public MethodEvaluator(String methodName, CSharpTypeDeclaration typeDeclaration, int parameterListSize)
+	public MethodEvaluator(String methodName, CSharpTypeDeclaration typeDeclaration, List<DotNetTypeDeclaration> parameterTypes)
 	{
 		myMethodName = methodName;
 		myTypeDeclaration = typeDeclaration;
+		myParameterTypes = parameterTypes;
 	}
 
 	@Override
@@ -46,6 +52,17 @@ public class MethodEvaluator extends Evaluator
 		if(popValue == null)
 		{
 			throw new IllegalArgumentException("no pop value");
+		}
+
+		List<Value<?>> values = new ArrayList<Value<?>>(myParameterTypes.size());
+		for(int i = 0; i < myParameterTypes.size(); i++)
+		{
+			Value<?> argumentValue = context.popValue();
+			if(argumentValue == null)
+			{
+				throw new IllegalArgumentException("no argument value");
+			}
+			values.add(argumentValue);
 		}
 
 		TypeMirror typeMirror = null;
@@ -63,13 +80,24 @@ public class MethodEvaluator extends Evaluator
 			throw new IllegalArgumentException("cant calculate type");
 		}
 
-		MethodMirror methodMirror = typeMirror.findMethodByName(myMethodName, true);
+		TypeMirror[] parameterTypeMirrors = new TypeMirror[myParameterTypes.size()];
+		for(int i = 0; i < parameterTypeMirrors.length; i++)
+		{
+			TypeMirror parameterTypeMirror = findTypeMirror(context, myParameterTypes.get(i));
+			if(parameterTypeMirror == null)
+			{
+				throw new IllegalArgumentException("cant find parameter type mirror");
+			}
+			parameterTypeMirrors[i] = parameterTypeMirror;
+		}
+
+		MethodMirror methodMirror = typeMirror.findMethodByName(myMethodName, true, parameterTypeMirrors);
 		if(methodMirror == null)
 		{
 			throw new IllegalArgumentException("no method");
 		}
 
-		Value<?> invoke = methodMirror.invoke(context.getFrame().thread(), InvokeFlags.DISABLE_BREAKPOINTS, popValue);
+		Value<?> invoke = methodMirror.invoke(context.getFrame().thread(), InvokeFlags.DISABLE_BREAKPOINTS, popValue, values.toArray(new Value[values.size()]));
 		if(invoke != null)
 		{
 			context.pull(invoke, methodMirror);

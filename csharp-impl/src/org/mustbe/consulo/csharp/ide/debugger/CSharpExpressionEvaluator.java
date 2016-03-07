@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.ConstantEvaluator;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.Evaluator;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.FieldEvaluator;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.IsExpressionEvaluator;
@@ -30,18 +30,26 @@ import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.MethodEvaluato
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.NullValueEvaluator;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.ParameterEvaluator;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.ThisObjectEvaluator;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIsExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
 
 /**
  * @author VISTALL
@@ -52,13 +60,25 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 	private List<Evaluator> myEvaluators = new ArrayList<Evaluator>();
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredReadAction
 	public void visitIsExpression(CSharpIsExpressionImpl expression)
 	{
 		DotNetExpression leftExpression = expression.getExpression();
 		leftExpression.accept(this);
 
 		myEvaluators.add(new IsExpressionEvaluator(expression));
+	}
+
+	@Override
+	@RequiredReadAction
+	public void visitConstantExpression(CSharpConstantExpressionImpl expression)
+	{
+		PsiElement element = expression.toTypeRef(true).resolve(expression).getElement();
+		if(!(element instanceof CSharpTypeDeclaration))
+		{
+			throw new IllegalArgumentException("bad constant type");
+		}
+		myEvaluators.add(new ConstantEvaluator(expression.getValue(), ((CSharpTypeDeclaration) element).getVmQName()));
 	}
 
 	@Override
@@ -116,13 +136,13 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 	{
 		DotNetExpression callExpression = expression.getCallExpression();
 
-		PsiElement element = expression.resolveToCallable();
-		if(!(element instanceof CSharpMethodDeclaration))
+		ResolveResult resolveResult = CSharpResolveUtil.findFirstValidResult(expression.multiResolve(false));
+		if(resolveResult == null || !(resolveResult instanceof MethodResolveResult) || !(resolveResult.getElement() instanceof CSharpMethodDeclaration))
 		{
-			throw new UnsupportedOperationException("Cant evaluate not method");
+			throw new UnsupportedOperationException("cant evaluate not method");
 		}
 
-		CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) element;
+		CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) resolveResult.getElement();
 
 		if(callExpression instanceof CSharpReferenceExpression)
 		{
@@ -149,17 +169,45 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 			String referenceName = ((CSharpReferenceExpression) callExpression).getReferenceName();
 			if(referenceName == null)
 			{
-				throw new UnsupportedOperationException("No reference name");
+				throw new UnsupportedOperationException("no reference name");
 			}
 
-			myEvaluators.add(new MethodEvaluator(referenceName, typeDeclaration, methodDeclaration.getParameters().length));
+			List<NCallArgument> arguments = ((MethodResolveResult) resolveResult).getCalcResult().getArguments();
+			for(NCallArgument argument : arguments)
+			{
+				CSharpCallArgument callArgument = argument.getCallArgument();
+				if(callArgument == null)
+				{
+					throw new UnsupportedOperationException("bad method call");
+				}
+				DotNetExpression argumentExpression = callArgument.getArgumentExpression();
+				if(argumentExpression == null)
+				{
+					throw new UnsupportedOperationException("bad method call argument");
+				}
+
+				argumentExpression.accept(this);
+			}
+
+			DotNetTypeRef[] parameterTypeRefs = methodDeclaration.getParameterTypeRefs();
+			List<DotNetTypeDeclaration> parameterTypes = new ArrayList<DotNetTypeDeclaration>();
+			for(DotNetTypeRef parameterTypeRef : parameterTypeRefs)
+			{
+				PsiElement element = parameterTypeRef.resolve(expression).getElement();
+				if(!(element instanceof CSharpTypeDeclaration))
+				{
+					throw new UnsupportedOperationException("parameter type is not type");
+				}
+				parameterTypes.add((DotNetTypeDeclaration) element);
+			}
+			myEvaluators.add(new MethodEvaluator(referenceName, typeDeclaration, parameterTypes));
 		}
 	}
 
 	@Override
 	public void visitElement(PsiElement element)
 	{
-		throw new UnsupportedOperationException("Expression is not supported");
+		throw new UnsupportedOperationException("expression is not supported");
 	}
 
 	@NotNull
