@@ -34,6 +34,11 @@ public class CSharpIntentionUtil
 	public static DotNetModifierListOwner findOwner(@NotNull PsiElement element)
 	{
 		PsiElement parent = element.getParent();
+		if(element instanceof CSharpIdentifier && parent instanceof DotNetModifierListOwner)
+		{
+			return (DotNetModifierListOwner) parent;
+		}
+
 		if(parent instanceof CSharpIdentifier && parent.getParent() instanceof DotNetModifierListOwner)
 		{
 			return (DotNetModifierListOwner) parent.getParent();

@@ -16,38 +16,56 @@
 
 package org.mustbe.consulo.csharp.ide.actions.generate;
 
+import java.awt.BorderLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.List;
 
 import javax.swing.Icon;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.codeInsight.actions.AddAccessModifierFix;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import com.intellij.codeInsight.CodeInsightActionHandler;
 import com.intellij.ide.IconDescriptorUpdaters;
 import com.intellij.ide.util.ChooseElementsDialog;
-import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.ide.util.PropertiesComponentImpl;
+import com.intellij.openapi.application.Result;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.codeStyle.CodeStyleManager;
+import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.Function;
+import com.intellij.util.Processor;
+import com.intellij.util.Query;
 
 /**
-* @author VISTALL
-* @since 24.07.2015
-*/
+ * @author VISTALL
+ * @since 24.07.2015
+ */
 public class GeneratePropertyHandler implements CodeInsightActionHandler
 {
+	private static final String ourReplaceReferencesToProperty = "csharp.replace.references.to.property";
+
 	private boolean myReadonly;
 
 	public GeneratePropertyHandler(boolean readonly)
@@ -71,9 +89,26 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 			return;
 		}
 
-		ChooseElementsDialog<DotNetFieldDeclaration> dialog = new ChooseElementsDialog<DotNetFieldDeclaration>(project, fields,
-				"Choose field(s)", "Choose field(s) for property generate", true)
+		ChooseElementsDialog<DotNetFieldDeclaration> dialog = new ChooseElementsDialog<DotNetFieldDeclaration>(project, fields, "Choose field(s)", "Choose field(s) for property generate", true)
 		{
+			@Override
+			protected JComponent createCenterPanel()
+			{
+				JComponent centerPanel = super.createCenterPanel();
+				assert centerPanel != null;
+				final JCheckBox replaceUsageToProperty = new JCheckBox("Replace references to property?", PropertiesComponentImpl.getInstance().getBoolean(ourReplaceReferencesToProperty, true));
+				replaceUsageToProperty.addItemListener(new ItemListener()
+				{
+					@Override
+					public void itemStateChanged(ItemEvent e)
+					{
+						PropertiesComponentImpl.getInstance().setValue(ourReplaceReferencesToProperty, replaceUsageToProperty.isSelected(), true);
+					}
+				});
+				centerPanel.add(replaceUsageToProperty, BorderLayout.SOUTH);
+				return centerPanel;
+			}
+
 			@Override
 			protected String getItemText(DotNetFieldDeclaration item)
 			{
@@ -88,7 +123,7 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 			}
 		};
 
-		List<DotNetFieldDeclaration> fieldDeclarations = dialog.showAndGetResult();
+		final List<DotNetFieldDeclaration> fieldDeclarations = dialog.showAndGetResult();
 		if(fieldDeclarations.isEmpty())
 		{
 			return;
@@ -108,18 +143,53 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 			}
 		}, "\n\n");
 
-		ApplicationManager.getApplication().runWriteAction(new Runnable()
+		PsiDocumentManager.getInstance(project).commitAllDocuments();
+
+		new Task.Backgroundable(project, "Searching references", true)
 		{
 			@Override
-			public void run()
+			public void run(@NotNull ProgressIndicator indicator)
 			{
-				editor.getDocument().insertString(startOffset, allText);
+				new WriteCommandAction(project, "Generate property", file)
+				{
+					@Override
+					@RequiredDispatchThread
+					protected void run(Result result) throws Throwable
+					{
+						if(PropertiesComponentImpl.getInstance().getBoolean(ourReplaceReferencesToProperty, true))
+						{
+							for(final DotNetFieldDeclaration fieldDeclaration : fieldDeclarations)
+							{
+								new AddAccessModifierFix(CSharpModifier.PRIVATE).invoke(project, editor, fieldDeclaration.getNameIdentifier());
 
-				PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+								final String propertyName = getPropertyName(project, fieldDeclaration.hasModifier(DotNetModifier.STATIC), fieldDeclaration.getName());
+								Query<PsiReference> search = ReferencesSearch.search(fieldDeclaration);
+								search.forEach(new Processor<PsiReference>()
+								{
+									@Override
+									public boolean process(PsiReference psiReference)
+									{
+										if(psiReference instanceof CSharpReferenceExpression)
+										{
+											psiReference.handleElementRename(propertyName);
+										}
+										return true;
+									}
+								});
+							}
+						}
 
-				CodeStyleManager.getInstance(project).reformatText(file, startOffset, startOffset + allText.length());
+						PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+
+						editor.getDocument().insertString(startOffset, allText);
+
+						PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+
+						CodeStyleManager.getInstance(project).reformatText(file, startOffset, startOffset + allText.length());
+					}
+				}.execute();
 			}
-		});
+		}.queue();
 	}
 
 	@NotNull
@@ -128,7 +198,7 @@ public class GeneratePropertyHandler implements CodeInsightActionHandler
 		CSharpCodeGenerationSettings customSettings = CSharpCodeGenerationSettings.getInstance(project);
 
 		String prefix = isStatic ? customSettings.STATIC_FIELD_PREFIX : customSettings.FIELD_PREFIX;
-		String suffix = isStatic? customSettings.STATIC_FIELD_SUFFIX : customSettings.FIELD_SUFFIX;
+		String suffix = isStatic ? customSettings.STATIC_FIELD_SUFFIX : customSettings.FIELD_SUFFIX;
 
 		if(!prefix.isEmpty())
 		{
