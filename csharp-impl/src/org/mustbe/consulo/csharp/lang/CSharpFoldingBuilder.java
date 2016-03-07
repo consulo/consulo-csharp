@@ -123,6 +123,8 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 			@RequiredReadAction
 			public void visitUsingChild(@NotNull CSharpUsingListChild child)
 			{
+				super.visitUsingChild(child);
+
 				if(processedUsingStatements.contains(child))
 				{
 					return;
