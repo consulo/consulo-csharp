@@ -267,6 +267,7 @@
 		<liveTemplateContext implementation="org.mustbe.consulo.csharp.ide.liveTemplates.context.CSharpClassBodyContextType"/>
 		<liveTemplateContext implementation="org.mustbe.consulo.csharp.ide.liveTemplates.context.CSharpExpressionContextType"/>
 		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.SuggestVariableNameMacro"/>
+		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.TypeMacro"/>
 		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.SuggestIndexVariableNameMacro"/>
 		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.ArrayVariableMacro"/>
 		<liveTemplateMacro implementation="org.mustbe.consulo.csharp.ide.liveTemplates.macro.IListVariableMacro"/>

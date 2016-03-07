@@ -18,13 +18,20 @@
 	<template resource-bundle="messages.CSharpBundle" key="livetemplates.psvm"
 			  name="psvm" toReformat="true" toShortenFQNames="true" value="public static void Main(){&#13;&#10;  $END$&#13;&#10;}">
 		<context>
-			<option name="CSHARP_CLASS_BODY" value="true" />
+			<option name="CSHARP_CLASS_BODY" value="true"/>
 		</context>
 	</template>
 	<template resource-bundle="messages.CSharpBundle" key="livetemplates.psvms"
 			  name="psvms" toReformat="true" toShortenFQNames="true" value="public static void Main(string[] args){&#13;&#10;  $END$&#13;&#10;}">
 		<context>
-			<option name="CSHARP_CLASS_BODY" value="true" />
+			<option name="CSHARP_CLASS_BODY" value="true"/>
+		</context>
+	</template>
+	<template resource-bundle="messages.CSharpBundle" key="livetemplates.prop" name="prop" toReformat="false" toShortenFQNames="true" value="public $TYPE$ $VAR$ { get; set; }">
+		<variable name="TYPE" expression="csharpType()" defaultValue="TYPE" alwaysStopAt="true"/>
+		<variable name="VAR" expression="csharpSuggestVariableName()" defaultValue="Name" alwaysStopAt="true"/>
+		<context>
+			<option name="CSHARP_CLASS_BODY" value="true"/>
 		</context>
 	</template>
 </templateSet>
