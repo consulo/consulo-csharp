@@ -26,15 +26,18 @@ import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.Evaluator;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.FieldEvaluator;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.IsExpressionEvaluator;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.LocalVariableEvaluator;
+import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.MethodEvaluator;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.NullValueEvaluator;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.ParameterEvaluator;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.ThisObjectEvaluator;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIsExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
@@ -68,11 +71,11 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 			PsiElement resolvedElement = expression.resolve();
 			if(resolvedElement instanceof DotNetParameter)
 			{
-				myEvaluators.add(new ParameterEvaluator((DotNetParameter)resolvedElement));
+				myEvaluators.add(new ParameterEvaluator((DotNetParameter) resolvedElement));
 			}
 			else if(resolvedElement instanceof CSharpLocalVariable)
 			{
-				myEvaluators.add(new LocalVariableEvaluator((CSharpLocalVariable)resolvedElement));
+				myEvaluators.add(new LocalVariableEvaluator((CSharpLocalVariable) resolvedElement));
 			}
 			else if(resolvedElement instanceof CSharpFieldDeclaration)
 			{
@@ -87,7 +90,7 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 					myEvaluators.add(ThisObjectEvaluator.INSTANCE);
 				}
 
-				myEvaluators.add(new FieldEvaluator(typeDeclaration, (CSharpFieldDeclaration)resolvedElement));
+				myEvaluators.add(new FieldEvaluator(typeDeclaration, (CSharpFieldDeclaration) resolvedElement));
 			}
 			else if(resolvedElement instanceof CSharpTypeDeclaration)
 			{
@@ -102,8 +105,54 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 			if(resolvedElement instanceof CSharpFieldDeclaration)
 			{
 				CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) resolvedElement.getParent();
-				myEvaluators.add(new FieldEvaluator(typeDeclaration, (CSharpFieldDeclaration)resolvedElement));
+				myEvaluators.add(new FieldEvaluator(typeDeclaration, (CSharpFieldDeclaration) resolvedElement));
 			}
+		}
+	}
+
+	@Override
+	@RequiredReadAction
+	public void visitMethodCallExpression(CSharpMethodCallExpressionImpl expression)
+	{
+		DotNetExpression callExpression = expression.getCallExpression();
+
+		PsiElement element = expression.resolveToCallable();
+		if(!(element instanceof CSharpMethodDeclaration))
+		{
+			throw new UnsupportedOperationException("Cant evaluate not method");
+		}
+
+		CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) element;
+
+		if(callExpression instanceof CSharpReferenceExpression)
+		{
+			CSharpTypeDeclaration typeDeclaration = null;
+
+			PsiElement qualifier = ((CSharpReferenceExpression) callExpression).getQualifier();
+			if(qualifier != null)
+			{
+				qualifier.accept(this);
+			}
+			else
+			{
+				if(methodDeclaration.hasModifier(DotNetModifier.STATIC))
+				{
+					typeDeclaration = (CSharpTypeDeclaration) methodDeclaration.getParent();
+					myEvaluators.add(NullValueEvaluator.INSTANCE); // push null
+				}
+				else
+				{
+					myEvaluators.add(ThisObjectEvaluator.INSTANCE);
+				}
+			}
+
+			String referenceName = ((CSharpReferenceExpression) callExpression).getReferenceName();
+			if(referenceName == null)
+			{
+				throw new UnsupportedOperationException("No reference name");
+			}
+
+			myEvaluators.add(new MethodEvaluator(referenceName, typeDeclaration, methodDeclaration.getParameters().length));
 		}
 	}
 
