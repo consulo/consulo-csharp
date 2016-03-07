@@ -162,6 +162,15 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 			spaceIfNoBlankLines(myBuilder.beforeInside(RBRACE, ARRAY_METHOD_DECLARATION), true);
 		}
 
+		// between members - one line
+		myBuilder.between(CSharpStubElements.QUALIFIED_MEMBERS, CSharpStubElements.QUALIFIED_MEMBERS).spacing(0, 0, 2, false, 0);
+
+		myBuilder.afterInside(CSharpTokens.LBRACE, CSharpStubElements.QUALIFIED_MEMBERS).spacing(0, 0, 1, false, 0);
+		myBuilder.beforeInside(CSharpTokens.RBRACE, CSharpStubElements.QUALIFIED_MEMBERS).spacing(0, 0, 1, false, 0);
+
+		myBuilder.afterInside(CSharpTokens.LBRACE, CSharpElements.BLOCK_STATEMENT).spacing(0, 0, 1, false, 0);
+		myBuilder.beforeInside(CSharpTokens.RBRACE, CSharpElements.BLOCK_STATEMENT).spacing(0, 0, 1, false, 0);
+
 		// call(arg
 		myBuilder.afterInside(CSharpTokens.LPAR, CSharpElements.CALL_ARGUMENT_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_CALL_PARENTHESES);
 		// call[arg
