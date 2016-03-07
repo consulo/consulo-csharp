@@ -325,6 +325,12 @@ public class CSharpReferenceExpressionImplUtil
 
 			if(localVariable != null)
 			{
+				if(localVariable.getParent() instanceof CSharpCatchStatementImpl)
+				{
+					// catch be without name
+					return ResolveToKind.TYPE_LIKE;
+				}
+
 				if(CSharpPsiUtilImpl.isNullOrEmpty(localVariable))
 				{
 					return ResolveToKind.EXPRESSION_OR_TYPE_LIKE;
@@ -401,6 +407,11 @@ public class CSharpReferenceExpressionImplUtil
 				CSharpLocalVariable localVariable = PsiTreeUtil.getParentOfType(userType, CSharpLocalVariable.class);
 				if(localVariable != null)
 				{
+					if(localVariable.getParent() instanceof CSharpCatchStatementImpl)
+					{
+						// catch be without name
+						return ResolveToKind.TYPE_LIKE;
+					}
 					if(CSharpPsiUtilImpl.isNullOrEmpty(localVariable))
 					{
 						return ResolveToKind.EXPRESSION_OR_TYPE_LIKE;
