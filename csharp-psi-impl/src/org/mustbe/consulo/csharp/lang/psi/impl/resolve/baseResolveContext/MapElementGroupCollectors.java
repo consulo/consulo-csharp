@@ -86,13 +86,6 @@ public class MapElementGroupCollectors
 			super(CSharpAdditionalMemberProvider.Target.OPERATOR_METHOD, context);
 		}
 
-		@NotNull
-		@Override
-		public DotNetGenericExtractor getExtractor()
-		{
-			return DotNetGenericExtractor.EMPTY;
-		}
-
 		@RequiredReadAction
 		@Nullable
 		@Override

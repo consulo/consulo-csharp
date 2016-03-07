@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.codeInsight;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedEventFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedFieldFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedMethodByLambdaTypeFix;
@@ -28,7 +29,6 @@ import org.mustbe.consulo.csharp.ide.codeInsight.actions.UsingNamespaceFix;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -42,14 +42,12 @@ import com.intellij.codeInsight.quickfix.UnresolvedReferenceQuickFixProvider;
 public class CSharpUnresolvedReferenceQuickFixProvider extends UnresolvedReferenceQuickFixProvider<CSharpReferenceExpression>
 {
 	@Override
+	@RequiredReadAction
 	public void registerFixes(CSharpReferenceExpression expression, QuickFixActionRegistrar quickFixActionRegistrar)
 	{
 		quickFixActionRegistrar.register(new UsingNamespaceFix(expression));
-		quickFixActionRegistrar.register(new CreateUnresolvedMethodFix(expression));
-		quickFixActionRegistrar.register(new CreateUnresolvedFieldFix(expression));
-		quickFixActionRegistrar.register(new CreateUnresolvedPropertyFix(expression));
-		quickFixActionRegistrar.register(new CreateUnresolvedEventFix(expression));
 
+		CSharpLambdaResolveResult lambdaResolveResult = null;
 		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(expression);
 		for(ExpectedTypeInfo expectedTypeRef : expectedTypeRefs)
 		{
@@ -57,8 +55,21 @@ public class CSharpUnresolvedReferenceQuickFixProvider extends UnresolvedReferen
 			DotNetTypeResolveResult result = typeRef.resolve(expression);
 			if(result instanceof CSharpLambdaResolveResult)
 			{
-				quickFixActionRegistrar.register(new CreateUnresolvedMethodByLambdaTypeFix(expression, (CSharpSimpleLikeMethod) result));
+				lambdaResolveResult = (CSharpLambdaResolveResult) result;
+				break;
 			}
+		}
+
+		if(lambdaResolveResult != null)
+		{
+			quickFixActionRegistrar.register(new CreateUnresolvedMethodByLambdaTypeFix(expression, lambdaResolveResult));
+		}
+		else
+		{
+			quickFixActionRegistrar.register(new CreateUnresolvedMethodFix(expression));
+			quickFixActionRegistrar.register(new CreateUnresolvedFieldFix(expression));
+			quickFixActionRegistrar.register(new CreateUnresolvedPropertyFix(expression));
+			quickFixActionRegistrar.register(new CreateUnresolvedEventFix(expression));
 		}
 	}
 

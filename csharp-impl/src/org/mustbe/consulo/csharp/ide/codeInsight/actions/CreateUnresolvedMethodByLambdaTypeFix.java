@@ -18,13 +18,14 @@ package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.liveTemplates.expression.ReturnStatementExpression;
 import org.mustbe.consulo.csharp.ide.liveTemplates.expression.TypeRefExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
@@ -43,9 +44,9 @@ import com.intellij.psi.util.PsiTreeUtil;
  */
 public class CreateUnresolvedMethodByLambdaTypeFix extends CreateUnresolvedElementFix
 {
-	private final CSharpSimpleLikeMethod myLikeMethod;
+	private final CSharpLambdaResolveResult myLikeMethod;
 
-	public CreateUnresolvedMethodByLambdaTypeFix(CSharpReferenceExpression expression, CSharpSimpleLikeMethod likeMethod)
+	public CreateUnresolvedMethodByLambdaTypeFix(CSharpReferenceExpression expression, CSharpLambdaResolveResult likeMethod)
 	{
 		super(expression);
 		myLikeMethod = likeMethod;
@@ -53,6 +54,7 @@ public class CreateUnresolvedMethodByLambdaTypeFix extends CreateUnresolvedEleme
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public String getText()
 	{
 		String arguments = buildArgumentTypeRefs();
@@ -64,6 +66,7 @@ public class CreateUnresolvedMethodByLambdaTypeFix extends CreateUnresolvedEleme
 	}
 
 	@Nullable
+	@RequiredReadAction
 	public String buildArgumentTypeRefs()
 	{
 		CSharpReferenceExpression element = myPointer.getElement();
@@ -136,10 +139,7 @@ public class CreateUnresolvedMethodByLambdaTypeFix extends CreateUnresolvedEleme
 	}
 
 	@Override
-	public void buildTemplate(@NotNull CreateUnresolvedElementFixContext context,
-			CSharpContextUtil.ContextType contextType,
-			@NotNull PsiFile file,
-			@NotNull Template template)
+	public void buildTemplate(@NotNull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @NotNull PsiFile file, @NotNull Template template)
 	{
 		template.addTextSegment("public ");
 		if(contextType == CSharpContextUtil.ContextType.STATIC)

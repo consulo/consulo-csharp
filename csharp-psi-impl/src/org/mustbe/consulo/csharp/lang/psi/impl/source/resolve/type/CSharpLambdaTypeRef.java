@@ -23,6 +23,7 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
@@ -162,6 +163,7 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 		{
 			@Nullable
 			@Override
+			@RequiredReadAction
 			public PsiElement getElement()
 			{
 				if(myTarget == null)
@@ -188,7 +190,19 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 			@Override
 			public CSharpSimpleParameterInfo[] getParameterInfos()
 			{
-				return myParameterInfos;
+				CSharpSimpleParameterInfo[] parameterInfos = myParameterInfos;
+				if(myExtractor == DotNetGenericExtractor.EMPTY)
+				{
+					return parameterInfos;
+				}
+				CSharpSimpleParameterInfo[] temp = new CSharpSimpleParameterInfo[parameterInfos.length];
+				for(int i = 0; i < parameterInfos.length; i++)
+				{
+					CSharpSimpleParameterInfo parameterInfo = parameterInfos[i];
+					DotNetTypeRef typeRef = GenericUnwrapTool.exchangeTypeRef(parameterInfo.getTypeRef(), getGenericExtractor(), scope);
+					temp[i] = new CSharpSimpleParameterInfo(parameterInfo.getIndex(), parameterInfo.getName(), parameterInfo.getElement(), typeRef);
+				}
+				return temp;
 			}
 
 			@Override
@@ -201,14 +215,14 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 			@Override
 			public DotNetTypeRef getReturnTypeRef()
 			{
-				return myReturnType;
+				return GenericUnwrapTool.exchangeTypeRef(myReturnType, getGenericExtractor(), scope);
 			}
 
 			@NotNull
 			@Override
 			public DotNetTypeRef[] getParameterTypeRefs()
 			{
-				return CSharpSimpleParameterInfo.toTypeRefs(myParameterInfos);
+				return CSharpSimpleParameterInfo.toTypeRefs(getParameterInfos());
 			}
 
 			@Nullable
