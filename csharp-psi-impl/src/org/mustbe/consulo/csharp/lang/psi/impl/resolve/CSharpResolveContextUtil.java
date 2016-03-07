@@ -158,14 +158,7 @@ public class CSharpResolveContextUtil
 		}
 		else
 		{
-			long time = System.currentTimeMillis();
-			CSharpTypeResolveContext context = new CSharpTypeResolveContext(typeDeclaration, genericExtractor, recursiveGuardSet);
-			long l = System.currentTimeMillis() - time;
-			if(l > 10)
-			{
-				System.out.println(l + " time for " + typeDeclaration.getPresentableQName());
-			}
-			return context;
+			return new CSharpTypeResolveContext(typeDeclaration, genericExtractor, recursiveGuardSet);
 		}
 	}
 
