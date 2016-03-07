@@ -21,7 +21,7 @@ import com.intellij.util.Processor;
 @ArrayFactoryFields
 public interface CSharpResolveContext
 {
-	CSharpResolveContext EMPTY = new BaseCSharpResolveContext();
+	CSharpResolveContext EMPTY = new CSharpResolveContextAdapter();
 
 	@Nullable
 	CSharpElementGroup<CSharpIndexMethodDeclaration> indexMethodGroup(boolean deep);

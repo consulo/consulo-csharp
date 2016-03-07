@@ -33,7 +33,7 @@ import com.intellij.util.Processor;
 * @author VISTALL
 * @since 05.03.2016
 */
-public class BaseCSharpResolveContext implements CSharpResolveContext
+public class CSharpResolveContextAdapter implements CSharpResolveContext
 {
 	@Nullable
 	@Override

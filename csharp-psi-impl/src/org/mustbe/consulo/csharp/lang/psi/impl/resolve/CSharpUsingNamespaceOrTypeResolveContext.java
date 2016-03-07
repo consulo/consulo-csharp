@@ -23,7 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingTypeStatement;
-import org.mustbe.consulo.csharp.lang.psi.resolve.BaseCSharpResolveContext;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContextAdapter;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -38,7 +38,7 @@ import com.intellij.util.Processor;
  * @author VISTALL
  * @since 05.03.2016
  */
-public class CSharpUsingNamespaceOrTypeResolveContext extends BaseCSharpResolveContext
+public class CSharpUsingNamespaceOrTypeResolveContext extends CSharpResolveContextAdapter
 {
 	private CSharpUsingListChild myUsingListChild;
 

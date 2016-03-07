@@ -19,10 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
-import org.mustbe.consulo.csharp.lang.psi.resolve.BaseCSharpResolveContext;
-import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.openapi.util.NotNullLazyValue;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContextAdapter;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.Processor;
@@ -31,28 +28,9 @@ import com.intellij.util.Processor;
  * @author VISTALL
  * @since 05.03.2016
  */
-public class CSharpTypeDefResolveContext extends BaseCSharpResolveContext
+public class CSharpTypeDefResolveContext extends CSharpResolveContextAdapter
 {
 	private CSharpTypeDefStatement myStatement;
-
-	private NotNullLazyValue<CSharpResolveContext> myValue = new NotNullLazyValue<CSharpResolveContext>()
-	{
-		@NotNull
-		@Override
-		@RequiredReadAction
-		protected CSharpResolveContext compute()
-		{
-			DotNetTypeResolveResult typeResolveResult = myStatement.toTypeRef().resolve(myStatement);
-
-			PsiElement element = typeResolveResult.getElement();
-			if(element == null)
-			{
-				return EMPTY;
-			}
-			return CSharpResolveContextUtil.createContext(typeResolveResult.getGenericExtractor(), myStatement.getResolveScope(), element);
-		}
-	};
-
 	private String myName;
 
 	public CSharpTypeDefResolveContext(CSharpTypeDefStatement statement)
