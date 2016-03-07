@@ -42,5 +42,9 @@
 		<intentionAction>
 			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.expressionActions.lambda.LambdaToDelegateExpressionFix</className>
 		</intentionAction>
+
+		<intentionAction>
+			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.ConvertToPropertyFieldFix</className>
+		</intentionAction>
 	</extensions>
 </idea-plugin>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 must-be.org
+ * Copyright 2013-2016 must-be.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,63 +18,73 @@ package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredDispatchThread;
-import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.RequiredWriteAction;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
+import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
- * @since 31.08.14
+ * @since 07.03.2016
  */
-public class AddXModifierFix extends PsiElementBaseIntentionAction
+public class ConvertToPropertyFieldFix extends PsiElementBaseIntentionAction
 {
-	private CSharpModifier[] myModifiers;
-
-	public AddXModifierFix(CSharpModifier... modifiers)
+	public ConvertToPropertyFieldFix()
 	{
-		myModifiers = modifiers;
+		setText("Convert to property");
 	}
 
 	@Override
+	@RequiredWriteAction
 	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException
 	{
 		DotNetModifierListOwner owner = CSharpIntentionUtil.findOwner(element);
-		if(owner == null || !owner.isWritable())
+		if(!(owner instanceof CSharpFieldDeclaration))
 		{
 			return;
 		}
 
+		StringBuilder builder = new StringBuilder();
 		DotNetModifierList modifierList = owner.getModifierList();
-		if(modifierList == null)
+		assert modifierList != null;
+		String modifierText = modifierList.getText();
+		if(!StringUtil.isEmpty(modifierText))
 		{
-			return;
+			builder.append(modifierText).append(" ");
 		}
 
-		beforeAdd(modifierList);
-
-		for(CSharpModifier modifier : ArrayUtil.reverseArray(myModifiers))
+		DotNetType type = ((CSharpFieldDeclaration) owner).getType();
+		if(type != null)
 		{
-			modifierList.addModifier(modifier);
+			builder.append(type.getText()).append(" ");
 		}
-	}
+		builder.append(((CSharpFieldDeclaration) owner).getName());
+		builder.append(" { get; set; }");
 
-	protected void beforeAdd(DotNetModifierList modifierList)
-	{
+		if(CSharpModuleUtil.findLanguageVersion(element).isAtLeast(CSharpLanguageVersion._6_0))
+		{
+			DotNetExpression initializer = ((CSharpFieldDeclaration) owner).getInitializer();
+			if(initializer != null)
+			{
+				builder.append(" = ").append(initializer.getText());
+			}
+		}
 
-	}
+		CSharpPropertyDeclaration property = CSharpFileFactory.createProperty(project, builder.toString());
 
-	public boolean isAllow(DotNetModifierListOwner owner, CSharpModifier[] modifier)
-	{
-		return true;
+		owner.replace(property);
 	}
 
 	@Override
@@ -82,34 +92,7 @@ public class AddXModifierFix extends PsiElementBaseIntentionAction
 	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element)
 	{
 		DotNetModifierListOwner owner = CSharpIntentionUtil.findOwner(element);
-		return owner != null && !hasModifiers(owner) && isAllow(owner, myModifiers) && owner.isWritable();
-	}
-
-	@RequiredReadAction
-	protected boolean hasModifiers(DotNetModifierListOwner owner)
-	{
-		for(CSharpModifier modifier : myModifiers)
-		{
-			if(!owner.hasModifier(modifier))
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-
-	@NotNull
-	@Override
-	public String getText()
-	{
-		return "Make " + StringUtil.join(myModifiers, new Function<CSharpModifier, String>()
-		{
-			@Override
-			public String fun(CSharpModifier modifier)
-			{
-				return modifier.getPresentableText();
-			}
-		}, " ");
+		return owner != null && owner instanceof CSharpFieldDeclaration && owner.isWritable();
 	}
 
 	@NotNull
