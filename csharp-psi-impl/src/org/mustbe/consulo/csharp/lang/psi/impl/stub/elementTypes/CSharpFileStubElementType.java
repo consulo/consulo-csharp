@@ -29,7 +29,6 @@ import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.CSharpLanguageVersionWrapper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpFileStub;
-import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.LanguageParserDefinitions;
@@ -39,7 +38,6 @@ import com.intellij.lang.PsiBuilderFactory;
 import com.intellij.lang.PsiParser;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
@@ -119,20 +117,6 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 
 		final PsiParser parser = LanguageParserDefinitions.INSTANCE.forLanguage(languageForParser).createParser(project, languageVersion);
 		return parser.parse(this, builder, languageVersion).getFirstChildNode();
-	}
-
-	@NotNull
-	@Deprecated
-	public static List<TextRange> collectDisabledBlocks(PsiFile macroFile, @NotNull DotNetSimpleModuleExtension<?> extension)
-	{
-		return collectDisabledBlocks(macroFile, extension.getVariables());
-	}
-
-	@NotNull
-	@Deprecated
-	private static List<TextRange> collectDisabledBlocks(PsiFile templateFile, @NotNull final List<String> baseVariables)
-	{
-		return Collections.emptyList();
 	}
 
 	@NotNull

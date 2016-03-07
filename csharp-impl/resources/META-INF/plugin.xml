@@ -139,7 +139,6 @@
 		<highlightVisitor implementation="org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightVisitor"/>
 		<highlightVisitor implementation="org.mustbe.consulo.csharp.ide.highlight.check.CSharpCompilerCheckVisitor"/>
 		<highlightVisitor implementation="org.mustbe.consulo.csharp.ide.highlight.CSharpMacroHighlightVisitor"/>
-		<externalAnnotator language="C#Macro" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpNonActiveAnnotator"/>
 		<iconDescriptorUpdater implementation="org.mustbe.consulo.csharp.lang.CSharpIconDescriptorUpdater"/>
 		<treeStructureProvider implementation="org.mustbe.consulo.csharp.ide.projectView.CSharpProjectViewProvider"/>
 		<applicationConfigurable id="editor.preferences.import.csharp"

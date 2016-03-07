@@ -16,6 +16,8 @@
 
 package org.mustbe.consulo.csharp.ide.highlight;
 
+import gnu.trove.TIntHashSet;
+
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
@@ -42,13 +44,17 @@ import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.daemon.impl.HighlightVisitor;
 import com.intellij.codeInsight.daemon.impl.analysis.HighlightInfoHolder;
 import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.colors.EditorColors;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.PsiUtilCore;
 
 /**
  * @author VISTALL
@@ -57,6 +63,8 @@ import com.intellij.psi.tree.IElementType;
 public class CSharpHighlightVisitor extends CSharpElementVisitor implements HighlightVisitor
 {
 	private HighlightInfoHolder myHighlightInfoHolder;
+	private TIntHashSet myProcessedLines = new TIntHashSet();
+	private Document myDocument;
 
 	@Override
 	public boolean suitableForFile(@NotNull PsiFile psiFile)
@@ -78,8 +86,22 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 		IElementType elementType = element.getNode().getElementType();
 		if(CSharpSoftTokens.ALL.contains(elementType))
 		{
-			myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(element).textAttributes(CSharpHighlightKey
-					.SOFT_KEYWORD).create());
+			myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(element).textAttributes(CSharpHighlightKey.SOFT_KEYWORD).create());
+		}
+		else if(PsiUtilCore.getElementType(element) == CSharpTokens.NON_ACTIVE_SYMBOL)
+		{
+			if(myDocument == null)
+			{
+				return;
+			}
+			int lineNumber = myDocument.getLineNumber(element.getTextOffset());
+			if(!myProcessedLines.contains(lineNumber))
+			{
+				myProcessedLines.add(lineNumber);
+
+				TextRange textRange = new TextRange(myDocument.getLineStartOffset(lineNumber), myDocument.getLineEndOffset(lineNumber));
+				myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(textRange).textAttributes(CSharpHighlightKey.DISABLED_BLOCK).create());
+			}
 		}
 	}
 
@@ -198,8 +220,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	{
 		super.visitLinqExpression(expression);
 
-		myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(expression).textAttributes(EditorColors
-				.INJECTED_LANGUAGE_FRAGMENT).create());
+		myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(expression).textAttributes(EditorColors.INJECTED_LANGUAGE_FRAGMENT).create());
 	}
 
 	@Override
@@ -256,8 +277,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 
 		if(resolved != null)
 		{
-			HighlightInfo highlightInfo = CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, resolved, referenceElement,
-					(PsiElement) reference);
+			HighlightInfo highlightInfo = CSharpHighlightUtil.highlightNamed(myHighlightInfoHolder, resolved, referenceElement, (PsiElement) reference);
 
 			if(highlightInfo != null && CSharpMethodImplUtil.isExtensionWrapper(resolved))
 			{
@@ -300,9 +320,8 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 			ImplicitCastInfo implicitCastInfo = nCallArgument.getUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO);
 			if(implicitCastInfo != null)
 			{
-				String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildTextWithKeyword
-						(implicitCastInfo.getFromTypeRef(), scope), CSharpTypeRefPresentationUtil.buildTextWithKeyword(implicitCastInfo.getToTypeRef
-						(), scope));
+				String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildTextWithKeyword(implicitCastInfo.getFromTypeRef(), scope),
+						CSharpTypeRefPresentationUtil.buildTextWithKeyword(implicitCastInfo.getToTypeRef(), scope));
 
 				HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION);
 				builder = builder.range(argumentExpression.getTextRange());
@@ -317,7 +336,10 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	public boolean analyze(@NotNull PsiFile psiFile, boolean b, @NotNull HighlightInfoHolder highlightInfoHolder, @NotNull Runnable runnable)
 	{
 		myHighlightInfoHolder = highlightInfoHolder;
+		myProcessedLines.clear();
+		myDocument = PsiDocumentManager.getInstance(psiFile.getProject()).getCachedDocument(psiFile);
 		runnable.run();
+		myDocument = null;
 		return true;
 	}
 
