@@ -53,6 +53,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl<CSharpIndexMethodDeclaration>(myProject, groups);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpConstructorDeclaration> constructorGroup()
@@ -69,6 +70,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl<CSharpConstructorDeclaration>(myProject, groups);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpConstructorDeclaration> deConstructorGroup()

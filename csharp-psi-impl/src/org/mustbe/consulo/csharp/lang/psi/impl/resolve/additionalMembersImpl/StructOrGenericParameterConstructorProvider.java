@@ -17,6 +17,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.util.Condition;
+import com.intellij.psi.PsiElement;
 import com.intellij.util.Consumer;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -30,7 +31,7 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 	@Override
 	public void processAdditionalMembers(@NotNull DotNetElement element,
 			@NotNull DotNetGenericExtractor extractor,
-			@NotNull Consumer<DotNetElement> consumer)
+			@NotNull Consumer<PsiElement> consumer)
 	{
 		if(element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).isStruct())
 		{
@@ -80,10 +81,17 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 		}
 	}
 
+	@NotNull
+	@Override
+	public Target getTarget()
+	{
+		return Target.CONSTRUCTOR;
+	}
+
 	private static void buildDefaultConstructor(@NotNull DotNetNamedElement element,
 			@NotNull CSharpModifier modifier,
 			@NotNull DotNetGenericExtractor extractor,
-			@NotNull Consumer<DotNetElement> consumer)
+			@NotNull Consumer<PsiElement> consumer)
 	{
 		String name = element.getName();
 		if(name == null)

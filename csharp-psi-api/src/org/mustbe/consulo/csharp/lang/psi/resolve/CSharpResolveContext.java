@@ -28,9 +28,11 @@ public interface CSharpResolveContext
 	CSharpElementGroup<CSharpIndexMethodDeclaration> indexMethodGroup(boolean deep);
 
 	@Nullable
+	@RequiredReadAction
 	CSharpElementGroup<CSharpConstructorDeclaration> constructorGroup();
 
 	@Nullable
+	@RequiredReadAction
 	CSharpElementGroup<CSharpConstructorDeclaration> deConstructorGroup();
 
 	@Nullable

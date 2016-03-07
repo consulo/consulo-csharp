@@ -76,6 +76,8 @@
 				implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl.StructOrGenericParameterConstructorProvider"/>
 		<additionalMemberProvider
 				implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl.OperatorsProvider"/>
+		<additionalMemberProvider
+				implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.additionalMembersImpl.ConversionMethodsProvider"/>
 
 		<toNativeElementTransformer implementation="org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToNativeElementTransformer"/>
 	</extensions>
@@ -304,7 +306,7 @@
 		<refactoring.moveHandler implementation="org.mustbe.consulo.csharp.ide.refactoring.move.CSharpMoveHandlerDelegate"/>
 		<refactoring.copyHandler implementation="org.mustbe.consulo.csharp.ide.refactoring.copy.CSharpCopyClassHandlerDelegate"/>
 
-		<filePropertyPusher implementation="org.mustbe.consulo.csharp.lang.CSharpFilePropertyPusher" />
+		<filePropertyPusher implementation="org.mustbe.consulo.csharp.lang.CSharpFilePropertyPusher"/>
 
 		<highlightUsagesHandlerFactory implementation="org.mustbe.consulo.csharp.lang.doc.ide.highlight.CSharpDocHighlightUsagesHandlerFactory"/>
 		<highlightUsagesHandlerFactory implementation="org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightUsagesHandlerFactory"/>

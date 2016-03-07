@@ -1,39 +1,38 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
-import gnu.trove.THashMap;
 import gnu.trove.THashSet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.*;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.baseResolveContext.MapElementGroupCollectors;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.baseResolveContext.SimpleElementGroupCollectors;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
-import org.mustbe.dotnet.msil.decompiler.util.MsilHelper;
-import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
-import com.intellij.util.Consumer;
 import com.intellij.util.Processor;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.containers.MultiMap;
 
 /**
  * @author VISTALL
@@ -41,158 +40,72 @@ import com.intellij.util.containers.MultiMap;
  */
 public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetModifierListOwner> implements CSharpResolveContext
 {
-	protected static class Collector extends CSharpElementVisitor
+	private final NotNullLazyValue<SimpleElementGroupCollectors.IndexMethod> myIndexMethodCollectorValue = new NotNullLazyValue<SimpleElementGroupCollectors.IndexMethod>()
 	{
-		private List<CSharpConstructorDeclaration> myDeConstructors;
-		private List<CSharpConstructorDeclaration> myConstructors;
-		private MultiMap<IElementType, CSharpMethodDeclaration> myOperatorsMap;
-		private MultiMap<String, CSharpMethodDeclaration> myExtensionMap;
-		private MultiMap<DotNetTypeRef, CSharpConversionMethodDeclaration> myConversionMap;
-		private List<CSharpIndexMethodDeclaration> myIndexMethods;
-		private MultiMap<String, PsiElement> myOtherElements = new MultiMap<String, PsiElement>();
-
+		@NotNull
 		@Override
-		public void visitConstructorDeclaration(CSharpConstructorDeclaration declaration)
+		protected SimpleElementGroupCollectors.IndexMethod compute()
 		{
-			if(declaration.isDeConstructor())
-			{
-				if(myDeConstructors == null)
-				{
-					myDeConstructors = new SmartList<CSharpConstructorDeclaration>();
-				}
-				myDeConstructors.add(declaration);
-			}
-			else
-			{
-				if(myConstructors == null)
-				{
-					myConstructors = new SmartList<CSharpConstructorDeclaration>();
-				}
-				myConstructors.add(declaration);
-			}
+			return new SimpleElementGroupCollectors.IndexMethod(CSharpBaseResolveContext.this);
 		}
+	};
 
+	private final NotNullLazyValue<SimpleElementGroupCollectors.Constructor> myConstructorCollectorValue = new NotNullLazyValue<SimpleElementGroupCollectors.Constructor>()
+	{
+		@NotNull
 		@Override
-		public void visitConversionMethodDeclaration(CSharpConversionMethodDeclaration element)
+		protected SimpleElementGroupCollectors.Constructor compute()
 		{
-			if(myConversionMap == null)
-			{
-				myConversionMap = new MultiMap<DotNetTypeRef, CSharpConversionMethodDeclaration>();
-			}
-
-			myConversionMap.putValue(element.getConversionTypeRef(), element);
+			return new SimpleElementGroupCollectors.Constructor(CSharpBaseResolveContext.this);
 		}
+	};
 
+	private final NotNullLazyValue<SimpleElementGroupCollectors.DeConstructor> myDeConstructorCollectorValue = new NotNullLazyValue<SimpleElementGroupCollectors.DeConstructor>()
+	{
+		@NotNull
 		@Override
-		public void visitMethodDeclaration(CSharpMethodDeclaration declaration)
+		protected SimpleElementGroupCollectors.DeConstructor compute()
 		{
-			if(declaration.isOperator())
-			{
-				IElementType operatorElementType = declaration.getOperatorElementType();
-				if(operatorElementType == null)
-				{
-					return;
-				}
-
-				if(myOperatorsMap == null)
-				{
-					myOperatorsMap = new MultiMap<IElementType, CSharpMethodDeclaration>();
-				}
-
-				myOperatorsMap.putValue(operatorElementType, declaration);
-			}
-			else
-			{
-				if(declaration.isExtension())
-				{
-					String name = declaration.getName();
-					if(name == null)
-					{
-						return;
-					}
-
-					if(myExtensionMap == null)
-					{
-						myExtensionMap = new MultiMap<String, CSharpMethodDeclaration>();
-					}
-
-					myExtensionMap.putValue(name, declaration);
-				}
-
-				putIfNotNull(declaration.getName(), declaration, myOtherElements);
-			}
+			return new SimpleElementGroupCollectors.DeConstructor(CSharpBaseResolveContext.this);
 		}
+	};
 
+	private final NotNullLazyValue<MapElementGroupCollectors.ConversionMethod> myConversionMethodCollectorValue = new NotNullLazyValue<MapElementGroupCollectors.ConversionMethod>()
+	{
+		@NotNull
 		@Override
-		public void visitIndexMethodDeclaration(CSharpIndexMethodDeclaration declaration)
+		protected MapElementGroupCollectors.ConversionMethod compute()
 		{
-			if(myIndexMethods == null)
-			{
-				myIndexMethods = new SmartList<CSharpIndexMethodDeclaration>();
-			}
-			myIndexMethods.add(declaration);
+			return new MapElementGroupCollectors.ConversionMethod(CSharpBaseResolveContext.this);
 		}
+	};
 
+	private final NotNullLazyValue<MapElementGroupCollectors.OperatorMethod> myOperatorMethodCollectorValue = new NotNullLazyValue<MapElementGroupCollectors.OperatorMethod>()
+	{
+		@NotNull
 		@Override
-		public void visitEnumConstantDeclaration(CSharpEnumConstantDeclaration declaration)
+		protected MapElementGroupCollectors.OperatorMethod compute()
 		{
-			putIfNotNull(declaration.getName(), declaration, myOtherElements);
+			return new MapElementGroupCollectors.OperatorMethod(CSharpBaseResolveContext.this);
 		}
+	};
 
+	private final NotNullLazyValue<MapElementGroupCollectors.Other> myOtherCollectorValue = new NotNullLazyValue<MapElementGroupCollectors.Other>()
+	{
+		@NotNull
 		@Override
-		public void visitFieldDeclaration(CSharpFieldDeclaration declaration)
+		protected MapElementGroupCollectors.Other compute()
 		{
-			putIfNotNull(declaration.getName(), declaration, myOtherElements);
+			return new MapElementGroupCollectors.Other(CSharpBaseResolveContext.this);
 		}
-
-		@Override
-		public void visitEventDeclaration(CSharpEventDeclaration declaration)
-		{
-			putIfNotNull(declaration.getName(), declaration, myOtherElements);
-		}
-
-		@Override
-		public void visitPropertyDeclaration(CSharpPropertyDeclaration declaration)
-		{
-			putIfNotNull(declaration.getName(), declaration, myOtherElements);
-		}
-
-		@Override
-		public void visitTypeDeclaration(CSharpTypeDeclaration declaration)
-		{
-			putIfNotNull(declaration.getName(), declaration, myOtherElements);
-		}
-
-		private <K, V extends DotNetNamedElement> void putIfNotNull(@Nullable K key, @NotNull V value, @NotNull MultiMap<K, PsiElement> map)
-		{
-			if(key == null)
-			{
-				return;
-			}
-			map.putValue(key, value);
-		}
-	}
+	};
 
 	@NotNull
 	protected final T myElement;
 	@NotNull
 	protected final DotNetGenericExtractor myExtractor;
+	@Nullable
 	private Set<PsiElement> myRecursiveGuardSet;
-	@Nullable
-	private MutableElementGroupWithCache<CSharpIndexMethodDeclaration> myIndexMethodGroup;
-	@Nullable
-	private MutableElementGroupWithCache<CSharpConstructorDeclaration> myConstructorGroup;
-	@Nullable
-	private MutableElementGroupWithCache<CSharpConstructorDeclaration> myDeConstructorGroup;
-
-	@Nullable
-	private final Map<DotNetTypeRef, MutableElementGroupWithCache<CSharpConversionMethodDeclaration>> myConversionMap;
-	@Nullable
-	private final Map<IElementType, MutableElementGroupWithCache<CSharpMethodDeclaration>> myOperatorMap;
-	@Nullable
-	private final Map<String, MutableElementGroupWithCache<CSharpMethodDeclaration>> myExtensionMap;
-	@Nullable
-	private final Map<String, MutableElementGroupWithCache<PsiElement>> myOtherElements;
 
 	@RequiredReadAction
 	public CSharpBaseResolveContext(@NotNull T element, @NotNull DotNetGenericExtractor extractor, @Nullable Set<PsiElement> recursiveGuardSet)
@@ -200,36 +113,9 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		myElement = element;
 		myExtractor = extractor;
 		myRecursiveGuardSet = recursiveGuardSet;
-		final Project project = element.getProject();
-
-		final Collector collector = new Collector();
-
-		processMembers(element, collector);
-
-		Consumer<DotNetElement> elementConsumer = new Consumer<DotNetElement>()
-		{
-			@Override
-			public void consume(DotNetElement dotNetElement)
-			{
-				dotNetElement.accept(collector);
-			}
-		};
-
-		for(CSharpAdditionalMemberProvider provider : getAdditionalTypeMemberProviders())
-		{
-			provider.processAdditionalMembers(element, extractor, elementConsumer);
-		}
-
-		myOtherElements = convertToGroup(project, collector.myOtherElements);
-		myIndexMethodGroup = toGroup(project, "[]", collector.myIndexMethods);
-		myConstructorGroup = toGroup(project, MsilHelper.CONSTRUCTOR_NAME, collector.myConstructors);
-		myDeConstructorGroup = toGroup(project, "~" + MsilHelper.CONSTRUCTOR_NAME, collector.myDeConstructors);
-		myOperatorMap = convertToGroup(project, collector.myOperatorsMap);
-		myExtensionMap = convertToGroup(project, collector.myExtensionMap);
-		myConversionMap = convertToGroup(project, collector.myConversionMap);
 	}
 
-	public abstract void processMembers(T element, Collector collector);
+	public abstract void acceptChildren(CSharpElementVisitor visitor);
 
 	@NotNull
 	protected abstract List<DotNetTypeRef> getExtendTypeRefs();
@@ -245,7 +131,6 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		}
 		return getSuperContextImpl(alreadyProcessedItem);
 	}
-
 
 	@NotNull
 	@RequiredReadAction
@@ -279,67 +164,14 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		return new CSharpCompositeResolveContext(myElement.getProject(), contexts.toArray(new CSharpResolveContext[contexts.size()]));
 	}
 
-	@NotNull
-	@LazyInstance
-	private static CSharpAdditionalMemberProvider[] getAdditionalTypeMemberProviders()
-	{
-		return CSharpAdditionalMemberProvider.EP_NAME.getExtensions();
-	}
-
-	@Nullable
-	private <T extends DotNetNamedElement> MutableElementGroupWithCache<T> toGroup(@NotNull Project project, @NotNull String key, @Nullable List<T> elements)
-	{
-		if(ContainerUtil.isEmpty(elements))
-		{
-			return null;
-		}
-		return new MutableElementGroupWithCache<T>(project, key, elements, myExtractor);
-	}
-
-	@Nullable
-	public <K, V extends PsiElement> Map<K, MutableElementGroupWithCache<V>> convertToGroup(@NotNull Project project, @Nullable MultiMap<K, V> multiMap)
-	{
-		if(multiMap == null || multiMap.isEmpty())
-		{
-			return null;
-		}
-		Map<K, MutableElementGroupWithCache<V>> map = new THashMap<K, MutableElementGroupWithCache<V>>(multiMap.size());
-		for(Map.Entry<K, Collection<V>> entry : multiMap.entrySet())
-		{
-			map.put(entry.getKey(), new MutableElementGroupWithCache<V>(project, entry.getKey(), entry.getValue(), myExtractor));
-		}
-		return map;
-	}
-
-	@Nullable
-	private static <T extends PsiElement> CSharpElementGroup<T> nullOrGroup(@Nullable MutableElementGroupWithCache<T> e)
-	{
-		if(e == null)
-		{
-			return null;
-		}
-		return e.asGroup();
-	}
-
-	@SuppressWarnings("unchecked")
-	private static <T extends PsiElement> boolean processGroups(@NotNull Collection<MutableElementGroupWithCache<T>> list, @NotNull Processor processor)
-	{
-		for(MutableElementGroupWithCache<T> cache : list)
-		{
-			if(!processor.process(cache.asGroup()))
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-
 	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpIndexMethodDeclaration> indexMethodGroup(boolean deep)
 	{
-		if(myIndexMethodGroup == null)
+		CSharpElementGroup<CSharpIndexMethodDeclaration> elementGroup = myIndexMethodCollectorValue.getValue().toGroup();
+
+		if(elementGroup == null)
 		{
 			return deep ? getSuperContext().indexMethodGroup(true) : null;
 		}
@@ -349,24 +181,26 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
 			if(deepGroup == null)
 			{
-				return myIndexMethodGroup.asGroup();
+				return elementGroup;
 			}
-			return new CSharpCompositeElementGroupImpl<CSharpIndexMethodDeclaration>(myElement.getProject(), Arrays.asList(myIndexMethodGroup.asGroup(), deepGroup));
+			return new CSharpCompositeElementGroupImpl<CSharpIndexMethodDeclaration>(myElement.getProject(), Arrays.asList(elementGroup, deepGroup));
 		}
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpConstructorDeclaration> constructorGroup()
 	{
-		return nullOrGroup(myConstructorGroup);
+		return myConstructorCollectorValue.getValue().toGroup();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpConstructorDeclaration> deConstructorGroup()
 	{
-		return nullOrGroup(myDeConstructorGroup);
+		return myDeConstructorCollectorValue.getValue().toGroup();
 	}
 
 	@RequiredReadAction
@@ -374,7 +208,8 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	@Override
 	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type, boolean deep)
 	{
-		if(myOperatorMap == null)
+		Map<IElementType, CSharpElementGroup<CSharpMethodDeclaration>> map = myOperatorMethodCollectorValue.getValue().toMap();
+		if(map == null)
 		{
 			return deep ? getSuperContext().findOperatorGroupByTokenType(type, true) : null;
 		}
@@ -384,15 +219,15 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
 			if(deepGroup == null)
 			{
-				return nullOrGroup(myOperatorMap.get(type));
+				return map.get(type);
 			}
 
-			MutableElementGroupWithCache<CSharpMethodDeclaration> thisGroup = myOperatorMap.get(type);
+			CSharpElementGroup<CSharpMethodDeclaration> thisGroup = map.get(type);
 			if(thisGroup == null)
 			{
 				return deepGroup;
 			}
-			return new CSharpCompositeElementGroupImpl<CSharpMethodDeclaration>(myElement.getProject(), Arrays.asList(thisGroup.asGroup(), deepGroup));
+			return new CSharpCompositeElementGroupImpl<CSharpMethodDeclaration>(myElement.getProject(), Arrays.asList(thisGroup, deepGroup));
 		}
 	}
 
@@ -401,7 +236,8 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	@Override
 	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef, boolean deep)
 	{
-		if(myConversionMap == null)
+		Map<DotNetTypeRef, CSharpElementGroup<CSharpConversionMethodDeclaration>> map = myConversionMethodCollectorValue.getValue().toMap();
+		if(map == null)
 		{
 			return deep ? getSuperContext().findConversionMethodGroup(typeRef, true) : null;
 		}
@@ -411,15 +247,15 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 
 			if(deepGroup == null)
 			{
-				return nullOrGroup(myConversionMap.get(typeRef));
+				return map.get(typeRef);
 			}
 
-			MutableElementGroupWithCache<CSharpConversionMethodDeclaration> thisGroup = myConversionMap.get(typeRef);
+			CSharpElementGroup<CSharpConversionMethodDeclaration> thisGroup = map.get(typeRef);
 			if(thisGroup == null)
 			{
 				return deepGroup;
 			}
-			return new CSharpCompositeElementGroupImpl<CSharpConversionMethodDeclaration>(myElement.getProject(), Arrays.asList(thisGroup.asGroup(), deepGroup));
+			return new CSharpCompositeElementGroupImpl<CSharpConversionMethodDeclaration>(myElement.getProject(), Arrays.asList(thisGroup, deepGroup));
 		}
 	}
 
@@ -428,18 +264,68 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	@Override
 	public CSharpElementGroup<CSharpMethodDeclaration> findExtensionMethodGroupByName(@NotNull String name)
 	{
-		if(myExtensionMap == null)
+		Map<String, CSharpElementGroup<PsiElement>> map = myOtherCollectorValue.getValue().toMap();
+		if(map == null)
 		{
 			return null;
 		}
-		return nullOrGroup(myExtensionMap.get(name));
+		CSharpElementGroup<PsiElement> elementGroup = map.get(name);
+		if(elementGroup == null)
+		{
+			return null;
+		}
+
+		return filterElementGroupToExtensionGroup(elementGroup);
+	}
+
+	@Nullable
+	private static CSharpElementGroup<CSharpMethodDeclaration> filterElementGroupToExtensionGroup(CSharpElementGroup<PsiElement> elementGroup)
+	{
+		final List<CSharpMethodDeclaration> extensions = new SmartList<CSharpMethodDeclaration>();
+		elementGroup.process(new Processor<PsiElement>()
+		{
+			@Override
+			public boolean process(PsiElement element)
+			{
+				if(element instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) element).isExtension())
+				{
+					extensions.add((CSharpMethodDeclaration) element);
+				}
+				return true;
+			}
+		});
+		if(extensions.isEmpty())
+		{
+			return null;
+		}
+		return new CSharpElementGroupImpl<CSharpMethodDeclaration>(elementGroup.getProject(), elementGroup.getKey(), extensions);
 	}
 
 	@RequiredReadAction
 	@Override
 	public boolean processExtensionMethodGroups(@NotNull Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
 	{
-		return myExtensionMap == null || processGroups(myExtensionMap.values(), processor);
+		Map<String, CSharpElementGroup<PsiElement>> map = myOtherCollectorValue.getValue().toMap();
+		if(map == null)
+		{
+			return true;
+		}
+
+		for(CSharpElementGroup<PsiElement> elementGroup : map.values())
+		{
+			CSharpElementGroup<CSharpMethodDeclaration> group = filterElementGroupToExtensionGroup(elementGroup);
+			if(group == null)
+			{
+				continue;
+			}
+
+			if(!processor.process(group))
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	@RequiredReadAction
@@ -447,21 +333,23 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	@NotNull
 	public PsiElement[] findByName(@NotNull String name, boolean deep, @NotNull UserDataHolder holder)
 	{
+		Map<String, CSharpElementGroup<PsiElement>> map = myOtherCollectorValue.getValue().toMap();
+
 		PsiElement[] selectedElements;
-		if(myOtherElements == null)
+		if(map == null)
 		{
 			selectedElements = PsiElement.EMPTY_ARRAY;
 		}
 		else
 		{
-			MutableElementGroupWithCache<PsiElement> group = myOtherElements.get(name);
+			CSharpElementGroup<PsiElement> group = map.get(name);
 			if(group == null)
 			{
 				selectedElements = PsiElement.EMPTY_ARRAY;
 			}
 			else
 			{
-				selectedElements = new PsiElement[]{group.asGroup()};
+				selectedElements = new PsiElement[]{group};
 			}
 		}
 
@@ -486,9 +374,18 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		}
 	}
 
+	@RequiredReadAction
 	public boolean processElementsImpl(@NotNull Processor<PsiElement> processor)
 	{
-		return myOtherElements == null || processGroups(myOtherElements.values(), processor);
+		Map<String, CSharpElementGroup<PsiElement>> map = myOtherCollectorValue.getValue().toMap();
+
+		return map == null || ContainerUtil.process(map.values(), processor);
+	}
+
+	@NotNull
+	public DotNetGenericExtractor getExtractor()
+	{
+		return myExtractor;
 	}
 
 	@Override

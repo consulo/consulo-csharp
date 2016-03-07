@@ -7,6 +7,7 @@ import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -28,6 +29,15 @@ public class CSharpTypeResolveContext extends CSharpBaseResolveContext<CSharpTyp
 		super(element, genericExtractor, recursiveGuardSet);
 	}
 
+	@Override
+	public void acceptChildren(CSharpElementVisitor visitor)
+	{
+		for(DotNetNamedElement element : myElement.getMembers())
+		{
+			element.accept(visitor);
+		}
+	}
+
 	@NotNull
 	@Override
 	protected List<DotNetTypeRef> getExtendTypeRefs()
@@ -40,15 +50,5 @@ public class CSharpTypeResolveContext extends CSharpBaseResolveContext<CSharpTyp
 			extendTypeRefs.add(GenericUnwrapTool.exchangeTypeRef(typeRef, myExtractor, myElement));
 		}
 		return extendTypeRefs;
-	}
-
-	@Override
-	public void processMembers(CSharpTypeDeclaration element, Collector collector)
-	{
-		DotNetNamedElement[] members = element.getMembers();
-		for(DotNetNamedElement member : members)
-		{
-			member.accept(collector);
-		}
 	}
 }

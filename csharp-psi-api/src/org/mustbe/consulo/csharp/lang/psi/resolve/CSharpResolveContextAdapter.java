@@ -43,6 +43,7 @@ public class CSharpResolveContextAdapter implements CSharpResolveContext
 		return null;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpConstructorDeclaration> constructorGroup()
@@ -50,6 +51,7 @@ public class CSharpResolveContextAdapter implements CSharpResolveContext
 		return null;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpConstructorDeclaration> deConstructorGroup()

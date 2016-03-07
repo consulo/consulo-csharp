@@ -62,6 +62,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		return null;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpConstructorDeclaration> constructorGroup()
@@ -69,6 +70,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		return null;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpConstructorDeclaration> deConstructorGroup()

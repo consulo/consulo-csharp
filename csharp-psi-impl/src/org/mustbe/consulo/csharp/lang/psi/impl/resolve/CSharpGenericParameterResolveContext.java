@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -22,8 +23,9 @@ public class CSharpGenericParameterResolveContext extends CSharpBaseResolveConte
 	}
 
 	@Override
-	public void processMembers(DotNetGenericParameter element, Collector collector)
+	public void acceptChildren(CSharpElementVisitor visitor)
 	{
+
 	}
 
 	@NotNull
