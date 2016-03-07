@@ -51,7 +51,6 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		private List<CSharpIndexMethodDeclaration> myIndexMethods;
 		private MultiMap<String, PsiElement> myOtherElements = new MultiMap<String, PsiElement>();
 
-
 		@Override
 		public void visitConstructorDeclaration(CSharpConstructorDeclaration declaration)
 		{
