@@ -32,7 +32,6 @@ public class CSharpResolveResult extends PsiElementResolveResult
 	public static final Key<PsiElement> FORCE_PROVIDER_ELEMENT = Key.create("csharp.provider.element");
 
 	private PsiElement myProviderElement;
-	private String myCreateTrace = ExceptionUtil.getThrowableText(new Exception());
 
 	public CSharpResolveResult(@NotNull PsiElement element)
 	{
