@@ -63,6 +63,14 @@ public class CSharpWrappingProcessor
 			}
 			else if(parentPsi instanceof CSharpPropertyDeclaration)
 			{
+				if(CSharpFormattingUtil.isAutoAccessorOwner(parentPsi))
+				{
+					if(myCustomSettings.KEEP_AUTO_PROPERTY_IN_ONE_LINE)
+					{
+						return Wrap.createWrap(WrapType.NONE, true);
+					}
+				}
+
 				braceStyle = myCustomSettings.PROPERTY_BRACE_STYLE;
 			}
 			else if(parentPsi instanceof CSharpEventDeclaration)

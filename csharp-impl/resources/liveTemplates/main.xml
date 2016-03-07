@@ -27,7 +27,7 @@
 			<option name="CSHARP_CLASS_BODY" value="true"/>
 		</context>
 	</template>
-	<template resource-bundle="messages.CSharpBundle" key="livetemplates.prop" name="prop" toReformat="false" toShortenFQNames="true" value="public $TYPE$ $VAR$ { get; set; }">
+	<template resource-bundle="messages.CSharpBundle" key="livetemplates.prop" name="prop" toReformat="true" toShortenFQNames="true" value="public $TYPE$ $VAR$ { get; set; }">
 		<variable name="TYPE" expression="csharpType()" defaultValue="TYPE" alwaysStopAt="true"/>
 		<variable name="VAR" expression="csharpSuggestVariableName()" defaultValue="Name" alwaysStopAt="true"/>
 		<context>
