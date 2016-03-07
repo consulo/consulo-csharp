@@ -23,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0264;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
@@ -92,7 +91,7 @@ public class PartialTypeCollector implements LineMarkerCollector
 				return;
 			}
 
-			CSharpCompositeTypeDeclaration compositeType = CS0264.findCompositeType(parent);
+			CSharpCompositeTypeDeclaration compositeType = CSharpCompositeTypeDeclaration.findCompositeType(parent);
 			if(compositeType == null)
 			{
 				return;
@@ -117,7 +116,7 @@ public class PartialTypeCollector implements LineMarkerCollector
 
 					assert typeDeclaration != null;
 
-					CSharpCompositeTypeDeclaration compositeType = CS0264.findCompositeType(typeDeclaration);
+					CSharpCompositeTypeDeclaration compositeType = CSharpCompositeTypeDeclaration.findCompositeType(typeDeclaration);
 					if(compositeType == null)
 					{
 						return;

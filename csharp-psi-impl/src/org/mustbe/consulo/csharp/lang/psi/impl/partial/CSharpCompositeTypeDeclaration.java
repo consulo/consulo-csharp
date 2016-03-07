@@ -35,6 +35,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -54,6 +55,7 @@ import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.light.LightElement;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
@@ -65,6 +67,34 @@ import com.intellij.util.containers.MultiMap;
  */
 public class CSharpCompositeTypeDeclaration extends LightElement implements CSharpTypeDeclaration
 {
+	@RequiredReadAction
+	public static DotNetTypeDeclaration selectCompositeOrSelfType(@NotNull DotNetTypeDeclaration parent)
+	{
+		return parent.hasModifier(CSharpModifier.PARTIAL) ? findCompositeType((CSharpTypeDeclaration) parent) : parent;
+	}
+
+	@RequiredReadAction
+	public static CSharpCompositeTypeDeclaration findCompositeType(@NotNull CSharpTypeDeclaration parent)
+	{
+		String vmQName = parent.getVmQName();
+		assert vmQName != null;
+		DotNetTypeDeclaration[] types = CSharpPsiSearcher.getInstance(parent.getProject()).findTypes(vmQName, parent.getResolveScope());
+
+		for(DotNetTypeDeclaration type : types)
+		{
+			if(type instanceof CSharpCompositeTypeDeclaration)
+			{
+				CSharpTypeDeclaration[] typeDeclarations = ((CSharpCompositeTypeDeclaration) type).getTypeDeclarations();
+				if(ArrayUtil.contains(parent, typeDeclarations))
+				{
+					return (CSharpCompositeTypeDeclaration) type;
+				}
+			}
+		}
+
+		return null;
+	}
+
 	@NotNull
 	@RequiredReadAction
 	public static PsiElement[] wrapPartialTypes(@NotNull GlobalSearchScope scope, @NotNull Project project, @NotNull PsiElement[] psiElements)

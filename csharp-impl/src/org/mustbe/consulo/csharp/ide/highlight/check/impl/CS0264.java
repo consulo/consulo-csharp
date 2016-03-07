@@ -24,15 +24,12 @@ import org.mustbe.consulo.csharp.ide.highlight.quickFix.RenameQuickFix;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ArrayUtil;
 
 /**
  * @author VISTALL
@@ -48,7 +45,7 @@ public class CS0264 extends CompilerCheck<DotNetGenericParameter>
 		DotNetGenericParameterListOwner listOwner = PsiTreeUtil.getParentOfType(element, DotNetGenericParameterListOwner.class);
 		if(listOwner instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) listOwner).hasModifier(CSharpModifier.PARTIAL))
 		{
-			CSharpCompositeTypeDeclaration compositeType = findCompositeType((CSharpTypeDeclaration) listOwner);
+			CSharpCompositeTypeDeclaration compositeType = CSharpCompositeTypeDeclaration.findCompositeType((CSharpTypeDeclaration) listOwner);
 			if(compositeType == null)
 			{
 				return null;
@@ -72,28 +69,5 @@ public class CS0264 extends CompilerCheck<DotNetGenericParameter>
 			}
 		}
 		return super.checkImpl(languageVersion, element);
-	}
-
-
-	@RequiredReadAction
-	public static CSharpCompositeTypeDeclaration findCompositeType(@NotNull CSharpTypeDeclaration parent)
-	{
-		String vmQName = parent.getVmQName();
-		assert vmQName != null;
-		DotNetTypeDeclaration[] types = CSharpPsiSearcher.getInstance(parent.getProject()).findTypes(vmQName, parent.getResolveScope());
-
-		for(DotNetTypeDeclaration type : types)
-		{
-			if(type instanceof CSharpCompositeTypeDeclaration)
-			{
-				CSharpTypeDeclaration[] typeDeclarations = ((CSharpCompositeTypeDeclaration) type).getTypeDeclarations();
-				if(ArrayUtil.contains(parent, typeDeclarations))
-				{
-					return (CSharpCompositeTypeDeclaration) type;
-				}
-			}
-		}
-
-		return null;
 	}
 }

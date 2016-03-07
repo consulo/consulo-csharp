@@ -19,7 +19,6 @@ package org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryModifier;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
-import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0264;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -54,7 +53,7 @@ public class UnnecessaryModifierInspection extends LocalInspectionTool
 				PsiElement modifierElement = modifierList.getModifierElement(CSharpModifier.PARTIAL);
 				if(modifierElement != null)
 				{
-					CSharpCompositeTypeDeclaration compositeType = CS0264.findCompositeType(declaration);
+					CSharpCompositeTypeDeclaration compositeType = CSharpCompositeTypeDeclaration.findCompositeType(declaration);
 					if(compositeType == null)
 					{
 						holder.registerProblem(modifierElement, "Unnecessary modifier", ProblemHighlightType.LIKE_UNUSED_SYMBOL, new IntentionWrapper(new RemoveModifierFix(CSharpModifier.PARTIAL,
