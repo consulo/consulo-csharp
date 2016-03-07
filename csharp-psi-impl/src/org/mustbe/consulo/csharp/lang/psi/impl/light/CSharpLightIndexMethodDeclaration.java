@@ -41,7 +41,7 @@ public class CSharpLightIndexMethodDeclaration extends CSharpLightLikeMethodDecl
 	@Override
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
-		visitor.visitArrayMethodDeclaration(this);
+		visitor.visitIndexMethodDeclaration(this);
 	}
 
 	@NotNull

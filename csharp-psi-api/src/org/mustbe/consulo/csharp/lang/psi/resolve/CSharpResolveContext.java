@@ -24,6 +24,7 @@ public interface CSharpResolveContext
 	CSharpResolveContext EMPTY = new CSharpResolveContextAdapter();
 
 	@Nullable
+	@RequiredReadAction
 	CSharpElementGroup<CSharpIndexMethodDeclaration> indexMethodGroup(boolean deep);
 
 	@Nullable
@@ -33,6 +34,7 @@ public interface CSharpResolveContext
 	CSharpElementGroup<CSharpConstructorDeclaration> deConstructorGroup();
 
 	@Nullable
+	@RequiredReadAction
 	CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type, boolean deep);
 
 	/**

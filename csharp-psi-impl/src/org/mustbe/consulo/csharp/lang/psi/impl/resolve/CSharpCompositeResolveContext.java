@@ -36,6 +36,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 		myContexts = contexts;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpIndexMethodDeclaration> indexMethodGroup(boolean deep)
@@ -84,6 +85,7 @@ public class CSharpCompositeResolveContext implements CSharpResolveContext
 		return groups.isEmpty() ? null : new CSharpCompositeElementGroupImpl<CSharpConstructorDeclaration>(myProject, groups);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type, boolean deep)

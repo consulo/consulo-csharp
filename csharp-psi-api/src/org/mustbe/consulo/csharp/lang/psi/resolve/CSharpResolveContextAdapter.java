@@ -35,6 +35,7 @@ import com.intellij.util.Processor;
 */
 public class CSharpResolveContextAdapter implements CSharpResolveContext
 {
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpIndexMethodDeclaration> indexMethodGroup(boolean deep)
@@ -56,6 +57,7 @@ public class CSharpResolveContextAdapter implements CSharpResolveContext
 		return null;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type, boolean deep)

@@ -54,6 +54,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		myResolveScope = resolveScope;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpIndexMethodDeclaration> indexMethodGroup(boolean deep)
@@ -75,6 +76,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		return null;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public CSharpElementGroup<CSharpMethodDeclaration> findOperatorGroupByTokenType(@NotNull IElementType type, boolean deep)

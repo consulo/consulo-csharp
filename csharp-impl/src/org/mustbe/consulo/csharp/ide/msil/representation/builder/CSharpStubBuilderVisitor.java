@@ -172,7 +172,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 	@Override
 	@RequiredReadAction
-	public void visitArrayMethodDeclaration(CSharpIndexMethodDeclaration declaration)
+	public void visitIndexMethodDeclaration(CSharpIndexMethodDeclaration declaration)
 	{
 		StringBuilder builder = new StringBuilder();
 

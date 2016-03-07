@@ -476,7 +476,7 @@ public class CSharpElementVisitor extends PsiElementVisitor
 		visitElement(statement);
 	}
 
-	public void visitArrayMethodDeclaration(CSharpIndexMethodDeclaration methodDeclaration)
+	public void visitIndexMethodDeclaration(CSharpIndexMethodDeclaration methodDeclaration)
 	{
 		visitElement(methodDeclaration);
 	}
