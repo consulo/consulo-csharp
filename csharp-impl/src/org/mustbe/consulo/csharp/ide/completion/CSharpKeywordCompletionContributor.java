@@ -321,6 +321,4 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 			}
 		});
 	}
-
-
 }

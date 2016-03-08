@@ -29,6 +29,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.Condition;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -61,6 +62,8 @@ public class CSharpCompletionUtil
 			return elementType.toString().replace("_KEYWORD", "").toLowerCase();
 		}
 	};
+
+	public static final Key<IElementType> KEYWORD_ELEMENT_TYPE = Key.create("csharp.keyword.element.type");
 
 	public static boolean mayStartClassName(CompletionResultSet result)
 	{
@@ -130,13 +133,13 @@ public class CSharpCompletionUtil
 		String keyword = ourCache.get(elementType);
 		LookupElementBuilder builder = LookupElementBuilder.create(elementType, keyword);
 		builder = builder.bold();
+		LookupElement item = builder;
 		if(decorator != null)
 		{
-			resultSet.addElement(decorator.fun(builder, elementType));
+			item = decorator.fun(builder, elementType);
 		}
-		else
-		{
-			resultSet.addElement(builder);
-		}
+
+		item.putUserData(KEYWORD_ELEMENT_TYPE, elementType);
+		resultSet.addElement(item);
 	}
 }

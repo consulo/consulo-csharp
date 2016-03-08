@@ -21,10 +21,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.completion.insertHandler.CSharpParenthesesWithSemicolonInsertHandler;
 import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLikeLookupElement;
-import org.mustbe.consulo.csharp.ide.completion.util.CSharpParenthesesInsertHandler;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -34,7 +33,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -46,8 +44,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
-import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -57,8 +53,6 @@ import com.intellij.openapi.editor.CaretModel;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiErrorElement;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -165,39 +159,7 @@ public class CSharpLookupElementBuilder
 				}
 				else
 				{
-					builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
-					{
-						@Override
-						@RequiredDispatchThread
-						public void handleInsert(InsertionContext context, LookupElement item)
-						{
-							new CSharpParenthesesInsertHandler(methodDeclaration).handleInsert(context, item);
-
-							if(context.getCompletionChar() != '\n')
-							{
-								return;
-							}
-
-							// for void method we always insert semicolon
-							if(DotNetTypeRefUtil.isVmQNameEqual(methodDeclaration.getReturnTypeRef(), element, DotNetTypes.System.Void))
-							{
-								if(TailType.SEMICOLON.isApplicable(context))
-								{
-									TailType.SEMICOLON.processTail(context.getEditor(), context.getTailOffset());
-								}
-							}
-							else
-							{
-								context.commitDocument();
-								PsiElement elementAt = context.getFile().findElementAt(context.getStartOffset());
-								CSharpMethodCallExpressionImpl expression = PsiTreeUtil.getParentOfType(elementAt, CSharpMethodCallExpressionImpl.class);
-								if(expression != null && expression.getNextSibling() instanceof PsiErrorElement)
-								{
-									TailType.SEMICOLON.processTail(context.getEditor(), context.getTailOffset());
-								}
-							}
-						}
-					});
+					builder = builder.withInsertHandler(new CSharpParenthesesWithSemicolonInsertHandler(methodDeclaration));
 				}
 
 				if(CSharpMethodImplUtil.isExtensionWrapper(methodDeclaration))

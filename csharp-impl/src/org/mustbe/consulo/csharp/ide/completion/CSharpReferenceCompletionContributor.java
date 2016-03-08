@@ -33,8 +33,8 @@ import org.mustbe.consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
+import org.mustbe.consulo.csharp.ide.completion.insertHandler.CSharpParenthesesWithSemicolonInsertHandler;
 import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLikeLookupElement;
-import org.mustbe.consulo.csharp.ide.completion.util.CSharpParenthesesInsertHandler;
 import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
@@ -99,6 +99,109 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 {
 	public CSharpReferenceCompletionContributor()
 	{
+		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.NEW_KEYWORD)), new CompletionProvider()
+		{
+			@RequiredReadAction
+			@Override
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			{
+				PsiElement position = parameters.getPosition();
+				CSharpNewExpressionImpl newExpression = PsiTreeUtil.getParentOfType(position, CSharpNewExpressionImpl.class);
+				if(newExpression == null)
+				{
+					return;
+				}
+
+				List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(newExpression);
+
+				boolean any = false;
+				if(!expectedTypeRefs.isEmpty())
+				{
+					for(ExpectedTypeInfo expectedTypeInfo : expectedTypeRefs)
+					{
+						DotNetTypeRef typeRef = expectedTypeInfo.getTypeRef();
+						if(typeRef instanceof CSharpArrayTypeRef)
+						{
+							if(((CSharpArrayTypeRef) typeRef).getDimensions() != 0)
+							{
+								continue;
+							}
+							String typeText = CSharpTypeRefPresentationUtil.buildShortText(typeRef, position);
+
+							LookupElementBuilder builder = LookupElementBuilder.create(typeText);
+							builder = builder.withIcon(getIconForInnerTypeRef((CSharpArrayTypeRef) typeRef, position));
+							// add without {...}
+							result.addElement(PrioritizedLookupElement.withPriority(builder, CSharpCompletionUtil.MAX_PRIORITY));
+
+							builder = builder.withTailText("{...}", true);
+							builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
+							{
+								@Override
+								public void handleInsert(InsertionContext context, LookupElement item)
+								{
+									if(context.getCompletionChar() != '{')
+									{
+										int offset = context.getEditor().getCaretModel().getOffset();
+										TailType.insertChar(context.getEditor(), offset, '{');
+										TailType.insertChar(context.getEditor(), offset + 1, '}');
+										context.getEditor().getCaretModel().moveToOffset(offset + 1);
+									}
+								}
+							});
+
+							result.addElement(PrioritizedLookupElement.withPriority(builder, CSharpCompletionUtil.MAX_PRIORITY));
+						}
+						else
+						{
+							DotNetTypeResolveResult typeResolveResult = typeRef.resolve(position);
+
+							PsiElement element = typeResolveResult.getElement();
+							if(element == null)
+							{
+								continue;
+							}
+
+							if(element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).isInterface())
+							{
+								return;
+							}
+
+							DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
+							CSharpResolveContext resolveContext = CSharpResolveContextUtil.createContext(genericExtractor, position.getResolveScope(), element);
+
+							CSharpElementGroup<CSharpConstructorDeclaration> group = resolveContext.constructorGroup();
+							Collection<CSharpConstructorDeclaration> objects = group == null ? Collections.<CSharpConstructorDeclaration>emptyList() : group.getElements();
+
+							if(objects.isEmpty())
+							{
+								return;
+							}
+
+							for(CSharpConstructorDeclaration object : objects)
+							{
+								if(!CSharpVisibilityUtil.isVisible(object, position))
+								{
+									continue;
+								}
+
+								LookupElementBuilder builder = buildForConstructorAfterNew(object, genericExtractor);
+								if(builder != null)
+								{
+									result.addElement(PrioritizedLookupElement.withPriority(builder, CSharpCompletionUtil.MAX_PRIORITY));
+									any = true;
+								}
+							}
+						}
+					}
+				}
+
+				if(any && parameters.getInvocationCount() == 1)
+				{
+					result.stopHere();
+				}
+			}
+		});
+
 		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class), new CompletionProvider()
 		{
 			@RequiredReadAction
@@ -477,97 +580,6 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 				}
 			}
 		});
-
-		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.NEW_KEYWORD)), new CompletionProvider()
-		{
-			@RequiredReadAction
-			@Override
-			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
-			{
-				PsiElement position = parameters.getPosition();
-				CSharpNewExpressionImpl newExpression = PsiTreeUtil.getParentOfType(position, CSharpNewExpressionImpl.class);
-				if(newExpression == null)
-				{
-					return;
-				}
-
-				List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(newExpression);
-
-				if(!expectedTypeRefs.isEmpty())
-				{
-					for(ExpectedTypeInfo expectedTypeInfo : expectedTypeRefs)
-					{
-						DotNetTypeRef typeRef = expectedTypeInfo.getTypeRef();
-						if(typeRef instanceof CSharpArrayTypeRef)
-						{
-							if(((CSharpArrayTypeRef) typeRef).getDimensions() != 0)
-							{
-								continue;
-							}
-							String typeText = CSharpTypeRefPresentationUtil.buildShortText(typeRef, position);
-
-							LookupElementBuilder builder = LookupElementBuilder.create(typeText);
-							builder = builder.withIcon(getIconForInnerTypeRef((CSharpArrayTypeRef) typeRef, position));
-							// add without {...}
-							result.addElement(PrioritizedLookupElement.withPriority(builder, CSharpCompletionUtil.MAX_PRIORITY));
-
-							builder = builder.withTailText("{...}", true);
-							builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
-							{
-								@Override
-								public void handleInsert(InsertionContext context, LookupElement item)
-								{
-									if(context.getCompletionChar() != '{')
-									{
-										int offset = context.getEditor().getCaretModel().getOffset();
-										TailType.insertChar(context.getEditor(), offset, '{');
-										TailType.insertChar(context.getEditor(), offset + 1, '}');
-										context.getEditor().getCaretModel().moveToOffset(offset + 1);
-									}
-								}
-							});
-
-							result.addElement(PrioritizedLookupElement.withPriority(builder, CSharpCompletionUtil.MAX_PRIORITY));
-						}
-						else
-						{
-							DotNetTypeResolveResult typeResolveResult = typeRef.resolve(position);
-
-							PsiElement element = typeResolveResult.getElement();
-							if(element == null)
-							{
-								continue;
-							}
-
-							DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
-							CSharpResolveContext resolveContext = CSharpResolveContextUtil.createContext(genericExtractor, position.getResolveScope(), element);
-
-							CSharpElementGroup<CSharpConstructorDeclaration> group = resolveContext.constructorGroup();
-							Collection<CSharpConstructorDeclaration> objects = group == null ? Collections.<CSharpConstructorDeclaration>emptyList() : group.getElements();
-
-							if(objects.isEmpty())
-							{
-								return;
-							}
-
-							for(CSharpConstructorDeclaration object : objects)
-							{
-								if(!CSharpVisibilityUtil.isVisible(object, position))
-								{
-									continue;
-								}
-
-								LookupElementBuilder builder = buildForConstructor(object, genericExtractor);
-								if(builder != null)
-								{
-									result.addElement(PrioritizedLookupElement.withPriority(builder, CSharpCompletionUtil.MAX_PRIORITY));
-								}
-							}
-						}
-					}
-				}
-			}
-		});
 	}
 
 	private static boolean needRemapToAnyResolving(CSharpReferenceExpression.ResolveToKind kind, CSharpReferenceExpression expression)
@@ -659,7 +671,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 
 	@Nullable
 	@RequiredReadAction
-	private static LookupElementBuilder buildForConstructor(final CSharpConstructorDeclaration declaration, final DotNetGenericExtractor extractor)
+	private static LookupElementBuilder buildForConstructorAfterNew(final CSharpConstructorDeclaration declaration, final DotNetGenericExtractor extractor)
 	{
 		PsiElement parent = declaration.getParent();
 
@@ -711,7 +723,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 		LookupElementBuilder builder = LookupElementBuilder.create(declaration, lookupString);
 		builder = builder.withIcon(IconDescriptorUpdaters.getIcon(parent, Iconable.ICON_FLAG_VISIBILITY));
 		builder = builder.withTailText(parameterText, true);
-		builder = builder.withInsertHandler(new CSharpParenthesesInsertHandler(declaration));
+		builder = builder.withInsertHandler(new CSharpParenthesesWithSemicolonInsertHandler(declaration));
 		return builder;
 	}
 }
