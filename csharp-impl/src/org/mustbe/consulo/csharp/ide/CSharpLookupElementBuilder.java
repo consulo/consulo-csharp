@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.completion.insertHandler.CSharpParenthesesWithSemicolonInsertHandler;
 import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLikeLookupElement;
@@ -74,7 +75,7 @@ public class CSharpLookupElementBuilder
 		List<LookupElement> list = new ArrayList<LookupElement>(arguments.length);
 		for(PsiElement argument : arguments)
 		{
-			ContainerUtil.addIfNotNull(list, buildLookupElement(argument));
+			ContainerUtil.addIfNotNull(list, buildLookupElement(argument, null));
 		}
 		return list.toArray(new LookupElement[list.size()]);
 	}
@@ -98,9 +99,13 @@ public class CSharpLookupElementBuilder
 	}
 
 	@RequiredReadAction
-	public static LookupElement buildLookupElement(final PsiElement element)
+	public static LookupElement buildLookupElement(final PsiElement element, @Nullable final CSharpTypeDeclaration contextType)
 	{
 		LookupElementBuilder builder = createLookupElementBuilder(element);
+		if(contextType != null && contextType.isEquivalentTo(element.getParent()))
+		{
+			builder = builder.bold();
+		}
 		if(CSharpPsiUtilImpl.isTypeLikeElement(element))
 		{
 			return new ReplaceableTypeLikeLookupElement(builder);

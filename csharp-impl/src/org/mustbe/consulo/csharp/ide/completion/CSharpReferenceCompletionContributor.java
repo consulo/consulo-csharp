@@ -52,15 +52,7 @@ import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
-import org.mustbe.consulo.dotnet.psi.DotNetStatement;
-import org.mustbe.consulo.dotnet.psi.DotNetType;
+import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -366,6 +358,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 
 				final List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(expression);
 
+				final CSharpTypeDeclaration contextType = getContextType(expression);
 				CSharpCallArgumentListOwner callArgumentListOwner = CSharpReferenceExpressionImplUtil.findCallArgumentListOwner(kind, expression);
 				CSharpReferenceExpressionImplUtil.collectResults(new CSharpResolveOptions(kind, null, expression, callArgumentListOwner, true, true), new Processor<ResolveResult>()
 				{
@@ -380,7 +373,7 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 						{
 							return true;
 						}
-						LookupElement builder = CSharpLookupElementBuilder.buildLookupElement(element);
+						LookupElement builder = CSharpLookupElementBuilder.buildLookupElement(element, contextType);
 						if(builder == null)
 						{
 							return true;
@@ -416,6 +409,21 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 						return true;
 					}
 				});
+			}
+
+			@RequiredReadAction
+			private CSharpTypeDeclaration getContextType(CSharpReferenceExpression referenceExpression)
+			{
+				PsiElement qualifier = referenceExpression.getQualifier();
+				if(qualifier instanceof DotNetExpression)
+				{
+					PsiElement element = ((DotNetExpression) qualifier).toTypeRef(true).resolve(referenceExpression).getElement();
+					return element instanceof CSharpTypeDeclaration ? (CSharpTypeDeclaration) element : null;
+				}
+				else
+				{
+					return PsiTreeUtil.getParentOfType(referenceExpression, CSharpTypeDeclaration.class);
+				}
 			}
 		});
 
