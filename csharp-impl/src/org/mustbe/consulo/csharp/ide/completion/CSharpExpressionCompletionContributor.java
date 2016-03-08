@@ -26,6 +26,7 @@ import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.codeInsight.completion.CompletionProvider;
 import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
@@ -50,6 +51,7 @@ import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
+import org.mustbe.consulo.dotnet.DotNetRunUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.*;
@@ -64,6 +66,7 @@ import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.completion.PrioritizedLookupElement;
+import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.icons.AllIcons;
@@ -73,10 +76,12 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Function;
 import com.intellij.util.NotNullPairFunction;
@@ -87,9 +92,13 @@ import com.intellij.util.Processor;
  * @author VISTALL
  * @since 23.11.14
  */
-public class CSharpReferenceCompletionContributor extends CompletionContributor
+public class CSharpExpressionCompletionContributor extends CompletionContributor
 {
-	public CSharpReferenceCompletionContributor()
+	private static final TokenSet ourExpressionLiterals = TokenSet.create(CSharpTokens.NULL_LITERAL, CSharpTokens.FALSE_KEYWORD, CSharpTokens.TRUE_KEYWORD, CSharpTokens.DEFAULT_KEYWORD,
+			CSharpTokens.TYPEOF_KEYWORD, CSharpTokens.SIZEOF_KEYWORD, CSharpTokens.THIS_KEYWORD, CSharpTokens.BASE_KEYWORD, CSharpSoftTokens.AWAIT_KEYWORD, CSharpTokens.NEW_KEYWORD,
+			CSharpTokens.__MAKEREF_KEYWORD, CSharpTokens.__REFTYPE_KEYWORD, CSharpTokens.__REFVALUE_KEYWORD, CSharpSoftTokens.NAMEOF_KEYWORD);
+
+	public CSharpExpressionCompletionContributor()
 	{
 		extend(CompletionType.BASIC, psiElement().afterLeaf(psiElement().withElementType(CSharpTokens.NEW_KEYWORD)), new CompletionProvider()
 		{
@@ -190,6 +199,98 @@ public class CSharpReferenceCompletionContributor extends CompletionContributor
 				if(any && parameters.getInvocationCount() == 1)
 				{
 					result.stopHere();
+				}
+			}
+		});
+
+		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class), new CompletionProvider()
+		{
+			@RequiredReadAction
+			@Override
+			protected void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			{
+				final CSharpReferenceExpressionEx parent = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
+				if(parent.getQualifier() == null && (parent.kind() == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER || parent.kind() == CSharpReferenceExpression.ResolveToKind
+						.EXPRESSION_OR_TYPE_LIKE))
+				{
+					CSharpCompletionUtil.tokenSetToLookup(result, ourExpressionLiterals, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
+							{
+								@NotNull
+								@Override
+								public LookupElement fun(LookupElementBuilder t, IElementType elementType)
+								{
+									if(elementType == CSharpTokens.DEFAULT_KEYWORD ||
+											elementType == CSharpTokens.TYPEOF_KEYWORD ||
+											elementType == CSharpSoftTokens.NAMEOF_KEYWORD ||
+											elementType == CSharpTokens.__MAKEREF_KEYWORD ||
+											elementType == CSharpTokens.__REFTYPE_KEYWORD ||
+											elementType == CSharpTokens.__REFVALUE_KEYWORD ||
+											elementType == CSharpTokens.SIZEOF_KEYWORD)
+									{
+										t = t.withTailText("(...)", true);
+										t = t.withInsertHandler(ParenthesesInsertHandler.getInstance(true));
+									}
+									else if(elementType == CSharpTokens.NEW_KEYWORD)
+									{
+										t = t.withInsertHandler(SpaceInsertHandler.INSTANCE);
+									}
+									else if(elementType == CSharpSoftTokens.AWAIT_KEYWORD)
+									{
+										t = t.withInsertHandler(new InsertHandler<LookupElement>()
+										{
+											@Override
+											@RequiredDispatchThread
+											public void handleInsert(InsertionContext context, LookupElement item)
+											{
+												CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(parameters.getOriginalPosition(), CSharpSimpleLikeMethodAsElement.class);
+												if(methodAsElement != null && !methodAsElement.hasModifier(CSharpModifier.ASYNC))
+												{
+													DotNetModifierList modifierList = methodAsElement.getModifierList();
+													assert modifierList != null;
+													modifierList.addModifier(CSharpModifier.ASYNC);
+													PsiDocumentManager.getInstance(context.getProject()).doPostponedOperationsAndUnblockDocument(context.getDocument());
+												}
+
+												SpaceInsertHandler.INSTANCE.handleInsert(context, item);
+											}
+										});
+									}
+									return t;
+								}
+							}, new Condition<IElementType>()
+							{
+								@Override
+								@RequiredReadAction
+								public boolean value(IElementType elementType)
+								{
+									if(elementType == CSharpTokens.BASE_KEYWORD || elementType == CSharpTokens.THIS_KEYWORD)
+									{
+										DotNetModifierListOwner owner = (DotNetModifierListOwner) PsiTreeUtil.getParentOfType(parent, DotNetQualifiedElement.class);
+										if(owner == null || owner.hasModifier(DotNetModifier.STATIC))
+										{
+											return false;
+										}
+										return true;
+									}
+									if(elementType == CSharpSoftTokens.AWAIT_KEYWORD)
+									{
+										CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(parameters.getOriginalPosition(), CSharpSimpleLikeMethodAsElement.class);
+
+										if(methodAsElement == null || methodAsElement instanceof DotNetMethodDeclaration && DotNetRunUtil.isEntryPoint((DotNetMethodDeclaration) methodAsElement))
+										{
+											return false;
+										}
+
+										return CSharpModuleUtil.findLanguageVersion(parent).isAtLeast(CSharpLanguageVersion._4_0);
+									}
+									if(elementType == CSharpSoftTokens.NAMEOF_KEYWORD)
+									{
+										return CSharpModuleUtil.findLanguageVersion(parent).isAtLeast(CSharpLanguageVersion._6_0);
+									}
+									return true;
+								}
+							}
+					);
 				}
 			}
 		});
