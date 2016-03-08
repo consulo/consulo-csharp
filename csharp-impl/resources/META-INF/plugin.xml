@@ -169,6 +169,7 @@
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpCallArgumentCompletionContributor"/>
 
 		<completion.confidence language="C#" implementationClass="com.intellij.codeInsight.completion.SkipAutopopupInStrings"/>
+		<completion.confidence language="C#" implementationClass="com.intellij.codeInsight.completion.UnfocusedNameIdentifier"/>
 		<weigher key="completion" id="csharpInheritable"
 				 implementationClass="org.mustbe.consulo.csharp.ide.completion.weigher.CSharpInheritProximityWeigher"/>
 
