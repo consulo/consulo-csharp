@@ -16,7 +16,7 @@
 
 package org.mustbe.consulo.csharp.ide.completion;
 
-import java.util.Set;
+import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
@@ -24,7 +24,6 @@ import org.mustbe.consulo.codeInsight.completion.CompletionProvider;
 import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
@@ -58,12 +57,8 @@ public class CSharpMemberNameCompletionContributor extends CompletionContributor
 				if(parent instanceof DotNetVariable)
 				{
 					DotNetVariable variable = (DotNetVariable) parent;
-					Set<String> suggestedNames = CSharpNameSuggesterUtil.getSuggestedNames(variable.toTypeRef(true), position);
-					DotNetExpression initializer = variable.getInitializer();
-					if(initializer != null)
-					{
-						suggestedNames.addAll(CSharpNameSuggesterUtil.getSuggestedNames(initializer));
-					}
+					Collection<String> suggestedNames = CSharpNameSuggesterUtil.getSuggestedVariableNames(variable);
+
 					for(String suggestedName : suggestedNames)
 					{
 						result.addElement(LookupElementBuilder.create(suggestedName));

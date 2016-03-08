@@ -20,6 +20,8 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -50,6 +52,7 @@ public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElem
 
 	@NotNull
 	@Override
+	@RequiredDispatchThread
 	public String getText()
 	{
 		String arguments = buildArgumentTypeRefs();
@@ -64,6 +67,7 @@ public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElem
 	public abstract String getTemplateText();
 
 	@Nullable
+	@RequiredReadAction
 	public String buildArgumentTypeRefs()
 	{
 		CSharpReferenceExpression element = myPointer.getElement();
@@ -103,6 +107,7 @@ public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElem
 		return builder.toString();
 	}
 
+	@RequiredReadAction
 	protected void buildParameterList(@NotNull CreateUnresolvedElementFixContext context, @NotNull PsiFile file, @NotNull Template template)
 	{
 		template.addTextSegment("(");

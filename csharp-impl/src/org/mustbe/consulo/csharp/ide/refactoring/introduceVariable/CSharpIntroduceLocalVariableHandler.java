@@ -43,6 +43,7 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 		super(RefactoringBundle.message("introduce.variable.title"));
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	protected Collection<String> getSuggestedNames(@NotNull DotNetExpression initializer)

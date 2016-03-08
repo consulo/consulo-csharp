@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.lexer.CSharpLexer;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -54,7 +55,7 @@ public class CSharpNameSuggesterUtil
 
 	@NotNull
 	@RequiredReadAction
-	public static Set<String> getSuggestedVariableNames(final DotNetVariable variable)
+	public static Collection<String> getSuggestedVariableNames(final DotNetVariable variable)
 	{
 		PsiElement parent = variable.getParent();
 
@@ -66,6 +67,24 @@ public class CSharpNameSuggesterUtil
 			{
 				suggestedNames = getSuggestedNames(iterableExpression, suggestedNames, variable);
 			}
+		}
+
+		DotNetExpression initializer = variable.getInitializer();
+		if(initializer != null)
+		{
+			suggestedNames.addAll(getSuggestedNames(initializer, suggestedNames, variable));
+		}
+
+		if(variable instanceof CSharpPropertyDeclaration)
+		{
+			return ContainerUtil.map(suggestedNames, new Function<String, String>()
+			{
+				@Override
+				public String fun(String variableName)
+				{
+					return StringUtil.capitalize(variableName);
+				}
+			});
 		}
 		return suggestedNames;
 	}
@@ -122,7 +141,7 @@ public class CSharpNameSuggesterUtil
 
 	@NotNull
 	@RequiredReadAction
-	public static Set<String> getSuggestedNames(@NotNull DotNetExpression expression, @Nullable Collection<String> additionalUsedNames, @Nullable PsiElement toSkip)
+	private static Set<String> getSuggestedNames(@NotNull DotNetExpression expression, @Nullable Collection<String> additionalUsedNames, @Nullable PsiElement toSkip)
 	{
 		Set<String> candidates = new LinkedHashSet<String>();
 

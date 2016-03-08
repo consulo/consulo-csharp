@@ -311,6 +311,7 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 	}
 
 	@NotNull
+	@RequiredReadAction
 	protected Collection<String> getSuggestedNames(@NotNull DotNetExpression initializer)
 	{
 		return CSharpNameSuggesterUtil.getSuggestedNames(initializer);
