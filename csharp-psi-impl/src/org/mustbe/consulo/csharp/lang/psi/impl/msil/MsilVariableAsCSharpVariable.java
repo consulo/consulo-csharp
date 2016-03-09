@@ -118,7 +118,7 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 	@Override
 	public DotNetExpression getInitializer()
 	{
-		return myOriginal.getInitializer();
+		return MsilExpressionConverter.convert(myOriginal.getInitializer());
 	}
 
 	@RequiredReadAction

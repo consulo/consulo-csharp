@@ -18,12 +18,15 @@ package org.mustbe.consulo.csharp.ide.parameterInfo;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.codeInsight.CodeInsightSettings;
@@ -119,6 +122,7 @@ public class CSharpParametersInfo
 		myParameterRanges = new TextRange[myParameterCount == 0 ? 1 : myParameterCount];
 	}
 
+	@RequiredReadAction
 	private int buildParameter(@NotNull CSharpSimpleParameterInfo o, @NotNull PsiElement scope)
 	{
 		String text = CSharpTypeRefPresentationUtil.buildShortText(o.getTypeRef(), scope);
@@ -129,7 +133,19 @@ public class CSharpParametersInfo
 			myBuilder.append(" ");
 			String notNullName = o.getNotNullName();
 			myBuilder.append(notNullName);
-			nameOffset = notNullName.length() + 1;
+			nameOffset += notNullName.length() + 1;
+		}
+
+		PsiElement element = o.getElement();
+		if(element instanceof DotNetVariable)
+		{
+			DotNetExpression initializer = ((DotNetVariable) element).getInitializer();
+			if(initializer != null)
+			{
+				String initializerText = initializer.getText();
+				myBuilder.append(" = ").append(initializerText);
+				nameOffset += initializerText.length() + 3;
+			}
 		}
 		return XmlStringUtil.escapeString(text).length() + nameOffset;
 	}
