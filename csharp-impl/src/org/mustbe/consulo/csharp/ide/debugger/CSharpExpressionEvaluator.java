@@ -33,6 +33,8 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIsExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPrefixExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -212,6 +214,37 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 			}
 			myEvaluators.add(new MethodEvaluator(referenceName, typeDeclaration, parameterTypes));
 		}
+	}
+
+	@Override
+	@RequiredReadAction
+	public void visitPrefixExpression(CSharpPrefixExpressionImpl expression)
+	{
+		CSharpOperatorReferenceImpl operatorElement = expression.getOperatorElement();
+
+		PsiElement element = operatorElement.resolveToCallable();
+		if(element != null)
+		{
+			if(!element.isPhysical())
+			{
+				CSharpCallArgument[] callArguments = expression.getCallArguments();
+				for(CSharpCallArgument callArgument : callArguments)
+				{
+					DotNetExpression argumentExpression = callArgument.getArgumentExpression();
+					if(argumentExpression == null)
+					{
+						throw new UnsupportedOperationException("bad operator call argument");
+					}
+
+					argumentExpression.accept(this);
+				}
+
+				myEvaluators.add(new PrefixOperatorEvaluator(operatorElement.getOperatorElementType()));
+				return;
+			}
+		}
+
+		throw new UnsupportedOperationException("expression is not supported");
 	}
 
 	@Override
