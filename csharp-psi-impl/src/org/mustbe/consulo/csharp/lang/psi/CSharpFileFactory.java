@@ -86,7 +86,7 @@ public class CSharpFileFactory
 		return (CSharpFieldDeclaration) typeDeclaration.getMembers()[0];
 	}
 
-	@@Nullable
+	@Nullable
 	public static CSharpPropertyDeclaration createProperty(@NotNull Project project, @NotNull String text)
 	{
 		String clazz = "class _Dummy { " + text + "; }";
