@@ -22,6 +22,9 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCodeFragment;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
@@ -36,7 +39,7 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 17.04.14
  */
-public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFragment, PsiCodeFragment
+public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFragment, PsiCodeFragment, CSharpFile
 {
 	@Nullable
 	private final PsiElement myContext;
@@ -96,5 +99,20 @@ public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFra
 	public GlobalSearchScope getForcedResolveScope()
 	{
 		return null;
+	}
+
+	@NotNull
+	@Override
+	public DotNetQualifiedElement[] getMembers()
+	{
+		return DotNetQualifiedElement.EMPTY_ARRAY;
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	public CSharpUsingListChild[] getUsingStatements()
+	{
+		return CSharpUsingListChild.EMPTY_ARRAY;
 	}
 }

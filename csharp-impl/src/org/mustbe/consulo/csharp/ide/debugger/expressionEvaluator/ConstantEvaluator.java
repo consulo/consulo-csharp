@@ -20,7 +20,9 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import edu.arizona.cs.mbel.signature.SignatureConstants;
+import mono.debugger.BooleanValueMirror;
 import mono.debugger.NumberValueMirror;
+import mono.debugger.StringValueMirror;
 import mono.debugger.VirtualMachine;
 
 /**
@@ -41,11 +43,23 @@ public class ConstantEvaluator extends Evaluator
 	@Override
 	public void evaluate(@NotNull CSharpEvaluateContext context)
 	{
+		VirtualMachine delegate = context.getDebuggerContext().getVirtualMachine().getDelegate();
 		if(DotNetTypes.System.Int32.equals(myVmQName))
 		{
-			VirtualMachine delegate = context.getDebuggerContext().getVirtualMachine().getDelegate();
-
 			context.pull(new NumberValueMirror(delegate, SignatureConstants.ELEMENT_TYPE_I4, (Number) myValue), null);
+		}
+		else if(DotNetTypes.System.String.equals(myVmQName))
+		{
+			StringValueMirror valueMirror = delegate.rootAppDomain().createString((String) myValue);
+			context.pull(valueMirror, null);
+		}
+		else if(DotNetTypes.System.Boolean.equals(myVmQName))
+		{
+			context.pull(new BooleanValueMirror(delegate, (Boolean) myValue), null);
+		}
+		else
+		{
+			throw new IllegalArgumentException("constant is not supported");
 		}
 	}
 }

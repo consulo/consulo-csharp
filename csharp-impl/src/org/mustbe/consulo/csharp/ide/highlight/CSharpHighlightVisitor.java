@@ -25,7 +25,6 @@ import org.mustbe.consulo.csharp.ide.codeInsight.actions.ConvertToNormalCallFix;
 import org.mustbe.consulo.csharp.ide.highlight.util.ConstructorHighlightUtil;
 import org.mustbe.consulo.csharp.ide.highlight.util.GenericParameterHighlightUtil;
 import org.mustbe.consulo.csharp.lang.psi.*;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLinqExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
@@ -69,7 +68,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	@Override
 	public boolean suitableForFile(@NotNull PsiFile psiFile)
 	{
-		return psiFile instanceof CSharpFileImpl;
+		return psiFile instanceof CSharpFile;
 	}
 
 	@Override
