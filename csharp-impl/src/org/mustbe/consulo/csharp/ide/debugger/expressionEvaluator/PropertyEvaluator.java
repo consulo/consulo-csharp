@@ -43,7 +43,7 @@ public class PropertyEvaluator extends FieldOrPropertyEvaluator<CSharpPropertyDe
 	@Override
 	protected boolean isMyMirror(@NotNull FieldOrPropertyMirror mirror)
 	{
-		return mirror instanceof PropertyMirror;
+		return mirror instanceof PropertyMirror && !((PropertyMirror) mirror).isArrayProperty();
 	}
 
 	@Override

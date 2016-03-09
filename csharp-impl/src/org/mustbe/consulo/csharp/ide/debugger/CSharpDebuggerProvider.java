@@ -107,7 +107,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 			List<Evaluator> evaluators = expressionEvaluator.getEvaluators();
 			if(evaluators.isEmpty())
 			{
-				callback.evaluated(new CSharpErrorValue("not supported"));
+				callback.evaluated(new CSharpErrorValue("cant evaluate expression"));
 				return;
 			}
 

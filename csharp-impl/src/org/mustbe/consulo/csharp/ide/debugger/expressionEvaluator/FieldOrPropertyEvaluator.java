@@ -25,8 +25,8 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import mono.debugger.FieldOrPropertyMirror;
 import mono.debugger.NoObjectValueMirror;
 import mono.debugger.ObjectValueMirror;
@@ -38,21 +38,28 @@ import mono.debugger.Value;
  * @author VISTALL
  * @since 09.03.2016
  */
-public abstract class FieldOrPropertyEvaluator<T extends DotNetVariable & DotNetQualifiedElement, M extends FieldOrPropertyMirror> extends Evaluator
+public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement & DotNetModifierListOwner, M extends FieldOrPropertyMirror> extends Evaluator
 {
 	@Nullable
 	private CSharpTypeDeclaration myTypeDeclaration;
-	private T myVariable;
+	protected T myElement;
 
-	public FieldOrPropertyEvaluator(@Nullable CSharpTypeDeclaration typeDeclaration, T variable)
+	public FieldOrPropertyEvaluator(@Nullable CSharpTypeDeclaration typeDeclaration, T element)
 	{
 		myTypeDeclaration = typeDeclaration;
-		myVariable = variable;
+		myElement = element;
 	}
 
 	protected abstract boolean isMyMirror(@NotNull FieldOrPropertyMirror mirror);
 
 	protected abstract boolean invoke(@NotNull M mirror, @NotNull CSharpEvaluateContext context, @NotNull Value<?> popValue);
+
+	@Nullable
+	@RequiredReadAction
+	public String getName()
+	{
+		return myElement.getName();
+	}
 
 	@Override
 	@RequiredReadAction
@@ -79,7 +86,7 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetVariable & DotNet
 			throw new IllegalArgumentException("cant calculate type");
 		}
 
-		String name = myVariable.getName();
+		String name = getName();
 		if(name == null)
 		{
 			throw new IllegalArgumentException("invalid name");
@@ -103,7 +110,7 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetVariable & DotNet
 				}
 			}
 		}
-		else if(popValue instanceof NoObjectValueMirror && myVariable.hasModifier(DotNetModifier.STATIC))
+		else if(popValue instanceof NoObjectValueMirror && myElement.hasModifier(DotNetModifier.STATIC))
 		{
 			if(invokeFieldOrProperty(context, name, popValue, typeMirror))
 			{
