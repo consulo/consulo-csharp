@@ -39,6 +39,12 @@ public abstract class MsilElementWrapper<T extends PsiElement> extends CSharpLig
 	}
 
 	@Override
+	public boolean isPhysical()
+	{
+		return true;
+	}
+
+	@Override
 	public PsiElement getParent()
 	{
 		return myParent;

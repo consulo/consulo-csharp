@@ -29,7 +29,9 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBinaryExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIsExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
@@ -46,6 +48,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
+import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
@@ -201,18 +204,85 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 				argumentExpression.accept(this);
 			}
 
-			DotNetTypeRef[] parameterTypeRefs = methodDeclaration.getParameterTypeRefs();
-			List<DotNetTypeDeclaration> parameterTypes = new ArrayList<DotNetTypeDeclaration>();
-			for(DotNetTypeRef parameterTypeRef : parameterTypeRefs)
+			pushMethodEvaluator(expression, methodDeclaration, typeDeclaration, referenceName);
+		}
+	}
+
+	@NotNull
+	private static String getMethodName(IElementType elementType, String originalName)
+	{
+		if(elementType == CSharpTokens.EQEQ || elementType == CSharpTokens.NTEQ)
+		{
+			return "Equals";
+		}
+		return originalName;
+	}
+
+	@RequiredReadAction
+	private void pushMethodEvaluator(PsiElement scope, CSharpMethodDeclaration methodDeclaration, CSharpTypeDeclaration typeDeclaration, @NotNull String referenceName)
+	{
+		DotNetTypeRef[] parameterTypeRefs = methodDeclaration.getParameterTypeRefs();
+		List<DotNetTypeDeclaration> parameterTypes = new ArrayList<DotNetTypeDeclaration>();
+		for(DotNetTypeRef parameterTypeRef : parameterTypeRefs)
+		{
+			PsiElement element = parameterTypeRef.resolve(scope).getElement();
+			if(!(element instanceof CSharpTypeDeclaration))
 			{
-				PsiElement element = parameterTypeRef.resolve(expression).getElement();
-				if(!(element instanceof CSharpTypeDeclaration))
-				{
-					throw new UnsupportedOperationException("parameter type is not type");
-				}
-				parameterTypes.add((DotNetTypeDeclaration) element);
+				throw new UnsupportedOperationException("parameter type is not type");
 			}
-			myEvaluators.add(new MethodEvaluator(referenceName, typeDeclaration, parameterTypes));
+			parameterTypes.add((DotNetTypeDeclaration) element);
+		}
+		myEvaluators.add(new MethodEvaluator(referenceName, typeDeclaration, parameterTypes));
+	}
+
+	@Override
+	@RequiredReadAction
+	public void visitBinaryExpression(CSharpBinaryExpressionImpl expression)
+	{
+		CSharpOperatorReferenceImpl operatorElement = expression.getOperatorElement();
+
+		IElementType operatorElementType = expression.getOperatorElement().getOperatorElementType();
+
+		PsiElement element = operatorElement.resolveToCallable();
+		if(element != null)
+		{
+			if(!element.isPhysical())
+			{
+
+			}
+			else if(element instanceof CSharpMethodDeclaration)
+			{
+				myEvaluators.add(NullValueEvaluator.INSTANCE); // operators always static
+
+				pushArguments(expression);
+
+				CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) element;
+
+				pushMethodEvaluator(expression, methodDeclaration, (CSharpTypeDeclaration) element.getParent(), getMethodName(operatorElementType, methodDeclaration.getName()));
+
+				if(operatorElementType == CSharpTokens.NTEQ)
+				{
+					myEvaluators.add(new PrefixOperatorEvaluator(CSharpTokens.EXCL));
+				}
+				return;
+			}
+		}
+
+		throw new UnsupportedOperationException("expression is not supported");
+	}
+
+	private void pushArguments(CSharpBinaryExpressionImpl expression)
+	{
+		CSharpCallArgument[] callArguments = expression.getCallArguments();
+		for(CSharpCallArgument callArgument : callArguments)
+		{
+			DotNetExpression argumentExpression = callArgument.getArgumentExpression();
+			if(argumentExpression == null)
+			{
+				throw new UnsupportedOperationException("bad operator call argument");
+			}
+
+			argumentExpression.accept(this);
 		}
 	}
 

@@ -48,12 +48,6 @@ public class MethodEvaluator extends Evaluator
 	@Override
 	public void evaluate(@NotNull CSharpEvaluateContext context)
 	{
-		Value<?> popValue = context.popValue();
-		if(popValue == null)
-		{
-			throw new IllegalArgumentException("no pop value");
-		}
-
 		List<Value<?>> values = new ArrayList<Value<?>>(myParameterTypes.size());
 		for(int i = 0; i < myParameterTypes.size(); i++)
 		{
@@ -63,6 +57,12 @@ public class MethodEvaluator extends Evaluator
 				throw new IllegalArgumentException("no argument value");
 			}
 			values.add(argumentValue);
+		}
+
+		Value<?> popValue = context.popValue();
+		if(popValue == null)
+		{
+			throw new IllegalArgumentException("no pop value");
 		}
 
 		TypeMirror typeMirror = null;

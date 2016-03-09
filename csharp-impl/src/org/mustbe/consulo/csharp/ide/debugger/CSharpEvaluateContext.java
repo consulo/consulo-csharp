@@ -66,14 +66,14 @@ public class CSharpEvaluateContext
 	@Nullable
 	public Value<?> popValue()
 	{
-		Pair<Value<?>, Object> pair = myStack.pollLast();
+		Pair<Value<?>, Object> pair = myStack.pollFirst();
 		return pair == null ? null : pair.getFirst();
 	}
 
 	@Nullable
 	public Pair<Value<?>, Object> pop()
 	{
-		return myStack.pollLast();
+		return myStack.pollFirst();
 	}
 
 	public void pull(@NotNull Value<?> o, @Nullable Object provider)
