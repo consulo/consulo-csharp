@@ -16,94 +16,51 @@
 
 package org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator;
 
-import java.util.List;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import mono.debugger.FieldOrPropertyMirror;
 import mono.debugger.InvokeFlags;
 import mono.debugger.MethodMirror;
 import mono.debugger.NoObjectValueMirror;
 import mono.debugger.ObjectValueMirror;
 import mono.debugger.PropertyMirror;
-import mono.debugger.StructValueMirror;
-import mono.debugger.TypeMirror;
 import mono.debugger.Value;
 
 /**
  * @author VISTALL
  * @since 09.03.2016
  */
-public class PropertyEvaluator extends Evaluator
+public class PropertyEvaluator extends FieldOrPropertyEvaluator<CSharpPropertyDeclaration, PropertyMirror>
 {
-	@Nullable
-	private CSharpTypeDeclaration myTypeDeclaration;
-	private CSharpPropertyDeclaration myPropertyDeclaration;
-
 	public PropertyEvaluator(@Nullable CSharpTypeDeclaration typeDeclaration, CSharpPropertyDeclaration propertyDeclaration)
 	{
-		myTypeDeclaration = typeDeclaration;
-		myPropertyDeclaration = propertyDeclaration;
+		super(typeDeclaration, propertyDeclaration);
 	}
 
 	@Override
-	@RequiredReadAction
-	public void evaluate(@NotNull CSharpEvaluateContext context)
+	protected boolean isMyMirror(@NotNull FieldOrPropertyMirror mirror)
 	{
-		Value<?> popValue = context.popValue();
-		if(popValue == null)
+		return mirror instanceof PropertyMirror;
+	}
+
+	@Override
+	protected boolean invoke(@NotNull PropertyMirror mirror, @NotNull CSharpEvaluateContext context, @NotNull Value<?> popValue)
+	{
+		MethodMirror methodMirror = mirror.methodGet();
+		if(methodMirror == null)
 		{
-			throw new IllegalArgumentException("no pop value");
+			return false;
 		}
 
-		TypeMirror typeMirror = null;
-		if(myTypeDeclaration == null)
+		Value<?> loadedValue = methodMirror.invoke(context.getFrame().thread(), InvokeFlags.DISABLE_BREAKPOINTS, popValue instanceof NoObjectValueMirror ? null : (ObjectValueMirror) popValue);
+		if(loadedValue != null)
 		{
-			typeMirror = popValue.type();
+			context.pull(loadedValue, mirror);
+			return true;
 		}
-		else
-		{
-			typeMirror = findTypeMirror(context, myTypeDeclaration);
-		}
-
-		if(typeMirror == null)
-		{
-			throw new IllegalArgumentException("cant calculate type");
-		}
-
-		if(popValue instanceof StructValueMirror)
-		{
-			throw new IllegalArgumentException("unsupported");
-		}
-		else if(popValue instanceof ObjectValueMirror || popValue instanceof NoObjectValueMirror && myPropertyDeclaration.hasModifier(DotNetModifier.STATIC))
-		{
-			List<FieldOrPropertyMirror> fieldOrPropertyMirrors = typeMirror.fieldAndProperties(true);
-			for(FieldOrPropertyMirror fieldOrPropertyMirror : fieldOrPropertyMirrors)
-			{
-				if(fieldOrPropertyMirror instanceof PropertyMirror && fieldOrPropertyMirror.name().equals(myPropertyDeclaration.getName()))
-				{
-					MethodMirror methodMirror = ((PropertyMirror) fieldOrPropertyMirror).methodGet();
-					if(methodMirror == null)
-					{
-						continue;
-					}
-
-					Value<?> loadedValue = methodMirror.invoke(context.getFrame().thread(), InvokeFlags.DISABLE_BREAKPOINTS, popValue instanceof NoObjectValueMirror ? null : (ObjectValueMirror)
-							popValue);
-					if(loadedValue != null)
-					{
-						context.pull(loadedValue, fieldOrPropertyMirror);
-						return;
-					}
-					break;
-				}
-			}
-		}
-		throw new IllegalArgumentException("no value");
+		return false;
 	}
 }

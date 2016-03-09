@@ -16,98 +16,43 @@
 
 package org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator;
 
-import java.util.List;
-import java.util.Map;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import mono.debugger.FieldMirror;
 import mono.debugger.FieldOrPropertyMirror;
 import mono.debugger.NoObjectValueMirror;
 import mono.debugger.ObjectValueMirror;
-import mono.debugger.StructValueMirror;
-import mono.debugger.TypeMirror;
 import mono.debugger.Value;
 
 /**
  * @author VISTALL
  * @since 05.08.2015
  */
-public class FieldEvaluator extends Evaluator
+public class FieldEvaluator extends FieldOrPropertyEvaluator<CSharpFieldDeclaration, FieldMirror>
 {
-	@Nullable
-	private CSharpTypeDeclaration myTypeDeclaration;
-	private CSharpFieldDeclaration myFieldDeclaration;
-
-	public FieldEvaluator(@Nullable CSharpTypeDeclaration typeDeclaration, CSharpFieldDeclaration fieldDeclaration)
+	public FieldEvaluator(@Nullable CSharpTypeDeclaration typeDeclaration, CSharpFieldDeclaration variable)
 	{
-		myTypeDeclaration = typeDeclaration;
-		myFieldDeclaration = fieldDeclaration;
+		super(typeDeclaration, variable);
 	}
 
 	@Override
-	@RequiredReadAction
-	public void evaluate(@NotNull CSharpEvaluateContext context)
+	protected boolean isMyMirror(@NotNull FieldOrPropertyMirror mirror)
 	{
-		Value<?> popValue = context.popValue();
-		if(popValue == null)
-		{
-			throw new IllegalArgumentException("no pop value");
-		}
+		return mirror instanceof FieldMirror;
+	}
 
-		TypeMirror typeMirror = null;
-		if(myTypeDeclaration == null)
+	@Override
+	protected boolean invoke(@NotNull FieldMirror mirror, @NotNull CSharpEvaluateContext context, @NotNull Value<?> popValue)
+	{
+		Value<?> loadedValue = mirror.value(context.getFrame().thread(), popValue instanceof NoObjectValueMirror ? null : (ObjectValueMirror) popValue);
+		if(loadedValue != null)
 		{
-			typeMirror = popValue.type();
+			context.pull(loadedValue, mirror);
+			return true;
 		}
-		else
-		{
-			typeMirror = findTypeMirror(context, myTypeDeclaration);
-		}
-
-		if(typeMirror == null)
-		{
-			throw new IllegalArgumentException("cant calculate type");
-		}
-
-		if(popValue instanceof StructValueMirror)
-		{
-			Map<FieldOrPropertyMirror, Value<?>> values = ((StructValueMirror) popValue).map();
-
-			for(Map.Entry<FieldOrPropertyMirror, Value<?>> entry : values.entrySet())
-			{
-				FieldOrPropertyMirror key = entry.getKey();
-				Value<?> value = entry.getValue();
-				if(key.name().equals(myFieldDeclaration.getName()))
-				{
-					context.pull(value, key);
-					break;
-				}
-			}
-		}
-		else if(popValue instanceof ObjectValueMirror || popValue instanceof NoObjectValueMirror && myFieldDeclaration.hasModifier(DotNetModifier.STATIC))
-		{
-			List<FieldOrPropertyMirror> fieldOrPropertyMirrors = typeMirror.fieldAndProperties(true);
-			for(FieldOrPropertyMirror fieldOrPropertyMirror : fieldOrPropertyMirrors)
-			{
-				if(fieldOrPropertyMirror instanceof FieldMirror && fieldOrPropertyMirror.name().equals(myFieldDeclaration.getName()))
-				{
-					Value<?> loadedValue = fieldOrPropertyMirror.value(context.getFrame().thread(), popValue instanceof NoObjectValueMirror ? null : (ObjectValueMirror) popValue);
-					if(loadedValue != null)
-					{
-						context.pull(loadedValue, fieldOrPropertyMirror);
-						return;
-					}
-					break;
-				}
-			}
-		}
-
-		throw new IllegalArgumentException("no value");
+		return false;
 	}
 }

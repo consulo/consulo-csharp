@@ -38,6 +38,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.ar
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -90,10 +91,10 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 			{
 				myEvaluators.add(new LocalVariableEvaluator((CSharpLocalVariable) resolvedElement));
 			}
-			else if(resolvedElement instanceof CSharpFieldDeclaration)
+			else if(resolvedElement instanceof CSharpFieldDeclaration || resolvedElement instanceof CSharpPropertyDeclaration)
 			{
 				CSharpTypeDeclaration typeDeclaration = null;
-				if(((CSharpFieldDeclaration) resolvedElement).hasModifier(DotNetModifier.STATIC))
+				if(((DotNetModifierListOwner) resolvedElement).hasModifier(DotNetModifier.STATIC))
 				{
 					typeDeclaration = (CSharpTypeDeclaration) resolvedElement.getParent();
 					myEvaluators.add(NullValueEvaluator.INSTANCE); // push null
@@ -103,11 +104,22 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 					myEvaluators.add(ThisObjectEvaluator.INSTANCE);
 				}
 
-				myEvaluators.add(new FieldEvaluator(typeDeclaration, (CSharpFieldDeclaration) resolvedElement));
+				if(resolvedElement instanceof CSharpPropertyDeclaration)
+				{
+					myEvaluators.add(new PropertyEvaluator(typeDeclaration, (CSharpPropertyDeclaration) resolvedElement));
+				}
+				else if(resolvedElement instanceof CSharpFieldDeclaration)
+				{
+					myEvaluators.add(new FieldEvaluator(typeDeclaration, (CSharpFieldDeclaration) resolvedElement));
+				}
 			}
 			else if(resolvedElement instanceof CSharpTypeDeclaration)
 			{
 				myEvaluators.add(NullValueEvaluator.INSTANCE);
+			}
+			else
+			{
+				throw new IllegalArgumentException("unsupported");
 			}
 		}
 		else
