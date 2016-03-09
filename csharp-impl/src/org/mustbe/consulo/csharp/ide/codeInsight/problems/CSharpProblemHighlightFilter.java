@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.codeInsight.problems;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import com.intellij.codeInsight.daemon.ProblemHighlightFilter;
+import com.intellij.psi.PsiCodeFragment;
 import com.intellij.psi.PsiFile;
 
 /**
@@ -32,6 +33,10 @@ public class CSharpProblemHighlightFilter extends ProblemHighlightFilter
 	{
 		if(psiFile instanceof CSharpFile)
 		{
+			if(psiFile instanceof PsiCodeFragment)
+			{
+				return true;
+			}
 			return CSharpLocationUtil.isValidLocation(psiFile.getProject(), psiFile.getVirtualFile());
 		}
 		return true;
