@@ -16,20 +16,12 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightMacroDefine;
-import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
@@ -74,44 +66,7 @@ public class CSharpMacroReferenceExpressionImpl extends CSharpMacroElementImpl i
 	@Override
 	public PsiElement resolve()
 	{
-		PsiFile containingFile = getContainingFile();
-		if(!(containingFile instanceof CSharpMacroFileImpl))
-		{
-			return null;
-		}
-
-		String text = getText();
-
-		Map<String, CSharpMacroDefine> map = new HashMap<String, CSharpMacroDefine>();
-
-		DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(containingFile, DotNetSimpleModuleExtension.class);
-		if(extension != null)
-		{
-			for(String var : extension.getVariables())
-			{
-				map.put(var, new CSharpLightMacroDefine(extension.getModule(), text));
-			}
-		}
-
-		for(CSharpMacroDefine macroDefine : ((CSharpMacroFileImpl) containingFile).getDefines())
-		{
-			String name = macroDefine.getName();
-			if(name == null)
-			{
-				continue;
-			}
-
-			if(macroDefine.isUnDef())
-			{
-				map.remove(name);
-			}
-			else
-			{
-				map.put(name, macroDefine);
-			}
-		}
-
-		return map.get(text);
+		return null;
 	}
 
 	@NotNull
