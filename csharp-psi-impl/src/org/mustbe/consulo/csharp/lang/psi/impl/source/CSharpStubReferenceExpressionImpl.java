@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
@@ -28,6 +29,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpReferenceExpressionStub;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -79,9 +81,10 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		visitor.visitReferenceExpression(this);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
-	public PsiElement getQualifier()
+	public DotNetExpression getQualifier()
 	{
 		return getStubOrPsiChild(CSharpStubElements.REFERENCE_EXPRESSION);
 	}
@@ -218,7 +221,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	@Override
 	public boolean isSoft()
 	{
-		return kind() == ResolveToKind.SOFT_QUALIFIED_NAMESPACE;
+		return CSharpReferenceExpressionImplUtil.isSoft(this);
 	}
 
 	@Nullable

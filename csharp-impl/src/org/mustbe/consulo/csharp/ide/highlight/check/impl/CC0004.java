@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -50,6 +51,10 @@ public class CC0004 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 			DotNetExpression callExpression = element.getCallExpression();
 			if(callExpression instanceof CSharpReferenceExpression)
 			{
+				if(((CSharpReferenceExpression) callExpression).isSoft())
+				{
+					return Collections.emptyList();
+				}
 				PsiElement referenceElement = ((CSharpReferenceExpression) callExpression).getReferenceElement();
 				if(referenceElement != null)
 				{

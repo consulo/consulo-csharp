@@ -25,7 +25,9 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -40,6 +42,11 @@ public class CC0003 extends CompilerCheck<CSharpIndexAccessExpressionImpl>
 	@Override
 	public List<HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpIndexAccessExpressionImpl expression)
 	{
+		DotNetExpression qualifier = expression.getQualifier();
+		if(qualifier.toTypeRef(false) == CSharpStaticTypeRef.DYNAMIC)
+		{
+			return Collections.emptyList();
+		}
 		List<PsiElement> ranges = new ArrayList<PsiElement>(2);
 		CSharpCallArgumentList parameterList = expression.getParameterList();
 		if(parameterList != null)

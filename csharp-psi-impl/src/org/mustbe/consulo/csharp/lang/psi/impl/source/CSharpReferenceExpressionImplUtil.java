@@ -45,6 +45,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.TypeLikeCom
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpElementGroupTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromNamespace;
@@ -1016,6 +1017,28 @@ public class CSharpReferenceExpressionImplUtil
 			targetToWalkChildren = element.getContainingFile();
 		}
 		return Couple.of(last, targetToWalkChildren);
+	}
+
+	@RequiredReadAction
+	public static boolean isSoft(@NotNull CSharpReferenceExpression referenceExpression)
+	{
+		ResolveToKind kind = referenceExpression.kind();
+		switch(kind)
+		{
+			case SOFT_QUALIFIED_NAMESPACE:
+				return true;
+			case METHOD:
+			case ARRAY_METHOD:
+			case ANY_MEMBER:
+				DotNetExpression qualifier = referenceExpression.getQualifier();
+				if(qualifier == null)
+				{
+					return false;
+				}
+				DotNetTypeRef typeRef = qualifier.toTypeRef(false);
+				return typeRef == CSharpStaticTypeRef.DYNAMIC;
+		}
+		return false;
 	}
 
 	@NotNull

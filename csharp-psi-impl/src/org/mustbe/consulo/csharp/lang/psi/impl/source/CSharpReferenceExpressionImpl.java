@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
@@ -71,9 +72,10 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 		visitor.visitReferenceExpression(this);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
-	public PsiElement getQualifier()
+	public DotNetExpression getQualifier()
 	{
 		return findChildByClass(DotNetExpression.class);
 	}
@@ -214,7 +216,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@Override
 	public boolean isSoft()
 	{
-		return kind() == ResolveToKind.SOFT_QUALIFIED_NAMESPACE;
+		return CSharpReferenceExpressionImplUtil.isSoft(this);
 	}
 
 	@Override

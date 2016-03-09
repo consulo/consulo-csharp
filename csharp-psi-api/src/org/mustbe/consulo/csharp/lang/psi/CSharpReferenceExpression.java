@@ -19,6 +19,8 @@ package org.mustbe.consulo.csharp.lang.psi;
 import org.consulo.annotations.Immutable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -73,6 +75,11 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 		@Immutable
 		public static final AccessType[] VALUES = values();
 	}
+
+	@Nullable
+	@Override
+	@RequiredReadAction
+	DotNetExpression getQualifier();
 
 	@Nullable
 	PsiElement getReferenceElement();
