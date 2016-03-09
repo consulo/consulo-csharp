@@ -83,6 +83,10 @@ public class ConvertToPropertyFieldFix extends PsiElementBaseIntentionAction
 		}
 
 		CSharpPropertyDeclaration property = CSharpFileFactory.createProperty(project, builder.toString());
+		if(property == null)
+		{
+			return;
+		}
 
 		owner.replace(property);
 	}

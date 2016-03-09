@@ -25,6 +25,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementI
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -85,7 +86,7 @@ public class CSharpFileFactory
 		return (CSharpFieldDeclaration) typeDeclaration.getMembers()[0];
 	}
 
-	@NotNull
+	@@Nullable
 	public static CSharpPropertyDeclaration createProperty(@NotNull Project project, @NotNull String text)
 	{
 		String clazz = "class _Dummy { " + text + "; }";
@@ -93,7 +94,12 @@ public class CSharpFileFactory
 		CSharpFileImpl psiFile = createTypeDeclarationWithScope(project, clazz);
 
 		DotNetTypeDeclaration typeDeclaration = (DotNetTypeDeclaration) psiFile.getMembers()[0];
-		return (CSharpPropertyDeclaration) typeDeclaration.getMembers()[0];
+		DotNetNamedElement namedElement = typeDeclaration.getMembers()[0];
+		if(namedElement instanceof CSharpPropertyDeclaration)
+		{
+			return (CSharpPropertyDeclaration) namedElement;
+		}
+		return null;
 	}
 
 	@NotNull
