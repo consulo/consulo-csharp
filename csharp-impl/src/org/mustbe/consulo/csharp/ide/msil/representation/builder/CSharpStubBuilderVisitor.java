@@ -31,7 +31,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import org.mustbe.consulo.msil.lang.psi.MsilConstantValue;
 import org.mustbe.consulo.msil.lang.psi.MsilCustomAttribute;
-import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import org.mustbe.dotnet.msil.decompiler.textBuilder.block.LineStubBlock;
 import org.mustbe.dotnet.msil.decompiler.textBuilder.block.StubBlock;
 import org.mustbe.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
@@ -685,19 +684,16 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 			{
 				return;
 			}
-			if(valueType == MsilTokens.NULLREF_KEYWORD)
+			String valueText = ((MsilConstantValue) initializer).getValueText();
+			if(valueText == null)
 			{
-				builder.append(" = null");
+				return;
 			}
-			else
-			{
-				String valueText = ((MsilConstantValue) initializer).getValueText();
-				if(valueText == null)
-				{
-					return;
-				}
-				builder.append(" = ").append(valueText);
-			}
+			builder.append(" = ").append(valueText);
+		}
+		else if(initializer != null)
+		{
+			builder.append(" = ").append(initializer.getText());
 		}
 	}
 
