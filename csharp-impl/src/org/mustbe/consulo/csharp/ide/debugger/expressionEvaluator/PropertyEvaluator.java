@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2015 must-be.org
+ * Copyright 2013-2016 must-be.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,37 +17,38 @@
 package org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator;
 
 import java.util.List;
-import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
-import mono.debugger.FieldMirror;
 import mono.debugger.FieldOrPropertyMirror;
+import mono.debugger.InvokeFlags;
+import mono.debugger.MethodMirror;
 import mono.debugger.NoObjectValueMirror;
 import mono.debugger.ObjectValueMirror;
+import mono.debugger.PropertyMirror;
 import mono.debugger.StructValueMirror;
 import mono.debugger.TypeMirror;
 import mono.debugger.Value;
 
 /**
  * @author VISTALL
- * @since 05.08.2015
+ * @since 09.03.2016
  */
-public class FieldEvaluator extends Evaluator
+public class PropertyEvaluator extends Evaluator
 {
 	@Nullable
 	private CSharpTypeDeclaration myTypeDeclaration;
-	private CSharpFieldDeclaration myFieldDeclaration;
+	private CSharpPropertyDeclaration myPropertyDeclaration;
 
-	public FieldEvaluator(@Nullable CSharpTypeDeclaration typeDeclaration, CSharpFieldDeclaration fieldDeclaration)
+	public PropertyEvaluator(@Nullable CSharpTypeDeclaration typeDeclaration, CSharpPropertyDeclaration propertyDeclaration)
 	{
 		myTypeDeclaration = typeDeclaration;
-		myFieldDeclaration = fieldDeclaration;
+		myPropertyDeclaration = propertyDeclaration;
 	}
 
 	@Override
@@ -77,27 +78,23 @@ public class FieldEvaluator extends Evaluator
 
 		if(popValue instanceof StructValueMirror)
 		{
-			Map<FieldOrPropertyMirror, Value<?>> values = ((StructValueMirror) popValue).map();
-
-			for(Map.Entry<FieldOrPropertyMirror, Value<?>> entry : values.entrySet())
-			{
-				FieldOrPropertyMirror key = entry.getKey();
-				Value<?> value = entry.getValue();
-				if(key.name().equals(myFieldDeclaration.getName()))
-				{
-					context.pull(value, key);
-					break;
-				}
-			}
+			throw new IllegalArgumentException("unsupported");
 		}
-		else if(popValue instanceof ObjectValueMirror || popValue instanceof NoObjectValueMirror && myFieldDeclaration.hasModifier(DotNetModifier.STATIC))
+		else if(popValue instanceof ObjectValueMirror || popValue instanceof NoObjectValueMirror && myPropertyDeclaration.hasModifier(DotNetModifier.STATIC))
 		{
 			List<FieldOrPropertyMirror> fieldOrPropertyMirrors = typeMirror.fieldAndProperties(true);
 			for(FieldOrPropertyMirror fieldOrPropertyMirror : fieldOrPropertyMirrors)
 			{
-				if(fieldOrPropertyMirror instanceof FieldMirror && fieldOrPropertyMirror.name().equals(myFieldDeclaration.getName()))
+				if(fieldOrPropertyMirror instanceof PropertyMirror && fieldOrPropertyMirror.name().equals(myPropertyDeclaration.getName()))
 				{
-					Value<?> loadedValue = fieldOrPropertyMirror.value(context.getFrame().thread(), popValue instanceof NoObjectValueMirror ? null : (ObjectValueMirror) popValue);
+					MethodMirror methodMirror = ((PropertyMirror) fieldOrPropertyMirror).methodGet();
+					if(methodMirror == null)
+					{
+						continue;
+					}
+
+					Value<?> loadedValue = methodMirror.invoke(context.getFrame().thread(), InvokeFlags.DISABLE_BREAKPOINTS, popValue instanceof NoObjectValueMirror ? null : (ObjectValueMirror)
+							popValue);
 					if(loadedValue != null)
 					{
 						context.pull(loadedValue, fieldOrPropertyMirror);
@@ -107,7 +104,6 @@ public class FieldEvaluator extends Evaluator
 				}
 			}
 		}
-
 		throw new IllegalArgumentException("no value");
 	}
 }

@@ -21,20 +21,13 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.ConstantEvaluator;
-import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.Evaluator;
-import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.FieldEvaluator;
-import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.IsExpressionEvaluator;
-import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.LocalVariableEvaluator;
-import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.MethodEvaluator;
-import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.NullValueEvaluator;
-import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.ParameterEvaluator;
-import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.ThisObjectEvaluator;
+import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.*;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
@@ -126,6 +119,11 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 			{
 				CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) resolvedElement.getParent();
 				myEvaluators.add(new FieldEvaluator(typeDeclaration, (CSharpFieldDeclaration) resolvedElement));
+			}
+			else if(resolvedElement instanceof CSharpPropertyDeclaration)
+			{
+				CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) resolvedElement.getParent();
+				myEvaluators.add(new PropertyEvaluator(typeDeclaration, (CSharpPropertyDeclaration) resolvedElement));
 			}
 		}
 	}
