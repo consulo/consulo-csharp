@@ -124,7 +124,7 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 			}
 			else
 			{
-				throw new IllegalArgumentException("unsupported");
+				throw new IllegalArgumentException("cant evaluate expression");
 			}
 		}
 		else
@@ -154,7 +154,7 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 		ResolveResult resolveResult = CSharpResolveUtil.findFirstValidResult(expression.multiResolve(false));
 		if(resolveResult == null || !(resolveResult instanceof MethodResolveResult) || !(resolveResult.getElement() instanceof CSharpMethodDeclaration))
 		{
-			throw new UnsupportedOperationException("cant evaluate not method");
+			throw new UnsupportedOperationException("cant evaluate expression");
 		}
 
 		CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) resolveResult.getElement();
@@ -266,6 +266,10 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 				}
 				return;
 			}
+		}
+		else
+		{
+			throw new IllegalArgumentException("cant evaluate expression");
 		}
 
 		throw new UnsupportedOperationException("expression is not supported");
