@@ -208,32 +208,6 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 		}
 	}
 
-	@NotNull
-	private static String getMethodName(IElementType elementType, String originalName)
-	{
-		if(elementType == CSharpTokens.EQEQ || elementType == CSharpTokens.NTEQ)
-		{
-			return "Equals";
-		}
-		return originalName;
-	}
-
-	@RequiredReadAction
-	private void pushMethodEvaluator(PsiElement scope, CSharpMethodDeclaration methodDeclaration, CSharpTypeDeclaration typeDeclaration, @NotNull String referenceName)
-	{
-		DotNetTypeRef[] parameterTypeRefs = methodDeclaration.getParameterTypeRefs();
-		List<DotNetTypeDeclaration> parameterTypes = new ArrayList<DotNetTypeDeclaration>();
-		for(DotNetTypeRef parameterTypeRef : parameterTypeRefs)
-		{
-			PsiElement element = parameterTypeRef.resolve(scope).getElement();
-			if(!(element instanceof CSharpTypeDeclaration))
-			{
-				throw new UnsupportedOperationException("parameter type is not type");
-			}
-			parameterTypes.add((DotNetTypeDeclaration) element);
-		}
-		myEvaluators.add(new MethodEvaluator(referenceName, typeDeclaration, parameterTypes));
-	}
 
 	@Override
 	@RequiredReadAction
@@ -275,21 +249,6 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 		throw new UnsupportedOperationException("expression is not supported");
 	}
 
-	private void pushArguments(CSharpBinaryExpressionImpl expression)
-	{
-		CSharpCallArgument[] callArguments = expression.getCallArguments();
-		for(CSharpCallArgument callArgument : callArguments)
-		{
-			DotNetExpression argumentExpression = callArgument.getArgumentExpression();
-			if(argumentExpression == null)
-			{
-				throw new UnsupportedOperationException("bad operator call argument");
-			}
-
-			argumentExpression.accept(this);
-		}
-	}
-
 	@Override
 	@RequiredReadAction
 	public void visitPrefixExpression(CSharpPrefixExpressionImpl expression)
@@ -325,6 +284,48 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 	public void visitElement(PsiElement element)
 	{
 		throw new UnsupportedOperationException("expression is not supported");
+	}
+
+	@NotNull
+	private static String getMethodName(IElementType elementType, String originalName)
+	{
+		if(elementType == CSharpTokens.EQEQ || elementType == CSharpTokens.NTEQ)
+		{
+			return "Equals";
+		}
+		return originalName;
+	}
+
+	@RequiredReadAction
+	private void pushMethodEvaluator(PsiElement scope, CSharpMethodDeclaration methodDeclaration, CSharpTypeDeclaration typeDeclaration, @NotNull String referenceName)
+	{
+		DotNetTypeRef[] parameterTypeRefs = methodDeclaration.getParameterTypeRefs();
+		List<DotNetTypeDeclaration> parameterTypes = new ArrayList<DotNetTypeDeclaration>();
+		for(DotNetTypeRef parameterTypeRef : parameterTypeRefs)
+		{
+			PsiElement element = parameterTypeRef.resolve(scope).getElement();
+			if(!(element instanceof CSharpTypeDeclaration))
+			{
+				throw new UnsupportedOperationException("parameter type is not type");
+			}
+			parameterTypes.add((DotNetTypeDeclaration) element);
+		}
+		myEvaluators.add(new MethodEvaluator(referenceName, typeDeclaration, parameterTypes));
+	}
+
+	private void pushArguments(CSharpBinaryExpressionImpl expression)
+	{
+		CSharpCallArgument[] callArguments = expression.getCallArguments();
+		for(CSharpCallArgument callArgument : callArguments)
+		{
+			DotNetExpression argumentExpression = callArgument.getArgumentExpression();
+			if(argumentExpression == null)
+			{
+				throw new UnsupportedOperationException("bad operator call argument");
+			}
+
+			argumentExpression.accept(this);
+		}
 	}
 
 	@NotNull
