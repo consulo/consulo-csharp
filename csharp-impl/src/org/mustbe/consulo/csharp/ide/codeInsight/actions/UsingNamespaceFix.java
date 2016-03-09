@@ -120,6 +120,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		return PopupResult.SHOW_HIT;
 	}
 
+	@RequiredReadAction
 	public static boolean isValidReference(CSharpReferenceExpression.ResolveToKind kind, CSharpReferenceExpression expression)
 	{
 		PsiElement resolvedElement = expression.resolve();
@@ -131,6 +132,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		switch(kind)
 		{
 			case TYPE_LIKE:
+			case ANY_MEMBER:
 				if(expression.getQualifier() != null)
 				{
 					return false;

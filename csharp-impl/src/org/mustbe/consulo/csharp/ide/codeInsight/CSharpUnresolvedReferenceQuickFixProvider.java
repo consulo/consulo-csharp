@@ -45,7 +45,10 @@ public class CSharpUnresolvedReferenceQuickFixProvider extends UnresolvedReferen
 	@RequiredReadAction
 	public void registerFixes(CSharpReferenceExpression expression, QuickFixActionRegistrar quickFixActionRegistrar)
 	{
-		quickFixActionRegistrar.register(new UsingNamespaceFix(expression));
+		if(UsingNamespaceFix.isValidReference(expression.kind(), expression))
+		{
+			quickFixActionRegistrar.register(new UsingNamespaceFix(expression));
+		}
 
 		CSharpLambdaResolveResult lambdaResolveResult = null;
 		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(expression);
