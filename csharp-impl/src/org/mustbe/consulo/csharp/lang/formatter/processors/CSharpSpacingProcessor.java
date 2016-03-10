@@ -16,6 +16,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImp
 import com.intellij.formatting.ASTBlock;
 import com.intellij.formatting.Spacing;
 import com.intellij.formatting.SpacingBuilder;
+import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.tree.IElementType;
@@ -83,6 +84,8 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 			return Spacing.createSpacing(count, count, 0, myCommonSettings.KEEP_LINE_BREAKS, myCommonSettings.KEEP_BLANK_LINES_IN_CODE);
 		}
 	}
+
+	private static TokenSet ourMultiDeclarationSet = TokenSet.create(CSharpStubElements.FIELD_DECLARATION, CSharpElements.LOCAL_VARIABLE, CSharpStubElements.EVENT_DECLARATION);
 
 	private final CSharpFormattingBlock myParent;
 	private final CommonCodeStyleSettings myCommonSettings;
@@ -304,6 +307,17 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 			if(operatorReferenceSpacingBuilder.match(child1, child2))
 			{
 				return operatorReferenceSpacingBuilder.createSpacing();
+			}
+		}
+
+		IElementType elementType1 = PsiUtilCore.getElementType(child1 == null ? null : child1.getNode());
+		IElementType elementType2 = PsiUtilCore.getElementType(child2.getNode());
+		if(ourMultiDeclarationSet.contains(elementType1) && elementType1 == elementType2)
+		{
+			ASTNode commaNode = child1.getNode().findChildByType(CSharpTokens.COMMA);
+			if(commaNode != null)
+			{
+				return Spacing.createSpacing(1, 1, 0, false, 0);
 			}
 		}
 		return myBuilder.getSpacing(myParent, child1, child2);
