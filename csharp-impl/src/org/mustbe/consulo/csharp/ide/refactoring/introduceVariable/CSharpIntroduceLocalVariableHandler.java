@@ -43,6 +43,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionIm
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
+import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
@@ -313,6 +315,10 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 	@RequiredReadAction
 	public static boolean canUseVar(@NotNull DotNetExpression initializer)
 	{
+		if(!CSharpModuleUtil.findLanguageVersion(initializer).isAtLeast(CSharpLanguageVersion._3_0))
+		{
+			return false;
+		}
 		if(CS0023.isNullConstant(initializer))
 		{
 			return false;
