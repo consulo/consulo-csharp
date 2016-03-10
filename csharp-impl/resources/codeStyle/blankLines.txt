@@ -1,6 +1,14 @@
 using System;
 
 public class Program {
+  public int field1;
+  public int field2;
+
+  public String Property {
+     get;set;
+  }
+  public void test() {
+  }
   public static void Main(String[] args) {
     Console.WriteLine("test");
   }

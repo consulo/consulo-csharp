@@ -166,13 +166,14 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		}
 
 		// between members - one line
-		myBuilder.between(CSharpStubElements.QUALIFIED_MEMBERS, CSharpStubElements.QUALIFIED_MEMBERS).spacing(0, 0, 2, false, 0);
+		myBuilder.between(CSharpStubElements.FIELD_DECLARATION, CSharpStubElements.FIELD_DECLARATION).blankLines(commonSettings.BLANK_LINES_AROUND_FIELD);
+		myBuilder.between(CSharpStubElements.QUALIFIED_MEMBERS, CSharpStubElements.QUALIFIED_MEMBERS).blankLines(commonSettings.BLANK_LINES_AROUND_METHOD);
 
-		myBuilder.afterInside(CSharpTokens.LBRACE, CSharpStubElements.QUALIFIED_MEMBERS).spacing(0, 0, 1, false, 0);
-		myBuilder.beforeInside(CSharpTokens.RBRACE, CSharpStubElements.QUALIFIED_MEMBERS).spacing(0, 0, 1, false, 0);
+		myBuilder.afterInside(CSharpTokens.LBRACE, CSharpStubElements.QUALIFIED_MEMBERS).spacing(0, 0, 1, commonSettings.KEEP_LINE_BREAKS, commonSettings.KEEP_BLANK_LINES_BEFORE_RBRACE);
+		myBuilder.beforeInside(CSharpTokens.RBRACE, CSharpStubElements.QUALIFIED_MEMBERS).spacing(0, 0, 1, commonSettings.KEEP_LINE_BREAKS, commonSettings.KEEP_BLANK_LINES_BEFORE_RBRACE);
 
-		myBuilder.afterInside(CSharpTokens.LBRACE, CSharpElements.BLOCK_STATEMENT).spacing(0, 0, 1, false, 0);
-		myBuilder.beforeInside(CSharpTokens.RBRACE, CSharpElements.BLOCK_STATEMENT).spacing(0, 0, 1, false, 0);
+		myBuilder.afterInside(CSharpTokens.LBRACE, CSharpElements.BLOCK_STATEMENT).spacing(0, 0, 1, commonSettings.KEEP_LINE_BREAKS, commonSettings.KEEP_BLANK_LINES_BEFORE_RBRACE);
+		myBuilder.beforeInside(CSharpTokens.RBRACE, CSharpElements.BLOCK_STATEMENT).spacing(0, 0, 1, commonSettings.KEEP_LINE_BREAKS, commonSettings.KEEP_BLANK_LINES_BEFORE_RBRACE);
 
 		// call(arg
 		myBuilder.afterInside(CSharpTokens.LPAR, CSharpElements.CALL_ARGUMENT_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_CALL_PARENTHESES);
