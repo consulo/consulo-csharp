@@ -140,7 +140,7 @@ public class CSharpFileFactory
 		return ((CSharpExpressionStatementImpl) statement).getExpression();
 	}
 
-	public static DotNetStatement createStatement(@NotNull Project project, @NotNull String text)
+	public static DotNetStatement createStatement(@NotNull Project project, @NotNull CharSequence text)
 	{
 		String clazz = "class _Dummy { " +
 				"void test() {" +
@@ -153,6 +153,22 @@ public class CSharpFileFactory
 		DotNetTypeDeclaration typeDeclaration = (DotNetTypeDeclaration) psiFile.getMembers()[0];
 		CSharpMethodDeclaration dotNetNamedElement = (CSharpMethodDeclaration) typeDeclaration.getMembers()[0];
 		return ((CSharpBlockStatementImpl) dotNetNamedElement.getCodeBlock()).getStatements()[0];
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public static CSharpLocalVariable createLocalVariable(@NotNull Project project, @NotNull CharSequence text)
+	{
+		CSharpLocalVariableDeclarationStatement statement = (CSharpLocalVariableDeclarationStatement) createStatement(project, text);
+		return statement.getVariables()[0];
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public static DotNetType createType(@NotNull Project project, @NotNull CharSequence type)
+	{
+		CSharpLocalVariableDeclarationStatement statement = (CSharpLocalVariableDeclarationStatement) createStatement(project, type + " temp;");
+		return statement.getVariables()[0].getType();
 	}
 
 	public static DotNetTypeDeclaration createTypeDeclaration(@NotNull Project project, @NotNull String text)

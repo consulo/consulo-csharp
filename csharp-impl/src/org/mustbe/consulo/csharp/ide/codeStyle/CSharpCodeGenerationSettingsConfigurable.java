@@ -7,6 +7,7 @@ import javax.swing.JTextField;
 
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
 import com.intellij.openapi.application.ApplicationBundle;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
@@ -28,7 +29,6 @@ public class CSharpCodeGenerationSettingsConfigurable implements Configurable
 	private JTextField myPropertySuffixField;
 	private JTextField myStaticPropertySuffixField;
 	private JCheckBox myUseLanguageKeywordsCheckBox;
-	private JCheckBox myExtractLocalVariableTypeBox;
 	private JPanel myRoot;
 
 	public CSharpCodeGenerationSettingsConfigurable(CodeStyleSettings settings)
@@ -50,6 +50,7 @@ public class CSharpCodeGenerationSettingsConfigurable implements Configurable
 		return null;
 	}
 
+	@RequiredDispatchThread
 	@Nullable
 	@Override
 	public JComponent createComponent()
@@ -57,6 +58,7 @@ public class CSharpCodeGenerationSettingsConfigurable implements Configurable
 		return myRoot;
 	}
 
+	@RequiredDispatchThread
 	@Override
 	public boolean isModified()
 	{
@@ -70,7 +72,6 @@ public class CSharpCodeGenerationSettingsConfigurable implements Configurable
 		isModified |= isModified(myPropertySuffixField, mySettings.PROPERTY_SUFFIX);
 		isModified |= isModified(myStaticPropertySuffixField, mySettings.STATIC_PROPERTY_SUFFIX);
 		isModified |= myUseLanguageKeywordsCheckBox.isSelected() != mySettings.USE_LANGUAGE_DATA_TYPES;
-		isModified |= myExtractLocalVariableTypeBox.isSelected() != mySettings.USE_VAR_FOR_EXTRACT_LOCAL_VARIABLE;
 		return isModified;
 	}
 
@@ -79,6 +80,7 @@ public class CSharpCodeGenerationSettingsConfigurable implements Configurable
 		return !textField.getText().trim().equals(value);
 	}
 
+	@RequiredDispatchThread
 	@Override
 	public void apply() throws ConfigurationException
 	{
@@ -92,9 +94,9 @@ public class CSharpCodeGenerationSettingsConfigurable implements Configurable
 		mySettings.PROPERTY_SUFFIX = myPropertySuffixField.getText().trim();
 		mySettings.STATIC_PROPERTY_SUFFIX = myStaticPropertySuffixField.getText().trim();
 		mySettings.USE_LANGUAGE_DATA_TYPES = myUseLanguageKeywordsCheckBox.isSelected();
-		mySettings.USE_VAR_FOR_EXTRACT_LOCAL_VARIABLE = myExtractLocalVariableTypeBox.isSelected();
 	}
 
+	@RequiredDispatchThread
 	@Override
 	public void reset()
 	{
@@ -108,9 +110,9 @@ public class CSharpCodeGenerationSettingsConfigurable implements Configurable
 		myPropertySuffixField.setText(mySettings.PROPERTY_SUFFIX);
 		myStaticPropertySuffixField.setText(mySettings.STATIC_PROPERTY_SUFFIX);
 		myUseLanguageKeywordsCheckBox.setSelected(mySettings.USE_LANGUAGE_DATA_TYPES);
-		myExtractLocalVariableTypeBox.setSelected(mySettings.USE_VAR_FOR_EXTRACT_LOCAL_VARIABLE);
 	}
 
+	@RequiredDispatchThread
 	@Override
 	public void disposeUIResources()
 	{

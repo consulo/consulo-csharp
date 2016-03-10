@@ -206,8 +206,7 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 
 	private void showCannotPerformError(Project project, Editor editor)
 	{
-		CommonRefactoringUtil.showErrorHint(project, editor, RefactoringBundle.message("refactoring.introduce.selection.error"), myDialogTitle,
-				"refactoring.extractMethod");
+		CommonRefactoringUtil.showErrorHint(project, editor, RefactoringBundle.message("refactoring.introduce.selection.error"), myDialogTitle, "refactoring.extractMethod");
 	}
 
 
@@ -329,8 +328,7 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 			}
 			else
 			{
-				OccurrencesChooser.simpleChooser(editor).showChooser(operation.getElement(), operation.getOccurrences(),
-						new Pass<OccurrencesChooser.ReplaceChoice>()
+				OccurrencesChooser.simpleChooser(editor).showChooser(operation.getElement(), operation.getOccurrences(), new Pass<OccurrencesChooser.ReplaceChoice>()
 				{
 					@Override
 					public void pass(OccurrencesChooser.ReplaceChoice replaceChoice)
@@ -414,9 +412,12 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 		}
 		final List<PsiElement> occurrences = operation.getOccurrences();
 		operation.getEditor().getCaretModel().moveToOffset(nameIdentifier.getTextOffset());
-		final InplaceVariableIntroducer<PsiElement> introducer = new CSharpInplaceVariableIntroducer(target,  operation, occurrences);
+		final InplaceVariableIntroducer<PsiElement> introducer = createVariableIntroducer(target, operation, occurrences);
 		introducer.performInplaceRefactoring(new LinkedHashSet<String>(operation.getSuggestedNames()));
 	}
+
+	@NotNull
+	protected abstract InplaceVariableIntroducer<PsiElement> createVariableIntroducer(CSharpLocalVariable target, CSharpIntroduceOperation operation, List<PsiElement> occurrences);
 
 	@Nullable
 	protected PsiElement performRefactoring(@NotNull CSharpIntroduceOperation operation)
@@ -424,8 +425,8 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 		PsiElement anchor = operation.isReplaceAll() ? findAnchor(operation.getOccurrences()) : findAnchor(operation.getInitializer());
 		if(anchor == null)
 		{
-			CommonRefactoringUtil.showErrorHint(operation.getProject(), operation.getEditor(), RefactoringBundle.getCannotRefactorMessage(null),
-					RefactoringBundle.getCannotRefactorMessage(null), null);
+			CommonRefactoringUtil.showErrorHint(operation.getProject(), operation.getEditor(), RefactoringBundle.getCannotRefactorMessage(null), RefactoringBundle.getCannotRefactorMessage(null),
+					null);
 			return null;
 		}
 		PsiElement declaration = createDeclaration(operation);
@@ -564,20 +565,19 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 		PsiElement anchor = operation.isReplaceAll() ? findAnchor(operation.getOccurrences()) : findAnchor(operation.getInitializer());
 		if(anchor == null)
 		{
-			CommonRefactoringUtil.showErrorHint(operation.getProject(), operation.getEditor(), RefactoringBundle.getCannotRefactorMessage(null),
-					RefactoringBundle.getCannotRefactorMessage(null), null);
+			CommonRefactoringUtil.showErrorHint(operation.getProject(), operation.getEditor(), RefactoringBundle.getCannotRefactorMessage(null), RefactoringBundle.getCannotRefactorMessage(null),
+					null);
 			return null;
 		}
 		final PsiElement parent = anchor.getParent();
 		return parent.addBefore(declaration, anchor);
 	}
 
-	private static class CSharpInplaceVariableIntroducer extends InplaceVariableIntroducer<PsiElement>
+	protected static class CSharpInplaceVariableIntroducer extends InplaceVariableIntroducer<PsiElement>
 	{
 		public CSharpInplaceVariableIntroducer(CSharpLocalVariable target, CSharpIntroduceOperation operation, List<PsiElement> occurrences)
 		{
-			super(target, operation.getEditor(), operation.getProject(), "Introduce Variable", occurrences.toArray(new PsiElement[occurrences.size()
-					]), null);
+			super(target, operation.getEditor(), operation.getProject(), "Introduce Variable", occurrences.toArray(new PsiElement[occurrences.size()]), null);
 		}
 
 		@Override
