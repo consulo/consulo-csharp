@@ -57,7 +57,7 @@ public class CSharpReadWriteAccessDetector extends ReadWriteAccessDetector
 	{
 		if(reference instanceof DotNetExpression)
 		{
-			Access expressionAccess = getExpressionAccess(referencedElement);
+			Access expressionAccess = getExpressionAccess((PsiElement) reference);
 			if(expressionAccess != null)
 			{
 				return expressionAccess;
