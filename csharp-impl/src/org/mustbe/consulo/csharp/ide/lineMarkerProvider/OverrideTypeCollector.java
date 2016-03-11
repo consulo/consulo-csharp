@@ -103,7 +103,7 @@ public class OverrideTypeCollector implements LineMarkerCollector
 						PsiElementListNavigator.openTargets(mouseEvent, typeDeclarations.toArray(new NavigatablePsiElement[0]), "Navigate to inheritors", "Navigate to inheritors",
 								new DefaultPsiElementCellRenderer());
 					}
-				}, GutterIconRenderer.Alignment.LEFT
+				}, GutterIconRenderer.Alignment.RIGHT
 				);
 				lineMarkerInfos.add(lineMarkerInfo);
 			}

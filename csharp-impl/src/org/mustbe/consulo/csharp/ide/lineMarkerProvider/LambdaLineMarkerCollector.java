@@ -122,7 +122,7 @@ public class LambdaLineMarkerCollector implements LineMarkerCollector
 						((Navigatable) element).navigate(true);
 					}
 				}
-			}, GutterIconRenderer.Alignment.LEFT); NavigateAction.setNavigateAction(markerInfo, "Navigate to lambda delegate", IdeActions.ACTION_GOTO_SUPER);
+			}, GutterIconRenderer.Alignment.RIGHT); NavigateAction.setNavigateAction(markerInfo, "Navigate to lambda delegate", IdeActions.ACTION_GOTO_SUPER);
 			lineMarkerInfos.add(markerInfo);
 		}
 	}

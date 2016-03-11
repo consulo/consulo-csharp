@@ -53,7 +53,7 @@ public class RecursiveCallCollector implements LineMarkerCollector
 				{
 					LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(),
 							AllIcons.Gutter.RecursiveMethod, Pass.UPDATE_OVERRIDEN_MARKERS, new ConstantFunction<PsiElement,
-							String>("Recursive call"), null, GutterIconRenderer.Alignment.LEFT);
+							String>("Recursive call"), null, GutterIconRenderer.Alignment.CENTER);
 					lineMarkerInfos.add(lineMarkerInfo);
 				}
 			}

@@ -130,7 +130,7 @@ public class PartialTypeCollector implements LineMarkerCollector
 					}
 					PsiElementListNavigator.openTargets(mouseEvent, navigatablePsiElements, "Navigate to partial types", "Navigate to partial types", new OurRender());
 				}
-			}, GutterIconRenderer.Alignment.LEFT
+			}, GutterIconRenderer.Alignment.CENTER
 			);
 			lineMarkerInfos.add(lineMarkerInfo);
 		}
