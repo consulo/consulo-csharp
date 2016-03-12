@@ -48,7 +48,10 @@ public class UnnecessaryModifierInspection extends LocalInspectionTool
 			public void visitTypeDeclaration(CSharpTypeDeclaration declaration)
 			{
 				DotNetModifierList modifierList = declaration.getModifierList();
-				assert modifierList != null;
+				if(modifierList == null)
+				{
+					return;
+				}
 
 				PsiElement modifierElement = modifierList.getModifierElement(CSharpModifier.PARTIAL);
 				if(modifierElement != null)
