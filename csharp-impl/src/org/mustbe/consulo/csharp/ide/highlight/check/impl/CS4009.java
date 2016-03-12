@@ -25,6 +25,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.DotNetRunUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -38,7 +39,12 @@ public class CS4009 extends CompilerCheck<CSharpMethodDeclaration>
 	@Override
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpMethodDeclaration element)
 	{
-		PsiElement modifierElement = element.getModifierList().getModifierElement(CSharpModifier.ASYNC);
+		DotNetModifierList modifierList = element.getModifierList();
+		if(modifierList == null)
+		{
+			return null;
+		}
+		PsiElement modifierElement = modifierList.getModifierElement(CSharpModifier.ASYNC);
 
 		if(modifierElement != null && DotNetRunUtil.isEntryPoint(element))
 		{
