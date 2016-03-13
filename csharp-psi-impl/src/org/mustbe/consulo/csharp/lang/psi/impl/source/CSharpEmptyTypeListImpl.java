@@ -62,7 +62,6 @@ public class CSharpEmptyTypeListImpl extends CSharpElementImpl implements DotNet
 	@Override
 	public int getTypesCount()
 	{
-		int size = findChildrenByType(CSharpTokens.COMMA).size();
-		return size == 0 ? 0 : size + 1;
+		return findChildrenByType(CSharpTokens.COMMA).size() + 1;
 	}
 }
