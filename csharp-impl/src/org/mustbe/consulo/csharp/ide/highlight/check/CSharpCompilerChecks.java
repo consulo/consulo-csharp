@@ -54,6 +54,7 @@ public enum CSharpCompilerChecks
 	CS0157(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // return is not allowed inside finally blocks
 	//CS0168(CSharpLanguageVersion._1_0, HighlightInfoType.UNUSED_SYMBOL), // local variable usage check
 	CS0201(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // expression statement can be only call, etc
+	CS0211(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // cant take address for expression
 	CS0214(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // fixed can be used inside unsafe context
 	//CS0219(CSharpLanguageVersion._1_0, HighlightInfoType.UNUSED_SYMBOL), // local variable usage check
 	CS0227(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // 'unsafe' modifier check
