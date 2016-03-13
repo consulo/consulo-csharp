@@ -190,6 +190,25 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 	@Override
 	public IElementType getTokenType()
 	{
+		IElementType tokenType = null;
+		while(!super.eof())
+		{
+			tokenType = getTokenTypeImpl();
+			if(tokenType == CSharpTokens.NON_ACTIVE_SYMBOL || tokenType == CSharpTokens.PREPROCESSOR_DIRECTIVE)
+			{
+				super.advanceLexer();
+			}
+			else
+			{
+				break;
+			}
+		}
+		return tokenType;
+	}
+
+	@Nullable
+	public IElementType getTokenTypeImpl()
+	{
 		IElementType tokenType = super.getTokenType();
 		if(tokenType == null)
 		{
@@ -265,16 +284,14 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 			}
 
 			remapCurrentToken(CSharpTokens.PREPROCESSOR_DIRECTIVE);
-			super.advanceLexer();
-			return getTokenType();
+			return CSharpTokens.PREPROCESSOR_DIRECTIVE;
 		}
 
 		PreprocessorState preprocessorState = myStates.peekLast();
 		if(preprocessorState != null && !preprocessorState.isActive())
 		{
 			remapCurrentToken(CSharpTokens.NON_ACTIVE_SYMBOL);
-			super.advanceLexer();
-			return getTokenType();
+			return CSharpTokens.NON_ACTIVE_SYMBOL;
 		}
 
 		if(tokenType == CSharpTokens.IDENTIFIER)
