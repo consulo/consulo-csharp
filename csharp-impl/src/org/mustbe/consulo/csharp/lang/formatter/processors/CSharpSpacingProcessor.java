@@ -189,6 +189,22 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		// call(
 		myBuilder.before(CSharpElements.CALL_ARGUMENT_LIST).spaceIf(commonSettings.SPACE_BEFORE_METHOD_CALL_PARENTHESES);
 
+		IElementType[] iElementTypes = {
+				CSharpElements.TYPE_OF_EXPRESSION,
+				CSharpElements.DEFAULT_EXPRESSION,
+				CSharpElements.NAMEOF_EXPRESSION,
+				CSharpElements.__MAKEREF_EXPRESSION,
+				CSharpElements.__REFTYPE_EXPRESSION,
+				CSharpElements.__REFVALUE_EXPRESSION,
+				CSharpElements.SIZE_OF_EXPRESSION
+		};
+
+		for(IElementType elementType : iElementTypes)
+		{
+			myBuilder.afterInside(CSharpTokens.LPAR, elementType).spaces(0);
+			myBuilder.beforeInside(CSharpTokens.RPAR, elementType).spaces(0);
+		}
+
 		// (Type
 		myBuilder.afterInside(CSharpTokens.LPAR, CSharpStubElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_PARENTHESES);
 		myBuilder.afterInside(CSharpTokens.LPAR, CSharpElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_PARENTHESES);
