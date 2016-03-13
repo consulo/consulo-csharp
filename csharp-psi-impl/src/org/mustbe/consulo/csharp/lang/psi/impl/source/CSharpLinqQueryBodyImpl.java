@@ -18,7 +18,13 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
@@ -36,10 +42,65 @@ public class CSharpLinqQueryBodyImpl extends CSharpElementImpl
 		super(node);
 	}
 
+	@NotNull
+	@RequiredReadAction
+	public DotNetTypeRef calcTypeRef(boolean skipContinuation)
+	{
+		CSharpLinqSelectOrGroupClauseImpl selectOrGroupClause = getSelectOrGroupClause();
+		if(selectOrGroupClause == null)
+		{
+			return DotNetTypeRef.ERROR_TYPE;
+		}
+
+		if(!skipContinuation)
+		{
+			CSharpLinqQueryContinuationImpl queryContinuation = getQueryContinuation();
+			if(queryContinuation != null)
+			{
+				CSharpLinqQueryBodyImpl queryBody = queryContinuation.getQueryBody();
+				if(queryBody != null)
+				{
+					return queryBody.calcTypeRef(false);
+				}
+			}
+		}
+
+		DotNetTypeRef innerTypeRef;
+		if(selectOrGroupClause.isGroup())
+		{
+			DotNetTypeRef[] arguments = new DotNetTypeRef[] {typeRefOrError(selectOrGroupClause.getSecondExpression()),
+					typeRefOrError(selectOrGroupClause.getFirstExpression())};
+			innerTypeRef = new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(DotNetTypes2.System.Linq.IGrouping$2), arguments);
+		}
+		else
+		{
+			innerTypeRef = typeRefOrError(selectOrGroupClause.getFirstExpression());
+		}
+
+		if(innerTypeRef != DotNetTypeRef.ERROR_TYPE)
+		{
+			CSharpTypeRefByQName enumerableTypeRef = new CSharpTypeRefByQName(DotNetTypes2.System.Collections.Generic.IEnumerable$1);
+			return new CSharpGenericWrapperTypeRef(enumerableTypeRef, innerTypeRef);
+		}
+		return DotNetTypeRef.ERROR_TYPE;
+	}
+
+	@NotNull
+	private static DotNetTypeRef typeRefOrError(@Nullable DotNetExpression expression)
+	{
+		return expression == null ? DotNetTypeRef.ERROR_TYPE : expression.toTypeRef(true);
+	}
+
 	@Nullable
 	public CSharpLinqSelectOrGroupClauseImpl getSelectOrGroupClause()
 	{
 		return findChildByClass(CSharpLinqSelectOrGroupClauseImpl.class);
+	}
+
+	@Nullable
+	public CSharpLinqQueryContinuationImpl getQueryContinuation()
+	{
+		return findChildByClass(CSharpLinqQueryContinuationImpl.class);
 	}
 
 	@Override

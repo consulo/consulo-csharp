@@ -96,6 +96,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 	}
 
 	@NotNull
+	@RequiredReadAction
 	private DotNetTypeRef resolveTypeRef()
 	{
 		PsiElement parent = getParent();
@@ -137,9 +138,29 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 				CSharpLinqVariableImpl variable = ((CSharpLinqJoinClauseImpl) nextParent).getVariable();
 				if(variable != null)
 				{
-					return new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(DotNetTypes2.System.Collections.Generic.IEnumerable$1),
-							new DotNetTypeRef[]{variable.toTypeRef(true)});
+					return new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(DotNetTypes2.System.Collections.Generic.IEnumerable$1), variable.toTypeRef(true));
 				}
+			}
+			else if(nextParent instanceof CSharpLinqQueryContinuationImpl)
+			{
+				CSharpLinqQueryBodyImpl body = (CSharpLinqQueryBodyImpl) nextParent.getParent();
+
+				PsiElement bodyParent = body.getParent();
+				if(bodyParent instanceof CSharpLinqExpressionImpl)
+				{
+					CSharpLinqFromClauseImpl fromClause = ((CSharpLinqExpressionImpl) bodyParent).getFromClause();
+					CSharpLinqVariableImpl variable = fromClause.getVariable();
+					if(variable != null)
+					{
+						return variable.toTypeRef(true);
+					}
+				}
+				else if(bodyParent instanceof CSharpLinqQueryContinuationImpl)
+				{
+					DotNetTypeRef bodyTypeRef = body.calcTypeRef(true);
+					return bodyTypeRef == DotNetTypeRef.ERROR_TYPE ? DotNetTypeRef.ERROR_TYPE : CSharpResolveUtil.resolveIterableType(this, bodyTypeRef);
+				}
+				return DotNetTypeRef.ERROR_TYPE;
 			}
 		}
 		return DotNetTypeRef.AUTO_TYPE;

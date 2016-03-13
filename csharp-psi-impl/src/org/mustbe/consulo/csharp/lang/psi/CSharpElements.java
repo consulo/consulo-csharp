@@ -196,6 +196,8 @@ public interface CSharpElements
 
 	IElementType LINQ_INTRO_CLAUSE = new ElementTypeAsPsiFactory("LINQ_INTRO_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqIntoClauseImpl.class);
 
+	IElementType LINQ_QUERY_CONTINUATION = new ElementTypeAsPsiFactory("LINQ_QUERY_CONTINUATION", CSharpLanguage.INSTANCE, CSharpLinqQueryContinuationImpl.class);
+
 	IElementType LINQ_ORDERBY_ORDERING = new ElementTypeAsPsiFactory("LINQ_ORDERBY_ORDERING", CSharpLanguage.INSTANCE,
 			CSharpLinqOrderByOrderingImpl.class);
 

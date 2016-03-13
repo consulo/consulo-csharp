@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.ModifierSet;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
@@ -31,8 +32,8 @@ import com.intellij.psi.tree.TokenSet;
  */
 public class LinqParsing extends SharedParsingHelpers
 {
-	public static final TokenSet LINQ_KEYWORDS = TokenSet.create(LET_KEYWORD, FROM_KEYWORD, SELECT_KEYWORD, GROUP_KEYWORD, BY_KEYWORD,
-	INTO_KEYWORD, ORDERBY_KEYWORD, WHERE_KEYWORD, ASCENDING_KEYWORD, DESCENDING_KEYWORD, JOIN_KEYWORD, ON_KEYWORD, EQUALS_KEYWORD);
+	public static final TokenSet LINQ_KEYWORDS = TokenSet.create(LET_KEYWORD, FROM_KEYWORD, SELECT_KEYWORD, GROUP_KEYWORD, BY_KEYWORD, INTO_KEYWORD, ORDERBY_KEYWORD, WHERE_KEYWORD,
+			ASCENDING_KEYWORD, DESCENDING_KEYWORD, JOIN_KEYWORD, ON_KEYWORD, EQUALS_KEYWORD);
 
 	public static PsiBuilder.Marker parseLinqExpression(final CSharpBuilderWrapper builder, ModifierSet set)
 	{
@@ -49,21 +50,7 @@ public class LinqParsing extends SharedParsingHelpers
 				return null;
 			}
 
-			PsiBuilder.Marker queryBody = builder.mark();
-			while(!builder.eof())
-			{
-				PsiBuilder.Marker qMarker = parseQueryBodyClause(builder, set);
-				if(qMarker == null)
-				{
-					break;
-				}
-			}
-
-			parseSelectOrGroupClause(builder, set);
-
-			//TODO [VISTALL] QueryContinuation?
-
-			queryBody.done(LINQ_QUERY_BODY);
+			parseQueryBody(builder, set);
 
 			linqExpressionMarker.done(LINQ_EXPRESSION);
 			return linqExpressionMarker;
@@ -71,6 +58,39 @@ public class LinqParsing extends SharedParsingHelpers
 		finally
 		{
 			builder.disableSoftKeywords(LINQ_KEYWORDS);
+		}
+	}
+
+	private static void parseQueryBody(CSharpBuilderWrapper builder, ModifierSet set)
+	{
+		PsiBuilder.Marker queryBody = builder.mark();
+		while(!builder.eof())
+		{
+			PsiBuilder.Marker qMarker = parseQueryBodyClause(builder, set);
+			if(qMarker == null)
+			{
+				break;
+			}
+		}
+
+		parseSelectOrGroupClause(builder, set);
+
+		parseQueryContinuation(builder, set);
+
+		queryBody.done(LINQ_QUERY_BODY);
+	}
+
+	private static void parseQueryContinuation(CSharpBuilderWrapper builder, ModifierSet set)
+	{
+		if(builder.getTokenType() == CSharpSoftTokens.INTO_KEYWORD)
+		{
+			PsiBuilder.Marker mark = builder.mark();
+
+			parseIntoClause(builder);
+
+			parseQueryBody(builder, set);
+
+			mark.done(LINQ_QUERY_CONTINUATION);
 		}
 	}
 
@@ -243,6 +263,15 @@ public class LinqParsing extends SharedParsingHelpers
 			builder.error("'equals' expected");
 		}
 
+		parseIntoClause(builder);
+
+		mark.done(LINQ_JOIN_CLAUSE);
+
+		return mark;
+	}
+
+	private static void parseIntoClause(CSharpBuilderWrapper builder)
+	{
 		if(builder.getTokenType() == INTO_KEYWORD)
 		{
 			PsiBuilder.Marker tempMarker = builder.mark();
@@ -254,10 +283,6 @@ public class LinqParsing extends SharedParsingHelpers
 
 			tempMarker.done(LINQ_INTRO_CLAUSE);
 		}
-
-		mark.done(LINQ_JOIN_CLAUSE);
-
-		return mark;
 	}
 
 	private static PsiBuilder.Marker parseWhereClause(CSharpBuilderWrapper builder, ModifierSet set)

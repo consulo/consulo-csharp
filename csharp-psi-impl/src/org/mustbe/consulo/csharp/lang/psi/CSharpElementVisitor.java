@@ -635,4 +635,9 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	{
 		visitElement(identifier);
 	}
+
+	public void visitLinqQueryContinuation(CSharpLinqQueryContinuationImpl continuation)
+	{
+		visitElement(continuation);
+	}
 }
