@@ -631,6 +631,16 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 								{
 									if(elementType == CSharpTokens.VOID_KEYWORD)
 									{
+										DotNetType userType = PsiTreeUtil.getParentOfType(parent, DotNetType.class);
+										if(userType == null)
+										{
+											return lookupElementBuilder;
+										}
+										PsiElement userTypeParent = userType.getParent();
+										if(userTypeParent instanceof CSharpTypeOfExpressionImpl)
+										{
+											return lookupElementBuilder;
+										}
 										return lookupElementBuilder.withInsertHandler(SpaceInsertHandler.INSTANCE);
 									}
 									return lookupElementBuilder;
@@ -668,6 +678,10 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 												return false;
 											}
 											return fieldDeclaration.getType() == userType;
+										}
+										else if(userTypeParent instanceof CSharpTypeOfExpressionImpl)
+										{
+											return true;
 										}
 										return false;
 									}

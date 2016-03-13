@@ -22,6 +22,7 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNativeType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeOfExpressionImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -47,6 +48,10 @@ public class CS1547 extends CompilerCheck<CSharpNativeType>
 		if(typeElementType == CSharpTokens.VOID_KEYWORD)
 		{
 			PsiElement parent = element.getParent();
+			if(parent instanceof CSharpTypeOfExpressionImpl)
+			{
+				return null;
+			}
 			if(!(parent instanceof DotNetLikeMethodDeclaration))
 			{
 				if(parent instanceof DotNetFieldDeclaration)
@@ -57,7 +62,7 @@ public class CS1547 extends CompilerCheck<CSharpNativeType>
 					}
 
 					PsiElement lastChild = parent.getLastChild();
-					// dotn show error while typing
+					// dont show error while typing
 					if(lastChild instanceof PsiErrorElement)
 					{
 						return null;
