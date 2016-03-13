@@ -24,9 +24,11 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeOfExpressionImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
@@ -74,6 +76,13 @@ public class CS0305 extends CompilerCheck<CSharpReferenceExpression>
 
 		if(expectedCount != foundCount)
 		{
+			if(expectedCount > 0 && foundCount == 0)
+			{
+				if(PsiTreeUtil.getParentOfType(referenceExpression, CSharpTypeOfExpressionImpl.class) != null)
+				{
+					return null;
+				}
+			}
 			return newBuilder(referenceExpression.getReferenceElement(), formatElement(resolvedElement), String.valueOf(expectedCount));
 		}
 		return null;
