@@ -29,8 +29,7 @@ public class CSharpGenericExtractor implements DotNetGenericExtractor
 	@NotNull
 	public static DotNetGenericExtractor create(@NotNull DotNetGenericParameter[] genericParameters, @NotNull DotNetTypeRef[] arguments)
 	{
-		assert genericParameters.length == arguments.length : genericParameters.length + " : " + arguments.length;
-		if(genericParameters.length == 0)
+		if(genericParameters.length == 0 || genericParameters.length != arguments.length)
 		{
 			return EMPTY;
 		}
