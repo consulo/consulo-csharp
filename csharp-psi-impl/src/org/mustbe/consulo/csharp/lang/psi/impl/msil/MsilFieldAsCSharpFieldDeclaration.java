@@ -71,4 +71,11 @@ public class MsilFieldAsCSharpFieldDeclaration extends MsilVariableAsCSharpVaria
 	{
 		return getVariable().getPresentableQName();
 	}
+
+	@Nullable
+	@Override
+	protected Class<? extends PsiElement> getNavigationElementClass()
+	{
+		return CSharpFieldDeclaration.class;
+	}
 }

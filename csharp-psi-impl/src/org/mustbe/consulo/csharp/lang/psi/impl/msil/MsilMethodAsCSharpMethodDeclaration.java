@@ -207,6 +207,13 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 		return typeForImplement != null ? typeForImplement.toTypeRef() : DotNetTypeRef.ERROR_TYPE;
 	}
 
+	@Nullable
+	@Override
+	protected Class<? extends PsiElement> getNavigationElementClass()
+	{
+		return CSharpMethodDeclaration.class;
+	}
+
 	public DotNetTypeDeclaration getDelegate()
 	{
 		return myDelegate;

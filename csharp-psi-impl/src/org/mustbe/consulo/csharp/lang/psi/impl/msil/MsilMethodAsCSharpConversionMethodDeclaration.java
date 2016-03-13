@@ -106,4 +106,11 @@ public class MsilMethodAsCSharpConversionMethodDeclaration extends MsilMethodAsC
 	{
 		return null;
 	}
+
+	@Nullable
+	@Override
+	protected Class<? extends PsiElement> getNavigationElementClass()
+	{
+		return CSharpConversionMethodDeclaration.class;
+	}
 }

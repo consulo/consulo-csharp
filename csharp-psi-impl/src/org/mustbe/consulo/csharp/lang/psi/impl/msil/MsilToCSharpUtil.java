@@ -226,6 +226,7 @@ public class MsilToCSharpUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static DotNetTypeRef extractToCSharp(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
 		if(typeRef == DotNetTypeRef.ERROR_TYPE)

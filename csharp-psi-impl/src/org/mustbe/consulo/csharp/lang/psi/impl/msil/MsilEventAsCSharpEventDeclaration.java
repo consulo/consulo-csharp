@@ -90,6 +90,7 @@ public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVaria
 		return (MsilEventEntry) super.getVariable();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableParentQName()
@@ -97,6 +98,7 @@ public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVaria
 		return getVariable().getPresentableParentQName();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableQName()
@@ -126,5 +128,12 @@ public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVaria
 	{
 		DotNetType typeForImplement = getTypeForImplement();
 		return typeForImplement != null ? typeForImplement.toTypeRef() : DotNetTypeRef.ERROR_TYPE;
+	}
+
+	@Nullable
+	@Override
+	protected Class<? extends PsiElement> getNavigationElementClass()
+	{
+		return CSharpEventDeclaration.class;
 	}
 }

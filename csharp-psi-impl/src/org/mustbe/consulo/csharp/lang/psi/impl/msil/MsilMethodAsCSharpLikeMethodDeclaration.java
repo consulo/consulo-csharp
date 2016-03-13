@@ -72,6 +72,12 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 		myGenericConstraintList = MsilAsCSharpBuildUtil.buildConstraintList(myGenericParameterList);
 	}
 
+	@Override
+	public boolean isEquivalentTo(PsiElement another)
+	{
+		return CSharpLikeMethodDeclarationImplUtil.isEquivalentTo(this, another);
+	}
+
 	@NotNull
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{

@@ -18,11 +18,17 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementCompareUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightElement;
 import org.mustbe.consulo.msil.representation.MsilRepresentationNavigateUtil;
+import com.intellij.openapi.util.Ref;
+import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
+import com.intellij.util.Consumer;
 
 /**
  * @author VISTALL
@@ -62,10 +68,55 @@ public abstract class MsilElementWrapper<T extends PsiElement> extends CSharpLig
 		return true;
 	}
 
+	@Nullable
+	protected Class<? extends PsiElement> getNavigationElementClass()
+	{
+		return null;
+	}
+
+	protected boolean isEquivalentTo(PsiElement o1, PsiElement o2)
+	{
+		return CSharpElementCompareUtil.isEqual(o1, o2, CSharpElementCompareUtil.CHECK_RETURN_TYPE | CSharpElementCompareUtil.CHECK_VIRTUAL_IMPL_TYPE, myOriginal);
+	}
+
 	@Override
+	@RequiredDispatchThread
 	public void navigate(boolean requestFocus)
 	{
-		MsilRepresentationNavigateUtil.navigateToRepresentation(myOriginal, CSharpFileType.INSTANCE);
+		final Class<? extends PsiElement> navigationElementClass = getNavigationElementClass();
+
+		Consumer<PsiFile> consumer = navigationElementClass == null ? MsilRepresentationNavigateUtil.DEFAULT_NAVIGATOR : new Consumer<PsiFile>()
+		{
+			@Override
+			public void consume(PsiFile file)
+			{
+				final Ref<Navigatable> navigatableRef = Ref.create();
+				file.accept(new PsiRecursiveElementWalkingVisitor()
+				{
+					@Override
+					public void visitElement(PsiElement element)
+					{
+						if(navigationElementClass.isAssignableFrom(element.getClass()) && isEquivalentTo(element, MsilElementWrapper.this))
+						{
+							navigatableRef.set((Navigatable) element);
+							stopWalking();
+							return;
+						}
+						super.visitElement(element);
+					}
+				});
+
+				Navigatable navigatable = navigatableRef.get();
+				if(navigatable != null)
+				{
+					navigatable.navigate(true);
+				}
+
+				file.navigate(true);
+			}
+		};
+
+		MsilRepresentationNavigateUtil.navigateToRepresentation(myOriginal, CSharpFileType.INSTANCE, consumer);
 	}
 
 	@NotNull

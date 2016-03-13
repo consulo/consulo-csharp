@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -41,6 +42,7 @@ public class MsilFieldAsCSharpEnumConstantDeclaration extends MsilVariableAsCSha
 		visitor.visitEnumConstantDeclaration(this);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableParentQName()
@@ -54,10 +56,18 @@ public class MsilFieldAsCSharpEnumConstantDeclaration extends MsilVariableAsCSha
 		return (MsilFieldEntry) super.getVariable();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableQName()
 	{
 		return getVariable().getPresentableQName();
+	}
+
+	@Nullable
+	@Override
+	protected Class<? extends PsiElement> getNavigationElementClass()
+	{
+		return CSharpEnumConstantDeclaration.class;
 	}
 }

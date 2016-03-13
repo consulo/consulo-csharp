@@ -23,8 +23,8 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightAttributeBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.typeParsing.SomeType;
@@ -265,5 +265,12 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 	public PsiElement getRightBrace()
 	{
 		return null;
+	}
+
+	@Nullable
+	@Override
+	protected Class<? extends PsiElement> getNavigationElementClass()
+	{
+		return CSharpIndexMethodDeclaration.class;
 	}
 }

@@ -99,6 +99,7 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 		return staticMod ? ArrayUtil.append(access.getModifiers(), CSharpModifier.STATIC) : access.getModifiers();
 	}
 
+	@RequiredReadAction
 	private static CSharpAccessModifier getAccessModifier(MsilMethodEntry second)
 	{
 		if(second.hasModifier(MsilTokens.PRIVATE_KEYWORD))
@@ -164,6 +165,7 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 		return getAccessors();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableParentQName()
@@ -171,6 +173,7 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 		return getVariable().getPresentableParentQName();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableQName()
@@ -200,5 +203,12 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 	{
 		DotNetType typeForImplement = getTypeForImplement();
 		return typeForImplement != null ? typeForImplement.toTypeRef() : DotNetTypeRef.ERROR_TYPE;
+	}
+
+	@Nullable
+	@Override
+	protected Class<? extends PsiElement> getNavigationElementClass()
+	{
+		return CSharpPropertyDeclaration.class;
 	}
 }

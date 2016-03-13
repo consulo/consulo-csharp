@@ -24,6 +24,7 @@ import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
@@ -32,7 +33,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
@@ -42,6 +42,7 @@ import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilPropertyEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import org.mustbe.consulo.msil.lang.psi.MsilXXXAcessor;
+import org.mustbe.dotnet.msil.decompiler.util.MsilHelper;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.openapi.util.Comparing;
@@ -62,6 +63,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	{
 		@NotNull
 		@Override
+		@RequiredDispatchThread
 		protected DotNetNamedElement[] compute()
 		{
 			MsilClassAsCSharpTypeDefinition parentThis = MsilClassAsCSharpTypeDefinition.this;
@@ -120,8 +122,8 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 					{
 						Pair<DotNetXXXAccessor, MsilMethodEntry> value = pairs.get(0);
 
-						if(value.getFirst().getAccessorKind() == DotNetXXXAccessor.Kind.GET && value.getSecond().getParameters().length == 1 ||
-								value.getFirst().getAccessorKind() == DotNetXXXAccessor.Kind.SET && value.getSecond().getParameters().length == 2)
+						if(value.getFirst().getAccessorKind() == DotNetXXXAccessor.Kind.GET && value.getSecond().getParameters().length == 1 || value.getFirst().getAccessorKind() ==
+								DotNetXXXAccessor.Kind.SET && value.getSecond().getParameters().length == 2)
 						{
 							list.add(new MsilPropertyAsCSharpIndexMethodDeclaration(parentThis, (MsilPropertyEntry) element, pairs));
 							continue;
@@ -184,8 +186,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 					}
 					if(MsilHelper.CONSTRUCTOR_NAME.equals(nameFromBytecode))
 					{
-						list.add(new MsilMethodAsCSharpConstructorDeclaration(parentThis, MsilClassAsCSharpTypeDefinition.this,
-								(MsilMethodEntry) member, false));
+						list.add(new MsilMethodAsCSharpConstructorDeclaration(parentThis, MsilClassAsCSharpTypeDefinition.this, (MsilMethodEntry) member, false));
 					}
 					else if(Comparing.equal(nameFromBytecode, "op_Implicit") || Comparing.equal(nameFromBytecode, "op_Explicit"))
 					{
@@ -193,12 +194,10 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 					}
 					else
 					{
-						boolean isDeConstructor = Comparing.equal(nameFromBytecode, "Finalize") && ((MsilMethodEntry) member).hasModifier(MsilTokens
-								.PROTECTED_KEYWORD);
+						boolean isDeConstructor = Comparing.equal(nameFromBytecode, "Finalize") && ((MsilMethodEntry) member).hasModifier(MsilTokens.PROTECTED_KEYWORD);
 						if(isDeConstructor)
 						{
-							list.add(new MsilMethodAsCSharpConstructorDeclaration(parentThis, MsilClassAsCSharpTypeDefinition.this,
-									(MsilMethodEntry) member, true));
+							list.add(new MsilMethodAsCSharpConstructorDeclaration(parentThis, MsilClassAsCSharpTypeDefinition.this, (MsilMethodEntry) member, true));
 						}
 						else
 						{
@@ -224,8 +223,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		super(parent, classEntry);
 		myModifierList = new MsilModifierListToCSharpModifierList(this, classEntry.getModifierList());
 		DotNetGenericParameterList genericParameterList = classEntry.getGenericParameterList();
-		myGenericParameterList = genericParameterList == null ? null : new MsilGenericParameterListAsCSharpGenericParameterList(this,
-				genericParameterList);
+		myGenericParameterList = genericParameterList == null ? null : new MsilGenericParameterListAsCSharpGenericParameterList(this, genericParameterList);
 		myGenericConstraintList = MsilAsCSharpBuildUtil.buildConstraintList(myGenericParameterList);
 	}
 
@@ -241,12 +239,14 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		return myOriginal.getContainingFile();
 	}
 
+	@RequiredReadAction
 	@Override
 	public String getVmQName()
 	{
 		return myOriginal.getVmQName();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getVmName()
@@ -397,12 +397,14 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		return myMembersValue.getValue();
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
 		return myModifierList.hasModifier(modifier);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetModifierList getModifierList()
@@ -410,6 +412,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		return myModifierList;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableParentQName()
@@ -423,6 +426,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		return MsilHelper.cutGenericMarker(myOriginal.getName());
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableQName()
@@ -453,5 +457,12 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
 	{
 		return null;
+	}
+
+	@Nullable
+	@Override
+	protected Class<? extends PsiElement> getNavigationElementClass()
+	{
+		return CSharpTypeDeclaration.class;
 	}
 }

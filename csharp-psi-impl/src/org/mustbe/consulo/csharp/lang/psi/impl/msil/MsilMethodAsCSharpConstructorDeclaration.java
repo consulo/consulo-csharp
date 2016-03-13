@@ -98,4 +98,11 @@ public class MsilMethodAsCSharpConstructorDeclaration extends MsilMethodAsCSharp
 	{
 		return null;
 	}
+
+	@Nullable
+	@Override
+	protected Class<? extends PsiElement> getNavigationElementClass()
+	{
+		return CSharpConstructorDeclaration.class;
+	}
 }

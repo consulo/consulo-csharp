@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
@@ -84,12 +85,14 @@ public class MsilXXXAccessorAsCSharpXXXAccessor extends MsilElementWrapper<DotNe
 		return null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
 		return myModifierList.hasModifier(modifier);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetModifierList getModifierList()
@@ -115,5 +118,12 @@ public class MsilXXXAccessorAsCSharpXXXAccessor extends MsilElementWrapper<DotNe
 	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
 	{
 		return null;
+	}
+
+	@Nullable
+	@Override
+	protected Class<? extends PsiElement> getNavigationElementClass()
+	{
+		return DotNetXXXAccessor.class;
 	}
 }
