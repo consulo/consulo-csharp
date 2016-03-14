@@ -67,6 +67,7 @@ public class CC0004 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 		{
 			list.add(element);
 		}
+		String text = element.getText();
 		return CC0001.checkReference(element, list);
 	}
 }

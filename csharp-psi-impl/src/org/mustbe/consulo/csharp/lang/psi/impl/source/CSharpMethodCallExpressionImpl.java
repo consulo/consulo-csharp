@@ -32,6 +32,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.Me
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResultUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -116,20 +117,9 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 				return resolveResults[0].getElement();
 			}
 		}
-		else if(callExpression instanceof CSharpCallArgumentListOwner)
+		else
 		{
-			ResolveResult[] resolveResults = multiResolve(false);
-
-			PsiElement firstValidElement = CSharpResolveUtil.findFirstValidElement(resolveResults);
-			if(firstValidElement != null)
-			{
-				return firstValidElement;
-			}
-
-			if(resolveResults.length > 0)
-			{
-				return resolveResults[0].getElement();
-			}
+			return CSharpResolveUtil.findFirstValidElement(multiResolve(false));
 		}
 		return null;
 	}
@@ -145,30 +135,24 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 		{
 			return ((CSharpReferenceExpression) callExpression).multiResolve(incompleteCode);
 		}
-		else if(callExpression instanceof CSharpCallArgumentListOwner)
+		else
 		{
-			if(!incompleteCode)
+			DotNetTypeRef typeRef = callExpression.toTypeRef(true);
+
+			DotNetTypeResolveResult typeResolveResult = typeRef.resolve(this);
+
+			PsiElement element = typeResolveResult.getElement();
+			CSharpMethodDeclaration declaration = CSharpLambdaResolveResultUtil.getDelegateMethodTypeWrapper(element);
+			if(declaration != null)
 			{
-				DotNetTypeRef typeRef = callExpression.toTypeRef(true);
+				declaration = GenericUnwrapTool.extract(declaration, typeResolveResult.getGenericExtractor());
 
-				DotNetTypeResolveResult typeResolveResult = typeRef.resolve(this);
+				MethodCalcResult calcResult = MethodResolver.calc(this, declaration, this);
 
-				PsiElement element = typeResolveResult.getElement();
-				CSharpMethodDeclaration delegateMethodTypeWrapper = CSharpLambdaResolveResultUtil.getDelegateMethodTypeWrapper(element);
-				if(delegateMethodTypeWrapper != null)
-				{
-					MethodCalcResult calcResult = MethodResolver.calc(this, delegateMethodTypeWrapper, this);
-
-					return new ResolveResult[] {MethodResolveResult.createResult(calcResult, delegateMethodTypeWrapper, null)};
-				}
+				return new ResolveResult[]{MethodResolveResult.createResult(calcResult, declaration, null)};
 			}
-			else
-			{
-				return CSharpResolveUtil.filterValidResults(multiResolve(false));
-			}
-
+			return ResolveResult.EMPTY_ARRAY;
 		}
-		return ResolveResult.EMPTY_ARRAY;
 	}
 
 	@NotNull

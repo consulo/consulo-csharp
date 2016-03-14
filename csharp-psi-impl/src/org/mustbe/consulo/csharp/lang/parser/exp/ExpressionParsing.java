@@ -540,6 +540,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 				IElementType expType = exprType(expr);
 				if(expType != REFERENCE_EXPRESSION &&
 						expType != INDEX_ACCESS_EXPRESSION &&
+						expType != PARENTHESES_EXPRESSION &&
 						expType != METHOD_CALL_EXPRESSION)
 				{
 					startMarker.drop();

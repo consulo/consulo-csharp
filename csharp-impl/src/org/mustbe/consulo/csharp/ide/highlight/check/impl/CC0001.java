@@ -200,9 +200,17 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 	}
 
 	@Contract("null -> false")
+	@RequiredReadAction
 	public static boolean isCalleInsideCalle(@Nullable PsiElement callElement)
 	{
-		return callElement instanceof CSharpMethodCallExpressionImpl && ((CSharpMethodCallExpressionImpl) callElement).getCallExpression() instanceof CSharpCallArgumentListOwner;
+		if(callElement instanceof CSharpMethodCallExpressionImpl)
+		{
+			return !(((CSharpMethodCallExpressionImpl) callElement).getCallExpression() instanceof CSharpReferenceExpression);
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	@RequiredReadAction
