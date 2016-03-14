@@ -67,7 +67,7 @@ public class CSharpModuleTypeHelperImpl extends CSharpModuleTypeHelper
 			}
 
 			StringBuilder builder = new StringBuilder();
-			builder.append("public class ArrayImpl<T> : System.Array, System.Collections.Generic.IEnumerable<T>");
+			builder.append("public class ArrayImpl<T> : System.Array, System.Collections.Generic.IEnumerable<T>, System.Collections.Generic.IList<T>");
 			builder.append("{");
 			builder.append("private ArrayImpl() {}");
 			builder.append("public T this[long index");
