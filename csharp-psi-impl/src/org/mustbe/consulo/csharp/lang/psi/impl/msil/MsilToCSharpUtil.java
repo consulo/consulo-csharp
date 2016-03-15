@@ -16,9 +16,6 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
-import java.util.Map;
-
-import org.jboss.netty.util.internal.ConcurrentWeakKeyHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
@@ -47,7 +44,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetRefTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
-import org.mustbe.consulo.msil.lang.psi.MsilEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilModifierElementType;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
@@ -55,8 +51,10 @@ import org.mustbe.consulo.msil.lang.psi.impl.type.MsilArrayTypRefImpl;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilNativeTypeRefImpl;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Condition;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.ObjectUtil;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
@@ -65,9 +63,9 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class MsilToCSharpUtil
 {
-	//FIXME [VISTALL] very dirty hack
-	private static Map<MsilEntry, PsiElement> ourCache = new ConcurrentWeakKeyHashMap<MsilEntry, PsiElement>();
+	private static final Key<PsiElement> MSIL_WRAPPER_VALUE = Key.create("msil.to.csharp.wrapper.key");
 
+	@RequiredReadAction
 	public static boolean hasCSharpInMsilModifierList(CSharpModifier modifier, DotNetModifierList modifierList)
 	{
 		MsilModifierElementType elementType = null;
@@ -138,6 +136,7 @@ public class MsilToCSharpUtil
 	}
 
 	@SuppressWarnings("unchecked")
+	@RequiredReadAction
 	private static <T extends DotNetModifierListOwner> boolean hasModifierInParentIfType(DotNetModifierList msilModifierList, DotNetModifier modifier)
 	{
 		PsiElement parent = msilModifierList.getParent();
@@ -156,6 +155,7 @@ public class MsilToCSharpUtil
 		return modifierListOwner.hasModifier(modifier);
 	}
 
+	@RequiredReadAction
 	private static boolean hasAttribute(DotNetModifierList modifierList, String qName)
 	{
 		for(DotNetAttribute attribute : modifierList.getAttributes())
@@ -171,21 +171,21 @@ public class MsilToCSharpUtil
 
 	@NotNull
 	@RequiredReadAction
-	public static PsiElement wrap(PsiElement element, @Nullable PsiElement parent)
+	public static PsiElement wrap(@NotNull PsiElement element, @Nullable PsiElement parent)
 	{
 		return wrap(element, parent, new GenericParameterContext(null));
 	}
 
 	@NotNull
 	@RequiredReadAction
-	public static PsiElement wrap(PsiElement element, @Nullable PsiElement parent, @NotNull GenericParameterContext context)
+	public static PsiElement wrap(@NotNull PsiElement element, @Nullable PsiElement parent, @NotNull GenericParameterContext context)
 	{
 		if(element instanceof MsilClassEntry)
 		{
-			PsiElement cache = ourCache.get(element);
-			if(cache != null)
+			PsiElement wrapElement = element.getUserData(MSIL_WRAPPER_VALUE);
+			if(wrapElement != null)
 			{
-				return cache;
+				return ObjectUtil.notNull(wrapElement, element);
 			}
 
 			if(parent == null)
@@ -197,13 +197,14 @@ public class MsilToCSharpUtil
 				}
 			}
 
-			cache = wrapToDelegateMethod((MsilClassEntry) element, parent, context);
-			if(cache == null)
+			wrapElement = wrapToDelegateMethod((MsilClassEntry) element, parent, context);
+			if(wrapElement == null)
 			{
-				cache = new MsilClassAsCSharpTypeDefinition(parent, (MsilClassEntry) element, context);
+				wrapElement = new MsilClassAsCSharpTypeDefinition(parent, (MsilClassEntry) element, context);
 			}
-			ourCache.put((MsilClassEntry) element, cache);
-			return cache;
+
+			element.putUserData(MSIL_WRAPPER_VALUE, wrapElement);
+			return wrapElement;
 		}
 		return element;
 	}
