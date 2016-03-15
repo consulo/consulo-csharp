@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2015 must-be.org
+ * Copyright 2013-2016 must-be.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,24 +18,41 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.ToNativeElementTransformer;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.transformer.MsilToNativeElementTransformer2;
-import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
- * @since 18.12.2015
+ * @since 15.03.2016
  */
-public class MsilToNativeElementTransformer implements ToNativeElementTransformer
+public class GenericParameterContext
 {
-	private static final MsilToNativeElementTransformer2 newInstance = new MsilToNativeElementTransformer2();
-
-	@RequiredReadAction
 	@Nullable
-	@Override
-	public PsiElement transform(@NotNull PsiElement element)
+	private GenericParameterContext myParent;
+
+	private int myCount;
+
+	public GenericParameterContext(@Nullable GenericParameterContext parent)
 	{
-		return newInstance.transform(element);
+		myParent = parent;
+	}
+
+	public void setGenericParameterCount(int count)
+	{
+		myCount = count;
+	}
+
+	@NotNull
+	public GenericParameterContext gemmate()
+	{
+		return new GenericParameterContext(this);
+	}
+
+	public boolean isImplicitParameter(int i)
+	{
+		if(myParent != null)
+		{
+			int count = myParent.myCount;
+			return i < count;
+		}
+		return false;
 	}
 }

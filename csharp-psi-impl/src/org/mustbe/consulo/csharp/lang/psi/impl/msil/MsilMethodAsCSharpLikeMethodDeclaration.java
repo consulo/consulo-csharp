@@ -50,7 +50,7 @@ import com.intellij.util.IncorrectOperationException;
 public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElementWrapper<MsilMethodEntry> implements DotNetLikeMethodDeclaration
 {
 	private MsilModifierListToCSharpModifierList myModifierList;
-	private MsilGenericParameterListAsCSharpGenericParameterList myGenericParameterList;
+	private DotNetGenericParameterList myGenericParameterList;
 	protected CSharpLightGenericConstraintList myGenericConstraintList;
 
 	public MsilMethodAsCSharpLikeMethodDeclaration(PsiElement parent, MsilMethodEntry methodEntry)
@@ -64,11 +64,10 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 		myModifierList = new MsilModifierListToCSharpModifierList(modifiers, this, methodEntry.getModifierList());
 	}
 
-	protected void setGenericParameterList(@NotNull DotNetGenericParameterListOwner owner)
+	protected void setGenericParameterList(@NotNull DotNetGenericParameterListOwner owner, @NotNull GenericParameterContext genericParameterContext)
 	{
 		DotNetGenericParameterList genericParameterList = owner.getGenericParameterList();
-		myGenericParameterList = genericParameterList == null ? null : new MsilGenericParameterListAsCSharpGenericParameterList(this,
-				genericParameterList);
+		myGenericParameterList = MsilGenericParameterListAsCSharpGenericParameterList.build(this, genericParameterList, genericParameterContext);
 		myGenericConstraintList = MsilAsCSharpBuildUtil.buildConstraintList(myGenericParameterList);
 	}
 

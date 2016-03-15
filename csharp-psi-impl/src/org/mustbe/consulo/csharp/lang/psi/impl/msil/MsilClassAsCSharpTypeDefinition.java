@@ -171,7 +171,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 				}
 				else if(element instanceof MsilClassEntry)
 				{
-					list.add((DotNetNamedElement) MsilToCSharpUtil.wrap(element, parentThis));
+					list.add((DotNetNamedElement) MsilToCSharpUtil.wrap(element, parentThis, myGenericParameterContext.gemmate()));
 				}
 			}
 
@@ -201,7 +201,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 						}
 						else
 						{
-							list.add(new MsilMethodAsCSharpMethodDeclaration(parentThis, null, (MsilMethodEntry) member));
+							list.add(new MsilMethodAsCSharpMethodDeclaration(parentThis, null, new GenericParameterContext (null), (MsilMethodEntry) member));
 						}
 					}
 				}
@@ -210,20 +210,23 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		}
 	};
 
-	private MsilModifierListToCSharpModifierList myModifierList;
-	private MsilGenericParameterListAsCSharpGenericParameterList myGenericParameterList;
-	private CSharpLightGenericConstraintList myGenericConstraintList;
+	private final GenericParameterContext myGenericParameterContext;
+	private final MsilModifierListToCSharpModifierList myModifierList;
+	private final DotNetGenericParameterList myGenericParameterList;
+	private final CSharpLightGenericConstraintList myGenericConstraintList;
 
 	private Boolean myIsStruct;
 	private Boolean myIsEnum;
 	private Boolean myIsInterface;
 
-	public MsilClassAsCSharpTypeDefinition(@Nullable PsiElement parent, MsilClassEntry classEntry)
+	@RequiredReadAction
+	public MsilClassAsCSharpTypeDefinition(@Nullable PsiElement parent, MsilClassEntry classEntry, @NotNull GenericParameterContext genericParameterContext)
 	{
 		super(parent, classEntry);
+		myGenericParameterContext = genericParameterContext;
 		myModifierList = new MsilModifierListToCSharpModifierList(this, classEntry.getModifierList());
 		DotNetGenericParameterList genericParameterList = classEntry.getGenericParameterList();
-		myGenericParameterList = genericParameterList == null ? null : new MsilGenericParameterListAsCSharpGenericParameterList(this, genericParameterList);
+		myGenericParameterList = MsilGenericParameterListAsCSharpGenericParameterList.build(this, genericParameterList, genericParameterContext);
 		myGenericConstraintList = MsilAsCSharpBuildUtil.buildConstraintList(myGenericParameterList);
 	}
 

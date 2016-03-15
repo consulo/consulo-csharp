@@ -65,6 +65,7 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class MsilToCSharpUtil
 {
+	//FIXME [VISTALL] very dirty hack
 	private static Map<MsilEntry, PsiElement> ourCache = new ConcurrentWeakKeyHashMap<MsilEntry, PsiElement>();
 
 	public static boolean hasCSharpInMsilModifierList(CSharpModifier modifier, DotNetModifierList modifierList)
@@ -172,6 +173,13 @@ public class MsilToCSharpUtil
 	@RequiredReadAction
 	public static PsiElement wrap(PsiElement element, @Nullable PsiElement parent)
 	{
+		return wrap(element, parent, new GenericParameterContext(null));
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public static PsiElement wrap(PsiElement element, @Nullable PsiElement parent, @NotNull GenericParameterContext context)
+	{
 		if(element instanceof MsilClassEntry)
 		{
 			PsiElement cache = ourCache.get(element);
@@ -189,10 +197,10 @@ public class MsilToCSharpUtil
 				}
 			}
 
-			cache = wrapToDelegateMethod((DotNetTypeDeclaration) element, parent);
+			cache = wrapToDelegateMethod((MsilClassEntry) element, parent, context);
 			if(cache == null)
 			{
-				cache = new MsilClassAsCSharpTypeDefinition(parent, (MsilClassEntry) element);
+				cache = new MsilClassAsCSharpTypeDefinition(parent, (MsilClassEntry) element, context);
 			}
 			ourCache.put((MsilClassEntry) element, cache);
 			return cache;
@@ -202,7 +210,7 @@ public class MsilToCSharpUtil
 
 	@Nullable
 	@RequiredReadAction
-	public static CSharpMethodDeclaration wrapToDelegateMethod(@NotNull DotNetTypeDeclaration typeDeclaration, @Nullable PsiElement parent)
+	public static CSharpMethodDeclaration wrapToDelegateMethod(@NotNull MsilClassEntry typeDeclaration, @Nullable PsiElement parent, @NotNull GenericParameterContext context)
 	{
 		if(DotNetInheritUtil.isInheritor(typeDeclaration, DotNetTypes.System.MulticastDelegate, false))
 		{
@@ -217,7 +225,7 @@ public class MsilToCSharpUtil
 
 			assert msilMethodEntry != null : typeDeclaration.getPresentableQName();
 
-			return new MsilMethodAsCSharpMethodDeclaration(parent, typeDeclaration, msilMethodEntry);
+			return new MsilMethodAsCSharpMethodDeclaration(parent, typeDeclaration, context, msilMethodEntry);
 		}
 		else
 		{
@@ -270,7 +278,7 @@ public class MsilToCSharpUtil
 		PsiElement resolve = typeRef.resolve(scope).getElement();
 		if(resolve instanceof DotNetTypeDeclaration)
 		{
-			CSharpMethodDeclaration delegateMethod = wrapToDelegateMethod((DotNetTypeDeclaration) resolve, null);
+			CSharpMethodDeclaration delegateMethod = wrapToDelegateMethod((MsilClassEntry) resolve, null, new GenericParameterContext(null));
 			if(delegateMethod != null)
 			{
 				return new CSharpLazyLambdaTypeRef(scope, delegateMethod);

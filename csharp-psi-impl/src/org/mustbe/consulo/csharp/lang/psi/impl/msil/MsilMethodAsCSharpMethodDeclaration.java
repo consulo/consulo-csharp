@@ -34,8 +34,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.msil.typeParsing.SomeTypeParser;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import com.intellij.openapi.util.NullableLazyValue;
 import com.intellij.openapi.util.Pair;
@@ -92,13 +92,14 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 		}
 	};
 
-	private final DotNetTypeDeclaration myDelegate;
+	private final MsilClassEntry myDelegate;
 
-	public MsilMethodAsCSharpMethodDeclaration(PsiElement parent, @Nullable DotNetTypeDeclaration declaration, @NotNull MsilMethodEntry methodEntry)
+	public MsilMethodAsCSharpMethodDeclaration(PsiElement parent, @Nullable MsilClassEntry declaration, @NotNull GenericParameterContext genericParameterContext, @NotNull MsilMethodEntry methodEntry)
 	{
 		super(parent, CSharpModifier.EMPTY_ARRAY, methodEntry);
 		myDelegate = declaration;
-		setGenericParameterList(declaration != null ? declaration : methodEntry);
+
+		setGenericParameterList(declaration != null ? declaration : methodEntry, genericParameterContext);
 	}
 
 	@Override
@@ -126,8 +127,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 	@Override
 	public String getPresentableQName()
 	{
-		return myDelegate == null ? MsilHelper.append(getPresentableParentQName(), getName()) : MsilHelper.cutGenericMarker(myDelegate
-				.getPresentableQName());
+		return myDelegate == null ? MsilHelper.append(getPresentableParentQName(), getName()) : MsilHelper.cutGenericMarker(myDelegate.getPresentableQName());
 	}
 
 	@Nullable
@@ -214,7 +214,8 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 		return CSharpMethodDeclaration.class;
 	}
 
-	public DotNetTypeDeclaration getDelegate()
+	@Nullable
+	public MsilClassEntry getDelegate()
 	{
 		return myDelegate;
 	}
