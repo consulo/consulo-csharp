@@ -43,6 +43,7 @@ import com.intellij.psi.ResolveResult;
 public class StaticVsInstanceComparator implements Comparator<ResolveResult>
 {
 	@NotNull
+	@RequiredReadAction
 	public static StaticVsInstanceComparator create(@NotNull PsiElement element)
 	{
 		CSharpReferenceExpressionEx parent = null;
@@ -60,9 +61,13 @@ public class StaticVsInstanceComparator implements Comparator<ResolveResult>
 	@Nullable
 	private final CSharpReferenceExpressionEx myParent;
 
+	private int myTypeArgumentsSize;
+
+	@RequiredReadAction
 	public StaticVsInstanceComparator(@NotNull PsiElement element, @Nullable CSharpReferenceExpressionEx parent)
 	{
 		myComparator = TypeLikeComparator.create(element);
+		myTypeArgumentsSize = CSharpReferenceExpressionImplUtil.getTypeArgumentListSize(element);
 		myParent = parent;
 	}
 
@@ -72,7 +77,7 @@ public class StaticVsInstanceComparator implements Comparator<ResolveResult>
 	{
 		if(isNameEqual(o1, o2))
 		{
-			int i = getWeight(o2) - getWeight(o1);
+			int i = getWeightByContext(o2) - getWeightByContext(o1);
 			if(i == 0)
 			{
 				return getWeightByTypeArguments(o2) - getWeightByTypeArguments(o1);
@@ -80,21 +85,6 @@ public class StaticVsInstanceComparator implements Comparator<ResolveResult>
 			return i;
 		}
 		return myComparator.compare(o1, o2);
-	}
-
-	@RequiredReadAction
-	private int getWeightByTypeArguments(ResolveResult o1)
-	{
-		PsiElement element = o1.getElement();
-		if(element instanceof DotNetGenericParameterListOwner)
-		{
-			int genericParametersCount = ((DotNetGenericParameterListOwner) element).getGenericParametersCount();
-			if(genericParametersCount == CSharpReferenceExpressionImplUtil.getTypeArgumentListSize(myParent))
-			{
-				return 500;
-			}
-		}
-		return 0;
 	}
 
 	private static boolean isNameEqual(ResolveResult o1, ResolveResult o2)
@@ -109,7 +99,24 @@ public class StaticVsInstanceComparator implements Comparator<ResolveResult>
 	}
 
 	@RequiredReadAction
-	private int getWeight(ResolveResult resolveResult)
+	private int getWeightByTypeArguments(ResolveResult o1)
+	{
+		PsiElement element = o1.getElement();
+		if(element instanceof DotNetGenericParameterListOwner)
+		{
+			int genericParametersCount = ((DotNetGenericParameterListOwner) element).getGenericParametersCount();
+			int weight = genericParametersCount * 10;
+			if(genericParametersCount == myTypeArgumentsSize)
+			{
+				weight += 1000;
+			}
+			return weight;
+		}
+		return 0;
+	}
+
+	@RequiredReadAction
+	private int getWeightByContext(ResolveResult resolveResult)
 	{
 		final PsiElement element = resolveResult.getElement();
 		if(element == null)

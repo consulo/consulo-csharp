@@ -4,7 +4,6 @@ import java.util.Comparator;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
@@ -24,12 +23,7 @@ public class TypeLikeComparator implements Comparator<ResolveResult>
 	@RequiredReadAction
 	public static TypeLikeComparator create(@NotNull PsiElement element)
 	{
-		int size = 0;
-		if(element instanceof CSharpReferenceExpression)
-		{
-			size = CSharpReferenceExpressionImplUtil.getTypeArgumentListSize((CSharpReferenceExpression) element);
-		}
-		return new TypeLikeComparator(size);
+		return new TypeLikeComparator(CSharpReferenceExpressionImplUtil.getTypeArgumentListSize(element));
 	}
 
 	private final int myGenericCount;

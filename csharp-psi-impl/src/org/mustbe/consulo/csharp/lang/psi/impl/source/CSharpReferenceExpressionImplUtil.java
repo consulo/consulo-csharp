@@ -251,13 +251,13 @@ public class CSharpReferenceExpressionImplUtil
 	}
 
 	@RequiredReadAction
-	public static int getTypeArgumentListSize(@Nullable CSharpReferenceExpression referenceExpression)
+	public static int getTypeArgumentListSize(@Nullable PsiElement element)
 	{
-		if(referenceExpression == null)
+		if(!(element instanceof CSharpReferenceExpression))
 		{
 			return 0;
 		}
-		DotNetTypeList typeArgumentList = referenceExpression.getTypeArgumentList();
+		DotNetTypeList typeArgumentList = ((CSharpReferenceExpression) element).getTypeArgumentList();
 		if(typeArgumentList == null)
 		{
 			return 0;
