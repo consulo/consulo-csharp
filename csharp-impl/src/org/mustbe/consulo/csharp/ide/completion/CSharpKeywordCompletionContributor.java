@@ -16,7 +16,11 @@
 
 package org.mustbe.consulo.csharp.ide.completion;
 
+import static com.intellij.patterns.StandardPatterns.or;
 import static com.intellij.patterns.StandardPatterns.psiElement;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
@@ -48,6 +52,7 @@ import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.codeInsight.completion.CompletionUtilCore;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.Condition;
@@ -65,8 +70,63 @@ import com.intellij.util.ProcessingContext;
  */
 public class CSharpKeywordCompletionContributor extends CompletionContributor
 {
+	private static final Map<String, Boolean> ourPreprocessorDirectives = new HashMap<String, Boolean>();
+	static
+	{
+		ourPreprocessorDirectives.put("region", Boolean.TRUE);
+		ourPreprocessorDirectives.put("endregion", Boolean.FALSE);
+		ourPreprocessorDirectives.put("if", Boolean.TRUE);
+		ourPreprocessorDirectives.put("elif", Boolean.TRUE);
+		ourPreprocessorDirectives.put("else", Boolean.TRUE);
+		ourPreprocessorDirectives.put("endif", Boolean.FALSE);
+	}
+
 	public CSharpKeywordCompletionContributor()
 	{
+		extend(CompletionType.BASIC, psiElement(CSharpTokens.PREPROCESSOR_DIRECTIVE), new CompletionProvider()
+		{
+			@RequiredReadAction
+			@Override
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			{
+				PsiElement position = parameters.getPosition();
+				String trim = position.getText().replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "").trim();
+				if(!trim.equals("#"))
+				{
+					return;
+				}
+				for(Map.Entry<String, Boolean> entry : ourPreprocessorDirectives.entrySet())
+				{
+					LookupElementBuilder element = LookupElementBuilder.create(entry.getKey()).withPresentableText("#" + entry.getKey());
+					if(entry.getValue())
+					{
+						element = element.withInsertHandler(SpaceInsertHandler.INSTANCE);
+					}
+					element = element.bold();
+					result.addElement(element);
+				}
+			}
+		});
+
+		extend(CompletionType.BASIC, or(CSharpPatterns.field(), CSharpPatterns.statementStart()), new CompletionProvider()
+		{
+			@RequiredReadAction
+			@Override
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			{
+				for(Map.Entry<String, Boolean> entry : ourPreprocessorDirectives.entrySet())
+				{
+					LookupElementBuilder element = LookupElementBuilder.create("#" + entry.getKey()).withPresentableText("#" + entry.getKey());
+					if(entry.getValue())
+					{
+						element = element.withInsertHandler(SpaceInsertHandler.INSTANCE);
+					}
+					element = element.bold();
+					result.addElement(element);
+				}
+			}
+		});
+
 		extend(CompletionType.BASIC, CSharpPatterns.field(), new CompletionProvider()
 		{
 			@RequiredReadAction

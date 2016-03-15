@@ -72,6 +72,10 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 
 			autoPopupMemberLookup(project, editor);
 		}
+		if(c == '#')
+		{
+			autoPopupMemberLookup(project, editor);
+		}
 		if(c == ';')
 		{
 			if(handleSemicolon(editor))
