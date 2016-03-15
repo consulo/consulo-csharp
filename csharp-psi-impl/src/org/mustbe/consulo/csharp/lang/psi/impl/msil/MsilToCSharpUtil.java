@@ -26,13 +26,10 @@ import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightNamespac
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpPointerTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyGenericWrapperTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
@@ -54,7 +51,6 @@ import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.ObjectUtil;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
@@ -185,7 +181,7 @@ public class MsilToCSharpUtil
 			PsiElement wrapElement = element.getUserData(MSIL_WRAPPER_VALUE);
 			if(wrapElement != null)
 			{
-				return ObjectUtil.notNull(wrapElement, element);
+				return wrapElement;
 			}
 
 			if(parent == null)
@@ -211,7 +207,7 @@ public class MsilToCSharpUtil
 
 	@Nullable
 	@RequiredReadAction
-	public static CSharpMethodDeclaration wrapToDelegateMethod(@NotNull MsilClassEntry typeDeclaration, @Nullable PsiElement parent, @NotNull GenericParameterContext context)
+	private static CSharpMethodDeclaration wrapToDelegateMethod(@NotNull MsilClassEntry typeDeclaration, @Nullable PsiElement parent, @NotNull GenericParameterContext context)
 	{
 		if(DotNetInheritUtil.isInheritor(typeDeclaration, DotNetTypes.System.MulticastDelegate, false))
 		{
@@ -274,20 +270,6 @@ public class MsilToCSharpUtil
 			}
 
 			return new CSharpLazyGenericWrapperTypeRef(scope, inner, newArguments);
-		}
-
-		PsiElement resolve = typeRef.resolve(scope).getElement();
-		if(resolve instanceof DotNetTypeDeclaration)
-		{
-			CSharpMethodDeclaration delegateMethod = wrapToDelegateMethod((MsilClassEntry) resolve, null, new GenericParameterContext(null));
-			if(delegateMethod != null)
-			{
-				return new CSharpLazyLambdaTypeRef(scope, delegateMethod);
-			}
-		}
-		else if(resolve instanceof DotNetGenericParameter)
-		{
-			return new CSharpTypeRefFromGenericParameter(new MsilGenericParameterAsCSharpGenericParameter(null, (DotNetGenericParameter) resolve));
 		}
 		return new MsilDelegateTypeRef(scope, typeRef);
 	}

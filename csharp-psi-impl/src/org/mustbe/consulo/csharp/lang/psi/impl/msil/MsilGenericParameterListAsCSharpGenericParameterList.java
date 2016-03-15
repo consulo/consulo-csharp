@@ -20,7 +20,7 @@ import com.intellij.util.containers.ContainerUtil;
 public class MsilGenericParameterListAsCSharpGenericParameterList extends MsilElementWrapper<DotNetGenericParameterList> implements DotNetGenericParameterList
 {
 	@Nullable
-	public static DotNetGenericParameterList build(@Nullable PsiElement parent, @Nullable DotNetGenericParameterList parameterList, GenericParameterContext context)
+	public static DotNetGenericParameterList build(@NotNull PsiElement parent, @Nullable DotNetGenericParameterList parameterList, GenericParameterContext context)
 	{
 		if(parameterList == null)
 		{
@@ -60,7 +60,7 @@ public class MsilGenericParameterListAsCSharpGenericParameterList extends MsilEl
 	};
 	private final GenericParameterContext myGenericParameterContext;
 
-	private MsilGenericParameterListAsCSharpGenericParameterList(@Nullable PsiElement parent, DotNetGenericParameterList msilElement, GenericParameterContext genericParameterContext)
+	private MsilGenericParameterListAsCSharpGenericParameterList(@NotNull PsiElement parent, DotNetGenericParameterList msilElement, GenericParameterContext genericParameterContext)
 	{
 		super(parent, msilElement);
 		myGenericParameterContext = genericParameterContext;

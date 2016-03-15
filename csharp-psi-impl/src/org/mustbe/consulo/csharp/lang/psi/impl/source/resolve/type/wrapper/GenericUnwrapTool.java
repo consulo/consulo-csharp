@@ -17,15 +17,8 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
+import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
@@ -95,6 +88,7 @@ public class GenericUnwrapTool
 	}
 
 	@SuppressWarnings("unchecked")
+	@RequiredReadAction
 	public static <T extends DotNetNamedElement> T extract(T namedElement, DotNetGenericExtractor extractor)
 	{
 		if(extractor == DotNetGenericExtractor.EMPTY)
@@ -121,6 +115,10 @@ public class GenericUnwrapTool
 			CSharpLightMethodDeclaration copy = new CSharpLightMethodDeclaration(methodDeclaration, parameterList);
 			exchangeMethodTypeRefs(copy, methodDeclaration, extractor);
 			return (T) copy;
+		}
+		else if(namedElement instanceof CSharpTypeDeclaration)
+		{
+			return (T) new CSharpLightTypeDeclaration((CSharpTypeDeclaration) namedElement, extractor);
 		}
 		else if(namedElement instanceof CSharpIndexMethodDeclaration)
 		{
@@ -161,8 +159,7 @@ public class GenericUnwrapTool
 			parameterList = new CSharpLightParameterList(parameterList == null ? namedElement : parameterList, newParameters);
 
 			DotNetTypeRef returnTypeRef = exchangeTypeRef(conversionMethodDeclaration.getReturnTypeRef(), extractor, namedElement);
-			CSharpLightConversionMethodDeclaration copy = new CSharpLightConversionMethodDeclaration(conversionMethodDeclaration, parameterList,
-					returnTypeRef);
+			CSharpLightConversionMethodDeclaration copy = new CSharpLightConversionMethodDeclaration(conversionMethodDeclaration, parameterList, returnTypeRef);
 			return (T) copy;
 		}
 		else if(namedElement instanceof CSharpConstructorDeclaration)
@@ -208,8 +205,8 @@ public class GenericUnwrapTool
 		return namedElement;
 	}
 
-	private static <S extends DotNetLikeMethodDeclaration & DotNetVirtualImplementOwner> void exchangeMethodTypeRefs(
-			CSharpLightLikeMethodDeclarationWithImplType<?> copy,
+	@RequiredReadAction
+	private static <S extends DotNetLikeMethodDeclaration & DotNetVirtualImplementOwner> void exchangeMethodTypeRefs(CSharpLightLikeMethodDeclarationWithImplType<?> copy,
 			S original,
 			DotNetGenericExtractor extractor)
 	{
@@ -219,21 +216,22 @@ public class GenericUnwrapTool
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static DotNetTypeRef[] exchangeTypeRefs(DotNetTypeRef[] typeRefs, DotNetGenericExtractor extractor, PsiElement element)
 	{
 		return exchangeTypeRefs(typeRefs, new GenericExtractFunction(extractor), element);
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static DotNetTypeRef exchangeTypeRef(@NotNull DotNetTypeRef typeRef, @NotNull DotNetGenericExtractor extractor, @NotNull PsiElement scope)
 	{
 		return exchangeTypeRef(typeRef, new GenericExtractFunction(extractor), scope);
 	}
 
 	@NotNull
-	public static DotNetTypeRef[] exchangeTypeRefs(@NotNull DotNetTypeRef[] typeRefs,
-			@NotNull Function<PsiElement, DotNetTypeRef> func,
-			@NotNull PsiElement element)
+	@RequiredReadAction
+	public static DotNetTypeRef[] exchangeTypeRefs(@NotNull DotNetTypeRef[] typeRefs, @NotNull Function<PsiElement, DotNetTypeRef> func, @NotNull PsiElement element)
 	{
 		if(typeRefs.length == 0)
 		{
@@ -249,9 +247,8 @@ public class GenericUnwrapTool
 	}
 
 	@NotNull
-	public static DotNetTypeRef exchangeTypeRef(@NotNull DotNetTypeRef typeRef,
-			@NotNull Function<PsiElement, DotNetTypeRef> func,
-			@NotNull PsiElement scope)
+	@RequiredReadAction
+	public static DotNetTypeRef exchangeTypeRef(@NotNull DotNetTypeRef typeRef, @NotNull Function<PsiElement, DotNetTypeRef> func, @NotNull PsiElement scope)
 	{
 		if(typeRef == DotNetTypeRef.ERROR_TYPE)
 		{
@@ -277,8 +274,7 @@ public class GenericUnwrapTool
 		}
 		else if(typeRef instanceof CSharpRefTypeRef)
 		{
-			return new CSharpRefTypeRef(((CSharpRefTypeRef) typeRef).getType(), exchangeTypeRef(((CSharpRefTypeRef) typeRef).getInnerTypeRef(),
-					func, scope));
+			return new CSharpRefTypeRef(((CSharpRefTypeRef) typeRef).getType(), exchangeTypeRef(((CSharpRefTypeRef) typeRef).getInnerTypeRef(), func, scope));
 		}
 		else if(typeRef instanceof CSharpArrayTypeRef)
 		{
@@ -326,9 +322,8 @@ public class GenericUnwrapTool
 	}
 
 	@NotNull
-	private static Pair<DotNetTypeRef, PsiElement> extractTypeRef(@NotNull DotNetTypeRef typeRef,
-			@NotNull Function<PsiElement, DotNetTypeRef> func,
-			@NotNull PsiElement scope)
+	@RequiredReadAction
+	private static Pair<DotNetTypeRef, PsiElement> extractTypeRef(@NotNull DotNetTypeRef typeRef, @NotNull Function<PsiElement, DotNetTypeRef> func, @NotNull PsiElement scope)
 	{
 		PsiElement resolve = typeRef.resolve(scope).getElement();
 

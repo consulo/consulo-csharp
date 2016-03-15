@@ -38,7 +38,6 @@ import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -47,7 +46,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
-import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.RecursionManager;
@@ -716,28 +714,17 @@ public class CSharpTypeUtil
 	@RequiredReadAction
 	private static boolean isMethodGeneric(PsiElement element)
 	{
-		PsiElement originalElement = element.getOriginalElement();
-
-		if(!(originalElement instanceof DotNetGenericParameter))
+		if(!(element instanceof DotNetGenericParameter))
 		{
 			return false;
 		}
-		PsiElement parent = originalElement.getParent();
+		PsiElement parent = element.getParent();
 		if(!(parent instanceof DotNetGenericParameterList))
 		{
 			return false;
 		}
 		PsiElement parentParent = parent.getParent();
-		// like c# impl
-		if(parentParent instanceof DotNetLikeMethodDeclaration)
-		{
-			return true;
-		}
-		else if(parentParent instanceof MsilClassEntry)
-		{
-			return DotNetInheritUtil.isInheritor((DotNetTypeDeclaration) parentParent, DotNetTypes.System.MulticastDelegate, false);
-		}
-		return false;
+		return parentParent instanceof DotNetLikeMethodDeclaration;
 	}
 
 	@Nullable

@@ -20,7 +20,7 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWrapper<DotNetGenericParameter> implements DotNetGenericParameter, DotNetAttributeListOwner
 {
-	public MsilGenericParameterAsCSharpGenericParameter(@Nullable PsiElement parent, DotNetGenericParameter msilElement)
+	public MsilGenericParameterAsCSharpGenericParameter(@NotNull PsiElement parent, DotNetGenericParameter msilElement)
 	{
 		super(parent, msilElement);
 	}

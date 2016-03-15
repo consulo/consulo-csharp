@@ -16,17 +16,29 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
-import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.ToNativeElementTransformers;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.msil.transformer.MsilToNativeElementTransformer;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpReferenceTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.SingleNullableStateResolveResult;
+import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
+import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
+import org.mustbe.consulo.msil.lang.psi.impl.type.MsilClassGenericTypeRefImpl;
+import org.mustbe.consulo.msil.lang.psi.impl.type.MsilMethodGenericTypeRefImpl;
 import org.mustbe.dotnet.msil.decompiler.util.MsilHelper;
+import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -35,6 +47,137 @@ import com.intellij.psi.PsiElement;
  */
 public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 {
+	private static class MsilResult extends SingleNullableStateResolveResult
+	{
+		private final PsiElement myElement;
+		private final DotNetTypeResolveResult myResolveResult;
+
+		public MsilResult(PsiElement element, DotNetTypeResolveResult resolveResult)
+		{
+			myElement = element;
+			myResolveResult = resolveResult;
+		}
+
+		@Nullable
+		@Override
+		@RequiredReadAction
+		public PsiElement getElement()
+		{
+			return ToNativeElementTransformers.transform(myElement);
+		}
+
+		@NotNull
+		@Override
+		public DotNetGenericExtractor getGenericExtractor()
+		{
+			return myResolveResult.getGenericExtractor();
+		}
+
+		@Override
+		@RequiredReadAction
+		public boolean isNullableImpl()
+		{
+			return CSharpTypeUtil.isNullableElement(getElement());
+		}
+	}
+
+	private NotNullLazyValue<DotNetTypeResolveResult> myResultValue = new NotNullLazyValue<DotNetTypeResolveResult>()
+	{
+		@NotNull
+		@Override
+		@RequiredReadAction
+		protected DotNetTypeResolveResult compute()
+		{
+			final DotNetTypeRef msilTypeRef = getDelegate();
+			final DotNetTypeResolveResult resolveResult = msilTypeRef.resolve(myScope);
+
+			final PsiElement element = resolveResult.getElement();
+			if(element == null)
+			{
+				return DotNetTypeResolveResult.EMPTY;
+			}
+
+			if(element instanceof MsilClassEntry)
+			{
+				MsilClassEntry msilClassEntry = (MsilClassEntry) element;
+
+				if(DotNetInheritUtil.isInheritor(msilClassEntry, DotNetTypes.System.MulticastDelegate, false))
+				{
+					PsiElement transformedElement = ToNativeElementTransformers.transform(element);
+					if(transformedElement instanceof CSharpMethodDeclaration)
+					{
+						return new CSharpLambdaTypeRef((CSharpMethodDeclaration) transformedElement).resolve(myScope);
+					}
+				}
+			}
+			else if(element instanceof DotNetGenericParameter)
+			{
+				if(msilTypeRef instanceof MsilMethodGenericTypeRefImpl)
+				{
+					MsilMethodGenericTypeRefImpl methodGenericTypeRef = (MsilMethodGenericTypeRefImpl) msilTypeRef;
+
+					MsilMethodEntry msilMethodEntry = methodGenericTypeRef.getParent();
+
+					MsilClassEntry rootClassEntry = MsilToNativeElementTransformer.findRootClassEntry((MsilClassEntry) msilMethodEntry.getParent());
+
+					PsiElement wrappedElement = ToNativeElementTransformers.transform(rootClassEntry);
+
+					if(wrappedElement == rootClassEntry)
+					{
+						return DotNetTypeResolveResult.EMPTY;
+					}
+
+					PsiElement elementByOriginal = MsilToNativeElementTransformer.findElementByOriginal(wrappedElement, msilMethodEntry);
+					if(elementByOriginal instanceof DotNetGenericParameterListOwner)
+					{
+						DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) elementByOriginal).getGenericParameters();
+
+						return new CSharpReferenceTypeRef.Result<PsiElement>(genericParameters[methodGenericTypeRef.getIndex()], DotNetGenericExtractor.EMPTY);
+					}
+				}
+				else if(msilTypeRef instanceof MsilClassGenericTypeRefImpl)
+				{
+					MsilClassEntry msilClassEntry = ((MsilClassGenericTypeRefImpl) msilTypeRef).getParent();
+
+					MsilClassEntry rootClassEntry = MsilToNativeElementTransformer.findRootClassEntry(msilClassEntry);
+
+					PsiElement wrappedElement = ToNativeElementTransformers.transform(rootClassEntry);
+
+					if(wrappedElement == rootClassEntry)
+					{
+						return DotNetTypeResolveResult.EMPTY;
+					}
+
+					PsiElement elementByOriginal = MsilToNativeElementTransformer.findElementByOriginal(wrappedElement, msilClassEntry);
+					if(elementByOriginal instanceof DotNetGenericParameterListOwner)
+					{
+						final String genericName = msilTypeRef.getPresentableText();
+
+						PsiElement owner = elementByOriginal;
+						while(owner instanceof DotNetGenericParameterListOwner)
+						{
+							DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) owner).getGenericParameters();
+
+							for(DotNetGenericParameter genericParameter : genericParameters)
+							{
+								if(genericName.equals(genericParameter.getName()))
+								{
+									return new CSharpReferenceTypeRef.Result<PsiElement>(genericParameter, DotNetGenericExtractor.EMPTY);
+								}
+							}
+
+							owner = owner.getParent();
+						}
+					}
+				}
+
+				return DotNetTypeResolveResult.EMPTY;
+			}
+
+			return new MsilResult(element, resolveResult);
+		}
+	};
+
 	@NotNull
 	private final PsiElement myScope;
 
@@ -58,47 +201,11 @@ public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 		return MsilHelper.prepareForUser(super.getQualifiedText());
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeResolveResult resolve(@NotNull final PsiElement scope)
 	{
-		return resolveImpl();
-	}
-
-	@NotNull
-	@LazyInstance
-	public DotNetTypeResolveResult resolveImpl()
-	{
-		return new SingleNullableStateResolveResult()
-		{
-			private DotNetTypeResolveResult cachedResult = MsilDelegateTypeRef.this.getDelegate().resolve(myScope);
-
-			@Nullable
-			@Override
-			@RequiredReadAction
-			public PsiElement getElement()
-			{
-				PsiElement element = cachedResult.getElement();
-				if(element == null)
-				{
-					return null;
-				}
-				return ToNativeElementTransformers.transform(cachedResult.getElement());
-			}
-
-			@NotNull
-			@Override
-			public DotNetGenericExtractor getGenericExtractor()
-			{
-				return cachedResult.getGenericExtractor();
-			}
-
-			@Override
-			@RequiredReadAction
-			public boolean isNullableImpl()
-			{
-				return CSharpTypeUtil.isNullableElement(getElement());
-			}
-		};
+		return myResultValue.getValue();
 	}
 }

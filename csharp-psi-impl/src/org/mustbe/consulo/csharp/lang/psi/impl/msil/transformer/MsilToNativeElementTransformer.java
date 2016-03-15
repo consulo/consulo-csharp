@@ -35,7 +35,7 @@ import com.intellij.psi.PsiFile;
  * @since 15.03.2016
  */
 @Logger
-public class MsilToNativeElementTransformer2 implements ToNativeElementTransformer
+public class MsilToNativeElementTransformer implements ToNativeElementTransformer
 {
 	@RequiredReadAction
 	@Nullable
@@ -97,7 +97,7 @@ public class MsilToNativeElementTransformer2 implements ToNativeElementTransform
 
 
 	@Nullable
-	private static PsiElement findElementByOriginal(@NotNull PsiElement wrappedElement, @NotNull PsiElement originalTarget)
+	public static PsiElement findElementByOriginal(@NotNull PsiElement wrappedElement, @NotNull PsiElement originalTarget)
 	{
 		PsiElement originalElement = wrappedElement.getOriginalElement();
 
@@ -111,7 +111,7 @@ public class MsilToNativeElementTransformer2 implements ToNativeElementTransform
 			MsilClassEntry delegate = ((MsilMethodAsCSharpMethodDeclaration) wrappedElement).getDelegate();
 			if(delegate != null && delegate.isEquivalentTo(originalTarget))
 			{
-				return delegate;
+				return wrappedElement;
 			}
 		}
 
