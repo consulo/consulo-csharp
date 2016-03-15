@@ -186,14 +186,11 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 		}
 	}
 
-	@Nullable
-	@Override
-	public IElementType getTokenType()
+	public void skipNonInterestItems()
 	{
-		IElementType tokenType = null;
 		while(!super.eof())
 		{
-			tokenType = getTokenTypeImpl();
+			IElementType tokenType = getTokenTypeImpl();
 			if(tokenType == CSharpTokens.NON_ACTIVE_SYMBOL || tokenType == CSharpTokens.PREPROCESSOR_DIRECTIVE)
 			{
 				super.advanceLexer();
@@ -203,7 +200,14 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 				break;
 			}
 		}
-		return tokenType;
+	}
+
+	@Nullable
+	@Override
+	public IElementType getTokenType()
+	{
+		skipNonInterestItems();
+		return super.getTokenType();
 	}
 
 	@Nullable

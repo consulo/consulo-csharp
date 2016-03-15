@@ -81,6 +81,8 @@ public class DeclarationParsing extends SharedParsingHelpers
 					return;
 				}
 
+				builder.skipNonInterestItems();
+
 				parse(builder, root);
 			}
 		}
