@@ -57,6 +57,7 @@ import com.intellij.psi.impl.light.LightElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.ObjectUtil;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.MultiMap;
@@ -68,12 +69,19 @@ import com.intellij.util.containers.MultiMap;
 public class CSharpCompositeTypeDeclaration extends LightElement implements CSharpTypeDeclaration
 {
 	@RequiredReadAction
+	@NotNull
 	public static DotNetTypeDeclaration selectCompositeOrSelfType(@NotNull DotNetTypeDeclaration parent)
 	{
-		return parent.hasModifier(CSharpModifier.PARTIAL) ? findCompositeType((CSharpTypeDeclaration) parent) : parent;
+		if(parent.hasModifier(CSharpModifier.PARTIAL))
+		{
+			CSharpCompositeTypeDeclaration compositeType = findCompositeType((CSharpTypeDeclaration) parent);
+			return ObjectUtil.notNull(compositeType, parent);
+		}
+		return parent;
 	}
 
 	@RequiredReadAction
+	@Nullable
 	public static CSharpCompositeTypeDeclaration findCompositeType(@NotNull CSharpTypeDeclaration parent)
 	{
 		String vmQName = parent.getVmQName();
