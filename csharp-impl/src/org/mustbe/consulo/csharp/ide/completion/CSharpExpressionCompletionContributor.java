@@ -265,7 +265,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 								{
 									if(elementType == CSharpTokens.BASE_KEYWORD || elementType == CSharpTokens.THIS_KEYWORD)
 									{
-										DotNetModifierListOwner owner = (DotNetModifierListOwner) PsiTreeUtil.getParentOfType(parent, DotNetQualifiedElement.class);
+										DotNetModifierListOwner owner = (DotNetModifierListOwner) PsiTreeUtil.getContextOfType(parent, DotNetQualifiedElement.class);
 										if(owner == null || owner.hasModifier(DotNetModifier.STATIC))
 										{
 											return false;
