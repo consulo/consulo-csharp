@@ -171,7 +171,7 @@ public class CSharpVisibilityUtil
 	{
 		List<DotNetTypeDeclaration> typeDeclarations = new SmartList<DotNetTypeDeclaration>();
 		PsiElement type = place;
-		while((type = PsiTreeUtil.getParentOfType(type, DotNetTypeDeclaration.class)) != null)
+		while((type = PsiTreeUtil.getContextOfType(type, DotNetTypeDeclaration.class)) != null)
 		{
 			typeDeclarations.add((DotNetTypeDeclaration) type);
 		}

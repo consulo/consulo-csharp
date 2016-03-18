@@ -336,7 +336,7 @@ public class CSharpResolveUtil
 
 			if(walkParent)
 			{
-				PsiElement parent = entrance.getParent();
+				PsiElement parent = entrance.getContext();
 				if(parent == null)
 				{
 					return true;
