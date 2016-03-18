@@ -198,7 +198,7 @@ public class CSharpLambdaExpressionImplUtil
 		else if(parent instanceof CSharpConditionalExpressionImpl)
 		{
 			DotNetExpression expression = ((CSharpConditionalExpressionImpl) parent).getTrueExpression();
-			if(expression != null)
+			if(expression != null && expression != target)
 			{
 				DotNetTypeResolveResult typeResolveResult = expression.toTypeRef(false).resolve(parent);
 				if(typeResolveResult instanceof CSharpLambdaResolveResult)
@@ -207,7 +207,7 @@ public class CSharpLambdaExpressionImplUtil
 				}
 			}
 			expression = ((CSharpConditionalExpressionImpl) parent).getFalseExpression();
-			if(expression != null)
+			if(expression != null && expression != target)
 			{
 				DotNetTypeResolveResult typeResolveResult = expression.toTypeRef(false).resolve(parent);
 				if(typeResolveResult instanceof CSharpLambdaResolveResult)
