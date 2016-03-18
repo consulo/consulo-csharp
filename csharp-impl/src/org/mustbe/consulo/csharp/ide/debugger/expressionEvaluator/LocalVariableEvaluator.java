@@ -17,9 +17,14 @@
 package org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
+import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.util.text.StringUtil;
 import mono.debugger.LocalVariableMirror;
+import mono.debugger.MethodMirror;
+import mono.debugger.StackFrameMirror;
 import mono.debugger.Value;
 
 /**
@@ -28,29 +33,53 @@ import mono.debugger.Value;
  */
 public class LocalVariableEvaluator extends Evaluator
 {
-	private CSharpLocalVariable myLocalVariable;
+	private String myName;
 
+	@RequiredReadAction
 	public LocalVariableEvaluator(CSharpLocalVariable localVariable)
 	{
-		myLocalVariable = localVariable;
+		myName = localVariable.getName();
 	}
 
 	@Override
 	public void evaluate(@NotNull CSharpEvaluateContext context)
 	{
-		LocalVariableMirror[] locals = context.getFrame().location().method().locals();
+		StackFrameMirror frame = context.getFrame();
+		MethodMirror method = frame.location().method();
 
+		LocalVariableMirror[] locals = method.locals(frame.location().codeIndex());
+
+		LocalVariableMirror mirror = null;
 		for(LocalVariableMirror local : locals)
 		{
-			if(myLocalVariable.getName().equals(local.name()))
+			String name = local.name();
+			if(StringUtil.isEmpty(name))
 			{
-				Value value = context.getFrame().localOrParameterValue(local);
-				if(value != null)
-				{
-					context.pull(value, local);
-				}
+				continue;
+			}
+
+			if(Comparing.equal(myName, name))
+			{
+				mirror = local;
 				break;
 			}
+		}
+
+		if(mirror != null)
+		{
+			Value value = context.getFrame().localOrParameterValue(mirror);
+			if(value != null)
+			{
+				context.pull(value, mirror);
+			}
+			else
+			{
+				throw new IllegalArgumentException("no variable");
+			}
+		}
+		else
+		{
+			throw new IllegalArgumentException("no variable");
 		}
 	}
 }

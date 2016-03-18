@@ -81,6 +81,13 @@ public class CSharpLambdaExpressionImplUtil
 			return null;
 		}
 
+		return resolveLambdaTypeRefFromParent(target);
+	}
+
+	@Nullable
+	@RequiredReadAction
+	private static CSharpLambdaResolveResult resolveLambdaTypeRefFromParent(PsiElement target)
+	{
 		PsiElement parent = target.getParent();
 		if(parent instanceof DotNetVariable)
 		{
@@ -183,6 +190,10 @@ public class CSharpLambdaExpressionImplUtil
 			{
 				return (CSharpLambdaResolveResult) typeResolveResult;
 			}
+		}
+		else if(parent instanceof CSharpParenthesesExpressionImpl)
+		{
+			return resolveLambdaTypeRefFromParent(parent);
 		}
 		else if(parent instanceof CSharpConditionalExpressionImpl)
 		{
