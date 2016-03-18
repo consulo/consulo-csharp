@@ -23,6 +23,7 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResultWithExtractor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
@@ -31,6 +32,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.openapi.util.Couple;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -49,7 +51,7 @@ public class ThisKindProcessor implements KindProcessor
 			@Nullable PsiElement forceQualifierElement,
 			@NotNull Processor<ResolveResult> processor)
 	{
-		DotNetTypeDeclaration thisTypeDeclaration = PsiTreeUtil.getParentOfType(options.getElement(), DotNetTypeDeclaration.class);
+		DotNetTypeDeclaration thisTypeDeclaration = PsiTreeUtil.getContextOfType(options.getElement(), DotNetTypeDeclaration.class);
 		if(thisTypeDeclaration != null)
 		{
 			DotNetGenericExtractor genericExtractor = DotNetGenericExtractor.EMPTY;

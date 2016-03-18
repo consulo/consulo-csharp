@@ -1009,6 +1009,11 @@ public class CSharpReferenceExpressionImplUtil
 					}
 				}
 			}
+			else if(temp instanceof CSharpCodeFragment)
+			{
+				temp = ((CSharpCodeFragment) temp).getScopeElement();
+				continue;
+			}
 			temp = temp.getParent();
 		}
 

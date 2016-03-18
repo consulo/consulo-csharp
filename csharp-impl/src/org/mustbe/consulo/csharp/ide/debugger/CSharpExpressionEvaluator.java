@@ -79,6 +79,8 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 	@RequiredReadAction
 	public void visitReferenceExpression(CSharpReferenceExpression expression)
 	{
+		CSharpReferenceExpression.ResolveToKind kind = expression.kind();
+		String referenceName = expression.getReferenceName();
 		PsiElement qualifier = expression.getQualifier();
 		if(qualifier == null)
 		{
@@ -115,11 +117,27 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 			}
 			else if(resolvedElement instanceof CSharpTypeDeclaration)
 			{
-				myEvaluators.add(NullValueEvaluator.INSTANCE);
+				switch(kind)
+				{
+					case THIS:
+						myEvaluators.add(ThisObjectEvaluator.INSTANCE);
+						break;
+					default:
+						myEvaluators.add(NullValueEvaluator.INSTANCE);
+						break;
+				}
 			}
 			else
 			{
-				cantEvaluateExpression();
+				switch(kind)
+				{
+					case THIS:
+						myEvaluators.add(ThisObjectEvaluator.INSTANCE);
+						break;
+					default:
+						cantEvaluateExpression();
+						break;
+				}
 			}
 		}
 		else
@@ -136,6 +154,10 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 			{
 				CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) resolvedElement.getParent();
 				myEvaluators.add(new PropertyEvaluator(typeDeclaration, (CSharpPropertyDeclaration) resolvedElement));
+			}
+			else
+			{
+				cantEvaluateExpression();
 			}
 		}
 	}

@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.ide.completion.insertHandler;
 
 import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.ide.completion.util.CSharpParenthesesInsertHandler;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCodeFragment;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -49,7 +50,7 @@ public class CSharpParenthesesWithSemicolonInsertHandler implements InsertHandle
 	{
 		new CSharpParenthesesInsertHandler(myDeclaration).handleInsert(context, item);
 
-		if(context.getCompletionChar() != '\n')
+		if(context.getCompletionChar() != '\n' || context.getFile() instanceof CSharpCodeFragment)
 		{
 			return;
 		}

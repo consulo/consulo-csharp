@@ -523,7 +523,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 				}
 				else
 				{
-					return PsiTreeUtil.getParentOfType(referenceExpression, CSharpTypeDeclaration.class);
+					return PsiTreeUtil.getContextOfType(referenceExpression, CSharpTypeDeclaration.class);
 				}
 			}
 		});

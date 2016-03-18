@@ -40,7 +40,7 @@ public class CS0026 extends CompilerCheck<CSharpReferenceExpression>
 	{
 		if(element.kind() == CSharpReferenceExpression.ResolveToKind.THIS)
 		{
-			DotNetModifierListOwner modifierListOwner = (DotNetModifierListOwner) PsiTreeUtil.getParentOfType(element, DotNetQualifiedElement.class);
+			DotNetModifierListOwner modifierListOwner = (DotNetModifierListOwner) PsiTreeUtil.getContextOfType(element, DotNetQualifiedElement.class);
 			if(modifierListOwner == null || modifierListOwner.hasModifier(DotNetModifier.STATIC))
 			{
 				return newBuilder(element, "this");

@@ -10,11 +10,13 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.Evaluator;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
 import org.mustbe.consulo.dotnet.debugger.DotNetDebugContext;
 import org.mustbe.consulo.dotnet.debugger.DotNetDebuggerProvider;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import com.intellij.lang.Language;
 import com.intellij.openapi.project.Project;
@@ -146,6 +148,11 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 			@NotNull Set<Object> visitedVariables,
 			@NotNull Consumer<XNamedValue> consumer)
 	{
+		PsiElement resolvedElement = referenceExpression.resolve();
+		if(referenceExpression.getParent() instanceof CSharpCallArgumentListOwner || resolvedElement instanceof DotNetLikeMethodDeclaration)
+		{
+			return;
+		}
 		CSharpExpressionEvaluator expressionEvaluator = new CSharpExpressionEvaluator();
 		try
 		{
