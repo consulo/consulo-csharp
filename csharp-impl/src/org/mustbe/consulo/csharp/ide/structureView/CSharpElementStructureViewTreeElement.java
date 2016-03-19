@@ -22,6 +22,8 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -62,12 +64,13 @@ public class CSharpElementStructureViewTreeElement extends PsiTreeElementBase<Ps
 
 	@Nullable
 	@Override
+	@RequiredDispatchThread
 	public String getPresentableText()
 	{
 		PsiNamedElement value = getValue();
 		if(value instanceof DotNetLikeMethodDeclaration)
 		{
-			return DotNetElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) value, DotNetElementPresentationUtil.METHOD_SCALA_LIKE_FULL);
+			return CSharpElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) value, CSharpElementPresentationUtil.METHOD_SCALA_LIKE_FULL);
 		}
 		else if(value instanceof DotNetTypeDeclaration)
 		{
@@ -75,7 +78,7 @@ public class CSharpElementStructureViewTreeElement extends PsiTreeElementBase<Ps
 		}
 		else if(value instanceof DotNetFieldDeclaration)
 		{
-			return DotNetElementPresentationUtil.formatField((DotNetFieldDeclaration) value);
+			return CSharpElementPresentationUtil.formatField((DotNetFieldDeclaration) value);
 		}
 		else if(value instanceof DotNetNamespaceDeclaration)
 		{

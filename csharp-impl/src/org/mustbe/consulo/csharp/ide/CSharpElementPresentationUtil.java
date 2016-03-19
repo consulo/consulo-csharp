@@ -17,13 +17,17 @@
 package org.mustbe.consulo.csharp.ide;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.BitUtil;
 import com.intellij.util.Function;
@@ -37,10 +41,23 @@ public class CSharpElementPresentationUtil
 	public static final int METHOD_SCALA_FORMAT = 1 << 0;
 	public static final int METHOD_WITH_RETURN_TYPE = 1 << 1;
 	public static final int METHOD_PARAMETER_NAME = 1 << 2;
+	public static final int METHOD_WITH_VIRTUAL_IMPL_TYPE = 1 << 4;
 
-	public static final int METHOD_SCALA_LIKE_FULL = METHOD_SCALA_FORMAT | METHOD_WITH_RETURN_TYPE | METHOD_PARAMETER_NAME;
+	public static final int METHOD_SCALA_LIKE_FULL = METHOD_SCALA_FORMAT | METHOD_WITH_RETURN_TYPE | METHOD_PARAMETER_NAME | METHOD_WITH_VIRTUAL_IMPL_TYPE;
 
 	@NotNull
+	@RequiredReadAction
+	public static String formatField(@NotNull DotNetFieldDeclaration fieldDeclaration)
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append(fieldDeclaration.getName());
+		builder.append(":");
+		CSharpTypeRefPresentationUtil.appendTypeRef(fieldDeclaration, builder, fieldDeclaration.toTypeRef(true), CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
+		return builder.toString();
+	}
+
+	@NotNull
+	@RequiredReadAction
 	public static String formatMethod(@NotNull DotNetLikeMethodDeclaration methodDeclaration, int flags)
 	{
 		StringBuilder builder = new StringBuilder();
@@ -57,6 +74,19 @@ public class CSharpElementPresentationUtil
 		if(methodDeclaration instanceof DotNetConstructorDeclaration && ((DotNetConstructorDeclaration) methodDeclaration).isDeConstructor())
 		{
 			builder.append("~");
+		}
+
+		if(BitUtil.isSet(flags, METHOD_WITH_VIRTUAL_IMPL_TYPE))
+		{
+			if(methodDeclaration instanceof DotNetVirtualImplementOwner)
+			{
+				DotNetTypeRef typeRefForImplement = ((DotNetVirtualImplementOwner) methodDeclaration).getTypeRefForImplement();
+				if(typeRefForImplement != DotNetTypeRef.ERROR_TYPE)
+				{
+					CSharpTypeRefPresentationUtil.appendTypeRef(methodDeclaration, builder, typeRefForImplement, CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
+					builder.append(".");
+				}
+			}
 		}
 
 		if(methodDeclaration instanceof CSharpIndexMethodDeclaration)
