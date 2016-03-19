@@ -226,6 +226,14 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 			PreprocessorDirective directive = PreprocessorParser.parse(super.getTokenText());
 			if(directive instanceof DefinePreprocessorDirective)
 			{
+				// if code is disabled - dont handle define
+				PreprocessorState preprocessorState = myStates.peekLast();
+				if(preprocessorState != null && !preprocessorState.isActive())
+				{
+					remapCurrentToken(CSharpTokens.NON_ACTIVE_SYMBOL);
+					return CSharpTokens.NON_ACTIVE_SYMBOL;
+				}
+
 				Set<String> newVariables = new HashSet<String>(variables);
 
 				if(((DefinePreprocessorDirective) directive).isUndef())
