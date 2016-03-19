@@ -24,6 +24,7 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.*;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.ide.IconDescriptorUpdaters;
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
@@ -39,6 +40,20 @@ import com.intellij.psi.PsiNamedElement;
 public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetNamedElement>
 {
 	public static int getWeight(PsiElement element)
+	{
+		int defaultWeight = getDefaultWeight(element);
+		if(element instanceof DotNetVirtualImplementOwner)
+		{
+			DotNetTypeRef typeRefForImplement = ((DotNetVirtualImplementOwner) element).getTypeRefForImplement();
+			if(typeRefForImplement != DotNetTypeRef.ERROR_TYPE)
+			{
+				return -defaultWeight;
+			}
+		}
+		return 0;
+	}
+
+	private static int getDefaultWeight(PsiElement element)
 	{
 		if(element instanceof DotNetNamespaceDeclaration)
 		{
@@ -137,8 +152,7 @@ public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetN
 	{
 		if(value instanceof DotNetLikeMethodDeclaration)
 		{
-			return DotNetElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) value, DotNetElementPresentationUtil
-					.METHOD_SCALA_LIKE_FULL);
+			return DotNetElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) value, DotNetElementPresentationUtil.METHOD_SCALA_LIKE_FULL);
 		}
 		else if(value instanceof DotNetFieldDeclaration)
 		{
