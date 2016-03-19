@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.CSharpCodeInsightSettings;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCodeFragment;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -206,9 +207,15 @@ public class AddUsingAction implements QuestionAction
 	{
 		PsiElement elementForBeforeAdd = getElementForBeforeAdd();
 
-		if(elementForBeforeAdd instanceof CSharpUsingListChild)
+		CSharpUsingNamespaceStatement newStatement = CSharpFileFactory.createUsingNamespaceStatement(myProject, qName);
+
+		if(myFile instanceof CSharpCodeFragment)
 		{
-			addUsingStatementAfter((CSharpUsingListChild) elementForBeforeAdd, qName);
+			((CSharpCodeFragment) myFile).addUsingChild(newStatement);
+		}
+		else if(elementForBeforeAdd instanceof CSharpUsingListChild)
+		{
+			addUsingStatementAfter(elementForBeforeAdd, newStatement);
 		}
 		else if(elementForBeforeAdd instanceof CSharpFile)
 		{
@@ -218,9 +225,7 @@ public class AddUsingAction implements QuestionAction
 
 			assert firstChild != null;
 
-			CSharpUsingNamespaceStatement usingStatement = CSharpFileFactory.createUsingNamespaceStatement(myProject, qName);
-
-			PsiElement usingStatementNew = elementForBeforeAdd.addBefore(usingStatement, firstChild);
+			PsiElement usingStatementNew = elementForBeforeAdd.addBefore(newStatement, firstChild);
 
 			PsiElement whiteSpaceFromText = PsiParserFacade.SERVICE.getInstance(myProject).createWhiteSpaceFromText("\n\n");
 
@@ -263,11 +268,9 @@ public class AddUsingAction implements QuestionAction
 	}
 
 	@RequiredReadAction
-	private static void addUsingStatementAfter(@NotNull PsiElement afterElement, @NotNull String qName)
+	private static void addUsingStatementAfter(@NotNull PsiElement afterElement, @NotNull CSharpUsingNamespaceStatement newStatement)
 	{
 		Project project = afterElement.getProject();
-
-		CSharpUsingNamespaceStatement newStatement = CSharpFileFactory.createUsingNamespaceStatement(project, qName);
 
 		PsiElement parent = afterElement.getParent();
 

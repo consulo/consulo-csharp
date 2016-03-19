@@ -14,6 +14,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 public interface CSharpUsingNamespaceStatement extends CSharpUsingListChild
 {
 	@Nullable
+	@RequiredReadAction
 	String getReferenceText();
 
 	@Nullable

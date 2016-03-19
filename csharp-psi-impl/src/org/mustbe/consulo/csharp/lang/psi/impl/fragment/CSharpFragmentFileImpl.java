@@ -16,6 +16,10 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.fragment;
 
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
@@ -24,9 +28,15 @@ import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCodeFragment;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightUsingNamespaceStatementBuilder;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.util.text.CharFilter;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiCodeFragment;
 import com.intellij.psi.PsiElement;
@@ -34,6 +44,8 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.impl.source.PsiFileImpl;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.SmartList;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -44,8 +56,9 @@ public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFra
 	@Nullable
 	private final PsiElement myContext;
 
-	public CSharpFragmentFileImpl(
-			@NotNull IElementType elementType, IElementType contentElementType, @NotNull FileViewProvider provider, @Nullable PsiElement context)
+	private Set<String> myUsingNamespaceChildren = new LinkedHashSet<String>();
+
+	public CSharpFragmentFileImpl(@NotNull IElementType elementType, IElementType contentElementType, @NotNull FileViewProvider provider, @Nullable PsiElement context)
 	{
 		super(elementType, contentElementType, provider);
 		myContext = context;
@@ -109,10 +122,39 @@ public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFra
 	}
 
 	@RequiredReadAction
+	@Override
+	public void addUsingChild(@NotNull CSharpUsingListChild child)
+	{
+		if(myContext == null)
+		{
+			return;
+		}
+
+		myManager.beforeChange(false); // clear resolve cache
+		if(child instanceof CSharpUsingNamespaceStatement)
+		{
+			String referenceText = ((CSharpUsingNamespaceStatement) child).getReferenceText();
+			assert referenceText != null;
+			String qName = StringUtil.strip(referenceText, CharFilter.NOT_WHITESPACE_FILTER);
+			myUsingNamespaceChildren.add(qName);
+		}
+	}
+
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public CSharpUsingListChild[] getUsingStatements()
 	{
-		return CSharpUsingListChild.EMPTY_ARRAY;
+		List<CSharpUsingListChild> listChildren = new SmartList<CSharpUsingListChild>();
+		for(String usingListChild : myUsingNamespaceChildren)
+		{
+			GlobalSearchScope resolveScope = myContext.getResolveScope();
+			DotNetNamespaceAsElement namespace = DotNetPsiSearcher.getInstance(getProject()).findNamespace(usingListChild, resolveScope);
+			if(namespace != null)
+			{
+				listChildren.add(new CSharpLightUsingNamespaceStatementBuilder(namespace, resolveScope));
+			}
+		}
+		return ContainerUtil.toArray(listChildren, CSharpUsingListChild.ARRAY_FACTORY);
 	}
 }

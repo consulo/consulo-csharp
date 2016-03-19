@@ -16,7 +16,9 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -27,4 +29,7 @@ public interface CSharpCodeFragment extends PsiElement
 {
 	@Nullable
 	PsiElement getScopeElement();
+
+	@RequiredReadAction
+	void addUsingChild(@NotNull CSharpUsingListChild child);
 }

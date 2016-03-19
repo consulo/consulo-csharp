@@ -62,6 +62,7 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 		return findNotNullChildByType(CSharpTokens.USING_KEYWORD);
 	}
 
+	@RequiredReadAction
 	@Override
 	@Nullable
 	public String getReferenceText()
