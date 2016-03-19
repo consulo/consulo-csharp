@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryCast;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeCastExpressionImpl;
@@ -41,6 +42,7 @@ public class UnnecessaryCastInspection extends LocalInspectionTool
 		return new CSharpElementVisitor()
 		{
 			@Override
+			@RequiredReadAction
 			public void visitTypeCastExpression(CSharpTypeCastExpressionImpl expression)
 			{
 				DotNetExpression innerExpression = expression.getInnerExpression();
@@ -52,8 +54,7 @@ public class UnnecessaryCastInspection extends LocalInspectionTool
 				DotNetTypeRef innerType = innerExpression.toTypeRef(false);
 				DotNetTypeRef castType = expression.toTypeRef(false);
 
-				if(CSharpTypeUtil.isInheritable(innerType, castType, expression) && CSharpTypeUtil.isInheritable(castType, innerType,
-						expression))
+				if(CSharpTypeUtil.isInheritable(innerType, castType, expression) && CSharpTypeUtil.isInheritable(castType, innerType, expression))
 				{
 					holder.registerProblem(expression.getType(), "Unnecessary cast", ProblemHighlightType.LIKE_UNUSED_SYMBOL);
 				}

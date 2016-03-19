@@ -385,6 +385,12 @@ public class CSharpTypeUtil
 			return fail();
 		}
 
+		// dont allow not nullable type to nullable
+		if(!topTypeResolveResult.isNullable() && targetTypeResolveResult.isNullable())
+		{
+			return fail();
+		}
+
 		DotNetGenericExtractor topGenericExtractor = topTypeResolveResult.getGenericExtractor();
 
 		if(explicitOrImplicit != null)
