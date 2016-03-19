@@ -80,7 +80,6 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 	public void visitReferenceExpression(CSharpReferenceExpression expression)
 	{
 		CSharpReferenceExpression.ResolveToKind kind = expression.kind();
-		String referenceName = expression.getReferenceName();
 		PsiElement qualifier = expression.getQualifier();
 		if(qualifier == null)
 		{
@@ -129,15 +128,7 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 			}
 			else
 			{
-				switch(kind)
-				{
-					case THIS:
-						myEvaluators.add(ThisObjectEvaluator.INSTANCE);
-						break;
-					default:
-						cantEvaluateExpression();
-						break;
-				}
+				cantEvaluateExpression();
 			}
 		}
 		else
