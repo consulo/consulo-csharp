@@ -26,6 +26,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.text.StringUtil;
@@ -41,9 +42,9 @@ public class CSharpElementPresentationUtil
 	public static final int METHOD_SCALA_FORMAT = 1 << 0;
 	public static final int METHOD_WITH_RETURN_TYPE = 1 << 1;
 	public static final int METHOD_PARAMETER_NAME = 1 << 2;
-	public static final int METHOD_WITH_VIRTUAL_IMPL_TYPE = 1 << 4;
+	public static final int WITH_VIRTUAL_IMPL_TYPE = 1 << 4;
 
-	public static final int METHOD_SCALA_LIKE_FULL = METHOD_SCALA_FORMAT | METHOD_WITH_RETURN_TYPE | METHOD_PARAMETER_NAME | METHOD_WITH_VIRTUAL_IMPL_TYPE;
+	public static final int METHOD_SCALA_LIKE_FULL = METHOD_SCALA_FORMAT | METHOD_WITH_RETURN_TYPE | METHOD_PARAMETER_NAME | WITH_VIRTUAL_IMPL_TYPE;
 
 	@NotNull
 	@RequiredReadAction
@@ -53,6 +54,28 @@ public class CSharpElementPresentationUtil
 		builder.append(fieldDeclaration.getName());
 		builder.append(":");
 		CSharpTypeRefPresentationUtil.appendTypeRef(fieldDeclaration, builder, fieldDeclaration.toTypeRef(true), CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
+		return builder.toString();
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public static String formatProperty(@NotNull DotNetPropertyDeclaration propertyDeclaration, int flags)
+	{
+		StringBuilder builder = new StringBuilder();
+
+		if(BitUtil.isSet(flags, WITH_VIRTUAL_IMPL_TYPE))
+		{
+			DotNetTypeRef typeRefForImplement = propertyDeclaration.getTypeRefForImplement();
+			if(typeRefForImplement != DotNetTypeRef.ERROR_TYPE)
+			{
+				CSharpTypeRefPresentationUtil.appendTypeRef(propertyDeclaration, builder, typeRefForImplement, CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
+				builder.append(".");
+			}
+		}
+
+		builder.append(propertyDeclaration.getName());
+		builder.append(":");
+		CSharpTypeRefPresentationUtil.appendTypeRef(propertyDeclaration, builder, propertyDeclaration.toTypeRef(true), CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
 		return builder.toString();
 	}
 
@@ -76,7 +99,7 @@ public class CSharpElementPresentationUtil
 			builder.append("~");
 		}
 
-		if(BitUtil.isSet(flags, METHOD_WITH_VIRTUAL_IMPL_TYPE))
+		if(BitUtil.isSet(flags, WITH_VIRTUAL_IMPL_TYPE))
 		{
 			if(methodDeclaration instanceof DotNetVirtualImplementOwner)
 			{

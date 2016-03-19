@@ -28,6 +28,7 @@ import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.ide.structureView.StructureViewTreeElement;
@@ -61,7 +62,6 @@ public class CSharpElementStructureViewTreeElement extends PsiTreeElementBase<Ps
 		return list;
 	}
 
-
 	@Nullable
 	@Override
 	@RequiredDispatchThread
@@ -79,6 +79,10 @@ public class CSharpElementStructureViewTreeElement extends PsiTreeElementBase<Ps
 		else if(value instanceof DotNetFieldDeclaration)
 		{
 			return CSharpElementPresentationUtil.formatField((DotNetFieldDeclaration) value);
+		}
+		else if(value instanceof DotNetPropertyDeclaration)
+		{
+			return CSharpElementPresentationUtil.formatProperty((DotNetPropertyDeclaration) value, CSharpElementPresentationUtil.WITH_VIRTUAL_IMPL_TYPE);
 		}
 		else if(value instanceof DotNetNamespaceDeclaration)
 		{
