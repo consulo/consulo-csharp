@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpEmptyGenericWrapperTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
@@ -74,6 +75,7 @@ public class CSharpTypeRefPresentationUtil
 	public static final int TYPE_KEYWORD = 1 << 1;
 	public static final int NO_GENERIC_ARGUMENTS = 1 << 2;
 	public static final int NO_REF = 1 << 3;
+	public static final int NULL = 1 << 4;
 
 	public static final int QUALIFIED_NAME_WITH_KEYWORD = QUALIFIED_NAME | TYPE_KEYWORD;
 
@@ -113,17 +115,29 @@ public class CSharpTypeRefPresentationUtil
 		return builder.toString();
 	}
 
+	@NotNull
 	@RequiredReadAction
-	public static void appendTypeRef(@NotNull final PsiElement scope, @NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef,
-			final int flags)
+	public static String buildTextWithKeywordAndNull(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
+	{
+		StringBuilder builder = new StringBuilder();
+		appendTypeRef(scope, builder, typeRef, QUALIFIED_NAME | TYPE_KEYWORD | NULL);
+		return builder.toString();
+	}
+
+	@RequiredReadAction
+	public static void appendTypeRef(@NotNull final PsiElement scope, @NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef, final int flags)
 	{
 		if(typeRef == DotNetTypeRef.AUTO_TYPE)
 		{
 			builder.append("var");
 			return;
 		}
-
-		if(typeRef == CSharpStaticTypeRef.__ARGLIST_TYPE)
+		else if(typeRef == CSharpNullTypeRef.INSTANCE && BitUtil.isSet(flags, NULL))
+		{
+			builder.append("null");
+			return;
+		}
+		else if(typeRef == CSharpStaticTypeRef.__ARGLIST_TYPE)
 		{
 			builder.append(typeRef.getPresentableText());
 			return;
@@ -175,8 +189,7 @@ public class CSharpTypeRefPresentationUtil
 				String qName = ((DotNetQualifiedElement) element).getPresentableQName();
 				String name = ((DotNetQualifiedElement) element).getName();
 
-				String typeAsKeyword = CSharpCodeGenerationSettings.getInstance(scope.getProject()).USE_LANGUAGE_DATA_TYPES ? ourTypesAsKeywords.get
-						(qName) : null;
+				String typeAsKeyword = CSharpCodeGenerationSettings.getInstance(scope.getProject()).USE_LANGUAGE_DATA_TYPES ? ourTypesAsKeywords.get(qName) : null;
 
 				if(BitUtil.isSet(flags, QUALIFIED_NAME))
 				{

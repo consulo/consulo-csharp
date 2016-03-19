@@ -93,8 +93,8 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(firstTypeRef, secondTypeRef, element, CSharpStaticTypeRef.IMPLICIT);
 		if(!inheritResult.isSuccess())
 		{
-			CompilerCheckBuilder builder = newBuilder(elementToHighlight, CSharpTypeRefPresentationUtil.buildTextWithKeyword(secondTypeRef, element),
-					CSharpTypeRefPresentationUtil.buildTextWithKeyword(firstTypeRef, element));
+			CompilerCheckBuilder builder = newBuilder(elementToHighlight, CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(secondTypeRef, element),
+					CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(firstTypeRef, element));
 
 			if(elementToHighlight instanceof DotNetExpression)
 			{
@@ -133,8 +133,8 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		}
 		else if(inheritResult.isConversion())
 		{
-			String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildTextWithKeyword(secondTypeRef, element),
-					CSharpTypeRefPresentationUtil.buildTextWithKeyword(firstTypeRef, element));
+			String text = CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(secondTypeRef, element),
+					CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(firstTypeRef, element));
 			return newBuilder(elementToHighlight).setText(text).setHighlightInfoType(HighlightInfoType.INFORMATION).setTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
 		}
 

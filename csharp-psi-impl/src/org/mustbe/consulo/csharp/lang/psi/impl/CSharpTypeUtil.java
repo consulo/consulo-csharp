@@ -162,6 +162,7 @@ public class CSharpTypeUtil
 					}
 				}
 			}
+			return false;
 		}
 		return true;
 	}
