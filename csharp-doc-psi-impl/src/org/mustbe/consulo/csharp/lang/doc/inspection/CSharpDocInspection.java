@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.doc.CSharpDocLanguage;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocAttribute;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocElementVisitor;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTag;
@@ -47,6 +48,10 @@ public class CSharpDocInspection extends LocalInspectionTool
 			@RequiredReadAction
 			public void visitErrorElement(PsiErrorElement element)
 			{
+				if(element.getLanguage() != CSharpDocLanguage.INSTANCE)
+				{
+					return;
+				}
 				int textLength = element.getTextLength();
 				if(textLength == 0)
 				{
