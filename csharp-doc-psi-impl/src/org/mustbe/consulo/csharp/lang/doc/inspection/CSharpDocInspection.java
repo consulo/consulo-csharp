@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.doc.inspection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocAttribute;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocElementVisitor;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTag;
@@ -27,6 +28,7 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiErrorElement;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
@@ -42,6 +44,22 @@ public class CSharpDocInspection extends LocalInspectionTool
 		return new CSharpDocElementVisitor()
 		{
 			@Override
+			@RequiredReadAction
+			public void visitErrorElement(PsiErrorElement element)
+			{
+				int textLength = element.getTextLength();
+				if(textLength == 0)
+				{
+					holder.registerProblem(element.getPrevSibling(), element.getErrorDescription(), ProblemHighlightType.WEAK_WARNING);
+				}
+				else
+				{
+					holder.registerProblem(element, element.getErrorDescription(), ProblemHighlightType.WEAK_WARNING);
+				}
+			}
+
+			@Override
+			@RequiredReadAction
 			public void visitDocTag(CSharpDocTag docTag)
 			{
 				if(docTag.getTagInfo() == null)
@@ -52,18 +70,19 @@ public class CSharpDocInspection extends LocalInspectionTool
 					{
 						return;
 					}
-					holder.registerProblem(firstItem, "Unknown tag name '" + firstItem.getText() + "'", ProblemHighlightType.ERROR);
+					holder.registerProblem(firstItem, "Unknown tag name '" + firstItem.getText() + "'", ProblemHighlightType.WEAK_WARNING);
 				}
 			}
 
 			@Override
+			@RequiredReadAction
 			public void visitDocAttribute(CSharpDocAttribute docAttribute)
 			{
 				if(docAttribute.getAttributeInfo() == null)
 				{
 					PsiElement psiElement = docAttribute.getNameIdentifier();
 					assert psiElement != null;
-					holder.registerProblem(psiElement, "Unknown attribute name '" + psiElement.getText() + "'", ProblemHighlightType.ERROR);
+					holder.registerProblem(psiElement, "Unknown attribute name '" + psiElement.getText() + "'", ProblemHighlightType.WEAK_WARNING);
 				}
 			}
 		};

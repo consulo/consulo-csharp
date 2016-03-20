@@ -245,6 +245,7 @@
 
 		<problemFileHighlightFilter implementation="org.mustbe.consulo.csharp.ide.codeInsight.problems.CSharpFileProblemHighlightFilter"/>
 		<problemHighlightFilter implementation="org.mustbe.consulo.csharp.ide.codeInsight.problems.CSharpProblemHighlightFilter"/>
+		<highlightErrorFilter implementation="org.mustbe.consulo.csharp.lang.doc.inspection.CSharpDocHighlightErrorFilter"/>
 		<editorHighlighterProvider filetype="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpEditorHighlighterProvider"/>
 
 		<codeInsight.parameterInfo language="C#" implementationClass="org.mustbe.consulo.csharp.ide.parameterInfo.CSharpParameterInfoHandler"/>
