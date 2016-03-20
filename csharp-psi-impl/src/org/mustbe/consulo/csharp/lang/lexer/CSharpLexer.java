@@ -59,20 +59,17 @@ public class CSharpLexer extends MergingLexerAdapterBase
 				// we need merge two docs if one line between
 				if(mergeToken == CSharpTokensImpl.LINE_DOC_COMMENT && currentToken == CSharpTokens.WHITE_SPACE)
 				{
-					if(hasOnlyOneLine(originalLexer.getTokenSequence()))
+					LexerPosition currentPosition = originalLexer.getCurrentPosition();
+					originalLexer.advance();
+					boolean docIsNext = originalLexer.getTokenType() == CSharpTokensImpl.LINE_DOC_COMMENT;
+					originalLexer.restore(currentPosition);
+					if(docIsNext)
 					{
-						LexerPosition currentPosition = originalLexer.getCurrentPosition();
-						originalLexer.advance();
-						boolean docIsNext = originalLexer.getTokenType() == CSharpTokensImpl.LINE_DOC_COMMENT;
-						originalLexer.restore(currentPosition);
-						if(docIsNext)
-						{
-							currentToken = CSharpTokensImpl.LINE_DOC_COMMENT;
-						}
-						else
-						{
-							break;
-						}
+						currentToken = CSharpTokensImpl.LINE_DOC_COMMENT;
+					}
+					else
+					{
+						break;
 					}
 				}
 
@@ -84,28 +81,6 @@ public class CSharpLexer extends MergingLexerAdapterBase
 				originalLexer.advance();
 			}
 			return mergeToken;
-		}
-
-		private static boolean hasOnlyOneLine(CharSequence sequence)
-		{
-			int c = 0;
-			int len = sequence.length();
-			if(len == 0)
-			{
-				return false;
-			}
-			for(int i = 0; i < len; i++)
-			{
-				if(sequence.charAt(i) == '\n')
-				{
-					c++;
-					if(c == 2)
-					{
-						return false;
-					}
-				}
-			}
-			return c == 1;
 		}
 	}
 

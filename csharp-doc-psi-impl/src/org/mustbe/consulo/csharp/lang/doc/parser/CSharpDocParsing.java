@@ -149,7 +149,7 @@ public class CSharpDocParsing
 		}
 		else
 		{
-			error("Unexpected end of file");
+			error("Unexpected end of doc");
 		}
 
 		content.drop();
