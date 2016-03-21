@@ -9,7 +9,6 @@ import com.intellij.openapi.options.Configurable;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CodeStyleSettingsProvider;
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
-import com.intellij.psi.codeStyle.DisplayPriority;
 
 /**
  * @author VISTALL
@@ -34,12 +33,6 @@ public class CSharpCodeGenerationSettingsProvider extends CodeStyleSettingsProvi
 	public Language getLanguage()
 	{
 		return CSharpLanguage.INSTANCE;
-	}
-
-	@Override
-	public DisplayPriority getPriority()
-	{
-		return DisplayPriority.CODE_SETTINGS;
 	}
 
 	@Nullable

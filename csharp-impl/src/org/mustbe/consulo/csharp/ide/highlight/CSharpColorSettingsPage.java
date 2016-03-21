@@ -33,14 +33,12 @@ import com.intellij.openapi.options.colors.AttributesDescriptor;
 import com.intellij.openapi.options.colors.ColorDescriptor;
 import com.intellij.openapi.options.colors.ColorSettingsPage;
 import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.psi.codeStyle.DisplayPriority;
-import com.intellij.psi.codeStyle.DisplayPrioritySortable;
 
 /**
  * @author VISTALL
  * @since 08.04.14
  */
-public class CSharpColorSettingsPage implements ColorSettingsPage, DisplayPrioritySortable
+public class CSharpColorSettingsPage implements ColorSettingsPage
 {
 	private static final AttributesDescriptor[] ourDescriptors = new AttributesDescriptor[]{
 			new AttributesDescriptor("Block comment", CSharpHighlightKey.BLOCK_COMMENT),
@@ -163,11 +161,5 @@ public class CSharpColorSettingsPage implements ColorSettingsPage, DisplayPriori
 	public String getDisplayName()
 	{
 		return "C#";
-	}
-
-	@Override
-	public DisplayPriority getPriority()
-	{
-		return DisplayPriority.LANGUAGE_SETTINGS;
 	}
 }
