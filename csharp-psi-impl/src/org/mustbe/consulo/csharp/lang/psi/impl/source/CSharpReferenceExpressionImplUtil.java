@@ -274,20 +274,7 @@ public class CSharpReferenceExpressionImplUtil
 			return TextRange.EMPTY_RANGE;
 		}
 
-		PsiElement qualifier = referenceExpression.getQualifier();
-		int startOffset = qualifier != null ? qualifier.getTextLength() : 0;
-		CSharpReferenceExpression.AccessType accessType = referenceExpression.getMemberAccessType();
-		switch(accessType)
-		{
-			case ARROW:
-			case COLONCOLON:
-			case NULLABLE_CALL:
-				startOffset += 2;
-				break;
-			case DOT:
-				startOffset += 1;
-				break;
-		}
+		int startOffset = referenceElement.getStartOffsetInParent();
 		return new TextRange(startOffset, referenceElement.getTextLength() + startOffset);
 	}
 
