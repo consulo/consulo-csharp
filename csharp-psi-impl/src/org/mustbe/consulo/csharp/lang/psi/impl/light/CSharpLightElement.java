@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.light;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import com.intellij.pom.Navigatable;
@@ -24,6 +25,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.light.LightElement;
+import com.intellij.util.ObjectUtil;
 
 /**
  * @author VISTALL
@@ -33,16 +35,26 @@ public abstract class CSharpLightElement<S extends PsiElement> extends LightElem
 {
 	protected final S myOriginal;
 
+	@Nullable
+	private PsiElement myParent;
+
 	protected CSharpLightElement(S original)
 	{
 		super(original.getManager(), CSharpLanguage.INSTANCE);
 		myOriginal = original;
 	}
 
+	@SuppressWarnings("unchecked")
+	public S withParent(@NotNull PsiElement parent)
+	{
+		myParent = parent;
+		return (S) this;
+	}
+
 	@Override
 	public PsiElement getParent()
 	{
-		return myOriginal.getParent();
+		return ObjectUtil.notNull(myParent, myOriginal.getParent());
 	}
 
 	@NotNull
@@ -87,7 +99,7 @@ public abstract class CSharpLightElement<S extends PsiElement> extends LightElem
 	@Override
 	public PsiElement getOriginalElement()
 	{
-		return myOriginal;
+		return myOriginal.getOriginalElement();
 	}
 
 	@Override
@@ -95,7 +107,7 @@ public abstract class CSharpLightElement<S extends PsiElement> extends LightElem
 	{
 		if(visitor instanceof CSharpElementVisitor)
 		{
-			accept((CSharpElementVisitor)visitor);
+			accept((CSharpElementVisitor) visitor);
 		}
 		else
 		{
