@@ -22,6 +22,7 @@ import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -58,7 +59,7 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 	{
 		for(IElementType o : CSharpSoftTokens.ALL.getTypes())
 		{
-			String keyword = o.toString().replace("_KEYWORD", "").toLowerCase();
+			String keyword = o.toString().replace("_KEYWORD", "").toLowerCase(Locale.US);
 			ourIdentifierToSoftKeywords.put(keyword, o);
 		}
 	}

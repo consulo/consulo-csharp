@@ -16,6 +16,8 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
+import java.util.Locale;
+
 import org.consulo.annotations.Immutable;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
@@ -88,6 +90,6 @@ public enum CSharpAccessModifier
 	@LazyInstance
 	public String getPresentableText()
 	{
-		return name().toLowerCase().replace("_", " ");
+		return name().toLowerCase(Locale.US).replace("_", " ");
 	}
 }

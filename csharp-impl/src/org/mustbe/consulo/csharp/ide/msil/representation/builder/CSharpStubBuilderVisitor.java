@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.ide.msil.representation.builder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -103,7 +104,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 		processModifierList(builder, accessor);
 
-		builder.append(accessorKind.name().toLowerCase());
+		builder.append(accessorKind.name().toLowerCase(Locale.US));
 
 		boolean canHaveBody = !accessor.hasModifier(CSharpModifier.ABSTRACT);
 
@@ -518,7 +519,7 @@ public class CSharpStubBuilderVisitor extends CSharpElementVisitor
 
 			if(targetType != null)
 			{
-				builder.append(targetType.name().toLowerCase()).append(": ");
+				builder.append(targetType.name().toLowerCase(Locale.US)).append(": ");
 			}
 			appendTypeRef(scope, builder, dotNetAttribute.toTypeRef());
 

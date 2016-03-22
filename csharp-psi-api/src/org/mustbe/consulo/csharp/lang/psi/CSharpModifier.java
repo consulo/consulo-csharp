@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.consulo.lombok.annotations.ArrayFactoryFields;
@@ -90,7 +91,7 @@ public enum CSharpModifier implements DotNetModifier
 	@LazyInstance
 	public String getPresentableText()
 	{
-		return name().toLowerCase();
+		return name().toLowerCase(Locale.US);
 	}
 
 	@NotNull

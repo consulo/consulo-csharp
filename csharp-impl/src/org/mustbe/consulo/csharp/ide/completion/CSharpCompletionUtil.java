@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.ide.completion;
 
+import java.util.Locale;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
@@ -59,7 +60,7 @@ public class CSharpCompletionUtil
 			{
 				return "null";
 			}
-			return elementType.toString().replace("_KEYWORD", "").toLowerCase();
+			return elementType.toString().replace("_KEYWORD", "").toLowerCase(Locale.US);
 		}
 	};
 

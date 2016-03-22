@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -199,7 +200,7 @@ public class CSharpLookupElementBuilder
 			{
 				return null;
 			}
-			String accessorPrefix = accessorKind.name().toLowerCase();
+			String accessorPrefix = accessorKind.name().toLowerCase(Locale.US);
 			builder = LookupElementBuilder.create(element, ownerName);
 			builder = builder.withPresentableText(accessorPrefix + "::" + parent.getName());
 			builder = builder.withLookupString(accessorPrefix + "::" + parent.getName());

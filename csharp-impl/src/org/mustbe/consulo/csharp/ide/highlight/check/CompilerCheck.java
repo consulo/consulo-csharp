@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -229,7 +230,7 @@ public abstract class CompilerCheck<T extends PsiElement>
 		else if(e instanceof DotNetXXXAccessor)
 		{
 			PsiElement parent = e.getParent();
-			return formatElement(parent) + "." + ((DotNetXXXAccessor) e).getAccessorKind().name().toLowerCase();
+			return formatElement(parent) + "." + ((DotNetXXXAccessor) e).getAccessorKind().name().toLowerCase(Locale.US);
 		}
 
 		String parentName = null;

@@ -16,6 +16,8 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
+import java.util.Locale;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
@@ -110,7 +112,7 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 		{
 			return "null";
 		}
-		return accessorKind.name().toLowerCase();
+		return accessorKind.name().toLowerCase(Locale.US);
 	}
 
 	@NotNull
