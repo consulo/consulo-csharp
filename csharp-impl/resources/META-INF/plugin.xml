@@ -44,6 +44,9 @@
 			<add-to-group group-id="NewGroup1" anchor="after" relative-to-action="NewClass"/>
 		</action>
 
+		<action id="CSharp.Internal.OpenTypeFromVariable" class="org.mustbe.consulo.csharp.ide.actions.internal.OpenTypeFromVariableAction" internal="true">
+			<add-to-group group-id="Internal" />
+		</action>
 		<group id="CSharp.GenerateActions">
 			<action id="CSharp.GenerateReadOnlyProperty" class="org.mustbe.consulo.csharp.ide.actions.generate.GenerateReadOnlyPropertyAction"/>
 			<action id="CSharp.GenerateProperty" class="org.mustbe.consulo.csharp.ide.actions.generate.GeneratePropertyAction"/>
