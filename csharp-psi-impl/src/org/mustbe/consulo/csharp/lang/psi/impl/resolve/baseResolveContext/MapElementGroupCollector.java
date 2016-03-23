@@ -30,6 +30,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpBaseResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpElementGroupImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.project.Project;
@@ -63,6 +64,7 @@ public abstract class MapElementGroupCollector<K, E extends PsiElement> extends 
 			{
 				map = new THashMap<K, CSharpElementGroup<E>>();
 				final DotNetGenericExtractor extractor = getExtractor();
+				final DotNetModifierListOwner parent = myResolveContext.getElement();
 				final Project project = getProject();
 
 				for(Map.Entry<K, Collection<E>> entry : elements.entrySet())
@@ -78,7 +80,7 @@ public abstract class MapElementGroupCollector<K, E extends PsiElement> extends 
 							@SuppressWarnings("unchecked")
 							public E fun(final E element)
 							{
-								return element instanceof DotNetNamedElement ? (E) GenericUnwrapTool.extract((DotNetNamedElement) element, extractor) : element;
+								return element instanceof DotNetNamedElement ? (E) GenericUnwrapTool.extract((DotNetNamedElement) element, extractor, parent) : element;
 							}
 						});
 

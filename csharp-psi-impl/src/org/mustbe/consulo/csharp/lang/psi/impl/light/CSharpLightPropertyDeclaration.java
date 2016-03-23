@@ -43,6 +43,7 @@ public class CSharpLightPropertyDeclaration extends CSharpLightVariable<CSharpPr
 		myVirtualTypeRefForImpl = virtualTypeRefForImpl;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
@@ -70,6 +71,7 @@ public class CSharpLightPropertyDeclaration extends CSharpLightVariable<CSharpPr
 		return myOriginal.getMembers();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableParentQName()
@@ -77,6 +79,7 @@ public class CSharpLightPropertyDeclaration extends CSharpLightVariable<CSharpPr
 		return myOriginal.getPresentableParentQName();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableQName()

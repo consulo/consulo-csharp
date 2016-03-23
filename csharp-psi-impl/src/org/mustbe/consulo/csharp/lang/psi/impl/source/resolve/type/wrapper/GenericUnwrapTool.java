@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.*;
@@ -40,7 +41,6 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.Function;
-import com.intellij.util.ObjectUtil;
 
 /**
  * @author VISTALL
@@ -58,7 +58,7 @@ public class GenericUnwrapTool
 		}
 
 		@Override
-		public DotNetTypeRef fun(PsiElement element)
+		public DotNetTypeRef fun(final PsiElement element)
 		{
 			if(element instanceof DotNetGenericParameter)
 			{
@@ -87,9 +87,14 @@ public class GenericUnwrapTool
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@RequiredReadAction
 	public static <T extends DotNetNamedElement> T extract(T namedElement, DotNetGenericExtractor extractor)
+	{
+		return extract(namedElement, extractor, null);
+	}
+
+	@RequiredReadAction
+	public static <T extends DotNetNamedElement> T extract(T namedElement, DotNetGenericExtractor extractor, @Nullable PsiElement parent)
 	{
 		if(extractor == DotNetGenericExtractor.EMPTY)
 		{
@@ -114,11 +119,11 @@ public class GenericUnwrapTool
 
 			CSharpLightMethodDeclaration copy = new CSharpLightMethodDeclaration(methodDeclaration, parameterList);
 			exchangeMethodTypeRefs(copy, methodDeclaration, extractor);
-			return (T) copy;
+			return cast(copy, parent);
 		}
 		else if(namedElement instanceof CSharpTypeDeclaration)
 		{
-			return (T) new CSharpLightTypeDeclaration((CSharpTypeDeclaration) namedElement, extractor);
+			return cast(new CSharpLightTypeDeclaration((CSharpTypeDeclaration) namedElement, extractor), parent);
 		}
 		else if(namedElement instanceof CSharpIndexMethodDeclaration)
 		{
@@ -139,7 +144,7 @@ public class GenericUnwrapTool
 
 			CSharpLightIndexMethodDeclaration copy = new CSharpLightIndexMethodDeclaration(arrayMethodDeclaration, parameterList);
 			exchangeMethodTypeRefs(copy, arrayMethodDeclaration, extractor);
-			return (T) copy;
+			return cast(copy, parent);
 		}
 		else if(namedElement instanceof CSharpConversionMethodDeclaration)
 		{
@@ -160,7 +165,7 @@ public class GenericUnwrapTool
 
 			DotNetTypeRef returnTypeRef = exchangeTypeRef(conversionMethodDeclaration.getReturnTypeRef(), extractor, namedElement);
 			CSharpLightConversionMethodDeclaration copy = new CSharpLightConversionMethodDeclaration(conversionMethodDeclaration, parameterList, returnTypeRef);
-			return (T) copy;
+			return cast(copy, parent);
 		}
 		else if(namedElement instanceof CSharpConstructorDeclaration)
 		{
@@ -180,29 +185,40 @@ public class GenericUnwrapTool
 			parameterList = new CSharpLightParameterList(parameterList == null ? namedElement : parameterList, newParameters);
 
 			CSharpLightConstructorDeclaration copy = new CSharpLightConstructorDeclaration(constructor, parameterList);
-			return (T) copy;
+			return cast(copy, parent);
 		}
 		else if(namedElement instanceof CSharpPropertyDeclaration)
 		{
 			CSharpPropertyDeclaration e = (CSharpPropertyDeclaration) namedElement;
 			DotNetTypeRef returnTypeRef = exchangeTypeRef(e.toTypeRef(true), extractor, e);
 			DotNetTypeRef virtualTypeForImpl = exchangeTypeRef(e.getTypeRefForImplement(), extractor, e);
-			return (T) new CSharpLightPropertyDeclaration(e, returnTypeRef, virtualTypeForImpl);
+			return cast(new CSharpLightPropertyDeclaration(e, returnTypeRef, virtualTypeForImpl), parent);
 		}
 		else if(namedElement instanceof CSharpEventDeclaration)
 		{
 			CSharpEventDeclaration e = (CSharpEventDeclaration) namedElement;
 			DotNetTypeRef returnTypeRef = exchangeTypeRef(e.toTypeRef(true), extractor, e);
 			DotNetTypeRef virtualTypeForImpl = exchangeTypeRef(e.getTypeRefForImplement(), extractor, e);
-			return (T) new CSharpLightEventDeclaration(e, returnTypeRef, virtualTypeForImpl);
+			return cast(new CSharpLightEventDeclaration(e, returnTypeRef, virtualTypeForImpl), parent);
 		}
 		else if(namedElement instanceof CSharpFieldDeclaration)
 		{
 			CSharpFieldDeclaration e = (CSharpFieldDeclaration) namedElement;
-			return (T) new CSharpLightFieldDeclaration(e, exchangeTypeRef(e.toTypeRef(true), extractor, e));
+			return cast(new CSharpLightFieldDeclaration(e, exchangeTypeRef(e.toTypeRef(true), extractor, e)), parent);
 		}
 
 		return namedElement;
+	}
+
+	@NotNull
+	@SuppressWarnings("unchecked")
+	private static <T extends DotNetNamedElement> T cast(@NotNull PsiElement target, @Nullable PsiElement parent)
+	{
+		if(parent != null && target instanceof CSharpLightElement)
+		{
+			return (T) ((CSharpLightElement) target).withParent(parent);
+		}
+		return (T) target;
 	}
 
 	@RequiredReadAction
@@ -288,11 +304,6 @@ public class GenericUnwrapTool
 
 			Pair<DotNetTypeRef, PsiElement> pair = extractTypeRef(typeRef, func, scope);
 
-			if(typeArgumentListRefs.length == 0)
-			{
-				return ObjectUtil.notNull(pair.getFirst(), typeRef);
-			}
-
 			DotNetTypeRef innerTypeRef;
 			if(pair.getFirst() == null && pair.getSecond() == null)
 			{
@@ -304,7 +315,21 @@ public class GenericUnwrapTool
 			}
 			else // element is not null
 			{
-				innerTypeRef = CSharpReferenceExpressionImplUtil.toTypeRef(pair.getSecond());
+				if(func instanceof GenericExtractFunction)
+				{
+					PsiElement psiElement = pair.getSecond();
+
+					innerTypeRef = CSharpReferenceExpressionImplUtil.toTypeRef(psiElement, ((GenericExtractFunction) func).myExtractor);
+				}
+				else
+				{
+					innerTypeRef = CSharpReferenceExpressionImplUtil.toTypeRef(pair.getSecond());
+				}
+			}
+
+			if(typeArgumentListRefs.length == 0)
+			{
+				return innerTypeRef;
 			}
 
 			DotNetTypeRef[] typeRefs = exchangeTypeRefs(typeArgumentListRefs, func, scope);

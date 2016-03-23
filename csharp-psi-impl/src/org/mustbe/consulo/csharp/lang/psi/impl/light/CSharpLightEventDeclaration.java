@@ -43,6 +43,7 @@ public class CSharpLightEventDeclaration extends CSharpLightVariable<CSharpEvent
 		myVirtualTypeRefForImpl = virtualTypeRefForImpl;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)

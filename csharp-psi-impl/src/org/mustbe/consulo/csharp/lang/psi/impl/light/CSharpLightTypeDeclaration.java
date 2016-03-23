@@ -181,13 +181,14 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
 	@NotNull
 	@Override
 	@LazyInstance
+	@RequiredReadAction
 	public DotNetNamedElement[] getMembers()
 	{
 		DotNetNamedElement[] originalMembers = myOriginal.getMembers();
 		DotNetNamedElement[] members = new DotNetNamedElement[originalMembers.length];
 		for(int i = 0; i < originalMembers.length; i++)
 		{
-			members[i] = GenericUnwrapTool.extract(originalMembers[i], myExtractor);
+			members[i] = GenericUnwrapTool.extract(originalMembers[i], myExtractor, CSharpLightTypeDeclaration.this);
 		}
 		return members;
 	}

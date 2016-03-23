@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.light;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
@@ -39,12 +40,14 @@ public abstract class CSharpLightVariable<S extends DotNetVariable> extends CSha
 		super(original);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean isConstant()
 	{
 		return myOriginal.isConstant();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getConstantKeywordElement()
@@ -52,6 +55,7 @@ public abstract class CSharpLightVariable<S extends DotNetVariable> extends CSha
 		return myOriginal.getConstantKeywordElement();
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
@@ -59,6 +63,7 @@ public abstract class CSharpLightVariable<S extends DotNetVariable> extends CSha
 		return myOriginal.toTypeRef(true);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetType getType()
@@ -66,6 +71,7 @@ public abstract class CSharpLightVariable<S extends DotNetVariable> extends CSha
 		return myOriginal.getType();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetExpression getInitializer()
@@ -73,12 +79,14 @@ public abstract class CSharpLightVariable<S extends DotNetVariable> extends CSha
 		return myOriginal.getInitializer();
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
 		return myOriginal.hasModifier(modifier);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetModifierList getModifierList()
