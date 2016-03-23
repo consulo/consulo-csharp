@@ -26,7 +26,8 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.formatter.DocumentBasedFormattingModel;
+import com.intellij.psi.formatter.FormattingDocumentModelImpl;
+import com.intellij.psi.formatter.PsiBasedFormattingModel;
 
 /**
  * @author VISTALL
@@ -45,8 +46,9 @@ public class CSharpFormattingModelBuilder implements DelegatingFormattingModelBu
 	public FormattingModel createModel(PsiElement element, CodeStyleSettings settings)
 	{
 		final PsiFile file = element.getContainingFile();
+		FormattingDocumentModelImpl model = FormattingDocumentModelImpl.createOn(element.getContainingFile());
 		Block rootBlock = new CSharpFormattingBlock(file.getNode(), null, null, settings);
-		return new DocumentBasedFormattingModel(rootBlock, element.getProject(), settings, file.getFileType(), file);
+		return new PsiBasedFormattingModel(file, rootBlock, model);
 	}
 
 	@Nullable
