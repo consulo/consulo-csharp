@@ -89,7 +89,14 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 		CSharpFragmentFileImpl expressionFragment = CSharpFragmentFactory.createExpressionFragment(debuggerContext.getProject(), expression,
 				elementAt);
 
-		PsiElement fragmentElement = expressionFragment.getChildren()[0];
+		PsiElement[] children = expressionFragment.getChildren();
+		if(children.length == 0)
+		{
+			callback.evaluated(new CSharpErrorValue("no expression"));
+			return;
+		}
+
+		PsiElement fragmentElement = children[0];
 
 		DotNetExpression expressionPsi = fragmentElement instanceof DotNetExpression ? (DotNetExpression) fragmentElement : null;
 
