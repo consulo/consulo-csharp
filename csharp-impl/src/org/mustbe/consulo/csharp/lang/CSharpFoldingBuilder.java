@@ -149,6 +149,10 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 							break;
 						}
 					}
+					else if(elementType == CSharpTokens.PREPROCESSOR_DIRECTIVE)
+					{
+						break;
+					}
 					else if(CSharpStubElements.USING_CHILDREN.contains(elementType))
 					{
 						children.add(node.getPsi(CSharpUsingListChild.class));
