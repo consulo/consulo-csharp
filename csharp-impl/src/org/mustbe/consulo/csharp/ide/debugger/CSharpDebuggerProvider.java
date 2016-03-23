@@ -67,7 +67,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 			XSourcePosition currentPosition = session.getCurrentPosition();
 			if(currentPosition == null)
 			{
-				callback.evaluated(new CSharpErrorValue("cant evaluate"));
+				callback.errorOccurred("cant evaluate");
 				return;
 			}
 
@@ -75,13 +75,13 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 			PsiFile psiFile = PsiManager.getInstance(debuggerContext.getProject()).findFile(file);
 			if(psiFile == null)
 			{
-				callback.evaluated(new CSharpErrorValue("cant evaluate"));
+				callback.errorOccurred("cant evaluate");
 				return;
 			}
 			elementAt = psiFile.findElementAt(currentPosition.getOffset());
 			if(elementAt == null)
 			{
-				callback.evaluated(new CSharpErrorValue("cant evaluate"));
+				callback.errorOccurred("cant evaluate");
 				return;
 			}
 		}
@@ -92,7 +92,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 		PsiElement[] children = expressionFragment.getChildren();
 		if(children.length == 0)
 		{
-			callback.evaluated(new CSharpErrorValue("no expression"));
+			callback.errorOccurred("no expression");
 			return;
 		}
 
@@ -102,7 +102,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 
 		if(expressionPsi == null)
 		{
-			callback.evaluated(new CSharpErrorValue("no expression"));
+			callback.errorOccurred("no expression");
 			return;
 		}
 
@@ -116,7 +116,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 			List<Evaluator> evaluators = expressionEvaluator.getEvaluators();
 			if(evaluators.isEmpty())
 			{
-				callback.evaluated(new CSharpErrorValue("cant evaluate expression"));
+				callback.errorOccurred("cant evaluate expression");
 				return;
 			}
 
@@ -128,12 +128,12 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 			}
 			else
 			{
-				callback.evaluated(new CSharpErrorValue("no value"));
+				callback.errorOccurred("no value");
 			}
 		}
 		catch(InvalidStackFrameException e)
 		{
-			callback.evaluated(new CSharpErrorValue("invalid stack frame"));
+			callback.errorOccurred("invalid stack frame");
 		}
 		catch(Exception e)
 		{
@@ -143,7 +143,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 				message = e.getClass().getSimpleName() + " was throw";
 				LOGGER.error("Exception have null message", e);
 			}
-			callback.evaluated(new CSharpErrorValue(message));
+			callback.errorOccurred(message);
 		}
 	}
 
