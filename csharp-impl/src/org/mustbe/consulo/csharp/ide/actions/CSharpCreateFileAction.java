@@ -60,7 +60,6 @@ import com.intellij.openapi.vfs.VirtualFileVisitor;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.util.IncorrectOperationException;
 
@@ -215,12 +214,6 @@ public class CSharpCreateFileAction extends CreateFromTemplateAction<PsiFile>
 
 			element = FileTemplateUtil.createFromTemplate(template, name, defaultProperties, dir);
 			PsiFile psiFile = element.getContainingFile();
-
-			if(template.isReformatCode())
-			{
-				//FIXME [VISTALL] this is hack until find reason - com.intellij.psi.codeStyle.CodeStyleManager.reformat() : 57 is not work?
-				CodeStyleManager.getInstance(project).reformat(psiFile);
-			}
 
 			VirtualFile virtualFile = psiFile.getVirtualFile();
 			if(virtualFile != null)
