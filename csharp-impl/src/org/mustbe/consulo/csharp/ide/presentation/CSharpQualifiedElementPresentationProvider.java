@@ -20,6 +20,8 @@ import javax.swing.Icon;
 
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -49,6 +51,7 @@ public class CSharpQualifiedElementPresentationProvider implements ItemPresentat
 
 		@Nullable
 		@Override
+		@RequiredDispatchThread
 		public String getPresentableText()
 		{
 			if(myDeclaration instanceof DotNetTypeDeclaration)
@@ -61,13 +64,14 @@ public class CSharpQualifiedElementPresentationProvider implements ItemPresentat
 				{
 					return DotNetElementPresentationUtil.formatTypeWithGenericParameters((CSharpMethodDeclaration) myDeclaration);
 				}
-				return DotNetElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) myDeclaration, 0);
+				return CSharpElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) myDeclaration, 0);
 			}
 			return myDeclaration.getName();
 		}
 
 		@Nullable
 		@Override
+		@RequiredDispatchThread
 		public String getLocationString()
 		{
 			String presentableParentQName = myDeclaration.getPresentableParentQName();
