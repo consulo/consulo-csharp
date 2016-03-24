@@ -110,6 +110,8 @@
 		<internalFileTemplate name="CSharpFile"/>
 		<internalFileTemplate name="CSharpAssemblyFile"/>
 
+		<createFromTemplateHandler implementation="org.mustbe.consulo.csharp.ide.actions.CSharpCreateFromTemplateHandler"/>
+
 		<errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
 
 		<additionalTextAttributes scheme="Darcula" file="/colorScheme/CSharpDarcula.xml"/>

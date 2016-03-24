@@ -16,9 +16,12 @@
 
 package org.mustbe.consulo.csharp.ide.actions;
 
-import java.text.ParseException;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.swing.Icon;
 
 import org.consulo.psi.PsiPackage;
 import org.consulo.psi.PsiPackageManager;
@@ -31,12 +34,9 @@ import org.mustbe.consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
-import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
-import org.mustbe.consulo.roots.ContentEntryFileListener;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.IconDescriptor;
 import com.intellij.ide.IdeView;
-import com.intellij.ide.actions.CreateFileAction;
 import com.intellij.ide.actions.CreateFileFromTemplateDialog;
 import com.intellij.ide.actions.CreateFromTemplateAction;
 import com.intellij.ide.fileTemplates.FileTemplate;
@@ -45,23 +45,15 @@ import com.intellij.ide.fileTemplates.FileTemplateUtil;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.Ref;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileSystem;
 import com.intellij.openapi.vfs.VirtualFileVisitor;
 import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.testFramework.LightVirtualFile;
-import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
@@ -123,137 +115,71 @@ public class CSharpCreateFileAction extends CreateFromTemplateAction<PsiFile>
 			return null;
 		}
 
-		Module resolve = findModuleByPsiDirectory(project, orChooseDirectory);
+		Module resolve = CSharpCreateFromTemplateHandler.findModuleByPsiDirectory(orChooseDirectory);
 		if(resolve != null)
+		{
 			return resolve;
-		return LangDataKeys.MODULE.getData(dataContext);
-	}
-
-	@Nullable
-	@RequiredReadAction
-	private static Module findModuleByPsiDirectory(Project project, final PsiDirectory orChooseDirectory)
-	{
-		LightVirtualFile l = new LightVirtualFile("test.cs", CSharpFileType.INSTANCE, "")
-		{
-			@Override
-			public VirtualFile getParent()
-			{
-				return orChooseDirectory.getVirtualFile();
-			}
-
-			@NotNull
-			@Override
-			public VirtualFileSystem getFileSystem()
-			{
-				return LocalFileSystem.getInstance();
-			}
-		};
-		for(ContentEntryFileListener.PossibleModuleForFileResolver o : ContentEntryFileListener.PossibleModuleForFileResolver.EP_NAME.getExtensions())
-		{
-			Module resolve = o.resolve(project, l);
-			if(resolve != null)
-			{
-				return resolve;
-			}
 		}
-		return null;
+		return LangDataKeys.MODULE.getData(dataContext);
 	}
 
 	@Override
 	@RequiredReadAction
 	protected PsiFile createFile(String name, String templateName, final PsiDirectory dir)
 	{
-		DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(dir, DotNetSimpleModuleExtension.class);
-		if(extension == null)
-		{
-			Module moduleByPsiDirectory = findModuleByPsiDirectory(dir.getProject(), dir);
-			if(moduleByPsiDirectory != null)
-			{
-				extension = ModuleUtilCore.getExtension(moduleByPsiDirectory, DotNetSimpleModuleExtension.class);
-			}
-		}
-
-		String namespace = null;
-		if(extension != null)
-		{
-			namespace = extension.getNamespaceGeneratePolicy().calculateNamespace(dir);
-		}
-
 		FileTemplate template = FileTemplateManager.getInstance().getInternalTemplate(templateName);
-		return createFileFromTemplate(name, namespace, template, dir);
-	}
-
-	@SuppressWarnings("DialogTitleCapitalization")
-	@Nullable
-	@RequiredReadAction
-	public static PsiFile createFileFromTemplate(@Nullable String name,
-			@Nullable String namespaceName,
-			@NotNull FileTemplate template,
-			@NotNull PsiDirectory dir)
-	{
-		CreateFileAction.MkDirs mkdirs = new CreateFileAction.MkDirs(name, dir);
-		name = mkdirs.newName;
-		dir = mkdirs.directory;
-		PsiElement element;
-		Project project = dir.getProject();
 		try
 		{
-			Properties defaultProperties = FileTemplateManager.getInstance().getDefaultProperties(project);
-			if(!StringUtil.isEmpty(namespaceName))
-			{
-				defaultProperties.put("NAMESPACE_NAME", namespaceName);
-			}
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("psiDirectory", dir);
 
-			if(template.getName().equals("CSharpAssemblyFile"))
-			{
-				Module module = ModuleUtilCore.findModuleForPsiElement(dir);
-				assert module != null;
-				defaultProperties.put("MODULE", module.getName());
-				defaultProperties.put("GUID", UUID.randomUUID().toString());
-			}
-
-			element = FileTemplateUtil.createFromTemplate(template, name, defaultProperties, dir);
-			PsiFile psiFile = element.getContainingFile();
-
-			VirtualFile virtualFile = psiFile.getVirtualFile();
-			if(virtualFile != null)
-			{
-				FileEditorManager.getInstance(project).openFile(virtualFile, true);
-
-				return psiFile;
-			}
-		}
-		catch(ParseException e)
-		{
-			Messages.showErrorDialog(project, "Error parsing Velocity template: " + e.getMessage(), "Create File from Template");
-			return null;
-		}
-		catch(IncorrectOperationException e)
-		{
-			throw e;
+			return (PsiFile) FileTemplateUtil.createFromTemplate(template, name, map, dir, getClass().getClassLoader());
 		}
 		catch(Exception e)
 		{
-			LOG.error(e);
+			e.printStackTrace();
+			return null;
 		}
-
-		return null;
 	}
 
 	@Override
 	@RequiredDispatchThread
 	protected void buildDialog(Project project, PsiDirectory psiDirectory, CreateFileFromTemplateDialog.Builder builder)
 	{
-		builder.addKind("Class", new IconDescriptor(AllIcons.Nodes.Class).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpClass");
-		builder.addKind("Interface", new IconDescriptor(AllIcons.Nodes.Interface).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpInterface");
-		builder.addKind("Enum", new IconDescriptor(AllIcons.Nodes.Enum).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpEnum");
-		builder.addKind("Struct", new IconDescriptor(AllIcons.Nodes.Struct).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpStruct");
-		builder.addKind("Attribute", new IconDescriptor(AllIcons.Nodes.Attribute).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpAttribute");
+		Set<String> used = new HashSet<String>();
+		addKind(builder, used, "Class", new IconDescriptor(AllIcons.Nodes.Class).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpClass");
+		addKind(builder, used, "Interface", new IconDescriptor(AllIcons.Nodes.Interface).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpInterface");
+		addKind(builder, used, "Enum", new IconDescriptor(AllIcons.Nodes.Enum).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpEnum");
+		addKind(builder, used, "Struct", new IconDescriptor(AllIcons.Nodes.Struct).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpStruct");
+		addKind(builder, used, "Attribute", new IconDescriptor(AllIcons.Nodes.Attribute).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpAttribute");
 		if(isCreationOfAssemblyFileAvailable(psiDirectory))
 		{
-			builder.addKind("Assembly File", AllIcons.FileTypes.Config, "CSharpAssemblyFile");
+			addKind(builder, used, "Assembly File", AllIcons.FileTypes.Config, "CSharpAssemblyFile");
 		}
-		builder.addKind("Empty File", CSharpFileType.INSTANCE.getIcon(), "CSharpFile");
+		addKind(builder, used, "Empty File", CSharpFileType.INSTANCE.getIcon(), "CSharpFile");
+
+		final CSharpCreateFromTemplateHandler handler = CSharpCreateFromTemplateHandler.getInstance();
+		for(FileTemplate template : FileTemplateManager.getInstance().getAllTemplates())
+		{
+			if(handler.handlesTemplate(template))
+			{
+				String name = template.getName().replaceFirst("CSharp", "");
+				if(!used.add(name))
+				{
+					name = template.getName();
+				}
+				addKind(builder, used, name, CSharpFileType.INSTANCE.getIcon(), template.getName());
+			}
+		}
+
+		builder.setTitle("Create New File");
+	}
+
+	private static void addKind(CreateFileFromTemplateDialog.Builder builder, @NotNull Set<String> used, @NotNull String kind, @Nullable Icon icon, @NotNull String templateName)
+	{
+		used.add(kind);
+
+		builder.addKind(kind, icon, templateName);
 	}
 
 	@RequiredReadAction
