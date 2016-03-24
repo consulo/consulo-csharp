@@ -762,7 +762,11 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 			if(parent instanceof CSharpUserType)
 			{
 				PsiElement parent1 = parent.getParent();
-				if(parent1 instanceof CSharpIsExpressionImpl || parent1 instanceof CSharpAsExpressionImpl || parent1 instanceof CSharpTypeCastExpressionImpl)
+				if(parent1 instanceof CSharpIsExpressionImpl ||
+						parent1 instanceof CSharpAsExpressionImpl ||
+						parent1 instanceof CSharpTypeOfExpressionImpl ||
+						parent1 instanceof CSharpSizeOfExpressionImpl ||
+						parent1 instanceof CSharpTypeCastExpressionImpl)
 				{
 					return false;
 				}
