@@ -146,13 +146,14 @@ public class GenericInferenceUtil
 		return new GenericInferenceResult(genericParameters.length == map.size(), CSharpGenericExtractor.create(map));
 	}
 
+	@RequiredReadAction
 	private static void inferenceGenericFromExpressionTypeRefAndParameterTypeRef(DotNetGenericParameter[] methodGenericParameters,
 			Map<DotNetGenericParameter, DotNetTypeRef> map,
 			DotNetTypeRef parameterTypeRef,
 			DotNetTypeRef expressionTypeRef,
 			PsiElement scope)
 	{
-		if(expressionTypeRef == DotNetTypeRef.AUTO_TYPE || expressionTypeRef == DotNetTypeRef.UNKNOWN_TYPE)
+		if(expressionTypeRef == DotNetTypeRef.AUTO_TYPE || expressionTypeRef == DotNetTypeRef.UNKNOWN_TYPE || expressionTypeRef == DotNetTypeRef.ERROR_TYPE)
 		{
 			return;
 		}
@@ -215,6 +216,7 @@ public class GenericInferenceUtil
 		}
 	}
 
+	@RequiredReadAction
 	private static int findIndexOfGeneric(DotNetTypeResolveResult parameterTypeResolveResult, DotNetGenericParameter parameter, PsiElement scope)
 	{
 		PsiElement element = parameterTypeResolveResult.getElement();
