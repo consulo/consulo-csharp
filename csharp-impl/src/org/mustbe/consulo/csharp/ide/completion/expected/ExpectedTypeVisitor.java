@@ -35,6 +35,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.openapi.util.Condition;
+import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -47,6 +48,7 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class ExpectedTypeVisitor extends CSharpElementVisitor
 {
+	public static final Key<List<ExpectedTypeInfo>> EXPECTED_TYPE_INFOS = Key.create("ExpectedTypeInfo");
 	@NotNull
 	public static List<ExpectedTypeInfo> findExpectedTypeRefs(@NotNull PsiElement psiElement)
 	{
@@ -303,5 +305,11 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 		{
 			myExpectedTypeInfos.addAll(findExpectedTypeRefs(parentOfUserType));
 		}
+	}
+
+	@Override
+	public void visitOurRefWrapExpression(CSharpOutRefWrapExpressionImpl expression)
+	{
+		myExpectedTypeInfos.addAll(findExpectedTypeRefs(expression));
 	}
 }

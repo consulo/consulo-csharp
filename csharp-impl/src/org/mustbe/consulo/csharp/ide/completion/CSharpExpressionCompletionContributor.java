@@ -36,6 +36,7 @@ import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import org.mustbe.consulo.csharp.ide.completion.insertHandler.CSharpParenthesesWithSemicolonInsertHandler;
 import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLikeLookupElement;
+import org.mustbe.consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
@@ -46,6 +47,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptio
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
@@ -203,7 +205,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class), new CompletionProvider()
+		extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -295,7 +297,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class), new CompletionProvider()
+		extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -308,7 +310,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 				}
 
 				boolean allowAsync = CSharpModuleUtil.findLanguageVersion(parent).isAtLeast(CSharpLanguageVersion._4_0);
-				List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(parent);
+				List<ExpectedTypeInfo> expectedTypeRefs = getExpectedTypeInfosForExpression(parameters, context);
 				for(ExpectedTypeInfo expectedTypeRef : expectedTypeRefs)
 				{
 					DotNetTypeRef typeRef = expectedTypeRef.getTypeRef();
@@ -439,7 +441,50 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 
 		});
 
-		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class), new DumbCompletionProvider()
+		extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new DumbCompletionProvider()
+		{
+			@Override
+			@RequiredReadAction
+			protected void addLookupElements(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			{
+				List<ExpectedTypeInfo> expectedTypeInfos = getExpectedTypeInfosForExpression(parameters, context);
+
+				for(ExpectedTypeInfo expectedTypeInfo : expectedTypeInfos)
+				{
+					DotNetTypeRef typeRef = expectedTypeInfo.getTypeRef();
+					if(typeRef instanceof CSharpRefTypeRef)
+					{
+						CSharpRefTypeRef.Type type = ((CSharpRefTypeRef) typeRef).getType();
+
+						IElementType elementType = null;
+						switch(type)
+						{
+							case out:
+								elementType = CSharpTokens.OUT_KEYWORD;
+								break;
+							case ref:
+								elementType = CSharpTokens.REF_KEYWORD;
+								break;
+						}
+
+						assert elementType != null;
+
+						CSharpCompletionUtil.elementToLookup(result, elementType, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
+						{
+							@NotNull
+							@Override
+							public LookupElement fun(LookupElementBuilder lookupElementBuilder, IElementType iElementType)
+							{
+								lookupElementBuilder = lookupElementBuilder.withInsertHandler(SpaceInsertHandler.INSTANCE);
+								return lookupElementBuilder;
+							}
+						}, null);
+					}
+				}
+			}
+		});
+
+		extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new DumbCompletionProvider()
 		{
 			@Override
 			@RequiredReadAction
@@ -457,7 +502,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 					kind = CSharpReferenceExpression.ResolveToKind.TYPE_LIKE;
 				}
 
-				final List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(expression);
+				final List<ExpectedTypeInfo> expectedTypeRefs = getExpectedTypeInfosForExpression(parameters, context);
 
 				final CSharpTypeDeclaration contextType = getContextType(expression);
 				CSharpCallArgumentListOwner callArgumentListOwner = CSharpReferenceExpressionImplUtil.findCallArgumentListOwner(kind, expression);
@@ -516,7 +561,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 			private CSharpTypeDeclaration getContextType(CSharpReferenceExpression referenceExpression)
 			{
 				PsiElement qualifier = referenceExpression.getQualifier();
-				if(qualifier instanceof DotNetExpression)
+				if(qualifier != null)
 				{
 					PsiElement element = ((DotNetExpression) qualifier).toTypeRef(true).resolve(referenceExpression).getElement();
 					return element instanceof CSharpTypeDeclaration ? (CSharpTypeDeclaration) element : null;
@@ -737,6 +782,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 	}
 
 	@NotNull
+	@RequiredReadAction
 	private static Icon getIconForInnerTypeRef(@NotNull CSharpArrayTypeRef typeRef, @NotNull PsiElement scope)
 	{
 		DotNetTypeRef innerTypeRef = typeRef.getInnerTypeRef();
@@ -848,5 +894,21 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 		builder = builder.withTailText(parameterText, true);
 		builder = builder.withInsertHandler(new CSharpParenthesesWithSemicolonInsertHandler(declaration));
 		return builder;
+	}
+
+	@NotNull
+	@RequiredReadAction
+	private static List<ExpectedTypeInfo> getExpectedTypeInfosForExpression(CompletionParameters parameters, ProcessingContext context)
+	{
+		List<ExpectedTypeInfo> expectedTypeInfos = context.get(ExpectedTypeVisitor.EXPECTED_TYPE_INFOS);
+		if(expectedTypeInfos != null)
+		{
+			return expectedTypeInfos;
+		}
+		final CSharpReferenceExpressionEx parent = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
+
+		expectedTypeInfos = ExpectedTypeVisitor.findExpectedTypeRefs(parent);
+		context.put(ExpectedTypeVisitor.EXPECTED_TYPE_INFOS, expectedTypeInfos);
+		return expectedTypeInfos;
 	}
 }

@@ -42,5 +42,6 @@ public abstract class DumbCompletionProvider extends CompletionProvider
 		addLookupElements(parameters, context, result);
 	}
 
+	@RequiredReadAction
 	protected abstract void addLookupElements(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result);
 }

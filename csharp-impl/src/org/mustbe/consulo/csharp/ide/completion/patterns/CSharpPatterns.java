@@ -21,6 +21,7 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUserType;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
@@ -38,6 +39,12 @@ import com.intellij.util.ProcessingContext;
  */
 public class CSharpPatterns
 {
+	@NotNull
+	public static PsiElementPattern.Capture<PsiElement> referenceExpression()
+	{
+		return StandardPatterns.psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpressionEx.class);
+	}
+
 	@NotNull
 	public static PsiElementPattern.Capture<PsiElement> statementStart()
 	{
