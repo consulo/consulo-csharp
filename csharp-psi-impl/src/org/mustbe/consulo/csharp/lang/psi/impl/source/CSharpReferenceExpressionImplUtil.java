@@ -473,7 +473,7 @@ public class CSharpReferenceExpressionImplUtil
 		ResolveResult[] resolveResults = buildSelectorAndMultiResolve(kind, callArgumentListOwner, element, resolveFromParent);
 		if(element instanceof CSharpReferenceExpression)
 		{
-			int typeArgumentListSize = getTypeArgumentListSize((CSharpReferenceExpression) element);
+			int typeArgumentListSize = getTypeArgumentListSize(element);
 			if(typeArgumentListSize > 0)
 			{
 				DotNetTypeRef[] typeArgumentListRefs = ((CSharpReferenceExpression) element).getTypeArgumentListRefs();
@@ -711,6 +711,10 @@ public class CSharpReferenceExpressionImplUtil
 			{
 				return;
 			}
+		}
+		else if(forceQualifierElement != null)
+		{
+			qualifierTypeRef = toTypeRef(forceQualifierElement);
 		}
 
 		if(!target.isValid())
