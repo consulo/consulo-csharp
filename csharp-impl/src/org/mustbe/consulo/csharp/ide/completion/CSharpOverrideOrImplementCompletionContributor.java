@@ -224,6 +224,8 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 				CodeStyleManager.getInstance(context.getProject()).reformat(virtualImplementOwner);
 			}
 		});
+
+		CSharpCompletionSorting.force(lookupElementBuilder, CSharpCompletionSorting.KindSorter.Type.overrideMember);
 		return lookupElementBuilder;
 	}
 

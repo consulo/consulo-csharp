@@ -174,14 +174,6 @@
 
 		<completion.confidence language="C#" implementationClass="com.intellij.codeInsight.completion.SkipAutopopupInStrings"/>
 		<completion.confidence language="C#" implementationClass="com.intellij.codeInsight.completion.UnfocusedNameIdentifier"/>
-		<weigher key="completion" id="csharpInheritable"
-				 implementationClass="org.mustbe.consulo.csharp.ide.completion.weigher.CSharpInheritProximityWeigher"/>
-
-		<weigher key="proximity" id="csharpObsolete"
-				 implementationClass="org.mustbe.consulo.csharp.ide.completion.weigher.CSharpObsoleteWeigher"/>
-
-		<weigher key="proximity" id="csharpByGenericParameter"
-				 implementationClass="org.mustbe.consulo.csharp.ide.completion.weigher.CSharpByGenericParameterWeigher"/>
 
 		<completion.contributor language="C#Doc"
 								implementationClass="org.mustbe.consulo.csharp.lang.doc.ide.competion.CSharpDocCompletionContributor"/>

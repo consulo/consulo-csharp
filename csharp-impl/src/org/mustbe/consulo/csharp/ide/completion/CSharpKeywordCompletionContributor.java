@@ -296,4 +296,11 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 			}
 		});
 	}
+
+	@RequiredReadAction
+	@Override
+	public void fillCompletionVariants(CompletionParameters parameters, CompletionResultSet result)
+	{
+		super.fillCompletionVariants(parameters, CSharpCompletionSorting.modifyResultSet(parameters, result));
+	}
 }

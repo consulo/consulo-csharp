@@ -67,7 +67,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -85,6 +84,7 @@ import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.util.PsiUtilBase;
 import com.intellij.util.Function;
 import com.intellij.util.NotNullPairFunction;
 import com.intellij.util.ProcessingContext;
@@ -134,7 +134,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 							LookupElementBuilder builder = LookupElementBuilder.create(typeText);
 							builder = builder.withIcon(getIconForInnerTypeRef((CSharpArrayTypeRef) typeRef, position));
 							// add without {...}
-							result.addElement(PrioritizedLookupElement.withPriority(builder, CSharpCompletionUtil.MAX_PRIORITY));
+							result.addElement(builder);
 
 							builder = builder.withTailText("{...}", true);
 							builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
@@ -152,7 +152,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 								}
 							});
 
-							result.addElement(PrioritizedLookupElement.withPriority(builder, CSharpCompletionUtil.MAX_PRIORITY));
+							result.addElement(builder);
 						}
 						else
 						{
@@ -190,7 +190,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 								LookupElementBuilder builder = buildForConstructorAfterNew(object, genericExtractor);
 								if(builder != null)
 								{
-									result.addElement(PrioritizedLookupElement.withPriority(builder, CSharpCompletionUtil.MAX_PRIORITY));
+									result.addElement(builder);
 									any = true;
 								}
 							}
@@ -367,7 +367,8 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 				lookupElementBuilder = lookupElementBuilder.withPresentableText(builder.append("{ }").toString());
 				lookupElementBuilder = lookupElementBuilder.withIcon(AllIcons.Nodes.Lambda);
 
-				result.addElement(PrioritizedLookupElement.withPriority(lookupElementBuilder, CSharpCompletionUtil.NORMAL_PRIORITY));
+				CSharpCompletionSorting.force(lookupElementBuilder, CSharpCompletionSorting.KindSorter.Type.lambda);
+				result.addElement(lookupElementBuilder);
 			}
 
 			@RequiredReadAction
@@ -414,7 +415,8 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 				lookupElementBuilder = lookupElementBuilder.withIcon(AllIcons.Nodes.Lambda);
 				lookupElementBuilder = reformatInsertHandler(lookupElementBuilder);
 
-				result.addElement(PrioritizedLookupElement.withPriority(lookupElementBuilder, CSharpCompletionUtil.NORMAL_PRIORITY));
+				CSharpCompletionSorting.force(lookupElementBuilder, CSharpCompletionSorting.KindSorter.Type.delegate);
+				result.addElement(lookupElementBuilder);
 			}
 
 			private LookupElementBuilder reformatInsertHandler(LookupElementBuilder lookupElementBuilder)
@@ -525,7 +527,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 							return true;
 						}
 
-						if(element instanceof CSharpMethodDeclaration)
+						if(element instanceof CSharpMethodDeclaration && !((CSharpMethodDeclaration) element).isDelegate())
 						{
 							CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) element;
 							DotNetTypeRef typeOfElement = methodDeclaration.getReturnTypeRef();
@@ -730,6 +732,11 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 										}
 										return false;
 									}
+									else if(elementType == CSharpTokens.__ARGLIST_KEYWORD)
+									{
+										DotNetParameter parameter = PsiTreeUtil.getParentOfType(parent, DotNetParameter.class);
+										return parameter != null;
+									}
 									else if(elementType == CSharpSoftTokens.VAR_KEYWORD)
 									{
 										if(PsiTreeUtil.getParentOfType(parent, DotNetStatement.class) == null)
@@ -748,6 +755,13 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 				}
 			}
 		});
+	}
+
+	@RequiredReadAction
+	@Override
+	public void fillCompletionVariants(CompletionParameters parameters, CompletionResultSet result)
+	{
+		super.fillCompletionVariants(parameters, CSharpCompletionSorting.modifyResultSet(parameters, result));
 	}
 
 	private static boolean needRemapToAnyResolving(CSharpReferenceExpression.ResolveToKind kind, CSharpReferenceExpression expression)
@@ -839,7 +853,8 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 		{
 			builder = builder.withStrikeoutness(true);
 		}
-		return PrioritizedLookupElement.withExplicitProximity(builder, 1);
+		CSharpCompletionSorting.force(builder, CSharpCompletionSorting.KindSorter.Type.member);
+		return builder;
 	}
 
 	@Nullable
@@ -902,17 +917,31 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 
 	@NotNull
 	@RequiredReadAction
-	private static List<ExpectedTypeInfo> getExpectedTypeInfosForExpression(CompletionParameters parameters, ProcessingContext context)
+	public static List<ExpectedTypeInfo> getExpectedTypeInfosForExpression(CompletionParameters parameters, @Nullable ProcessingContext context)
 	{
-		List<ExpectedTypeInfo> expectedTypeInfos = context.get(ExpectedTypeVisitor.EXPECTED_TYPE_INFOS);
+		PsiElement position = parameters.getPosition();
+		if(PsiUtilBase.getElementType(position) != CSharpTokens.IDENTIFIER)
+		{
+			return Collections.emptyList();
+		}
+
+		PsiElement parent = position.getParent();
+		if(!(parent instanceof CSharpReferenceExpressionEx))
+		{
+			return Collections.emptyList();
+		}
+
+		List<ExpectedTypeInfo> expectedTypeInfos = context == null ? null : context.get(ExpectedTypeVisitor.EXPECTED_TYPE_INFOS);
 		if(expectedTypeInfos != null)
 		{
 			return expectedTypeInfos;
 		}
-		final CSharpReferenceExpressionEx parent = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
 
 		expectedTypeInfos = ExpectedTypeVisitor.findExpectedTypeRefs(parent);
-		context.put(ExpectedTypeVisitor.EXPECTED_TYPE_INFOS, expectedTypeInfos);
+		if(context != null)
+		{
+			context.put(ExpectedTypeVisitor.EXPECTED_TYPE_INFOS, expectedTypeInfos);
+		}
 		return expectedTypeInfos;
 	}
 }

@@ -22,9 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.completion.CSharpCompletionUtil;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
-import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
@@ -39,12 +37,10 @@ import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.codeInsight.completion.CompletionLocation;
-import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.codeInsight.lookup.LookupElementWeigher;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.Weigher;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 
@@ -52,7 +48,7 @@ import com.intellij.psi.util.PsiTreeUtil;
  * @author VISTALL
  * @since 27.07.2015
  */
-public class CSharpInheritProximityWeigher extends Weigher<LookupElement, CompletionLocation>
+public class CSharpInheritProximityWeigher extends LookupElementWeigher
 {
 	public enum Position
 	{
@@ -63,38 +59,31 @@ public class CSharpInheritProximityWeigher extends Weigher<LookupElement, Comple
 		HIGH
 	}
 
+	private PsiElement myPosition;
+	private List<ExpectedTypeInfo> myExpectedTypeInfos;
+
+	public CSharpInheritProximityWeigher(PsiElement position, List<ExpectedTypeInfo> expectedTypeInfos)
+	{
+		super("CSharpInheritProximityWeigher");
+		myPosition = position;
+		myExpectedTypeInfos = expectedTypeInfos;
+	}
+
 	@Nullable
 	@Override
-	public Comparable weigh(@NotNull LookupElement element, @NotNull CompletionLocation completionLocation)
+	public Comparable weigh(@NotNull LookupElement element)
 	{
-		if(element instanceof PrioritizedLookupElement)
-		{
-			return null;
-		}
-		PsiElement position = completionLocation.getCompletionParameters().getPosition();
-		if(!(position.getContainingFile() instanceof CSharpFile))
-		{
-			return Position.NONE;
-		}
-
 		if(element.getPsiElement() instanceof CSharpConstructorDeclaration)
 		{
 			return null;
 		}
 
-		PsiElement parent = position.getParent();
-		if(!(parent instanceof CSharpReferenceExpressionEx))
+		if(myExpectedTypeInfos.isEmpty())
 		{
 			return Position.NONE;
 		}
 
-		CSharpReferenceExpressionEx referenceExpressionEx = (CSharpReferenceExpressionEx) parent;
-
-		List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(referenceExpressionEx);
-		if(expectedTypeRefs.isEmpty())
-		{
-			return Position.NONE;
-		}
+		CSharpReferenceExpressionEx referenceExpressionEx = (CSharpReferenceExpressionEx) myPosition.getParent();
 
 		PsiElement psiElement = element.getPsiElement();
 		if(psiElement == null)
@@ -107,18 +96,18 @@ public class CSharpInheritProximityWeigher extends Weigher<LookupElement, Comple
 				{
 					return Position.NONE;
 				}
-				PsiElement resolvedElement = typeRef.resolve(parent).getElement();
+				PsiElement resolvedElement = typeRef.resolve(referenceExpressionEx).getElement();
 				if(resolvedElement == null)
 				{
 					return Position.NONE;
 				}
-				return weighElement(resolvedElement, referenceExpressionEx, expectedTypeRefs, Position.UP_KEYWORD);
+				return weighElement(resolvedElement, referenceExpressionEx, myExpectedTypeInfos, Position.UP_KEYWORD);
 			}
 			return Position.NONE;
 		}
 		else
 		{
-			return weighElement(psiElement, referenceExpressionEx, expectedTypeRefs, Position.UP_REF);
+			return weighElement(psiElement, referenceExpressionEx, myExpectedTypeInfos, Position.UP_REF);
 		}
 	}
 

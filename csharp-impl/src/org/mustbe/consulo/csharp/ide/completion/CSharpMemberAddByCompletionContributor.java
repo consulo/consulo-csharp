@@ -56,7 +56,7 @@ public abstract class CSharpMemberAddByCompletionContributor extends CompletionC
 				CSharpTypeDeclaration typeDeclaration = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpTypeDeclaration.class);
 				assert typeDeclaration != null;
 
-				processCompletion(parameters, context, result, typeDeclaration);
+				processCompletion(parameters, context, CSharpCompletionSorting.modifyResultSet(parameters, result), typeDeclaration);
 			}
 		});
 	}

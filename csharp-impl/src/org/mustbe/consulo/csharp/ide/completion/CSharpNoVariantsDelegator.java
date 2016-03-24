@@ -14,7 +14,9 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.libraryAnalyzer.NamespaceReference;
+import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -111,7 +113,7 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 
 		if(empty)
 		{
-			delegate(parameters, result, holder);
+			delegate(parameters, CSharpCompletionSorting.modifyResultSet(parameters, result), holder);
 		}
 		else
 		{
@@ -120,7 +122,7 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 					CSharpCompletionUtil.mayStartClassName(result) &&
 					CSharpCompletionUtil.isClassNamePossible(parameters))
 			{
-				addTypesForUsing(parameters, result.withPrefixMatcher(tracker.betterMatcher), holder);
+				addTypesForUsing(parameters, CSharpCompletionSorting.modifyResultSet(parameters, result.withPrefixMatcher(tracker.betterMatcher)), holder);
 			}
 		}
 	}
@@ -272,6 +274,11 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 					new AddUsingAction(completionParameters.getEditor(), context.getFile(), Collections.<NamespaceReference>singleton(new NamespaceReference(parentQName, null))).execute();
 				}
 			});
+		}
+
+		if(DotNetAttributeUtil.hasAttribute(someType, DotNetTypes.System.ObsoleteAttribute))
+		{
+			builder = builder.withStrikeoutness(true);
 		}
 
 		consumer.consume(new ReplaceableTypeLikeLookupElement(builder));

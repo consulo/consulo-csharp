@@ -17,27 +17,35 @@
 package org.mustbe.consulo.csharp.ide.completion.weigher;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.codeInsight.lookup.LookupElementWeigher;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.ProximityLocation;
-import com.intellij.psi.util.proximity.ProximityWeigher;
 
 /**
  * @author VISTALL
  * @since 17.11.2015
  */
-public class CSharpByGenericParameterWeigher extends ProximityWeigher
+public class CSharpByGenericParameterWeigher extends LookupElementWeigher
 {
+	public CSharpByGenericParameterWeigher()
+	{
+		super("CSharpByGenericParameterWeigher");
+	}
+
+	@Nullable
 	@Override
 	@RequiredReadAction
-	public Comparable weigh(@NotNull PsiElement element, @NotNull ProximityLocation location)
+	public Comparable weigh(@NotNull LookupElement element)
 	{
-		if(element instanceof DotNetGenericParameterListOwner && element.getLanguage() == CSharpLanguage.INSTANCE)
+		PsiElement psiElement = element.getPsiElement();
+		if(psiElement instanceof DotNetGenericParameterListOwner && psiElement.getLanguage() == CSharpLanguage.INSTANCE)
 		{
-			return -((DotNetGenericParameterListOwner) element).getGenericParametersCount();
+			return ((DotNetGenericParameterListOwner) psiElement).getGenericParametersCount();
 		}
-		return null;
+		return 0;
 	}
 }

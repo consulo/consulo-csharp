@@ -2,6 +2,7 @@ package org.mustbe.consulo.csharp.ide.completion.item;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.completion.CSharpCompletionSorting;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilMethodAsCSharpMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -21,6 +22,8 @@ public class ReplaceableTypeLikeLookupElement extends LookupElementDecorator<Loo
 
 		PsiElement psiElement = delegate.getPsiElement();
 		assert psiElement instanceof DotNetQualifiedElement;
+
+		CSharpCompletionSorting.copyForce(delegate, this);
 	}
 
 	@Override

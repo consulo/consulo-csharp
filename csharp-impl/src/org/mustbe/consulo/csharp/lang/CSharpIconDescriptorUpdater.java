@@ -133,6 +133,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 		else if(element instanceof DotNetGenericParameter || element instanceof CSharpTypeDefStatement)
 		{
 			iconDescriptor.setMainIcon(AllIcons.Nodes.TypeAlias);
+			iconDescriptor.addLayerIcon(AllIcons.Nodes.C_public);
 		}
 		else if(element instanceof CSharpLabeledStatementImpl)
 		{
@@ -141,10 +142,12 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 		else if(element instanceof CSharpLocalVariable || element instanceof CSharpLinqVariable)
 		{
 			iconDescriptor.setMainIcon(AllIcons.Nodes.Variable);
+			iconDescriptor.addLayerIcon(AllIcons.Nodes.C_plocal);
 		}
 		else if(element instanceof DotNetParameter || element instanceof CSharpLambdaParameter)
 		{
 			iconDescriptor.setMainIcon(AllIcons.Nodes.Parameter);
+			iconDescriptor.addLayerIcon(AllIcons.Nodes.C_plocal);
 		}
 		else if(element instanceof DotNetFieldDeclaration)
 		{

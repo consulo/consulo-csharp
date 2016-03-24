@@ -24,6 +24,7 @@ import java.util.Locale;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.completion.CSharpCompletionSorting;
 import org.mustbe.consulo.csharp.ide.completion.insertHandler.CSharpParenthesesWithSemicolonInsertHandler;
 import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLikeLookupElement;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
@@ -105,8 +106,11 @@ public class CSharpLookupElementBuilder
 		LookupElementBuilder builder = createLookupElementBuilder(element);
 		if(contextType != null && contextType.isEquivalentTo(element.getParent()))
 		{
-			builder = builder.bold();
+			LookupElementBuilder oldBuilder = builder;
+			builder = oldBuilder.bold();
+			CSharpCompletionSorting.copyForce(oldBuilder, builder);
 		}
+
 		if(CSharpPsiUtilImpl.isTypeLikeElement(element))
 		{
 			return new ReplaceableTypeLikeLookupElement(builder);
@@ -281,6 +285,7 @@ public class CSharpLookupElementBuilder
 			builder = LookupElementBuilder.create(name);
 
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
+			CSharpCompletionSorting.force(builder, CSharpCompletionSorting.KindSorter.Type.namespace);
 		}
 		else if(element instanceof CSharpTypeDefStatement)
 		{

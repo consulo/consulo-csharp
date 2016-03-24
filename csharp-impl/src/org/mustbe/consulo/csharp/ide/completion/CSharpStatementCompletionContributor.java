@@ -463,6 +463,15 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 		});
 	}
 
+
+
+	@RequiredReadAction
+	@Override
+	public void fillCompletionVariants(CompletionParameters parameters, CompletionResultSet result)
+	{
+		super.fillCompletionVariants(parameters, CSharpCompletionSorting.modifyResultSet(parameters, result));
+	}
+
 	@NotNull
 	public static InsertHandler<LookupElement> buildInsertHandler(final IElementType elementType)
 	{
