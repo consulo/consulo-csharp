@@ -298,6 +298,16 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 
 		// doc
 		myBuilder.after(CSharpDocTokenType.DOC_LINE_START).spacing(1, 1, 0, true, 0);
+
+		// semicolons
+		// special hacks for 'for()'
+		myBuilder.betweenInside(CSharpTokens.LPAR, CSharpTokens.SEMICOLON, CSharpElements.FOR_STATEMENT).spaces(0);
+		myBuilder.betweenInside(CSharpTokens.SEMICOLON, CSharpTokens.RPAR, CSharpElements.FOR_STATEMENT).spaces(0);
+		myBuilder.betweenInside(CSharpTokens.SEMICOLON, CSharpTokens.SEMICOLON, CSharpElements.FOR_STATEMENT).spaces(0);
+
+		myBuilder.beforeInside(CSharpTokens.SEMICOLON, CSharpElements.FOR_STATEMENT).spaceIf(commonSettings.SPACE_BEFORE_SEMICOLON);
+		myBuilder.afterInside(CSharpTokens.SEMICOLON, CSharpElements.FOR_STATEMENT).spaceIf(commonSettings.SPACE_AFTER_SEMICOLON);
+		myBuilder.before(CSharpTokens.SEMICOLON).spaces(0);
 	}
 
 	private void spaceIfNoBlankLines(SpacingBuilder.RuleBuilder builder, boolean config)
