@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.ide.debugger;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.consulo.lombok.annotations.Logger;
@@ -10,11 +11,13 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.Evaluator;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
-import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.dotnet.debugger.DotNetDebugContext;
 import org.mustbe.consulo.dotnet.debugger.DotNetDebuggerProvider;
+import org.mustbe.consulo.dotnet.debugger.nodes.DotNetFieldOrPropertyMirrorNode;
+import org.mustbe.consulo.dotnet.debugger.nodes.DotNetStructValueInfo;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
@@ -32,7 +35,10 @@ import com.intellij.xdebugger.evaluation.XDebuggerEvaluator;
 import com.intellij.xdebugger.frame.XNamedValue;
 import mono.debugger.FieldOrPropertyMirror;
 import mono.debugger.InvalidStackFrameException;
+import mono.debugger.ObjectValueMirror;
 import mono.debugger.StackFrameMirror;
+import mono.debugger.StructValueMirror;
+import mono.debugger.TypeMirror;
 import mono.debugger.Value;
 
 /**
@@ -44,10 +50,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 {
 	@NotNull
 	@Override
-	public PsiFile createExpressionCodeFragment(@NotNull Project project,
-			@NotNull PsiElement sourcePosition,
-			@NotNull String text,
-			boolean isPhysical)
+	public PsiFile createExpressionCodeFragment(@NotNull Project project, @NotNull PsiElement sourcePosition, @NotNull String text, boolean isPhysical)
 	{
 		return CSharpFragmentFactory.createExpressionFragment(project, text, sourcePosition);
 	}
@@ -86,8 +89,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 			}
 		}
 
-		CSharpFragmentFileImpl expressionFragment = CSharpFragmentFactory.createExpressionFragment(debuggerContext.getProject(), expression,
-				elementAt);
+		CSharpFragmentFileImpl expressionFragment = CSharpFragmentFactory.createExpressionFragment(debuggerContext.getProject(), expression, elementAt);
 
 		PsiElement[] children = expressionFragment.getChildren();
 		if(children.length == 0)
@@ -156,7 +158,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 			@NotNull Consumer<XNamedValue> consumer)
 	{
 		PsiElement resolvedElement = referenceExpression.resolve();
-		if(referenceExpression.getParent() instanceof CSharpCallArgumentListOwner || resolvedElement instanceof DotNetLikeMethodDeclaration)
+		if(referenceExpression.getParent() instanceof CSharpMethodCallExpressionImpl || resolvedElement instanceof DotNetLikeMethodDeclaration)
 		{
 			return;
 		}
@@ -182,8 +184,29 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 				{
 					return;
 				}
+
 				visitedVariables.add(fieldOrPropertyMirror);
-				consumer.consume(new CSharpWatcherNode(debuggerContext, referenceExpression.getText(), frame.thread(), objectPair.getFirst()));
+
+				TypeMirror parent = fieldOrPropertyMirror.parent();
+
+				Value thisObjectValue = frame.thisObject();
+				TypeMirror type = thisObjectValue.type();
+				if(thisObjectValue instanceof ObjectValueMirror && parent.equals(type))
+				{
+					consumer.consume(new DotNetFieldOrPropertyMirrorNode(debuggerContext, fieldOrPropertyMirror, frame.thread(), (ObjectValueMirror) thisObjectValue));
+				}
+				else if(thisObjectValue instanceof StructValueMirror && parent.equals(type))
+				{
+					StructValueMirror structValueMirror = (StructValueMirror) thisObjectValue;
+
+					DotNetStructValueInfo valueInfo = new DotNetStructValueInfo(structValueMirror, null, fieldOrPropertyMirror, objectPair.getFirst());
+
+					consumer.consume(new DotNetFieldOrPropertyMirrorNode(debuggerContext, fieldOrPropertyMirror, frame.thread(), null, valueInfo));
+				}
+				else
+				{
+					consumer.consume(new CSharpWatcherNode(debuggerContext, referenceExpression.getText(), frame.thread(), objectPair.getFirst()));
+				}
 			}
 		}
 		catch(Exception e)
