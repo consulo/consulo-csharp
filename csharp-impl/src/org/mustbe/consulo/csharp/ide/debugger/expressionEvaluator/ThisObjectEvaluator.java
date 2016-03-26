@@ -17,7 +17,15 @@
 package org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
+import org.mustbe.consulo.dotnet.debugger.nodes.DotNetDebuggerCompilerGenerateUtil;
+import com.intellij.openapi.util.Condition;
+import com.intellij.util.containers.ContainerUtil;
+import mono.debugger.FieldMirror;
+import mono.debugger.ObjectValueMirror;
+import mono.debugger.TypeMirror;
+import mono.debugger.Value;
 
 /**
  * @author VISTALL
@@ -34,6 +42,68 @@ public class ThisObjectEvaluator extends Evaluator
 	@Override
 	public void evaluate(@NotNull CSharpEvaluateContext context)
 	{
-		context.pull(context.getFrame().thisObject(), null);
+		Value thisObject = context.getFrame().thisObject();
+		Value<?> value = tryToFindObjectInsideYieldOrAsync(context, thisObject);
+		if(value != null)
+		{
+			context.pull(value, null);
+		}
+		else
+		{
+			context.pull(thisObject, null);
+		}
+	}
+
+	@Nullable
+	private Value<?> tryToFindObjectInsideYieldOrAsync(@NotNull CSharpEvaluateContext context, Value thisObject)
+	{
+		if(!(thisObject instanceof ObjectValueMirror))
+		{
+			return null;
+		}
+
+		ObjectValueMirror objectValueMirror = (ObjectValueMirror) thisObject;
+
+		TypeMirror type;
+		try
+		{
+			type = thisObject.type();
+			assert type != null;
+
+			if(DotNetDebuggerCompilerGenerateUtil.isYieldOrAsyncNestedType(type))
+			{
+				TypeMirror parentType = type.parentType();
+
+				if(parentType == null)
+				{
+					return null;
+				}
+
+				FieldMirror[] fields = type.fields();
+
+				final FieldMirror thisFieldMirror = ContainerUtil.find(fields, new Condition<FieldMirror>()
+				{
+					@Override
+					public boolean value(FieldMirror fieldMirror)
+					{
+						String name = fieldMirror.name();
+						return DotNetDebuggerCompilerGenerateUtil.isYieldOrAsyncThisField(name);
+					}
+				});
+
+				if(thisFieldMirror != null)
+				{
+					Value<?> value = thisFieldMirror.value(context.getFrame().thread(), objectValueMirror);
+					if(value != null)
+					{
+						return value;
+					}
+				}
+			}
+		}
+		catch(Exception ignored)
+		{
+		}
+		return null;
 	}
 }

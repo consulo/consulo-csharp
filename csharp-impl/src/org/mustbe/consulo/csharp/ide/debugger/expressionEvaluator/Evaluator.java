@@ -36,7 +36,7 @@ public abstract class Evaluator
 	public abstract void evaluate(@NotNull CSharpEvaluateContext context);
 
 	@Nullable
-	public TypeMirror findTypeMirror(@NotNull CSharpEvaluateContext context, @Nullable PsiElement element)
+	public static TypeMirror findTypeMirror(@NotNull CSharpEvaluateContext context, @Nullable PsiElement element)
 	{
 		if(element instanceof CSharpTypeDeclaration)
 		{
