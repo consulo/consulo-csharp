@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.dotnet.lang.psi.impl.DotNetPsiCountUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -15,6 +16,7 @@ import com.intellij.lang.parameterInfo.ParameterInfoUtils;
 import com.intellij.lang.parameterInfo.UpdateParameterInfoContext;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtil;
 
@@ -68,25 +70,35 @@ public class CSharpGenericParameterInfoHandler implements ParameterInfoHandler<P
 			return null;
 		}
 
-		DotNetTypeList dotNetTypeList = PsiTreeUtil.getParentOfType(at, DotNetTypeList.class);
-		if(dotNetTypeList == null)
+		DotNetTypeList typeList = PsiTreeUtil.getParentOfType(at, DotNetTypeList.class);
+		if(typeList == null)
 		{
 			return null;
 		}
 
-		PsiElement parent = dotNetTypeList.getParent();
+		PsiElement parent = typeList.getParent();
 		if(!(parent instanceof CSharpReferenceExpression))
 		{
 			return null;
 		}
 
-		CSharpReferenceExpression referenceExpression = (CSharpReferenceExpression) parent;
+		int argumentsSize = DotNetPsiCountUtil.countChildrenOfType(typeList.getNode(), CSharpTokens.COMMA) + 1;
 
-		PsiElement resolvedElement = referenceExpression.resolve();
-		if(resolvedElement instanceof DotNetGenericParameterListOwner)
+		CSharpReferenceExpression referenceExpression = (CSharpReferenceExpression) parent;
+		ResolveResult[] resolveResults = referenceExpression.multiResolve(true);
+		for(ResolveResult resolveResult : resolveResults)
 		{
-			return (DotNetGenericParameterListOwner) resolvedElement;
+			PsiElement element = resolveResult.getElement();
+			if(element instanceof DotNetGenericParameterListOwner)
+			{
+				int genericParametersCount = ((DotNetGenericParameterListOwner) element).getGenericParametersCount();
+				if(genericParametersCount == argumentsSize)
+				{
+					return (DotNetGenericParameterListOwner) element;
+				}
+			}
 		}
+
 		return null;
 	}
 
