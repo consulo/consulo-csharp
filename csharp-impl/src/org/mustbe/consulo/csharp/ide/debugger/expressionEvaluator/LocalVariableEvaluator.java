@@ -20,11 +20,11 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
+import org.mustbe.consulo.dotnet.debugger.proxy.DotNetStackFrameMirrorProxy;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.text.StringUtil;
 import mono.debugger.LocalVariableMirror;
 import mono.debugger.MethodMirror;
-import mono.debugger.StackFrameMirror;
 import mono.debugger.Value;
 
 /**
@@ -44,7 +44,7 @@ public class LocalVariableEvaluator extends Evaluator
 	@Override
 	public void evaluate(@NotNull CSharpEvaluateContext context)
 	{
-		StackFrameMirror frame = context.getFrame();
+		DotNetStackFrameMirrorProxy frame = context.getFrame();
 		MethodMirror method = frame.location().method();
 
 		LocalVariableMirror[] locals = method.locals(frame.location().codeIndex());
@@ -67,7 +67,7 @@ public class LocalVariableEvaluator extends Evaluator
 
 		if(mirror != null)
 		{
-			Value value = context.getFrame().localOrParameterValue(mirror);
+			Value value = frame.localOrParameterValue(mirror);
 			if(value != null)
 			{
 				context.pull(value, mirror);

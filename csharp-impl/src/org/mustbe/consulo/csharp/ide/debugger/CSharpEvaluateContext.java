@@ -24,9 +24,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.Evaluator;
 import org.mustbe.consulo.dotnet.debugger.DotNetDebugContext;
+import org.mustbe.consulo.dotnet.debugger.proxy.DotNetStackFrameMirrorProxy;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
-import mono.debugger.StackFrameMirror;
 import mono.debugger.Value;
 
 /**
@@ -37,10 +37,10 @@ public class CSharpEvaluateContext
 {
 	private Deque<Pair<Value<?>, Object>> myStack = new ArrayDeque<Pair<Value<?>, Object>>();
 	private DotNetDebugContext myDebuggerContext;
-	private StackFrameMirror myFrame;
+	private DotNetStackFrameMirrorProxy myFrame;
 	private PsiElement myElementAt;
 
-	public CSharpEvaluateContext(DotNetDebugContext debuggerContext, StackFrameMirror frame, PsiElement elementAt)
+	public CSharpEvaluateContext(DotNetDebugContext debuggerContext, DotNetStackFrameMirrorProxy frame, PsiElement elementAt)
 	{
 		myDebuggerContext = debuggerContext;
 		myFrame = frame;
@@ -58,7 +58,7 @@ public class CSharpEvaluateContext
 	}
 
 	@NotNull
-	public StackFrameMirror getFrame()
+	public DotNetStackFrameMirrorProxy getFrame()
 	{
 		return myFrame;
 	}

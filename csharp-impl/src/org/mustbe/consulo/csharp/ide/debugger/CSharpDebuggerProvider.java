@@ -1,7 +1,6 @@
 package org.mustbe.consulo.csharp.ide.debugger;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.consulo.lombok.annotations.Logger;
@@ -18,6 +17,7 @@ import org.mustbe.consulo.dotnet.debugger.DotNetDebugContext;
 import org.mustbe.consulo.dotnet.debugger.DotNetDebuggerProvider;
 import org.mustbe.consulo.dotnet.debugger.nodes.DotNetFieldOrPropertyMirrorNode;
 import org.mustbe.consulo.dotnet.debugger.nodes.DotNetStructValueInfo;
+import org.mustbe.consulo.dotnet.debugger.proxy.DotNetStackFrameMirrorProxy;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
@@ -36,7 +36,6 @@ import com.intellij.xdebugger.frame.XNamedValue;
 import mono.debugger.FieldOrPropertyMirror;
 import mono.debugger.InvalidStackFrameException;
 import mono.debugger.ObjectValueMirror;
-import mono.debugger.StackFrameMirror;
 import mono.debugger.StructValueMirror;
 import mono.debugger.TypeMirror;
 import mono.debugger.Value;
@@ -57,7 +56,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 
 	@Override
 	@RequiredReadAction
-	public void evaluate(@NotNull StackFrameMirror frame,
+	public void evaluate(@NotNull DotNetStackFrameMirrorProxy frame,
 			@NotNull DotNetDebugContext debuggerContext,
 			@NotNull String expression,
 			@Nullable PsiElement elementAt,
@@ -151,7 +150,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 
 	@Override
 	@RequiredReadAction
-	public void evaluate(@NotNull StackFrameMirror frame,
+	public void evaluate(@NotNull DotNetStackFrameMirrorProxy frame,
 			@NotNull DotNetDebugContext debuggerContext,
 			@NotNull DotNetReferenceExpression referenceExpression,
 			@NotNull Set<Object> visitedVariables,
