@@ -43,7 +43,7 @@ public class ThisObjectEvaluator extends Evaluator
 	public void evaluate(@NotNull CSharpEvaluateContext context)
 	{
 		Value thisObject = context.getFrame().thisObject();
-		Value<?> value = tryToFindObjectInsideYieldOrAsync(context, thisObject);
+		Value<?> value = tryToFindObjectInsideYieldOrAsyncThis(context, thisObject);
 		if(value != null)
 		{
 			context.pull(value, null);
@@ -55,7 +55,7 @@ public class ThisObjectEvaluator extends Evaluator
 	}
 
 	@Nullable
-	private Value<?> tryToFindObjectInsideYieldOrAsync(@NotNull CSharpEvaluateContext context, Value thisObject)
+	public static Value<?> tryToFindObjectInsideYieldOrAsyncThis(@NotNull CSharpEvaluateContext context, Value thisObject)
 	{
 		if(!(thisObject instanceof ObjectValueMirror))
 		{
