@@ -125,7 +125,7 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 				return;
 			}
 		}
-		throw new IllegalArgumentException("unsupported");
+		throw new IllegalArgumentException("can't find member with name '" + name + "' from parent : " + typeMirror.qualifiedName());
 	}
 
 	@SuppressWarnings("unchecked")
