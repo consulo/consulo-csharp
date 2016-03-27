@@ -27,7 +27,9 @@ import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.Consumer;
 import com.intellij.util.ProcessingContext;
 
 /**
@@ -63,7 +65,7 @@ public abstract class CSharpMemberAddByCompletionContributor extends CompletionC
 
 	@RequiredReadAction
 	public abstract void processCompletion(@NotNull CompletionParameters parameters,
-			ProcessingContext context,
-			@NotNull CompletionResultSet result,
+			@NotNull ProcessingContext context,
+			@NotNull Consumer<LookupElement> result,
 			@NotNull CSharpTypeDeclaration typeDeclaration);
 }

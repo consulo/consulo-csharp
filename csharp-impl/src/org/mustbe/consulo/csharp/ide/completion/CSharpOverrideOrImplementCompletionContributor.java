@@ -24,6 +24,7 @@ import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.CSharpIcons;
 import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
@@ -48,7 +49,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -60,6 +60,7 @@ import com.intellij.openapi.editor.CaretModel;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.Consumer;
 import com.intellij.util.ProcessingContext;
 
 /**
@@ -74,28 +75,36 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 	@RequiredReadAction
 	@Override
 	public void processCompletion(@NotNull CompletionParameters parameters,
-			ProcessingContext context,
-			@NotNull CompletionResultSet result,
+			@NotNull ProcessingContext context,
+			@NotNull final Consumer<LookupElement> result,
 			@NotNull CSharpTypeDeclaration typeDeclaration)
 	{
+		Consumer<LookupElement> delegate = new Consumer<LookupElement>()
+		{
+			@Override
+			public void consume(LookupElement lookupElement)
+			{
+				if(lookupElement == null)
+				{
+					return;
+				}
+				CSharpCompletionSorting.force(lookupElement, CSharpCompletionSorting.KindSorter.Type.overrideMember);
+				result.consume(lookupElement);
+			}
+		};
+
 		Collection<DotNetModifierListOwner> overrideItems = getItemsImpl(typeDeclaration);
 		for(DotNetModifierListOwner overrideItem : overrideItems)
 		{
 			LookupElementBuilder builder = buildLookupItem(typeDeclaration, overrideItem, false);
 
-			if(builder != null)
-			{
-				result.addElement(builder);
-			}
+			delegate.consume(builder);
 
 			if(!typeDeclaration.isInterface() && overrideItem.hasModifier(CSharpModifier.INTERFACE_ABSTRACT))
 			{
 				builder = buildLookupItem(typeDeclaration, overrideItem, true);
 
-				if(builder != null)
-				{
-					result.addElement(builder);
-				}
+				delegate.consume(builder);
 			}
 		}
 	}
@@ -186,6 +195,7 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 		lookupElementBuilder = lookupElementBuilder.withInsertHandler(new InsertHandler<LookupElement>()
 		{
 			@Override
+			@RequiredDispatchThread
 			public void handleInsert(InsertionContext context, LookupElement item)
 			{
 				CaretModel caretModel = context.getEditor().getCaretModel();
@@ -225,10 +235,10 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 			}
 		});
 
-		CSharpCompletionSorting.force(lookupElementBuilder, CSharpCompletionSorting.KindSorter.Type.overrideMember);
 		return lookupElementBuilder;
 	}
 
+	@RequiredReadAction
 	public static void formatMethod(@NotNull DotNetLikeMethodDeclaration methodDeclaration, @NotNull StringBuilder builder, boolean hide)
 	{
 		if(!(methodDeclaration instanceof DotNetConstructorDeclaration))
