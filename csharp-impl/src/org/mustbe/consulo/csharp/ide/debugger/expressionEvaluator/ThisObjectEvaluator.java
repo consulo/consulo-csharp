@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import org.mustbe.consulo.dotnet.debugger.nodes.DotNetDebuggerCompilerGenerateUtil;
+import org.mustbe.consulo.dotnet.debugger.proxy.DotNetStackFrameMirrorProxy;
 import com.intellij.openapi.util.Condition;
 import com.intellij.util.containers.ContainerUtil;
 import mono.debugger.FieldMirror;
@@ -42,20 +43,24 @@ public class ThisObjectEvaluator extends Evaluator
 	@Override
 	public void evaluate(@NotNull CSharpEvaluateContext context)
 	{
-		Value thisObject = context.getFrame().thisObject();
-		Value<?> value = tryToFindObjectInsideYieldOrAsyncThis(context, thisObject);
-		if(value != null)
+		DotNetStackFrameMirrorProxy frame = context.getFrame();
+
+		context.pull(calcThisObject(frame, frame.thisObject()), null);
+	}
+
+	@NotNull
+	public static Value<?> calcThisObject(@NotNull DotNetStackFrameMirrorProxy proxy, Value<?> thisObject)
+	{
+		Value<?> temp = tryToFindObjectInsideYieldOrAsyncThis(proxy, thisObject);
+		if(temp != null)
 		{
-			context.pull(value, null);
+			return temp;
 		}
-		else
-		{
-			context.pull(thisObject, null);
-		}
+		return thisObject;
 	}
 
 	@Nullable
-	public static Value<?> tryToFindObjectInsideYieldOrAsyncThis(@NotNull CSharpEvaluateContext context, Value thisObject)
+	private static Value<?> tryToFindObjectInsideYieldOrAsyncThis(@NotNull DotNetStackFrameMirrorProxy proxy, Value thisObject)
 	{
 		if(!(thisObject instanceof ObjectValueMirror))
 		{
@@ -93,7 +98,7 @@ public class ThisObjectEvaluator extends Evaluator
 
 				if(thisFieldMirror != null)
 				{
-					Value<?> value = thisFieldMirror.value(context.getFrame().thread(), objectValueMirror);
+					Value<?> value = thisFieldMirror.value(proxy.thread(), objectValueMirror);
 					if(value != null)
 					{
 						return value;

@@ -52,7 +52,7 @@ public class LocalVariableEvaluator extends Evaluator
 		MethodMirror method = frame.location().method();
 
 		Value<?> thisObject = frame.thisObject();
-		Value<?> yieldOrAsyncThis = ThisObjectEvaluator.tryToFindObjectInsideYieldOrAsyncThis(context, thisObject);
+		Value<?> yieldOrAsyncThis = ThisObjectEvaluator.calcThisObject(frame, thisObject);
 		if(yieldOrAsyncThis instanceof ObjectValueMirror)
 		{
 			ObjectValueMirror thisObjectAsObjectMirror = (ObjectValueMirror) thisObject;

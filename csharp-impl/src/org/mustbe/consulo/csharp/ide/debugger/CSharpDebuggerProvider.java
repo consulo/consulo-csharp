@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.Evaluator;
+import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.ThisObjectEvaluator;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
@@ -188,7 +189,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 
 				TypeMirror parent = fieldOrPropertyMirror.parent();
 
-				Value thisObjectValue = frame.thisObject();
+				Value<?> thisObjectValue = ThisObjectEvaluator.calcThisObject(frame, frame.thisObject());
 				TypeMirror type = thisObjectValue.type();
 				if(thisObjectValue instanceof ObjectValueMirror && parent.equals(type))
 				{
