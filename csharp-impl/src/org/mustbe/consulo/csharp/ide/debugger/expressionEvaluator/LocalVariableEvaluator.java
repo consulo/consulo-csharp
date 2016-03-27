@@ -20,99 +20,55 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import org.mustbe.consulo.dotnet.debugger.nodes.DotNetDebuggerCompilerGenerateUtil;
 import org.mustbe.consulo.dotnet.debugger.proxy.DotNetStackFrameMirrorProxy;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.text.StringUtil;
-import mono.debugger.FieldMirror;
 import mono.debugger.LocalVariableMirror;
 import mono.debugger.MethodMirror;
-import mono.debugger.ObjectValueMirror;
-import mono.debugger.TypeMirror;
 import mono.debugger.Value;
 
 /**
  * @author VISTALL
  * @since 05.08.2015
  */
-public class LocalVariableEvaluator extends Evaluator
+public class LocalVariableEvaluator extends LocalVariableOrParameterEvaluator<CSharpLocalVariable>
 {
-	private String myName;
-
 	@RequiredReadAction
 	public LocalVariableEvaluator(CSharpLocalVariable localVariable)
 	{
-		myName = localVariable.getName();
+		super(localVariable);
 	}
 
 	@Override
-	public void evaluate(@NotNull CSharpEvaluateContext context)
+	protected boolean tryEvaluateFromStackFrame(@NotNull CSharpEvaluateContext context, DotNetStackFrameMirrorProxy frame, MethodMirror method)
 	{
-		DotNetStackFrameMirrorProxy frame = context.getFrame();
-		MethodMirror method = frame.location().method();
+		LocalVariableMirror[] locals = method.locals(frame.location().codeIndex());
 
-		Value<?> thisObject = frame.thisObject();
-		Value<?> yieldOrAsyncThis = ThisObjectEvaluator.calcThisObject(frame, thisObject);
-		if(yieldOrAsyncThis instanceof ObjectValueMirror)
+		LocalVariableMirror mirror = null;
+		for(LocalVariableMirror local : locals)
 		{
-			ObjectValueMirror thisObjectAsObjectMirror = (ObjectValueMirror) thisObject;
-			FieldMirror localVariableField = null;
-			TypeMirror type = thisObjectAsObjectMirror.type();
-			assert type != null;
-			for(final FieldMirror field : type.fields())
+			String name = local.name();
+			if(StringUtil.isEmpty(name))
 			{
-				String name = DotNetDebuggerCompilerGenerateUtil.extractNotGeneratedName(field.name());
-				if(name == null)
-				{
-					continue;
-				}
-				if(myName.equals(name))
-				{
-					localVariableField = field;
-					break;
-				}
+				continue;
 			}
 
-			if(localVariableField != null)
+			if(Comparing.equal(myName, name))
 			{
-				Value<?> value = localVariableField.value(frame.thread(), thisObjectAsObjectMirror);
-				if(value != null)
-				{
-					context.pull(value, localVariableField);
-					return;
-				}
+				mirror = local;
+				break;
 			}
 		}
-		else
+
+		if(mirror != null)
 		{
-			LocalVariableMirror[] locals = method.locals(frame.location().codeIndex());
-
-			LocalVariableMirror mirror = null;
-			for(LocalVariableMirror local : locals)
+			Value value = frame.localOrParameterValue(mirror);
+			if(value != null)
 			{
-				String name = local.name();
-				if(StringUtil.isEmpty(name))
-				{
-					continue;
-				}
-
-				if(Comparing.equal(myName, name))
-				{
-					mirror = local;
-					break;
-				}
-			}
-
-			if(mirror != null)
-			{
-				Value value = frame.localOrParameterValue(mirror);
-				if(value != null)
-				{
-					context.pull(value, mirror);
-					return;
-				}
+				context.pull(value, mirror);
+				return true;
 			}
 		}
-		throw new IllegalArgumentException("no variable with name '" + myName + "'");
+		return false;
 	}
 }

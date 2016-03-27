@@ -17,7 +17,9 @@
 package org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
+import org.mustbe.consulo.dotnet.debugger.proxy.DotNetStackFrameMirrorProxy;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import mono.debugger.MethodMirror;
 import mono.debugger.MethodParameterMirror;
@@ -27,28 +29,28 @@ import mono.debugger.Value;
  * @author VISTALL
  * @since 05.08.2015
  */
-public class ParameterEvaluator extends Evaluator
+public class ParameterEvaluator extends LocalVariableOrParameterEvaluator<DotNetParameter>
 {
-	private DotNetParameter myParameter;
+	private int myIndex;
 
-	public ParameterEvaluator(DotNetParameter parameter)
+	@RequiredReadAction
+	public ParameterEvaluator(@NotNull DotNetParameter parameter)
 	{
-		myParameter = parameter;
+		super(parameter);
+		myIndex = parameter.getIndex();
 	}
 
 	@Override
-	public void evaluate(@NotNull CSharpEvaluateContext context)
+	protected boolean tryEvaluateFromStackFrame(@NotNull CSharpEvaluateContext context, DotNetStackFrameMirrorProxy frame, MethodMirror method)
 	{
-		MethodMirror method = context.getFrame().location().method();
-
-		int index = myParameter.getIndex();
-
-		MethodParameterMirror methodParameterMirror = method.parameters()[index];
+		MethodParameterMirror methodParameterMirror = method.parameters()[myIndex];
 
 		Value value = context.getFrame().localOrParameterValue(methodParameterMirror);
 		if(value != null)
 		{
 			context.pull(value, methodParameterMirror);
+			return true;
 		}
+		return false;
 	}
 }
