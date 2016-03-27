@@ -79,32 +79,18 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 			@NotNull final Consumer<LookupElement> result,
 			@NotNull CSharpTypeDeclaration typeDeclaration)
 	{
-		Consumer<LookupElement> delegate = new Consumer<LookupElement>()
-		{
-			@Override
-			public void consume(LookupElement lookupElement)
-			{
-				if(lookupElement == null)
-				{
-					return;
-				}
-				CSharpCompletionSorting.force(lookupElement, CSharpCompletionSorting.KindSorter.Type.overrideMember);
-				result.consume(lookupElement);
-			}
-		};
-
 		Collection<DotNetModifierListOwner> overrideItems = getItemsImpl(typeDeclaration);
 		for(DotNetModifierListOwner overrideItem : overrideItems)
 		{
 			LookupElementBuilder builder = buildLookupItem(typeDeclaration, overrideItem, false);
 
-			delegate.consume(builder);
+			result.consume(builder);
 
 			if(!typeDeclaration.isInterface() && overrideItem.hasModifier(CSharpModifier.INTERFACE_ABSTRACT))
 			{
 				builder = buildLookupItem(typeDeclaration, overrideItem, true);
 
-				delegate.consume(builder);
+				result.consume(builder);
 			}
 		}
 	}

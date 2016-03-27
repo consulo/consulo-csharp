@@ -58,7 +58,22 @@ public abstract class CSharpMemberAddByCompletionContributor extends CompletionC
 				CSharpTypeDeclaration typeDeclaration = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpTypeDeclaration.class);
 				assert typeDeclaration != null;
 
-				processCompletion(parameters, context, CSharpCompletionSorting.modifyResultSet(parameters, result), typeDeclaration);
+				final CompletionResultSet delegateResultSet = CSharpCompletionSorting.modifyResultSet(parameters, result);
+				Consumer<LookupElement> delegate = new Consumer<LookupElement>()
+				{
+					@Override
+					public void consume(LookupElement lookupElement)
+					{
+						if(lookupElement == null)
+						{
+							return;
+						}
+						CSharpCompletionSorting.force(lookupElement, CSharpCompletionSorting.KindSorter.Type.overrideMember);
+						delegateResultSet.consume(lookupElement);
+					}
+				};
+
+				processCompletion(parameters, context, delegate, typeDeclaration);
 			}
 		});
 	}
