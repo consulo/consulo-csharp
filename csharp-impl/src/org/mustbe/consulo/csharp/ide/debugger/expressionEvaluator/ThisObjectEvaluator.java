@@ -22,6 +22,7 @@ import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import org.mustbe.consulo.dotnet.debugger.nodes.DotNetDebuggerCompilerGenerateUtil;
 import org.mustbe.consulo.dotnet.debugger.proxy.DotNetStackFrameMirrorProxy;
 import com.intellij.openapi.util.Condition;
+import com.intellij.util.ObjectUtil;
 import com.intellij.util.containers.ContainerUtil;
 import mono.debugger.FieldMirror;
 import mono.debugger.ObjectValueMirror;
@@ -51,12 +52,7 @@ public class ThisObjectEvaluator extends Evaluator
 	@NotNull
 	public static Value<?> calcThisObject(@NotNull DotNetStackFrameMirrorProxy proxy, Value<?> thisObject)
 	{
-		Value<?> temp = tryToFindObjectInsideYieldOrAsyncThis(proxy, thisObject);
-		if(temp != null)
-		{
-			return temp;
-		}
-		return thisObject;
+		return ObjectUtil.notNull(tryToFindObjectInsideYieldOrAsyncThis(proxy, thisObject), thisObject);
 	}
 
 	@Nullable
