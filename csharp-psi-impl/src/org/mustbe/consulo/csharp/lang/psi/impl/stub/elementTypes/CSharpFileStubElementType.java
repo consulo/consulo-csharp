@@ -95,6 +95,11 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 		if(virtualFile instanceof LightVirtualFile)
 		{
 			virtualFile = ((LightVirtualFile) virtualFile).getOriginalFile();
+			// we need call second time, due second original file will be light
+			if(virtualFile instanceof LightVirtualFile)
+			{
+				virtualFile = ((LightVirtualFile) virtualFile).getOriginalFile();
+			}
 		}
 		if(virtualFile == null)
 		{
