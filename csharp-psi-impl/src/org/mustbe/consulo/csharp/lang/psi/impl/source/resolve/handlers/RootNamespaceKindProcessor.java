@@ -44,7 +44,10 @@ public class RootNamespaceKindProcessor implements KindProcessor
 		PsiElement element = options.getElement();
 
 		DotNetNamespaceAsElement temp = DotNetPsiSearcher.getInstance(element.getProject()).findNamespace("", element.getResolveScope());
-		assert temp != null;
+		if(temp == null)
+		{
+			return;
+		}
 		processor.process(new CSharpResolveResult(temp));
 	}
 }

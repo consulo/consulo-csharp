@@ -169,7 +169,11 @@ public class CSharpResolveUtil
 
 		DotNetNamespaceAsElement root = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace("", entrance.getResolveScope());
 
-		assert root != null;
+		// skip null - indexing
+		if(root == null)
+		{
+			return true;
+		}
 
 		if(!processor.execute(root, state))
 		{

@@ -21,7 +21,6 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.openapi.project.DumbService;
 import com.intellij.util.ProcessingContext;
 
 /**
@@ -34,10 +33,6 @@ public abstract class DumbCompletionProvider extends CompletionProvider
 	@Override
 	protected final void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 	{
-		if(DumbService.isDumb(parameters.getPosition().getProject()))
-		{
-			return;
-		}
 
 		addLookupElements(parameters, context, result);
 	}
