@@ -17,6 +17,8 @@
 package org.mustbe.consulo.csharp.ide.completion;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocRoot;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -36,6 +38,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.codeInsight.AutoPopupController;
 import com.intellij.codeInsight.editorActions.TypedHandlerDelegate;
 import com.intellij.codeStyle.CodeStyleFacade;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.fileTypes.FileType;
@@ -56,6 +59,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 public class CSharpTypedHandler extends TypedHandlerDelegate
 {
 	@Override
+	@RequiredDispatchThread
 	public Result beforeCharTyped(char c, Project project, Editor editor, PsiFile file, FileType fileType)
 	{
 		if(!(file instanceof CSharpFile))
@@ -87,6 +91,7 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 	}
 
 	@Override
+	@RequiredDispatchThread
 	public Result charTyped(char c, Project project, Editor editor, @NotNull PsiFile file)
 	{
 		if(c == '/')
@@ -108,16 +113,25 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 			if(prevSibling != null && prevSibling.getNode().getElementType() == CSharpTokens.LINE_COMMENT)
 			{
 				PsiElement prevSiblingSkipWhiteSpaces = UsefulPsiTreeUtil.getPrevSiblingSkipWhiteSpaces(prevSibling, true);
-				if(prevSiblingSkipWhiteSpaces instanceof CSharpDocRoot)
+				// we skip if prev token is doc, or whe have already filed comment
+				if(prevSiblingSkipWhiteSpaces instanceof CSharpDocRoot || prevSibling.getTextLength() != 2)
 				{
 					return Result.CONTINUE;
 				}
 				PsiElement nextSibling = elementAt.getNextSibling();
 				if(nextSibling instanceof DotNetQualifiedElement)
 				{
+					Document document = editor.getDocument();
+					int lineOfComment = document.getLineNumber(prevSibling.getTextOffset());
+					int lineOfMember = document.getLineNumber(nextSibling.getTextOffset());
+					// if we have one than one between elements - skip it
+					if((lineOfMember - lineOfComment) > 1)
+					{
+						return Result.CONTINUE;
+					}
 					Pair<CharSequence, Integer> pair = buildDocComment((DotNetQualifiedElement) nextSibling, editor, offset);
 
-					editor.getDocument().insertString(offset, pair.getFirst());
+					document.insertString(offset, pair.getFirst());
 					editor.getCaretModel().moveToOffset(pair.getSecond());
 
 					PsiDocumentManager.getInstance(project).commitDocument(editor.getDocument());
@@ -134,6 +148,7 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 	}
 
 	@NotNull
+	@RequiredDispatchThread
 	private static Pair<CharSequence, Integer> buildDocComment(DotNetQualifiedElement qualifiedElement, Editor editor, int offset)
 	{
 		String lineIndent = CodeStyleFacade.getInstance(qualifiedElement.getProject()).getLineIndent(editor.getDocument(), offset);
@@ -194,6 +209,7 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 		return Pair.<CharSequence, Integer>create(builder, diffForCaret);
 	}
 
+	@RequiredDispatchThread
 	private static boolean handleDotAtPointerType(Editor editor, PsiFile file)
 	{
 		if(DumbService.isDumb(file.getProject()))
@@ -249,11 +265,13 @@ public class CSharpTypedHandler extends TypedHandlerDelegate
 		return true;
 	}
 
+	@RequiredDispatchThread
 	private static void autoPopupMemberLookup(Project project, final Editor editor)
 	{
 		AutoPopupController.getInstance(project).autoPopupMemberLookup(editor, new Condition<PsiFile>()
 		{
 			@Override
+			@RequiredReadAction
 			public boolean value(final PsiFile file)
 			{
 				int offset = editor.getCaretModel().getOffset();
