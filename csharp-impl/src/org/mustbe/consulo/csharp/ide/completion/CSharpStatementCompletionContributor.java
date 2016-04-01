@@ -263,11 +263,11 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
-		extend(CompletionType.BASIC, CSharpPatterns.statementStart(), new DumbCompletionProvider()
+		extend(CompletionType.BASIC, CSharpPatterns.statementStart(), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
-			protected void addLookupElements(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				final PsiElement position = parameters.getPosition();
 				CSharpCompletionUtil.elementToLookup(result, CSharpSoftTokens.YIELD_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()

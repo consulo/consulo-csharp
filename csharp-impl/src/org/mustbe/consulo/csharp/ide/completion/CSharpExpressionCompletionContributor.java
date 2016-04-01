@@ -443,11 +443,11 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 
 		});
 
-		extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new DumbCompletionProvider()
+		extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
 		{
 			@Override
 			@RequiredReadAction
-			protected void addLookupElements(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				List<ExpectedTypeInfo> expectedTypeInfos = getExpectedTypeInfosForExpression(parameters, context);
 
@@ -486,11 +486,11 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new DumbCompletionProvider()
+		extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
 		{
 			@Override
 			@RequiredReadAction
-			protected void addLookupElements(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull final CompletionResultSet result)
+			protected void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull final CompletionResultSet result)
 			{
 				final CSharpReferenceExpressionEx expression = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
 				CSharpReferenceExpression.ResolveToKind kind = expression.kind();
