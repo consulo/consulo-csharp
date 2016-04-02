@@ -94,6 +94,7 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 		return CSharpModifier.EMPTY_ARRAY;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	protected MsilModifierListToCSharpModifierList createModifierList(CSharpModifier[] modifiers, DotNetVariable variable)

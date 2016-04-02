@@ -49,11 +49,13 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 		}
 	};
 
+	@RequiredReadAction
 	public MsilVariableAsCSharpVariable(PsiElement parent, DotNetVariable variable)
 	{
 		this(parent, CSharpModifier.EMPTY_ARRAY, variable);
 	}
 
+	@RequiredReadAction
 	public MsilVariableAsCSharpVariable(PsiElement parent, CSharpModifier[] modifiers, DotNetVariable variable)
 	{
 		super(parent, variable);
@@ -62,9 +64,10 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 	}
 
 	@NotNull
+	@RequiredReadAction
 	protected MsilModifierListToCSharpModifierList createModifierList(CSharpModifier[] modifiers, DotNetVariable variable)
 	{
-		return new MsilModifierListToCSharpModifierList(modifiers, variable, variable.getModifierList());
+		return new MsilModifierListToCSharpModifierList(modifiers, this, variable.getModifierList());
 	}
 
 	@Override
