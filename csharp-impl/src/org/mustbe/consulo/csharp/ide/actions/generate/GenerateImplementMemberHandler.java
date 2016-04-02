@@ -22,12 +22,16 @@ import java.util.Collections;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -45,7 +49,7 @@ public class GenerateImplementMemberHandler extends GenerateImplementOrOverrideM
 
 	@RequiredReadAction
 	@Override
-	public void processItem(@NotNull StringBuilder builder, @NotNull PsiElement item)
+	public void appendAdditionalModifiers(@NotNull StringBuilder builder, @NotNull PsiElement item)
 	{
 		CSharpModifier requiredOverrideModifier = OverrideUtil.getRequiredOverrideModifier((DotNetModifierListOwner) item);
 		if(requiredOverrideModifier != null)
@@ -56,23 +60,47 @@ public class GenerateImplementMemberHandler extends GenerateImplementOrOverrideM
 
 	@RequiredReadAction
 	@Override
-	public void processReturn(@NotNull StringBuilder builder, @NotNull PsiElement item)
+	public void appendReturnStatement(@NotNull StringBuilder builder, @NotNull PsiElement item)
 	{
 		generateReturn(builder, item);
 	}
 
+	@RequiredReadAction
 	public static void generateReturn(@NotNull StringBuilder builder, @NotNull PsiElement item)
 	{
 		if(item instanceof CSharpMethodDeclaration)
 		{
-			String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(((CSharpMethodDeclaration) item).getReturnTypeRef(), item);
-			if(defaultValueForType != null)
+			generateReturnForTypeRef(builder, ((CSharpMethodDeclaration) item).getReturnTypeRef(), item);
+		}
+		else if(item instanceof DotNetXXXAccessor)
+		{
+			DotNetXXXAccessor.Kind accessorKind = ((DotNetXXXAccessor) item).getAccessorKind();
+			if(accessorKind == DotNetXXXAccessor.Kind.GET)
 			{
-				builder.append("return ").append(defaultValueForType).append(";\n");
+				PsiElement parent = item.getParent();
+				if(parent instanceof CSharpPropertyDeclaration)
+				{
+					generateReturnForTypeRef(builder, ((CSharpPropertyDeclaration) parent).toTypeRef(false), item);
+				}
+				else if(parent instanceof CSharpIndexMethodDeclaration)
+				{
+					generateReturnForTypeRef(builder, ((CSharpIndexMethodDeclaration) parent).getReturnTypeRef(), item);
+				}
 			}
 		}
 	}
 
+	@RequiredReadAction
+	private static void generateReturnForTypeRef(@NotNull StringBuilder builder, @NotNull DotNetTypeRef typeRef, @NotNull PsiElement item)
+	{
+		String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(typeRef, item);
+		if(defaultValueForType != null)
+		{
+			builder.append("return ").append(defaultValueForType).append(";\n");
+		}
+	}
+
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public Collection<DotNetModifierListOwner> getItems(@NotNull CSharpTypeDeclaration typeDeclaration)

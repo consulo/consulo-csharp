@@ -22,8 +22,10 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
@@ -51,7 +53,7 @@ public class GenerateOverrideMemberHandler extends GenerateImplementOrOverrideMe
 
 	@RequiredReadAction
 	@Override
-	public void processItem(@NotNull StringBuilder builder, @NotNull PsiElement item)
+	public void appendAdditionalModifiers(@NotNull StringBuilder builder, @NotNull PsiElement item)
 	{
 		CSharpModifier requiredOverrideModifier = OverrideUtil.getRequiredOverrideModifier((DotNetModifierListOwner) item);
 		if(requiredOverrideModifier != null)
@@ -62,11 +64,12 @@ public class GenerateOverrideMemberHandler extends GenerateImplementOrOverrideMe
 
 	@RequiredReadAction
 	@Override
-	public void processReturn(@NotNull StringBuilder builder, @NotNull PsiElement item)
+	public void appendReturnStatement(@NotNull StringBuilder builder, @NotNull PsiElement item)
 	{
 		generateReturn(builder, item);
 	}
 
+	@RequiredReadAction
 	public static void generateReturn(@NotNull StringBuilder builder, @NotNull PsiElement item)
 	{
 		if(item instanceof CSharpMethodDeclaration)
@@ -91,14 +94,18 @@ public class GenerateOverrideMemberHandler extends GenerateImplementOrOverrideMe
 			}
 			builder.append(");\n");
 		}
+		else if(item instanceof CSharpPropertyDeclaration || item instanceof CSharpIndexMethodDeclaration)
+		{
+			GenerateImplementMemberHandler.generateReturn(builder, item);
+		}
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public Collection<PsiElement> getItems(@NotNull CSharpTypeDeclaration typeDeclaration)
 	{
-		Collection<PsiElement> allMembers = OverrideUtil.getAllMembers(typeDeclaration, typeDeclaration.getResolveScope(),
-				DotNetGenericExtractor.EMPTY, false, true);
+		Collection<PsiElement> allMembers = OverrideUtil.getAllMembers(typeDeclaration, typeDeclaration.getResolveScope(), DotNetGenericExtractor.EMPTY, false, true);
 
 		boolean isInterface = typeDeclaration.isInterface();
 

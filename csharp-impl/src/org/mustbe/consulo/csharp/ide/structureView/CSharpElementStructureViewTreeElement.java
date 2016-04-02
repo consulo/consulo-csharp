@@ -82,7 +82,7 @@ public class CSharpElementStructureViewTreeElement extends PsiTreeElementBase<Ps
 		}
 		else if(value instanceof DotNetPropertyDeclaration)
 		{
-			return CSharpElementPresentationUtil.formatProperty((DotNetPropertyDeclaration) value, CSharpElementPresentationUtil.WITH_VIRTUAL_IMPL_TYPE);
+			return CSharpElementPresentationUtil.formatProperty((DotNetPropertyDeclaration) value, CSharpElementPresentationUtil.PROPERTY_SCALA_LIKE_FULL);
 		}
 		else if(value instanceof DotNetNamespaceDeclaration)
 		{

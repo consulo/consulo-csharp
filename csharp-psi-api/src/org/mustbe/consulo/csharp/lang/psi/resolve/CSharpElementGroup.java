@@ -16,7 +16,7 @@ public interface CSharpElementGroup<T extends PsiElement> extends PsiNamedElemen
 	@NotNull
 	Collection<T> getElements();
 
-	boolean process(@NotNull Processor<T> processor);
+	boolean process(@NotNull Processor<? super T> processor);
 
 	@Override
 	@NotNull

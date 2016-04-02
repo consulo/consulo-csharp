@@ -39,12 +39,13 @@ import com.intellij.util.Function;
  */
 public class CSharpElementPresentationUtil
 {
-	public static final int METHOD_SCALA_FORMAT = 1 << 0;
+	public static final int SCALA_FORMAT = 1 << 0;
 	public static final int METHOD_WITH_RETURN_TYPE = 1 << 1;
 	public static final int METHOD_PARAMETER_NAME = 1 << 2;
 	public static final int WITH_VIRTUAL_IMPL_TYPE = 1 << 4;
 
-	public static final int METHOD_SCALA_LIKE_FULL = METHOD_SCALA_FORMAT | METHOD_WITH_RETURN_TYPE | METHOD_PARAMETER_NAME | WITH_VIRTUAL_IMPL_TYPE;
+	public static final int PROPERTY_SCALA_LIKE_FULL = SCALA_FORMAT | WITH_VIRTUAL_IMPL_TYPE;
+	public static final int METHOD_SCALA_LIKE_FULL = SCALA_FORMAT | METHOD_WITH_RETURN_TYPE | METHOD_PARAMETER_NAME | WITH_VIRTUAL_IMPL_TYPE;
 
 	@NotNull
 	@RequiredReadAction
@@ -73,9 +74,20 @@ public class CSharpElementPresentationUtil
 			}
 		}
 
-		builder.append(propertyDeclaration.getName());
-		builder.append(":");
-		CSharpTypeRefPresentationUtil.appendTypeRef(propertyDeclaration, builder, propertyDeclaration.toTypeRef(true), CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
+		if(BitUtil.isSet(flags, SCALA_FORMAT))
+		{
+			builder.append(propertyDeclaration.getName());
+			builder.append(":");
+			CSharpTypeRefPresentationUtil.appendTypeRef(propertyDeclaration, builder, propertyDeclaration.toTypeRef(true), CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
+
+		}
+		else
+		{
+			CSharpTypeRefPresentationUtil.appendTypeRef(propertyDeclaration, builder, propertyDeclaration.toTypeRef(true), CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
+
+			builder.append(" ");
+			builder.append(propertyDeclaration.getName());
+		}
 		return builder.toString();
 	}
 
@@ -85,7 +97,7 @@ public class CSharpElementPresentationUtil
 	{
 		StringBuilder builder = new StringBuilder();
 
-		if(BitUtil.isSet(flags, METHOD_WITH_RETURN_TYPE) && !BitUtil.isSet(flags, METHOD_SCALA_FORMAT))
+		if(BitUtil.isSet(flags, METHOD_WITH_RETURN_TYPE) && !BitUtil.isSet(flags, SCALA_FORMAT))
 		{
 			if(!(methodDeclaration instanceof DotNetConstructorDeclaration))
 			{
@@ -149,7 +161,7 @@ public class CSharpElementPresentationUtil
 						return text;
 					}
 
-					if(BitUtil.isSet(flags, METHOD_SCALA_FORMAT))
+					if(BitUtil.isSet(flags, SCALA_FORMAT))
 					{
 						return parameter.getName() + ":" + text;
 					}
@@ -162,7 +174,7 @@ public class CSharpElementPresentationUtil
 			builder.append(indexMethod ? "]" : ")");
 		}
 
-		if(BitUtil.isSet(flags, METHOD_WITH_RETURN_TYPE) && BitUtil.isSet(flags, METHOD_SCALA_FORMAT))
+		if(BitUtil.isSet(flags, METHOD_WITH_RETURN_TYPE) && BitUtil.isSet(flags, SCALA_FORMAT))
 		{
 			if(!(methodDeclaration instanceof DotNetConstructorDeclaration))
 			{

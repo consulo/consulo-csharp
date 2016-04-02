@@ -20,6 +20,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTargetUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import org.mustbe.consulo.csharp.lang.psi.resolve.MemberByNameSelector;
@@ -353,8 +354,16 @@ public class OverrideUtil
 			boolean completion,
 			boolean overrideTool)
 	{
-		CommonProcessors.CollectProcessor<PsiElement> collectProcessor = new CommonProcessors.CollectProcessor<PsiElement>();
-		CSharpResolveContextUtil.createContext(extractor, scope, targetTypeDeclaration).processElements(collectProcessor, true);
+		final CommonProcessors.CollectProcessor<PsiElement> collectProcessor = new CommonProcessors.CollectProcessor<PsiElement>();
+		CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, scope, targetTypeDeclaration);
+		// process method & properties
+		context.processElements(collectProcessor, true);
+		// process index methods
+		CSharpElementGroup<CSharpIndexMethodDeclaration> group = context.indexMethodGroup(true);
+		if(group != null)
+		{
+			group.process(collectProcessor);
+		}
 
 		Collection<PsiElement> results = collectProcessor.getResults();
 

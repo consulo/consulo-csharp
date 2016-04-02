@@ -30,6 +30,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiManager;
@@ -105,12 +106,23 @@ public class CSharpFileFactory
 	@NotNull
 	public static DotNetLikeMethodDeclaration createMethod(@NotNull Project project, @NotNull CharSequence text)
 	{
+		DotNetNamedElement member = createMember(project, text);
+		if(!(member instanceof DotNetLikeMethodDeclaration))
+		{
+			throw new IllegalArgumentException("member is not method, text: " + StringUtil.SINGLE_QUOTER.fun(text.toString()));
+		}
+		return (DotNetLikeMethodDeclaration) member;
+	}
+
+	@NotNull
+	public static DotNetNamedElement createMember(@NotNull Project project, @NotNull CharSequence text)
+	{
 		String clazz = "class _Dummy { " + text + "; }";
 
 		CSharpFileImpl psiFile = createTypeDeclarationWithScope(project, clazz);
 
 		DotNetTypeDeclaration typeDeclaration = (DotNetTypeDeclaration) psiFile.getMembers()[0];
-		return (DotNetLikeMethodDeclaration) typeDeclaration.getMembers()[0];
+		return typeDeclaration.getMembers()[0];
 	}
 
 	@NotNull

@@ -19,8 +19,9 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 /**
  * @author VISTALL
  * @since 16.12.14
+ *
+ * @see CS0534
  */
 public class CS0535
 {
-	// see CS0534
 }

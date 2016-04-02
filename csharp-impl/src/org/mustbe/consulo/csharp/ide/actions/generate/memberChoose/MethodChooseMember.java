@@ -16,57 +16,52 @@
 
 package org.mustbe.consulo.csharp.ide.actions.generate.memberChoose;
 
-import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.PairConsumer;
 
 /**
  * @author VISTALL
  * @since 16.12.14
  */
-public class MethodChooseMember extends CSharpMemberChooseObject<CSharpMethodDeclaration>
+public class MethodChooseMember extends ImplementMemberChooseObject<CSharpMethodDeclaration>
 {
-	public MethodChooseMember(CSharpMethodDeclaration declaration)
+	public MethodChooseMember(CSharpMethodDeclaration declaration,
+			PairConsumer<PsiElement, StringBuilder> additionalModifiersAppender,
+			PairConsumer<PsiElement, StringBuilder> returnAppender,
+			boolean canGenerateBlock)
 	{
-		super(declaration);
+		super(declaration, additionalModifiersAppender, returnAppender, canGenerateBlock);
 	}
 
 	@Override
+	@RequiredDispatchThread
 	public String getPresentationText()
 	{
-		return CSharpElementPresentationUtil.formatMethod(myDeclaration, CSharpElementPresentationUtil.METHOD_WITH_RETURN_TYPE |
-				CSharpElementPresentationUtil.METHOD_PARAMETER_NAME);
-	}
-
-	public void process(@NotNull StringBuilder builder)
-	{
-
-	}
-
-	public void processReturn(@NotNull StringBuilder builder)
-	{
-
+		return CSharpElementPresentationUtil.formatMethod(myDeclaration, CSharpElementPresentationUtil.METHOD_WITH_RETURN_TYPE | CSharpElementPresentationUtil.METHOD_PARAMETER_NAME);
 	}
 
 	@Override
+	@RequiredDispatchThread
 	public String getText()
 	{
 		StringBuilder builder = new StringBuilder();
 		CSharpAccessModifier modifier = CSharpAccessModifier.findModifier(myDeclaration);
-		boolean canGenerateCodeBlock = canGenerateCodeBlock();
-		if(modifier != CSharpAccessModifier.NONE && canGenerateCodeBlock)
+		if(modifier != CSharpAccessModifier.NONE && myCanGenerateBlock)
 		{
 			builder.append(modifier.getPresentableText()).append(" ");
 		}
 
-		process(builder);
+		myAdditionalModifiersAppender.consume(myDeclaration, builder);
 
 		builder.append(getPresentationText());
-		if(canGenerateCodeBlock)
+		if(myCanGenerateBlock)
 		{
 			builder.append(" {\n");
-			processReturn(builder);
+			myReturnAppender.consume(myDeclaration, builder);
 			builder.append("}");
 		}
 		else
@@ -74,10 +69,5 @@ public class MethodChooseMember extends CSharpMemberChooseObject<CSharpMethodDec
 			builder.append(";");
 		}
 		return builder.toString();
-	}
-
-	public boolean canGenerateCodeBlock()
-	{
-		return true;
 	}
 }

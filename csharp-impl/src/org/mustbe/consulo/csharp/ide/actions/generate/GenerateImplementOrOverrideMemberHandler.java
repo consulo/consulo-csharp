@@ -25,10 +25,12 @@ import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.actions.generate.memberChoose.CSharpMemberChooseObject;
 import org.mustbe.consulo.csharp.ide.actions.generate.memberChoose.MethodChooseMember;
+import org.mustbe.consulo.csharp.ide.actions.generate.memberChoose.XXXAccessorOwnerChooseMember;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpXXXAccessorOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import com.intellij.ide.util.MemberChooser;
 import com.intellij.ide.util.MemberChooserBuilder;
 import com.intellij.lang.LanguageCodeInsightActionHandler;
@@ -40,6 +42,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.codeStyle.CodeStyleManager;
+import com.intellij.util.PairConsumer;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
@@ -64,31 +67,36 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 			return;
 		}
 
+		boolean canGenerateBlock = !typeDeclaration.isInterface();
 		List<CSharpMemberChooseObject> memberChooseObjects = new ArrayList<CSharpMemberChooseObject>(psiElements.size());
+		PairConsumer<PsiElement, StringBuilder> returnAppender = new PairConsumer<PsiElement, StringBuilder>()
+		{
+			@Override
+			@RequiredDispatchThread
+			public void consume(PsiElement element, StringBuilder builder)
+			{
+				GenerateImplementOrOverrideMemberHandler.this.appendReturnStatement(builder, element);
+			}
+		};
+		PairConsumer<PsiElement, StringBuilder> additionalModifiersAppender = new PairConsumer<PsiElement, StringBuilder>()
+		{
+			@Override
+			@RequiredDispatchThread
+			public void consume(PsiElement element, StringBuilder builder)
+			{
+				GenerateImplementOrOverrideMemberHandler.this.appendAdditionalModifiers(builder, element);
+			}
+		};
+
 		for(final PsiElement psiElement : psiElements)
 		{
 			if(psiElement instanceof CSharpMethodDeclaration)
 			{
-				memberChooseObjects.add(new MethodChooseMember((CSharpMethodDeclaration) psiElement)
-				{
-					@Override
-					public void process(@NotNull StringBuilder builder)
-					{
-						GenerateImplementOrOverrideMemberHandler.this.processItem(builder, psiElement);
-					}
-
-					@Override
-					public void processReturn(@NotNull StringBuilder builder)
-					{
-						GenerateImplementOrOverrideMemberHandler.this.processReturn(builder, psiElement);
-					}
-
-					@Override
-					public boolean canGenerateCodeBlock()
-					{
-						return !typeDeclaration.isInterface();
-					}
-				});
+				memberChooseObjects.add(new MethodChooseMember((CSharpMethodDeclaration) psiElement, additionalModifiersAppender, returnAppender, canGenerateBlock));
+			}
+			else if(psiElement instanceof CSharpXXXAccessorOwner)
+			{
+				memberChooseObjects.add(new XXXAccessorOwnerChooseMember((CSharpXXXAccessorOwner) psiElement, additionalModifiersAppender, returnAppender, canGenerateBlock));
 			}
 		}
 
@@ -96,8 +104,7 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 		builder.setTitle(getTitle());
 		builder.allowMultiSelection(true);
 
-		final MemberChooser<CSharpMemberChooseObject<?>> memberChooser = builder.createBuilder(ContainerUtil.toArray(memberChooseObjects,
-				CSharpMemberChooseObject.ARRAY_FACTORY));
+		final MemberChooser<CSharpMemberChooseObject<?>> memberChooser = builder.createBuilder(ContainerUtil.toArray(memberChooseObjects, CSharpMemberChooseObject.ARRAY_FACTORY));
 
 		if(!memberChooser.showAndGet())
 		{
@@ -120,12 +127,13 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 	public abstract String getTitle();
 
 	@RequiredReadAction
-	public abstract void processItem(@NotNull StringBuilder builder, @NotNull PsiElement item);
+	public abstract void appendAdditionalModifiers(@NotNull StringBuilder builder, @NotNull PsiElement item);
 
 	@RequiredReadAction
-	public abstract void processReturn(@NotNull StringBuilder builder, @NotNull PsiElement item);
+	public abstract void appendReturnStatement(@NotNull StringBuilder builder, @NotNull PsiElement item);
 
 	@NotNull
+	@RequiredReadAction
 	public abstract Collection<? extends PsiElement> getItems(@NotNull CSharpTypeDeclaration typeDeclaration);
 
 	@RequiredReadAction
@@ -136,7 +144,7 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 	{
 		String text = chooseMember.getText();
 
-		final DotNetLikeMethodDeclaration method = CSharpFileFactory.createMethod(typeDeclaration.getProject(), text);
+		final DotNetNamedElement namedElement = CSharpFileFactory.createMember(typeDeclaration.getProject(), text);
 
 		final int offset = editor.getCaretModel().getOffset();
 		PsiElement elementAt = file.findElementAt(offset);
@@ -154,7 +162,7 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 			@Override
 			protected void run() throws Throwable
 			{
-				final PsiElement psiElement = typeDeclaration.addAfter(method, temp);
+				final PsiElement psiElement = typeDeclaration.addAfter(namedElement, temp);
 				typeDeclaration.addAfter(PsiParserFacade.SERVICE.getInstance(file.getProject()).createWhiteSpaceFromText("\n"), psiElement);
 
 				PsiDocumentManager documentManager = PsiDocumentManager.getInstance(getProject());

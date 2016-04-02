@@ -118,7 +118,7 @@ public class CSharpCompositeElementGroupImpl<T extends PsiElement> extends Light
 	}
 
 	@Override
-	public boolean process(@NotNull Processor<T> processor)
+	public boolean process(@NotNull Processor<? super T> processor)
 	{
 		for(CSharpElementGroup<T> group : myGroups)
 		{
