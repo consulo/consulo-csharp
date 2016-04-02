@@ -18,18 +18,25 @@ package org.mustbe.consulo.csharp.ide.lineMarkerProvider;
 
 import javax.swing.Icon;
 
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import com.intellij.ide.util.PsiElementListCellRenderer;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.presentation.java.SymbolPresentationUtil;
+import com.intellij.util.Function;
 
 /**
  * @author VISTALL
  * @since 16.12.14
  */
-public class ElementGutterRender extends PsiElementListCellRenderer<PsiElement>
+public class PsiMappedElementListCellRender extends PsiElementListCellRenderer<PsiElement>
 {
+	private Function<PsiElement, PsiElement> myMap;
+
+	public PsiMappedElementListCellRender(Function<PsiElement, PsiElement> map)
+	{
+		myMap = map;
+	}
+
 	@Override
 	protected int getIconFlags()
 	{
@@ -39,10 +46,10 @@ public class ElementGutterRender extends PsiElementListCellRenderer<PsiElement>
 	@Override
 	protected Icon getIcon(PsiElement element)
 	{
-		PsiElement parent = element.getParent();
-		if(parent instanceof CSharpTypeDeclaration)
+		PsiElement map = myMap.fun(element);
+		if(map != null)
 		{
-			return super.getIcon(parent);
+			return super.getIcon(map);
 		}
 		return super.getIcon(element);
 	}
@@ -50,10 +57,10 @@ public class ElementGutterRender extends PsiElementListCellRenderer<PsiElement>
 	@Override
 	public String getElementText(PsiElement element)
 	{
-		PsiElement parent = element.getParent();
-		if(parent instanceof CSharpTypeDeclaration)
+		PsiElement map = myMap.fun(element);
+		if(map != null)
 		{
-			return SymbolPresentationUtil.getSymbolPresentableText(parent);
+			return SymbolPresentationUtil.getSymbolPresentableText(map);
 		}
 		return SymbolPresentationUtil.getSymbolPresentableText(element);
 	}
@@ -61,10 +68,10 @@ public class ElementGutterRender extends PsiElementListCellRenderer<PsiElement>
 	@Override
 	public String getContainerText(PsiElement element, final String name)
 	{
-		PsiElement parent = element.getParent();
-		if(parent instanceof CSharpTypeDeclaration)
+		PsiElement map = myMap.fun(element);
+		if(map != null)
 		{
-			return SymbolPresentationUtil.getSymbolContainerText(parent);
+			return SymbolPresentationUtil.getSymbolContainerText(map);
 		}
 		return SymbolPresentationUtil.getSymbolContainerText(element);
 	}

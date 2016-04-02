@@ -22,6 +22,7 @@ import java.util.Collection;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.CSharpIcons;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
@@ -32,12 +33,9 @@ import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
-import com.intellij.codeInsight.daemon.impl.PsiElementListNavigator;
 import com.intellij.icons.AllIcons;
-import com.intellij.ide.util.DefaultPsiElementCellRenderer;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.pom.Navigatable;
-import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ConstantFunction;
 import com.intellij.util.containers.ContainerUtil;
@@ -53,6 +51,7 @@ public class HidingOrOverridingElementCollector implements LineMarkerCollector
 		public static final OurHandler INSTANCE = new OurHandler();
 
 		@Override
+		@RequiredDispatchThread
 		public void navigate(MouseEvent mouseEvent, PsiElement element)
 		{
 			DotNetVirtualImplementOwner virtualImplementOwner = CSharpLineMarkerUtil.findElementForLineMarker(element);
@@ -78,9 +77,7 @@ public class HidingOrOverridingElementCollector implements LineMarkerCollector
 			}
 			else
 			{
-				NavigatablePsiElement[] navigatablePsiElements = members.toArray(new NavigatablePsiElement[0]);
-
-				PsiElementListNavigator.openTargets(mouseEvent, navigatablePsiElements, "Searching for overriding", "Searching for overriding", new DefaultPsiElementCellRenderer());
+				CSharpLineMarkerUtil.openTargets(members, mouseEvent, "Searching for overriding", CSharpLineMarkerUtil.BY_PARENT);
 			}
 		}
 	}

@@ -17,14 +17,13 @@
 package org.mustbe.consulo.csharp.ide.lineMarkerProvider;
 
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransformer;
@@ -33,15 +32,14 @@ import org.mustbe.consulo.dotnet.psi.search.searches.TypeInheritorsSearch;
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
-import com.intellij.codeInsight.daemon.impl.PsiElementListNavigator;
 import com.intellij.icons.AllIcons;
-import com.intellij.ide.util.DefaultPsiElementCellRenderer;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.CommonProcessors;
-import com.intellij.util.Function;
+import com.intellij.util.FunctionUtil;
+import com.intellij.util.Functions;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -59,18 +57,10 @@ public class OverrideTypeCollector implements LineMarkerCollector
 			if(hasChild(parent))
 			{
 				final Icon icon = parent.isInterface() ? AllIcons.Gutter.ImplementedMethod : AllIcons.Gutter.OverridenMethod;
-				LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.UPDATE_OVERRIDEN_MARKERS, new Function<PsiElement,
-						String>()
-
+				LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.UPDATE_OVERRIDEN_MARKERS, FunctionUtil.constant("Searching for overriding"), new GutterIconNavigationHandler<PsiElement>()
 				{
 					@Override
-					public String fun(PsiElement element)
-					{
-						return "Searching for overriding";
-					}
-				}, new GutterIconNavigationHandler<PsiElement>()
-				{
-					@Override
+					@RequiredDispatchThread
 					public void navigate(MouseEvent mouseEvent, PsiElement element)
 					{
 						final DotNetTypeDeclaration typeDeclaration = CSharpLineMarkerUtil.getNameIdentifierAs(element, CSharpTypeDeclaration.class);
@@ -90,18 +80,7 @@ public class OverrideTypeCollector implements LineMarkerCollector
 
 						Collection<DotNetTypeDeclaration> results = collectProcessor.getResults();
 
-						List<NavigatablePsiElement> typeDeclarations = new ArrayList<NavigatablePsiElement>(results.size());
-						for(DotNetTypeDeclaration result : results)
-						{
-							PsiElement fun = CSharpTransformer.INSTANCE.fun(result);
-							if(fun instanceof NavigatablePsiElement)
-							{
-								typeDeclarations.add((NavigatablePsiElement) fun);
-							}
-						}
-
-						PsiElementListNavigator.openTargets(mouseEvent, typeDeclarations.toArray(new NavigatablePsiElement[0]), "Navigate to inheritors", "Navigate to inheritors",
-								new DefaultPsiElementCellRenderer());
+						CSharpLineMarkerUtil.openTargets(ContainerUtil.map(results, CSharpTransformer.INSTANCE), mouseEvent, "Navigate to inheritors", Functions.<PsiElement, PsiElement>identity());
 					}
 				}, GutterIconRenderer.Alignment.RIGHT
 				);
