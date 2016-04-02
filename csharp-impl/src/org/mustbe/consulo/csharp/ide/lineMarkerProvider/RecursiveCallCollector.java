@@ -16,8 +16,6 @@
 
 package org.mustbe.consulo.csharp.ide.lineMarkerProvider;
 
-import java.util.Collection;
-
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -30,7 +28,8 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ConstantFunction;
+import com.intellij.util.Consumer;
+import com.intellij.util.FunctionUtil;
 
 /**
  * @author VISTALL
@@ -40,7 +39,7 @@ public class RecursiveCallCollector implements LineMarkerCollector
 {
 	@RequiredReadAction
 	@Override
-	public void collect(PsiElement psiElement, @NotNull Collection<LineMarkerInfo> lineMarkerInfos)
+	public void collect(PsiElement psiElement, @NotNull Consumer<LineMarkerInfo> consumer)
 	{
 		if(psiElement.getNode().getElementType() == CSharpTokens.IDENTIFIER && psiElement.getParent() instanceof CSharpReferenceExpression &&
 				psiElement.getParent().getParent() instanceof CSharpMethodCallExpressionImpl)
@@ -51,10 +50,9 @@ public class RecursiveCallCollector implements LineMarkerCollector
 				CSharpMethodDeclaration methodDeclaration = PsiTreeUtil.getParentOfType(psiElement, CSharpMethodDeclaration.class);
 				if(resolvedElement.isEquivalentTo(methodDeclaration))
 				{
-					LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(),
-							AllIcons.Gutter.RecursiveMethod, Pass.UPDATE_OVERRIDEN_MARKERS, new ConstantFunction<PsiElement,
-							String>("Recursive call"), null, GutterIconRenderer.Alignment.CENTER);
-					lineMarkerInfos.add(lineMarkerInfo);
+					LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), AllIcons.Gutter.RecursiveMethod, Pass.UPDATE_OVERRIDEN_MARKERS,
+							FunctionUtil.constant("Recursive call"), null, GutterIconRenderer.Alignment.CENTER);
+					consumer.consume(lineMarkerInfo);
 				}
 			}
 		}

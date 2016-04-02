@@ -17,7 +17,6 @@
 package org.mustbe.consulo.csharp.ide.lineMarkerProvider;
 
 import java.awt.event.MouseEvent;
-import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,6 +39,7 @@ import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.presentation.java.SymbolPresentationUtil;
 import com.intellij.psi.util.PsiUtilCore;
+import com.intellij.util.Consumer;
 import com.intellij.util.Function;
 
 /**
@@ -81,7 +81,7 @@ public class PartialTypeCollector implements LineMarkerCollector
 
 	@RequiredReadAction
 	@Override
-	public void collect(PsiElement psiElement, @NotNull Collection<LineMarkerInfo> lineMarkerInfos)
+	public void collect(PsiElement psiElement, @NotNull Consumer<LineMarkerInfo> consumer)
 	{
 		CSharpTypeDeclaration parent = CSharpLineMarkerUtil.getNameIdentifierAs(psiElement, CSharpTypeDeclaration.class);
 		if(parent != null)
@@ -132,7 +132,7 @@ public class PartialTypeCollector implements LineMarkerCollector
 				}
 			}, GutterIconRenderer.Alignment.CENTER
 			);
-			lineMarkerInfos.add(lineMarkerInfo);
+			consumer.consume(lineMarkerInfo);
 		}
 	}
 }

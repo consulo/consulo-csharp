@@ -17,7 +17,6 @@
 package org.mustbe.consulo.csharp.ide.lineMarkerProvider;
 
 import java.awt.event.MouseEvent;
-import java.util.Collection;
 import java.util.List;
 
 import javax.swing.Icon;
@@ -44,6 +43,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.ConstantFunction;
+import com.intellij.util.Consumer;
 import com.intellij.util.Function;
 
 /**
@@ -87,7 +87,7 @@ public class LambdaLineMarkerCollector implements LineMarkerCollector
 
 	@RequiredReadAction
 	@Override
-	public void collect(PsiElement psiElement, @NotNull Collection<LineMarkerInfo> lineMarkerInfos)
+	public void collect(PsiElement psiElement, @NotNull Consumer<LineMarkerInfo> lineMarkerInfos)
 	{
 		IElementType elementType = PsiUtilCore.getElementType(psiElement);
 		if(elementType == CSharpTokens.DARROW)
@@ -123,7 +123,7 @@ public class LambdaLineMarkerCollector implements LineMarkerCollector
 					}
 				}
 			}, GutterIconRenderer.Alignment.RIGHT); NavigateAction.setNavigateAction(markerInfo, "Navigate to lambda delegate", IdeActions.ACTION_GOTO_SUPER);
-			lineMarkerInfos.add(markerInfo);
+			lineMarkerInfos.consume(markerInfo);
 		}
 	}
 }

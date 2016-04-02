@@ -43,8 +43,10 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.editor.markup.SeparatorPlacement;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.DumbService;
+import com.intellij.openapi.util.Ref;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayUtil;
+import com.intellij.util.Consumer;
 import com.intellij.util.FunctionUtil;
 
 /**
@@ -53,13 +55,16 @@ import com.intellij.util.FunctionUtil;
  */
 public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 {
+	private static final LineMarkerCollector[] ourSingleCollector = {
+			new LambdaLineMarkerCollector(),
+			new RecursiveCallCollector()
+	};
+
 	private static final LineMarkerCollector[] ourCollectors = {
 			new OverrideTypeCollector(),
 			new PartialTypeCollector(),
-			new RecursiveCallCollector(),
 			new HidingOrOverridingElementCollector(),
-			new HidedOrOverridedElementCollector(),
-			new LambdaLineMarkerCollector()
+			new HidedOrOverridedElementCollector()
 	};
 
 	protected final DaemonCodeAnalyzerSettings myDaemonCodeAnalyzerSettings;
@@ -94,20 +99,37 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 				return null;
 			}
 
-			LineMarkerInfo info = new LineMarkerInfo<PsiElement>(element, element.getTextRange(), null, Pass.UPDATE_ALL, FunctionUtil.<Object,
-					String>nullConstant(), null, GutterIconRenderer.Alignment.RIGHT);
+			LineMarkerInfo info = new LineMarkerInfo<PsiElement>(element, element.getTextRange(), null, Pass.UPDATE_ALL, FunctionUtil.<Object, String>nullConstant(), null,
+					GutterIconRenderer.Alignment.RIGHT);
 			EditorColorsScheme scheme = myEditorColorsManager.getGlobalScheme();
 			info.separatorColor = scheme.getColor(CodeInsightColors.METHOD_SEPARATORS_COLOR);
 			info.separatorPlacement = SeparatorPlacement.TOP;
 			return info;
 		}
 
-		return null;
+		final Ref<LineMarkerInfo> ref = Ref.create();
+		Consumer<LineMarkerInfo> consumer = new Consumer<LineMarkerInfo>()
+		{
+			@Override
+			public void consume(LineMarkerInfo markerInfo)
+			{
+				ref.set(markerInfo);
+			}
+		};
+
+		//noinspection ForLoopReplaceableByForEach
+		for(int j = 0; j < ourSingleCollector.length; j++)
+		{
+			LineMarkerCollector ourCollector = ourSingleCollector[j];
+			ourCollector.collect(element, consumer);
+		}
+
+		return ref.get();
 	}
 
 	@RequiredReadAction
 	@Override
-	public void collectSlowLineMarkers(@NotNull List<PsiElement> elements, @NotNull Collection<LineMarkerInfo> lineMarkerInfos)
+	public void collectSlowLineMarkers(@NotNull List<PsiElement> elements, @NotNull final Collection<LineMarkerInfo> lineMarkerInfos)
 	{
 		ApplicationManager.getApplication().assertReadAccessAllowed();
 
@@ -115,6 +137,15 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 		{
 			return;
 		}
+
+		Consumer<LineMarkerInfo> consumer = new Consumer<LineMarkerInfo>()
+		{
+			@Override
+			public void consume(LineMarkerInfo lineMarkerInfo)
+			{
+				lineMarkerInfos.add(lineMarkerInfo);
+			}
+		};
 
 		//noinspection ForLoopReplaceableByForEach
 		for(int i = 0; i < elements.size(); i++)
@@ -125,7 +156,7 @@ public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 			for(int j = 0; j < ourCollectors.length; j++)
 			{
 				LineMarkerCollector ourCollector = ourCollectors[j];
-				ourCollector.collect(psiElement, lineMarkerInfos);
+				ourCollector.collect(psiElement, consumer);
 			}
 		}
 	}

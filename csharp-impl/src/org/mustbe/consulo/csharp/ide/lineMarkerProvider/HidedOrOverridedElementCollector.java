@@ -38,6 +38,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ConstantFunction;
+import com.intellij.util.Consumer;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
@@ -84,7 +85,7 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 
 	@RequiredReadAction
 	@Override
-	public void collect(PsiElement psiElement, @NotNull Collection<LineMarkerInfo> lineMarkerInfos)
+	public void collect(PsiElement psiElement, @NotNull Consumer<LineMarkerInfo> consumer)
 	{
 		DotNetVirtualImplementOwner virtualImplementOwner = CSharpLineMarkerUtil.findElementForLineMarker(psiElement);
 		if(virtualImplementOwner != null)
@@ -142,7 +143,7 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.UPDATE_OVERRIDEN_MARKERS, new ConstantFunction<PsiElement,
 					String>("Searching for overrided"), OurHandler.INSTANCE, GutterIconRenderer.Alignment.RIGHT);
 
-			lineMarkerInfos.add(lineMarkerInfo);
+			consumer.consume(lineMarkerInfo);
 		}
 	}
 }

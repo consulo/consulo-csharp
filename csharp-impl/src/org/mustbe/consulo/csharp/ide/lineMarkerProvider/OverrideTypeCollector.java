@@ -37,6 +37,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.CommonProcessors;
+import com.intellij.util.Consumer;
 import com.intellij.util.FunctionUtil;
 import com.intellij.util.Functions;
 import com.intellij.util.containers.ContainerUtil;
@@ -49,7 +50,7 @@ public class OverrideTypeCollector implements LineMarkerCollector
 {
 	@RequiredReadAction
 	@Override
-	public void collect(PsiElement psiElement, @NotNull Collection<LineMarkerInfo> lineMarkerInfos)
+	public void collect(PsiElement psiElement, @NotNull Consumer<LineMarkerInfo> consumer)
 	{
 		CSharpTypeDeclaration parent = CSharpLineMarkerUtil.getNameIdentifierAs(psiElement, CSharpTypeDeclaration.class);
 		if(parent != null)
@@ -84,7 +85,7 @@ public class OverrideTypeCollector implements LineMarkerCollector
 					}
 				}, GutterIconRenderer.Alignment.RIGHT
 				);
-				lineMarkerInfos.add(lineMarkerInfo);
+				consumer.consume(lineMarkerInfo);
 			}
 		}
 	}
