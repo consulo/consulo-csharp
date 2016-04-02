@@ -24,7 +24,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpXXXAccessorOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.psi.PsiElement;
@@ -65,7 +64,7 @@ public class XXXAccessorOwnerChooseMember extends ImplementMemberChooseObject<CS
 	public String getText()
 	{
 		StringBuilder builder = new StringBuilder();
-		CSharpAccessModifier modifier = CSharpAccessModifier.findModifier((DotNetModifierListOwner) myDeclaration);
+		CSharpAccessModifier modifier = CSharpAccessModifier.findModifier(myDeclaration);
 		boolean canGenerateCodeBlock = myCanGenerateBlock;
 		if(modifier != CSharpAccessModifier.NONE && canGenerateCodeBlock)
 		{

@@ -18,13 +18,14 @@ package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 
 /**
  * @author VISTALL
  * @since 20.12.14
  */
-public interface CSharpXXXAccessorOwner extends DotNetElement, CSharpBodyWithBraces
+public interface CSharpXXXAccessorOwner extends DotNetElement, CSharpBodyWithBraces, DotNetModifierListOwner
 {
 	@NotNull
 	DotNetXXXAccessor[] getAccessors();
