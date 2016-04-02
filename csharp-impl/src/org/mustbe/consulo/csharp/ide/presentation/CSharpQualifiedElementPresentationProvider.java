@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -64,6 +65,10 @@ public class CSharpQualifiedElementPresentationProvider implements ItemPresentat
 				{
 					return DotNetElementPresentationUtil.formatTypeWithGenericParameters((CSharpMethodDeclaration) myDeclaration);
 				}
+				return CSharpElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) myDeclaration, 0);
+			}
+			else if(myDeclaration instanceof CSharpIndexMethodDeclaration)
+			{
 				return CSharpElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) myDeclaration, 0);
 			}
 			return myDeclaration.getName();
