@@ -163,6 +163,10 @@ public class CSharpLambdaExpressionImplUtil
 			if(operatorElementType == CSharpTokens.PLUSEQ || operatorElementType == CSharpTokens.MINUSEQ || operatorElementType == CSharpTokens.EQ)
 			{
 				DotNetExpression expression = ((CSharpAssignmentExpressionImpl) parent).getParameterExpressions()[0];
+				if(expression == target)
+				{
+					return null;
+				}
 				DotNetTypeResolveResult typeResolveResult = expression.toTypeRef(true).resolve(parent);
 				if(typeResolveResult instanceof CSharpLambdaResolveResult)
 				{
