@@ -674,6 +674,11 @@ public class CSharpTypeUtil
 			{
 				return true;
 			}
+
+			if(isTypeGeneric(element1) && isTypeGeneric(element2) && ((DotNetGenericParameter) element1).getIndex() == ((DotNetGenericParameter) element2).getIndex())
+			{
+				return true;
+			}
 		}
 
 		if(!element1.isEquivalentTo(element2))
@@ -732,6 +737,22 @@ public class CSharpTypeUtil
 		}
 		PsiElement parentParent = parent.getParent();
 		return parentParent instanceof DotNetLikeMethodDeclaration;
+	}
+
+	@RequiredReadAction
+	private static boolean isTypeGeneric(PsiElement element)
+	{
+		if(!(element instanceof DotNetGenericParameter))
+		{
+			return false;
+		}
+		PsiElement parent = element.getParent();
+		if(!(parent instanceof DotNetGenericParameterList))
+		{
+			return false;
+		}
+		PsiElement parentParent = parent.getParent();
+		return parentParent instanceof CSharpTypeDeclaration;
 	}
 
 	@Nullable

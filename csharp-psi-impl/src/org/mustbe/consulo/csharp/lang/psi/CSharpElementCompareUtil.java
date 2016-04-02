@@ -1,6 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
@@ -21,16 +22,19 @@ public class CSharpElementCompareUtil
 	public static final int CHECK_RETURN_TYPE = 1 << 0;
 	public static final int CHECK_VIRTUAL_IMPL_TYPE = 1 << 1;
 
+	@RequiredReadAction
 	public static boolean isEqual(@NotNull PsiElement element, @NotNull PsiElement element2, @NotNull PsiElement scope)
 	{
 		return isEqual(element, element2, 0, scope);
 	}
 
+	@RequiredReadAction
 	public static boolean isEqualWithVirtualImpl(@NotNull PsiElement element, @NotNull PsiElement element2, @NotNull PsiElement scope)
 	{
 		return isEqual(element, element2, CHECK_VIRTUAL_IMPL_TYPE, scope);
 	}
 
+	@RequiredReadAction
 	public static boolean isEqual(@NotNull PsiElement element, @NotNull PsiElement element2, int flags, @NotNull PsiElement scope)
 	{
 		if(element == element2)
@@ -50,8 +54,8 @@ public class CSharpElementCompareUtil
 				return false;
 			}
 
-			if(BitUtil.isSet(flags, CHECK_RETURN_TYPE) && !CSharpTypeUtil.isTypeEqual(((CSharpPropertyDeclaration) element).toTypeRef(false),
-					((CSharpPropertyDeclaration) element2).toTypeRef(false), scope))
+			if(BitUtil.isSet(flags, CHECK_RETURN_TYPE) && !CSharpTypeUtil.isTypeEqual(((CSharpPropertyDeclaration) element).toTypeRef(false), ((CSharpPropertyDeclaration) element2).toTypeRef(false),
+					scope))
 			{
 				return false;
 			}
@@ -71,8 +75,8 @@ public class CSharpElementCompareUtil
 				return false;
 			}
 
-			if(BitUtil.isSet(flags, CHECK_RETURN_TYPE) && !CSharpTypeUtil.isTypeEqual(((CSharpEventDeclaration) element).toTypeRef(false),
-					((CSharpEventDeclaration) element2).toTypeRef(false), scope))
+			if(BitUtil.isSet(flags, CHECK_RETURN_TYPE) && !CSharpTypeUtil.isTypeEqual(((CSharpEventDeclaration) element).toTypeRef(false), ((CSharpEventDeclaration) element2).toTypeRef(false),
+					scope))
 			{
 				return false;
 			}
@@ -97,8 +101,7 @@ public class CSharpElementCompareUtil
 
 		if(element instanceof CSharpConstructorDeclaration && element2 instanceof CSharpConstructorDeclaration)
 		{
-			if(((CSharpConstructorDeclaration) element).hasModifier(DotNetModifier.STATIC) != ((CSharpConstructorDeclaration) element2).hasModifier
-					(DotNetModifier.STATIC))
+			if(((CSharpConstructorDeclaration) element).hasModifier(DotNetModifier.STATIC) != ((CSharpConstructorDeclaration) element2).hasModifier(DotNetModifier.STATIC))
 			{
 				return false;
 			}
@@ -127,13 +130,11 @@ public class CSharpElementCompareUtil
 
 		if(element instanceof CSharpConversionMethodDeclaration && element2 instanceof CSharpConversionMethodDeclaration)
 		{
-			if(!CSharpTypeUtil.isTypeEqual(((CSharpConversionMethodDeclaration) element).getConversionTypeRef(),
-					((CSharpConversionMethodDeclaration) element2).getConversionTypeRef(), scope))
+			if(!CSharpTypeUtil.isTypeEqual(((CSharpConversionMethodDeclaration) element).getConversionTypeRef(), ((CSharpConversionMethodDeclaration) element2).getConversionTypeRef(), scope))
 			{
 				return false;
 			}
-			if(!CSharpTypeUtil.isTypeEqual(((CSharpConversionMethodDeclaration) element).getReturnTypeRef(),
-					((CSharpConversionMethodDeclaration) element2).getReturnTypeRef(), scope))
+			if(!CSharpTypeUtil.isTypeEqual(((CSharpConversionMethodDeclaration) element).getReturnTypeRef(), ((CSharpConversionMethodDeclaration) element2).getReturnTypeRef(), scope))
 			{
 				return false;
 			}
@@ -167,6 +168,7 @@ public class CSharpElementCompareUtil
 		return false;
 	}
 
+	@RequiredReadAction
 	private static boolean compareReturnTypeRef(@NotNull PsiElement o1, @NotNull PsiElement o2, int flags, @NotNull PsiElement scope)
 	{
 		if(!BitUtil.isSet(flags, CHECK_RETURN_TYPE))
@@ -178,6 +180,7 @@ public class CSharpElementCompareUtil
 		return CSharpTypeUtil.isTypeEqual(returnTypeRef1, returnTypeRef2, scope);
 	}
 
+	@RequiredReadAction
 	private static boolean compareVirtualImpl(@NotNull PsiElement o1, @NotNull PsiElement o2, int flags, @NotNull PsiElement scope)
 	{
 		if(!BitUtil.isSet(flags, CHECK_VIRTUAL_IMPL_TYPE))
@@ -197,10 +200,10 @@ public class CSharpElementCompareUtil
 			return false;
 		}
 		// we need call getTypeRefForImplement() due light element have ref for original DotNetType but getTypeRefForImplement() ill return another
-		return CSharpTypeUtil.isTypeEqual(((DotNetVirtualImplementOwner) o1).getTypeRefForImplement(),
-				((DotNetVirtualImplementOwner) o2).getTypeRefForImplement(), scope);
+		return CSharpTypeUtil.isTypeEqual(((DotNetVirtualImplementOwner) o1).getTypeRefForImplement(), ((DotNetVirtualImplementOwner) o2).getTypeRefForImplement(), scope);
 	}
 
+	@RequiredReadAction
 	private static boolean compareParameterList(@NotNull PsiElement listOwner, @NotNull PsiElement listOwner2, @NotNull PsiElement scope)
 	{
 		DotNetTypeRef[] parameterTypeRefs = ((DotNetParameterListOwner) listOwner).getParameterTypeRefs();

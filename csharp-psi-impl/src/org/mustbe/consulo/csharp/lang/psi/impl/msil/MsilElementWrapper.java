@@ -19,8 +19,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementCompareUtil;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightElement;
 import org.mustbe.consulo.msil.representation.MsilRepresentationNavigateUtil;
 import com.intellij.openapi.util.Ref;
@@ -94,10 +96,22 @@ public abstract class MsilElementWrapper<T extends PsiElement> extends CSharpLig
 				file.accept(new PsiRecursiveElementWalkingVisitor()
 				{
 					@Override
+					@RequiredReadAction
 					public void visitElement(PsiElement element)
 					{
-						if(navigationElementClass.isAssignableFrom(element.getClass()) && isEquivalentTo(element, MsilElementWrapper.this))
+						MsilElementWrapper<T> msilWrapper = MsilElementWrapper.this;
+						if(navigationElementClass.isAssignableFrom(element.getClass()) && isEquivalentTo(element, msilWrapper))
 						{
+							PsiElement elementParent = element.getParent();
+							PsiElement wrapperParent = msilWrapper.getParent();
+							// check if parent type is equal to self type
+							if(elementParent instanceof CSharpTypeDeclaration && wrapperParent instanceof CSharpTypeDeclaration)
+							{
+								if(!CSharpElementCompareUtil.isEqual(elementParent, wrapperParent, myOriginal))
+								{
+									return;
+								}
+							}
 							navigatableRef.set((Navigatable) element);
 							stopWalking();
 							return;
