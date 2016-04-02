@@ -37,8 +37,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
@@ -215,12 +213,6 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
 	{
 		return null;
-	}
-
-	@Override
-	public ItemPresentation getPresentation()
-	{
-		return ItemPresentationProviders.getItemPresentation(this);
 	}
 
 	@Override

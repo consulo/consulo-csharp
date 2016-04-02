@@ -451,12 +451,6 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	}
 
 	@Override
-	public ItemPresentation getPresentation()
-	{
-		return ItemPresentationProviders.getItemPresentation(this);
-	}
-
-	@Override
 	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
 	{
 		return null;

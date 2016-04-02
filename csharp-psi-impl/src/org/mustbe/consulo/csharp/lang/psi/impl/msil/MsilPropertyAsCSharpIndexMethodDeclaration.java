@@ -35,8 +35,6 @@ import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilPropertyEntry;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
@@ -92,6 +90,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 		return CSharpLikeMethodDeclarationImplUtil.getParametersInfos(this);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableParentQName()
@@ -99,6 +98,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 		return myOriginal.getPresentableParentQName();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableQName()
@@ -119,12 +119,6 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 	}
 
 	@Override
-	public ItemPresentation getPresentation()
-	{
-		return ItemPresentationProviders.getItemPresentation(this);
-	}
-
-	@Override
 	public String toString()
 	{
 		return getPresentableQName();
@@ -137,6 +131,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 		return myAccessors;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetType getReturnType()
@@ -144,6 +139,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 		throw new IllegalArgumentException();
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	@LazyInstance
@@ -166,6 +162,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 		return myModifierList.hasModifier(modifier);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetModifierList getModifierList()

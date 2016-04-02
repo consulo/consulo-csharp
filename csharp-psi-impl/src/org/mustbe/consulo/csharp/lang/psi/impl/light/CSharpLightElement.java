@@ -20,6 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
@@ -100,6 +102,12 @@ public abstract class CSharpLightElement<S extends PsiElement> extends LightElem
 	public PsiElement getOriginalElement()
 	{
 		return myOriginal.getOriginalElement();
+	}
+
+	@Override
+	public ItemPresentation getPresentation()
+	{
+		return ItemPresentationProviders.getItemPresentation(this);
 	}
 
 	@Override
