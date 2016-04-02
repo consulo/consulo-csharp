@@ -250,14 +250,15 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, TYPE_DECLARATION).spaces(1);
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, LOCAL_VARIABLE).spaces(1);
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, FIELD_DECLARATION).spaces(1);
-		myBuilder.betweenInside(DOT, CSharpTokens.IDENTIFIER, EVENT_DECLARATION).none();
+		myBuilder.betweenInside(CSharpTokens.DOT, CSharpTokens.IDENTIFIER, EVENT_DECLARATION).none();
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, EVENT_DECLARATION).spaces(1);
-		myBuilder.betweenInside(DOT, CSharpTokens.IDENTIFIER, PROPERTY_DECLARATION).none();
+		myBuilder.betweenInside(CSharpTokens.DOT, CSharpTokens.IDENTIFIER, PROPERTY_DECLARATION).none();
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, PROPERTY_DECLARATION).spaces(1);
-		myBuilder.betweenInside(DOT, CSharpTokens.IDENTIFIER, METHOD_DECLARATION).none();
+		myBuilder.betweenInside(CSharpTokens.DOT, CSharpTokens.IDENTIFIER, METHOD_DECLARATION).none();
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, METHOD_DECLARATION).spaces(1);
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, CONSTRUCTOR_DECLARATION).spaces(1);
-		myBuilder.beforeInside(THIS_KEYWORD, ARRAY_METHOD_DECLARATION).spaces(1);
+		myBuilder.betweenInside(CSharpTokens.DOT, CSharpTokens.THIS_KEYWORD, ARRAY_METHOD_DECLARATION).none();
+		myBuilder.beforeInside(CSharpTokens.THIS_KEYWORD, ARRAY_METHOD_DECLARATION).spaces(1);
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, CSharpElements.PARAMETER).spaces(1);
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, CSharpStubElements.PARAMETER).spaces(1);
 
