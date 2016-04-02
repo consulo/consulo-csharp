@@ -247,20 +247,23 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		// delegate(parameterList)
 		myBuilder.between(CSharpTokens.DELEGATE_KEYWORD, CSharpElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_BEFORE_METHOD_PARENTHESES);
 
-		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, TYPE_DECLARATION).spaces(1);
+		myBuilder.beforeInside(CSharpStubElements.IDENTIFIER, TYPE_DECLARATION).spaces(1);
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, LOCAL_VARIABLE).spaces(1);
-		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, FIELD_DECLARATION).spaces(1);
+		myBuilder.beforeInside(CSharpStubElements.IDENTIFIER, FIELD_DECLARATION).spaces(1);
 		myBuilder.betweenInside(CSharpTokens.DOT, CSharpTokens.IDENTIFIER, EVENT_DECLARATION).none();
-		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, EVENT_DECLARATION).spaces(1);
+		myBuilder.beforeInside(CSharpStubElements.IDENTIFIER, EVENT_DECLARATION).spaces(1);
 		myBuilder.betweenInside(CSharpTokens.DOT, CSharpTokens.IDENTIFIER, PROPERTY_DECLARATION).none();
-		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, PROPERTY_DECLARATION).spaces(1);
+		myBuilder.beforeInside(CSharpStubElements.IDENTIFIER, PROPERTY_DECLARATION).spaces(1);
 		myBuilder.betweenInside(CSharpTokens.DOT, CSharpTokens.IDENTIFIER, METHOD_DECLARATION).none();
-		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, METHOD_DECLARATION).spaces(1);
-		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, CONSTRUCTOR_DECLARATION).spaces(1);
+		myBuilder.beforeInside(CSharpStubElements.IDENTIFIER, METHOD_DECLARATION).spaces(1);
+		myBuilder.beforeInside(CSharpStubElements.IDENTIFIER, CONSTRUCTOR_DECLARATION).spaces(1);
 		myBuilder.betweenInside(CSharpTokens.DOT, CSharpTokens.THIS_KEYWORD, ARRAY_METHOD_DECLARATION).none();
 		myBuilder.beforeInside(CSharpTokens.THIS_KEYWORD, ARRAY_METHOD_DECLARATION).spaces(1);
+
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, CSharpElements.PARAMETER).spaces(1);
 		myBuilder.beforeInside(CSharpTokens.IDENTIFIER, CSharpStubElements.PARAMETER).spaces(1);
+		myBuilder.beforeInside(CSharpStubElements.IDENTIFIER, CSharpElements.PARAMETER).spaces(1);
+		myBuilder.beforeInside(CSharpStubElements.IDENTIFIER, CSharpStubElements.PARAMETER).spaces(1);
 
 		spaceIfNoBlankLines(myBuilder.afterInside(COLON, CSharpStubElements.EXTENDS_LIST), true);
 		spaceIfNoBlankLines(myBuilder.before(CSharpStubElements.EXTENDS_LIST), true);
