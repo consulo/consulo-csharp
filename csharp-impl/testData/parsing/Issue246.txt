@@ -1,13 +1,12 @@
 CSHARP_FILE
-  CSharpUsingListImpl [USING_LIST]
+  CSharpUsingNamespaceStatementImpl [USING_NAMESPACE_STATEMENT]
     CSharpStubModifierListImpl [MODIFIER_LIST]
       <empty list>
-    CSharpUsingNamespaceStatementImpl [USING_NAMESPACE_STATEMENT]
-      PsiElement(USING_KEYWORD)('using')
-      PsiWhiteSpace(' ')
-      CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
-        PsiElement(IDENTIFIER)('System')
-      PsiElement(SEMICOLON)(';')
+    PsiElement(USING_KEYWORD)('using')
+    PsiWhiteSpace(' ')
+    CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+      PsiElement(IDENTIFIER)('System')
+    PsiElement(SEMICOLON)(';')
   PsiWhiteSpace('\n\n')
   CSharpTypeDeclarationImpl [TYPE_DECLARATION]
     CSharpStubModifierListImpl [MODIFIER_LIST]

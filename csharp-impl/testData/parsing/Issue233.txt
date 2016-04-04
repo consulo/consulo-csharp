@@ -1,26 +1,27 @@
 CSHARP_FILE
-  CSharpUsingListImpl [USING_LIST]
+  CSharpUsingNamespaceStatementImpl [USING_NAMESPACE_STATEMENT]
     CSharpStubModifierListImpl [MODIFIER_LIST]
       <empty list>
-    CSharpUsingNamespaceStatementImpl [USING_NAMESPACE_STATEMENT]
-      PsiElement(USING_KEYWORD)('using')
-      PsiWhiteSpace(' ')
-      CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
-        PsiElement(IDENTIFIER)('System')
-      PsiElement(SEMICOLON)(';')
-    PsiWhiteSpace('\n')
-    CSharpUsingNamespaceStatementImpl [USING_NAMESPACE_STATEMENT]
-      PsiElement(USING_KEYWORD)('using')
-      PsiWhiteSpace(' ')
+    PsiElement(USING_KEYWORD)('using')
+    PsiWhiteSpace(' ')
+    CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
+      PsiElement(IDENTIFIER)('System')
+    PsiElement(SEMICOLON)(';')
+  PsiWhiteSpace('\n')
+  CSharpUsingNamespaceStatementImpl [USING_NAMESPACE_STATEMENT]
+    CSharpStubModifierListImpl [MODIFIER_LIST]
+      <empty list>
+    PsiElement(USING_KEYWORD)('using')
+    PsiWhiteSpace(' ')
+    CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
       CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
         CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
-          CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
-            PsiElement(IDENTIFIER)('System')
-          PsiElement(DOT)('.')
-          PsiElement(IDENTIFIER)('Threading')
+          PsiElement(IDENTIFIER)('System')
         PsiElement(DOT)('.')
-        PsiElement(IDENTIFIER)('Tasks')
-      PsiElement(SEMICOLON)(';')
+        PsiElement(IDENTIFIER)('Threading')
+      PsiElement(DOT)('.')
+      PsiElement(IDENTIFIER)('Tasks')
+    PsiElement(SEMICOLON)(';')
   PsiWhiteSpace('\n\n')
   CSharpTypeDeclarationImpl [TYPE_DECLARATION]
     CSharpStubModifierListImpl [MODIFIER_LIST]

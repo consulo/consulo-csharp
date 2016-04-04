@@ -1,19 +1,18 @@
 CSHARP_FILE
-  CSharpUsingListImpl [USING_LIST]
+  CSharpUsingTypeStatementImpl [USING_TYPE_STATEMENT]
     CSharpStubModifierListImpl [MODIFIER_LIST]
       <empty list>
-    CSharpUsingTypeStatementImpl [USING_TYPE_STATEMENT]
-      PsiElement(USING_KEYWORD)('using')
-      PsiWhiteSpace(' ')
-      PsiElement(STATIC_KEYWORD)('static')
-      PsiWhiteSpace(' ')
-      CSharpStubUserTypeImpl [USER_TYPE]
+    PsiElement(USING_KEYWORD)('using')
+    PsiWhiteSpace(' ')
+    PsiElement(STATIC_KEYWORD)('static')
+    PsiWhiteSpace(' ')
+    CSharpStubUserTypeImpl [USER_TYPE]
+      CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
         CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
-          CSharpStubReferenceExpressionImpl [REFERENCE_NAME]
-            PsiElement(IDENTIFIER)('System')
-          PsiElement(DOT)('.')
-          PsiElement(IDENTIFIER)('Console')
-      PsiElement(SEMICOLON)(';')
+          PsiElement(IDENTIFIER)('System')
+        PsiElement(DOT)('.')
+        PsiElement(IDENTIFIER)('Console')
+    PsiElement(SEMICOLON)(';')
   PsiWhiteSpace('\n\n')
   CSharpTypeDeclarationImpl [TYPE_DECLARATION]
     CSharpStubModifierListImpl [MODIFIER_LIST]

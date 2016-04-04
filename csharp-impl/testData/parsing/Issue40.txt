@@ -10,7 +10,7 @@ CSHARP_FILE
     PsiWhiteSpace('\n')
     PsiElement(LBRACE)('{')
     PsiWhiteSpace('\n    ')
-    CSharpArrayMethodDeclarationImpl [ARRAY_METHOD_DECLARATION]
+    CSharpIndexMethodDeclarationImpl [INDEX_METHOD_DECLARATION]
       CSharpStubModifierListImpl [MODIFIER_LIST]
         PsiElement(PUBLIC_KEYWORD)('public')
       PsiWhiteSpace(' ')
