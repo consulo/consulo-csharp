@@ -69,7 +69,7 @@ public class CSharpMockModuleDescriptor implements TestModuleDescriptor
 		{
 			//modifiableRootModel.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) modifiableRootModel.getCurrentLayer(), lib));
 
-			// use zipped library, due it more was read
+			// use zipped library, because read is more faster
 			Library library = moduleLibraryTable.createLibrary();
 			Library.ModifiableModel modifiableModel = library.getModifiableModel();
 			VirtualFile libZip = LocalFileSystem.getInstance().findFileByPath(PathManagerEx.getTestDataPath("/mockSdk/mono4.5/") + lib + ".zip");
