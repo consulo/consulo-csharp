@@ -1,0 +1,6 @@
+Issue367(10,18): namespace[Issue367]=true
+T0(203,205): generic-parameter[T0]=true
+UnityEvent<T0>(192,206): type[Issue367.UnityEvent`1]=true, type[Issue367.UnityEvent]=true
+UnityEvent<T0>.GetDelegate(192,218): method[GetDelegate():T0]=true
+T0(314,316): generic-parameter[T0]=true
+T0(353,355): generic-parameter[T0]=true

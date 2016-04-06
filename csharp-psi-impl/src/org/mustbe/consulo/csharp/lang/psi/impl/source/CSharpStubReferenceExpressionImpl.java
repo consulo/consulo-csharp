@@ -127,6 +127,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	@Override
 	public ResolveResult[] multiResolve(final boolean incompleteCode)
 	{
+		String text = getText();
 		return multiResolve(incompleteCode, true);
 	}
 

@@ -1,0 +1,5 @@
+T(56,57): generic-parameter[T]=true
+Test<string>(99,111): delegate-method[Test<T>(param:string):void]=true
+Test<string>(134,146): constructor[Test(p:CastChecks.Test<T>)]=true
+test(147,151): method[test(value:string):void]=true
+predicateString(157,172): local-variable[predicateString]=true

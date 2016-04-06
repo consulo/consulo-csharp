@@ -1,0 +1,1 @@
+test(68,72): method[test(arg1:string, arg2:string):void]=true, method[test(args:string[]):int]=true

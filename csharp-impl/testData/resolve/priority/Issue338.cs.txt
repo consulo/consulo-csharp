@@ -1,0 +1,3 @@
+Color(63,68): type[Color]=true
+Color(77,82): type[Color]=true, field[Color]=true
+Color.white(77,88): enum-constant[white]=true

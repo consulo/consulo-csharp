@@ -1,0 +1,9 @@
+System(603,609): namespace[System]=true
+test(622,626): namespace[test]=true
+test(675,679): namespace[test]=true
+String(779,785): type[System.String]=true
+Action<String>(772,786): delegate-method[Action<T>(obj:T):void]=true, delegate-method[Action():void]=true, delegate-method[Action<T1, T2>(arg1:T1, arg2:T2):void]=true, delegate-method[Action<T1, T2, T3>(arg1:T1, arg2:T2, arg3:T3):void]=true, delegate-method[Action<T1, T2, T3, T4>(arg1:T1, arg2:T2, arg3:T3, arg4:T4):void]=true, delegate-method[Action<T1, T2, T3, T4, T5>(arg1:T1, arg2:T2, arg3:T3, arg4:T4, arg5:T5):void]=true, delegate-method[Action<T1, T2, T3, T4, T5, T6>(arg1:T1, arg2:T2, arg3:T3, arg4:T4, arg5:T5, arg6:T6):void]=true, delegate-method[Action<T1, T2, T3, T4, T5, T6, T7>(arg1:T1, arg2:T2, arg3:T3, arg4:T4, arg5:T5, arg6:T6, arg7:T7):void]=true, delegate-method[Action<T1, T2, T3, T4, T5, T6, T7, T8>(arg1:T1, arg2:T2, arg3:T3, arg4:T4, arg5:T5, arg6:T6, arg7:T7, arg8:T8):void]=true
+someEvent(809,818): local-variable[someEvent]=true
+=(819,820): operator[EQ]=true
+SomeNotifier(821,833): method[SomeNotifier(param:string):void]=true, type[test.SomeNotifier]=true
+String(923,929): type[System.String]=true
