@@ -151,7 +151,6 @@
 								 instance="org.mustbe.consulo.csharp.ide.codeInsight.CSharpAutoImportConfigurable"/>
 		<stubElementTypeHolder class="org.mustbe.consulo.csharp.lang.psi.CSharpStubElements"/>
 		<codeInsight.lineMarkerProvider language="C#" implementationClass="org.mustbe.consulo.csharp.ide.CSharpLineMarkerProvider"/>
-		<codeInsight.lineMarkerProvider language="C#" implementationClass="com.intellij.ui.ColorLineMarkerProvider"/>
 
 		<fileStructureGroupRuleProvider implementation="org.mustbe.consulo.csharp.ide.findUsage.groupingRule.CSharpTypeGroupRuleProvider"/>
 		<fileStructureGroupRuleProvider implementation="org.mustbe.consulo.csharp.ide.findUsage.groupingRule.CSharpCodeBlockOwnerGroupRuleProvider"/>
