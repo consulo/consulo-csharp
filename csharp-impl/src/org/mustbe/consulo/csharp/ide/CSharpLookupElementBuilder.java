@@ -100,10 +100,15 @@ public class CSharpLookupElementBuilder
 		return list.toArray(new LookupElement[list.size()]);
 	}
 
+	@Nullable
 	@RequiredReadAction
 	public static LookupElement buildLookupElement(final PsiElement element, @Nullable final CSharpTypeDeclaration contextType)
 	{
 		LookupElementBuilder builder = createLookupElementBuilder(element);
+		if(builder == null)
+		{
+			return null;
+		}
 		if(contextType != null && contextType.isEquivalentTo(element.getParent()))
 		{
 			LookupElementBuilder oldBuilder = builder;
@@ -183,8 +188,7 @@ public class CSharpLookupElementBuilder
 			{
 				builder = LookupElementBuilder.create(methodDeclaration);
 				builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
-				builder = builder.withTailText(DotNetElementPresentationUtil.formatGenericParameters((DotNetGenericParameterListOwner) element),
-						true);
+				builder = builder.withTailText(DotNetElementPresentationUtil.formatGenericParameters((DotNetGenericParameterListOwner) element), true);
 				builder = builder.withTypeText(methodDeclaration.getPresentableParentQName());
 
 				builder = withGenericInsertHandler(element, builder);
