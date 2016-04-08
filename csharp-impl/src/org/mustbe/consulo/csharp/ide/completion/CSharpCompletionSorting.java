@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.weigher.CSharpByGenericParameterWeigher;
 import org.mustbe.consulo.csharp.ide.completion.weigher.CSharpInheritProximityWeigher;
 import org.mustbe.consulo.csharp.ide.completion.weigher.CSharpObsoleteWeigher;
+import org.mustbe.consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
@@ -61,6 +62,7 @@ public class CSharpCompletionSorting
 			keyword,
 			hiddenKeywords,
 			preprocessorKeywords,
+			constants,
 			member,
 			overrideMember,
 			any,
@@ -74,6 +76,7 @@ public class CSharpCompletionSorting
 
 		@Nullable
 		@Override
+		@RequiredReadAction
 		public Type weigh(@NotNull LookupElement element)
 		{
 			Type type = element.getUserData(ourForceType);
@@ -102,6 +105,11 @@ public class CSharpCompletionSorting
 			if(psiElement instanceof CSharpLocalVariable || psiElement instanceof DotNetParameter)
 			{
 				return Type.localVariableOrParameter;
+			}
+
+			if(psiElement instanceof CSharpFieldDeclaration && ((CSharpFieldDeclaration) psiElement).isConstant() || psiElement instanceof CSharpEnumConstantDeclaration)
+			{
+				return Type.constants;
 			}
 
 			if(psiElement instanceof CSharpPropertyDeclaration ||
