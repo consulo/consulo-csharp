@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -58,6 +59,10 @@ public class ResultElementBuilder implements Function<ResolveResult, String>
 		else if(element instanceof CSharpFieldDeclaration)
 		{
 			return build("field", ((CSharpFieldDeclaration) element).getName(), resolveResult);
+		}
+		else if(element instanceof CSharpPropertyDeclaration)
+		{
+			return build("property", ((CSharpPropertyDeclaration) element).getName(), resolveResult);
 		}
 		else if(element instanceof CSharpEnumConstantDeclaration)
 		{
