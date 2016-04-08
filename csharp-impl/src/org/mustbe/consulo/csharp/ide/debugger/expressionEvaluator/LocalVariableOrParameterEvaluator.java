@@ -49,7 +49,7 @@ public abstract class LocalVariableOrParameterEvaluator<T extends DotNetVariable
 		MethodMirror method = frame.location().method();
 
 		Value<?> thisObject = frame.thisObject();
-		Value<?> yieldOrAsyncThis = ThisObjectEvaluator.calcThisObject(frame, thisObject);
+		Value<?> yieldOrAsyncThis = ThisObjectEvaluator.tryToFindObjectInsideYieldOrAsyncThis(frame, thisObject);
 		if(yieldOrAsyncThis instanceof ObjectValueMirror)
 		{
 			ObjectValueMirror thisObjectAsObjectMirror = (ObjectValueMirror) thisObject;

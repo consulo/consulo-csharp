@@ -56,7 +56,7 @@ public class ThisObjectEvaluator extends Evaluator
 	}
 
 	@Nullable
-	private static Value<?> tryToFindObjectInsideYieldOrAsyncThis(@NotNull DotNetStackFrameMirrorProxy proxy, Value thisObject)
+	public static Value<?> tryToFindObjectInsideYieldOrAsyncThis(@NotNull DotNetStackFrameMirrorProxy proxy, Value thisObject)
 	{
 		if(!(thisObject instanceof ObjectValueMirror))
 		{
