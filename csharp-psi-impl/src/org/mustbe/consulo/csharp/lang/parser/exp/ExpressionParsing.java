@@ -490,7 +490,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 					dotPos.drop();
 					final PsiBuilder.Marker refExpr = expr.precede();
 
-					if(!expect(builder, ID_OR_SUPER, "expected.CSharpTokens.IDENTIFIER"))
+					if(!expect(builder, ID_OR_SUPER, "Expected identifier"))
 					{
 						refExpr.done(REFERENCE_EXPRESSION);
 						startMarker.drop();
@@ -508,7 +508,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 				final PsiBuilder.Marker refExpr = expr.precede();
 
-				if(!expect(builder, CSharpTokens.IDENTIFIER, "expected.CSharpTokens.IDENTIFIER"))
+				if(!expect(builder, CSharpTokens.IDENTIFIER, "Expected identifier"))
 				{
 					refExpr.done(REFERENCE_EXPRESSION);
 					startMarker.drop();
@@ -524,7 +524,7 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 				final PsiBuilder.Marker refExpr = expr.precede();
 
-				if(!expect(builder, CSharpTokens.IDENTIFIER, "expected.CSharpTokens.IDENTIFIER"))
+				if(!expect(builder, CSharpTokens.IDENTIFIER, "Expected identifier"))
 				{
 					refExpr.done(REFERENCE_EXPRESSION);
 					startMarker.drop();
