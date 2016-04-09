@@ -19,7 +19,6 @@ package org.musbe.consulo.csharp;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.module.extension.CSharpSimpleMutableModuleExtension;
 import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleMutableModuleExtension;
-import com.intellij.openapi.application.ex.PathManagerEx;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.impl.SdkImpl;
@@ -34,6 +33,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.util.ArchiveVfsUtil;
 import com.intellij.testFramework.TestModuleDescriptor;
 import com.intellij.util.Consumer;
+import consulo.testFramework.util.TestPathUtil;
 
 /**
  * @author VISTALL
@@ -47,7 +47,7 @@ public class CSharpMockModuleDescriptor implements TestModuleDescriptor
 	public void configureSdk(@NotNull Consumer<Sdk> consumer)
 	{
 		SdkImpl sdk = new SdkImpl(ourSdkName, UnknownSdkType.getInstance("dotnet"));
-		sdk.setHomePath(PathManagerEx.getTestDataPath("/mockSdk/mono4.5/"));
+		sdk.setHomePath(TestPathUtil.getTestDataPath("/mockSdk/mono4.5/"));
 		consumer.consume(sdk);
 	}
 
@@ -72,7 +72,7 @@ public class CSharpMockModuleDescriptor implements TestModuleDescriptor
 			// use zipped library, because read is more faster
 			Library library = moduleLibraryTable.createLibrary();
 			Library.ModifiableModel modifiableModel = library.getModifiableModel();
-			VirtualFile libZip = LocalFileSystem.getInstance().findFileByPath(PathManagerEx.getTestDataPath("/mockSdk/mono4.5/") + lib + ".zip");
+			VirtualFile libZip = LocalFileSystem.getInstance().findFileByPath(TestPathUtil.getTestDataPath("/mockSdk/mono4.5/") + lib + ".zip");
 			assert libZip != null;
 			VirtualFile archiveRootForLocalFile = ArchiveVfsUtil.getArchiveRootForLocalFile(libZip);
 			assert archiveRootForLocalFile != null;
