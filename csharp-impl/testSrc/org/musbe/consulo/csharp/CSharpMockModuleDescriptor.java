@@ -21,8 +21,6 @@ import org.mustbe.consulo.csharp.module.extension.CSharpSimpleMutableModuleExten
 import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleMutableModuleExtension;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.projectRoots.impl.SdkImpl;
-import com.intellij.openapi.projectRoots.impl.UnknownSdkType;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.libraries.Library;
@@ -41,14 +39,9 @@ import consulo.testFramework.util.TestPathUtil;
  */
 public class CSharpMockModuleDescriptor implements TestModuleDescriptor
 {
-	private static final String ourSdkName = "dotnet_mock_sdk";
-
 	@Override
 	public void configureSdk(@NotNull Consumer<Sdk> consumer)
 	{
-		SdkImpl sdk = new SdkImpl(ourSdkName, UnknownSdkType.getInstance("dotnet"));
-		sdk.setHomePath(TestPathUtil.getTestDataPath("/mockSdk/mono4.5/"));
-		consumer.consume(sdk);
 	}
 
 	@Override
@@ -58,7 +51,6 @@ public class CSharpMockModuleDescriptor implements TestModuleDescriptor
 		assert extension != null;
 		extension.setEnabled(true);
 
-		extension.getInheritableSdk().set(null, ourSdkName);
 		LibraryTable moduleLibraryTable = modifiableRootModel.getModuleLibraryTable();
 
 
@@ -67,8 +59,6 @@ public class CSharpMockModuleDescriptor implements TestModuleDescriptor
 				"System"
 		})
 		{
-			//modifiableRootModel.addOrderEntry(new DotNetLibraryOrderEntryImpl((ModuleRootLayerImpl) modifiableRootModel.getCurrentLayer(), lib));
-
 			// use zipped library, because read is more faster
 			Library library = moduleLibraryTable.createLibrary();
 			Library.ModifiableModel modifiableModel = library.getModifiableModel();
