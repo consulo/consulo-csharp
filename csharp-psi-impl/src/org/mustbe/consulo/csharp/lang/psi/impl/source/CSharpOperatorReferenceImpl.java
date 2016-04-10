@@ -253,6 +253,23 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			}
 		}
 
+		if(parent instanceof CSharpPostfixExpressionImpl)
+		{
+			if(elementType == CSharpTokens.PLUSPLUS || elementType == CSharpTokens.MINUSMINUS)
+			{
+				DotNetExpression expression = ArrayUtil2.safeGet(getParameterExpressions(), 0);
+				if(expression == null)
+				{
+					return DotNetTypeRef.ERROR_TYPE;
+				}
+				DotNetTypeRef expressionTypeRef = expression.toTypeRef(true);
+				if(expressionTypeRef instanceof DotNetPointerTypeRef)
+				{
+					return expressionTypeRef;
+				}
+			}
+		}
+
 		if(parent instanceof CSharpExpressionWithOperatorImpl)
 		{
 			if(elementType == CSharpTokenSets.OROR || elementType == CSharpTokens.ANDAND)
