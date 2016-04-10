@@ -16,9 +16,8 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
+import java.util.LinkedHashSet;
 
 import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.ResolveResult;
@@ -32,7 +31,6 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class SortedMemberResolveScopeProcessor extends MemberResolveScopeProcessor
 {
-	private final List<ResolveResult> myResults = new ArrayList<ResolveResult>();
 	private final Processor<ResolveResult> myOriginalProcessor;
 	private Comparator<ResolveResult> myComparator;
 
@@ -49,14 +47,16 @@ public class SortedMemberResolveScopeProcessor extends MemberResolveScopeProcess
 
 	private void initThisProcessor()
 	{
-		myResultProcessor = new CommonProcessors.CollectProcessor<ResolveResult>(myResults) ;
+		myResultProcessor = new CommonProcessors.CollectProcessor<ResolveResult>(new LinkedHashSet<ResolveResult>()) ;
 	}
 
 	public void consumeAll()
 	{
-		ContainerUtil.sort(myResults, myComparator);
+		ResolveResult[] resolveResults = ((CommonProcessors.CollectProcessor<ResolveResult>) myResultProcessor).toArray(ResolveResult.EMPTY_ARRAY);
 
-		for(ResolveResult result : myResults)
+		ContainerUtil.sort(resolveResults, myComparator);
+
+		for(ResolveResult result : resolveResults)
 		{
 			if(!myOriginalProcessor.process(result))
 			{
