@@ -72,7 +72,9 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.ArrayUtil;
+import com.intellij.util.Consumer;
 import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.ObjectUtil;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -80,8 +82,7 @@ import com.intellij.util.containers.ContainerUtil;
  * @author VISTALL
  * @since 12.03.14
  */
-public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements PsiReference, PsiPolyVariantReference, CSharpCallArgumentListOwner,
-		CSharpQualifiedNonReference
+public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements PsiReference, PsiPolyVariantReference, CSharpCallArgumentListOwner, CSharpQualifiedNonReference
 {
 	private static class OurResolver implements ResolveCache.PolyVariantResolver<CSharpOperatorReferenceImpl>
 	{
@@ -137,8 +138,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		}
 	}
 
-	private static final TokenSet ourMergeSet = TokenSet.orSet(CSharpTokenSets.OVERLOADING_OPERATORS, CSharpTokenSets.ASSIGNMENT_OPERATORS,
-			TokenSet.create(CSharpTokens.ANDAND, CSharpTokens.OROR));
+	private static final TokenSet ourMergeSet = TokenSet.orSet(CSharpTokenSets.OVERLOADING_OPERATORS, CSharpTokenSets.ASSIGNMENT_OPERATORS, TokenSet.create(CSharpTokens.ANDAND, CSharpTokens.OROR));
 
 	private static final Map<IElementType, IElementType> ourAssignmentOperatorMap = new HashMap<IElementType, IElementType>()
 	{
@@ -213,13 +213,8 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	@RequiredReadAction
 	private Object resolveImpl()
 	{
-		IElementType elementType = getOperatorElementType();
-		// normalize
-		IElementType normalized = ourAssignmentOperatorMap.get(elementType);
-		if(normalized != null)
-		{
-			elementType = normalized;
-		}
+		final IElementType temp = getOperatorElementType();
+		final IElementType elementType = ObjectUtil.notNull(ourAssignmentOperatorMap.get(temp), temp);
 
 		PsiElement parent = getParent();
 
@@ -287,18 +282,23 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 				return new CSharpTypeRefByQName(DotNetTypes.System.Void);
 			}
 
-			List<MethodResolveResult> resolveResults = new SmartList<MethodResolveResult>();
+			final List<MethodResolveResult> resolveResults = new SmartList<MethodResolveResult>();
 
-			for(DotNetExpression dotNetExpression : parameterExpressions)
+			for(final DotNetExpression dotNetExpression : parameterExpressions)
 			{
-				DotNetTypeRef expressionTypeRef = dotNetExpression.toTypeRef(true);
+				final DotNetTypeRef expressionTypeRef = dotNetExpression.toTypeRef(true);
 
 				resolveUserDefinedOperators(elementType, expressionTypeRef, expressionTypeRef, resolveResults, null);
 
-				for(DotNetTypeRef implicitTypeRef : getAllImplicitCasts(expressionTypeRef, parent))
+				processImplicitCasts(expressionTypeRef, parent, new Consumer<DotNetTypeRef>()
 				{
-					resolveUserDefinedOperators(elementType, expressionTypeRef, implicitTypeRef, resolveResults, dotNetExpression);
-				}
+					@Override
+					@RequiredReadAction
+					public void consume(DotNetTypeRef implicitTypeRef)
+					{
+						resolveUserDefinedOperators(elementType, expressionTypeRef, implicitTypeRef, resolveResults, dotNetExpression);
+					}
+				});
 			}
 
 			Collections.sort(resolveResults, WeightUtil.ourComparator);
@@ -308,18 +308,18 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		return null;
 	}
 
-	@NotNull
-	private List<DotNetTypeRef> getAllImplicitCasts(DotNetTypeRef expressionTypeRef, PsiElement parent)
+	@RequiredReadAction
+	private void processImplicitCasts(DotNetTypeRef expressionTypeRef, PsiElement parent, @NotNull Consumer<DotNetTypeRef> consumer)
 	{
-		List<DotNetTypeRef> list = new SmartList<DotNetTypeRef>();
 		for(DotNetExpression dotNetExpression : ((CSharpExpressionWithOperatorImpl) parent).getParameterExpressions())
 		{
-			List<DotNetTypeRef> implicitOrExplicitTypeRefs = CSharpTypeUtil.getImplicitOrExplicitTypeRefs(dotNetExpression.toTypeRef(true),
-					expressionTypeRef, CSharpStaticTypeRef.IMPLICIT, this);
+			List<DotNetTypeRef> implicitOrExplicitTypeRefs = CSharpTypeUtil.getImplicitOrExplicitTypeRefs(dotNetExpression.toTypeRef(true), expressionTypeRef, CSharpStaticTypeRef.IMPLICIT, this);
 
-			list.addAll(implicitOrExplicitTypeRefs);
+			for(DotNetTypeRef implicitOrExplicitTypeRef : implicitOrExplicitTypeRefs)
+			{
+				consumer.consume(implicitOrExplicitTypeRef);
+			}
 		}
-		return list;
 	}
 
 	@NotNull
@@ -367,8 +367,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		}
 
 		AsPsiElementProcessor psiElementProcessor = new AsPsiElementProcessor();
-		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(CSharpResolveOptions.build().element(this), psiElementProcessor,
-				new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
+		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(CSharpResolveOptions.build().element(this), psiElementProcessor, new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
 
 		ResolveState state = ResolveState.initial();
 		state = state.put(CSharpResolveUtil.SELECTOR, new OperatorByTokenSelector(elementType));
@@ -389,7 +388,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			MethodCalcResult calc = MethodResolver.calc(arguments, psiElement, this, true);
 			if(implicitExpression != null)
 			{
-				calc = calc.dupWithResult(Short.MIN_VALUE);
+				calc = calc.dupWithResult(-3000000);
 			}
 
 			last.add(MethodResolveResult.createResult(calc, psiElement, null));

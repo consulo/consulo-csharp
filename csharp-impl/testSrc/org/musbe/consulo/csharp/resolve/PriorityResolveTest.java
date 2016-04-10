@@ -50,6 +50,10 @@ public class PriorityResolveTest extends ResolvingTestCase
 	{
 	}
 
+	public void testOperatorWithImplicitCast()
+	{
+	}
+
 	@NotNull
 	@Override
 	protected TestModuleDescriptor createTestModuleDescriptor()
