@@ -16,8 +16,8 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiElement;
@@ -30,7 +30,7 @@ import com.intellij.util.Processor;
  */
 public class AsPsiElementProcessor implements Processor<ResolveResult>
 {
-	private List<PsiElement> myElements = new ArrayList<PsiElement>();
+	private Set<PsiElement> myElements = new LinkedHashSet<PsiElement>();
 
 	@Override
 	public boolean process(ResolveResult resolveResult)
@@ -41,7 +41,7 @@ public class AsPsiElementProcessor implements Processor<ResolveResult>
 	}
 
 	@NotNull
-	public List<PsiElement> getElements()
+	public Set<PsiElement> getElements()
 	{
 		return myElements;
 	}

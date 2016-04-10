@@ -376,7 +376,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		state = state.put(CSharpResolveUtil.EXTRACTOR, typeResolveResult.getGenericExtractor());
 		CSharpResolveUtil.walkChildren(processor, element, false, true, state);
 
-		List<PsiElement> psiElements = psiElementProcessor.getElements();
+		Set<PsiElement> psiElements = psiElementProcessor.getElements();
 		if(psiElements.isEmpty())
 		{
 			return;
