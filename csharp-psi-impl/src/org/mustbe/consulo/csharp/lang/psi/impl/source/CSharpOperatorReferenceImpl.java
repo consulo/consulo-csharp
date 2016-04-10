@@ -16,11 +16,12 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -120,10 +121,10 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			Object o = reference.resolveImpl();
 
 			List<ResolveResult> elements = new SmartList<ResolveResult>();
-			if(o instanceof List)
+			if(o instanceof MethodResolveResult[])
 			{
-				//noinspection unchecked
-				elements.addAll((Collection<? extends ResolveResult>) o);
+				MethodResolveResult[] array = (MethodResolveResult[]) o;
+				ContainerUtil.addAll(elements, array);
 			}
 			else if(o instanceof PsiElement)
 			{
@@ -282,7 +283,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 				return new CSharpTypeRefByQName(DotNetTypes.System.Void);
 			}
 
-			final List<MethodResolveResult> resolveResults = new SmartList<MethodResolveResult>();
+			final Set<MethodResolveResult> resolveResults = new LinkedHashSet<MethodResolveResult>();
 
 			for(final DotNetExpression dotNetExpression : parameterExpressions)
 			{
@@ -301,8 +302,9 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 				});
 			}
 
-			Collections.sort(resolveResults, WeightUtil.ourComparator);
-			return resolveResults;
+			MethodResolveResult[] results = ContainerUtil.toArray(resolveResults, MethodResolveResult.ARRAY_FACTORY);
+			Arrays.sort(results, WeightUtil.ourComparator);
+			return results;
 		}
 
 		return null;
@@ -355,7 +357,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	public void resolveUserDefinedOperators(@NotNull IElementType elementType,
 			@NotNull DotNetTypeRef originalTypeRef,
 			@NotNull DotNetTypeRef typeRef,
-			@NotNull List<MethodResolveResult> last,
+			@NotNull Set<MethodResolveResult> last,
 			@Nullable DotNetExpression implicitExpression)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(this);
