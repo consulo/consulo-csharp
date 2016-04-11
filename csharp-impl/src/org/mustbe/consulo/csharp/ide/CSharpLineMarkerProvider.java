@@ -56,15 +56,15 @@ import com.intellij.util.FunctionUtil;
 public class CSharpLineMarkerProvider implements LineMarkerProvider, DumbAware
 {
 	private static final LineMarkerCollector[] ourSingleCollector = {
-			new LambdaLineMarkerCollector(),
-			new RecursiveCallCollector()
+			new LambdaLineMarkerCollector()
 	};
 
 	private static final LineMarkerCollector[] ourCollectors = {
 			new OverrideTypeCollector(),
 			new PartialTypeCollector(),
 			new HidingOrOverridingElementCollector(),
-			new HidedOrOverridedElementCollector()
+			new HidedOrOverridedElementCollector(),
+			new RecursiveCallCollector()
 	};
 
 	protected final DaemonCodeAnalyzerSettings myDaemonCodeAnalyzerSettings;
