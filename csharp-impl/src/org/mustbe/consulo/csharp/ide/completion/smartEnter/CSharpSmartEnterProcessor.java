@@ -30,9 +30,12 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
@@ -65,8 +68,7 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 				return false;
 			}
 
-			if(variable.hasModifier(CSharpModifier.ABSTRACT) || variable.hasModifier(CSharpModifier.PARTIAL) || variable.hasModifier(CSharpModifier
-					.EXTERN))
+			if(variable.hasModifier(CSharpModifier.ABSTRACT) || variable.hasModifier(CSharpModifier.PARTIAL) || variable.hasModifier(CSharpModifier.EXTERN))
 			{
 				insertStringAtEndWithReformat("();", variable, editor, 3, false);
 			}
@@ -142,17 +144,26 @@ public class CSharpSmartEnterProcessor extends SmartEnterProcessor
 	}
 
 	@RequiredReadAction
-	private void insertStringAtEndWithReformat(@NotNull String text, @NotNull PsiElement anchor, @NotNull Editor editor, int moveOffset,
-			boolean commit)
+	private void insertStringAtEndWithReformat(@NotNull String text, @NotNull PsiElement anchor, @NotNull Editor editor, int moveOffset, boolean commit)
 	{
+		PsiFile containingFile = anchor.getContainingFile();
+
 		Document document = editor.getDocument();
-		int endOffset = anchor.getTextRange().getEndOffset();
+		TextRange range = anchor.getTextRange();
+		int endOffset = range.getEndOffset();
 		document.insertString(endOffset, text);
 		editor.getCaretModel().moveToOffset(endOffset + moveOffset);
 		if(commit)
 		{
 			commit(editor);
 		}
-		reformat(anchor);
+
+		reformatRange(containingFile, new TextRange(range.getStartOffset(), endOffset + moveOffset));
+	}
+
+	private void reformatRange(PsiFile psiFile, TextRange textRange) throws IncorrectOperationException
+	{
+		final PsiFile baseFile = psiFile.getViewProvider().getPsi(psiFile.getViewProvider().getBaseLanguage());
+		CodeStyleManager.getInstance(psiFile.getProject()).reformatText(baseFile, textRange.getStartOffset(), textRange.getEndOffset());
 	}
 }
