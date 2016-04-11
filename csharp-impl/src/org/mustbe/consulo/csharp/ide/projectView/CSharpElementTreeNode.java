@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -139,6 +141,7 @@ public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetN
 	}
 
 	@Override
+	@RequiredDispatchThread
 	protected void updateImpl(PresentationData presentationData)
 	{
 		DotNetNamedElement value = getValue();
@@ -148,15 +151,16 @@ public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetN
 		presentationData.setPresentableText(getPresentableText(value));
 	}
 
+	@RequiredDispatchThread
 	public static String getPresentableText(PsiNamedElement value)
 	{
 		if(value instanceof DotNetLikeMethodDeclaration)
 		{
-			return DotNetElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) value, DotNetElementPresentationUtil.METHOD_SCALA_LIKE_FULL);
+			return CSharpElementPresentationUtil.formatMethod((DotNetLikeMethodDeclaration) value, CSharpElementPresentationUtil.METHOD_SCALA_LIKE_FULL);
 		}
 		else if(value instanceof DotNetFieldDeclaration)
 		{
-			return DotNetElementPresentationUtil.formatField((DotNetFieldDeclaration) value);
+			return CSharpElementPresentationUtil.formatField((DotNetFieldDeclaration) value);
 		}
 		else if(value instanceof DotNetNamespaceDeclaration)
 		{
