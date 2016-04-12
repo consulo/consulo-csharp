@@ -155,9 +155,9 @@ public class CSharpTypeUtil
 					{
 						DotNetTypeRef dotNetTypeRef = ((CSharpGenericConstraintTypeValue) genericConstraintValue).toTypeRef();
 						DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(element);
-						if(!typeResolveResult.isNullable())
+						if(typeResolveResult.isNullable())
 						{
-							return false;
+							return true;
 						}
 					}
 				}
