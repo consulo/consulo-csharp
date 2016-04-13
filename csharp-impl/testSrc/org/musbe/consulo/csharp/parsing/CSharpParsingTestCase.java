@@ -21,9 +21,9 @@ import java.lang.reflect.Method;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.CSharpLanguageVersionHelper;
-import org.mustbe.consulo.testFramework.ParsingTestCase;
 import com.intellij.lang.LanguageVersion;
 import com.intellij.openapi.fileTypes.FileType;
+import consulo.testFramework.ParsingTestCase;
 
 /**
  * @author VISTALL
@@ -33,7 +33,7 @@ public abstract class CSharpParsingTestCase extends ParsingTestCase
 {
 	public CSharpParsingTestCase(@NonNls @NotNull String dataPath)
 	{
-		super(dataPath, "cs");
+		super("/csharp-impl/testData/" + dataPath + "/", "cs");
 	}
 
 	@Override
@@ -70,11 +70,5 @@ public abstract class CSharpParsingTestCase extends ParsingTestCase
 	protected boolean shouldContainTempFiles()
 	{
 		return false;
-	}
-
-	@Override
-	protected String getTestDataPath()
-	{
-		return "/csharp-impl/testData";
 	}
 }

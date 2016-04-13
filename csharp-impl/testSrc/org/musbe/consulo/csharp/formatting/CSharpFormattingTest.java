@@ -1,6 +1,7 @@
 package org.musbe.consulo.csharp.formatting;
 
-import org.mustbe.consulo.testFramework.FormattingTestCase;
+
+import consulo.testFramework.FormattingTestCase;
 
 /**
  * @author VISTALL
@@ -10,7 +11,7 @@ public class CSharpFormattingTest extends FormattingTestCase
 {
 	public CSharpFormattingTest()
 	{
-		super("formatting", "cs");
+		super("/csharp-impl/testData/formatting/", "cs");
 	}
 
 	@Override
@@ -18,13 +19,6 @@ public class CSharpFormattingTest extends FormattingTestCase
 	{
 		return false;
 	}
-
-	@Override
-	protected String getTestDataPath()
-	{
-		return "/csharp-impl/testData";
-	}
-
 	public void testIssue270()
 	{
 	}
