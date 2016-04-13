@@ -8,7 +8,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
-import com.intellij.util.ExceptionUtil;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
@@ -40,8 +39,6 @@ public class CSharpGenericExtractor implements DotNetGenericExtractor
 	private DotNetGenericParameter[] myGenericParameters;
 	private DotNetTypeRef[] myTypeRefs;
 
-	private String myExceptionText;
-
 	private CSharpGenericExtractor(Map<DotNetGenericParameter, DotNetTypeRef> map)
 	{
 		this(ContainerUtil.toArray(map.keySet(), DotNetGenericParameter.ARRAY_FACTORY), ContainerUtil.toArray(map.values(), DotNetTypeRef.ARRAY_FACTORY));
@@ -51,7 +48,6 @@ public class CSharpGenericExtractor implements DotNetGenericExtractor
 	{
 		myGenericParameters = genericParameters;
 		myTypeRefs = arguments;
-		myExceptionText = ExceptionUtil.getThrowableText(new Exception());
 	}
 
 	@Nullable
