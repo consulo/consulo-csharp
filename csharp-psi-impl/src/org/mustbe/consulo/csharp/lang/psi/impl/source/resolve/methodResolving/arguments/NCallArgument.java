@@ -107,19 +107,19 @@ public class NCallArgument extends UserDataHolderBase
 		int newVal = FAIL;
 		if(parameterTypeRef != null)
 		{
-			if(CSharpTypeUtil.isTypeEqual(parameterTypeRef, getTypeRef(), scope))
+			DotNetTypeRef typeRef = getTypeRef();
+			if(CSharpTypeUtil.isTypeEqual(parameterTypeRef, typeRef, scope))
 			{
 				newVal = EQUAL;
 			}
 			else
 			{
-				CSharpTypeUtil.InheritResult inheritable = CSharpTypeUtil.isInheritable(parameterTypeRef, getTypeRef(), scope,
-						CSharpStaticTypeRef.IMPLICIT);
+				CSharpTypeUtil.InheritResult inheritable = CSharpTypeUtil.isInheritable(parameterTypeRef, typeRef, scope, CSharpStaticTypeRef.IMPLICIT);
 				if(inheritable.isSuccess())
 				{
 					if(inheritable.isConversion())
 					{
-						putUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO, new ImplicitCastInfo(getTypeRef(), parameterTypeRef));
+						putUserData(ImplicitCastInfo.IMPLICIT_CAST_INFO, new ImplicitCastInfo(typeRef, parameterTypeRef));
 					}
 
 					newVal = INSTANCE_OF;

@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
@@ -41,6 +42,7 @@ public enum CSharpImplicitReturnModel
 {
 	Async(DotNetTypes2.System.Threading.Tasks.Task$1, DotNetTypes2.System.Threading.Tasks.Task, DotNetTypes.System.Void)
 			{
+				@RequiredReadAction
 				@Override
 				public boolean canHandle(CSharpSimpleLikeMethodAsElement methodAsElement, CSharpReturnStatementImpl returnStatement)
 				{
@@ -49,6 +51,7 @@ public enum CSharpImplicitReturnModel
 			},
 	YieldEnumerator(DotNetTypes2.System.Collections.Generic.IEnumerator$1, DotNetTypes2.System.Collections.IEnumerator, DotNetTypes.System.Object)
 			{
+				@RequiredReadAction
 				@Override
 				public boolean canHandle(CSharpSimpleLikeMethodAsElement methodAsElement, CSharpReturnStatementImpl returnStatement)
 				{
@@ -58,6 +61,7 @@ public enum CSharpImplicitReturnModel
 			},
 	YieldEnumerable(DotNetTypes2.System.Collections.Generic.IEnumerable$1, DotNetTypes2.System.Collections.IEnumerable, DotNetTypes.System.Object)
 			{
+				@RequiredReadAction
 				@Override
 				public boolean canHandle(CSharpSimpleLikeMethodAsElement methodAsElement, CSharpReturnStatementImpl returnStatement)
 				{
@@ -67,12 +71,14 @@ public enum CSharpImplicitReturnModel
 			},
 	None(null, null, null)
 			{
+				@RequiredReadAction
 				@Override
 				public boolean canHandle(CSharpSimpleLikeMethodAsElement methodAsElement, CSharpReturnStatementImpl returnStatement)
 				{
 					return true;
 				}
 
+				@RequiredReadAction
 				@NotNull
 				@Override
 				public DotNetTypeRef extractTypeRef(@NotNull DotNetTypeRef expectedTypeRef, @NotNull PsiElement scope)
@@ -92,6 +98,7 @@ public enum CSharpImplicitReturnModel
 		myNoGenericTypeVmQName = noGenericTypeVmQName;
 	}
 
+	@RequiredReadAction
 	public abstract boolean canHandle(CSharpSimpleLikeMethodAsElement methodAsElement, CSharpReturnStatementImpl returnStatement);
 
 	@Nullable
@@ -107,12 +114,14 @@ public enum CSharpImplicitReturnModel
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public DotNetTypeRef extractTypeRef(@NotNull DotNetTypeRef expectedTypeRef, @NotNull PsiElement scope)
 	{
 		return ObjectUtil.notNull(extractTypeRefImpl(expectedTypeRef, scope), DotNetTypeRef.ERROR_TYPE);
 	}
 
 	@Nullable
+	@RequiredReadAction
 	public DotNetTypeRef extractTypeRefImpl(@NotNull DotNetTypeRef expectedTypeRef, @NotNull PsiElement scope)
 	{
 		Pair<DotNetTypeDeclaration, DotNetGenericExtractor> typeInSuper = CSharpTypeUtil.findTypeInSuper(expectedTypeRef, myGenericVmQName, scope);

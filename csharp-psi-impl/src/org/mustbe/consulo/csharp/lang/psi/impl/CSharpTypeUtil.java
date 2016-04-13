@@ -16,8 +16,11 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl;
 
+import gnu.trove.THashSet;
+
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,9 +49,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
-import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.RecursionManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ObjectUtil;
@@ -207,12 +208,15 @@ public class CSharpTypeUtil
 			return null;
 		}
 
-		return findTypeRefFromExtends(typeRef, (DotNetTypeDeclaration) element, scope);
+		return findTypeRefFromExtends(typeRef, (DotNetTypeDeclaration) element, scope, new THashSet<String>());
 	}
 
 	@Nullable
 	@RequiredReadAction
-	public static DotNetTypeResolveResult findTypeRefFromExtends(@NotNull final DotNetTypeRef typeRef, @NotNull final DotNetTypeDeclaration typeDeclaration, @NotNull final PsiElement scope)
+	public static DotNetTypeResolveResult findTypeRefFromExtends(@NotNull final DotNetTypeRef typeRef,
+			@NotNull final DotNetTypeDeclaration typeDeclaration,
+			@NotNull final PsiElement scope,
+			@NotNull Set<String> processed)
 	{
 		final DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
 		final PsiElement resolvedElement = typeResolveResult.getElement();
@@ -226,25 +230,24 @@ public class CSharpTypeUtil
 			return typeResolveResult;
 		}
 
-		return RecursionManager.doPreventingRecursion(typeDeclaration, false, new Computable<DotNetTypeResolveResult>()
+		if(!processed.add(((DotNetTypeDeclaration) resolvedElement).getVmQName()))
 		{
-			@Override
-			@RequiredReadAction
-			public DotNetTypeResolveResult compute()
-			{
-				for(DotNetTypeRef extendTypeRef : ((DotNetTypeDeclaration) resolvedElement).getExtendTypeRefs())
-				{
-					extendTypeRef = GenericUnwrapTool.exchangeTypeRef(extendTypeRef, typeResolveResult.getGenericExtractor(), scope);
+			return null;
+		}
 
-					DotNetTypeResolveResult findTypeRefFromExtends = findTypeRefFromExtends(extendTypeRef, typeDeclaration, scope);
-					if(findTypeRefFromExtends != null)
-					{
-						return findTypeRefFromExtends;
-					}
-				}
-				return null;
+		DotNetTypeRef[] extendTypeRefs = ((DotNetTypeDeclaration) resolvedElement).getExtendTypeRefs();
+
+		for(DotNetTypeRef extendTypeRef : extendTypeRefs)
+		{
+			extendTypeRef = GenericUnwrapTool.exchangeTypeRef(extendTypeRef, typeResolveResult.getGenericExtractor(), scope);
+
+			DotNetTypeResolveResult findTypeRefFromExtends = findTypeRefFromExtends(extendTypeRef, typeDeclaration, scope, processed);
+			if(findTypeRefFromExtends != null)
+			{
+				return findTypeRefFromExtends;
 			}
-		});
+		}
+		return null;
 	}
 
 	@RequiredReadAction
@@ -419,7 +422,7 @@ public class CSharpTypeUtil
 		if(topGenericExtractor != DotNetGenericExtractor.EMPTY && topElement instanceof DotNetTypeDeclaration)
 		{
 			DotNetTypeDeclaration topTypeDeclaration = (DotNetTypeDeclaration) topElement;
-			DotNetTypeResolveResult typeFromSuper = findTypeRefFromExtends(target, topTypeDeclaration, scope);
+			DotNetTypeResolveResult typeFromSuper = findTypeRefFromExtends(target, topTypeDeclaration, scope, new THashSet<String>());
 
 			if(typeFromSuper == null)
 			{
