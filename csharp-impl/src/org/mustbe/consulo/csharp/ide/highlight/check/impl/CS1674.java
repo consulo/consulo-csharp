@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
@@ -71,7 +70,7 @@ public class CS1674 extends CompilerCheck<CSharpUsingStatementImpl>
 		if(!CSharpTypeUtil.isInheritable(ourIDisposableTypeRef, usingTypeRef, element))
 		{
 			assert highlightElement != null;
-			return newBuilder(highlightElement, CSharpTypeRefPresentationUtil.buildTextWithKeyword(usingTypeRef, element));
+			return newBuilder(highlightElement, formatTypeRef(usingTypeRef, element));
 		}
 		return null;
 	}

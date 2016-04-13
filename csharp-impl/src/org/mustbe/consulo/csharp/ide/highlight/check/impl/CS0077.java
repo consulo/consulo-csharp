@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAsExpressionImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
@@ -92,8 +91,7 @@ public class CS0077 extends CompilerCheck<CSharpAsExpressionImpl>
 		{
 			DotNetType type = element.getType();
 			assert type != null;
-			return newBuilder(element.getAsKeyword(), "as", CSharpTypeRefPresentationUtil.buildTextWithKeyword(typeRef,
-					element)).addQuickFix(new AddQuestMarkQuickFix(type));
+			return newBuilder(element.getAsKeyword(), "as", formatTypeRef(typeRef, element)).addQuickFix(new AddQuestMarkQuickFix(type));
 		}
 		return super.checkImpl(languageVersion, element);
 	}

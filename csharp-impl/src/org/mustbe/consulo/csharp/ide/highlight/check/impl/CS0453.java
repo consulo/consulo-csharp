@@ -22,7 +22,6 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNullableType;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -104,7 +103,6 @@ public class CS0453 extends CompilerCheck<CSharpNullableType>
 			return null;
 		}
 		PsiElement questElement = element.getQuestElement();
-		return newBuilder(questElement, CSharpTypeRefPresentationUtil.buildTextWithKeyword(dotNetTypeRef,
-				element)).addQuickFix(new DeleteQuestMarkQuickFix(element));
+		return newBuilder(questElement, formatTypeRef(dotNetTypeRef, element)).addQuickFix(new DeleteQuestMarkQuickFix(element));
 	}
 }

@@ -11,7 +11,6 @@ import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.ide.highlight.quickFix.ReplaceTypeQuickFix;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeCastExpressionImpl;
@@ -82,12 +81,10 @@ public class CS0030 extends CompilerCheck<PsiElement>
 					return;
 				}
 
-				boolean success = CSharpTypeUtil.isInheritable(iterableTypeRef, variableTypeRef, statement) ||
-						CSharpTypeUtil.isInheritable(variableTypeRef, iterableTypeRef, statement);
+				boolean success = CSharpTypeUtil.isInheritable(iterableTypeRef, variableTypeRef, statement) || CSharpTypeUtil.isInheritable(variableTypeRef, iterableTypeRef, statement);
 				if(!success)
 				{
-					CompilerCheckBuilder builder = newBuilder(type, CSharpTypeRefPresentationUtil.buildTextWithKeyword(iterableTypeRef, statement),
-							CSharpTypeRefPresentationUtil.buildTextWithKeyword(variableTypeRef, statement));
+					CompilerCheckBuilder builder = newBuilder(type, formatTypeRef(iterableTypeRef, statement), formatTypeRef(variableTypeRef, statement));
 
 					if(languageVersion.isAtLeast(CSharpLanguageVersion._3_0))
 					{
@@ -117,8 +114,7 @@ public class CS0030 extends CompilerCheck<PsiElement>
 				}
 				DotNetTypeRef expressionTypeRef = innerExpression.toTypeRef(false);
 
-				CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(expressionTypeRef, castTypeRef, expression,
-						CSharpStaticTypeRef.EXPLICIT);
+				CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(expressionTypeRef, castTypeRef, expression, CSharpStaticTypeRef.EXPLICIT);
 
 				if(!inheritResult.isSuccess())
 				{
@@ -126,8 +122,7 @@ public class CS0030 extends CompilerCheck<PsiElement>
 
 					if(!inheritResult.isSuccess())
 					{
-						CompilerCheckBuilder builder = newBuilder(type, CSharpTypeRefPresentationUtil.buildTextWithKeyword(expressionTypeRef,
-								expression), CSharpTypeRefPresentationUtil.buildTextWithKeyword(castTypeRef, expression));
+						CompilerCheckBuilder builder = newBuilder(type, formatTypeRef(expressionTypeRef, expression), formatTypeRef(castTypeRef, expression));
 
 						if(EarlyAccessProgramManager.is(CS0030TypeCast.class))
 						{
@@ -138,8 +133,7 @@ public class CS0030 extends CompilerCheck<PsiElement>
 					{
 						CompilerCheckBuilder builder = newBuilder(innerExpression);
 						builder.setTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
-						builder.setText(CSharpErrorBundle.message("impicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildTextWithKeyword
-								(expressionTypeRef, expression), CSharpTypeRefPresentationUtil.buildTextWithKeyword(castTypeRef, expression)));
+						builder.setText(CSharpErrorBundle.message("impicit.cast.from.0.to.1", formatTypeRef(expressionTypeRef, expression), formatTypeRef(castTypeRef, expression)));
 						builder.setHighlightInfoType(HighlightInfoType.INFORMATION);
 						ref.set(builder);
 					}
@@ -148,8 +142,7 @@ public class CS0030 extends CompilerCheck<PsiElement>
 				{
 					CompilerCheckBuilder builder = newBuilder(type);
 					builder.setTextAttributesKey(CSharpHighlightKey.IMPLICIT_OR_EXPLICIT_CAST);
-					builder.setText(CSharpErrorBundle.message("explicit.cast.from.0.to.1", CSharpTypeRefPresentationUtil.buildTextWithKeyword
-							(expressionTypeRef, expression), CSharpTypeRefPresentationUtil.buildTextWithKeyword(castTypeRef, expression)));
+					builder.setText(CSharpErrorBundle.message("explicit.cast.from.0.to.1", formatTypeRef(expressionTypeRef, expression), formatTypeRef(castTypeRef, expression)));
 					builder.setHighlightInfoType(HighlightInfoType.INFORMATION);
 					ref.set(builder);
 				}

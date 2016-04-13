@@ -93,8 +93,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(firstTypeRef, secondTypeRef, element, CSharpStaticTypeRef.IMPLICIT);
 		if(!inheritResult.isSuccess())
 		{
-			CompilerCheckBuilder builder = newBuilder(elementToHighlight, CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(secondTypeRef, element),
-					CSharpTypeRefPresentationUtil.buildTextWithKeywordAndNull(firstTypeRef, element));
+			CompilerCheckBuilder builder = newBuilder(elementToHighlight, formatTypeRef(secondTypeRef, element), formatTypeRef(firstTypeRef, element));
 
 			if(elementToHighlight instanceof DotNetExpression)
 			{
