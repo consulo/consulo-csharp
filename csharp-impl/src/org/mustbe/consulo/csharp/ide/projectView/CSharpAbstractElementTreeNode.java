@@ -44,14 +44,14 @@ public abstract class CSharpAbstractElementTreeNode<T extends PsiElement> extend
 	protected boolean isDeprecated()
 	{
 		T value = getValue();
-		return value.isValid() && DotNetAttributeUtil.hasAttribute(value, DotNetTypes.System.ObsoleteAttribute);
+		return value != null && value.isValid() && DotNetAttributeUtil.hasAttribute(value, DotNetTypes.System.ObsoleteAttribute);
 	}
 
 	@Override
 	public boolean contains(@NotNull VirtualFile file)
 	{
 		T value = getValue();
-		return value.isValid() && PsiUtilCore.getVirtualFile(value) == file;
+		return value != null && value.isValid() && PsiUtilCore.getVirtualFile(value) == file;
 	}
 
 	private boolean canRepresent(final PsiElement psiElement, final Object element)
