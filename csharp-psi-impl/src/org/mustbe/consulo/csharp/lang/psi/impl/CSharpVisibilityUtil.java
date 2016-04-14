@@ -25,6 +25,7 @@ import org.mustbe.consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
+import org.mustbe.consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.AttributeListIndex;
 import org.mustbe.consulo.dotnet.module.DotNetAssemblyUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
@@ -96,7 +97,7 @@ public class CSharpVisibilityUtil
 					{
 						String vmQName = targetType.getVmQName();
 						assert vmQName != null;
-						if(DotNetInheritUtil.isParentOrSelf(vmQName, placeType, true))
+						if(DotNetInheritUtil.isParentOrSelf(vmQName, CSharpCompositeTypeDeclaration.selectCompositeOrSelfType(placeType), true))
 						{
 							return true;
 						}
