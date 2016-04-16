@@ -16,7 +16,9 @@ import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import org.mustbe.consulo.csharp.lang.lexer.CSharpLexer;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
@@ -24,6 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithInnerTypeRef;
@@ -59,7 +62,7 @@ public class CSharpNameSuggesterUtil
 	{
 		PsiElement parent = variable.getParent();
 
-		Set<String> suggestedNames = getSuggestedNames(variable.toTypeRef(true), variable);
+		Collection<String> suggestedNames = getSuggestedNames(variable.toTypeRef(true), variable);
 		if(parent instanceof CSharpForeachStatementImpl)
 		{
 			DotNetExpression iterableExpression = ((CSharpForeachStatementImpl) parent).getIterableExpression();
@@ -77,7 +80,7 @@ public class CSharpNameSuggesterUtil
 
 		if(variable instanceof CSharpPropertyDeclaration)
 		{
-			return ContainerUtil.map(suggestedNames, new Function<String, String>()
+			suggestedNames = ContainerUtil.map(suggestedNames, new Function<String, String>()
 			{
 				@Override
 				public String fun(String variableName)
@@ -86,7 +89,40 @@ public class CSharpNameSuggesterUtil
 				}
 			});
 		}
-		return suggestedNames;
+
+		CSharpCodeGenerationSettings settings = CSharpCodeGenerationSettings.getInstance(variable.getProject());
+
+		boolean isStatic = variable.hasModifier(DotNetModifier.STATIC);
+		final String prefix;
+		final String suffix;
+		if(variable instanceof CSharpPropertyDeclaration)
+		{
+			prefix = isStatic ? settings.STATIC_PROPERTY_PREFIX : settings.PROPERTY_PREFIX;
+			suffix = isStatic ? settings.STATIC_PROPERTY_SUFFIX : settings.PROPERTY_PREFIX;
+		}
+		else if(variable instanceof CSharpFieldDeclaration)
+		{
+			prefix = isStatic ? settings.STATIC_FIELD_PREFIX : settings.FIELD_PREFIX;
+			suffix = isStatic ? settings.STATIC_FIELD_SUFFIX : settings.FIELD_SUFFIX;
+		}
+		else
+		{
+			prefix = null;
+			suffix = null;
+		}
+
+		return ContainerUtil.map(suggestedNames, new Function<String, String>()
+		{
+			@Override
+			public String fun(String name)
+			{
+				if(prefix == null && suffix == null)
+				{
+					return null;
+				}
+				return StringUtil.notNullize(prefix) + name + StringUtil.notNullize(suffix);
+			}
+		});
 	}
 
 	@NotNull
