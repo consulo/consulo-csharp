@@ -74,7 +74,6 @@ public enum CSharpCompilerChecks
 	CS0501(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // empty code block checks
 	CS0509(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // classes cant extend sealed type
 	CS0516(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // constructor cant call itself
-	CS0518(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // dynamic checks
 	CS0531(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // checks for body for only abstract items
 	CS0534(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // checks for missed impl of interfaces
 	//CS0535(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // checks for missed impl of abstract members
@@ -115,6 +114,7 @@ public enum CSharpCompilerChecks
 	CS1738(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // parameter default values check for order
 	CS1741(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // default value cant be specified for ref/out parameters
 	CS1960(CSharpLanguageVersion._2_0, HighlightInfoType.WRONG_REF), // in and out modifiers can be only for interface(or delegate) generic parameter
+	CS1980(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // dynamic checks
 	CS1984(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // await cant be used inside finally statements
 	CS1985(CSharpLanguageVersion._4_0, HighlightInfoType.WRONG_REF), // await cant be used inside catch statements
 	CS1998(CSharpLanguageVersion._4_0, HighlightInfoType.UNUSED_SYMBOL), // async modifer - then no await
