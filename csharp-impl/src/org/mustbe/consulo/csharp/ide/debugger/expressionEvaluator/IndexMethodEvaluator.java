@@ -27,10 +27,12 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import mono.debugger.ArrayValueMirror;
 import mono.debugger.FieldOrPropertyMirror;
 import mono.debugger.InvokeFlags;
 import mono.debugger.MethodMirror;
 import mono.debugger.NoObjectValueMirror;
+import mono.debugger.NumberValueMirror;
 import mono.debugger.ObjectValueMirror;
 import mono.debugger.PropertyMirror;
 import mono.debugger.Value;
@@ -110,6 +112,23 @@ public class IndexMethodEvaluator extends FieldOrPropertyEvaluator<CSharpIndexMe
 		{
 			context.pull(loadedValue, mirror);
 			return true;
+		}
+		return false;
+	}
+
+	@Override
+	protected boolean tryEvaluateNonObjectValue(CSharpEvaluateContext context, Value<?> value)
+	{
+		if(value instanceof ArrayValueMirror && myArgumentValues.size() == 1)
+		{
+			Value<?> argumentValue = myArgumentValues.get(0);
+			if(argumentValue instanceof NumberValueMirror)
+			{
+				int index = ((NumberValueMirror) argumentValue).value().intValue();
+
+				context.pull(((ArrayValueMirror) value).get(index), null);
+				return true;
+			}
 		}
 		return false;
 	}

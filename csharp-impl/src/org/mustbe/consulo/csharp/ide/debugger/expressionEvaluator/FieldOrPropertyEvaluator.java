@@ -124,8 +124,18 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 			{
 				return;
 			}
+
+			if(tryEvaluateNonObjectValue(context, popValue))
+			{
+				return;
+			}
 		}
 		throw new IllegalArgumentException("can't find member with name '" + name + "' from parent : " + typeMirror.qualifiedName());
+	}
+
+	protected boolean tryEvaluateNonObjectValue(CSharpEvaluateContext context, Value<?> value)
+	{
+		return false;
 	}
 
 	@SuppressWarnings("unchecked")
