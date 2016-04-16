@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.ide.findUsage;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.lexer.CSharpLexer;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpEnumConstantDeclarationImpl;
@@ -28,6 +29,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
@@ -168,18 +170,19 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 
 	@NotNull
 	@Override
-	public String getNodeText(@NotNull PsiElement element, boolean b)
+	@RequiredReadAction
+	public String getNodeText(@NotNull PsiElement element, boolean useFullName)
 	{
 		CSharpMethodDeclaration original = element.getUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER);
 		if(original != null)
 		{
-			return getNodeText(original, b);
+			return getNodeText(original, useFullName);
 		}
 
 		DotNetQualifiedElement accessorValueVariableOwner = element.getUserData(CSharpResolveUtil.ACCESSOR_VALUE_VARIABLE_OWNER);
 		if(accessorValueVariableOwner != null)
 		{
-			return getNodeText(accessorValueVariableOwner, b);
+			return getNodeText(accessorValueVariableOwner, useFullName);
 		}
 
 		if(element instanceof CSharpTypeDefStatement)
@@ -214,6 +217,19 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 			StringBuilder builder = new StringBuilder();
 			builder.append(CSharpTypeRefPresentationUtil.buildText(dotNetTypeRef, element)).append(" ").append(name);
 			return builder.toString();
+		}
+
+		if(element instanceof DotNetXXXAccessor)
+		{
+			PsiElement parent = element.getParent();
+
+			String nodeText = getNodeText(parent, useFullName);
+			PsiElement accessorElement = ((DotNetXXXAccessor) element).getAccessorElement();
+			if(accessorElement == null)
+			{
+				return nodeText;
+			}
+			return nodeText + "." + accessorElement.getText();
 		}
 
 		return "getNodeText : " + element.getClass().getSimpleName();

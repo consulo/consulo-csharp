@@ -173,7 +173,25 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 		}
 		else if(element instanceof DotNetXXXAccessor)
 		{
-			iconDescriptor.setMainIcon(AllIcons.Nodes.Method);
+			DotNetXXXAccessor.Kind accessorKind = ((DotNetXXXAccessor) element).getAccessorKind();
+			if(accessorKind != null)
+			{
+				switch(accessorKind)
+				{
+					case GET:
+						iconDescriptor.setMainIcon(AllIcons.Nodes.PropertyRead);
+						break;
+					case SET:
+						iconDescriptor.setMainIcon(AllIcons.Nodes.PropertyWrite);
+						break;
+					case ADD:
+						iconDescriptor.setMainIcon(AllIcons.Nodes.Event);
+						break;
+					case REMOVE:
+						iconDescriptor.setMainIcon(AllIcons.Nodes.Event);
+						break;
+				}
+			}
 
 			processModifierListOwner(element, iconDescriptor, flags);
 		}
