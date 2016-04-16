@@ -94,7 +94,7 @@ public class ChangeReturnToTypeRefFix extends BaseIntentionAction
 		}
 		String typeText = CSharpTypeRefPresentationUtil.buildShortText(myToTypeRef, element);
 
-		DotNetType type = CSharpFileFactory.createStubType(project, typeText, typeOfVariable);
+		DotNetType type = CSharpFileFactory.createMaybeStubType(project, typeText, typeOfVariable);
 
 		typeOfVariable.replace(type);
 	}

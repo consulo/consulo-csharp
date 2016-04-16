@@ -61,7 +61,7 @@ public class CSharpFileFactory
 	}
 
 	@NotNull
-	public static DotNetType createStubType(@NotNull Project project, @NotNull String typeText, @Nullable DotNetType oldType)
+	public static DotNetType createMaybeStubType(@NotNull Project project, @NotNull String typeText, @Nullable DotNetType oldType)
 	{
 		if(oldType instanceof StubBasedPsiElement)
 		{

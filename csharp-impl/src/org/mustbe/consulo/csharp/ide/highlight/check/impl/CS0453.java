@@ -79,7 +79,7 @@ public class CS0453 extends CompilerCheck<CSharpNullableType>
 				return;
 			}
 
-			DotNetType type = CSharpFileFactory.createStubType(project, innerType.getText(), element);
+			DotNetType type = CSharpFileFactory.createMaybeStubType(project, innerType.getText(), element);
 			element.replace(type);
 		}
 	}
