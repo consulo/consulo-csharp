@@ -27,9 +27,15 @@ public class CSharpErrorTypeRef extends DotNetTypeRef.Adapter
 {
 	private String myText;
 
-	public CSharpErrorTypeRef(String text)
+	public CSharpErrorTypeRef(@NotNull String text)
 	{
 		myText = text;
+	}
+
+	@NotNull
+	public String getText()
+	{
+		return myText;
 	}
 
 	@NotNull

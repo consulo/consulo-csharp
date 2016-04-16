@@ -307,7 +307,8 @@ public class GenericUnwrapTool
 			DotNetTypeRef innerTypeRef;
 			if(pair.getFirst() == null && pair.getSecond() == null)
 			{
-				innerTypeRef = new CSharpErrorTypeRef(referenceExpression.getReferenceName());
+				String referenceName = referenceExpression.getReferenceName();
+				innerTypeRef = referenceName == null ? DotNetTypeRef.ERROR_TYPE : new CSharpErrorTypeRef(referenceName);
 			}
 			else if(pair.getFirst() != null)
 			{
