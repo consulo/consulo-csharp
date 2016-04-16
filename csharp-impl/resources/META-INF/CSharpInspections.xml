@@ -33,7 +33,7 @@
 		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unusedUsing.UnusedUsingInspection"
 						 displayName="Unused using" groupName="C#" enabledByDefault="true"/>
 		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.languageKeywordUsage.LanguageKeywordUsageInspection"
-						 displayName="Language Keyword Usage" groupName="C#" enabledByDefault="true"/>
+						 displayName="Language Keyword Usage" groupName="C#" enabledByDefault="true" level="WEAK WARNING"/>
 
 		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.lang.doc.inspection.CSharpDocInspection"
 						 displayName="C# Documentation problems" groupName="C# Documentation" enabledByDefault="true"/>

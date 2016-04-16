@@ -17,7 +17,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalQuickFixOnPsiElement;
-import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
@@ -128,8 +127,7 @@ public class LanguageKeywordUsageInspection extends LocalInspectionTool
 			{
 				if(vmQName.equals(entry.getValue()) && PsiUtilCore.getElementType(referenceElement) != entry.getKey())
 				{
-					myHolder.registerProblem(referenceElement, "Reference does not match the current code style, use '" + CSharpCompletionUtil.textOfKeyword(entry.getKey()) + "'",
-							ProblemHighlightType.WEAK_WARNING, new ReplaceByKeywordFix(referenceElement, entry.getKey()));
+					myHolder.registerProblem(referenceElement, "Reference does not match the current code style, use '" + CSharpCompletionUtil.textOfKeyword(entry.getKey()) + "'", new ReplaceByKeywordFix(referenceElement, entry.getKey()));
 					break;
 				}
 			}
