@@ -49,6 +49,12 @@ public class CSharpStaticTypeRef extends DotNetTypeRef.Adapter
 	}
 
 	@NotNull
+	public String getText()
+	{
+		return myPresentableText;
+	}
+
+	@NotNull
 	@Override
 	public String getPresentableText()
 	{

@@ -24,8 +24,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.parameterInfo.CSharpParametersInfo;
-import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
@@ -144,7 +144,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 				DotNetTypeRef typeRef = dotNetParameter.toTypeRef(true);
 				if(typeRef == CSharpStaticTypeRef.__ARGLIST_TYPE)
 				{
-					return typeRef.getPresentableText();
+					return ((CSharpStaticTypeRef) typeRef).getText();
 				}
 				return generateLinksForType(typeRef, dotNetParameter, false) + " " + dotNetParameter.getName();
 			}
