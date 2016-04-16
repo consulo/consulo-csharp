@@ -118,7 +118,7 @@ public class CSharpNameSuggesterUtil
 			{
 				if(prefix == null && suffix == null)
 				{
-					return null;
+					return name;
 				}
 				return StringUtil.notNullize(prefix) + name + StringUtil.notNullize(suffix);
 			}
