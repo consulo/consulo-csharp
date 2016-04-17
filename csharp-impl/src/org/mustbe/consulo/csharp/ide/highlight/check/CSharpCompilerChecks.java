@@ -33,6 +33,7 @@ import com.intellij.psi.PsiElement;
  */
 public enum CSharpCompilerChecks
 {
+	CS0017(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // Main() duplicate check
 	CS0019(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // operator checks
 	CS0023(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), //  null cant be reference qualifier(dot operator)
 	CS0026(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), //  'this' dont exists in static context
