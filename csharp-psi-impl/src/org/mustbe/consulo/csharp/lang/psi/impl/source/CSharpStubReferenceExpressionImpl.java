@@ -20,6 +20,7 @@ import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.RequiredWriteAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
@@ -56,8 +57,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		super(node);
 	}
 
-	public CSharpStubReferenceExpressionImpl(@NotNull CSharpReferenceExpressionStub stub,
-			@NotNull IStubElementType<? extends CSharpReferenceExpressionStub, ?> nodeType)
+	public CSharpStubReferenceExpressionImpl(@NotNull CSharpReferenceExpressionStub stub, @NotNull IStubElementType<? extends CSharpReferenceExpressionStub, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -68,6 +68,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		return this;
 	}
 
+	@RequiredReadAction
 	@Override
 	@Nullable
 	public PsiElement getReferenceElement()
@@ -89,6 +90,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		return getStubOrPsiChild(CSharpStubElements.REFERENCE_EXPRESSION);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getReferenceName()
@@ -99,6 +101,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public String getReferenceNameWithAt()
 	{
 		CSharpReferenceExpressionStub stub = getStub();
@@ -118,6 +121,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	}
 
 	@Override
+	@RequiredReadAction
 	public TextRange getRangeInElement()
 	{
 		return CSharpReferenceExpressionImplUtil.getRangeInElement(this);
@@ -125,12 +129,13 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public ResolveResult[] multiResolve(final boolean incompleteCode)
 	{
-		String text = getText();
 		return multiResolve(incompleteCode, true);
 	}
 
+	@RequiredReadAction
 	@Override
 	@NotNull
 	public ResolveResult[] multiResolve(final boolean incompleteCode, final boolean resolveFromParent)
@@ -142,14 +147,15 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		return CSharpResolveCache.getInstance(getProject()).resolveWithCaching(this, CSharpReferenceExpressionImplUtil.OurResolver.INSTANCE, true, incompleteCode, resolveFromParent);
 	}
 
+	@RequiredReadAction
 	@Override
 	@NotNull
 	public ResolveResult[] multiResolveImpl(ResolveToKind kind, boolean resolveFromParent)
 	{
-		return CSharpReferenceExpressionImplUtil.multiResolveImpl(kind, CSharpReferenceExpressionImplUtil.findCallArgumentListOwner(kind, this),
-				this, resolveFromParent);
+		return CSharpReferenceExpressionImplUtil.multiResolveImpl(kind, CSharpReferenceExpressionImplUtil.findCallArgumentListOwner(kind, this), this, resolveFromParent);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public ResolveResult[] tryResolveFromQualifier(@NotNull PsiElement element)
@@ -159,11 +165,13 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public PsiElement resolve()
 	{
 		return CSharpResolveUtil.findFirstValidElement(multiResolve(false));
 	}
 
+	@RequiredReadAction
 	@Override
 	@NotNull
 	public ResolveToKind kind()
@@ -178,17 +186,21 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public String getCanonicalText()
 	{
 		return getText();
 	}
 
 	@Override
+	@RequiredWriteAction
 	public PsiElement handleElementRename(String s) throws IncorrectOperationException
 	{
 		PsiElement element = getReferenceElement();
 
-		PsiElement newIdentifier = CSharpFileFactory.createIdentifier(getProject(), s);
+		assert element != null;
+
+		PsiElement newIdentifier = CSharpFileFactory.createReferenceToken(getProject(), s);
 
 		element.replace(newIdentifier);
 		return this;
@@ -201,13 +213,13 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	}
 
 	@Override
+	@RequiredReadAction
 	public boolean isReferenceTo(PsiElement element)
 	{
 		PsiElement resolve = resolve();
 		if(element instanceof DotNetNamespaceAsElement && resolve instanceof DotNetNamespaceAsElement)
 		{
-			return Comparing.equal(((DotNetNamespaceAsElement) resolve).getPresentableQName(), ((DotNetNamespaceAsElement) element)
-					.getPresentableQName());
+			return Comparing.equal(((DotNetNamespaceAsElement) resolve).getPresentableQName(), ((DotNetNamespaceAsElement) element).getPresentableQName());
 		}
 		return element.getManager().areElementsEquivalent(element, resolve);
 	}
@@ -220,11 +232,13 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	}
 
 	@Override
+	@RequiredReadAction
 	public boolean isSoft()
 	{
 		return CSharpReferenceExpressionImplUtil.isSoft(this);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetTypeList getTypeArgumentList()
@@ -232,6 +246,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		return getStubOrPsiChild(CSharpStubElements.TYPE_ARGUMENTS);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef[] getTypeArgumentListRefs()
@@ -240,6 +255,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		return typeArgumentList == null ? DotNetTypeRef.EMPTY_ARRAY : typeArgumentList.getTypeRefs();
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean isGlobalElement()
 	{
@@ -252,6 +268,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		return referenceElement != null && referenceElement.getNode().getElementType() == CSharpSoftTokens.GLOBAL_KEYWORD;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getMemberAccessElement()
@@ -259,6 +276,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		return findChildByType(CSharpReferenceExpressionImplUtil.ourAccessTokens);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public AccessType getMemberAccessType()
@@ -292,11 +310,13 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
 		return CSharpReferenceExpressionImplUtil.toTypeRef(this, resolveFromParent);
 	}
 
+	@RequiredReadAction
 	@Override
 	@NotNull
 	public DotNetTypeRef toTypeRefWithoutCaching(ResolveToKind kind, boolean resolveFromParent)

@@ -82,22 +82,29 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 	DotNetExpression getQualifier();
 
 	@Nullable
+	@RequiredReadAction
 	PsiElement getReferenceElement();
 
 	@NotNull
+	@RequiredReadAction
 	ResolveToKind kind();
 
 	@Nullable
+	@RequiredReadAction
 	DotNetTypeList getTypeArgumentList();
 
 	@NotNull
+	@RequiredReadAction
 	DotNetTypeRef[] getTypeArgumentListRefs();
 
+	@RequiredReadAction
 	boolean isGlobalElement();
 
 	@Nullable
+	@RequiredReadAction
 	PsiElement getMemberAccessElement();
 
 	@NotNull
+	@RequiredReadAction
 	AccessType getMemberAccessType();
 }

@@ -114,6 +114,7 @@ public class CSharpIndexAccessExpressionImpl extends CSharpElementImpl implement
 		return (DotNetExpression) getFirstChild();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getReferenceName()
@@ -121,6 +122,7 @@ public class CSharpIndexAccessExpressionImpl extends CSharpElementImpl implement
 		throw new UnsupportedOperationException();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getReferenceNameWithAt()

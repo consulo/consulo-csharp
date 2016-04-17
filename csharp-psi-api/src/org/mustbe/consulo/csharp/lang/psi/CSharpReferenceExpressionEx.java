@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
@@ -28,14 +29,18 @@ import com.intellij.psi.ResolveResult;
 public interface CSharpReferenceExpressionEx extends CSharpReferenceExpression
 {
 	@NotNull
+	@RequiredReadAction
 	DotNetTypeRef toTypeRefWithoutCaching(ResolveToKind kind, boolean resolveFromParent);
 
 	@NotNull
+	@RequiredReadAction
 	ResolveResult[] multiResolve(final boolean incompleteCode, final boolean resolveFromParent);
 
 	@NotNull
+	@RequiredReadAction
 	ResolveResult[] multiResolveImpl(ResolveToKind kind, boolean resolveFromParent);
 
 	@NotNull
+	@RequiredReadAction
 	ResolveResult[] tryResolveFromQualifier(@NotNull PsiElement element);
 }

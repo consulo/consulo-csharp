@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -26,11 +27,14 @@ import com.intellij.psi.PsiElement;
 public interface CSharpQualifiedNonReference extends PsiElement
 {
 	@Nullable
+	@RequiredReadAction
 	String getReferenceName();
 
 	@Nullable
+	@RequiredReadAction
 	String getReferenceNameWithAt();
 
 	@Nullable
+	@RequiredReadAction
 	PsiElement getQualifier();
 }

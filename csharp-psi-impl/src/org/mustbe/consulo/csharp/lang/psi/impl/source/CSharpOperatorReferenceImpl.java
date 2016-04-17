@@ -520,6 +520,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		return array;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getReferenceName()
@@ -527,6 +528,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		throw new UnsupportedOperationException();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getReferenceNameWithAt()
@@ -534,6 +536,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		throw new UnsupportedOperationException();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getQualifier()
