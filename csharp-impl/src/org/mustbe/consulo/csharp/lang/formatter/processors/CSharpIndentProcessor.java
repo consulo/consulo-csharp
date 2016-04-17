@@ -166,14 +166,15 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 	public Indent getChildIndent()
 	{
 		IElementType elementType = myBlock.getNode().getElementType();
-		if(elementType == CSharpStubElements.FILE || elementType == CSharpElements.MODIFIER_LIST || elementType == CSharpStubElements.MODIFIER_LIST)
+		if(elementType == CSharpStubElements.FILE ||
+				elementType == CSharpElements.MODIFIER_LIST ||
+				elementType == CSharpElements.IF_STATEMENT ||
+				elementType == CSharpElements.TRY_STATEMENT ||
+				elementType == CSharpStubElements.MODIFIER_LIST)
 		{
 			return Indent.getNoneIndent();
 		}
-		else if(elementType == CSharpElements.TRY_STATEMENT)
-		{
-			return Indent.getNoneIndent();
-		}
+
 		return Indent.getNormalIndent();
 	}
 }
