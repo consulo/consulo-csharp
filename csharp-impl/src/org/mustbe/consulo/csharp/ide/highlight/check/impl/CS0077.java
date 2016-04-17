@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAsExpressionImpl;
@@ -79,7 +80,7 @@ public class CS0077 extends CompilerCheck<CSharpAsExpressionImpl>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpAsExpressionImpl element)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpAsExpressionImpl element)
 	{
 		DotNetTypeRef typeRef = element.toTypeRef(false);
 		if(typeRef == DotNetTypeRef.ERROR_TYPE)
@@ -93,6 +94,6 @@ public class CS0077 extends CompilerCheck<CSharpAsExpressionImpl>
 			assert type != null;
 			return newBuilder(element.getAsKeyword(), "as", formatTypeRef(typeRef, element)).addQuickFix(new AddQuestMarkQuickFix(type));
 		}
-		return super.checkImpl(languageVersion, element);
+		return super.checkImpl(languageVersion, highlightContext, element);
 	}
 }

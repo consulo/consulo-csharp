@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -34,7 +35,7 @@ public class CC0005 extends CompilerCheck<CSharpConstructorSuperCallImpl>
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public List<HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpConstructorSuperCallImpl element)
+	public List<HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpConstructorSuperCallImpl element)
 	{
 		return CC0001.checkReference(element, Arrays.asList(element));
 	}

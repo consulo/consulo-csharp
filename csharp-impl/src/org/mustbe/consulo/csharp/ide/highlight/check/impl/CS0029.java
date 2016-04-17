@@ -24,6 +24,7 @@ import org.mustbe.consulo.csharp.ide.codeInsight.actions.AddModifierFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CastExpressionToTypeRef;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.ChangeReturnToTypeRefFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.ChangeVariableToTypeRefFix;
+import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightKey;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
@@ -72,7 +73,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull PsiElement element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull PsiElement element)
 	{
 		Trinity<? extends DotNetTypeRef, ? extends DotNetTypeRef, ? extends PsiElement> resolve = resolve(element);
 		if(resolve == null)

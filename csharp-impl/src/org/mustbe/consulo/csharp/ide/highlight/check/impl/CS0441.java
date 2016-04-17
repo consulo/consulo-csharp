@@ -22,6 +22,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
+import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -39,12 +40,12 @@ public class CS0441 extends CompilerCheck<DotNetTypeDeclaration>
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public List<? extends HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetTypeDeclaration element)
+	public List<? extends HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull DotNetTypeDeclaration element)
 	{
 		DotNetModifierList modifierList = element.getModifierList();
 		if(modifierList == null)
 		{
-			return super.check(languageVersion, element);
+			return super.check(languageVersion, highlightContext, element);
 		}
 		PsiElement sealedModifierElement = modifierList.getModifierElement(CSharpModifier.SEALED);
 		PsiElement staticModifierElement = modifierList.getModifierElement(CSharpModifier.STATIC);
@@ -56,6 +57,6 @@ public class CS0441 extends CompilerCheck<DotNetTypeDeclaration>
 			list.add(newBuilder(staticModifierElement, name).addQuickFix(new RemoveModifierFix(DotNetModifier.STATIC, element)));
 			return list;
 		}
-		return super.check(languageVersion, element);
+		return super.check(languageVersion, highlightContext, element);
 	}
 }

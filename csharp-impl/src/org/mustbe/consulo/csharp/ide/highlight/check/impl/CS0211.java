@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNewExpression;
@@ -37,7 +38,7 @@ public class CS0211 extends CompilerCheck<CSharpPrefixExpressionImpl>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpPrefixExpressionImpl element)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpPrefixExpressionImpl element)
 	{
 		IElementType operatorElementType = element.getOperatorElement().getOperatorElementType();
 		if(operatorElementType == CSharpTokens.AND)
@@ -49,6 +50,6 @@ public class CS0211 extends CompilerCheck<CSharpPrefixExpressionImpl>
 				return newBuilder(argumentExpression);
 			}
 		}
-		return super.checkImpl(languageVersion, element);
+		return super.checkImpl(languageVersion, highlightContext, element);
 	}
 }

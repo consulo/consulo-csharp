@@ -20,10 +20,10 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import org.mustbe.consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.msil.representation.MsilFileRepresentationVirtualFile;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
@@ -31,7 +31,6 @@ import com.intellij.codeInsight.daemon.impl.HighlightVisitor;
 import com.intellij.codeInsight.daemon.impl.analysis.HighlightInfoHolder;
 import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
 import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
@@ -44,6 +43,7 @@ import com.intellij.psi.PsiFile;
 public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements HighlightVisitor
 {
 	private HighlightInfoHolder myHighlightInfoHolder;
+	private CSharpHighlightContext myHighlightContext;
 
 	@Override
 	@RequiredReadAction
@@ -52,12 +52,7 @@ public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements 
 		ProgressIndicatorProvider.checkCanceled();
 		if(element instanceof DotNetElement)
 		{
-			CSharpLanguageVersion languageVersion = CSharpLanguageVersion.HIGHEST;
-			CSharpSimpleModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpSimpleModuleExtension.class);
-			if(extension != null)
-			{
-				languageVersion = extension.getLanguageVersion();
-			}
+			CSharpLanguageVersion languageVersion = myHighlightContext.getLanguageVersion();
 
 			for(CSharpCompilerChecks classEntry : CSharpCompilerChecks.VALUES)
 			{
@@ -66,7 +61,7 @@ public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements 
 				if(languageVersion.ordinal() >= classEntry.getLanguageVersion().ordinal() && classEntry.getTargetClass().isAssignableFrom(element
 						.getClass()))
 				{
-					List<? extends CompilerCheck.HighlightInfoFactory> results = classEntry.check(languageVersion, element);
+					List<? extends CompilerCheck.HighlightInfoFactory> results = classEntry.check(languageVersion, myHighlightContext, element);
 					if(results.isEmpty())
 					{
 						continue;
@@ -105,8 +100,10 @@ public class CSharpCompilerCheckVisitor extends CSharpElementVisitor implements 
 	@Override
 	public boolean analyze(@NotNull PsiFile psiFile, boolean b, @NotNull HighlightInfoHolder highlightInfoHolder, @NotNull Runnable runnable)
 	{
+		myHighlightContext = new CSharpHighlightContext(psiFile);
 		myHighlightInfoHolder = highlightInfoHolder;
 		runnable.run();
+		myHighlightContext = null;
 		return true;
 	}
 

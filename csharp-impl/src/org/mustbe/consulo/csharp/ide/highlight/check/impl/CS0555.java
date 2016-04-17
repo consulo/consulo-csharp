@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
@@ -36,8 +37,7 @@ public class CS0555 extends CompilerCheck<CSharpConversionMethodDeclaration>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion,
-			@NotNull CSharpConversionMethodDeclaration element)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpConversionMethodDeclaration element)
 	{
 		DotNetTypeRef typeRef1 = element.getReturnTypeRef();
 		DotNetTypeRef typeRef2 = ArrayUtil2.safeGet(element.getParameterTypeRefs(), 0);
@@ -55,6 +55,6 @@ public class CS0555 extends CompilerCheck<CSharpConversionMethodDeclaration>
 			}
 			return newBuilder(operatorElement);
 		}
-		return super.checkImpl(languageVersion, element);
+		return super.checkImpl(languageVersion, highlightContext, element);
 	}
 }

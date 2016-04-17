@@ -22,6 +22,7 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNativeType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -29,7 +30,6 @@ import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
-import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -44,12 +44,12 @@ public class CS1980 extends CompilerCheck<CSharpNativeType>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpNativeType element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpNativeType element)
 	{
 		PsiElement typeElement = element.getTypeElement();
 		if(element.getTypeElementType() == CSharpTokens.DYNAMIC_KEYWORD)
 		{
-			DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(element, DotNetSimpleModuleExtension.class);
+			DotNetSimpleModuleExtension<?> extension = highlightContext.getDotNetModuleExtension();
 			if(extension == null)
 			{
 				return null;

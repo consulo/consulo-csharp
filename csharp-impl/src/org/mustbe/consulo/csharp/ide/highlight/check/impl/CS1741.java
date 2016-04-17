@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveVariableInitializer;
+import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -36,7 +37,7 @@ public class CS1741 extends CompilerCheck<DotNetParameter>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetParameter element)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull DotNetParameter element)
 	{
 		DotNetExpression initializer = element.getInitializer();
 		if(initializer != null)
@@ -49,6 +50,6 @@ public class CS1741 extends CompilerCheck<DotNetParameter>
 				builder.addQuickFix(new RemoveModifierFix(isRef ? CSharpModifier.REF : CSharpModifier.OUT, element));
 				return builder;
 			}
-		} return super.checkImpl(languageVersion, element);
+		} return super.checkImpl(languageVersion, highlightContext, element);
 	}
 }

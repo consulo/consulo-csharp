@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.RequiredWriteAction;
+import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAwaitExpressionImpl;
@@ -147,8 +148,8 @@ public class CS1644 extends CompilerCheck<PsiElement>
 					{
 						return element;
 					}
-					else if(element.getNode() != null && (element.getNode().getElementType() == CSharpElements.TYPE_ARGUMENTS || element.getNode()
-							.getElementType() == CSharpStubElements.TYPE_ARGUMENTS))
+					else if(element.getNode() != null && (element.getNode().getElementType() == CSharpElements.TYPE_ARGUMENTS || element.getNode().getElementType() == CSharpStubElements
+							.TYPE_ARGUMENTS))
 					{
 						return element;
 					}
@@ -158,6 +159,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			add(new Feature("implicitly typed local variable", CSharpLanguageVersion._3_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
+				@RequiredReadAction
 				public PsiElement fun(PsiElement element)
 				{
 					if(element instanceof CSharpLocalVariable && ((CSharpLocalVariable) element).toTypeRef(false) == DotNetTypeRef.AUTO_TYPE)
@@ -170,6 +172,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			add(new Feature("extension methods", CSharpLanguageVersion._3_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
+				@RequiredReadAction
 				public PsiElement fun(PsiElement element)
 				{
 					if(element instanceof CSharpMethodDeclaration)
@@ -207,8 +210,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 					if(element instanceof CSharpConstructorDeclaration)
 					{
 						PsiElement parent = element.getParent();
-						if(parent instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) parent).isStruct() && ((CSharpConstructorDeclaration)
-								element).getParameters().length == 0)
+						if(parent instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) parent).isStruct() && ((CSharpConstructorDeclaration) element).getParameters().length == 0)
 						{
 							return ((CSharpConstructorDeclaration) element).getNameIdentifier();
 						}
@@ -219,6 +221,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			add(new Feature("property initializer", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
+				@RequiredReadAction
 				public PsiElement fun(PsiElement element)
 				{
 					if(element instanceof CSharpPropertyDeclaration)
@@ -287,12 +290,12 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			add(new Feature("string interpolation", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
+				@RequiredReadAction
 				public PsiElement fun(PsiElement element)
 				{
 					if(element instanceof CSharpConstantExpressionImpl)
 					{
-						return ((CSharpConstantExpressionImpl) element).getLiteralType() == CSharpTokensImpl.INTERPOLATION_STRING_LITERAL ? element
-								: null;
+						return ((CSharpConstantExpressionImpl) element).getLiteralType() == CSharpTokensImpl.INTERPOLATION_STRING_LITERAL ? element : null;
 					}
 					return null;
 				}
@@ -312,12 +315,12 @@ public class CS1644 extends CompilerCheck<PsiElement>
 			add(new Feature("await in catch/finally", CSharpLanguageVersion._6_0, new Function<PsiElement, PsiElement>()
 			{
 				@Override
+				@RequiredReadAction
 				public PsiElement fun(PsiElement element)
 				{
 					if(element instanceof CSharpAwaitExpressionImpl)
 					{
-						DotNetStatement statement = PsiTreeUtil.getParentOfType(element, CSharpFinallyStatementImpl.class,
-								CSharpCatchStatementImpl.class);
+						DotNetStatement statement = PsiTreeUtil.getParentOfType(element, CSharpFinallyStatementImpl.class, CSharpCatchStatementImpl.class);
 						if(statement != null)
 						{
 							return ((CSharpAwaitExpressionImpl) element).getAwaitKeywordElement();
@@ -361,7 +364,7 @@ public class CS1644 extends CompilerCheck<PsiElement>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull PsiElement element)
+	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull PsiElement element)
 	{
 		for(Feature feature : myFeatures)
 		{

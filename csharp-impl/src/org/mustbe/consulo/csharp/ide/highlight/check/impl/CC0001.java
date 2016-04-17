@@ -28,6 +28,7 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CastNArgumentToTypeRefFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedConstructorFix;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.CreateUnresolvedMethodFix;
+import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.ide.parameterInfo.CSharpParametersInfo;
 import org.mustbe.consulo.csharp.lang.doc.CSharpDocUtil;
@@ -82,7 +83,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public List<HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpReferenceExpression expression)
+	public List<HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpReferenceExpression expression)
 	{
 		PsiElement referenceElement = expression.getReferenceElement();
 		if(referenceElement == null || expression.isSoft() || CSharpDocUtil.isInsideDoc(expression))

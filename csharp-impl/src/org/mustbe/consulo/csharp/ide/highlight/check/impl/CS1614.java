@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
@@ -121,7 +122,7 @@ public class CS1614 extends CompilerCheck<CSharpAttribute>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpAttribute element)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpAttribute element)
 	{
 		CSharpReferenceExpressionEx referenceExpression = (CSharpReferenceExpressionEx) element.getReferenceExpression();
 		if(referenceExpression == null)
@@ -148,7 +149,7 @@ public class CS1614 extends CompilerCheck<CSharpAttribute>
 			compilerCheckBuilder.addQuickFix(new UseTypeWithSuffixFix(referenceExpression, suffixType));
 			return compilerCheckBuilder;
 		}
-		return super.checkImpl(languageVersion, element);
+		return super.checkImpl(languageVersion, highlightContext, element);
 	}
 
 	@Nullable

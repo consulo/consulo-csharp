@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -36,7 +37,7 @@ public class CS0023 extends CompilerCheck<DotNetElement>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetElement element)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull DotNetElement element)
 	{
 		if(element instanceof CSharpReferenceExpression)
 		{
@@ -48,7 +49,7 @@ public class CS0023 extends CompilerCheck<DotNetElement>
 				return newBuilder(memberAccessElement, ".", "null");
 			}
 		}
-		return super.checkImpl(languageVersion, element);
+		return super.checkImpl(languageVersion, highlightContext, element);
 	}
 
 	public static boolean isNullConstant(@Nullable PsiElement element)

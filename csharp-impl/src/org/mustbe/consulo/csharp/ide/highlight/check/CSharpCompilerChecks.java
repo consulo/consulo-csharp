@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.psi.PsiElement;
@@ -155,9 +156,9 @@ public enum CSharpCompilerChecks
 
 	@NotNull
 	@RequiredReadAction
-	public List<? extends CompilerCheck.HighlightInfoFactory> check(CSharpLanguageVersion languageVersion, PsiElement element)
+	public List<? extends CompilerCheck.HighlightInfoFactory> check(CSharpLanguageVersion languageVersion, CSharpHighlightContext highlightContext, PsiElement element)
 	{
-		List<? extends CompilerCheck.HighlightInfoFactory> results = myCheck.check(languageVersion, element);
+		List<? extends CompilerCheck.HighlightInfoFactory> results = myCheck.check(languageVersion, highlightContext, element);
 		if(results.isEmpty())
 		{
 			return Collections.emptyList();

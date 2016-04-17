@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
 import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
+import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -153,9 +154,9 @@ public abstract class CompilerCheck<T extends PsiElement>
 
 	@NotNull
 	@RequiredReadAction
-	public List<? extends HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull T element)
+	public List<? extends HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull T element)
 	{
-		HighlightInfoFactory check = checkImpl(languageVersion, element);
+		HighlightInfoFactory check = checkImpl(languageVersion, highlightContext, element);
 		if(check == null)
 		{
 			return Collections.emptyList();
@@ -165,7 +166,7 @@ public abstract class CompilerCheck<T extends PsiElement>
 
 	@Nullable
 	@RequiredReadAction
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull T element)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull T element)
 	{
 		return null;
 	}

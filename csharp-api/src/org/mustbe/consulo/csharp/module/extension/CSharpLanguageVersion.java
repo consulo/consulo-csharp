@@ -56,6 +56,7 @@ public enum CSharpLanguageVersion implements Named, NamedPointer<CSharpLanguageV
 		return CSharpBundle.message("csharp.version." + name());
 	}
 
+	@NotNull
 	@Override
 	public CSharpLanguageVersion get()
 	{

@@ -22,6 +22,7 @@ import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.RequiredWriteAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
+import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifierList;
@@ -99,7 +100,7 @@ public class CS0227 extends CompilerCheck<DotNetElement>
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull DotNetElement element)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull DotNetElement element)
 	{
 		PsiElement targetElement = getElement(element);
 		if(targetElement == null)
@@ -107,7 +108,7 @@ public class CS0227 extends CompilerCheck<DotNetElement>
 			return null;
 		}
 
-		CSharpSimpleModuleExtension extension = ModuleUtilCore.getExtension(element, CSharpSimpleModuleExtension.class);
+		CSharpSimpleModuleExtension extension = highlightContext.getCSharpModuleExtension();
 
 		if(extension != null && !extension.isAllowUnsafeCode())
 		{

@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
@@ -96,7 +97,7 @@ public class CS1620 extends CompilerCheck<CSharpMethodCallExpressionImpl>
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public List<CompilerCheckBuilder> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpMethodCallExpressionImpl element)
+	public List<CompilerCheckBuilder> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpMethodCallExpressionImpl element)
 	{
 		ResolveResult resolveResult = CSharpResolveUtil.findFirstValidResult(element.multiResolve(true));
 		if(!(resolveResult instanceof MethodResolveResult))
