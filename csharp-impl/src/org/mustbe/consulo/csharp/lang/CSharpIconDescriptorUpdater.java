@@ -133,7 +133,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 		else if(element instanceof DotNetGenericParameter || element instanceof CSharpTypeDefStatement)
 		{
 			iconDescriptor.setMainIcon(AllIcons.Nodes.TypeAlias);
-			iconDescriptor.addLayerIcon(AllIcons.Nodes.C_public);
+			iconDescriptor.setRightIcon(AllIcons.Nodes.C_public);
 		}
 		else if(element instanceof CSharpLabeledStatementImpl)
 		{
