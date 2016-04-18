@@ -273,6 +273,7 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 		spaceIfNoBlankLines(myBuilder.beforeInside(COLON, CSharpStubElements.CONSTRUCTOR_DECLARATION), true);
 
 		myBuilder.around(COLONCOLON).none();
+		myBuilder.aroundInside(COLON, CSharpElements.GENERIC_CONSTRAINT).spaces(1);
 		myBuilder.around(DARROW).spaceIf(commonSettings.SPACE_AROUND_LAMBDA_ARROW);
 		myBuilder.around(ARROW).none();
 

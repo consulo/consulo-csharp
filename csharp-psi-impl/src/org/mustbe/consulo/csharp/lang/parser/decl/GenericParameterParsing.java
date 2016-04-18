@@ -16,15 +16,13 @@
 
 package org.mustbe.consulo.csharp.lang.parser.decl;
 
-import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import org.mustbe.consulo.csharp.lang.parser.SharedParsingHelpers;
+import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.lang.PsiBuilder;
-import com.intellij.openapi.util.Pair;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.intellij.util.NotNullFunction;
 
 /**
  * @author VISTALL
@@ -90,25 +88,27 @@ public class GenericParameterParsing extends SharedParsingHelpers
 		PsiBuilder.Marker marker = builder.mark();
 
 		boolean empty = true;
-		while(true)
+		while(!builder.eof())
 		{
-			Pair<PsiBuilder.Marker, Void> p = parseWithSoftElements(new NotNullFunction<CSharpBuilderWrapper, Pair<PsiBuilder.Marker, Void>>()
-			{
-				@NotNull
-				@Override
-				public Pair<PsiBuilder.Marker, Void> fun(CSharpBuilderWrapper builderWrapper)
-				{
-					return new Pair<PsiBuilder.Marker, Void>(parseGenericConstraint(builderWrapper), null);
-				}
-			}, builder, WHERE_KEYWORD);
+			builder.enableSoftKeyword(CSharpSoftTokens.WHERE_KEYWORD);
+			IElementType elementType = builder.getTokenType();
+			builder.disableSoftKeyword(CSharpSoftTokens.WHERE_KEYWORD);
 
-			if(p.getFirst() == null)
+			if(elementType == CSharpSoftTokens.WHERE_KEYWORD)
 			{
-				break;
+				PsiBuilder.Marker genericConstraint = parseGenericConstraint(builder);
+				if(genericConstraint == null)
+				{
+					break;
+				}
+				else
+				{
+					empty = false;
+				}
 			}
 			else
 			{
-				empty = false;
+				break;
 			}
 		}
 

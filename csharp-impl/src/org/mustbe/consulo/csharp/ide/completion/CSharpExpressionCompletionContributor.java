@@ -60,6 +60,7 @@ import org.mustbe.consulo.dotnet.psi.*;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import com.intellij.codeInsight.AutoPopupController;
 import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
@@ -70,6 +71,7 @@ import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.codeInsight.lookup.LookupElementDecorator;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.IconDescriptorUpdaters;
 import com.intellij.openapi.editor.Editor;
@@ -525,6 +527,23 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 						if(builder == null)
 						{
 							return true;
+						}
+
+						if(element instanceof DotNetGenericParameter && expression.getParent() instanceof CSharpGenericConstraint)
+						{
+							builder = new LookupElementDecorator<LookupElement>(builder)
+							{
+								@Override
+								@RequiredDispatchThread
+								public void handleInsert(InsertionContext context)
+								{
+									if(TailType.COND_EXPR_COLON.isApplicable(context))
+									{
+										TailType.COND_EXPR_COLON.processTail(context.getEditor(), context.getTailOffset());
+									}
+									AutoPopupController.getInstance(context.getProject()).scheduleAutoPopup(context.getEditor());
+								}
+							};
 						}
 
 						if(element instanceof CSharpMethodDeclaration && !((CSharpMethodDeclaration) element).isDelegate())
