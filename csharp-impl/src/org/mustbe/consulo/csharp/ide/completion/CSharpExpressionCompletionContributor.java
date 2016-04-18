@@ -594,6 +594,46 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 			}
 		});
 
+		extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
+		{
+			@RequiredReadAction
+			@Override
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			{
+				if(isCorrentPosition(parameters.getPosition()))
+				{
+					TokenSet set = TokenSet.create(CSharpTokens.AS_KEYWORD, CSharpTokens.IS_KEYWORD);
+					CSharpCompletionUtil.tokenSetToLookup(result, set, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
+					{
+						@NotNull
+						@Override
+						public LookupElement fun(LookupElementBuilder lookupElementBuilder, IElementType iElementType)
+						{
+							lookupElementBuilder = lookupElementBuilder.withInsertHandler(SpaceInsertHandler.INSTANCE);
+							return lookupElementBuilder;
+						}
+					}, null);
+				}
+			}
+
+			@RequiredReadAction
+			public boolean isCorrentPosition(PsiElement position)
+			{
+				PsiElement prev = PsiTreeUtil.prevVisibleLeaf(position);
+				if(prev == null)
+				{
+					return false;
+				}
+
+				PsiElement expr = PsiTreeUtil.getParentOfType(prev, DotNetExpression.class);
+				if(expr != null && expr.getTextRange().getEndOffset() == prev.getTextRange().getEndOffset())
+				{
+					return true;
+				}
+				return false;
+			}
+		});
+
 		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class).withSuperParent(2, CSharpArrayInitializerImpl.class).withSuperParent(3,
 				CSharpNewExpressionImpl.class), new CompletionProvider()
 		{
