@@ -205,6 +205,9 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 			myBuilder.beforeInside(CSharpTokens.RPAR, elementType).spaces(0);
 		}
 
+		myBuilder.before(CSharpElements.PARAMETER_LIST).none();
+		myBuilder.before(CSharpStubElements.PARAMETER_LIST).none();
+
 		// (Type
 		myBuilder.afterInside(CSharpTokens.LPAR, CSharpStubElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_PARENTHESES);
 		myBuilder.afterInside(CSharpTokens.LPAR, CSharpElements.PARAMETER_LIST).spaceIf(commonSettings.SPACE_WITHIN_METHOD_PARENTHESES);
