@@ -25,7 +25,6 @@ import org.mustbe.consulo.codeInsight.completion.CompletionProvider;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import org.mustbe.consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import org.mustbe.consulo.csharp.ide.completion.util.ExpressionOrStatementInsertHandler;
-import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
@@ -249,17 +248,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 						return t;
 					}
 				}, null);
-				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.THROW_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
-
-				{
-					@NotNull
-					@Override
-					public LookupElement fun(LookupElementBuilder t, IElementType v)
-					{
-						t = t.withInsertHandler(SpaceInsertHandler.INSTANCE);
-						return t;
-					}
-				}, null);
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.THROW_KEYWORD, CSharpCompletionUtil.ourSpaceInsert, null);
 			}
 		});
 
@@ -336,16 +325,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
-				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.CONST_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
-				{
-					@NotNull
-					@Override
-					public LookupElement fun(LookupElementBuilder lookupElementBuilder, IElementType elementType)
-					{
-						lookupElementBuilder = lookupElementBuilder.withInsertHandler(SpaceInsertHandler.INSTANCE);
-						return lookupElementBuilder;
-					}
-				}, null);
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.CONST_KEYWORD, CSharpCompletionUtil.ourSpaceInsert, null);
 			}
 		});
 
@@ -462,7 +442,6 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 	}
-
 
 
 	@RequiredReadAction

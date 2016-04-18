@@ -541,7 +541,6 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 									{
 										TailType.COND_EXPR_COLON.processTail(context.getEditor(), context.getTailOffset());
 									}
-									AutoPopupController.getInstance(context.getProject()).scheduleAutoPopup(context.getEditor());
 								}
 							};
 						}

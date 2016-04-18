@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
@@ -44,6 +45,17 @@ import com.intellij.util.containers.ConcurrentFactoryMap;
  */
 public class CSharpCompletionUtil
 {
+	public static NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement> ourSpaceInsert = new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
+	{
+		@NotNull
+		@Override
+		public LookupElement fun(LookupElementBuilder lookupElementBuilder, IElementType iElementType)
+		{
+			lookupElementBuilder = lookupElementBuilder.withInsertHandler(SpaceInsertHandler.INSTANCE);
+			return lookupElementBuilder;
+		}
+	};
+
 	private static Map<IElementType, String> ourCache = new ConcurrentFactoryMap<IElementType, String>()
 	{
 		@Nullable

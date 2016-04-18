@@ -31,29 +31,20 @@ import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
 import org.mustbe.consulo.dotnet.DotNetRunUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetStatement;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetUserType;
+import org.mustbe.consulo.dotnet.psi.*;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.completion.CompletionUtilCore;
-import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.ArrayUtil;
-import com.intellij.util.NotNullPairFunction;
 import com.intellij.util.ProcessingContext;
 
 /**
@@ -133,16 +124,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 					return;
 				}
 
-				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.CONST_KEYWORD, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
-				{
-					@NotNull
-					@Override
-					public LookupElement fun(LookupElementBuilder lookupElementBuilder, IElementType elementType)
-					{
-						lookupElementBuilder = lookupElementBuilder.withInsertHandler(SpaceInsertHandler.INSTANCE);
-						return lookupElementBuilder;
-					}
-				}, null);
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.CONST_KEYWORD, CSharpCompletionUtil.ourSpaceInsert, null);
 			}
 		});
 
@@ -191,6 +173,42 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 			}
 		});
 
+		extend(CompletionType.BASIC, psiElement(), new CompletionProvider()
+		{
+			@RequiredReadAction
+			@Override
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			{
+				PsiElement position = parameters.getPosition();
+				if(isCorrectPosition(position))
+				{
+					CSharpCompletionUtil.elementToLookup(result, CSharpSoftTokens.WHERE_KEYWORD, CSharpCompletionUtil.ourSpaceInsert, null);
+				}
+			}
+
+			@RequiredReadAction
+			private boolean isCorrectPosition(PsiElement position)
+			{
+				PsiElement prev = PsiTreeUtil.prevVisibleLeaf(position);
+				if(prev == null)
+				{
+					return false;
+				}
+
+				if(PsiUtilCore.getElementType(prev) == CSharpTokens.RPAR)
+				{
+					DotNetGenericParameterListOwner listOwner = PsiTreeUtil.getParentOfType(prev, DotNetGenericParameterListOwner.class);
+					if(listOwner == null || listOwner.getGenericParametersCount() == 0)
+					{
+						return false;
+					}
+
+					return true;
+				}
+				return false;
+			}
+		});
+
 		extend(CompletionType.BASIC, CSharpPatterns.referenceExpression().inside(CSharpUserType.class).inside(CSharpGenericConstraint.class).afterLeaf(psiElement(CSharpTokens.COLON)),
 				new CompletionProvider()
 		{
@@ -234,68 +252,57 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 						TokenSet tokenVal = TokenSet.orSet(CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START, TokenSet.create(CSharpTokens.DELEGATE_KEYWORD,
 								CSharpTokens.NAMESPACE_KEYWORD));
 
-						CSharpCompletionUtil.tokenSetToLookup(completionResultSet, tokenVal, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
-
+						CSharpCompletionUtil.tokenSetToLookup(completionResultSet, tokenVal, CSharpCompletionUtil.ourSpaceInsert, new Condition<IElementType>()
+						{
+							@Override
+							@RequiredReadAction
+							public boolean value(IElementType elementType)
+							{
+								if(elementType == CSharpTokens.IN_KEYWORD)
 								{
-									@NotNull
-									@Override
-									public LookupElement fun(LookupElementBuilder t, IElementType v)
+									return false;
+								}
+								if(elementType == CSharpSoftTokens.ASYNC_KEYWORD)
+								{
+									CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(parameters.getOriginalPosition(), CSharpSimpleLikeMethodAsElement.class);
+
+									if(methodAsElement instanceof DotNetMethodDeclaration && DotNetRunUtil.isEntryPoint((DotNetMethodDeclaration) methodAsElement))
 									{
-										t = t.withInsertHandler(SpaceInsertHandler.INSTANCE);
-										return t;
+										return false;
 									}
-								}, new Condition<IElementType>()
-								{
-									@Override
-									@RequiredReadAction
-									public boolean value(IElementType elementType)
+
+									if(!CSharpModuleUtil.findLanguageVersion(position).isAtLeast(CSharpLanguageVersion._4_0))
 									{
-										if(elementType == CSharpTokens.IN_KEYWORD)
-										{
-											return false;
-										}
-										if(elementType == CSharpSoftTokens.ASYNC_KEYWORD)
-										{
-											CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(parameters.getOriginalPosition(), CSharpSimpleLikeMethodAsElement.class);
-
-											if(methodAsElement instanceof DotNetMethodDeclaration && DotNetRunUtil.isEntryPoint((DotNetMethodDeclaration) methodAsElement))
-											{
-												return false;
-											}
-
-											if(!CSharpModuleUtil.findLanguageVersion(position).isAtLeast(CSharpLanguageVersion._4_0))
-											{
-												return false;
-											}
-										}
-
-										DotNetParameter parameter = PsiTreeUtil.getParentOfType(position, DotNetParameter.class);
-
-										if(elementType == CSharpTokens.REF_KEYWORD ||
-												elementType == CSharpTokens.OUT_KEYWORD ||
-												elementType == CSharpTokens.THIS_KEYWORD ||
-												elementType == CSharpTokens.PARAMS_KEYWORD)
-										{
-											if(parameter == null)
-											{
-												return false;
-											}
-											if(elementType == CSharpTokenSets.THIS_KEYWORD)
-											{
-												return parameter.getIndex() == 0;
-											}
-											else if(elementType == CSharpTokens.PARAMS_KEYWORD)
-											{
-												DotNetParameterListOwner owner = parameter.getOwner();
-												return owner != null && ArrayUtil.getLastElement(owner.getParameters()) == parameter;
-											}
-											return true;
-										}
-
-										return parameter == null;
+										return false;
 									}
 								}
-						);
+
+								DotNetParameter parameter = PsiTreeUtil.getParentOfType(position, DotNetParameter.class);
+
+								if(elementType == CSharpTokens.REF_KEYWORD ||
+										elementType == CSharpTokens.OUT_KEYWORD ||
+										elementType == CSharpTokens.THIS_KEYWORD ||
+										elementType == CSharpTokens.PARAMS_KEYWORD)
+								{
+									if(parameter == null)
+									{
+										return false;
+									}
+									if(elementType == CSharpTokenSets.THIS_KEYWORD)
+									{
+										return parameter.getIndex() == 0;
+									}
+									else if(elementType == CSharpTokens.PARAMS_KEYWORD)
+									{
+										DotNetParameterListOwner owner = parameter.getOwner();
+										return owner != null && ArrayUtil.getLastElement(owner.getParameters()) == parameter;
+									}
+									return true;
+								}
+
+								return parameter == null;
+							}
+						});
 					}
 				}
 			}
