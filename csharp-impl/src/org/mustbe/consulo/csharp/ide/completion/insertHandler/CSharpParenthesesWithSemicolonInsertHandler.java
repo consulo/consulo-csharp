@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.completion.insertHandler;
 import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.ide.completion.util.CSharpParenthesesInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCodeFragment;
+import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -56,7 +57,7 @@ public class CSharpParenthesesWithSemicolonInsertHandler implements InsertHandle
 		}
 
 		// for void method we always insert semicolon
-		if(DotNetTypeRefUtil.isVmQNameEqual(myDeclaration.getReturnTypeRef(), myDeclaration, DotNetTypes.System.Void))
+		if(!(myDeclaration instanceof CSharpConstructorDeclaration) && DotNetTypeRefUtil.isVmQNameEqual(myDeclaration.getReturnTypeRef(), myDeclaration, DotNetTypes.System.Void))
 		{
 			if(TailType.SEMICOLON.isApplicable(context))
 			{
