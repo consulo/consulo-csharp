@@ -20,6 +20,7 @@ import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.ide.completion.util.CSharpParenthesesInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCodeFragment;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -68,8 +69,8 @@ public class CSharpParenthesesWithSemicolonInsertHandler implements InsertHandle
 		{
 			context.commitDocument();
 			PsiElement elementAt = context.getFile().findElementAt(context.getStartOffset());
-			CSharpMethodCallExpressionImpl expression = PsiTreeUtil.getParentOfType(elementAt, CSharpMethodCallExpressionImpl.class);
-			if(expression != null && expression.getNextSibling() instanceof PsiErrorElement)
+			PsiElement parent = PsiTreeUtil.getParentOfType(elementAt, CSharpMethodCallExpressionImpl.class, CSharpLocalVariable.class);
+			if(parent != null && parent.getNextSibling() instanceof PsiErrorElement)
 			{
 				TailType.SEMICOLON.processTail(context.getEditor(), context.getTailOffset());
 			}
