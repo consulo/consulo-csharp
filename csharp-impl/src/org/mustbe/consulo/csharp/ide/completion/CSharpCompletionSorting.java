@@ -26,6 +26,8 @@ import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.weigher.CSharpByGenericParameterWeigher;
 import org.mustbe.consulo.csharp.ide.completion.weigher.CSharpInheritProximityWeigher;
 import org.mustbe.consulo.csharp.ide.completion.weigher.CSharpObsoleteWeigher;
+import org.mustbe.consulo.csharp.ide.completion.weigher.CSharpRecursiveGuardWeigher;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
@@ -43,6 +45,8 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -142,22 +146,36 @@ public class CSharpCompletionSorting
 		}
 	}
 
+	@Nullable
+	private static LookupElementWeigher recursiveSorter(CompletionParameters completionParameters, CompletionResultSet result)
+	{
+		PsiElement position = completionParameters.getPosition();
+
+		CSharpCallArgumentListOwner argumentListOwner = PsiTreeUtil.getContextOfType(position, CSharpCallArgumentListOwner.class);
+		if(argumentListOwner != null)
+		{
+			return new CSharpRecursiveGuardWeigher(argumentListOwner);
+		}
+		return null;
+	}
+
 	@RequiredReadAction
 	public static CompletionResultSet modifyResultSet(CompletionParameters completionParameters, CompletionResultSet result)
 	{
 		CompletionSorter sorter = CompletionSorter.defaultSorter(completionParameters, result.getPrefixMatcher());
-		List<LookupElementWeigher> weighers = new ArrayList<LookupElementWeigher>();
-		weighers.add(new KindSorter());
-		weighers.add(new CSharpByGenericParameterWeigher());
+		List<LookupElementWeigher> afterPrefix = new ArrayList<LookupElementWeigher>();
+		afterPrefix.add(new KindSorter());
+		afterPrefix.add(new CSharpByGenericParameterWeigher());
 
 		List<ExpectedTypeInfo> expectedTypeInfos = CSharpExpressionCompletionContributor.getExpectedTypeInfosForExpression(completionParameters, null);
 		if(!expectedTypeInfos.isEmpty())
 		{
-			weighers.add(new CSharpInheritProximityWeigher(completionParameters.getPosition(), expectedTypeInfos));
+			afterPrefix.add(new CSharpInheritProximityWeigher(completionParameters.getPosition(), expectedTypeInfos));
 		}
-		weighers.add(new CSharpObsoleteWeigher());
+		ContainerUtil.addIfNotNull(afterPrefix, recursiveSorter(completionParameters, result));
+		afterPrefix.add(new CSharpObsoleteWeigher());
 
-		sorter = sorter.weighAfter("prefix", weighers.toArray(new LookupElementWeigher[weighers.size()]));
+		sorter = sorter.weighAfter("prefix", afterPrefix.toArray(new LookupElementWeigher[afterPrefix.size()]));
 		result = result.withRelevanceSorter(sorter);
 		return result;
 	}
