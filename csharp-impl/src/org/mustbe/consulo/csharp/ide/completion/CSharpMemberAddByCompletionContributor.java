@@ -23,6 +23,7 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.codeInsight.completion.CompletionProvider;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
@@ -54,6 +55,16 @@ public abstract class CSharpMemberAddByCompletionContributor extends CompletionC
 				if(!(currentElement instanceof CSharpFieldDeclaration))
 				{
 					return;
+				}
+
+				DotNetModifierList modifierList = ((CSharpFieldDeclaration) currentElement).getModifierList();
+				if(modifierList != null)
+				{
+					int textLength = modifierList.getTextLength();
+					if(textLength > 0)
+					{
+						return;
+					}
 				}
 
 				CSharpTypeDeclaration typeDeclaration = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpTypeDeclaration.class);
