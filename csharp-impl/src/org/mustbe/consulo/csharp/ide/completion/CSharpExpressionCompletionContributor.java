@@ -600,7 +600,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
-				if(isCorrentPosition(parameters.getPosition()))
+				if(isCorrectPosition(parameters.getPosition()))
 				{
 					TokenSet set = TokenSet.create(CSharpTokens.AS_KEYWORD, CSharpTokens.IS_KEYWORD);
 					CSharpCompletionUtil.tokenSetToLookup(result, set, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
@@ -617,7 +617,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 			}
 
 			@RequiredReadAction
-			public boolean isCorrentPosition(PsiElement position)
+			private boolean isCorrectPosition(PsiElement position)
 			{
 				PsiElement prev = PsiTreeUtil.prevVisibleLeaf(position);
 				if(prev == null)
