@@ -105,7 +105,7 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 		buildVariableTypeString(operation.getProject(), initializer, builder, generationSettings.USE_VAR_FOR_EXTRACT_LOCAL_VARIABLE);
 		builder.append(" ").append(operation.getName()).append(" = ").append(initExpression);
 		PsiElement parent = initializer.getParent();
-		if(!(parent instanceof CSharpExpressionStatementImpl) || ((CSharpExpressionStatementImpl) parent).getExpression() != initializer)
+		if(!(parent instanceof CSharpExpressionStatementImpl) || !StringUtil.endsWith(parent.getText(), ";") || ((CSharpExpressionStatementImpl) parent).getExpression() != initializer)
 		{
 			builder.append(";");
 		}
