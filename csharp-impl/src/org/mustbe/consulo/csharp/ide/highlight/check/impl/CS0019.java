@@ -16,6 +16,9 @@
 
 package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
@@ -29,16 +32,20 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBinaryExpressionImpl
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.containers.MultiMap;
 
 /**
  * @author VISTALL
@@ -102,6 +109,27 @@ public class CS0019 extends CompilerCheck<CSharpBinaryExpressionImpl>
 		}
 	}
 
+	private static MultiMap<String, String> ourAllowedMap = new MultiMap<String, String>();
+
+	static
+	{
+		String[] values = {
+				DotNetTypes.System.SByte,
+				DotNetTypes.System.Byte,
+				DotNetTypes.System.Int16,
+				DotNetTypes.System.UInt16,
+				DotNetTypes.System.Int32,
+				DotNetTypes.System.UInt32,
+				DotNetTypes.System.Int64,
+				DotNetTypes.System.UInt64
+		};
+
+		for(String value : values)
+		{
+			ourAllowedMap.put(value, Arrays.asList(values));
+		}
+	}
+
 	@RequiredReadAction
 	@Nullable
 	@Override
@@ -125,6 +153,18 @@ public class CS0019 extends CompilerCheck<CSharpBinaryExpressionImpl>
 					CSharpStaticTypeRef.IMPLICIT).isSuccess();
 			if(!applicable)
 			{
+				Pair<String, DotNetTypeDeclaration> leftPair = CSharpTypeUtil.resolveTypeElement(leftType, element);
+				if(leftPair != null)
+				{
+					Collection<String> allowedSetLeft = ourAllowedMap.get(leftPair.getFirst());
+
+					Pair<String, DotNetTypeDeclaration> rightPair = CSharpTypeUtil.resolveTypeElement(rightType, element);
+					if(rightPair != null && allowedSetLeft.contains(rightPair.getFirst()))
+					{
+						return null;
+					}
+				}
+
 				return newBuilder(operatorElement, operatorElement.getCanonicalText(), formatTypeRef(leftType, element), formatTypeRef(rightType,
 						element)).addQuickFix(new ReplaceByEqualsCallFix(element));
 			}
