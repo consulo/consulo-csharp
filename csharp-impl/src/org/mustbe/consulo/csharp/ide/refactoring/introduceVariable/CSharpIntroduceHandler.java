@@ -21,10 +21,14 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.UsefulPsiTreeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetCodeBlockOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
 import com.intellij.codeInsight.CodeInsightUtilCore;
 import com.intellij.codeInsight.template.impl.TemplateManagerImpl;
 import com.intellij.codeInsight.template.impl.TemplateState;
@@ -224,56 +228,69 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 		final Editor editor = operation.getEditor();
 		final PsiFile file = operation.getFile();
 		int offset = editor.getCaretModel().getOffset();
-		PsiElement elementAtCaret = file.findElementAt(offset);
-		assert elementAtCaret != null;
-		if(!checkIntroduceContext(file, editor, elementAtCaret))
+		PsiElement temp = file.findElementAt(offset);
+		assert temp != null;
+		if(!checkIntroduceContext(file, editor, temp))
 		{
 			return true;
 		}
 
-		if(elementAtCaret instanceof PsiWhiteSpace)
+		if(temp instanceof PsiWhiteSpace)
 		{
-			elementAtCaret = PsiTreeUtil.prevLeaf(elementAtCaret);
+			temp = PsiTreeUtil.prevLeaf(temp);
 		}
 
 		final List<DotNetExpression> expressions = new ArrayList<DotNetExpression>();
 
 		// int var = 1;<caret>
-		if(PsiUtilCore.getElementType(elementAtCaret) == CSharpTokens.SEMICOLON)
+		if(PsiUtilCore.getElementType(temp) == CSharpTokens.SEMICOLON)
 		{
-			CSharpLocalVariableDeclarationStatement statement = PsiTreeUtil.getParentOfType(elementAtCaret, CSharpLocalVariableDeclarationStatement.class);
+			CSharpLocalVariableDeclarationStatement statement = PsiTreeUtil.getParentOfType(temp, CSharpLocalVariableDeclarationStatement.class);
 			if(statement != null)
 			{
 				CSharpLocalVariable[] variables = statement.getVariables();
 				CSharpLocalVariable lastElement = ArrayUtil.getLastElement(variables);
 				if(lastElement != null)
 				{
-					elementAtCaret = lastElement.getInitializer();
+					temp = lastElement.getInitializer();
 				}
 			}
 		}
 
-		while(elementAtCaret != null)
+		while(temp != null)
 		{
-			if(elementAtCaret instanceof CSharpFile)
+			if(temp instanceof CSharpFile)
 			{
 				break;
 			}
-			if(elementAtCaret instanceof DotNetExpression)
+			if(temp instanceof DotNetExpression)
 			{
-				if(elementAtCaret instanceof CSharpReferenceExpression)
+				if(temp instanceof CSharpReferenceExpression)
 				{
-					CSharpReferenceExpression.ResolveToKind kind = ((CSharpReferenceExpression) elementAtCaret).kind();
+					CSharpReferenceExpression.ResolveToKind kind = ((CSharpReferenceExpression) temp).kind();
 					if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || kind == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR)
 					{
-						elementAtCaret = elementAtCaret.getParent();
+						temp = temp.getParent();
+						continue;
+					}
+
+					PsiElement parent = temp.getParent();
+					if(parent instanceof CSharpMethodCallExpressionImpl && ((CSharpMethodCallExpressionImpl) parent).getCallExpression() == temp)
+					{
+						temp = temp.getParent();
 						continue;
 					}
 				}
 
-				expressions.add((DotNetExpression) elementAtCaret);
+				DotNetTypeRef typeRef = ((DotNetExpression) temp).toTypeRef(true);
+				if(DotNetTypeRefUtil.isVmQNameEqual(typeRef, file, DotNetTypes.System.Void))
+				{
+					break;
+				}
+
+				expressions.add((DotNetExpression) temp);
 			}
-			elementAtCaret = elementAtCaret.getParent();
+			temp = temp.getParent();
 		}
 
 		if(expressions.isEmpty())
