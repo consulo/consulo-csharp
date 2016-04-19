@@ -15,7 +15,9 @@ import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpRefactoringUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.UsefulPsiTreeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetCodeBlockOwner;
@@ -44,12 +46,14 @@ import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.PsiRecursiveElementVisitor;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.refactoring.IntroduceTargetChooser;
 import com.intellij.refactoring.RefactoringActionHandler;
 import com.intellij.refactoring.RefactoringBundle;
 import com.intellij.refactoring.introduce.inplace.InplaceVariableIntroducer;
 import com.intellij.refactoring.introduce.inplace.OccurrencesChooser;
 import com.intellij.refactoring.util.CommonRefactoringUtil;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.Function;
 
 @SuppressWarnings("MethodMayBeStatic")
@@ -128,6 +132,7 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 	{
 	}
 
+	@RequiredReadAction
 	public void performAction(CSharpIntroduceOperation operation)
 	{
 		final PsiFile file = operation.getFile();
@@ -211,17 +216,41 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 	}
 
 
+	@RequiredReadAction
 	private boolean smartIntroduce(final CSharpIntroduceOperation operation)
 	{
 		final Editor editor = operation.getEditor();
 		final PsiFile file = operation.getFile();
 		int offset = editor.getCaretModel().getOffset();
 		PsiElement elementAtCaret = file.findElementAt(offset);
+		assert elementAtCaret != null;
 		if(!checkIntroduceContext(file, editor, elementAtCaret))
 		{
 			return true;
 		}
+
+		if(elementAtCaret instanceof PsiWhiteSpace)
+		{
+			elementAtCaret = PsiTreeUtil.prevLeaf(elementAtCaret);
+		}
+
 		final List<DotNetExpression> expressions = new ArrayList<DotNetExpression>();
+
+		// int var = 1;<caret>
+		if(PsiUtilCore.getElementType(elementAtCaret) == CSharpTokens.SEMICOLON)
+		{
+			CSharpLocalVariableDeclarationStatement statement = PsiTreeUtil.getParentOfType(elementAtCaret, CSharpLocalVariableDeclarationStatement.class);
+			if(statement != null)
+			{
+				CSharpLocalVariable[] variables = statement.getVariables();
+				CSharpLocalVariable lastElement = ArrayUtil.getLastElement(variables);
+				if(lastElement != null)
+				{
+					elementAtCaret = lastElement.getInitializer();
+				}
+			}
+		}
+
 		while(elementAtCaret != null)
 		{
 			if(elementAtCaret instanceof CSharpFile)
