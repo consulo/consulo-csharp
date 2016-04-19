@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpRefactoringUtil;
@@ -45,6 +46,7 @@ import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.PsiRecursiveElementVisitor;
 import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.refactoring.IntroduceTargetChooser;
@@ -491,6 +493,7 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 	protected abstract String getDeclarationString(CSharpIntroduceOperation operation, String initExpression);
 
 	@Nullable
+	@RequiredDispatchThread
 	private PsiElement performReplace(@NotNull final PsiElement declaration, final CSharpIntroduceOperation operation)
 	{
 		final DotNetExpression initializer = operation.getInitializer();
@@ -600,7 +603,9 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 			return null;
 		}
 		final PsiElement parent = anchor.getParent();
-		return parent.addBefore(declaration, anchor);
+		PsiElement psiElement = parent.addBefore(declaration, anchor);
+		CodeStyleManager.getInstance(declaration.getProject()).reformat(psiElement);
+		return psiElement;
 	}
 
 	protected static class CSharpInplaceVariableIntroducer extends InplaceVariableIntroducer<PsiElement>

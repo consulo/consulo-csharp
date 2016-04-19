@@ -34,6 +34,8 @@ import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.RequiredWriteAction;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
+import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
+import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0023;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
@@ -313,14 +315,25 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 		}
 		else
 		{
-			DotNetTypeRef typeRef = initializer.toTypeRef(true);
-			if(typeRef == DotNetTypeRef.AUTO_TYPE || typeRef == DotNetTypeRef.ERROR_TYPE || typeRef == DotNetTypeRef.UNKNOWN_TYPE)
+			DotNetTypeRef initalizerTypeRef = initializer.toTypeRef(true);
+			if(initalizerTypeRef == DotNetTypeRef.AUTO_TYPE || initalizerTypeRef == DotNetTypeRef.ERROR_TYPE || initalizerTypeRef == DotNetTypeRef.UNKNOWN_TYPE)
 			{
 				builder.append(StringUtil.getShortName(DotNetTypes.System.Object));
 			}
 			else
 			{
-				CSharpTypeRefPresentationUtil.appendTypeRef(initializer, builder, typeRef, CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
+				DotNetTypeResolveResult typeResolveResult = initalizerTypeRef.resolve(initializer);
+				if(typeResolveResult instanceof CSharpLambdaResolveResult)
+				{
+					List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(initializer);
+					if(!expectedTypeRefs.isEmpty())
+					{
+						CSharpTypeRefPresentationUtil.appendTypeRef(initializer, builder, expectedTypeRefs.get(0).getTypeRef(), CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
+						return;
+					}
+				}
+
+				CSharpTypeRefPresentationUtil.appendTypeRef(initializer, builder, initalizerTypeRef, CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
 			}
 		}
 	}
