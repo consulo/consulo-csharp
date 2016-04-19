@@ -30,15 +30,18 @@ import org.mustbe.consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.AttributeListIndex;
+import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MethodIndex;
 import org.mustbe.consulo.dotnet.DotNetRunUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.dotnet.module.extension.DotNetModuleLangExtension;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.search.searches.AllTypesSearch;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.projectRoots.Sdk;
@@ -47,8 +50,6 @@ import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.Processor;
-import com.intellij.util.Query;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
@@ -87,21 +88,21 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	@RequiredReadAction
 	public PsiElement[] getEntryPointElements()
 	{
-		Query<DotNetTypeDeclaration> search = AllTypesSearch.search(getModule().getModuleWithDependenciesScope(), getProject());
-
 		final List<DotNetTypeDeclaration> typeDeclarations = new ArrayList<DotNetTypeDeclaration>();
-		search.forEach(new Processor<DotNetTypeDeclaration>()
+		Collection<DotNetLikeMethodDeclaration> methods = MethodIndex.getInstance().get("Main", getProject(), getModule().getModuleScope());
+		for(DotNetLikeMethodDeclaration method : methods)
 		{
-			@Override
-			public boolean process(DotNetTypeDeclaration typeDeclaration)
+			if(method instanceof CSharpMethodDeclaration && DotNetRunUtil.isEntryPoint((DotNetMethodDeclaration) method))
 			{
-				if(typeDeclaration.getGenericParametersCount() == 0 && DotNetRunUtil.hasEntryPoint(typeDeclaration))
+				Module moduleForPsiElement = ModuleUtilCore.findModuleForPsiElement(method);
+				// scope is broken?
+				if(!getModule().equals(moduleForPsiElement))
 				{
-					typeDeclarations.add(typeDeclaration);
+					continue;
 				}
-				return true;
+				typeDeclarations.add((DotNetTypeDeclaration) method.getParent());
 			}
-		});
+		}
 		return ContainerUtil.toArray(typeDeclarations, DotNetTypeDeclaration.ARRAY_FACTORY);
 	}
 
