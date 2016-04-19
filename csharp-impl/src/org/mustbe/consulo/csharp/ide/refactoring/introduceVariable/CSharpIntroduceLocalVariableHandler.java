@@ -48,6 +48,7 @@ import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.openapi.application.Result;
@@ -123,6 +124,18 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 			private JCheckBox myConstant;
 
 			private boolean mySetVarAfterConstant;
+
+			@RequiredReadAction
+			@Override
+			protected int getVariableEndOffset(DotNetVariable variable)
+			{
+				if(variable instanceof CSharpLocalVariable)
+				{
+					PsiElement parent = variable.getParent();
+					return parent.getTextRange().getEndOffset();
+				}
+				return super.getVariableEndOffset(variable);
+			}
 
 			@Nullable
 			@Override

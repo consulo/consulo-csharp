@@ -21,6 +21,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementI
 import org.mustbe.consulo.dotnet.psi.DotNetCodeBlockOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import com.intellij.codeInsight.CodeInsightUtilCore;
 import com.intellij.codeInsight.template.impl.TemplateManagerImpl;
 import com.intellij.codeInsight.template.impl.TemplateState;
@@ -581,6 +582,7 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 		}
 
 		@Override
+		@RequiredReadAction
 		protected void moveOffsetAfter(boolean success)
 		{
 			super.moveOffsetAfter(success);
@@ -588,12 +590,18 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 			if(success)
 			{
 				PsiNamedElement variable = getVariable();
-				if(variable != null && variable.isValid())
+				if(variable instanceof DotNetVariable && variable.isValid())
 				{
-					myEditor.getCaretModel().moveToOffset(variable.getTextRange().getEndOffset());
+					myEditor.getCaretModel().moveToOffset(getVariableEndOffset((DotNetVariable) variable));
 					myEditor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
 				}
 			}
+		}
+
+		@RequiredReadAction
+		protected int getVariableEndOffset(DotNetVariable variable)
+		{
+			return variable.getTextRange().getEndOffset();
 		}
 
 		@Override
