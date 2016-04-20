@@ -18,9 +18,11 @@ package org.mustbe.consulo.csharp.ide.highlight.util;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.quickFix.RenameQuickFix;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
@@ -34,6 +36,7 @@ import com.intellij.psi.PsiElement;
 public class ConstructorHighlightUtil
 {
 	@Nullable
+	@RequiredReadAction
 	public static HighlightInfo checkConstructorDeclaration(@NotNull CSharpConstructorDeclaration declaration)
 	{
 		PsiElement nameIdentifier = declaration.getNameIdentifier();
@@ -54,7 +57,7 @@ public class ConstructorHighlightUtil
 		{
 			return null;
 		}
-		if(!Comparing.equal(expectedTypeName, nameIdentifier.getText()))
+		if(!Comparing.equal(expectedTypeName, CSharpPsiUtilImpl.getNameWithoutAt(nameIdentifier.getText())))
 		{
 			HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(HighlightInfoType.ERROR);
 			builder = builder.descriptionAndTooltip("Expected method name");

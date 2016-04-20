@@ -144,6 +144,7 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitConstructorDeclaration(CSharpConstructorDeclaration declaration)
 	{
 		super.visitConstructorDeclaration(declaration);
