@@ -29,7 +29,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.CSharpIcons;
 import org.mustbe.consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.module.extension.CSharpSimpleModuleExtension;
@@ -147,11 +146,11 @@ public class CSharpCreateFileAction extends CreateFromTemplateAction<PsiFile>
 	protected void buildDialog(Project project, PsiDirectory psiDirectory, CreateFileFromTemplateDialog.Builder builder)
 	{
 		Set<String> used = new HashSet<String>();
-		addKind(builder, used, "Class", new IconDescriptor(AllIcons.Nodes.Class).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpClass");
-		addKind(builder, used, "Interface", new IconDescriptor(AllIcons.Nodes.Interface).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpInterface");
-		addKind(builder, used, "Enum", new IconDescriptor(AllIcons.Nodes.Enum).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpEnum");
-		addKind(builder, used, "Struct", new IconDescriptor(AllIcons.Nodes.Struct).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpStruct");
-		addKind(builder, used, "Attribute", new IconDescriptor(AllIcons.Nodes.Attribute).addLayerIcon(CSharpIcons.Lang).toIcon(), "CSharpAttribute");
+		addKind(builder, used, "Class", new IconDescriptor(AllIcons.Nodes.Class).toIcon(), "CSharpClass");
+		addKind(builder, used, "Interface", new IconDescriptor(AllIcons.Nodes.Interface).toIcon(), "CSharpInterface");
+		addKind(builder, used, "Enum", new IconDescriptor(AllIcons.Nodes.Enum).toIcon(), "CSharpEnum");
+		addKind(builder, used, "Struct", new IconDescriptor(AllIcons.Nodes.Struct).toIcon(), "CSharpStruct");
+		addKind(builder, used, "Attribute", new IconDescriptor(AllIcons.Nodes.Attribute).toIcon(), "CSharpAttribute");
 		if(isCreationOfAssemblyFileAvailable(psiDirectory))
 		{
 			addKind(builder, used, "Assembly File", AllIcons.FileTypes.Config, "CSharpAssemblyFile");
