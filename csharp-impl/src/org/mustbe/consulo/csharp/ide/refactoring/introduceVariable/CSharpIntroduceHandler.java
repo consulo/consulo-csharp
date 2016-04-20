@@ -245,15 +245,19 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 		// int var = 1;<caret>
 		if(PsiUtilCore.getElementType(temp) == CSharpTokens.SEMICOLON)
 		{
-			CSharpLocalVariableDeclarationStatement statement = PsiTreeUtil.getParentOfType(temp, CSharpLocalVariableDeclarationStatement.class);
-			if(statement != null)
+			PsiElement parent = temp.getParent();
+			if(parent instanceof CSharpLocalVariableDeclarationStatement)
 			{
-				CSharpLocalVariable[] variables = statement.getVariables();
+				CSharpLocalVariable[] variables = ((CSharpLocalVariableDeclarationStatement) parent).getVariables();
 				CSharpLocalVariable lastElement = ArrayUtil.getLastElement(variables);
 				if(lastElement != null)
 				{
 					temp = lastElement.getInitializer();
 				}
+			}
+			else if(parent instanceof CSharpExpressionStatementImpl)
+			{
+				temp = ((CSharpExpressionStatementImpl) parent).getExpression();
 			}
 		}
 
