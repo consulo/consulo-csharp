@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.codeInsight.completion.CompletionProvider;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
+import org.mustbe.consulo.csharp.ide.completion.insertHandler.CSharpTailInsertHandler;
 import org.mustbe.consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import org.mustbe.consulo.csharp.ide.completion.util.ExpressionOrStatementInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
@@ -195,8 +196,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			}
 		});
 
-		extend(CompletionType.BASIC, psiElement().withSuperParent(4, CSharpSwitchStatementImpl.class), new CompletionProvider()
-
+		extend(CompletionType.BASIC, CSharpPatterns.statementStart().withSuperParent(6, CSharpSwitchStatementImpl.class), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -208,17 +208,24 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 					@Override
 					public LookupElement fun(LookupElementBuilder t, final IElementType v)
 					{
-						t = t.withInsertHandler(new InsertHandler<LookupElement>()
+						if(v == CSharpTokens.DEFAULT_KEYWORD)
 						{
-							@Override
-							public void handleInsert(InsertionContext insertionContext, LookupElement item)
+							t = t.withInsertHandler(new CSharpTailInsertHandler(TailType.CASE_COLON));
+						}
+						else
+						{
+							t = t.withInsertHandler(new InsertHandler<LookupElement>()
 							{
-								int offset = insertionContext.getEditor().getCaretModel().getOffset();
-								insertionContext.getDocument().insertString(offset, " :");
+								@Override
+								public void handleInsert(InsertionContext insertionContext, LookupElement item)
+								{
+									int offset = insertionContext.getEditor().getCaretModel().getOffset();
+									insertionContext.getDocument().insertString(offset, " :");
 
-								insertionContext.getEditor().getCaretModel().moveToOffset(offset + 1);
-							}
-						});
+									insertionContext.getEditor().getCaretModel().moveToOffset(offset + 1);
+								}
+							});
+						}
 
 						return t;
 					}
