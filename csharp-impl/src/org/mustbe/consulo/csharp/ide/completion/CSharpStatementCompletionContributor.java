@@ -202,6 +202,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			@Override
 			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
+				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.BREAK_KEYWORD, null, null);
 				CSharpCompletionUtil.tokenSetToLookup(result, ourCaseAndDefaultKeywords, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
 				{
 					@NotNull
