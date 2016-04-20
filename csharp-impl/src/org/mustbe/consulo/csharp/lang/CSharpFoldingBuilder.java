@@ -29,7 +29,15 @@ import org.mustbe.consulo.csharp.lang.parser.preprocessor.EndRegionPreprocessorD
 import org.mustbe.consulo.csharp.lang.parser.preprocessor.PreprocessorDirective;
 import org.mustbe.consulo.csharp.lang.parser.preprocessor.PreprocessorParser;
 import org.mustbe.consulo.csharp.lang.parser.preprocessor.RegionPreprocessorDirective;
-import org.mustbe.consulo.csharp.lang.psi.*;
+import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;
+import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import com.intellij.codeInsight.folding.CodeFoldingSettings;
@@ -38,6 +46,7 @@ import com.intellij.lang.folding.CustomFoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -144,7 +153,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 					if(elementType == TokenType.WHITE_SPACE)
 					{
 						CharSequence chars = node.getChars();
-						if(chars.length() != 1 || chars.charAt(0) != '\n')
+						if(StringUtil.countNewLines(chars) > 2)
 						{
 							break;
 						}

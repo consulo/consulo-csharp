@@ -46,6 +46,13 @@ public class CSharpFileFactory
 {
 	@NotNull
 	@RequiredReadAction
+	public static CSharpFile createFile(@NotNull Project project, @NotNull CharSequence text)
+	{
+		return (CSharpFile) PsiFileFactory.getInstance(project).createFileFromText("dummy.cs", CSharpFileType.INSTANCE, text);
+	}
+
+	@NotNull
+	@RequiredReadAction
 	public static CSharpUsingListChild createUsingStatementFromText(@NotNull Project project, @NotNull String text)
 	{
 		CSharpFileImpl fileFromText = (CSharpFileImpl) PsiFileFactory.getInstance(project).createFileFromText("dummy.cs", CSharpFileType.INSTANCE, text);
