@@ -16,7 +16,11 @@
 
 package org.mustbe.consulo.csharp.ide.resolve;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
 import com.intellij.openapi.util.TextRange;
@@ -28,6 +32,7 @@ import com.intellij.psi.PsiReferenceContributor;
 import com.intellij.psi.PsiReferenceProvider;
 import com.intellij.psi.PsiReferenceRegistrar;
 import com.intellij.util.ProcessingContext;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -38,11 +43,11 @@ public class CSharpPsiReferenceContributor extends PsiReferenceContributor
 	@Override
 	public void registerReferenceProviders(PsiReferenceRegistrar psiReferenceRegistrar)
 	{
-		psiReferenceRegistrar.registerReferenceProvider(StandardPatterns.psiElement(CSharpCallArgumentList.class).withParent
-				(CSharpIndexAccessExpressionImpl.class), new PsiReferenceProvider()
+		psiReferenceRegistrar.registerReferenceProvider(StandardPatterns.psiElement(CSharpCallArgumentList.class).withParent(CSharpIndexAccessExpressionImpl.class), new PsiReferenceProvider()
 		{
 			@NotNull
 			@Override
+			@RequiredReadAction
 			public PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext processingContext)
 			{
 				CSharpIndexAccessExpressionImpl parent = (CSharpIndexAccessExpressionImpl) element.getParent();
@@ -51,9 +56,28 @@ public class CSharpPsiReferenceContributor extends PsiReferenceContributor
 				{
 					return PsiReference.EMPTY_ARRAY;
 				}
-				return new PsiReference[]{
-						new PsiReferenceBase.Immediate<PsiElement>(element, new TextRange(0, element.getTextLength()), callable)
-				};
+				CSharpCallArgumentList parameterList = parent.getParameterList();
+				if(parameterList == null)
+				{
+					return PsiReference.EMPTY_ARRAY;
+				}
+
+				PsiElement openElement = parameterList.getOpenElement();
+
+				List<PsiReference> list = new ArrayList<PsiReference>(2);
+				if(openElement != null)
+				{
+					int startOffsetInParent = openElement.getStartOffsetInParent();
+					list.add(new PsiReferenceBase.Immediate<PsiElement>(element, new TextRange(startOffsetInParent, startOffsetInParent + openElement.getTextLength()), callable));
+				}
+
+				PsiElement closeElement = parameterList.getCloseElement();
+				if(closeElement != null)
+				{
+					int startOffsetInParent = closeElement.getStartOffsetInParent();
+					list.add(new PsiReferenceBase.Immediate<PsiElement>(element, new TextRange(startOffsetInParent, startOffsetInParent + closeElement.getTextLength()), callable));
+				}
+				return ContainerUtil.toArray(list, PsiReference.ARRAY_FACTORY);
 			}
 		});
 	}
