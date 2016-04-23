@@ -126,12 +126,12 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor
 	@RequiredReadAction
 	private void applyTypeArguments(PsiElement[] psiElements)
 	{
-		if(!(myScopeElement  instanceof CSharpReferenceExpression))
+		if(!(myScopeElement  instanceof CSharpReferenceExpression) || psiElements.length == 0)
 		{
 			return;
 		}
 
-		int typeArgumentListSize = CSharpReferenceExpressionImplUtil.getTypeArgumentListSize((CSharpReferenceExpression) myScopeElement);
+		int typeArgumentListSize = CSharpReferenceExpressionImplUtil.getTypeArgumentListSize(myScopeElement);
 		if(typeArgumentListSize == 0)
 		{
 			return;
