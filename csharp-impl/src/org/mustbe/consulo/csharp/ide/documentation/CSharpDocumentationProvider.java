@@ -28,6 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.dotnet.documentation.DotNetDocumentationCache;
 import org.mustbe.consulo.dotnet.psi.*;
@@ -231,6 +232,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public String generateDoc(PsiElement element, @Nullable PsiElement element2)
 	{
 		if(element instanceof CSharpTypeDefStatement)
@@ -306,26 +308,26 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 	}
 
 	@RequiredReadAction
-	private static String generateLinksForType(DotNetTypeRef dotNetTypeRef, PsiElement element, boolean qualified)
+	private static String generateLinksForType(DotNetTypeRef typeRef, PsiElement element, boolean qualified)
 	{
 		StringBuilder builder = new StringBuilder();
-		if(dotNetTypeRef == DotNetTypeRef.AUTO_TYPE)
+		if(typeRef == DotNetTypeRef.AUTO_TYPE)
 		{
 			builder.append("var");
 		}
-		else if(dotNetTypeRef instanceof DotNetArrayTypeRef)
+		else if(typeRef instanceof DotNetArrayTypeRef)
 		{
-			builder.append(generateLinksForType(((DotNetArrayTypeRef) dotNetTypeRef).getInnerTypeRef(), element, qualified));
+			builder.append(generateLinksForType(((DotNetArrayTypeRef) typeRef).getInnerTypeRef(), element, qualified));
 			builder.append("[]");
 		}
-		else if(dotNetTypeRef instanceof DotNetPointerTypeRef)
+		else if(typeRef instanceof DotNetPointerTypeRef)
 		{
-			builder.append(generateLinksForType(((DotNetPointerTypeRef) dotNetTypeRef).getInnerTypeRef(), element, qualified));
+			builder.append(generateLinksForType(((DotNetPointerTypeRef) typeRef).getInnerTypeRef(), element, qualified));
 			builder.append("*");
 		}
 		else
 		{
-			DotNetTypeResolveResult dotNetTypeResolveResult = dotNetTypeRef.resolve(element);
+			DotNetTypeResolveResult dotNetTypeResolveResult = typeRef.resolve(element);
 			PsiElement resolved = dotNetTypeResolveResult.getElement();
 			if(resolved instanceof DotNetQualifiedElement)
 			{
@@ -366,7 +368,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 			}
 			else
 			{
-				builder.append(dotNetTypeRef.getPresentableText());
+				builder.append(CSharpTypeRefPresentationUtil.buildShortText(typeRef, element));
 			}
 		}
 
