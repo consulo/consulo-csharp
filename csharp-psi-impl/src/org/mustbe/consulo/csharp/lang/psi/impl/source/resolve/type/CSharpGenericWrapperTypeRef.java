@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
@@ -83,6 +84,7 @@ public class CSharpGenericWrapperTypeRef implements DotNetGenericWrapperTypeRef
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 	{
 		DotNetTypeResolveResult typeResolveResult = getInnerTypeRef().resolve(scope);

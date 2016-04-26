@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy;
 
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -38,6 +39,7 @@ public class CSharpLazyGenericWrapperTypeRef extends CSharpGenericWrapperTypeRef
 		myScope = scope;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
@@ -47,6 +49,7 @@ public class CSharpLazyGenericWrapperTypeRef extends CSharpGenericWrapperTypeRef
 
 	@NotNull
 	@LazyInstance
+	@RequiredReadAction
 	private DotNetTypeResolveResult resolveImpl()
 	{
 		return CSharpLazyGenericWrapperTypeRef.super.resolve(myScope);
