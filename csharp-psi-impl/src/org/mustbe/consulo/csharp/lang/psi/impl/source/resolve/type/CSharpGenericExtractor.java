@@ -48,6 +48,7 @@ public class CSharpGenericExtractor implements DotNetGenericExtractor
 	{
 		myGenericParameters = genericParameters;
 		myTypeRefs = arguments;
+		assert myGenericParameters.length != 0 : "can't be empty";
 	}
 
 	@Nullable
