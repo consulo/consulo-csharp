@@ -18,6 +18,8 @@ package org.mustbe.consulo.csharp.ide.codeInsight.template.postfix;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
+import org.mustbe.consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import com.intellij.codeInsight.template.postfix.templates.PostfixTemplate;
 import com.intellij.openapi.editor.Document;
@@ -39,10 +41,17 @@ public class CSharpParenthesesPostfixTemplate extends PostfixTemplate
 	@Override
 	public boolean isApplicable(@NotNull PsiElement context, @NotNull Document copyDocument, int newOffset)
 	{
-
-		DotNetExpression parentOfType = PsiTreeUtil.getParentOfType(context, DotNetExpression.class);
-
-		return parentOfType != null;
+		DotNetExpression expression = PsiTreeUtil.getParentOfType(context, DotNetExpression.class);
+		if(expression == null)
+		{
+			return false;
+		}
+		PsiElement parent = expression.getParent();
+		if(parent instanceof CSharpNamespaceDeclaration || parent instanceof CSharpUsingListChild)
+		{
+			return false;
+		}
+		return true;
 	}
 
 	@Override
