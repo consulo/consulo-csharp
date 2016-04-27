@@ -18,6 +18,7 @@
 package org.mustbe.consulo.csharp.ide.completion.util;
 
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -27,12 +28,13 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.codeStyle.CodeStyleManager;
 
 /**
  * @author peter
  * @see com.intellij.codeInsight.completion.util.ParenthesesInsertHandler
  */
-public abstract class ExpressionOrStatementInsertHandler<T extends LookupElement> implements InsertHandler<T>
+public class ExpressionOrStatementInsertHandler<T extends LookupElement> implements InsertHandler<T>
 {
 	private final char myOpenChar;
 	private final char myCloseChar;
@@ -44,11 +46,29 @@ public abstract class ExpressionOrStatementInsertHandler<T extends LookupElement
 	}
 
 	@Override
+	@RequiredDispatchThread
 	public void handleInsert(final InsertionContext context, final T item)
 	{
 		final Editor editor = context.getEditor();
 		final Document document = editor.getDocument();
 		context.commitDocument();
+
+		PsiElement elementAt = context.getFile().findElementAt(context.getStartOffset());
+		handleInsertImpl(context, item, editor, document);
+		if(myOpenChar == '{')
+		{
+			document.insertString(editor.getCaretModel().getOffset(), "\n");
+		}
+		context.commitDocument();
+		if(elementAt != null)
+		{
+			PsiElement parent = elementAt.getParent();
+			CodeStyleManager.getInstance(elementAt.getProject()).reformat(parent);
+		}
+	}
+
+	private void handleInsertImpl(InsertionContext context, T item, Editor editor, Document document)
+	{
 		PsiElement element = findNextToken(context);
 
 		final char completionChar = context.getCompletionChar();
@@ -150,7 +170,7 @@ public abstract class ExpressionOrStatementInsertHandler<T extends LookupElement
 
 	private static String getSpace(boolean needSpace)
 	{
-		return needSpace ? " " :  "";
+		return needSpace ? " " : "";
 	}
 
 	@Nullable

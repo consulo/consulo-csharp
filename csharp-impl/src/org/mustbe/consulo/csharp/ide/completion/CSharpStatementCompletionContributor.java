@@ -22,7 +22,6 @@ import static com.intellij.patterns.StandardPatterns.psiElement;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.codeInsight.completion.CompletionProvider;
-import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import org.mustbe.consulo.csharp.ide.completion.insertHandler.CSharpTailInsertHandler;
 import org.mustbe.consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import org.mustbe.consulo.csharp.ide.completion.util.ExpressionOrStatementInsertHandler;
@@ -53,7 +52,6 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -475,64 +473,6 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 			close = '}';
 		}
 
-		return new ExpressionOrStatementInsertHandler<LookupElement>(open, close)
-		{
-			@Override
-			protected boolean canAddSpaceBeforePair(InsertionContext insertionContext, LookupElement item)
-			{
-				CommonCodeStyleSettings codeStyleSettings = insertionContext.getCodeStyleSettings();
-				CSharpCodeStyleSettings customCodeStyleSettings = CSharpCodeStyleSettings.getInstance(insertionContext.getProject());
-
-				if(elementType == DO_KEYWORD)
-				{
-					return codeStyleSettings.SPACE_BEFORE_DO_LBRACE;
-				}
-				else if(elementType == TRY_KEYWORD)
-				{
-					return codeStyleSettings.SPACE_BEFORE_TRY_LBRACE;
-				}
-				else if(elementType == CATCH_KEYWORD)
-				{
-					return codeStyleSettings.SPACE_BEFORE_CATCH_LBRACE;
-				}
-				else if(elementType == FINALLY_KEYWORD)
-				{
-					return codeStyleSettings.SPACE_BEFORE_FINALLY_LBRACE;
-				}
-				else if(elementType == IF_KEYWORD)
-				{
-					return codeStyleSettings.SPACE_BEFORE_IF_PARENTHESES;
-				}
-				else if(elementType == SWITCH_KEYWORD)
-				{
-					return codeStyleSettings.SPACE_BEFORE_SWITCH_PARENTHESES;
-				}
-				else if(elementType == WHILE_KEYWORD)
-				{
-					return codeStyleSettings.SPACE_BEFORE_WHILE_PARENTHESES;
-				}
-				else if(elementType == FOR_KEYWORD)
-				{
-					return codeStyleSettings.SPACE_BEFORE_FOR_LBRACE;
-				}
-				else if(elementType == FOREACH_KEYWORD)
-				{
-					return customCodeStyleSettings.SPACE_BEFORE_FOREACH_PARENTHESES;
-				}
-				else if(elementType == USING_KEYWORD)
-				{
-					return customCodeStyleSettings.SPACE_BEFORE_USING_PARENTHESES;
-				}
-				else if(elementType == LOCK_KEYWORD)
-				{
-					return customCodeStyleSettings.SPACE_BEFORE_LOCK_PARENTHESES;
-				}
-				else if(elementType == UNSAFE_KEYWORD)
-				{
-					return customCodeStyleSettings.SPACE_BEFORE_UNSAFE_LBRACE;
-				}
-				return false;
-			}
-		};
+		return new ExpressionOrStatementInsertHandler<LookupElement>(open, close);
 	}
 }
