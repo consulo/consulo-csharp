@@ -30,15 +30,7 @@ import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpCatchStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDelegateExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaParameterImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTryStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.*;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
@@ -112,6 +104,12 @@ public class CS0128 extends CompilerCheck<CSharpBlockStatementImpl>
 
 			@Override
 			public void visitForeachStatement(CSharpForeachStatementImpl statement)
+			{
+				visitAndRollback(statement);
+			}
+
+			@Override
+			public void visitFixedStatement(CSharpFixedStatementImpl statement)
 			{
 				visitAndRollback(statement);
 			}
