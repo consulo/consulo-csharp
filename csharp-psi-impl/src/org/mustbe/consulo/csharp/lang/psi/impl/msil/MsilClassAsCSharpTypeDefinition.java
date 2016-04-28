@@ -33,7 +33,15 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.psi.*;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
+import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
+import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilEventEntry;
@@ -43,10 +51,9 @@ import org.mustbe.consulo.msil.lang.psi.MsilPropertyEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import org.mustbe.consulo.msil.lang.psi.MsilXXXAcessor;
 import org.mustbe.dotnet.msil.decompiler.util.MsilHelper;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.NotNullLazyValue;
+import com.intellij.openapi.util.NullableLazyValue;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -213,7 +220,16 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	private final GenericParameterContext myGenericParameterContext;
 	private final MsilModifierListToCSharpModifierList myModifierList;
 	private final DotNetGenericParameterList myGenericParameterList;
-	private final CSharpLightGenericConstraintList myGenericConstraintList;
+	private final NullableLazyValue<CSharpLightGenericConstraintList> myGenericConstraintListValue = new NullableLazyValue<CSharpLightGenericConstraintList>()
+	{
+		@Nullable
+		@Override
+		@RequiredReadAction
+		protected CSharpLightGenericConstraintList compute()
+		{
+			return MsilAsCSharpBuildUtil.buildConstraintList(getGenericParameterList());
+		}
+	};
 
 	private Boolean myIsStruct;
 	private Boolean myIsEnum;
@@ -227,7 +243,6 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		myModifierList = new MsilModifierListToCSharpModifierList(this, classEntry.getModifierList());
 		DotNetGenericParameterList genericParameterList = classEntry.getGenericParameterList();
 		myGenericParameterList = MsilGenericParameterListAsCSharpGenericParameterList.build(this, genericParameterList, genericParameterContext);
-		myGenericConstraintList = MsilAsCSharpBuildUtil.buildConstraintList(myGenericParameterList);
 	}
 
 	@Override
@@ -281,7 +296,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	@Override
 	public CSharpGenericConstraintList getGenericConstraintList()
 	{
-		return myGenericConstraintList;
+		return myGenericConstraintListValue.getValue();
 	}
 
 	@NotNull

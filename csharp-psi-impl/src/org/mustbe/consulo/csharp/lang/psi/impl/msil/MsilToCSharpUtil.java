@@ -294,7 +294,16 @@ public class MsilToCSharpUtil
 
 				return new CSharpLazyGenericWrapperTypeRef(scope, inner, ContainerUtil.toArray(list, DotNetTypeRef.ARRAY_FACTORY));
 			}
-			return DotNetTypeRef.ERROR_TYPE;
+			else  // fallback
+			{
+				DotNetTypeRef[] newArguments = new DotNetTypeRef[arguments.length];
+				for(int i = 0; i < newArguments.length; i++)
+				{
+					newArguments[i] = extractToCSharp(arguments[i], scope);
+				}
+
+				return new CSharpLazyGenericWrapperTypeRef(scope, inner, newArguments);
+			}
 		}
 		return new MsilDelegateTypeRef(scope, typeRef);
 	}
