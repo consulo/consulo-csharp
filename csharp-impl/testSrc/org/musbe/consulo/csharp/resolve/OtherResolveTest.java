@@ -46,11 +46,21 @@ public class OtherResolveTest extends ResolvingTestCase
 	{
 	}
 
+	public void testIssue384_csharp()
+	{
+	}
+
+	public void testIssue384_msil()
+	{
+	}
+
 	@NotNull
 	@Override
 	protected TestModuleDescriptor createTestModuleDescriptor()
 	{
-		return new CSharpMockModuleDescriptor();
+		String testName = getTestName(false);
+		String fullDataPath = myFullDataPath;
+		return new CSharpMockModuleDescriptor(fullDataPath, testName);
 	}
 
 	@NotNull

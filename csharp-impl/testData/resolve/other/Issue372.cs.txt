@@ -21,7 +21,7 @@ enumerator(358,368): local-variable[enumerator]=true
 enumerator.MoveNext(358,377): method[MoveNext():bool]=true
 String(390,396): type[System.String]=true
 enumerator(405,415): local-variable[enumerator]=true
-enumerator.Current(405,423): property[Current]=true, property[Current]=true
+enumerator.Current(405,423): property[Current]=true
 Console(430,437): type[System.Console]=true
 Console.WriteLine(430,447): method[WriteLine():void]=false, method[WriteLine(value:bool):void]=false, method[WriteLine(value:char):void]=false, method[WriteLine(buffer:char[]):void]=false, method[WriteLine(value:decimal):void]=false, method[WriteLine(value:double):void]=false, method[WriteLine(value:int):void]=false, method[WriteLine(value:long):void]=false, method[WriteLine(value:float):void]=false, method[WriteLine(value:uint):void]=false, method[WriteLine(value:ulong):void]=false, method[WriteLine(buffer:char[], index:int, count:int):void]=false, method[WriteLine(value:string):void]=true, method[WriteLine(format:string, arg0:object):void]=false, method[WriteLine(format:string, arg0:object, arg1:object):void]=false, method[WriteLine(format:string, arg0:object, arg1:object, arg2:object):void]=false, method[WriteLine(format:string, arg0:object, arg1:object, arg2:object, arg3:object, null:__arglist):void]=false, method[WriteLine(format:string, arg:object[]):void]=true, method[WriteLine(value:object):void]=true
 value(448,453): local-variable[value]=true

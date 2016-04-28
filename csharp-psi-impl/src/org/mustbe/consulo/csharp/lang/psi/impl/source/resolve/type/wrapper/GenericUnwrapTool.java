@@ -314,7 +314,7 @@ public class GenericUnwrapTool
 			{
 				innerTypeRef = pair.getFirst();
 			}
-			else // element is not null
+			else
 			{
 				if(func instanceof GenericExtractFunction)
 				{
@@ -339,9 +339,27 @@ public class GenericUnwrapTool
 		else
 		{
 			Pair<DotNetTypeRef, PsiElement> pair = extractTypeRef(typeRef, func, scope);
-			if(pair.getFirst() != null)
+			if(pair.getFirst() == null && pair.getSecond() == null)
+			{
+				// nothing
+			}
+			else if(pair.getFirst() != null)
 			{
 				return pair.getFirst();
+			}
+			else
+			{
+				if(func instanceof GenericExtractFunction)
+				{
+					PsiElement psiElement = pair.getSecond();
+
+					typeRef = CSharpReferenceExpressionImplUtil.toTypeRef(psiElement, ((GenericExtractFunction) func).myExtractor);
+				}
+				else
+				{
+					typeRef = CSharpReferenceExpressionImplUtil.toTypeRef(pair.getSecond());
+				}
+				return typeRef;
 			}
 		}
 		return typeRef;

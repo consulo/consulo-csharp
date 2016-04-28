@@ -1,0 +1,5 @@
+Test(6,10): namespace[Test]=true
+Impl<string>(70,82): type[Test.Impl`1]=true
+SomeInterface<string>(91,112): type[Test.SomeInterface`1]=true
+str(120,123): local-variable[str]=true
+str.Get(120,127): method[Get():Some]=true

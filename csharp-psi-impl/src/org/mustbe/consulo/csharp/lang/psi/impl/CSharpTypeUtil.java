@@ -52,6 +52,7 @@ import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.ExceptionUtil;
 import com.intellij.util.ObjectUtil;
 import com.intellij.util.SmartList;
 
@@ -66,7 +67,7 @@ public class CSharpTypeUtil
 		private final boolean mySuccess;
 		private final boolean myConversion;
 		private final CSharpConversionMethodDeclaration myConversionMethod;
-		//private final String myExceptionText = ExceptionUtil.getThrowableText(new Exception());
+		private final String myExceptionText = ExceptionUtil.getThrowableText(new Exception());
 
 		public InheritResult(boolean success, boolean conversion)
 		{
@@ -532,8 +533,8 @@ public class CSharpTypeUtil
 
 	private static InheritResult fail()
 	{
-		return FAIL;
-		//return new InheritResult(false, null);
+		//return FAIL;
+		return new InheritResult(false, null);
 	}
 
 	@NotNull

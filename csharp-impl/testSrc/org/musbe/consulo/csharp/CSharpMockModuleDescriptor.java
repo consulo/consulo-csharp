@@ -16,7 +16,10 @@
 
 package org.musbe.consulo.csharp;
 
+import java.io.File;
+
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.module.extension.CSharpSimpleMutableModuleExtension;
 import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleMutableModuleExtension;
 import com.intellij.openapi.module.Module;
@@ -39,6 +42,20 @@ import consulo.testFramework.util.TestPathUtil;
  */
 public class CSharpMockModuleDescriptor implements TestModuleDescriptor
 {
+	private String myFullDataPath;
+	private String myTestName;
+
+	public CSharpMockModuleDescriptor()
+	{
+		this(null, null);
+	}
+
+	public CSharpMockModuleDescriptor(@Nullable String fullDataPath, @Nullable String testName)
+	{
+		myFullDataPath = fullDataPath;
+		myTestName = testName;
+	}
+
 	@Override
 	public void configureSdk(@NotNull Consumer<Sdk> consumer)
 	{
@@ -69,6 +86,28 @@ public class CSharpMockModuleDescriptor implements TestModuleDescriptor
 
 			modifiableModel.addRoot(archiveRootForLocalFile, BinariesOrderRootType.getInstance());
 			modifiableModel.commit();
+		}
+
+		// per test library
+		if(myFullDataPath != null && myTestName != null)
+		{
+			File file = new File(myFullDataPath, myTestName + ".dll");
+			if(file.exists())
+			{
+				VirtualFile fileByIoFile = LocalFileSystem.getInstance().findFileByIoFile(file);
+				if(fileByIoFile != null)
+				{
+					VirtualFile archiveRootForLocalFile = ArchiveVfsUtil.getArchiveRootForLocalFile(fileByIoFile);
+					if(archiveRootForLocalFile != null)
+					{
+						Library library = moduleLibraryTable.createLibrary();
+						Library.ModifiableModel modifiableModel = library.getModifiableModel();
+
+						modifiableModel.addRoot(archiveRootForLocalFile, BinariesOrderRootType.getInstance());
+						modifiableModel.commit();
+					}
+				}
+			}
 		}
 
 		CSharpSimpleMutableModuleExtension<?> csharpExtension = modifiableRootModel.getExtensionWithoutCheck("mono-csharp");
