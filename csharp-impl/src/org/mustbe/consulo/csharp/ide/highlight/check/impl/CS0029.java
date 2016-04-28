@@ -36,16 +36,10 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAssignmentExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDoWhileStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpRefTypeExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpRefValueExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReturnStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpWhileStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.*;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpPointerTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
@@ -156,7 +150,21 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			{
 				return null;
 			}
-			return Trinity.create(variableTypRef, initializer.toTypeRef(true), initializer);
+			DotNetTypeRef initializerTypeRef = initializer.toTypeRef(true);
+
+			PsiElement parent = element.getParent();
+			if(parent instanceof CSharpFixedStatementImpl)
+			{
+				if(initializerTypeRef instanceof CSharpArrayTypeRef)
+				{
+					if(((CSharpArrayTypeRef) initializerTypeRef).getDimensions() == 0)
+					{
+						DotNetTypeRef innerTypeRef = ((CSharpArrayTypeRef) initializerTypeRef).getInnerTypeRef();
+						initializerTypeRef = new CSharpPointerTypeRef(innerTypeRef);
+					}
+				}
+			}
+			return Trinity.create(variableTypRef, initializerTypeRef, initializer);
 		}
 		else if(element instanceof DotNetExpression && element.getParent() instanceof CSharpMethodDeclaration)
 		{
