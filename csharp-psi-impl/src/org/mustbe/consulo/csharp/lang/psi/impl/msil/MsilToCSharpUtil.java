@@ -16,6 +16,9 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
@@ -30,6 +33,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLa
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
@@ -51,6 +55,7 @@ import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
@@ -178,10 +183,15 @@ public class MsilToCSharpUtil
 	{
 		if(element instanceof MsilClassEntry)
 		{
-			PsiElement wrapElement = element.getUserData(MSIL_WRAPPER_VALUE);
-			if(wrapElement != null)
+			PsiElement wrapElement = null;
+			if(parent == null)
 			{
-				return wrapElement;
+				// do not return already wrapped element when we have parent(for nested classes) due we will override parent
+				wrapElement = element.getUserData(MSIL_WRAPPER_VALUE);
+				if(wrapElement != null)
+				{
+					return wrapElement;
+				}
 			}
 
 			if(parent == null)
@@ -263,13 +273,28 @@ public class MsilToCSharpUtil
 			DotNetTypeRef[] arguments = ((DotNetGenericWrapperTypeRef) typeRef).getArgumentTypeRefs();
 
 			DotNetTypeRef inner = extractToCSharp(innerTypeRef, scope);
-			DotNetTypeRef[] newArguments = new DotNetTypeRef[arguments.length];
-			for(int i = 0; i < newArguments.length; i++)
-			{
-				newArguments[i] = extractToCSharp(arguments[i], scope);
-			}
 
-			return new CSharpLazyGenericWrapperTypeRef(scope, inner, newArguments);
+			PsiElement element = inner.resolve(scope).getElement();
+			if(element instanceof DotNetGenericParameterListOwner)
+			{
+				int genericParametersCount = ((DotNetGenericParameterListOwner) element).getGenericParametersCount();
+				if(genericParametersCount == 0)
+				{
+					return inner;
+				}
+
+				DotNetTypeRef[] anotherArray = ArrayUtil.reverseArray(arguments);
+				List<DotNetTypeRef> list = new ArrayList<DotNetTypeRef>(genericParametersCount);
+				for(int i = 0; i < genericParametersCount; i++)
+				{
+					list.add(extractToCSharp(anotherArray[i], scope));
+				}
+
+				ContainerUtil.reverse(list);
+
+				return new CSharpLazyGenericWrapperTypeRef(scope, inner, ContainerUtil.toArray(list, DotNetTypeRef.ARRAY_FACTORY));
+			}
+			return DotNetTypeRef.ERROR_TYPE;
 		}
 		return new MsilDelegateTypeRef(scope, typeRef);
 	}
