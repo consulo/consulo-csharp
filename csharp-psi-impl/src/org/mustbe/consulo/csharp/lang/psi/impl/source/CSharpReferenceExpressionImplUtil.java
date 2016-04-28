@@ -65,6 +65,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
+import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -176,6 +177,65 @@ public class CSharpReferenceExpressionImplUtil
 			}
 			ourProcessors[i] = kindProcessor;
 		}
+	}
+
+	@RequiredReadAction
+	public static boolean isReferenceTo(CSharpReferenceExpression referenceExpression, PsiElement element)
+	{
+		ResolveResult[] resolveResults = referenceExpression.multiResolve(false);
+		boolean haveValidResult = false;
+		for(ResolveResult resolveResult : resolveResults)
+		{
+			if(!resolveResult.isValidResult())
+			{
+				continue;
+			}
+
+			haveValidResult = true;
+
+			if(isReferenceTo(resolveResult, element))
+			{
+				return true;
+			}
+		}
+
+		if(haveValidResult)
+		{
+			return false;
+		}
+
+		for(ResolveResult resolveResult : resolveResults)
+		{
+			if(resolveResult.isValidResult())
+			{
+				continue;
+			}
+
+			if(isReferenceTo(resolveResult, element))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@RequiredReadAction
+	private static boolean isReferenceTo(ResolveResult resolveResult, PsiElement element)
+	{
+		PsiElement psiElement = resolveResult.getElement();
+		if(element instanceof DotNetNamespaceAsElement && psiElement instanceof DotNetNamespaceAsElement)
+		{
+			if(Comparing.equal(((DotNetNamespaceAsElement) psiElement).getPresentableQName(), ((DotNetNamespaceAsElement) element).getPresentableQName()))
+			{
+				return true;
+			}
+		}
+
+		if(element.getManager().areElementsEquivalent(element, psiElement))
+		{
+			return true;
+		}
+		return false;
 	}
 
 	public static boolean isConstructorKind(ResolveToKind kind)

@@ -32,10 +32,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolve
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpReferenceExpressionStub;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
-import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
@@ -216,12 +214,7 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 	@RequiredReadAction
 	public boolean isReferenceTo(PsiElement element)
 	{
-		PsiElement resolve = resolve();
-		if(element instanceof DotNetNamespaceAsElement && resolve instanceof DotNetNamespaceAsElement)
-		{
-			return Comparing.equal(((DotNetNamespaceAsElement) resolve).getPresentableQName(), ((DotNetNamespaceAsElement) element).getPresentableQName());
-		}
-		return element.getManager().areElementsEquivalent(element, resolve);
+		return CSharpReferenceExpressionImplUtil.isReferenceTo(this, element);
 	}
 
 	@NotNull
