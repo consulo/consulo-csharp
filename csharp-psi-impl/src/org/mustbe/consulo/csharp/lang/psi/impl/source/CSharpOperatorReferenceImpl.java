@@ -17,7 +17,9 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +38,8 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDeclarationBuilder;
+import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AsPsiElementProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
@@ -62,6 +66,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiPolyVariantReference;
@@ -140,6 +145,17 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	}
 
 	private static final TokenSet ourMergeSet = TokenSet.orSet(CSharpTokenSets.OVERLOADING_OPERATORS, CSharpTokenSets.ASSIGNMENT_OPERATORS, TokenSet.create(CSharpTokens.ANDAND, CSharpTokens.OROR));
+
+	private static final String[] ourPointerArgumentTypes = new String[]{
+			DotNetTypes.System.SByte,
+			DotNetTypes.System.Byte,
+			DotNetTypes.System.Int16,
+			DotNetTypes.System.UInt16,
+			DotNetTypes.System.Int32,
+			DotNetTypes.System.UInt32,
+			DotNetTypes.System.Int64,
+			DotNetTypes.System.UInt64,
+	};
 
 	private static final Map<IElementType, IElementType> ourAssignmentOperatorMap = new HashMap<IElementType, IElementType>()
 	{
@@ -360,24 +376,8 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			@NotNull Set<MethodResolveResult> last,
 			@Nullable DotNetExpression implicitExpression)
 	{
-		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(this);
-
-		PsiElement element = typeResolveResult.getElement();
-		if(element == null)
-		{
-			return;
-		}
-
-		AsPsiElementProcessor psiElementProcessor = new AsPsiElementProcessor();
-		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(CSharpResolveOptions.build().element(this), psiElementProcessor, new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
-
-		ResolveState state = ResolveState.initial();
-		state = state.put(CSharpResolveUtil.SELECTOR, new OperatorByTokenSelector(elementType));
-		state = state.put(CSharpResolveUtil.EXTRACTOR, typeResolveResult.getGenericExtractor());
-		CSharpResolveUtil.walkChildren(processor, element, false, true, state);
-
-		Set<PsiElement> psiElements = psiElementProcessor.getElements();
-		if(psiElements.isEmpty())
+		Set<PsiElement> psiElements = resolveElements(elementType, typeRef);
+		if(psiElements == null)
 		{
 			return;
 		}
@@ -395,6 +395,63 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
 			last.add(MethodResolveResult.createResult(calc, psiElement, null));
 		}
+	}
+
+	@Nullable
+	@RequiredReadAction
+	private Set<PsiElement> resolveElements(@NotNull IElementType elementType, @NotNull DotNetTypeRef typeRef)
+	{
+		if(typeRef instanceof DotNetPointerTypeRef)
+		{
+			if(elementType != CSharpTokens.PLUS && elementType != CSharpTokens.MINUS)
+			{
+				return Collections.emptySet();
+			}
+			Set<PsiElement> elements = new HashSet<PsiElement>();
+			for(String pointerArgumentType : ourPointerArgumentTypes)
+			{
+				elements.add(buildOperatorForPointer(elementType, typeRef, pointerArgumentType));
+			}
+			return elements;
+		}
+		else
+		{
+			DotNetTypeResolveResult typeResolveResult = typeRef.resolve(this);
+
+			PsiElement element = typeResolveResult.getElement();
+			if(element == null)
+			{
+				return null;
+			}
+
+			AsPsiElementProcessor psiElementProcessor = new AsPsiElementProcessor();
+			MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(CSharpResolveOptions.build().element(this), psiElementProcessor, new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
+
+			ResolveState state = ResolveState.initial();
+			state = state.put(CSharpResolveUtil.SELECTOR, new OperatorByTokenSelector(elementType));
+			state = state.put(CSharpResolveUtil.EXTRACTOR, typeResolveResult.getGenericExtractor());
+			CSharpResolveUtil.walkChildren(processor, element, false, true, state);
+
+			Set<PsiElement> psiElements = psiElementProcessor.getElements();
+			if(psiElements.isEmpty())
+			{
+				return null;
+			}
+			return psiElements;
+		}
+	}
+
+	@RequiredReadAction
+	@NotNull
+	private PsiElement buildOperatorForPointer(IElementType operatorElementType, DotNetTypeRef leftTypeRef, String typeVmQName)
+	{
+		Project project = getProject();
+		CSharpLightMethodDeclarationBuilder builder = new CSharpLightMethodDeclarationBuilder(project);
+		builder.withReturnType(leftTypeRef);
+		builder.addParameter(new CSharpLightParameterBuilder(project).withName("p0").withTypeRef(leftTypeRef));
+		builder.addParameter(new CSharpLightParameterBuilder(project).withName("p0").withTypeRef(new CSharpTypeRefByQName(typeVmQName)));
+		builder.setOperator(operatorElementType);
+		return builder;
 	}
 
 	@NotNull
