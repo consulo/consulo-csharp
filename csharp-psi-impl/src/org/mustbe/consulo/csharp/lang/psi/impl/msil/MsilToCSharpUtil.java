@@ -290,7 +290,7 @@ public class MsilToCSharpUtil
 					list.add(extractToCSharp(anotherArray[i], scope));
 				}
 
-				ContainerUtil.reverse(list);
+				list = ContainerUtil.reverse(list);
 
 				return new CSharpLazyGenericWrapperTypeRef(scope, inner, ContainerUtil.toArray(list, DotNetTypeRef.ARRAY_FACTORY));
 			}
