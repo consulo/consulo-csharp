@@ -37,6 +37,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
+import com.intellij.openapi.util.NullableLazyValue;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
@@ -49,7 +50,7 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 {
 	private MsilModifierListToCSharpModifierList myModifierList;
 	private DotNetGenericParameterList myGenericParameterList;
-	protected CSharpLightGenericConstraintList myGenericConstraintList;
+	protected NullableLazyValue<CSharpLightGenericConstraintList> myGenericConstraintListValue;
 
 	public MsilMethodAsCSharpLikeMethodDeclaration(PsiElement parent, MsilMethodEntry methodEntry)
 	{
@@ -66,7 +67,16 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 	{
 		DotNetGenericParameterList genericParameterList = owner.getGenericParameterList();
 		myGenericParameterList = MsilGenericParameterListAsCSharpGenericParameterList.build(this, genericParameterList, genericParameterContext);
-		myGenericConstraintList = MsilAsCSharpBuildUtil.buildConstraintList(myGenericParameterList);
+		myGenericConstraintListValue = new NullableLazyValue<CSharpLightGenericConstraintList>()
+		{
+			@Nullable
+			@Override
+			@RequiredReadAction
+			protected CSharpLightGenericConstraintList compute()
+			{
+				return MsilAsCSharpBuildUtil.buildConstraintList(myGenericParameterList);
+			}
+		};
 	}
 
 	@Override

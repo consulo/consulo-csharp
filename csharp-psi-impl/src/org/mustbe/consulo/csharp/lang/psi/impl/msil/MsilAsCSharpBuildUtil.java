@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightGenericConstraintList;
@@ -23,6 +24,7 @@ import com.intellij.util.containers.ContainerUtil;
 public class MsilAsCSharpBuildUtil
 {
 	@Nullable
+	@RequiredReadAction
 	public static CSharpLightGenericConstraintList buildConstraintList(@Nullable DotNetGenericParameterList genericParameterList)
 	{
 		if(genericParameterList == null)
