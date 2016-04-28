@@ -118,9 +118,17 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{
-		return myOriginal.getExtendTypeRefs();
+		DotNetTypeRef[] extendTypeRefs = myOriginal.getExtendTypeRefs();
+		DotNetTypeRef[] typeRefs = new DotNetTypeRef[extendTypeRefs.length];
+		for(int i = 0; i < extendTypeRefs.length; i++)
+		{
+			DotNetTypeRef extendTypeRef = extendTypeRefs[i];
+			typeRefs[i] = GenericUnwrapTool.exchangeTypeRef(extendTypeRef, myExtractor, myOriginal);
+		}
+		return typeRefs;
 	}
 
 	@RequiredReadAction
