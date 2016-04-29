@@ -23,6 +23,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.debugger.nodes.DotNetDebuggerCompilerGenerateUtil;
 import consulo.dotnet.debugger.proxy.DotNetFieldProxy;
 import consulo.dotnet.debugger.proxy.DotNetInvalidObjectException;
+import consulo.dotnet.debugger.proxy.DotNetInvalidStackFrameException;
 import consulo.dotnet.debugger.proxy.DotNetMethodProxy;
 import consulo.dotnet.debugger.proxy.DotNetSourceLocation;
 import consulo.dotnet.debugger.proxy.DotNetStackFrameProxy;
@@ -45,7 +46,7 @@ public abstract class LocalVariableOrParameterEvaluator<T extends DotNetVariable
 	}
 
 	@Override
-	public void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetInvalidObjectException
+	public void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetInvalidObjectException, DotNetInvalidStackFrameException
 	{
 		DotNetStackFrameProxy frame = context.getFrame();
 		DotNetSourceLocation sourceLocation = frame.getSourceLocation();

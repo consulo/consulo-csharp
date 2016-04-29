@@ -25,6 +25,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiUtilCore;
 import consulo.dotnet.debugger.DotNetDebugContext;
 import consulo.dotnet.debugger.proxy.DotNetInvalidObjectException;
+import consulo.dotnet.debugger.proxy.DotNetInvalidStackFrameException;
 import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
 import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
 
@@ -34,7 +35,7 @@ import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
  */
 public abstract class Evaluator
 {
-	public abstract void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetInvalidObjectException, DotNetThrowValueException;
+	public abstract void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetInvalidObjectException, DotNetThrowValueException, DotNetInvalidStackFrameException;
 
 	@Nullable
 	public static DotNetTypeProxy findTypeMirror(@NotNull CSharpEvaluateContext context, @Nullable PsiElement element)

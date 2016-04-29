@@ -25,6 +25,7 @@ import com.intellij.util.containers.ContainerUtil;
 import consulo.dotnet.debugger.nodes.DotNetDebuggerCompilerGenerateUtil;
 import consulo.dotnet.debugger.proxy.DotNetFieldProxy;
 import consulo.dotnet.debugger.proxy.DotNetInvalidObjectException;
+import consulo.dotnet.debugger.proxy.DotNetInvalidStackFrameException;
 import consulo.dotnet.debugger.proxy.DotNetStackFrameProxy;
 import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
@@ -43,7 +44,7 @@ public class ThisObjectEvaluator extends Evaluator
 	}
 
 	@Override
-	public void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetInvalidObjectException
+	public void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetInvalidObjectException, DotNetInvalidStackFrameException
 	{
 		DotNetStackFrameProxy frame = context.getFrame();
 

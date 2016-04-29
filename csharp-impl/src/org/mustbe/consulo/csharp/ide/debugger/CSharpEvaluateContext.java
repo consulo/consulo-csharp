@@ -27,6 +27,7 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import consulo.dotnet.debugger.DotNetDebugContext;
 import consulo.dotnet.debugger.proxy.DotNetInvalidObjectException;
+import consulo.dotnet.debugger.proxy.DotNetInvalidStackFrameException;
 import consulo.dotnet.debugger.proxy.DotNetStackFrameProxy;
 import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
@@ -83,7 +84,7 @@ public class CSharpEvaluateContext
 		myStack.addFirst(Pair.<DotNetValueProxy, Object>create(o, provider));
 	}
 
-	public void evaluate(List<Evaluator> evaluators) throws DotNetThrowValueException, DotNetInvalidObjectException
+	public void evaluate(List<Evaluator> evaluators) throws DotNetThrowValueException, DotNetInvalidObjectException, DotNetInvalidStackFrameException
 	{
 		for(Evaluator evaluator : evaluators)
 		{
