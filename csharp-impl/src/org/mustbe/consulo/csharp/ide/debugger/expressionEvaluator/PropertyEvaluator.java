@@ -21,19 +21,19 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import mono.debugger.FieldOrPropertyMirror;
-import mono.debugger.InvokeFlags;
-import mono.debugger.MethodMirror;
-import mono.debugger.NoObjectValueMirror;
-import mono.debugger.ObjectValueMirror;
-import mono.debugger.PropertyMirror;
-import mono.debugger.Value;
+import consulo.dotnet.debugger.proxy.DotNetFieldOrPropertyProxy;
+import consulo.dotnet.debugger.proxy.DotNetMethodProxy;
+import consulo.dotnet.debugger.proxy.DotNetPropertyProxy;
+import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
+import consulo.dotnet.debugger.proxy.value.DotNetNullValueProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
 /**
  * @author VISTALL
  * @since 09.03.2016
  */
-public class PropertyEvaluator extends FieldOrPropertyEvaluator<CSharpPropertyDeclaration, PropertyMirror>
+public class PropertyEvaluator extends FieldOrPropertyEvaluator<CSharpPropertyDeclaration, DotNetPropertyProxy>
 {
 	public PropertyEvaluator(@Nullable CSharpTypeDeclaration typeDeclaration, CSharpPropertyDeclaration propertyDeclaration)
 	{
@@ -41,21 +41,21 @@ public class PropertyEvaluator extends FieldOrPropertyEvaluator<CSharpPropertyDe
 	}
 
 	@Override
-	protected boolean isMyMirror(@NotNull FieldOrPropertyMirror mirror)
+	protected boolean isMyMirror(@NotNull DotNetFieldOrPropertyProxy mirror)
 	{
-		return mirror instanceof PropertyMirror && !((PropertyMirror) mirror).isArrayProperty();
+		return mirror instanceof DotNetPropertyProxy && !((DotNetPropertyProxy) mirror).isArrayProperty();
 	}
 
 	@Override
-	protected boolean invoke(@NotNull PropertyMirror mirror, @NotNull CSharpEvaluateContext context, @NotNull Value<?> popValue)
+	protected boolean invoke(@NotNull DotNetPropertyProxy mirror, @NotNull CSharpEvaluateContext context, @NotNull DotNetValueProxy popValue)  throws DotNetThrowValueException
 	{
-		MethodMirror methodMirror = mirror.methodGet();
+		DotNetMethodProxy methodMirror = mirror.getGetMethod();
 		if(methodMirror == null)
 		{
 			return false;
 		}
 
-		Value<?> loadedValue = methodMirror.invoke(context.getFrame().thread(), InvokeFlags.DISABLE_BREAKPOINTS, popValue instanceof NoObjectValueMirror ? null : (ObjectValueMirror) popValue);
+		DotNetValueProxy loadedValue = methodMirror.invoke(context.getFrame().getThread(), popValue instanceof DotNetNullValueProxy ? null : (DotNetObjectValueProxy) popValue);
 		if(loadedValue != null)
 		{
 			context.pull(loadedValue, mirror);

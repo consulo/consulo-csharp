@@ -21,17 +21,17 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import mono.debugger.FieldMirror;
-import mono.debugger.FieldOrPropertyMirror;
-import mono.debugger.NoObjectValueMirror;
-import mono.debugger.ObjectValueMirror;
-import mono.debugger.Value;
+import consulo.dotnet.debugger.proxy.DotNetFieldOrPropertyProxy;
+import consulo.dotnet.debugger.proxy.DotNetFieldProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetNullValueProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
 /**
  * @author VISTALL
  * @since 05.08.2015
  */
-public class FieldEvaluator extends FieldOrPropertyEvaluator<CSharpFieldDeclaration, FieldMirror>
+public class FieldEvaluator extends FieldOrPropertyEvaluator<CSharpFieldDeclaration, DotNetFieldProxy>
 {
 	public FieldEvaluator(@Nullable CSharpTypeDeclaration typeDeclaration, CSharpFieldDeclaration variable)
 	{
@@ -39,15 +39,15 @@ public class FieldEvaluator extends FieldOrPropertyEvaluator<CSharpFieldDeclarat
 	}
 
 	@Override
-	protected boolean isMyMirror(@NotNull FieldOrPropertyMirror mirror)
+	protected boolean isMyMirror(@NotNull DotNetFieldOrPropertyProxy mirror)
 	{
-		return mirror instanceof FieldMirror;
+		return mirror instanceof DotNetFieldProxy;
 	}
 
 	@Override
-	protected boolean invoke(@NotNull FieldMirror mirror, @NotNull CSharpEvaluateContext context, @NotNull Value<?> popValue)
+	protected boolean invoke(@NotNull DotNetFieldProxy mirror, @NotNull CSharpEvaluateContext context, @NotNull DotNetValueProxy popValue)
 	{
-		Value<?> loadedValue = mirror.value(context.getFrame().thread(), popValue instanceof NoObjectValueMirror ? null : (ObjectValueMirror) popValue);
+		DotNetValueProxy loadedValue = mirror.getValue(context.getFrame().getThread(), popValue instanceof DotNetNullValueProxy ? null : (DotNetObjectValueProxy) popValue);
 		if(loadedValue != null)
 		{
 			context.pull(loadedValue, mirror);

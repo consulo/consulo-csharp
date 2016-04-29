@@ -23,10 +23,10 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import mono.debugger.InvokeFlags;
-import mono.debugger.MethodMirror;
-import mono.debugger.TypeMirror;
-import mono.debugger.Value;
+import consulo.dotnet.debugger.proxy.DotNetMethodProxy;
+import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
+import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
 /**
  * @author VISTALL
@@ -46,12 +46,12 @@ public class MethodEvaluator extends Evaluator
 	}
 
 	@Override
-	public void evaluate(@NotNull CSharpEvaluateContext context)
+	public void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetThrowValueException
 	{
-		List<Value<?>> values = new ArrayList<Value<?>>(myParameterTypes.size());
+		List<DotNetValueProxy> values = new ArrayList<DotNetValueProxy>(myParameterTypes.size());
 		for(int i = 0; i < myParameterTypes.size(); i++)
 		{
-			Value<?> argumentValue = context.popValue();
+			DotNetValueProxy argumentValue = context.popValue();
 			if(argumentValue == null)
 			{
 				throw new IllegalArgumentException("no argument value");
@@ -59,16 +59,16 @@ public class MethodEvaluator extends Evaluator
 			values.add(argumentValue);
 		}
 
-		Value<?> popValue = context.popValue();
+		DotNetValueProxy popValue = context.popValue();
 		if(popValue == null)
 		{
 			throw new IllegalArgumentException("no pop value");
 		}
 
-		TypeMirror typeMirror = null;
+		DotNetTypeProxy typeMirror = null;
 		if(myTypeDeclaration == null)
 		{
-			typeMirror = popValue.type();
+			typeMirror = popValue.getType();
 		}
 		else
 		{
@@ -80,10 +80,10 @@ public class MethodEvaluator extends Evaluator
 			throw new IllegalArgumentException("cant calculate type");
 		}
 
-		TypeMirror[] parameterTypeMirrors = new TypeMirror[myParameterTypes.size()];
+		DotNetTypeProxy[] parameterTypeMirrors = new DotNetTypeProxy[myParameterTypes.size()];
 		for(int i = 0; i < parameterTypeMirrors.length; i++)
 		{
-			TypeMirror parameterTypeMirror = findTypeMirror(context, myParameterTypes.get(i));
+			DotNetTypeProxy parameterTypeMirror = findTypeMirror(context, myParameterTypes.get(i));
 			if(parameterTypeMirror == null)
 			{
 				throw new IllegalArgumentException("cant find parameter type mirror");
@@ -91,13 +91,13 @@ public class MethodEvaluator extends Evaluator
 			parameterTypeMirrors[i] = parameterTypeMirror;
 		}
 
-		MethodMirror methodMirror = typeMirror.findMethodByName(myMethodName, true, parameterTypeMirrors);
+		DotNetMethodProxy methodMirror = typeMirror.findMethodByName(myMethodName, true, parameterTypeMirrors);
 		if(methodMirror == null)
 		{
 			throw new IllegalArgumentException("no method");
 		}
 
-		Value<?> invoke = methodMirror.invoke(context.getFrame().thread(), InvokeFlags.DISABLE_BREAKPOINTS, popValue, values.toArray(new Value[values.size()]));
+		DotNetValueProxy invoke = methodMirror.invoke(context.getFrame().getThread(), popValue, values.toArray(new DotNetValueProxy[values.size()]));
 		if(invoke != null)
 		{
 			context.pull(invoke, methodMirror);

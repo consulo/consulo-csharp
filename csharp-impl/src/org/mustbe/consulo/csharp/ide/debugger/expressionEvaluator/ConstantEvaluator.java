@@ -19,11 +19,8 @@ package org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import org.mustbe.consulo.dotnet.DotNetTypes;
+import consulo.dotnet.debugger.proxy.DotNetVirtualMachineProxy;
 import edu.arizona.cs.mbel.signature.SignatureConstants;
-import mono.debugger.BooleanValueMirror;
-import mono.debugger.NumberValueMirror;
-import mono.debugger.StringValueMirror;
-import mono.debugger.VirtualMachine;
 
 /**
  * @author VISTALL
@@ -43,19 +40,18 @@ public class ConstantEvaluator extends Evaluator
 	@Override
 	public void evaluate(@NotNull CSharpEvaluateContext context)
 	{
-		VirtualMachine delegate = context.getDebuggerContext().getVirtualMachine().getDelegate();
+		DotNetVirtualMachineProxy virtualMachine = context.getDebuggerContext().getVirtualMachine();
 		if(DotNetTypes.System.Int32.equals(myVmQName))
 		{
-			context.pull(new NumberValueMirror(delegate, SignatureConstants.ELEMENT_TYPE_I4, (Number) myValue), null);
+			context.pull(virtualMachine.createNumberValue(SignatureConstants.ELEMENT_TYPE_I4, (Number) myValue), null);
 		}
 		else if(DotNetTypes.System.String.equals(myVmQName))
 		{
-			StringValueMirror valueMirror = delegate.rootAppDomain().createString((String) myValue);
-			context.pull(valueMirror, null);
+			context.pull(virtualMachine.createStringValue((String) myValue), null);
 		}
 		else if(DotNetTypes.System.Boolean.equals(myVmQName))
 		{
-			context.pull(new BooleanValueMirror(delegate, (Boolean) myValue), null);
+			context.pull(virtualMachine.createBooleanValue((Boolean) myValue), null);
 		}
 		else
 		{

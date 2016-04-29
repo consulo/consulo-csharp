@@ -19,15 +19,16 @@ package org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
-import org.mustbe.consulo.dotnet.debugger.nodes.DotNetDebuggerCompilerGenerateUtil;
-import org.mustbe.consulo.dotnet.debugger.proxy.DotNetStackFrameMirrorProxy;
 import com.intellij.openapi.util.Condition;
 import com.intellij.util.ObjectUtil;
 import com.intellij.util.containers.ContainerUtil;
-import mono.debugger.FieldMirror;
-import mono.debugger.ObjectValueMirror;
-import mono.debugger.TypeMirror;
-import mono.debugger.Value;
+import consulo.dotnet.debugger.nodes.DotNetDebuggerCompilerGenerateUtil;
+import consulo.dotnet.debugger.proxy.DotNetFieldProxy;
+import consulo.dotnet.debugger.proxy.DotNetInvalidObjectException;
+import consulo.dotnet.debugger.proxy.DotNetStackFrameProxy;
+import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
 /**
  * @author VISTALL
@@ -42,59 +43,59 @@ public class ThisObjectEvaluator extends Evaluator
 	}
 
 	@Override
-	public void evaluate(@NotNull CSharpEvaluateContext context)
+	public void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetInvalidObjectException
 	{
-		DotNetStackFrameMirrorProxy frame = context.getFrame();
+		DotNetStackFrameProxy frame = context.getFrame();
 
-		context.pull(calcThisObject(frame, frame.thisObject()), null);
+		context.pull(calcThisObject(frame, frame.getThisObject()), null);
 	}
 
 	@NotNull
-	public static Value<?> calcThisObject(@NotNull DotNetStackFrameMirrorProxy proxy, Value<?> thisObject)
+	public static DotNetValueProxy calcThisObject(@NotNull DotNetStackFrameProxy proxy, DotNetValueProxy thisObject)
 	{
 		return ObjectUtil.notNull(tryToFindObjectInsideYieldOrAsyncThis(proxy, thisObject), thisObject);
 	}
 
 	@Nullable
-	public static Value<?> tryToFindObjectInsideYieldOrAsyncThis(@NotNull DotNetStackFrameMirrorProxy proxy, Value thisObject)
+	public static DotNetValueProxy tryToFindObjectInsideYieldOrAsyncThis(@NotNull DotNetStackFrameProxy proxy, DotNetValueProxy thisObject)
 	{
-		if(!(thisObject instanceof ObjectValueMirror))
+		if(!(thisObject instanceof DotNetObjectValueProxy))
 		{
 			return null;
 		}
 
-		ObjectValueMirror objectValueMirror = (ObjectValueMirror) thisObject;
+		DotNetObjectValueProxy objectValueMirror = (DotNetObjectValueProxy) thisObject;
 
-		TypeMirror type;
+		DotNetTypeProxy type;
 		try
 		{
-			type = thisObject.type();
+			type = thisObject.getType();
 			assert type != null;
 
 			if(DotNetDebuggerCompilerGenerateUtil.isYieldOrAsyncNestedType(type))
 			{
-				TypeMirror parentType = type.parentType();
+				DotNetTypeProxy parentType = type.getDeclarationType();
 
 				if(parentType == null)
 				{
 					return null;
 				}
 
-				FieldMirror[] fields = type.fields();
+				DotNetFieldProxy[] fields = type.getFields();
 
-				final FieldMirror thisFieldMirror = ContainerUtil.find(fields, new Condition<FieldMirror>()
+				final DotNetFieldProxy thisFieldMirror = ContainerUtil.find(fields, new Condition<DotNetFieldProxy>()
 				{
 					@Override
-					public boolean value(FieldMirror fieldMirror)
+					public boolean value(DotNetFieldProxy fieldMirror)
 					{
-						String name = fieldMirror.name();
+						String name = fieldMirror.getName();
 						return DotNetDebuggerCompilerGenerateUtil.isYieldOrAsyncThisField(name);
 					}
 				});
 
 				if(thisFieldMirror != null)
 				{
-					Value<?> value = thisFieldMirror.value(proxy.thread(), objectValueMirror);
+					DotNetValueProxy value = thisFieldMirror.getValue(proxy.getThread(), objectValueMirror);
 					if(value != null)
 					{
 						return value;

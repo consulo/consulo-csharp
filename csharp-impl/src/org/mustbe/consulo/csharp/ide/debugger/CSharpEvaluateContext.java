@@ -23,11 +23,13 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.Evaluator;
-import org.mustbe.consulo.dotnet.debugger.DotNetDebugContext;
-import org.mustbe.consulo.dotnet.debugger.proxy.DotNetStackFrameMirrorProxy;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
-import mono.debugger.Value;
+import consulo.dotnet.debugger.DotNetDebugContext;
+import consulo.dotnet.debugger.proxy.DotNetInvalidObjectException;
+import consulo.dotnet.debugger.proxy.DotNetStackFrameProxy;
+import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
+import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
 /**
  * @author VISTALL
@@ -35,12 +37,12 @@ import mono.debugger.Value;
  */
 public class CSharpEvaluateContext
 {
-	private Deque<Pair<Value<?>, Object>> myStack = new ArrayDeque<Pair<Value<?>, Object>>();
+	private Deque<Pair<DotNetValueProxy, Object>> myStack = new ArrayDeque<Pair<DotNetValueProxy, Object>>();
 	private DotNetDebugContext myDebuggerContext;
-	private DotNetStackFrameMirrorProxy myFrame;
+	private DotNetStackFrameProxy myFrame;
 	private PsiElement myElementAt;
 
-	public CSharpEvaluateContext(DotNetDebugContext debuggerContext, DotNetStackFrameMirrorProxy frame, PsiElement elementAt)
+	public CSharpEvaluateContext(DotNetDebugContext debuggerContext, DotNetStackFrameProxy frame, PsiElement elementAt)
 	{
 		myDebuggerContext = debuggerContext;
 		myFrame = frame;
@@ -58,30 +60,30 @@ public class CSharpEvaluateContext
 	}
 
 	@NotNull
-	public DotNetStackFrameMirrorProxy getFrame()
+	public DotNetStackFrameProxy getFrame()
 	{
 		return myFrame;
 	}
 
 	@Nullable
-	public Value<?> popValue()
+	public DotNetValueProxy popValue()
 	{
-		Pair<Value<?>, Object> pair = myStack.pollFirst();
+		Pair<DotNetValueProxy, Object> pair = myStack.pollFirst();
 		return pair == null ? null : pair.getFirst();
 	}
 
 	@Nullable
-	public Pair<Value<?>, Object> pop()
+	public Pair<DotNetValueProxy, Object> pop()
 	{
 		return myStack.pollFirst();
 	}
 
-	public void pull(@NotNull Value<?> o, @Nullable Object provider)
+	public void pull(@NotNull DotNetValueProxy o, @Nullable Object provider)
 	{
-		myStack.addFirst(Pair.<Value<?>, Object>create(o, provider));
+		myStack.addFirst(Pair.<DotNetValueProxy, Object>create(o, provider));
 	}
 
-	public void evaluate(List<Evaluator> evaluators)
+	public void evaluate(List<Evaluator> evaluators) throws DotNetThrowValueException, DotNetInvalidObjectException
 	{
 		for(Evaluator evaluator : evaluators)
 		{

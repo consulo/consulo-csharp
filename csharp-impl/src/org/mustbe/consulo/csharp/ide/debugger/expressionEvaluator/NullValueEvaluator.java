@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
-import mono.debugger.NoObjectValueMirror;
+import consulo.dotnet.debugger.proxy.DotNetVirtualMachineProxy;
 
 /**
  * @author VISTALL
@@ -35,6 +35,7 @@ public class NullValueEvaluator extends Evaluator
 	@Override
 	public void evaluate(@NotNull CSharpEvaluateContext context)
 	{
-		context.pull(new NoObjectValueMirror(context.getDebuggerContext().getVirtualMachine().getDelegate()), null);
+		DotNetVirtualMachineProxy virtualMachine = context.getDebuggerContext().getVirtualMachine();
+		context.pull(virtualMachine.createNullValue(), null);
 	}
 }

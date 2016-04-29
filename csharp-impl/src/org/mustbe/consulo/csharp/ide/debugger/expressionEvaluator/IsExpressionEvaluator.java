@@ -21,9 +21,9 @@ import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIsExpressionImpl;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
-import mono.debugger.BooleanValueMirror;
-import mono.debugger.TypeMirror;
-import mono.debugger.Value;
+import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
+import consulo.dotnet.debugger.proxy.DotNetVirtualMachineProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
 /**
  * @author VISTALL
@@ -41,14 +41,14 @@ public class IsExpressionEvaluator extends Evaluator
 	@Override
 	public void evaluate(@NotNull CSharpEvaluateContext context)
 	{
-		Value<?> pop = context.popValue();
+		DotNetValueProxy pop = context.popValue();
 
 		if(pop == null)
 		{
 			return;
 		}
 
-		TypeMirror type = pop.type();
+		DotNetTypeProxy type = pop.getType();
 		if(type == null)
 		{
 			return;
@@ -57,11 +57,12 @@ public class IsExpressionEvaluator extends Evaluator
 		DotNetTypeRef typeRef = myExpression.getIsTypeRef();
 		PsiElement element = typeRef.resolve(context.getElementAt()).getElement();
 
-		TypeMirror typeMirror = findTypeMirror(context, element);
+		DotNetTypeProxy typeMirror = findTypeMirror(context, element);
 		if(typeMirror == null)
 		{
 			return;
 		}
-		context.pull(new BooleanValueMirror(context.getDebuggerContext().getVirtualMachine().getDelegate(), typeMirror.isAssignableFrom(type)), null);
+		DotNetVirtualMachineProxy virtualMachine = context.getDebuggerContext().getVirtualMachine();
+		context.pull(virtualMachine.createBooleanValue(typeMirror.isAssignableFrom(type)), null);
 	}
 }

@@ -20,9 +20,9 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.psi.tree.IElementType;
-import mono.debugger.BooleanValueMirror;
-import mono.debugger.Value;
-import mono.debugger.VirtualMachine;
+import consulo.dotnet.debugger.proxy.DotNetVirtualMachineProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetBooleanValueProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
 /**
  * @author VISTALL
@@ -40,19 +40,19 @@ public class PrefixOperatorEvaluator extends Evaluator
 	@Override
 	public void evaluate(@NotNull CSharpEvaluateContext context)
 	{
-		Value<?> popValue = context.popValue();
+		DotNetValueProxy popValue = context.popValue();
 		if(popValue == null)
 		{
 			throw new IllegalArgumentException("no pop value");
 		}
 
-		VirtualMachine delegate = context.getDebuggerContext().getVirtualMachine().getDelegate();
+		DotNetVirtualMachineProxy virtualMachine = context.getDebuggerContext().getVirtualMachine();
 		if(myOperatorElementType == CSharpTokens.EXCL)
 		{
-			if(popValue instanceof BooleanValueMirror)
+			if(popValue instanceof DotNetBooleanValueProxy)
 			{
-				Boolean value = ((BooleanValueMirror) popValue).value();
-				context.pull(new BooleanValueMirror(delegate, !value), null);
+				Boolean value = ((DotNetBooleanValueProxy) popValue).getValue();
+				context.pull(virtualMachine.createBooleanValue(!value), null);
 			}
 			else
 			{

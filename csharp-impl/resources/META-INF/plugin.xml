@@ -85,20 +85,23 @@
 		<toNativeElementTransformer implementation="org.mustbe.consulo.csharp.lang.psi.impl.msil.transformer.MsilToNativeElementTransformer"/>
 	</extensions>
 
+	<extensions defaultExtensionNs="consulo.dotnet">
+		<debuggerSourceLineResolver language="C#" implementationClass="org.mustbe.consulo.csharp.ide.debugger.CSharpDebuggerSourceLineResolver"/>
+
+		<debuggerProvider implementation="org.mustbe.consulo.csharp.ide.debugger.CSharpDebuggerProvider"/>
+	</extensions>
 
 	<extensions defaultExtensionNs="org.mustbe.consulo.dotnet.core">
 		<allTypesSearch implementation="org.mustbe.consulo.csharp.lang.psi.impl.search.CSharpAllTypesSearchExecutor"/>
 		<directTypeInheritorsSearch implementation="org.mustbe.consulo.csharp.lang.psi.impl.search.CSharpDirectTypeInheritorsSearcherExecutor"/>
 		<psiSearcher implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher"/>
 		<shortNameSearcher implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpShortNameSearcher"/>
-		<debugger.provider implementation="org.mustbe.consulo.csharp.ide.debugger.CSharpDebuggerProvider"/>
 		<stubIndexer implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMsilStubIndexer"/>
 
 		<msilFileRepresentation implementation="org.mustbe.consulo.csharp.ide.msil.representation.CSharpMsilFileRepresentationProvider"/>
 		<injectionByAttributeHelper implementation="org.mustbe.consulo.csharp.lang.CSharpMultiHostInjectorByAttributeHelper"/>
 
 		<documentationResolver implementation="org.mustbe.consulo.csharp.lang.doc.CSharpCommentDocumentationResolver"/>
-		<debugger.sourceLineResolver language="C#" implementationClass="org.mustbe.consulo.csharp.ide.debugger.CSharpDebuggerSourceLineResolver"/>
 	</extensions>
 
 	<extensions defaultExtensionNs="com.intellij">
@@ -310,7 +313,7 @@
 		<eapDescriptor implementation="org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0030$CS0030TypeCast"/>
 
 		<xdebugger.lineBreakpointResolver filetype="C#"
-										  implementationClass="org.mustbe.consulo.dotnet.debugger.linebreakType.DotNetLineBreakpointResolver"
+										  implementationClass="consulo.dotnet.debugger.breakpoint.DotNetLineBreakpointResolver"
 										  id="csharp"/>
 
 		<smartPointerAnchorProvider implementation="org.mustbe.consulo.csharp.lang.psi.impl.CSharpAnchorProvider"/>
