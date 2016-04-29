@@ -23,6 +23,7 @@ import org.consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCodeFragment;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
@@ -94,10 +95,7 @@ public class CSharpResolveUtil
 	public static final Key<Boolean> WALK_DEEP = Key.create("walk.deep");
 
 
-	public static boolean treeWalkUp(@NotNull PsiScopeProcessor processor,
-			@NotNull PsiElement entrance,
-			@NotNull PsiElement sender,
-			@Nullable PsiElement maxScope)
+	public static boolean treeWalkUp(@NotNull PsiScopeProcessor processor, @NotNull PsiElement entrance, @NotNull PsiElement sender, @Nullable PsiElement maxScope)
 	{
 		return treeWalkUp(processor, entrance, sender, maxScope, ResolveState.initial());
 	}
@@ -157,10 +155,7 @@ public class CSharpResolveUtil
 	}
 
 	@RequiredReadAction
-	public static boolean walkUsing(@NotNull final PsiScopeProcessor processor,
-			@NotNull final PsiElement entrance,
-			@Nullable PsiElement maxScope,
-			@NotNull final ResolveState state)
+	public static boolean walkUsing(@NotNull final PsiScopeProcessor processor, @NotNull final PsiElement entrance, @Nullable PsiElement maxScope, @NotNull final ResolveState state)
 	{
 		if(!entrance.isValid())
 		{
@@ -195,10 +190,7 @@ public class CSharpResolveUtil
 		PsiElement prevParent = entrance;
 		PsiElement scope = entrance;
 
-		if(maxScope == null)
-		{
-			maxScope = entrance.getContainingFile();
-		}
+		maxScope = validateMaxScope(entrance, maxScope);
 
 		while(scope != null)
 		{
@@ -232,6 +224,23 @@ public class CSharpResolveUtil
 		return true;
 	}
 
+	private static PsiElement validateMaxScope(@NotNull PsiElement entrance, @Nullable PsiElement maxScope)
+	{
+		if(maxScope == null)
+		{
+			maxScope = entrance.getContainingFile();
+			if(maxScope instanceof CSharpCodeFragment)
+			{
+				PsiElement scopeElement = ((CSharpCodeFragment) maxScope).getScopeElement();
+				if(scopeElement != null)
+				{
+					maxScope = scopeElement.getContainingFile();
+				}
+			}
+		}
+		return maxScope;
+	}
+
 	public static boolean walkGenericParameterList(@NotNull final PsiScopeProcessor processor,
 			@NotNull Processor<ResolveResult> consumer,
 			@NotNull final PsiElement entrance,
@@ -251,10 +260,7 @@ public class CSharpResolveUtil
 		PsiElement prevParent = entrance;
 		PsiElement scope = entrance;
 
-		if(maxScope == null)
-		{
-			maxScope = entrance.getContainingFile();
-		}
+		maxScope = validateMaxScope(entrance, maxScope);
 
 		CSharpResolveSelector selector = state.get(SELECTOR);
 		if(selector != null)
@@ -318,11 +324,7 @@ public class CSharpResolveUtil
 	}
 
 	@RequiredReadAction
-	public static boolean walkChildren(@NotNull final PsiScopeProcessor processor,
-			@NotNull final PsiElement entrance,
-			boolean walkParent,
-			boolean walkDeep,
-			@NotNull ResolveState state)
+	public static boolean walkChildren(@NotNull final PsiScopeProcessor processor, @NotNull final PsiElement entrance, boolean walkParent, boolean walkDeep, @NotNull ResolveState state)
 	{
 		if(walkDeep)
 		{
@@ -394,8 +396,7 @@ public class CSharpResolveUtil
 
 			if(walkParent)
 			{
-				DotNetNamespaceAsElement parentNamespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace(parentQName,
-						resolveScope);
+				DotNetNamespaceAsElement parentNamespace = DotNetPsiSearcher.getInstance(entrance.getProject()).findNamespace(parentQName, resolveScope);
 				if(parentNamespace != null && !walkChildren(processor, parentNamespace, walkParent, walkDeep, state))
 				{
 					return false;
@@ -464,12 +465,10 @@ public class CSharpResolveUtil
 		{
 			return ((DotNetArrayTypeRef) typeRef).getInnerTypeRef();
 		}
-		DotNetMethodDeclaration method = CSharpSearchUtil.findMethodByName("GetEnumerator", DotNetTypes2.System.Collections.Generic.IEnumerable$1,
-				typeRef, scope, 0);
+		DotNetMethodDeclaration method = CSharpSearchUtil.findMethodByName("GetEnumerator", DotNetTypes2.System.Collections.Generic.IEnumerable$1, typeRef, scope, 0);
 		if(method != null)
 		{
-			DotNetPropertyDeclaration current = CSharpSearchUtil.findPropertyByName("Current", DotNetTypes2.System.Collections.Generic.IEnumerator$1,
-					method.getReturnTypeRef(), scope);
+			DotNetPropertyDeclaration current = CSharpSearchUtil.findPropertyByName("Current", DotNetTypes2.System.Collections.Generic.IEnumerator$1, method.getReturnTypeRef(), scope);
 			if(current == null)
 			{
 				return DotNetTypeRef.ERROR_TYPE;
