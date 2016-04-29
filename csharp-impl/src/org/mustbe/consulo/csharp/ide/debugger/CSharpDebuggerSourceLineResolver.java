@@ -8,8 +8,8 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDelegateExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
-import org.mustbe.consulo.dotnet.debugger.DotNetDefaultDebuggerSourceLineResolver;
 import com.intellij.psi.PsiElement;
+import consulo.dotnet.debugger.DotNetDefaultDebuggerSourceLineResolver;
 
 /**
  * @author VISTALL

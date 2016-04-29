@@ -20,16 +20,12 @@ import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.dotnet.debugger.DotNetDebugContext;
-import org.mustbe.consulo.dotnet.debugger.nodes.DotNetAbstractVariableMirrorNode;
 import com.intellij.icons.AllIcons;
-import mono.debugger.InvalidFieldIdException;
-import mono.debugger.InvalidStackFrameException;
-import mono.debugger.ThreadMirror;
-import mono.debugger.ThrowValueException;
-import mono.debugger.TypeMirror;
-import mono.debugger.VMDisconnectedException;
-import mono.debugger.Value;
+import consulo.dotnet.debugger.DotNetDebugContext;
+import consulo.dotnet.debugger.nodes.DotNetAbstractVariableMirrorNode;
+import consulo.dotnet.debugger.proxy.DotNetThreadProxy;
+import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
 /**
  * @author VISTALL
@@ -37,9 +33,9 @@ import mono.debugger.Value;
  */
 public class CSharpWatcherNode extends DotNetAbstractVariableMirrorNode
 {
-	private Value<?> myValue;
+	private DotNetValueProxy myValue;
 
-	public CSharpWatcherNode(@NotNull DotNetDebugContext debuggerContext, @NotNull String name, @NotNull ThreadMirror threadMirror, @NotNull Value<?> value)
+	public CSharpWatcherNode(@NotNull DotNetDebugContext debuggerContext, @NotNull String name, @NotNull DotNetThreadProxy threadMirror, @NotNull DotNetValueProxy value)
 	{
 		super(debuggerContext, name, threadMirror);
 		myValue = value;
@@ -54,20 +50,20 @@ public class CSharpWatcherNode extends DotNetAbstractVariableMirrorNode
 
 	@Nullable
 	@Override
-	public Value<?> getValueOfVariableImpl() throws ThrowValueException, InvalidFieldIdException, VMDisconnectedException, InvalidStackFrameException
+	public DotNetValueProxy getValueOfVariableImpl()
 	{
 		return myValue;
 	}
 
 	@Override
-	public void setValueForVariableImpl(@NotNull Value<?> value) throws ThrowValueException, InvalidFieldIdException, VMDisconnectedException, InvalidStackFrameException
+	public void setValueForVariableImpl(@NotNull DotNetValueProxy value)
 	{
 
 	}
 
 	@Nullable
 	@Override
-	public TypeMirror getTypeOfVariable()
+	public DotNetTypeProxy getTypeOfVariable()
 	{
 		return null;
 	}

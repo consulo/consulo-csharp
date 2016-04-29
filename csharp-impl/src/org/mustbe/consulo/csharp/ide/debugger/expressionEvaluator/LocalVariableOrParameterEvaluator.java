@@ -19,14 +19,16 @@ package org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
-import org.mustbe.consulo.dotnet.debugger.nodes.DotNetDebuggerCompilerGenerateUtil;
-import org.mustbe.consulo.dotnet.debugger.proxy.DotNetStackFrameMirrorProxy;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
-import mono.debugger.FieldMirror;
-import mono.debugger.MethodMirror;
-import mono.debugger.ObjectValueMirror;
-import mono.debugger.TypeMirror;
-import mono.debugger.Value;
+import consulo.dotnet.debugger.nodes.DotNetDebuggerCompilerGenerateUtil;
+import consulo.dotnet.debugger.proxy.DotNetFieldProxy;
+import consulo.dotnet.debugger.proxy.DotNetInvalidObjectException;
+import consulo.dotnet.debugger.proxy.DotNetMethodProxy;
+import consulo.dotnet.debugger.proxy.DotNetSourceLocation;
+import consulo.dotnet.debugger.proxy.DotNetStackFrameProxy;
+import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
 /**
  * @author VISTALL
@@ -43,22 +45,27 @@ public abstract class LocalVariableOrParameterEvaluator<T extends DotNetVariable
 	}
 
 	@Override
-	public void evaluate(@NotNull CSharpEvaluateContext context)
+	public void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetInvalidObjectException
 	{
-		DotNetStackFrameMirrorProxy frame = context.getFrame();
-		MethodMirror method = frame.location().method();
-
-		Value<?> thisObject = frame.thisObject();
-		Value<?> yieldOrAsyncThis = ThisObjectEvaluator.tryToFindObjectInsideYieldOrAsyncThis(frame, thisObject);
-		if(yieldOrAsyncThis instanceof ObjectValueMirror)
+		DotNetStackFrameProxy frame = context.getFrame();
+		DotNetSourceLocation sourceLocation = frame.getSourceLocation();
+		if(sourceLocation == null)
 		{
-			ObjectValueMirror thisObjectAsObjectMirror = (ObjectValueMirror) thisObject;
-			FieldMirror localVariableField = null;
-			TypeMirror type = thisObjectAsObjectMirror.type();
+			throw new IllegalArgumentException("no source position");
+		}
+		DotNetMethodProxy method = sourceLocation.getMethod();
+
+		DotNetValueProxy thisObject = frame.getThisObject();
+		DotNetValueProxy yieldOrAsyncThis = ThisObjectEvaluator.tryToFindObjectInsideYieldOrAsyncThis(frame, thisObject);
+		if(yieldOrAsyncThis instanceof DotNetObjectValueProxy)
+		{
+			DotNetObjectValueProxy thisObjectAsObjectMirror = (DotNetObjectValueProxy) thisObject;
+			DotNetFieldProxy localVariableField = null;
+			DotNetTypeProxy type = thisObjectAsObjectMirror.getType();
 			assert type != null;
-			for(final FieldMirror field : type.fields())
+			for(final DotNetFieldProxy field : type.getFields())
 			{
-				String name = DotNetDebuggerCompilerGenerateUtil.extractNotGeneratedName(field.name());
+				String name = DotNetDebuggerCompilerGenerateUtil.extractNotGeneratedName(field.getName());
 				if(name == null)
 				{
 					continue;
@@ -72,7 +79,7 @@ public abstract class LocalVariableOrParameterEvaluator<T extends DotNetVariable
 
 			if(localVariableField != null)
 			{
-				Value<?> value = localVariableField.value(frame.thread(), thisObjectAsObjectMirror);
+				DotNetValueProxy value = localVariableField.getValue(frame.getThread(), thisObjectAsObjectMirror);
 				if(value != null)
 				{
 					context.pull(value, localVariableField);
@@ -87,5 +94,5 @@ public abstract class LocalVariableOrParameterEvaluator<T extends DotNetVariable
 		throw new IllegalArgumentException("no variable with name '" + myName + "'");
 	}
 
-	protected abstract boolean tryEvaluateFromStackFrame(@NotNull CSharpEvaluateContext context, DotNetStackFrameMirrorProxy frame, MethodMirror method);
+	protected abstract boolean tryEvaluateFromStackFrame(@NotNull CSharpEvaluateContext context, DotNetStackFrameProxy frame, DotNetMethodProxy method);
 }

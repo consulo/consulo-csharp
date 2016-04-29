@@ -212,26 +212,19 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 		PsiElement element = operatorElement.resolveToCallable();
 		if(element != null)
 		{
-			if(!element.isPhysical())
+			myEvaluators.add(NullValueEvaluator.INSTANCE); // operators always static
+
+			pushArguments(expression);
+
+			CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) element;
+
+			pushMethodEvaluator(expression, methodDeclaration, (CSharpTypeDeclaration) element.getParent(), getMethodName(operatorElementType, methodDeclaration.getName()));
+
+			if(operatorElementType == CSharpTokens.NTEQ)
 			{
-
+				myEvaluators.add(new PrefixOperatorEvaluator(CSharpTokens.EXCL));
 			}
-			else if(element instanceof CSharpMethodDeclaration)
-			{
-				myEvaluators.add(NullValueEvaluator.INSTANCE); // operators always static
-
-				pushArguments(expression);
-
-				CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) element;
-
-				pushMethodEvaluator(expression, methodDeclaration, (CSharpTypeDeclaration) element.getParent(), getMethodName(operatorElementType, methodDeclaration.getName()));
-
-				if(operatorElementType == CSharpTokens.NTEQ)
-				{
-					myEvaluators.add(new PrefixOperatorEvaluator(CSharpTokens.EXCL));
-				}
-				return;
-			}
+			return;
 		}
 		else
 		{

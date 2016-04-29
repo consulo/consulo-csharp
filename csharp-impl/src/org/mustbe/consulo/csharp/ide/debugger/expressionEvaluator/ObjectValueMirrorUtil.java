@@ -17,9 +17,9 @@
 package org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator;
 
 import org.jetbrains.annotations.Nullable;
-import mono.debugger.ObjectValueMirror;
-import mono.debugger.StringValueMirror;
-import mono.debugger.Value;
+import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetStringValueProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
 /**
  * @author VISTALL
@@ -28,16 +28,16 @@ import mono.debugger.Value;
 public class ObjectValueMirrorUtil
 {
 	@Nullable
-	public static ObjectValueMirror extractObjectValueMirror(@Nullable Value<?> value)
+	public static DotNetObjectValueProxy extractObjectValueMirror(@Nullable DotNetValueProxy value)
 	{
-		if(value instanceof ObjectValueMirror)
+		if(value instanceof DotNetObjectValueProxy)
 		{
-			return (ObjectValueMirror) value;
+			return (DotNetObjectValueProxy) value;
 		}
 
-		if(value instanceof StringValueMirror)
+		if(value instanceof DotNetStringValueProxy)
 		{
-			return ((StringValueMirror) value).object();
+			return (DotNetObjectValueProxy) ((DotNetStringValueProxy) value).getObjectValue();
 		}
 		return null;
 	}

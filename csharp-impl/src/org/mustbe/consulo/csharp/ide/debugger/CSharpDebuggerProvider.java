@@ -14,11 +14,6 @@ import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
-import org.mustbe.consulo.dotnet.debugger.DotNetDebugContext;
-import org.mustbe.consulo.dotnet.debugger.DotNetDebuggerProvider;
-import org.mustbe.consulo.dotnet.debugger.nodes.DotNetFieldOrPropertyMirrorNode;
-import org.mustbe.consulo.dotnet.debugger.nodes.DotNetStructValueInfo;
-import org.mustbe.consulo.dotnet.debugger.proxy.DotNetStackFrameMirrorProxy;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
@@ -34,12 +29,17 @@ import com.intellij.xdebugger.XDebugSession;
 import com.intellij.xdebugger.XSourcePosition;
 import com.intellij.xdebugger.evaluation.XDebuggerEvaluator;
 import com.intellij.xdebugger.frame.XNamedValue;
-import mono.debugger.FieldOrPropertyMirror;
-import mono.debugger.InvalidStackFrameException;
-import mono.debugger.ObjectValueMirror;
-import mono.debugger.StructValueMirror;
-import mono.debugger.TypeMirror;
-import mono.debugger.Value;
+import consulo.dotnet.debugger.DotNetDebugContext;
+import consulo.dotnet.debugger.DotNetDebuggerProvider;
+import consulo.dotnet.debugger.nodes.DotNetFieldOrPropertyMirrorNode;
+import consulo.dotnet.debugger.nodes.DotNetStructValueInfo;
+import consulo.dotnet.debugger.proxy.DotNetFieldOrPropertyProxy;
+import consulo.dotnet.debugger.proxy.DotNetInvalidObjectException;
+import consulo.dotnet.debugger.proxy.DotNetStackFrameProxy;
+import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetStructValueProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
 /**
  * @author VISTALL
@@ -57,7 +57,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 
 	@Override
 	@RequiredReadAction
-	public void evaluate(@NotNull DotNetStackFrameMirrorProxy frame,
+	public void evaluate(@NotNull DotNetStackFrameProxy frame,
 			@NotNull DotNetDebugContext debuggerContext,
 			@NotNull String expression,
 			@Nullable PsiElement elementAt,
@@ -123,19 +123,19 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 			}
 
 			evaluateContext.evaluate(evaluators);
-			Value<?> targetValue = evaluateContext.popValue();
+			DotNetValueProxy targetValue = evaluateContext.popValue();
 			if(targetValue != null)
 			{
-				callback.evaluated(new CSharpWatcherNode(debuggerContext, expression, frame.thread(), targetValue));
+				callback.evaluated(new CSharpWatcherNode(debuggerContext, expression, frame.getThread(), targetValue));
 			}
 			else
 			{
 				callback.errorOccurred("no value");
 			}
 		}
-		catch(InvalidStackFrameException e)
+		catch(DotNetInvalidObjectException e)
 		{
-			callback.errorOccurred("invalid stack frame");
+			callback.errorOccurred("invalid object");
 		}
 		catch(Exception e)
 		{
@@ -151,7 +151,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 
 	@Override
 	@RequiredReadAction
-	public void evaluate(@NotNull DotNetStackFrameMirrorProxy frame,
+	public void evaluate(@NotNull DotNetStackFrameProxy frame,
 			@NotNull DotNetDebugContext debuggerContext,
 			@NotNull DotNetReferenceExpression referenceExpression,
 			@NotNull Set<Object> visitedVariables,
@@ -176,10 +176,10 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 			}
 
 			evaluateContext.evaluate(evaluators);
-			Pair<Value<?>, Object> objectPair = evaluateContext.pop();
-			if(objectPair != null && objectPair.getSecond() instanceof FieldOrPropertyMirror)
+			Pair<DotNetValueProxy, Object> objectPair = evaluateContext.pop();
+			if(objectPair != null && objectPair.getSecond() instanceof DotNetFieldOrPropertyProxy)
 			{
-				FieldOrPropertyMirror fieldOrPropertyMirror = (FieldOrPropertyMirror) objectPair.getSecond();
+				DotNetFieldOrPropertyProxy fieldOrPropertyMirror = (DotNetFieldOrPropertyProxy) objectPair.getSecond();
 				if(visitedVariables.contains(fieldOrPropertyMirror))
 				{
 					return;
@@ -187,25 +187,25 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 
 				visitedVariables.add(fieldOrPropertyMirror);
 
-				TypeMirror parent = fieldOrPropertyMirror.parent();
+				DotNetTypeProxy parent = fieldOrPropertyMirror.getParentType();
 
-				Value<?> thisObjectValue = ThisObjectEvaluator.calcThisObject(frame, frame.thisObject());
-				TypeMirror type = thisObjectValue.type();
-				if(thisObjectValue instanceof ObjectValueMirror && parent.equals(type))
+				DotNetValueProxy thisObjectValue = ThisObjectEvaluator.calcThisObject(frame, frame.getThisObject());
+				DotNetTypeProxy type = thisObjectValue.getType();
+				if(thisObjectValue instanceof DotNetObjectValueProxy && parent.equals(type))
 				{
-					consumer.consume(new DotNetFieldOrPropertyMirrorNode(debuggerContext, fieldOrPropertyMirror, frame.thread(), (ObjectValueMirror) thisObjectValue));
+					consumer.consume(new DotNetFieldOrPropertyMirrorNode(debuggerContext, fieldOrPropertyMirror, frame.getThread(), (DotNetObjectValueProxy) thisObjectValue));
 				}
-				else if(thisObjectValue instanceof StructValueMirror && parent.equals(type))
+				else if(thisObjectValue instanceof DotNetStructValueProxy && parent.equals(type))
 				{
-					StructValueMirror structValueMirror = (StructValueMirror) thisObjectValue;
+					DotNetStructValueProxy structValueMirror = (DotNetStructValueProxy) thisObjectValue;
 
 					DotNetStructValueInfo valueInfo = new DotNetStructValueInfo(structValueMirror, null, fieldOrPropertyMirror, objectPair.getFirst());
 
-					consumer.consume(new DotNetFieldOrPropertyMirrorNode(debuggerContext, fieldOrPropertyMirror, frame.thread(), null, valueInfo));
+					consumer.consume(new DotNetFieldOrPropertyMirrorNode(debuggerContext, fieldOrPropertyMirror, frame.getThread(), null, valueInfo));
 				}
 				else
 				{
-					consumer.consume(new CSharpWatcherNode(debuggerContext, referenceExpression.getText(), frame.thread(), objectPair.getFirst()));
+					consumer.consume(new CSharpWatcherNode(debuggerContext, referenceExpression.getText(), frame.getThread(), objectPair.getFirst()));
 				}
 			}
 		}

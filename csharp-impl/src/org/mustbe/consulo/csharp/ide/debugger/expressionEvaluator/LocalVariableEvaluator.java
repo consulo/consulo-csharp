@@ -20,12 +20,12 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import org.mustbe.consulo.dotnet.debugger.proxy.DotNetStackFrameMirrorProxy;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.text.StringUtil;
-import mono.debugger.LocalVariableMirror;
-import mono.debugger.MethodMirror;
-import mono.debugger.Value;
+import consulo.dotnet.debugger.proxy.DotNetLocalVariableProxy;
+import consulo.dotnet.debugger.proxy.DotNetMethodProxy;
+import consulo.dotnet.debugger.proxy.DotNetStackFrameProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
 /**
  * @author VISTALL
@@ -40,14 +40,14 @@ public class LocalVariableEvaluator extends LocalVariableOrParameterEvaluator<CS
 	}
 
 	@Override
-	protected boolean tryEvaluateFromStackFrame(@NotNull CSharpEvaluateContext context, DotNetStackFrameMirrorProxy frame, MethodMirror method)
+	protected boolean tryEvaluateFromStackFrame(@NotNull CSharpEvaluateContext context, DotNetStackFrameProxy frame, DotNetMethodProxy method)
 	{
-		LocalVariableMirror[] locals = method.locals(frame.location().codeIndex());
+		DotNetLocalVariableProxy[] locals = method.getLocalVariables(frame);
 
-		LocalVariableMirror mirror = null;
-		for(LocalVariableMirror local : locals)
+		DotNetLocalVariableProxy mirror = null;
+		for(DotNetLocalVariableProxy local : locals)
 		{
-			String name = local.name();
+			String name = local.getName();
 			if(StringUtil.isEmpty(name))
 			{
 				continue;
@@ -62,7 +62,7 @@ public class LocalVariableEvaluator extends LocalVariableOrParameterEvaluator<CS
 
 		if(mirror != null)
 		{
-			Value value = frame.localOrParameterValue(mirror);
+			DotNetValueProxy value = frame.getLocalValue(mirror);
 			if(value != null)
 			{
 				context.pull(value, mirror);

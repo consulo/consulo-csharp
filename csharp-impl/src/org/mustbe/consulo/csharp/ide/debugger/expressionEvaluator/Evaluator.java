@@ -20,12 +20,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.dotnet.debugger.DotNetDebugContext;
-import org.mustbe.consulo.dotnet.debugger.TypeMirrorUnloadedException;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiUtilCore;
-import mono.debugger.TypeMirror;
+import consulo.dotnet.debugger.DotNetDebugContext;
+import consulo.dotnet.debugger.proxy.DotNetInvalidObjectException;
+import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
+import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
 
 /**
  * @author VISTALL
@@ -33,28 +34,21 @@ import mono.debugger.TypeMirror;
  */
 public abstract class Evaluator
 {
-	public abstract void evaluate(@NotNull CSharpEvaluateContext context);
+	public abstract void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetInvalidObjectException, DotNetThrowValueException;
 
 	@Nullable
-	public static TypeMirror findTypeMirror(@NotNull CSharpEvaluateContext context, @Nullable PsiElement element)
+	public static DotNetTypeProxy findTypeMirror(@NotNull CSharpEvaluateContext context, @Nullable PsiElement element)
 	{
 		if(element instanceof CSharpTypeDeclaration)
 		{
-			try
-			{
-				DotNetDebugContext debuggerContext = context.getDebuggerContext();
+			DotNetDebugContext debuggerContext = context.getDebuggerContext();
 
-				VirtualFile virtualFile = PsiUtilCore.getVirtualFile(element);
-				if(virtualFile == null)
-				{
-					return null;
-				}
-				return debuggerContext.getVirtualMachine().findTypeMirror(element.getProject(), virtualFile, ((CSharpTypeDeclaration) element).getVmQName());
-			}
-			catch(TypeMirrorUnloadedException e)
+			VirtualFile virtualFile = PsiUtilCore.getVirtualFile(element);
+			if(virtualFile == null)
 			{
-				e.printStackTrace();
+				return null;
 			}
+			return debuggerContext.getVirtualMachine().findType(element.getProject(), ((CSharpTypeDeclaration) element).getVmQName(), virtualFile);
 		}
 		return null;
 	}

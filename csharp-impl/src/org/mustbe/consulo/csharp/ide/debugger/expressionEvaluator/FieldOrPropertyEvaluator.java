@@ -16,7 +16,6 @@
 
 package org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator;
 
-import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
@@ -27,18 +26,20 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
-import mono.debugger.FieldOrPropertyMirror;
-import mono.debugger.NoObjectValueMirror;
-import mono.debugger.ObjectValueMirror;
-import mono.debugger.StructValueMirror;
-import mono.debugger.TypeMirror;
-import mono.debugger.Value;
+import consulo.dotnet.debugger.DotNetDebuggerSearchUtil;
+import consulo.dotnet.debugger.proxy.DotNetFieldOrPropertyProxy;
+import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
+import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetNullValueProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetStructValueProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
 /**
  * @author VISTALL
  * @since 09.03.2016
  */
-public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement & DotNetModifierListOwner, M extends FieldOrPropertyMirror> extends Evaluator
+public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement & DotNetModifierListOwner, M extends DotNetFieldOrPropertyProxy> extends Evaluator
 {
 	@Nullable
 	private CSharpTypeDeclaration myTypeDeclaration;
@@ -50,9 +51,9 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 		myElement = element;
 	}
 
-	protected abstract boolean isMyMirror(@NotNull FieldOrPropertyMirror mirror);
+	protected abstract boolean isMyMirror(@NotNull DotNetFieldOrPropertyProxy mirror);
 
-	protected abstract boolean invoke(@NotNull M mirror, @NotNull CSharpEvaluateContext context, @NotNull Value<?> popValue);
+	protected abstract boolean invoke(@NotNull M mirror, @NotNull CSharpEvaluateContext context, @NotNull DotNetValueProxy popValue) throws DotNetThrowValueException;
 
 	@Nullable
 	@RequiredReadAction
@@ -63,18 +64,18 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 
 	@Override
 	@RequiredReadAction
-	public void evaluate(@NotNull CSharpEvaluateContext context)
+	public void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetThrowValueException
 	{
-		Value<?> popValue = context.popValue();
+		DotNetValueProxy popValue = context.popValue();
 		if(popValue == null)
 		{
 			throw new IllegalArgumentException("no pop value");
 		}
 
-		TypeMirror typeMirror = null;
+		DotNetTypeProxy typeMirror = null;
 		if(myTypeDeclaration == null)
 		{
-			typeMirror = popValue.type();
+			typeMirror = popValue.getType();
 		}
 		else
 		{
@@ -92,17 +93,17 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 			throw new IllegalArgumentException("invalid name");
 		}
 
-		if(popValue instanceof StructValueMirror)
+		if(popValue instanceof DotNetStructValueProxy)
 		{
-			Map<FieldOrPropertyMirror, Value<?>> values = ((StructValueMirror) popValue).map();
+			Map<DotNetFieldOrPropertyProxy, DotNetValueProxy> values = ((DotNetStructValueProxy) popValue).getValues();
 
-			for(Map.Entry<FieldOrPropertyMirror, Value<?>> entry : values.entrySet())
+			for(Map.Entry<DotNetFieldOrPropertyProxy, DotNetValueProxy> entry : values.entrySet())
 			{
-				FieldOrPropertyMirror key = entry.getKey();
+				DotNetFieldOrPropertyProxy key = entry.getKey();
 				if(isMyMirror(key))
 				{
-					Value<?> value = entry.getValue();
-					if(key.name().equals(name))
+					DotNetValueProxy value = entry.getValue();
+					if(key.getName().equals(name))
 					{
 						context.pull(value, key);
 						return;
@@ -110,7 +111,7 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 				}
 			}
 		}
-		else if(popValue instanceof NoObjectValueMirror && myElement.hasModifier(DotNetModifier.STATIC))
+		else if(popValue instanceof DotNetNullValueProxy && myElement.hasModifier(DotNetModifier.STATIC))
 		{
 			if(invokeFieldOrProperty(context, name, popValue, typeMirror))
 			{
@@ -119,7 +120,7 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 		}
 		else
 		{
-			ObjectValueMirror objectValueMirror = ObjectValueMirrorUtil.extractObjectValueMirror(popValue);
+			DotNetObjectValueProxy objectValueMirror = ObjectValueMirrorUtil.extractObjectValueMirror(popValue);
 			if(objectValueMirror != null && invokeFieldOrProperty(context, name, objectValueMirror, typeMirror))
 			{
 				return;
@@ -130,21 +131,24 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 				return;
 			}
 		}
-		throw new IllegalArgumentException("can't find member with name '" + name + "' from parent : " + typeMirror.qualifiedName());
+		throw new IllegalArgumentException("can't find member with name '" + name + "' from parent : " + typeMirror.getFullName());
 	}
 
-	protected boolean tryEvaluateNonObjectValue(CSharpEvaluateContext context, Value<?> value)
+	protected boolean tryEvaluateNonObjectValue(CSharpEvaluateContext context, DotNetValueProxy value)
 	{
 		return false;
 	}
 
 	@SuppressWarnings("unchecked")
-	private boolean invokeFieldOrProperty(@NotNull CSharpEvaluateContext context, @NotNull String name, @NotNull Value<?> popValue, @NotNull TypeMirror typeMirror)
+	private boolean invokeFieldOrProperty(@NotNull CSharpEvaluateContext context,
+			@NotNull String name,
+			@NotNull DotNetValueProxy popValue,
+			@NotNull DotNetTypeProxy typeMirror) throws DotNetThrowValueException
 	{
-		List<FieldOrPropertyMirror> fieldOrPropertyMirrors = typeMirror.fieldAndProperties(true);
-		for(FieldOrPropertyMirror fieldOrPropertyMirror : fieldOrPropertyMirrors)
+		DotNetFieldOrPropertyProxy[] fieldOrPropertyMirrors = DotNetDebuggerSearchUtil.getFieldAndProperties(typeMirror, true);
+		for(DotNetFieldOrPropertyProxy fieldOrPropertyMirror : fieldOrPropertyMirrors)
 		{
-			if(isMyMirror(fieldOrPropertyMirror) && fieldOrPropertyMirror.name().equals(name) && invoke((M) fieldOrPropertyMirror, context, popValue))
+			if(isMyMirror(fieldOrPropertyMirror) && fieldOrPropertyMirror.getName().equals(name) && invoke((M) fieldOrPropertyMirror, context, popValue))
 			{
 				return true;
 			}

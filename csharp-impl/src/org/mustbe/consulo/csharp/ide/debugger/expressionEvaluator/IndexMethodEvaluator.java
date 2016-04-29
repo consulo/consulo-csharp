@@ -27,25 +27,25 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import mono.debugger.ArrayValueMirror;
-import mono.debugger.FieldOrPropertyMirror;
-import mono.debugger.InvokeFlags;
-import mono.debugger.MethodMirror;
-import mono.debugger.NoObjectValueMirror;
-import mono.debugger.NumberValueMirror;
-import mono.debugger.ObjectValueMirror;
-import mono.debugger.PropertyMirror;
-import mono.debugger.Value;
+import consulo.dotnet.debugger.proxy.DotNetFieldOrPropertyProxy;
+import consulo.dotnet.debugger.proxy.DotNetMethodProxy;
+import consulo.dotnet.debugger.proxy.DotNetPropertyProxy;
+import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
+import consulo.dotnet.debugger.proxy.value.DotNetArrayValueProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetNullValueProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetNumberValueProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
 /**
  * @author VISTALL
  * @since 09.03.2016
  */
-public class IndexMethodEvaluator extends FieldOrPropertyEvaluator<CSharpIndexMethodDeclaration, PropertyMirror>
+public class IndexMethodEvaluator extends FieldOrPropertyEvaluator<CSharpIndexMethodDeclaration, DotNetPropertyProxy>
 {
 	private List<DotNetTypeDeclaration> myParameterTypes;
 
-	private List<Value<?>> myArgumentValues;
+	private List<DotNetValueProxy> myArgumentValues;
 
 	public IndexMethodEvaluator(CSharpIndexMethodDeclaration variable, List<DotNetTypeDeclaration> parameterTypes)
 	{
@@ -68,12 +68,12 @@ public class IndexMethodEvaluator extends FieldOrPropertyEvaluator<CSharpIndexMe
 
 	@RequiredReadAction
 	@Override
-	public void evaluate(@NotNull CSharpEvaluateContext context)
+	public void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetThrowValueException
 	{
-		myArgumentValues = new ArrayList<Value<?>>(myParameterTypes.size());
+		myArgumentValues = new ArrayList<DotNetValueProxy>(myParameterTypes.size());
 		for(int i = 0; i < myParameterTypes.size(); i++)
 		{
-			Value<?> argumentValue = context.popValue();
+			DotNetValueProxy argumentValue = context.popValue();
 			if(argumentValue == null)
 			{
 				throw new IllegalArgumentException("no argument value");
@@ -85,29 +85,29 @@ public class IndexMethodEvaluator extends FieldOrPropertyEvaluator<CSharpIndexMe
 	}
 
 	@Override
-	protected boolean isMyMirror(@NotNull FieldOrPropertyMirror mirror)
+	protected boolean isMyMirror(@NotNull DotNetFieldOrPropertyProxy mirror)
 	{
-		if(mirror instanceof PropertyMirror)
+		if(mirror instanceof DotNetPropertyProxy)
 		{
-			MethodMirror methodMirror = ((PropertyMirror) mirror).methodGet();
-			return methodMirror != null && methodMirror.parameters().length == myParameterTypes.size();
+			DotNetMethodProxy methodMirror = ((DotNetPropertyProxy) mirror).getGetMethod();
+			return methodMirror != null && methodMirror.getParameters().length == myParameterTypes.size();
 		}
 		return false;
 	}
 
 	@Override
-	protected boolean invoke(@NotNull PropertyMirror mirror, @NotNull CSharpEvaluateContext context, @NotNull Value<?> popValue)
+	protected boolean invoke(@NotNull DotNetPropertyProxy mirror, @NotNull CSharpEvaluateContext context, @NotNull DotNetValueProxy popValue) throws DotNetThrowValueException
 	{
 		assert myArgumentValues != null;
 
-		MethodMirror methodMirror = mirror.methodGet();
+		DotNetMethodProxy methodMirror = mirror.getGetMethod();
 		if(methodMirror == null)
 		{
 			return false;
 		}
 
-		Value<?> loadedValue = methodMirror.invoke(context.getFrame().thread(), InvokeFlags.DISABLE_BREAKPOINTS, popValue instanceof NoObjectValueMirror ? null : (ObjectValueMirror) popValue,
-				myArgumentValues.toArray(new Value[myArgumentValues.size()]));
+		DotNetValueProxy loadedValue = methodMirror.invoke(context.getFrame().getThread(), popValue instanceof DotNetNullValueProxy ? null : (DotNetObjectValueProxy) popValue,
+				myArgumentValues.toArray(new DotNetValueProxy[myArgumentValues.size()]));
 		if(loadedValue != null)
 		{
 			context.pull(loadedValue, mirror);
@@ -117,16 +117,16 @@ public class IndexMethodEvaluator extends FieldOrPropertyEvaluator<CSharpIndexMe
 	}
 
 	@Override
-	protected boolean tryEvaluateNonObjectValue(CSharpEvaluateContext context, Value<?> value)
+	protected boolean tryEvaluateNonObjectValue(CSharpEvaluateContext context, DotNetValueProxy value)
 	{
-		if(value instanceof ArrayValueMirror && myArgumentValues.size() == 1)
+		if(value instanceof DotNetArrayValueProxy && myArgumentValues.size() == 1)
 		{
-			Value<?> argumentValue = myArgumentValues.get(0);
-			if(argumentValue instanceof NumberValueMirror)
+			DotNetValueProxy argumentValue = myArgumentValues.get(0);
+			if(argumentValue instanceof DotNetNumberValueProxy)
 			{
-				int index = ((NumberValueMirror) argumentValue).value().intValue();
+				int index = ((DotNetNumberValueProxy) argumentValue).getValue().intValue();
 
-				context.pull(((ArrayValueMirror) value).get(index), null);
+				context.pull(((DotNetArrayValueProxy) value).get(index), null);
 				return true;
 			}
 		}
