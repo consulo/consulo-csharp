@@ -313,7 +313,7 @@
 		<eapDescriptor implementation="org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0030$CS0030TypeCast"/>
 
 		<xdebugger.lineBreakpointResolver filetype="C#"
-										  implementationClass="org.mustbe.consulo.dotnet.debugger.linebreakType.DotNetLineBreakpointResolver"
+										  implementationClass="consulo.dotnet.debugger.breakpoint.DotNetLineBreakpointResolver"
 										  id="csharp"/>
 
 		<smartPointerAnchorProvider implementation="org.mustbe.consulo.csharp.lang.psi.impl.CSharpAnchorProvider"/>
