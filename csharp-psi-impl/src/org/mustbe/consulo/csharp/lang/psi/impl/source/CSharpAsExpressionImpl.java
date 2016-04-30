@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -50,6 +51,7 @@ public class CSharpAsExpressionImpl extends CSharpElementImpl implements DotNetE
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public PsiElement getAsKeyword()
 	{
 		return findNotNullChildByType(CSharpTokens.AS_KEYWORD);
@@ -63,6 +65,7 @@ public class CSharpAsExpressionImpl extends CSharpElementImpl implements DotNetE
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
 		DotNetType type = getType();

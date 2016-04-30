@@ -20,8 +20,10 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAsExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeCastExpressionImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalInspectionToolSession;
@@ -57,6 +59,28 @@ public class UnnecessaryCastInspection extends LocalInspectionTool
 				if(CSharpTypeUtil.isInheritable(innerType, castType, expression) && CSharpTypeUtil.isInheritable(castType, innerType, expression))
 				{
 					holder.registerProblem(expression.getType(), "Unnecessary cast", ProblemHighlightType.LIKE_UNUSED_SYMBOL);
+				}
+			}
+
+			@Override
+			@RequiredReadAction
+			public void visitAsExpression(CSharpAsExpressionImpl expression)
+			{
+				DotNetExpression innerExpression = expression.getInnerExpression();
+				if(innerExpression == null)
+				{
+					return;
+				}
+
+				DotNetType type = expression.getType();
+				if(type == null)
+				{
+					return;
+				}
+
+				if(CSharpTypeUtil.isTypeEqual(innerExpression.toTypeRef(true), type.toTypeRef(), expression))
+				{
+					holder.registerProblem(expression.getAsKeyword(), "Unnecessary 'as' expression", ProblemHighlightType.LIKE_UNUSED_SYMBOL);
 				}
 			}
 		};
