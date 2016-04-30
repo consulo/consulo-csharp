@@ -20,12 +20,13 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.DotNetAccessorOwner;
 
 /**
  * @author VISTALL
  * @since 20.12.14
  */
-public interface CSharpXXXAccessorOwner extends DotNetElement, CSharpBodyWithBraces, DotNetModifierListOwner
+public interface CSharpXXXAccessorOwner extends DotNetElement, CSharpBodyWithBraces, DotNetModifierListOwner, DotNetAccessorOwner
 {
 	@NotNull
 	DotNetXXXAccessor[] getAccessors();
