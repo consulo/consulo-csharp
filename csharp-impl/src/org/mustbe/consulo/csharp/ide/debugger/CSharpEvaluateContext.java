@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator.Evaluator;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import consulo.dotnet.debugger.DotNetDebugContext;
+import consulo.dotnet.debugger.proxy.DotNetAbsentInformationException;
 import consulo.dotnet.debugger.proxy.DotNetInvalidObjectException;
 import consulo.dotnet.debugger.proxy.DotNetInvalidStackFrameException;
 import consulo.dotnet.debugger.proxy.DotNetStackFrameProxy;
@@ -84,7 +85,7 @@ public class CSharpEvaluateContext
 		myStack.addFirst(Pair.<DotNetValueProxy, Object>create(o, provider));
 	}
 
-	public void evaluate(List<Evaluator> evaluators) throws DotNetThrowValueException, DotNetInvalidObjectException, DotNetInvalidStackFrameException
+	public void evaluate(List<Evaluator> evaluators) throws DotNetThrowValueException, DotNetInvalidObjectException, DotNetInvalidStackFrameException, DotNetAbsentInformationException
 	{
 		for(Evaluator evaluator : evaluators)
 		{
