@@ -23,11 +23,13 @@ import java.util.Locale;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.completion.CSharpCompletionSorting;
 import org.mustbe.consulo.csharp.ide.completion.insertHandler.CSharpParenthesesWithSemicolonInsertHandler;
 import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLikeLookupElement;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodUtil;
@@ -47,6 +49,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -77,7 +80,7 @@ public class CSharpLookupElementBuilder
 		List<LookupElement> list = new ArrayList<LookupElement>(arguments.length);
 		for(PsiElement argument : arguments)
 		{
-			ContainerUtil.addIfNotNull(list, buildLookupElement(argument, null));
+			ContainerUtil.addIfNotNull(list, buildLookupElementWithContextType(argument, null, null));
 		}
 		return list.toArray(new LookupElement[list.size()]);
 	}
@@ -94,7 +97,7 @@ public class CSharpLookupElementBuilder
 		List<LookupElement> list = new ArrayList<LookupElement>(arguments.size());
 		for(PsiElement element : arguments)
 		{
-			ContainerUtil.addIfNotNull(list, createLookupElementBuilder(element));
+			ContainerUtil.addIfNotNull(list, createLookupElementBuilder(element, null));
 		}
 
 		return list.toArray(new LookupElement[list.size()]);
@@ -102,9 +105,9 @@ public class CSharpLookupElementBuilder
 
 	@Nullable
 	@RequiredReadAction
-	public static LookupElement buildLookupElement(final PsiElement element, @Nullable final CSharpTypeDeclaration contextType)
+	public static LookupElement buildLookupElementWithContextType(final PsiElement element, @Nullable final CSharpTypeDeclaration contextType, @Nullable PsiElement parent)
 	{
-		LookupElementBuilder builder = createLookupElementBuilder(element);
+		LookupElementBuilder builder = createLookupElementBuilder(element, parent);
 		if(builder == null)
 		{
 			return null;
@@ -124,7 +127,7 @@ public class CSharpLookupElementBuilder
 	}
 
 	@RequiredReadAction
-	public static LookupElementBuilder createLookupElementBuilder(@NotNull final PsiElement element)
+	public static LookupElementBuilder createLookupElementBuilder(@NotNull final PsiElement element, @Nullable final PsiElement completionParent)
 	{
 		LookupElementBuilder builder = null;
 		if(element instanceof CSharpMethodDeclaration)
@@ -336,6 +339,30 @@ public class CSharpLookupElementBuilder
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 
 			builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(dotNetVariable.toTypeRef(true), dotNetVariable));
+
+			builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
+			{
+				@Override
+				@RequiredDispatchThread
+				public void handleInsert(InsertionContext context, LookupElement item)
+				{
+					char completionChar = context.getCompletionChar();
+					switch(completionChar)
+					{
+						case '=':
+							context.setAddCompletionChar(false);
+							TailType.EQ.processTail(context.getEditor(), context.getTailOffset());
+							break;
+						case ',':
+							if(completionParent != null && completionParent.getParent() instanceof CSharpCallArgument)
+							{
+								context.setAddCompletionChar(false);
+								TailType.COMMA.processTail(context.getEditor(), context.getTailOffset());
+							}
+							break;
+					}
+				}
+			});
 		}
 		else if(element instanceof CSharpMacroDefine)
 		{

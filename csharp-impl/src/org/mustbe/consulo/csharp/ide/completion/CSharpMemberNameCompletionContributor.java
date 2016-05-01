@@ -21,10 +21,12 @@ import java.util.Collection;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.codeInsight.completion.CompletionProvider;
+import org.mustbe.consulo.csharp.ide.completion.insertHandler.CSharpTailInsertHandlerWithChar;
 import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -61,7 +63,9 @@ public class CSharpMemberNameCompletionContributor extends CompletionContributor
 
 					for(String suggestedName : suggestedNames)
 					{
-						result.addElement(LookupElementBuilder.create(suggestedName));
+						LookupElementBuilder element = LookupElementBuilder.create(suggestedName);
+						element = element.withInsertHandler(new CSharpTailInsertHandlerWithChar(TailType.EQ, '='));
+						result.addElement(element);
 					}
 				}
 			}

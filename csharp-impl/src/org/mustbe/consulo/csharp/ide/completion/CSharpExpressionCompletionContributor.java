@@ -522,7 +522,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 						{
 							return true;
 						}
-						LookupElement builder = CSharpLookupElementBuilder.buildLookupElement(element, contextType);
+						LookupElement builder = CSharpLookupElementBuilder.buildLookupElementWithContextType(element, contextType, expression);
 						if(builder == null)
 						{
 							return true;
@@ -628,7 +628,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 			@RequiredReadAction
 			protected void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull final CompletionResultSet result)
 			{
-				CSharpReferenceExpressionEx expression = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
+				final CSharpReferenceExpressionEx expression = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
 
 				CSharpArrayInitializerImpl arrayInitializationExpression = PsiTreeUtil.getParentOfType(expression, CSharpArrayInitializerImpl.class);
 
@@ -657,7 +657,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 						{
 							return true;
 						}
-						LookupElementBuilder lookupElementBuilder = CSharpLookupElementBuilder.createLookupElementBuilder(element);
+						LookupElementBuilder lookupElementBuilder = CSharpLookupElementBuilder.createLookupElementBuilder(element, expression);
 						if(lookupElementBuilder != null)
 						{
 							lookupElementBuilder = lookupElementBuilder.withTailText(" = ", true);
