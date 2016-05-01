@@ -18,12 +18,16 @@
 package org.mustbe.consulo.csharp.ide.completion.util;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.RequiredWriteAction;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.ide.DataManager;
+import com.intellij.openapi.actionSystem.IdeActions;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.actionSystem.EditorActionManager;
+import com.intellij.openapi.editor.actionSystem.EditorWriteActionHandler;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -46,7 +50,7 @@ public class ExpressionOrStatementInsertHandler<T extends LookupElement> impleme
 	}
 
 	@Override
-	@RequiredDispatchThread
+	@RequiredWriteAction
 	public void handleInsert(final InsertionContext context, final T item)
 	{
 		final Editor editor = context.getEditor();
@@ -63,7 +67,14 @@ public class ExpressionOrStatementInsertHandler<T extends LookupElement> impleme
 		if(elementAt != null)
 		{
 			PsiElement parent = elementAt.getParent();
+
 			CodeStyleManager.getInstance(elementAt.getProject()).reformat(parent);
+
+			if(myOpenChar == '{')
+			{
+				EditorWriteActionHandler actionHandler = (EditorWriteActionHandler) EditorActionManager.getInstance().getActionHandler(IdeActions.ACTION_EDITOR_ENTER);
+				actionHandler.executeWriteAction(editor, DataManager.getInstance().getDataContext(editor.getContentComponent()));
+			}
 		}
 	}
 
