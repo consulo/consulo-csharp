@@ -18,9 +18,10 @@ package org.mustbe.consulo.csharp.ide.completion;
 
 import static com.intellij.patterns.StandardPatterns.psiElement;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.Icon;
 
@@ -34,24 +35,20 @@ import org.mustbe.consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
-import org.mustbe.consulo.csharp.ide.completion.insertHandler.CSharpParenthesesWithSemicolonInsertHandler;
 import org.mustbe.consulo.csharp.ide.completion.insertHandler.CSharpTailInsertHandler;
-import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLikeLookupElement;
+import org.mustbe.consulo.csharp.ide.completion.item.CSharpTypeLikeLookupElement;
 import org.mustbe.consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
-import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
-import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
 import org.mustbe.consulo.dotnet.DotNetRunUtil;
@@ -118,7 +115,6 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 
 				List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(newExpression);
 
-				boolean any = false;
 				if(!expectedTypeRefs.isEmpty())
 				{
 					for(ExpectedTypeInfo expectedTypeInfo : expectedTypeRefs)
@@ -155,53 +151,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 
 							result.addElement(builder);
 						}
-						else
-						{
-							DotNetTypeResolveResult typeResolveResult = typeRef.resolve(position);
-
-							PsiElement element = typeResolveResult.getElement();
-							if(element == null)
-							{
-								continue;
-							}
-
-							if(element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).isInterface())
-							{
-								return;
-							}
-
-							DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
-							CSharpResolveContext resolveContext = CSharpResolveContextUtil.createContext(genericExtractor, position.getResolveScope(), element);
-
-							CSharpElementGroup<CSharpConstructorDeclaration> group = resolveContext.constructorGroup();
-							Collection<CSharpConstructorDeclaration> objects = group == null ? Collections.<CSharpConstructorDeclaration>emptyList() : group.getElements();
-
-							if(objects.isEmpty())
-							{
-								return;
-							}
-
-							for(CSharpConstructorDeclaration object : objects)
-							{
-								if(!CSharpVisibilityUtil.isVisible(object, position))
-								{
-									continue;
-								}
-
-								LookupElementBuilder builder = buildForConstructorAfterNew(object, genericExtractor);
-								if(builder != null)
-								{
-									result.addElement(builder);
-									any = true;
-								}
-							}
-						}
 					}
-				}
-
-				if(any && parameters.getInvocationCount() == 1)
-				{
-					result.stopHere();
 				}
 			}
 		});
@@ -507,6 +457,10 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 
 				final List<ExpectedTypeInfo> expectedTypeRefs = getExpectedTypeInfosForExpression(parameters, context);
 
+				final CSharpNewExpression newExpression = getNewExpression(expression);
+
+				final List<ExpectedTypeInfo> newExpectedTypeRefs = newExpression != null ? ExpectedTypeVisitor.findExpectedTypeRefs(newExpression) : Collections.<ExpectedTypeInfo>emptyList();
+
 				final CSharpTypeDeclaration contextType = getContextType(expression);
 				CSharpCallArgumentListOwner callArgumentListOwner = CSharpReferenceExpressionImplUtil.findCallArgumentListOwner(kind, expression);
 				CSharpReferenceExpressionImplUtil.collectResults(new CSharpResolveOptions(kind, null, expression, callArgumentListOwner, true, true), new Processor<ResolveResult>()
@@ -522,15 +476,57 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 						{
 							return true;
 						}
-						LookupElement builder = CSharpLookupElementBuilder.buildLookupElementWithContextType(element, contextType, expression);
-						if(builder == null)
+
+						DotNetGenericExtractor extractor = DotNetGenericExtractor.EMPTY;
+						if(newExpression != null && CSharpPsiUtilImpl.isTypeLikeElement(element))
+						{
+							if(element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).hasModifier(DotNetModifier.ABSTRACT))
+							{
+								return true;
+							}
+
+							if(!newExpectedTypeRefs.isEmpty())
+							{
+								for(ExpectedTypeInfo newExpectedTypeRef : newExpectedTypeRefs)
+								{
+									DotNetTypeResolveResult expectedTypeResult = newExpectedTypeRef.getTypeRef().resolve(expression);
+
+									PsiElement expectedTypeResultElement = expectedTypeResult.getElement();
+									if(expectedTypeResult instanceof CSharpLambdaResolveResult)
+									{
+										expectedTypeResultElement = ((CSharpLambdaResolveResult) expectedTypeResult).getTarget();
+									}
+
+									if(element instanceof CSharpTypeDeclaration && expectedTypeResultElement instanceof CSharpTypeDeclaration)
+									{
+										DotNetGenericParameter[] genericParameters = ((CSharpTypeDeclaration) element).getGenericParameters();
+
+										Map<DotNetGenericParameter, DotNetTypeRef> map = new HashMap<DotNetGenericParameter, DotNetTypeRef>(genericParameters.length);
+										resolveGenericParameterValues((CSharpTypeDeclaration) element, (DotNetTypeDeclaration) expectedTypeResultElement, expectedTypeResult.getGenericExtractor(),
+												map, expression);
+
+										if(!map.isEmpty())
+										{
+											extractor = CSharpGenericExtractor.create(map);
+										}
+									}
+									else if(element instanceof CSharpMethodDeclaration && element.isEquivalentTo(expectedTypeResultElement))
+									{
+										extractor = expectedTypeResult.getGenericExtractor();
+									}
+								}
+							}
+						}
+
+						LookupElement lookupElement = CSharpLookupElementBuilder.buildLookupElementWithContextType(element, contextType, extractor, expression);
+						if(lookupElement == null)
 						{
 							return true;
 						}
 
-						if(element instanceof DotNetGenericParameter && expression.getParent() instanceof CSharpGenericConstraint && builder instanceof LookupElementBuilder)
+						if(element instanceof DotNetGenericParameter && expression.getParent() instanceof CSharpGenericConstraint && lookupElement instanceof LookupElementBuilder)
 						{
-							builder = ((LookupElementBuilder) builder).withInsertHandler(new CSharpTailInsertHandler(TailType.COND_EXPR_COLON));
+							lookupElement = ((LookupElementBuilder) lookupElement).withInsertHandler(new CSharpTailInsertHandler(TailType.COND_EXPR_COLON));
 						}
 
 						if(element instanceof CSharpMethodDeclaration && !((CSharpMethodDeclaration) element).isDelegate())
@@ -559,7 +555,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 								}
 							}
 						}
-						result.consume(builder);
+						result.consume(lookupElement);
 						return true;
 					}
 				});
@@ -657,7 +653,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 						{
 							return true;
 						}
-						LookupElementBuilder lookupElementBuilder = CSharpLookupElementBuilder.createLookupElementBuilder(element, expression);
+						LookupElementBuilder lookupElementBuilder = CSharpLookupElementBuilder.createLookupElementBuilder(element, DotNetGenericExtractor.EMPTY, expression);
 						if(lookupElementBuilder != null)
 						{
 							lookupElementBuilder = lookupElementBuilder.withTailText(" = ", true);
@@ -680,7 +676,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 
 							if(CSharpPsiUtilImpl.isTypeLikeElement(element))
 							{
-								result.consume(new ReplaceableTypeLikeLookupElement(lookupElementBuilder));
+								result.consume(CSharpTypeLikeLookupElement.create(lookupElementBuilder, DotNetGenericExtractor.EMPTY, expression));
 							}
 							else
 							{
@@ -824,6 +820,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 				PsiElement parent1 = parent.getParent();
 				if(parent1 instanceof CSharpIsExpressionImpl ||
 						parent1 instanceof CSharpAsExpressionImpl ||
+						parent1 instanceof CSharpNewExpression ||
 						parent1 instanceof CSharpTypeOfExpressionImpl ||
 						parent1 instanceof CSharpSizeOfExpressionImpl ||
 						parent1 instanceof CSharpTypeCastExpressionImpl)
@@ -903,62 +900,73 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 		return builder;
 	}
 
-	@Nullable
 	@RequiredReadAction
-	private static LookupElementBuilder buildForConstructorAfterNew(final CSharpConstructorDeclaration declaration, final DotNetGenericExtractor extractor)
+	private static void resolveGenericParameterValues(CSharpTypeDeclaration targetType,
+			DotNetTypeDeclaration expectedType,
+			DotNetGenericExtractor expectedGenericExtractor,
+			Map<DotNetGenericParameter, DotNetTypeRef> map,
+			PsiElement scope)
 	{
-		PsiElement parent = declaration.getParent();
-
-		if(!(parent instanceof DotNetNamedElement))
+		if(targetType.isEquivalentTo(expectedType))
 		{
-			return null;
-		}
-
-		String lookupString = ((DotNetNamedElement) parent).getName();
-		if(parent instanceof DotNetGenericParameterListOwner)
-		{
-			DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) parent).getGenericParameters();
-			if(genericParameters.length > 0)
+			for(DotNetGenericParameter genericParameter : targetType.getGenericParameters())
 			{
-				lookupString += "<" + StringUtil.join(genericParameters, new Function<DotNetGenericParameter, String>()
+				DotNetTypeRef typeRef = map.get(genericParameter);
+				if(typeRef == null)
 				{
-					@Override
-					@RequiredReadAction
-					public String fun(DotNetGenericParameter parameter)
-					{
-						DotNetTypeRef extract = extractor.extract(parameter);
-						if(extract != null)
-						{
-							return CSharpTypeRefPresentationUtil.buildShortText(extract, declaration);
-						}
-						return parameter.getName();
-					}
-				}, ", ") + ">";
+					map.put(genericParameter, expectedGenericExtractor.extract(genericParameter));
+				}
 			}
+			return;
 		}
 
-		if(lookupString == null)
-		{
-			return null;
-		}
+		DotNetTypeRef[] extendTypeRefs = targetType.getExtendTypeRefs();
 
-		DotNetTypeRef[] parameters = declaration.getParameterTypeRefs();
-
-		String parameterText = "(" + StringUtil.join(parameters, new Function<DotNetTypeRef, String>()
+		for(DotNetTypeRef extendTypeRef : extendTypeRefs)
 		{
-			@Override
-			@RequiredReadAction
-			public String fun(DotNetTypeRef parameter)
+			DotNetTypeResolveResult typeResolveResult = extendTypeRef.resolve(scope);
+
+			PsiElement element = typeResolveResult.getElement();
+			if(element instanceof DotNetTypeDeclaration && element.isEquivalentTo(expectedType))
 			{
-				return CSharpTypeRefPresentationUtil.buildShortText(parameter, declaration);
+				DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();
+				for(DotNetGenericParameter genericParameter : ((DotNetTypeDeclaration) element).getGenericParameters())
+				{
+					DotNetTypeRef tempTypeRef = genericExtractor.extract(genericParameter);
+					PsiElement tempElement = tempTypeRef == null ? null : tempTypeRef.resolve(scope).getElement();
+					if(tempElement != null)
+					{
+						for(DotNetGenericParameter targetParameter : targetType.getGenericParameters())
+						{
+							if(targetParameter.isEquivalentTo(tempElement))
+							{
+								DotNetTypeRef typeRef = map.get(targetParameter);
+								if(typeRef == null)
+								{
+									map.put(targetParameter, expectedGenericExtractor.extract(genericParameter));
+								}
+							}
+						}
+					}
+				}
 			}
-		}, ", ") + ")";
+		}
+	}
 
-		LookupElementBuilder builder = LookupElementBuilder.create(declaration, lookupString);
-		builder = builder.withIcon(IconDescriptorUpdaters.getIcon(parent, Iconable.ICON_FLAG_VISIBILITY));
-		builder = builder.withTailText(parameterText, true);
-		builder = builder.withInsertHandler(new CSharpParenthesesWithSemicolonInsertHandler(declaration));
-		return builder;
+	@Nullable
+	public static CSharpNewExpression getNewExpression(PsiElement expression)
+	{
+		PsiElement parent = expression.getParent();
+		if(parent instanceof CSharpUserType)
+		{
+			PsiElement typeParent = parent.getParent();
+			if(typeParent instanceof CSharpNewExpression)
+			{
+				return (CSharpNewExpression) typeParent;
+			}
+		}
+
+		return null;
 	}
 
 	@NotNull

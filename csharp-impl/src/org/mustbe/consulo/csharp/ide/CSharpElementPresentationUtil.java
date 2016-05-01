@@ -28,6 +28,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.BitUtil;
@@ -137,6 +138,7 @@ public class CSharpElementPresentationUtil
 		return builder.toString();
 	}
 
+	@RequiredReadAction
 	public static void formatParameters(@NotNull DotNetLikeMethodDeclaration methodDeclaration, @NotNull StringBuilder builder, final int flags)
 	{
 		boolean indexMethod = methodDeclaration instanceof CSharpIndexMethodDeclaration;
@@ -152,6 +154,7 @@ public class CSharpElementPresentationUtil
 			builder.append(StringUtil.join(parameters, new Function<DotNetParameter, String>()
 			{
 				@Override
+				@RequiredReadAction
 				public String fun(DotNetParameter parameter)
 				{
 					String text = CSharpTypeRefPresentationUtil.buildTextWithKeyword(parameter.toTypeRef(true), parameter);
@@ -192,6 +195,7 @@ public class CSharpElementPresentationUtil
 			builder.append(StringUtil.join(parameters, new Function<DotNetGenericParameter, String>()
 			{
 				@Override
+				@RequiredReadAction
 				public String fun(DotNetGenericParameter dotNetGenericParameter)
 				{
 					return dotNetGenericParameter.getName();
@@ -202,7 +206,8 @@ public class CSharpElementPresentationUtil
 	}
 
 	@NotNull
-	public static String formatGenericParameters(@NotNull DotNetGenericParameterListOwner owner)
+	@RequiredReadAction
+	public static String formatGenericParameters(@NotNull final DotNetGenericParameterListOwner owner, @NotNull final DotNetGenericExtractor extractor)
 	{
 		DotNetGenericParameter[] genericParameters = owner.getGenericParameters();
 		if(genericParameters.length == 0)
@@ -212,8 +217,14 @@ public class CSharpElementPresentationUtil
 		return "<" + StringUtil.join(genericParameters, new Function<DotNetGenericParameter, String>()
 		{
 			@Override
+			@RequiredReadAction
 			public String fun(DotNetGenericParameter genericParameter)
 			{
+				DotNetTypeRef extract = extractor.extract(genericParameter);
+				if(extract != null)
+				{
+					return CSharpTypeRefPresentationUtil.buildShortText(extract, owner);
+				}
 				return genericParameter.getName();
 			}
 		}, ", ") + ">";

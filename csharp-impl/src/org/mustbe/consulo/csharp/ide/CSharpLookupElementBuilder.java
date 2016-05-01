@@ -17,7 +17,6 @@
 package org.mustbe.consulo.csharp.ide;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,7 +26,7 @@ import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.completion.CSharpCompletionSorting;
 import org.mustbe.consulo.csharp.ide.completion.insertHandler.CSharpParenthesesWithSemicolonInsertHandler;
-import org.mustbe.consulo.csharp.ide.completion.item.ReplaceableTypeLikeLookupElement;
+import org.mustbe.consulo.csharp.ide.completion.item.CSharpTypeLikeLookupElement;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
@@ -46,8 +45,10 @@ import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
+import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.completion.InsertHandler;
@@ -80,34 +81,19 @@ public class CSharpLookupElementBuilder
 		List<LookupElement> list = new ArrayList<LookupElement>(arguments.length);
 		for(PsiElement argument : arguments)
 		{
-			ContainerUtil.addIfNotNull(list, buildLookupElementWithContextType(argument, null, null));
+			ContainerUtil.addIfNotNull(list, buildLookupElementWithContextType(argument, null, DotNetGenericExtractor.EMPTY, null));
 		}
-		return list.toArray(new LookupElement[list.size()]);
-	}
-
-	@NotNull
-	@RequiredReadAction
-	public static LookupElement[] buildToLookupElements(@NotNull Collection<? extends PsiElement> arguments)
-	{
-		if(arguments.isEmpty())
-		{
-			return LookupElement.EMPTY_ARRAY;
-		}
-
-		List<LookupElement> list = new ArrayList<LookupElement>(arguments.size());
-		for(PsiElement element : arguments)
-		{
-			ContainerUtil.addIfNotNull(list, createLookupElementBuilder(element, null));
-		}
-
 		return list.toArray(new LookupElement[list.size()]);
 	}
 
 	@Nullable
 	@RequiredReadAction
-	public static LookupElement buildLookupElementWithContextType(final PsiElement element, @Nullable final CSharpTypeDeclaration contextType, @Nullable PsiElement parent)
+	public static LookupElement buildLookupElementWithContextType(final PsiElement element,
+			@Nullable final CSharpTypeDeclaration contextType,
+			@NotNull DotNetGenericExtractor extractor,
+			@Nullable PsiElement expression)
 	{
-		LookupElementBuilder builder = createLookupElementBuilder(element, parent);
+		LookupElementBuilder builder = createLookupElementBuilder(element, extractor, expression);
 		if(builder == null)
 		{
 			return null;
@@ -121,13 +107,13 @@ public class CSharpLookupElementBuilder
 
 		if(CSharpPsiUtilImpl.isTypeLikeElement(element))
 		{
-			return new ReplaceableTypeLikeLookupElement(builder);
+			return CSharpTypeLikeLookupElement.create(builder, extractor, expression);
 		}
 		return builder;
 	}
 
 	@RequiredReadAction
-	public static LookupElementBuilder createLookupElementBuilder(@NotNull final PsiElement element, @Nullable final PsiElement completionParent)
+	public static LookupElementBuilder createLookupElementBuilder(@NotNull final PsiElement element, @NotNull DotNetGenericExtractor extractor, @Nullable final PsiElement completionParent)
 	{
 		LookupElementBuilder builder = null;
 		if(element instanceof CSharpMethodDeclaration)
@@ -189,12 +175,7 @@ public class CSharpLookupElementBuilder
 			}
 			else
 			{
-				builder = LookupElementBuilder.create(methodDeclaration);
-				builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
-				builder = builder.withTailText(DotNetElementPresentationUtil.formatGenericParameters((DotNetGenericParameterListOwner) element), true);
-				builder = builder.withTypeText(methodDeclaration.getPresentableParentQName());
-
-				builder = withGenericInsertHandler(element, builder);
+				builder = buildTypeLikeElement((CSharpMethodDeclaration) element, extractor);
 			}
 		}
 		else if(element instanceof DotNetXXXAccessor)
@@ -371,21 +352,36 @@ public class CSharpLookupElementBuilder
 		}
 		else if(element instanceof CSharpTypeDeclaration)
 		{
-			CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) element;
-			builder = LookupElementBuilder.create(typeDeclaration);
-
-			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
-
-			builder = builder.withTypeText(typeDeclaration.getPresentableParentQName());
-
-			builder = builder.withTailText(DotNetElementPresentationUtil.formatGenericParameters(typeDeclaration), true);
-
-			builder = withGenericInsertHandler(element, builder);
+			builder = buildTypeLikeElement((CSharpTypeDeclaration) element, extractor);
 		}
 
 		if(builder != null && DotNetAttributeUtil.hasAttribute(element, DotNetTypes.System.ObsoleteAttribute))
 		{
 			builder = builder.withStrikeoutness(true);
+		}
+		return builder;
+	}
+
+	@RequiredReadAction
+	private static <E extends DotNetGenericParameterListOwner & DotNetQualifiedElement> LookupElementBuilder buildTypeLikeElement(@NotNull E element, @NotNull DotNetGenericExtractor extractor)
+	{
+		String genericText = CSharpElementPresentationUtil.formatGenericParameters(element, extractor);
+
+		String name = element.getName();
+
+		LookupElementBuilder builder = LookupElementBuilder.create(element, name + (extractor == DotNetGenericExtractor.EMPTY ? "" : genericText));
+
+		builder = builder.withPresentableText(name); // always show only name
+
+		builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
+
+		builder = builder.withTypeText(element.getPresentableParentQName());
+
+		builder = builder.withTailText(genericText, true);
+
+		if(extractor == DotNetGenericExtractor.EMPTY)
+		{
+			builder = withGenericInsertHandler(element, builder);
 		}
 		return builder;
 	}
