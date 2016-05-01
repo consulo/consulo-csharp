@@ -21,13 +21,12 @@ import static com.intellij.patterns.StandardPatterns.psiElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.RequiredWriteAction;
 import org.mustbe.consulo.codeInsight.completion.CompletionProvider;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpXXXAccessorOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
@@ -37,9 +36,14 @@ import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.ide.DataManager;
+import com.intellij.openapi.actionSystem.IdeActions;
 import com.intellij.openapi.editor.CaretModel;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.actionSystem.EditorActionManager;
+import com.intellij.openapi.editor.actionSystem.EditorWriteActionHandler;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -77,37 +81,52 @@ public class CSharpAccessorCompletionContributor extends CompletionContributor
 
 				if((rightTextRange == -1 || textOffset < rightTextRange) && textOffset > leftBrace.getTextOffset())
 				{
-					if(accessorOwner instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) accessorOwner).hasModifier(DotNetModifier.ABSTRACT))
+					if(accessorOwner.hasModifier(DotNetModifier.ABSTRACT))
 					{
-						buildAccessorKeywordsCompletion(resultSet, accessorOwner, null, null);
+						buildAccessorKeywordsCompletion(resultSet, accessorOwner, null);
 					}
 					else
 					{
-						buildAccessorKeywordsCompletion(resultSet, accessorOwner, " {}", new InsertHandler<LookupElement>()
+						buildAccessorKeywordsCompletion(resultSet, accessorOwner, new InsertHandler<LookupElement>()
 						{
 							@Override
+							@RequiredWriteAction
 							public void handleInsert(InsertionContext context, LookupElement item)
 							{
-								Editor editor = context.getEditor();
+								if(context.getCompletionChar() == '{')
+								{
+									context.setAddCompletionChar(false);
 
-								CaretModel caretModel = editor.getCaretModel();
-								int offset = caretModel.getOffset();
-								caretModel.moveToOffset(offset - 1);
+									Editor editor = context.getEditor();
+
+									CaretModel caretModel = editor.getCaretModel();
+									int offset = caretModel.getOffset();
+
+									context.getDocument().insertString(offset, "{\n}");
+									caretModel.moveToOffset(offset + 1);
+
+									PsiElement elementAt = context.getFile().findElementAt(offset - 1);
+
+									context.commitDocument();
+
+									DotNetXXXAccessor accessor = PsiTreeUtil.getParentOfType(elementAt, DotNetXXXAccessor.class);
+									if(accessor != null)
+									{
+										CodeStyleManager.getInstance(context.getProject()).reformat(accessor);
+									}
+
+									EditorWriteActionHandler actionHandler = (EditorWriteActionHandler) EditorActionManager.getInstance().getActionHandler(IdeActions.ACTION_EDITOR_ENTER);
+									actionHandler.executeWriteAction(editor, DataManager.getInstance().getDataContext(editor.getContentComponent()));
+								}
 							}
 						});
-
-						if(accessorOwner instanceof CSharpPropertyDeclaration)
-						{
-							buildAccessorKeywordsCompletion(resultSet, accessorOwner, null, null);
-						}
 					}
 				}
 			}
 		});
 	}
 
-	private void buildAccessorKeywordsCompletion(CompletionResultSet resultSet, final CSharpXXXAccessorOwner accessorOwner, @Nullable String tail,
-			@Nullable InsertHandler<LookupElement> insertHandler)
+	private void buildAccessorKeywordsCompletion(CompletionResultSet resultSet, final CSharpXXXAccessorOwner accessorOwner, @Nullable InsertHandler<LookupElement> insertHandler)
 	{
 		TokenSet tokenSet = accessorOwner instanceof CSharpEventDeclaration ? TokenSet.create(CSharpSoftTokens.ADD_KEYWORD, CSharpSoftTokens.REMOVE_KEYWORD) : TokenSet.create(CSharpSoftTokens
 				.GET_KEYWORD, CSharpSoftTokens.SET_KEYWORD);
@@ -118,16 +137,15 @@ public class CSharpAccessorCompletionContributor extends CompletionContributor
 			{
 				continue;
 			}
-			String textOfKeyword = CSharpCompletionUtil.textOfKeyword(elementType);
-			LookupElementBuilder builder = LookupElementBuilder.create(tail != null ? textOfKeyword + tail : textOfKeyword);
-			if(tail == null)
-			{
-				builder = builder.bold();
-			}
+			LookupElementBuilder builder = LookupElementBuilder.create(CSharpCompletionUtil.textOfKeyword(elementType));
+			builder = builder.bold();
+
 			if(insertHandler != null)
 			{
 				builder = builder.withInsertHandler(insertHandler);
 			}
+
+			builder.putUserData(CSharpCompletionUtil.KEYWORD_ELEMENT_TYPE, elementType);
 
 			resultSet.addElement(builder);
 		}
