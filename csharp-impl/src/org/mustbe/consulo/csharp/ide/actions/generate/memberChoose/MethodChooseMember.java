@@ -16,7 +16,9 @@
 
 package org.mustbe.consulo.csharp.ide.actions.generate.memberChoose;
 
+import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -37,6 +39,8 @@ public class MethodChooseMember extends ImplementMemberChooseObject<CSharpMethod
 		super(declaration, additionalModifiersAppender, returnAppender, canGenerateBlock);
 	}
 
+	@RequiredReadAction
+	@NotNull
 	@Override
 	@RequiredDispatchThread
 	public String getPresentationText()

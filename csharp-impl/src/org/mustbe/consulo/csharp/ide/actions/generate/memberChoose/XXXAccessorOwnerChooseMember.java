@@ -18,7 +18,9 @@ package org.mustbe.consulo.csharp.ide.actions.generate.memberChoose;
 
 import java.util.Locale;
 
+import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
@@ -43,6 +45,8 @@ public class XXXAccessorOwnerChooseMember extends ImplementMemberChooseObject<CS
 		super(declaration, additionalModifiersAppender, returnAppender, canGenerateBlock);
 	}
 
+	@RequiredReadAction
+	@NotNull
 	@Override
 	@RequiredDispatchThread
 	public String getPresentationText()
@@ -56,7 +60,7 @@ public class XXXAccessorOwnerChooseMember extends ImplementMemberChooseObject<CS
 			return CSharpElementPresentationUtil.formatMethod((CSharpIndexMethodDeclaration) myDeclaration, CSharpElementPresentationUtil.METHOD_WITH_RETURN_TYPE | CSharpElementPresentationUtil
 					.METHOD_PARAMETER_NAME);
 		}
-		return null;
+		throw new UnsupportedOperationException(myDeclaration.getClass().getSimpleName() + " is not supported");
 	}
 
 	@Override

@@ -16,6 +16,8 @@
 
 package org.mustbe.consulo.csharp.ide.actions.generate.memberChoose;
 
+import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 
@@ -30,6 +32,8 @@ public class ClassChooseObject extends CSharpMemberChooseObject<DotNetTypeDeclar
 		super(declaration);
 	}
 
+	@RequiredReadAction
+	@NotNull
 	@Override
 	public String getPresentationText()
 	{

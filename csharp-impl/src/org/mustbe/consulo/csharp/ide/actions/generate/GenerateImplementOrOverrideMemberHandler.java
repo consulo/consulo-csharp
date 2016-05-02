@@ -27,7 +27,9 @@ import org.mustbe.consulo.csharp.ide.actions.generate.memberChoose.CSharpMemberC
 import org.mustbe.consulo.csharp.ide.actions.generate.memberChoose.MethodChooseMember;
 import org.mustbe.consulo.csharp.ide.actions.generate.memberChoose.XXXAccessorOwnerChooseMember;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpXXXAccessorOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -94,7 +96,7 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 			{
 				memberChooseObjects.add(new MethodChooseMember((CSharpMethodDeclaration) psiElement, additionalModifiersAppender, returnAppender, canGenerateBlock));
 			}
-			else if(psiElement instanceof CSharpXXXAccessorOwner)
+			else if(psiElement instanceof CSharpPropertyDeclaration || psiElement instanceof CSharpIndexMethodDeclaration)
 			{
 				memberChooseObjects.add(new XXXAccessorOwnerChooseMember((CSharpXXXAccessorOwner) psiElement, additionalModifiersAppender, returnAppender, canGenerateBlock));
 			}

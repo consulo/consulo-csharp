@@ -20,6 +20,8 @@ import javax.swing.JTree;
 
 import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.codeInsight.generation.ClassMember;
@@ -50,12 +52,15 @@ public abstract class CSharpMemberChooseObject<T extends DotNetElement> implemen
 	}
 
 	@Override
+	@RequiredDispatchThread
 	public void renderTreeNode(SimpleColoredComponent component, JTree tree)
 	{
 		component.setIcon(IconDescriptorUpdaters.getIconWithoutCache(myDeclaration, Iconable.ICON_FLAG_VISIBILITY));
 		component.append(getPresentationText());
 	}
 
+	@NotNull
+	@RequiredReadAction
 	public abstract String getPresentationText();
 
 	@Override

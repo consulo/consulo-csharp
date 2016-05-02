@@ -17,6 +17,8 @@
 package org.mustbe.consulo.csharp.ide.actions.generate.memberChoose;
 
 import org.consulo.lombok.annotations.ArrayFactoryFields;
+import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
@@ -83,6 +85,8 @@ public class ConstructorChooseMember extends CSharpMemberChooseObject<DotNetCons
 		return builder.toString();
 	}
 
+	@RequiredReadAction
+	@NotNull
 	@Override
 	public String getPresentationText()
 	{
