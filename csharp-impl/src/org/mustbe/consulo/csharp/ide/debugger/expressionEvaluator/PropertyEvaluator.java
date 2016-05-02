@@ -25,8 +25,6 @@ import consulo.dotnet.debugger.proxy.DotNetFieldOrPropertyProxy;
 import consulo.dotnet.debugger.proxy.DotNetMethodProxy;
 import consulo.dotnet.debugger.proxy.DotNetPropertyProxy;
 import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
-import consulo.dotnet.debugger.proxy.value.DotNetNullValueProxy;
-import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
 /**
@@ -47,7 +45,7 @@ public class PropertyEvaluator extends FieldOrPropertyEvaluator<CSharpPropertyDe
 	}
 
 	@Override
-	protected boolean invoke(@NotNull DotNetPropertyProxy mirror, @NotNull CSharpEvaluateContext context, @NotNull DotNetValueProxy popValue)  throws DotNetThrowValueException
+	protected boolean invoke(@NotNull DotNetPropertyProxy mirror, @NotNull CSharpEvaluateContext context, @Nullable DotNetValueProxy popValue)  throws DotNetThrowValueException
 	{
 		DotNetMethodProxy methodMirror = mirror.getGetMethod();
 		if(methodMirror == null)
@@ -55,7 +53,7 @@ public class PropertyEvaluator extends FieldOrPropertyEvaluator<CSharpPropertyDe
 			return false;
 		}
 
-		DotNetValueProxy loadedValue = methodMirror.invoke(context.getFrame().getThread(), popValue instanceof DotNetNullValueProxy ? null : (DotNetObjectValueProxy) popValue);
+		DotNetValueProxy loadedValue = methodMirror.invoke(context.getFrame().getThread(), popValue);
 		if(loadedValue != null)
 		{
 			context.pull(loadedValue, mirror);

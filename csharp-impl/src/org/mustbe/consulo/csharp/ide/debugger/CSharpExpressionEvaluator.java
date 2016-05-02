@@ -98,7 +98,7 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 				if(((DotNetModifierListOwner) resolvedElement).hasModifier(DotNetModifier.STATIC))
 				{
 					typeDeclaration = (CSharpTypeDeclaration) resolvedElement.getParent();
-					myEvaluators.add(NullValueEvaluator.INSTANCE); // push null
+					myEvaluators.add(StaticObjectEvaluator.INSTANCE);
 				}
 				else
 				{
@@ -122,7 +122,7 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 						myEvaluators.add(ThisObjectEvaluator.INSTANCE);
 						break;
 					default:
-						myEvaluators.add(NullValueEvaluator.INSTANCE);
+						myEvaluators.add(StaticObjectEvaluator.INSTANCE);
 						break;
 				}
 			}
@@ -181,7 +181,7 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 				if(methodDeclaration.hasModifier(DotNetModifier.STATIC))
 				{
 					typeDeclaration = (CSharpTypeDeclaration) methodDeclaration.getParent();
-					myEvaluators.add(NullValueEvaluator.INSTANCE); // push null
+					myEvaluators.add(StaticObjectEvaluator.INSTANCE);
 				}
 				else
 				{
@@ -212,7 +212,7 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 		PsiElement element = operatorElement.resolveToCallable();
 		if(element != null)
 		{
-			myEvaluators.add(NullValueEvaluator.INSTANCE); // operators always static
+			myEvaluators.add(StaticObjectEvaluator.INSTANCE); // operators always static
 
 			pushArguments(expression);
 

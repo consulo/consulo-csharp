@@ -97,10 +97,21 @@ public class MethodEvaluator extends Evaluator
 			throw new IllegalArgumentException("no method");
 		}
 
-		DotNetValueProxy invoke = methodMirror.invoke(context.getFrame().getThread(), popValue, values.toArray(new DotNetValueProxy[values.size()]));
-		if(invoke != null)
+		try
 		{
-			context.pull(invoke, methodMirror);
+			DotNetValueProxy invoke = methodMirror.invoke(context.getFrame().getThread(), substituteStaticContext(popValue), values.toArray(new DotNetValueProxy[values.size()]));
+			if(invoke != null)
+			{
+				context.pull(invoke, methodMirror);
+			}
+		}
+		catch(DotNetThrowValueException e)
+		{
+			throw e;
+		}
+		catch(Exception e)
+		{
+			throw new IllegalArgumentException("invoking '" + methodMirror.getName() + "' has been failed");
 		}
 	}
 }

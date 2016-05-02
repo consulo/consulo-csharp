@@ -32,9 +32,7 @@ import consulo.dotnet.debugger.proxy.DotNetMethodProxy;
 import consulo.dotnet.debugger.proxy.DotNetPropertyProxy;
 import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
 import consulo.dotnet.debugger.proxy.value.DotNetArrayValueProxy;
-import consulo.dotnet.debugger.proxy.value.DotNetNullValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetNumberValueProxy;
-import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
 /**
@@ -96,7 +94,7 @@ public class IndexMethodEvaluator extends FieldOrPropertyEvaluator<CSharpIndexMe
 	}
 
 	@Override
-	protected boolean invoke(@NotNull DotNetPropertyProxy mirror, @NotNull CSharpEvaluateContext context, @NotNull DotNetValueProxy popValue) throws DotNetThrowValueException
+	protected boolean invoke(@NotNull DotNetPropertyProxy mirror, @NotNull CSharpEvaluateContext context, @Nullable DotNetValueProxy popValue) throws DotNetThrowValueException
 	{
 		assert myArgumentValues != null;
 
@@ -106,8 +104,7 @@ public class IndexMethodEvaluator extends FieldOrPropertyEvaluator<CSharpIndexMe
 			return false;
 		}
 
-		DotNetValueProxy loadedValue = methodMirror.invoke(context.getFrame().getThread(), popValue instanceof DotNetNullValueProxy ? null : (DotNetObjectValueProxy) popValue,
-				myArgumentValues.toArray(new DotNetValueProxy[myArgumentValues.size()]));
+		DotNetValueProxy loadedValue = methodMirror.invoke(context.getFrame().getThread(), popValue, myArgumentValues.toArray(new DotNetValueProxy[myArgumentValues.size()]));
 		if(loadedValue != null)
 		{
 			context.pull(loadedValue, mirror);

@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
+import org.mustbe.consulo.csharp.ide.debugger.CSharpStaticValueProxy;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
@@ -30,7 +31,6 @@ import consulo.dotnet.debugger.DotNetDebuggerSearchUtil;
 import consulo.dotnet.debugger.proxy.DotNetFieldOrPropertyProxy;
 import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
 import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
-import consulo.dotnet.debugger.proxy.value.DotNetNullValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetStructValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
@@ -53,7 +53,7 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 
 	protected abstract boolean isMyMirror(@NotNull DotNetFieldOrPropertyProxy mirror);
 
-	protected abstract boolean invoke(@NotNull M mirror, @NotNull CSharpEvaluateContext context, @NotNull DotNetValueProxy popValue) throws DotNetThrowValueException;
+	protected abstract boolean invoke(@NotNull M mirror, @NotNull CSharpEvaluateContext context, @Nullable DotNetValueProxy popValue) throws DotNetThrowValueException;
 
 	@Nullable
 	@RequiredReadAction
@@ -111,7 +111,7 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 				}
 			}
 		}
-		else if(popValue instanceof DotNetNullValueProxy && myElement.hasModifier(DotNetModifier.STATIC))
+		else if(popValue == CSharpStaticValueProxy.INSTANCE && myElement.hasModifier(DotNetModifier.STATIC))
 		{
 			if(invokeFieldOrProperty(context, name, popValue, typeMirror))
 			{
@@ -148,7 +148,7 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 		DotNetFieldOrPropertyProxy[] fieldOrPropertyMirrors = DotNetDebuggerSearchUtil.getFieldAndProperties(typeMirror, true);
 		for(DotNetFieldOrPropertyProxy fieldOrPropertyMirror : fieldOrPropertyMirrors)
 		{
-			if(isMyMirror(fieldOrPropertyMirror) && fieldOrPropertyMirror.getName().equals(name) && invoke((M) fieldOrPropertyMirror, context, popValue))
+			if(isMyMirror(fieldOrPropertyMirror) && fieldOrPropertyMirror.getName().equals(name) && invoke((M) fieldOrPropertyMirror, context, substituteStaticContext(popValue)))
 			{
 				return true;
 			}

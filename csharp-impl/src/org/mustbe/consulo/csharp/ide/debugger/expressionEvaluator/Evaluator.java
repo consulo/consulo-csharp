@@ -18,7 +18,9 @@ package org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
+import org.mustbe.consulo.csharp.ide.debugger.CSharpStaticValueProxy;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
@@ -29,6 +31,7 @@ import consulo.dotnet.debugger.proxy.DotNetInvalidObjectException;
 import consulo.dotnet.debugger.proxy.DotNetInvalidStackFrameException;
 import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
 import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
 /**
  * @author VISTALL
@@ -40,6 +43,13 @@ public abstract class Evaluator
 			DotNetAbsentInformationException;
 
 	@Nullable
+	public static DotNetValueProxy substituteStaticContext(@NotNull DotNetValueProxy proxy)
+	{
+		return proxy == CSharpStaticValueProxy.INSTANCE ? null : proxy;
+	}
+
+	@Nullable
+	@RequiredReadAction
 	public static DotNetTypeProxy findTypeMirror(@NotNull CSharpEvaluateContext context, @Nullable PsiElement element)
 	{
 		if(element instanceof CSharpTypeDeclaration)

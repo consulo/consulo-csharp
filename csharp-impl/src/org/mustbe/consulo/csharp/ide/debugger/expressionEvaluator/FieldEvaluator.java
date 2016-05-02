@@ -23,8 +23,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.debugger.proxy.DotNetFieldOrPropertyProxy;
 import consulo.dotnet.debugger.proxy.DotNetFieldProxy;
-import consulo.dotnet.debugger.proxy.value.DotNetNullValueProxy;
-import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
 /**
@@ -45,9 +43,9 @@ public class FieldEvaluator extends FieldOrPropertyEvaluator<CSharpFieldDeclarat
 	}
 
 	@Override
-	protected boolean invoke(@NotNull DotNetFieldProxy mirror, @NotNull CSharpEvaluateContext context, @NotNull DotNetValueProxy popValue)
+	protected boolean invoke(@NotNull DotNetFieldProxy mirror, @NotNull CSharpEvaluateContext context, @Nullable DotNetValueProxy popValue)
 	{
-		DotNetValueProxy loadedValue = mirror.getValue(context.getFrame().getThread(), popValue instanceof DotNetNullValueProxy ? null : (DotNetObjectValueProxy) popValue);
+		DotNetValueProxy loadedValue = mirror.getValue(context.getFrame().getThread(), popValue);
 		if(loadedValue != null)
 		{
 			context.pull(loadedValue, mirror);

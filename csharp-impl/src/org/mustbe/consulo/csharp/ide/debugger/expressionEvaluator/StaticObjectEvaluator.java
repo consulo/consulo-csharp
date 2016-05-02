@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2015 must-be.org
+ * Copyright 2013-2016 must-be.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,24 +18,23 @@ package org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
-import consulo.dotnet.debugger.proxy.DotNetVirtualMachineProxy;
+import org.mustbe.consulo.csharp.ide.debugger.CSharpStaticValueProxy;
 
 /**
  * @author VISTALL
- * @since 05.08.2015
+ * @since 02.05.2016
  */
-public class NullValueEvaluator extends Evaluator
+public class StaticObjectEvaluator extends Evaluator
 {
-	public static final NullValueEvaluator INSTANCE = new NullValueEvaluator();
+	public static final StaticObjectEvaluator INSTANCE = new StaticObjectEvaluator();
 
-	private NullValueEvaluator()
+	private StaticObjectEvaluator()
 	{
 	}
 
 	@Override
 	public void evaluate(@NotNull CSharpEvaluateContext context)
 	{
-		DotNetVirtualMachineProxy virtualMachine = context.getDebuggerContext().getVirtualMachine();
-		context.pull(virtualMachine.createNullValue(), null);
+		context.pull(CSharpStaticValueProxy.INSTANCE, null);
 	}
 }
