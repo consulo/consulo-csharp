@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.RequiredWriteAction;
 import org.mustbe.consulo.codeInsight.completion.CompletionProvider;
 import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
@@ -548,7 +549,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 									{
 										if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), new CSharpLambdaTypeRef(methodDeclaration), expression))
 										{
-											result.consume(buildForMethodReference(methodDeclaration));
+											result.consume(buildForMethodReference(methodDeclaration, expression));
 											return true;
 										}
 									}
@@ -867,7 +868,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 
 	@NotNull
 	@RequiredReadAction
-	private static LookupElement buildForMethodReference(final CSharpMethodDeclaration methodDeclaration)
+	private static LookupElement buildForMethodReference(final CSharpMethodDeclaration methodDeclaration, final CSharpReferenceExpressionEx expression)
 	{
 		LookupElementBuilder builder = LookupElementBuilder.create(methodDeclaration.getName());
 		builder = builder.withIcon(AllIcons.Nodes.MethodReference);
@@ -896,6 +897,25 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 		{
 			builder = builder.withStrikeoutness(true);
 		}
+		builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
+		{
+			@Override
+			@RequiredWriteAction
+			public void handleInsert(InsertionContext context, LookupElement item)
+			{
+				char completionChar = context.getCompletionChar();
+				switch(completionChar)
+				{
+					case ',':
+						if(expression != null && expression.getParent() instanceof CSharpCallArgument)
+						{
+							context.setAddCompletionChar(false);
+							TailType.COMMA.processTail(context.getEditor(), context.getTailOffset());
+						}
+						break;
+				}
+			}
+		});
 		CSharpCompletionSorting.force(builder, CSharpCompletionSorting.KindSorter.Type.member);
 		return builder;
 	}
