@@ -105,7 +105,7 @@ public class CSharpTypeLikeLookupElement extends LookupElementDecorator<LookupEl
 
 			if(!hasParameters)
 			{
-				caretModel.moveToOffset(oldCaretOffset);
+				caretModel.moveToOffset(oldCaretOffset + 2);
 			}
 		}
 	}
