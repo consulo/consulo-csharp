@@ -302,6 +302,7 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 		PsiElement parentOfUserType = parent.getParent();
 		if(parentOfUserType instanceof CSharpAsExpressionImpl ||
 				parentOfUserType instanceof CSharpTypeCastExpressionImpl ||
+				parentOfUserType instanceof CSharpNewExpression ||
 				parentOfUserType instanceof CSharpRefValueExpressionImpl)
 		{
 			myExpectedTypeInfos.addAll(findExpectedTypeRefs(parentOfUserType));
