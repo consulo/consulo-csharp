@@ -300,10 +300,15 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 	public void visitUserType(CSharpUserType parent)
 	{
 		PsiElement parentOfUserType = parent.getParent();
-		if(parentOfUserType instanceof CSharpAsExpressionImpl || parentOfUserType instanceof CSharpTypeCastExpressionImpl || parentOfUserType
-				instanceof CSharpRefValueExpressionImpl)
+		if(parentOfUserType instanceof CSharpAsExpressionImpl ||
+				parentOfUserType instanceof CSharpTypeCastExpressionImpl ||
+				parentOfUserType instanceof CSharpRefValueExpressionImpl)
 		{
 			myExpectedTypeInfos.addAll(findExpectedTypeRefs(parentOfUserType));
+		}
+		else if(parentOfUserType instanceof CSharpLocalVariable && parentOfUserType.getParent() instanceof CSharpCatchStatementImpl)
+		{
+			myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Exception), null));
 		}
 	}
 
