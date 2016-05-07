@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariableDeclarationStatement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -58,6 +59,11 @@ public class CSharpPatterns
 				CSharpLocalVariable localVariable = PsiTreeUtil.getParentOfType(element, CSharpLocalVariable.class);
 				// we cant use it when 'const <exp>'
 				if(localVariable == null || localVariable.isConstant())
+				{
+					return false;
+				}
+				// disable it inside non local decl statement, like catch
+				if(!(localVariable.getParent() instanceof CSharpLocalVariableDeclarationStatement))
 				{
 					return false;
 				}

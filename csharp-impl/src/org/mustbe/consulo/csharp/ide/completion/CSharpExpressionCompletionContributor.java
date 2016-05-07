@@ -709,9 +709,20 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 					return;
 				}
 
-				if(parent.kind() == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE ||
-						parent.kind() == CSharpReferenceExpression.ResolveToKind.EXPRESSION_OR_TYPE_LIKE ||
-						parent.kind() == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
+				CSharpReferenceExpression.ResolveToKind kind = parent.kind();
+				if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE)
+				{
+					DotNetType type = PsiTreeUtil.getParentOfType(parent, DotNetType.class);
+					// disable native type completion, due they dont extends System.Exception
+					if(type != null && type.getParent() instanceof CSharpLocalVariable && type.getParent().getParent() instanceof CSharpCatchStatementImpl)
+					{
+						return;
+					}
+				}
+
+				if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE ||
+						kind == CSharpReferenceExpression.ResolveToKind.EXPRESSION_OR_TYPE_LIKE ||
+						kind == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
 				{
 					CSharpCompletionUtil.tokenSetToLookup(completionResultSet, CSharpTokenSets.NATIVE_TYPES, new NotNullPairFunction<LookupElementBuilder, IElementType, LookupElement>()
 							{
@@ -818,13 +829,14 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 			PsiElement parent = expression.getParent();
 			if(parent instanceof CSharpUserType)
 			{
-				PsiElement parent1 = parent.getParent();
-				if(parent1 instanceof CSharpIsExpressionImpl ||
-						parent1 instanceof CSharpAsExpressionImpl ||
-						parent1 instanceof CSharpNewExpression ||
-						parent1 instanceof CSharpTypeOfExpressionImpl ||
-						parent1 instanceof CSharpSizeOfExpressionImpl ||
-						parent1 instanceof CSharpTypeCastExpressionImpl)
+				PsiElement nextParent = parent.getParent();
+				if(nextParent instanceof CSharpIsExpressionImpl ||
+						nextParent instanceof CSharpAsExpressionImpl ||
+						nextParent instanceof CSharpNewExpression ||
+						nextParent instanceof CSharpTypeOfExpressionImpl ||
+						nextParent instanceof CSharpSizeOfExpressionImpl ||
+						nextParent instanceof CSharpTypeCastExpressionImpl ||
+						nextParent instanceof CSharpLocalVariable && nextParent.getParent() instanceof CSharpCatchStatementImpl)
 				{
 					return false;
 				}
