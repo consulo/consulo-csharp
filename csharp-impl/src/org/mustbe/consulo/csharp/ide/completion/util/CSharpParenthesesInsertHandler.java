@@ -130,7 +130,7 @@ public class CSharpParenthesesInsertHandler implements InsertHandler<LookupEleme
 			}
 		}
 
-		document.insertString(context.getTailOffset(), "" + ")");
+		document.insertString(context.getTailOffset(), ")");
 		if(!putCaretInside)
 		{
 			editor.getCaretModel().moveToOffset(context.getTailOffset());

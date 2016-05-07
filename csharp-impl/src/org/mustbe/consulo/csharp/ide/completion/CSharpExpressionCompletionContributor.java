@@ -587,6 +587,11 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 								}
 							}
 						}
+
+						if(element instanceof CSharpIndexMethodDeclaration)
+						{
+							lookupElement = PrioritizedLookupElement.withPriority(lookupElement, 1);
+						}
 						result.consume(lookupElement);
 						return true;
 					}

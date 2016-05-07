@@ -99,7 +99,11 @@ public class CSharpLookupElementBuilder
 		if(contextType != null && contextType.isEquivalentTo(element.getParent()))
 		{
 			LookupElementBuilder oldBuilder = builder;
-			builder = oldBuilder.bold();
+			// don't bold lookup like '[int key]' looks ugly
+			if(!(element instanceof CSharpIndexMethodDeclaration))
+			{
+				builder = oldBuilder.bold();
+			}
 			CSharpCompletionSorting.copyForce(oldBuilder, builder);
 		}
 
@@ -178,7 +182,51 @@ public class CSharpLookupElementBuilder
 		}
 		else if(element instanceof CSharpIndexMethodDeclaration)
 		{
-			System.out.println("test");
+			builder = LookupElementBuilder.create(element, "[]");
+			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
+			final CSharpSimpleParameterInfo[] parameterInfos = ((CSharpIndexMethodDeclaration) element).getParameterInfos();
+			String parameterText = "[" + StringUtil.join(parameterInfos, new Function<CSharpSimpleParameterInfo, String>()
+			{
+				@Override
+				@RequiredReadAction
+				public String fun(CSharpSimpleParameterInfo parameter)
+				{
+					return CSharpTypeRefPresentationUtil.buildShortText(parameter.getTypeRef(), element) + " " + parameter.getNotNullName();
+				}
+			}, ", ") + "]";
+			builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(((CSharpIndexMethodDeclaration) element).getReturnTypeRef(), element));
+			builder = builder.withPresentableText(parameterText);
+			builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
+			{
+				@Override
+				public void handleInsert(InsertionContext context, LookupElement item)
+				{
+					CharSequence charSequence = context.getDocument().getImmutableCharSequence();
+
+					int start = -1, end = -1;
+					for(int i = context.getTailOffset(); i != 0; i--)
+					{
+						char c = charSequence.charAt(i);
+						if(c == '.')
+						{
+							start = i;
+							break;
+						}
+						else if(c == '[')
+						{
+							end = i;
+						}
+					}
+
+					if(start != -1 && end != -1)
+					{
+						// .[ -> [ replace
+						context.getDocument().replaceString(start, end + 1, "[");
+					}
+
+					context.getEditor().getCaretModel().moveToOffset(end);
+				}
+			});
 		}
 		/*else if(element instanceof DotNetXXXAccessor)
 		{
