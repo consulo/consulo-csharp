@@ -41,8 +41,8 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpNewExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstructorSuperCallImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
@@ -387,50 +387,56 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 			HighlightInfo highlightInfo = builder.create();
 			if(highlightInfo != null)
 			{
-				if(element instanceof CSharpReferenceExpression)
-				{
-					if(resolveElement instanceof CSharpMethodDeclaration)
-					{
-						QuickFixAction.registerQuickFixAction(highlightInfo, new CreateUnresolvedMethodFix((CSharpReferenceExpression) element));
-					}
-
-					if(resolveElement instanceof CSharpConstructorDeclaration)
-					{
-						QuickFixAction.registerQuickFixAction(highlightInfo, new CreateUnresolvedConstructorFix((CSharpReferenceExpression) element));
-					}
-
-					for(NCallArgument argument : arguments)
-					{
-						if(!argument.isValid())
-						{
-							CSharpCallArgument callArgument = argument.getCallArgument();
-							if(callArgument == null)
-							{
-								continue;
-							}
-							DotNetExpression argumentExpression = callArgument.getArgumentExpression();
-							if(argumentExpression == null)
-							{
-								continue;
-							}
-							DotNetTypeRef parameterTypeRef = argument.getParameterTypeRef();
-							if(parameterTypeRef == null)
-							{
-								continue;
-							}
-							String parameterName = argument.getParameterName();
-							if(parameterName == null)
-							{
-								continue;
-							}
-							QuickFixAction.registerQuickFixAction(highlightInfo, new CastNArgumentToTypeRefFix(argumentExpression, parameterTypeRef, parameterName));
-						}
-					}
-				}
+				registerQuickFixes(callOwner, resolveElement, arguments, highlightInfo);
 			}
 			return highlightInfo;
 		}
 		return null;
+	}
+
+	private static void registerQuickFixes(@NotNull CSharpCallArgumentListOwner element, PsiElement resolveElement, List<NCallArgument> arguments, HighlightInfo highlightInfo)
+	{
+		DotNetExpression callExpression = element instanceof CSharpMethodCallExpressionImpl ? ((CSharpMethodCallExpressionImpl) element).getCallExpression() : null;
+		if(callExpression instanceof CSharpReferenceExpression)
+		{
+			if(resolveElement instanceof CSharpMethodDeclaration)
+			{
+				QuickFixAction.registerQuickFixAction(highlightInfo, new CreateUnresolvedMethodFix((CSharpReferenceExpression) callExpression));
+			}
+
+			if(resolveElement instanceof CSharpConstructorDeclaration)
+			{
+				QuickFixAction.registerQuickFixAction(highlightInfo, new CreateUnresolvedConstructorFix((CSharpReferenceExpression) callExpression));
+			}
+		}
+
+		for(NCallArgument argument : arguments)
+		{
+			if(!argument.isValid())
+			{
+				CSharpCallArgument callArgument = argument.getCallArgument();
+				if(callArgument == null)
+				{
+					continue;
+				}
+				DotNetExpression argumentExpression = callArgument.getArgumentExpression();
+				if(argumentExpression == null)
+				{
+					continue;
+				}
+				DotNetTypeRef parameterTypeRef = argument.getParameterTypeRef();
+				if(parameterTypeRef == null)
+				{
+					continue;
+				}
+				String parameterName = argument.getParameterName();
+				if(parameterName == null)
+				{
+					continue;
+				}
+				QuickFixAction.registerQuickFixAction(highlightInfo, new CastNArgumentToTypeRefFix(argumentExpression, parameterTypeRef, parameterName));
+			}
+		}
 	}
 
 	@RequiredReadAction
