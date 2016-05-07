@@ -52,11 +52,11 @@ public class CSharpInheritProximityWeigher extends LookupElementWeigher
 {
 	public enum Position
 	{
-		DOWN,
-		NONE,
+		HIGH,
 		UP_KEYWORD,
 		UP_REF,
-		HIGH
+		NONE,
+		DOWN,
 	}
 
 	private PsiElement myPosition;
