@@ -120,7 +120,11 @@ public class CSharpNameSuggesterUtil
 				{
 					return name;
 				}
-				return StringUtil.notNullize(prefix) + name + StringUtil.notNullize(suffix);
+				if(StringUtil.isEmpty(prefix))
+				{
+					return name + StringUtil.notNullize(suffix);
+				}
+				return StringUtil.notNullize(prefix) + StringUtil.capitalize(name) + StringUtil.notNullize(suffix);
 			}
 		});
 	}
