@@ -25,6 +25,7 @@ import org.mustbe.consulo.codeInsight.completion.CompletionProvider;
 import org.mustbe.consulo.csharp.ide.completion.insertHandler.CSharpTailInsertHandler;
 import org.mustbe.consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import org.mustbe.consulo.csharp.ide.completion.util.ExpressionOrStatementInsertHandler;
+import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
@@ -213,17 +214,7 @@ public class CSharpStatementCompletionContributor extends CompletionContributor 
 						}
 						else
 						{
-							t = t.withInsertHandler(new InsertHandler<LookupElement>()
-							{
-								@Override
-								public void handleInsert(InsertionContext insertionContext, LookupElement item)
-								{
-									int offset = insertionContext.getEditor().getCaretModel().getOffset();
-									insertionContext.getDocument().insertString(offset, " :");
-
-									insertionContext.getEditor().getCaretModel().moveToOffset(offset + 1);
-								}
-							});
+							t = t.withInsertHandler(SpaceInsertHandler.INSTANCE);
 						}
 
 						return t;
