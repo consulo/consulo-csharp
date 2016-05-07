@@ -18,8 +18,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.lang.ASTNode;
@@ -27,6 +29,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.util.PsiUtilCore;
 
 /**
  * @author VISTALL
@@ -45,6 +48,31 @@ public class CSharpCatchStatementImpl extends CSharpElementImpl implements DotNe
 		visitor.visitCatchStatement(this);
 	}
 
+	@RequiredReadAction
+	public void deleteVariable()
+	{
+		CSharpLocalVariable variable = getVariable();
+		if(variable == null)
+		{
+			return;
+		}
+
+		PsiElement lparElement = variable.getPrevSibling();
+		PsiElement rparElement = variable.getNextSibling();
+
+		((CSharpLocalVariableImpl) variable).deleteInternal();
+
+		if(PsiUtilCore.getElementType(lparElement) == CSharpTokens.LPAR)
+		{
+			lparElement.delete();
+		}
+
+		if(PsiUtilCore.getElementType(rparElement) == CSharpTokens.RPAR)
+		{
+			rparElement.delete();
+		}
+	}
+
 	@Nullable
 	public CSharpLocalVariable getVariable()
 	{
@@ -58,8 +86,7 @@ public class CSharpCatchStatementImpl extends CSharpElementImpl implements DotNe
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement
-			place)
+	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place)
 	{
 		if(lastParent == null || !PsiTreeUtil.isAncestor(this, lastParent, false))
 		{

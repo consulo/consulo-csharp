@@ -191,10 +191,11 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 	@Override
 	public void delete() throws IncorrectOperationException
 	{
-		List<PsiElement> collectForDelete = new SmartList<PsiElement>();
 		PsiElement parent = getParent();
 		if(parent instanceof CSharpLocalVariableDeclarationStatement)
 		{
+			List<PsiElement> collectForDelete = new SmartList<PsiElement>();
+
 			CSharpLocalVariable[] variables = ((CSharpLocalVariableDeclarationStatement) parent).getVariables();
 			if(variables.length == 1)
 			{
@@ -226,16 +227,25 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 					collectForDelete.add(this);
 				}
 			}  */
+
+			for(PsiElement element : collectForDelete)
+			{
+				element.delete();
+			}
+		}
+		else if(parent instanceof CSharpCatchStatementImpl)
+		{
+			((CSharpCatchStatementImpl) parent).deleteVariable();
 		}
 		else
 		{
-			collectForDelete.add(this);
+			deleteInternal();
 		}
+	}
 
-		for(PsiElement element : collectForDelete)
-		{
-			element.delete();
-		}
+	public void deleteInternal()
+	{
+		super.delete();
 	}
 
 	private static void removeWithNextSibling(PsiElement element, IElementType token, List<PsiElement> collectForDelete)
