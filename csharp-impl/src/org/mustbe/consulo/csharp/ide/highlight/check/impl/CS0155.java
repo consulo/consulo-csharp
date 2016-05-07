@@ -21,42 +21,67 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
+import org.mustbe.consulo.csharp.ide.highlight.quickFix.ReplaceTypeQuickFix;
+import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpCatchStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpThrowStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.DotNetTypes;
+import org.mustbe.consulo.dotnet.psi.DotNetElement;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
  * @since 15.05.14
  */
-public class CS0155 extends CompilerCheck<CSharpThrowStatementImpl>
+public class CS0155 extends CompilerCheck<DotNetElement>
 {
 	private static final DotNetTypeRef ourExceptionTypeRef = new CSharpTypeRefByQName(DotNetTypes.System.Exception);
 
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpThrowStatementImpl statement)
+	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull DotNetElement element)
 	{
-		DotNetExpression expression = statement.getExpression();
-		if(expression == null)
+		if(element instanceof DotNetExpression)
 		{
-			return null;
+			PsiElement parent = element.getParent();
+			if(!(parent instanceof CSharpThrowStatementImpl))
+			{
+				return null;
+			}
+
+			DotNetExpression expression = (DotNetExpression) element;
+
+			DotNetTypeRef expressionTypeRef = expression.toTypeRef(true);
+			if(expressionTypeRef == DotNetTypeRef.ERROR_TYPE)
+			{
+				return null;
+			}
+
+			if(!CSharpTypeUtil.isInheritable(ourExceptionTypeRef, expressionTypeRef, expression))
+			{
+				return newBuilder(element);
+			}
 		}
 
-		DotNetTypeRef expressionTypeRef = expression.toTypeRef(true);
-		if(expressionTypeRef == DotNetTypeRef.ERROR_TYPE)
+		if(element instanceof DotNetType)
 		{
-			return null;
-		}
+			PsiElement parent = element.getParent();
+			if(!(parent instanceof CSharpLocalVariable) || !(parent.getParent() instanceof CSharpCatchStatementImpl))
+			{
+				return null;
+			}
 
-		if(!CSharpTypeUtil.isInheritable(ourExceptionTypeRef, expressionTypeRef, statement))
-		{
-			return newBuilder(expression);
+			if(!CSharpTypeUtil.isInheritable(ourExceptionTypeRef, ((CSharpLocalVariable) parent).toTypeRef(true), element))
+			{
+				return newBuilder(element).addQuickFix(new ReplaceTypeQuickFix((DotNetType) element, ourExceptionTypeRef));
+			}
 		}
 		return null;
 	}
