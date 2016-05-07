@@ -133,6 +133,12 @@ public class CSharpTypeLikeLookupElement extends LookupElementDecorator<LookupEl
 	}
 
 	@NotNull
+	public DotNetGenericExtractor getExtractor()
+	{
+		return myExtractor;
+	}
+
+	@NotNull
 	private DotNetQualifiedElement getOriginal()
 	{
 		LookupElement delegate = getDelegate();

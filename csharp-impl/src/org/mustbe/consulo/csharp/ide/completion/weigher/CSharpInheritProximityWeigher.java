@@ -20,8 +20,10 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.completion.CSharpCompletionUtil;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
+import org.mustbe.consulo.csharp.ide.completion.item.CSharpTypeLikeLookupElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -33,6 +35,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionI
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -71,6 +74,7 @@ public class CSharpInheritProximityWeigher extends LookupElementWeigher
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public Comparable weigh(@NotNull LookupElement element)
 	{
 		if(element.getPsiElement() instanceof CSharpConstructorDeclaration)
@@ -85,6 +89,11 @@ public class CSharpInheritProximityWeigher extends LookupElementWeigher
 
 		CSharpReferenceExpressionEx referenceExpressionEx = (CSharpReferenceExpressionEx) myPosition.getParent();
 
+		DotNetGenericExtractor extractor = DotNetGenericExtractor.EMPTY;
+		if(element instanceof CSharpTypeLikeLookupElement)
+		{
+			extractor = ((CSharpTypeLikeLookupElement) element).getExtractor();
+		}
 		PsiElement psiElement = element.getPsiElement();
 		if(psiElement == null)
 		{
@@ -101,24 +110,25 @@ public class CSharpInheritProximityWeigher extends LookupElementWeigher
 				{
 					return Position.NONE;
 				}
-				return weighElement(resolvedElement, referenceExpressionEx, myExpectedTypeInfos, Position.UP_KEYWORD);
+				return weighElement(resolvedElement, extractor, referenceExpressionEx, myExpectedTypeInfos, Position.UP_KEYWORD);
 			}
 			return Position.NONE;
 		}
 		else
 		{
-			return weighElement(psiElement, referenceExpressionEx, myExpectedTypeInfos, Position.UP_REF);
+			return weighElement(psiElement, extractor, referenceExpressionEx, myExpectedTypeInfos, Position.UP_REF);
 		}
 	}
 
+	@RequiredReadAction
 	public Comparable weighElement(@NotNull PsiElement psiElement,
+			DotNetGenericExtractor extractor,
 			@NotNull CSharpReferenceExpressionEx referenceExpressionEx,
 			@NotNull List<ExpectedTypeInfo> expectedTypeRefs,
 			@NotNull Position upPosition)
 	{
 		// if we have not type declaration, make types lower, dont allow int i = Int32 completion more high
-		if(referenceExpressionEx.kind() != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE && CSharpCompletionUtil.isTypeLikeElementWithNamespace(psiElement)
-				&& upPosition == Position.UP_REF)
+		if(referenceExpressionEx.kind() != CSharpReferenceExpression.ResolveToKind.TYPE_LIKE && CSharpCompletionUtil.isTypeLikeElementWithNamespace(psiElement) && upPosition == Position.UP_REF)
 		{
 			return Position.DOWN;
 		}
@@ -127,7 +137,7 @@ public class CSharpInheritProximityWeigher extends LookupElementWeigher
 		if(psiElement instanceof CSharpMethodDeclaration)
 		{
 			CSharpMethodDeclaration methodDeclaration = (CSharpMethodDeclaration) psiElement;
-			typeOfElement = methodDeclaration.getReturnTypeRef();
+			typeOfElement = GenericUnwrapTool.exchangeTypeRef(methodDeclaration.getReturnTypeRef(), extractor, psiElement);
 
 			for(ExpectedTypeInfo expectedTypeInfo : expectedTypeRefs)
 			{
@@ -157,7 +167,7 @@ public class CSharpInheritProximityWeigher extends LookupElementWeigher
 		}
 		else
 		{
-			typeOfElement = CSharpReferenceExpressionImplUtil.toTypeRef(psiElement);
+			typeOfElement = CSharpReferenceExpressionImplUtil.toTypeRef(psiElement, extractor);
 
 			for(ExpectedTypeInfo expectedTypeInfo : expectedTypeRefs)
 			{
@@ -177,6 +187,7 @@ public class CSharpInheritProximityWeigher extends LookupElementWeigher
 	}
 
 	@Nullable
+	@RequiredReadAction
 	private static DotNetTypeRef typeRefFromTokeType(@NotNull IElementType e, CSharpReferenceExpressionEx parent)
 	{
 		if(e == CSharpTokens.TRUE_KEYWORD || e == CSharpTokens.FALSE_KEYWORD)

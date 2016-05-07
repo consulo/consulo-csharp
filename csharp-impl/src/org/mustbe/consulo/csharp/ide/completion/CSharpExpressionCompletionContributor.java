@@ -493,8 +493,6 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 
 				final CSharpNewExpression newExpression = getNewExpression(expression);
 
-				final List<ExpectedTypeInfo> newExpectedTypeRefs = newExpression != null ? ExpectedTypeVisitor.findExpectedTypeRefs(newExpression) : Collections.<ExpectedTypeInfo>emptyList();
-
 				final CSharpTypeDeclaration contextType = getContextType(expression);
 				CSharpCallArgumentListOwner callArgumentListOwner = CSharpReferenceExpressionImplUtil.findCallArgumentListOwner(kind, expression);
 				CSharpReferenceExpressionImplUtil.collectResults(new CSharpResolveOptions(kind, null, expression, callArgumentListOwner, true, true), new Processor<ResolveResult>()
@@ -519,9 +517,9 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 								return true;
 							}
 
-							if(!newExpectedTypeRefs.isEmpty())
+							if(!expectedTypeRefs.isEmpty())
 							{
-								for(ExpectedTypeInfo newExpectedTypeRef : newExpectedTypeRefs)
+								for(ExpectedTypeInfo newExpectedTypeRef : expectedTypeRefs)
 								{
 									DotNetTypeResolveResult expectedTypeResult = newExpectedTypeRef.getTypeRef().resolve(expression);
 
