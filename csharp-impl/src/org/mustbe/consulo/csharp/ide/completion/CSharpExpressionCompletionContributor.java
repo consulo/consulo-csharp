@@ -66,6 +66,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
+import com.intellij.codeInsight.completion.PrioritizedLookupElement;
 import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -129,10 +130,10 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 							}
 							String typeText = CSharpTypeRefPresentationUtil.buildShortText(typeRef, position);
 
-							LookupElementBuilder builder = LookupElementBuilder.create(typeText);
+							LookupElementBuilder builder = LookupElementBuilder.create(typeRef, typeText);
 							builder = builder.withIcon(getIconForInnerTypeRef((CSharpArrayTypeRef) typeRef, position));
 							// add without {...}
-							result.addElement(builder);
+							result.addElement(PrioritizedLookupElement.withPriority(builder, 1));
 
 							builder = builder.withTailText("{...}", true);
 							builder = builder.withInsertHandler(new InsertHandler<LookupElement>()
@@ -150,9 +151,41 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 								}
 							});
 
-							result.addElement(builder);
+							result.addElement(PrioritizedLookupElement.withPriority(builder, 1));
 						}
 					}
+				}
+			}
+
+			@Nullable
+			@RequiredReadAction
+			private Icon getIconForInnerTypeRef(@NotNull CSharpArrayTypeRef typeRef, @NotNull PsiElement scope)
+			{
+				DotNetTypeRef innerTypeRef = typeRef.getInnerTypeRef();
+				if(!(innerTypeRef instanceof CSharpArrayTypeRef))
+				{
+					PsiElement element = innerTypeRef.resolve(scope).getElement();
+					if(element != null)
+					{
+						if(element instanceof DotNetTypeDeclaration)
+						{
+							String vmQName = ((DotNetTypeDeclaration) element).getVmQName();
+							String keyword = CSharpTypeRefPresentationUtil.ourTypesAsKeywords.get(vmQName);
+							if(keyword != null && CSharpCodeGenerationSettings.getInstance(scope.getProject()).USE_LANGUAGE_DATA_TYPES )
+							{
+								return null;
+							}
+						}
+						return IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY);
+					}
+					else
+					{
+						return AllIcons.Nodes.Class;
+					}
+				}
+				else
+				{
+					return getIconForInnerTypeRef((CSharpArrayTypeRef) ((CSharpArrayTypeRef) innerTypeRef).getInnerTypeRef(), scope);
 				}
 			}
 		});
@@ -713,10 +746,18 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 				if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE)
 				{
 					DotNetType type = PsiTreeUtil.getParentOfType(parent, DotNetType.class);
-					// disable native type completion, due they dont extends System.Exception
-					if(type != null && type.getParent() instanceof CSharpLocalVariable && type.getParent().getParent() instanceof CSharpCatchStatementImpl)
+					if(type != null)
 					{
-						return;
+						// disable native type completion, due they dont extends System.Exception
+						if(type.getParent() instanceof CSharpLocalVariable && type.getParent().getParent() instanceof CSharpCatchStatementImpl)
+						{
+							return;
+						}
+
+						if(type.getParent() instanceof CSharpNewExpression)
+						{
+							return;
+						}
 					}
 				}
 
@@ -853,29 +894,6 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 			}
 		}
 		return false;
-	}
-
-	@NotNull
-	@RequiredReadAction
-	private static Icon getIconForInnerTypeRef(@NotNull CSharpArrayTypeRef typeRef, @NotNull PsiElement scope)
-	{
-		DotNetTypeRef innerTypeRef = typeRef.getInnerTypeRef();
-		if(!(innerTypeRef instanceof CSharpArrayTypeRef))
-		{
-			PsiElement element = innerTypeRef.resolve(scope).getElement();
-			if(element != null)
-			{
-				return IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY);
-			}
-			else
-			{
-				return AllIcons.Nodes.Class;
-			}
-		}
-		else
-		{
-			return getIconForInnerTypeRef((CSharpArrayTypeRef) ((CSharpArrayTypeRef) innerTypeRef).getInnerTypeRef(), scope);
-		}
 	}
 
 	@NotNull
