@@ -18,7 +18,6 @@ package org.mustbe.consulo.csharp.ide;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,6 +28,7 @@ import org.mustbe.consulo.csharp.ide.completion.insertHandler.CSharpParenthesesW
 import org.mustbe.consulo.csharp.ide.completion.item.CSharpTypeLikeLookupElement;
 import org.mustbe.consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMacroDefine;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodUtil;
@@ -44,10 +44,8 @@ import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
-import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.codeInsight.TailType;
@@ -178,7 +176,11 @@ public class CSharpLookupElementBuilder
 				builder = buildTypeLikeElement((CSharpMethodDeclaration) element, extractor);
 			}
 		}
-		else if(element instanceof DotNetXXXAccessor)
+		else if(element instanceof CSharpIndexMethodDeclaration)
+		{
+			System.out.println("test");
+		}
+		/*else if(element instanceof DotNetXXXAccessor)
 		{
 			DotNetNamedElement parent = (DotNetNamedElement) element.getParent();
 
@@ -261,7 +263,7 @@ public class CSharpLookupElementBuilder
 					});
 					break;
 			}
-		}
+		}   */
 		else if(element instanceof DotNetNamespaceAsElement)
 		{
 			DotNetNamespaceAsElement namespaceAsElement = (DotNetNamespaceAsElement) element;
