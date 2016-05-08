@@ -580,7 +580,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 									{
 										if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), new CSharpLambdaTypeRef(methodDeclaration), expression))
 										{
-											result.consume(buildForMethodReference(methodDeclaration, expression));
+											result.consume(buildForMethodReference(methodDeclaration, contextType, expression));
 											return true;
 										}
 									}
@@ -901,7 +901,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 
 	@NotNull
 	@RequiredReadAction
-	private static LookupElement buildForMethodReference(final CSharpMethodDeclaration methodDeclaration, final CSharpReferenceExpressionEx expression)
+	private static LookupElement buildForMethodReference(final CSharpMethodDeclaration methodDeclaration, CSharpTypeDeclaration contextType, final CSharpReferenceExpressionEx expression)
 	{
 		LookupElementBuilder builder = LookupElementBuilder.create(methodDeclaration.getName());
 		builder = builder.withIcon(AllIcons.Nodes.MethodReference);
@@ -949,6 +949,12 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 				}
 			}
 		});
+
+		if(contextType != null && contextType.isEquivalentTo(methodDeclaration.getParent()))
+		{
+			builder = builder.bold();
+		}
+
 		CSharpCompletionSorting.force(builder, CSharpCompletionSorting.KindSorter.Type.member);
 		return builder;
 	}

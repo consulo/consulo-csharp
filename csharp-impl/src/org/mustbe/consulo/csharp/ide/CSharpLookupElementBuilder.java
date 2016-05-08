@@ -96,6 +96,7 @@ public class CSharpLookupElementBuilder
 		{
 			return null;
 		}
+
 		if(contextType != null && contextType.isEquivalentTo(element.getParent()))
 		{
 			LookupElementBuilder oldBuilder = builder;
