@@ -25,7 +25,15 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.psi.*;
+import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.daemon.impl.analysis.HighlightInfoHolder;
@@ -44,10 +52,7 @@ public class CSharpHighlightUtil
 {
 	@Nullable
 	@RequiredReadAction
-	public static HighlightInfo highlightNamed(@NotNull HighlightInfoHolder holder,
-			@Nullable PsiElement element,
-			@Nullable PsiElement target,
-			@Nullable PsiElement owner)
+	public static HighlightInfo highlightNamed(@NotNull HighlightInfoHolder holder, @Nullable PsiElement element, @Nullable PsiElement target, @Nullable PsiElement owner)
 	{
 		if(target == null || element == null)
 		{
@@ -55,15 +60,14 @@ public class CSharpHighlightUtil
 		}
 
 		IElementType elementType = target.getNode().getElementType();
-		if(CSharpTokenSets.KEYWORDS.contains(elementType))  // dont highlight keywords
+		if(CSharpTokenSets.KEYWORDS.contains(elementType))  // don't highlight keywords
 		{
 			return null;
 		}
 
 		if(isMethodRef(owner, element))
 		{
-			HighlightInfo highlightInfo = HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes
-					(CSharpHighlightKey.METHOD_REF).create();
+			HighlightInfo highlightInfo = HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes(CSharpHighlightKey.METHOD_REF).create();
 			holder.add(highlightInfo);
 		}
 
@@ -73,13 +77,11 @@ public class CSharpHighlightUtil
 			return null;
 		}
 
-		HighlightInfo info = HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes(defaultTextAttributeKey)
-				.create();
+		HighlightInfo info = HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes(defaultTextAttributeKey).create();
 		holder.add(info);
-		if(DotNetAttributeUtil.hasAttribute(element, DotNetTypes.System.ObsoleteAttribute))
+		if(!(target instanceof CSharpIdentifier) && DotNetAttributeUtil.hasAttribute(element, DotNetTypes.System.ObsoleteAttribute))
 		{
-			holder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes(CodeInsightColors
-					.DEPRECATED_ATTRIBUTES).create());
+			holder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(target).textAttributes(CodeInsightColors.DEPRECATED_ATTRIBUTES).create());
 		}
 
 		return info;
@@ -146,8 +148,7 @@ public class CSharpHighlightUtil
 			}
 			else
 			{
-				key = ((DotNetModifierListOwner) element).hasModifier(CSharpModifier.STATIC) ? CSharpHighlightKey.STATIC_METHOD_CALL : CSharpHighlightKey
-						.INSTANCE_METHOD_CALL;
+				key = ((DotNetModifierListOwner) element).hasModifier(CSharpModifier.STATIC) ? CSharpHighlightKey.STATIC_METHOD_CALL : CSharpHighlightKey.INSTANCE_METHOD_CALL;
 			}
 		}
 		else if(element instanceof CSharpMacroDefine)
@@ -172,21 +173,19 @@ public class CSharpHighlightUtil
 		}
 		else if(element instanceof CSharpEventDeclaration)
 		{
-			key = ((DotNetVariable) element).hasModifier(CSharpModifier.STATIC) ? CSharpHighlightKey.STATIC_EVENT : CSharpHighlightKey
-					.INSTANCE_EVENT;
+			key = ((DotNetVariable) element).hasModifier(CSharpModifier.STATIC) ? CSharpHighlightKey.STATIC_EVENT : CSharpHighlightKey.INSTANCE_EVENT;
 		}
 		else if(element instanceof DotNetVariable)
 		{
-			key = ((DotNetVariable) element).hasModifier(CSharpModifier.STATIC) ? CSharpHighlightKey.STATIC_FIELD_OR_PROPERTY : CSharpHighlightKey
-					.INSTANCE_FIELD_OR_PROPERTY;
+			key = ((DotNetVariable) element).hasModifier(CSharpModifier.STATIC) ? CSharpHighlightKey.STATIC_FIELD_OR_PROPERTY : CSharpHighlightKey.INSTANCE_FIELD_OR_PROPERTY;
 		}
 		return key;
 	}
 
+	@RequiredReadAction
 	public static boolean isMethodRef(PsiElement owner, PsiElement element)
 	{
-		if(owner instanceof CSharpReferenceExpression && ((CSharpReferenceExpression) owner).kind() == CSharpReferenceExpression.ResolveToKind
-				.ANY_MEMBER)
+		if(owner instanceof CSharpReferenceExpression && ((CSharpReferenceExpression) owner).kind() == CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
 		{
 			if(element == null)
 			{

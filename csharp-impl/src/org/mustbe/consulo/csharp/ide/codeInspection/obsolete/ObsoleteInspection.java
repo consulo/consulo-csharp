@@ -18,15 +18,20 @@ package org.mustbe.consulo.csharp.ide.codeInspection.obsolete;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInspection.CSharpInspectionBundle;
 import org.mustbe.consulo.csharp.ide.projectView.CSharpElementTreeNode;
 import org.mustbe.consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
-import org.mustbe.consulo.csharp.lang.psi.*;
+import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
+import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
+import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
+import org.mustbe.consulo.csharp.lang.psi.CSharpNamedFieldOrPropertySet;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
@@ -47,48 +52,7 @@ public class ObsoleteInspection extends LocalInspectionTool
 		return new CSharpElementVisitor()
 		{
 			@Override
-			public void visitTypeDeclaration(CSharpTypeDeclaration declaration)
-			{
-				process(holder, declaration.getNameIdentifier(), declaration);
-			}
-
-			@Override
-			public void visitMethodDeclaration(CSharpMethodDeclaration declaration)
-			{
-				process(holder, declaration.getNameIdentifier(), declaration);
-			}
-
-			@Override
-			public void visitFieldDeclaration(CSharpFieldDeclaration declaration)
-			{
-				process(holder, declaration.getNameIdentifier(), declaration);
-			}
-
-			@Override
-			public void visitConstructorDeclaration(CSharpConstructorDeclaration declaration)
-			{
-				process(holder, declaration.getNameIdentifier(), declaration);
-			}
-
-			@Override
-			public void visitEventDeclaration(CSharpEventDeclaration declaration)
-			{
-				process(holder, declaration.getNameIdentifier(), declaration);
-			}
-
-			@Override
-			public void visitPropertyDeclaration(CSharpPropertyDeclaration declaration)
-			{
-				process(holder, declaration.getNameIdentifier(), declaration);
-			}
-
-			@Override
-			public void visitParameter(DotNetParameter parameter)
-			{
-				process(holder, parameter.getNameIdentifier(), parameter);
-			}
-
-			@Override
+			@RequiredReadAction
 			public void visitReferenceExpression(CSharpReferenceExpression expression)
 			{
 				PsiElement resolve = expression.resolve();
@@ -107,6 +71,7 @@ public class ObsoleteInspection extends LocalInspectionTool
 		};
 	}
 
+	@RequiredReadAction
 	private static void process(@NotNull ProblemsHolder holder, @Nullable PsiElement range, @NotNull PsiElement target)
 	{
 		if(range == null)
@@ -114,18 +79,22 @@ public class ObsoleteInspection extends LocalInspectionTool
 			return;
 		}
 
-		DotNetAttribute attribute = DotNetAttributeUtil.findAttribute(target, DotNetTypes.System.ObsoleteAttribute);
-		if(attribute == null)
+		// #hasAttribute() is cache result, #findAttribute() not
+		if(DotNetAttributeUtil.hasAttribute(target, DotNetTypes.System.ObsoleteAttribute))
 		{
-			return;
-		}
-		String message = getMessage(attribute);
-		if(message == null)
-		{
-			message = CSharpInspectionBundle.message("target.is.obsolete", CSharpElementTreeNode.getPresentableText((PsiNamedElement) target));
-		}
+			DotNetAttribute attribute = DotNetAttributeUtil.findAttribute(target, DotNetTypes.System.ObsoleteAttribute);
+			if(attribute == null)
+			{
+				return;
+			}
+			String message = getMessage(attribute);
+			if(message == null)
+			{
+				message = CSharpInspectionBundle.message("target.is.obsolete", CSharpElementTreeNode.getPresentableText((PsiNamedElement) target));
+			}
 
-		holder.registerProblem(range, message, ProblemHighlightType.LIKE_DEPRECATED);
+			holder.registerProblem(range, message, ProblemHighlightType.LIKE_DEPRECATED);
+		}
 	}
 
 	public static String getMessage(DotNetAttribute attribute)

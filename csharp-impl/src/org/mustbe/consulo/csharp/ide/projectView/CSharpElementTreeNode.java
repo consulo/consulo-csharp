@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
 import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.*;
@@ -151,7 +152,7 @@ public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetN
 		presentationData.setPresentableText(getPresentableText(value));
 	}
 
-	@RequiredDispatchThread
+	@RequiredReadAction
 	public static String getPresentableText(PsiNamedElement value)
 	{
 		if(value instanceof DotNetLikeMethodDeclaration)
