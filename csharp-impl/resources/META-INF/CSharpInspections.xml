@@ -24,6 +24,8 @@
 						 displayName="Unnecessary Type" groupName="C#" enabledByDefault="false"/>
 		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryModifier.UnnecessaryModifierInspection"
 						 displayName="Unnecessary Modifier" groupName="C#" enabledByDefault="true"/>
+		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessarySemicolon.UnnecessarySemicolonInspection"
+						 displayName="Unnecessary Semicolon" groupName="C#" enabledByDefault="true" level="WARNING"/>
 		<localInspection
 				language="C#"
 				implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryNamedArgument.UnnecessaryNamedArgumentInspection"
