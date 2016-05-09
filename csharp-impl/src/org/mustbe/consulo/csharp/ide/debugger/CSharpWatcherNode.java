@@ -22,8 +22,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.icons.AllIcons;
 import consulo.dotnet.debugger.DotNetDebugContext;
-import consulo.dotnet.debugger.nodes.DotNetAbstractVariableMirrorNode;
-import consulo.dotnet.debugger.proxy.DotNetThreadProxy;
+import consulo.dotnet.debugger.nodes.DotNetAbstractVariableValueNode;
+import consulo.dotnet.debugger.proxy.DotNetStackFrameProxy;
 import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
@@ -31,13 +31,13 @@ import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
  * @author VISTALL
  * @since 05.08.2015
  */
-public class CSharpWatcherNode extends DotNetAbstractVariableMirrorNode
+public class CSharpWatcherNode extends DotNetAbstractVariableValueNode
 {
 	private DotNetValueProxy myValue;
 
-	public CSharpWatcherNode(@NotNull DotNetDebugContext debuggerContext, @NotNull String name, @NotNull DotNetThreadProxy threadMirror, @NotNull DotNetValueProxy value)
+	public CSharpWatcherNode(@NotNull DotNetDebugContext debuggerContext, @NotNull String name, @NotNull DotNetStackFrameProxy frameProxy, @NotNull DotNetValueProxy value)
 	{
-		super(debuggerContext, name, threadMirror);
+		super(debuggerContext, name, frameProxy);
 		myValue = value;
 	}
 

@@ -45,7 +45,7 @@ public class FieldEvaluator extends FieldOrPropertyEvaluator<CSharpFieldDeclarat
 	@Override
 	protected boolean invoke(@NotNull DotNetFieldProxy mirror, @NotNull CSharpEvaluateContext context, @Nullable DotNetValueProxy popValue)
 	{
-		DotNetValueProxy loadedValue = mirror.getValue(context.getFrame().getThread(), popValue);
+		DotNetValueProxy loadedValue = mirror.getValue(context.getFrame(), popValue);
 		if(loadedValue != null)
 		{
 			context.pull(loadedValue, mirror);

@@ -97,7 +97,7 @@ public class ThisObjectEvaluator extends Evaluator
 
 				if(thisFieldMirror != null)
 				{
-					DotNetValueProxy value = thisFieldMirror.getValue(proxy.getThread(), objectValueMirror);
+					DotNetValueProxy value = thisFieldMirror.getValue(proxy, objectValueMirror);
 					if(value != null)
 					{
 						return value;

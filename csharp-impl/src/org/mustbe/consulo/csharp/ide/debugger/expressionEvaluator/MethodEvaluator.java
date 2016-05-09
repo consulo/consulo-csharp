@@ -99,7 +99,7 @@ public class MethodEvaluator extends Evaluator
 
 		try
 		{
-			DotNetValueProxy invoke = methodMirror.invoke(context.getFrame().getThread(), substituteStaticContext(popValue), values.toArray(new DotNetValueProxy[values.size()]));
+			DotNetValueProxy invoke = methodMirror.invoke(context.getFrame(), substituteStaticContext(popValue), values.toArray(new DotNetValueProxy[values.size()]));
 			if(invoke != null)
 			{
 				context.pull(invoke, methodMirror);

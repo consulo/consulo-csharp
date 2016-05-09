@@ -53,7 +53,7 @@ public class PropertyEvaluator extends FieldOrPropertyEvaluator<CSharpPropertyDe
 			return false;
 		}
 
-		DotNetValueProxy loadedValue = methodMirror.invoke(context.getFrame().getThread(), popValue);
+		DotNetValueProxy loadedValue = methodMirror.invoke(context.getFrame(), popValue);
 		if(loadedValue != null)
 		{
 			context.pull(loadedValue, mirror);

@@ -104,7 +104,7 @@ public class IndexMethodEvaluator extends FieldOrPropertyEvaluator<CSharpIndexMe
 			return false;
 		}
 
-		DotNetValueProxy loadedValue = methodMirror.invoke(context.getFrame().getThread(), popValue, myArgumentValues.toArray(new DotNetValueProxy[myArgumentValues.size()]));
+		DotNetValueProxy loadedValue = methodMirror.invoke(context.getFrame(), popValue, myArgumentValues.toArray(new DotNetValueProxy[myArgumentValues.size()]));
 		if(loadedValue != null)
 		{
 			context.pull(loadedValue, mirror);

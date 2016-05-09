@@ -81,7 +81,7 @@ public abstract class LocalVariableOrParameterEvaluator<T extends DotNetVariable
 
 			if(localVariableField != null)
 			{
-				DotNetValueProxy value = localVariableField.getValue(frame.getThread(), thisObjectAsObjectMirror);
+				DotNetValueProxy value = localVariableField.getValue(frame, thisObjectAsObjectMirror);
 				if(value != null)
 				{
 					context.pull(value, localVariableField);
