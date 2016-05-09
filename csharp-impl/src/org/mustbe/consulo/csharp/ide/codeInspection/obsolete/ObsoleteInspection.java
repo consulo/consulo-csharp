@@ -28,6 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamedFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
@@ -38,6 +39,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
@@ -66,6 +68,13 @@ public class ObsoleteInspection extends LocalInspectionTool
 				{
 					return;
 				}
+
+				IElementType elementType = referenceElement.getNode().getElementType();
+				if(CSharpTokenSets.KEYWORDS.contains(elementType))
+				{
+					return;
+				}
+
 				process(holder, referenceElement, resolve);
 			}
 		};
