@@ -29,21 +29,21 @@ import com.intellij.util.io.StringRef;
  */
 public class CSharpNamespaceDeclStub extends StubBase<CSharpNamespaceDeclarationImpl>
 {
-	private final StringRef myQualifiedName;
+	private final StringRef myReferenceTextRef;
 
-	public CSharpNamespaceDeclStub(StubElement parent, IStubElementType elementType, @Nullable StringRef qualifiedName)
+	public CSharpNamespaceDeclStub(StubElement parent, IStubElementType elementType, @Nullable StringRef referenceTextRef)
 	{
 		super(parent, elementType);
-		myQualifiedName = qualifiedName;
+		myReferenceTextRef = referenceTextRef;
 	}
 
-	public CSharpNamespaceDeclStub(final StubElement parent, final IStubElementType elementType, @Nullable final String qualifiedName)
+	public CSharpNamespaceDeclStub(final StubElement parent, final IStubElementType elementType, @Nullable final String referenceTextRef)
 	{
-		this(parent, elementType, StringRef.fromString(qualifiedName));
+		this(parent, elementType, StringRef.fromString(referenceTextRef));
 	}
 
-	public String getQualifiedName()
+	public String getReferenceTextRef()
 	{
-		return StringRef.toString(myQualifiedName);
+		return StringRef.toString(myReferenceTextRef);
 	}
 }

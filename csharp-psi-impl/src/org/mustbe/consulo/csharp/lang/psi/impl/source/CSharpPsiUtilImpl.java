@@ -84,6 +84,7 @@ public class CSharpPsiUtilImpl
 	}
 
 	@Nullable
+	@RequiredReadAction
 	public static DotNetNamedElement findSingleElement(@NotNull CSharpFile file)
 	{
 		DotNetNamedElement[] members = file.getMembers();
@@ -100,10 +101,16 @@ public class CSharpPsiUtilImpl
 			{
 				return null;
 			}
-			DotNetNamedElement namespacesDeclaration = namespacesDeclarations[0];
-			if(Comparing.equal(FileUtil.getNameWithoutExtension(file.getName()), namespacesDeclaration.getName()))
+
+			DotNetNamedElement namespaceChildren = namespacesDeclarations[0];
+			if(namespaceChildren instanceof DotNetNamespaceDeclaration)
 			{
-				return namespacesDeclaration;
+				return null;
+			}
+
+			if(Comparing.equal(FileUtil.getNameWithoutExtension(file.getName()), namespaceChildren.getName()))
+			{
+				return namespaceChildren;
 			}
 			return null;
 		}

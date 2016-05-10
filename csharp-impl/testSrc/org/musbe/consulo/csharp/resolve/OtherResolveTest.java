@@ -54,6 +54,10 @@ public class OtherResolveTest extends ResolvingTestCase
 	{
 	}
 
+	public void testIssue_consulo187()
+	{
+	}
+
 	@NotNull
 	@Override
 	protected TestModuleDescriptor createTestModuleDescriptor()

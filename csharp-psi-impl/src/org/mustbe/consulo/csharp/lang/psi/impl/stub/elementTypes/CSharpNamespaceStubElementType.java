@@ -56,21 +56,21 @@ public class CSharpNamespaceStubElementType extends CSharpAbstractStubElementTyp
 	@Override
 	public CSharpNamespaceDeclStub createStub(@NotNull CSharpNamespaceDeclarationImpl declaration, StubElement stubElement)
 	{
-		String qName = declaration.getQNameFromDecl();
-		return new CSharpNamespaceDeclStub(stubElement, this, qName);
+		String referenceText = declaration.getReferenceText();
+		return new CSharpNamespaceDeclStub(stubElement, this, referenceText);
 	}
 
 	@Override
 	public void serialize(@NotNull CSharpNamespaceDeclStub namespaceStub, @NotNull StubOutputStream stubOutputStream) throws IOException
 	{
-		stubOutputStream.writeName(namespaceStub.getQualifiedName());
+		stubOutputStream.writeName(namespaceStub.getReferenceTextRef());
 	}
 
 	@NotNull
 	@Override
 	public CSharpNamespaceDeclStub deserialize(@NotNull StubInputStream stubInputStream, StubElement stubElement) throws IOException
 	{
-		StringRef qname = stubInputStream.readName();
-		return new CSharpNamespaceDeclStub(stubElement, this, qname);
+		StringRef referenceTextRef = stubInputStream.readName();
+		return new CSharpNamespaceDeclStub(stubElement, this, referenceTextRef);
 	}
 }

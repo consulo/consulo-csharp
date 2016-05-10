@@ -1,0 +1,14 @@
+Scripts(10,17): namespace[Scripts]=true
+Scripts.Values(10,24): namespace[Scripts.Values]=true
+Player(38,44): empty
+Player.Test(38,49): empty
+Scripts(146,153): namespace[Scripts]=true
+Scripts.Values(146,160): namespace[Scripts.Values]=true
+Scripts.Values.Player(146,167): namespace[Scripts.Values.Player]=true
+Scripts.Values.Player.Test(146,172): namespace[Scripts.Values.Player.Test]=true
+Scripts.Values.Player.Test.Players(146,180): type[Scripts.Values.Player.Test.Players]=true
+Scripts(196,203): namespace[Scripts]=true
+Scripts.Values(196,210): namespace[Scripts.Values]=true
+Scripts.Values.Player(196,217): namespace[Scripts.Values.Player]=true
+Scripts.Values.Player.Test(196,222): namespace[Scripts.Values.Player.Test]=true
+Scripts.Values.Player.Test.Players(196,230): constructor[Players()]=true

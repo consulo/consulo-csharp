@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.RequiredWriteAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -79,18 +80,15 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 	@RequiredReadAction
 	public String getName()
 	{
-		String presentableQName0 = getQNameFromDecl();
-
-		if(StringUtil.isEmpty(presentableQName0))
+		String qName = getPresentableQName();
+		if(qName == null)
 		{
 			return null;
 		}
-		else
-		{
-			return StringUtil.getShortName(presentableQName0);
-		}
+		return StringUtil.getShortName(qName);
 	}
 
+	@RequiredWriteAction
 	@Override
 	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
 	{
@@ -111,6 +109,7 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 		return findChildByType(CSharpTokens.RBRACE);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetQualifiedElement[] getMembers()
@@ -129,22 +128,11 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 	@Override
 	public String getPresentableParentQName()
 	{
-		String fullQName = null;
-		PsiElement parent = getParent();
-		if(parent instanceof DotNetNamespaceDeclaration)
-		{
-			fullQName = ((DotNetNamespaceDeclaration) parent).getPresentableQName() + getQNameFromDecl();
-		}
-		else
-		{
-			fullQName = getQNameFromDecl();
-		}
-
+		String fullQName = buildQualifiedName();
 		if(fullQName == null)
 		{
 			return null;
 		}
-
 		return StringUtil.getPackageName(fullQName);
 	}
 
@@ -153,17 +141,35 @@ public class CSharpNamespaceDeclarationImpl extends CSharpStubElementImpl<CSharp
 	@Override
 	public String getPresentableQName()
 	{
-		return getQNameFromDecl();
+		return buildQualifiedName();
+	}
+
+	@RequiredReadAction
+	private String buildQualifiedName()
+	{
+		String parentQualifiedName = null;
+		PsiElement parent = getParent();
+		if(parent instanceof DotNetNamespaceDeclaration)
+		{
+			parentQualifiedName = ((DotNetNamespaceDeclaration) parent).getPresentableQName();
+		}
+
+		String text = getReferenceText();
+		if(!StringUtil.isEmpty(parentQualifiedName))
+		{
+			return parentQualifiedName + "." + text;
+		}
+		return text;
 	}
 
 	@Nullable
 	@RequiredReadAction
-	public String getQNameFromDecl()
+	public String getReferenceText()
 	{
 		CSharpNamespaceDeclStub stub = getStub();
 		if(stub != null)
 		{
-			return stub.getQualifiedName();
+			return stub.getReferenceTextRef();
 		}
 		CSharpReferenceExpression childByClass = findChildByClass(CSharpReferenceExpression.class);
 		return childByClass != null ? StringUtil.strip(childByClass.getText(), CharFilter.NOT_WHITESPACE_FILTER) : null;
