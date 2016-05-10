@@ -39,6 +39,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS1547;
 import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
@@ -46,6 +47,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
+import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
@@ -494,7 +496,9 @@ public class CSharpChangeSignatureDialog extends ChangeSignatureDialogBase<CShar
 	protected PsiCodeFragment createReturnTypeCodeFragment()
 	{
 		String text = CSharpTypeRefPresentationUtil.buildShortText(myMethod.getMethod().getReturnTypeRef(), myDefaultValueContext);
-		return CSharpFragmentFactory.createTypeFragment(getProject(), text, myDefaultValueContext);
+		CSharpFragmentFileImpl typeFragment = CSharpFragmentFactory.createTypeFragment(getProject(), text, myDefaultValueContext);
+		typeFragment.putUserData(CS1547.ourReturnTypeFlag, Boolean.TRUE);
+		return typeFragment;
 	}
 
 	@Nullable

@@ -28,6 +28,7 @@ import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
+import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiErrorElement;
 import com.intellij.psi.tree.IElementType;
@@ -38,6 +39,8 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CS1547 extends CompilerCheck<CSharpNativeType>
 {
+	public static Key<Boolean> ourReturnTypeFlag = Key.create("CS1547");
+
 	private static final String VOID = "void";
 
 	@RequiredReadAction
@@ -45,6 +48,11 @@ public class CS1547 extends CompilerCheck<CSharpNativeType>
 	@Override
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpNativeType element)
 	{
+		if(highlightContext.getFile().getUserData(ourReturnTypeFlag) == Boolean.TRUE)
+		{
+			return null;
+		}
+
 		IElementType typeElementType = element.getTypeElementType();
 		if(typeElementType == CSharpTokens.VOID_KEYWORD)
 		{

@@ -81,6 +81,12 @@ public class CSharpHighlightContext
 		myFile = file;
 	}
 
+	@NotNull
+	public PsiFile getFile()
+	{
+		return myFile;
+	}
+
 	@RequiredReadAction
 	@Nullable
 	public Module getModule()
