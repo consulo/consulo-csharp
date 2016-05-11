@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.RequiredWriteAction;
 import org.mustbe.consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
@@ -55,7 +56,7 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer)
 	{
 		DotNetType type = getType();
 		if(type == null)
@@ -90,6 +91,7 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 		return CSharpLambdaExpressionImplUtil.resolveTypeForParameter(lambdaExpression, i);
 	}
 
+	@RequiredWriteAction
 	@Override
 	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
 	{

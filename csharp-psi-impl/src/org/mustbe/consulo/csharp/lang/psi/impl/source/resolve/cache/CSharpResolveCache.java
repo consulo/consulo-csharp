@@ -22,7 +22,6 @@ import java.util.concurrent.ConcurrentMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -30,6 +29,7 @@ import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.Getter;
+import com.intellij.openapi.util.NotNullLazyKey;
 import com.intellij.openapi.util.RecursionGuard;
 import com.intellij.openapi.util.RecursionManager;
 import com.intellij.openapi.util.StaticGetter;
@@ -52,6 +52,8 @@ import com.intellij.util.messages.MessageBus;
  */
 public class CSharpResolveCache
 {
+	private static final NotNullLazyKey<CSharpResolveCache, Project> ourInstanceKey = ServiceManager.createLazyKey(CSharpResolveCache.class);
+
 	private static final Logger LOG = Logger.getInstance("#com.intellij.psi.impl.source.resolve.ResolveCache");
 	private final ConcurrentMap[] myMaps = new ConcurrentMap[2 * 2 * 2 * 2];
 	//boolean physical, boolean incompleteCode, boolean resolveFromParent, boolean isPoly
@@ -60,7 +62,7 @@ public class CSharpResolveCache
 	public static CSharpResolveCache getInstance(Project project)
 	{
 		ProgressIndicatorProvider.checkCanceled(); // We hope this method is being called often enough to cancel daemon processes smoothly
-		return ServiceManager.getService(project, CSharpResolveCache.class);
+		return ourInstanceKey.getValue(project);
 	}
 
 	public interface AbstractResolver<TRef extends PsiElement, TResult>
@@ -75,20 +77,6 @@ public class CSharpResolveCache
 		@NotNull
 		@RequiredReadAction
 		ResolveResult[] resolve(@NotNull T t, boolean incompleteCode, boolean resolveFromParent);
-	}
-
-	public static abstract class TypeRefResolver<TElement extends PsiElement> implements AbstractResolver<TElement, DotNetTypeRef>
-	{
-		@RequiredReadAction
-		@Override
-		@NotNull
-		public final DotNetTypeRef resolve(@NotNull TElement ref, boolean incompleteCode, boolean resolveFromParent)
-		{
-			return resolveTypeRef(ref, resolveFromParent);
-		}
-
-		@NotNull
-		public abstract DotNetTypeRef resolveTypeRef(@NotNull TElement element, boolean resolveFromParent);
 	}
 
 	public CSharpResolveCache(@NotNull MessageBus messageBus)
@@ -112,7 +100,7 @@ public class CSharpResolveCache
 		});
 	}
 
-	private static <K, V> ConcurrentWeakHashMap<K, V> createWeakMap()
+	public static <K, V> ConcurrentWeakHashMap<K, V> createWeakMap()
 	{
 		return new ConcurrentWeakHashMap<K, V>(100, 0.75f, Runtime.getRuntime().availableProcessors(), ContainerUtil.<K>canonicalStrategy());
 	}
@@ -227,21 +215,6 @@ public class CSharpResolveCache
 		return resolve(ref, resolver, needToPreventRecursion, incompleteCode, resolveFromParent, false, ref.isPhysical());
 	}
 
-	@NotNull
-	@RequiredReadAction
-	public <TElement extends PsiElement> DotNetTypeRef resolveTypeRef(@NotNull TElement ref,
-			@NotNull TypeRefResolver<TElement> resolver,
-			boolean resolveFromParent)
-	{
-		DotNetTypeRef resolve = resolve(ref, resolver, true, false, resolveFromParent, false, ref.isPhysical());
-		if(resolve == null)
-		{
-			// if is recursive call - return error
-			return DotNetTypeRef.ERROR_TYPE;
-		}
-		return resolve;
-	}
-
 	private <TRef extends PsiElement, TResult> ConcurrentMap<TRef, Getter<TResult>> getMap(boolean physical,
 			boolean incompleteCode,
 			boolean resolveFromParent,
@@ -251,7 +224,7 @@ public class CSharpResolveCache
 		return myMaps[(physical ? 0 : 1) * 8 + (incompleteCode ? 0 : 1) * 4 + (resolveFromParent ? 0 : 1) * 2 + (isPoly ? 0 : 1)];
 	}
 
-	private static class SoftGetter<T> extends SoftReference<T> implements Getter<T>
+	protected static class SoftGetter<T> extends SoftReference<T> implements Getter<T>
 	{
 		public SoftGetter(T referent)
 		{

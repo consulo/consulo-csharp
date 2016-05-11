@@ -17,7 +17,8 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
+import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpTypeRefCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyTypeRefWrapper;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
@@ -30,10 +31,11 @@ import com.intellij.lang.ASTNode;
  */
 public abstract class CSharpTypeElementImpl extends CSharpElementImpl implements DotNetType
 {
-	private static class OurResolver extends CSharpResolveCache.TypeRefResolver<CSharpTypeElementImpl>
+	private static class OurResolver extends CSharpTypeRefCache.TypeRefResolver<CSharpTypeElementImpl>
 	{
 		public static final OurResolver INSTANCE = new OurResolver();
 
+		@RequiredReadAction
 		@NotNull
 		@Override
 		public DotNetTypeRef resolveTypeRef(@NotNull CSharpTypeElementImpl element, boolean resolveFromParent)
@@ -57,10 +59,11 @@ public abstract class CSharpTypeElementImpl extends CSharpElementImpl implements
 	@NotNull
 	public abstract DotNetTypeRef toTypeRefImpl();
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public final DotNetTypeRef toTypeRef()
 	{
-		return CSharpResolveCache.getInstance(getProject()).resolveTypeRef(this, OurResolver.INSTANCE, true);
+		return CSharpTypeRefCache.getInstance(getProject()).resolveTypeRef(this, OurResolver.INSTANCE, true);
 	}
 }

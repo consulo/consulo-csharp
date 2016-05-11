@@ -81,7 +81,7 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer)
 	{
 		PsiElement parent = getParent();
 		if(parent instanceof CSharpForeachStatementImpl)
@@ -104,7 +104,7 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 		}
 		else
 		{
-			return super.toTypeRef(resolveFromInitializer);
+			return super.toTypeRefImpl(resolveFromInitializer);
 		}
 	}
 

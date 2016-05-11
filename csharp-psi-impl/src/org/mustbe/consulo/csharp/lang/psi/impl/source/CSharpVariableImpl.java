@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpTypeRefCache;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -34,6 +35,19 @@ import com.intellij.psi.PsiElement;
  */
 public abstract class CSharpVariableImpl extends CSharpMemberImpl implements DotNetVariable
 {
+	private static class Resolver extends CSharpTypeRefCache.TypeRefResolver<CSharpVariableImpl>
+	{
+		private static final Resolver INSTANCE = new Resolver();
+
+		@RequiredReadAction
+		@NotNull
+		@Override
+		public DotNetTypeRef resolveTypeRef(@NotNull CSharpVariableImpl element, boolean resolveFromParent)
+		{
+			return element.toTypeRefImpl(resolveFromParent);
+		}
+	}
+
 	public CSharpVariableImpl(@NotNull ASTNode node)
 	{
 		super(node);
@@ -51,6 +65,13 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
+	{
+		return CSharpTypeRefCache.getInstance(getProject()).resolveTypeRef(this, Resolver.INSTANCE, resolveFromInitializer);
+	}
+
+	@RequiredReadAction
+	@NotNull
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer)
 	{
 		DotNetType type = getType();
 		if(type == null)

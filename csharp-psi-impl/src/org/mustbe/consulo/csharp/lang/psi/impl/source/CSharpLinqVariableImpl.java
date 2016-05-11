@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLinqVariable;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpTypeRefCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -44,10 +45,11 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpLinqVariable
 {
-	private static class OurResolver extends CSharpResolveCache.TypeRefResolver<CSharpLinqVariableImpl>
+	private static class OurResolver extends CSharpTypeRefCache.TypeRefResolver<CSharpLinqVariableImpl>
 	{
 		public static final OurResolver INSTANCE = new OurResolver();
 
+		@RequiredReadAction
 		@NotNull
 		@Override
 		public DotNetTypeRef resolveTypeRef(@NotNull CSharpLinqVariableImpl element, boolean resolveFromParent)
@@ -92,7 +94,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolve)
 	{
-		return CSharpResolveCache.getInstance(getProject()).resolveTypeRef(this, OurResolver.INSTANCE, resolve);
+		return CSharpTypeRefCache.getInstance(getProject()).resolveTypeRef(this, OurResolver.INSTANCE, resolve);
 	}
 
 	@NotNull
