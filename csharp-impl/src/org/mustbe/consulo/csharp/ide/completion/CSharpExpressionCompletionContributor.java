@@ -18,10 +18,13 @@ package org.mustbe.consulo.csharp.ide.completion;
 
 import static com.intellij.patterns.StandardPatterns.psiElement;
 
+import gnu.trove.THashSet;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.Icon;
 
@@ -85,10 +88,12 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilBase;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.Function;
 import com.intellij.util.NotNullPairFunction;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.Processor;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -467,6 +472,91 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 							}
 						}, null);
 					}
+				}
+			}
+		});
+
+		extend(CompletionType.BASIC, psiElement(CSharpTokens.IDENTIFIER).withParent(CSharpReferenceExpression.class).withSuperParent(2, CSharpCallArgument.class), new CompletionProvider()
+		{
+			@RequiredReadAction
+			@Override
+			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			{
+				CSharpReferenceExpression referenceExpression = (CSharpReferenceExpression) parameters.getPosition().getParent();
+				if(referenceExpression.getQualifier() != null)
+				{
+					return;
+				}
+
+				CSharpCallArgument callArgument = (CSharpCallArgument) referenceExpression.getParent();
+				if(callArgument instanceof CSharpNamedCallArgument)
+				{
+					return;
+				}
+
+				CSharpCallArgumentListOwner argumentListOwner = PsiTreeUtil.getParentOfType(referenceExpression, CSharpCallArgumentListOwner.class);
+
+				assert argumentListOwner != null;
+				ResolveResult[] resolveResults = argumentListOwner.multiResolve(false);
+
+				boolean visitedNotNamed = false;
+				Set<String> alreadyDeclared = new THashSet<String>(5);
+				CSharpCallArgument[] callArguments = argumentListOwner.getCallArguments();
+				for(CSharpCallArgument c : callArguments)
+				{
+					if(c == callArgument)
+					{
+						continue;
+					}
+					if(c instanceof CSharpNamedCallArgument)
+					{
+						alreadyDeclared.add(((CSharpNamedCallArgument) c).getName());
+					}
+					else
+					{
+						visitedNotNamed = true;
+					}
+				}
+				int thisCallArgumentPosition = visitedNotNamed ? ArrayUtil.indexOf(callArguments, callArgument) : -1;
+
+				Set<String> wantToCompleteParameters = new THashSet<String>();
+				for(ResolveResult resolveResult : resolveResults)
+				{
+					PsiElement element = resolveResult.getElement();
+					if(element instanceof CSharpSimpleLikeMethodAsElement)
+					{
+						CSharpSimpleParameterInfo[] parameterInfos = ((CSharpSimpleLikeMethodAsElement) element).getParameterInfos();
+
+						if(thisCallArgumentPosition != -1)
+						{
+							if(parameterInfos.length > thisCallArgumentPosition)
+							{
+								for(int i = thisCallArgumentPosition; i < parameterInfos.length; i++)
+								{
+									CSharpSimpleParameterInfo parameterInfo = parameterInfos[i];
+									ContainerUtil.addIfNotNull(wantToCompleteParameters, parameterInfo.getName());
+								}
+							}
+						}
+						else
+						{
+							for(CSharpSimpleParameterInfo parameterInfo : parameterInfos)
+							{
+								ContainerUtil.addIfNotNull(wantToCompleteParameters, parameterInfo.getName());
+							}
+						}
+					}
+				}
+
+				wantToCompleteParameters.removeAll(alreadyDeclared);
+
+				for(String wantToCompleteParameter : wantToCompleteParameters)
+				{
+					LookupElementBuilder builder = LookupElementBuilder.create(wantToCompleteParameter + ": ");
+					builder = builder.withIcon(AllIcons.Nodes.Parameter);
+
+					CSharpCompletionSorting.force(builder, CSharpCompletionSorting.KindSorter.Type.parameterInCall);
+					result.consume(builder);
 				}
 			}
 		});

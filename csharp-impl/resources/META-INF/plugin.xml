@@ -172,7 +172,6 @@
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpStatementCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpExpressionCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpNoVariantsDelegator"/>
-		<completion.contributor language="C#" implementationClass="org.mustbe.consulo.csharp.ide.completion.CSharpCallArgumentCompletionContributor"/>
 
 		<completion.confidence language="C#" implementationClass="com.intellij.codeInsight.completion.SkipAutopopupInStrings"/>
 		<completion.confidence language="C#" implementationClass="com.intellij.codeInsight.completion.UnfocusedNameIdentifier"/>
