@@ -50,6 +50,7 @@ public class CSharpEventDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 		super(stub, CSharpStubElements.EVENT_DECLARATION);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetType getType()

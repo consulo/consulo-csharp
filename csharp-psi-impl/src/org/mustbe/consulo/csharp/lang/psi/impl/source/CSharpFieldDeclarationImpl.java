@@ -52,6 +52,7 @@ public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 		visitor.visitFieldDeclaration(this);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetType getType()
@@ -67,6 +68,7 @@ public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 		return CSharpStubVariableImplUtil.getModifierList(this);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getConstantKeywordElement()
@@ -81,6 +83,7 @@ public class CSharpFieldDeclarationImpl extends CSharpStubVariableImpl<CSharpVar
 		return findChildByClass(DotNetExpression.class);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean isConstant()
 	{

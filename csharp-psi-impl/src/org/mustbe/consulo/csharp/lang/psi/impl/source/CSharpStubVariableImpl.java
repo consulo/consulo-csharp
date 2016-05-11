@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
@@ -45,12 +46,14 @@ public abstract class CSharpStubVariableImpl<S extends CSharpVariableDeclStub<?>
 		super(stub, nodeType);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean isConstant()
 	{
 		return false;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getConstantKeywordElement()
@@ -58,6 +61,7 @@ public abstract class CSharpStubVariableImpl<S extends CSharpVariableDeclStub<?>
 		return getExplicitConstantKeywordElement();
 	}
 
+	@RequiredReadAction
 	@Override
 	@Nullable
 	public DotNetType getType()
@@ -72,17 +76,20 @@ public abstract class CSharpStubVariableImpl<S extends CSharpVariableDeclStub<?>
 	}
 
 	@Nullable
+	@RequiredReadAction
 	public DotNetModifierList getExplicitModifierList()
 	{
 		return getStubOrPsiChild(CSharpStubElements.MODIFIER_LIST);
 	}
 
 	@Nullable
+	@RequiredReadAction
 	public PsiElement getExplicitConstantKeywordElement()
 	{
 		return findChildByType(CSharpTokens.CONST_KEYWORD);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
