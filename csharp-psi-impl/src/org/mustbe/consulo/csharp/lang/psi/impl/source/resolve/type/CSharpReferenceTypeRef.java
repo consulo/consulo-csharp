@@ -128,7 +128,7 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 		}
 	}
 
-	private final CSharpReferenceExpression myReferenceExpression;
+	protected final CSharpReferenceExpression myReferenceExpression;
 
 	public CSharpReferenceTypeRef(CSharpReferenceExpression referenceExpression)
 	{

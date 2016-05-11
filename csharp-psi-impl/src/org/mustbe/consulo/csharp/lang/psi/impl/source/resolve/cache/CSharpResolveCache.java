@@ -37,8 +37,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.ResolveResult;
-import com.intellij.psi.impl.AnyPsiChangeListener;
-import com.intellij.psi.impl.PsiManagerImpl;
+import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.reference.SoftReference;
 import com.intellij.util.containers.ConcurrentWeakHashMap;
 import com.intellij.util.containers.ContainerUtil;
@@ -85,17 +84,13 @@ public class CSharpResolveCache
 		{
 			myMaps[i] = createWeakMap();
 		}
-		messageBus.connect().subscribe(PsiManagerImpl.ANY_PSI_CHANGE_TOPIC, new AnyPsiChangeListener()
+		messageBus.connect().subscribe(PsiModificationTracker.TOPIC, new PsiModificationTracker.Listener()
 		{
 			@Override
-			public void beforePsiChanged(boolean isPhysical)
+			public void modificationCountChanged()
 			{
-				clearCache(isPhysical);
-			}
-
-			@Override
-			public void afterPsiChanged(boolean isPhysical)
-			{
+				clearCache(true);
+				clearCache(false);
 			}
 		});
 	}

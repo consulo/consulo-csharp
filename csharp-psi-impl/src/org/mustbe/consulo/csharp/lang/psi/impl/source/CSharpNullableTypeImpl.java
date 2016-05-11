@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNullableType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -43,6 +44,7 @@ public class CSharpNullableTypeImpl extends CSharpTypeElementImpl implements CSh
 		visitor.visitNullableType(this);
 	}
 
+	@RequiredReadAction
 	@Override
 	@NotNull
 	public DotNetTypeRef toTypeRefImpl()
@@ -52,9 +54,10 @@ public class CSharpNullableTypeImpl extends CSharpTypeElementImpl implements CSh
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
-		return CSharpNullableTypeUtil.box(innerType.toTypeRef());
+		return CSharpNullableTypeUtil.box(this, innerType.toTypeRef());
 	}
 
+	@RequiredReadAction
 	@Override
 	@Nullable
 	public DotNetType getInnerType()
@@ -62,6 +65,7 @@ public class CSharpNullableTypeImpl extends CSharpTypeElementImpl implements CSh
 		return findChildByClass(DotNetType.class);
 	}
 
+	@RequiredReadAction
 	@Override
 	@NotNull
 	public PsiElement getQuestElement()

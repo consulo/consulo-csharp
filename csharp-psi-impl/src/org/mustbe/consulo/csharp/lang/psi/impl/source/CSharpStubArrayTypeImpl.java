@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
@@ -32,7 +33,7 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpStubArrayTypeImpl extends CSharpStubElementImpl<CSharpWithIntValueStub<CSharpArrayType>> implements CSharpArrayType
+public class CSharpStubArrayTypeImpl extends CSharpStubTypeElementImpl<CSharpWithIntValueStub<CSharpArrayType>> implements CSharpArrayType
 {
 	public CSharpStubArrayTypeImpl(@NotNull ASTNode node)
 	{
@@ -45,15 +46,17 @@ public class CSharpStubArrayTypeImpl extends CSharpStubElementImpl<CSharpWithInt
 		super(stub, nodeType);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef()
+	public DotNetTypeRef toTypeRefImpl()
 	{
 		DotNetType innerType = getInnerType();
 
 		return new CSharpLazyArrayTypeRef(this, innerType.toTypeRef(), getDimensions());
 	}
 
+	@RequiredReadAction
 	@Override
 	public int getDimensions()
 	{
@@ -71,6 +74,7 @@ public class CSharpStubArrayTypeImpl extends CSharpStubElementImpl<CSharpWithInt
 		visitor.visitArrayType(this);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetType getInnerType()

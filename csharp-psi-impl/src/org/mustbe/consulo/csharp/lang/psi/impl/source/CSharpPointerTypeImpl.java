@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpPointerTypeRef;
@@ -31,7 +32,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 05.12.14
  */
-public class CSharpPointerTypeImpl extends CSharpElementImpl implements DotNetPointerType
+public class CSharpPointerTypeImpl extends CSharpTypeElementImpl implements DotNetPointerType
 {
 	public CSharpPointerTypeImpl(@NotNull ASTNode node)
 	{
@@ -44,9 +45,10 @@ public class CSharpPointerTypeImpl extends CSharpElementImpl implements DotNetPo
 		visitor.visitPointerType(this);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef()
+	public DotNetTypeRef toTypeRefImpl()
 	{
 		DotNetType innerType = getInnerType();
 		if(innerType == null)

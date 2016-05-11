@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 must-be.org
+ * Copyright 2013-2016 must-be.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,24 +19,20 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy;
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpReferenceTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
- * @since 04.01.14.
+ * @since 5/11/2016
  */
-public class CSharpLazyGenericWrapperTypeRef extends CSharpGenericWrapperTypeRef
+public class CSharpLazyReferenceTypRef extends CSharpReferenceTypeRef
 {
-	@NotNull
-	private final PsiElement myScope;
-
-	public CSharpLazyGenericWrapperTypeRef(@NotNull PsiElement scope, @NotNull DotNetTypeRef innerTypeRef, @NotNull DotNetTypeRef... rArguments)
+	public CSharpLazyReferenceTypRef(CSharpReferenceExpression referenceExpression)
 	{
-		super(innerTypeRef, rArguments);
-		myScope = scope;
+		super(referenceExpression);
 	}
 
 	@RequiredReadAction
@@ -50,8 +46,8 @@ public class CSharpLazyGenericWrapperTypeRef extends CSharpGenericWrapperTypeRef
 	@NotNull
 	@LazyInstance
 	@RequiredReadAction
-	private DotNetTypeResolveResult resolveImpl()
+	public DotNetTypeResolveResult resolveImpl()
 	{
-		return CSharpLazyGenericWrapperTypeRef.super.resolve(myScope);
+		return CSharpLazyReferenceTypRef.super.resolve(myReferenceExpression);
 	}
 }

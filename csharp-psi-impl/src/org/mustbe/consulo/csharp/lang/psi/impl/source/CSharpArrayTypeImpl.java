@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
@@ -29,22 +30,24 @@ import com.intellij.lang.ASTNode;
  * @author VISTALL
  * @since 05.12.14
  */
-public class CSharpArrayTypeImpl extends CSharpElementImpl implements CSharpArrayType
+public class CSharpArrayTypeImpl extends CSharpTypeElementImpl implements CSharpArrayType
 {
 	public CSharpArrayTypeImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef()
+	public DotNetTypeRef toTypeRefImpl()
 	{
 		DotNetType innerType = getInnerType();
 
 		return new CSharpLazyArrayTypeRef(this, innerType.toTypeRef(), getDimensions());
 	}
 
+	@RequiredReadAction
 	@Override
 	public int getDimensions()
 	{
@@ -57,6 +60,7 @@ public class CSharpArrayTypeImpl extends CSharpElementImpl implements CSharpArra
 		visitor.visitArrayType(this);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetType getInnerType()

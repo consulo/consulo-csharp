@@ -35,7 +35,7 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 13.12.13.
  */
-public class CSharpStubPointerTypeImpl extends CSharpStubElementImpl<EmptyStub<DotNetPointerType>> implements DotNetPointerType
+public class CSharpStubPointerTypeImpl extends CSharpStubTypeElementImpl<EmptyStub<DotNetPointerType>> implements DotNetPointerType
 {
 	public CSharpStubPointerTypeImpl(@NotNull ASTNode node)
 	{
@@ -57,7 +57,7 @@ public class CSharpStubPointerTypeImpl extends CSharpStubElementImpl<EmptyStub<D
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef()
+	public DotNetTypeRef toTypeRefImpl()
 	{
 		DotNetType innerType = getInnerType();
 		if(innerType == null)

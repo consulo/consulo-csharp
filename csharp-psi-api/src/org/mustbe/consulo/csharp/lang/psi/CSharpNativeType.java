@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.psi.DotNetNativeType;
 import com.intellij.psi.tree.IElementType;
 
@@ -27,5 +28,6 @@ import com.intellij.psi.tree.IElementType;
 public interface CSharpNativeType extends DotNetNativeType
 {
 	@NotNull
+	@RequiredReadAction
 	IElementType getTypeElementType();
 }

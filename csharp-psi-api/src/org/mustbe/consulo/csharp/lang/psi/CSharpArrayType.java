@@ -16,6 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.psi.DotNetArrayType;
 
 /**
@@ -24,5 +25,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetArrayType;
  */
 public interface CSharpArrayType extends DotNetArrayType
 {
+	@RequiredReadAction
 	int getDimensions();
 }

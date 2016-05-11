@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNativeType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
@@ -50,6 +51,7 @@ public class CSharpStubNativeTypeImpl extends CSharpStubTypeElementImpl<CSharpWi
 		visitor.visitNativeType(this);
 	}
 
+	@RequiredReadAction
 	@Override
 	@NotNull
 	public IElementType getTypeElementType()
@@ -62,6 +64,7 @@ public class CSharpStubNativeTypeImpl extends CSharpStubTypeElementImpl<CSharpWi
 		return getTypeElement().getNode().getElementType();
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRefImpl()

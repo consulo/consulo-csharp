@@ -72,16 +72,17 @@ public class CSharpEnumConstantDeclarationImpl extends CSharpStubVariableImpl<CS
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer)
 	{
-		DotNetTypeDeclaration parentOfType = PsiTreeUtil.getParentOfType(this, DotNetTypeDeclaration.class);
-		if(parentOfType == null)
+		DotNetTypeDeclaration declaration = PsiTreeUtil.getParentOfType(this, DotNetTypeDeclaration.class);
+		if(declaration == null)
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
-		return new CSharpTypeRefByTypeDeclaration(parentOfType);
+		return new CSharpTypeRefByTypeDeclaration(declaration);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetExpression getInitializer()

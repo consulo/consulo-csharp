@@ -17,10 +17,11 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUserType;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpReferenceTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyReferenceTypRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -29,7 +30,7 @@ import com.intellij.lang.ASTNode;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpUserTypeImpl extends CSharpElementImpl implements CSharpUserType
+public class CSharpUserTypeImpl extends CSharpTypeElementImpl implements CSharpUserType
 {
 	public CSharpUserTypeImpl(@NotNull ASTNode node)
 	{
@@ -41,11 +42,12 @@ public class CSharpUserTypeImpl extends CSharpElementImpl implements CSharpUserT
 		visitor.visitUserType(this);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef()
+	public DotNetTypeRef toTypeRefImpl()
 	{
-		return new CSharpReferenceTypeRef(getReferenceExpression());
+		return new CSharpLazyReferenceTypRef(getReferenceExpression());
 	}
 
 	@NotNull

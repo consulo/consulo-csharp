@@ -64,9 +64,10 @@ public class CSharpStubNullableTypeImpl extends CSharpStubTypeElementImpl<EmptyS
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
-		return CSharpNullableTypeUtil.box(innerType.toTypeRef());
+		return CSharpNullableTypeUtil.box(this, innerType.toTypeRef());
 	}
 
+	@RequiredReadAction
 	@Override
 	@Nullable
 	public DotNetType getInnerType()
@@ -74,6 +75,7 @@ public class CSharpStubNullableTypeImpl extends CSharpStubTypeElementImpl<EmptyS
 		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
 	}
 
+	@RequiredReadAction
 	@Override
 	@NotNull
 	public PsiElement getQuestElement()

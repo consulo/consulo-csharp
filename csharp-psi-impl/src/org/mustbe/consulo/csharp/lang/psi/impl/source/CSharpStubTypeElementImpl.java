@@ -3,8 +3,6 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpTypeRefCache;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyTypeRefWrapper;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -26,14 +24,7 @@ public abstract class CSharpStubTypeElementImpl<S extends StubElement> extends C
 		@Override
 		public DotNetTypeRef resolveTypeRef(@NotNull CSharpStubTypeElementImpl<?> element, boolean resolveFromParent)
 		{
-			DotNetTypeRef delegate = element.toTypeRefImpl();
-			if(delegate == DotNetTypeRef.AUTO_TYPE || delegate == DotNetTypeRef.UNKNOWN_TYPE || delegate == DotNetTypeRef.ERROR_TYPE || delegate ==
-					CSharpStaticTypeRef.EXPLICIT || delegate == CSharpStaticTypeRef.IMPLICIT || delegate == CSharpStaticTypeRef.DYNAMIC || delegate
-					== CSharpStaticTypeRef.__ARGLIST_TYPE)
-			{
-				return delegate;
-			}
-			return new CSharpLazyTypeRefWrapper(element, delegate);
+			return element.toTypeRefImpl();
 		}
 	}
 
@@ -48,6 +39,7 @@ public abstract class CSharpStubTypeElementImpl<S extends StubElement> extends C
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public abstract DotNetTypeRef toTypeRefImpl();
 
 	@RequiredReadAction

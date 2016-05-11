@@ -17,11 +17,12 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUserType;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpReferenceTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyReferenceTypRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
@@ -33,7 +34,7 @@ import com.intellij.psi.stubs.IStubElementType;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpStubUserTypeImpl extends CSharpStubElementImpl<CSharpWithStringValueStub<CSharpUserType>> implements CSharpUserType
+public class CSharpStubUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWithStringValueStub<CSharpUserType>> implements CSharpUserType
 {
 	public CSharpStubUserTypeImpl(@NotNull ASTNode node)
 	{
@@ -52,11 +53,12 @@ public class CSharpStubUserTypeImpl extends CSharpStubElementImpl<CSharpWithStri
 		visitor.visitUserType(this);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef()
+	public DotNetTypeRef toTypeRefImpl()
 	{
-		return new CSharpReferenceTypeRef(getReferenceExpression());
+		return new CSharpLazyReferenceTypRef(getReferenceExpression());
 	}
 
 	@NotNull

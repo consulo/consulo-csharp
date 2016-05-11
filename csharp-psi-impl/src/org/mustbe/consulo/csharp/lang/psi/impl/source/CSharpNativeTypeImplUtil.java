@@ -5,11 +5,12 @@ import gnu.trove.THashMap;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNativeType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.tree.IElementType;
@@ -43,6 +44,7 @@ public class CSharpNativeTypeImplUtil
 	};
 
 	@NotNull
+	@RequiredReadAction
 	public static DotNetTypeRef toTypeRef(@NotNull CSharpNativeType nativeType)
 	{
 		IElementType elementType = nativeType.getTypeElementType();
@@ -67,8 +69,8 @@ public class CSharpNativeTypeImplUtil
 			return CSharpStaticTypeRef.__ARGLIST_TYPE;
 		}
 
-		String q = ourElementToQTypes.get(elementType);
-		assert q != null : elementType.toString();
-		return new CSharpTypeRefByQName(q);
+		String qualifiedName = ourElementToQTypes.get(elementType);
+		assert qualifiedName != null : elementType.toString();
+		return new CSharpLazyTypeRefByQName(nativeType, qualifiedName);
 	}
 }

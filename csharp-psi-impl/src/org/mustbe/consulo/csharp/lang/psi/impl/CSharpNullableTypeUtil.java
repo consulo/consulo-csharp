@@ -8,6 +8,8 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyGenericWrapperTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -45,6 +47,7 @@ public class CSharpNullableTypeUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static DotNetTypeRef boxIfNeed(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
 		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
@@ -56,9 +59,9 @@ public class CSharpNullableTypeUtil
 	}
 
 	@NotNull
-	public static DotNetTypeRef box(@NotNull DotNetTypeRef typeRef)
+	public static DotNetTypeRef box(@NotNull PsiElement scope, @NotNull DotNetTypeRef typeRef)
 	{
-		return new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(DotNetTypes.System.Nullable$1), typeRef);
+		return new CSharpLazyGenericWrapperTypeRef(scope, new CSharpLazyTypeRefByQName(scope, DotNetTypes.System.Nullable$1), typeRef);
 	}
 
 	@NotNull

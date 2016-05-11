@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import com.intellij.psi.PsiElement;
 
@@ -28,8 +29,10 @@ import com.intellij.psi.PsiElement;
 public interface CSharpNullableType extends DotNetType
 {
 	@Nullable
+	@RequiredReadAction
 	DotNetType getInnerType();
 
 	@NotNull
+	@RequiredReadAction
 	PsiElement getQuestElement();
 }
