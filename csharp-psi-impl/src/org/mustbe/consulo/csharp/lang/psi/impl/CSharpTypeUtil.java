@@ -67,7 +67,7 @@ public class CSharpTypeUtil
 		private final boolean mySuccess;
 		private final boolean myConversion;
 		private final CSharpConversionMethodDeclaration myConversionMethod;
-		private final String myExceptionText = ExceptionUtil.getThrowableText(new Exception());
+		//private final String myExceptionText = ExceptionUtil.getThrowableText(new Exception());
 
 		public InheritResult(boolean success, boolean conversion)
 		{
