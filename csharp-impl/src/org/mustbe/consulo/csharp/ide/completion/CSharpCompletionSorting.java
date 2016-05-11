@@ -63,6 +63,7 @@ public class CSharpCompletionSorting
 			lambda,
 			delegate,
 			localVariableOrParameter,
+			parameterInCall,
 			keyword,
 			hiddenKeywords,
 			preprocessorKeywords,
@@ -164,7 +165,6 @@ public class CSharpCompletionSorting
 	{
 		CompletionSorter sorter = CompletionSorter.defaultSorter(completionParameters, result.getPrefixMatcher());
 		List<LookupElementWeigher> afterPrefix = new ArrayList<LookupElementWeigher>();
-		afterPrefix.add(new KindSorter());
 		afterPrefix.add(new CSharpByGenericParameterWeigher());
 
 		List<ExpectedTypeInfo> expectedTypeInfos = CSharpExpressionCompletionContributor.getExpectedTypeInfosForExpression(completionParameters, null);
@@ -172,6 +172,7 @@ public class CSharpCompletionSorting
 		{
 			afterPrefix.add(new CSharpInheritProximityWeigher(completionParameters.getPosition(), expectedTypeInfos));
 		}
+		afterPrefix.add(new KindSorter());
 		ContainerUtil.addIfNotNull(afterPrefix, recursiveSorter(completionParameters, result));
 		afterPrefix.add(new CSharpObsoleteWeigher());
 

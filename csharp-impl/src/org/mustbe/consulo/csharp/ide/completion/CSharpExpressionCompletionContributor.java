@@ -489,11 +489,37 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 					kind = CSharpReferenceExpression.ResolveToKind.TYPE_LIKE;
 				}
 
+				final CSharpTypeDeclaration contextType = getContextType(expression);
+
 				final List<ExpectedTypeInfo> expectedTypeRefs = getExpectedTypeInfosForExpression(parameters, context);
+				for(ExpectedTypeInfo expectedTypeRef : expectedTypeRefs)
+				{
+					PsiElement element = expectedTypeRef.getTypeRef().resolve(expression).getElement();
+					if(element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).isEnum() && !element.isEquivalentTo(contextType))
+					{
+						DotNetNamedElement[] members = ((CSharpTypeDeclaration) element).getMembers();
+						for(DotNetNamedElement member : members)
+						{
+							if(member instanceof CSharpEnumConstantDeclaration)
+							{
+								String name = member.getName();
+								if(name == null)
+								{
+									continue;
+								}
+								LookupElementBuilder builder = LookupElementBuilder.create(member, ((CSharpTypeDeclaration) element).getName() + "." + name);
+								builder = builder.withIcon(IconDescriptorUpdaters.getIcon(member, 0));
+								builder = builder.withTypeText(((CSharpTypeDeclaration) element).getPresentableParentQName());
+								builder = builder.withLookupString(name);
+								CSharpCompletionSorting.force(builder, CSharpCompletionSorting.KindSorter.Type.constants);
+								result.addElement(builder);
+							}
+						}
+					}
+				}
 
 				final CSharpNewExpression newExpression = getNewExpression(expression);
 
-				final CSharpTypeDeclaration contextType = getContextType(expression);
 				CSharpCallArgumentListOwner callArgumentListOwner = CSharpReferenceExpressionImplUtil.findCallArgumentListOwner(kind, expression);
 				CSharpReferenceExpressionImplUtil.collectResults(new CSharpResolveOptions(kind, null, expression, callArgumentListOwner, true, true), new Processor<ResolveResult>()
 				{
