@@ -893,9 +893,10 @@ public class StatementParsing extends SharedParsingHelpers
 
 		parseExpressionInParenth(wrapper, set);
 
-		StatementParsing.parse(wrapper, set);
-
-		expect(wrapper, SEMICOLON, null);
+		if(StatementParsing.parse(wrapper, set) == null)
+		{
+			wrapper.error("Statement expected");
+		}
 
 		marker.done(doneElement);
 	}
