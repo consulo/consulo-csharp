@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.codeInspection.unnecessarySemicolon;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpEmptyStatementImpl;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalQuickFixOnPsiElement;
@@ -72,7 +73,11 @@ public class UnnecessarySemicolonInspection extends LocalInspectionTool
 			@RequiredReadAction
 			public void visitEmptyStatement(CSharpEmptyStatementImpl statement)
 			{
-				holder.registerProblem(statement, null, "Unnecessary Semicolon", new RemoveSemicolonFix(statement));
+				PsiElement parent = statement.getParent();
+				if(parent instanceof CSharpBlockStatementImpl)
+				{
+					holder.registerProblem(statement, null, "Unnecessary Semicolon", new RemoveSemicolonFix(statement));
+				}
 			}
 		};
 	}
