@@ -17,7 +17,10 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.lang.ASTNode;
 
@@ -30,6 +33,13 @@ public class CSharpSwitchStatementImpl extends CSharpElementImpl implements DotN
 	public CSharpSwitchStatementImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	@Nullable
+	@RequiredReadAction
+	public DotNetExpression getExpression()
+	{
+		return findChildByClass(DotNetExpression.class);
 	}
 
 	@Override

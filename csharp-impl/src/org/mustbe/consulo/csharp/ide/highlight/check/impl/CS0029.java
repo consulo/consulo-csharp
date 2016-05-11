@@ -230,6 +230,26 @@ public class CS0029 extends CompilerCheck<PsiElement>
 			}
 			return Trinity.create(new CSharpTypeRefByQName(DotNetTypes.System.TypedReference), expression.toTypeRef(true), expression);
 		}
+		else if(element instanceof CSharpSwitchLabelStatementImpl)
+		{
+			DotNetExpression expression = ((CSharpSwitchLabelStatementImpl) element).getExpression();
+			if(expression == null)
+			{
+				return null;
+			}
+
+			PsiElement parent = element.getParent().getParent();
+			if(!(parent instanceof CSharpSwitchStatementImpl))
+			{
+				return null;
+			}
+			DotNetExpression switchExpression = ((CSharpSwitchStatementImpl) parent).getExpression();
+			if(switchExpression == null)
+			{
+				return null;
+			}
+			return Trinity.create(switchExpression.toTypeRef(true), expression.toTypeRef(true), expression);
+		}
 		else if(element instanceof CSharpRefValueExpressionImpl)
 		{
 			DotNetExpression expression = ((CSharpRefValueExpressionImpl) element).getExpression();
