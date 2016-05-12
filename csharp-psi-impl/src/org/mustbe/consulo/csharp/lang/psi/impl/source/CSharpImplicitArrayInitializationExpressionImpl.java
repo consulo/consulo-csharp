@@ -89,6 +89,7 @@ public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpExpre
 		return findChildrenByClass(DotNetExpression.class);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)

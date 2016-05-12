@@ -18,13 +18,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.dotnet.lang.psi.impl.DotNetTypeRefCacheUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.Key;
-import com.intellij.psi.util.CachedValue;
-import com.intellij.util.NotNullFunction;
+import consulo.csharp.lang.psi.impl.source.CSharpTypeRefCacher;
 
 /**
  * @author VISTALL
@@ -32,29 +29,16 @@ import com.intellij.util.NotNullFunction;
  */
 public abstract class CSharpExpressionImpl extends CSharpElementImpl implements DotNetExpression
 {
-	private static Key<CachedValue<DotNetTypeRef>> ourTrueTypeRefKey = Key.create("CSharpExpressionImpl.ourTrueTypeRefKey");
-	private static Key<CachedValue<DotNetTypeRef>> ourFalseTypeRefKey = Key.create("CSharpExpressionImpl.ourFalseTypeRefKey");
-
-	private static class Resolver implements NotNullFunction<CSharpExpressionImpl, DotNetTypeRef>
+	private static final CSharpTypeRefCacher<CSharpExpressionImpl> ourCacheSystem = new CSharpTypeRefCacher<CSharpExpressionImpl>(true)
 	{
-		private boolean myValue;
-
-		private Resolver(boolean value)
-		{
-			myValue = value;
-		}
-
+		@RequiredReadAction
 		@NotNull
 		@Override
-		@RequiredReadAction
-		public DotNetTypeRef fun(CSharpExpressionImpl expression)
+		protected DotNetTypeRef toTypeRefImpl(CSharpExpressionImpl element, boolean resolveFromParentOrInitializer)
 		{
-			return expression.toTypeRefImpl(myValue);
+			return element.toTypeRefImpl(resolveFromParentOrInitializer);
 		}
-	}
-
-	private static final Resolver ourTrueResolver = new Resolver(true);
-	private static final Resolver ourFalseResolver = new Resolver(false);
+	};
 
 	public CSharpExpressionImpl(@NotNull ASTNode node)
 	{
@@ -70,8 +54,6 @@ public abstract class CSharpExpressionImpl extends CSharpElementImpl implements 
 	@RequiredReadAction
 	public final DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
-		Key<CachedValue<DotNetTypeRef>> key = resolveFromParent ? ourTrueTypeRefKey : ourFalseTypeRefKey;
-		NotNullFunction<CSharpExpressionImpl, DotNetTypeRef> resolver = resolveFromParent ? ourTrueResolver : ourFalseResolver;
-		return DotNetTypeRefCacheUtil.localCacheTypeRef(key, this, resolver);
+		return ourCacheSystem.toTypeRef(this, resolveFromParent);
 	}
 }

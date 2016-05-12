@@ -19,7 +19,6 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpTypeRefCache;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -28,6 +27,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.NullableComputable;
 import com.intellij.openapi.util.RecursionManager;
 import com.intellij.psi.PsiElement;
+import consulo.csharp.lang.psi.impl.source.CSharpTypeRefCacher;
 
 /**
  * @author VISTALL
@@ -35,18 +35,16 @@ import com.intellij.psi.PsiElement;
  */
 public abstract class CSharpVariableImpl extends CSharpMemberImpl implements DotNetVariable
 {
-	private static class Resolver extends CSharpTypeRefCache.TypeRefResolver<CSharpVariableImpl>
+	private static final CSharpTypeRefCacher<CSharpVariableImpl> ourCacheSystem = new CSharpTypeRefCacher<CSharpVariableImpl>(true)
 	{
-		private static final Resolver INSTANCE = new Resolver();
-
 		@RequiredReadAction
 		@NotNull
 		@Override
-		public DotNetTypeRef resolveTypeRef(@NotNull CSharpVariableImpl element, boolean resolveFromParent)
+		protected DotNetTypeRef toTypeRefImpl(CSharpVariableImpl element, boolean resolveFromParentOrInitializer)
 		{
-			return element.toTypeRefImpl(resolveFromParent);
+			return element.toTypeRefImpl(resolveFromParentOrInitializer);
 		}
-	}
+	};
 
 	public CSharpVariableImpl(@NotNull ASTNode node)
 	{
@@ -66,7 +64,7 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
-		return CSharpTypeRefCache.getInstance(getProject()).resolveTypeRef(this, Resolver.INSTANCE, resolveFromInitializer);
+		return ourCacheSystem.toTypeRef(this, resolveFromInitializer);
 	}
 
 	@RequiredReadAction

@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpTypeRefCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
@@ -30,6 +29,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
+import consulo.csharp.lang.psi.impl.source.CSharpTypeRefCacher;
 
 /**
  * @author VISTALL
@@ -37,18 +37,16 @@ import com.intellij.psi.stubs.IStubElementType;
  */
 public abstract class CSharpStubVariableImpl<S extends CSharpVariableDeclStub<?>> extends CSharpStubMemberImpl<S> implements DotNetVariable
 {
-	private static class Resolver extends CSharpTypeRefCache.TypeRefResolver<CSharpStubVariableImpl<?>>
+	private static final CSharpTypeRefCacher<CSharpStubVariableImpl> ourCacheSystem = new CSharpTypeRefCacher<CSharpStubVariableImpl>(false)
 	{
-		private static final Resolver INSTANCE = new Resolver();
-
 		@RequiredReadAction
 		@NotNull
 		@Override
-		public DotNetTypeRef resolveTypeRef(@NotNull CSharpStubVariableImpl<?> ref, boolean resolveFromParent)
+		protected DotNetTypeRef toTypeRefImpl(CSharpStubVariableImpl element, boolean resolveFromParentOrInitializer)
 		{
-			return ref.toTypeRefImpl(resolveFromParent);
+			return element.toTypeRefImpl(resolveFromParentOrInitializer);
 		}
-	}
+	};
 
 	public CSharpStubVariableImpl(@NotNull ASTNode node)
 	{
@@ -108,7 +106,7 @@ public abstract class CSharpStubVariableImpl<S extends CSharpVariableDeclStub<?>
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
-		return CSharpTypeRefCache.getInstance(getProject()).resolveTypeRef(this, Resolver.INSTANCE, resolveFromInitializer);
+		return ourCacheSystem.toTypeRef(this, resolveFromInitializer);
 	}
 
 	@RequiredReadAction
