@@ -234,7 +234,7 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 					builder.append(", ");
 				}
 				DotNetTypeRef argument = argumentTypeRefs[i];
-				builder.append(argument.getPresentableText());
+				builder.append(argument.toString());
 			}
 			builder.append(">");
 		}

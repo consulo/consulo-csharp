@@ -212,14 +212,8 @@ public class CSharpTypeRefPresentationUtil
 			}
 			else
 			{
-				if(BitUtil.isSet(flags, QUALIFIED_NAME))
-				{
-					builder.append(typeRef.getQualifiedText());
-				}
-				else
-				{
-					builder.append(typeRef.getPresentableText());
-				}
+				// fallback
+				builder.append(typeRef.toString());
 			}
 
 			if(!BitUtil.isSet(flags, NO_GENERIC_ARGUMENTS))

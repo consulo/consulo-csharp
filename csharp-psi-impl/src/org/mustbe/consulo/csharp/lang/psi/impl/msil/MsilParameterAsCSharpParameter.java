@@ -25,8 +25,10 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeArgumentNode;
 import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeHolder;
@@ -75,8 +77,7 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 		{
 			PsiElement msilElement = parent.getOriginalElement();
 			// we can use mirror due ExtensionAttribute is in ban list
-			if(DotNetAttributeUtil.hasAttribute(msilElement, DotNetTypes.System.Runtime.CompilerServices
-					.ExtensionAttribute))
+			if(DotNetAttributeUtil.hasAttribute(msilElement, DotNetTypes.System.Runtime.CompilerServices.ExtensionAttribute))
 			{
 				return new CSharpModifier[]{CSharpModifier.THIS};
 			}
@@ -139,6 +140,7 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 			}
 
 			@NotNull
+			@RequiredReadAction
 			private List<ExternalAttributeNode> getAttributesFromExternal(ExternalAttributeHolder holder, String vmQName)
 			{
 				ExternalAttributeWithChildrenNode classNode = holder.findClassNode(vmQName);
@@ -174,7 +176,7 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 					{
 						DotNetTypeRef parameterTypeRef = parameterTypeRefs[i];
 						ExternalAttributeSimpleNode externalAttributeSimpleNode = children.get(i);
-						if(!Comparing.equal(parameterTypeRef.getQualifiedText(), externalAttributeSimpleNode.getName()))
+						if(!CSharpTypeUtil.isTypeEqual(parameterTypeRef, new CSharpTypeRefByQName(myMethodDeclaration, externalAttributeSimpleNode.getName()), myMethodDeclaration))
 						{
 							continue topLoop;
 						}

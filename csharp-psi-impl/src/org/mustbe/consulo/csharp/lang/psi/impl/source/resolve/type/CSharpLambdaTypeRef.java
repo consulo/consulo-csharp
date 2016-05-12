@@ -182,7 +182,7 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 			}
 			else
 			{
-				builder.append(parameterType.getQualifiedText());
+				builder.append(parameterType.toString());
 			}
 		}
 		builder.append(")");
@@ -192,7 +192,7 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 		}
 		else
 		{
-			builder.append(" => ").append(myReturnType.getQualifiedText());
+			builder.append(" => ").append(myReturnType.toString());
 		}
 		builder.append("}");
 		return builder.toString();
