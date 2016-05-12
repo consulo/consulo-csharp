@@ -2,6 +2,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
@@ -15,7 +16,7 @@ import com.intellij.psi.tree.TokenSet;
  * @author VISTALL
  * @since 11.02.14
  */
-public class CSharpOutRefWrapExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public class CSharpOutRefWrapExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
 	private static final TokenSet ourStartTypes = TokenSet.create(CSharpTokens.OUT_KEYWORD, CSharpTokens.REF_KEYWORD);
 
@@ -30,9 +31,10 @@ public class CSharpOutRefWrapExpressionImpl extends CSharpElementImpl implements
 		visitor.visitOurRefWrapExpression(this);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
 		DotNetExpression innerExpression = getInnerExpression();
 		if(innerExpression == null)

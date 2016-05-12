@@ -30,7 +30,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBinaryExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -149,16 +148,16 @@ public class CS0019 extends CompilerCheck<CSharpBinaryExpressionImpl>
 			DotNetTypeRef leftType = leftExpression.toTypeRef(true);
 			DotNetTypeRef rightType = rightExpression.toTypeRef(true);
 
-			boolean applicable = CSharpTypeUtil.isInheritable(leftType, rightType, element, CSharpStaticTypeRef.IMPLICIT).isSuccess() || CSharpTypeUtil.isInheritable(rightType, leftType, element,
-					CSharpStaticTypeRef.IMPLICIT).isSuccess();
+			boolean applicable = CSharpTypeUtil.isInheritableWithImplicit(leftType, rightType, element) || CSharpTypeUtil.isInheritableWithImplicit(rightType, leftType, element);
+
 			if(!applicable)
 			{
-				Pair<String, DotNetTypeDeclaration> leftPair = CSharpTypeUtil.resolveTypeElement(leftType, element);
+				Pair<String, DotNetTypeDeclaration> leftPair = CSharpTypeUtil.resolveTypeElement(leftType);
 				if(leftPair != null)
 				{
 					Collection<String> allowedSetLeft = ourAllowedMap.get(leftPair.getFirst());
 
-					Pair<String, DotNetTypeDeclaration> rightPair = CSharpTypeUtil.resolveTypeElement(rightType, element);
+					Pair<String, DotNetTypeDeclaration> rightPair = CSharpTypeUtil.resolveTypeElement(rightType);
 					if(rightPair != null && allowedSetLeft.contains(rightPair.getFirst()))
 					{
 						return null;

@@ -117,7 +117,7 @@ public class ConstantExpressionEvaluator extends CSharpElementVisitor
 			return null;
 		}
 		DotNetTypeRef typeRef = element.toTypeRef(false);
-		PsiElement psiElement = typeRef.resolve(element).getElement();
+		PsiElement psiElement = typeRef.resolve().getElement();
 		if(!(psiElement instanceof DotNetTypeDeclaration))
 		{
 			return value;

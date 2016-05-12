@@ -25,8 +25,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLinqVariable;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpTypeRefCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -38,6 +36,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
+import consulo.csharp.lang.psi.impl.source.CSharpTypeRefCacher;
 
 /**
  * @author VISTALL
@@ -45,23 +44,21 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpLinqVariable
 {
-	private static class OurResolver extends CSharpTypeRefCache.TypeRefResolver<CSharpLinqVariableImpl>
+	private static final CSharpTypeRefCacher<CSharpLinqVariableImpl> ourCacheSystem = new CSharpTypeRefCacher<CSharpLinqVariableImpl>(true)
 	{
-		public static final OurResolver INSTANCE = new OurResolver();
-
 		@RequiredReadAction
 		@NotNull
 		@Override
-		public DotNetTypeRef resolveTypeRef(@NotNull CSharpLinqVariableImpl element, boolean resolveFromParent)
+		protected DotNetTypeRef toTypeRefImpl(CSharpLinqVariableImpl element, boolean resolveFromParentOrInitializer)
 		{
 			DotNetType type = element.getType();
 			if(type != null)
 			{
 				return type.toTypeRef();
 			}
-			return resolveFromParent ? element.resolveTypeRef() : DotNetTypeRef.AUTO_TYPE;
+			return resolveFromParentOrInitializer ? element.resolveTypeRef() : DotNetTypeRef.AUTO_TYPE;
 		}
-	}
+	};
 
 	public CSharpLinqVariableImpl(@NotNull ASTNode node)
 	{
@@ -94,7 +91,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolve)
 	{
-		return CSharpTypeRefCache.getInstance(getProject()).resolveTypeRef(this, OurResolver.INSTANCE, resolve);
+		return ourCacheSystem.toTypeRef(this, resolve);
 	}
 
 	@NotNull
@@ -140,7 +137,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 				CSharpLinqVariableImpl variable = ((CSharpLinqJoinClauseImpl) nextParent).getVariable();
 				if(variable != null)
 				{
-					return new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(DotNetTypes2.System.Collections.Generic.IEnumerable$1), variable.toTypeRef(true));
+					return new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(this, DotNetTypes2.System.Collections.Generic.IEnumerable$1), variable.toTypeRef(true));
 				}
 			}
 			else if(nextParent instanceof CSharpLinqQueryContinuationImpl)

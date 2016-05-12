@@ -55,7 +55,7 @@ public class CSharpUnresolvedReferenceQuickFixProvider extends UnresolvedReferen
 		for(ExpectedTypeInfo expectedTypeRef : expectedTypeRefs)
 		{
 			DotNetTypeRef typeRef = expectedTypeRef.getTypeRef();
-			DotNetTypeResolveResult result = typeRef.resolve(expression);
+			DotNetTypeResolveResult result = typeRef.resolve();
 			if(result instanceof CSharpLambdaResolveResult)
 			{
 				lambdaResolveResult = (CSharpLambdaResolveResult) result;

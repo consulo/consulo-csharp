@@ -1,5 +1,6 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -28,10 +29,11 @@ public class CSharpGenericParameterResolveContext extends CSharpBaseResolveConte
 
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	protected List<DotNetTypeRef> getExtendTypeRefs()
 	{
-		return CSharpGenericConstraintUtil.getExtendTypes(myElement);
+		return Arrays.asList(CSharpGenericConstraintUtil.getExtendTypes(myElement));
 	}
 }

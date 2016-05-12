@@ -45,7 +45,7 @@ import com.intellij.util.IncorrectOperationException;
  * @since 28.11.13.
  */
 @Logger
-public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements CSharpReferenceExpressionEx
+public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implements CSharpReferenceExpressionEx
 {
 	public CSharpReferenceExpressionImpl(@NotNull ASTNode node)
 	{
@@ -271,7 +271,7 @@ public class CSharpReferenceExpressionImpl extends CSharpElementImpl implements 
 	@NotNull
 	@Override
 	@RequiredReadAction
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
 		return CSharpReferenceExpressionImplUtil.toTypeRef(this, resolveFromParent);
 	}

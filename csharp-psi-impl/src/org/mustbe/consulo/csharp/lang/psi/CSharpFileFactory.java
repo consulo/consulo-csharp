@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileWithScopeImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -201,6 +202,6 @@ public class CSharpFileFactory
 	{
 		LightVirtualFile virtualFile = new LightVirtualFile("dummy.cs", CSharpFileType.INSTANCE, text, System.currentTimeMillis());
 		SingleRootFileViewProvider viewProvider = new SingleRootFileViewProvider(PsiManager.getInstance(project), virtualFile, false);
-		return new CSharpFileImpl(viewProvider);
+		return new CSharpFileWithScopeImpl(viewProvider);
 	}
 }

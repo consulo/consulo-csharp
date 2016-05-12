@@ -127,7 +127,7 @@ public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElem
 
 			CSharpCallArgument callArgument = callArguments[i];
 
-			DotNetTypeRef parameterTypeRef = new CSharpTypeRefByQName(DotNetTypes.System.Object);
+			DotNetTypeRef parameterTypeRef = new CSharpTypeRefByQName(callArgument, DotNetTypes.System.Object);
 			DotNetExpression argumentExpression = callArgument.getArgumentExpression();
 			if(argumentExpression != null)
 			{

@@ -17,13 +17,13 @@
 package org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryType;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.ChangeVariableToTypeRefFix;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpCatchStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -35,6 +35,7 @@ import com.intellij.codeInspection.LocalInspectionToolSession;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElementVisitor;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpDynamicTypeRef;
 
 /**
  * @author VISTALL
@@ -55,6 +56,7 @@ public class UnnecessaryTypeInspection extends LocalInspectionTool
 		return new CSharpElementVisitor()
 		{
 			@Override
+			@RequiredReadAction
 			public void visitLocalVariable(CSharpLocalVariable variable)
 			{
 				if(variable.isConstant() || variable.getParent() instanceof CSharpCatchStatementImpl)
@@ -66,7 +68,7 @@ public class UnnecessaryTypeInspection extends LocalInspectionTool
 				if(initializer != null)
 				{
 					DotNetTypeRef typeRef = initializer.toTypeRef(false);
-					if(typeRef instanceof CSharpLambdaTypeRef || typeRef == CSharpNullTypeRef.INSTANCE)
+					if(typeRef instanceof CSharpLambdaTypeRef || typeRef instanceof CSharpNullTypeRef)
 					{
 						return;
 					}
@@ -81,7 +83,7 @@ public class UnnecessaryTypeInspection extends LocalInspectionTool
 				{
 					return;
 				}
-				else if(typeRef == CSharpStaticTypeRef.DYNAMIC)
+				else if(typeRef instanceof CSharpDynamicTypeRef)
 				{
 					return;
 				}

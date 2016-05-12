@@ -46,7 +46,7 @@ import com.intellij.psi.ResolveResult;
  * @author VISTALL
  * @since 16.12.13.
  */
-public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpCallArgumentListOwner
+public class CSharpMethodCallExpressionImpl extends CSharpExpressionImpl implements DotNetExpression, CSharpCallArgumentListOwner
 {
 	public CSharpMethodCallExpressionImpl(@NotNull ASTNode node)
 	{
@@ -139,7 +139,7 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 		{
 			DotNetTypeRef typeRef = callExpression.toTypeRef(true);
 
-			DotNetTypeResolveResult typeResolveResult = typeRef.resolve(this);
+			DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 
 			PsiElement element = typeResolveResult.getElement();
 			CSharpMethodDeclaration declaration = CSharpLambdaResolveResultUtil.getDelegateMethodTypeWrapper(element);
@@ -158,13 +158,13 @@ public class CSharpMethodCallExpressionImpl extends CSharpElementImpl implements
 	@NotNull
 	@Override
 	@RequiredReadAction
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
 		PsiElement resolvedElement = resolveToCallable();
 		if(resolvedElement instanceof DotNetVariable)
 		{
 			DotNetTypeRef dotNetTypeRef = ((DotNetVariable) resolvedElement).toTypeRef(false);
-			DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(this);
+			DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve();
 			if(typeResolveResult instanceof CSharpLambdaResolveResult)
 			{
 				return ((CSharpLambdaResolveResult) typeResolveResult).getReturnTypeRef();

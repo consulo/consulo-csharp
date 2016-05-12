@@ -63,7 +63,7 @@ public class CS0151 extends CompilerCheck<DotNetExpression>
 		{
 			DotNetTypeRef typeRef = element.toTypeRef(true);
 
-			if(isValidTypeRef(typeRef, element))
+			if(isValidTypeRef(typeRef))
 			{
 				return null;
 			}
@@ -75,9 +75,9 @@ public class CS0151 extends CompilerCheck<DotNetExpression>
 	}
 
 	@RequiredReadAction
-	private boolean isValidTypeRef(DotNetTypeRef typeRef, PsiElement scope)
+	private boolean isValidTypeRef(DotNetTypeRef typeRef)
 	{
-		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 		PsiElement resolvedElement = typeResolveResult.getElement();
 
 		if(resolvedElement instanceof CSharpTypeDeclaration)
@@ -107,7 +107,7 @@ public class CS0151 extends CompilerCheck<DotNetExpression>
 						return false;
 					}
 
-					return isValidTypeRef(extractedTypRef, scope);
+					return isValidTypeRef(extractedTypRef);
 				}
 			}
 		}

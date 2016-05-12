@@ -24,8 +24,6 @@ import java.util.List;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.JDOMUtil;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ReflectionUtil;
@@ -41,16 +39,16 @@ public class OperatorStubsLoader
 	{
 		public static class Parameter
 		{
-			public DotNetTypeRef myTypeRef;
+			public String myTypeRef;
 
 			public Parameter(String type)
 			{
-				myTypeRef = type == null ? null : new CSharpTypeRefByQName(type);
+				myTypeRef = type;
 			}
 		}
 
 		public final IElementType myOperatorToken;
-		public final DotNetTypeRef myReturnTypeRef;
+		public final String myReturnTypeRef;
 		public final List<Parameter> myParameterTypes = new ArrayList<Parameter>(5);
 
 		public Operator(String name, String returnType)
@@ -65,7 +63,7 @@ public class OperatorStubsLoader
 			{
 				throw new Error();
 			}
-			myReturnTypeRef = returnType == null ? null : new CSharpTypeRefByQName(returnType);
+			myReturnTypeRef = returnType;
 		}
 	}
 

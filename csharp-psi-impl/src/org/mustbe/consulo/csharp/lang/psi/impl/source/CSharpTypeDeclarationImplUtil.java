@@ -45,18 +45,18 @@ public class CSharpTypeDeclarationImplUtil
 	@RequiredReadAction
 	public static boolean isInheritOrSelf(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope, @NotNull String... vmQNames)
 	{
-		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 		PsiElement typeResolveResultElement = typeResolveResult.getElement();
 		if(!(typeResolveResultElement instanceof DotNetTypeDeclaration))
 		{
 			return false;
 		}
 
-		return isInheritOrSelf0((DotNetTypeDeclaration) typeResolveResultElement, scope, vmQNames);
+		return isInheritOrSelf0((DotNetTypeDeclaration) typeResolveResultElement, vmQNames);
 	}
 
 	@RequiredReadAction
-	private static boolean isInheritOrSelf0(DotNetTypeDeclaration typeDeclaration, PsiElement scope, String... vmQNames)
+	private static boolean isInheritOrSelf0(DotNetTypeDeclaration typeDeclaration, String... vmQNames)
 	{
 		if(ArrayUtil.contains(typeDeclaration.getVmQName(), vmQNames))
 		{
@@ -68,7 +68,7 @@ public class CSharpTypeDeclarationImplUtil
 		{
 			for(DotNetTypeRef dotNetType : anExtends)
 			{
-				PsiElement psiElement = dotNetType.resolve(scope).getElement();
+				PsiElement psiElement = dotNetType.resolve().getElement();
 				if(psiElement instanceof DotNetTypeDeclaration)
 				{
 					if(psiElement.isEquivalentTo(typeDeclaration))
@@ -81,7 +81,7 @@ public class CSharpTypeDeclarationImplUtil
 						return true;
 					}
 
-					if(isInheritOrSelf0((DotNetTypeDeclaration) psiElement, scope, vmQNames))
+					if(isInheritOrSelf0((DotNetTypeDeclaration) psiElement, vmQNames))
 					{
 						return true;
 					}
@@ -111,23 +111,23 @@ public class CSharpTypeDeclarationImplUtil
 
 	@RequiredReadAction
 	@NotNull
-	public static DotNetTypeRef[] getExtendTypeRefs(@NotNull DotNetTypeDeclaration t)
+	public static DotNetTypeRef[] getExtendTypeRefs(@NotNull DotNetTypeDeclaration typeDeclaration)
 	{
 		DotNetTypeRef[] typeRefs = DotNetTypeRef.EMPTY_ARRAY;
-		DotNetTypeList extendList = t.getExtendList();
-		if(extendList != null && !t.isEnum())
+		DotNetTypeList extendList = typeDeclaration.getExtendList();
+		if(extendList != null && !typeDeclaration.isEnum())
 		{
 			typeRefs = extendList.getTypeRefs();
 		}
 
 		if(typeRefs.length == 0)
 		{
-			String defaultSuperType = getDefaultSuperType(t);
+			String defaultSuperType = getDefaultSuperType(typeDeclaration);
 			if(defaultSuperType == null)
 			{
 				return DotNetTypeRef.EMPTY_ARRAY;
 			}
-			typeRefs = new DotNetTypeRef[]{new CSharpTypeRefByQName(defaultSuperType)};
+			typeRefs = new DotNetTypeRef[]{new CSharpTypeRefByQName(typeDeclaration, defaultSuperType)};
 		}
 		return typeRefs;
 	}
@@ -143,7 +143,7 @@ public class CSharpTypeDeclarationImplUtil
 		{
 			for(DotNetTypeRef anExtend : anExtends)
 			{
-				DotNetTypeResolveResult resolveResult = anExtend.resolve(scope);
+				DotNetTypeResolveResult resolveResult = anExtend.resolve();
 				PsiElement resolve = resolveResult.getElement();
 				if(resolve instanceof DotNetTypeDeclaration && !((DotNetTypeDeclaration) resolve).isInterface())
 				{

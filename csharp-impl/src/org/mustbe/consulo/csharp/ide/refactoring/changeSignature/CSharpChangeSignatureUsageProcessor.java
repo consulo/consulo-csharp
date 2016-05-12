@@ -28,6 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
@@ -191,7 +192,7 @@ public class CSharpChangeSignatureUsageProcessor implements ChangeSignatureUsage
 			}
 			else
 			{
-				builder.append(method.getReturnTypeRef().getQualifiedText()).append(" ");
+				builder.append(CSharpTypeRefPresentationUtil.buildShortText(method.getReturnTypeRef(), method)).append(" ");
 			}
 		}
 		builder.append(method.getName());

@@ -43,7 +43,7 @@ import com.intellij.psi.util.CachedValuesManager;
  * @author VISTALL
  * @since 19.01.14
  */
-public class CSharpDelegateExpressionImpl extends CSharpElementImpl implements CSharpAnonymousMethodExpression, DotNetParameterListOwner
+public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implements CSharpAnonymousMethodExpression, DotNetParameterListOwner
 {
 	public CSharpDelegateExpressionImpl(@NotNull ASTNode node)
 	{
@@ -103,11 +103,13 @@ public class CSharpDelegateExpressionImpl extends CSharpElementImpl implements C
 
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	@RequiredReadAction
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
-		return new CSharpLambdaTypeRef(null, getParameterInfos(), DotNetTypeRef.AUTO_TYPE, getParameterList() == null);
+		return new CSharpLambdaTypeRef(this, null, getParameterInfos(), DotNetTypeRef.AUTO_TYPE, getParameterList() == null);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public CSharpSimpleParameterInfo[] getParameterInfos()
@@ -122,6 +124,7 @@ public class CSharpDelegateExpressionImpl extends CSharpElementImpl implements C
 		return parameterInfos;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()

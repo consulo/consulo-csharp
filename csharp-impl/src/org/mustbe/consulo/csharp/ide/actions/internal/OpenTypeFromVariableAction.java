@@ -54,7 +54,7 @@ public class OpenTypeFromVariableAction extends AnAction
 
 		DotNetTypeRef typeRef = ((DotNetVariable) psiElement).toTypeRef(true);
 
-		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(psiElement);
+		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 
 		PsiElement element = typeResolveResult.getElement();
 		if(!(element instanceof DotNetNamedElement))

@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.light;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightTypeDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -32,13 +33,17 @@ import com.intellij.psi.PsiElement;
 public class CSharpLightAttributeWithSelfTypeBuilder extends CSharpAbstractLightAttributeBuilder
 {
 	private final CSharpLightTypeDeclarationBuilder myType;
+	private final DotNetTypeRef myTypeRef;
 
+	@RequiredReadAction
 	public CSharpLightAttributeWithSelfTypeBuilder(PsiElement scope, String qualifiedName)
 	{
 		super(scope.getProject());
 		myType = new CSharpLightTypeDeclarationBuilder(scope);
 		myType.withParentQName(StringUtil.getPackageName(qualifiedName)) ;
 		myType.withName(StringUtil.getShortName(qualifiedName));
+
+		myTypeRef = new CSharpTypeRefByQName(scope, qualifiedName);
 	}
 
 	@Nullable
@@ -52,7 +57,7 @@ public class CSharpLightAttributeWithSelfTypeBuilder extends CSharpAbstractLight
 	@Override
 	public DotNetTypeRef toTypeRef()
 	{
-		return new CSharpTypeRefByQName(myType.getVmQName());
+		return myTypeRef;
 	}
 
 	@Override

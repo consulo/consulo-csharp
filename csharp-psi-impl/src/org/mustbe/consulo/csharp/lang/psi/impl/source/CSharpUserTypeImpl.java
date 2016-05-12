@@ -21,7 +21,7 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUserType;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyReferenceTypRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpUserTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -47,7 +47,7 @@ public class CSharpUserTypeImpl extends CSharpTypeElementImpl implements CSharpU
 	@Override
 	public DotNetTypeRef toTypeRefImpl()
 	{
-		return new CSharpLazyReferenceTypRef(getReferenceExpression());
+		return new CSharpUserTypeRef(getReferenceExpression());
 	}
 
 	@NotNull

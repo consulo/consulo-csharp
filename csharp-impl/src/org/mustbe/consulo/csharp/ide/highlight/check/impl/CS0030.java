@@ -15,7 +15,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeCastExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -24,6 +23,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.openapi.util.Ref;
 import com.intellij.psi.PsiElement;
+import consulo.csharp.lang.CSharpCastType;
 
 /**
  * @author VISTALL
@@ -115,11 +115,11 @@ public class CS0030 extends CompilerCheck<PsiElement>
 				}
 				DotNetTypeRef expressionTypeRef = innerExpression.toTypeRef(false);
 
-				CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(expressionTypeRef, castTypeRef, expression, CSharpStaticTypeRef.EXPLICIT);
+				CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(expressionTypeRef, castTypeRef, expression, CSharpCastType.EXPLICIT);
 
 				if(!inheritResult.isSuccess())
 				{
-					inheritResult = CSharpTypeUtil.isInheritable(expressionTypeRef, castTypeRef, expression, CSharpStaticTypeRef.IMPLICIT);
+					inheritResult = CSharpTypeUtil.isInheritable(expressionTypeRef, castTypeRef, expression, CSharpCastType.IMPLICIT);
 
 					if(!inheritResult.isSuccess())
 					{

@@ -2,6 +2,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementCompareUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -54,8 +55,8 @@ public class CSharpLikeMethodDeclarationImplUtil
 	}
 
 	@NotNull
-	public static Pair<ResolveVirtualImplementResult, PsiElement> resolveVirtualImplementation(@NotNull DotNetVirtualImplementOwner owner,
-			@NotNull PsiElement scope)
+	@RequiredReadAction
+	public static Pair<ResolveVirtualImplementResult, PsiElement> resolveVirtualImplementation(@NotNull DotNetVirtualImplementOwner owner, @NotNull PsiElement scope)
 	{
 		DotNetType typeForImplement = owner.getTypeForImplement();
 		if(typeForImplement == null)
@@ -65,7 +66,7 @@ public class CSharpLikeMethodDeclarationImplUtil
 
 		DotNetTypeRef typeRefForImplement = typeForImplement.toTypeRef();
 
-		DotNetTypeResolveResult typeResolveResult = typeRefForImplement.resolve(owner);
+		DotNetTypeResolveResult typeResolveResult = typeRefForImplement.resolve();
 
 		PsiElement resolvedElement = typeResolveResult.getElement();
 		DotNetGenericExtractor genericExtractor = typeResolveResult.getGenericExtractor();

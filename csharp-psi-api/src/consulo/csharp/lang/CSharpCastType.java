@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 must-be.org
+ * Copyright 2013-2016 must-be.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
-
-import org.consulo.lombok.annotations.ModuleService;
-import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+package consulo.csharp.lang;
 
 /**
  * @author VISTALL
- * @since 18.01.14
+ * @since 13-May-16
  */
-@ModuleService
-public abstract class CSharpModuleTypeHelper
+public enum CSharpCastType
 {
-	@Nullable
-	public abstract DotNetTypeDeclaration getArrayType(int dimensions);
+	IMPLICIT,
+	EXPLICIT
 }

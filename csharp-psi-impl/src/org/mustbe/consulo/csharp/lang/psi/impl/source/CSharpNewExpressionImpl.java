@@ -16,11 +16,13 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -45,7 +47,7 @@ import com.intellij.util.containers.ContainerUtil;
  * @author VISTALL
  * @since 29.12.13.
  */
-public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharpNewExpression, CSharpArrayInitializerOwner
+public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSharpNewExpression, CSharpArrayInitializerOwner
 {
 	public CSharpNewExpressionImpl(@NotNull ASTNode node)
 	{
@@ -64,9 +66,10 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 		visitor.visitNewExpression(this);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
 		CSharpNewArrayLengthImpl[] arrayLengths = getNewArrayLengths();
 		DotNetType type = getNewType();
@@ -80,7 +83,7 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 					return DotNetTypeRef.ERROR_TYPE;
 				}
 
-				return calcType(arrayInitializer.getValues());
+				return calcType(this, arrayInitializer.getValues());
 			}
 
 			CSharpFieldOrPropertySetBlock fieldOrPropertySetBlock = getFieldOrPropertySetBlock();
@@ -121,14 +124,14 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 
 			for(CSharpNewArrayLengthImpl length : arrayLengths)
 			{
-				typeRef = new CSharpArrayTypeRef(typeRef, length.getDimensionSize());
+				typeRef = new CSharpArrayTypeRef(this, typeRef, length.getDimensionSize());
 			}
 			return typeRef;
 		}
 	}
 
 	@NotNull
-	private static DotNetTypeRef calcType(CSharpArrayInitializerValue[] values)
+	private static DotNetTypeRef calcType(CSharpNewExpressionImpl newExpression, CSharpArrayInitializerValue[] values)
 	{
 		if(values.length == 0)
 		{
@@ -156,7 +159,14 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 			}
 		}
 
-		typeRefs.remove(CSharpNullTypeRef.INSTANCE);
+		for(Iterator<DotNetTypeRef> iterator = typeRefs.iterator(); iterator.hasNext(); )
+		{
+			DotNetTypeRef next = iterator.next();
+			if(next instanceof CSharpNullTypeRef)
+			{
+				iterator.remove();
+			}
+		}
 
 		if(typeRefs.isEmpty())
 		{
@@ -164,7 +174,7 @@ public class CSharpNewExpressionImpl extends CSharpElementImpl implements CSharp
 		}
 		//TODO [VISTALL] better calc
 		DotNetTypeRef firstItem = ContainerUtil.getFirstItem(typeRefs);
-		return new CSharpArrayTypeRef(firstItem, 0);
+		return new CSharpArrayTypeRef(newExpression, firstItem, 0);
 	}
 
 	@Override

@@ -145,7 +145,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 				DotNetTypeRef typeRef = dotNetParameter.toTypeRef(true);
 				if(typeRef == CSharpStaticTypeRef.__ARGLIST_TYPE)
 				{
-					return ((CSharpStaticTypeRef) typeRef).getText();
+					return typeRef.toString();
 				}
 				return generateLinksForType(typeRef, dotNetParameter, false) + " " + dotNetParameter.getName();
 			}
@@ -237,7 +237,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 	{
 		if(element instanceof CSharpTypeDefStatement)
 		{
-			PsiElement resolvedElement = ((CSharpTypeDefStatement) element).toTypeRef().resolve(element).getElement();
+			PsiElement resolvedElement = ((CSharpTypeDefStatement) element).toTypeRef().resolve().getElement();
 			if(resolvedElement != null)
 			{
 				element = resolvedElement;
@@ -327,7 +327,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 		}
 		else
 		{
-			DotNetTypeResolveResult dotNetTypeResolveResult = typeRef.resolve(element);
+			DotNetTypeResolveResult dotNetTypeResolveResult = typeRef.resolve();
 			PsiElement resolved = dotNetTypeResolveResult.getElement();
 			if(resolved instanceof DotNetQualifiedElement)
 			{

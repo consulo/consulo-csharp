@@ -54,7 +54,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.ImplicitOperatorArgumentAsCallArgumentWrapper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpPointerTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.OperatorByTokenSelector;
@@ -83,6 +82,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.ObjectUtil;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.csharp.lang.CSharpCastType;
 
 /**
  * @author VISTALL
@@ -244,7 +244,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 				{
 					return DotNetTypeRef.ERROR_TYPE;
 				}
-				return new CSharpPointerTypeRef(dotNetExpression.toTypeRef(true));
+				return new CSharpPointerTypeRef(this, dotNetExpression.toTypeRef(true));
 			}
 			else if(elementType == CSharpTokens.MUL)
 			{
@@ -286,7 +286,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		{
 			if(elementType == CSharpTokenSets.OROR || elementType == CSharpTokens.ANDAND)
 			{
-				return new CSharpTypeRefByQName(DotNetTypes.System.Boolean);
+				return new CSharpTypeRefByQName(this, DotNetTypes.System.Boolean);
 			}
 
 			DotNetExpression[] parameterExpressions = getParameterExpressions();
@@ -296,7 +296,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 				{
 					return parameterExpressions[0].toTypeRef(false);
 				}
-				return new CSharpTypeRefByQName(DotNetTypes.System.Void);
+				return new CSharpTypeRefByQName(this, DotNetTypes.System.Void);
 			}
 
 			final Set<MethodResolveResult> resolveResults = new LinkedHashSet<MethodResolveResult>();
@@ -331,7 +331,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	{
 		for(DotNetExpression dotNetExpression : ((CSharpExpressionWithOperatorImpl) parent).getParameterExpressions())
 		{
-			List<DotNetTypeRef> implicitOrExplicitTypeRefs = CSharpTypeUtil.getImplicitOrExplicitTypeRefs(dotNetExpression.toTypeRef(true), expressionTypeRef, CSharpStaticTypeRef.IMPLICIT, this);
+			List<DotNetTypeRef> implicitOrExplicitTypeRefs = CSharpTypeUtil.getImplicitOrExplicitTypeRefs(dotNetExpression.toTypeRef(true), expressionTypeRef, CSharpCastType.IMPLICIT, this);
 
 			for(DotNetTypeRef implicitOrExplicitTypeRef : implicitOrExplicitTypeRefs)
 			{
@@ -416,7 +416,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		}
 		else
 		{
-			DotNetTypeResolveResult typeResolveResult = typeRef.resolve(this);
+			DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 
 			PsiElement element = typeResolveResult.getElement();
 			if(element == null)
@@ -449,7 +449,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		CSharpLightMethodDeclarationBuilder builder = new CSharpLightMethodDeclarationBuilder(project);
 		builder.withReturnType(leftTypeRef);
 		builder.addParameter(new CSharpLightParameterBuilder(project).withName("p0").withTypeRef(leftTypeRef));
-		builder.addParameter(new CSharpLightParameterBuilder(project).withName("p0").withTypeRef(new CSharpTypeRefByQName(typeVmQName)));
+		builder.addParameter(new CSharpLightParameterBuilder(project).withName("p0").withTypeRef(new CSharpTypeRefByQName(this, typeVmQName)));
 		builder.setOperator(operatorElementType);
 		return builder;
 	}

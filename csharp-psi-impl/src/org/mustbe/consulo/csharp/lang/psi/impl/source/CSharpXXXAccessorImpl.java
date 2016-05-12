@@ -60,6 +60,7 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 	}
 
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public CSharpSimpleParameterInfo[] getParameterInfos()
@@ -67,6 +68,7 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 		return CSharpSimpleParameterInfo.EMPTY_ARRAY;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
@@ -76,7 +78,7 @@ public class CSharpXXXAccessorImpl extends CSharpStubMemberImpl<CSharpXXXAccesso
 			Pair<DotNetTypeRef, ? extends PsiElement> typeRefOfParent = getTypeRefOfParent();
 			return typeRefOfParent.getFirst();
 		}
-		return new CSharpTypeRefByQName(DotNetTypes.System.Void);
+		return new CSharpTypeRefByQName(this, DotNetTypes.System.Void);
 	}
 
 	@RequiredReadAction

@@ -31,7 +31,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpAsExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public class CSharpAsExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
 	public CSharpAsExpressionImpl(@NotNull ASTNode node)
 	{
@@ -66,7 +66,7 @@ public class CSharpAsExpressionImpl extends CSharpElementImpl implements DotNetE
 	@NotNull
 	@Override
 	@RequiredReadAction
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
 		DotNetType type = getType();
 		if(type == null)

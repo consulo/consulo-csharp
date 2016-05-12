@@ -18,6 +18,8 @@ package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.RequiredWriteAction;
 import org.mustbe.consulo.csharp.ide.refactoring.CSharpGenerateUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import org.mustbe.consulo.csharp.lang.psi.CSharpContextUtil;
@@ -73,6 +75,7 @@ public abstract class CreateUnresolvedElementFix extends BaseIntentionAction
 	@Override
 	public abstract String getText();
 
+	@RequiredReadAction
 	public abstract void buildTemplate(@NotNull CreateUnresolvedElementFixContext context,
 			CSharpContextUtil.ContextType contextType,
 			@NotNull PsiFile file,
@@ -85,6 +88,7 @@ public abstract class CreateUnresolvedElementFix extends BaseIntentionAction
 	}
 
 	@Override
+	@RequiredWriteAction
 	public void invoke(@NotNull Project project, final Editor editor, PsiFile file) throws IncorrectOperationException
 	{
 		PsiDocumentManager.getInstance(project).commitAllDocuments();

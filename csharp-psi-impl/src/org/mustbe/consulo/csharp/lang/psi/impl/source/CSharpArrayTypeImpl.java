@@ -21,7 +21,7 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpArrayType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyArrayTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
@@ -44,7 +44,7 @@ public class CSharpArrayTypeImpl extends CSharpTypeElementImpl implements CSharp
 	{
 		DotNetType innerType = getInnerType();
 
-		return new CSharpLazyArrayTypeRef(this, innerType.toTypeRef(), getDimensions());
+		return new CSharpArrayTypeRef(this, innerType.toTypeRef(), getDimensions());
 	}
 
 	@RequiredReadAction

@@ -105,7 +105,7 @@ public class CSharpInheritProximityWeigher extends LookupElementWeigher
 				{
 					return Position.NONE;
 				}
-				PsiElement resolvedElement = typeRef.resolve(referenceExpressionEx).getElement();
+				PsiElement resolvedElement = typeRef.resolve().getElement();
 				if(resolvedElement == null)
 				{
 					return Position.NONE;
@@ -192,27 +192,27 @@ public class CSharpInheritProximityWeigher extends LookupElementWeigher
 	{
 		if(e == CSharpTokens.TRUE_KEYWORD || e == CSharpTokens.FALSE_KEYWORD)
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.Boolean);
+			return new CSharpTypeRefByQName(parent, DotNetTypes.System.Boolean);
 		}
 		else if(e == CSharpTokens.TYPEOF_KEYWORD)
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.Type);
+			return new CSharpTypeRefByQName(parent, DotNetTypes.System.Type);
 		}
 		else if(e == CSharpSoftTokens.NAMEOF_KEYWORD)
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.String);
+			return new CSharpTypeRefByQName(parent, DotNetTypes.System.String);
 		}
 		else if(e == CSharpTokens.SIZEOF_KEYWORD)
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.Int32);
+			return new CSharpTypeRefByQName(parent, DotNetTypes.System.Int32);
 		}
 		else if(e == CSharpTokens.__MAKEREF_KEYWORD)
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.TypedReference);
+			return new CSharpTypeRefByQName(parent, DotNetTypes.System.TypedReference);
 		}
 		else if(e == CSharpTokens.__REFTYPE_KEYWORD)
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.Type);
+			return new CSharpTypeRefByQName(parent, DotNetTypes.System.Type);
 		}
 		else if(e == CSharpTokens.THIS_KEYWORD)
 		{

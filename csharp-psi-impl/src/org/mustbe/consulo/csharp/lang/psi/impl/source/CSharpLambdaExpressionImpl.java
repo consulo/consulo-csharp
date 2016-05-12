@@ -51,7 +51,7 @@ import com.intellij.psi.util.CachedValuesManager;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements CSharpAnonymousMethodExpression
+public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements CSharpAnonymousMethodExpression
 {
 	public CSharpLambdaExpressionImpl(@NotNull ASTNode node)
 	{
@@ -119,10 +119,7 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements CSh
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
-			@NotNull ResolveState state,
-			PsiElement lastParent,
-			@NotNull PsiElement place)
+	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place)
 	{
 		for(CSharpLambdaParameter parameter : getParameters())
 		{
@@ -134,20 +131,22 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements CSh
 		return true;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
-		return new CSharpLambdaTypeRef(null, getParameterInfos(resolveFromParent), resolveFromParent ? getReturnTypeRef() : DotNetTypeRef.AUTO_TYPE);
+		return new CSharpLambdaTypeRef(this, null, getParameterInfos(resolveFromParent), resolveFromParent ? getReturnTypeRef() : DotNetTypeRef.AUTO_TYPE);
 	}
 
 	@NotNull
 	public DotNetTypeRef toTypeRefForInference()
 	{
-		return new CSharpLambdaTypeRef(null, getParameterInfos(true), findPossibleReturnTypeRef());
+		return new CSharpLambdaTypeRef(this, null, getParameterInfos(true), findPossibleReturnTypeRef());
 	}
 
 	@NotNull
+	@RequiredReadAction
 	private DotNetTypeRef findPossibleReturnTypeRef()
 	{
 		PsiElement codeBlock = getCodeBlock();
@@ -183,15 +182,15 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements CSh
 			}
 
 			@Override
+			@RequiredReadAction
 			public void visitReturnStatement(CSharpReturnStatementImpl statement)
 			{
-				CSharpImplicitReturnModel implicitReturnModel = CSharpImplicitReturnModel.getImplicitReturnModel(statement,
-						CSharpLambdaExpressionImpl.this);
+				CSharpImplicitReturnModel implicitReturnModel = CSharpImplicitReturnModel.getImplicitReturnModel(statement, CSharpLambdaExpressionImpl.this);
 
 				DotNetExpression expression = statement.getExpression();
 				DotNetTypeRef expectedTypeRef;
 
-				expectedTypeRef = expression == null ? new CSharpTypeRefByQName(DotNetTypes.System.Void) : expression.toTypeRef(false);
+				expectedTypeRef = expression == null ? new CSharpTypeRefByQName(statement, DotNetTypes.System.Void) : expression.toTypeRef(false);
 				if(expectedTypeRef == DotNetTypeRef.ERROR_TYPE)
 				{
 					return;
@@ -205,12 +204,11 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements CSh
 				{
 					if(DotNetTypeRefUtil.isVmQNameEqual(expectedTypeRef, statement, DotNetTypes.System.Void))
 					{
-						typeRefs.add(new CSharpTypeRefByQName(implicitReturnModel.getNoGenericTypeVmQName()));
+						typeRefs.add(new CSharpTypeRefByQName(statement, implicitReturnModel.getNoGenericTypeVmQName()));
 					}
 					else
 					{
-						typeRefs.add(new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(implicitReturnModel.getGenericVmQName()),
-								expectedTypeRef));
+						typeRefs.add(new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(statement, implicitReturnModel.getGenericVmQName()), expectedTypeRef));
 					}
 				}
 			}
@@ -218,11 +216,12 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements CSh
 
 		if(typeRefs.isEmpty())
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.Void);
+			return new CSharpTypeRefByQName(this, DotNetTypes.System.Void);
 		}
 		return typeRefs.get(0);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public CSharpSimpleParameterInfo[] getParameterInfos()
@@ -243,6 +242,7 @@ public class CSharpLambdaExpressionImpl extends CSharpElementImpl implements CSh
 		return parameterInfos;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()

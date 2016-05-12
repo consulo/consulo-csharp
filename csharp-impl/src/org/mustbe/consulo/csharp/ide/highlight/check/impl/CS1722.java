@@ -111,7 +111,7 @@ public class CS1722 extends CompilerCheck<DotNetTypeList>
 		for(DotNetType type : types)
 		{
 			DotNetTypeRef typeRef = type.toTypeRef();
-			PsiElement temp = typeRef.resolve(element).getElement();
+			PsiElement temp = typeRef.resolve().getElement();
 			if(temp instanceof CSharpTypeDeclaration && !((CSharpTypeDeclaration) temp).isInterface())
 			{
 				resolvedElement = (CSharpTypeDeclaration) temp;

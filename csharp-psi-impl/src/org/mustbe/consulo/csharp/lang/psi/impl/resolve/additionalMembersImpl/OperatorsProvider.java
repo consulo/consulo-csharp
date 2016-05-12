@@ -13,6 +13,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDe
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalMemberProvider;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -24,6 +25,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.Consumer;
 import com.intellij.util.containers.ContainerUtil;
@@ -38,32 +40,34 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 	@Override
 	public void processAdditionalMembers(@NotNull DotNetElement element, @NotNull DotNetGenericExtractor extractor, @NotNull Consumer<PsiElement> consumer)
 	{
-		Project project = element.getProject();
-
 		if(element instanceof CSharpTypeDeclaration)
 		{
+			Project project = element.getProject();
+			GlobalSearchScope resolveScope = element.getResolveScope();
+
 			CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) element;
 
 			CSharpMethodDeclaration methodDeclaration = typeDeclaration.getUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE);
 			DotNetTypeRef selfTypeRef;
 			if(methodDeclaration != null)
 			{
-				selfTypeRef = new CSharpLambdaTypeRef(methodDeclaration, extractor);
+				selfTypeRef = new CSharpLambdaTypeRef(element, methodDeclaration, extractor);
 			}
 			else
 			{
 				selfTypeRef = new CSharpTypeRefByTypeDeclaration(typeDeclaration, extractor);
 			}
 
-			buildOperators(project, selfTypeRef, element, OperatorStubsLoader.INSTANCE.myTypeOperators.get(typeDeclaration.getVmQName()), consumer);
+			buildOperators(project, resolveScope, selfTypeRef, element, OperatorStubsLoader.INSTANCE.myTypeOperators.get(typeDeclaration.getVmQName()), consumer);
+
 			if(typeDeclaration.isEnum())
 			{
-				buildOperators(project, selfTypeRef, element, OperatorStubsLoader.INSTANCE.myEnumOperators, consumer);
+				buildOperators(project, resolveScope, selfTypeRef, element, OperatorStubsLoader.INSTANCE.myEnumOperators, consumer);
 			}
 
 			if(DotNetTypes.System.Nullable$1.equals(typeDeclaration.getVmQName()))
 			{
-				buildNullableOperators(selfTypeRef, typeDeclaration, extractor, consumer);
+				buildNullableOperators(project, resolveScope, selfTypeRef, typeDeclaration, extractor, consumer);
 			}
 
 			if(methodDeclaration != null)
@@ -108,7 +112,9 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 
 	@NotNull
 	@RequiredReadAction
-	private DotNetElement[] buildNullableOperators(@NotNull DotNetTypeRef selfTypeRef,
+	private DotNetElement[] buildNullableOperators(@NotNull Project project,
+			@NotNull GlobalSearchScope resolveScope,
+			@NotNull DotNetTypeRef selfTypeRef,
 			@NotNull CSharpTypeDeclaration typeDeclaration,
 			@NotNull DotNetGenericExtractor extractor,
 			@NotNull Consumer<PsiElement> consumer)
@@ -126,28 +132,28 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 			return DotNetElement.EMPTY_ARRAY;
 		}
 
-		DotNetTypeResolveResult typeResolveResult = extract.resolve(typeDeclaration);
+		DotNetTypeResolveResult typeResolveResult = extract.resolve();
 		PsiElement typeResolveResultElement = typeResolveResult.getElement();
 		if(!(typeResolveResultElement instanceof DotNetTypeDeclaration))
 		{
 			return DotNetElement.EMPTY_ARRAY;
 		}
 
-		Project project = typeDeclaration.getProject();
 		List<DotNetElement> elements = new ArrayList<DotNetElement>();
 
 		DotNetTypeDeclaration forAddOperatorsElement = (DotNetTypeDeclaration) typeResolveResultElement;
 
-		buildOperators(project, selfTypeRef, forAddOperatorsElement, OperatorStubsLoader.INSTANCE.myTypeOperators.get(forAddOperatorsElement.getVmQName()), consumer);
+		buildOperators(project, resolveScope, selfTypeRef, forAddOperatorsElement, OperatorStubsLoader.INSTANCE.myTypeOperators.get(forAddOperatorsElement.getVmQName()), consumer);
 
 		if(forAddOperatorsElement.isEnum())
 		{
-			buildOperators(project, selfTypeRef, forAddOperatorsElement, OperatorStubsLoader.INSTANCE.myEnumOperators, consumer);
+			buildOperators(project, resolveScope, selfTypeRef, forAddOperatorsElement, OperatorStubsLoader.INSTANCE.myEnumOperators, consumer);
 		}
 		return ContainerUtil.toArray(elements, DotNetElement.ARRAY_FACTORY);
 	}
 
 	private static void buildOperators(@NotNull Project project,
+			@NotNull GlobalSearchScope resolveScope,
 			@NotNull DotNetTypeRef selfTypeRef,
 			@NotNull DotNetElement parent,
 			@NotNull Collection<OperatorStubsLoader.Operator> operators,
@@ -171,14 +177,14 @@ public class OperatorsProvider implements CSharpAdditionalMemberProvider
 
 				temp.withParent(parent);
 
-				temp.withReturnType(operator.myReturnTypeRef == null ? selfTypeRef : operator.myReturnTypeRef);
+				temp.withReturnType(operator.myReturnTypeRef == null ? selfTypeRef : new CSharpTypeRefByQName(project, resolveScope, operator.myReturnTypeRef));
 
 				int i = 0;
 				for(OperatorStubsLoader.Operator.Parameter parameter : operator.myParameterTypes)
 				{
 					CSharpLightParameterBuilder parameterBuilder = new CSharpLightParameterBuilder(project);
 					parameterBuilder.withName("p" + i);
-					parameterBuilder.withTypeRef(parameter.myTypeRef == null ? selfTypeRef : parameter.myTypeRef);
+					parameterBuilder.withTypeRef(parameter.myTypeRef == null ? selfTypeRef : new CSharpTypeRefByQName(project, resolveScope, parameter.myTypeRef));
 
 					temp.addParameter(parameterBuilder);
 					i++;

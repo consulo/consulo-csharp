@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.openapi.util.NotNullLazyValue;
 
@@ -30,12 +31,14 @@ public abstract class SingleNullableStateResolveResult implements DotNetTypeReso
 	{
 		@NotNull
 		@Override
+		@RequiredReadAction
 		protected Boolean compute()
 		{
 			return isNullableImpl();
 		}
 	};
 
+	@RequiredReadAction
 	public abstract boolean isNullableImpl();
 
 	@Override

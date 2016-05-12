@@ -44,7 +44,7 @@ public class CSharpLightConstructorDeclaration extends CSharpLightLikeMethodDecl
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
-		return new CSharpTypeRefByQName(DotNetTypes.System.Void);
+		return new CSharpTypeRefByQName(myOriginal, DotNetTypes.System.Void);
 	}
 
 	@Override

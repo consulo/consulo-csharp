@@ -22,7 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUserType;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyReferenceTypRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpUserTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithStringValueStub;
 import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
@@ -58,7 +58,7 @@ public class CSharpStubUserTypeImpl extends CSharpStubTypeElementImpl<CSharpWith
 	@Override
 	public DotNetTypeRef toTypeRefImpl()
 	{
-		return new CSharpLazyReferenceTypRef(getReferenceExpression());
+		return new CSharpUserTypeRef(getReferenceExpression());
 	}
 
 	@NotNull

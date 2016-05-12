@@ -29,12 +29,14 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalMemberProvider;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpBaseResolveContext;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.Consumer;
+import consulo.csharp.lang.CSharpCastType;
 
 /**
  * @author VISTALL
@@ -42,7 +44,7 @@ import com.intellij.util.Consumer;
  */
 public class MapElementGroupCollectors
 {
-	public static class ConversionMethod extends MapElementGroupCollector<DotNetTypeRef, CSharpConversionMethodDeclaration>
+	public static class ConversionMethod extends MapElementGroupCollector<CSharpCastType, CSharpConversionMethodDeclaration>
 	{
 		public ConversionMethod(@NotNull CSharpBaseResolveContext<?> context)
 		{
@@ -59,9 +61,14 @@ public class MapElementGroupCollectors
 		@RequiredReadAction
 		@Nullable
 		@Override
-		protected DotNetTypeRef getKeyForElement(CSharpConversionMethodDeclaration element)
+		protected CSharpCastType getKeyForElement(CSharpConversionMethodDeclaration element)
 		{
-			return element.getConversionTypeRef();
+			DotNetTypeRef conversionTypeRef = element.getConversionTypeRef();
+			if(conversionTypeRef == CSharpStaticTypeRef.IMPLICIT)
+			{
+				return CSharpCastType.IMPLICIT;
+			}
+			return CSharpCastType.EXPLICIT;
 		}
 
 		@NotNull

@@ -115,7 +115,7 @@ public class MethodLikeKindProcessor implements KindProcessor
 				{
 					DotNetTypeRef dotNetTypeRef = ((DotNetVariable) maybeElementGroup).toTypeRef(true);
 
-					DotNetTypeResolveResult maybeLambdaResolveResult = dotNetTypeRef.resolve(element);
+					DotNetTypeResolveResult maybeLambdaResolveResult = dotNetTypeRef.resolve();
 
 					if(maybeLambdaResolveResult instanceof CSharpLambdaResolveResult)
 					{

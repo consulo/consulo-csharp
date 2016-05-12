@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.light;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -30,28 +31,30 @@ import com.intellij.psi.PsiElement;
  */
 public class CSharpLightAttributeBuilder extends CSharpAbstractLightAttributeBuilder implements CSharpAttribute
 {
-	private final PsiElement myScope;
 	private final String myQualifiedName;
 
+	private final DotNetTypeRef myTypeRef;
+
+	@RequiredReadAction
 	public CSharpLightAttributeBuilder(PsiElement scope, String qualifiedName)
 	{
 		super(scope.getProject());
-		myScope = scope;
 		myQualifiedName = qualifiedName;
+		myTypeRef = new CSharpTypeRefByQName(scope, qualifiedName);
 	}
 
 	@Nullable
 	@Override
 	public DotNetTypeDeclaration resolveToType()
 	{
-		return (DotNetTypeDeclaration) toTypeRef().resolve(myScope).getElement();
+		return (DotNetTypeDeclaration) toTypeRef().resolve().getElement();
 	}
 
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRef()
 	{
-		return new CSharpTypeRefByQName(myQualifiedName);
+		return myTypeRef;
 	}
 
 	@Override

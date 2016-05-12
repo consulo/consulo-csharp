@@ -41,8 +41,6 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CSharpConstantTypeRef extends CSharpConstantBaseTypeRef
 {
-	private static final DotNetTypeRef ourEnumTypeRef = new CSharpTypeRefByQName(DotNetTypes.System.Enum);
-
 	public CSharpConstantTypeRef(CSharpConstantExpressionImpl element, @NotNull DotNetTypeRef defaultTypeRef)
 	{
 		super(element, defaultTypeRef);
@@ -69,14 +67,14 @@ public class CSharpConstantTypeRef extends CSharpConstantBaseTypeRef
 	{
 		if(isNumberLiteral(expression))
 		{
-			PsiElement element = another.resolve(scope).getElement();
+			PsiElement element = another.resolve().getElement();
 			String qName = element instanceof CSharpTypeDeclaration ? ((CSharpTypeDeclaration) element).getVmQName() : null;
 			if(qName == null)
 			{
 				return null;
 			}
 
-			Object value = null;
+			Object value;
 			try
 			{
 				value = expression.getValue(prefix);
@@ -101,6 +99,7 @@ public class CSharpConstantTypeRef extends CSharpConstantBaseTypeRef
 	}
 
 	@Nullable
+	@RequiredReadAction
 	public static DotNetTypeRef testNumber(@Nullable Object value, @NotNull String qName, @NotNull DotNetTypeRef another, @NotNull PsiElement scope)
 	{
 		if(value instanceof Number)
@@ -147,7 +146,8 @@ public class CSharpConstantTypeRef extends CSharpConstantBaseTypeRef
 				return another;
 			}
 
-			if(CSharpTypeUtil.isInheritable(ourEnumTypeRef, another, scope) && numberValue.longValue() == 0)
+			CSharpTypeRefByQName enumTypeRef = new CSharpTypeRefByQName(scope, DotNetTypes.System.Enum);
+			if(CSharpTypeUtil.isInheritable(enumTypeRef, another, scope) && numberValue.longValue() == 0)
 			{
 				return another;
 			}

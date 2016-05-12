@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
@@ -28,7 +29,7 @@ import com.intellij.lang.ASTNode;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpDefaultExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public class CSharpDefaultExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
 	public CSharpDefaultExpressionImpl(@NotNull ASTNode node)
 	{
@@ -47,9 +48,10 @@ public class CSharpDefaultExpressionImpl extends CSharpElementImpl implements Do
 		return findChildByClass(DotNetType.class);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
 		DotNetType type = getType();
 		if(type == null)

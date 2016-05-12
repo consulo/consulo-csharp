@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
 
@@ -28,7 +28,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 15.01.14
  */
-public class CSharpTypeRefFromGenericParameter extends DotNetTypeRef.Adapter
+public class CSharpTypeRefFromGenericParameter extends DotNetTypeRefWithCachedResult
 {
 	private final DotNetGenericParameter myGenericParameter;
 
@@ -40,14 +40,15 @@ public class CSharpTypeRefFromGenericParameter extends DotNetTypeRef.Adapter
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
+	protected DotNetTypeResolveResult resolveResult()
 	{
-		return new CSharpReferenceTypeRef.Result<PsiElement>(myGenericParameter, DotNetGenericExtractor.EMPTY);
+		return new CSharpUserTypeRef.Result<PsiElement>(myGenericParameter, DotNetGenericExtractor.EMPTY);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public String getPresentableText()
+	public String toString()
 	{
 		return myGenericParameter.getName();
 	}

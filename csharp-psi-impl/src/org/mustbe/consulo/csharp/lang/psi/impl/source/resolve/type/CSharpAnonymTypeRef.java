@@ -16,8 +16,8 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAnonymFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldOrPropertySet;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
@@ -27,7 +27,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightTypeDecl
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
 import com.intellij.openapi.project.Project;
@@ -38,7 +38,7 @@ import com.intellij.psi.PsiFile;
  * @author VISTALL
  * @since 08.05.14
  */
-public class CSharpAnonymTypeRef extends DotNetTypeRef.Adapter
+public class CSharpAnonymTypeRef extends DotNetTypeRefWithCachedResult
 {
 	public static class SetField extends CSharpLightFieldDeclarationBuilder
 	{
@@ -75,23 +75,18 @@ public class CSharpAnonymTypeRef extends DotNetTypeRef.Adapter
 		mySets = sets;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
-	{
-		return resolve();
-	}
-
-	@LazyInstance
-	@NotNull
-	public DotNetTypeResolveResult resolve()
+	protected DotNetTypeResolveResult resolveResult()
 	{
 		return new SimpleTypeResolveResult(createTypeDeclaration());
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public String getPresentableText()
+	public String toString()
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("{");
@@ -109,20 +104,14 @@ public class CSharpAnonymTypeRef extends DotNetTypeRef.Adapter
 	}
 
 	@NotNull
-	@Override
-	public String getQualifiedText()
-	{
-		return getPresentableText();
-	}
-
-	@NotNull
+	@RequiredReadAction
 	private DotNetTypeDeclaration createTypeDeclaration()
 	{
-		CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(myContainingFile.getProject());
+		CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(myContainingFile);
 		builder.addModifier(CSharpModifier.PUBLIC);
 		builder.withParent(myContainingFile);
 		builder.withType(CSharpLightTypeDeclarationBuilder.Type.STRUCT);
-		builder.addExtendType(new CSharpTypeRefByQName(DotNetTypes.System.ValueType));
+		builder.addExtendType(new CSharpTypeRefByQName(myContainingFile, DotNetTypes.System.ValueType));
 
 		for(CSharpFieldOrPropertySet set : mySets)
 		{
@@ -138,7 +127,7 @@ public class CSharpAnonymTypeRef extends DotNetTypeRef.Adapter
 
 			if(valueReferenceExpression == null)
 			{
-				fieldBuilder.withTypeRef(new CSharpTypeRefByQName(DotNetTypes.System.Object));
+				fieldBuilder.withTypeRef(new CSharpTypeRefByQName(myContainingFile, DotNetTypes.System.Object));
 			}
 			else
 			{

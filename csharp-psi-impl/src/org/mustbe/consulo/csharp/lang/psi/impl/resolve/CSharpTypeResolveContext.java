@@ -38,6 +38,7 @@ public class CSharpTypeResolveContext extends CSharpBaseResolveContext<CSharpTyp
 		}
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	protected List<DotNetTypeRef> getExtendTypeRefs()

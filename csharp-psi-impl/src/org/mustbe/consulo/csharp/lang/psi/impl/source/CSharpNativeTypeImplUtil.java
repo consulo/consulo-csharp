@@ -10,10 +10,11 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpNativeType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyTypeRefByQName;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.tree.IElementType;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpDynamicTypeRef;
 
 /**
  * @author VISTALL
@@ -62,7 +63,7 @@ public class CSharpNativeTypeImplUtil
 		}
 		else if(elementType == CSharpTokens.DYNAMIC_KEYWORD)
 		{
-			return CSharpStaticTypeRef.DYNAMIC;
+			return new CSharpDynamicTypeRef(nativeType.getProject(), nativeType.getResolveScope());
 		}
 		else if(elementType == CSharpTokens.__ARGLIST_KEYWORD)
 		{
@@ -71,6 +72,6 @@ public class CSharpNativeTypeImplUtil
 
 		String qualifiedName = ourElementToQTypes.get(elementType);
 		assert qualifiedName != null : elementType.toString();
-		return new CSharpLazyTypeRefByQName(nativeType, qualifiedName);
+		return new CSharpTypeRefByQName(nativeType, qualifiedName);
 	}
 }

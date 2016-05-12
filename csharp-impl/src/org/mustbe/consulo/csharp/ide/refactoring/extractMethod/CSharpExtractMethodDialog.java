@@ -83,7 +83,7 @@ public class CSharpExtractMethodDialog extends CSharpChangeSignatureDialog
 			builder.addModifier(CSharpModifier.STATIC);
 		}
 
-		DotNetTypeRef returnTypeRef = new CSharpTypeRefByQName(DotNetTypes.System.Void);
+		DotNetTypeRef returnTypeRef = new CSharpTypeRefByQName(myMethod.getMethod(), DotNetTypes.System.Void);
 		DotNetType returnType = PsiTreeUtil.getChildOfType(myReturnTypeCodeFragment, DotNetType.class);
 		if(returnType != null)
 		{

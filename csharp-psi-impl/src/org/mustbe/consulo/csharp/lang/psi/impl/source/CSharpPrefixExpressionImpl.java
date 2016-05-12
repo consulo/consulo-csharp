@@ -66,9 +66,9 @@ public class CSharpPrefixExpressionImpl extends CSharpExpressionWithOperatorImpl
 	@NotNull
 	@Override
 	@RequiredReadAction
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
-		DotNetTypeRef delegate = super.toTypeRef(resolveFromParent);
+		DotNetTypeRef delegate = super.toTypeRefImpl(resolveFromParent);
 
 		DotNetExpression expression = getExpression();
 		if(!(expression instanceof CSharpConstantExpressionImpl))

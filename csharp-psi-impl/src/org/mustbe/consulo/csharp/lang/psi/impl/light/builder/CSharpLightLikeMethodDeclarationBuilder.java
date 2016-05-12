@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLikeMethodDeclarationImplUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -58,6 +59,7 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 		super(project);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{
@@ -77,6 +79,7 @@ public abstract class CSharpLightLikeMethodDeclarationBuilder<T extends CSharpLi
 		return null;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()

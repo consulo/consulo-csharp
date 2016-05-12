@@ -45,13 +45,13 @@ public class CSharpAssignmentExpressionImpl extends CSharpExpressionWithOperator
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
 		DotNetExpression[] expressions = getParameterExpressions();
 		if(expressions.length > 0)
 		{
 			return expressions[0].toTypeRef(false);
 		}
-		return new CSharpTypeRefByQName(DotNetTypes.System.Void);
+		return new CSharpTypeRefByQName(this, DotNetTypes.System.Void);
 	}
 }

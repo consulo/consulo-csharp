@@ -27,10 +27,10 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightNamespaceDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpPointerTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyGenericWrapperTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyTypeRefByQName;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
@@ -50,6 +50,8 @@ import org.mustbe.consulo.msil.lang.psi.MsilModifierElementType;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilArrayTypRefImpl;
 import org.mustbe.consulo.msil.lang.psi.impl.type.MsilNativeTypeRefImpl;
+import org.mustbe.consulo.msil.lang.psi.impl.type.MsilPointerTypeRefImpl;
+import org.mustbe.consulo.msil.lang.psi.impl.type.MsilRefTypeRefImpl;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Key;
@@ -251,21 +253,21 @@ public class MsilToCSharpUtil
 
 		if(typeRef instanceof MsilNativeTypeRefImpl)
 		{
-			return new CSharpLazyTypeRefByQName(scope, typeRef.getQualifiedText());
+			return new CSharpTypeRefByQName(scope, typeRef.toString());
 		}
 		else if(typeRef instanceof MsilArrayTypRefImpl)
 		{
 			int[] lowerValues = ((MsilArrayTypRefImpl) typeRef).getLowerValues();
-			return new CSharpArrayTypeRef(extractToCSharp(((MsilArrayTypRefImpl) typeRef).getInnerTypeRef(), scope),
-					lowerValues.length == 0 ? 0 : lowerValues.length - 1);
+			return new CSharpArrayTypeRef(scope, extractToCSharp(((MsilArrayTypRefImpl) typeRef).getInnerTypeRef(), scope), lowerValues.length == 0 ? 0 : lowerValues.length - 1);
 		}
-		else if(typeRef instanceof DotNetPointerTypeRef)
+		else if(typeRef instanceof MsilPointerTypeRefImpl)
 		{
-			return new CSharpPointerTypeRef(extractToCSharp(((DotNetPointerTypeRef) typeRef).getInnerTypeRef(), scope));
+			return new CSharpPointerTypeRef(scope, extractToCSharp(((DotNetPointerTypeRef) typeRef).getInnerTypeRef(), scope));
 		}
-		else if(typeRef instanceof DotNetRefTypeRef)
+		else if(typeRef instanceof MsilRefTypeRefImpl)
 		{
-			return new CSharpRefTypeRef(CSharpRefTypeRef.Type.ref, extractToCSharp(((DotNetRefTypeRef) typeRef).getInnerTypeRef(), scope));
+			DotNetTypeRef innerTypeRef = extractToCSharp(((DotNetRefTypeRef) typeRef).getInnerTypeRef(), scope);
+			return new CSharpRefTypeRef(CSharpRefTypeRef.Type.ref, innerTypeRef);
 		}
 		else if(typeRef instanceof DotNetGenericWrapperTypeRef)
 		{
@@ -274,7 +276,7 @@ public class MsilToCSharpUtil
 
 			DotNetTypeRef inner = extractToCSharp(innerTypeRef, scope);
 
-			PsiElement element = inner.resolve(scope).getElement();
+			PsiElement element = inner.resolve().getElement();
 			if(element instanceof DotNetGenericParameterListOwner)
 			{
 				int genericParametersCount = ((DotNetGenericParameterListOwner) element).getGenericParametersCount();
@@ -292,7 +294,7 @@ public class MsilToCSharpUtil
 
 				list = ContainerUtil.reverse(list);
 
-				return new CSharpLazyGenericWrapperTypeRef(scope, inner, ContainerUtil.toArray(list, DotNetTypeRef.ARRAY_FACTORY));
+				return new CSharpGenericWrapperTypeRef(inner, ContainerUtil.toArray(list, DotNetTypeRef.ARRAY_FACTORY));
 			}
 			else  // fallback
 			{
@@ -302,7 +304,7 @@ public class MsilToCSharpUtil
 					newArguments[i] = extractToCSharp(arguments[i], scope);
 				}
 
-				return new CSharpLazyGenericWrapperTypeRef(scope, inner, newArguments);
+				return new CSharpGenericWrapperTypeRef(inner, newArguments);
 			}
 		}
 		return new MsilDelegateTypeRef(scope, typeRef);

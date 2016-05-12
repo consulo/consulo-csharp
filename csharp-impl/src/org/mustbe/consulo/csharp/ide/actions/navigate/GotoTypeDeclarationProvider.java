@@ -59,7 +59,7 @@ public class GotoTypeDeclarationProvider extends TypeDeclarationProvider
 			return null;
 		}
 
-		PsiElement element = typeRef.resolve(symbol).getElement();
+		PsiElement element = typeRef.resolve().getElement();
 		if(element instanceof DotNetTypeDeclaration || CSharpMethodUtil.isDelegate(element))
 		{
 			return new PsiElement[] {element};

@@ -83,65 +83,72 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitIfStatement(CSharpIfStatementImpl statement)
 	{
 		DotNetExpression conditionExpression = statement.getConditionExpression();
 		if(conditionExpression == myCurrentElement)
 		{
-			myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Boolean), null));
+			myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(statement, DotNetTypes.System.Boolean), null));
 		}
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitAttribute(CSharpAttribute attribute)
 	{
 		if(attribute.getReferenceExpression() == myCurrentElement)
 		{
-			myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Attribute), null));
+			myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(attribute, DotNetTypes.System.Attribute), null));
 		}
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitWhileStatement(CSharpWhileStatementImpl statement)
 	{
 		DotNetExpression conditionExpression = statement.getConditionExpression();
 		if(conditionExpression == myCurrentElement)
 		{
-			myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Boolean), null));
+			myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(statement, DotNetTypes.System.Boolean), null));
 		}
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitThrowStatement(CSharpThrowStatementImpl statement)
 	{
 		DotNetExpression throwExpression = statement.getExpression();
 		if(throwExpression == myCurrentElement)
 		{
-			myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Exception), null));
+			myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(statement, DotNetTypes.System.Exception), null));
 		}
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitDoWhileStatement(CSharpDoWhileStatementImpl statement)
 	{
 		DotNetExpression conditionExpression = statement.getConditionExpression();
 		if(conditionExpression == myCurrentElement)
 		{
-			myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Boolean), null));
+			myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(statement, DotNetTypes.System.Boolean), null));
 		}
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitForeachStatement(CSharpForeachStatementImpl statement)
 	{
 		if(statement.getIterableExpression() == myCurrentElement)
 		{
-			myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Collections.IEnumerable), null));
-			myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Collections.Generic.IEnumerable$1), null));
+			myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(statement, DotNetTypes2.System.Collections.IEnumerable), null));
+			myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(statement, DotNetTypes2.System.Collections.Generic.IEnumerable$1), null));
 		}
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitNamedFieldOrPropertySet(CSharpNamedFieldOrPropertySet parent)
 	{
 		CSharpReferenceExpression nameReferenceExpression = parent.getNameElement();
@@ -165,6 +172,7 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitReturnStatement(CSharpReturnStatementImpl statement)
 	{
 		CSharpSimpleLikeMethodAsElement methodAsElement = PsiTreeUtil.getParentOfType(myCurrentElement, CSharpSimpleLikeMethodAsElement.class);
@@ -180,17 +188,19 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitRefTypeExpression(CSharpRefTypeExpressionImpl expression)
 	{
-		myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.TypedReference), null));
+		myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(expression, DotNetTypes.System.TypedReference), null));
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitRefValueExpression(CSharpRefValueExpressionImpl parent)
 	{
 		if(parent.getExpression() == myCurrentElement)
 		{
-			myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.TypedReference), null));
+			myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(parent, DotNetTypes.System.TypedReference), null));
 		}
 	}
 
@@ -248,13 +258,15 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitAwaitExpression(CSharpAwaitExpressionImpl expression)
 	{
-		myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Threading.Tasks.Task), null));
-		myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes2.System.Threading.Tasks.Task$1), null));
+		myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(expression, DotNetTypes2.System.Threading.Tasks.Task), null));
+		myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(expression, DotNetTypes2.System.Threading.Tasks.Task$1), null));
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitVariable(DotNetVariable variable)
 	{
 		myExpectedTypeInfos.add(new ExpectedTypeInfo(variable.toTypeRef(false), variable));
@@ -297,6 +309,7 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visitUserType(CSharpUserType parent)
 	{
 		PsiElement parentOfUserType = parent.getParent();
@@ -309,7 +322,7 @@ public class ExpectedTypeVisitor extends CSharpElementVisitor
 		}
 		else if(parentOfUserType instanceof CSharpLocalVariable && parentOfUserType.getParent() instanceof CSharpCatchStatementImpl)
 		{
-			myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(DotNetTypes.System.Exception), null));
+			myExpectedTypeInfos.add(new ExpectedTypeInfo(new CSharpTypeRefByQName(parent, DotNetTypes.System.Exception), null));
 		}
 	}
 

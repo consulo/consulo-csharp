@@ -24,7 +24,7 @@ import org.mustbe.consulo.csharp.lang.psi.ToNativeElementTransformers;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.transformer.MsilToNativeElementTransformer;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpReferenceTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpUserTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.SingleNullableStateResolveResult;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
@@ -32,6 +32,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.msil.lang.psi.MsilClassEntry;
 import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
@@ -45,7 +46,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 23.05.14
  */
-public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
+public class MsilDelegateTypeRef extends DotNetTypeRefWithCachedResult
 {
 	private static class MsilResult extends SingleNullableStateResolveResult
 	{
@@ -88,8 +89,8 @@ public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 		@RequiredReadAction
 		protected DotNetTypeResolveResult compute()
 		{
-			final DotNetTypeRef msilTypeRef = getDelegate();
-			final DotNetTypeResolveResult resolveResult = msilTypeRef.resolve(myScope);
+			final DotNetTypeRef msilTypeRef = myTypeRef;
+			final DotNetTypeResolveResult resolveResult = msilTypeRef.resolve();
 
 			final PsiElement element = resolveResult.getElement();
 			if(element == null)
@@ -106,7 +107,7 @@ public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 					PsiElement transformedElement = ToNativeElementTransformers.transform(element);
 					if(transformedElement instanceof CSharpMethodDeclaration)
 					{
-						return new CSharpLambdaTypeRef((CSharpMethodDeclaration) transformedElement).resolve(myScope);
+						return new CSharpLambdaTypeRef((CSharpMethodDeclaration) transformedElement).resolve();
 					}
 				}
 			}
@@ -132,7 +133,7 @@ public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 					{
 						DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) elementByOriginal).getGenericParameters();
 
-						return new CSharpReferenceTypeRef.Result<PsiElement>(genericParameters[methodGenericTypeRef.getIndex()], DotNetGenericExtractor.EMPTY);
+						return new CSharpUserTypeRef.Result<PsiElement>(genericParameters[methodGenericTypeRef.getIndex()], DotNetGenericExtractor.EMPTY);
 					}
 				}
 				else if(msilTypeRef instanceof MsilClassGenericTypeRefImpl)
@@ -151,7 +152,7 @@ public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 					PsiElement elementByOriginal = MsilToNativeElementTransformer.findElementByOriginal(wrappedElement, msilClassEntry);
 					if(elementByOriginal instanceof DotNetGenericParameterListOwner)
 					{
-						final String genericName = msilTypeRef.getPresentableText();
+						final String genericName = msilTypeRef.toString();
 
 						PsiElement owner = elementByOriginal;
 						while(owner instanceof DotNetGenericParameterListOwner)
@@ -162,7 +163,7 @@ public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 							{
 								if(genericName.equals(genericParameter.getName()))
 								{
-									return new CSharpReferenceTypeRef.Result<PsiElement>(genericParameter, DotNetGenericExtractor.EMPTY);
+									return new CSharpUserTypeRef.Result<PsiElement>(genericParameter, DotNetGenericExtractor.EMPTY);
 								}
 							}
 
@@ -180,32 +181,27 @@ public class MsilDelegateTypeRef extends DotNetTypeRef.Delegate
 
 	@NotNull
 	private final PsiElement myScope;
+	private DotNetTypeRef myTypeRef;
 
 	public MsilDelegateTypeRef(@NotNull PsiElement scope, @NotNull DotNetTypeRef typeRef)
 	{
-		super(typeRef);
 		myScope = scope;
-	}
-
-	@NotNull
-	@Override
-	public String getPresentableText()
-	{
-		return MsilHelper.cutGenericMarker(super.getPresentableText());
-	}
-
-	@NotNull
-	@Override
-	public String getQualifiedText()
-	{
-		return MsilHelper.prepareForUser(super.getQualifiedText());
+		myTypeRef = typeRef;
 	}
 
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeResolveResult resolve(@NotNull final PsiElement scope)
+	protected DotNetTypeResolveResult resolveResult()
 	{
 		return myResultValue.getValue();
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	public String toString()
+	{
+		return MsilHelper.prepareForUser(myTypeRef.toString());
 	}
 }

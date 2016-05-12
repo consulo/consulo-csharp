@@ -9,6 +9,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.Me
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
 
@@ -16,7 +17,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 26.10.14
  */
-public class CSharpElementGroupTypeRef extends DotNetTypeRef.Adapter implements CSharpFastImplicitTypeRef
+public class CSharpElementGroupTypeRef extends DotNetTypeRefWithCachedResult implements CSharpFastImplicitTypeRef
 {
 	private final CSharpElementGroup<?> myElementGroup;
 
@@ -25,16 +26,18 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRef.Adapter implements 
 		myElementGroup = elementGroup;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public String getPresentableText()
+	protected DotNetTypeResolveResult resolveResult()
 	{
-		return myElementGroup.getName();
+		return DotNetTypeResolveResult.EMPTY;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public String getQualifiedText()
+	public String toString()
 	{
 		return myElementGroup.getName();
 	}
@@ -44,7 +47,7 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRef.Adapter implements 
 	@Override
 	public DotNetTypeRef doMirror(@NotNull DotNetTypeRef another, PsiElement scope)
 	{
-		DotNetTypeResolveResult typeResolveResult = another.resolve(scope);
+		DotNetTypeResolveResult typeResolveResult = another.resolve();
 		if(typeResolveResult instanceof CSharpLambdaResolveResult)
 		{
 			DotNetTypeRef[] parameterTypeRefs = ((CSharpLambdaResolveResult) typeResolveResult).getParameterTypeRefs();
@@ -59,8 +62,8 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRef.Adapter implements 
 
 					if(calc.isValidResult())
 					{
-						return new CSharpLambdaTypeRef(null, CSharpLikeMethodDeclarationImplUtil.getParametersInfos((DotNetLikeMethodDeclaration)
-								psiElement), ((DotNetLikeMethodDeclaration) psiElement).getReturnTypeRef());
+						return new CSharpLambdaTypeRef(scope, null, CSharpLikeMethodDeclarationImplUtil.getParametersInfos((DotNetLikeMethodDeclaration) psiElement),
+								((DotNetLikeMethodDeclaration) psiElement).getReturnTypeRef());
 					}
 				}
 			}

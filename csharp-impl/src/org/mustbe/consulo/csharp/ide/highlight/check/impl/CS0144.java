@@ -39,7 +39,7 @@ public class CS0144 extends CompilerCheck<CSharpNewExpression>
 	@Override
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpNewExpression element)
 	{
-		PsiElement resolvedNewElement = element.toTypeRef(false).resolve(element).getElement();
+		PsiElement resolvedNewElement = element.toTypeRef(false).resolve().getElement();
 		if(resolvedNewElement instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) resolvedNewElement).hasModifier(DotNetModifier.ABSTRACT))
 		{
 			DotNetType newType = element.getNewType();

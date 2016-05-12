@@ -24,6 +24,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericWrapperTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
 
@@ -31,63 +32,44 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpGenericWrapperTypeRef implements DotNetGenericWrapperTypeRef
+public class CSharpGenericWrapperTypeRef extends DotNetTypeRefWithCachedResult implements DotNetGenericWrapperTypeRef
 {
 	private final DotNetTypeRef myInnerTypeRef;
 	private final DotNetTypeRef[] myArguments;
 
-	public CSharpGenericWrapperTypeRef(DotNetTypeRef innerTypeRef, DotNetTypeRef... rArguments)
+	public CSharpGenericWrapperTypeRef(@NotNull DotNetTypeRef innerTypeRef, @NotNull DotNetTypeRef... rArguments)
 	{
 		myInnerTypeRef = innerTypeRef;
 		myArguments = rArguments;
 	}
 
-	@NotNull
-	@Override
-	public String getPresentableText()
-	{
-		StringBuilder builder = new StringBuilder();
-		builder.append(getInnerTypeRef().getPresentableText());
-		builder.append("<");
-		for(int i = 0; i < getArgumentTypeRefs().length; i++)
-		{
-			if(i != 0)
-			{
-				builder.append(", ");
-			}
-			DotNetTypeRef argument = getArgumentTypeRefs()[i];
-			builder.append(argument.getPresentableText());
-		}
-		builder.append(">");
-		return builder.toString();
-	}
-
-	@NotNull
-	@Override
-	public String getQualifiedText()
-	{
-		StringBuilder builder = new StringBuilder();
-		builder.append(getInnerTypeRef().getQualifiedText());
-		builder.append("<");
-		for(int i = 0; i < getArgumentTypeRefs().length; i++)
-		{
-			if(i != 0)
-			{
-				builder.append(", ");
-			}
-			DotNetTypeRef argument = getArgumentTypeRefs()[i];
-			builder.append(argument.getQualifiedText());
-		}
-		builder.append(">");
-		return builder.toString();
-	}
-
-	@NotNull
-	@Override
 	@RequiredReadAction
-	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
+	@NotNull
+	@Override
+	public String toString()
 	{
-		DotNetTypeResolveResult typeResolveResult = getInnerTypeRef().resolve(scope);
+		StringBuilder builder = new StringBuilder();
+		builder.append(getInnerTypeRef().toString());
+		builder.append("<");
+		for(int i = 0; i < getArgumentTypeRefs().length; i++)
+		{
+			if(i != 0)
+			{
+				builder.append(", ");
+			}
+			DotNetTypeRef argument = getArgumentTypeRefs()[i];
+			builder.append(argument.toString());
+		}
+		builder.append(">");
+		return builder.toString();
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	protected DotNetTypeResolveResult resolveResult()
+	{
+		DotNetTypeResolveResult typeResolveResult = getInnerTypeRef().resolve();
 		PsiElement element = typeResolveResult.getElement();
 
 		if(typeResolveResult instanceof CSharpLambdaResolveResult)
@@ -95,11 +77,11 @@ public class CSharpGenericWrapperTypeRef implements DotNetGenericWrapperTypeRef
 			CSharpMethodDeclaration target = ((CSharpLambdaResolveResult) typeResolveResult).getTarget();
 			if(target == null)
 			{
-				return new CSharpReferenceTypeRef.Result<PsiElement>(element, getGenericExtractor(element));
+				return new CSharpUserTypeRef.Result<PsiElement>(element, getGenericExtractor(element));
 			}
-			return new CSharpReferenceTypeRef.LambdaResult(scope, target, getGenericExtractor(target));
+			return new CSharpUserTypeRef.LambdaResult(target, target, getGenericExtractor(target));
 		}
-		return new CSharpReferenceTypeRef.Result<PsiElement>(element, getGenericExtractor(element));
+		return new CSharpUserTypeRef.Result<PsiElement>(element, getGenericExtractor(element));
 	}
 
 	public DotNetGenericExtractor getGenericExtractor(PsiElement resolved)

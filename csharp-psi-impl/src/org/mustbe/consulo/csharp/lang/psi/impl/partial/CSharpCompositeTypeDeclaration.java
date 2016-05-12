@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.RequiredWriteAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraint;
 import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
@@ -170,11 +171,15 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return ContainerUtil.toArray(newElementList, PsiElement.ARRAY_FACTORY);
 	}
 
+	private Project myProject;
+	private GlobalSearchScope mySearchScope;
 	private CSharpTypeDeclaration[] myTypeDeclarations;
 
-	public CSharpCompositeTypeDeclaration(@NotNull CSharpTypeDeclaration[] typeDeclarations)
+	public CSharpCompositeTypeDeclaration(@NotNull Project project, GlobalSearchScope searchScope, CSharpTypeDeclaration[] typeDeclarations)
 	{
 		super(typeDeclarations[0].getManager(), typeDeclarations[0].getLanguage());
+		myProject = project;
+		mySearchScope = searchScope;
 		myTypeDeclarations = typeDeclarations;
 	}
 
@@ -261,6 +266,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return null;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef[] getExtendTypeRefs()
@@ -286,11 +292,11 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 
 			if(set.contains(DotNetTypes.System.ValueType))
 			{
-				extendTypeRefs.add(new CSharpTypeRefByQName(DotNetTypes.System.ValueType));
+				extendTypeRefs.add(new CSharpTypeRefByQName(myProject, mySearchScope, DotNetTypes.System.ValueType));
 			}
 			else
 			{
-				extendTypeRefs.add(new CSharpTypeRefByQName(DotNetTypes.System.Object));
+				extendTypeRefs.add(new CSharpTypeRefByQName(myProject, mySearchScope, DotNetTypes.System.Object));
 			}
 		}
 		return ContainerUtil.toArray(extendTypeRefs, DotNetTypeRef.ARRAY_FACTORY);
@@ -310,12 +316,14 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return false;
 	}
 
+	@RequiredReadAction
 	@Override
 	public DotNetTypeRef getTypeRefForEnumConstants()
 	{
 		return null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public String getName()
 	{
@@ -358,6 +366,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return myTypeDeclarations[0].getGenericParametersCount();
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetNamedElement[] getMembers()
@@ -432,6 +441,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return false;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getNameIdentifier()
@@ -439,6 +449,7 @@ public class CSharpCompositeTypeDeclaration extends LightElement implements CSha
 		return null;
 	}
 
+	@RequiredWriteAction
 	@Override
 	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
 	{

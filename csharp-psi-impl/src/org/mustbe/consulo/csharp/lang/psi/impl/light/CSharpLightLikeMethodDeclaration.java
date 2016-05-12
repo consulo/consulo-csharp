@@ -51,6 +51,7 @@ public abstract class CSharpLightLikeMethodDeclaration<S extends DotNetLikeMetho
 		myParameterList = parameterList;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{

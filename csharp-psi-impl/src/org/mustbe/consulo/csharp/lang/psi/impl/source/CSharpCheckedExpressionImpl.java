@@ -2,6 +2,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -12,7 +13,7 @@ import com.intellij.lang.ASTNode;
  * @author VISTALL
  * @since 11.02.14
  */
-public class CSharpCheckedExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public class CSharpCheckedExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
 	public CSharpCheckedExpressionImpl(@NotNull ASTNode node)
 	{
@@ -30,9 +31,10 @@ public class CSharpCheckedExpressionImpl extends CSharpElementImpl implements Do
 		visitor.visitCheckedExpression(this);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
 		DotNetExpression innerExpression = getInnerExpression();
 		return innerExpression == null ? DotNetTypeRef.ERROR_TYPE : innerExpression.toTypeRef(true);

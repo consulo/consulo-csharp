@@ -125,7 +125,7 @@ public class CreateUnresolvedMethodByLambdaTypeFix extends CreateUnresolvedEleme
 				{
 					DotNetTypeRef typeRef = ((DotNetExpression) qualifier).toTypeRef(true);
 
-					DotNetTypeResolveResult typeResolveResult = typeRef.resolve(element);
+					DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 
 					PsiElement typeResolveResultElement = typeResolveResult.getElement();
 					if(typeResolveResultElement instanceof DotNetMemberOwner && typeResolveResultElement.isWritable())
@@ -138,6 +138,7 @@ public class CreateUnresolvedMethodByLambdaTypeFix extends CreateUnresolvedEleme
 		return null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public void buildTemplate(@NotNull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @NotNull PsiFile file, @NotNull Template template)
 	{

@@ -45,7 +45,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.TypeLikeCom
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpElementGroupTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromNamespace;
@@ -81,6 +80,7 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.ObjectUtil;
 import com.intellij.util.Processor;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpDynamicTypeRef;
 
 /**
  * @author VISTALL
@@ -715,7 +715,7 @@ public class CSharpReferenceExpressionImplUtil
 					break;
 			}
 
-			DotNetTypeResolveResult typeResolveResult = typeRef.resolve(element);
+			DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 
 			PsiElement resolveElement = typeResolveResult.getElement();
 			if(resolveElement == null)
@@ -758,7 +758,7 @@ public class CSharpReferenceExpressionImplUtil
 				}
 			}
 
-			DotNetTypeResolveResult typeResolveResult = qualifierTypeRef.resolve(element);
+			DotNetTypeResolveResult typeResolveResult = qualifierTypeRef.resolve();
 
 			PsiElement resolve = typeResolveResult.getElement();
 
@@ -1092,7 +1092,7 @@ public class CSharpReferenceExpressionImplUtil
 					return false;
 				}
 				DotNetTypeRef typeRef = qualifier.toTypeRef(false);
-				return typeRef == CSharpStaticTypeRef.DYNAMIC;
+				return typeRef instanceof CSharpDynamicTypeRef;
 		}
 		return false;
 	}
@@ -1119,35 +1119,35 @@ public class CSharpReferenceExpressionImplUtil
 
 	@NotNull
 	@RequiredReadAction
-	public static DotNetTypeRef toTypeRef(@Nullable PsiElement resolve, @NotNull DotNetGenericExtractor extractor)
+	public static DotNetTypeRef toTypeRef(@Nullable PsiElement resolvedElement, @NotNull DotNetGenericExtractor extractor)
 	{
-		if(resolve instanceof DotNetNamespaceAsElement)
+		if(resolvedElement instanceof DotNetNamespaceAsElement)
 		{
-			return new CSharpTypeRefFromNamespace(((DotNetNamespaceAsElement) resolve).getPresentableQName());
+			return new CSharpTypeRefFromNamespace((DotNetNamespaceAsElement) resolvedElement);
 		}
-		else if(resolve instanceof DotNetTypeDeclaration)
+		else if(resolvedElement instanceof DotNetTypeDeclaration)
 		{
-			return new CSharpTypeRefByTypeDeclaration((DotNetTypeDeclaration) resolve, extractor);
+			return new CSharpTypeRefByTypeDeclaration((DotNetTypeDeclaration) resolvedElement, extractor);
 		}
-		else if(resolve instanceof CSharpTypeDefStatement)
+		else if(resolvedElement instanceof CSharpTypeDefStatement)
 		{
-			return ((CSharpTypeDefStatement) resolve).toTypeRef();
+			return ((CSharpTypeDefStatement) resolvedElement).toTypeRef();
 		}
-		else if(resolve instanceof DotNetGenericParameter)
+		else if(resolvedElement instanceof DotNetGenericParameter)
 		{
-			return new CSharpTypeRefFromGenericParameter((DotNetGenericParameter) resolve);
+			return new CSharpTypeRefFromGenericParameter((DotNetGenericParameter) resolvedElement);
 		}
-		else if(resolve instanceof CSharpMethodDeclaration)
+		else if(resolvedElement instanceof CSharpMethodDeclaration)
 		{
-			return new CSharpLambdaTypeRef((CSharpMethodDeclaration) resolve);
+			return new CSharpLambdaTypeRef((CSharpMethodDeclaration) resolvedElement);
 		}
-		else if(resolve instanceof DotNetVariable)
+		else if(resolvedElement instanceof DotNetVariable)
 		{
-			return ((DotNetVariable) resolve).toTypeRef(true);
+			return ((DotNetVariable) resolvedElement).toTypeRef(true);
 		}
-		else if(resolve instanceof CSharpElementGroup)
+		else if(resolvedElement instanceof CSharpElementGroup)
 		{
-			return new CSharpElementGroupTypeRef((CSharpElementGroup<?>) resolve);
+			return new CSharpElementGroupTypeRef((CSharpElementGroup<?>) resolvedElement);
 		}
 		return DotNetTypeRef.ERROR_TYPE;
 	}

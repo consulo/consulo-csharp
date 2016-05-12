@@ -17,23 +17,29 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpGenericParameterStub;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.ArrayUtil;
+import consulo.csharp.psi.CSharpGenericParameter;
 
 /**
  * @author VISTALL
  * @since 30.11.13.
  */
-public class CSharpGenericParameterImpl extends CSharpStubMemberImpl<CSharpGenericParameterStub> implements DotNetGenericParameter
+public class CSharpGenericParameterImpl extends CSharpStubMemberImpl<CSharpGenericParameterStub> implements CSharpGenericParameter
 {
 	public CSharpGenericParameterImpl(@NotNull ASTNode node)
 	{
@@ -73,5 +79,22 @@ public class CSharpGenericParameterImpl extends CSharpStubMemberImpl<CSharpGener
 			return modifierList.getAttributes();
 		}
 		return DotNetAttribute.EMPTY_ARRAY;
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	public DotNetTypeRef[] getExtendTypeRefs()
+	{
+		return CachedValuesManager.getCachedValue(this, new CachedValueProvider<DotNetTypeRef[]>()
+		{
+			@Nullable
+			@Override
+			@RequiredReadAction
+			public Result<DotNetTypeRef[]> compute()
+			{
+				return Result.create(CSharpGenericConstraintUtil.getExtendTypes(CSharpGenericParameterImpl.this), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+			}
+		});
 	}
 }

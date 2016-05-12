@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import org.mustbe.consulo.csharp.ide.liveTemplates.expression.ReturnStatementExpression;
@@ -90,7 +91,7 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
 				{
 					DotNetTypeRef typeRef = ((DotNetExpression) qualifier).toTypeRef(true);
 
-					DotNetTypeResolveResult typeResolveResult = typeRef.resolve(element);
+					DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 
 					PsiElement typeResolveResultElement = typeResolveResult.getElement();
 					if(typeResolveResultElement instanceof DotNetMemberOwner && typeResolveResultElement.isWritable())
@@ -103,6 +104,7 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
 		return null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public void buildTemplate(@NotNull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @NotNull PsiFile file, @NotNull Template template)
 	{
@@ -126,7 +128,7 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
 		}
 		else
 		{
-			template.addVariable(new TypeRefExpression(new CSharpTypeRefByQName(DotNetTypes.System.Void), file), true);
+			template.addVariable(new TypeRefExpression(new CSharpTypeRefByQName(file, DotNetTypes.System.Void), file), true);
 		}
 
 		template.addTextSegment(" ");

@@ -36,7 +36,7 @@ public class MethodGenerateUtil
 	@RequiredReadAction
 	public static String getDefaultValueForType(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
 	{
-		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 
 		if(typeResolveResult.isNullable())
 		{

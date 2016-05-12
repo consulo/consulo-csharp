@@ -64,7 +64,7 @@ public class CSharpStubPointerTypeImpl extends CSharpStubTypeElementImpl<EmptySt
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
-		return new CSharpPointerTypeRef(innerType.toTypeRef());
+		return new CSharpPointerTypeRef(this, innerType.toTypeRef());
 	}
 
 	@Nullable

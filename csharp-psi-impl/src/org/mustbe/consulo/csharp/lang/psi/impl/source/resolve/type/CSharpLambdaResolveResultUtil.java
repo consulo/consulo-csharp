@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
@@ -31,11 +32,12 @@ public class CSharpLambdaResolveResultUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static CSharpTypeDeclaration createTypeFromDelegate(@NotNull CSharpMethodDeclaration declaration)
 	{
 		Project project = declaration.getProject();
 
-		CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(project);
+		CSharpLightTypeDeclarationBuilder builder = new CSharpLightTypeDeclarationBuilder(declaration);
 		builder.withParentQName(declaration.getPresentableParentQName());
 		builder.withName(declaration.getName());
 		builder.addModifier(DotNetModifier.SEALED);
@@ -49,7 +51,7 @@ public class CSharpLambdaResolveResultUtil
 
 		builder.putUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE, declaration);
 
-		builder.addExtendType(new CSharpTypeRefByQName(DotNetTypes.System.MulticastDelegate));
+		builder.addExtendType(new CSharpTypeRefByQName(declaration, DotNetTypes.System.MulticastDelegate));
 
 		for(DotNetGenericParameter parameter : declaration.getGenericParameters())
 		{

@@ -89,8 +89,8 @@ public class GenericInferenceUtil
 		DotNetGenericParameter[] genericParameters = methodDeclaration.getGenericParameters();
 		if(genericParameters.length == 0 || typeArgumentListRefs.length > 0)
 		{
-			DotNetGenericExtractor extractor = genericParameters.length != typeArgumentListRefs.length ? DotNetGenericExtractor.EMPTY :
-					CSharpGenericExtractor.create(genericParameters, typeArgumentListRefs);
+			DotNetGenericExtractor extractor = genericParameters.length != typeArgumentListRefs.length ? DotNetGenericExtractor.EMPTY : CSharpGenericExtractor.create(genericParameters,
+					typeArgumentListRefs);
 			return new GenericInferenceResult(genericParameters.length == typeArgumentListRefs.length, extractor);
 		}
 
@@ -113,8 +113,8 @@ public class GenericInferenceUtil
 
 			DotNetTypeRef expressionTypeRef = unwrapPossibleGenericTypeRefs(nCallArgument, parameterTypeRef, map, scope);
 
-			DotNetTypeResolveResult parameterTypeResolveResult = parameterTypeRef.resolve(scope);
-			DotNetTypeResolveResult expressionTypeResolveResult = expressionTypeRef.resolve(scope);
+			DotNetTypeResolveResult parameterTypeResolveResult = parameterTypeRef.resolve();
+			DotNetTypeResolveResult expressionTypeResolveResult = expressionTypeRef.resolve();
 
 			if(parameterTypeResolveResult instanceof CSharpLambdaResolveResult && expressionTypeResolveResult instanceof CSharpLambdaResolveResult)
 			{
@@ -131,13 +131,11 @@ public class GenericInferenceUtil
 						DotNetTypeRef pParameterTypeRef = pParameterTypeRefs[i];
 						DotNetTypeRef eParameterTypeRef = eParameterTypeRefs[i];
 
-						inferenceGenericFromExpressionTypeRefAndParameterTypeRef(genericParameters, map, pParameterTypeRef, eParameterTypeRef,
-								scope);
+						inferenceGenericFromExpressionTypeRefAndParameterTypeRef(genericParameters, map, pParameterTypeRef, eParameterTypeRef, scope);
 					}
 				}
 
-				inferenceGenericFromExpressionTypeRefAndParameterTypeRef(genericParameters, map, pLambdaResolveResult.getReturnTypeRef(),
-						eLambdaResolveResult.getReturnTypeRef(), scope);
+				inferenceGenericFromExpressionTypeRefAndParameterTypeRef(genericParameters, map, pLambdaResolveResult.getReturnTypeRef(), eLambdaResolveResult.getReturnTypeRef(), scope);
 			}
 
 			inferenceGenericFromExpressionTypeRefAndParameterTypeRef(genericParameters, map, parameterTypeRef, expressionTypeRef, scope);
@@ -158,7 +156,7 @@ public class GenericInferenceUtil
 			return;
 		}
 
-		DotNetTypeResolveResult parameterTypeResolveResult = parameterTypeRef.resolve(scope);
+		DotNetTypeResolveResult parameterTypeResolveResult = parameterTypeRef.resolve();
 
 		PsiElement parameterElement = parameterTypeResolveResult.getElement();
 		for(DotNetGenericParameter genericParameter : methodGenericParameters)
@@ -195,7 +193,7 @@ public class GenericInferenceUtil
 					continue;
 				}
 
-				int indexOfGeneric = findIndexOfGeneric(parameterTypeResolveResult, genericParameter, scope);
+				int indexOfGeneric = findIndexOfGeneric(parameterTypeResolveResult, genericParameter);
 				if(indexOfGeneric == -1)
 				{
 					continue;
@@ -217,7 +215,7 @@ public class GenericInferenceUtil
 	}
 
 	@RequiredReadAction
-	private static int findIndexOfGeneric(DotNetTypeResolveResult parameterTypeResolveResult, DotNetGenericParameter parameter, PsiElement scope)
+	private static int findIndexOfGeneric(DotNetTypeResolveResult parameterTypeResolveResult, DotNetGenericParameter parameter)
 	{
 		PsiElement element = parameterTypeResolveResult.getElement();
 		if(element instanceof DotNetGenericParameterListOwner)
@@ -237,7 +235,7 @@ public class GenericInferenceUtil
 				{
 					continue;
 				}
-				DotNetTypeResolveResult extractedTypeResolveResult = extractedTypeRef.resolve(scope);
+				DotNetTypeResolveResult extractedTypeResolveResult = extractedTypeRef.resolve();
 				if(parameter.isEquivalentTo(extractedTypeResolveResult.getElement()))
 				{
 					return i;
@@ -268,8 +266,7 @@ public class GenericInferenceUtil
 			return expressionTypeRef;
 		}
 
-		CSharpLambdaTypeRef baseTypeRefOfLambda = new CSharpLambdaTypeRef(null, ((CSharpLambdaExpressionImpl) argumentExpression).getParameterInfos
-				(), DotNetTypeRef.AUTO_TYPE);
+		CSharpLambdaTypeRef baseTypeRefOfLambda = new CSharpLambdaTypeRef(scope, null, ((CSharpLambdaExpressionImpl) argumentExpression).getParameterInfos(), DotNetTypeRef.AUTO_TYPE);
 		if(CSharpTypeUtil.isInheritable(parameterTypeRef, baseTypeRefOfLambda, scope))
 		{
 			//TODO [VISTALL] find another way to duplicate expression

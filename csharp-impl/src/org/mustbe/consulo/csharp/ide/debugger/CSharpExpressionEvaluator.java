@@ -67,7 +67,7 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 	@RequiredReadAction
 	public void visitConstantExpression(CSharpConstantExpressionImpl expression)
 	{
-		PsiElement element = expression.toTypeRef(true).resolve(expression).getElement();
+		PsiElement element = expression.toTypeRef(true).resolve().getElement();
 		if(!(element instanceof CSharpTypeDeclaration))
 		{
 			cantEvaluateExpression();
@@ -291,7 +291,7 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 		List<DotNetTypeDeclaration> parameterTypes = new ArrayList<DotNetTypeDeclaration>();
 		for(DotNetTypeRef parameterTypeRef : parameterTypeRefs)
 		{
-			PsiElement element = parameterTypeRef.resolve(expression).getElement();
+			PsiElement element = parameterTypeRef.resolve().getElement();
 			if(!(element instanceof CSharpTypeDeclaration))
 			{
 				throw new UnsupportedOperationException("parameter type is not type");
@@ -336,7 +336,7 @@ public class CSharpExpressionEvaluator extends CSharpElementVisitor
 		List<DotNetTypeDeclaration> parameterTypes = new ArrayList<DotNetTypeDeclaration>();
 		for(DotNetTypeRef parameterTypeRef : parameterTypeRefs)
 		{
-			PsiElement element = parameterTypeRef.resolve(scope).getElement();
+			PsiElement element = parameterTypeRef.resolve().getElement();
 			if(!(element instanceof CSharpTypeDeclaration))
 			{
 				throw new UnsupportedOperationException("parameter type is not type");

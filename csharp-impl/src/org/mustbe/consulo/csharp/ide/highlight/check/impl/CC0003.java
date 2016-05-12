@@ -26,11 +26,11 @@ import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpDynamicTypeRef;
 
 /**
  * @author VISTALL
@@ -44,7 +44,7 @@ public class CC0003 extends CompilerCheck<CSharpIndexAccessExpressionImpl>
 	public List<HighlightInfoFactory> check(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpIndexAccessExpressionImpl expression)
 	{
 		DotNetExpression qualifier = expression.getQualifier();
-		if(qualifier.toTypeRef(false) == CSharpStaticTypeRef.DYNAMIC)
+		if(qualifier.toTypeRef(false) instanceof CSharpDynamicTypeRef)
 		{
 			return Collections.emptyList();
 		}

@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.RequiredWriteAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
@@ -81,6 +82,7 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 		return myOriginal;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getConstantKeywordElement()
@@ -95,6 +97,7 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 		return false;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public final DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
@@ -145,12 +148,14 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 		return getName();
 	}
 
+	@RequiredReadAction
 	@Override
 	public String getName()
 	{
 		return myOriginal.getName();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getNameIdentifier()
@@ -158,6 +163,7 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 		return null;
 	}
 
+	@RequiredWriteAction
 	@Override
 	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
 	{

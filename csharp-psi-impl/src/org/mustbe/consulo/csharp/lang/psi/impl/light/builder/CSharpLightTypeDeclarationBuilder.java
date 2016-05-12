@@ -38,7 +38,6 @@ import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclarationUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
@@ -67,14 +66,13 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 	private Type myType = Type.DEFAULT;
 	private String myParentQName;
 
-	public CSharpLightTypeDeclarationBuilder(Project project)
-	{
-		super(project);
-	}
+	private DotNetTypeRef myEnumConstantTypeRef;
 
+	@RequiredReadAction
 	public CSharpLightTypeDeclarationBuilder(PsiElement element)
 	{
 		super(element);
+		myEnumConstantTypeRef = new CSharpTypeRefByQName(element, DotNetTypes.System.Int32);
 	}
 
 	@Override
@@ -135,6 +133,7 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 		return null;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef[] getExtendTypeRefs()
@@ -149,10 +148,11 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 		return DotNetInheritUtil.isInheritor(this, other, deep);
 	}
 
+	@RequiredReadAction
 	@Override
 	public DotNetTypeRef getTypeRefForEnumConstants()
 	{
-		return new CSharpTypeRefByQName(DotNetTypes.System.Int32);
+		return myEnumConstantTypeRef;
 	}
 
 	@Nullable
@@ -181,6 +181,7 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 		return getGenericParameters().length;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetQualifiedElement[] getMembers()
@@ -188,12 +189,14 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 		return ContainerUtil.toArray(myMembers, DotNetQualifiedElement.ARRAY_FACTORY);
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
 		return myModifiers.contains(CSharpModifier.as(modifier));
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public DotNetModifierList getModifierList()
@@ -201,6 +204,7 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 		return null;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableParentQName()
@@ -213,6 +217,7 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 		return myParentQName;
 	}
 
+	@RequiredReadAction
 	@Override
 	public String getVmQName()
 	{
@@ -225,6 +230,7 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 		return presentableQName + DotNetTypeDeclarationUtil.GENERIC_MARKER_IN_NAME + genericParametersCount;
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getVmName()
@@ -232,6 +238,7 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 		return DotNetTypeDeclarationUtil.getVmName(this);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getPresentableQName()
@@ -244,6 +251,7 @@ public class CSharpLightTypeDeclarationBuilder extends CSharpLightNamedElementBu
 		return parentQName + "." + getName();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getNameIdentifier()

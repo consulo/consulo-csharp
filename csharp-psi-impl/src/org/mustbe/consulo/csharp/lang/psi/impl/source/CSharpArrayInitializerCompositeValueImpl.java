@@ -102,7 +102,7 @@ public class CSharpArrayInitializerCompositeValueImpl extends CSharpElementImpl 
 				return ResolveResult.EMPTY_ARRAY;
 			}
 
-			DotNetTypeResolveResult typeResolveResult = typeRef.resolve(this);
+			DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 			PsiElement resolvedElement = typeResolveResult.getElement();
 			if(resolvedElement == null)
 			{

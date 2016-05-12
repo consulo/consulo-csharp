@@ -71,7 +71,7 @@ public class FieldOrPropertyKindProcessor implements KindProcessor
 			return;
 		}
 
-		DotNetTypeResolveResult typeResolveResult = resolvedTypeRef.resolve(element);
+		DotNetTypeResolveResult typeResolveResult = resolvedTypeRef.resolve();
 
 		PsiElement typeElement = typeResolveResult.getElement();
 		if(typeElement == null)

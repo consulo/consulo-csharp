@@ -24,6 +24,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.util.SandboxUtil;
 
 /**
  * @author VISTALL
@@ -34,6 +35,15 @@ public abstract class CSharpElementImpl extends ASTWrapperPsiElement
 	public CSharpElementImpl(@NotNull ASTNode node)
 	{
 		super(node);
+
+		if(SandboxUtil.isInsideSandbox())
+		{
+			String name = getClass().getName();
+			if(name.contains("Expression") && !name.contains("Statement") && !(this instanceof CSharpExpressionImpl))
+			{
+				throw new IllegalArgumentException();
+			}
+		}
 	}
 
 	@NotNull
@@ -54,7 +64,7 @@ public abstract class CSharpElementImpl extends ASTWrapperPsiElement
 	{
 		if(visitor instanceof CSharpElementVisitor)
 		{
-			accept((CSharpElementVisitor)visitor);
+			accept((CSharpElementVisitor) visitor);
 		}
 		else
 		{

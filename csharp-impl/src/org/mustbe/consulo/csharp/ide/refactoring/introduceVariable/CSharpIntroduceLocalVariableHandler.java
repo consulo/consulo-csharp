@@ -322,7 +322,7 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 			}
 			else
 			{
-				DotNetTypeResolveResult typeResolveResult = initalizerTypeRef.resolve(initializer);
+				DotNetTypeResolveResult typeResolveResult = initalizerTypeRef.resolve();
 				if(typeResolveResult instanceof CSharpLambdaResolveResult)
 				{
 					List<ExpectedTypeInfo> expectedTypeRefs = ExpectedTypeVisitor.findExpectedTypeRefs(initializer);
@@ -350,7 +350,7 @@ public class CSharpIntroduceLocalVariableHandler extends CSharpIntroduceHandler
 			return false;
 		}
 		DotNetTypeRef initializerType = initializer.toTypeRef(false);
-		DotNetTypeResolveResult typeResolveResult = initializerType.resolve(initializer);
+		DotNetTypeResolveResult typeResolveResult = initializerType.resolve();
 		if(typeResolveResult instanceof CSharpLambdaResolveResult && ((CSharpLambdaResolveResult) typeResolveResult).getTarget() == null)
 		{
 			return false;

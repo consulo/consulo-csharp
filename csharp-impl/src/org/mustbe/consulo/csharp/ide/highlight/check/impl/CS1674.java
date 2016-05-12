@@ -37,8 +37,6 @@ import com.intellij.psi.PsiElement;
  */
 public class CS1674 extends CompilerCheck<CSharpUsingStatementImpl>
 {
-	private static DotNetTypeRef ourIDisposableTypeRef = new CSharpTypeRefByQName(DotNetTypes.System.IDisposable);
-
 	@RequiredReadAction
 	@Nullable
 	@Override
@@ -68,7 +66,7 @@ public class CS1674 extends CompilerCheck<CSharpUsingStatementImpl>
 			return null;
 		}
 
-		if(!CSharpTypeUtil.isInheritable(ourIDisposableTypeRef, usingTypeRef, element))
+		if(!CSharpTypeUtil.isInheritable(new CSharpTypeRefByQName(element, DotNetTypes.System.IDisposable), usingTypeRef, element))
 		{
 			assert highlightElement != null;
 			return newBuilder(highlightElement, formatTypeRef(usingTypeRef, element));

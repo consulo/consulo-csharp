@@ -1,24 +1,28 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
+import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
+import consulo.csharp.psi.CSharpGenericParameter;
 
 /**
  * @author VISTALL
  * @since 21.11.14
  */
-public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWrapper<DotNetGenericParameter> implements DotNetGenericParameter, DotNetAttributeListOwner
+public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWrapper<DotNetGenericParameter> implements CSharpGenericParameter, DotNetAttributeListOwner
 {
 	public MsilGenericParameterAsCSharpGenericParameter(@NotNull PsiElement parent, DotNetGenericParameter msilElement)
 	{
@@ -102,5 +106,14 @@ public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWra
 	public DotNetAttribute[] getAttributes()
 	{
 		return myOriginal.getAttributes();
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	@LazyInstance
+	public DotNetTypeRef[] getExtendTypeRefs()
+	{
+		return CSharpGenericConstraintUtil.getExtendTypes(MsilGenericParameterAsCSharpGenericParameter.this);
 	}
 }

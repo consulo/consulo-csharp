@@ -17,21 +17,20 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
-import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
 import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
  * @since 11.02.14
  */
-public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRef.Adapter
+public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRefWithCachedResult
 {
 	private DotNetTypeDeclaration myElement;
 	@NotNull
@@ -48,29 +47,24 @@ public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRef.Adapter
 		myExtractor = extractor;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public String getPresentableText()
-	{
-		return myElement.getName();
-	}
-
-	@NotNull
-	@Override
-	public String getQualifiedText()
-	{
-		return myElement.getPresentableQName();
-	}
-
-	@NotNull
-	@Override
-	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
+	protected DotNetTypeResolveResult resolveResult()
 	{
 		CSharpMethodDeclaration methodDeclaration = myElement.getUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE);
 		if(methodDeclaration != null)
 		{
-			return new CSharpReferenceTypeRef.LambdaResult(scope, methodDeclaration, myExtractor);
+			return new CSharpUserTypeRef.LambdaResult(myElement, methodDeclaration, myExtractor);
 		}
-		return new CSharpReferenceTypeRef.Result<PsiElement>(myElement, myExtractor);
+		return new CSharpUserTypeRef.Result<PsiElement>(myElement, myExtractor);
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	public String toString()
+	{
+		return myElement.getPresentableQName();
 	}
 }

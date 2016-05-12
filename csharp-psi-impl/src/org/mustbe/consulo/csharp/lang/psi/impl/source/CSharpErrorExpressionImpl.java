@@ -17,6 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -26,7 +27,7 @@ import com.intellij.lang.ASTNode;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpErrorExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public class CSharpErrorExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
 	public CSharpErrorExpressionImpl(@NotNull ASTNode node)
 	{
@@ -39,9 +40,10 @@ public class CSharpErrorExpressionImpl extends CSharpElementImpl implements DotN
 		visitor.visitElement(this);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
 		return DotNetTypeRef.ERROR_TYPE;
 	}

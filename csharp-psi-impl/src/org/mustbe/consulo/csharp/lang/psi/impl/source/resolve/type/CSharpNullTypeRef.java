@@ -7,43 +7,53 @@ import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 
 /**
  * @author VISTALL
  * @since 23.10.14
  */
-public class CSharpNullTypeRef implements DotNetTypeRef
+public class CSharpNullTypeRef extends DotNetTypeRefWithCachedResult
 {
-	public static final CSharpNullTypeRef INSTANCE = new CSharpNullTypeRef();
+	private Project myProject;
+	private GlobalSearchScope myScope;
 
-	@NotNull
-	@Override
-	public String getPresentableText()
-	{
-		return "null";
-	}
-
-	@NotNull
-	@Override
-	public String getQualifiedText()
-	{
-		return getPresentableText();
-	}
-
-	@NotNull
-	@Override
 	@RequiredReadAction
-	public DotNetTypeResolveResult resolve(@NotNull PsiElement element)
+	public CSharpNullTypeRef(@NotNull PsiElement element)
 	{
-		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(element.getProject()).findType(DotNetTypes.System.Object, element.getResolveScope(), CSharpTransform.INSTANCE);
+		this(element.getProject(), element.getResolveScope());
+	}
+
+	@RequiredReadAction
+	public CSharpNullTypeRef(@NotNull Project project, @NotNull GlobalSearchScope scope)
+	{
+		myProject = project;
+		myScope = scope;
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	protected DotNetTypeResolveResult resolveResult()
+	{
+		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(myProject).findType(DotNetTypes.System.Object, myScope, CSharpTransform.INSTANCE);
 		if(type == null)
 		{
 			return DotNetTypeResolveResult.EMPTY;
 		}
 		return new SimpleTypeResolveResult(type, DotNetGenericExtractor.EMPTY);
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	public String toString()
+	{
+		return "null";
 	}
 }
