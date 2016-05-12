@@ -195,7 +195,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 		}
 
 		CSharpLightMethodDeclarationBuilder builder = new CSharpLightMethodDeclarationBuilder(project);
-		builder.withReturnType(returnTypeRef.get() == null ? new CSharpTypeRefByQName(DotNetTypes.System.Void) : returnTypeRef.get());
+		builder.withReturnType(returnTypeRef.get() == null ? new CSharpTypeRefByQName(file, DotNetTypes.System.Void) : returnTypeRef.get());
 		builder.addModifier(CSharpModifier.PRIVATE);
 		if(qualifiedElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) qualifiedElement).hasModifier(CSharpModifier.STATIC))
 		{

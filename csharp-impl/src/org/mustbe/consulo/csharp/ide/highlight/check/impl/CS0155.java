@@ -41,8 +41,6 @@ import com.intellij.psi.PsiElement;
  */
 public class CS0155 extends CompilerCheck<DotNetElement>
 {
-	private static final DotNetTypeRef ourExceptionTypeRef = new CSharpTypeRefByQName(DotNetTypes.System.Exception);
-
 	@RequiredReadAction
 	@Nullable
 	@Override
@@ -64,7 +62,7 @@ public class CS0155 extends CompilerCheck<DotNetElement>
 				return null;
 			}
 
-			if(!CSharpTypeUtil.isInheritable(ourExceptionTypeRef, expressionTypeRef, expression))
+			if(!CSharpTypeUtil.isInheritable(new CSharpTypeRefByQName(element, DotNetTypes.System.Exception), expressionTypeRef, expression))
 			{
 				return newBuilder(element);
 			}
@@ -78,9 +76,11 @@ public class CS0155 extends CompilerCheck<DotNetElement>
 				return null;
 			}
 
-			if(!CSharpTypeUtil.isInheritable(ourExceptionTypeRef, ((CSharpLocalVariable) parent).toTypeRef(true), element))
+			DotNetTypeRef exceptionTypeRef = new CSharpTypeRefByQName(element, DotNetTypes.System.Exception);
+
+			if(!CSharpTypeUtil.isInheritable(exceptionTypeRef, ((CSharpLocalVariable) parent).toTypeRef(true), element))
 			{
-				return newBuilder(element).addQuickFix(new ReplaceTypeQuickFix((DotNetType) element, ourExceptionTypeRef));
+				return newBuilder(element).addQuickFix(new ReplaceTypeQuickFix((DotNetType) element, exceptionTypeRef));
 			}
 		}
 		return null;

@@ -2,6 +2,7 @@ package org.mustbe.consulo.csharp.lang.psi;
 
 import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
@@ -12,8 +13,10 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 public interface CSharpSimpleLikeMethod
 {
 	@NotNull
+	@RequiredReadAction
 	CSharpSimpleParameterInfo[] getParameterInfos();
 
 	@NotNull
+	@RequiredReadAction
 	DotNetTypeRef getReturnTypeRef();
 }

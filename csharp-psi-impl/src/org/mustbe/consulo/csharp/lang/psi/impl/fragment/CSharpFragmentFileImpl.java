@@ -56,6 +56,8 @@ public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFra
 	@Nullable
 	private final PsiElement myContext;
 
+	private GlobalSearchScope mySearchScope;
+
 	private Set<String> myUsingNamespaceChildren = new LinkedHashSet<String>();
 
 	public CSharpFragmentFileImpl(@NotNull IElementType elementType, IElementType contentElementType, @NotNull FileViewProvider provider, @Nullable PsiElement context)
@@ -105,13 +107,13 @@ public class CSharpFragmentFileImpl extends PsiFileImpl implements CSharpCodeFra
 	@Override
 	public void forceResolveScope(GlobalSearchScope searchScope)
 	{
-
+		mySearchScope = searchScope;
 	}
 
 	@Override
 	public GlobalSearchScope getForcedResolveScope()
 	{
-		return null;
+		return mySearchScope;
 	}
 
 	@NotNull

@@ -32,7 +32,7 @@ import com.intellij.psi.ResolveResult;
  * @author VISTALL
  * @since 13.08.14
  */
-public abstract class CSharpExpressionWithOperatorImpl extends CSharpElementImpl implements DotNetExpression, CSharpCallArgumentListOwner
+public abstract class CSharpExpressionWithOperatorImpl extends CSharpExpressionImpl implements DotNetExpression, CSharpCallArgumentListOwner
 {
 	public CSharpExpressionWithOperatorImpl(@NotNull ASTNode node)
 	{
@@ -48,7 +48,7 @@ public abstract class CSharpExpressionWithOperatorImpl extends CSharpElementImpl
 	@NotNull
 	@Override
 	@RequiredReadAction
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
 		CSharpOperatorReferenceImpl operatorElement = getOperatorElement();
 

@@ -31,6 +31,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParamete
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalMemberProvider;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.DotNetTypes;
@@ -42,6 +43,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.Consumer;
 import com.intellij.util.containers.ContainerUtil;
 
@@ -55,33 +57,34 @@ public class ConversionMethodsProvider implements CSharpAdditionalMemberProvider
 	@Override
 	public void processAdditionalMembers(@NotNull DotNetElement element, @NotNull DotNetGenericExtractor extractor, @NotNull Consumer<PsiElement> consumer)
 	{
-		Project project = element.getProject();
-
 		if(element instanceof CSharpTypeDeclaration)
 		{
+			Project project = element.getProject();
+			GlobalSearchScope resolveScope = element.getResolveScope();
+
 			CSharpTypeDeclaration typeDeclaration = (CSharpTypeDeclaration) element;
 
 			CSharpMethodDeclaration methodDeclaration = typeDeclaration.getUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE);
 			DotNetTypeRef selfTypeRef;
 			if(methodDeclaration != null)
 			{
-				selfTypeRef = new CSharpLambdaTypeRef(methodDeclaration, extractor);
+				selfTypeRef = new CSharpLambdaTypeRef(element, methodDeclaration, extractor);
 			}
 			else
 			{
 				selfTypeRef = new CSharpTypeRefByTypeDeclaration(typeDeclaration, extractor);
 			}
 
-			buildConversionMethods(project, selfTypeRef, element, OperatorStubsLoader.INSTANCE.myTypeOperators.get(typeDeclaration.getVmQName()), consumer);
+			buildConversionMethods(project, resolveScope, selfTypeRef, element, OperatorStubsLoader.INSTANCE.myTypeOperators.get(typeDeclaration.getVmQName()), consumer);
 
 			if(typeDeclaration.isEnum())
 			{
-				buildConversionMethods(project, selfTypeRef, element, OperatorStubsLoader.INSTANCE.myEnumOperators, consumer);
+				buildConversionMethods(project, resolveScope, selfTypeRef, element, OperatorStubsLoader.INSTANCE.myEnumOperators, consumer);
 			}
 
 			if(DotNetTypes.System.Nullable$1.equals(typeDeclaration.getVmQName()))
 			{
-				buildNullableConversionMethods(selfTypeRef, typeDeclaration, extractor, consumer);
+				buildNullableConversionMethods(project, selfTypeRef, resolveScope, typeDeclaration, extractor, consumer);
 			}
 		}
 	}
@@ -95,7 +98,9 @@ public class ConversionMethodsProvider implements CSharpAdditionalMemberProvider
 
 	@NotNull
 	@RequiredReadAction
-	private DotNetElement[] buildNullableConversionMethods(@NotNull DotNetTypeRef selfTypeRef,
+	private DotNetElement[] buildNullableConversionMethods(Project project,
+			@NotNull DotNetTypeRef selfTypeRef,
+			GlobalSearchScope resolveScope,
 			@NotNull CSharpTypeDeclaration typeDeclaration,
 			@NotNull DotNetGenericExtractor extractor,
 			@NotNull Consumer<PsiElement> consumer)
@@ -113,28 +118,28 @@ public class ConversionMethodsProvider implements CSharpAdditionalMemberProvider
 			return DotNetElement.EMPTY_ARRAY;
 		}
 
-		DotNetTypeResolveResult typeResolveResult = extract.resolve(typeDeclaration);
+		DotNetTypeResolveResult typeResolveResult = extract.resolve();
 		PsiElement typeResolveResultElement = typeResolveResult.getElement();
 		if(!(typeResolveResultElement instanceof DotNetTypeDeclaration))
 		{
 			return DotNetElement.EMPTY_ARRAY;
 		}
 
-		Project project = typeDeclaration.getProject();
 		List<DotNetElement> elements = new ArrayList<DotNetElement>();
 
 		DotNetTypeDeclaration forAddOperatorsElement = (DotNetTypeDeclaration) typeResolveResultElement;
 
-		buildConversionMethods(project, selfTypeRef, forAddOperatorsElement, OperatorStubsLoader.INSTANCE.myTypeOperators.get(forAddOperatorsElement.getVmQName()), consumer);
+		buildConversionMethods(project, resolveScope, selfTypeRef, forAddOperatorsElement, OperatorStubsLoader.INSTANCE.myTypeOperators.get(forAddOperatorsElement.getVmQName()), consumer);
 
 		if(forAddOperatorsElement.isEnum())
 		{
-			buildConversionMethods(project, selfTypeRef, forAddOperatorsElement, OperatorStubsLoader.INSTANCE.myEnumOperators, consumer);
+			buildConversionMethods(project, resolveScope, selfTypeRef, forAddOperatorsElement, OperatorStubsLoader.INSTANCE.myEnumOperators, consumer);
 		}
 		return ContainerUtil.toArray(elements, DotNetElement.ARRAY_FACTORY);
 	}
 
 	private static void buildConversionMethods(@NotNull Project project,
+			GlobalSearchScope resolveScope,
 			@NotNull DotNetTypeRef selfTypeRef,
 			@NotNull DotNetElement parent,
 			@NotNull Collection<OperatorStubsLoader.Operator> operators,
@@ -158,14 +163,14 @@ public class ConversionMethodsProvider implements CSharpAdditionalMemberProvider
 
 				builder.withParent(parent);
 
-				builder.withReturnType(operator.myReturnTypeRef == null ? selfTypeRef : operator.myReturnTypeRef);
+				builder.withReturnType(operator.myReturnTypeRef == null ? selfTypeRef : new CSharpTypeRefByQName(project, resolveScope, operator.myReturnTypeRef));
 
 				int i = 0;
 				for(OperatorStubsLoader.Operator.Parameter parameter : operator.myParameterTypes)
 				{
 					CSharpLightParameterBuilder parameterBuilder = new CSharpLightParameterBuilder(project);
 					parameterBuilder.withName("p" + i);
-					parameterBuilder.withTypeRef(parameter.myTypeRef == null ? selfTypeRef : parameter.myTypeRef);
+					parameterBuilder.withTypeRef(parameter.myTypeRef == null ? selfTypeRef : new CSharpTypeRefByQName(project, resolveScope, parameter.myTypeRef));
 
 					builder.addParameter(parameterBuilder);
 					i++;

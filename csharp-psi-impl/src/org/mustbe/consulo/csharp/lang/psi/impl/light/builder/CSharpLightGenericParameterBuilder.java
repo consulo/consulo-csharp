@@ -20,19 +20,21 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import consulo.csharp.psi.CSharpGenericParameter;
 
 /**
  * @author VISTALL
  * @since 11.08.14
  */
 public class CSharpLightGenericParameterBuilder extends CSharpLightNamedElementWiModifierListBuilder<CSharpLightGenericParameterBuilder>
-		implements DotNetGenericParameter, DotNetModifierListOwner
+		implements CSharpGenericParameter, DotNetModifierListOwner
 {
 	private int myIndex = -1;
 
@@ -76,5 +78,13 @@ public class CSharpLightGenericParameterBuilder extends CSharpLightNamedElementW
 			return modifierList.getAttributes();
 		}
 		return DotNetAttribute.EMPTY_ARRAY;
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	public DotNetTypeRef[] getExtendTypeRefs()
+	{
+		return CSharpGenericConstraintUtil.getExtendTypes(this);
 	}
 }

@@ -16,7 +16,6 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
@@ -28,6 +27,7 @@ import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
 
@@ -35,83 +35,133 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 05.05.14
  */
-public class CSharpLambdaTypeRef implements DotNetTypeRef
+public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 {
+	private class Result implements CSharpLambdaResolveResult
+	{
+		private final PsiElement myScope;
+
+		public Result(PsiElement scope)
+		{
+			myScope = scope;
+		}
+
+		@Nullable
+		@Override
+		@RequiredReadAction
+		public PsiElement getElement()
+		{
+			if(myTarget == null)
+			{
+				return DotNetPsiSearcher.getInstance(myScope.getProject()).findType(DotNetTypes.System.MulticastDelegate, myScope.getResolveScope(), CSharpTransform.INSTANCE);
+			}
+			return CSharpLambdaResolveResultUtil.createTypeFromDelegate(myTarget);
+		}
+
+		@NotNull
+		@Override
+		public DotNetGenericExtractor getGenericExtractor()
+		{
+			return myExtractor;
+		}
+
+		@Override
+		public boolean isNullable()
+		{
+			return true;
+		}
+
+		@RequiredReadAction
+		@NotNull
+		@Override
+		public CSharpSimpleParameterInfo[] getParameterInfos()
+		{
+			CSharpSimpleParameterInfo[] parameterInfos = myParameterInfos;
+			if(myExtractor == DotNetGenericExtractor.EMPTY)
+			{
+				return parameterInfos;
+			}
+			CSharpSimpleParameterInfo[] temp = new CSharpSimpleParameterInfo[parameterInfos.length];
+			for(int i = 0; i < parameterInfos.length; i++)
+			{
+				CSharpSimpleParameterInfo parameterInfo = parameterInfos[i];
+				DotNetTypeRef typeRef = GenericUnwrapTool.exchangeTypeRef(parameterInfo.getTypeRef(), getGenericExtractor(), myScope);
+				temp[i] = new CSharpSimpleParameterInfo(parameterInfo.getIndex(), parameterInfo.getName(), parameterInfo.getElement(), typeRef);
+			}
+			return temp;
+		}
+
+		@RequiredReadAction
+		@Override
+		public boolean isInheritParameters()
+		{
+			return myInheritParameters;
+		}
+
+		@RequiredReadAction
+		@NotNull
+		@Override
+		public DotNetTypeRef getReturnTypeRef()
+		{
+			return GenericUnwrapTool.exchangeTypeRef(myReturnType, getGenericExtractor(), myScope);
+		}
+
+		@RequiredReadAction
+		@NotNull
+		@Override
+		public DotNetTypeRef[] getParameterTypeRefs()
+		{
+			return CSharpSimpleParameterInfo.toTypeRefs(getParameterInfos());
+		}
+
+		@Nullable
+		@Override
+		public CSharpMethodDeclaration getTarget()
+		{
+			return myTarget;
+		}
+	}
+
+	private final PsiElement myElement;
 	private final CSharpMethodDeclaration myTarget;
 	private final CSharpSimpleParameterInfo[] myParameterInfos;
 	private final DotNetTypeRef myReturnType;
 	private final boolean myInheritParameters;
 	private DotNetGenericExtractor myExtractor = DotNetGenericExtractor.EMPTY;
 
+	@RequiredReadAction
 	public CSharpLambdaTypeRef(@NotNull CSharpMethodDeclaration method)
 	{
-		this(method, method.getParameterInfos(), method.getReturnTypeRef());
+		this(method, method, method.getParameterInfos(), method.getReturnTypeRef());
 	}
 
-	public CSharpLambdaTypeRef(@NotNull CSharpMethodDeclaration method, @NotNull DotNetGenericExtractor extractor)
+	@RequiredReadAction
+	public CSharpLambdaTypeRef(@NotNull PsiElement scope, @NotNull CSharpMethodDeclaration method, @NotNull DotNetGenericExtractor extractor)
 	{
-		this(method, method.getParameterInfos(), method.getReturnTypeRef());
+		this(scope, method, method.getParameterInfos(), method.getReturnTypeRef());
 		myExtractor = extractor;
 	}
 
-	public CSharpLambdaTypeRef(@Nullable CSharpMethodDeclaration target, @NotNull CSharpSimpleParameterInfo[] parameterInfos, @NotNull DotNetTypeRef returnType)
+	@RequiredReadAction
+	public CSharpLambdaTypeRef(@NotNull PsiElement scope, @Nullable CSharpMethodDeclaration target, @NotNull CSharpSimpleParameterInfo[] parameterInfos, @NotNull DotNetTypeRef returnType)
 	{
-		this(target, parameterInfos, returnType, false);
+		this(scope, target, parameterInfos, returnType, false);
 	}
 
-	public CSharpLambdaTypeRef(@Nullable CSharpMethodDeclaration target, @NotNull CSharpSimpleParameterInfo[] parameterInfos, @NotNull DotNetTypeRef returnType, boolean inheritParameters)
+	@RequiredReadAction
+	public CSharpLambdaTypeRef(@NotNull PsiElement scope, @Nullable CSharpMethodDeclaration target, @NotNull CSharpSimpleParameterInfo[] parameterInfos, @NotNull DotNetTypeRef returnType, boolean inheritParameters)
 	{
+		myElement = scope;
 		myTarget = target;
 		myParameterInfos = parameterInfos;
 		myReturnType = returnType;
 		myInheritParameters = inheritParameters;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	@LazyInstance
-	public String getPresentableText()
-	{
-		if(myTarget != null)
-		{
-			return myTarget.getName();
-		}
-		StringBuilder builder = new StringBuilder();
-		builder.append("{(");
-		for(int i = 0; i < myParameterInfos.length; i++)
-		{
-			if(i != 0)
-			{
-				builder.append(", ");
-			}
-
-			DotNetTypeRef parameterType = myParameterInfos[i].getTypeRef();
-			if(parameterType == AUTO_TYPE)
-			{
-				builder.append("?");
-			}
-			else
-			{
-				builder.append(parameterType.getPresentableText());
-			}
-		}
-		builder.append(")");
-		if(myReturnType == AUTO_TYPE)
-		{
-			builder.append(" => ?");
-		}
-		else
-		{
-			builder.append(" => ").append(myReturnType.getPresentableText());
-		}
-		builder.append("}");
-		return builder.toString();
-	}
-
-	@NotNull
-	@Override
-	@LazyInstance
-	public String getQualifiedText()
+	public String toString()
 	{
 		if(myTarget != null)
 		{
@@ -157,80 +207,8 @@ public class CSharpLambdaTypeRef implements DotNetTypeRef
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeResolveResult resolve(@NotNull final PsiElement scope)
+	protected DotNetTypeResolveResult resolveResult()
 	{
-		return new CSharpLambdaResolveResult()
-		{
-			@Nullable
-			@Override
-			@RequiredReadAction
-			public PsiElement getElement()
-			{
-				if(myTarget == null)
-				{
-					return DotNetPsiSearcher.getInstance(scope.getProject()).findType(DotNetTypes.System.MulticastDelegate, scope.getResolveScope(), CSharpTransform.INSTANCE);
-				}
-				return CSharpLambdaResolveResultUtil.createTypeFromDelegate(myTarget);
-			}
-
-			@NotNull
-			@Override
-			public DotNetGenericExtractor getGenericExtractor()
-			{
-				return myExtractor;
-			}
-
-			@Override
-			public boolean isNullable()
-			{
-				return true;
-			}
-
-			@NotNull
-			@Override
-			public CSharpSimpleParameterInfo[] getParameterInfos()
-			{
-				CSharpSimpleParameterInfo[] parameterInfos = myParameterInfos;
-				if(myExtractor == DotNetGenericExtractor.EMPTY)
-				{
-					return parameterInfos;
-				}
-				CSharpSimpleParameterInfo[] temp = new CSharpSimpleParameterInfo[parameterInfos.length];
-				for(int i = 0; i < parameterInfos.length; i++)
-				{
-					CSharpSimpleParameterInfo parameterInfo = parameterInfos[i];
-					DotNetTypeRef typeRef = GenericUnwrapTool.exchangeTypeRef(parameterInfo.getTypeRef(), getGenericExtractor(), scope);
-					temp[i] = new CSharpSimpleParameterInfo(parameterInfo.getIndex(), parameterInfo.getName(), parameterInfo.getElement(), typeRef);
-				}
-				return temp;
-			}
-
-			@Override
-			public boolean isInheritParameters()
-			{
-				return myInheritParameters;
-			}
-
-			@NotNull
-			@Override
-			public DotNetTypeRef getReturnTypeRef()
-			{
-				return GenericUnwrapTool.exchangeTypeRef(myReturnType, getGenericExtractor(), scope);
-			}
-
-			@NotNull
-			@Override
-			public DotNetTypeRef[] getParameterTypeRefs()
-			{
-				return CSharpSimpleParameterInfo.toTypeRefs(getParameterInfos());
-			}
-
-			@Nullable
-			@Override
-			public CSharpMethodDeclaration getTarget()
-			{
-				return myTarget;
-			}
-		};
+		return new Result(myElement);
 	}
 }

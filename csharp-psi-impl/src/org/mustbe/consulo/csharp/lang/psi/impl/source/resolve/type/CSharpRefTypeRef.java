@@ -17,14 +17,17 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.resolve.DotNetRefTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 
 /**
  * @author VISTALL
  * @since 02.06.14
  */
-public class CSharpRefTypeRef extends DotNetTypeRef.Delegate implements DotNetRefTypeRef
+public class CSharpRefTypeRef extends DotNetTypeRefWithCachedResult implements DotNetRefTypeRef
 {
 	public static enum Type
 	{
@@ -33,11 +36,12 @@ public class CSharpRefTypeRef extends DotNetTypeRef.Delegate implements DotNetRe
 	}
 
 	private final Type myType;
+	private DotNetTypeRef myTypeRef;
 
 	public CSharpRefTypeRef(@NotNull Type type, @NotNull DotNetTypeRef typeRef)
 	{
-		super(typeRef);
 		myType = type;
+		myTypeRef = typeRef;
 	}
 
 	public Type getType()
@@ -45,24 +49,26 @@ public class CSharpRefTypeRef extends DotNetTypeRef.Delegate implements DotNetRe
 		return myType;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public String getPresentableText()
+	protected DotNetTypeResolveResult resolveResult()
 	{
-		return myType.name() + " " + super.getPresentableText();
+		return myTypeRef.resolve();
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public String getQualifiedText()
+	public String toString()
 	{
-		return myType.name() + " " + super.getQualifiedText();
+		return myType.name() + " " + myTypeRef.toString();
 	}
 
 	@NotNull
 	@Override
 	public DotNetTypeRef getInnerTypeRef()
 	{
-		return getDelegate();
+		return myTypeRef;
 	}
 }

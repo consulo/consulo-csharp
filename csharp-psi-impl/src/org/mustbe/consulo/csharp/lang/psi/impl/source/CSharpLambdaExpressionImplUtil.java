@@ -73,7 +73,7 @@ public class CSharpLambdaExpressionImplUtil
 		DotNetTypeRef typeRefOfLambda = target.getUserData(TYPE_REF_OF_LAMBDA);
 		if(typeRefOfLambda != null)
 		{
-			DotNetTypeResolveResult typeResolveResult = typeRefOfLambda.resolve(target);
+			DotNetTypeResolveResult typeResolveResult = typeRefOfLambda.resolve();
 			if(typeResolveResult instanceof CSharpLambdaResolveResult)
 			{
 				return (CSharpLambdaResolveResult) typeResolveResult;
@@ -146,7 +146,7 @@ public class CSharpLambdaExpressionImplUtil
 							return null;
 						}
 
-						DotNetTypeResolveResult typeResolveResult = parameterTypeRef.resolve(target);
+						DotNetTypeResolveResult typeResolveResult = parameterTypeRef.resolve();
 						if(typeResolveResult instanceof CSharpLambdaResolveResult)
 						{
 							return (CSharpLambdaResolveResult) typeResolveResult;
@@ -167,7 +167,7 @@ public class CSharpLambdaExpressionImplUtil
 				{
 					return null;
 				}
-				DotNetTypeResolveResult typeResolveResult = expression.toTypeRef(true).resolve(parent);
+				DotNetTypeResolveResult typeResolveResult = expression.toTypeRef(true).resolve();
 				if(typeResolveResult instanceof CSharpLambdaResolveResult)
 				{
 					return (CSharpLambdaResolveResult) typeResolveResult;
@@ -176,7 +176,7 @@ public class CSharpLambdaExpressionImplUtil
 		}
 		else if(parent instanceof CSharpTypeCastExpressionImpl)
 		{
-			DotNetTypeResolveResult typeResolveResult = ((CSharpTypeCastExpressionImpl) parent).toTypeRef(false).resolve(parent);
+			DotNetTypeResolveResult typeResolveResult = ((CSharpTypeCastExpressionImpl) parent).toTypeRef(false).resolve();
 			if(typeResolveResult instanceof CSharpLambdaResolveResult)
 			{
 				return (CSharpLambdaResolveResult) typeResolveResult;
@@ -189,7 +189,7 @@ public class CSharpLambdaExpressionImplUtil
 			{
 				return null;
 			}
-			DotNetTypeResolveResult typeResolveResult = methodAsElement.getReturnTypeRef().resolve(parent);
+			DotNetTypeResolveResult typeResolveResult = methodAsElement.getReturnTypeRef().resolve();
 			if(typeResolveResult instanceof CSharpLambdaResolveResult)
 			{
 				return (CSharpLambdaResolveResult) typeResolveResult;
@@ -204,7 +204,7 @@ public class CSharpLambdaExpressionImplUtil
 			DotNetExpression expression = ((CSharpConditionalExpressionImpl) parent).getTrueExpression();
 			if(expression != null && expression != target)
 			{
-				DotNetTypeResolveResult typeResolveResult = expression.toTypeRef(false).resolve(parent);
+				DotNetTypeResolveResult typeResolveResult = expression.toTypeRef(false).resolve();
 				if(typeResolveResult instanceof CSharpLambdaResolveResult)
 				{
 					return (CSharpLambdaResolveResult) typeResolveResult;
@@ -213,7 +213,7 @@ public class CSharpLambdaExpressionImplUtil
 			expression = ((CSharpConditionalExpressionImpl) parent).getFalseExpression();
 			if(expression != null && expression != target)
 			{
-				DotNetTypeResolveResult typeResolveResult = expression.toTypeRef(false).resolve(parent);
+				DotNetTypeResolveResult typeResolveResult = expression.toTypeRef(false).resolve();
 				if(typeResolveResult instanceof CSharpLambdaResolveResult)
 				{
 					return (CSharpLambdaResolveResult) typeResolveResult;
@@ -229,7 +229,7 @@ public class CSharpLambdaExpressionImplUtil
 	public static CSharpLambdaResolveResult resolveLeftLambdaTypeRefForVariable(DotNetVariable variable)
 	{
 		DotNetTypeRef leftTypeRef = variable.toTypeRef(false);
-		DotNetTypeResolveResult typeResolveResult = leftTypeRef.resolve(variable);
+		DotNetTypeResolveResult typeResolveResult = leftTypeRef.resolve();
 		return typeResolveResult instanceof CSharpLambdaResolveResult ? (CSharpLambdaResolveResult) typeResolveResult : null;
 	}
 }

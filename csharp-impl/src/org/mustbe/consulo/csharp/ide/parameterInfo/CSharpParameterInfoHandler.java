@@ -127,6 +127,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public ItemToShow[] getParametersForLookup(LookupElement item, ParameterInfoContext context)
 	{
 		Object object = item.getObject();
@@ -140,7 +141,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 			DotNetVariable variable = (DotNetVariable) object;
 			DotNetTypeRef dotNetTypeRef = variable.toTypeRef(tracksParameterIndex());
 
-			DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(variable);
+			DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve();
 			if(typeResolveResult instanceof CSharpLambdaResolveResult)
 			{
 				return new ItemToShow[]{new ItemToShow((CSharpSimpleLikeMethod) typeResolveResult, variable)};
@@ -221,6 +222,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 	}
 
 	@Nullable
+	@RequiredReadAction
 	private static CSharpSimpleLikeMethod resolveSimpleMethod(ResolveResult resolveResult, PsiElement scope)
 	{
 		CSharpSimpleLikeMethod method = null;
@@ -230,7 +232,7 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 		{
 			DotNetTypeRef typeRef = ((DotNetVariable) resolveResultElement).toTypeRef(false);
 
-			DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+			DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 			if(typeResolveResult instanceof CSharpLambdaResolveResult)
 			{
 				CSharpMethodDeclaration resolve = ((CSharpLambdaResolveResult) typeResolveResult).getTarget();

@@ -81,7 +81,7 @@ public class NParamsCallArgument extends NCallArgument
 			typeRefs.add(argumentExpression.toTypeRef(false));
 		}
 
-		return new CSharpArrayTypeRef(typeRefs.get(0), 0);
+		return new CSharpArrayTypeRef(myCallArguments.get(0), typeRefs.get(0), 0);
 	}
 
 	@NotNull

@@ -27,7 +27,7 @@ import com.intellij.lang.ASTNode;
  * @author VISTALL
  * @since 30.12.13.
  */
-public class CSharpParenthesesExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public class CSharpParenthesesExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
 	public CSharpParenthesesExpressionImpl(@NotNull ASTNode node)
 	{
@@ -48,7 +48,7 @@ public class CSharpParenthesesExpressionImpl extends CSharpElementImpl implement
 
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
 		DotNetExpression innerExpression = getInnerExpression();
 		if(innerExpression == null)

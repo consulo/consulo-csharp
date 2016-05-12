@@ -104,12 +104,14 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 		return genericParameterList == null ? 0 : genericParameterList.getGenericParametersCount();
 	}
 
+	@RequiredReadAction
 	@Override
 	public String getVmQName()
 	{
 		return DotNetTypeDeclarationUtil.getVmQName(this);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getVmName()
@@ -117,6 +119,7 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 		return DotNetTypeDeclarationUtil.getVmName(this);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetQualifiedElement[] getMembers()
@@ -127,8 +130,7 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 			@Override
 			public Result<DotNetQualifiedElement[]> compute()
 			{
-				return Result.create(getStubOrPsiChildren(CSharpStubElements.QUALIFIED_MEMBERS, DotNetQualifiedElement.ARRAY_FACTORY),
-						PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+				return Result.create(getStubOrPsiChildren(CSharpStubElements.QUALIFIED_MEMBERS, DotNetQualifiedElement.ARRAY_FACTORY), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
 			}
 		});
 	}
@@ -174,8 +176,7 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent,
-			@NotNull PsiElement place)
+	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place)
 	{
 		if(ExecuteTargetUtil.canProcess(processor, ExecuteTarget.GENERIC_PARAMETER))
 		{
@@ -202,11 +203,22 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 		return getStubOrPsiChild(CSharpStubElements.EXTENDS_LIST);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{
-		return CSharpTypeDeclarationImplUtil.getExtendTypeRefs(this);
+		return CachedValuesManager.getCachedValue(this, new CachedValueProvider<DotNetTypeRef[]>()
+		{
+			@Nullable
+			@Override
+			@RequiredReadAction
+			public Result<DotNetTypeRef[]> compute()
+			{
+				DotNetTypeRef[] extendTypeRefs = CSharpTypeDeclarationImplUtil.getExtendTypeRefs(CSharpTypeDeclarationImpl.this);
+				return Result.create(extendTypeRefs, PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+			}
+		});
 	}
 
 	@RequiredReadAction
@@ -216,16 +228,32 @@ public class CSharpTypeDeclarationImpl extends CSharpStubMemberImpl<CSharpTypeDe
 		return DotNetInheritUtil.isInheritor(this, other, deep);
 	}
 
+	@NotNull
+	@RequiredReadAction
 	@Override
 	public DotNetTypeRef getTypeRefForEnumConstants()
 	{
-		DotNetTypeList extendList = getExtendList();
-		if(extendList == null)
+		return CachedValuesManager.getCachedValue(this, new CachedValueProvider<DotNetTypeRef>()
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.Int32);
-		}
-		DotNetTypeRef[] typeRefs = extendList.getTypeRefs();
-		return typeRefs.length == 0 ? new CSharpTypeRefByQName(DotNetTypes.System.Int32) : typeRefs[0];
+			@Nullable
+			@Override
+			@RequiredReadAction
+			public Result<DotNetTypeRef> compute()
+			{
+				DotNetTypeRef typeRef;
+				DotNetTypeList extendList = getExtendList();
+				if(extendList == null)
+				{
+					typeRef = new CSharpTypeRefByQName(CSharpTypeDeclarationImpl.this, DotNetTypes.System.Int32);
+				}
+				else
+				{
+					DotNetTypeRef[] typeRefs = extendList.getTypeRefs();
+					typeRef = typeRefs.length == 0 ? new CSharpTypeRefByQName(CSharpTypeDeclarationImpl.this, DotNetTypes.System.Int32) : typeRefs[0];
+				}
+				return Result.create(typeRef, PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+			}
+		});
 	}
 
 	@Nullable

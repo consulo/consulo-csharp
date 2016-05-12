@@ -32,8 +32,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpFastImp
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpReferenceTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpUserTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
@@ -52,9 +52,9 @@ import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.util.ExceptionUtil;
 import com.intellij.util.ObjectUtil;
 import com.intellij.util.SmartList;
+import consulo.csharp.psi.CSharpGenericParameter;
 
 /**
  * @author VISTALL
@@ -113,10 +113,9 @@ public class CSharpTypeUtil
 		{
 			return true;
 		}
-		else if(typeRef instanceof CSharpReferenceTypeRef)
+		else if(typeRef instanceof CSharpUserTypeRef)
 		{
-			CSharpReferenceExpression referenceExpression = ((CSharpReferenceTypeRef) typeRef).getReferenceExpression();
-			return typeRef.resolve(referenceExpression).getElement() == null;
+			return typeRef.resolve().getElement() == null;
 		}
 		return false;
 	}
@@ -156,7 +155,7 @@ public class CSharpTypeUtil
 					else if(genericConstraintValue instanceof CSharpGenericConstraintTypeValue)
 					{
 						DotNetTypeRef dotNetTypeRef = ((CSharpGenericConstraintTypeValue) genericConstraintValue).toTypeRef();
-						DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(element);
+						DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve();
 						if(typeResolveResult.isNullable())
 						{
 							return true;
@@ -171,9 +170,9 @@ public class CSharpTypeUtil
 
 	@Nullable
 	@RequiredReadAction
-	public static Pair<DotNetTypeDeclaration, DotNetGenericExtractor> findTypeInSuper(@NotNull DotNetTypeRef typeRef, @NotNull String vmQName, @NotNull PsiElement scope)
+	public static Pair<DotNetTypeDeclaration, DotNetGenericExtractor> findTypeInSuper(@NotNull DotNetTypeRef typeRef, @NotNull String vmQName)
 	{
-		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 		PsiElement resolve = typeResolveResult.getElement();
 		if(!(resolve instanceof DotNetTypeDeclaration))
 		{
@@ -188,7 +187,7 @@ public class CSharpTypeUtil
 
 		for(DotNetTypeRef superType : ((DotNetTypeDeclaration) resolve).getExtendTypeRefs())
 		{
-			Pair<DotNetTypeDeclaration, DotNetGenericExtractor> typeInSuper = findTypeInSuper(superType, vmQName, scope);
+			Pair<DotNetTypeDeclaration, DotNetGenericExtractor> typeInSuper = findTypeInSuper(superType, vmQName);
 			if(typeInSuper != null)
 			{
 				return typeInSuper;
@@ -201,7 +200,7 @@ public class CSharpTypeUtil
 	@RequiredReadAction
 	public static DotNetTypeResolveResult findTypeRefFromExtends(@NotNull DotNetTypeRef typeRef, @NotNull DotNetTypeRef otherTypeRef, @NotNull PsiElement scope)
 	{
-		DotNetTypeResolveResult typeResolveResult = otherTypeRef.resolve(scope);
+		DotNetTypeResolveResult typeResolveResult = otherTypeRef.resolve();
 
 		PsiElement element = typeResolveResult.getElement();
 		if(!(element instanceof CSharpTypeDeclaration))
@@ -219,7 +218,7 @@ public class CSharpTypeUtil
 			@NotNull final PsiElement scope,
 			@NotNull Set<String> processed)
 	{
-		final DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+		final DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 		final PsiElement resolvedElement = typeResolveResult.getElement();
 		if(!(resolvedElement instanceof DotNetTypeDeclaration))
 		{
@@ -339,8 +338,8 @@ public class CSharpTypeUtil
 			return isInheritable(((CSharpArrayTypeRef) top).getInnerTypeRef(), ((CSharpArrayTypeRef) target).getInnerTypeRef(), scope, explicitOrImplicit);
 		}
 
-		DotNetTypeResolveResult topTypeResolveResult = top.resolve(scope);
-		DotNetTypeResolveResult targetTypeResolveResult = target.resolve(scope);
+		DotNetTypeResolveResult topTypeResolveResult = top.resolve();
+		DotNetTypeResolveResult targetTypeResolveResult = target.resolve();
 		if(topTypeResolveResult instanceof CSharpLambdaResolveResult && targetTypeResolveResult instanceof CSharpLambdaResolveResult)
 		{
 			if(!((CSharpLambdaResolveResult) targetTypeResolveResult).isInheritParameters())
@@ -374,17 +373,17 @@ public class CSharpTypeUtil
 
 		PsiElement topElement = topTypeResolveResult.getElement();
 		PsiElement targetElement = targetTypeResolveResult.getElement();
-		if(topElement == null && targetElement == null && top instanceof CSharpReferenceTypeRef && target instanceof CSharpReferenceTypeRef)
+		if(topElement == null && targetElement == null && top instanceof CSharpUserTypeRef && target instanceof CSharpUserTypeRef)
 		{
-			return ((CSharpReferenceTypeRef) top).getReferenceText().equals(((CSharpReferenceTypeRef) target).getReferenceText()) ? SIMPLE_SUCCESS : FAIL;
+			return ((CSharpUserTypeRef) top).getReferenceText().equals(((CSharpUserTypeRef) target).getReferenceText()) ? SIMPLE_SUCCESS : FAIL;
 		}
 
-		if(topTypeResolveResult.isNullable() && target == CSharpNullTypeRef.INSTANCE)
+		if(topTypeResolveResult.isNullable() && target instanceof CSharpNullTypeRef)
 		{
 			return SIMPLE_SUCCESS;
 		}
 
-		if(!topTypeResolveResult.isNullable() && target == CSharpNullTypeRef.INSTANCE)
+		if(!topTypeResolveResult.isNullable() && target instanceof CSharpNullTypeRef)
 		{
 			return fail();
 		}
@@ -500,9 +499,9 @@ public class CSharpTypeUtil
 			}
 		}
 
-		if(topElement instanceof DotNetGenericParameter)
+		if(topElement instanceof CSharpGenericParameter)
 		{
-			List<DotNetTypeRef> extendTypes = CSharpGenericConstraintUtil.getExtendTypes((DotNetGenericParameter) topElement);
+			DotNetTypeRef[] extendTypes = ((CSharpGenericParameter) topElement).getExtendTypeRefs();
 
 			for(DotNetTypeRef extendType : extendTypes)
 			{
@@ -514,9 +513,9 @@ public class CSharpTypeUtil
 			}
 		}
 
-		if(targetElement instanceof DotNetGenericParameter)
+		if(targetElement instanceof CSharpGenericParameter)
 		{
-			List<DotNetTypeRef> extendTypes = CSharpGenericConstraintUtil.getExtendTypes((DotNetGenericParameter) targetElement);
+			DotNetTypeRef[] extendTypes = ((CSharpGenericParameter) targetElement).getExtendTypeRefs();
 
 			for(DotNetTypeRef extendType : extendTypes)
 			{
@@ -594,7 +593,7 @@ public class CSharpTypeUtil
 			@NotNull CSharpStaticTypeRef explicitOrImplicit,
 			@NotNull PsiElement scope)
 	{
-		DotNetTypeResolveResult typeResolveResult = fromTypeRef.resolve(scope);
+		DotNetTypeResolveResult typeResolveResult = fromTypeRef.resolve();
 
 		PsiElement typeResolveResultElement = typeResolveResult.getElement();
 		if(!(typeResolveResultElement instanceof DotNetTypeDeclaration))
@@ -652,8 +651,8 @@ public class CSharpTypeUtil
 					((CSharpArrayTypeRef) t2).getInnerTypeRef(), scope);
 		}
 
-		DotNetTypeResolveResult resolveResult1 = t1.resolve(scope);
-		DotNetTypeResolveResult resolveResult2 = t2.resolve(scope);
+		DotNetTypeResolveResult resolveResult1 = t1.resolve();
+		DotNetTypeResolveResult resolveResult2 = t2.resolve();
 
 		if(resolveResult1.isNullable() != resolveResult2.isNullable())
 		{
@@ -662,9 +661,9 @@ public class CSharpTypeUtil
 		PsiElement element1 = resolveResult1.getElement();
 		PsiElement element2 = resolveResult2.getElement();
 
-		if(element1 == null && element2 == null && t1 instanceof CSharpReferenceTypeRef && t2 instanceof CSharpReferenceTypeRef)
+		if(element1 == null && element2 == null && t1 instanceof CSharpUserTypeRef && t2 instanceof CSharpUserTypeRef)
 		{
-			return ((CSharpReferenceTypeRef) t1).getReferenceText().equals(((CSharpReferenceTypeRef) t2).getReferenceText());
+			return ((CSharpUserTypeRef) t1).getReferenceText().equals(((CSharpUserTypeRef) t2).getReferenceText());
 		}
 
 		if(element1 == null || element2 == null)
@@ -761,9 +760,9 @@ public class CSharpTypeUtil
 
 	@Nullable
 	@RequiredReadAction
-	public static Pair<String, DotNetTypeDeclaration> resolveTypeElement(@NotNull DotNetTypeRef typeRef, @NotNull PsiElement scope)
+	public static Pair<String, DotNetTypeDeclaration> resolveTypeElement(@NotNull DotNetTypeRef typeRef)
 	{
-		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 
 		PsiElement typeResolveResultElement = typeResolveResult.getElement();
 		if(typeResolveResultElement instanceof DotNetTypeDeclaration)

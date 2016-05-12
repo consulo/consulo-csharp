@@ -16,17 +16,18 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.SmartList;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -34,12 +35,13 @@ import com.intellij.util.SmartList;
  */
 public class CSharpGenericConstraintUtil
 {
-	public static List<DotNetTypeRef> getExtendTypes(@NotNull DotNetGenericParameter parameter)
+	@RequiredReadAction
+	public static DotNetTypeRef[] getExtendTypes(@NotNull DotNetGenericParameter parameter)
 	{
 		CSharpGenericConstraint genericConstraint = findGenericConstraint(parameter);
 		if(genericConstraint == null)
 		{
-			return Collections.<DotNetTypeRef>singletonList(new CSharpTypeRefByQName(DotNetTypes.System.Object));
+			return new DotNetTypeRef[] {new CSharpTypeRefByQName(parameter, DotNetTypes.System.Object)};
 		}
 
 		List<DotNetTypeRef> superTypes = new SmartList<DotNetTypeRef>();
@@ -54,20 +56,20 @@ public class CSharpGenericConstraintUtil
 			{
 				if(((CSharpGenericConstraintKeywordValue) value).getKeywordElementType() == CSharpTokens.STRUCT_KEYWORD)
 				{
-					superTypes.add(new CSharpTypeRefByQName(DotNetTypes.System.ValueType));
+					superTypes.add(new CSharpTypeRefByQName(parameter, DotNetTypes.System.ValueType));
 				}
 				else if(((CSharpGenericConstraintKeywordValue) value).getKeywordElementType() == CSharpTokens.CLASS_KEYWORD)
 				{
-					superTypes.add(new CSharpTypeRefByQName(DotNetTypes.System.Object));
+					superTypes.add(new CSharpTypeRefByQName(parameter, DotNetTypes.System.Object));
 				}
 			}
 		}
 
 		if(superTypes.isEmpty())
 		{
-			superTypes.add(new CSharpTypeRefByQName(DotNetTypes.System.Object));
+			superTypes.add(new CSharpTypeRefByQName(parameter, DotNetTypes.System.Object));
 		}
-		return superTypes;
+		return ContainerUtil.toArray(superTypes, DotNetTypeRef.ARRAY_FACTORY);
 	}
 
 	@Nullable

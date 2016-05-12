@@ -25,11 +25,9 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.injection.CSharpStringLiteralEscaper;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpTypeRefCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpConstantTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetConstantExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
@@ -46,54 +44,8 @@ import com.intellij.psi.tree.IElementType;
  * @author VISTALL
  * @since 16.12.13.
  */
-public class CSharpConstantExpressionImpl extends CSharpElementImpl implements DotNetConstantExpression, PsiLanguageInjectionHost
+public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implements DotNetConstantExpression, PsiLanguageInjectionHost
 {
-	private static class OurTypeRefResolver extends CSharpTypeRefCache.TypeRefResolver<CSharpConstantExpressionImpl>
-	{
-		public static final OurTypeRefResolver INSTANCE = new OurTypeRefResolver();
-
-		@NotNull
-		@Override
-		@RequiredReadAction
-		public DotNetTypeRef resolveTypeRef(@NotNull CSharpConstantExpressionImpl element, boolean resolveFromParent)
-		{
-			IElementType elementType = element.getLiteralType();
-
-			PsiElement parent = element.getParent();
-			if(parent instanceof DotNetVariable)
-			{
-				DotNetTypeRef typeRef = ((DotNetVariable) parent).toTypeRef(false);
-				if(typeRef == DotNetTypeRef.AUTO_TYPE)
-				{
-					if(elementType == CSharpTokens.INTEGER_LITERAL)
-					{
-						CSharpTypeRefByQName another = new CSharpTypeRefByQName(DotNetTypes.System.Int32);
-						if(CSharpConstantTypeRef.testNumberConstant(element, "", another, element) != null)
-						{
-							return another;
-						}
-						another = new CSharpTypeRefByQName(DotNetTypes.System.Int64);
-						if(CSharpConstantTypeRef.testNumberConstant(element, "", another, element) != null)
-						{
-							return another;
-						}
-						return DotNetTypeRef.ERROR_TYPE;
-					}
-				}
-			}
-
-			DotNetTypeRef defaultConstantTypeRef = element.getDefaultConstantTypeRef();
-			if(defaultConstantTypeRef != null)
-			{
-				return defaultConstantTypeRef;
-			}
-			else
-			{
-				throw new UnsupportedOperationException(elementType.toString());
-			}
-		}
-	}
-
 	public CSharpConstantExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
@@ -105,12 +57,45 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 		visitor.visitConstantExpression(this);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	@RequiredReadAction
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
-		return CSharpTypeRefCache.getInstance(getProject()).resolveTypeRef(this, OurTypeRefResolver.INSTANCE, resolveFromParent);
+		IElementType elementType = getLiteralType();
+
+		PsiElement parent = getParent();
+		if(parent instanceof DotNetVariable)
+		{
+			DotNetTypeRef typeRef = ((DotNetVariable) parent).toTypeRef(false);
+			if(typeRef == DotNetTypeRef.AUTO_TYPE)
+			{
+				if(elementType == CSharpTokens.INTEGER_LITERAL)
+				{
+					CSharpTypeRefByQName another = new CSharpTypeRefByQName(this, DotNetTypes.System.Int32);
+					if(CSharpConstantTypeRef.testNumberConstant(this, "", another, this) != null)
+					{
+						return another;
+					}
+					another = new CSharpTypeRefByQName(this, DotNetTypes.System.Int64);
+					if(CSharpConstantTypeRef.testNumberConstant(this, "", another, this) != null)
+					{
+						return another;
+					}
+					return DotNetTypeRef.ERROR_TYPE;
+				}
+			}
+		}
+
+		DotNetTypeRef defaultConstantTypeRef = getDefaultConstantTypeRef();
+		if(defaultConstantTypeRef != null)
+		{
+			return defaultConstantTypeRef;
+		}
+		else
+		{
+			throw new UnsupportedOperationException(elementType.toString());
+		}
 	}
 
 	@RequiredReadAction
@@ -120,7 +105,7 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 		IElementType elementType = getLiteralType();
 		if(elementType == CSharpTokens.INTEGER_LITERAL)
 		{
-			return new CSharpConstantTypeRef(this, new CSharpLazyTypeRefByQName(this, DotNetTypes.System.Int32));
+			return new CSharpConstantTypeRef(this, new CSharpTypeRefByQName(this, DotNetTypes.System.Int32));
 		}
 		else if(elementType == CSharpTokens.DOUBLE_LITERAL)
 		{
@@ -128,47 +113,47 @@ public class CSharpConstantExpressionImpl extends CSharpElementImpl implements D
 			// explicit type
 			if(text.endsWith("d") || text.endsWith("D"))
 			{
-				return new CSharpConstantTypeRef(this, new CSharpLazyTypeRefByQName(this, DotNetTypes.System.Double));
+				return new CSharpConstantTypeRef(this, new CSharpTypeRefByQName(this, DotNetTypes.System.Double));
 			}
 
-			return new CSharpConstantTypeRef(this, new CSharpLazyTypeRefByQName(this, DotNetTypes.System.Double));
+			return new CSharpConstantTypeRef(this, new CSharpTypeRefByQName(this, DotNetTypes.System.Double));
 		}
 		else if(elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL ||
 				elementType == CSharpTokensImpl.INTERPOLATION_STRING_LITERAL)
 		{
-			return new CSharpLazyTypeRefByQName(this, DotNetTypes.System.String);
+			return new CSharpTypeRefByQName(this, DotNetTypes.System.String);
 		}
 		else if(elementType == CSharpTokens.CHARACTER_LITERAL)
 		{
-			return new CSharpLazyTypeRefByQName(this, DotNetTypes.System.Char);
+			return new CSharpTypeRefByQName(this, DotNetTypes.System.Char);
 		}
 		else if(elementType == CSharpTokens.UINTEGER_LITERAL)
 		{
-			return new CSharpLazyTypeRefByQName(this, DotNetTypes.System.UInt32);
+			return new CSharpTypeRefByQName(this, DotNetTypes.System.UInt32);
 		}
 		else if(elementType == CSharpTokens.ULONG_LITERAL)
 		{
-			return new CSharpLazyTypeRefByQName(this, DotNetTypes.System.UInt64);
+			return new CSharpTypeRefByQName(this, DotNetTypes.System.UInt64);
 		}
 		else if(elementType == CSharpTokens.LONG_LITERAL)
 		{
-			return new CSharpLazyTypeRefByQName(this, DotNetTypes.System.Int64);
+			return new CSharpTypeRefByQName(this, DotNetTypes.System.Int64);
 		}
 		else if(elementType == CSharpTokens.FLOAT_LITERAL)
 		{
-			return new CSharpLazyTypeRefByQName(this, DotNetTypes.System.Single);
+			return new CSharpTypeRefByQName(this, DotNetTypes.System.Single);
 		}
 		else if(elementType == CSharpTokens.DECIMAL_LITERAL)
 		{
-			return new CSharpLazyTypeRefByQName(this, DotNetTypes.System.Decimal);
+			return new CSharpTypeRefByQName(this, DotNetTypes.System.Decimal);
 		}
 		else if(elementType == CSharpTokens.NULL_LITERAL)
 		{
-			return CSharpNullTypeRef.INSTANCE;
+			return new CSharpNullTypeRef(this);
 		}
 		else if(elementType == CSharpTokens.TRUE_KEYWORD || elementType == CSharpTokens.FALSE_KEYWORD)
 		{
-			return new CSharpLazyTypeRefByQName(this, DotNetTypes.System.Boolean);
+			return new CSharpTypeRefByQName(this, DotNetTypes.System.Boolean);
 		}
 		return null;
 	}

@@ -83,6 +83,7 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 		visitor.visitIndexMethodDeclaration(this);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public CSharpSimpleParameterInfo[] getParameterInfos()

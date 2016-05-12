@@ -32,7 +32,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 29.12.13.
  */
-public class CSharpStaticTypeRef extends DotNetTypeRef.Adapter
+public class CSharpStaticTypeRef implements DotNetTypeRef
 {
 	public static final CSharpStaticTypeRef IMPLICIT = new CSharpStaticTypeRef("implicit", "System.Object");
 	public static final CSharpStaticTypeRef EXPLICIT = new CSharpStaticTypeRef("explicit", "System.Object");
@@ -75,6 +75,13 @@ public class CSharpStaticTypeRef extends DotNetTypeRef.Adapter
 	@RequiredReadAction
 	@NotNull
 	@Override
+	public DotNetTypeResolveResult resolve()
+	{
+		return DotNetTypeResolveResult.EMPTY;
+	}
+
+	@RequiredReadAction
+	@NotNull
 	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
 	{
 		if(myWrapperQualifiedClass == null)

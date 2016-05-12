@@ -70,7 +70,7 @@ public class CSharpLinqQueryBodyImpl extends CSharpElementImpl
 		{
 			DotNetTypeRef[] arguments = new DotNetTypeRef[] {typeRefOrError(selectOrGroupClause.getSecondExpression()),
 					typeRefOrError(selectOrGroupClause.getFirstExpression())};
-			innerTypeRef = new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(DotNetTypes2.System.Linq.IGrouping$2), arguments);
+			innerTypeRef = new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(this, DotNetTypes2.System.Linq.IGrouping$2), arguments);
 		}
 		else
 		{
@@ -79,7 +79,7 @@ public class CSharpLinqQueryBodyImpl extends CSharpElementImpl
 
 		if(innerTypeRef != DotNetTypeRef.ERROR_TYPE)
 		{
-			CSharpTypeRefByQName enumerableTypeRef = new CSharpTypeRefByQName(DotNetTypes2.System.Collections.Generic.IEnumerable$1);
+			CSharpTypeRefByQName enumerableTypeRef = new CSharpTypeRefByQName(this, DotNetTypes2.System.Collections.Generic.IEnumerable$1);
 			return new CSharpGenericWrapperTypeRef(enumerableTypeRef, innerTypeRef);
 		}
 		return DotNetTypeRef.ERROR_TYPE;

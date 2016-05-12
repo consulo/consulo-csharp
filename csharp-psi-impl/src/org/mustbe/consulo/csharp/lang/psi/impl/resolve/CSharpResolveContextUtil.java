@@ -26,6 +26,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.NotNullFunction;
 
 /**
@@ -150,7 +151,7 @@ public class CSharpResolveContextUtil
 				@RequiredReadAction
 				public Result<CSharpResolveContext> compute()
 				{
-					return Result.<CSharpResolveContext>create(new CSharpTypeResolveContext(typeDeclaration, DotNetGenericExtractor.EMPTY, null), typeDeclaration);
+					return Result.<CSharpResolveContext>create(new CSharpTypeResolveContext(typeDeclaration, DotNetGenericExtractor.EMPTY, null), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
 				}
 			}, false);
 			typeDeclaration.putUserData(RESOLVE_CONTEXT, cachedValue);
@@ -177,7 +178,7 @@ public class CSharpResolveContextUtil
 			@Override
 			public Result<CSharpResolveContext> compute()
 			{
-				return Result.create(fun.fun(element), element);
+				return Result.create(fun.fun(element), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
 			}
 		}, false);
 		element.putUserData(RESOLVE_CONTEXT, cachedValue);

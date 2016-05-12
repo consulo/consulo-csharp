@@ -59,7 +59,7 @@ public class CS1008 extends CompilerCheck<DotNetType>
 			PsiElement superParent = parent.getParent();
 			if(superParent instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) superParent).isEnum())
 			{
-				PsiElement psiElement = element.toTypeRef().resolve(element).getElement();
+				PsiElement psiElement = element.toTypeRef().resolve().getElement();
 				if(psiElement instanceof CSharpTypeDeclaration)
 				{
 					if(!ArrayUtil.contains(((CSharpTypeDeclaration) psiElement).getVmQName(), ourEnumSuperTypes))

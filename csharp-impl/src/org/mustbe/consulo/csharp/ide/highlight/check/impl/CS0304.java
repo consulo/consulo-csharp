@@ -47,7 +47,7 @@ public class CS0304 extends CompilerCheck<CSharpNewExpression>
 	@Override
 	public CompilerCheckBuilder checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpNewExpression element)
 	{
-		PsiElement resolvedNewElement = element.toTypeRef(false).resolve(element).getElement();
+		PsiElement resolvedNewElement = element.toTypeRef(false).resolve().getElement();
 		if(resolvedNewElement instanceof DotNetGenericParameter)
 		{
 			DotNetGenericParameterListOwner parent = PsiTreeUtil.getParentOfType(resolvedNewElement, DotNetGenericParameterListOwner.class);

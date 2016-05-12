@@ -38,6 +38,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import org.mustbe.consulo.msil.lang.psi.impl.type.MsilTypeResolveResult;
 import org.mustbe.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.BitUtil;
@@ -132,7 +133,7 @@ public class CSharpTypeRefPresentationUtil
 			builder.append("var");
 			return;
 		}
-		else if(typeRef == CSharpNullTypeRef.INSTANCE && BitUtil.isSet(flags, NULL))
+		else if(typeRef instanceof CSharpNullTypeRef && BitUtil.isSet(flags, NULL))
 		{
 			builder.append("null");
 			return;
@@ -173,11 +174,11 @@ public class CSharpTypeRefPresentationUtil
 		}
 		else
 		{
-			DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+			DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 
 			PsiElement element = typeResolveResult.getElement();
 			boolean isNullable = CSharpTypeUtil.isNullableElement(element);
-			boolean isExpectedNullable = typeResolveResult.isNullable();
+			boolean isExpectedNullable = typeResolveResult instanceof MsilTypeResolveResult || typeResolveResult.isNullable();
 
 			if(element instanceof DotNetQualifiedElement)
 			{

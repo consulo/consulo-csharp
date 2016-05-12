@@ -24,7 +24,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 
 /**
@@ -34,9 +33,13 @@ import com.intellij.psi.PsiElement;
 public class CSharpLightConstructorDeclarationBuilder extends CSharpLightLikeMethodDeclarationBuilder<CSharpLightConstructorDeclarationBuilder>
 		implements CSharpConstructorDeclaration
 {
-	public CSharpLightConstructorDeclarationBuilder(Project project)
+	private DotNetTypeRef myTypeRef;
+
+	@RequiredReadAction
+	public CSharpLightConstructorDeclarationBuilder(PsiElement element)
 	{
-		super(project);
+		super(element.getProject());
+		myTypeRef = new CSharpTypeRefByQName(element, DotNetTypes.System.Void);
 	}
 
 	@RequiredReadAction
@@ -44,7 +47,7 @@ public class CSharpLightConstructorDeclarationBuilder extends CSharpLightLikeMet
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
-		return new CSharpTypeRefByQName(DotNetTypes.System.Void);
+		return myTypeRef;
 	}
 
 	@Override

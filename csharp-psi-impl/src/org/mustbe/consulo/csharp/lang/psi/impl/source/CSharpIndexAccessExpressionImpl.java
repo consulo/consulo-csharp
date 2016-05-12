@@ -46,8 +46,7 @@ import com.intellij.psi.ResolveResult;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpIndexAccessExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpCallArgumentListOwner,
-		CSharpQualifiedNonReference
+public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implements DotNetExpression, CSharpCallArgumentListOwner, CSharpQualifiedNonReference
 {
 	public static class OurResolver implements CSharpResolveCache.PolyVariantResolver<CSharpIndexAccessExpressionImpl>
 	{
@@ -66,13 +65,11 @@ public class CSharpIndexAccessExpressionImpl extends CSharpElementImpl implement
 
 				CSharpLightIndexMethodDeclarationBuilder builder = new CSharpLightIndexMethodDeclarationBuilder(expression.getProject());
 				builder.withReturnType(innerTypeRef);
-				builder.addParameter(new CSharpLightParameterBuilder(expression.getProject()).withName("p").withTypeRef(new CSharpTypeRefByQName
-						(DotNetTypes.System.Int32)));
+				builder.addParameter(new CSharpLightParameterBuilder(expression.getProject()).withName("p").withTypeRef(new CSharpTypeRefByQName(expression, DotNetTypes.System.Int32)));
 				return new ResolveResult[]{new CSharpResolveResult(builder)};
 			}
 
-			ResolveResult[] resolveResults = CSharpReferenceExpressionImplUtil.multiResolveImpl(CSharpReferenceExpression.ResolveToKind.ARRAY_METHOD,
-					expression, expression, true);
+			ResolveResult[] resolveResults = CSharpReferenceExpressionImplUtil.multiResolveImpl(CSharpReferenceExpression.ResolveToKind.ARRAY_METHOD, expression, expression, true);
 			return !incompleteCode ? resolveResults : CSharpResolveUtil.filterValidResults(resolveResults);
 		}
 	}
@@ -91,7 +88,7 @@ public class CSharpIndexAccessExpressionImpl extends CSharpElementImpl implement
 	@NotNull
 	@Override
 	@RequiredReadAction
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
 		PsiElement resolve = resolveToCallable();
 		if(resolve instanceof CSharpIndexMethodDeclaration)

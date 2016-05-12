@@ -49,7 +49,7 @@ public class CS0509 extends CompilerCheck<DotNetType>
 			{
 				return null;
 			}
-			PsiElement psiElement = element.toTypeRef().resolve(element).getElement();
+			PsiElement psiElement = element.toTypeRef().resolve().getElement();
 			if(psiElement instanceof CSharpTypeDeclaration)
 			{
 				if(((CSharpTypeDeclaration) psiElement).hasModifier(DotNetModifier.SEALED))

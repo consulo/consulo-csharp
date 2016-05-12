@@ -49,11 +49,12 @@ public class CSharpConstructorDeclarationImpl extends CSharpLikeMethodDeclaratio
 		super(stub, nodeType);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
-		return new CSharpTypeRefByQName(DotNetTypes.System.Void);
+		return new CSharpTypeRefByQName(this, DotNetTypes.System.Void);
 	}
 
 	@Override

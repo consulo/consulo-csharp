@@ -153,12 +153,12 @@ public class CS0019 extends CompilerCheck<CSharpBinaryExpressionImpl>
 					CSharpStaticTypeRef.IMPLICIT).isSuccess();
 			if(!applicable)
 			{
-				Pair<String, DotNetTypeDeclaration> leftPair = CSharpTypeUtil.resolveTypeElement(leftType, element);
+				Pair<String, DotNetTypeDeclaration> leftPair = CSharpTypeUtil.resolveTypeElement(leftType);
 				if(leftPair != null)
 				{
 					Collection<String> allowedSetLeft = ourAllowedMap.get(leftPair.getFirst());
 
-					Pair<String, DotNetTypeDeclaration> rightPair = CSharpTypeUtil.resolveTypeElement(rightType, element);
+					Pair<String, DotNetTypeDeclaration> rightPair = CSharpTypeUtil.resolveTypeElement(rightType);
 					if(rightPair != null && allowedSetLeft.contains(rightPair.getFirst()))
 					{
 						return null;

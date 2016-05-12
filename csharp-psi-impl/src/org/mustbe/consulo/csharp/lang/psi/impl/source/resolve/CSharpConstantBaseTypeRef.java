@@ -24,20 +24,31 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionIm
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpConstantTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpFastImplicitTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
  * @since 31.10.2015
  */
-public abstract class CSharpConstantBaseTypeRef extends DotNetTypeRef.Delegate implements CSharpFastImplicitTypeRef
+public abstract class CSharpConstantBaseTypeRef extends DotNetTypeRefWithCachedResult implements CSharpFastImplicitTypeRef
 {
 	protected CSharpConstantExpressionImpl myExpression;
+	private DotNetTypeRef myDelegate;
 
 	public CSharpConstantBaseTypeRef(CSharpConstantExpressionImpl expression, DotNetTypeRef delegate)
 	{
-		super(delegate);
 		myExpression = expression;
+		myDelegate = delegate;
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	protected DotNetTypeResolveResult resolveResult()
+	{
+		return myDelegate.resolve();
 	}
 
 	@Nullable
@@ -58,6 +69,14 @@ public abstract class CSharpConstantBaseTypeRef extends DotNetTypeRef.Delegate i
 		return null;
 	}
 
+	@RequiredReadAction
+	@NotNull
+	@Override
+	public String toString()
+	{
+		return myDelegate.toString();
+	}
+
 	@NotNull
 	@RequiredReadAction
 	protected String getPrefix()
@@ -74,6 +93,6 @@ public abstract class CSharpConstantBaseTypeRef extends DotNetTypeRef.Delegate i
 	@Override
 	public boolean equals(Object obj)
 	{
-		return getDelegate().equals(obj);
+		return myDelegate.equals(obj);
 	}
 }

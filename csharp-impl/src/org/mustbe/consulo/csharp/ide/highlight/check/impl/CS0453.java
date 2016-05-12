@@ -97,7 +97,7 @@ public class CS0453 extends CompilerCheck<CSharpNullableType>
 		}
 		DotNetTypeRef dotNetTypeRef = innerType.toTypeRef();
 
-		DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(element);
+		DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve();
 
 		if(!typeResolveResult.isNullable())
 		{

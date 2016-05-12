@@ -55,7 +55,7 @@ public class IsExpressionEvaluator extends Evaluator
 		}
 
 		DotNetTypeRef typeRef = myExpression.getIsTypeRef();
-		PsiElement element = typeRef.resolve(context.getElementAt()).getElement();
+		PsiElement element = typeRef.resolve().getElement();
 
 		DotNetTypeProxy typeMirror = findTypeMirror(context, element);
 		if(typeMirror == null)

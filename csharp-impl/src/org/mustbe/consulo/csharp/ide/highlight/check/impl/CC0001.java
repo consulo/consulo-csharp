@@ -312,7 +312,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 			if(resolveElement instanceof DotNetVariable)
 			{
 				DotNetTypeRef typeRef = ((DotNetVariable) resolveElement).toTypeRef(false);
-				DotNetTypeResolveResult typeResolveResult = typeRef.resolve(element);
+				DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 				if(!(typeResolveResult instanceof CSharpLambdaResolveResult))
 				{
 					return null;

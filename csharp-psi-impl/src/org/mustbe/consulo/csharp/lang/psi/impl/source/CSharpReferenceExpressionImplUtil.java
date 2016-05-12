@@ -715,7 +715,7 @@ public class CSharpReferenceExpressionImplUtil
 					break;
 			}
 
-			DotNetTypeResolveResult typeResolveResult = typeRef.resolve(element);
+			DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 
 			PsiElement resolveElement = typeResolveResult.getElement();
 			if(resolveElement == null)
@@ -758,7 +758,7 @@ public class CSharpReferenceExpressionImplUtil
 				}
 			}
 
-			DotNetTypeResolveResult typeResolveResult = qualifierTypeRef.resolve(element);
+			DotNetTypeResolveResult typeResolveResult = qualifierTypeRef.resolve();
 
 			PsiElement resolve = typeResolveResult.getElement();
 
@@ -1119,35 +1119,35 @@ public class CSharpReferenceExpressionImplUtil
 
 	@NotNull
 	@RequiredReadAction
-	public static DotNetTypeRef toTypeRef(@Nullable PsiElement resolve, @NotNull DotNetGenericExtractor extractor)
+	public static DotNetTypeRef toTypeRef(@Nullable PsiElement resolvedElement, @NotNull DotNetGenericExtractor extractor)
 	{
-		if(resolve instanceof DotNetNamespaceAsElement)
+		if(resolvedElement instanceof DotNetNamespaceAsElement)
 		{
-			return new CSharpTypeRefFromNamespace(((DotNetNamespaceAsElement) resolve).getPresentableQName());
+			return new CSharpTypeRefFromNamespace((DotNetNamespaceAsElement) resolvedElement);
 		}
-		else if(resolve instanceof DotNetTypeDeclaration)
+		else if(resolvedElement instanceof DotNetTypeDeclaration)
 		{
-			return new CSharpTypeRefByTypeDeclaration((DotNetTypeDeclaration) resolve, extractor);
+			return new CSharpTypeRefByTypeDeclaration((DotNetTypeDeclaration) resolvedElement, extractor);
 		}
-		else if(resolve instanceof CSharpTypeDefStatement)
+		else if(resolvedElement instanceof CSharpTypeDefStatement)
 		{
-			return ((CSharpTypeDefStatement) resolve).toTypeRef();
+			return ((CSharpTypeDefStatement) resolvedElement).toTypeRef();
 		}
-		else if(resolve instanceof DotNetGenericParameter)
+		else if(resolvedElement instanceof DotNetGenericParameter)
 		{
-			return new CSharpTypeRefFromGenericParameter((DotNetGenericParameter) resolve);
+			return new CSharpTypeRefFromGenericParameter((DotNetGenericParameter) resolvedElement);
 		}
-		else if(resolve instanceof CSharpMethodDeclaration)
+		else if(resolvedElement instanceof CSharpMethodDeclaration)
 		{
-			return new CSharpLambdaTypeRef((CSharpMethodDeclaration) resolve);
+			return new CSharpLambdaTypeRef((CSharpMethodDeclaration) resolvedElement);
 		}
-		else if(resolve instanceof DotNetVariable)
+		else if(resolvedElement instanceof DotNetVariable)
 		{
-			return ((DotNetVariable) resolve).toTypeRef(true);
+			return ((DotNetVariable) resolvedElement).toTypeRef(true);
 		}
-		else if(resolve instanceof CSharpElementGroup)
+		else if(resolvedElement instanceof CSharpElementGroup)
 		{
-			return new CSharpElementGroupTypeRef((CSharpElementGroup<?>) resolve);
+			return new CSharpElementGroupTypeRef((CSharpElementGroup<?>) resolvedElement);
 		}
 		return DotNetTypeRef.ERROR_TYPE;
 	}

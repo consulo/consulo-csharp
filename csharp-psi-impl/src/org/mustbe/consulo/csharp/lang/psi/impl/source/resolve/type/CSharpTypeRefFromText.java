@@ -17,12 +17,12 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFactory;
 import org.mustbe.consulo.csharp.lang.psi.impl.fragment.CSharpFragmentFileImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 
@@ -30,7 +30,7 @@ import com.intellij.psi.util.PsiTreeUtil;
  * @author VISTALL
  * @since 15.01.14
  */
-public class CSharpTypeRefFromText extends DotNetTypeRef.Adapter
+public class CSharpTypeRefFromText extends DotNetTypeRefWithCachedResult
 {
 	private final String myText;
 	private final PsiElement myOwner;
@@ -46,29 +46,26 @@ public class CSharpTypeRefFromText extends DotNetTypeRef.Adapter
 	private DotNetType getType()
 	{
 		CSharpFragmentFileImpl typeFragment = CSharpFragmentFactory.createTypeFragment(myOwner.getProject(), myText, myOwner);
+		typeFragment.forceResolveScope(myOwner.getResolveScope());
+
 		DotNetType dotNetType = PsiTreeUtil.getChildOfType(typeFragment, DotNetType.class);
 		assert dotNetType != null : myText;
 		return dotNetType;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public String getPresentableText()
+	protected DotNetTypeResolveResult resolveResult()
 	{
-		return StringUtil.getShortName(myText);
+		return getType().toTypeRef().resolve();
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public String getQualifiedText()
+	public String toString()
 	{
-		return getType().toTypeRef().getQualifiedText();
-	}
-
-	@NotNull
-	@Override
-	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
-	{
-		return getType().toTypeRef().resolve(scope);
+		return getType().toTypeRef().toString();
 	}
 }

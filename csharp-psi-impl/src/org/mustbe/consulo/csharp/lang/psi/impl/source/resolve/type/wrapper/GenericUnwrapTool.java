@@ -24,10 +24,10 @@ import org.mustbe.consulo.csharp.lang.psi.impl.light.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpReferenceExpressionImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpErrorTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpPointerTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpReferenceTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyGenericWrapperTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpUserTypeRef;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
@@ -282,11 +282,11 @@ public class GenericUnwrapTool
 				DotNetTypeRef oldArgument = oldArguments[i];
 				arguments[i] = exchangeTypeRef(oldArgument, func, scope);
 			}
-			return new CSharpLazyGenericWrapperTypeRef(scope, inner, arguments);
+			return new CSharpGenericWrapperTypeRef(inner, arguments);
 		}
 		else if(typeRef instanceof DotNetPointerTypeRef)
 		{
-			return new CSharpPointerTypeRef(exchangeTypeRef(((DotNetPointerTypeRef) typeRef).getInnerTypeRef(), func, scope));
+			return new CSharpPointerTypeRef(scope, exchangeTypeRef(((DotNetPointerTypeRef) typeRef).getInnerTypeRef(), func, scope));
 		}
 		else if(typeRef instanceof CSharpRefTypeRef)
 		{
@@ -295,14 +295,14 @@ public class GenericUnwrapTool
 		else if(typeRef instanceof CSharpArrayTypeRef)
 		{
 			CSharpArrayTypeRef arrayType = (CSharpArrayTypeRef) typeRef;
-			return new CSharpArrayTypeRef(exchangeTypeRef(arrayType.getInnerTypeRef(), func, scope), arrayType.getDimensions());
+			return new CSharpArrayTypeRef(scope, exchangeTypeRef(arrayType.getInnerTypeRef(), func, scope), arrayType.getDimensions());
 		}
-		else if(typeRef instanceof CSharpReferenceTypeRef)
+		else if(typeRef instanceof CSharpUserTypeRef)
 		{
-			CSharpReferenceExpression referenceExpression = ((CSharpReferenceTypeRef) typeRef).getReferenceExpression();
+			CSharpReferenceExpression referenceExpression = ((CSharpUserTypeRef) typeRef).getReferenceExpression();
 			DotNetTypeRef[] typeArgumentListRefs = referenceExpression.getTypeArgumentListRefs();
 
-			Pair<DotNetTypeRef, PsiElement> pair = extractTypeRef(typeRef, func, scope);
+			Pair<DotNetTypeRef, PsiElement> pair = extractTypeRef(typeRef, func);
 
 			DotNetTypeRef innerTypeRef;
 			if(pair.getFirst() == null && pair.getSecond() == null)
@@ -334,11 +334,11 @@ public class GenericUnwrapTool
 			}
 
 			DotNetTypeRef[] typeRefs = exchangeTypeRefs(typeArgumentListRefs, func, scope);
-			return new CSharpLazyGenericWrapperTypeRef(scope, innerTypeRef, typeRefs);
+			return new CSharpGenericWrapperTypeRef(innerTypeRef, typeRefs);
 		}
 		else
 		{
-			Pair<DotNetTypeRef, PsiElement> pair = extractTypeRef(typeRef, func, scope);
+			Pair<DotNetTypeRef, PsiElement> pair = extractTypeRef(typeRef, func);
 			if(pair.getFirst() == null && pair.getSecond() == null)
 			{
 				// nothing
@@ -367,9 +367,9 @@ public class GenericUnwrapTool
 
 	@NotNull
 	@RequiredReadAction
-	private static Pair<DotNetTypeRef, PsiElement> extractTypeRef(@NotNull DotNetTypeRef typeRef, @NotNull Function<PsiElement, DotNetTypeRef> func, @NotNull PsiElement scope)
+	private static Pair<DotNetTypeRef, PsiElement> extractTypeRef(@NotNull DotNetTypeRef typeRef, @NotNull Function<PsiElement, DotNetTypeRef> func)
 	{
-		PsiElement resolve = typeRef.resolve(scope).getElement();
+		PsiElement resolve = typeRef.resolve().getElement();
 
 		DotNetTypeRef extractedTypeRef = func.fun(resolve);
 		if(extractedTypeRef != null)

@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import org.mustbe.consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import org.mustbe.consulo.csharp.ide.liveTemplates.expression.TypeRefExpression;
@@ -48,6 +49,7 @@ public class CreateUnresolvedEventFix extends CreateUnresolvedFieldFix
 		return BundleBase.format("Create event ''{0}''", myReferenceName);
 	}
 
+	@RequiredReadAction
 	@Override
 	public void buildTemplate(@NotNull CreateUnresolvedElementFixContext context,
 			CSharpContextUtil.ContextType contextType,
@@ -72,7 +74,7 @@ public class CreateUnresolvedEventFix extends CreateUnresolvedFieldFix
 		}
 		else
 		{
-			template.addVariable(new TypeRefExpression(new CSharpTypeRefByQName(DotNetTypes.System.Object), file), true);
+			template.addVariable(new TypeRefExpression(new CSharpTypeRefByQName(file, DotNetTypes.System.Object), file), true);
 		}
 
 		template.addTextSegment(" ");

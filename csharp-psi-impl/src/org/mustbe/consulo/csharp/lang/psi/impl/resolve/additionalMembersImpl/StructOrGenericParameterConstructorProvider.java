@@ -88,6 +88,7 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 		return Target.CONSTRUCTOR;
 	}
 
+	@RequiredReadAction
 	private static void buildDefaultConstructor(@NotNull DotNetNamedElement element,
 			@NotNull CSharpModifier modifier,
 			@NotNull DotNetGenericExtractor extractor,
@@ -98,7 +99,7 @@ public class StructOrGenericParameterConstructorProvider implements CSharpAdditi
 		{
 			return;
 		}
-		CSharpLightConstructorDeclarationBuilder builder = new CSharpLightConstructorDeclarationBuilder(element.getProject());
+		CSharpLightConstructorDeclarationBuilder builder = new CSharpLightConstructorDeclarationBuilder(element);
 		builder.addModifier(modifier);
 		builder.setNavigationElement(element);
 		builder.withParent(element);

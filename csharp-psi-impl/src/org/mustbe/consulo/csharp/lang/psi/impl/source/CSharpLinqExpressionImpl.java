@@ -32,7 +32,7 @@ import com.intellij.psi.util.PsiTreeUtil;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpLinqExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public class CSharpLinqExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
 	public CSharpLinqExpressionImpl(@NotNull ASTNode node)
 	{
@@ -81,7 +81,7 @@ public class CSharpLinqExpressionImpl extends CSharpElementImpl implements DotNe
 	@NotNull
 	@Override
 	@RequiredReadAction
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
 		CSharpLinqQueryBodyImpl queryBody = getQueryBody();
 		if(queryBody == null)

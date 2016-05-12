@@ -37,6 +37,7 @@ public class MsilMethodAsCSharpConstructorDeclaration extends MsilMethodAsCSharp
 {
 	private final MsilClassAsCSharpTypeDefinition myTypeDefinition;
 	private final boolean myDeConstructor;
+	private final DotNetTypeRef myReturnTypeRef;
 
 	public MsilMethodAsCSharpConstructorDeclaration(
 			PsiElement parent, MsilClassAsCSharpTypeDefinition typeDefinition, MsilMethodEntry methodEntry, boolean deConstructor)
@@ -44,6 +45,7 @@ public class MsilMethodAsCSharpConstructorDeclaration extends MsilMethodAsCSharp
 		super(parent, methodEntry);
 		myTypeDefinition = typeDefinition;
 		myDeConstructor = deConstructor;
+		myReturnTypeRef = new CSharpTypeRefByQName(typeDefinition, DotNetTypes.System.Void);
 	}
 
 	@RequiredReadAction
@@ -51,7 +53,7 @@ public class MsilMethodAsCSharpConstructorDeclaration extends MsilMethodAsCSharp
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
 	{
-		return new CSharpTypeRefByQName(DotNetTypes.System.Void);
+		return myReturnTypeRef;
 	}
 
 	@Override

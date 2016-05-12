@@ -24,6 +24,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpFastImp
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetArrayTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 
@@ -31,29 +33,24 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 30.12.14
  */
-public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpArrayInitializerOwner
+public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpExpressionImpl implements DotNetExpression, CSharpArrayInitializerOwner
 {
-	private static class ImplicitArrayInitializationTypeRef extends DotNetTypeRef.Adapter implements CSharpFastImplicitTypeRef
+	private static class ImplicitArrayInitializationTypeRef extends DotNetTypeRefWithCachedResult implements CSharpFastImplicitTypeRef
 	{
-		private final CSharpImplicitArrayInitializationExpressionImpl myExpression;
-
-		public ImplicitArrayInitializationTypeRef(CSharpImplicitArrayInitializationExpressionImpl expression)
-		{
-			myExpression = expression;
-		}
-
+		@RequiredReadAction
 		@NotNull
 		@Override
-		public String getPresentableText()
+		public String toString()
 		{
 			return "{...}";
 		}
 
+		@RequiredReadAction
 		@NotNull
 		@Override
-		public String getQualifiedText()
+		protected DotNetTypeResolveResult resolveResult()
 		{
-			return "{...}";
+			return DotNetTypeResolveResult.EMPTY;
 		}
 
 		@RequiredReadAction
@@ -94,9 +91,9 @@ public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpEleme
 
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
-		return new ImplicitArrayInitializationTypeRef(this);
+		return new ImplicitArrayInitializationTypeRef();
 	}
 
 	@Nullable

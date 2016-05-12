@@ -25,7 +25,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLinqVariable;
 import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpTypeRefCache;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
@@ -140,7 +139,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 				CSharpLinqVariableImpl variable = ((CSharpLinqJoinClauseImpl) nextParent).getVariable();
 				if(variable != null)
 				{
-					return new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(DotNetTypes2.System.Collections.Generic.IEnumerable$1), variable.toTypeRef(true));
+					return new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(this, DotNetTypes2.System.Collections.Generic.IEnumerable$1), variable.toTypeRef(true));
 				}
 			}
 			else if(nextParent instanceof CSharpLinqQueryContinuationImpl)

@@ -30,7 +30,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpNullCoalescingExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public class CSharpNullCoalescingExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
 	public CSharpNullCoalescingExpressionImpl(@NotNull ASTNode node)
 	{
@@ -72,10 +72,10 @@ public class CSharpNullCoalescingExpressionImpl extends CSharpElementImpl implem
 	@NotNull
 	@Override
 	@RequiredReadAction
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
 		DotNetExpression condition = getCondition();
 		DotNetTypeRef typeRef = condition.toTypeRef(resolveFromParent);
-		return CSharpNullableTypeUtil.unbox(typeRef, this);
+		return CSharpNullableTypeUtil.unbox(typeRef);
 	}
 }

@@ -60,7 +60,7 @@ public class CSharpUsingNamespaceOrTypeResolveContext extends CSharpResolveConte
 			{
 				DotNetTypeRef typeRef = ((CSharpUsingTypeStatement) myUsingListChild).getTypeRef();
 
-				DotNetTypeResolveResult typeResolveResult = typeRef.resolve(myUsingListChild);
+				DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 				targetElement = typeResolveResult.getElement();
 				extractor = typeResolveResult.getGenericExtractor();
 			}

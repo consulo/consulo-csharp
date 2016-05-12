@@ -41,9 +41,11 @@ public class CSharpPartialElementManager implements Disposable
 {
 	private final Map<GlobalSearchScope, Map<String, CSharpTypeDeclaration>> myCache = ContainerUtil.createConcurrentWeakMap();
 	private long myOutOfCodeModification;
+	private final Project myProject;
 
 	public CSharpPartialElementManager(@NotNull Project project, @NotNull final PsiModificationTracker modificationTracker)
 	{
+		myProject = project;
 		project.getMessageBus().connect().subscribe(PsiModificationTracker.TOPIC, new PsiModificationTracker.Listener()
 		{
 			@Override
@@ -69,9 +71,7 @@ public class CSharpPartialElementManager implements Disposable
 	}
 
 	@NotNull
-	public CSharpTypeDeclaration getOrCreateCompositeType(@NotNull GlobalSearchScope scope,
-			@NotNull final String vmQName,
-			@NotNull final Collection<CSharpTypeDeclaration> typeDeclarations)
+	public CSharpTypeDeclaration getOrCreateCompositeType(@NotNull final GlobalSearchScope scope, @NotNull final String vmQName, @NotNull final Collection<CSharpTypeDeclaration> typeDeclarations)
 	{
 		Map<String, CSharpTypeDeclaration> scopeMap = ContainerUtil.getOrCreate(myCache, scope, new Factory<Map<String, CSharpTypeDeclaration>>()
 		{
@@ -87,7 +87,7 @@ public class CSharpPartialElementManager implements Disposable
 			@Override
 			public CSharpTypeDeclaration create()
 			{
-				return new CSharpCompositeTypeDeclaration(ContainerUtil.toArray(typeDeclarations, CSharpTypeDeclaration.ARRAY_FACTORY));
+				return new CSharpCompositeTypeDeclaration(myProject, scope, ContainerUtil.toArray(typeDeclarations, CSharpTypeDeclaration.ARRAY_FACTORY));
 			}
 		});
 	}

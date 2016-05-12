@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -35,7 +36,7 @@ import com.intellij.psi.ResolveResult;
  * @author VISTALL
  * @since 30.01.15
  */
-public class CSharpArglistExpressionImpl extends CSharpElementImpl implements DotNetExpression, CSharpCallArgumentListOwner
+public class CSharpArglistExpressionImpl extends CSharpExpressionImpl implements DotNetExpression, CSharpCallArgumentListOwner
 {
 	public CSharpArglistExpressionImpl(@NotNull ASTNode node)
 	{
@@ -48,14 +49,15 @@ public class CSharpArglistExpressionImpl extends CSharpElementImpl implements Do
 		visitor.visitArglistExpression(this);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef(boolean b)
+	public DotNetTypeRef toTypeRefImpl(boolean b)
 	{
 		CSharpCallArgumentList callArgumentList = findChildByClass(CSharpCallArgumentList.class);
 		if(callArgumentList == null)
 		{
-			return new CSharpTypeRefByQName(DotNetTypes2.System.RuntimeArgumentHandle);
+			return new CSharpTypeRefByQName(this, DotNetTypes2.System.RuntimeArgumentHandle);
 		}
 		else
 		{

@@ -75,6 +75,7 @@ public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 		return getRequiredStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
@@ -83,6 +84,7 @@ public class CSharpIndexMethodDeclarationImpl extends CSharpStubMemberImpl<CShar
 		return type.toTypeRef();
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public CSharpSimpleParameterInfo[] getParameterInfos()

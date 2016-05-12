@@ -118,6 +118,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	public abstract void acceptChildren(CSharpElementVisitor visitor);
 
 	@NotNull
+	@RequiredReadAction
 	protected abstract List<DotNetTypeRef> getExtendTypeRefs();
 
 	@NotNull
@@ -146,7 +147,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		List<CSharpResolveContext> contexts = new ArrayList<CSharpResolveContext>(superTypes.size());
 		for(DotNetTypeRef dotNetTypeRef : superTypes)
 		{
-			DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(myElement);
+			DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve();
 			PsiElement resolvedElement = typeResolveResult.getElement();
 
 			if(resolvedElement != null && alreadyProcessedItem.add(resolvedElement))

@@ -57,9 +57,9 @@ public class CSharpBinaryExpressionImpl extends CSharpExpressionWithOperatorImpl
 	@NotNull
 	@Override
 	@RequiredReadAction
-	public DotNetTypeRef toTypeRef(boolean resolveFromParent)
+	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
-		DotNetTypeRef delegate = super.toTypeRef(resolveFromParent);
+		DotNetTypeRef delegate = super.toTypeRefImpl(resolveFromParent);
 
 		IElementType operatorElementType = getOperatorElement().getOperatorElementType();
 		if(operatorElementType == CSharpTokenSets.LTLT || operatorElementType == CSharpTokenSets.GTGT)

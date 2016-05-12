@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AsPsiElementProcessor;
@@ -49,12 +50,10 @@ import com.intellij.psi.ResolveState;
 public class CSharpSearchUtil
 {
 	@Nullable
-	public static DotNetPropertyDeclaration findPropertyByName(@NotNull final String name,
-			@Nullable String parentQName,
-			@NotNull DotNetTypeRef typeRef,
-			@NotNull PsiElement scope)
+	@RequiredReadAction
+	public static DotNetPropertyDeclaration findPropertyByName(@NotNull final String name, @Nullable String parentQName, @NotNull DotNetTypeRef typeRef)
 	{
-		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 		PsiElement resolvedElement = typeResolveResult.getElement();
 		if(resolvedElement == null)
 		{
@@ -65,14 +64,12 @@ public class CSharpSearchUtil
 	}
 
 	@Nullable
-	public static DotNetPropertyDeclaration findPropertyByName(@NotNull final String name,
-			@NotNull PsiElement owner,
-			@Nullable String parentQName,
-			@NotNull DotNetGenericExtractor extractor)
+	@RequiredReadAction
+	public static DotNetPropertyDeclaration findPropertyByName(@NotNull final String name, @NotNull PsiElement owner, @Nullable String parentQName, @NotNull DotNetGenericExtractor extractor)
 	{
 		AsPsiElementProcessor psiElementProcessor = new AsPsiElementProcessor();
-		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner, psiElementProcessor,
-				new ExecuteTarget[]{ExecuteTarget.PROPERTY}, OverrideProcessor.ALWAYS_TRUE);
+		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner, psiElementProcessor, new ExecuteTarget[]{ExecuteTarget.PROPERTY},
+				OverrideProcessor.ALWAYS_TRUE);
 
 		ResolveState state = ResolveState.initial();
 		state = state.put(CSharpResolveUtil.EXTRACTOR, extractor);
@@ -90,13 +87,10 @@ public class CSharpSearchUtil
 	}
 
 	@Nullable
-	public static DotNetMethodDeclaration findMethodByName(@NotNull final String name,
-			@Nullable String parentQName,
-			@NotNull DotNetTypeRef typeRef,
-			@NotNull PsiElement scope,
-			int parameterSize)
+	@RequiredReadAction
+	public static DotNetMethodDeclaration findMethodByName(@NotNull final String name, @Nullable String parentQName, @NotNull DotNetTypeRef typeRef, int parameterSize)
 	{
-		DotNetTypeResolveResult typeResolveResult = typeRef.resolve(scope);
+		DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 		PsiElement resolvedElement = typeResolveResult.getElement();
 		if(resolvedElement == null)
 		{
@@ -106,6 +100,7 @@ public class CSharpSearchUtil
 	}
 
 	@Nullable
+	@RequiredReadAction
 	public static DotNetMethodDeclaration findMethodByName(@NotNull final String name,
 			@NotNull PsiElement owner,
 			@Nullable String parentQName,
@@ -119,8 +114,7 @@ public class CSharpSearchUtil
 			{
 				for(DotNetNamedElement dotNetNamedElement : ((DotNetMemberOwner) owner).getMembers())
 				{
-					if(dotNetNamedElement instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) dotNetNamedElement).getParameters()
-							.length == 0 &&
+					if(dotNetNamedElement instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) dotNetNamedElement).getParameters().length == 0 &&
 							name.equals(dotNetNamedElement.getName()))
 					{
 						DotNetTypeRef typeRefForImplement = ((CSharpMethodDeclaration) dotNetNamedElement).getTypeRefForImplement();
@@ -134,8 +128,8 @@ public class CSharpSearchUtil
 		}
 
 		AsPsiElementProcessor psiElementProcessor = new AsPsiElementProcessor();
-		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner, psiElementProcessor,
-				new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP}, OverrideProcessor.ALWAYS_TRUE);
+		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(owner, psiElementProcessor, new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP},
+				OverrideProcessor.ALWAYS_TRUE);
 
 		ResolveState state = ResolveState.initial();
 		state = state.put(CSharpResolveUtil.EXTRACTOR, extractor);
@@ -185,6 +179,7 @@ public class CSharpSearchUtil
 		return false;
 	}
 
+	@RequiredReadAction
 	private static boolean isEqualVmQNameOfParent(PsiElement element, String parentQName)
 	{
 		PsiElement parent = element.getParent();

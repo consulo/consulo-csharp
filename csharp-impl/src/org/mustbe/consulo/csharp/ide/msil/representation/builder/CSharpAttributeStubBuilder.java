@@ -82,11 +82,12 @@ public class CSharpAttributeStubBuilder
 		builder.append(")");
 	}
 
+	@RequiredReadAction
 	private static void appendValue(StringBuilder builder, MsiCustomAttributeValue value, final PsiElement scope)
 	{
 		if(value instanceof MsilCustomAttributeEnumValue)
 		{
-			final DotNetTypeRef typeRef = toTypeRef(value.getTypeSignature(), true);
+			final DotNetTypeRef typeRef = toTypeRef(scope, value.getTypeSignature(), true);
 
 			assert typeRef != null;
 
@@ -96,6 +97,7 @@ public class CSharpAttributeStubBuilder
 			{
 				@Nullable
 				@Override
+				@RequiredReadAction
 				public Void fun(StringBuilder builder, String s)
 				{
 					CSharpStubBuilderVisitor.appendTypeRef(scope, builder, typeRef);
@@ -115,7 +117,7 @@ public class CSharpAttributeStubBuilder
 			}
 			else if(realValue instanceof TypeSignature)
 			{
-				DotNetTypeRef typeRef = toTypeRef((TypeSignature) realValue, true);
+				DotNetTypeRef typeRef = toTypeRef(scope, (TypeSignature) realValue, true);
 				assert typeRef != null;
 				builder.append("typeof(");
 				CSharpStubBuilderVisitor.appendTypeRef(scope, builder, typeRef);
@@ -129,7 +131,8 @@ public class CSharpAttributeStubBuilder
 	}
 
 	@Nullable
-	private static DotNetTypeRef toTypeRef(TypeSignature typeSignature, boolean firstEnter)
+	@RequiredReadAction
+	private static DotNetTypeRef toTypeRef(PsiElement scope, TypeSignature typeSignature, boolean firstEnter)
 	{
 		if(typeSignature == null)
 		{
@@ -137,83 +140,80 @@ public class CSharpAttributeStubBuilder
 		}
 		if(typeSignature == TypeSignature.BOOLEAN)
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.Boolean);
+			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Boolean);
 		}
 		else if(typeSignature == TypeSignature.STRING)
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.String);
+			return new CSharpTypeRefByQName(scope, DotNetTypes.System.String);
 		}
 		else if(typeSignature == TypeSignature.U1)
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.Byte);
+			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Byte);
 		}
 		else if(typeSignature == TypeSignature.I1)
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.SByte);
+			return new CSharpTypeRefByQName(scope, DotNetTypes.System.SByte);
 		}
 		if(typeSignature == TypeSignature.U2)
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.UInt16);
+			return new CSharpTypeRefByQName(scope, DotNetTypes.System.UInt16);
 		}
 		else if(typeSignature == TypeSignature.I2)
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.Int16);
+			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Int16);
 		}
 		else if(typeSignature == TypeSignature.U4)
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.UInt32);
+			return new CSharpTypeRefByQName(scope, DotNetTypes.System.UInt32);
 		}
 		else if(typeSignature == TypeSignature.I4)
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.Int32);
+			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Int32);
 		}
 		else if(typeSignature == TypeSignature.U8)
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.UInt64);
+			return new CSharpTypeRefByQName(scope, DotNetTypes.System.UInt64);
 		}
 		else if(typeSignature == TypeSignature.I8)
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.Int64);
+			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Int64);
 		}
 		else if(typeSignature == TypeSignature.R4)
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.Single);
+			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Single);
 		}
 		else if(typeSignature == TypeSignature.R8)
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.Double);
+			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Double);
 		}
 		else if(typeSignature == TypeSignature.CHAR)
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.Char);
+			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Char);
 		}
 		else if(typeSignature instanceof TypeSignatureWithGenericParameters)
 		{
-			TypeSignatureWithGenericParameters typeSignatureWithGenericParameters =
-					(TypeSignatureWithGenericParameters) typeSignature;
+			TypeSignatureWithGenericParameters typeSignatureWithGenericParameters = (TypeSignatureWithGenericParameters) typeSignature;
 			List<TypeSignature> genericArguments = typeSignatureWithGenericParameters.getGenericArguments();
 			DotNetTypeRef[] innerTypeRefs = new DotNetTypeRef[genericArguments.size()];
 			for(int i = 0; i < innerTypeRefs.length; i++)
 			{
-				innerTypeRefs[i] = toTypeRef(genericArguments.get(i), false);
+				innerTypeRefs[i] = toTypeRef(scope, genericArguments.get(i), false);
 			}
-			return new CSharpGenericWrapperTypeRef(toTypeRef(typeSignatureWithGenericParameters.getSignature(),
-					false), innerTypeRefs);
+			return new CSharpGenericWrapperTypeRef(toTypeRef(scope, typeSignatureWithGenericParameters.getSignature(), false), innerTypeRefs);
 		}
 		else if(typeSignature instanceof ArrayTypeSignature)
 		{
 			ArrayShapeSignature arrayShape = ((ArrayTypeSignature) typeSignature).getArrayShape();
-			return new CSharpArrayTypeRef(toTypeRef(((ArrayTypeSignature) typeSignature).getElementType(), false),
-					arrayShape.getRank());
+			return new CSharpArrayTypeRef(scope, toTypeRef(scope, ((ArrayTypeSignature) typeSignature).getElementType(), false), arrayShape.getRank());
 		}
 		else if(typeSignature instanceof ValueTypeSignature)
 		{
-			return new CSharpTypeRefByQName(((ValueTypeSignature) typeSignature).getValueType().getFullName());
+			return new CSharpTypeRefByQName(scope, ((ValueTypeSignature) typeSignature).getValueType().getFullName());
 		}
 		else if(typeSignature instanceof ClassTypeSignature)
 		{
 			String fullName = ((ClassTypeSignature) typeSignature).getClassType().getFullName();
-			CSharpTypeRefByQName innerTypeRef = new CSharpTypeRefByQName(fullName);
+			CSharpTypeRefByQName innerTypeRef = new CSharpTypeRefByQName(scope, fullName);
 			if(firstEnter)
 			{
 				if(StringUtil.containsChar(fullName, MsilHelper.GENERIC_MARKER_IN_NAME))
@@ -225,9 +225,8 @@ public class CSharpAttributeStubBuilder
 		}
 		else
 		{
-			LOGGER.error("Unknown how convert: " + typeSignature.toString() + ":0x" + Integer.toHexString
-					(typeSignature.getType()));
-			return new CSharpTypeRefByQName(DotNetTypes.System.Object);
+			LOGGER.error("Unknown how convert: " + typeSignature.toString() + ":0x" + Integer.toHexString(typeSignature.getType()));
+			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Object);
 		}
 	}
 }

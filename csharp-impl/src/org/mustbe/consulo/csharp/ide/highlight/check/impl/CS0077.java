@@ -88,7 +88,7 @@ public class CS0077 extends CompilerCheck<CSharpAsExpressionImpl>
 			return null;
 		}
 
-		if(!typeRef.resolve(element).isNullable())
+		if(!typeRef.resolve().isNullable())
 		{
 			DotNetType type = element.getType();
 			assert type != null;

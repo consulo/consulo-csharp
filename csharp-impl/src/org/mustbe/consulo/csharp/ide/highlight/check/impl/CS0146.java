@@ -27,7 +27,7 @@ public class CS0146 extends CompilerCheck<CSharpUserType>
 		{
 			CSharpTypeDeclaration parent = (CSharpTypeDeclaration) element.getParent().getParent();
 
-			DotNetTypeResolveResult typeResolveResult = element.toTypeRef().resolve(element);
+			DotNetTypeResolveResult typeResolveResult = element.toTypeRef().resolve();
 
 			PsiElement resolvedElement = typeResolveResult.getElement();
 			if(resolvedElement instanceof CSharpTypeDeclaration)

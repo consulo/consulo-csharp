@@ -19,50 +19,36 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
-import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
  * @since 18.12.13.
  */
-public class CSharpTypeRefFromNamespace extends DotNetTypeRef.Adapter
+public class CSharpTypeRefFromNamespace extends DotNetTypeRefWithCachedResult
 {
-	private final String myQualifiedName;
+	private DotNetNamespaceAsElement myNamespaceAsElement;
 
-	public CSharpTypeRefFromNamespace(String qualifiedName)
+	public CSharpTypeRefFromNamespace(DotNetNamespaceAsElement namespaceAsElement)
 	{
-		myQualifiedName = qualifiedName;
-	}
-
-	@NotNull
-	@Override
-	public String getPresentableText()
-	{
-		return StringUtil.getShortName(myQualifiedName);
-	}
-
-	@NotNull
-	@Override
-	public String getQualifiedText()
-	{
-		return myQualifiedName;
+		myNamespaceAsElement = namespaceAsElement;
 	}
 
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeResolveResult resolve(@NotNull PsiElement element)
+	protected DotNetTypeResolveResult resolveResult()
 	{
-		DotNetNamespaceAsElement namespace = DotNetPsiSearcher.getInstance(element.getProject()).findNamespace(myQualifiedName, element.getResolveScope());
-		if(namespace == null)
-		{
-			return DotNetTypeResolveResult.EMPTY;
-		}
-		return new SimpleTypeResolveResult(namespace);
+		return new SimpleTypeResolveResult(myNamespaceAsElement);
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	public String toString()
+	{
+		return myNamespaceAsElement.getPresentableQName();
 	}
 }

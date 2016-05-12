@@ -169,7 +169,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 				DotNetTypeRef innerTypeRef = typeRef.getInnerTypeRef();
 				if(!(innerTypeRef instanceof CSharpArrayTypeRef))
 				{
-					PsiElement element = innerTypeRef.resolve(scope).getElement();
+					PsiElement element = innerTypeRef.resolve().getElement();
 					if(element != null)
 					{
 						if(element instanceof DotNetTypeDeclaration)
@@ -304,14 +304,14 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 				for(ExpectedTypeInfo expectedTypeRef : expectedTypeRefs)
 				{
 					DotNetTypeRef typeRef = expectedTypeRef.getTypeRef();
-					DotNetTypeResolveResult typeResolveResult = typeRef.resolve(parent);
+					DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 					if(typeResolveResult instanceof CSharpLambdaResolveResult)
 					{
-						addLambdaExpressionLookup((CSharpLambdaResolveResult) typeResolveResult, result, parent, false);
+						addLambdaExpressionLookup((CSharpLambdaResolveResult) typeResolveResult, result, false);
 
 						if(allowAsync)
 						{
-							addLambdaExpressionLookup((CSharpLambdaResolveResult) typeResolveResult, result, parent, true);
+							addLambdaExpressionLookup((CSharpLambdaResolveResult) typeResolveResult, result, true);
 						}
 
 						addDelegateExpressionLookup((CSharpLambdaResolveResult) typeResolveResult, result, parent, false);
@@ -325,7 +325,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 			}
 
 			@RequiredReadAction
-			private void addLambdaExpressionLookup(CSharpLambdaResolveResult typeResolveResult, CompletionResultSet result, PsiElement parent, boolean async)
+			private void addLambdaExpressionLookup(CSharpLambdaResolveResult typeResolveResult, CompletionResultSet result, boolean async)
 			{
 				CSharpSimpleParameterInfo[] parameterInfos = typeResolveResult.getParameterInfos();
 
@@ -584,7 +584,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 				final List<ExpectedTypeInfo> expectedTypeRefs = getExpectedTypeInfosForExpression(parameters, context);
 				for(ExpectedTypeInfo expectedTypeRef : expectedTypeRefs)
 				{
-					PsiElement element = expectedTypeRef.getTypeRef().resolve(expression).getElement();
+					PsiElement element = expectedTypeRef.getTypeRef().resolve().getElement();
 					if(element instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) element).isEnum() && !element.isEquivalentTo(contextType))
 					{
 						DotNetNamedElement[] members = ((CSharpTypeDeclaration) element).getMembers();
@@ -637,7 +637,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 							{
 								for(ExpectedTypeInfo newExpectedTypeRef : expectedTypeRefs)
 								{
-									DotNetTypeResolveResult expectedTypeResult = newExpectedTypeRef.getTypeRef().resolve(expression);
+									DotNetTypeResolveResult expectedTypeResult = newExpectedTypeRef.getTypeRef().resolve();
 
 									PsiElement expectedTypeResultElement = expectedTypeResult.getElement();
 									if(expectedTypeResult instanceof CSharpLambdaResolveResult)
@@ -691,7 +691,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 
 								if(!CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), typeOfElement, expression))
 								{
-									DotNetTypeResolveResult typeResolveResult = expectedTypeInfo.getTypeRef().resolve(expression);
+									DotNetTypeResolveResult typeResolveResult = expectedTypeInfo.getTypeRef().resolve();
 									if(typeResolveResult instanceof CSharpLambdaResolveResult)
 									{
 										if(CSharpTypeUtil.isInheritable(expectedTypeInfo.getTypeRef(), new CSharpLambdaTypeRef(methodDeclaration), expression))
@@ -720,7 +720,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 				PsiElement qualifier = referenceExpression.getQualifier();
 				if(qualifier != null)
 				{
-					PsiElement element = ((DotNetExpression) qualifier).toTypeRef(true).resolve(referenceExpression).getElement();
+					PsiElement element = ((DotNetExpression) qualifier).toTypeRef(true).resolve().getElement();
 					return element instanceof CSharpTypeDeclaration ? (CSharpTypeDeclaration) element : null;
 				}
 				else
@@ -1099,7 +1099,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 
 		for(DotNetTypeRef extendTypeRef : extendTypeRefs)
 		{
-			DotNetTypeResolveResult typeResolveResult = extendTypeRef.resolve(scope);
+			DotNetTypeResolveResult typeResolveResult = extendTypeRef.resolve();
 
 			PsiElement element = typeResolveResult.getElement();
 			if(element instanceof DotNetTypeDeclaration && element.isEquivalentTo(expectedType))
@@ -1108,7 +1108,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 				for(DotNetGenericParameter genericParameter : ((DotNetTypeDeclaration) element).getGenericParameters())
 				{
 					DotNetTypeRef tempTypeRef = genericExtractor.extract(genericParameter);
-					PsiElement tempElement = tempTypeRef == null ? null : tempTypeRef.resolve(scope).getElement();
+					PsiElement tempElement = tempTypeRef == null ? null : tempTypeRef.resolve().getElement();
 					if(tempElement != null)
 					{
 						for(DotNetGenericParameter targetParameter : targetType.getGenericParameters())

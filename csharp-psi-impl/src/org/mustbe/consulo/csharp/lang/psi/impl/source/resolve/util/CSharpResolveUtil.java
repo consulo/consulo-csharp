@@ -358,7 +358,7 @@ public class CSharpResolveUtil
 		{
 			DotNetTypeRef dotNetTypeRef = ((CSharpTypeDefStatement) entrance).toTypeRef();
 
-			DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve(entrance);
+			DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve();
 
 			PsiElement element = typeResolveResult.getElement();
 			if(element == null)
@@ -465,10 +465,10 @@ public class CSharpResolveUtil
 		{
 			return ((DotNetArrayTypeRef) typeRef).getInnerTypeRef();
 		}
-		DotNetMethodDeclaration method = CSharpSearchUtil.findMethodByName("GetEnumerator", DotNetTypes2.System.Collections.Generic.IEnumerable$1, typeRef, scope, 0);
+		DotNetMethodDeclaration method = CSharpSearchUtil.findMethodByName("GetEnumerator", DotNetTypes2.System.Collections.Generic.IEnumerable$1, typeRef, 0);
 		if(method != null)
 		{
-			DotNetPropertyDeclaration current = CSharpSearchUtil.findPropertyByName("Current", DotNetTypes2.System.Collections.Generic.IEnumerator$1, method.getReturnTypeRef(), scope);
+			DotNetPropertyDeclaration current = CSharpSearchUtil.findPropertyByName("Current", DotNetTypes2.System.Collections.Generic.IEnumerator$1, method.getReturnTypeRef());
 			if(current == null)
 			{
 				return DotNetTypeRef.ERROR_TYPE;
@@ -479,7 +479,7 @@ public class CSharpResolveUtil
 
 		if(DotNetInheritUtil.isParentOrSelf(DotNetTypes2.System.Collections.IEnumerable, typeRef, scope, true))
 		{
-			return new CSharpTypeRefByQName(DotNetTypes.System.Object);
+			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Object);
 		}
 		else
 		{

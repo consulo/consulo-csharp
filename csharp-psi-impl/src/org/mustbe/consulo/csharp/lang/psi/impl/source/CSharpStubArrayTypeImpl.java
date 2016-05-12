@@ -22,7 +22,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpArrayType;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.lazy.CSharpLazyArrayTypeRef;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpWithIntValueStub;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
@@ -40,8 +40,7 @@ public class CSharpStubArrayTypeImpl extends CSharpStubTypeElementImpl<CSharpWit
 		super(node);
 	}
 
-	public CSharpStubArrayTypeImpl(@NotNull CSharpWithIntValueStub<CSharpArrayType> stub,
-			@NotNull IStubElementType<? extends CSharpWithIntValueStub<CSharpArrayType>, ?> nodeType)
+	public CSharpStubArrayTypeImpl(@NotNull CSharpWithIntValueStub<CSharpArrayType> stub, @NotNull IStubElementType<? extends CSharpWithIntValueStub<CSharpArrayType>, ?> nodeType)
 	{
 		super(stub, nodeType);
 	}
@@ -53,7 +52,7 @@ public class CSharpStubArrayTypeImpl extends CSharpStubTypeElementImpl<CSharpWit
 	{
 		DotNetType innerType = getInnerType();
 
-		return new CSharpLazyArrayTypeRef(this, innerType.toTypeRef(), getDimensions());
+		return new CSharpArrayTypeRef(this, innerType.toTypeRef(), getDimensions());
 	}
 
 	@RequiredReadAction

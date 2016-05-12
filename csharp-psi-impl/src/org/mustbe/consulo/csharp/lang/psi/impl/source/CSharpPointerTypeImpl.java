@@ -55,7 +55,7 @@ public class CSharpPointerTypeImpl extends CSharpTypeElementImpl implements DotN
 		{
 			return DotNetTypeRef.ERROR_TYPE;
 		}
-		return new CSharpPointerTypeRef(innerType.toTypeRef());
+		return new CSharpPointerTypeRef(this, innerType.toTypeRef());
 	}
 
 	@Nullable

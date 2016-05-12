@@ -202,7 +202,7 @@ public class StaticVsInstanceComparator implements Comparator<ResolveResult>
 		else if(element instanceof DotNetVariable)
 		{
 			DotNetTypeRef typeRef = ((DotNetVariable) element).toTypeRef(true);
-			PsiElement resolvedElement = typeRef.resolve(scope).getElement();
+			PsiElement resolvedElement = typeRef.resolve().getElement();
 			if(resolvedElement == null)
 			{
 				return null;

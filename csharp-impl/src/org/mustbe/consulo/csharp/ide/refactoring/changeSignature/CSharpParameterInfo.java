@@ -77,7 +77,7 @@ public class CSharpParameterInfo implements ParameterInfo
 		myParameter = parameter;
 		myName = name;
 		myTypeText = "";
-		myTypeRef = new CSharpTypeRefByQName(DotNetTypes.System.Object);
+		myTypeRef = new CSharpTypeRefByQName(parameter, DotNetTypes.System.Object);
 		myNewIndex = newIndex;
 		myOldIndex = parameter == null ? -1 : parameter.getIndex();
 	}

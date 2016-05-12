@@ -18,6 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpMethodDeclStub;
@@ -91,6 +92,7 @@ public abstract class CSharpLikeMethodDeclarationImpl<T extends CSharpMethodDecl
 		return getStubOrPsiChildByIndex(CSharpStubElements.TYPE_SET, 0);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef getReturnTypeRef()
@@ -99,6 +101,7 @@ public abstract class CSharpLikeMethodDeclarationImpl<T extends CSharpMethodDecl
 		return type == null ? DotNetTypeRef.ERROR_TYPE : type.toTypeRef();
 	}
 
+	@RequiredReadAction
 	@NotNull
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{

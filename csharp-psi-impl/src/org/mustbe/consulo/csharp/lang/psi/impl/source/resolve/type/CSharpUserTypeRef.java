@@ -14,6 +14,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.psi.PsiElement;
 
@@ -21,7 +22,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 20.10.14
  */
-public class CSharpReferenceTypeRef implements DotNetTypeRef
+public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 {
 	public static class Result<T extends PsiElement> extends SingleNullableStateResolveResult
 	{
@@ -48,6 +49,7 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 			return myExtractor;
 		}
 
+		@RequiredReadAction
 		@Override
 		public boolean isNullableImpl()
 		{
@@ -68,6 +70,8 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 
 		@NotNull
 		@Override
+		@RequiredReadAction
+		@LazyInstance
 		public CSharpSimpleParameterInfo[] getParameterInfos()
 		{
 			CSharpSimpleParameterInfo[] parameterInfos = myElement.getParameterInfos();
@@ -87,11 +91,13 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 
 		@Nullable
 		@Override
+		@LazyInstance
 		public PsiElement getElement()
 		{
 			return CSharpLambdaResolveResultUtil.createTypeFromDelegate(myElement);
 		}
 
+		@RequiredReadAction
 		@NotNull
 		@Override
 		@LazyInstance
@@ -100,12 +106,14 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 			return GenericUnwrapTool.exchangeTypeRef(myElement.getReturnTypeRef(), getGenericExtractor(), myScope);
 		}
 
+		@RequiredReadAction
 		@Override
 		public boolean isInheritParameters()
 		{
 			return false;
 		}
 
+		@RequiredReadAction
 		@NotNull
 		@Override
 		@LazyInstance
@@ -114,6 +122,7 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 			return GenericUnwrapTool.exchangeTypeRefs(myElement.getParameterTypeRefs(), getGenericExtractor(), myScope);
 		}
 
+		@RequiredReadAction
 		@Override
 		public boolean isNullableImpl()
 		{
@@ -130,21 +139,15 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 
 	protected final CSharpReferenceExpression myReferenceExpression;
 
-	public CSharpReferenceTypeRef(CSharpReferenceExpression referenceExpression)
+	public CSharpUserTypeRef(@NotNull CSharpReferenceExpression referenceExpression)
 	{
 		myReferenceExpression = referenceExpression;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public String getPresentableText()
-	{
-		return getReferenceText();
-	}
-
-	@NotNull
-	@Override
-	public String getQualifiedText()
+	public String toString()
 	{
 		DotNetTypeRef[] argumentTypeRefs = myReferenceExpression.getTypeArgumentListRefs();
 
@@ -161,7 +164,7 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 					builder.append(", ");
 				}
 				DotNetTypeRef argument = argumentTypeRefs[i];
-				builder.append(argument.getQualifiedText());
+				builder.append(argument.toString());
 			}
 			builder.append(">");
 		}
@@ -171,17 +174,17 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 	@NotNull
 	@Override
 	@RequiredReadAction
-	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
+	public DotNetTypeResolveResult resolveResult()
 	{
 		PsiElement resolve = myReferenceExpression.resolve();
 		if(resolve instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) resolve).isDelegate())
 		{
-			return new LambdaResult(scope, (CSharpMethodDeclaration) resolve, createExtractor(resolve));
+			return new LambdaResult(myReferenceExpression, (CSharpMethodDeclaration) resolve, createExtractor(resolve));
 		}
 		else if(resolve instanceof CSharpTypeDefStatement)
 		{
 			DotNetTypeRef typeRef = ((CSharpTypeDefStatement) resolve).toTypeRef();
-			return typeRef.resolve(resolve);
+			return typeRef.resolve();
 		}
 		return new Result<PsiElement>(resolve, createExtractor(resolve));
 	}
@@ -193,6 +196,7 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 	}
 
 	@NotNull
+	@RequiredReadAction
 	private DotNetGenericExtractor createExtractor(PsiElement resolved)
 	{
 		DotNetTypeRef[] typeArgumentListRefs = myReferenceExpression.getTypeArgumentListRefs();
@@ -212,6 +216,7 @@ public class CSharpReferenceTypeRef implements DotNetTypeRef
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public String getReferenceText()
 	{
 		DotNetTypeRef[] argumentTypeRefs = myReferenceExpression.getTypeArgumentListRefs();

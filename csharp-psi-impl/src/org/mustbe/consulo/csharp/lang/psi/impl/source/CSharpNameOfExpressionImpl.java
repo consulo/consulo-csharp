@@ -28,7 +28,7 @@ import com.intellij.lang.ASTNode;
  * @author VISTALL
  * @since 11.03.2015
  */
-public class CSharpNameOfExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public class CSharpNameOfExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
 	public CSharpNameOfExpressionImpl(@NotNull ASTNode node)
 	{
@@ -43,8 +43,8 @@ public class CSharpNameOfExpressionImpl extends CSharpElementImpl implements Dot
 
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef(boolean b)
+	public DotNetTypeRef toTypeRefImpl(boolean b)
 	{
-		return new CSharpTypeRefByQName(DotNetTypes.System.String);
+		return new CSharpTypeRefByQName(this, DotNetTypes.System.String);
 	}
 }

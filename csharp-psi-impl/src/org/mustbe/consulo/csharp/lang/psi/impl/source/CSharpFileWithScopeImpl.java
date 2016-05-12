@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 must-be.org
+ * Copyright 2013-2016 must-be.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,32 +17,32 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.lang.ASTNode;
+import com.intellij.psi.FileViewProvider;
+import com.intellij.psi.PsiCodeFragment;
+import com.intellij.psi.search.GlobalSearchScope;
 
 /**
  * @author VISTALL
- * @since 04.01.14.
+ * @since 12-May-16
  */
-public class CSharpErrorExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
+public class CSharpFileWithScopeImpl extends CSharpFileImpl implements PsiCodeFragment
 {
-	public CSharpErrorExpressionImpl(@NotNull ASTNode node)
+	private GlobalSearchScope myScope;
+
+	public CSharpFileWithScopeImpl(@NotNull FileViewProvider viewProvider)
 	{
-		super(node);
+		super(viewProvider);
 	}
 
 	@Override
-	public void accept(@NotNull CSharpElementVisitor visitor)
+	public void forceResolveScope(GlobalSearchScope scope)
 	{
-		visitor.visitElement(this);
+		myScope = scope;
 	}
 
-	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
+	public GlobalSearchScope getForcedResolveScope()
 	{
-		return DotNetTypeRef.ERROR_TYPE;
+		return myScope;
 	}
 }

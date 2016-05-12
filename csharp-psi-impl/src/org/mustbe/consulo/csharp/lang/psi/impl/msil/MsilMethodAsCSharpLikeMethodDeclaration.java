@@ -85,6 +85,7 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 		return CSharpLikeMethodDeclarationImplUtil.isEquivalentTo(this, another);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	public CSharpSimpleParameterInfo[] getParameterInfos()
 	{

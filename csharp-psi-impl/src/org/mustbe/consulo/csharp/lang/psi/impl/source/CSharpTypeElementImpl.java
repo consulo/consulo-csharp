@@ -18,10 +18,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpTypeRefCache;
+import org.mustbe.consulo.dotnet.lang.psi.impl.DotNetTypeRefCacheUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetType;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
+import com.intellij.util.NotNullFunction;
 
 /**
  * @author VISTALL
@@ -29,16 +30,16 @@ import com.intellij.lang.ASTNode;
  */
 public abstract class CSharpTypeElementImpl extends CSharpElementImpl implements DotNetType
 {
-	private static class OurResolver extends CSharpTypeRefCache.TypeRefResolver<CSharpTypeElementImpl>
+	private static class Resolver implements NotNullFunction<CSharpTypeElementImpl, DotNetTypeRef>
 	{
-		public static final OurResolver INSTANCE = new OurResolver();
+		public static final Resolver INSTANCE = new Resolver();
 
-		@RequiredReadAction
 		@NotNull
 		@Override
-		public DotNetTypeRef resolveTypeRef(@NotNull CSharpTypeElementImpl element, boolean resolveFromParent)
+		@RequiredReadAction
+		public DotNetTypeRef fun(CSharpTypeElementImpl typeElement)
 		{
-			return element.toTypeRefImpl();
+			return typeElement.toTypeRefImpl();
 		}
 	}
 
@@ -49,13 +50,13 @@ public abstract class CSharpTypeElementImpl extends CSharpElementImpl implements
 
 	@NotNull
 	@RequiredReadAction
-	public abstract DotNetTypeRef toTypeRefImpl();
+	protected abstract DotNetTypeRef toTypeRefImpl();
 
 	@RequiredReadAction
 	@NotNull
 	@Override
 	public final DotNetTypeRef toTypeRef()
 	{
-		return CSharpTypeRefCache.getInstance(getProject()).resolveTypeRef(this, OurResolver.INSTANCE, true);
+		return DotNetTypeRefCacheUtil.localCacheTypeRef(this, Resolver.INSTANCE);
 	}
 }

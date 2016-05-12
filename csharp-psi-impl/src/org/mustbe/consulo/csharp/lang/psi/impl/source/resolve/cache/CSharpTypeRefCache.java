@@ -34,6 +34,7 @@ import com.intellij.psi.util.PsiModificationTracker;
  * @author VISTALL
  * @since 5/11/2016
  */
+@Deprecated
 public class CSharpTypeRefCache
 {
 	private static final NotNullLazyKey<CSharpTypeRefCache, Project> ourInstanceKey = ServiceManager.createLazyKey(CSharpTypeRefCache.class);

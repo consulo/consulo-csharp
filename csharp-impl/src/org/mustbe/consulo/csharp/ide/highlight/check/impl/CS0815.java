@@ -52,7 +52,7 @@ public class CS0815 extends CompilerCheck<CSharpLocalVariable>
 				return newBuilder(localVariable.getInitializer(), "null");
 			}
 			DotNetTypeRef initializerType = initializer.toTypeRef(false);
-			DotNetTypeResolveResult typeResolveResult = initializerType.resolve(localVariable);
+			DotNetTypeResolveResult typeResolveResult = initializerType.resolve();
 			if(typeResolveResult instanceof CSharpLambdaResolveResult && ((CSharpLambdaResolveResult) typeResolveResult).getTarget() == null)
 			{
 				return newBuilder(localVariable.getInitializer(), "anonymous method");
