@@ -40,7 +40,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpPointerTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
@@ -57,6 +56,7 @@ import com.intellij.openapi.util.Trinity;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ObjectUtil;
+import consulo.csharp.lang.CSharpCastType;
 
 /**
  * @author VISTALL
@@ -85,7 +85,7 @@ public class CS0029 extends CompilerCheck<PsiElement>
 		}
 		PsiElement elementToHighlight = resolve.getThird();
 
-		CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(firstTypeRef, secondTypeRef, element, CSharpStaticTypeRef.IMPLICIT);
+		CSharpTypeUtil.InheritResult inheritResult = CSharpTypeUtil.isInheritable(firstTypeRef, secondTypeRef, element, CSharpCastType.IMPLICIT);
 		if(!inheritResult.isSuccess())
 		{
 			CompilerCheckBuilder builder = newBuilder(elementToHighlight, formatTypeRef(secondTypeRef, element), formatTypeRef(firstTypeRef, element));

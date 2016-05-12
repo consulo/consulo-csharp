@@ -45,7 +45,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.sorter.TypeLikeCom
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpElementGroupTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromNamespace;
@@ -81,6 +80,7 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.ObjectUtil;
 import com.intellij.util.Processor;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpDynamicTypeRef;
 
 /**
  * @author VISTALL
@@ -1092,7 +1092,7 @@ public class CSharpReferenceExpressionImplUtil
 					return false;
 				}
 				DotNetTypeRef typeRef = qualifier.toTypeRef(false);
-				return typeRef == CSharpStaticTypeRef.DYNAMIC;
+				return typeRef instanceof CSharpDynamicTypeRef;
 		}
 		return false;
 	}

@@ -33,6 +33,7 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.util.Processor;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.csharp.lang.CSharpCastType;
 
 /**
  * @author VISTALL
@@ -235,23 +236,23 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull DotNetTypeRef typeRef, boolean deep)
+	public CSharpElementGroup<CSharpConversionMethodDeclaration> findConversionMethodGroup(@NotNull CSharpCastType castType, boolean deep)
 	{
-		Map<DotNetTypeRef, CSharpElementGroup<CSharpConversionMethodDeclaration>> map = myConversionMethodCollectorValue.getValue().toMap();
+		Map<CSharpCastType, CSharpElementGroup<CSharpConversionMethodDeclaration>> map = myConversionMethodCollectorValue.getValue().toMap();
 		if(map == null)
 		{
-			return deep ? getSuperContext().findConversionMethodGroup(typeRef, true) : null;
+			return deep ? getSuperContext().findConversionMethodGroup(castType, true) : null;
 		}
 		else
 		{
-			CSharpElementGroup<CSharpConversionMethodDeclaration> deepGroup = deep ? getSuperContext().findConversionMethodGroup(typeRef, true) : null;
+			CSharpElementGroup<CSharpConversionMethodDeclaration> deepGroup = deep ? getSuperContext().findConversionMethodGroup(castType, true) : null;
 
 			if(deepGroup == null)
 			{
-				return map.get(typeRef);
+				return map.get(castType);
 			}
 
-			CSharpElementGroup<CSharpConversionMethodDeclaration> thisGroup = map.get(typeRef);
+			CSharpElementGroup<CSharpConversionMethodDeclaration> thisGroup = map.get(castType);
 			if(thisGroup == null)
 			{
 				return deepGroup;

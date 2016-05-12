@@ -14,6 +14,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRef
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.tree.IElementType;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpDynamicTypeRef;
 
 /**
  * @author VISTALL
@@ -62,7 +63,7 @@ public class CSharpNativeTypeImplUtil
 		}
 		else if(elementType == CSharpTokens.DYNAMIC_KEYWORD)
 		{
-			return CSharpStaticTypeRef.DYNAMIC;
+			return new CSharpDynamicTypeRef(nativeType.getProject(), nativeType.getResolveScope());
 		}
 		else if(elementType == CSharpTokens.__ARGLIST_KEYWORD)
 		{

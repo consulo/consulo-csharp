@@ -43,6 +43,7 @@ import org.mustbe.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.BitUtil;
 import com.intellij.util.PairFunction;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpDynamicTypeRef;
 
 /**
  * @author VISTALL
@@ -139,9 +140,9 @@ public class CSharpTypeRefPresentationUtil
 			return;
 		}
 
-		if(typeRef instanceof CSharpStaticTypeRef)
+		if(typeRef instanceof CSharpStaticTypeRef || typeRef instanceof CSharpDynamicTypeRef)
 		{
-			builder.append(((CSharpStaticTypeRef) typeRef).getText());
+			builder.append(typeRef.toString());
 		}
 		else if(typeRef instanceof CSharpArrayTypeRef)
 		{

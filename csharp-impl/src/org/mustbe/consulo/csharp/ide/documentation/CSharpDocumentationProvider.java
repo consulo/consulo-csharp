@@ -145,7 +145,7 @@ public class CSharpDocumentationProvider implements DocumentationProvider
 				DotNetTypeRef typeRef = dotNetParameter.toTypeRef(true);
 				if(typeRef == CSharpStaticTypeRef.__ARGLIST_TYPE)
 				{
-					return ((CSharpStaticTypeRef) typeRef).getText();
+					return typeRef.toString();
 				}
 				return generateLinksForType(typeRef, dotNetParameter, false) + " " + dotNetParameter.getName();
 			}

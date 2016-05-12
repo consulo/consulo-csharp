@@ -17,35 +17,25 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
-import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
-import org.mustbe.consulo.dotnet.resolve.SimpleTypeResolveResult;
-import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
  * @since 29.12.13.
  */
-public class CSharpStaticTypeRef implements DotNetTypeRef
+public class CSharpStaticTypeRef extends DotNetTypeRefWithCachedResult
 {
-	public static final CSharpStaticTypeRef IMPLICIT = new CSharpStaticTypeRef("implicit", "System.Object");
-	public static final CSharpStaticTypeRef EXPLICIT = new CSharpStaticTypeRef("explicit", "System.Object");
-	public static final CSharpStaticTypeRef DYNAMIC = new CSharpStaticTypeRef("dynamic", "System.Object");
-	public static final CSharpStaticTypeRef __ARGLIST_TYPE = new CSharpStaticTypeRef("__arglist", null);
+	public static final CSharpStaticTypeRef IMPLICIT = new CSharpStaticTypeRef("implicit");
+	public static final CSharpStaticTypeRef EXPLICIT = new CSharpStaticTypeRef("explicit");
+	public static final CSharpStaticTypeRef __ARGLIST_TYPE = new CSharpStaticTypeRef("__arglist");
 
 	private final String myPresentableText;
-	private final String myWrapperQualifiedClass;
 
-	private CSharpStaticTypeRef(String presentableText, @Nullable String wrapperQualifiedClass)
+	private CSharpStaticTypeRef(String presentableText)
 	{
 		myPresentableText = presentableText;
-		myWrapperQualifiedClass = wrapperQualifiedClass;
 	}
 
 	@NotNull
@@ -54,45 +44,19 @@ public class CSharpStaticTypeRef implements DotNetTypeRef
 		return myPresentableText;
 	}
 
-	@NotNull
-	@Override
-	public String getPresentableText()
-	{
-		return myPresentableText;
-	}
-
-	@NotNull
-	@Override
-	public String getQualifiedText()
-	{
-		if(myWrapperQualifiedClass == null)
-		{
-			return getPresentableText();
-		}
-		return myWrapperQualifiedClass;
-	}
-
 	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeResolveResult resolve()
+	protected DotNetTypeResolveResult resolveResult()
 	{
 		return DotNetTypeResolveResult.EMPTY;
 	}
 
 	@RequiredReadAction
 	@NotNull
-	public DotNetTypeResolveResult resolve(@NotNull PsiElement scope)
+	@Override
+	public String toString()
 	{
-		if(myWrapperQualifiedClass == null)
-		{
-			return DotNetTypeResolveResult.EMPTY;
-		}
-		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(scope.getProject()).findType(myWrapperQualifiedClass, scope.getResolveScope(), CSharpTransform.INSTANCE);
-		if(type == null)
-		{
-			return DotNetTypeResolveResult.EMPTY;
-		}
-		return new SimpleTypeResolveResult(type, DotNetGenericExtractor.EMPTY, true);
+		return myPresentableText;
 	}
 }
