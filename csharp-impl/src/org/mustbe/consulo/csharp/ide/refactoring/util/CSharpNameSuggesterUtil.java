@@ -23,13 +23,19 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithInnerTypeRef;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
@@ -130,15 +136,27 @@ public class CSharpNameSuggesterUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static Set<String> getSuggestedNames(final DotNetTypeRef typeRef, PsiElement scope)
 	{
 		Collection<String> candidates = new LinkedHashSet<String>();
 
-		if(typeRef instanceof DotNetTypeRefWithInnerTypeRef)
+		DotNetTypeResolveResult resolveResult = CSharpTypeUtil.findTypeRefFromExtends(typeRef, new CSharpTypeRefByQName(scope, DotNetTypes.System.Collections.Generic.IEnumerable$1), scope);
+		if(resolveResult != null)
 		{
-			candidates.addAll(generateNames(((DotNetTypeRefWithInnerTypeRef) typeRef).getInnerTypeRef().getPresentableText()));
+			PsiElement element = resolveResult.getElement();
+			if(element instanceof DotNetGenericParameterListOwner)
+			{
+				DotNetGenericParameter genericParameter = ((DotNetGenericParameterListOwner) element).getGenericParameters()[0];
+				DotNetTypeRef insideTypeRef = resolveResult.getGenericExtractor().extract(genericParameter);
+				if(insideTypeRef != null)
+				{
+					candidates.addAll(generateNames(StringUtil.pluralize(CSharpTypeRefPresentationUtil.buildShortText(insideTypeRef, scope))));
+				}
+			}
 		}
-		candidates.addAll(generateNames(typeRef.getPresentableText()));
+
+		candidates.addAll(generateNames(CSharpTypeRefPresentationUtil.buildShortText(typeRef, scope)));
 
 		final Set<String> usedNames = CSharpRefactoringUtil.collectUsedNames(scope, scope);
 
