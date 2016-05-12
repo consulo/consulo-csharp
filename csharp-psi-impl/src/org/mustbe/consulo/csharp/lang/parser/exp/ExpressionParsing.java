@@ -1120,71 +1120,85 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 		boolean lpar = expect(builder, LPAR, null);
 
-		if(!lpar || builder.getTokenType() != RPAR)
+		if(!lpar)
 		{
-			while(!builder.eof())
+			parseLambdaParameter(builder, true);
+		}
+		else
+		{
+			if(builder.getTokenType() != CSharpTokens.RPAR)
 			{
-				parseLambdaParameter(builder);
+				while(!builder.eof())
+				{
+					parseLambdaParameter(builder, false);
 
-				if(builder.getTokenType() == COMMA)
-				{
-					builder.advanceLexer();
-				}
-				else
-				{
-					break;
+					if(builder.getTokenType() == COMMA)
+					{
+						builder.advanceLexer();
+					}
+					else if(builder.getTokenType() == CSharpTokens.RPAR)
+					{
+						break;
+					}
+					else
+					{
+						PsiBuilder.Marker errorMarker = builder.mark();
+						builder.advanceLexer();
+						errorMarker.error("Expected comma");
+					}
 				}
 			}
-		}
 
-		if(lpar)
-		{
 			expect(builder, RPAR, "')' expected");
 		}
 
 		mark.done(LAMBDA_PARAMETER_LIST);
 	}
 
-	private static void parseLambdaParameter(CSharpBuilderWrapper builder)
+	private static void parseLambdaParameter(CSharpBuilderWrapper builder, boolean single)
 	{
 		PsiBuilder.Marker mark = builder.mark();
 
-		// typed
-		if(MODIFIERS.contains(builder.getTokenType()))
+		if(single)
 		{
-			parseModifierList(builder, NONE);
+			expectOrReportIdentifier(builder,  0);
 
-			if(parseType(builder) == null)
-			{
-				builder.error("Type expected");
-			}
-			else
-			{
-				expectOrReportIdentifier(builder,  0);
-			}
+			mark.done(CSharpElements.LAMBDA_PARAMETER);
 		}
 		else
 		{
-			IElementType iElementType = builder.lookAhead(1);
-			// not typed parameter
-			if(builder.getTokenType() == CSharpTokens.IDENTIFIER && (iElementType == COMMA || iElementType == RPAR || iElementType == DARROW))
+			boolean wasIdentifier = builder.getTokenType() == CSharpTokens.IDENTIFIER;
+
+			TypeInfo typeInfo = parseType(builder);
+
+			if(typeInfo != null)
 			{
-				expectOrReportIdentifier(builder, 0);
-			}
-			else
-			{
-				if(parseType(builder) == null)
+				if(builder.getTokenType() == CSharpTokens.IDENTIFIER)
 				{
-					builder.error("Type expected");
+					expectOrReportIdentifier(builder, 0);
+
+					mark.done(LAMBDA_PARAMETER);
+				}
+				else if(wasIdentifier)
+				{
+					typeInfo.marker.rollbackTo();
+
+					expectOrReportIdentifier(builder, 0);
+
+					mark.done(LAMBDA_PARAMETER);
 				}
 				else
 				{
-					expectOrReportIdentifier(builder,  0);
+					mark.drop();
+
+					reportIdentifier(builder, 0);
 				}
 			}
+			else
+			{
+				mark.error("Identifier expected");
+			}
 		}
-
-		mark.done(LAMBDA_PARAMETER);
 	}
 
 	public static void parseConstructorSuperCall(CSharpBuilderWrapper builder, ModifierSet set)
