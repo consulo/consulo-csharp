@@ -247,6 +247,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 							prevSibling.getNode().getElementType() == CSharpTokens.COMMA ||
 							prevSibling.getNode().getElementType() == CSharpTokens.RBRACKET ||
 							prevSibling.getNode().getElementType() == CSharpTokens.SEMICOLON ||
+							prevSibling.getNode().getElementType() == CSharpTokens.PREPROCESSOR_DIRECTIVE ||
 							CSharpTokenSets.MODIFIERS.contains(prevSibling.getNode().getElementType()))
 					{
 						TokenSet tokenVal = TokenSet.orSet(CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START, TokenSet.create(CSharpTokens.DELEGATE_KEYWORD,
