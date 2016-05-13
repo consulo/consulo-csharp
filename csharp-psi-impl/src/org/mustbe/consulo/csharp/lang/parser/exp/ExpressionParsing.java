@@ -968,14 +968,11 @@ public class ExpressionParsing extends SharedParsingHelpers
 		PsiBuilder.Marker mark = builder.mark();
 		builder.advanceLexer();
 
-		if(builder.getTokenType() != CSharpTokens.IDENTIFIER)
+		if(parse(builder, set) == null)
 		{
-			builder.error("Identifier expected");
+			builder.error("Expression expected");
 		}
-		else
-		{
-			parse(builder, set);
-		}
+
 		mark.done(OUT_REF_WRAP_EXPRESSION);
 		return mark;
 	}
