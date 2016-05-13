@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetPsiSearcher;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
@@ -31,7 +32,7 @@ import com.intellij.psi.PsiElement;
  * @author VISTALL
  * @since 07.12.14
  */
-public class CSharpPointerTypeRef extends DotNetTypeRefWithCachedResult
+public class CSharpPointerTypeRef extends DotNetTypeRefWithCachedResult implements DotNetPointerTypeRef
 {
 	private PsiElement myScope;
 	private DotNetTypeRef myInnerTypeRef;
@@ -61,5 +62,12 @@ public class CSharpPointerTypeRef extends DotNetTypeRefWithCachedResult
 	public String toString()
 	{
 		return myInnerTypeRef.toString() + "*";
+	}
+
+	@NotNull
+	@Override
+	public DotNetTypeRef getInnerTypeRef()
+	{
+		return myInnerTypeRef;
 	}
 }
