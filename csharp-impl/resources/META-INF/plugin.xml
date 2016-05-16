@@ -254,6 +254,9 @@
 		<referencesSearch implementation="org.mustbe.consulo.csharp.ide.findUsage.referenceSearch.AdditionalReferenceSearch"/>
 		<referencesSearch implementation="org.mustbe.consulo.csharp.ide.findUsage.referenceSearch.CSharpConstructorPlusTypeReferenceSearch"/>
 
+		<definitionsScopedSearch implementation="org.mustbe.consulo.csharp.ide.navigation.CSharpMethodImplementationsSearcher" />
+		<definitionsScopedSearch implementation="org.mustbe.consulo.csharp.ide.navigation.CSharpTypeImplementationSearcher" />
+
 		<bundleLiveTemplateSet path="liveTemplates/output"/>
 		<bundleLiveTemplateSet path="liveTemplates/main"/>
 		<bundleLiveTemplateSet path="liveTemplates/foreach"/>

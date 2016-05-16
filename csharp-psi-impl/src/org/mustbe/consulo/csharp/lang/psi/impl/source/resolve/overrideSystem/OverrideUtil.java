@@ -222,6 +222,7 @@ public class OverrideUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static Collection<DotNetVirtualImplementOwner> collectOverridingMembers(final DotNetVirtualImplementOwner target)
 	{
 		PsiElement parent = target.getParent();
