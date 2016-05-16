@@ -16,8 +16,6 @@
 
 package org.mustbe.consulo.csharp.ide.navigation;
 
-import java.util.Collection;
-
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -25,7 +23,6 @@ import org.mustbe.consulo.dotnet.psi.search.searches.TypeInheritorsSearch;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.searches.DefinitionsScopedSearch;
 import com.intellij.util.Processor;
-import com.intellij.util.Query;
 import com.intellij.util.QueryExecutor;
 
 /**
@@ -40,10 +37,8 @@ public class CSharpTypeImplementationSearcher implements QueryExecutor<PsiElemen
 		final PsiElement element = queryParameters.getElement();
 		if(element instanceof DotNetTypeDeclaration)
 		{
-			Query<DotNetTypeDeclaration> search = TypeInheritorsSearch.search((DotNetTypeDeclaration) element, queryParameters.getScope(), queryParameters.isCheckDeep(), true,
-					CSharpTransform.INSTANCE);
-			Collection<DotNetTypeDeclaration> all = search.findAll();
-			return search.forEach(new Processor<DotNetTypeDeclaration>()
+			return TypeInheritorsSearch.search((DotNetTypeDeclaration) element, queryParameters.getScope(), queryParameters.isCheckDeep(), true,
+					CSharpTransform.INSTANCE).forEach(new Processor<DotNetTypeDeclaration>()
 
 			{
 				@Override
