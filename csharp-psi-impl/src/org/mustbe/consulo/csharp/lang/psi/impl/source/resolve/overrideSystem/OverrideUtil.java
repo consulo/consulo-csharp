@@ -271,6 +271,7 @@ public class OverrideUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static Collection<DotNetVirtualImplementOwner> collectOverridenMembers(final DotNetVirtualImplementOwner target)
 	{
 		PsiElement parent = target.getParent();
@@ -307,6 +308,7 @@ public class OverrideUtil
 		search.forEach(new Processor<DotNetTypeDeclaration>()
 		{
 			@Override
+			@RequiredReadAction
 			public boolean process(DotNetTypeDeclaration typeDeclaration)
 			{
 				CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, resolveScope, typeDeclaration);

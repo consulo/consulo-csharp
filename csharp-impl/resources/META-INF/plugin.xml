@@ -253,6 +253,7 @@
 
 		<referencesSearch implementation="org.mustbe.consulo.csharp.ide.findUsage.referenceSearch.AdditionalReferenceSearch"/>
 		<referencesSearch implementation="org.mustbe.consulo.csharp.ide.findUsage.referenceSearch.CSharpConstructorPlusTypeReferenceSearch"/>
+		<referencesSearch implementation="org.mustbe.consulo.csharp.ide.findUsage.referenceSearch.CSharpImplementedReferenceSearch"/>
 
 		<definitionsScopedSearch implementation="org.mustbe.consulo.csharp.ide.navigation.CSharpMethodImplementationsSearcher" />
 		<definitionsScopedSearch implementation="org.mustbe.consulo.csharp.ide.navigation.CSharpTypeImplementationSearcher" />
