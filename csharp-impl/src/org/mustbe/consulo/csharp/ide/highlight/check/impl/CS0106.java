@@ -25,10 +25,10 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.RemoveModifierFix;
 import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
-import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
+import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
@@ -57,10 +57,11 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 		DeConstructor,
 		InterfaceMember(CSharpModifier.NEW),
 		GenericParameter(CSharpModifier.IN, CSharpModifier.OUT),
-		NamespaceType(CSharpModifier.STATIC, CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT,
-				CSharpModifier.PARTIAL, CSharpModifier.SEALED),
-		NestedType(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT,
-				CSharpModifier.PARTIAL, CSharpModifier.SEALED, CSharpModifier.STATIC),
+		NamespaceEnum(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL),
+		NestedEnum(CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.PRIVATE, CSharpModifier.INTERNAL),
+		NamespaceType(CSharpModifier.STATIC, CSharpModifier.PUBLIC, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT, CSharpModifier.PARTIAL, CSharpModifier.SEALED),
+		NestedType(CSharpModifier.PUBLIC, CSharpModifier.PRIVATE, CSharpModifier.PROTECTED, CSharpModifier.INTERNAL, CSharpModifier.ABSTRACT, CSharpModifier.PARTIAL, CSharpModifier.SEALED,
+				CSharpModifier.STATIC),
 		Unknown
 				{
 					@Override
@@ -166,14 +167,16 @@ public class CS0106 extends CompilerCheck<DotNetModifierListOwner>
 
 		if(owner instanceof DotNetTypeDeclaration)
 		{
+			boolean anEnum = ((DotNetTypeDeclaration) owner).isEnum();
+
 			PsiElement parent = owner.getParent();
 			if(parent instanceof CSharpNamespaceDeclaration || parent instanceof CSharpFile)
 			{
-				return Owners.NamespaceType;
+				return anEnum ? Owners.NamespaceEnum : Owners.NamespaceType;
 			}
 			else if(parent instanceof DotNetTypeDeclaration)
 			{
-				return Owners.NestedType;
+				return anEnum ? Owners.NestedEnum : Owners.NestedType;
 			}
 		}
 		return Owners.Unknown;

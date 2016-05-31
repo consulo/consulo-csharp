@@ -43,7 +43,7 @@ public enum CSharpCompilerChecks
 	CS0100(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // parameter is duplicate
 	CS0101(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // members duplicate in namespace declaration
 	CS0102(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // members duplicate in type declaration
-	CS0106(CSharpLanguageVersion._1_0, HighlightInfoType.WRONG_REF), // modifier check
+	CS0106(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // modifier check
 	CS0107(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // modifier protection check
 	CS0118(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // expected variable but found type
 	CS0120(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // instance members required instance object reference
