@@ -36,6 +36,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpQualifiedNonReference;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpNullableTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDeclarationBuilder;
@@ -232,6 +233,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	{
 		final IElementType temp = getOperatorElementType();
 		final IElementType elementType = ObjectUtil.notNull(ourAssignmentOperatorMap.get(temp), temp);
+		boolean isAssignmentOperator = ourAssignmentOperatorMap.containsKey(temp);
 
 		PsiElement parent = getParent();
 
@@ -316,6 +318,21 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 						resolveUserDefinedOperators(elementType, expressionTypeRef, implicitTypeRef, resolveResults, dotNetExpression);
 					}
 				});
+			}
+
+			// += -= and others have some hack for nullable types
+			// A? + A is not work - but A? += A work
+			if(isAssignmentOperator && parameterExpressions.length > 0)
+			{
+				DotNetExpression parameterExpression = parameterExpressions[0];
+				DotNetTypeRef expressionTypeRef = parameterExpression.toTypeRef(true);
+				DotNetTypeRef unboxTypeRef = CSharpNullableTypeUtil.unbox(expressionTypeRef);
+
+				// we have extracted type
+				if(unboxTypeRef != expressionTypeRef)
+				{
+					resolveUserDefinedOperators(elementType, expressionTypeRef, unboxTypeRef, resolveResults, parameterExpression);
+				}
 			}
 
 			MethodResolveResult[] results = ContainerUtil.toArray(resolveResults, MethodResolveResult.ARRAY_FACTORY);

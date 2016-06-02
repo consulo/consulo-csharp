@@ -53,4 +53,32 @@ public class MethodCalcResult extends UserDataHolderBase
 	{
 		return myArguments;
 	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if(this == o)
+		{
+			return true;
+		}
+		if(o == null || getClass() != o.getClass())
+		{
+			return false;
+		}
+
+		MethodCalcResult that = (MethodCalcResult) o;
+
+		if(myValid != that.myValid)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return (myValid ? 1 : 0);
+	}
 }
