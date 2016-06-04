@@ -19,6 +19,7 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.RequiredWriteAction;
 import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpContextUtil;
@@ -54,6 +55,7 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx>
 
 		@NotNull
 		@Override
+		@RequiredReadAction
 		public String getText()
 		{
 			CSharpReferenceExpressionEx element = myReferenceExpressionPointer.getElement();
@@ -65,7 +67,7 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx>
 			PsiElement resolvedElement = element.resolve();
 			if(resolvedElement == null)
 			{
-				throw new IllegalArgumentException();
+				return "";
 			}
 			return "Replace qualifier by '" + formatElement(resolvedElement.getParent()) + "'";
 		}
@@ -78,13 +80,15 @@ public class CS0120 extends CompilerCheck<CSharpReferenceExpressionEx>
 		}
 
 		@Override
+		@RequiredReadAction
 		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
 		{
 			CSharpReferenceExpressionEx element = myReferenceExpressionPointer.getElement();
-			return element != null && element.getQualifier() != null;
+			return element != null && element.resolve() != null && element.getQualifier() != null;
 		}
 
 		@Override
+		@RequiredWriteAction
 		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			CSharpReferenceExpressionEx element = myReferenceExpressionPointer.getElement();
