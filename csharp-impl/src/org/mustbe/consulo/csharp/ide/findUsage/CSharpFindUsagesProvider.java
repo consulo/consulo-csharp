@@ -205,7 +205,9 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		ItemPresentation itemPresentation = ItemPresentationProviders.getItemPresentation((NavigationItem) element);
 		if(itemPresentation != null)
 		{
-			return itemPresentation.getPresentableText();
+			String presentableText = itemPresentation.getPresentableText();
+			assert presentableText != null : element.getClass().getName();
+			return presentableText;
 		}
 
 		if(element instanceof DotNetVariable)
