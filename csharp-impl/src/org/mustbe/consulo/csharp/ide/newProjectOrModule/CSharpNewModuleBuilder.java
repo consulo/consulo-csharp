@@ -24,7 +24,6 @@ import org.mustbe.consulo.csharp.CSharpIcons;
 import org.mustbe.consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import org.mustbe.consulo.dotnet.DotNetTarget;
 import org.mustbe.consulo.dotnet.module.extension.DotNetMutableModuleExtension;
-import org.mustbe.consulo.dotnet.module.roots.DotNetLibraryOrderEntryImpl;
 import org.mustbe.consulo.ide.impl.NewModuleBuilder;
 import org.mustbe.consulo.ide.impl.NewModuleBuilderProcessor;
 import org.mustbe.consulo.ide.impl.NewModuleContext;
@@ -38,6 +37,7 @@ import com.intellij.openapi.roots.ModifiableModuleRootLayer;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.impl.ModuleRootLayerImpl;
 import com.intellij.openapi.vfs.VirtualFile;
+import consulo.dotnet.roots.orderEntry.DotNetLibraryOrderEntryImpl;
 
 /**
  * @author VISTALL

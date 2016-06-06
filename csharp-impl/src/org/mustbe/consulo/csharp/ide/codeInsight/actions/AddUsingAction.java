@@ -33,7 +33,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import org.mustbe.consulo.dotnet.DotNetBundle;
 import org.mustbe.consulo.dotnet.libraryAnalyzer.NamespaceReference;
-import org.mustbe.consulo.dotnet.module.roots.DotNetLibraryOrderEntryImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.codeInsight.actions.OptimizeImportsProcessor;
 import com.intellij.codeInsight.hint.QuestionAction;
@@ -61,6 +60,7 @@ import com.intellij.psi.PsiParserFacade;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.dotnet.roots.orderEntry.DotNetLibraryOrderEntryImpl;
 
 /**
  * @author VISTALL
