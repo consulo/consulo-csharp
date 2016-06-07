@@ -4,8 +4,14 @@
 			<parameter/>
 			<parameter/>
 		</operator>
+		<operator name="PLUSPLUS">
+			<parameter/>
+		</operator>
 		<operator name="MINUS">
 			<parameter/>
+			<parameter/>
+		</operator>
+		<operator name="MINUSMINUS">
 			<parameter/>
 		</operator>
 		<operator name="OR">
