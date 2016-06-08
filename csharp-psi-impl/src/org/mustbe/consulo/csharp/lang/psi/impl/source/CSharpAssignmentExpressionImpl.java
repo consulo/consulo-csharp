@@ -19,11 +19,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
-import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -34,6 +33,18 @@ public class CSharpAssignmentExpressionImpl extends CSharpExpressionWithOperator
 	public CSharpAssignmentExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public DotNetExpression getLeftExpression()
+	{
+		PsiElement firstChild = getFirstChild();
+		if(firstChild instanceof DotNetExpression)
+		{
+			return (DotNetExpression) firstChild;
+		}
+		throw new IllegalArgumentException();
 	}
 
 	@Override
@@ -47,11 +58,6 @@ public class CSharpAssignmentExpressionImpl extends CSharpExpressionWithOperator
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
-		DotNetExpression[] expressions = getParameterExpressions();
-		if(expressions.length > 0)
-		{
-			return expressions[0].toTypeRef(false);
-		}
-		return new CSharpTypeRefByQName(this, DotNetTypes.System.Void);
+		return getLeftExpression().toTypeRef(false);
 	}
 }

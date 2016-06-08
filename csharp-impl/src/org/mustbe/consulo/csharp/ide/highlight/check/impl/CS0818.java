@@ -22,7 +22,7 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLocalVariableUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 
@@ -37,7 +37,7 @@ public class CS0818 extends CompilerCheck<CSharpLocalVariable>
 	@Override
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpLocalVariable element)
 	{
-		if(element.getParent() instanceof CSharpForeachStatementImpl)
+		if(CSharpLocalVariableUtil.isForeachVariable(element))
 		{
 			return null;
 		}

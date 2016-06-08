@@ -8,10 +8,11 @@ import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0168;
 import org.mustbe.consulo.csharp.ide.highlight.check.impl.CS0219;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLocalVariableUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalInspectionToolSession;
 import com.intellij.codeInspection.LocalQuickFix;
@@ -112,7 +113,7 @@ public class UnusedSymbolLocalInspection extends LocalInspectionTool
 			assert nameIdentifier != null;
 
 			LocalQuickFix[] fixes = LocalQuickFix.EMPTY_ARRAY;
-			if(key instanceof CSharpLocalVariable && !(key.getParent() instanceof CSharpForeachStatementImpl))
+			if(key instanceof CSharpLocalVariable && !CSharpLocalVariableUtil.isForeachVariable((DotNetVariable) key))
 			{
 				fixes = new LocalQuickFix[] {new DeleteLocalVariable(nameIdentifier.getText(), key)};
 			}

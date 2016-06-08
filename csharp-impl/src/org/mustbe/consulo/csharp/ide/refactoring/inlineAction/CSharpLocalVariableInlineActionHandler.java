@@ -23,8 +23,9 @@ import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForStatementImpl;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLocalVariableUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import com.intellij.lang.Language;
 import com.intellij.lang.refactoring.InlineActionHandler;
 import com.intellij.openapi.command.WriteCommandAction;
@@ -52,7 +53,7 @@ public class CSharpLocalVariableInlineActionHandler extends InlineActionHandler
 	{
 		if(element instanceof CSharpLocalVariable)
 		{
-			if(element.getParent() instanceof CSharpForeachStatementImpl || element.getParent() instanceof CSharpForStatementImpl)
+			if(CSharpLocalVariableUtil.isForeachVariable((DotNetVariable) element) || element.getParent() instanceof CSharpForStatementImpl)
 			{
 				return false;
 			}
