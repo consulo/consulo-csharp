@@ -34,6 +34,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import org.mustbe.consulo.dotnet.resolve.impl.IndexBasedDotNetPsiSearcher;
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndexKey;
@@ -76,6 +77,11 @@ public class CSharpPsiSearcher extends IndexBasedDotNetPsiSearcher
 	@Override
 	public Collection<? extends DotNetTypeDeclaration> findTypesImpl(@NotNull String vmQName, @NotNull GlobalSearchScope scope)
 	{
+		if(DumbService.isDumb(myProject))
+		{
+			return Collections.emptyList();
+		}
+
 		Collection<DotNetTypeDeclaration> declarations = TypeByVmQNameIndex.getInstance().get(vmQName, myProject, scope);
 
 		List<CSharpTypeDeclaration> partials = Collections.emptyList();
