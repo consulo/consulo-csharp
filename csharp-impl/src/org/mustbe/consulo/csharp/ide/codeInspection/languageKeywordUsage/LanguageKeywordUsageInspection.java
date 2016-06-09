@@ -104,7 +104,8 @@ public class LanguageKeywordUsageInspection extends LocalInspectionTool
 		public void visitReferenceExpression(CSharpReferenceExpression expression)
 		{
 			DotNetExpression qualifier = expression.getQualifier();
-			if(qualifier != null)
+			CSharpReferenceExpression.ResolveToKind kind = expression.kind();
+			if(qualifier != null || kind == CSharpReferenceExpression.ResolveToKind.BASE || kind == CSharpReferenceExpression.ResolveToKind.THIS)
 			{
 				return;
 			}
