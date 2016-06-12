@@ -84,6 +84,10 @@ public class CSharpModifierListImplUtil
 		switch(cSharpModifier)
 		{
 			case PUBLIC:
+				if(parent instanceof CSharpEnumConstantDeclaration)
+				{
+					return true;
+				}
 				if(parent instanceof DotNetVirtualImplementOwner && parent.getParent() instanceof CSharpTypeDeclaration && ((CSharpTypeDeclaration) parent.getParent()).isInterface())
 				{
 					return true;

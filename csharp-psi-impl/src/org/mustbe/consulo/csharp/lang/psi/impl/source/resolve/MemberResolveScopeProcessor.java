@@ -58,9 +58,7 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor
 	private final GlobalSearchScope myResolveScope;
 	private final OverrideProcessor myOverrideProcessor;
 
-	public MemberResolveScopeProcessor(@NotNull CSharpResolveOptions options,
-			@NotNull Processor<ResolveResult> resultProcessor,
-			ExecuteTarget[] targets)
+	public MemberResolveScopeProcessor(@NotNull CSharpResolveOptions options, @NotNull Processor<ResolveResult> resultProcessor, ExecuteTarget[] targets)
 	{
 		myScopeElement = options.getElement();
 		myResolveScope = myScopeElement.getResolveScope();
@@ -115,7 +113,11 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor
 				continue;
 			}
 
-			if(!myResultProcessor.process(new CSharpResolveResult(psiElement).setProvider(element)))
+			final CSharpResolveResult result = new CSharpResolveResult(psiElement);
+			result.setProvider(element);
+			result.setAssignable(myScopeElement);
+
+			if(!myResultProcessor.process(result))
 			{
 				return false;
 			}
@@ -126,7 +128,7 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor
 	@RequiredReadAction
 	private void applyTypeArguments(PsiElement[] psiElements)
 	{
-		if(!(myScopeElement  instanceof CSharpReferenceExpression) || psiElements.length == 0)
+		if(!(myScopeElement instanceof CSharpReferenceExpression) || psiElements.length == 0)
 		{
 			return;
 		}
@@ -144,8 +146,7 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor
 			PsiElement psiElement = psiElements[i];
 			if(psiElement instanceof CSharpElementGroup)
 			{
-				@SuppressWarnings("unchecked")
-				CSharpElementGroup<PsiElement> elementGroup = (CSharpElementGroup<PsiElement>) psiElement;
+				@SuppressWarnings("unchecked") CSharpElementGroup<PsiElement> elementGroup = (CSharpElementGroup<PsiElement>) psiElement;
 
 				Collection<PsiElement> elements = elementGroup.getElements();
 

@@ -574,7 +574,7 @@ public class CSharpResolveUtil
 		return ContainerUtil.toArray(filter, ResolveResult.EMPTY_ARRAY);
 	}
 
-	private static boolean isAssignable(ResolveResult resolveResult)
+	public static boolean isAssignable(ResolveResult resolveResult)
 	{
 		if(resolveResult instanceof CSharpResolveResult)
 		{

@@ -41,7 +41,7 @@ public class CSharpLambdaResolveResultUtil
 		builder.withParentQName(declaration.getPresentableParentQName());
 		builder.withName(declaration.getName());
 		builder.addModifier(DotNetModifier.SEALED);
-		CSharpAccessModifier accessModifier = CSharpAccessModifier.findModifier(declaration);
+		CSharpAccessModifier accessModifier = CSharpAccessModifier.findModifierOrDefault(declaration);
 		for(CSharpModifier modifier : accessModifier.getModifiers())
 		{
 			builder.addModifier(modifier);

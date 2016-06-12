@@ -39,7 +39,7 @@ public class CSharpResolveResult extends PsiElementResolveResult
 	public static final Key<PsiElement> FORCE_PROVIDER_ELEMENT = Key.create("csharp.provider.element");
 
 	private PsiElement myProviderElement;
-	private boolean myAssignable = true;
+	protected Boolean myAssignable = null;
 
 	public CSharpResolveResult(@NotNull PsiElement element)
 	{
@@ -66,12 +66,17 @@ public class CSharpResolveResult extends PsiElementResolveResult
 
 	public boolean isAssignable()
 	{
-		return myAssignable;
+		return myAssignable == null || myAssignable == Boolean.TRUE;
 	}
 
 	@RequiredReadAction
 	public void setAssignable(@NotNull PsiElement place)
 	{
+		if(myAssignable != null)
+		{
+			return;
+		}
+
 		final PsiElement element = getElement();
 		if(element instanceof CSharpLocalVariable ||
 				element instanceof CSharpLinqVariable ||
@@ -79,11 +84,17 @@ public class CSharpResolveResult extends PsiElementResolveResult
 				element instanceof DotNetGenericParameter ||
 				element instanceof DotNetNamespaceAsElement)
 		{
+			myAssignable = Boolean.TRUE;
 			return;
 		}
+
 		if(element instanceof DotNetModifierListOwner)
 		{
 			myAssignable = CSharpVisibilityUtil.isVisible((DotNetModifierListOwner) element, place);
+		}
+		else
+		{
+			myAssignable = Boolean.TRUE;
 		}
 	}
 }

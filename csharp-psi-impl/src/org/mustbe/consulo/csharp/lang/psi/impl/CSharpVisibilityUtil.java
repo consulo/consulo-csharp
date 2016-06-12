@@ -48,7 +48,7 @@ public class CSharpVisibilityUtil
 	@RequiredReadAction
 	public static boolean isVisible(@NotNull DotNetModifierListOwner target, @NotNull PsiElement place)
 	{
-		return isVisible(target, place, CSharpAccessModifier.findModifier(target));
+		return isVisible(target, place, CSharpAccessModifier.findModifierOrDefault(target));
 	}
 
 	@RequiredReadAction

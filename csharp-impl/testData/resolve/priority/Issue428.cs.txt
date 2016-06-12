@@ -1,0 +1,3 @@
+a(73,74): local-variable[a]=true|true
+a.Equals(73,81): method[Equals(other:System.Nullable<int>):bool]=true|false, method[Equals(other:object):bool]=true|true, method[Equals(objA:object, objB:object):bool]=false|true
+b(82,83): local-variable[b]=true|true

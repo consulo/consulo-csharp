@@ -23,6 +23,7 @@ import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
+import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -78,6 +79,28 @@ public enum CSharpAccessModifier
 		}
 		return NONE;
 	}
+
+	@NotNull
+	@RequiredReadAction
+	public static CSharpAccessModifier findModifierOrDefault(@NotNull DotNetModifierListOwner owner)
+	{
+		final CSharpAccessModifier modifier = findModifier(owner);
+		if(modifier == NONE)
+		{
+			if(owner instanceof CSharpTypeDeclaration)
+			{
+				return INTERNAL;
+			}
+
+			final PsiElement parent = owner.getParent();
+			if(parent instanceof CSharpTypeDeclaration)
+			{
+				return PRIVATE;
+			}
+		}
+		return modifier;
+	}
+
 
 	@NotNull
 	@Immutable

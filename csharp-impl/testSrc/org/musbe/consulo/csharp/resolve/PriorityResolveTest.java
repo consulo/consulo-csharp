@@ -50,6 +50,10 @@ public class PriorityResolveTest extends ResolvingTestCase
 	{
 	}
 
+	public void testIssue428()
+	{
+	}
+
 	public void testOperatorWithImplicitCast()
 	{
 	}
