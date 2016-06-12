@@ -18,10 +18,17 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.lang.psi.CSharpLinqVariable;
+import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
+import org.mustbe.consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
+import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
+import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
-import com.intellij.util.ExceptionUtil;
 
 /**
  * @author VISTALL
@@ -32,6 +39,7 @@ public class CSharpResolveResult extends PsiElementResolveResult
 	public static final Key<PsiElement> FORCE_PROVIDER_ELEMENT = Key.create("csharp.provider.element");
 
 	private PsiElement myProviderElement;
+	private boolean myAssignable = true;
 
 	public CSharpResolveResult(@NotNull PsiElement element)
 	{
@@ -54,5 +62,28 @@ public class CSharpResolveResult extends PsiElementResolveResult
 	public PsiElement getProviderElement()
 	{
 		return myProviderElement;
+	}
+
+	public boolean isAssignable()
+	{
+		return myAssignable;
+	}
+
+	@RequiredReadAction
+	public void setAssignable(@NotNull PsiElement place)
+	{
+		final PsiElement element = getElement();
+		if(element instanceof CSharpLocalVariable ||
+				element instanceof CSharpLinqVariable ||
+				element instanceof DotNetParameter ||
+				element instanceof DotNetGenericParameter ||
+				element instanceof DotNetNamespaceAsElement)
+		{
+			return;
+		}
+		if(element instanceof DotNetModifierListOwner)
+		{
+			myAssignable = CSharpVisibilityUtil.isVisible((DotNetModifierListOwner) element, place);
+		}
 	}
 }

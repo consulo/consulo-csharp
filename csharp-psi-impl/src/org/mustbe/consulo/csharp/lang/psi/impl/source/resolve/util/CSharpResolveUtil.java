@@ -541,7 +541,7 @@ public class CSharpResolveUtil
 		}
 		for(ResolveResult resolveResult : resolveResults)
 		{
-			if(resolveResult.isValidResult())
+			if(resolveResult.isValidResult() && isAssignable(resolveResult))
 			{
 				return resolveResult;
 			}
@@ -566,11 +566,20 @@ public class CSharpResolveUtil
 		List<ResolveResult> filter = new SmartList<ResolveResult>();
 		for(ResolveResult resolveResult : resolveResults)
 		{
-			if(resolveResult.isValidResult())
+			if(resolveResult.isValidResult() && isAssignable(resolveResult))
 			{
 				filter.add(resolveResult);
 			}
 		}
 		return ContainerUtil.toArray(filter, ResolveResult.EMPTY_ARRAY);
+	}
+
+	private static boolean isAssignable(ResolveResult resolveResult)
+	{
+		if(resolveResult instanceof CSharpResolveResult)
+		{
+			return ((CSharpResolveResult) resolveResult).isAssignable();
+		}
+		return true;
 	}
 }

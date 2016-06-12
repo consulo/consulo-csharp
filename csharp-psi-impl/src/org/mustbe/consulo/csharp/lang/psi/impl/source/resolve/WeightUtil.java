@@ -4,6 +4,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mustbe.consulo.RequiredReadAction;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.ContainerUtil;
@@ -25,7 +27,8 @@ public class WeightUtil
 		}
 	};
 
-	public static void sortAndProcess(@NotNull List<MethodResolveResult> list, @NotNull Processor<ResolveResult> processor)
+	@RequiredReadAction
+	public static void sortAndProcess(@NotNull List<MethodResolveResult> list, @NotNull Processor<ResolveResult> processor, @NotNull PsiElement place)
 	{
 		if(list.isEmpty())
 		{
@@ -36,6 +39,8 @@ public class WeightUtil
 
 		for(MethodResolveResult methodResolveResult : list)
 		{
+			methodResolveResult.setAssignable(place);
+
 			if(!processor.process(methodResolveResult))
 			{
 				return;

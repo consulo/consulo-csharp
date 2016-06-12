@@ -131,6 +131,6 @@ public class MethodLikeKindProcessor implements KindProcessor
 			}
 		});
 
-		WeightUtil.sortAndProcess(methodResolveResults, processor);
+		WeightUtil.sortAndProcess(methodResolveResults, processor, options.getElement());
 	}
 }

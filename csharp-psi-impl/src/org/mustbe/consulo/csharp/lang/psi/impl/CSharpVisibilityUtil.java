@@ -93,11 +93,12 @@ public class CSharpVisibilityUtil
 
 				for(DotNetTypeDeclaration placeType : placeTypes)
 				{
+					final DotNetTypeDeclaration type = CSharpCompositeTypeDeclaration.selectCompositeOrSelfType(placeType);
 					for(DotNetTypeDeclaration targetType : targetTypes)
 					{
 						String vmQName = targetType.getVmQName();
 						assert vmQName != null;
-						if(DotNetInheritUtil.isParentOrSelf(vmQName, CSharpCompositeTypeDeclaration.selectCompositeOrSelfType(placeType), true))
+						if(DotNetInheritUtil.isParentOrSelf(vmQName, type, true))
 						{
 							return true;
 						}

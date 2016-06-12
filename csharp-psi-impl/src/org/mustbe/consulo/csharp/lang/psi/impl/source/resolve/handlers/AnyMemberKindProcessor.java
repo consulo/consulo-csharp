@@ -87,6 +87,6 @@ public class AnyMemberKindProcessor implements KindProcessor
 			}
 		});
 
-		WeightUtil.sortAndProcess(methodResolveResults, processor);
+		WeightUtil.sortAndProcess(methodResolveResults, processor, options.getElement());
 	}
 }

@@ -52,7 +52,7 @@ public class SortedMemberResolveScopeProcessor extends MemberResolveScopeProcess
 
 	public void consumeAll()
 	{
-		ResolveResult[] resolveResults = ((CommonProcessors.CollectProcessor<ResolveResult>) myResultProcessor).toArray(ResolveResult.EMPTY_ARRAY);
+		ResolveResult[] resolveResults = ((CommonProcessors.CollectProcessor<ResolveResult>) myResultProcessor).toArray(ResolveResult.ARRAY_FACTORY);
 
 		ContainerUtil.sort(resolveResults, myComparator);
 
