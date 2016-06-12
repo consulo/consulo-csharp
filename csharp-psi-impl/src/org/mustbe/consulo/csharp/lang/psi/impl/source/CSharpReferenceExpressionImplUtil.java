@@ -182,41 +182,8 @@ public class CSharpReferenceExpressionImplUtil
 	@RequiredReadAction
 	public static boolean isReferenceTo(CSharpReferenceExpression referenceExpression, PsiElement element)
 	{
-		ResolveResult[] resolveResults = referenceExpression.multiResolve(false);
-		boolean haveValidResult = false;
-		for(ResolveResult resolveResult : resolveResults)
-		{
-			if(!resolveResult.isValidResult())
-			{
-				continue;
-			}
-
-			haveValidResult = true;
-
-			if(isReferenceTo(resolveResult, element))
-			{
-				return true;
-			}
-		}
-
-		if(haveValidResult)
-		{
-			return false;
-		}
-
-		for(ResolveResult resolveResult : resolveResults)
-		{
-			if(resolveResult.isValidResult())
-			{
-				continue;
-			}
-
-			if(isReferenceTo(resolveResult, element))
-			{
-				return true;
-			}
-		}
-		return false;
+		final ResolveResult firstValidResult = CSharpResolveUtil.findValidOrFirstMaybeResult(referenceExpression.multiResolve(false));
+		return isReferenceTo(firstValidResult, element);
 	}
 
 	@RequiredReadAction
