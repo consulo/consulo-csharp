@@ -26,6 +26,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
@@ -99,6 +100,6 @@ public class ResultElementBuilder implements Function<ResolveResult, String>
 
 	private String build(String prefix, String elementText, ResolveResult result)
 	{
-		return prefix + "[" + elementText + "]=" + result.isValidResult();
+		return prefix + "[" + elementText + "]=" + result.isValidResult() + "|" + CSharpResolveUtil.isAssignable(result);
 	}
 }

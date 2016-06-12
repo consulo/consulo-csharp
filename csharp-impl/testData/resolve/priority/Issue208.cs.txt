@@ -1,15 +1,15 @@
-TargetType(152,162): type[TargetType]=true
-TargetType(176,186): type[TargetType]=true, field[TargetType]=true
-TargetType.Test(176,191): enum-constant[Test]=true
-TargetType(275,285): type[TargetType]=true
-TargetType(293,303): type[TargetType]=true, field[TargetType]=true
-TargetType.Test(293,308): enum-constant[Test]=true
-AA(326,328): type[AA]=true
-TargetType(392,402): type[TargetType]=true, field[TargetType]=true
-TargetType.Test(392,407): enum-constant[Test]=true
-TargetType(443,453): field[TargetType]=true, type[TargetType]=true
-TargetType.GetHashCode(443,465): method[GetHashCode():int]=true
-AA(507,509): field[AA]=true, type[AA]=true
-AA.test(507,514): method[test():void]=true
-AA(543,545): type[AA]=true, field[AA]=true
-AA.tt(543,548): method[tt():void]=true
+TargetType(152,162): type[TargetType]=true|true
+TargetType(176,186): type[TargetType]=true|true, field[TargetType]=true|true
+TargetType.Test(176,191): enum-constant[Test]=true|true
+TargetType(275,285): type[TargetType]=true|true
+TargetType(293,303): type[TargetType]=true|true, field[TargetType]=true|true
+TargetType.Test(293,308): enum-constant[Test]=true|true
+AA(326,328): type[AA]=true|true
+TargetType(392,402): type[TargetType]=true|true, field[TargetType]=true|true
+TargetType.Test(392,407): enum-constant[Test]=true|true
+TargetType(443,453): field[TargetType]=true|true, type[TargetType]=true|true
+TargetType.GetHashCode(443,465): method[GetHashCode():int]=true|true
+AA(507,509): field[AA]=true|true, type[AA]=true|true
+AA.test(507,514): method[test():void]=true|true
+AA(543,545): type[AA]=true|true, field[AA]=true|true
+AA.tt(543,548): method[tt():void]=true|true

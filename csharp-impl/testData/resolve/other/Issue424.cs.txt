@@ -1,11 +1,11 @@
-SomeValue(41,50): type[SomeValue]=true
-SomeValue(61,70): type[SomeValue]=true
-SomeValue(82,91): type[SomeValue]=true
-SomeValue(120,129): constructor[SomeValue()]=true
-SomeValue(195,204): type[SomeValue]=true
-SomeValue(221,230): constructor[SomeValue()]=true
-SomeValue(237,246): type[SomeValue]=true
-SomeValue(263,272): constructor[SomeValue()]=true
-nullable(279,287): local-variable[nullable]=true
--=(288,290): method[-(someValue:SomeValue, someValue2:SomeValue):SomeValue]=false, method[-(someValue:SomeValue, someValue2:SomeValue):SomeValue]=true
-someValue(291,300): local-variable[someValue]=true
+SomeValue(41,50): type[SomeValue]=true|true
+SomeValue(61,70): type[SomeValue]=true|true
+SomeValue(82,91): type[SomeValue]=true|true
+SomeValue(120,129): constructor[SomeValue()]=true|true
+SomeValue(195,204): type[SomeValue]=true|true
+SomeValue(221,230): constructor[SomeValue()]=true|true
+SomeValue(237,246): type[SomeValue]=true|true
+SomeValue(263,272): constructor[SomeValue()]=true|true
+nullable(279,287): local-variable[nullable]=true|true
+-=(288,290): method[-(someValue:SomeValue, someValue2:SomeValue):SomeValue]=false|true, method[-(someValue:SomeValue, someValue2:SomeValue):SomeValue]=true|true
+someValue(291,300): local-variable[someValue]=true|true

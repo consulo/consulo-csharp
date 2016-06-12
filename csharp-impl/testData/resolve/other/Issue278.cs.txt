@@ -1,4 +1,4 @@
-FB(97,99): type[FB]=true
-FB.appId(97,105): field[appId]=true
-=(106,107): operator[EQ]=true
-appId(108,113): parameter[appId]=true, field[appId]=true
+FB(97,99): type[FB]=true|true
+FB.appId(97,105): field[appId]=true|true
+=(106,107): operator[EQ]=true|true
+appId(108,113): parameter[appId]=true|true, field[appId]=true|true

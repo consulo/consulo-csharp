@@ -1,8 +1,8 @@
-T(69,70): generic-parameter[T]=true
+T(69,70): generic-parameter[T]=true|true
 IEnumerable<T>(57,71): empty
-Collection(87,97): type[ObjectA`1/Collection]=true
-ObjectA<string>(194,209): type[ObjectA`1]=true
-ObjectA<string>(220,235): constructor[ObjectA()]=true
+Collection(87,97): type[ObjectA`1/Collection]=true|true
+ObjectA<string>(194,209): type[ObjectA`1]=true|true
+ObjectA<string>(220,235): constructor[ObjectA()]=true|true
 IEnumerable<string>(243,262): empty
-str(270,273): local-variable[str]=true
-str.Test(270,278): property[Test]=true
+str(270,273): local-variable[str]=true|true
+str.Test(270,278): property[Test]=true|true

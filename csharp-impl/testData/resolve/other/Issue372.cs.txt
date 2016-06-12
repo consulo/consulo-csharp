@@ -1,27 +1,27 @@
-System(6,12): namespace[System]=true
-System(20,26): namespace[System]=true
-System.Collections(20,38): namespace[System.Collections]=true
-System.Collections.Generic(20,46): namespace[System.Collections.Generic]=true
-String(122,128): type[System.String]=true
-List<String>(117,129): type[System.Collections.Generic.List`1]=true
-List<string>(147,159): constructor[List()]=true, constructor[List(capacity:int)]=false, constructor[List(collection:System.Collections.Generic.IEnumerable<string>)]=false
-listString(165,175): local-variable[listString]=true
-listString.Add(165,179): method[Add(item:string):void]=true
-listString(191,201): local-variable[listString]=true
-listString.Add(191,205): method[Add(item:string):void]=true
-listString(218,228): local-variable[listString]=true
-listString.Add(218,232): method[Add(item:string):void]=true
-listString(245,255): local-variable[listString]=true
-listString.Add(245,259): method[Add(item:string):void]=true
-List<string>(280,292): type[System.Collections.Generic.List`1]=true
-List<string>.Enumerator(280,303): type[System.Collections.Generic.List`1/Enumerator]=true
-listString(317,327): local-variable[listString]=true
-listString.GetEnumerator(317,341): method[GetEnumerator():Enumerator]=true
-enumerator(358,368): local-variable[enumerator]=true
-enumerator.MoveNext(358,377): method[MoveNext():bool]=true
-String(390,396): type[System.String]=true
-enumerator(405,415): local-variable[enumerator]=true
-enumerator.Current(405,423): property[Current]=true
-Console(430,437): type[System.Console]=true
-Console.WriteLine(430,447): method[WriteLine():void]=false, method[WriteLine(value:bool):void]=false, method[WriteLine(value:char):void]=false, method[WriteLine(buffer:char[]):void]=false, method[WriteLine(value:decimal):void]=false, method[WriteLine(value:double):void]=false, method[WriteLine(value:int):void]=false, method[WriteLine(value:long):void]=false, method[WriteLine(value:float):void]=false, method[WriteLine(value:uint):void]=false, method[WriteLine(value:ulong):void]=false, method[WriteLine(buffer:char[], index:int, count:int):void]=false, method[WriteLine(value:string):void]=true, method[WriteLine(format:string, arg0:object):void]=false, method[WriteLine(format:string, arg0:object, arg1:object):void]=false, method[WriteLine(format:string, arg0:object, arg1:object, arg2:object):void]=false, method[WriteLine(format:string, arg0:object, arg1:object, arg2:object, arg3:object, null:__arglist):void]=false, method[WriteLine(format:string, arg:object[]):void]=true, method[WriteLine(value:object):void]=true
-value(448,453): local-variable[value]=true
+System(6,12): namespace[System]=true|true
+System(20,26): namespace[System]=true|true
+System.Collections(20,38): namespace[System.Collections]=true|true
+System.Collections.Generic(20,46): namespace[System.Collections.Generic]=true|true
+String(122,128): type[System.String]=true|true
+List<String>(117,129): type[System.Collections.Generic.List`1]=true|true
+List<string>(147,159): constructor[List()]=true|true, constructor[List(capacity:int)]=false|true, constructor[List(collection:System.Collections.Generic.IEnumerable<string>)]=false|true
+listString(165,175): local-variable[listString]=true|true
+listString.Add(165,179): method[Add(item:string):void]=true|true
+listString(191,201): local-variable[listString]=true|true
+listString.Add(191,205): method[Add(item:string):void]=true|true
+listString(218,228): local-variable[listString]=true|true
+listString.Add(218,232): method[Add(item:string):void]=true|true
+listString(245,255): local-variable[listString]=true|true
+listString.Add(245,259): method[Add(item:string):void]=true|true
+List<string>(280,292): type[System.Collections.Generic.List`1]=true|true
+List<string>.Enumerator(280,303): type[System.Collections.Generic.List`1/Enumerator]=true|true
+listString(317,327): local-variable[listString]=true|true
+listString.GetEnumerator(317,341): method[GetEnumerator():Enumerator]=true|true
+enumerator(358,368): local-variable[enumerator]=true|true
+enumerator.MoveNext(358,377): method[MoveNext():bool]=true|true
+String(390,396): type[System.String]=true|true
+enumerator(405,415): local-variable[enumerator]=true|true
+enumerator.Current(405,423): property[Current]=true|true
+Console(430,437): type[System.Console]=true|true
+Console.WriteLine(430,447): method[WriteLine():void]=false|true, method[WriteLine(value:bool):void]=false|true, method[WriteLine(value:char):void]=false|true, method[WriteLine(buffer:char[]):void]=false|true, method[WriteLine(value:decimal):void]=false|true, method[WriteLine(value:double):void]=false|true, method[WriteLine(value:int):void]=false|true, method[WriteLine(value:long):void]=false|true, method[WriteLine(value:float):void]=false|true, method[WriteLine(value:uint):void]=false|true, method[WriteLine(value:ulong):void]=false|true, method[WriteLine(buffer:char[], index:int, count:int):void]=false|true, method[WriteLine(value:string):void]=true|true, method[WriteLine(format:string, arg0:object):void]=false|true, method[WriteLine(format:string, arg0:object, arg1:object):void]=false|true, method[WriteLine(format:string, arg0:object, arg1:object, arg2:object):void]=false|true, method[WriteLine(format:string, arg0:object, arg1:object, arg2:object, arg3:object, null:__arglist):void]=false|true, method[WriteLine(format:string, arg:object[]):void]=true|true, method[WriteLine(value:object):void]=true|true
+value(448,453): local-variable[value]=true|true
