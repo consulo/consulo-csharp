@@ -183,11 +183,15 @@ public class CSharpReferenceExpressionImplUtil
 	public static boolean isReferenceTo(CSharpReferenceExpression referenceExpression, PsiElement element)
 	{
 		final ResolveResult firstValidResult = CSharpResolveUtil.findValidOrFirstMaybeResult(referenceExpression.multiResolve(false));
+		if(firstValidResult == null)
+		{
+			return false;
+		}
 		return isReferenceTo(firstValidResult, element);
 	}
 
 	@RequiredReadAction
-	private static boolean isReferenceTo(ResolveResult resolveResult, PsiElement element)
+	private static boolean isReferenceTo(@NotNull ResolveResult resolveResult, PsiElement element)
 	{
 		PsiElement psiElement = resolveResult.getElement();
 		if(element instanceof DotNetNamespaceAsElement && psiElement instanceof DotNetNamespaceAsElement)
