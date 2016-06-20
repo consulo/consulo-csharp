@@ -5,6 +5,7 @@ import gnu.trove.THashSet;
 import java.util.Collections;
 import java.util.Set;
 
+import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.RequiredWriteAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.AddUsingAction;
@@ -87,6 +88,7 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 
 	@RequiredReadAction
 	@Override
+	@RequiredDispatchThread
 	public void fillCompletionVariants(CompletionParameters parameters, CompletionResultSet result)
 	{
 		final InheritorsHolder holder = new InheritorsHolder(result);
@@ -129,6 +131,7 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 		}
 	}
 
+	@RequiredReadAction
 	private static void delegate(CompletionParameters parameters, final CompletionResultSet result, final InheritorsHolder inheritorsHolder)
 	{
 		if(parameters.getCompletionType() == CompletionType.BASIC)
@@ -151,6 +154,7 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 		}
 	}
 
+	@RequiredReadAction
 	public static void addTypesForUsing(final CompletionParameters parameters, final CompletionResultSet result, final InheritorsHolder inheritorsHolder)
 	{
 		final PrefixMatcher matcher = result.getPrefixMatcher();
@@ -185,6 +189,7 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 			}
 		}, resolveScope, projectIdFilter);
 
+		final Set<DotNetTypeDeclaration> targets = new THashSet<DotNetTypeDeclaration>(names.size());
 		int i = 0;
 		for(String key : names)
 		{
@@ -204,11 +209,22 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 						return true;
 					}
 
-					consumeType(parameters, parent, result, insideUsing, typeDeclaration);
+					targets.add(typeDeclaration);
 
 					return true;
 				}
 			});
+		}
+
+		i = 0;
+		for(DotNetTypeDeclaration target : targets)
+		{
+			if(i++ % 512 == 0)
+			{
+				ProgressManager.checkCanceled();
+			}
+
+			consumeType(parameters, parent, result, insideUsing, target);
 		}
 	}
 
