@@ -101,8 +101,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 	{
 		String presentableName = DotNetNamespaceStubUtil.getIndexableNamespace(myNamespaceAsElement.getPresentableQName());
 
-		Collection<DotNetTypeDeclaration> decls = TypeWithExtensionMethodsIndex.getInstance().get(presentableName,
-				myNamespaceAsElement.getProject(), myResolveScope);
+		Collection<DotNetTypeDeclaration> decls = TypeWithExtensionMethodsIndex.getInstance().get(presentableName, myNamespaceAsElement.getProject(), myResolveScope);
 
 		if(decls.isEmpty())
 		{
@@ -139,8 +138,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 	@Override
 	public boolean processExtensionMethodGroups(@NotNull final Processor<CSharpElementGroup<CSharpMethodDeclaration>> processor)
 	{
-		return processExtensionMethodGroups(myNamespaceAsElement.getPresentableQName(), myNamespaceAsElement.getProject(), myResolveScope,
-				processor);
+		return processExtensionMethodGroups(myNamespaceAsElement.getPresentableQName(), myNamespaceAsElement.getProject(), myResolveScope, processor);
 	}
 
 	@RequiredReadAction
@@ -156,9 +154,9 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		String indexableName = DotNetNamespaceStubUtil.getIndexableNamespace(qName);
 
 		final Set<String> processed = new THashSet<String>();
+		final Set<PsiElement> typeDeclarations = new THashSet<PsiElement>();
 
-		return StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_WITH_EXTENSION_METHODS_INDEX, indexableName, project, scope,
-				DotNetTypeDeclaration.class, new Processor<DotNetTypeDeclaration>()
+		StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_WITH_EXTENSION_METHODS_INDEX, indexableName, project, scope, DotNetTypeDeclaration.class, new Processor<DotNetTypeDeclaration>()
 		{
 			@Override
 			@RequiredReadAction
@@ -176,11 +174,24 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 					processed.add(vmQName);
 				}
 
-				CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, scope, wrappedDeclaration);
-
-				return context.processExtensionMethodGroups(processor);
+				typeDeclarations.add(wrappedDeclaration);
+				return true;
 			}
 		});
+
+
+		for(PsiElement typeDeclaration : typeDeclarations)
+		{
+			ProgressManager.checkCanceled();
+
+			CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, scope, typeDeclaration);
+
+			if(!context.processExtensionMethodGroups(processor))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@RequiredReadAction
