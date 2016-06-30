@@ -119,6 +119,10 @@ public class CSharpParameterImpl extends CSharpElementImpl implements DotNetPara
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
+		if(modifier == CSharpModifier.OPTIONAL)
+		{
+			return getInitializer() != null;
+		}
 		DotNetModifierList modifierList = getModifierList();
 		return modifierList != null && modifierList.hasModifier(modifier);
 	}

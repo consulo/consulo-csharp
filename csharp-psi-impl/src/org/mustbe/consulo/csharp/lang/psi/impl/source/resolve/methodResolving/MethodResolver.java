@@ -25,6 +25,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.util.Trinity;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.SmartList;
 
@@ -68,7 +69,7 @@ public class MethodResolver
 
 	@NotNull
 	@RequiredReadAction
-	private static List<NCallArgument> buildCallArguments(@NotNull CSharpCallArgument[] callArguments, @NotNull PsiElement scope, @NotNull ParameterResolveContext<?> context)
+	private static <T> List<NCallArgument> buildCallArguments(@NotNull CSharpCallArgument[] callArguments, @NotNull PsiElement scope, @NotNull ParameterResolveContext<T> context)
 	{
 		List<NCallArgument> list = new ArrayList<NCallArgument>(context.getParametersSize());
 
@@ -96,7 +97,7 @@ public class MethodResolver
 			}
 			else
 			{
-				Object parameter = context.getParameterByIndex(i++);
+				T parameter = context.getParameterByIndex(i++);
 				if(parameter == null)
 				{
 					DotNetParameter paramsParameter = context.getParamsParameter();
@@ -191,7 +192,7 @@ public class MethodResolver
 			}
 		}
 
-		for(Object parameter : context.getParameters())
+		for(T parameter : context.getParameters())
 		{
 			NCallArgument nCallArgument = findByParameterObject(list, parameter);
 			if(nCallArgument != null)
@@ -199,18 +200,11 @@ public class MethodResolver
 				continue;
 			}
 
-			if(parameter instanceof DotNetParameter)
+			final Trinity<String, DotNetTypeRef, Boolean> parameterInfo = context.getParameterInfo(parameter);
+
+			if(parameterInfo.getThird())
 			{
-				DotNetParameter asParameter = (DotNetParameter) parameter;
-				DotNetExpression initializer = asParameter.getInitializer();
-				if(initializer != null)
-				{
-					list.add(new NNamedCallArgument(asParameter.toTypeRef(true), null, parameter, asParameter.getName()));
-				}
-				else
-				{
-					list.add(new NErrorCallArgument(parameter));
-				}
+				list.add(new NNamedCallArgument(parameterInfo.getSecond(), null, parameter, parameterInfo.getFirst()));
 			}
 			else
 			{

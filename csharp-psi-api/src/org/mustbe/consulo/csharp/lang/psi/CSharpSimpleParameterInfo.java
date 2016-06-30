@@ -3,6 +3,8 @@ package org.mustbe.consulo.csharp.lang.psi;
 import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 
@@ -35,12 +37,30 @@ public class CSharpSimpleParameterInfo
 	private final PsiElement myElement;
 	private DotNetTypeRef myTypeRef;
 
+	private boolean myOptional;
+
+	@RequiredReadAction
+	public CSharpSimpleParameterInfo(int index, @NotNull DotNetParameter parameter, @NotNull DotNetTypeRef typeRef)
+	{
+		myIndex = index;
+		myName = parameter.getName();
+		myElement = parameter;
+		myTypeRef = typeRef;
+		myOptional = parameter.hasModifier(CSharpModifier.OPTIONAL);
+	}
+
+	@RequiredReadAction
 	public CSharpSimpleParameterInfo(int index, @Nullable String name, @Nullable PsiElement element, @NotNull DotNetTypeRef typeRef)
 	{
 		myIndex = index;
 		myName = name;
 		myElement = element;
 		myTypeRef = typeRef;
+	}
+
+	public boolean isOptional()
+	{
+		return myOptional;
 	}
 
 	@Nullable

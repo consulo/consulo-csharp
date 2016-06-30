@@ -119,7 +119,7 @@ public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implement
 		for(int i = 0; i < parameters.length; i++)
 		{
 			DotNetParameter parameter = parameters[i];
-			parameterInfos[i] = new CSharpSimpleParameterInfo(i, parameter.getName(), parameter, parameter.toTypeRef(false));
+			parameterInfos[i] = new CSharpSimpleParameterInfo(i, parameter, parameter.toTypeRef(false));
 		}
 		return parameterInfos;
 	}

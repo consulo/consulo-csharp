@@ -3,6 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.c
 import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
@@ -10,6 +11,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetParameterListOwner;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.util.Trinity;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayUtil;
 
@@ -83,6 +85,14 @@ public class MethodParameterResolveContext implements ParameterResolveContext<Do
 			}
 		}
 		return null;
+	}
+
+	@NotNull
+	@RequiredReadAction
+	@Override
+	public Trinity<String, DotNetTypeRef, Boolean> getParameterInfo(@NotNull DotNetParameter parameter)
+	{
+		return Trinity.create(parameter.getName(), parameter.toTypeRef(true), parameter.hasModifier(CSharpModifier.OPTIONAL));
 	}
 
 	@NotNull

@@ -131,6 +131,10 @@ public abstract class MsilVariableAsCSharpVariable extends MsilElementWrapper<Do
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
+		if(modifier == CSharpModifier.OPTIONAL)
+		{
+			return getInitializer() != null;
+		}
 		return myModifierList.hasModifier(modifier);
 	}
 

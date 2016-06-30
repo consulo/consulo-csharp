@@ -2,11 +2,13 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.c
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
 import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import org.mustbe.consulo.dotnet.util.ArrayUtil2;
 import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.util.Trinity;
 
 /**
  * @author VISTALL
@@ -81,5 +83,13 @@ public class SimpleParameterResolveContext implements ParameterResolveContext<CS
 	public boolean isResolveFromParentTypeRef()
 	{
 		return false;
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	public Trinity<String, DotNetTypeRef, Boolean> getParameterInfo(@NotNull CSharpSimpleParameterInfo parameter)
+	{
+		return Trinity.create(parameter.getNotNullName(), parameter.getTypeRef(), parameter.isOptional());
 	}
 }

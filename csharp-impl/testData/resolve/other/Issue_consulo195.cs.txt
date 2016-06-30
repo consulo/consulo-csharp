@@ -1,0 +1,10 @@
+System(603,609): namespace[System]=true|true
+Enum(701,705): type[System.Enum]=true|true
+StateMachineChangeDelegate(771,797): delegate-method[StateMachineChangeDelegate(e:System.Enum, options:string):void]=true|true
+StateMachineChange(846,864): field[StateMachineChange]=true|true
+WaveMangerStates(865,881): type[WaveMangerStates]=true|true
+WaveMangerStates.Start(865,887): enum-constant[Start]=true|true
+test(893,897): method[test(e:System.Enum, options:string):void]=true|true
+WaveMangerStates(898,914): type[WaveMangerStates]=true|true
+WaveMangerStates.Start(898,920): enum-constant[Start]=true|true
+Enum(938,942): type[System.Enum]=true|true

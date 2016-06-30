@@ -88,6 +88,7 @@ public class CSharpLikeMethodDeclarationImplUtil
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static CSharpSimpleParameterInfo[] getParametersInfos(@NotNull DotNetParameterListOwner parameterListOwner)
 	{
 		DotNetParameter[] parameters = parameterListOwner.getParameters();
@@ -96,7 +97,7 @@ public class CSharpLikeMethodDeclarationImplUtil
 		for(int i = 0; i < parameters.length; i++)
 		{
 			DotNetParameter parameter = parameters[i];
-			parameterInfos[i] = new CSharpSimpleParameterInfo(i, parameter.getName(), parameter, parameter.toTypeRef(true));
+			parameterInfos[i] = new CSharpSimpleParameterInfo(i, parameter, parameter.toTypeRef(true));
 		}
 		return parameterInfos;
 	}
