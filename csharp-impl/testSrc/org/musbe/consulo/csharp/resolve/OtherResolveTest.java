@@ -58,6 +58,10 @@ public class OtherResolveTest extends ResolvingTestCase
 	{
 	}
 
+	public void testIssue_consulo196()
+	{
+	}
+
 	public void testIssue424()
 	{
 	}

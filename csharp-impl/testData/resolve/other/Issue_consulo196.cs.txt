@@ -1,0 +1,3 @@
+TestInfiniteParams(117,135): method[TestInfiniteParams(items:object[]):void]=true|true
+TestInfiniteParams(151,169): method[TestInfiniteParams(items:object[]):void]=true|true
+TestInfiniteParams(211,229): method[TestInfiniteParams(items:object[]):void]=true|true
