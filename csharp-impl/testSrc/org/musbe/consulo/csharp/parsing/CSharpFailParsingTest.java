@@ -16,6 +16,8 @@
 
 package org.musbe.consulo.csharp.parsing;
 
+import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+
 /**
  * @author VISTALL
  * @since 22.05.2015
@@ -41,6 +43,12 @@ public class CSharpFailParsingTest extends CSharpParsingTestCase
 
 	@SetLanguageVersion
 	public void testLambdaParameterListFailParsing()
+	{
+		doTest(true);
+	}
+
+	@SetLanguageVersion(version = CSharpLanguageVersion._6_0)
+	public void testIssue438()
 	{
 		doTest(true);
 	}

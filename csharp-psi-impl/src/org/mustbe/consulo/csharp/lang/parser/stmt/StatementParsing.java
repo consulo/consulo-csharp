@@ -551,33 +551,17 @@ public class StatementParsing extends SharedParsingHelpers
 				builder.advanceLexer();
 			}
 
-			if(builder.getTokenType() != SEMICOLON)
-			{
-				ExpressionParsing.parse(builder, modifierSet);
-			}
-			else
-			{
-				builder.advanceLexer();
+			expect(builder, CSharpTokens.SEMICOLON, "';' expected");
+			ExpressionParsing.parse(builder, modifierSet);
 
-				ExpressionParsing.parse(builder, modifierSet);
-			}
+			expect(builder, CSharpTokens.SEMICOLON, "';' expected");
+			ExpressionParsing.parse(builder, modifierSet);
 
-			if(builder.getTokenType() != SEMICOLON)
-			{
-				ExpressionParsing.parse(builder, modifierSet);
-			}
-			else
+			while(builder.getTokenType() == COMMA)
 			{
 				builder.advanceLexer();
 
 				ExpressionParsing.parse(builder, modifierSet);
-
-				while(builder.getTokenType() == COMMA)
-				{
-					builder.advanceLexer();
-
-					ExpressionParsing.parse(builder, modifierSet);
-				}
 			}
 
 			expect(builder, RPAR, "')' expected");
