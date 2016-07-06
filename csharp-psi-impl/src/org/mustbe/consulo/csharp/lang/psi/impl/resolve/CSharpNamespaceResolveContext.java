@@ -35,6 +35,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.CommonProcessors;
 import com.intellij.util.Processor;
 import com.intellij.util.SmartList;
 import consulo.csharp.lang.CSharpCastType;
@@ -153,38 +154,29 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		}
 		String indexableName = DotNetNamespaceStubUtil.getIndexableNamespace(qName);
 
-		final Set<String> processed = new THashSet<String>();
-		final Set<PsiElement> typeDeclarations = new THashSet<PsiElement>();
+		CommonProcessors.CollectUniquesProcessor<DotNetTypeDeclaration> collect = new CommonProcessors.CollectUniquesProcessor<DotNetTypeDeclaration>();
 
-		StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_WITH_EXTENSION_METHODS_INDEX, indexableName, project, scope, DotNetTypeDeclaration.class, new Processor<DotNetTypeDeclaration>()
-		{
-			@Override
-			@RequiredReadAction
-			public boolean process(DotNetTypeDeclaration typeDeclaration)
-			{
-				PsiElement wrappedDeclaration = ToNativeElementTransformers.transform(typeDeclaration);
+		StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_WITH_EXTENSION_METHODS_INDEX, indexableName, project, scope, DotNetTypeDeclaration.class, collect);
 
-				if(typeDeclaration instanceof CSharpTypeDeclaration && typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
-				{
-					String vmQName = typeDeclaration.getVmQName();
-					if(processed.contains(vmQName))
-					{
-						return true;
-					}
-					processed.add(vmQName);
-				}
+		Set<String> processed = new THashSet<String>();
 
-				typeDeclarations.add(wrappedDeclaration);
-				return true;
-			}
-		});
-
-
-		for(PsiElement typeDeclaration : typeDeclarations)
+		for(DotNetTypeDeclaration typeDeclaration : collect.getResults())
 		{
 			ProgressManager.checkCanceled();
 
-			CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, scope, typeDeclaration);
+			PsiElement wrappedDeclaration = ToNativeElementTransformers.transform(typeDeclaration);
+
+			if(typeDeclaration instanceof CSharpTypeDeclaration && typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
+			{
+				String vmQName = typeDeclaration.getVmQName();
+				if(processed.contains(vmQName))
+				{
+					return true;
+				}
+				processed.add(vmQName);
+			}
+
+			CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, scope, wrappedDeclaration);
 
 			if(!context.processExtensionMethodGroups(processor))
 			{
