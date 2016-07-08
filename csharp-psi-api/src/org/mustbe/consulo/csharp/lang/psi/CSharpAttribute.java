@@ -16,9 +16,9 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
-import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
+import consulo.lombok.annotations.ArrayFactoryFields;
 
 /**
  * @author VISTALL

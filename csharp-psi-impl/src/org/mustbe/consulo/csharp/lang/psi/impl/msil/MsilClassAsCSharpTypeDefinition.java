@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -59,6 +58,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
+import consulo.lombok.annotations.Lazy;
 
 /**
  * @author VISTALL
@@ -352,7 +352,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 
 	@NotNull
 	@Override
-	@LazyInstance
+	@Lazy
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{
 		String vmQName = getVmQName();
@@ -382,7 +382,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 	}
 
 	@Override
-	@LazyInstance
+	@Lazy
 	public DotNetTypeRef getTypeRefForEnumConstants()
 	{
 		return MsilToCSharpUtil.extractToCSharp(myOriginal.getTypeRefForEnumConstants(), myOriginal);

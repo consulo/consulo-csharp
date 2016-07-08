@@ -22,7 +22,6 @@ import java.util.Map;
 
 import javax.swing.Icon;
 
-import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.doc.ide.highlight.CSharpDocHighlightKey;
@@ -33,6 +32,7 @@ import com.intellij.openapi.options.colors.AttributesDescriptor;
 import com.intellij.openapi.options.colors.ColorDescriptor;
 import com.intellij.openapi.options.colors.ColorSettingsPage;
 import com.intellij.openapi.util.io.FileUtil;
+import consulo.lombok.annotations.Lazy;
 
 /**
  * @author VISTALL
@@ -122,7 +122,7 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 
 	@NotNull
 	@Override
-	@LazyInstance
+	@Lazy
 	public String getDemoText()
 	{
 		try

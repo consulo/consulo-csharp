@@ -42,7 +42,7 @@ public class CSharpTypeRefFromText extends DotNetTypeRefWithCachedResult
 	}
 
 	@NotNull
-	//@LazyInstance
+	//@Lazy
 	private DotNetType getType()
 	{
 		CSharpFragmentFileImpl typeFragment = CSharpFragmentFactory.createTypeFragment(myOwner.getProject(), myText, myOwner);

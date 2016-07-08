@@ -16,7 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
-import org.consulo.lombok.annotations.LazyInstance;
+import consulo.lombok.annotations.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
@@ -56,7 +56,7 @@ public class MsilMethodAsCSharpConversionMethodDeclaration extends MsilMethodAsC
 	@RequiredReadAction
 	@NotNull
 	@Override
-	@LazyInstance
+	@Lazy
 	public DotNetTypeRef getReturnTypeRef()
 	{
 		return MsilToCSharpUtil.extractToCSharp(myOriginal.getReturnTypeRef(), myOriginal);

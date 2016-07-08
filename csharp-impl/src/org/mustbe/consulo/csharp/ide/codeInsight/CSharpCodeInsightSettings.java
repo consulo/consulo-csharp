@@ -16,8 +16,8 @@
 
 package org.mustbe.consulo.csharp.ide.codeInsight;
 
-import org.consulo.lombok.annotations.ApplicationService;
-import org.consulo.lombok.annotations.Logger;
+import consulo.lombok.annotations.ApplicationService;
+import consulo.lombok.annotations.Logger;
 import org.jdom.Element;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;

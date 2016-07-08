@@ -20,10 +20,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.consulo.lombok.annotations.ArrayFactoryFields;
-import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import consulo.lombok.annotations.ArrayFactoryFields;
+import consulo.lombok.annotations.Lazy;
 
 /**
  * @author VISTALL
@@ -89,7 +89,7 @@ public enum CSharpModifier implements DotNetModifier
 	}
 
 	@Override
-	@LazyInstance
+	@Lazy
 	public String getPresentableText()
 	{
 		return name().toLowerCase(Locale.US);

@@ -19,7 +19,6 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
@@ -42,6 +41,7 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import consulo.lombok.annotations.Lazy;
 
 /**
  * @author VISTALL
@@ -52,28 +52,28 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 	private static Map<String, Pair<String, IElementType>> ourOperatorNames = new HashMap<String, Pair<String, IElementType>>()
 	{
 		{
-			put("op_Addition", new Pair<String, IElementType>("+", CSharpTokens.PLUS));
-			put("op_UnaryPlus", new Pair<String, IElementType>("+", CSharpTokens.PLUS));
-			put("op_Subtraction", new Pair<String, IElementType>("-", CSharpTokens.MINUS));
-			put("op_UnaryNegation", new Pair<String, IElementType>("-", CSharpTokens.MINUS));
-			put("op_Multiply", new Pair<String, IElementType>("*", CSharpTokens.MUL));
-			put("op_Division", new Pair<String, IElementType>("/", CSharpTokens.DIV));
-			put("op_Modulus", new Pair<String, IElementType>("%", CSharpTokens.PERC));
-			put("op_BitwiseAnd", new Pair<String, IElementType>("&", CSharpTokens.AND));
-			put("op_BitwiseOr", new Pair<String, IElementType>("|", CSharpTokens.OR));
-			put("op_ExclusiveOr", new Pair<String, IElementType>("^", CSharpTokens.XOR));
-			put("op_LeftShift", new Pair<String, IElementType>("<<", CSharpTokens.LTLT));
-			put("op_RightShift", new Pair<String, IElementType>(">>", CSharpTokens.GTGT));
-			put("op_Equality", new Pair<String, IElementType>("==", CSharpTokens.EQEQ));
-			put("op_Inequality", new Pair<String, IElementType>("!=", CSharpTokens.NTEQ));
-			put("op_LessThan", new Pair<String, IElementType>("<", CSharpTokens.LT));
-			put("op_LessThanOrEqual", new Pair<String, IElementType>("<=", CSharpTokens.LTEQ));
-			put("op_GreaterThan", new Pair<String, IElementType>(">", CSharpTokens.GT));
-			put("op_GreaterThanOrEqual", new Pair<String, IElementType>(">=", CSharpTokens.GTEQ));
-			put("op_OnesComplement", new Pair<String, IElementType>("~", CSharpTokens.TILDE));
-			put("op_LogicalNot", new Pair<String, IElementType>("!", CSharpTokens.EXCL));
-			put("op_Increment", new Pair<String, IElementType>("++", CSharpTokens.PLUSPLUS));
-			put("op_Decrement", new Pair<String, IElementType>("--", CSharpTokens.MINUSMINUS));
+			put("op_Addition", Pair.create("+", CSharpTokens.PLUS));
+			put("op_UnaryPlus", Pair.create("+", CSharpTokens.PLUS));
+			put("op_Subtraction", Pair.create("-", CSharpTokens.MINUS));
+			put("op_UnaryNegation", Pair.create("-", CSharpTokens.MINUS));
+			put("op_Multiply", Pair.create("*", CSharpTokens.MUL));
+			put("op_Division", Pair.create("/", CSharpTokens.DIV));
+			put("op_Modulus", Pair.create("%", CSharpTokens.PERC));
+			put("op_BitwiseAnd", Pair.create("&", CSharpTokens.AND));
+			put("op_BitwiseOr", Pair.create("|", CSharpTokens.OR));
+			put("op_ExclusiveOr", Pair.create("^", CSharpTokens.XOR));
+			put("op_LeftShift", Pair.create("<<", CSharpTokens.LTLT));
+			put("op_RightShift", Pair.create(">>", CSharpTokens.GTGT));
+			put("op_Equality", Pair.create("==", CSharpTokens.EQEQ));
+			put("op_Inequality", Pair.create("!=", CSharpTokens.NTEQ));
+			put("op_LessThan", Pair.create("<", CSharpTokens.LT));
+			put("op_LessThanOrEqual", Pair.create("<=", CSharpTokens.LTEQ));
+			put("op_GreaterThan", Pair.create(">", CSharpTokens.GT));
+			put("op_GreaterThanOrEqual", Pair.create(">=", CSharpTokens.GTEQ));
+			put("op_OnesComplement", Pair.create("~", CSharpTokens.TILDE));
+			put("op_LogicalNot", Pair.create("!", CSharpTokens.EXCL));
+			put("op_Increment", Pair.create("++", CSharpTokens.PLUSPLUS));
+			put("op_Decrement", Pair.create("--", CSharpTokens.MINUSMINUS));
 		}
 	};
 
@@ -185,7 +185,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 
 	@Nullable
 	@Override
-	@LazyInstance(notNull = false)
+	@Lazy(notNull = false)
 	public DotNetType getTypeForImplement()
 	{
 		String nameFromBytecode = myOriginal.getNameFromBytecode();
@@ -200,7 +200,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 
 	@NotNull
 	@Override
-	@LazyInstance
+	@Lazy
 	public DotNetTypeRef getTypeRefForImplement()
 	{
 		DotNetType typeForImplement = getTypeForImplement();

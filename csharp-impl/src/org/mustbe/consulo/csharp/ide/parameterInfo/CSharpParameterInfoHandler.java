@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.ide.parameterInfo;
 import java.util.Comparator;
 import java.util.List;
 
-import org.consulo.lombok.annotations.ArrayFactoryFields;
+import consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredDispatchThread;

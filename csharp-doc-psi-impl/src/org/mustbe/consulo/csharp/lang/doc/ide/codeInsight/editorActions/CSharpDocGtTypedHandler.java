@@ -53,7 +53,7 @@ import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
 
-@org.consulo.lombok.annotations.Logger
+@consulo.lombok.annotations.Logger
 public class CSharpDocGtTypedHandler extends TypedHandlerDelegate
 {
 	private static final RoleFinder CLOSING_TAG_NAME_FINDER = new RoleFinder()

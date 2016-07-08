@@ -19,7 +19,6 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
@@ -43,6 +42,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.lombok.annotations.Lazy;
 
 /**
  * @author VISTALL
@@ -183,7 +183,7 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 
 	@Nullable
 	@Override
-	@LazyInstance(notNull = false)
+	@Lazy(notNull = false)
 	public DotNetType getTypeForImplement()
 	{
 		String nameFromBytecode = getVariable().getNameFromBytecode();
@@ -198,7 +198,7 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 
 	@NotNull
 	@Override
-	@LazyInstance
+	@Lazy
 	public DotNetTypeRef getTypeRefForImplement()
 	{
 		DotNetType typeForImplement = getTypeForImplement();

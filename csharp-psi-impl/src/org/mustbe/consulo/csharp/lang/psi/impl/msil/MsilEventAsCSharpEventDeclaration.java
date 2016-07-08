@@ -18,7 +18,6 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
 import java.util.List;
 
-import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
@@ -35,6 +34,7 @@ import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import consulo.lombok.annotations.Lazy;
 
 /**
  * @author VISTALL
@@ -108,7 +108,7 @@ public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVaria
 
 	@Nullable
 	@Override
-	@LazyInstance(notNull = false)
+	@Lazy(notNull = false)
 	public DotNetType getTypeForImplement()
 	{
 		String nameFromBytecode = getVariable().getNameFromBytecode();
@@ -123,7 +123,7 @@ public class MsilEventAsCSharpEventDeclaration extends MsilVariableAsCSharpVaria
 
 	@NotNull
 	@Override
-	@LazyInstance
+	@Lazy
 	public DotNetTypeRef getTypeRefForImplement()
 	{
 		DotNetType typeForImplement = getTypeForImplement();

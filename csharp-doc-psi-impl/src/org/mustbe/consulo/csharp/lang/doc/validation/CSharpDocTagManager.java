@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.consulo.annotations.Immutable;
-import org.consulo.lombok.annotations.ApplicationService;
+import consulo.lombok.annotations.ApplicationService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

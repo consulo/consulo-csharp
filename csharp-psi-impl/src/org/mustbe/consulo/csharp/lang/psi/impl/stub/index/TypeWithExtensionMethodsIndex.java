@@ -1,6 +1,6 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub.index;
 
-import org.consulo.lombok.annotations.LazyInstance;
+import consulo.lombok.annotations.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.psi.stubs.StringStubIndexExtension;
@@ -14,7 +14,7 @@ import com.intellij.psi.stubs.StubIndexKey;
 public class TypeWithExtensionMethodsIndex extends StringStubIndexExtension<DotNetTypeDeclaration>
 {
 	@NotNull
-	@LazyInstance
+	@Lazy
 	public static TypeWithExtensionMethodsIndex getInstance()
 	{
 		return StubIndexExtension.EP_NAME.findExtension(TypeWithExtensionMethodsIndex.class);

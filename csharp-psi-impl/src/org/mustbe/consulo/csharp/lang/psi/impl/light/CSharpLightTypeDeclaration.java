@@ -16,7 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.light;
 
-import org.consulo.lombok.annotations.LazyInstance;
+import consulo.lombok.annotations.Lazy;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -188,7 +188,7 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
 
 	@NotNull
 	@Override
-	@LazyInstance
+	@Lazy
 	@RequiredReadAction
 	public DotNetNamedElement[] getMembers()
 	{

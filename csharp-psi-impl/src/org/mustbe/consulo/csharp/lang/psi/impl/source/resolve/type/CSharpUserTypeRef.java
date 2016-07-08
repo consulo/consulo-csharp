@@ -1,6 +1,6 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.consulo.lombok.annotations.LazyInstance;
+import consulo.lombok.annotations.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
@@ -71,7 +71,7 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 		@NotNull
 		@Override
 		@RequiredReadAction
-		@LazyInstance
+		@Lazy
 		public CSharpSimpleParameterInfo[] getParameterInfos()
 		{
 			CSharpSimpleParameterInfo[] parameterInfos = myElement.getParameterInfos();
@@ -91,7 +91,7 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 
 		@Nullable
 		@Override
-		@LazyInstance
+		@Lazy
 		public PsiElement getElement()
 		{
 			return CSharpLambdaResolveResultUtil.createTypeFromDelegate(myElement);
@@ -100,7 +100,7 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 		@RequiredReadAction
 		@NotNull
 		@Override
-		@LazyInstance
+		@Lazy
 		public DotNetTypeRef getReturnTypeRef()
 		{
 			return GenericUnwrapTool.exchangeTypeRef(myElement.getReturnTypeRef(), getGenericExtractor(), myScope);
@@ -116,7 +116,7 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 		@RequiredReadAction
 		@NotNull
 		@Override
-		@LazyInstance
+		@Lazy
 		public DotNetTypeRef[] getParameterTypeRefs()
 		{
 			return GenericUnwrapTool.exchangeTypeRefs(myElement.getParameterTypeRefs(), getGenericExtractor(), myScope);

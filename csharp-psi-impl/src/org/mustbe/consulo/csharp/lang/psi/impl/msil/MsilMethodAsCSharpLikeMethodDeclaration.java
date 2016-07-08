@@ -16,7 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
-import org.consulo.lombok.annotations.LazyInstance;
+import consulo.lombok.annotations.Lazy;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -109,7 +109,7 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 	@RequiredReadAction
 	@NotNull
 	@Override
-	@LazyInstance
+	@Lazy
 	public DotNetTypeRef getReturnTypeRef()
 	{
 		return MsilToCSharpUtil.extractToCSharp(myOriginal.getReturnTypeRef(), myOriginal);
@@ -159,7 +159,7 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 
 	@NotNull
 	@Override
-	@LazyInstance
+	@Lazy
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
 		DotNetTypeRef[] parameters = myOriginal.getParameterTypeRefs();

@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.partial;
 import java.util.Collection;
 import java.util.Map;
 
-import org.consulo.lombok.annotations.ProjectService;
+import consulo.lombok.annotations.ProjectService;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import com.intellij.ProjectTopics;

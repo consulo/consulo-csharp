@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
@@ -43,6 +42,7 @@ import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayUtil;
+import consulo.lombok.annotations.Lazy;
 
 /**
  * @author VISTALL
@@ -175,7 +175,7 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 		return Collections.emptyList();
 	}
 
-	@LazyInstance(notNull = false)
+	@Lazy(notNull = false)
 	private ExternalAttributeHolder getExternalAttributeHolder()
 	{
 		return ExternalAttributesUtil.findHolder(myModifierList);

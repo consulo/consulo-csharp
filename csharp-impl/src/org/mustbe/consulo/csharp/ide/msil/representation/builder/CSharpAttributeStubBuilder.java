@@ -3,7 +3,7 @@ package org.mustbe.consulo.csharp.ide.msil.representation.builder;
 import java.util.List;
 import java.util.Map;
 
-import org.consulo.lombok.annotations.Logger;
+import consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;

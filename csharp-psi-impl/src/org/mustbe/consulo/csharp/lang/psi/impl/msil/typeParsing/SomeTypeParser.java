@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil.typeParsing;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.consulo.lombok.annotations.Logger;
+import consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;

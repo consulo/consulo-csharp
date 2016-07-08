@@ -20,7 +20,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-import org.consulo.lombok.annotations.LazyInstance;
+import consulo.lombok.annotations.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
 import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
@@ -66,7 +66,7 @@ public class AttributeListIndex extends AbstractStubIndex<DotNetAttributeTargetT
 	}
 
 	@NotNull
-	@LazyInstance
+	@Lazy
 	public static AttributeListIndex getInstance()
 	{
 		return StubIndexExtension.EP_NAME.findExtension(AttributeListIndex.class);

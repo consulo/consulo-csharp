@@ -19,11 +19,11 @@ package org.mustbe.consulo.csharp.lang.psi;
 import java.util.Locale;
 
 import org.consulo.annotations.Immutable;
-import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import com.intellij.psi.PsiElement;
+import consulo.lombok.annotations.Lazy;
 
 /**
  * @author VISTALL
@@ -110,7 +110,7 @@ public enum CSharpAccessModifier
 	}
 
 	@NotNull
-	@LazyInstance
+	@Lazy
 	public String getPresentableText()
 	{
 		return name().toLowerCase(Locale.US).replace("_", " ");

@@ -19,7 +19,6 @@ package org.mustbe.consulo.csharp.ide.actions;
 import java.util.Map;
 import java.util.UUID;
 
-import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
@@ -37,6 +36,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileSystem;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.testFramework.LightVirtualFile;
+import consulo.lombok.annotations.Lazy;
 
 /**
  * @author VISTALL
@@ -45,7 +45,7 @@ import com.intellij.testFramework.LightVirtualFile;
 public class CSharpCreateFromTemplateHandler extends DefaultCreateFromTemplateHandler
 {
 	@NotNull
-	@LazyInstance
+	@Lazy
 	public static CSharpCreateFromTemplateHandler getInstance()
 	{
 		return EP_NAME.findExtension(CSharpCreateFromTemplateHandler.class);

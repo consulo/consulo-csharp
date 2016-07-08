@@ -1,6 +1,5 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
-import org.consulo.lombok.annotations.LazyInstance;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,6 +16,7 @@ import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import consulo.csharp.psi.CSharpGenericParameter;
+import consulo.lombok.annotations.Lazy;
 
 /**
  * @author VISTALL
@@ -111,7 +111,7 @@ public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWra
 	@RequiredReadAction
 	@NotNull
 	@Override
-	@LazyInstance
+	@Lazy
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{
 		return CSharpGenericConstraintUtil.getExtendTypes(MsilGenericParameterAsCSharpGenericParameter.this);

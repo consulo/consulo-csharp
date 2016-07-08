@@ -16,7 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi.impl.stub.index;
 
-import org.consulo.lombok.annotations.LazyInstance;
+import consulo.lombok.annotations.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import com.intellij.psi.stubs.StringStubIndexExtension;
@@ -30,7 +30,7 @@ import com.intellij.psi.stubs.StubIndexKey;
 public class TypeIndex extends StringStubIndexExtension<CSharpTypeDeclaration>
 {
 	@NotNull
-	@LazyInstance
+	@Lazy
 	public static TypeIndex getInstance()
 	{
 		return StubIndexExtension.EP_NAME.findExtension(TypeIndex.class);

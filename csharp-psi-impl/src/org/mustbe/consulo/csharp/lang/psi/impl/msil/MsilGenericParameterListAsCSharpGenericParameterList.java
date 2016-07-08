@@ -3,7 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.consulo.lombok.annotations.LazyInstance;
+import consulo.lombok.annotations.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
@@ -80,7 +80,7 @@ public class MsilGenericParameterListAsCSharpGenericParameterList extends MsilEl
 
 	@NotNull
 	@Override
-	@LazyInstance
+	@Lazy
 	public DotNetGenericParameter[] getParameters()
 	{
 		return myParametersValue.getValue();

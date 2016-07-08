@@ -1,6 +1,6 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.context;
 
-import org.consulo.lombok.annotations.LazyInstance;
+import consulo.lombok.annotations.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
@@ -40,7 +40,7 @@ public class MethodParameterResolveContext implements ParameterResolveContext<Do
 
 	@Override
 	@NotNull
-	@LazyInstance
+	@Lazy
 	public DotNetTypeRef getInnerParamsParameterTypeRef()
 	{
 		return myParamsParameter == null ? DotNetTypeRef.ERROR_TYPE : CSharpResolveUtil.resolveIterableType(myScope, getParamsParameterTypeRef());
@@ -48,7 +48,7 @@ public class MethodParameterResolveContext implements ParameterResolveContext<Do
 
 	@Override
 	@NotNull
-	@LazyInstance
+	@Lazy
 	public DotNetTypeRef getParamsParameterTypeRef()
 	{
 		return myParamsParameter == null ? DotNetTypeRef.ERROR_TYPE : myParamsParameter.toTypeRef(true);
