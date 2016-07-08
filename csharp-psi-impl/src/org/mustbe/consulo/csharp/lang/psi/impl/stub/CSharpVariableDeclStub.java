@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpParameterImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubParameterImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubVariableImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubVariableImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.CSharpAbstractStubElementType;
@@ -54,7 +54,7 @@ public class CSharpVariableDeclStub<V extends DotNetVariable> extends MemberStub
 		{
 			i |= BitUtil.set(i, MULTIPLE_DECLARATION_MASK, CSharpStubVariableImplUtil.isMultipleDeclaration((CSharpStubVariableImpl<?>) variable));
 		}
-		if(variable instanceof CSharpParameterImpl)
+		if(variable instanceof CSharpStubParameterImpl)
 		{
 			i |= BitUtil.set(i, OPTIONAL, variable.getInitializer() != null);
 		}
