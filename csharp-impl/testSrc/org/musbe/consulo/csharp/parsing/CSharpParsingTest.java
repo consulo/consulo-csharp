@@ -166,4 +166,10 @@ public class CSharpParsingTest extends CSharpParsingTestCase
 	{
 		doTest(true);
 	}
+
+	@SetLanguageVersion(version = CSharpLanguageVersion._6_0)
+	public void testIssue441()
+	{
+		doTest(true);
+	}
 }

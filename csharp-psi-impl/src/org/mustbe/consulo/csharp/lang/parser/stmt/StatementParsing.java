@@ -43,143 +43,160 @@ public class StatementParsing extends SharedParsingHelpers
 		return parseStatement(wrapper, set);
 	}
 
-	private static PsiBuilder.Marker parseStatement(CSharpBuilderWrapper wrapper, ModifierSet set)
+	private static PsiBuilder.Marker parseStatement(CSharpBuilderWrapper builder, ModifierSet set)
 	{
-		PsiBuilder.Marker marker = wrapper.mark();
+		PsiBuilder.Marker marker = builder.mark();
 
-		wrapper.enableSoftKeyword(CSharpSoftTokens.YIELD_KEYWORD);
+		builder.enableSoftKeyword(CSharpSoftTokens.YIELD_KEYWORD);
 
-		IElementType tokenType = wrapper.getTokenType();
+		IElementType tokenType = builder.getTokenType();
 
-		wrapper.disableSoftKeyword(CSharpSoftTokens.YIELD_KEYWORD);
+		builder.disableSoftKeyword(CSharpSoftTokens.YIELD_KEYWORD);
 
 		if(tokenType == LOCK_KEYWORD)
 		{
-			parseStatementWithParenthesesExpression(wrapper, marker, LOCK_STATEMENT, set);
+			parseStatementWithParenthesesExpression(builder, marker, LOCK_STATEMENT, set);
 		}
 		else if(tokenType == BREAK_KEYWORD)
 		{
-			wrapper.advanceLexer();
+			builder.advanceLexer();
 
-			expect(wrapper, SEMICOLON, "';' expected");
+			expect(builder, SEMICOLON, "';' expected");
 
 			marker.done(BREAK_STATEMENT);
 		}
 		else if(tokenType == GOTO_KEYWORD)
 		{
-			wrapper.advanceLexer();
+			builder.advanceLexer();
 
-			doneOneElement(wrapper, CSharpTokens.IDENTIFIER, REFERENCE_EXPRESSION, "Identifier expected");
+			final IElementType nextTokenType = builder.getTokenType();
+			if(nextTokenType == CSharpTokens.CASE_KEYWORD)
+			{
+				builder.advanceLexer();
 
-			expect(wrapper, SEMICOLON, "';' expected");
+				if(ExpressionParsing.parse(builder, set) == null)
+				{
+					builder.error("Expression expected");
+				}
+			}
+			else if(nextTokenType == CSharpTokens.DEFAULT_KEYWORD)
+			{
+				builder.advanceLexer();
+			}
+			else
+			{
+				doneOneElement(builder, CSharpTokens.IDENTIFIER, REFERENCE_EXPRESSION, "Identifier expected");
+			}
+
+			expect(builder, SEMICOLON, "';' expected");
 
 			marker.done(GOTO_STATEMENT);
 		}
 		else if(tokenType == CONTINUE_KEYWORD)
 		{
-			wrapper.advanceLexer();
+			builder.advanceLexer();
 
-			expect(wrapper, SEMICOLON, "';' expected");
+			expect(builder, SEMICOLON, "';' expected");
 
 			marker.done(CONTINUE_STATEMENT);
 		}
 		else if(tokenType == FOR_KEYWORD)
 		{
-			parseForStatement(wrapper, marker, set);
+			parseForStatement(builder, marker, set);
 		}
 		else if(tokenType == DO_KEYWORD)
 		{
-			parseDoWhileStatement(wrapper, marker, set);
+			parseDoWhileStatement(builder, marker, set);
 		}
 		else if(tokenType == RETURN_KEYWORD)
 		{
-			parseReturnStatement(wrapper, marker, set);
+			parseReturnStatement(builder, marker, set);
 		}
 		else if(tokenType == THROW_KEYWORD)
 		{
-			parseThrowStatement(wrapper, marker, set);
+			parseThrowStatement(builder, marker, set);
 		}
 		else if(tokenType == FOREACH_KEYWORD)
 		{
-			parseForeachStatement(wrapper, marker, set);
+			parseForeachStatement(builder, marker, set);
 		}
 		else if(tokenType == YIELD_KEYWORD)
 		{
-			parseYieldStatement(wrapper, marker, set);
+			parseYieldStatement(builder, marker, set);
 		}
 		else if(tokenType == TRY_KEYWORD)
 		{
-			parseTryStatement(wrapper, marker, set);
+			parseTryStatement(builder, marker, set);
 		}
 		else if(tokenType == CATCH_KEYWORD)
 		{
-			parseCatchStatement(wrapper, marker, set);
+			parseCatchStatement(builder, marker, set);
 		}
 		else if(tokenType == FINALLY_KEYWORD)
 		{
-			parseFinallyStatement(wrapper, marker, set);
+			parseFinallyStatement(builder, marker, set);
 		}
 		else if(tokenType == UNSAFE_KEYWORD)
 		{
-			parseUnsafeStatement(wrapper, marker, set);
+			parseUnsafeStatement(builder, marker, set);
 		}
 		else if(tokenType == IF_KEYWORD)
 		{
-			parseIfStatement(wrapper, marker, set);
+			parseIfStatement(builder, marker, set);
 		}
 		else if(tokenType == LBRACE)
 		{
-			parseBlockStatement(wrapper, marker, set);
+			parseBlockStatement(builder, marker, set);
 		}
 		else if(tokenType == WHILE_KEYWORD)
 		{
-			parseStatementWithParenthesesExpression(wrapper, marker, WHILE_STATEMENT, set);
+			parseStatementWithParenthesesExpression(builder, marker, WHILE_STATEMENT, set);
 		}
 		else if(tokenType == CHECKED_KEYWORD || tokenType == UNCHECKED_KEYWORD)
 		{
-			parseCheckedStatement(wrapper, marker, set);
+			parseCheckedStatement(builder, marker, set);
 		}
 		else if(tokenType == USING_KEYWORD)
 		{
-			parseUsingOrFixed(wrapper, marker, USING_STATEMENT, set);
+			parseUsingOrFixed(builder, marker, USING_STATEMENT, set);
 		}
 		else if(tokenType == FIXED_KEYWORD)
 		{
-			parseUsingOrFixed(wrapper, marker, FIXED_STATEMENT, set);
+			parseUsingOrFixed(builder, marker, FIXED_STATEMENT, set);
 		}
-		else if(tokenType == CASE_KEYWORD || tokenType == DEFAULT_KEYWORD && wrapper.lookAhead(1) == COLON)  // accept with colon only,
+		else if(tokenType == CASE_KEYWORD || tokenType == DEFAULT_KEYWORD && builder.lookAhead(1) == COLON)  // accept with colon only,
 		// default can be expression
 		{
-			parseSwitchLabel(wrapper, marker, tokenType == CASE_KEYWORD, set);
+			parseSwitchLabel(builder, marker, tokenType == CASE_KEYWORD, set);
 		}
 		else if(tokenType == SWITCH_KEYWORD)
 		{
-			parseSwitchStatement(wrapper, marker, set);
+			parseSwitchStatement(builder, marker, set);
 		}
 		else if(tokenType == CONST_KEYWORD)
 		{
-			PsiBuilder.Marker varMark = wrapper.mark();
+			PsiBuilder.Marker varMark = builder.mark();
 
-			wrapper.advanceLexer();
+			builder.advanceLexer();
 
-			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(wrapper, varMark, LOCAL_VARIABLE, NONE, true, set);
+			FieldOrPropertyParsing.parseFieldOrLocalVariableAtTypeWithDone(builder, varMark, LOCAL_VARIABLE, NONE, true, set);
 
 			marker.done(LOCAL_VARIABLE_DECLARATION_STATEMENT);
 		}
 		else if(tokenType == SEMICOLON)
 		{
-			wrapper.advanceLexer();
+			builder.advanceLexer();
 			marker.done(EMPTY_STATEMENT);
 		}
 		else
 		{
-			if(tokenType == CSharpTokens.IDENTIFIER && wrapper.lookAhead(1) == COLON)
+			if(tokenType == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == COLON)
 			{
-				parseLabeledStatement(wrapper, marker, set);
+				parseLabeledStatement(builder, marker, set);
 				return marker;
 			}
 
-			if(parseVariableOrExpression(wrapper, marker, set) == null)
+			if(parseVariableOrExpression(builder, marker, set) == null)
 			{
 				return null;
 			}

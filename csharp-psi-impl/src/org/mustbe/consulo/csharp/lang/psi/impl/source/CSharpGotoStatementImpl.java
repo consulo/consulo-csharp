@@ -17,9 +17,14 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
+import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import org.mustbe.consulo.dotnet.psi.DotNetExpression;
 import org.mustbe.consulo.dotnet.psi.DotNetStatement;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.TokenSet;
 
 /**
  * @author VISTALL
@@ -27,9 +32,24 @@ import com.intellij.lang.ASTNode;
  */
 public class CSharpGotoStatementImpl extends CSharpElementImpl implements DotNetStatement
 {
+	private static final TokenSet ourCaseOrDefaultSet = TokenSet.create(CSharpTokens.DEFAULT_KEYWORD, CSharpTokens.CASE_KEYWORD);
+
 	public CSharpGotoStatementImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	@RequiredReadAction
+	public boolean isCaseOrDefault()
+	{
+		return findChildByType(ourCaseOrDefaultSet) != null;
+	}
+
+	@Nullable
+	@RequiredReadAction
+	public DotNetExpression getExpression()
+	{
+		return findChildByClass(DotNetExpression.class);
 	}
 
 	@Override
