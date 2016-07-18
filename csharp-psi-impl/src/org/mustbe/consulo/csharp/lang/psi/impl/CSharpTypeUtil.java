@@ -308,6 +308,16 @@ public class CSharpTypeUtil
 			return isInheritable(((CSharpRefTypeRef) top).getInnerTypeRef(), ((CSharpRefTypeRef) target).getInnerTypeRef(), scope, castType);
 		}
 
+		if(target instanceof CSharpRefTypeRef)
+		{
+			target = ((CSharpRefTypeRef) target).getInnerTypeRef();
+		}
+
+		if(top instanceof CSharpRefTypeRef)
+		{
+			top = ((CSharpRefTypeRef) top).getInnerTypeRef();
+		}
+
 		if(target instanceof DotNetPointerTypeRef || top instanceof DotNetPointerTypeRef)
 		{
 			if(target instanceof DotNetPointerTypeRef && !(top instanceof DotNetPointerTypeRef))
