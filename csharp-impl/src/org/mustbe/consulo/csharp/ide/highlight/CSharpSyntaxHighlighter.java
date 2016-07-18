@@ -67,6 +67,9 @@ public class CSharpSyntaxHighlighter extends SyntaxHighlighterBase
 		safeMap(ourKeys, CSharpTokens.DARROW, CSharpHighlightKey.ARROW);
 		safeMap(ourKeys, CSharpTokens.ARROW, CSharpHighlightKey.ARROW);
 		safeMap(ourKeys, CSharpTokenSets.OVERLOADING_OPERATORS, CSharpHighlightKey.OPERATION_SIGN);
+		safeMap(ourKeys, CSharpTokenSets.ASSIGNMENT_OPERATORS, CSharpHighlightKey.OPERATION_SIGN);
+		safeMap(ourKeys, CSharpTokens.OROR, CSharpHighlightKey.OPERATION_SIGN);
+		safeMap(ourKeys, CSharpTokens.ANDAND, CSharpHighlightKey.OPERATION_SIGN);
 		safeMap(ourKeys, StringEscapesTokenTypes.VALID_STRING_ESCAPE_TOKEN, DefaultLanguageHighlighterColors.VALID_STRING_ESCAPE);
 		safeMap(ourKeys, StringEscapesTokenTypes.INVALID_CHARACTER_ESCAPE_TOKEN, DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE);
 		safeMap(ourKeys, StringEscapesTokenTypes.INVALID_UNICODE_ESCAPE_TOKEN, DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE);

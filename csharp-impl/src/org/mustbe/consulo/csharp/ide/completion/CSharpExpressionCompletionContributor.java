@@ -178,7 +178,7 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 						{
 							String vmQName = ((DotNetTypeDeclaration) element).getVmQName();
 							String keyword = CSharpTypeRefPresentationUtil.ourTypesAsKeywords.get(vmQName);
-							if(keyword != null && CSharpCodeGenerationSettings.getInstance(scope.getProject()).USE_LANGUAGE_DATA_TYPES )
+							if(keyword != null && CSharpCodeGenerationSettings.getInstance(scope.getProject()).USE_LANGUAGE_DATA_TYPES)
 							{
 								return null;
 							}
