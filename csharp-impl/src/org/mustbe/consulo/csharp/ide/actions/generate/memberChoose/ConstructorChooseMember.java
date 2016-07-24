@@ -26,11 +26,14 @@ import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
+import org.mustbe.consulo.dotnet.DotNetTypes;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import com.intellij.codeInsight.generation.ClassMember;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.lombok.annotations.ArrayFactoryFields;
 
@@ -84,17 +87,28 @@ public class ConstructorChooseMember extends CSharpMemberChooseObject<DotNetCons
 
 		if(!targets.isEmpty())
 		{
-			builder.append(" : base(");
-			for(int i = 0; i < parameters.length; i++)
+			boolean needGenerateBase = true;
+			PsiElement parent = myDeclaration.getParent();
+			if(parent instanceof DotNetTypeDeclaration)
 			{
-				if(i != 0)
-				{
-					builder.append(", ");
-				}
-				DotNetParameter parameter = parameters[i];
-				builder.append(parameter.getName());
+				String vmQName = ((DotNetTypeDeclaration) parent).getVmQName();
+				needGenerateBase = !DotNetTypes.System.Object.equals(vmQName);
 			}
-			builder.append(")");
+
+			if(needGenerateBase)
+			{
+				builder.append(" : base(");
+				for(int i = 0; i < parameters.length; i++)
+				{
+					if(i != 0)
+					{
+						builder.append(", ");
+					}
+					DotNetParameter parameter = parameters[i];
+					builder.append(parameter.getName());
+				}
+				builder.append(")");
+			}
 		}
 		builder.append(" {\n");
 		for(CSharpVariableChooseObject additionalParameter : additionalParameters)
