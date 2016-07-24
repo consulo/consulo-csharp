@@ -17,13 +17,19 @@
 package org.mustbe.consulo.csharp.ide.actions.generate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.RequiredDispatchThread;
+import org.mustbe.consulo.RequiredReadAction;
+import org.mustbe.consulo.csharp.ide.actions.generate.memberChoose.CSharpVariableChooseObject;
 import org.mustbe.consulo.csharp.ide.actions.generate.memberChoose.ConstructorChooseMember;
+import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
+import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.AsPsiElementProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
@@ -31,10 +37,12 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.ExecuteTarget;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
+import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
 import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import org.mustbe.consulo.dotnet.psi.DotNetVariable;
 import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.codeInsight.CodeInsightActionHandler;
 import com.intellij.ide.util.MemberChooser;
@@ -49,6 +57,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.codeStyle.CodeStyleManager;
+import com.intellij.util.Function;
+import com.intellij.util.Processor;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
@@ -61,6 +71,8 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 	@Override
 	public void invoke(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file)
 	{
+		PsiDocumentManager.getInstance(project).commitAllDocuments();
+
 		final CSharpTypeDeclaration typeDeclaration = CSharpGenerateAction.findTypeDeclaration(editor, file);
 		if(typeDeclaration == null)
 		{
@@ -80,8 +92,8 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 		}
 
 		AsPsiElementProcessor psiElementProcessor = new AsPsiElementProcessor();
-		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(CSharpResolveOptions.build().element
-				(typeDeclaration), psiElementProcessor, new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
+		MemberResolveScopeProcessor memberResolveScopeProcessor = new MemberResolveScopeProcessor(CSharpResolveOptions.build().element(typeDeclaration), psiElementProcessor,
+				new ExecuteTarget[]{ExecuteTarget.ELEMENT_GROUP});
 
 		ResolveState resolveState = ResolveState.initial();
 		resolveState = resolveState.put(CSharpResolveUtil.SELECTOR, StaticResolveSelectors.CONSTRUCTOR_GROUP);
@@ -125,6 +137,7 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 			{
 				return;
 			}
+
 			for(ConstructorChooseMember selectedElement : selectedElements)
 			{
 				generateConstructor(typeDeclaration, editor, file, selectedElement);
@@ -132,12 +145,61 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 		}
 	}
 
+	@RequiredReadAction
 	private static void generateConstructor(@NotNull final CSharpTypeDeclaration typeDeclaration,
 			@NotNull final Editor editor,
 			@NotNull final PsiFile file,
 			@NotNull ConstructorChooseMember chooseMember)
 	{
-		String text = chooseMember.getText();
+		CSharpResolveContext context = CSharpResolveContextUtil.createContext(DotNetGenericExtractor.EMPTY, typeDeclaration.getResolveScope(), typeDeclaration);
+		final List<DotNetVariable> fieldOrProperties = new ArrayList<DotNetVariable>();
+		context.processElements(new Processor<PsiElement>()
+		{
+			@Override
+			public boolean process(PsiElement psiElement)
+			{
+				if(psiElement instanceof CSharpElementGroup)
+				{
+					((CSharpElementGroup) psiElement).process(this);
+				}
+
+				if(psiElement instanceof CSharpFieldDeclaration || psiElement instanceof CSharpPropertyDeclaration)
+				{
+					fieldOrProperties.add((DotNetVariable) psiElement);
+				}
+				return true;
+			}
+		}, false);
+
+		List<CSharpVariableChooseObject> additionalParameters = Collections.emptyList();
+		if(!fieldOrProperties.isEmpty())
+		{
+			final MemberChooserBuilder<CSharpVariableChooseObject> builder = new MemberChooserBuilder<CSharpVariableChooseObject>(typeDeclaration.getProject());
+			builder.setTitle("Choose Fields or Properties");
+			builder.allowMultiSelection(true);
+			builder.allowEmptySelection(true);
+
+			List<CSharpVariableChooseObject> map = ContainerUtil.map(fieldOrProperties, new Function<DotNetVariable, CSharpVariableChooseObject>()
+			{
+				@Override
+				public CSharpVariableChooseObject fun(DotNetVariable variable)
+				{
+					return new CSharpVariableChooseObject(variable);
+				}
+			});
+
+			MemberChooser<CSharpVariableChooseObject> fieldChooser = builder.createBuilder(ContainerUtil.toArray(map, CSharpVariableChooseObject.ARRAY_FACTORY));
+
+			if(!fieldChooser.showAndGet())
+			{
+				return;
+			}
+
+			additionalParameters = fieldChooser.getSelectedElements();
+			assert additionalParameters != null;
+		}
+
+		String text = chooseMember.getText(additionalParameters);
 		text = text.replace("$NAME$", typeDeclaration.getName());
 
 		final DotNetLikeMethodDeclaration method = CSharpFileFactory.createMethod(typeDeclaration.getProject(), text);
@@ -154,7 +216,7 @@ public class GenerateConstructorHandler implements CodeInsightActionHandler
 				final PsiElement psiElement = typeDeclaration.addAfter(method, elementAt);
 				typeDeclaration.addAfter(PsiParserFacade.SERVICE.getInstance(file.getProject()).createWhiteSpaceFromText("\n"), psiElement);
 
-				PsiDocumentManager.getInstance(getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+				PsiDocumentManager.getInstance(getProject()).commitDocument(editor.getDocument());
 
 				CodeStyleManager.getInstance(getProject()).reformat(psiElement);
 			}
