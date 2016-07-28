@@ -23,6 +23,7 @@ import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOutRefWrapExpressionImpl;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
@@ -41,7 +42,7 @@ public class CS1510 extends CompilerCheck<CSharpOutRefWrapExpressionImpl>
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpOutRefWrapExpressionImpl element)
 	{
 		DotNetExpression innerExpression = element.getInnerExpression();
-		if(innerExpression == null)
+		if(innerExpression == null || innerExpression instanceof CSharpIndexAccessExpressionImpl)
 		{
 			return null;
 		}
