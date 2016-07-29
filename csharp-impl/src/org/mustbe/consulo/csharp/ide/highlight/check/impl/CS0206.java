@@ -21,22 +21,18 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
-import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
-import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOutRefWrapExpressionImpl;
+import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetVariable;
-import com.intellij.psi.PsiElement;
+import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
  * @author VISTALL
- * @since 13-May-16
- *
- * @see CS0206
+ * @since 29-Jul-16
  */
-public class CS1510 extends CompilerCheck<CSharpOutRefWrapExpressionImpl>
+public class CS0206 extends CompilerCheck<CSharpOutRefWrapExpressionImpl>
 {
 	@RequiredReadAction
 	@Nullable
@@ -44,25 +40,15 @@ public class CS1510 extends CompilerCheck<CSharpOutRefWrapExpressionImpl>
 	public HighlightInfoFactory checkImpl(@NotNull CSharpLanguageVersion languageVersion, @NotNull CSharpHighlightContext highlightContext, @NotNull CSharpOutRefWrapExpressionImpl element)
 	{
 		DotNetExpression innerExpression = element.getInnerExpression();
-		if(innerExpression == null || innerExpression instanceof CSharpIndexAccessExpressionImpl)  // ignore index access see CS0206
+		if(innerExpression instanceof CSharpIndexAccessExpressionImpl)
 		{
-			return null;
-		}
+			DotNetExpression qualifier = ((CSharpIndexAccessExpressionImpl) innerExpression).getQualifier();
 
-		if(!(innerExpression instanceof CSharpReferenceExpression))
-		{
-			return newBuilder(innerExpression);
-		}
-
-		PsiElement psiElement = ((CSharpReferenceExpression) innerExpression).resolve();
-		// reference already highlighted by error
-		if(psiElement == null)
-		{
-			return null;
-		}
-		if(!(psiElement instanceof DotNetVariable) || ((DotNetVariable) psiElement).isConstant() || ((DotNetVariable) psiElement).hasModifier(CSharpModifier.READONLY))
-		{
-			return newBuilder(innerExpression);
+			DotNetTypeRef typeRef = qualifier.toTypeRef(true);
+			if(!(typeRef instanceof CSharpArrayTypeRef))
+			{
+				return newBuilder(innerExpression);
+			}
 		}
 		return null;
 	}
