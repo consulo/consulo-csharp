@@ -68,9 +68,13 @@ public class MonoInternalCompilerProvider extends BaseInternalCompilerProvider
 		{
 			builder.setExecutableFromSdk(sdk, "/../../../bin/mcs");
 		}
+		else if(SystemInfo.isFreeBSD)
+		{
+			builder.setExecutable(MonoSdkType.ourDefaultFreeBSDCompilerPath);
+		}
 		else if(SystemInfo.isLinux)
 		{
-			builder.setExecutable(MonoSdkType.LINUX_COMPILER);
+			builder.setExecutable(MonoSdkType.ourDefaultLinuxCompilerPath);
 		}
 	}
 }
