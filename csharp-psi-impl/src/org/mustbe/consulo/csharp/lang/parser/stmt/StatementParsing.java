@@ -563,10 +563,6 @@ public class StatementParsing extends SharedParsingHelpers
 					}
 				}
 			}
-			else
-			{
-				builder.advanceLexer();
-			}
 
 			expect(builder, CSharpTokens.SEMICOLON, "';' expected");
 			ExpressionParsing.parse(builder, modifierSet);
