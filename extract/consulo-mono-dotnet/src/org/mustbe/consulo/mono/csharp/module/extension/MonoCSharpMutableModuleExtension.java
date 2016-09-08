@@ -21,7 +21,7 @@ import javax.swing.JComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.module.extension.CSharpConfigurationPanel;
-import org.mustbe.consulo.csharp.module.extension.CSharpMutableModuleExtension;
+import consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.roots.ModuleRootLayer;
 

@@ -3,7 +3,7 @@ package org.mustbe.consulo.csharp.compiler;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
+import consulo.csharp.module.extension.CSharpModuleExtension;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkTable;
 import com.intellij.openapi.projectRoots.SdkType;

@@ -25,7 +25,7 @@ import org.mustbe.consulo.csharp.ide.highlight.quickFix.RenameQuickFix;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
-import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import com.intellij.openapi.util.Comparing;

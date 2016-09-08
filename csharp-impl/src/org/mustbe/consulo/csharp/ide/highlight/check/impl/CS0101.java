@@ -23,7 +23,7 @@ import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
-import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
 
 /**
  * @author VISTALL

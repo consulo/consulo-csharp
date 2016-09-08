@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.ide.codeInsight.problems;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
-import org.mustbe.consulo.csharp.module.extension.CSharpSimpleModuleExtension;
+import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.msil.representation.MsilFileRepresentationVirtualFile;

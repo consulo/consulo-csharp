@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.compiler;
+package consulo.csharp;
+
+import consulo.lombok.annotations.Bundle;
 
 /**
  * @author VISTALL
- * @since 05.08.14
+ * @since 15.05.14
  */
-public enum CSharpPlatform
+@Bundle
+public class CSharpBundle
 {
-	ANY_CPU,
-	ANY_CPU_32BIT_PREFERRED,
-	ARM,
-	X86,
-	X64,
-	ITANIUM
 }

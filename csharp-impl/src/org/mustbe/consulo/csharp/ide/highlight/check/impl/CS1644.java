@@ -34,9 +34,9 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDictionaryInitialize
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFinallyStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpGenericParameterListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
-import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import org.mustbe.consulo.csharp.module.extension.CSharpMutableModuleExtension;
-import org.mustbe.consulo.csharp.module.extension.CSharpSimpleModuleExtension;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.csharp.module.extension.CSharpMutableModuleExtension;
+import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetParameter;

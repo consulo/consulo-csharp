@@ -26,7 +26,7 @@ import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameterList;
-import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.psi.DotNetVariable;

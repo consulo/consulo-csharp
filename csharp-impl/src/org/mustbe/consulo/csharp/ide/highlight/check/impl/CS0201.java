@@ -30,7 +30,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpExpressionWithOperat
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPostfixExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPrefixExpressionImpl;
-import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetExpression;
 import com.intellij.psi.tree.IElementType;
 

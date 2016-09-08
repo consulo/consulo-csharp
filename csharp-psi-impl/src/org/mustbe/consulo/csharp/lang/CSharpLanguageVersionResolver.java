@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.lang;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.module.extension.CSharpSimpleModuleExtension;
+import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import com.intellij.lang.Language;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;

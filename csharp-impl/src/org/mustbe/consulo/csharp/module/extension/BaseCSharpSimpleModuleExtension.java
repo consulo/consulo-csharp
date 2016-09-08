@@ -8,6 +8,8 @@ import org.mustbe.consulo.csharp.module.CSharpLanguageVersionPointer;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import consulo.dotnet.compiler.DotNetCompileFailedException;
 import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import consulo.dotnet.module.extension.DotNetModuleLangExtension;
@@ -18,8 +20,7 @@ import consulo.roots.ModuleRootLayer;
  * @author VISTALL
  * @since 07.06.2015
  */
-public class BaseCSharpSimpleModuleExtension<T extends BaseCSharpSimpleModuleExtension<T>> extends ModuleExtensionImpl<T> implements
-		CSharpSimpleModuleExtension<T>, DotNetModuleLangExtension<T>
+public class BaseCSharpSimpleModuleExtension<T extends BaseCSharpSimpleModuleExtension<T>> extends ModuleExtensionImpl<T> implements CSharpSimpleModuleExtension<T>, DotNetModuleLangExtension<T>
 {
 	protected final CSharpLanguageVersionPointer myLanguageVersionPointer;
 	protected boolean myAllowUnsafeCode;

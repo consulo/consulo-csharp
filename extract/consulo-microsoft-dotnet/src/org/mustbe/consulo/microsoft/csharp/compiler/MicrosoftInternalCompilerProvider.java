@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.compiler.BaseInternalCompilerProvider;
 import org.mustbe.consulo.csharp.compiler.CSharpCompilerUtil;
 import org.mustbe.consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
-import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
+import consulo.csharp.module.extension.CSharpModuleExtension;
 import com.intellij.openapi.vfs.VirtualFile;
 import consulo.dotnet.compiler.DotNetCompileFailedException;
 import consulo.dotnet.module.extension.DotNetModuleExtension;

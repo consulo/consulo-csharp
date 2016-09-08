@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.compiler.CSharpCompilerProvider;
 import org.mustbe.consulo.csharp.compiler.CSharpCompilerUtil;
 import org.mustbe.consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
-import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
+import consulo.csharp.module.extension.CSharpModuleExtension;
 import consulo.dotnet.compiler.DotNetCompileFailedException;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;

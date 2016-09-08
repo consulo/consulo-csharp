@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.module.extension;
+package consulo.csharp.module.extension;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.compiler.CSharpPlatform;
+import consulo.csharp.compiler.CSharpPlatform;
 import com.intellij.openapi.projectRoots.Sdk;
 import consulo.module.extension.MutableModuleExtension;
 import consulo.module.extension.MutableModuleInheritableNamedPointer;

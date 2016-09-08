@@ -16,7 +16,7 @@
 
 package org.musbe.consulo.csharp.parsing;
 
-import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
 
 /**
  * @author VISTALL

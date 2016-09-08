@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 
 import org.mustbe.consulo.csharp.compiler.CSharpCompilerProvider;
-import org.mustbe.consulo.csharp.compiler.CSharpPlatform;
+import consulo.csharp.compiler.CSharpPlatform;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -35,6 +35,9 @@ import com.intellij.ui.TextFieldWithHistory;
 import com.intellij.ui.TitledSeparator;
 import com.intellij.ui.components.JBCheckBox;
 import consulo.annotations.RequiredDispatchThread;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.csharp.module.extension.CSharpModuleExtension;
+import consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.module.extension.MutableModuleInheritableNamedPointer;
 import consulo.roots.ui.configuration.SdkComboBox;

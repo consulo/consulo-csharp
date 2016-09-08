@@ -22,6 +22,7 @@ import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import consulo.bundle.SdkUtil;
+import consulo.csharp.module.extension.CSharpModuleExtension;
 import consulo.module.extension.impl.ModuleInheritableNamedPointerImpl;
 import consulo.util.pointers.NamedPointer;
 

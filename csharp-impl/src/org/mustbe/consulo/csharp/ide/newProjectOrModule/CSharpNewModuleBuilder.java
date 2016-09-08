@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.CSharpIcons;
-import org.mustbe.consulo.csharp.module.extension.CSharpMutableModuleExtension;
+import consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.fileEditor.ex.FileEditorManagerEx;
 import com.intellij.openapi.project.DumbService;

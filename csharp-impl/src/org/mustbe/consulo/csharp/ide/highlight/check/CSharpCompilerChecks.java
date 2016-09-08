@@ -23,7 +23,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
-import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.psi.PsiElement;
 

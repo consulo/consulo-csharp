@@ -1,4 +1,4 @@
-package org.mustbe.consulo.csharp.module.extension;
+package consulo.csharp.module.extension;
 
 import org.jetbrains.annotations.NotNull;
 import consulo.module.extension.ModuleExtension;

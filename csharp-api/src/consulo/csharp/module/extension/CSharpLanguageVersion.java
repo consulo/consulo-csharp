@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.mustbe.consulo.csharp.module.extension;
+package consulo.csharp.module.extension;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.CSharpBundle;
+import consulo.csharp.CSharpBundle;
 import consulo.util.pointers.Named;
 import consulo.util.pointers.NamedPointer;
 

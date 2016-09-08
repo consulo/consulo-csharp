@@ -20,7 +20,7 @@ import java.io.File;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.module.extension.CSharpSimpleMutableModuleExtension;
+import consulo.csharp.module.extension.CSharpSimpleMutableModuleExtension;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ContentEntry;

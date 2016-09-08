@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.lang;
 
 import consulo.lombok.annotations.ApplicationService;
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.lang.LanguageVersion;
 
 /**

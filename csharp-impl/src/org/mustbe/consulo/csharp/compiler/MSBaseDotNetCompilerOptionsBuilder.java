@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 import consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
+import consulo.csharp.module.extension.CSharpModuleExtension;
 import consulo.dotnet.DotNetTarget;
 import consulo.dotnet.compiler.DotNetCompileFailedException;
 import consulo.dotnet.compiler.DotNetCompilerMessage;

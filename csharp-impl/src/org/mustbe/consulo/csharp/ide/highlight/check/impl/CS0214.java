@@ -30,7 +30,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFixedStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPrefixExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUnsafeStatementImpl;
-import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetPointerType;
