@@ -3,7 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.light;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetExpression;
 import com.intellij.psi.impl.light.LightElement;
 
 /**

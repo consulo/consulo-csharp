@@ -17,9 +17,9 @@
 package org.mustbe.consulo.csharp.ide.actions.generate.memberChoose;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.dotnet.ide.DotNetElementPresentationUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.ide.DotNetElementPresentationUtil;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
 
 /**
  * @author VISTALL

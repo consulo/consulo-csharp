@@ -2,15 +2,15 @@ package org.mustbe.consulo.csharp.compiler;
 
 import java.util.List;
 
-import org.consulo.module.extension.ModuleInheritableNamedPointer;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
-import org.mustbe.consulo.dotnet.compiler.DotNetCompileFailedException;
-import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkTable;
 import com.intellij.openapi.projectRoots.SdkType;
 import com.intellij.openapi.vfs.VirtualFile;
+import consulo.dotnet.compiler.DotNetCompileFailedException;
+import consulo.dotnet.module.extension.DotNetModuleExtension;
+import consulo.module.extension.ModuleInheritableNamedPointer;
 
 /**
  * @author VISTALL

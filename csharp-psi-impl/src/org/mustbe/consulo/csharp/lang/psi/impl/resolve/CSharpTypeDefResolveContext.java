@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContextAdapter;
 import com.intellij.openapi.util.UserDataHolder;

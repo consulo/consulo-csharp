@@ -23,18 +23,12 @@ import java.util.Set;
 
 import javax.swing.Icon;
 
-import org.consulo.psi.PsiPackage;
-import org.consulo.psi.PsiPackageManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredDispatchThread;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.module.extension.CSharpSimpleModuleExtension;
-import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import com.intellij.icons.AllIcons;
-import com.intellij.ide.IconDescriptor;
 import com.intellij.ide.IdeView;
 import com.intellij.ide.actions.CreateFileFromTemplateDialog;
 import com.intellij.ide.actions.CreateFromTemplateAction;
@@ -53,6 +47,12 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileVisitor;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
+import consulo.annotations.RequiredDispatchThread;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.module.extension.DotNetModuleExtension;
+import consulo.ide.IconDescriptor;
+import consulo.psi.PsiPackage;
+import consulo.psi.PsiPackageManager;
 
 /**
  * @author VISTALL

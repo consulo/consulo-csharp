@@ -30,17 +30,17 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.injection.CSharpForInjecti
 import org.mustbe.consulo.csharp.lang.psi.impl.source.injection.CSharpInjectExpressionElementType;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
-import com.intellij.lang.LanguageVersion;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilderFactory;
 import com.intellij.lang.PsiParser;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.tree.LazyParseableElement;
-import com.intellij.psi.tree.ElementTypeAsPsiFactory;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.ILazyParseableElementType;
 import com.intellij.psi.tree.TokenSet;
+import consulo.lang.LanguageVersion;
+import consulo.psi.tree.ElementTypeAsPsiFactory;
 
 /**
  * @author VISTALL

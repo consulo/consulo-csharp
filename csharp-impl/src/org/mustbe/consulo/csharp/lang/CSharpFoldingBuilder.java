@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.parser.preprocessor.EndRegionPreprocessorDirective;
 import org.mustbe.consulo.csharp.lang.parser.preprocessor.PreprocessorDirective;
 import org.mustbe.consulo.csharp.lang.parser.preprocessor.PreprocessorParser;
@@ -39,7 +39,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import com.intellij.codeInsight.folding.CodeFoldingSettings;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.CustomFoldingBuilder;

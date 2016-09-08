@@ -6,12 +6,12 @@ import org.mustbe.consulo.csharp.compiler.CSharpCompilerProvider;
 import org.mustbe.consulo.csharp.compiler.CSharpCompilerUtil;
 import org.mustbe.consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
-import org.mustbe.consulo.dotnet.compiler.DotNetCompileFailedException;
-import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
-import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
-import org.mustbe.consulo.msbuild.bundle.MSBuildBundleType;
 import com.intellij.openapi.projectRoots.SdkType;
 import com.intellij.openapi.vfs.VirtualFile;
+import consulo.dotnet.compiler.DotNetCompileFailedException;
+import consulo.dotnet.module.extension.DotNetModuleExtension;
+import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
+import consulo.msbuild.bundle.MSBuildBundleType;
 
 /**
  * @author VISTALL

@@ -17,8 +17,8 @@
 package org.musbe.consulo.csharp;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import consulo.testFramework.OneFileAtProjectTestCase;

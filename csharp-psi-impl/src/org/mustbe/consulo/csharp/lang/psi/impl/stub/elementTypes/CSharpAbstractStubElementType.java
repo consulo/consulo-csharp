@@ -19,7 +19,6 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpIdentifierStub;
@@ -27,7 +26,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.IndexSink;
 import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.tree.IElementTypeAsPsiFactory;
+import consulo.annotations.RequiredReadAction;
+import consulo.psi.tree.IElementTypeAsPsiFactory;
 
 /**
  * @author VISTALL

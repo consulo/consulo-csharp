@@ -18,19 +18,10 @@ package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredDispatchThread;
-import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.RequiredWriteAction;
 import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import org.mustbe.consulo.dotnet.DotNetRunUtil;
-import org.mustbe.consulo.dotnet.DotNetTarget;
-import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
-import org.mustbe.consulo.dotnet.module.extension.DotNetMutableModuleExtension;
-import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -39,6 +30,15 @@ import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
+import consulo.annotations.RequiredDispatchThread;
+import consulo.annotations.RequiredReadAction;
+import consulo.annotations.RequiredWriteAction;
+import consulo.dotnet.DotNetRunUtil;
+import consulo.dotnet.DotNetTarget;
+import consulo.dotnet.module.extension.DotNetModuleExtension;
+import consulo.dotnet.module.extension.DotNetMutableModuleExtension;
+import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
 
 /**
  * @author VISTALL

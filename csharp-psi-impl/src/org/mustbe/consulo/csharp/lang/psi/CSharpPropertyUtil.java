@@ -17,10 +17,10 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.psi.PsiElement;
 
 /**

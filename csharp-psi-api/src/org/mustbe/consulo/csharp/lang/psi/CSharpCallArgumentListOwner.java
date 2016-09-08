@@ -18,8 +18,9 @@ package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.DeprecationInfo;
-import org.mustbe.consulo.dotnet.psi.DotNetCallArgumentListOwner;
+import consulo.annotations.DeprecationInfo;
+import consulo.dotnet.psi.DotNetCallArgumentListOwner;
+import consulo.dotnet.psi.DotNetExpression;
 
 /**
  * @author VISTALL
@@ -33,7 +34,7 @@ public interface CSharpCallArgumentListOwner extends DotNetCallArgumentListOwner
 	@NotNull
 	@Deprecated
 	@DeprecationInfo("Use #getCallArguments() due we can have named arguments")
-	org.mustbe.consulo.dotnet.psi.DotNetExpression[] getParameterExpressions();
+	DotNetExpression[] getParameterExpressions();
 
 	@NotNull
 	CSharpCallArgument[] getCallArguments();

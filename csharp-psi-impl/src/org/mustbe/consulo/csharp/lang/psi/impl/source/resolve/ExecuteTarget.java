@@ -5,10 +5,10 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
-import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import consulo.dotnet.psi.DotNetGenericParameter;
+import consulo.dotnet.psi.DotNetParameter;
+import consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.psi.PsiElement;
 
 /**

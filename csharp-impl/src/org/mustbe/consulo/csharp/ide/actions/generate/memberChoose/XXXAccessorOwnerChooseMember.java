@@ -19,15 +19,15 @@ package org.mustbe.consulo.csharp.ide.actions.generate.memberChoose;
 import java.util.Locale;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredDispatchThread;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredDispatchThread;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpXXXAccessorOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.DotNetPropertyDeclaration;
+import consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.PairConsumer;
 

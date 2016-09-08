@@ -17,12 +17,12 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.dotnet.lang.psi.impl.DotNetPsiCountUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetType;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.lang.psi.impl.DotNetPsiCountUtil;
+import consulo.dotnet.psi.DotNetType;
+import consulo.dotnet.psi.DotNetTypeList;
+import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 
 /**

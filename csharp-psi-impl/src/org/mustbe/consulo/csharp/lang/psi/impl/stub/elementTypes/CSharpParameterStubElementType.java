@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubParameterImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import consulo.dotnet.psi.DotNetParameter;
 import com.intellij.lang.ASTNode;
 
 /**

@@ -18,8 +18,8 @@ package org.mustbe.consulo.csharp.ide.navigation;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.CSharpTransform;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.search.searches.TypeInheritorsSearch;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.search.searches.TypeInheritorsSearch;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.searches.DefinitionsScopedSearch;
 import com.intellij.util.Processor;

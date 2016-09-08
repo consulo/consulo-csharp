@@ -20,14 +20,9 @@ import static com.intellij.patterns.StandardPatterns.psiElement;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.RequiredWriteAction;
-import org.mustbe.consulo.codeInsight.completion.CompletionProvider;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpXXXAccessorOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
-import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -48,6 +43,11 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
+import consulo.annotations.RequiredReadAction;
+import consulo.annotations.RequiredWriteAction;
+import consulo.codeInsight.completion.CompletionProvider;
+import consulo.dotnet.psi.DotNetModifier;
+import consulo.dotnet.psi.DotNetXXXAccessor;
 
 /**
  * @author VISTALL
@@ -61,7 +61,7 @@ public class CSharpAccessorCompletionContributor extends CompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			protected void addCompletions(@NotNull CompletionParameters completionParameters, ProcessingContext processingContext, @NotNull CompletionResultSet resultSet)
+			public void addCompletions(@NotNull CompletionParameters completionParameters, ProcessingContext processingContext, @NotNull CompletionResultSet resultSet)
 			{
 				PsiElement position = completionParameters.getPosition();
 				final CSharpXXXAccessorOwner accessorOwner = PsiTreeUtil.getParentOfType(position, CSharpXXXAccessorOwner.class);

@@ -22,24 +22,24 @@ import java.util.Locale;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
-import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.psi.*;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefUtil;
-import org.mustbe.consulo.msil.lang.psi.MsilConstantValue;
-import org.mustbe.consulo.msil.lang.psi.MsilCustomAttribute;
-import org.mustbe.dotnet.msil.decompiler.textBuilder.block.LineStubBlock;
-import org.mustbe.dotnet.msil.decompiler.textBuilder.block.StubBlock;
-import org.mustbe.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.PairFunction;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.DotNetTypes;
+import consulo.dotnet.psi.*;
+import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.resolve.DotNetTypeRefUtil;
+import consulo.internal.dotnet.msil.decompiler.textBuilder.block.LineStubBlock;
+import consulo.internal.dotnet.msil.decompiler.textBuilder.block.StubBlock;
+import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
+import consulo.msil.lang.psi.MsilConstantValue;
+import consulo.msil.lang.psi.MsilCustomAttribute;
 
 /**
  * @author VISTALL

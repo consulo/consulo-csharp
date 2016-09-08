@@ -19,22 +19,22 @@ package org.mustbe.consulo.csharp.ide.actions.internal;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.ide.msil.representation.builder.CSharpStubBuilderVisitor;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetVariable;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
-import org.mustbe.dotnet.msil.decompiler.textBuilder.block.StubBlock;
-import org.mustbe.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 import com.intellij.ide.actions.OpenFileAction;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.psi.PsiElement;
 import com.intellij.testFramework.LightVirtualFile;
+import consulo.annotations.RequiredDispatchThread;
+import consulo.dotnet.psi.DotNetNamedElement;
+import consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import consulo.internal.dotnet.msil.decompiler.textBuilder.block.StubBlock;
+import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 
 /**
  * @author VISTALL

@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.ide.findUsage.referenceSearch;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import consulo.dotnet.psi.DotNetNamedElement;
 import com.intellij.openapi.application.QueryExecutorBase;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;

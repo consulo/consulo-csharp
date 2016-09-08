@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
+import consulo.dotnet.psi.DotNetMemberOwner;
 
 /**
 * @author VISTALL

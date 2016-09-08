@@ -25,8 +25,6 @@ import javax.swing.JPanel;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.dotnet.DotNetTarget;
-import org.mustbe.consulo.module.extension.ModuleExtensionProviderEP;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkTable;
 import com.intellij.openapi.projectRoots.SdkTypeId;
@@ -36,6 +34,8 @@ import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.ui.ColoredListCellRendererWrapper;
 import com.intellij.util.SmartList;
+import consulo.dotnet.DotNetTarget;
+import consulo.module.extension.ModuleExtensionProviderEP;
 
 /**
  * @author VISTALL

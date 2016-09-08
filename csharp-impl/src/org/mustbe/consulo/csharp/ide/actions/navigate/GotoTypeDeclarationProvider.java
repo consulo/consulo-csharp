@@ -18,13 +18,13 @@ package org.mustbe.consulo.csharp.ide.actions.navigate;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetVariable;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.navigation.actions.TypeDeclarationProvider;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;

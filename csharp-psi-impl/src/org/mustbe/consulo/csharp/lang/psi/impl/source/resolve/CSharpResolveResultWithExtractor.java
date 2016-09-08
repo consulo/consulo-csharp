@@ -1,7 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 

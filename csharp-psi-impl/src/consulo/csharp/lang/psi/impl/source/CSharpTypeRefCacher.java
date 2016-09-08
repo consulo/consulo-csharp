@@ -17,9 +17,9 @@
 package consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.dotnet.lang.psi.impl.DotNetTypeRefCacheUtil;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.lang.psi.impl.DotNetTypeRefCacheUtil;
+import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.CachedValue;

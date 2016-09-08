@@ -19,21 +19,13 @@ package org.mustbe.consulo.csharp.lang;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilElementWrapper;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAnonymousMethodExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
-import org.mustbe.consulo.dotnet.DotNetRunUtil;
-import org.mustbe.consulo.dotnet.module.DotNetModuleUtil;
-import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
-import org.mustbe.consulo.dotnet.psi.*;
-import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.icons.AllIcons;
-import com.intellij.ide.IconDescriptor;
-import com.intellij.ide.IconDescriptorUpdater;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.roots.ProjectFileIndex;
@@ -44,6 +36,14 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.BitUtil;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.DotNetRunUtil;
+import consulo.dotnet.module.DotNetModuleUtil;
+import consulo.dotnet.module.extension.DotNetModuleExtension;
+import consulo.dotnet.psi.*;
+import consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import consulo.ide.IconDescriptor;
+import consulo.ide.IconDescriptorUpdater;
 
 /**
  * @author VISTALL

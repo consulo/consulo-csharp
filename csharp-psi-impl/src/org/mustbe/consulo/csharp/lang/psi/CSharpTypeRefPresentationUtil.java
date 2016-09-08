@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import org.mustbe.consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
@@ -30,20 +29,21 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTyp
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpStaticTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromGenericParameter;
-import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
-import org.mustbe.consulo.dotnet.resolve.DotNetPointerTypeRef;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
-import org.mustbe.consulo.msil.lang.psi.impl.type.MsilTypeResolveResult;
-import org.mustbe.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.BitUtil;
 import com.intellij.util.PairFunction;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpDynamicTypeRef;
+import consulo.dotnet.DotNetTypes;
+import consulo.dotnet.psi.DotNetGenericParameter;
+import consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.dotnet.resolve.DotNetGenericExtractor;
+import consulo.dotnet.resolve.DotNetPointerTypeRef;
+import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
+import consulo.msil.lang.psi.impl.type.MsilTypeResolveResult;
 
 /**
  * @author VISTALL

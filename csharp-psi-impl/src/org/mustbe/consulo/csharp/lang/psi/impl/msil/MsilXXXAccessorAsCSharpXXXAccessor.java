@@ -19,14 +19,14 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
-import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
-import org.mustbe.consulo.msil.lang.psi.MsilMethodEntry;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.psi.DotNetModifier;
+import consulo.dotnet.psi.DotNetModifierList;
+import consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.msil.lang.psi.MsilMethodEntry;
 
 /**
  * @author VISTALL

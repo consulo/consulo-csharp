@@ -16,10 +16,10 @@
 package org.mustbe.consulo.csharp.ide.completion.util;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredDispatchThread;
+import consulo.annotations.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.ide.parameterInfo.CSharpParameterInfoHandler;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
+import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import consulo.dotnet.psi.DotNetParameterList;
 import com.intellij.codeInsight.AutoPopupController;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;

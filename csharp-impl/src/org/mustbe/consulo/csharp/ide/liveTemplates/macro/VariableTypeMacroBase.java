@@ -18,9 +18,9 @@ package org.mustbe.consulo.csharp.ide.liveTemplates.macro;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpLookupElementBuilder;
-import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.psi.DotNetVariable;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.template.Expression;
 import com.intellij.codeInsight.template.ExpressionContext;

@@ -17,12 +17,12 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.DeprecationInfo;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.ToNativeElementTransformers;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.NotNullFunction;
+import consulo.annotations.DeprecationInfo;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
 
 /**
  * @author VISTALL

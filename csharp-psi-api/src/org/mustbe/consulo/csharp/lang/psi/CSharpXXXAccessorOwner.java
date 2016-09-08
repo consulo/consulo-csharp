@@ -17,9 +17,9 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.dotnet.psi.DotNetElement;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.DotNetElement;
+import consulo.dotnet.psi.DotNetModifierListOwner;
+import consulo.dotnet.psi.DotNetXXXAccessor;
 import consulo.dotnet.psi.DotNetAccessorOwner;
 
 /**

@@ -2,7 +2,7 @@ package org.mustbe.consulo.csharp.ide.findUsage.groupingRule;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.dotnet.psi.DotNetCodeBlockOwner;
+import consulo.dotnet.psi.DotNetCodeBlockOwner;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;

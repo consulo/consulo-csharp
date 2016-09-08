@@ -19,10 +19,10 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.dotnet.lang.psi.impl.DotNetPsiCountUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.lang.psi.impl.DotNetPsiCountUtil;
+import consulo.dotnet.psi.DotNetParameter;
+import consulo.dotnet.psi.DotNetParameterList;
+import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.EmptyStub;
 

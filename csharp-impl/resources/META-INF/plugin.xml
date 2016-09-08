@@ -21,12 +21,12 @@
 	<version>SNAPSHOT</version>
 	<vendor>Must-Be.org</vendor>
 	<resource-bundle>messages.CSharpBundle</resource-bundle>
-	<depends>org.mustbe.consulo.dotnet.core</depends>
+	<depends>consulo.dotnet</depends>
 	<depends>com.intellij.xml</depends>
 	<depends config-file="CSharpSpellchecker.xml" optional="true">com.intellij.spellchecker</depends>
-	<depends config-file="MSBuild.xml" optional="true">org.mustbe.consulo.msbuild</depends>
-	<depends config-file="microsoft-csharp.xml" optional="true">org.mustbe.consulo.dotnet.microsoft</depends>
-	<depends config-file="mono-csharp.xml" optional="true">org.mustbe.consulo.dotnet.mono</depends>
+	<depends config-file="MSBuild.xml" optional="true">consulo.msbuild</depends>
+	<depends config-file="microsoft-csharp.xml" optional="true">consulo.dotnet.microsoft</depends>
+	<depends config-file="mono-csharp.xml" optional="true">consulo.dotnet.mono</depends>
 
 	<xi:include href="/META-INF/CSharpInspections.xml" xpointer="xpointer(/idea-plugin/*)">
 		<xi:fallback/>
@@ -91,7 +91,7 @@
 		<debuggerProvider implementation="org.mustbe.consulo.csharp.ide.debugger.CSharpDebuggerProvider"/>
 	</extensions>
 
-	<extensions defaultExtensionNs="org.mustbe.consulo.dotnet.core">
+	<extensions defaultExtensionNs="consulo.dotnet">
 		<allTypesSearch implementation="org.mustbe.consulo.csharp.lang.psi.impl.search.CSharpAllTypesSearchExecutor"/>
 		<directTypeInheritorsSearch implementation="org.mustbe.consulo.csharp.lang.psi.impl.search.CSharpDirectTypeInheritorsSearcherExecutor"/>
 		<psiSearcher implementation="org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher"/>
@@ -114,8 +114,6 @@
 		<internalFileTemplate name="CSharpAssemblyFile"/>
 
 		<createFromTemplateHandler implementation="org.mustbe.consulo.csharp.ide.actions.CSharpCreateFromTemplateHandler"/>
-
-		<errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
 
 		<additionalTextAttributes scheme="Darcula" file="/colorScheme/CSharpDarcula.xml"/>
 		<additionalTextAttributes scheme="Default" file="/colorScheme/CSharpDefault.xml"/>

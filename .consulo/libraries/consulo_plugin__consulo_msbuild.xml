@@ -1,0 +1,7 @@
+<component name="libraryTable">
+  <library name="consulo-plugin: consulo.msbuild">
+    <binaries>
+      <root url="jar://$PROJECT_DIR$/dep/consulo.msbuild/lib/msbuild.jar!/" />
+    </binaries>
+  </library>
+</component>

@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
+import consulo.dotnet.psi.DotNetGenericParameter;
 import com.intellij.psi.stubs.StubElement;
 
 /**

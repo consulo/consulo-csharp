@@ -20,14 +20,14 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.compiler.CSharpCompilerUtil;
 import org.mustbe.consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.csharp.module.extension.BaseCSharpModuleExtension;
-import org.mustbe.consulo.dotnet.compiler.DotNetCompileFailedException;
-import org.mustbe.consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
-import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
-import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
-import org.mustbe.consulo.mono.dotnet.sdk.MonoSdkType;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.ModuleRootLayer;
 import com.intellij.openapi.vfs.VirtualFile;
+import consulo.dotnet.compiler.DotNetCompileFailedException;
+import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
+import consulo.dotnet.module.extension.DotNetModuleExtension;
+import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
+import consulo.mono.dotnet.sdk.MonoSdkType;
+import consulo.roots.ModuleRootLayer;
 
 /**
  * @author VISTALL

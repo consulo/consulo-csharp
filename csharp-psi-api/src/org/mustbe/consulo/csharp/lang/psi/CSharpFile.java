@@ -1,8 +1,8 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.dotnet.psi.DotNetFile;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.dotnet.psi.DotNetFile;
+import consulo.dotnet.psi.DotNetQualifiedElement;
 
 /**
  * @author VISTALL

@@ -20,10 +20,7 @@ import java.util.Set;
 
 import javax.swing.Icon;
 
-import consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredDispatchThread;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.CSharpCodeInsightSettings;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCodeFragment;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
@@ -31,9 +28,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
-import org.mustbe.consulo.dotnet.DotNetBundle;
 import org.mustbe.consulo.dotnet.libraryAnalyzer.NamespaceReference;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.codeInsight.actions.OptimizeImportsProcessor;
 import com.intellij.codeInsight.hint.QuestionAction;
 import com.intellij.icons.AllIcons;
@@ -49,7 +44,6 @@ import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.impl.ModuleRootLayerImpl;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
@@ -60,7 +54,13 @@ import com.intellij.psi.PsiParserFacade;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.annotations.RequiredDispatchThread;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.DotNetBundle;
+import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.roots.orderEntry.DotNetLibraryOrderEntryImpl;
+import consulo.lombok.annotations.Logger;
+import consulo.roots.impl.ModuleRootLayerImpl;
 
 /**
  * @author VISTALL

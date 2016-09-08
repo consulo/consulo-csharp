@@ -24,11 +24,11 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpAsExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBinaryExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeCastExpressionImpl;
-import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetVariable;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.DotNetTypes;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 
 /**

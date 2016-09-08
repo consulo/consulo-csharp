@@ -20,11 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
-import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import consulo.dotnet.psi.DotNetFieldDeclaration;
+import consulo.dotnet.psi.DotNetNamedElement;
 import com.intellij.codeInsight.CodeInsightActionHandler;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;

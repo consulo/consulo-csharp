@@ -17,12 +17,12 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubParameterImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubVariableImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubVariableImplUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.CSharpAbstractStubElementType;
-import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.psi.DotNetVariable;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.BitUtil;
 import com.intellij.util.io.StringRef;

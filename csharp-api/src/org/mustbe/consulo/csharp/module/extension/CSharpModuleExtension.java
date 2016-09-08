@@ -16,14 +16,14 @@
 
 package org.mustbe.consulo.csharp.module.extension;
 
-import org.consulo.module.extension.ModuleExtension;
-import org.consulo.module.extension.ModuleInheritableNamedPointer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.compiler.CSharpPlatform;
-import org.mustbe.consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
+import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
+import consulo.module.extension.ModuleExtension;
+import consulo.module.extension.ModuleInheritableNamedPointer;
 
 /**
  * @author VISTALL

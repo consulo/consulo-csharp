@@ -1,9 +1,9 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.resolve;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.dotnet.psi.DotNetElement;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.psi.DotNetElement;
+import consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.Consumer;

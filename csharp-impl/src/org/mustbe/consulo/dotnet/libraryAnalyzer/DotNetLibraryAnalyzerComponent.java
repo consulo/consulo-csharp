@@ -22,15 +22,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-import org.consulo.ide.eap.EarlyAccessProgramDescriptor;
-import org.consulo.ide.eap.EarlyAccessProgramManager;
-import org.consulo.module.extension.ModuleExtension;
-import org.consulo.module.extension.ModuleExtensionChangeListener;
 import org.jboss.netty.util.internal.ConcurrentWeakKeyHashMap;
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.dotnet.module.extension.DotNetLibraryOpenCache;
-import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
-import org.mustbe.dotnet.msil.decompiler.util.MsilHelper;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.module.Module;
@@ -41,13 +34,20 @@ import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.DumbModeAction;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.types.BinariesOrderRootType;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.PathUtil;
 import com.intellij.util.containers.MultiMap;
 import com.intellij.util.messages.MessageBusConnection;
-import edu.arizona.cs.mbel.mbel.TypeDef;
-import edu.arizona.cs.mbel.parse.MSILParseException;
+import consulo.dotnet.module.extension.DotNetLibraryOpenCache;
+import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
+import consulo.ide.eap.EarlyAccessProgramDescriptor;
+import consulo.ide.eap.EarlyAccessProgramManager;
+import consulo.internal.dotnet.asm.mbel.TypeDef;
+import consulo.internal.dotnet.asm.parse.MSILParseException;
+import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
+import consulo.module.extension.ModuleExtension;
+import consulo.module.extension.ModuleExtensionChangeListener;
+import consulo.roots.types.BinariesOrderRootType;
 
 /**
  * @author VISTALL

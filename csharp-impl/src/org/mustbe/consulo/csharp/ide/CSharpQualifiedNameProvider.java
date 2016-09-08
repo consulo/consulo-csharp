@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.ide;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.ide.actions.QualifiedNameProvider;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;

@@ -20,9 +20,9 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredDispatchThread;
+import consulo.annotations.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.ide.lineMarkerProvider.CSharpLineMarkerUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.psi.DotNetVariable;
 import com.intellij.codeInsight.template.Expression;
 import com.intellij.codeInsight.template.ExpressionContext;
 import com.intellij.codeInsight.template.Macro;

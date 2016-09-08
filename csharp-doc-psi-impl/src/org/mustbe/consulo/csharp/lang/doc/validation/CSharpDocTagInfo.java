@@ -20,9 +20,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.consulo.annotations.Immutable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import consulo.annotations.Immutable;
 
 /**
  * @author VISTALL

@@ -19,9 +19,9 @@ package org.mustbe.consulo.csharp.ide.refactoring.extractMethod;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.DeprecationInfo;
-import org.mustbe.dotnet.msil.decompiler.textBuilder.block.LineStubBlock;
-import org.mustbe.dotnet.msil.decompiler.textBuilder.block.StubBlock;
+import consulo.annotations.DeprecationInfo;
+import consulo.internal.dotnet.msil.decompiler.textBuilder.block.LineStubBlock;
+import consulo.internal.dotnet.msil.decompiler.textBuilder.block.StubBlock;
 
 /**
  * @author VISTALL

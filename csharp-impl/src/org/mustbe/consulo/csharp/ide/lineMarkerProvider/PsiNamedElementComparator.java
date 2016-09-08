@@ -2,7 +2,7 @@ package org.mustbe.consulo.csharp.ide.lineMarkerProvider;
 
 import java.util.Comparator;
 
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiNamedElement;
 

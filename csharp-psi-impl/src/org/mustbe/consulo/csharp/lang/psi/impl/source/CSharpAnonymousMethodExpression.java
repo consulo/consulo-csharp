@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source;
 
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleLikeMethodAsElement;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetExpression;
 
 /**
  * @author VISTALL

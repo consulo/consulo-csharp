@@ -20,11 +20,11 @@ import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.compiler.CSharpCompilerUtil;
 import org.mustbe.consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.csharp.module.extension.BaseCSharpModuleExtension;
-import org.mustbe.consulo.dotnet.compiler.DotNetCompileFailedException;
-import org.mustbe.consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
-import org.mustbe.consulo.dotnet.module.extension.DotNetModuleExtension;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.ModuleRootLayer;
+import consulo.dotnet.compiler.DotNetCompileFailedException;
+import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
+import consulo.dotnet.module.extension.DotNetModuleExtension;
+import consulo.roots.ModuleRootLayer;
 
 /**
  * @author VISTALL

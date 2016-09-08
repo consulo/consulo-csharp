@@ -16,7 +16,7 @@
 
 package org.mustbe.consulo.csharp.ide.actions.generate.memberChoose;
 
-import org.mustbe.consulo.dotnet.psi.DotNetElement;
+import consulo.dotnet.psi.DotNetElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.PairConsumer;
 

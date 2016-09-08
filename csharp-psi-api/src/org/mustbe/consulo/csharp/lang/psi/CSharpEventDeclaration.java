@@ -16,7 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
-import org.mustbe.consulo.dotnet.psi.DotNetEventDeclaration;
+import consulo.dotnet.psi.DotNetEventDeclaration;
 
 /**
  * @author VISTALL

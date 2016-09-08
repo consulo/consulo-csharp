@@ -18,7 +18,6 @@ package org.mustbe.consulo.csharp.ide.navigation;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.codeInsight.navigation.actions.GotoDeclarationHandlerEx;
 import org.mustbe.consulo.csharp.ide.lineMarkerProvider.PartialTypeCollector;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -29,6 +28,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
+import consulo.codeInsight.navigation.actions.GotoDeclarationHandlerEx;
 
 /**
  * @author VISTALL

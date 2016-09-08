@@ -18,14 +18,14 @@ package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.dotnet.psi.DotNetMemberOwner;
+import consulo.dotnet.psi.DotNetNamedElement;
+import consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.codeInsight.template.Template;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;

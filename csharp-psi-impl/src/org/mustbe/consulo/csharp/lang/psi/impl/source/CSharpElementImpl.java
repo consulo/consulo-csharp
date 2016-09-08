@@ -24,7 +24,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.SandboxUtil;
+import consulo.util.SandboxUtil;
 
 /**
  * @author VISTALL

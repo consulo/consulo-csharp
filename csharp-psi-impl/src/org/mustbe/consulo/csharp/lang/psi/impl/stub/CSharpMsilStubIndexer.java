@@ -20,16 +20,16 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
-import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
-import org.mustbe.consulo.dotnet.lang.psi.impl.stub.MsilHelper;
-import org.mustbe.consulo.msil.lang.psi.impl.elementType.stub.MsilClassEntryStub;
-import org.mustbe.consulo.msil.lang.psi.impl.elementType.stub.MsilCustomAttributeStub;
-import org.mustbe.consulo.msil.lang.psi.impl.elementType.stub.MsilStubIndexer;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.stubs.IndexSink;
 import com.intellij.psi.stubs.StubElement;
+import consulo.dotnet.DotNetTypes;
+import consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
+import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
+import consulo.msil.lang.psi.impl.elementType.stub.MsilClassEntryStub;
+import consulo.msil.lang.psi.impl.elementType.stub.MsilCustomAttributeStub;
+import consulo.msil.lang.psi.impl.elementType.stub.MsilStubIndexer;
 
 /**
  * @author VISTALL

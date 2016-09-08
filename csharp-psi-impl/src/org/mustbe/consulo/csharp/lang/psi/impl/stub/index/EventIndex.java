@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.index;
 
 import consulo.lombok.annotations.Lazy;
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.dotnet.psi.DotNetEventDeclaration;
+import consulo.dotnet.psi.DotNetEventDeclaration;
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;

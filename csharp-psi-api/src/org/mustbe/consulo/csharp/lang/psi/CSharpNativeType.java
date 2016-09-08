@@ -17,8 +17,8 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.dotnet.psi.DotNetNativeType;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.psi.DotNetNativeType;
 import com.intellij.psi.tree.IElementType;
 
 /**

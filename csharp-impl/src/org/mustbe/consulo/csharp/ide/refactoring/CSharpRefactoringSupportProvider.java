@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.ide.refactoring;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureHandler;
 import org.mustbe.consulo.csharp.ide.refactoring.extractMethod.CSharpExtractMethodHandler;
 import org.mustbe.consulo.csharp.ide.refactoring.introduceVariable.CSharpIntroduceLocalVariableHandler;
@@ -25,9 +25,9 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
-import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import consulo.dotnet.psi.DotNetParameter;
+import consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.lang.refactoring.RefactoringSupportProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;

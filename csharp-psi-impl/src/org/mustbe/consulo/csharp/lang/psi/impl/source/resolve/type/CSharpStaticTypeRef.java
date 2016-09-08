@@ -17,9 +17,9 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeResolveResult;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
+import consulo.dotnet.resolve.DotNetTypeResolveResult;
 
 /**
  * @author VISTALL

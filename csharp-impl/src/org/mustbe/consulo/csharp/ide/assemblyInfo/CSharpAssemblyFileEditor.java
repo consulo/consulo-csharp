@@ -30,10 +30,10 @@ import javax.swing.tree.DefaultTreeModel;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredDispatchThread;
+import consulo.annotations.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.ide.assemblyInfo.blocks.CSharpAssemblyBlock;
 import org.mustbe.consulo.csharp.ide.assemblyInfo.blocks.CSharpSimpleStringAssemblyBlock;
-import org.mustbe.consulo.dotnet.DotNetTypes;
+import consulo.dotnet.DotNetTypes;
 import com.intellij.codeHighlighting.BackgroundEditorHighlighter;
 import com.intellij.ide.structureView.StructureViewBuilder;
 import com.intellij.openapi.application.ApplicationManager;

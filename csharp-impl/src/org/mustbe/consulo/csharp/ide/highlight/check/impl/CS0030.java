@@ -1,10 +1,7 @@
 package org.mustbe.consulo.csharp.ide.highlight.check.impl;
 
-import org.consulo.ide.eap.EarlyAccessProgramDescriptor;
-import org.consulo.ide.eap.EarlyAccessProgramManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpErrorBundle;
 import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightContext;
 import org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightKey;
@@ -17,13 +14,16 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForeachStatementImpl
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpTypeCastExpressionImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetType;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.openapi.util.Ref;
 import com.intellij.psi.PsiElement;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.CSharpCastType;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetType;
+import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.ide.eap.EarlyAccessProgramDescriptor;
+import consulo.ide.eap.EarlyAccessProgramManager;
 
 /**
  * @author VISTALL

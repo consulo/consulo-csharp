@@ -20,11 +20,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.consulo.module.extension.MutableModuleInheritableNamedPointer;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.compiler.CSharpPlatform;
 import org.mustbe.consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
 import org.mustbe.consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
@@ -33,24 +31,26 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.AttributeListIndex;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MethodIndex;
-import org.mustbe.consulo.dotnet.DotNetRunUtil;
-import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
-import org.mustbe.consulo.dotnet.module.extension.DotNetModuleLangExtension;
-import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.ModuleRootLayer;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.DotNetRunUtil;
+import consulo.dotnet.DotNetTypes;
+import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
+import consulo.dotnet.module.extension.DotNetModuleLangExtension;
+import consulo.dotnet.psi.DotNetAttributeTargetType;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import consulo.dotnet.psi.DotNetMethodDeclaration;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.module.extension.MutableModuleInheritableNamedPointer;
+import consulo.roots.ModuleRootLayer;
 
 /**
  * @author VISTALL

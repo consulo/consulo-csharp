@@ -1,7 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.resolve;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import com.intellij.psi.PsiElement;
 
 /**

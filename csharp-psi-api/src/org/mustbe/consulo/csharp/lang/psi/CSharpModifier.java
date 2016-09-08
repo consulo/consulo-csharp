@@ -21,7 +21,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
+import consulo.dotnet.psi.DotNetModifier;
 import consulo.lombok.annotations.ArrayFactoryFields;
 import consulo.lombok.annotations.Lazy;
 

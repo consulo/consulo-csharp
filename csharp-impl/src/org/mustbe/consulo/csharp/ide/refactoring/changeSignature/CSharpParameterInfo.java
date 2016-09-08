@@ -19,13 +19,13 @@ package org.mustbe.consulo.csharp.ide.refactoring.changeSignature;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
-import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.DotNetTypes;
+import consulo.dotnet.psi.DotNetParameter;
+import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.refactoring.changeSignature.ParameterInfo;
 import com.intellij.util.containers.ContainerUtil;
 

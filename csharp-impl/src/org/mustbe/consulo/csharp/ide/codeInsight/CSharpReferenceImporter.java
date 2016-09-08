@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.ide.codeInsight;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInsight.actions.UsingNamespaceFix;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;

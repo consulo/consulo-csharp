@@ -18,7 +18,7 @@
 package org.mustbe.consulo.csharp.ide.completion.util;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredWriteAction;
+import consulo.annotations.RequiredWriteAction;
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElement;

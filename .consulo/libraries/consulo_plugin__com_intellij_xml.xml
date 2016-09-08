@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="consulo-plugin: com.intellij.xml">
+    <binaries>
+      <root url="jar://$PROJECT_DIR$/dep/com.intellij.xml/lib/xml.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dep/com.intellij.xml/lib/xerces.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dep/com.intellij.xml/lib/resolver.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dep/com.intellij.xml/lib/jsr173_1.0_api.jar!/" />
+    </binaries>
+  </library>
+</component>

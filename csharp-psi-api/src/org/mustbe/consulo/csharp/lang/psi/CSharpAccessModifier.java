@@ -18,11 +18,11 @@ package org.mustbe.consulo.csharp.lang.psi;
 
 import java.util.Locale;
 
-import org.consulo.annotations.Immutable;
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierListOwner;
 import com.intellij.psi.PsiElement;
+import consulo.annotations.Immutable;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.lombok.annotations.Lazy;
 
 /**

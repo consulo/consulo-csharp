@@ -17,7 +17,6 @@
 package org.mustbe.consulo.csharp.ide.copyright;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.copyright.config.CopyrightFileConfig;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
@@ -25,6 +24,7 @@ import com.maddyhome.idea.copyright.CopyrightProfile;
 import com.maddyhome.idea.copyright.psi.UpdateCopyrightsProvider;
 import com.maddyhome.idea.copyright.psi.UpdatePsiFileCopyright;
 import com.maddyhome.idea.copyright.ui.TemplateCommentPanel;
+import consulo.copyright.config.CopyrightFileConfig;
 
 /**
  * @author VISTALL

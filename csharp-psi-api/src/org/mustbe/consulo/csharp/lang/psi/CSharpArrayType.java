@@ -16,8 +16,8 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
-import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.dotnet.psi.DotNetArrayType;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.psi.DotNetArrayType;
 
 /**
  * @author VISTALL

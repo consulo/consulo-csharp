@@ -2,8 +2,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
-import org.mustbe.consulo.dotnet.lang.psi.impl.IndexBasedDotNetNamespaceAsElement;
-import org.mustbe.consulo.dotnet.resolve.impl.IndexBasedDotNetPsiSearcher;
+import consulo.dotnet.lang.psi.impl.IndexBasedDotNetNamespaceAsElement;
+import consulo.dotnet.resolve.impl.IndexBasedDotNetPsiSearcher;
 import com.intellij.openapi.project.Project;
 
 /**

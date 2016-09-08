@@ -23,21 +23,10 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.msil.representation.builder.CSharpStubBuilderVisitor;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilToCSharpUtil;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
-import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
-import org.mustbe.consulo.msil.lang.psi.MsilAssemblyEntry;
-import org.mustbe.consulo.msil.lang.psi.MsilFile;
-import org.mustbe.consulo.msil.representation.MsilFileRepresentationProvider;
-import org.mustbe.consulo.msil.representation.MsilFileRepresentationVirtualFile;
-import org.mustbe.dotnet.msil.decompiler.file.DotNetAssemblyFileArchiveEntry;
-import org.mustbe.dotnet.msil.decompiler.textBuilder.block.StubBlock;
-import org.mustbe.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.util.Condition;
@@ -51,6 +40,17 @@ import com.intellij.psi.SingleRootFileViewProvider;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.impl.PsiManagerEx;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.psi.DotNetAttributeTargetType;
+import consulo.dotnet.psi.DotNetNamedElement;
+import consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.internal.dotnet.msil.decompiler.file.DotNetAssemblyFileArchiveEntry;
+import consulo.internal.dotnet.msil.decompiler.textBuilder.block.StubBlock;
+import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
+import consulo.msil.lang.psi.MsilAssemblyEntry;
+import consulo.msil.lang.psi.MsilFile;
+import consulo.msil.representation.MsilFileRepresentationProvider;
+import consulo.msil.representation.MsilFileRepresentationVirtualFile;
 
 /**
  * @author VISTALL

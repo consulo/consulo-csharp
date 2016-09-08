@@ -1,7 +1,7 @@
 package org.mustbe.consulo.csharp.module.extension;
 
-import org.consulo.module.extension.ModuleExtension;
 import org.jetbrains.annotations.NotNull;
+import consulo.module.extension.ModuleExtension;
 
 /**
  * @author VISTALL

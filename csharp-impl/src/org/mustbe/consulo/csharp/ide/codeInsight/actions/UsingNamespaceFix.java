@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgument;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -35,17 +34,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.Me
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodIndex;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MethodIndex;
 import org.mustbe.consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
-import org.mustbe.consulo.dotnet.DotNetBundle;
 import org.mustbe.consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent;
 import org.mustbe.consulo.dotnet.libraryAnalyzer.NamespaceReference;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetInheritUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetNamespaceDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.resolve.DotNetShortNameSearcher;
-import org.mustbe.consulo.dotnet.resolve.GlobalSearchScopeFilter;
 import com.intellij.codeInsight.daemon.impl.ShowAutoImportPass;
 import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.codeInsight.intention.HighPriorityAction;
@@ -66,6 +56,16 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ArrayListSet;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.DotNetBundle;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetInheritUtil;
+import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import consulo.dotnet.psi.DotNetNamespaceDeclaration;
+import consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.resolve.DotNetShortNameSearcher;
+import consulo.dotnet.resolve.GlobalSearchScopeFilter;
 
 /**
  * @author VISTALL

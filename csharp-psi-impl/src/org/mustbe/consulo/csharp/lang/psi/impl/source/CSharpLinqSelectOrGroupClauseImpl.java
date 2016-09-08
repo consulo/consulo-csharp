@@ -20,8 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSoftTokens;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.util.ArrayUtil2;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.util.ArrayUtil2;
 import com.intellij.lang.ASTNode;
 
 /**

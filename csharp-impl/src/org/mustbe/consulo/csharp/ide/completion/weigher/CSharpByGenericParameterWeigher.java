@@ -18,9 +18,9 @@ package org.mustbe.consulo.csharp.ide.completion.weigher;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementWeigher;
 import com.intellij.psi.PsiElement;

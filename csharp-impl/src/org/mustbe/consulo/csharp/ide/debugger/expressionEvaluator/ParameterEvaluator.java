@@ -17,9 +17,9 @@
 package org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
+import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.debugger.proxy.DotNetMethodParameterProxy;
 import consulo.dotnet.debugger.proxy.DotNetMethodProxy;
 import consulo.dotnet.debugger.proxy.DotNetStackFrameProxy;

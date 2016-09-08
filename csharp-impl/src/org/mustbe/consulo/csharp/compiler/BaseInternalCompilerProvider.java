@@ -21,11 +21,11 @@ import javax.swing.Icon;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleExtension;
-import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkType;
-import com.intellij.openapi.roots.ui.configuration.SdkComboBox;
 import com.intellij.openapi.vfs.VirtualFile;
+import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
+import consulo.roots.ui.configuration.SdkComboBox;
 
 /**
  * @author VISTALL

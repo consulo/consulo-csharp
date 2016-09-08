@@ -18,8 +18,8 @@ package org.mustbe.consulo.csharp.ide.completion.expected;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
+import consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
  * @author VISTALL

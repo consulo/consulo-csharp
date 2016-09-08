@@ -17,17 +17,15 @@
 package org.mustbe.consulo.csharp.lang;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.lexer.CSharpLexer;
 import org.mustbe.consulo.csharp.lang.parser.CSharpParser;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import com.intellij.lang.LanguageVersion;
-import com.intellij.lang.LanguageVersionWithParsing;
 import com.intellij.lang.PsiParser;
 import com.intellij.lexer.Lexer;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.tree.TokenSet;
+import consulo.lang.LanguageVersion;
+import consulo.lang.LanguageVersionWithParsing;
 
 /**
  * @author VISTALL
@@ -44,14 +42,14 @@ public class CSharpLanguageVersionWrapper implements LanguageVersion<CSharpLangu
 
 	@NotNull
 	@Override
-	public PsiParser createParser(@Nullable Project project)
+	public PsiParser createParser()
 	{
 		return new CSharpParser();
 	}
 
 	@NotNull
 	@Override
-	public Lexer createLexer(@Nullable Project project)
+	public Lexer createLexer()
 	{
 		return new CSharpLexer();
 	}

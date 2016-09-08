@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeInspection.unusedUsing.BaseUnusedUsingVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerBase;

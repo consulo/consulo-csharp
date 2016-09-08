@@ -18,8 +18,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl.light;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.light.LightElement;
 

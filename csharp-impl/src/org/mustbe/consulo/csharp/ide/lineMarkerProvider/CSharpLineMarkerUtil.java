@@ -22,11 +22,11 @@ import java.util.Comparator;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.codeInsight.daemon.impl.PsiElementListNavigator;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.NavigatablePsiElement;

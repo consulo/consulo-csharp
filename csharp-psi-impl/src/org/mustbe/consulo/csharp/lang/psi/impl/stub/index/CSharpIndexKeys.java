@@ -19,14 +19,14 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.index;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
-import org.mustbe.consulo.dotnet.psi.DotNetEventDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetPropertyDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetQualifiedElement;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeList;
+import consulo.dotnet.psi.DotNetAttributeTargetType;
+import consulo.dotnet.psi.DotNetEventDeclaration;
+import consulo.dotnet.psi.DotNetFieldDeclaration;
+import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import consulo.dotnet.psi.DotNetPropertyDeclaration;
+import consulo.dotnet.psi.DotNetQualifiedElement;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.DotNetTypeList;
 import com.intellij.psi.stubs.StubIndexKey;
 
 /**

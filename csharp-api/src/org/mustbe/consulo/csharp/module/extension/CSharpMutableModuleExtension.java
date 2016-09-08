@@ -16,12 +16,12 @@
 
 package org.mustbe.consulo.csharp.module.extension;
 
-import org.consulo.module.extension.MutableModuleExtension;
-import org.consulo.module.extension.MutableModuleInheritableNamedPointer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.compiler.CSharpPlatform;
 import com.intellij.openapi.projectRoots.Sdk;
+import consulo.module.extension.MutableModuleExtension;
+import consulo.module.extension.MutableModuleInheritableNamedPointer;
 
 /**
  * @author VISTALL

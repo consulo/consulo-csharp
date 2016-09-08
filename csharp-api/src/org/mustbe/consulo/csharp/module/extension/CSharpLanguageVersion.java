@@ -16,10 +16,10 @@
 
 package org.mustbe.consulo.csharp.module.extension;
 
-import org.consulo.util.pointers.Named;
-import org.consulo.util.pointers.NamedPointer;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.CSharpBundle;
+import consulo.util.pointers.Named;
+import consulo.util.pointers.NamedPointer;
 
 /**
  * @author VISTALL

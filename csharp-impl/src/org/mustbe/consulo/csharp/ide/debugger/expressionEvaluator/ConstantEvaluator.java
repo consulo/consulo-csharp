@@ -18,9 +18,9 @@ package org.mustbe.consulo.csharp.ide.debugger.expressionEvaluator;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.ide.debugger.CSharpEvaluateContext;
-import org.mustbe.consulo.dotnet.DotNetTypes;
+import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.debugger.proxy.DotNetVirtualMachineProxy;
-import edu.arizona.cs.mbel.signature.SignatureConstants;
+import consulo.internal.dotnet.asm.signature.SignatureConstants;
 
 /**
  * @author VISTALL

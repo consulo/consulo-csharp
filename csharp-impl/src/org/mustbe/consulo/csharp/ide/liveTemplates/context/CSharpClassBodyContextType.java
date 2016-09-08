@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.ide.liveTemplates.context;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import com.intellij.codeInsight.template.TemplateContextType;

@@ -25,7 +25,6 @@ import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
-import org.mustbe.consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -36,8 +35,9 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.intellij.util.NotNullPairFunction;
 import com.intellij.util.containers.ConcurrentFactoryMap;
+import consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import consulo.util.NotNullPairFunction;
 
 /**
  * @author VISTALL

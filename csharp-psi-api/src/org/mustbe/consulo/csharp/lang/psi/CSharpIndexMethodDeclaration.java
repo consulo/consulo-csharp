@@ -16,9 +16,9 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetMemberOwner;
-import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import consulo.dotnet.psi.DotNetMemberOwner;
+import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 
 /**
  * @author VISTALL

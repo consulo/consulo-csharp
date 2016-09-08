@@ -18,8 +18,6 @@ package org.mustbe.consulo.csharp.ide.highlight;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.cfs.ide.highlight.CfsSyntaxHighlighter;
-import org.mustbe.consulo.csharp.cfs.lang.CfsTokens;
 import org.mustbe.consulo.csharp.lang.CSharpCfsLanguageVersion;
 import org.mustbe.consulo.csharp.lang.doc.ide.highlight.CSharpDocSyntaxHighlighter;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
@@ -32,6 +30,8 @@ import com.intellij.openapi.editor.ex.util.LayerDescriptor;
 import com.intellij.openapi.editor.ex.util.LayeredLexerEditorHighlighter;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.tree.IElementType;
+import consulo.csharp.cfs.ide.highlight.CfsSyntaxHighlighter;
+import consulo.csharp.cfs.lang.CfsTokens;
 
 /**
  * @author VISTALL

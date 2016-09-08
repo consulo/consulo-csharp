@@ -16,7 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
-import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
+import consulo.dotnet.psi.DotNetConstructorDeclaration;
 import com.intellij.psi.PsiNameIdentifierOwner;
 
 /**

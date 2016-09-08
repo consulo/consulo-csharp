@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentList;
 import org.mustbe.consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -29,13 +28,6 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
-import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
-import org.mustbe.consulo.dotnet.psi.DotNetReferenceExpression;
-import org.mustbe.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 import com.intellij.openapi.application.ReadActionProcessor;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.TextRange;
@@ -50,6 +42,14 @@ import com.intellij.usageView.UsageInfo;
 import com.intellij.util.PairFunction;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.MultiMap;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import consulo.dotnet.psi.DotNetModifierList;
+import consulo.dotnet.psi.DotNetParameter;
+import consulo.dotnet.psi.DotNetParameterList;
+import consulo.dotnet.psi.DotNetReferenceExpression;
+import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 
 /**
  * @author VISTALL

@@ -1,8 +1,8 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.dotnet.psi.DotNetAttributeList;
-import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
+import consulo.dotnet.psi.DotNetAttributeList;
+import consulo.dotnet.psi.DotNetAttributeTargetType;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubBase;
 import com.intellij.psi.stubs.StubElement;

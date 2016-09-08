@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.lang.doc.CSharpDocUtil;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocAttributeValue;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTag;
@@ -52,6 +51,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.annotations.RequiredDispatchThread;
 
 @consulo.lombok.annotations.Logger
 public class CSharpDocGtTypedHandler extends TypedHandlerDelegate

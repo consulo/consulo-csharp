@@ -1,7 +1,7 @@
 package org.mustbe.consulo.csharp.lang.formatter.processors;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import org.mustbe.consulo.csharp.lang.formatter.CSharpFormattingBlock;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
@@ -12,7 +12,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerComp
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpArrayInitializerSingleValueImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpIfStatementImpl;
-import org.mustbe.consulo.dotnet.psi.DotNetStatement;
+import consulo.dotnet.psi.DotNetStatement;
 import com.intellij.formatting.Indent;
 import com.intellij.formatting.templateLanguages.BlockWithParent;
 import com.intellij.lang.ASTNode;

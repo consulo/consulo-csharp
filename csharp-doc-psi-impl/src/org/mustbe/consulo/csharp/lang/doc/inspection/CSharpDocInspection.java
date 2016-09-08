@@ -19,7 +19,6 @@ package org.mustbe.consulo.csharp.lang.doc.inspection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.doc.CSharpDocLanguage;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocAttribute;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocElementVisitor;
@@ -31,6 +30,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiErrorElement;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.annotations.RequiredReadAction;
 
 /**
  * @author VISTALL

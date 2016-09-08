@@ -18,8 +18,8 @@ package org.mustbe.consulo.csharp.lang.psi;
 
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.*;
-import com.intellij.psi.tree.ElementTypeAsPsiFactory;
 import com.intellij.psi.tree.IElementType;
+import consulo.psi.tree.ElementTypeAsPsiFactory;
 
 /**
  * @author VISTALL

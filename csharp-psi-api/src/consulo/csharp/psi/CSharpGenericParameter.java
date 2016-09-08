@@ -17,9 +17,9 @@
 package consulo.csharp.psi;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.dotnet.psi.DotNetGenericParameter;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.psi.DotNetGenericParameter;
+import consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
  * @author VISTALL

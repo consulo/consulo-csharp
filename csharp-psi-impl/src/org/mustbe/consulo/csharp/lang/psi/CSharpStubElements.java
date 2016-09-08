@@ -21,11 +21,11 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubNullableTypeImpl
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubPointerTypeImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpUsingTypeStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes.*;
-import org.mustbe.consulo.dotnet.psi.DotNetPointerType;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.EmptyStub;
 import com.intellij.psi.tree.TokenSet;
+import consulo.dotnet.psi.DotNetPointerType;
 
 /**
  * @author VISTALL

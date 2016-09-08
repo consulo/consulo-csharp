@@ -12,11 +12,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 
-import org.consulo.module.extension.MutableModuleInheritableNamedPointer;
-import org.mustbe.consulo.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.compiler.CSharpCompilerProvider;
 import org.mustbe.consulo.csharp.compiler.CSharpPlatform;
-import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -25,7 +22,6 @@ import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkType;
 import com.intellij.openapi.projectRoots.SdkTypeId;
 import com.intellij.openapi.roots.ui.configuration.ProjectStructureConfigurable;
-import com.intellij.openapi.roots.ui.configuration.SdkComboBox;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.LabeledComponent;
@@ -38,6 +34,10 @@ import com.intellij.ui.SimpleTextAttributes;
 import com.intellij.ui.TextFieldWithHistory;
 import com.intellij.ui.TitledSeparator;
 import com.intellij.ui.components.JBCheckBox;
+import consulo.annotations.RequiredDispatchThread;
+import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
+import consulo.module.extension.MutableModuleInheritableNamedPointer;
+import consulo.roots.ui.configuration.SdkComboBox;
 
 /**
  * @author VISTALL

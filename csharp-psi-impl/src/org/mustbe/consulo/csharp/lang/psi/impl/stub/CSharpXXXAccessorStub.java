@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub;
 
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
-import org.mustbe.consulo.dotnet.psi.DotNetXXXAccessor;
+import consulo.dotnet.psi.DotNetXXXAccessor;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.ArrayUtil;
 

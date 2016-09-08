@@ -23,15 +23,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.codeInsight.completion.CompletionProvider;
 import org.mustbe.consulo.csharp.ide.completion.patterns.CSharpPatterns;
 import org.mustbe.consulo.csharp.ide.completion.util.SpaceInsertHandler;
 import org.mustbe.consulo.csharp.lang.psi.*;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
 import org.mustbe.consulo.csharp.module.extension.CSharpModuleUtil;
-import org.mustbe.consulo.dotnet.DotNetRunUtil;
-import org.mustbe.consulo.dotnet.psi.*;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -46,6 +42,10 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.ProcessingContext;
+import consulo.annotations.RequiredReadAction;
+import consulo.codeInsight.completion.CompletionProvider;
+import consulo.dotnet.DotNetRunUtil;
+import consulo.dotnet.psi.*;
 
 /**
  * @author VISTALL
@@ -71,7 +71,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				PsiElement position = parameters.getPosition();
 				String trim = position.getText().replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "").trim();
@@ -96,7 +96,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				for(Map.Entry<String, Boolean> entry : ourPreprocessorDirectives.entrySet())
 				{
@@ -115,7 +115,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				CSharpFieldDeclaration fieldDeclaration = PsiTreeUtil.getParentOfType(parameters.getPosition(), CSharpFieldDeclaration.class);
 				assert fieldDeclaration != null;
@@ -132,7 +132,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			protected void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				CSharpCompletionUtil.elementToLookup(result, CSharpTokens.STATIC_KEYWORD, null, new Condition<IElementType>()
 				{
@@ -150,7 +150,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			protected void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				CSharpCompletionUtil.tokenSetToLookup(result, TokenSet.create(CSharpTokens.IN_KEYWORD, CSharpTokens.OUT_KEYWORD), null, new Condition<IElementType>()
 				{
@@ -177,7 +177,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				PsiElement position = parameters.getPosition();
 				if(isCorrectPosition(position))
@@ -214,7 +214,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				TokenSet set = TokenSet.create(CSharpTokens.CLASS_KEYWORD, CSharpTokens.STRUCT_KEYWORD);
 				CSharpCompletionUtil.tokenSetToLookup(result, set, null, null);
@@ -225,7 +225,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			protected void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet completionResultSet)
+			public void addCompletions(@NotNull final CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet completionResultSet)
 			{
 				final PsiElement position = parameters.getPosition();
 				if(position.getParent() instanceof DotNetReferenceExpression && position.getParent().getParent() instanceof DotNetUserType)

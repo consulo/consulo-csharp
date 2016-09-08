@@ -2,11 +2,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.c
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
-import org.mustbe.consulo.dotnet.psi.DotNetParameter;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.dotnet.util.ArrayUtil2;
+import consulo.dotnet.psi.DotNetParameter;
+import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.dotnet.util.ArrayUtil2;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Trinity;
 

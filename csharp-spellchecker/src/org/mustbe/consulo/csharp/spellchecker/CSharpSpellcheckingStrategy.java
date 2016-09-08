@@ -17,7 +17,6 @@
 package org.mustbe.consulo.csharp.spellchecker;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -27,6 +26,7 @@ import com.intellij.spellchecker.inspections.IdentifierSplitter;
 import com.intellij.spellchecker.tokenizer.SpellcheckingStrategy;
 import com.intellij.spellchecker.tokenizer.TokenConsumer;
 import com.intellij.spellchecker.tokenizer.Tokenizer;
+import consulo.annotations.RequiredReadAction;
 
 /**
  * @author VISTALL

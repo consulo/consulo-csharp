@@ -22,9 +22,9 @@ import org.mustbe.consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttribute;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
-import org.mustbe.consulo.dotnet.lang.MultiHostInjectorByAttributeHelper;
-import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.lang.MultiHostInjectorByAttributeHelper;
+import consulo.dotnet.psi.DotNetAttribute;
+import consulo.dotnet.psi.DotNetExpression;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.tree.IElementType;
 

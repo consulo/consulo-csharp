@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.util.SmartList;
 
 /**

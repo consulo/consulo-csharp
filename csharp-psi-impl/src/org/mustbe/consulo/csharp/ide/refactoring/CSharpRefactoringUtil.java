@@ -16,7 +16,7 @@
 
 package org.mustbe.consulo.csharp.ide.refactoring;
 
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIdentifier;
 import com.intellij.psi.PsiElement;

@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubModifierListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpModifierListStub;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
+import consulo.dotnet.psi.DotNetModifierList;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.StubElement;

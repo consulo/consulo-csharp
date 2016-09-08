@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpStubParameterListImpl;
-import org.mustbe.consulo.dotnet.psi.DotNetParameterList;
+import consulo.dotnet.psi.DotNetParameterList;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.EmptyStub;
 

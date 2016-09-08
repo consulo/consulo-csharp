@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import consulo.lombok.annotations.ArrayFactoryFields;
-import org.mustbe.consulo.dotnet.psi.DotNetElement;
+import consulo.dotnet.psi.DotNetElement;
 
 /**
  * @author VISTALL

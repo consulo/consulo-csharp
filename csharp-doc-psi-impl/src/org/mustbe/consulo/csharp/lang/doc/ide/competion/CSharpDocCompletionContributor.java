@@ -19,8 +19,6 @@ package org.mustbe.consulo.csharp.lang.doc.ide.competion;
 import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.codeInsight.completion.CompletionProvider;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocAttribute;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTag;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTokenType;
@@ -35,6 +33,8 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
+import consulo.annotations.RequiredReadAction;
+import consulo.codeInsight.completion.CompletionProvider;
 
 /**
  * @author VISTALL
@@ -48,7 +48,7 @@ public class CSharpDocCompletionContributor extends CompletionContributor
 		{
 			@RequiredReadAction
 			@Override
-			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				PsiElement parent = parameters.getPosition().getParent();
 				if(parent instanceof CSharpDocTag)

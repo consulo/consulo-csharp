@@ -19,9 +19,9 @@ package org.mustbe.consulo.csharp.lang.psi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
-import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
-import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetAttribute;
+import consulo.dotnet.psi.DotNetAttributeUtil;
+import consulo.dotnet.psi.DotNetExpression;
 import com.intellij.psi.PsiElement;
 
 /**

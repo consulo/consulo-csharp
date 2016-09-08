@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.CSharpLanguageVersionHelper;
-import com.intellij.lang.LanguageVersion;
+import consulo.lang.LanguageVersion;
 import com.intellij.openapi.fileTypes.FileType;
 import consulo.testFramework.ParsingTestCase;
 

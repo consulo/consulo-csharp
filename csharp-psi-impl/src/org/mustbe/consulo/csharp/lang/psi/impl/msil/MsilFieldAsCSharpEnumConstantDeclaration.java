@@ -18,11 +18,11 @@ package org.mustbe.consulo.csharp.lang.psi.impl.msil;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetVariable;
-import org.mustbe.consulo.msil.lang.psi.MsilFieldEntry;
+import consulo.dotnet.psi.DotNetVariable;
+import consulo.msil.lang.psi.MsilFieldEntry;
 import com.intellij.psi.PsiElement;
 
 /**

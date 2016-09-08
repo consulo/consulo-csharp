@@ -2,8 +2,8 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.a
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 
 /**

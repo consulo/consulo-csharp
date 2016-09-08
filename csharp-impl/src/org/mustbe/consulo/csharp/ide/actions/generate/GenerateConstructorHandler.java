@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredDispatchThread;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredDispatchThread;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.actions.generate.memberChoose.CSharpVariableChooseObject;
 import org.mustbe.consulo.csharp.ide.actions.generate.memberChoose.ConstructorChooseMember;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
@@ -39,11 +39,11 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolve
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
 import org.mustbe.consulo.csharp.lang.psi.resolve.StaticResolveSelectors;
-import org.mustbe.consulo.dotnet.psi.DotNetConstructorDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetLikeMethodDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetVariable;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
+import consulo.dotnet.psi.DotNetConstructorDeclaration;
+import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.resolve.DotNetGenericExtractor;
 import com.intellij.codeInsight.CodeInsightActionHandler;
 import com.intellij.ide.util.MemberChooser;
 import com.intellij.ide.util.MemberChooserBuilder;

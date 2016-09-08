@@ -18,7 +18,7 @@ package org.mustbe.consulo.csharp.lang;
 
 import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.Language;
-import com.intellij.lang.LanguageVersion;
+import consulo.lang.LanguageVersion;
 
 /**
  * @author VISTALL

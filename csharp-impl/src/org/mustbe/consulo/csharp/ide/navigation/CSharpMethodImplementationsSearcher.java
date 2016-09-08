@@ -20,7 +20,7 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetVirtualImplementOwner;
+import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.searches.DefinitionsScopedSearch;
 import com.intellij.util.Processor;

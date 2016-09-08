@@ -22,9 +22,9 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalMemberProvider;
 import org.mustbe.consulo.csharp.lang.psi.impl.resolve.CSharpBaseResolveContext;
-import org.mustbe.consulo.dotnet.resolve.DotNetGenericExtractor;
-import org.mustbe.dotnet.msil.decompiler.util.MsilHelper;
 import com.intellij.util.Consumer;
+import consulo.dotnet.resolve.DotNetGenericExtractor;
+import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
 
 /**
  * @author VISTALL

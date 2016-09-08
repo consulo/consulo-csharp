@@ -17,12 +17,12 @@
 package org.mustbe.consulo.csharp.ide.actions.generate.memberChoose;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
-import org.mustbe.consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.psi.DotNetFieldDeclaration;
+import consulo.dotnet.psi.DotNetVariable;
 import consulo.lombok.annotations.ArrayFactoryFields;
 
 /**

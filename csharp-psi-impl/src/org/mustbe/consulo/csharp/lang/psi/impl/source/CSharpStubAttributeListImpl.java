@@ -24,7 +24,7 @@ import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokenSets;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpAttributeListStub;
-import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
+import consulo.dotnet.psi.DotNetAttributeTargetType;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.IStubElementType;
 

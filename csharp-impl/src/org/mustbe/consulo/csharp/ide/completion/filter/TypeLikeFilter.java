@@ -17,7 +17,7 @@
 package org.mustbe.consulo.csharp.ide.completion.filter;
 
 import org.mustbe.consulo.csharp.ide.completion.CSharpCompletionUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetNamedElement;
+import consulo.dotnet.psi.DotNetNamedElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.filters.ElementFilterBase;
 

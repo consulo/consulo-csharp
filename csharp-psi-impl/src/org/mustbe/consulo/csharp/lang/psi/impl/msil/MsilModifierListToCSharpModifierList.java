@@ -30,19 +30,19 @@ import org.mustbe.consulo.csharp.lang.psi.impl.DotNetTypes2;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightAttributeBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.CSharpLightAttributeWithSelfTypeBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpModifierListImplUtil;
-import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeArgumentNode;
-import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeHolder;
-import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributeNode;
-import org.mustbe.consulo.dotnet.externalAttributes.ExternalAttributesUtil;
-import org.mustbe.consulo.dotnet.psi.DotNetAttribute;
-import org.mustbe.consulo.dotnet.psi.DotNetModifier;
-import org.mustbe.consulo.dotnet.psi.DotNetModifierList;
-import org.mustbe.consulo.dotnet.psi.DotNetTypeDeclaration;
-import org.mustbe.consulo.msil.lang.psi.MsilTokens;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayUtil;
+import consulo.dotnet.DotNetTypes;
+import consulo.dotnet.externalAttributes.ExternalAttributeArgumentNode;
+import consulo.dotnet.externalAttributes.ExternalAttributeHolder;
+import consulo.dotnet.externalAttributes.ExternalAttributeNode;
+import consulo.dotnet.externalAttributes.ExternalAttributesUtil;
+import consulo.dotnet.psi.DotNetAttribute;
+import consulo.dotnet.psi.DotNetModifier;
+import consulo.dotnet.psi.DotNetModifierList;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.lombok.annotations.Lazy;
+import consulo.msil.lang.psi.MsilTokens;
 
 /**
  * @author VISTALL

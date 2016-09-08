@@ -1,11 +1,11 @@
 package org.mustbe.consulo.csharp.lang;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.cfs.lang.BaseExpressionCfsLanguageVersion;
-import org.mustbe.consulo.csharp.cfs.lang.CfsLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.injection.CSharpInjectExpressionElementType;
 import com.intellij.psi.tree.IElementType;
+import consulo.csharp.cfs.lang.BaseExpressionCfsLanguageVersion;
+import consulo.csharp.cfs.lang.CfsLanguage;
 import consulo.lombok.annotations.Lazy;
 
 /**

@@ -1,8 +1,8 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.dotnet.psi.DotNetElement;
-import org.mustbe.consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetElement;
+import consulo.dotnet.psi.DotNetExpression;
 import consulo.lombok.annotations.ArrayFactoryFields;
 
 /**

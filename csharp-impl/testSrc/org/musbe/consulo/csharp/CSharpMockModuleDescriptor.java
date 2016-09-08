@@ -21,20 +21,20 @@ import java.io.File;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.module.extension.CSharpSimpleMutableModuleExtension;
-import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleMutableModuleExtension;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.libraries.LibraryTable;
-import com.intellij.openapi.roots.types.BinariesOrderRootType;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.util.ArchiveVfsUtil;
 import com.intellij.testFramework.TestModuleDescriptor;
 import com.intellij.util.Consumer;
+import consulo.dotnet.module.extension.DotNetSimpleMutableModuleExtension;
+import consulo.roots.types.BinariesOrderRootType;
 import consulo.testFramework.util.TestPathUtil;
+import consulo.vfs.util.ArchiveVfsUtil;
 
 /**
  * @author VISTALL

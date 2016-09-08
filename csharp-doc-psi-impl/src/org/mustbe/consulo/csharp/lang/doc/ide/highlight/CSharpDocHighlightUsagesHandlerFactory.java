@@ -17,16 +17,16 @@
 package org.mustbe.consulo.csharp.lang.doc.ide.highlight;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTag;
 import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTokenType;
-import com.intellij.codeInsight.TargetElementUtil;
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerBase;
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerFactory;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
+import consulo.annotations.RequiredReadAction;
+import consulo.codeInsight.TargetElementUtil;
 
 /**
  * @author VISTALL

@@ -23,7 +23,7 @@ import java.io.IOException;
 import consulo.lombok.annotations.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpAttributeList;
-import org.mustbe.consulo.dotnet.psi.DotNetAttributeTargetType;
+import consulo.dotnet.psi.DotNetAttributeTargetType;
 import com.intellij.psi.stubs.AbstractStubIndex;
 import com.intellij.psi.stubs.StubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;

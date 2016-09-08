@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.highlight.check.CompilerCheck;
 import org.mustbe.consulo.csharp.ide.highlight.check.impl.CC0001;
 import org.mustbe.consulo.csharp.lang.doc.CSharpDocUtil;

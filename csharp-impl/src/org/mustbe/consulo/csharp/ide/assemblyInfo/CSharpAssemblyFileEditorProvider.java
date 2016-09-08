@@ -16,8 +16,6 @@
 
 package org.mustbe.consulo.csharp.ide.assemblyInfo;
 
-import org.consulo.ide.eap.EarlyAccessProgramDescriptor;
-import org.consulo.ide.eap.EarlyAccessProgramManager;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.assemblyInfo.CSharpAssemblyConstants;
@@ -32,6 +30,8 @@ import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import consulo.ide.eap.EarlyAccessProgramDescriptor;
+import consulo.ide.eap.EarlyAccessProgramManager;
 
 /**
  * @author VISTALL

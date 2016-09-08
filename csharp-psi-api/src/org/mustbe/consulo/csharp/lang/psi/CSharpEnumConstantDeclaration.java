@@ -16,7 +16,7 @@
 
 package org.mustbe.consulo.csharp.lang.psi;
 
-import org.mustbe.consulo.dotnet.psi.DotNetFieldDeclaration;
+import consulo.dotnet.psi.DotNetFieldDeclaration;
 
 /**
  * @author VISTALL

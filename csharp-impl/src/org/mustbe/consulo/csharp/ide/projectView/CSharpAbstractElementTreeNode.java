@@ -1,8 +1,8 @@
 package org.mustbe.consulo.csharp.ide.projectView;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.psi.DotNetAttributeUtil;
+import consulo.dotnet.DotNetTypes;
+import consulo.dotnet.psi.DotNetAttributeUtil;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.BasePsiNode;
 import com.intellij.openapi.project.Project;

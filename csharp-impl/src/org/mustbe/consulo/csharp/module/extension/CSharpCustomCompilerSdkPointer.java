@@ -16,14 +16,14 @@
 
 package org.mustbe.consulo.csharp.module.extension;
 
-import org.consulo.module.extension.impl.ModuleInheritableNamedPointerImpl;
-import org.consulo.util.pointers.NamedPointer;
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.sdk.SdkUtil;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
+import consulo.bundle.SdkUtil;
+import consulo.module.extension.impl.ModuleInheritableNamedPointerImpl;
+import consulo.util.pointers.NamedPointer;
 
 /**
  * @author VISTALL

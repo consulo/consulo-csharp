@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpFilePropertyPusher;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.CSharpLanguageVersionWrapper;
@@ -32,7 +31,6 @@ import org.mustbe.consulo.csharp.lang.psi.impl.stub.CSharpFileStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.LanguageParserDefinitions;
-import com.intellij.lang.LanguageVersion;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilderFactory;
 import com.intellij.lang.PsiParser;
@@ -49,6 +47,8 @@ import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.tree.IStubFileElementType;
 import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.util.indexing.IndexingDataKeys;
+import consulo.annotations.RequiredReadAction;
+import consulo.lang.LanguageVersion;
 
 /**
  * @author VISTALL
@@ -120,7 +120,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 		final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion, chameleon.getChars());
 		builder.putUserData(PREPROCESSOR_VARIABLES, defVariables);
 
-		final PsiParser parser = LanguageParserDefinitions.INSTANCE.forLanguage(languageForParser).createParser(project, languageVersion);
+		final PsiParser parser = LanguageParserDefinitions.INSTANCE.forLanguage(languageForParser).createParser(languageVersion);
 		return parser.parse(this, builder, languageVersion).getFirstChildNode();
 	}
 

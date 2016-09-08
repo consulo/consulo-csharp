@@ -3,7 +3,7 @@ package org.mustbe.consulo.csharp.lang.psi;
 import org.mustbe.consulo.csharp.lang.CSharpMacroLanguage;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.*;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.ElementTypeAsPsiFactory;
+import consulo.psi.tree.ElementTypeAsPsiFactory;
 
 /**
  * @author VISTALL

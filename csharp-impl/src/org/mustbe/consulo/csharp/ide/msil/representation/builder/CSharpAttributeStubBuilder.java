@@ -3,31 +3,31 @@ package org.mustbe.consulo.csharp.ide.msil.representation.builder;
 import java.util.List;
 import java.util.Map;
 
-import consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpEmptyGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
-import org.mustbe.consulo.dotnet.DotNetTypes;
-import org.mustbe.consulo.dotnet.resolve.DotNetTypeRef;
-import org.mustbe.consulo.msil.lang.psi.MsilCustomAttribute;
-import org.mustbe.consulo.msil.lang.stubbing.MsilCustomAttributeArgumentList;
-import org.mustbe.consulo.msil.lang.stubbing.MsilCustomAttributeStubber;
-import org.mustbe.consulo.msil.lang.stubbing.values.MsiCustomAttributeValue;
-import org.mustbe.consulo.msil.lang.stubbing.values.MsilCustomAttributeEnumValue;
-import org.mustbe.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
-import org.mustbe.dotnet.msil.decompiler.util.MsilHelper;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.PairFunction;
-import edu.arizona.cs.mbel.signature.ArrayShapeSignature;
-import edu.arizona.cs.mbel.signature.ArrayTypeSignature;
-import edu.arizona.cs.mbel.signature.ClassTypeSignature;
-import edu.arizona.cs.mbel.signature.TypeSignature;
-import edu.arizona.cs.mbel.signature.TypeSignatureWithGenericParameters;
-import edu.arizona.cs.mbel.signature.ValueTypeSignature;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.DotNetTypes;
+import consulo.dotnet.resolve.DotNetTypeRef;
+import consulo.internal.dotnet.asm.signature.ArrayShapeSignature;
+import consulo.internal.dotnet.asm.signature.ArrayTypeSignature;
+import consulo.internal.dotnet.asm.signature.ClassTypeSignature;
+import consulo.internal.dotnet.asm.signature.TypeSignature;
+import consulo.internal.dotnet.asm.signature.TypeSignatureWithGenericParameters;
+import consulo.internal.dotnet.asm.signature.ValueTypeSignature;
+import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
+import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
+import consulo.lombok.annotations.Logger;
+import consulo.msil.lang.psi.MsilCustomAttribute;
+import consulo.msil.lang.stubbing.MsilCustomAttributeArgumentList;
+import consulo.msil.lang.stubbing.MsilCustomAttributeStubber;
+import consulo.msil.lang.stubbing.values.MsiCustomAttributeValue;
+import consulo.msil.lang.stubbing.values.MsilCustomAttributeEnumValue;
 
 /**
  * @author VISTALL

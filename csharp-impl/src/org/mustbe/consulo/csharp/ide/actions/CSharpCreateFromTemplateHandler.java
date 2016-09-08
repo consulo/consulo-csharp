@@ -21,10 +21,7 @@ import java.util.UUID;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.RequiredReadAction;
 import org.mustbe.consulo.csharp.lang.CSharpFileType;
-import org.mustbe.consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
-import org.mustbe.consulo.roots.ContentEntryFileListener;
 import com.intellij.ide.fileTemplates.DefaultCreateFromTemplateHandler;
 import com.intellij.ide.fileTemplates.FileTemplate;
 import com.intellij.openapi.fileTypes.FileType;
@@ -36,7 +33,10 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileSystem;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.testFramework.LightVirtualFile;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.lombok.annotations.Lazy;
+import consulo.roots.ContentEntryFileListener;
 
 /**
  * @author VISTALL

@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.lang;
 import consulo.lombok.annotations.ApplicationService;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.module.extension.CSharpLanguageVersion;
-import com.intellij.lang.LanguageVersion;
+import consulo.lang.LanguageVersion;
 
 /**
  * @author VISTALL

@@ -17,8 +17,8 @@
 package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.dotnet.psi.DotNetLocalVariable;
-import org.mustbe.consulo.dotnet.psi.DotNetType;
+import consulo.dotnet.psi.DotNetLocalVariable;
+import consulo.dotnet.psi.DotNetType;
 
 /**
  * @author VISTALL

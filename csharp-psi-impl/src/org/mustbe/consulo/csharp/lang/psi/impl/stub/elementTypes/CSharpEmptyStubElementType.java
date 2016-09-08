@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.EmptyStub;
 import com.intellij.psi.stubs.StubElement;
