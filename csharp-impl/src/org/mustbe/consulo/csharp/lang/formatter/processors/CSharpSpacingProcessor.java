@@ -6,7 +6,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTokenType;
+import consulo.csharp.lang.doc.psi.CSharpDocTokenType;
 import org.mustbe.consulo.csharp.lang.formatter.CSharpFormattingBlock;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;

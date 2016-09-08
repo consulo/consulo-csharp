@@ -101,7 +101,7 @@
 		<msilFileRepresentation implementation="org.mustbe.consulo.csharp.ide.msil.representation.CSharpMsilFileRepresentationProvider"/>
 		<injectionByAttributeHelper implementation="org.mustbe.consulo.csharp.lang.CSharpMultiHostInjectorByAttributeHelper"/>
 
-		<documentationResolver implementation="org.mustbe.consulo.csharp.lang.doc.CSharpCommentDocumentationResolver"/>
+		<documentationResolver implementation="consulo.csharp.lang.doc.CSharpCommentDocumentationResolver"/>
 	</extensions>
 
 	<extensions defaultExtensionNs="com.intellij">
@@ -175,7 +175,7 @@
 		<completion.confidence language="C#" implementationClass="com.intellij.codeInsight.completion.UnfocusedNameIdentifier"/>
 
 		<completion.contributor language="C#Doc"
-								implementationClass="org.mustbe.consulo.csharp.lang.doc.ide.competion.CSharpDocCompletionContributor"/>
+								implementationClass="consulo.csharp.lang.doc.ide.competion.CSharpDocCompletionContributor"/>
 
 		<lookup.charFilter implementation="org.mustbe.consulo.csharp.ide.completion.CSharpCompletionCharFilter"/>
 
@@ -186,7 +186,7 @@
 		<referenceImporter implementation="org.mustbe.consulo.csharp.ide.codeInsight.CSharpReferenceImporter"/>
 
 		<typedHandler implementation="org.mustbe.consulo.csharp.ide.completion.CSharpTypedHandler" id="csharp"/>
-		<typedHandler implementation="org.mustbe.consulo.csharp.lang.doc.ide.codeInsight.editorActions.CSharpDocGtTypedHandler" id="csharpdoc"/>
+		<typedHandler implementation="consulo.csharp.lang.doc.ide.codeInsight.editorActions.CSharpDocGtTypedHandler" id="csharpdoc"/>
 
 		<renamePsiElementProcessor implementation="org.mustbe.consulo.csharp.ide.refactoring.rename.CSharpTypeRenamePsiElementProcessor"/>
 		<renamePsiElementProcessor implementation="org.mustbe.consulo.csharp.ide.refactoring.rename.CSharpOverrideElementProcessor"/>
@@ -241,7 +241,7 @@
 
 		<problemFileHighlightFilter implementation="org.mustbe.consulo.csharp.ide.codeInsight.problems.CSharpFileProblemHighlightFilter"/>
 		<problemHighlightFilter implementation="org.mustbe.consulo.csharp.ide.codeInsight.problems.CSharpProblemHighlightFilter"/>
-		<highlightErrorFilter implementation="org.mustbe.consulo.csharp.lang.doc.inspection.CSharpDocHighlightErrorFilter"/>
+		<highlightErrorFilter implementation="consulo.csharp.lang.doc.inspection.CSharpDocHighlightErrorFilter"/>
 		<editorHighlighterProvider filetype="C#" implementationClass="org.mustbe.consulo.csharp.ide.highlight.CSharpEditorHighlighterProvider"/>
 
 		<codeInsight.parameterInfo language="C#" implementationClass="org.mustbe.consulo.csharp.ide.parameterInfo.CSharpParameterInfoHandler"/>
@@ -294,17 +294,17 @@
 				implementation="org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureUsageProcessor"/>
 		<inlineActionHandler implementation="org.mustbe.consulo.csharp.ide.refactoring.inlineAction.CSharpLocalVariableInlineActionHandler"/>
 		<lang.parserDefinition language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpParserDefinition"/>
-		<lang.parserDefinition language="C#Doc" implementationClass="org.mustbe.consulo.csharp.lang.doc.CSharpDocParserDefinition"/>
+		<lang.parserDefinition language="C#Doc" implementationClass="consulo.csharp.lang.doc.CSharpDocParserDefinition"/>
 		<lang.versionResolver language="C#" implementationClass="org.mustbe.consulo.csharp.lang.CSharpLanguageVersionResolver"/>
 		<lang.documentationProvider language="C#" implementationClass="org.mustbe.consulo.csharp.ide.documentation.CSharpDocumentationProvider"/>
-		<lang.braceMatcher language="C#Doc" implementationClass="org.mustbe.consulo.csharp.lang.doc.CSharpDocBraceMatcher"/>
+		<lang.braceMatcher language="C#Doc" implementationClass="consulo.csharp.lang.doc.CSharpDocBraceMatcher"/>
 		<psi.referenceContributor language="C#" implementation="org.mustbe.consulo.csharp.ide.resolve.CSharpPsiReferenceContributor"/>
 		<refactoring.moveHandler implementation="org.mustbe.consulo.csharp.ide.refactoring.move.CSharpMoveHandlerDelegate"/>
 		<refactoring.copyHandler implementation="org.mustbe.consulo.csharp.ide.refactoring.copy.CSharpCopyClassHandlerDelegate"/>
 
 		<filePropertyPusher implementation="org.mustbe.consulo.csharp.lang.CSharpFilePropertyPusher"/>
 
-		<highlightUsagesHandlerFactory implementation="org.mustbe.consulo.csharp.lang.doc.ide.highlight.CSharpDocHighlightUsagesHandlerFactory"/>
+		<highlightUsagesHandlerFactory implementation="consulo.csharp.lang.doc.ide.highlight.CSharpDocHighlightUsagesHandlerFactory"/>
 		<highlightUsagesHandlerFactory implementation="org.mustbe.consulo.csharp.ide.highlight.CSharpHighlightUsagesHandlerFactory"/>
 		<newModuleBuilder implementation="org.mustbe.consulo.csharp.ide.newProjectOrModule.CSharpNewModuleBuilder"/>
 
