@@ -7,7 +7,7 @@ import org.mustbe.consulo.csharp.ide.completion.CSharpCompletionSorting;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpNewExpression;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUserType;
 import org.mustbe.consulo.csharp.lang.psi.impl.msil.MsilMethodAsCSharpMethodDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;

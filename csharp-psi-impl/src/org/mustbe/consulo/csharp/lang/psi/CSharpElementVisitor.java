@@ -18,6 +18,8 @@ package org.mustbe.consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.*;
+import consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
+import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterList;
 import consulo.dotnet.psi.DotNetParameter;

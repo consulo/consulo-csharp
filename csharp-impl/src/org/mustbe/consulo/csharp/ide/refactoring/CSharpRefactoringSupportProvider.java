@@ -22,7 +22,7 @@ import org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSig
 import org.mustbe.consulo.csharp.ide.refactoring.extractMethod.CSharpExtractMethodHandler;
 import org.mustbe.consulo.csharp.ide.refactoring.introduceVariable.CSharpIntroduceLocalVariableHandler;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
-import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
+import consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetParameter;

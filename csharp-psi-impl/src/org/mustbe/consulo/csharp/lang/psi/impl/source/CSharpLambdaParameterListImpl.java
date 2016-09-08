@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameter;
-import org.mustbe.consulo.csharp.lang.psi.CSharpLambdaParameterList;
+import consulo.csharp.lang.psi.CSharpLambdaParameterList;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 

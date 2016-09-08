@@ -24,7 +24,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
-import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
+import consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetConstructorDeclaration;

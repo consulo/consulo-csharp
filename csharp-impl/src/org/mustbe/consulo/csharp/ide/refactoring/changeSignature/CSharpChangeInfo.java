@@ -21,7 +21,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
-import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
+import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import com.intellij.lang.Language;
 import com.intellij.refactoring.changeSignature.ChangeInfo;

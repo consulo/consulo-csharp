@@ -1,7 +1,7 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.stub.elementTypes;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
+import consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpGenericConstraintTypeValueImpl;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;

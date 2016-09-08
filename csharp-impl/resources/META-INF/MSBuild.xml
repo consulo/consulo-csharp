@@ -1,5 +1,5 @@
 <idea-plugin>
 	<extensions defaultExtensionNs="org.mustbe.consulo.csharp">
-		<compilerProvider id="msbuild" implementation="org.mustbe.consulo.csharp.compiler.impl.MSBundleCompilerProvider" order="after ms-internal"/>
+		<compilerProvider id="msbuild" implementation="consulo.csharp.compiler.impl.MSBundleCompilerProvider" order="after ms-internal"/>
 	</extensions>
 </idea-plugin>

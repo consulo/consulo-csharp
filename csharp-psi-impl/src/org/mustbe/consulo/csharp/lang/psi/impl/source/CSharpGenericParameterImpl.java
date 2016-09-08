@@ -33,7 +33,7 @@ import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.ArrayUtil;
-import consulo.csharp.psi.CSharpGenericParameter;
+import consulo.csharp.lang.psi.CSharpGenericParameter;
 
 /**
  * @author VISTALL

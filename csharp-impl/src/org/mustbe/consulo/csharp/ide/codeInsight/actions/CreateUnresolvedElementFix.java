@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.ide.codeInsight.actions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.ide.refactoring.CSharpGenerateUtil;
-import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;
+import consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import org.mustbe.consulo.csharp.lang.psi.CSharpContextUtil;
 import org.mustbe.consulo.csharp.lang.psi.CSharpReferenceExpression;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;

@@ -29,14 +29,14 @@ import org.mustbe.consulo.csharp.lang.parser.preprocessor.EndRegionPreprocessorD
 import org.mustbe.consulo.csharp.lang.parser.preprocessor.PreprocessorDirective;
 import org.mustbe.consulo.csharp.lang.parser.preprocessor.PreprocessorParser;
 import org.mustbe.consulo.csharp.lang.parser.preprocessor.RegionPreprocessorDirective;
-import org.mustbe.consulo.csharp.lang.psi.CSharpBodyWithBraces;
+import consulo.csharp.lang.psi.CSharpBodyWithBraces;
 import org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import org.mustbe.consulo.csharp.lang.psi.CSharpStubElements;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
 import org.mustbe.consulo.csharp.lang.psi.CSharpTokensImpl;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpUsingListChild;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;

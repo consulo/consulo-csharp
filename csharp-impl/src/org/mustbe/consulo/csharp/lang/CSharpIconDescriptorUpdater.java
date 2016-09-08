@@ -37,6 +37,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.BitUtil;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.dotnet.DotNetRunUtil;
 import consulo.dotnet.module.DotNetModuleUtil;
 import consulo.dotnet.module.extension.DotNetModuleExtension;

@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.csharp.ide.CSharpElementPresentationUtil;
-import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
+import consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.PairConsumer;

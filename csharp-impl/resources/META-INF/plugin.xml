@@ -196,28 +196,28 @@
 
 		<qualifiedNameProvider implementation="org.mustbe.consulo.csharp.ide.CSharpQualifiedNameProvider"/>
 
-		<itemPresentationProvider forClass="org.mustbe.consulo.csharp.lang.psi.CSharpTypeDeclaration"
+		<itemPresentationProvider forClass="consulo.csharp.lang.psi.CSharpTypeDeclaration"
 								  implementationClass="org.mustbe.consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
 
-		<itemPresentationProvider forClass="org.mustbe.consulo.csharp.lang.psi.CSharpFieldDeclaration"
+		<itemPresentationProvider forClass="consulo.csharp.lang.psi.CSharpFieldDeclaration"
 								  implementationClass="org.mustbe.consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
 
-		<itemPresentationProvider forClass="org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpEnumConstantDeclarationImpl"
+		<itemPresentationProvider forClass="consulo.csharp.lang.psi.impl.source.CSharpEnumConstantDeclarationImpl"
 								  implementationClass="org.mustbe.consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
 
-		<itemPresentationProvider forClass="org.mustbe.consulo.csharp.lang.psi.CSharpPropertyDeclaration"
+		<itemPresentationProvider forClass="consulo.csharp.lang.psi.CSharpPropertyDeclaration"
 								  implementationClass="org.mustbe.consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
 
-		<itemPresentationProvider forClass="org.mustbe.consulo.csharp.lang.psi.CSharpEventDeclaration"
+		<itemPresentationProvider forClass="consulo.csharp.lang.psi.CSharpEventDeclaration"
 								  implementationClass="org.mustbe.consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
 
-		<itemPresentationProvider forClass="org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration"
+		<itemPresentationProvider forClass="consulo.csharp.lang.psi.CSharpMethodDeclaration"
 								  implementationClass="org.mustbe.consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
-		<itemPresentationProvider forClass="org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration"
+		<itemPresentationProvider forClass="consulo.csharp.lang.psi.CSharpConstructorDeclaration"
 								  implementationClass="org.mustbe.consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
-		<itemPresentationProvider forClass="org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpConversionMethodDeclarationImpl"
+		<itemPresentationProvider forClass="consulo.csharp.lang.psi.impl.source.CSharpConversionMethodDeclarationImpl"
 								  implementationClass="org.mustbe.consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
-		<itemPresentationProvider forClass="org.mustbe.consulo.csharp.lang.psi.CSharpIndexMethodDeclaration"
+		<itemPresentationProvider forClass="consulo.csharp.lang.psi.CSharpIndexMethodDeclaration"
 								  implementationClass="org.mustbe.consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
 
 		<stubIndex implementation="org.mustbe.consulo.csharp.lang.psi.impl.stub.index.TypeIndex"/>

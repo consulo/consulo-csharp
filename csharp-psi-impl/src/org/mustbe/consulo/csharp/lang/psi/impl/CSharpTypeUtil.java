@@ -36,6 +36,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.CSharpUserTyp
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import org.mustbe.consulo.csharp.lang.psi.resolve.CSharpResolveContext;
+import consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterList;
@@ -54,7 +56,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ObjectUtil;
 import com.intellij.util.SmartList;
 import consulo.csharp.lang.CSharpCastType;
-import consulo.csharp.psi.CSharpGenericParameter;
+import consulo.csharp.lang.psi.CSharpGenericParameter;
 
 /**
  * @author VISTALL

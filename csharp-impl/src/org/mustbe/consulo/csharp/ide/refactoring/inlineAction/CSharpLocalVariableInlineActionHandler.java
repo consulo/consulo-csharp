@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.mustbe.consulo.csharp.lang.CSharpLanguage;
 import org.mustbe.consulo.csharp.lang.psi.CSharpFileFactory;
-import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
+import consulo.csharp.lang.psi.CSharpLocalVariable;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpForStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLocalVariableUtil;
 import consulo.dotnet.psi.DotNetExpression;

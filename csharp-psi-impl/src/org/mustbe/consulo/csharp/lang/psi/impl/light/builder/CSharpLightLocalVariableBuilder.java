@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.lang.psi.impl.light.builder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mustbe.consulo.csharp.lang.psi.CSharpElementVisitor;
-import org.mustbe.consulo.csharp.lang.psi.CSharpLocalVariable;
+import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.dotnet.psi.DotNetType;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;

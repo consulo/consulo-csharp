@@ -24,7 +24,7 @@ import javax.swing.Icon;
 import org.jetbrains.annotations.NotNull;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
-import org.mustbe.consulo.csharp.CSharpIcons;
+import consulo.csharp.CSharpIcons;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierListOwner;

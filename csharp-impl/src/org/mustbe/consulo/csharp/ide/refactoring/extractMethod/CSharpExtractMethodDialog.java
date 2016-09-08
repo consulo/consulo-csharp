@@ -26,7 +26,7 @@ import consulo.annotations.RequiredDispatchThread;
 import org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureDialog;
 import org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpMethodDescriptor;
 import org.mustbe.consulo.csharp.ide.refactoring.changeSignature.CSharpParameterInfo;
-import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
+import consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpModifier;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDeclarationBuilder;
 import org.mustbe.consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;

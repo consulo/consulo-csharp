@@ -27,7 +27,7 @@ import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import consulo.csharp.psi.CSharpGenericParameter;
+import consulo.csharp.lang.psi.CSharpGenericParameter;
 
 /**
  * @author VISTALL

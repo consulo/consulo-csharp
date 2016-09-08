@@ -1,5 +1,6 @@
 package org.mustbe.consulo.csharp.lang.psi.impl.source.resolve;
 
+import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.mustbe.consulo.csharp.lang.psi.*;

@@ -34,6 +34,8 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpDictionaryInitialize
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpFinallyStatementImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpGenericParameterListImpl;
 import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
+import consulo.csharp.lang.psi.CSharpLocalVariable;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import consulo.csharp.module.extension.CSharpSimpleModuleExtension;

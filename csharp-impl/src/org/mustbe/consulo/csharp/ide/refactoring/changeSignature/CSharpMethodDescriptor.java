@@ -19,7 +19,7 @@ package org.mustbe.consulo.csharp.ide.refactoring.changeSignature;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mustbe.consulo.csharp.lang.psi.CSharpAccessModifier;
+import consulo.csharp.lang.psi.CSharpAccessModifier;
 import org.mustbe.consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;

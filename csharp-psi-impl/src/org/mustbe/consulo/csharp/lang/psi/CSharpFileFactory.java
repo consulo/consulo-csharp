@@ -32,6 +32,7 @@ import com.intellij.psi.SingleRootFileViewProvider;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.testFramework.LightVirtualFile;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;

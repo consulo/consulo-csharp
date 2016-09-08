@@ -33,7 +33,7 @@ import org.mustbe.consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpression
 import org.mustbe.consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodIndex;
 import org.mustbe.consulo.csharp.lang.psi.impl.stub.index.MethodIndex;
-import org.mustbe.consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
+import consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
 import org.mustbe.consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent;
 import org.mustbe.consulo.dotnet.libraryAnalyzer.NamespaceReference;
 import com.intellij.codeInsight.daemon.impl.ShowAutoImportPass;

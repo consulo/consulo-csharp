@@ -15,7 +15,7 @@ import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import consulo.csharp.psi.CSharpGenericParameter;
+import consulo.csharp.lang.psi.CSharpGenericParameter;
 import consulo.lombok.annotations.Lazy;
 
 /**
