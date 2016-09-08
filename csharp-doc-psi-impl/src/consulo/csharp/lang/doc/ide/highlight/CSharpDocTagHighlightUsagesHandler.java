@@ -18,7 +18,7 @@ package consulo.csharp.lang.doc.ide.highlight;
 
 import java.util.List;
 
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTag;
+import consulo.csharp.lang.doc.psi.CSharpDocTag;
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerBase;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;

@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.doc.ide.highlight;
 
-import org.mustbe.consulo.csharp.lang.doc.CSharpDocLanguage;
+import consulo.csharp.lang.doc.CSharpDocLanguage;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 

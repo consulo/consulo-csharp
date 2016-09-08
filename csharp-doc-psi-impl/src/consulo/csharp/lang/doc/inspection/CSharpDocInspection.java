@@ -19,10 +19,10 @@ package consulo.csharp.lang.doc.inspection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.doc.CSharpDocLanguage;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocAttribute;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocElementVisitor;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTag;
+import consulo.csharp.lang.doc.CSharpDocLanguage;
+import consulo.csharp.lang.doc.psi.CSharpDocAttribute;
+import consulo.csharp.lang.doc.psi.CSharpDocElementVisitor;
+import consulo.csharp.lang.doc.psi.CSharpDocTag;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;

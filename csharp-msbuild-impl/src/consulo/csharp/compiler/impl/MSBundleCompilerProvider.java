@@ -2,9 +2,9 @@ package consulo.csharp.compiler.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.compiler.CSharpCompilerProvider;
-import org.mustbe.consulo.csharp.compiler.CSharpCompilerUtil;
-import org.mustbe.consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
+import consulo.csharp.compiler.CSharpCompilerProvider;
+import consulo.csharp.compiler.CSharpCompilerUtil;
+import consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
 import consulo.csharp.module.extension.CSharpModuleExtension;
 import com.intellij.openapi.projectRoots.SdkType;
 import com.intellij.openapi.vfs.VirtualFile;

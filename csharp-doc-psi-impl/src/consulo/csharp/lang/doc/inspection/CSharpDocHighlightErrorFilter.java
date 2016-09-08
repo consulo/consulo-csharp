@@ -17,7 +17,7 @@
 package consulo.csharp.lang.doc.inspection;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.doc.CSharpDocLanguage;
+import consulo.csharp.lang.doc.CSharpDocLanguage;
 import com.intellij.codeInsight.highlighting.HighlightErrorFilter;
 import com.intellij.psi.PsiErrorElement;
 import consulo.annotations.RequiredReadAction;

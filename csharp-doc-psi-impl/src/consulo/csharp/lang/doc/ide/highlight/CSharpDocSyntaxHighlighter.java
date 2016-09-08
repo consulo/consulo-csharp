@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.doc.lexer.CSharpDocLexer;
+import consulo.csharp.lang.doc.lexer.CSharpDocLexer;
 import consulo.csharp.lang.doc.psi.CSharpDocTokenType;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.HighlighterColors;

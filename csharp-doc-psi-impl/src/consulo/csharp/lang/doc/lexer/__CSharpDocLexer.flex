@@ -1,9 +1,9 @@
  /* It's an automatically generated code. Do not modify it. */
-package org.mustbe.consulo.csharp.lang.doc.lexer;
+package consulo.csharp.lang.doc.lexer;
 
 import com.intellij.psi.tree.IElementType;
 import com.intellij.lexer.LexerBase;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTokenType;
+import consulo.csharp.lang.doc.psi.CSharpDocTokenType;
 
 %%
 

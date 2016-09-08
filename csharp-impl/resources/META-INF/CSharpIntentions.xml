@@ -17,34 +17,34 @@
 <idea-plugin>
 	<extensions defaultExtensionNs="com.intellij">
 		<intentionAction>
-			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.IntroduceLocalVariableIntention</className>
+			<className>consulo.csharp.ide.codeInsight.actions.IntroduceLocalVariableIntention</className>
 		</intentionAction>
 		<intentionAction>
-			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.AddProtectedInternalModifierFix</className>
+			<className>consulo.csharp.ide.codeInsight.actions.AddProtectedInternalModifierFix</className>
 		</intentionAction>
 		<intentionAction>
-			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.AddProtectedModifierFix</className>
+			<className>consulo.csharp.ide.codeInsight.actions.AddProtectedModifierFix</className>
 		</intentionAction>
 		<intentionAction>
-			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.AddInternalModifierFix</className>
+			<className>consulo.csharp.ide.codeInsight.actions.AddInternalModifierFix</className>
 		</intentionAction>
 		<intentionAction>
-			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.AddPrivateModifierFix</className>
+			<className>consulo.csharp.ide.codeInsight.actions.AddPrivateModifierFix</className>
 		</intentionAction>
 		<intentionAction>
-			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.AddPublicModifierFix</className>
-		</intentionAction>
-
-		<intentionAction>
-			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.expressionActions.lambda.DelegateToLambdaExpressionFix</className>
+			<className>consulo.csharp.ide.codeInsight.actions.AddPublicModifierFix</className>
 		</intentionAction>
 
 		<intentionAction>
-			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.expressionActions.lambda.LambdaToDelegateExpressionFix</className>
+			<className>consulo.csharp.ide.codeInsight.actions.expressionActions.lambda.DelegateToLambdaExpressionFix</className>
 		</intentionAction>
 
 		<intentionAction>
-			<className>org.mustbe.consulo.csharp.ide.codeInsight.actions.ConvertToPropertyFieldFix</className>
+			<className>consulo.csharp.ide.codeInsight.actions.expressionActions.lambda.LambdaToDelegateExpressionFix</className>
+		</intentionAction>
+
+		<intentionAction>
+			<className>consulo.csharp.ide.codeInsight.actions.ConvertToPropertyFieldFix</className>
 		</intentionAction>
 	</extensions>
 </idea-plugin>

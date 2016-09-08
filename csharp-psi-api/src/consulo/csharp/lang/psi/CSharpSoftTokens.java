@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.psi;
 
-import org.mustbe.consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.CSharpLanguage;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 

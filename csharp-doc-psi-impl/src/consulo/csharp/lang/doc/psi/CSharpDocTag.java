@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocTagInfo;
-import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocTagManager;
+import consulo.csharp.lang.doc.validation.CSharpDocTagInfo;
+import consulo.csharp.lang.doc.validation.CSharpDocTagManager;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;

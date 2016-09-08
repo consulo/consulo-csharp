@@ -18,8 +18,8 @@ package someTypeTest;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.typeParsing.SomeType;
-import org.mustbe.consulo.csharp.lang.psi.impl.msil.typeParsing.SomeTypeParser;
+import consulo.csharp.lang.psi.impl.msil.typeParsing.SomeType;
+import consulo.csharp.lang.psi.impl.msil.typeParsing.SomeTypeParser;
 
 /**
  * @author VISTALL

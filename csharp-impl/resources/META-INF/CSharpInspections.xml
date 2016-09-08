@@ -16,30 +16,30 @@
 
 <idea-plugin>
 	<extensions defaultExtensionNs="com.intellij">
-		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.obsolete.ObsoleteInspection"
+		<localInspection language="C#" implementationClass="consulo.csharp.ide.codeInspection.obsolete.ObsoleteInspection"
 						 displayName="Obsolete warnings" groupName="C#" enabledByDefault="true"/>
-		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryCast.UnnecessaryCastInspection"
+		<localInspection language="C#" implementationClass="consulo.csharp.ide.codeInspection.unnecessaryCast.UnnecessaryCastInspection"
 						 displayName="Unnecessary Cast" groupName="C#" enabledByDefault="true"/>
-		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryType.UnnecessaryTypeInspection"
+		<localInspection language="C#" implementationClass="consulo.csharp.ide.codeInspection.unnecessaryType.UnnecessaryTypeInspection"
 						 displayName="Unnecessary Type" groupName="C#" enabledByDefault="false"/>
-		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryModifier.UnnecessaryModifierInspection"
+		<localInspection language="C#" implementationClass="consulo.csharp.ide.codeInspection.unnecessaryModifier.UnnecessaryModifierInspection"
 						 displayName="Unnecessary Modifier" groupName="C#" enabledByDefault="true"/>
-		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessarySemicolon.UnnecessarySemicolonInspection"
+		<localInspection language="C#" implementationClass="consulo.csharp.ide.codeInspection.unnecessarySemicolon.UnnecessarySemicolonInspection"
 						 displayName="Unnecessary Semicolon" groupName="C#" enabledByDefault="true" level="WARNING"/>
 		<localInspection
 				language="C#"
-				implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unnecessaryNamedArgument.UnnecessaryNamedArgumentInspection"
+				implementationClass="consulo.csharp.ide.codeInspection.unnecessaryNamedArgument.UnnecessaryNamedArgumentInspection"
 				displayName="Unnecessary Named Argument" groupName="C#" enabledByDefault="true"/>
-		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unusedSymbol.UnusedSymbolLocalInspection"
+		<localInspection language="C#" implementationClass="consulo.csharp.ide.codeInspection.unusedSymbol.UnusedSymbolLocalInspection"
 						 displayName="Unused Symbol" groupName="C#" enabledByDefault="true"/>
-		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.unusedUsing.UnusedUsingInspection"
+		<localInspection language="C#" implementationClass="consulo.csharp.ide.codeInspection.unusedUsing.UnusedUsingInspection"
 						 displayName="Unused using" groupName="C#" enabledByDefault="true"/>
-		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.ide.codeInspection.languageKeywordUsage.LanguageKeywordUsageInspection"
+		<localInspection language="C#" implementationClass="consulo.csharp.ide.codeInspection.languageKeywordUsage.LanguageKeywordUsageInspection"
 						 displayName="Language Keyword Usage" groupName="C#" enabledByDefault="true" level="WEAK WARNING"/>
 
-		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.lang.doc.inspection.CSharpDocInspection"
+		<localInspection language="C#" implementationClass="consulo.csharp.lang.doc.inspection.CSharpDocInspection"
 						 displayName="C# Documentation problems" groupName="C# Documentation" enabledByDefault="true"/>
-		<localInspection language="C#" implementationClass="org.mustbe.consulo.csharp.lang.doc.inspection.CSharpDocReferenceInspection"
+		<localInspection language="C#" implementationClass="consulo.csharp.lang.doc.inspection.CSharpDocReferenceInspection"
 						 displayName="C# Documentation reference problems" groupName="C# Documentation" enabledByDefault="true" level="WARNING"/>
 	</extensions>
 </idea-plugin>

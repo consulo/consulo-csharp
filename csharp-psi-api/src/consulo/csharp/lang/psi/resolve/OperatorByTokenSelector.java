@@ -2,7 +2,7 @@ package consulo.csharp.lang.psi.resolve;
 
 import org.jetbrains.annotations.NotNull;
 import consulo.annotations.RequiredReadAction;
-import org.mustbe.consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 

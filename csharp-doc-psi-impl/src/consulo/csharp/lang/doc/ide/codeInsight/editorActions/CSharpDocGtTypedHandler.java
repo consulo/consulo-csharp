@@ -19,12 +19,12 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.doc.CSharpDocUtil;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocAttributeValue;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTag;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocText;
+import consulo.csharp.lang.doc.CSharpDocUtil;
+import consulo.csharp.lang.doc.psi.CSharpDocAttributeValue;
+import consulo.csharp.lang.doc.psi.CSharpDocTag;
+import consulo.csharp.lang.doc.psi.CSharpDocText;
 import consulo.csharp.lang.doc.psi.CSharpDocTokenType;
-import org.mustbe.consulo.csharp.lang.psi.CSharpFile;
+import consulo.csharp.lang.psi.CSharpFile;
 import com.intellij.codeInsight.editorActions.TypedHandlerDelegate;
 import com.intellij.codeInsight.highlighting.BraceMatchingUtil;
 import com.intellij.lang.ASTNode;

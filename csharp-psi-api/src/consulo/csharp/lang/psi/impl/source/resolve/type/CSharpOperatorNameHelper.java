@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.psi.tree.IElementType;
 
 /**

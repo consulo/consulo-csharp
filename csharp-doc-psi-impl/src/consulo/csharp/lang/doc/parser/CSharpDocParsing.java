@@ -17,11 +17,11 @@ package consulo.csharp.lang.doc.parser;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocElements;
+import consulo.csharp.lang.doc.psi.CSharpDocElements;
 import consulo.csharp.lang.doc.psi.CSharpDocTokenType;
-import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocAttributeInfo;
-import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocTagInfo;
-import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocTagManager;
+import consulo.csharp.lang.doc.validation.CSharpDocAttributeInfo;
+import consulo.csharp.lang.doc.validation.CSharpDocTagInfo;
+import consulo.csharp.lang.doc.validation.CSharpDocTagManager;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.CustomParsingType;
 import com.intellij.psi.tree.IElementType;

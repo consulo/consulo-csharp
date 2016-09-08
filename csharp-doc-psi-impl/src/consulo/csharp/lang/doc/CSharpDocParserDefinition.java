@@ -17,11 +17,11 @@
 package consulo.csharp.lang.doc;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.doc.lexer.DeprecatedCSharpDocLexer;
-import org.mustbe.consulo.csharp.lang.doc.parser.CSharpDocParser;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocElements;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocRoot;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTokenType;
+import consulo.csharp.lang.doc.lexer.DeprecatedCSharpDocLexer;
+import consulo.csharp.lang.doc.parser.CSharpDocParser;
+import consulo.csharp.lang.doc.psi.CSharpDocElements;
+import consulo.csharp.lang.doc.psi.CSharpDocRoot;
+import consulo.csharp.lang.doc.psi.CSharpDocTokenType;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.ParserDefinition;

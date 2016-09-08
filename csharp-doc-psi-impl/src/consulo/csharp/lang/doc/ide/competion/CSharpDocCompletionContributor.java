@@ -19,12 +19,12 @@ package consulo.csharp.lang.doc.ide.competion;
 import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocAttribute;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocTag;
+import consulo.csharp.lang.doc.psi.CSharpDocAttribute;
+import consulo.csharp.lang.doc.psi.CSharpDocTag;
 import consulo.csharp.lang.doc.psi.CSharpDocTokenType;
-import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocAttributeInfo;
-import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocTagInfo;
-import org.mustbe.consulo.csharp.lang.doc.validation.CSharpDocTagManager;
+import consulo.csharp.lang.doc.validation.CSharpDocAttributeInfo;
+import consulo.csharp.lang.doc.validation.CSharpDocTagInfo;
+import consulo.csharp.lang.doc.validation.CSharpDocTagManager;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;

@@ -1,5 +1,5 @@
 <idea-plugin>
 	<extensions defaultExtensionNs="com.intellij">
-		<lang.defineVersion language="CFS" implementationClass="org.mustbe.consulo.csharp.lang.CSharpCfsLanguageVersion"/>
+		<lang.defineVersion language="CFS" implementationClass="consulo.csharp.lang.CSharpCfsLanguageVersion"/>
 	</extensions>
 </idea-plugin>

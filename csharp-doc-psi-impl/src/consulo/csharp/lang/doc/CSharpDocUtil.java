@@ -17,7 +17,7 @@
 package consulo.csharp.lang.doc;
 
 import org.jetbrains.annotations.NotNull;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocRoot;
+import consulo.csharp.lang.doc.psi.CSharpDocRoot;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 

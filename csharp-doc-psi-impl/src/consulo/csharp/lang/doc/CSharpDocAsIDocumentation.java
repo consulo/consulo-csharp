@@ -17,7 +17,7 @@
 package consulo.csharp.lang.doc;
 
 import org.emonic.base.documentation.IDocumentation;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocRoot;
+import consulo.csharp.lang.doc.psi.CSharpDocRoot;
 
 /**
  * @author VISTALL

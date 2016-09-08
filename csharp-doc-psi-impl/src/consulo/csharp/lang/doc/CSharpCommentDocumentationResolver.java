@@ -21,13 +21,12 @@ import java.util.List;
 import org.emonic.base.documentation.IDocumentation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.csharp.lang.doc.psi.CSharpDocRoot;
-import org.mustbe.consulo.csharp.lang.psi.UsefulPsiTreeUtil;
-import consulo.dotnet.documentation.DotNetDocumentationResolver;
-import consulo.dotnet.psi.DotNetQualifiedElement;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import consulo.csharp.lang.doc.psi.CSharpDocRoot;
+import consulo.dotnet.documentation.DotNetDocumentationResolver;
+import consulo.dotnet.psi.DotNetQualifiedElement;
 
 /**
  * @author VISTALL

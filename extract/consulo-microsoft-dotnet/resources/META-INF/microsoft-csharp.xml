@@ -20,11 +20,11 @@
 								 parentKey="microsoft-dotnet"
 								 name="C#"
 								 icon="/icons/dotnet.png"
-								 immutableClass="org.mustbe.consulo.microsoft.csharp.module.extension.MicrosoftCSharpModuleExtension"
-								 mutableClass="org.mustbe.consulo.microsoft.csharp.module.extension.MicrosoftCSharpMutableModuleExtension"/>
+								 immutableClass="consulo.microsoft.csharp.module.extension.MicrosoftCSharpModuleExtension"
+								 mutableClass="consulo.microsoft.csharp.module.extension.MicrosoftCSharpMutableModuleExtension"/>
 	</extensions>
 
-	<extensions defaultExtensionNs="org.mustbe.consulo.csharp">
-		<compilerProvider id="ms-internal" implementation="org.mustbe.consulo.microsoft.csharp.compiler.MicrosoftInternalCompilerProvider" order="first"/>
+	<extensions defaultExtensionNs="consulo.csharp">
+		<compilerProvider id="ms-internal" implementation="consulo.microsoft.csharp.compiler.MicrosoftInternalCompilerProvider" order="first"/>
 	</extensions>
 </idea-plugin>
