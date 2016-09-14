@@ -67,7 +67,7 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 	{
 		NewModuleContext.Group group = context.createGroup("csharp", "C#");
 
-		group.add("Empty", AllIcons.FileTypes.Unknown, new NewModuleBuilderProcessor<CSharpSdkPanel>()
+		group.add("Empty", AllIcons.FileTypes.Any_type, new NewModuleBuilderProcessor<CSharpSdkPanel>()
 		{
 			@NotNull
 			@Override
