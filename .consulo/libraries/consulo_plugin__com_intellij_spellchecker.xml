@@ -1,8 +1,7 @@
 <component name="libraryTable">
   <library name="consulo-plugin: com.intellij.spellchecker">
     <binaries>
-      <root url="file://$PROJECT_DIR$/dep/com.intellij.spellchecker/lib" />
+      <root url="jar://$PROJECT_DIR$/dep/com.intellij.spellchecker/lib/spellchecker.jar!/" />
     </binaries>
-    <jarDirectory url="file://$PROJECT_DIR$/dep/com.intellij.spellchecker/lib" recursive="false" />
   </library>
 </component>

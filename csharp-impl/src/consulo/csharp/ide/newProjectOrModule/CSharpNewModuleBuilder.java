@@ -20,8 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.CSharpIcons;
-import consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.fileEditor.ex.FileEditorManagerEx;
 import com.intellij.openapi.project.DumbService;
@@ -29,13 +27,14 @@ import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.vfs.VirtualFile;
+import consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import consulo.dotnet.DotNetTarget;
 import consulo.dotnet.module.extension.DotNetMutableModuleExtension;
 import consulo.dotnet.roots.orderEntry.DotNetLibraryOrderEntryImpl;
-import consulo.ide.impl.NewModuleBuilder;
-import consulo.ide.impl.NewModuleBuilderProcessor;
-import consulo.ide.impl.NewModuleContext;
 import consulo.ide.impl.UnzipNewModuleBuilderProcessor;
+import consulo.ide.newProject.NewModuleBuilder;
+import consulo.ide.newProject.NewModuleBuilderProcessor;
+import consulo.ide.newProject.NewModuleContext;
 import consulo.roots.ModifiableModuleRootLayer;
 import consulo.roots.impl.ModuleRootLayerImpl;
 
@@ -66,14 +65,9 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 	@Override
 	public void setupContext(@NotNull NewModuleContext context)
 	{
-		context.addItem("#CSharp", "C#", CSharpIcons.FileType);
-		context.addItem("#CSharpEmpty", "Empty", AllIcons.FileTypes.Unknown);
-		context.addItem("#CSharpConsoleApplication", "Console Application", AllIcons.RunConfigurations.Application);
+		NewModuleContext.Group group = context.createGroup("csharp", "C#");
 
-		context.setupItem(new String[]{
-				"#CSharp",
-				"#CSharpEmpty"
-		}, new NewModuleBuilderProcessor<CSharpSdkPanel>()
+		group.add("Empty", AllIcons.FileTypes.Unknown, new NewModuleBuilderProcessor<CSharpSdkPanel>()
 		{
 			@NotNull
 			@Override
@@ -83,18 +77,13 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 			}
 
 			@Override
-			public void setupModule(@NotNull CSharpSdkPanel panel,
-					@NotNull ContentEntry contentEntry,
-					@NotNull ModifiableRootModel modifiableRootModel)
+			public void setupModule(@NotNull CSharpSdkPanel panel, @NotNull ContentEntry contentEntry, @NotNull ModifiableRootModel modifiableRootModel)
 			{
 				defaultSetup(panel, modifiableRootModel);
 			}
 		});
 
-		context.setupItem(new String[]{
-				"#CSharp",
-				"#CSharpConsoleApplication"
-		}, new UnzipNewModuleBuilderProcessor<CSharpSdkPanel>("/moduleTemplates/#CSharpConsoleApplication.zip")
+		group.add("Console Application", AllIcons.RunConfigurations.Application, new UnzipNewModuleBuilderProcessor<CSharpSdkPanel>("/moduleTemplates/#CSharpConsoleApplication.zip")
 		{
 			@NotNull
 			@Override
@@ -104,9 +93,7 @@ public class CSharpNewModuleBuilder implements NewModuleBuilder
 			}
 
 			@Override
-			public void setupModule(@NotNull CSharpSdkPanel panel,
-					@NotNull final ContentEntry contentEntry,
-					@NotNull final ModifiableRootModel modifiableRootModel)
+			public void setupModule(@NotNull CSharpSdkPanel panel, @NotNull final ContentEntry contentEntry, @NotNull final ModifiableRootModel modifiableRootModel)
 			{
 				unzip(modifiableRootModel);
 
