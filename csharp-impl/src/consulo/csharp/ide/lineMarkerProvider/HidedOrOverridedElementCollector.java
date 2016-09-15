@@ -140,7 +140,7 @@ public class HidedOrOverridedElementCollector implements LineMarkerCollector
 					icon = AllIcons.Gutter.OverridenMethod;
 				}
 			}
-			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.UPDATE_OVERRIDEN_MARKERS, new ConstantFunction<PsiElement,
+			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.LINE_MARKERS, new ConstantFunction<PsiElement,
 					String>("Searching for overrided"), OurHandler.INSTANCE, GutterIconRenderer.Alignment.RIGHT);
 
 			consumer.consume(lineMarkerInfo);

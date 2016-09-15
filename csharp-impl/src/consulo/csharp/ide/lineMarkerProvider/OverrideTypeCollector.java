@@ -58,7 +58,7 @@ public class OverrideTypeCollector implements LineMarkerCollector
 			if(hasChild(parent))
 			{
 				final Icon icon = parent.isInterface() ? AllIcons.Gutter.ImplementedMethod : AllIcons.Gutter.OverridenMethod;
-				LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.UPDATE_OVERRIDEN_MARKERS, FunctionUtil.constant("Searching for overriding"), new GutterIconNavigationHandler<PsiElement>()
+				LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.LINE_MARKERS, FunctionUtil.constant("Searching for overriding"), new GutterIconNavigationHandler<PsiElement>()
 				{
 					@Override
 					@RequiredDispatchThread

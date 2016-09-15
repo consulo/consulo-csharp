@@ -97,7 +97,7 @@ public class PartialTypeCollector implements LineMarkerCollector
 				return;
 			}
 
-			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), AllIcons.Nodes.TreeDownArrow, Pass.UPDATE_OVERRIDEN_MARKERS,
+			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), AllIcons.Nodes.TreeDownArrow, Pass.LINE_MARKERS,
 					new Function<PsiElement, String>()
 
 			{

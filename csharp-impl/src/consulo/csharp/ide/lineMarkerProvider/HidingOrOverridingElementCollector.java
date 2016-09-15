@@ -121,7 +121,7 @@ public class HidingOrOverridingElementCollector implements LineMarkerCollector
 				}
 			}
 
-			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.UPDATE_OVERRIDEN_MARKERS, new ConstantFunction<PsiElement,
+			LineMarkerInfo<PsiElement> lineMarkerInfo = new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), icon, Pass.LINE_MARKERS, new ConstantFunction<PsiElement,
 					String>("Searching for overriding"), OurHandler.INSTANCE, GutterIconRenderer.Alignment.RIGHT);
 
 			consumer.consume(lineMarkerInfo);
