@@ -99,6 +99,6 @@ public class CSharpSdkPanel extends JPanel
 	@Nullable
 	public Sdk getSdk()
 	{
-		return (Sdk) myComboBox.getSelectedItem();
+		return myComboBox.getSelectedSdk();
 	}
 }
