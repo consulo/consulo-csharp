@@ -26,16 +26,15 @@ import javax.swing.JPanel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.projectRoots.SdkTable;
-import com.intellij.openapi.projectRoots.SdkTypeId;
-import com.intellij.openapi.projectRoots.impl.SdkListCellRenderer;
+import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.VerticalFlowLayout;
-import com.intellij.ui.ColoredListCellRendererWrapper;
+import com.intellij.ui.ColoredListCellRenderer;
 import com.intellij.util.SmartList;
 import consulo.dotnet.DotNetTarget;
 import consulo.module.extension.ModuleExtensionProviderEP;
+import consulo.roots.ui.configuration.SdkComboBox;
 
 /**
  * @author VISTALL
@@ -43,8 +42,8 @@ import consulo.module.extension.ModuleExtensionProviderEP;
  */
 public class CSharpSdkPanel extends JPanel
 {
-	private ComboBox myTargetComboBox;
-	private ComboBox myComboBox;
+	private ComboBox<DotNetTarget> myTargetComboBox;
+	private SdkComboBox myComboBox;
 
 	private JComponent myTargetComponent;
 
@@ -52,22 +51,18 @@ public class CSharpSdkPanel extends JPanel
 	{
 		super(new VerticalFlowLayout());
 
-		myTargetComboBox = new ComboBox(DotNetTarget.values());
-		myTargetComboBox.setRenderer(new ColoredListCellRendererWrapper<DotNetTarget>()
+		myTargetComboBox = new ComboBox<>(DotNetTarget.values());
+		myTargetComboBox.setRenderer(new ColoredListCellRenderer<DotNetTarget>()
 		{
 			@Override
-			protected void doCustomize(JList list, DotNetTarget value, int index, boolean selected, boolean hasFocus)
+			protected void customizeCellRenderer(@NotNull JList<? extends DotNetTarget> jList, DotNetTarget target, int i, boolean b, boolean b1)
 			{
-				append(value.getDescription());
+				append(target.getDescription());
 			}
 		});
 		add(myTargetComponent = LabeledComponent.left(myTargetComboBox, "Target"));
 
-		SdkTable sdkTable = SdkTable.getInstance();
-		myComboBox = new ComboBox();
-		myComboBox.setRenderer(new SdkListCellRenderer("<none>"));
-
-		List<String> validSdkTypes = new SmartList<String>();
+		List<String> validSdkTypes = new SmartList<>();
 		for(Map.Entry<String, String[]> entry : CSharpNewModuleBuilder.ourExtensionMapping.entrySet())
 		{
 			// need check C# extension
@@ -79,14 +74,10 @@ public class CSharpSdkPanel extends JPanel
 			validSdkTypes.add(entry.getKey());
 		}
 
-		for(Sdk o : sdkTable.getAllSdks())
-		{
-			SdkTypeId sdkType = o.getSdkType();
-			if(validSdkTypes.contains(sdkType.getName()))
-			{
-				myComboBox.addItem(o);
-			}
-		}
+		ProjectSdksModel model = new ProjectSdksModel();
+		model.reset();
+
+		myComboBox = new SdkComboBox(model, sdkTypeId -> validSdkTypes.contains(sdkTypeId.getName()), false);
 
 		add(LabeledComponent.left(myComboBox, ".NET SDK"));
 	}
