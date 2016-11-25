@@ -17,12 +17,12 @@
 package consulo.csharp.module;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import consulo.module.extension.impl.ModuleInheritableNamedPointerImpl;
+import consulo.roots.ModuleRootLayer;
 import consulo.util.pointers.NamedPointer;
 
 /**
@@ -33,9 +33,9 @@ public class CSharpLanguageVersionPointer extends ModuleInheritableNamedPointerI
 {
 	private final String myExtensionId;
 
-	public CSharpLanguageVersionPointer(@NotNull Project project, @NotNull String id)
+	public CSharpLanguageVersionPointer(@NotNull ModuleRootLayer layer, @NotNull String id)
 	{
-		super(project, "language-version");
+		super(layer, "language-version");
 		myExtensionId = id;
 	}
 
@@ -63,7 +63,7 @@ public class CSharpLanguageVersionPointer extends ModuleInheritableNamedPointerI
 
 	@NotNull
 	@Override
-	public NamedPointer<CSharpLanguageVersion> getPointer(@NotNull Project project, @NotNull String name)
+	public NamedPointer<CSharpLanguageVersion> getPointer(@NotNull ModuleRootLayer layer, @NotNull String name)
 	{
 		return CSharpLanguageVersion.valueOf(name);
 	}

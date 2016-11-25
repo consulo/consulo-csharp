@@ -19,11 +19,10 @@ package consulo.csharp.module.extension;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import consulo.bundle.SdkUtil;
-import consulo.csharp.module.extension.CSharpModuleExtension;
 import consulo.module.extension.impl.ModuleInheritableNamedPointerImpl;
+import consulo.roots.ModuleRootLayer;
 import consulo.util.pointers.NamedPointer;
 
 /**
@@ -34,9 +33,9 @@ public class CSharpCustomCompilerSdkPointer extends ModuleInheritableNamedPointe
 {
 	private final String myExtensionId;
 
-	public CSharpCustomCompilerSdkPointer(@NotNull Project project, @NotNull String id)
+	public CSharpCustomCompilerSdkPointer(@NotNull ModuleRootLayer layer, @NotNull String id)
 	{
-		super(project, "custom-compiler-sdk");
+		super(layer, "custom-compiler-sdk");
 		myExtensionId = id;
 	}
 
@@ -64,7 +63,7 @@ public class CSharpCustomCompilerSdkPointer extends ModuleInheritableNamedPointe
 
 	@NotNull
 	@Override
-	public NamedPointer<Sdk> getPointer(@NotNull Project project, @NotNull String name)
+	public NamedPointer<Sdk> getPointer(@NotNull ModuleRootLayer layer, @NotNull String name)
 	{
 		return SdkUtil.createPointer(name);
 	}

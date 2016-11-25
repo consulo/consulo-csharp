@@ -3,13 +3,11 @@ package consulo.csharp.module.extension;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.CSharpFileType;
-import consulo.csharp.module.CSharpLanguageVersionPointer;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
+import consulo.csharp.lang.CSharpFileType;
+import consulo.csharp.module.CSharpLanguageVersionPointer;
 import consulo.dotnet.compiler.DotNetCompileFailedException;
 import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import consulo.dotnet.module.extension.DotNetModuleLangExtension;
@@ -25,10 +23,10 @@ public class BaseCSharpSimpleModuleExtension<T extends BaseCSharpSimpleModuleExt
 	protected final CSharpLanguageVersionPointer myLanguageVersionPointer;
 	protected boolean myAllowUnsafeCode;
 
-	public BaseCSharpSimpleModuleExtension(@NotNull String id, @NotNull ModuleRootLayer module)
+	public BaseCSharpSimpleModuleExtension(@NotNull String id, @NotNull ModuleRootLayer layer)
 	{
-		super(id, module);
-		myLanguageVersionPointer = new CSharpLanguageVersionPointer(getProject(), id);
+		super(id, layer);
+		myLanguageVersionPointer = new CSharpLanguageVersionPointer(layer, id);
 	}
 
 	@Override

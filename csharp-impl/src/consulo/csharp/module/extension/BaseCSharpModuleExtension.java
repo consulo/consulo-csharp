@@ -23,14 +23,6 @@ import java.util.List;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.compiler.CSharpPlatform;
-import consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
-import consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
-import consulo.csharp.lang.psi.CSharpAttribute;
-import consulo.csharp.lang.psi.CSharpAttributeList;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.impl.stub.index.AttributeListIndex;
-import consulo.csharp.lang.psi.impl.stub.index.MethodIndex;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.projectRoots.Sdk;
@@ -40,7 +32,14 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.module.extension.CSharpModuleExtension;
+import consulo.csharp.compiler.CSharpPlatform;
+import consulo.csharp.compiler.MSBaseDotNetCompilerOptionsBuilder;
+import consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
+import consulo.csharp.lang.psi.CSharpAttribute;
+import consulo.csharp.lang.psi.CSharpAttributeList;
+import consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.csharp.lang.psi.impl.stub.index.AttributeListIndex;
+import consulo.csharp.lang.psi.impl.stub.index.MethodIndex;
 import consulo.dotnet.DotNetRunUtil;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
@@ -65,10 +64,10 @@ public abstract class BaseCSharpModuleExtension<T extends BaseCSharpModuleExtens
 	protected String myCompilerTarget;
 	protected CSharpCustomCompilerSdkPointer myCustomCompilerSdkPointer;
 
-	public BaseCSharpModuleExtension(@NotNull String id, @NotNull ModuleRootLayer module)
+	public BaseCSharpModuleExtension(@NotNull String id, @NotNull ModuleRootLayer layer)
 	{
-		super(id, module);
-		myCustomCompilerSdkPointer = new CSharpCustomCompilerSdkPointer(getProject(), id);
+		super(id, layer);
+		myCustomCompilerSdkPointer = new CSharpCustomCompilerSdkPointer(layer, id);
 	}
 
 	@Override
