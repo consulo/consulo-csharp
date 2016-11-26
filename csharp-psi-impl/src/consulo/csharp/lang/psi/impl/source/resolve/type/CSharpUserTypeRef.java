@@ -1,8 +1,8 @@
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import consulo.lombok.annotations.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -16,7 +16,7 @@ import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.psi.PsiElement;
+import consulo.lombok.annotations.Lazy;
 
 /**
  * @author VISTALL
@@ -186,7 +186,7 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 			DotNetTypeRef typeRef = ((CSharpTypeDefStatement) resolve).toTypeRef();
 			return typeRef.resolve();
 		}
-		return new Result<PsiElement>(resolve, createExtractor(resolve));
+		return new Result<>(resolve, createExtractor(resolve));
 	}
 
 	@NotNull

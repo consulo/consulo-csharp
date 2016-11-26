@@ -22,6 +22,7 @@ import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTupleType;
 import consulo.csharp.lang.psi.CSharpTupleVariable;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTupleTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
@@ -40,7 +41,14 @@ public class CSharpTupleTypeImpl extends CSharpTypeElementImpl implements CSharp
 	@Override
 	protected DotNetTypeRef toTypeRefImpl()
 	{
-		return DotNetTypeRef.ERROR_TYPE;
+		CSharpTupleVariable[] variables = getVariables();
+		DotNetTypeRef[] typeRefs = new DotNetTypeRef[variables.length];
+		for(int i = 0; i < variables.length; i++)
+		{
+			CSharpTupleVariable variable = variables[i];
+			typeRefs[i] = variable.toTypeRef(true);
+		}
+		return new CSharpTupleTypeRef(this, typeRefs, variables);
 	}
 
 	@Override

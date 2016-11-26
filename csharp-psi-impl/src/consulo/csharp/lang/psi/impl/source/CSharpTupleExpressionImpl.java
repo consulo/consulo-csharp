@@ -20,6 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.ASTNode;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTupleTypeRef;
+import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
@@ -33,12 +35,27 @@ public class CSharpTupleExpressionImpl extends CSharpExpressionImpl
 		super(node);
 	}
 
+	@NotNull
+	@RequiredReadAction
+	public CSharpTupleElementImpl[] getElements()
+	{
+		return findChildrenByClass(CSharpTupleElementImpl.class);
+	}
+
 	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
-		return DotNetTypeRef.ERROR_TYPE;
+		CSharpTupleElementImpl[] elements = getElements();
+		DotNetTypeRef[] typeRefs = new DotNetTypeRef[elements.length];
+		for(int i = 0; i < elements.length; i++)
+		{
+			CSharpTupleElementImpl element = elements[i];
+			DotNetExpression expression = element.getExpression();
+			typeRefs[i] = expression == null ? DotNetTypeRef.ERROR_TYPE : expression.toTypeRef(resolveFromParent);
+		}
+		return new CSharpTupleTypeRef(this, typeRefs, elements);
 	}
 
 	@Override

@@ -16,11 +16,13 @@
 
 package consulo.csharp.lang.psi.impl.light.builder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.SmartList;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.dotnet.psi.DotNetExpression;
@@ -29,8 +31,6 @@ import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -39,7 +39,7 @@ import com.intellij.psi.PsiElement;
 public abstract class CSharpLightVariableBuilder<T extends CSharpLightVariableBuilder<T>> extends CSharpLightNamedElementBuilder<T> implements
 		DotNetVariable
 {
-	private List<DotNetModifier> myModifiers = new ArrayList<DotNetModifier>();
+	private List<CSharpModifier> myModifiers = new SmartList<>();
 	private boolean myConstant;
 	private DotNetTypeRef myTypeRef;
 
@@ -106,7 +106,6 @@ public abstract class CSharpLightVariableBuilder<T extends CSharpLightVariableBu
 		return null;
 	}
 
-
 	@RequiredReadAction
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
@@ -114,7 +113,7 @@ public abstract class CSharpLightVariableBuilder<T extends CSharpLightVariableBu
 		return myModifiers.contains(CSharpModifier.as(modifier));
 	}
 
-	public void addModifier(DotNetModifier modifierWithMask)
+	public void addModifier(CSharpModifier modifierWithMask)
 	{
 		myModifiers.add(modifierWithMask);
 	}

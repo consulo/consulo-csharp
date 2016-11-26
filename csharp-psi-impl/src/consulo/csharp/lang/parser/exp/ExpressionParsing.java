@@ -992,10 +992,8 @@ public class ExpressionParsing extends SharedParsingHelpers
 		PsiBuilder.Marker mark = builder.mark();
 		if(builder.getTokenType() == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == CSharpTokens.COLON)
 		{
-			PsiBuilder.Marker refMarker = builder.mark();
-			builder.advanceLexer(); // identifier
-			refMarker.done(CSharpElements.REFERENCE_EXPRESSION);
-			builder.advanceLexer();
+			doneIdentifier(builder, NONE);
+			builder.advanceLexer(); // colon
 			if(parse(builder, set) == null)
 			{
 				builder.error("Expression expected");

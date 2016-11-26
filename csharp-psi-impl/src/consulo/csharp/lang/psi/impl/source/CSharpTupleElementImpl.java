@@ -16,24 +16,84 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.util.IncorrectOperationException;
+import consulo.annotations.RequiredReadAction;
+import consulo.annotations.RequiredWriteAction;
+import consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpIdentifier;
+import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.CSharpTupleTypeDeclaration;
+import consulo.dotnet.psi.DotNetExpression;
 
 /**
  * @author VISTALL
  * @since 26-Nov-16.
  */
-public class CSharpTupleElementImpl extends CSharpElementImpl
+public class CSharpTupleElementImpl extends CSharpElementImpl implements PsiNameIdentifierOwner
 {
 	public CSharpTupleElementImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
+	@RequiredReadAction
+	@Override
+	public String getName()
+	{
+		CSharpIdentifier element = findChildByClass(CSharpIdentifier.class);
+		return element == null ? null : CSharpPsiUtilImpl.getNameWithoutAt(element.getValue());	}
+
+	@Nullable
+	@RequiredReadAction
+	public DotNetExpression getExpression()
+	{
+		return findChildByClass(DotNetExpression.class);
+	}
+
 	@Override
 	public void accept(@NotNull CSharpElementVisitor visitor)
 	{
 		visitor.visitTupleElement(this);
+	}
+
+	@RequiredReadAction
+	@Override
+	public int getTextOffset()
+	{
+		PsiElement nameIdentifier = getNameIdentifier();
+		return nameIdentifier == null ? super.getTextOffset() : nameIdentifier.getTextOffset();
+	}
+
+	@RequiredReadAction
+	@Nullable
+	@Override
+	public PsiElement getNameIdentifier()
+	{
+		return findChildByClass(CSharpIdentifier.class);
+	}
+
+	@RequiredWriteAction
+	@Override
+	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
+	{
+		CSharpRefactoringUtil.replaceNameIdentifier(this, s);
+		return this;
+	}
+
+	@Override
+	public boolean isEquivalentTo(PsiElement another)
+	{
+		PsiElement tupleElement = another.getUserData(CSharpTupleTypeDeclaration.TUPLE_ELEMENT);
+		if(tupleElement != null && another.isEquivalentTo(tupleElement))
+		{
+			return true;
+		}
+		return super.isEquivalentTo(another);
 	}
 }

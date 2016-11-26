@@ -28,6 +28,7 @@ import consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTupleVariable;
+import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.CSharpTupleTypeDeclaration;
 import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetModifier;
@@ -153,5 +154,16 @@ public class CSharpStubTupleVariableImpl extends CSharpStubElementImpl<CSharpVar
 	public DotNetModifierList getModifierList()
 	{
 		return null;
+	}
+
+	@Override
+	public boolean isEquivalentTo(PsiElement another)
+	{
+		PsiElement tupleElement = another.getUserData(CSharpTupleTypeDeclaration.TUPLE_ELEMENT);
+		if(tupleElement != null && another.isEquivalentTo(tupleElement))
+		{
+			return true;
+		}
+		return super.isEquivalentTo(another);
 	}
 }

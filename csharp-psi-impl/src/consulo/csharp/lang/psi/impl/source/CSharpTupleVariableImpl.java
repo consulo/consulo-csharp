@@ -19,9 +19,11 @@ package consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTupleVariable;
+import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.CSharpTupleTypeDeclaration;
 import consulo.dotnet.psi.DotNetType;
 
 /**
@@ -47,5 +49,16 @@ public class CSharpTupleVariableImpl extends CSharpVariableImpl implements CShar
 	public DotNetType getType()
 	{
 		return findChildByClass(DotNetType.class);
+	}
+
+	@Override
+	public boolean isEquivalentTo(PsiElement another)
+	{
+		PsiElement tupleElement = another.getUserData(CSharpTupleTypeDeclaration.TUPLE_ELEMENT);
+		if(tupleElement != null && another.isEquivalentTo(tupleElement))
+		{
+			return true;
+		}
+		return super.isEquivalentTo(another);
 	}
 }
