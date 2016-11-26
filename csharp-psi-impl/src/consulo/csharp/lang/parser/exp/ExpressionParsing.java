@@ -840,6 +840,12 @@ public class ExpressionParsing extends SharedParsingHelpers
 				return lambda;
 			}
 
+			PsiBuilder.Marker tuple = parseTupleExpressionAfterLPar(builder, modifierSet);
+			if(tuple != null)
+			{
+				return tuple;
+			}
+
 			final PsiBuilder.Marker parenth = builder.mark();
 			builder.advanceLexer();
 
@@ -922,6 +928,90 @@ public class ExpressionParsing extends SharedParsingHelpers
 		}
 
 		return null;
+	}
+
+	private static PsiBuilder.Marker parseTupleExpressionAfterLPar(CSharpBuilderWrapper builder, ModifierSet set)
+	{
+		PsiBuilder.Marker marker = builder.mark();
+		builder.advanceLexer();
+
+		// expression like '(name: test)'
+		if(builder.getTokenType() == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == CSharpTokens.COLON)
+		{
+			marker.rollbackTo();
+			return parseTupleExpression(builder, set);
+		}
+		else
+		{
+			PsiBuilder.Marker expression = parse(builder, set);
+			if(expression == null || builder.getTokenType() != CSharpTokens.COMMA)
+			{
+				marker.rollbackTo();
+				return null;
+			}
+			marker.rollbackTo();
+			return parseTupleExpression(builder, set);
+		}
+	}
+
+	private static PsiBuilder.Marker parseTupleExpression(CSharpBuilderWrapper builder, ModifierSet set)
+	{
+		if(builder.getTokenType() == LPAR)
+		{
+			PsiBuilder.Marker mark = builder.mark();
+			builder.advanceLexer();
+
+			while(true)
+			{
+				parseTupleElement(builder, set);
+				if(builder.getTokenType() != COMMA)
+				{
+					break;
+				}
+				else
+				{
+					builder.advanceLexer();
+				}
+			}
+
+			expect(builder, RPAR, "')' expected");
+			mark.done(TUPLE_EXPRESSION);
+			return mark;
+		}
+		return null;
+	}
+
+	private static boolean parseTupleElement(CSharpBuilderWrapper builder, ModifierSet set)
+	{
+		if(builder.getTokenType() == CSharpTokens.COMMA || builder.getTokenType() == CSharpTokens.RPAR)
+		{
+			return false;
+		}
+
+		boolean valid = true;
+		PsiBuilder.Marker mark = builder.mark();
+		if(builder.getTokenType() == CSharpTokens.IDENTIFIER && builder.lookAhead(1) == CSharpTokens.COLON)
+		{
+			PsiBuilder.Marker refMarker = builder.mark();
+			builder.advanceLexer(); // identifier
+			refMarker.done(CSharpElements.REFERENCE_EXPRESSION);
+			builder.advanceLexer();
+			if(parse(builder, set) == null)
+			{
+				builder.error("Expression expected");
+				valid = false;
+			}
+		}
+		else
+		{
+			if(parse(builder, set) == null)
+			{
+				builder.error("Expression expected");
+				valid = false;
+			}
+		}
+		mark.done(CSharpElements.TUPLE_ELEMENT);
+		return valid;
 	}
 
 	private static PsiBuilder.Marker parseArglistExpression(CSharpBuilderWrapper builder, ModifierSet set)

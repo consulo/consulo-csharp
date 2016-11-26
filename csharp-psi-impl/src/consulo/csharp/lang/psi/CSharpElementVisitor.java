@@ -17,8 +17,7 @@
 package consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.psi.CSharpGenericConstraintTypeValue;
-import consulo.csharp.lang.psi.CSharpLocalVariable;
+import com.intellij.psi.PsiElementVisitor;
 import consulo.csharp.lang.psi.impl.source.*;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterList;
@@ -28,7 +27,6 @@ import consulo.dotnet.psi.DotNetPointerType;
 import consulo.dotnet.psi.DotNetTypeList;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.psi.DotNetXXXAccessor;
-import com.intellij.psi.PsiElementVisitor;
 
 /**
  * @author VISTALL
@@ -151,6 +149,26 @@ public class CSharpElementVisitor extends PsiElementVisitor
 	public void visitFieldDeclaration(CSharpFieldDeclaration declaration)
 	{
 		visitVariable(declaration);
+	}
+
+	public void visitTupleType(CSharpTupleType type)
+	{
+		visitElement(type);
+	}
+
+	public void visitTupleVariable(CSharpTupleVariable variable)
+	{
+		visitVariable(variable);
+	}
+
+	public void visitTupleExpression(CSharpTupleExpressionImpl expression)
+	{
+		visitElement(expression);
+	}
+
+	public void visitTupleElement(CSharpTupleElementImpl element)
+	{
+		visitElement(element);
 	}
 
 	public void visitPointerType(DotNetPointerType type)

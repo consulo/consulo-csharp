@@ -113,7 +113,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 
 			if(variables != null)
 			{
-				defVariables = new HashSet<String>(variables);
+				defVariables = new HashSet<>(variables);
 			}
 		}
 
@@ -134,7 +134,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 	@Override
 	public int getStubVersion()
 	{
-		return 83;
+		return 85;
 	}
 
 	@NotNull

@@ -79,6 +79,14 @@ public interface CSharpElements
 
 	IElementType POINTER_TYPE = new ElementTypeAsPsiFactory("POINTER_TYPE", CSharpLanguage.INSTANCE, CSharpPointerTypeImpl.class);
 
+	IElementType TUPLE_TYPE = new ElementTypeAsPsiFactory("TUPLE_TYPE", CSharpLanguage.INSTANCE, CSharpTupleTypeImpl.class);
+
+	IElementType TUPLE_VARIABLE = new ElementTypeAsPsiFactory("TUPLE_VARIABLE", CSharpLanguage.INSTANCE, CSharpTupleVariableImpl.class);
+
+	IElementType TUPLE_ELEMENT = new ElementTypeAsPsiFactory("TUPLE_ELEMENT", CSharpLanguage.INSTANCE, CSharpTupleElementImpl.class);
+
+	IElementType TUPLE_EXPRESSION = new ElementTypeAsPsiFactory("TUPLE_ELEMENT", CSharpLanguage.INSTANCE, CSharpTupleExpressionImpl.class);
+
 	IElementType NULLABLE_TYPE = new ElementTypeAsPsiFactory("NULLABLE_TYPE", CSharpLanguage.INSTANCE, CSharpNullableTypeImpl.class);
 
 	IElementType NATIVE_TYPE = new ElementTypeAsPsiFactory("NATIVE_TYPE", CSharpLanguage.INSTANCE, CSharpNativeTypeImpl.class);
@@ -93,11 +101,11 @@ public interface CSharpElements
 
 	IElementType EMPTY_TYPE_ARGUMENTS = new ElementTypeAsPsiFactory("EMPTY_TYPE_ARGUMENTS", CSharpLanguage.INSTANCE, CSharpEmptyTypeListImpl.class);
 
-	IElementType CONSTANT_EXPRESSION = new ElementTypeAsPsiFactory("CONSTANT_EXPRESSION", CSharpLanguage.INSTANCE,
-			CSharpConstantExpressionImpl.class);
+	IElementType CONSTANT_EXPRESSION = new ElementTypeAsPsiFactory("CONSTANT_EXPRESSION", CSharpLanguage.INSTANCE, CSharpConstantExpressionImpl
+			.class);
 
-	IElementType REFERENCE_EXPRESSION = new ElementTypeAsPsiFactory("REFERENCE_EXPRESSION", CSharpLanguage.INSTANCE,
-			CSharpReferenceExpressionImpl.class);
+	IElementType REFERENCE_EXPRESSION = new ElementTypeAsPsiFactory("REFERENCE_EXPRESSION", CSharpLanguage.INSTANCE, CSharpReferenceExpressionImpl
+			.class);
 
 	IElementType METHOD_CALL_EXPRESSION = new ElementTypeAsPsiFactory("METHOD_CALL_EXPRESSION", CSharpLanguage.INSTANCE,
 			CSharpMethodCallExpressionImpl.class);
@@ -131,17 +139,17 @@ public interface CSharpElements
 
 	IElementType IDENTIFIER = new ElementTypeAsPsiFactory("IDENTIFIER", CSharpLanguage.INSTANCE, CSharpIdentifierImpl.class);
 
-	IElementType __ARGLIST_EXPRESSION = new ElementTypeAsPsiFactory("__ARGLIST_EXPRESSION", CSharpLanguage.INSTANCE,
-			CSharpArglistExpressionImpl.class);
+	IElementType __ARGLIST_EXPRESSION = new ElementTypeAsPsiFactory("__ARGLIST_EXPRESSION", CSharpLanguage.INSTANCE, CSharpArglistExpressionImpl
+			.class);
 
-	IElementType __MAKEREF_EXPRESSION = new ElementTypeAsPsiFactory("__MAKEREF_EXPRESSION", CSharpLanguage.INSTANCE,
-			CSharpMakeRefExpressionImpl.class);
+	IElementType __MAKEREF_EXPRESSION = new ElementTypeAsPsiFactory("__MAKEREF_EXPRESSION", CSharpLanguage.INSTANCE, CSharpMakeRefExpressionImpl
+			.class);
 
-	IElementType __REFTYPE_EXPRESSION = new ElementTypeAsPsiFactory("__REFTYPE_EXPRESSION", CSharpLanguage.INSTANCE,
-			CSharpRefTypeExpressionImpl.class);
+	IElementType __REFTYPE_EXPRESSION = new ElementTypeAsPsiFactory("__REFTYPE_EXPRESSION", CSharpLanguage.INSTANCE, CSharpRefTypeExpressionImpl
+			.class);
 
-	IElementType __REFVALUE_EXPRESSION = new ElementTypeAsPsiFactory("__REFVALUE_EXPRESSION", CSharpLanguage.INSTANCE,
-			CSharpRefValueExpressionImpl.class);
+	IElementType __REFVALUE_EXPRESSION = new ElementTypeAsPsiFactory("__REFVALUE_EXPRESSION", CSharpLanguage.INSTANCE, CSharpRefValueExpressionImpl
+			.class);
 
 	IElementType STACKALLOC_EXPRESSION = new ElementTypeAsPsiFactory("STACKALLOC_EXPRESSION", CSharpLanguage.INSTANCE,
 			CSharpStackAllocExpressionImpl.class);
@@ -158,8 +166,8 @@ public interface CSharpElements
 	IElementType ASSIGNMENT_EXPRESSION = new ElementTypeAsPsiFactory("ASSIGNMENT_EXPRESSION", CSharpLanguage.INSTANCE,
 			CSharpAssignmentExpressionImpl.class);
 
-	IElementType TYPE_CAST_EXPRESSION = new ElementTypeAsPsiFactory("TYPE_CAST_EXPRESSION", CSharpLanguage.INSTANCE,
-			CSharpTypeCastExpressionImpl.class);
+	IElementType TYPE_CAST_EXPRESSION = new ElementTypeAsPsiFactory("TYPE_CAST_EXPRESSION", CSharpLanguage.INSTANCE, CSharpTypeCastExpressionImpl
+			.class);
 
 	IElementType IF_STATEMENT = new ElementTypeAsPsiFactory("IF_STATEMENT", CSharpLanguage.INSTANCE, CSharpIfStatementImpl.class);
 
@@ -187,8 +195,8 @@ public interface CSharpElements
 
 	IElementType LINQ_WHERE_CLAUSE = new ElementTypeAsPsiFactory("LINQ_WHERE_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqWhereClauseImpl.class);
 
-	IElementType LINQ_ORDERBY_CLAUSE = new ElementTypeAsPsiFactory("LINQ_ORDERBY_CLAUSE", CSharpLanguage.INSTANCE,
-			CSharpLinqOrderByClauseImpl.class);
+	IElementType LINQ_ORDERBY_CLAUSE = new ElementTypeAsPsiFactory("LINQ_ORDERBY_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqOrderByClauseImpl
+			.class);
 
 	IElementType LINQ_LET_CLAUSE = new ElementTypeAsPsiFactory("LINQ_LET_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqLetClauseImpl.class);
 
@@ -196,23 +204,24 @@ public interface CSharpElements
 
 	IElementType LINQ_INTRO_CLAUSE = new ElementTypeAsPsiFactory("LINQ_INTRO_CLAUSE", CSharpLanguage.INSTANCE, CSharpLinqIntoClauseImpl.class);
 
-	IElementType LINQ_QUERY_CONTINUATION = new ElementTypeAsPsiFactory("LINQ_QUERY_CONTINUATION", CSharpLanguage.INSTANCE, CSharpLinqQueryContinuationImpl.class);
+	IElementType LINQ_QUERY_CONTINUATION = new ElementTypeAsPsiFactory("LINQ_QUERY_CONTINUATION", CSharpLanguage.INSTANCE,
+			CSharpLinqQueryContinuationImpl.class);
 
-	IElementType LINQ_ORDERBY_ORDERING = new ElementTypeAsPsiFactory("LINQ_ORDERBY_ORDERING", CSharpLanguage.INSTANCE,
-			CSharpLinqOrderByOrderingImpl.class);
+	IElementType LINQ_ORDERBY_ORDERING = new ElementTypeAsPsiFactory("LINQ_ORDERBY_ORDERING", CSharpLanguage.INSTANCE, CSharpLinqOrderByOrderingImpl
+			.class);
 
 	IElementType LINQ_SELECT_OR_GROUP_CLAUSE = new ElementTypeAsPsiFactory("LINQ_SELECT_OR_GROUP_CLAUSE", CSharpLanguage.INSTANCE,
 			CSharpLinqSelectOrGroupClauseImpl.class);
 
 	IElementType LAMBDA_EXPRESSION = new ElementTypeAsPsiFactory("LAMBDA_EXPRESSION", CSharpLanguage.INSTANCE, CSharpLambdaExpressionImpl.class);
 
-	IElementType DELEGATE_EXPRESSION = new ElementTypeAsPsiFactory("DELEGATE_EXPRESSION", CSharpLanguage.INSTANCE,
-			CSharpDelegateExpressionImpl.class);
+	IElementType DELEGATE_EXPRESSION = new ElementTypeAsPsiFactory("DELEGATE_EXPRESSION", CSharpLanguage.INSTANCE, CSharpDelegateExpressionImpl
+			.class);
 
 	IElementType LAMBDA_PARAMETER = new ElementTypeAsPsiFactory("LAMBDA_PARAMETER", CSharpLanguage.INSTANCE, CSharpLambdaParameterImpl.class);
 
-	IElementType LAMBDA_PARAMETER_LIST = new ElementTypeAsPsiFactory("LAMBDA_PARAMETER_LIST", CSharpLanguage.INSTANCE,
-			CSharpLambdaParameterListImpl.class);
+	IElementType LAMBDA_PARAMETER_LIST = new ElementTypeAsPsiFactory("LAMBDA_PARAMETER_LIST", CSharpLanguage.INSTANCE, CSharpLambdaParameterListImpl
+			.class);
 
 	IElementType ANONYM_FIELD_OR_PROPERTY_SET = new ElementTypeAsPsiFactory("ANONYM_FIELD_OR_PROPERTY_SET", CSharpLanguage.INSTANCE,
 			CSharpAnonymFieldOrPropertySetImpl.class);
@@ -231,8 +240,8 @@ public interface CSharpElements
 	IElementType ARRAY_INITIALIZER_COMPOSITE_VALUE = new ElementTypeAsPsiFactory("ARRAY_INITIALIZER_COMPOSITE_VALUE", CSharpLanguage.INSTANCE,
 			CSharpArrayInitializerCompositeValueImpl.class);
 
-	IElementType IMPLICIT_ARRAY_INITIALIZATION_EXPRESSION = new ElementTypeAsPsiFactory("IMPLICIT_ARRAY_INITIALIZATION_EXPRESSION",
-			CSharpLanguage.INSTANCE, CSharpImplicitArrayInitializationExpressionImpl.class);
+	IElementType IMPLICIT_ARRAY_INITIALIZATION_EXPRESSION = new ElementTypeAsPsiFactory("IMPLICIT_ARRAY_INITIALIZATION_EXPRESSION", CSharpLanguage
+			.INSTANCE, CSharpImplicitArrayInitializationExpressionImpl.class);
 
 	IElementType DICTIONARY_INITIALIZER_LIST = new ElementTypeAsPsiFactory("DICTIONARY_INITIALIZER_LIST", CSharpLanguage.INSTANCE,
 			CSharpDictionaryInitializerListImpl.class);
@@ -246,14 +255,14 @@ public interface CSharpElements
 
 	IElementType DOC_CALL_ARGUMENT = new ElementTypeAsPsiFactory("DOC_CALL_ARGUMENT", CSharpLanguage.INSTANCE, CSharpDocCallArgumentImpl.class);
 
-	IElementType NAMED_CALL_ARGUMENT = new ElementTypeAsPsiFactory("NAMED_CALL_ARGUMENT", CSharpLanguage.INSTANCE,
-			CSharpNamedCallArgumentImpl.class);
+	IElementType NAMED_CALL_ARGUMENT = new ElementTypeAsPsiFactory("NAMED_CALL_ARGUMENT", CSharpLanguage.INSTANCE, CSharpNamedCallArgumentImpl
+			.class);
 
 	IElementType LOCAL_VARIABLE_DECLARATION_STATEMENT = new ElementTypeAsPsiFactory("LOCAL_VARIABLE_DECLARATION_STATEMENT", CSharpLanguage.INSTANCE,
 			CSharpLocalVariableDeclarationStatementImpl.class);
 
-	IElementType EXPRESSION_STATEMENT = new ElementTypeAsPsiFactory("EXPRESSION_STATEMENT", CSharpLanguage.INSTANCE,
-			CSharpExpressionStatementImpl.class);
+	IElementType EXPRESSION_STATEMENT = new ElementTypeAsPsiFactory("EXPRESSION_STATEMENT", CSharpLanguage.INSTANCE, CSharpExpressionStatementImpl
+			.class);
 
 	IElementType USING_STATEMENT = new ElementTypeAsPsiFactory("USING_STATEMENT", CSharpLanguage.INSTANCE, CSharpUsingStatementImpl.class);
 

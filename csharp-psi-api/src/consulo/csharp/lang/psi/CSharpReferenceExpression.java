@@ -56,7 +56,8 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 		THIS_CONSTRUCTOR,
 		PARAMETER_FROM_PARENT,
 		NAMEOF,
-		EXPRESSION_OR_TYPE_LIKE;
+		EXPRESSION_OR_TYPE_LIKE,
+		TUPLE_PROPERTY; // tuple property (name: exp)
 
 		@NotNull
 		@Immutable

@@ -325,6 +325,56 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 
 			typeInfo.nativeElementType = tokenType;
 		}
+		else if(builder.getTokenType() == CSharpTokens.LPAR)
+		{
+			builder.advanceLexer();
+
+			if(builder.getTokenType() == CSharpTokens.RPAR)
+			{
+				builder.error("Expected type");
+				builder.advanceLexer();
+			}
+			else
+			{
+				int count = 0;
+				while(!builder.eof())
+				{
+					TypeInfo inner = parseType(builder, flags);
+					if(inner == null)
+					{
+						builder.error("Expected type");
+					}
+					else
+					{
+						PsiBuilder.Marker precede = inner.marker.precede();
+						if(builder.getTokenType() == CSharpTokens.IDENTIFIER)
+						{
+							doneIdentifier(builder, flags);
+						}
+
+						precede.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.TUPLE_VARIABLE : CSharpElements.TUPLE_VARIABLE);
+						count ++;
+					}
+
+					if(builder.getTokenType() == COMMA)
+					{
+						builder.advanceLexer();
+					}
+					else
+					{
+						break;
+					}
+				}
+
+				if(count < 2)
+				{
+					builder.error("Expected comma");
+				}
+
+				expect(builder, CSharpTokens.RPAR, "Expected ')'");
+			}
+			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.TUPLE_TYPE : CSharpElements.TUPLE_TYPE);
+		}
 		else if(builder.getTokenType() == CSharpTokens.IDENTIFIER)
 		{
 			ExpressionParsing.ReferenceInfo referenceInfo = ExpressionParsing.parseQualifiedReference(builder, null, flags, nameStopperSet);
@@ -412,7 +462,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 	{
 		PsiBuilder.Marker marker = builder.mark();
 
-		Set<IElementType> set = new THashSet<IElementType>();
+		Set<IElementType> set = new THashSet<>();
 		while(!builder.eof())
 		{
 			if(MODIFIERS.contains(builder.getTokenType()))
@@ -427,7 +477,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 			}
 		}
 		marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.MODIFIER_LIST : CSharpElements.MODIFIER_LIST);
-		return new Pair<PsiBuilder.Marker, ModifierSet>(marker, ModifierSet.create(set));
+		return Pair.create(marker, ModifierSet.create(set));
 	}
 
 	protected static Pair<PsiBuilder.Marker, ModifierSet> parseModifierListWithAttributes(CSharpBuilderWrapper builder, int flags)
@@ -438,7 +488,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 		}
 		else
 		{
-			Set<IElementType> set = new THashSet<IElementType>();
+			Set<IElementType> set = new THashSet<>();
 			PsiBuilder.Marker marker = builder.mark();
 			if(!parseAttributeList(builder, ModifierSet.EMPTY, flags))
 			{
@@ -459,7 +509,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 				}
 			}
 			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.MODIFIER_LIST : CSharpElements.MODIFIER_LIST);
-			return new Pair<PsiBuilder.Marker, ModifierSet>(marker, ModifierSet.create(set));
+			return Pair.create(marker, ModifierSet.create(set));
 		}
 	}
 
