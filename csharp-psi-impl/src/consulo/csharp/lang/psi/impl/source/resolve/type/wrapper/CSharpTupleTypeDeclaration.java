@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.util.Key;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.impl.light.LightElement;
 import com.intellij.util.ArrayUtil;
@@ -51,7 +52,7 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpTupleTypeDeclaration extends LightElement implements CSharpTypeDeclaration
 {
-	public static final Key<PsiElement> TUPLE_ELEMENT = Key.create("tuple.element");
+	public static final Key<PsiNameIdentifierOwner> TUPLE_ELEMENT = Key.create("tuple.element");
 
 	private final CSharpTypeDeclaration myType;
 	private final DotNetNamedElement[] myMembers;
@@ -86,9 +87,19 @@ public class CSharpTupleTypeDeclaration extends LightElement implements CSharpTy
 				}
 
 				@Override
-				public PsiElement getOriginalElement()
+				public boolean isEquivalentTo(PsiElement another)
 				{
-					return variable;
+					if(another == getUserData(TUPLE_ELEMENT))
+					{
+						return true;
+					}
+					return super.isEquivalentTo(another);
+				}
+
+				@Override
+				public PsiFile getContainingFile()
+				{
+					return getUserData(TUPLE_ELEMENT).getContainingFile();
 				}
 			};
 			builder.putUserData(TUPLE_ELEMENT, variable);

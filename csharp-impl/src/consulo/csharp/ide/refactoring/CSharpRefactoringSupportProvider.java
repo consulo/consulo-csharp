@@ -24,7 +24,9 @@ import consulo.csharp.ide.refactoring.introduceVariable.CSharpIntroduceLocalVari
 import consulo.csharp.lang.psi.CSharpLambdaParameter;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpTupleVariable;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.impl.source.CSharpTupleElementImpl;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
@@ -100,6 +102,10 @@ public class CSharpRefactoringSupportProvider extends RefactoringSupportProvider
 		if(nameSuggestionContext != null && nameSuggestionContext.getContainingFile() != elementToRename.getContainingFile())
 		{
 			return false;
+		}
+		if(elementToRename instanceof CSharpTupleVariable || elementToRename instanceof CSharpTupleElementImpl)
+		{
+			return true;
 		}
 		if(elementToRename instanceof DotNetNamespaceAsElement)
 		{

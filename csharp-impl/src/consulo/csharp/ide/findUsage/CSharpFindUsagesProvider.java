@@ -33,6 +33,7 @@ import consulo.csharp.lang.lexer.CSharpLexer;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpEnumConstantDeclarationImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpTupleElementImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetNamedElement;
@@ -89,6 +90,10 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		else if(element instanceof CSharpIndexMethodDeclaration)
 		{
 			return "index method";
+		}
+		else if(element instanceof CSharpTupleVariable || element instanceof CSharpTupleElementImpl)
+		{
+			return "tuple variable";
 		}
 		else if(element instanceof CSharpMethodDeclaration)
 		{

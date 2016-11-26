@@ -30,12 +30,13 @@ import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpIdentifier;
 import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.CSharpTupleTypeDeclaration;
 import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetNamedElement;
 
 /**
  * @author VISTALL
  * @since 26-Nov-16.
  */
-public class CSharpTupleElementImpl extends CSharpElementImpl implements PsiNameIdentifierOwner
+public class CSharpTupleElementImpl extends CSharpElementImpl implements PsiNameIdentifierOwner, DotNetNamedElement
 {
 	public CSharpTupleElementImpl(@NotNull ASTNode node)
 	{
@@ -89,8 +90,8 @@ public class CSharpTupleElementImpl extends CSharpElementImpl implements PsiName
 	@Override
 	public boolean isEquivalentTo(PsiElement another)
 	{
-		PsiElement tupleElement = another.getUserData(CSharpTupleTypeDeclaration.TUPLE_ELEMENT);
-		if(tupleElement != null && another.isEquivalentTo(tupleElement))
+		PsiElement tupleElement = another.getOriginalElement().getUserData(CSharpTupleTypeDeclaration.TUPLE_ELEMENT);
+		if(tupleElement != null && super.isEquivalentTo(tupleElement))
 		{
 			return true;
 		}

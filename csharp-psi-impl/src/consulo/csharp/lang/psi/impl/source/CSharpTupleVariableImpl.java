@@ -54,8 +54,8 @@ public class CSharpTupleVariableImpl extends CSharpVariableImpl implements CShar
 	@Override
 	public boolean isEquivalentTo(PsiElement another)
 	{
-		PsiElement tupleElement = another.getUserData(CSharpTupleTypeDeclaration.TUPLE_ELEMENT);
-		if(tupleElement != null && another.isEquivalentTo(tupleElement))
+		PsiElement tupleElement = another.getOriginalElement().getUserData(CSharpTupleTypeDeclaration.TUPLE_ELEMENT);
+		if(tupleElement != null && super.isEquivalentTo(tupleElement))
 		{
 			return true;
 		}
