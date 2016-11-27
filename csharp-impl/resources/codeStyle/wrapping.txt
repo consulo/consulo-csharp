@@ -23,7 +23,11 @@ namespace Test {
       }
     }
 
+    ///
+    /// some doc comment
+    ///
     public static void Main(String[] args) {
+      // this is line comment
       Console.WriteLine("test");
       lock(args) {
         using(var obj = new IoStream()) {

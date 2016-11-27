@@ -89,6 +89,10 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 		}
 		else if(CommentUtilCore.isComment(node))
 		{
+			if(elementType == CSharpTokens.LINE_COMMENT)
+			{
+				return myCodeStyleSettings.KEEP_FIRST_COLUMN_COMMENT ? Indent.getAbsoluteNoneIndent() : Indent.getNormalIndent();
+			}
 			return Indent.getNormalIndent();
 		}
 		else if(elementType == CSharpElements.MODIFIER_LIST || elementType == CSharpStubElements.MODIFIER_LIST)
