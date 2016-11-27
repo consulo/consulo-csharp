@@ -36,6 +36,7 @@ import consulo.csharp.lang.psi.impl.source.CSharpGenericParameterListImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.impl.source.CSharpTupleExpressionImpl;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.csharp.module.extension.CSharpMutableModuleExtension;
 import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
@@ -356,6 +357,14 @@ public class CS1644 extends CompilerCheck<PsiElement>
 				public PsiElement fun(PsiElement element)
 				{
 					return element instanceof CSharpNamedCallArgument ? element : null;
+				}
+			}));
+			add(new Feature("tuples", CSharpLanguageVersion._7_0, new Function<PsiElement, PsiElement>()
+			{
+				@Override
+				public PsiElement fun(PsiElement psiElement)
+				{
+					return psiElement instanceof CSharpTupleType || psiElement instanceof CSharpTupleExpressionImpl ? psiElement : null;
 				}
 			}));
 		}
