@@ -212,7 +212,8 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 				}
 				else
 				{
-					consumer.consume(new CSharpWatcherNode(debuggerContext, referenceExpression.getText(), frame, objectPair.getFirst()));
+					consumer.consume(new CSharpWatcherNode(debuggerContext, ApplicationManager.getApplication().runReadAction
+							((Computable<String>) referenceExpression::getText), frame, objectPair.getFirst()));
 				}
 			}
 		}
