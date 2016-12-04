@@ -16,11 +16,17 @@
 
 package consulo.csharp.lang;
 
+import java.util.function.Consumer;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.Pair;
+import com.intellij.psi.PsiLanguageInjectionHost;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
 import consulo.csharp.lang.psi.CSharpAttribute;
 import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.impl.source.CSharpBinaryExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
 import consulo.dotnet.lang.MultiHostInjectorByAttributeHelper;
 import consulo.dotnet.psi.DotNetAttribute;
@@ -34,6 +40,7 @@ import com.intellij.psi.tree.IElementType;
  */
 public class CSharpMultiHostInjectorByAttributeHelper implements MultiHostInjectorByAttributeHelper
 {
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public String getLanguageId(@NotNull DotNetAttribute attribute)
@@ -50,22 +57,55 @@ public class CSharpMultiHostInjectorByAttributeHelper implements MultiHostInject
 		return new ConstantExpressionEvaluator(parameterExpressions[0]).getValueAs(String.class);
 	}
 
-	@Nullable
+	@RequiredReadAction
 	@Override
-	public TextRange getTextRangeForInject(@NotNull DotNetExpression expression)
+	public void fillExpressionsForInject(@NotNull DotNetExpression expression, @NotNull Consumer<Pair<PsiLanguageInjectionHost, TextRange>> list)
 	{
 		if(expression instanceof CSharpConstantExpressionImpl)
 		{
-			IElementType literalType = ((CSharpConstantExpressionImpl) expression).getLiteralType();
-			if(literalType == CSharpTokens.VERBATIM_STRING_LITERAL)
+			processConstantExpression(expression, list);
+		}
+		else if(expression instanceof CSharpBinaryExpressionImpl)
+		{
+			processBinaryExpression((CSharpBinaryExpressionImpl) expression, list);
+		}
+	}
+
+	@RequiredReadAction
+	private void processBinaryExpression(@NotNull CSharpBinaryExpressionImpl expression,
+			@NotNull Consumer<Pair<PsiLanguageInjectionHost, TextRange>> list)
+	{
+		for(DotNetExpression exp : expression.getParameterExpressions())
+		{
+			if(exp instanceof CSharpConstantExpressionImpl)
 			{
-				return new TextRange(2, expression.getTextLength() - 1);
+				processConstantExpression(exp, list);
 			}
-			else if(literalType == CSharpTokens.STRING_LITERAL)
+			else if(exp instanceof CSharpBinaryExpressionImpl)
 			{
-				return new TextRange(1, expression.getTextLength() - 1);
+				processBinaryExpression((CSharpBinaryExpressionImpl) exp, list);
 			}
 		}
-		return null;
+	}
+
+	@RequiredReadAction
+	private void processConstantExpression(@NotNull DotNetExpression expression, @NotNull Consumer<Pair<PsiLanguageInjectionHost, TextRange>> list)
+	{
+		TextRange textRange = null;
+		IElementType literalType = ((CSharpConstantExpressionImpl) expression).getLiteralType();
+		if(literalType == CSharpTokens.VERBATIM_STRING_LITERAL)
+		{
+			textRange = new TextRange(2, expression.getTextLength() - 1);
+		}
+		else if(literalType == CSharpTokens.STRING_LITERAL)
+		{
+			textRange = new TextRange(1, expression.getTextLength() - 1);
+		}
+
+		if(textRange == null)
+		{
+			return;
+		}
+		list.accept(Pair.create((PsiLanguageInjectionHost) expression, textRange));
 	}
 }
