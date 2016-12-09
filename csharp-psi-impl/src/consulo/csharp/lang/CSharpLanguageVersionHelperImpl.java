@@ -47,21 +47,21 @@ public class CSharpLanguageVersionHelperImpl extends CSharpLanguageVersionHelper
 
 	@NotNull
 	@Override
-	public LanguageVersion<CSharpLanguage> getHighestVersion()
+	public LanguageVersion getHighestVersion()
 	{
 		return myHighest;
 	}
 
 	@NotNull
 	@Override
-	public LanguageVersion<CSharpLanguage>[] getVersions()
+	public LanguageVersion[] getVersions()
 	{
 		return myWrappers;
 	}
 
 	@NotNull
 	@Override
-	public LanguageVersion<CSharpLanguage> getWrapper(@NotNull CSharpLanguageVersion version)
+	public LanguageVersion getWrapper(@NotNull CSharpLanguageVersion version)
 	{
 		return myWrappers[version.ordinal()];
 	}

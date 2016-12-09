@@ -17,14 +17,13 @@
 package consulo.csharp.lang;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.lexer.CSharpLexer;
-import consulo.csharp.lang.parser.CSharpParser;
-import consulo.csharp.lang.psi.CSharpTokenSets;
-import consulo.csharp.lang.CSharpLanguage;
-import consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.lang.PsiParser;
 import com.intellij.lexer.Lexer;
 import com.intellij.psi.tree.TokenSet;
+import consulo.csharp.lang.lexer.CSharpLexer;
+import consulo.csharp.lang.parser.CSharpParser;
+import consulo.csharp.lang.psi.CSharpTokenSets;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.lang.LanguageVersion;
 import consulo.lang.LanguageVersionWithParsing;
 
@@ -32,12 +31,13 @@ import consulo.lang.LanguageVersionWithParsing;
  * @author VISTALL
  * @since 22.11.13.
  */
-public class CSharpLanguageVersionWrapper implements LanguageVersion<CSharpLanguage>, LanguageVersionWithParsing<CSharpLanguage>
+public class CSharpLanguageVersionWrapper extends LanguageVersion implements LanguageVersionWithParsing
 {
 	private final CSharpLanguageVersion myLanguageVersion;
 
 	public CSharpLanguageVersionWrapper(CSharpLanguageVersion languageVersion)
 	{
+		super(languageVersion.name(), languageVersion.getPresentableName(), CSharpLanguage.INSTANCE);
 		myLanguageVersion = languageVersion;
 	}
 
@@ -74,19 +74,6 @@ public class CSharpLanguageVersionWrapper implements LanguageVersion<CSharpLangu
 	public TokenSet getWhitespaceTokens()
 	{
 		return CSharpTokenSets.WHITESPACES;
-	}
-
-	@NotNull
-	@Override
-	public String getName()
-	{
-		return getLanguageVersion().name();
-	}
-
-	@Override
-	public CSharpLanguage getLanguage()
-	{
-		return CSharpLanguage.INSTANCE;
 	}
 
 	public CSharpLanguageVersion getLanguageVersion()

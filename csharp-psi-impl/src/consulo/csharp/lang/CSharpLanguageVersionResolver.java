@@ -18,15 +18,14 @@ package consulo.csharp.lang;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.CSharpLanguage;
-import consulo.csharp.lang.CSharpLanguageVersionHelper;
-import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import com.intellij.lang.Language;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.module.extension.CSharpSimpleModuleExtension;
 import consulo.lang.LanguageVersion;
 import consulo.lang.LanguageVersionResolver;
 
@@ -34,11 +33,12 @@ import consulo.lang.LanguageVersionResolver;
  * @author VISTALL
  * @since 22.11.13.
  */
-public class CSharpLanguageVersionResolver implements LanguageVersionResolver<CSharpLanguage>
+public class CSharpLanguageVersionResolver implements LanguageVersionResolver
 {
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public LanguageVersion<CSharpLanguage> getLanguageVersion(@NotNull Language language, @Nullable PsiElement element)
+	public LanguageVersion getLanguageVersion(@NotNull Language language, @Nullable PsiElement element)
 	{
 		if(element == null)
 		{
@@ -57,11 +57,12 @@ public class CSharpLanguageVersionResolver implements LanguageVersionResolver<CS
 		return CSharpLanguageVersionHelper.getInstance().getWrapper(extension.getLanguageVersion());
 	}
 
+	@NotNull
+	@RequiredReadAction
 	@Override
-	public LanguageVersion<CSharpLanguage> getLanguageVersion(@NotNull Language language, @Nullable Project project, @Nullable VirtualFile
-			virtualFile)
+	public LanguageVersion getLanguageVersion(@NotNull Language language, @Nullable Project project, @Nullable VirtualFile virtualFile)
 	{
-		if(project  == null || virtualFile == null)
+		if(project == null || virtualFile == null)
 		{
 			return CSharpLanguageVersionHelper.getInstance().getHighestVersion();
 		}

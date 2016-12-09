@@ -44,7 +44,7 @@ public abstract class CSharpParsingTestCase extends ParsingTestCase
 
 	@NotNull
 	@Override
-	public LanguageVersion<?> resolveLanguageVersion(@NotNull FileType fileType)
+	public LanguageVersion resolveLanguageVersion(@NotNull FileType fileType)
 	{
 		String name = getName();
 		try

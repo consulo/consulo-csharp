@@ -16,11 +16,10 @@
 
 package consulo.csharp.lang;
 
-import consulo.csharp.lang.CSharpLanguage;
-import consulo.lombok.annotations.ApplicationService;
 import org.jetbrains.annotations.NotNull;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.lang.LanguageVersion;
+import consulo.lombok.annotations.ApplicationService;
 
 /**
  * @author VISTALL
@@ -30,11 +29,11 @@ import consulo.lang.LanguageVersion;
 public abstract class CSharpLanguageVersionHelper
 {
 	@NotNull
-	public abstract LanguageVersion<CSharpLanguage> getHighestVersion();
+	public abstract LanguageVersion getHighestVersion();
 
 	@NotNull
-	public abstract LanguageVersion<CSharpLanguage>[] getVersions();
+	public abstract LanguageVersion[] getVersions();
 
 	@NotNull
-	public abstract LanguageVersion<CSharpLanguage> getWrapper(@NotNull CSharpLanguageVersion version);
+	public abstract LanguageVersion getWrapper(@NotNull CSharpLanguageVersion version);
 }
