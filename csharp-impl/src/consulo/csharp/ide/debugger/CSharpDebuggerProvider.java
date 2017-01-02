@@ -161,19 +161,19 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 			@NotNull Set<Object> visitedVariables,
 			@NotNull Consumer<XNamedValue> consumer)
 	{
-		List<Evaluator> evaluators = ApplicationManager.getApplication().runReadAction((Computable<List<Evaluator>>) () -> {
-			PsiElement resolvedElement = referenceExpression.resolve();
-			if(referenceExpression.getParent() instanceof CSharpMethodCallExpressionImpl || resolvedElement instanceof DotNetLikeMethodDeclaration)
-			{
-				return Collections.emptyList();
-			}
-			CSharpExpressionEvaluator expressionEvaluator = new CSharpExpressionEvaluator();
-			referenceExpression.accept(expressionEvaluator);
-			return expressionEvaluator.getEvaluators();
-		});
-
 		try
 		{
+			List<Evaluator> evaluators = ApplicationManager.getApplication().runReadAction((Computable<List<Evaluator>>) () -> {
+				PsiElement resolvedElement = referenceExpression.resolve();
+				if(referenceExpression.getParent() instanceof CSharpMethodCallExpressionImpl || resolvedElement instanceof DotNetLikeMethodDeclaration)
+				{
+					return Collections.emptyList();
+				}
+				CSharpExpressionEvaluator expressionEvaluator = new CSharpExpressionEvaluator();
+				referenceExpression.accept(expressionEvaluator);
+				return expressionEvaluator.getEvaluators();
+			});
+
 			if(evaluators.isEmpty())
 			{
 				return;
