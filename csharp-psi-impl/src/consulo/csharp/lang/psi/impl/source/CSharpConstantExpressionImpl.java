@@ -305,6 +305,6 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
 		{
 			return new TextRange(1, expression.getTextLength() - 1);
 		}
-		throw new UnsupportedOperationException(literalType.toString());
+		return new TextRange(0, expression.getTextLength());
 	}
 }
