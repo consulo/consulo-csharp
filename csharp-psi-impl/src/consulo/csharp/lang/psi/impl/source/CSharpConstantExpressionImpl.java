@@ -20,7 +20,11 @@ import java.math.BigInteger;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.ContributedReferenceHost;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.PsiReferenceService;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpTokensImpl;
 import consulo.csharp.lang.psi.impl.source.injection.CSharpStringLiteralEscaper;
@@ -44,7 +48,7 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  * @author VISTALL
  * @since 16.12.13.
  */
-public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implements DotNetConstantExpression, PsiLanguageInjectionHost
+public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implements DotNetConstantExpression, PsiLanguageInjectionHost, ContributedReferenceHost
 {
 	public CSharpConstantExpressionImpl(@NotNull ASTNode node)
 	{
@@ -250,7 +254,15 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
 	public boolean isValidHost()
 	{
 		IElementType elementType = getLiteralType();
-		return elementType == CSharpTokens.STRING_LITERAL || elementType == CSharpTokens.VERBATIM_STRING_LITERAL;
+		return elementType != CSharpTokens.CHARACTER_LITERAL && CSharpTokenSets.STRINGS.contains(elementType);
+	}
+
+	@NotNull
+	@Override
+	@RequiredReadAction
+	public PsiReference[] getReferences()
+	{
+		return PsiReferenceService.getService().getContributedReferences(this);
 	}
 
 	@Override
