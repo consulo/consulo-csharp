@@ -18,15 +18,14 @@ package consulo.csharp.lang;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.TextRange;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
 import consulo.csharp.lang.psi.CSharpAttribute;
-import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl;
 import consulo.dotnet.lang.MultiHostInjectorByAttributeHelper;
 import consulo.dotnet.psi.DotNetAttribute;
 import consulo.dotnet.psi.DotNetExpression;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
@@ -52,19 +51,12 @@ public class CSharpMultiHostInjectorByAttributeHelper implements MultiHostInject
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public TextRange getTextRangeForInject(@NotNull DotNetExpression expression)
 	{
 		if(expression instanceof CSharpConstantExpressionImpl)
 		{
-			IElementType literalType = ((CSharpConstantExpressionImpl) expression).getLiteralType();
-			if(literalType == CSharpTokens.VERBATIM_STRING_LITERAL)
-			{
-				return new TextRange(2, expression.getTextLength() - 1);
-			}
-			else if(literalType == CSharpTokens.STRING_LITERAL)
-			{
-				return new TextRange(1, expression.getTextLength() - 1);
-			}
+			return CSharpConstantExpressionImpl.getStringValueTextRange((CSharpConstantExpressionImpl) expression);
 		}
 		return null;
 	}

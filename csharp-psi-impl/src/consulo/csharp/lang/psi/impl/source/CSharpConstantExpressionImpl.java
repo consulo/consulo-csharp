@@ -20,9 +20,18 @@ import java.math.BigInteger;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.ContributedReferenceHost;
+import com.intellij.psi.LiteralTextEscaper;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceService;
+import com.intellij.psi.impl.source.tree.LeafPsiElement;
+import com.intellij.psi.tree.IElementType;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -31,14 +40,6 @@ import consulo.csharp.lang.psi.impl.source.injection.CSharpStringLiteralEscaper;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpConstantTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.LiteralTextEscaper;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiLanguageInjectionHost;
-import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import com.intellij.psi.tree.IElementType;
-import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetConstantExpression;
 import consulo.dotnet.psi.DotNetVariable;
@@ -282,12 +283,28 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
 		IElementType elementType = getLiteralType();
 		if(elementType == CSharpTokens.STRING_LITERAL)
 		{
-			return new CSharpStringLiteralEscaper<CSharpConstantExpressionImpl>(this);
+			return new CSharpStringLiteralEscaper<>(this);
 		}
 		else if(elementType == CSharpTokens.VERBATIM_STRING_LITERAL)
 		{
 			return LiteralTextEscaper.createSimple(this);
 		}
 		throw new IllegalArgumentException("Unknown " + elementType);
+	}
+
+	@RequiredReadAction
+	@NotNull
+	public static TextRange getStringValueTextRange(CSharpConstantExpressionImpl expression)
+	{
+		IElementType literalType = expression.getLiteralType();
+		if(literalType == CSharpTokens.VERBATIM_STRING_LITERAL || literalType == CSharpTokenSets.INTERPOLATION_STRING_LITERAL)
+		{
+			return new TextRange(2, expression.getTextLength() - 1);
+		}
+		else if(literalType == CSharpTokens.STRING_LITERAL)
+		{
+			return new TextRange(1, expression.getTextLength() - 1);
+		}
+		throw new UnsupportedOperationException(expression.getNode().getElementType().toString());
 	}
 }
