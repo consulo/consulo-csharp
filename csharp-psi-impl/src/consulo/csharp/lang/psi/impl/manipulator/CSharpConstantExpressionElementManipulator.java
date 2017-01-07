@@ -5,7 +5,6 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.AbstractElementManipulator;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -24,7 +23,7 @@ public class CSharpConstantExpressionElementManipulator extends AbstractElementM
 	{
 		CSharpConstantExpressionImpl constantExpression = (CSharpConstantExpressionImpl) element;
 		StringBuilder builder = new StringBuilder();
-		IElementType elementType = PsiUtilCore.getElementType(element);
+		IElementType elementType = ((CSharpConstantExpressionImpl) element).getLiteralType();
 		if(elementType == CSharpTokens.STRING_LITERAL)
 		{
 			builder.append("\"");

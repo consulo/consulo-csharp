@@ -294,7 +294,7 @@ public class CSharpConstantExpressionImpl extends CSharpExpressionImpl implement
 
 	@RequiredReadAction
 	@NotNull
-	public static TextRange getStringValueTextRange(CSharpConstantExpressionImpl expression)
+	public static TextRange getStringValueTextRange(@NotNull CSharpConstantExpressionImpl expression)
 	{
 		IElementType literalType = expression.getLiteralType();
 		if(literalType == CSharpTokens.VERBATIM_STRING_LITERAL || literalType == CSharpTokenSets.INTERPOLATION_STRING_LITERAL)
