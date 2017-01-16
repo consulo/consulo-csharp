@@ -49,6 +49,7 @@ public class CSharpParameterHintsProvider implements InlayParameterHintsProvider
 			"System.Func*",
 			"System.Action*",
 			"*.Add(value)",
+			"*.Add(item)",
 			"*.Add(key, value)",
 			"*.TryParse(*, *)"
 	};
