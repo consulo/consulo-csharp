@@ -152,6 +152,7 @@
 								 instance="consulo.csharp.ide.codeInsight.CSharpAutoImportConfigurable"/>
 		<stubElementTypeHolder class="consulo.csharp.lang.psi.CSharpStubElements"/>
 		<codeInsight.lineMarkerProvider language="C#" implementationClass="consulo.csharp.ide.CSharpLineMarkerProvider"/>
+		<codeInsight.parameterNameHints language="C#" implementationClass="consulo.csharp.ide.codeInsight.hits.CSharpParameterHintsProvider"/>
 
 		<fileStructureGroupRuleProvider implementation="consulo.csharp.ide.findUsage.groupingRule.CSharpTypeGroupRuleProvider"/>
 		<fileStructureGroupRuleProvider implementation="consulo.csharp.ide.findUsage.groupingRule.CSharpCodeBlockOwnerGroupRuleProvider"/>

@@ -21,6 +21,10 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.util.Trinity;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.SmartList;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -40,10 +44,6 @@ import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetParameterListOwner;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.util.ArrayUtil2;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.Trinity;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.SmartList;
 
 /**
  * @author VISTALL
@@ -64,6 +64,13 @@ public class MethodResolver
 			list.add(new NCallArgument(callArgumentTypeRef, null, dotNetTypeRef));
 		}
 		return list;
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public static List<NCallArgument> buildCallArguments(@NotNull CSharpCallArgument[] callArguments, @NotNull CSharpSimpleParameterInfo[] parameterInfos, @NotNull PsiElement scope)
+	{
+		return buildCallArguments(callArguments, scope, new SimpleParameterResolveContext(parameterInfos));
 	}
 
 	@NotNull
