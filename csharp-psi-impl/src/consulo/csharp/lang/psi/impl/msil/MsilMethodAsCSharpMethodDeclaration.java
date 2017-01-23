@@ -21,6 +21,12 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.NullableLazyValue;
+import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpGenericConstraint;
 import consulo.csharp.lang.psi.CSharpGenericConstraintList;
@@ -30,16 +36,9 @@ import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.impl.msil.typeParsing.SomeType;
 import consulo.csharp.lang.psi.impl.msil.typeParsing.SomeTypeParser;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpMethodImplUtil;
-import com.intellij.openapi.util.NullableLazyValue;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
-import consulo.lombok.annotations.Lazy;
 import consulo.msil.lang.psi.MsilClassEntry;
 import consulo.msil.lang.psi.MsilMethodEntry;
 
@@ -77,7 +76,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 		}
 	};
 
-	private NullableLazyValue<String> myNameValue = new NullableLazyValue<String>()
+	private final NullableLazyValue<String> myNameValue = new NullableLazyValue<String>()
 	{
 		@Nullable
 		@Override
@@ -92,14 +91,29 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 		}
 	};
 
+	private final NullableLazyValue<DotNetType> myTypeForImplementValue;
+
 	private final MsilClassEntry myDelegate;
 
+	@RequiredReadAction
 	public MsilMethodAsCSharpMethodDeclaration(PsiElement parent, @Nullable MsilClassEntry declaration, @NotNull GenericParameterContext genericParameterContext, @NotNull MsilMethodEntry methodEntry)
 	{
 		super(parent, CSharpModifier.EMPTY_ARRAY, methodEntry);
 		myDelegate = declaration;
 
 		setGenericParameterList(declaration != null ? declaration : methodEntry, genericParameterContext);
+
+		myTypeForImplementValue = NullableLazyValue.of(() ->
+		{
+			String nameFromBytecode = myOriginal.getNameFromBytecode();
+			String typeBeforeDot = StringUtil.getPackageName(nameFromBytecode);
+			SomeType someType = SomeTypeParser.parseType(typeBeforeDot, nameFromBytecode);
+			if(someType != null)
+			{
+				return new DummyType(getProject(), MsilMethodAsCSharpMethodDeclaration.this, someType);
+			}
+			return null;
+		});
 	}
 
 	@Override
@@ -108,6 +122,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 		visitor.visitMethodDeclaration(this);
 	}
 
+	@RequiredReadAction
 	@Override
 	public String getName()
 	{
@@ -176,6 +191,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 		return pair.getSecond();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getNameIdentifier()
@@ -185,22 +201,14 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 
 	@Nullable
 	@Override
-	@Lazy(notNull = false)
 	public DotNetType getTypeForImplement()
 	{
-		String nameFromBytecode = myOriginal.getNameFromBytecode();
-		String typeBeforeDot = StringUtil.getPackageName(nameFromBytecode);
-		SomeType someType = SomeTypeParser.parseType(typeBeforeDot, nameFromBytecode);
-		if(someType != null)
-		{
-			return new DummyType(getProject(), MsilMethodAsCSharpMethodDeclaration.this, someType);
-		}
-		return null;
+		return myTypeForImplementValue.getValue();
 	}
 
 	@NotNull
 	@Override
-	@Lazy
+	@RequiredReadAction
 	public DotNetTypeRef getTypeRefForImplement()
 	{
 		DotNetType typeForImplement = getTypeForImplement();

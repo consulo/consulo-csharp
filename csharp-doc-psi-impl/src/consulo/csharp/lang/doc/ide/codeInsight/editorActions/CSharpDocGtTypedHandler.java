@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.diagnostic.Logger;
 import consulo.csharp.lang.doc.CSharpDocUtil;
 import consulo.csharp.lang.doc.psi.CSharpDocAttributeValue;
 import consulo.csharp.lang.doc.psi.CSharpDocTag;
@@ -53,9 +54,10 @@ import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredDispatchThread;
 
-@consulo.lombok.annotations.Logger
 public class CSharpDocGtTypedHandler extends TypedHandlerDelegate
 {
+	private static final Logger LOGGER = Logger.getInstance(CSharpDocGtTypedHandler.class);
+
 	private static final RoleFinder CLOSING_TAG_NAME_FINDER = new RoleFinder()
 	{
 		@Override

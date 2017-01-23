@@ -19,17 +19,28 @@ package consulo.csharp.lang.psi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.ArrayFactory;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetExpression;
-import consulo.lombok.annotations.ArrayFactoryFields;
 
 /**
  * @author VISTALL
  * @since 29.12.13.
  */
-@ArrayFactoryFields
 public interface CSharpFieldOrPropertySet extends DotNetElement
 {
+	public static final CSharpFieldOrPropertySet[] EMPTY_ARRAY = new CSharpFieldOrPropertySet[0];
+
+	public static ArrayFactory<CSharpFieldOrPropertySet> ARRAY_FACTORY = new ArrayFactory<CSharpFieldOrPropertySet>()
+	{
+		@NotNull
+		@Override
+		public CSharpFieldOrPropertySet[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new CSharpFieldOrPropertySet[count];
+		}
+	};
+
 	@Nullable
 	String getName();
 

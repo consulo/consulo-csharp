@@ -23,7 +23,6 @@ import com.intellij.psi.PsiElement;
 import consulo.annotations.Immutable;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.lombok.annotations.Lazy;
 
 /**
  * @author VISTALL
@@ -110,7 +109,6 @@ public enum CSharpAccessModifier
 	}
 
 	@NotNull
-	@Lazy
 	public String getPresentableText()
 	{
 		return name().toLowerCase(Locale.US).replace("_", " ");

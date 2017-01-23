@@ -19,27 +19,28 @@ package consulo.csharp.lang.psi.impl.msil.typeParsing;
 import java.util.ArrayList;
 import java.util.List;
 
-import consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromText;
-import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.resolve.DotNetTypeRef;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.IntArrayList;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefFromText;
+import consulo.dotnet.DotNetTypes;
+import consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
  * @author VISTALL
  * @since 11.07.14
  */
-@Logger
 public class SomeTypeParser
 {
+	private static final Logger LOGGER = Logger.getInstance(SomeTypeParser.class);
+
 	@NotNull
 	public static DotNetTypeRef toDotNetTypeRef(String text, String nameFromBytecode, PsiElement scope)
 	{

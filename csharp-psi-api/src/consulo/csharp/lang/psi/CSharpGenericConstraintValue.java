@@ -16,14 +16,25 @@
 
 package consulo.csharp.lang.psi;
 
-import consulo.lombok.annotations.ArrayFactoryFields;
+import org.jetbrains.annotations.NotNull;
+import com.intellij.util.ArrayFactory;
 import consulo.dotnet.psi.DotNetElement;
 
 /**
  * @author VISTALL
  * @since 30.11.13.
  */
-@ArrayFactoryFields
 public interface CSharpGenericConstraintValue extends DotNetElement
 {
+	public static final CSharpGenericConstraintValue[] EMPTY_ARRAY = new CSharpGenericConstraintValue[0];
+
+	public static ArrayFactory<CSharpGenericConstraintValue> ARRAY_FACTORY = new ArrayFactory<CSharpGenericConstraintValue>()
+	{
+		@NotNull
+		@Override
+		public CSharpGenericConstraintValue[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new CSharpGenericConstraintValue[count];
+		}
+	};
 }

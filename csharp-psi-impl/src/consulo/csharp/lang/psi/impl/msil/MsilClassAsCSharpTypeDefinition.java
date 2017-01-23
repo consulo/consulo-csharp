@@ -23,12 +23,6 @@ import java.util.List;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpGenericConstraint;
-import consulo.csharp.lang.psi.CSharpGenericConstraintList;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.impl.light.CSharpLightGenericConstraintList;
-import consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.openapi.util.NullableLazyValue;
@@ -39,6 +33,13 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
+import consulo.annotations.RequiredWriteAction;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpGenericConstraint;
+import consulo.csharp.lang.psi.CSharpGenericConstraintList;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.impl.light.CSharpLightGenericConstraintList;
+import consulo.csharp.lang.psi.impl.source.CSharpTypeDeclarationImplUtil;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterList;
@@ -51,7 +52,6 @@ import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.psi.DotNetXXXAccessor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
-import consulo.lombok.annotations.Lazy;
 import consulo.msil.lang.psi.MsilClassEntry;
 import consulo.msil.lang.psi.MsilEventEntry;
 import consulo.msil.lang.psi.MsilFieldEntry;
@@ -208,7 +208,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 						}
 						else
 						{
-							list.add(new MsilMethodAsCSharpMethodDeclaration(parentThis, null, new GenericParameterContext (null), (MsilMethodEntry) member));
+							list.add(new MsilMethodAsCSharpMethodDeclaration(parentThis, null, new GenericParameterContext(null), (MsilMethodEntry) member));
 						}
 					}
 				}
@@ -231,6 +231,9 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		}
 	};
 
+	private final NotNullLazyValue<DotNetTypeRef[]> myExtendTypeRefsValue;
+	private final NotNullLazyValue<DotNetTypeRef> myTypeRefForEnumConstantsValue;
+
 	private Boolean myIsStruct;
 	private Boolean myIsEnum;
 	private Boolean myIsInterface;
@@ -243,6 +246,28 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		myModifierList = new MsilModifierListToCSharpModifierList(this, classEntry.getModifierList());
 		DotNetGenericParameterList genericParameterList = classEntry.getGenericParameterList();
 		myGenericParameterList = MsilGenericParameterListAsCSharpGenericParameterList.build(this, genericParameterList, genericParameterContext);
+
+		myExtendTypeRefsValue = NotNullLazyValue.createValue(() ->
+		{
+			String vmQName = getVmQName();
+			// hack
+			if(DotNetTypes.System.Object.equals(vmQName))
+			{
+				return DotNetTypeRef.EMPTY_ARRAY;
+			}
+			DotNetTypeRef[] extendTypeRefs = myOriginal.getExtendTypeRefs();
+			if(extendTypeRefs.length == 0)
+			{
+				return DotNetTypeRef.EMPTY_ARRAY;
+			}
+			DotNetTypeRef[] typeRefs = new DotNetTypeRef[extendTypeRefs.length];
+			for(int i = 0; i < typeRefs.length; i++)
+			{
+				typeRefs[i] = MsilToCSharpUtil.extractToCSharp(extendTypeRefs[i], myOriginal);
+			}
+			return typeRefs;
+		});
+		myTypeRefForEnumConstantsValue = NotNullLazyValue.createValue(() -> MsilToCSharpUtil.extractToCSharp(myOriginal.getTypeRefForEnumConstants(), myOriginal));
 	}
 
 	@Override
@@ -350,28 +375,12 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		return null;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	@Lazy
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{
-		String vmQName = getVmQName();
-		// hack
-		if(DotNetTypes.System.Object.equals(vmQName))
-		{
-			return DotNetTypeRef.EMPTY_ARRAY;
-		}
-		DotNetTypeRef[] extendTypeRefs = myOriginal.getExtendTypeRefs();
-		if(extendTypeRefs.length == 0)
-		{
-			return DotNetTypeRef.EMPTY_ARRAY;
-		}
-		DotNetTypeRef[] typeRefs = new DotNetTypeRef[extendTypeRefs.length];
-		for(int i = 0; i < typeRefs.length; i++)
-		{
-			typeRefs[i] = MsilToCSharpUtil.extractToCSharp(extendTypeRefs[i], myOriginal);
-		}
-		return typeRefs;
+		return myExtendTypeRefsValue.getValue();
 	}
 
 	@RequiredReadAction
@@ -381,11 +390,12 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		return DotNetInheritUtil.isInheritor(this, other, deep);
 	}
 
+	@NotNull
+	@RequiredReadAction
 	@Override
-	@Lazy
 	public DotNetTypeRef getTypeRefForEnumConstants()
 	{
-		return MsilToCSharpUtil.extractToCSharp(myOriginal.getTypeRefForEnumConstants(), myOriginal);
+		return myTypeRefForEnumConstantsValue.getValue();
 	}
 
 	@Nullable
@@ -408,6 +418,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		return myGenericParameterList == null ? 0 : myGenericParameterList.getGenericParametersCount();
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetNamedElement[] getMembers()
@@ -438,6 +449,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		return myOriginal.getPresentableParentQName();
 	}
 
+	@RequiredReadAction
 	@Override
 	public String getName()
 	{
@@ -458,6 +470,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		return myOriginal.toString();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getNameIdentifier()
@@ -465,6 +478,7 @@ public class MsilClassAsCSharpTypeDefinition extends MsilElementWrapper<MsilClas
 		return myOriginal.getNameIdentifier();
 	}
 
+	@RequiredWriteAction
 	@Override
 	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
 	{

@@ -22,11 +22,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
-import consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.util.Condition;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.ResolveResult;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.util.CommonProcessors;
+import com.intellij.util.Processor;
+import com.intellij.util.Query;
+import com.intellij.util.SmartList;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpElementCompareUtil;
+import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.impl.msil.CSharpTransform;
@@ -51,26 +63,15 @@ import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import consulo.dotnet.psi.search.searches.TypeInheritorsSearch;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
-import com.intellij.openapi.util.Condition;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.CommonProcessors;
-import com.intellij.util.Processor;
-import com.intellij.util.Query;
-import com.intellij.util.SmartList;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
  * @since 14.12.14
  */
-@Logger
 public class OverrideUtil
 {
+	private static final Logger LOGGER = Logger.getInstance(OverrideUtil.class);
+
 	@RequiredReadAction
 	public static CSharpModifier getRequiredOverrideModifier(@NotNull DotNetModifierListOwner modifierListOwner)
 	{

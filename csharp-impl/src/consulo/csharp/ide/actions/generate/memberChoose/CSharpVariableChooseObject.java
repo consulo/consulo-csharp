@@ -17,21 +17,32 @@
 package consulo.csharp.ide.actions.generate.memberChoose;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.dotnet.psi.DotNetFieldDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
-import consulo.lombok.annotations.ArrayFactoryFields;
 
 /**
  * @author VISTALL
  * @since 24-Jul-16
  */
-@ArrayFactoryFields
 public class CSharpVariableChooseObject extends CSharpMemberChooseObject<DotNetVariable>
 {
+	public static final CSharpVariableChooseObject[] EMPTY_ARRAY = new CSharpVariableChooseObject[0];
+
+	public static ArrayFactory<CSharpVariableChooseObject> ARRAY_FACTORY = new ArrayFactory<CSharpVariableChooseObject>()
+	{
+		@NotNull
+		@Override
+		public CSharpVariableChooseObject[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new CSharpVariableChooseObject[count];
+		}
+	};
+
 	public CSharpVariableChooseObject(DotNetVariable declaration)
 	{
 		super(declaration);

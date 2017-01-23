@@ -16,10 +16,14 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.stubs.EmptyStub;
+import com.intellij.util.ArrayFactory;
+import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpIdentifier;
@@ -28,18 +32,25 @@ import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpTypeDefStatement;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.stubs.EmptyStub;
-import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
  * @since 11.02.14
  */
-@ArrayFactoryFields
 public class CSharpTypeDefStatementImpl extends CSharpStubElementImpl<EmptyStub<CSharpTypeDefStatement>> implements CSharpTypeDefStatement
 {
+	public static final CSharpTypeDefStatementImpl[] EMPTY_ARRAY = new CSharpTypeDefStatementImpl[0];
+
+	public static ArrayFactory<CSharpTypeDefStatementImpl> ARRAY_FACTORY = new ArrayFactory<CSharpTypeDefStatementImpl>()
+	{
+		@NotNull
+		@Override
+		public CSharpTypeDefStatementImpl[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new CSharpTypeDefStatementImpl[count];
+		}
+	};
+
 	public CSharpTypeDefStatementImpl(@NotNull ASTNode node)
 	{
 		super(node);

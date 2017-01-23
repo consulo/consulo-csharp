@@ -16,13 +16,14 @@
 
 package consulo.csharp.ide.codeInsight;
 
-import consulo.lombok.annotations.ApplicationService;
-import consulo.lombok.annotations.Logger;
 import org.jdom.Element;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.components.StoragePathMacros;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.util.xmlb.XmlSerializationException;
 import com.intellij.util.xmlb.XmlSerializer;
 
@@ -30,8 +31,6 @@ import com.intellij.util.xmlb.XmlSerializer;
  * @author VISTALL
  * @since 01.01.14.
  */
-@ApplicationService
-@Logger
 @State(
 		name = "CSharpCodeInsightSettings",
 		storages = {
@@ -40,6 +39,14 @@ import com.intellij.util.xmlb.XmlSerializer;
 		})
 public class CSharpCodeInsightSettings implements PersistentStateComponent<Element>
 {
+	private static final Logger LOGGER = Logger.getInstance(CSharpCodeInsightSettings.class);
+
+	@NotNull
+	public static CSharpCodeInsightSettings getInstance()
+	{
+		return ServiceManager.getService(CSharpCodeInsightSettings.class);
+	}
+
 	public boolean OPTIMIZE_IMPORTS_ON_THE_FLY = true;
 
 	@Override

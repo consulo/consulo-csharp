@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.Language;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.Pair;
@@ -57,15 +58,15 @@ import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetReferenceExpression;
-import consulo.lombok.annotations.Logger;
 
 /**
  * @author VISTALL
  * @since 10.04.14
  */
-@Logger
 public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 {
+	private static final Logger LOGGER = Logger.getInstance(CSharpDebuggerProvider.class);
+
 	@NotNull
 	@Override
 	public PsiFile createExpressionCodeFragment(@NotNull Project project,

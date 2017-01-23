@@ -19,15 +19,14 @@ package consulo.csharp.lang.psi.impl.msil;
 import java.util.ArrayList;
 import java.util.List;
 
-import consulo.lombok.annotations.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.dotnet.psi.DotNetGenericParameter;
-import consulo.dotnet.psi.DotNetGenericParameterList;
 import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.dotnet.psi.DotNetGenericParameter;
+import consulo.dotnet.psi.DotNetGenericParameterList;
 
 /**
  * @author VISTALL
@@ -96,7 +95,6 @@ public class MsilGenericParameterListAsCSharpGenericParameterList extends MsilEl
 
 	@NotNull
 	@Override
-	@Lazy
 	public DotNetGenericParameter[] getParameters()
 	{
 		return myParametersValue.getValue();

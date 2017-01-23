@@ -22,6 +22,10 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.NullableLazyValue;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.ArrayUtil;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpAttributeList;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpModifier;
@@ -30,8 +34,6 @@ import consulo.csharp.lang.psi.impl.DotNetTypes2;
 import consulo.csharp.lang.psi.impl.light.CSharpLightAttributeBuilder;
 import consulo.csharp.lang.psi.impl.light.CSharpLightAttributeWithSelfTypeBuilder;
 import consulo.csharp.lang.psi.impl.source.CSharpModifierListImplUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.ArrayUtil;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.externalAttributes.ExternalAttributeArgumentNode;
 import consulo.dotnet.externalAttributes.ExternalAttributeHolder;
@@ -41,7 +43,6 @@ import consulo.dotnet.psi.DotNetAttribute;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
-import consulo.lombok.annotations.Lazy;
 import consulo.msil.lang.psi.MsilTokens;
 
 /**
@@ -61,14 +62,16 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 	private final CSharpModifier[] myAdditional;
 	private List<DotNetAttribute> myAdditionalAttributes = Collections.emptyList();
 
+	private NullableLazyValue<ExternalAttributeHolder> myAttributeHolderValue;
+
+	@RequiredReadAction
 	public MsilModifierListToCSharpModifierList(@NotNull PsiElement parent, @NotNull DotNetModifierList modifierList)
 	{
 		this(CSharpModifier.EMPTY_ARRAY, parent, modifierList);
 	}
 
-	public MsilModifierListToCSharpModifierList(@NotNull CSharpModifier[] additional,
-			@NotNull PsiElement parent,
-			@NotNull DotNetModifierList modifierList)
+	@RequiredReadAction
+	public MsilModifierListToCSharpModifierList(@NotNull CSharpModifier[] additional, @NotNull PsiElement parent, @NotNull DotNetModifierList modifierList)
 	{
 		super(parent, modifierList);
 		myAdditional = additional;
@@ -88,6 +91,8 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 		{
 			addAdditionalAttribute(new CSharpLightAttributeBuilder(myModifierList, DotNetTypes2.System.Runtime.InteropServices.InAttribute));
 		}
+
+		myAttributeHolderValue = NullableLazyValue.of(() -> ExternalAttributesUtil.findHolder(myModifierList));
 	}
 
 	public void addAdditionalAttribute(@NotNull DotNetAttribute attribute)
@@ -150,7 +155,7 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 		}
 		attributes.addAll(myAdditionalAttributes);
 
-		ExternalAttributeHolder holder = getExternalAttributeHolder();
+		ExternalAttributeHolder holder = myAttributeHolderValue.getValue();
 
 		if(holder != null)
 		{
@@ -173,12 +178,6 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 	public List<ExternalAttributeNode> findAttributes(ExternalAttributeHolder holder)
 	{
 		return Collections.emptyList();
-	}
-
-	@Lazy(notNull = false)
-	private ExternalAttributeHolder getExternalAttributeHolder()
-	{
-		return ExternalAttributesUtil.findHolder(myModifierList);
 	}
 
 	@Override

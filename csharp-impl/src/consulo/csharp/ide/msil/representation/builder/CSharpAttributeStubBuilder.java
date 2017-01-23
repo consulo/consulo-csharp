@@ -20,14 +20,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpEmptyGenericWrapperTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.PairFunction;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpEmptyGenericWrapperTypeRef;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.internal.dotnet.asm.signature.ArrayShapeSignature;
@@ -38,7 +39,6 @@ import consulo.internal.dotnet.asm.signature.TypeSignatureWithGenericParameters;
 import consulo.internal.dotnet.asm.signature.ValueTypeSignature;
 import consulo.internal.dotnet.msil.decompiler.textBuilder.util.StubBlockUtil;
 import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
-import consulo.lombok.annotations.Logger;
 import consulo.msil.lang.psi.MsilCustomAttribute;
 import consulo.msil.lang.stubbing.MsilCustomAttributeArgumentList;
 import consulo.msil.lang.stubbing.MsilCustomAttributeStubber;
@@ -49,9 +49,10 @@ import consulo.msil.lang.stubbing.values.MsilCustomAttributeEnumValue;
  * @author VISTALL
  * @since 21.03.14
  */
-@Logger
 public class CSharpAttributeStubBuilder
 {
+	private static final Logger LOGGER = Logger.getInstance(CSharpAttributeStubBuilder.class);
+
 	@RequiredReadAction
 	public static void append(StringBuilder builder, MsilCustomAttribute attribute)
 	{
@@ -241,7 +242,7 @@ public class CSharpAttributeStubBuilder
 		}
 		else
 		{
-			CSharpAttributeStubBuilder.LOGGER.error("Unknown how convert: " + typeSignature.toString() + ":0x" + Integer.toHexString(typeSignature.getType()));
+			LOGGER.error("Unknown how convert: " + typeSignature.toString() + ":0x" + Integer.toHexString(typeSignature.getType()));
 			return new CSharpTypeRefByQName(scope, DotNetTypes.System.Object);
 		}
 	}

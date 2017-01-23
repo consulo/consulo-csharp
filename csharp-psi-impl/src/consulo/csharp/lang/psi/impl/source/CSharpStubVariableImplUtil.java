@@ -16,25 +16,26 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
-import consulo.dotnet.psi.DotNetModifierList;
-import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.psi.DotNetVariable;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtil;
+import consulo.csharp.lang.psi.impl.stub.CSharpVariableDeclStub;
+import consulo.dotnet.psi.DotNetModifierList;
+import consulo.dotnet.psi.DotNetType;
+import consulo.dotnet.psi.DotNetVariable;
 
 /**
  * @author VISTALL
  * @since 10.02.15
  */
-@Logger
 public class CSharpStubVariableImplUtil
 {
+	private static final Logger LOGGER = Logger.getInstance(CSharpStubVariableImplUtil.class);
+
 	public static boolean isMultipleDeclaration(@NotNull CSharpStubVariableImpl<?> variable)
 	{
 		CSharpVariableDeclStub<?> stub = variable.getStub();

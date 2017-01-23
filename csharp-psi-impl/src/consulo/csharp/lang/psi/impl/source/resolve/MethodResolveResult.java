@@ -16,20 +16,31 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve;
 
-import consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
+import com.intellij.util.ArrayFactory;
+import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
 
 /**
  * @author VISTALL
  * @since 02.11.14
  */
-@ArrayFactoryFields
 public class MethodResolveResult extends CSharpResolveResult
 {
+	public static final MethodResolveResult[] EMPTY_ARRAY = new MethodResolveResult[0];
+
+	public static ArrayFactory<MethodResolveResult> ARRAY_FACTORY = new ArrayFactory<MethodResolveResult>()
+	{
+		@NotNull
+		@Override
+		public MethodResolveResult[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new MethodResolveResult[count];
+		}
+	};
+
 	@NotNull
 	public static MethodResolveResult createResult(@NotNull MethodCalcResult calcResult, @NotNull PsiElement element, @Nullable ResolveResult resolveResult)
 	{

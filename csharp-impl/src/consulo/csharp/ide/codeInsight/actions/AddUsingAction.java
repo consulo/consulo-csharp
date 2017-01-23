@@ -21,19 +21,12 @@ import java.util.Set;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.ide.codeInsight.CSharpCodeInsightSettings;
-import consulo.csharp.lang.psi.CSharpCodeFragment;
-import consulo.csharp.lang.psi.CSharpFile;
-import consulo.csharp.lang.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpUsingListChild;
-import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
-import consulo.dotnet.libraryAnalyzer.NamespaceReference;
 import com.intellij.codeInsight.actions.OptimizeImportsProcessor;
 import com.intellij.codeInsight.hint.QuestionAction;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
@@ -56,19 +49,27 @@ import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.ide.codeInsight.CSharpCodeInsightSettings;
+import consulo.csharp.lang.psi.CSharpCodeFragment;
+import consulo.csharp.lang.psi.CSharpFile;
+import consulo.csharp.lang.psi.CSharpFileFactory;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpUsingListChild;
+import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
 import consulo.dotnet.DotNetBundle;
+import consulo.dotnet.libraryAnalyzer.NamespaceReference;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.roots.orderEntry.DotNetLibraryOrderEntryImpl;
-import consulo.lombok.annotations.Logger;
 import consulo.roots.impl.ModuleRootLayerImpl;
 
 /**
  * @author VISTALL
  * @since 30.12.13.
  */
-@Logger
 public class AddUsingAction implements QuestionAction
 {
+	private static final Logger LOGGER = Logger.getInstance(AddUsingAction.class);
+
 	private final Editor myEditor;
 	private final Project myProject;
 	private final PsiFile myFile;

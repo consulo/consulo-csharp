@@ -19,9 +19,23 @@ package consulo.csharp.ide.parameterInfo;
 import java.util.Comparator;
 import java.util.List;
 
-import consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.lang.parameterInfo.CreateParameterInfoContext;
+import com.intellij.lang.parameterInfo.ParameterInfoContext;
+import com.intellij.lang.parameterInfo.ParameterInfoHandler;
+import com.intellij.lang.parameterInfo.ParameterInfoUIContext;
+import com.intellij.lang.parameterInfo.ParameterInfoUtils;
+import com.intellij.lang.parameterInfo.UpdateParameterInfoContext;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.ArrayFactory;
+import com.intellij.util.SmartList;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;
@@ -39,20 +53,6 @@ import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.lang.parameterInfo.CreateParameterInfoContext;
-import com.intellij.lang.parameterInfo.ParameterInfoContext;
-import com.intellij.lang.parameterInfo.ParameterInfoHandler;
-import com.intellij.lang.parameterInfo.ParameterInfoUIContext;
-import com.intellij.lang.parameterInfo.ParameterInfoUtils;
-import com.intellij.lang.parameterInfo.UpdateParameterInfoContext;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.SmartList;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -66,9 +66,20 @@ public class CSharpParameterInfoHandler implements ParameterInfoHandler<PsiEleme
 		return new ItemToShow((CSharpSimpleLikeMethod) e, e);
 	}
 
-	@ArrayFactoryFields
 	public static class ItemToShow
 	{
+		public static final ItemToShow[] EMPTY_ARRAY = new ItemToShow[0];
+
+		public static ArrayFactory<ItemToShow> ARRAY_FACTORY = new ArrayFactory<ItemToShow>()
+		{
+			@NotNull
+			@Override
+			public ItemToShow[] create(int count)
+			{
+				return count == 0 ? EMPTY_ARRAY : new ItemToShow[count];
+			}
+		};
+
 		private CSharpSimpleLikeMethod myLikeMethod;
 		private PsiElement myScope;
 		private boolean myValid;

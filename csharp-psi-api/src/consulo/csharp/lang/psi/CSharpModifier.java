@@ -21,15 +21,13 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.util.ArrayFactory;
 import consulo.dotnet.psi.DotNetModifier;
-import consulo.lombok.annotations.ArrayFactoryFields;
-import consulo.lombok.annotations.Lazy;
 
 /**
  * @author VISTALL
  * @since 06.01.14.
  */
-@ArrayFactoryFields
 public enum CSharpModifier implements DotNetModifier
 {
 	PUBLIC,
@@ -54,6 +52,18 @@ public enum CSharpModifier implements DotNetModifier
 	EXTERN,
 	INTERFACE_ABSTRACT, // dummy modifier
 	OPTIONAL; // dummy modifier
+
+	public static final CSharpModifier[] EMPTY_ARRAY = new CSharpModifier[0];
+
+	public static ArrayFactory<CSharpModifier> ARRAY_FACTORY = new ArrayFactory<CSharpModifier>()
+	{
+		@NotNull
+		@Override
+		public CSharpModifier[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new CSharpModifier[count];
+		}
+	};
 
 	private static Map<DotNetModifier, CSharpModifier> ourReplaceMap = new HashMap<DotNetModifier, CSharpModifier>()
 	{
@@ -89,7 +99,6 @@ public enum CSharpModifier implements DotNetModifier
 	}
 
 	@Override
-	@Lazy
 	public String getPresentableText()
 	{
 		return name().toLowerCase(Locale.US);

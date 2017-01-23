@@ -20,14 +20,13 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-import consulo.lombok.annotations.Lazy;
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.psi.CSharpAttributeList;
-import consulo.dotnet.psi.DotNetAttributeTargetType;
 import com.intellij.psi.stubs.AbstractStubIndex;
 import com.intellij.psi.stubs.StubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
 import com.intellij.util.io.KeyDescriptor;
+import consulo.csharp.lang.psi.CSharpAttributeList;
+import consulo.dotnet.psi.DotNetAttributeTargetType;
 
 /**
  * @author VISTALL
@@ -66,7 +65,6 @@ public class AttributeListIndex extends AbstractStubIndex<DotNetAttributeTargetT
 	}
 
 	@NotNull
-	@Lazy
 	public static AttributeListIndex getInstance()
 	{
 		return StubIndexExtension.EP_NAME.findExtension(AttributeListIndex.class);

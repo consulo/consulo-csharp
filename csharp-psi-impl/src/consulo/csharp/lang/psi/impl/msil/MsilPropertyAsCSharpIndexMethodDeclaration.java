@@ -18,10 +18,16 @@ package consulo.csharp.lang.psi.impl.msil;
 
 import java.util.List;
 
-import consulo.lombok.annotations.Lazy;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.util.NotNullLazyValue;
+import com.intellij.openapi.util.NullableLazyValue;
+import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
@@ -35,11 +41,6 @@ import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.msil.lang.psi.MsilMethodEntry;
 import consulo.msil.lang.psi.MsilPropertyEntry;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
@@ -53,19 +54,24 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 
 	private final DotNetXXXAccessor[] myAccessors;
 
+	private final NullableLazyValue<DotNetType> myTypeForImplementValue;
+
+	private final NotNullLazyValue<DotNetTypeRef> myReturnTypeRefValue;
+
+	private final NotNullLazyValue<DotNetTypeRef[]> myParameterTypeRefsValue;
+
+	@RequiredReadAction
 	public MsilPropertyAsCSharpIndexMethodDeclaration(PsiElement parent, MsilPropertyEntry propertyEntry, List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
 	{
 		super(parent, propertyEntry);
 
 		myAccessors = MsilPropertyAsCSharpPropertyDeclaration.buildAccessors(this, pairs);
-		myModifierList = new MsilModifierListToCSharpModifierList(MsilPropertyAsCSharpPropertyDeclaration.getAdditionalModifiers(propertyEntry,
-				pairs), this, propertyEntry.getModifierList());
+		myModifierList = new MsilModifierListToCSharpModifierList(MsilPropertyAsCSharpPropertyDeclaration.getAdditionalModifiers(propertyEntry, pairs), this, propertyEntry.getModifierList());
 
 		String name = getName();
 		if(!Comparing.equal(name, DotNetPropertyDeclaration.DEFAULT_INDEX_PROPERTY_NAME))
 		{
-			CSharpLightAttributeBuilder attribute = new CSharpLightAttributeBuilder(propertyEntry, DotNetTypes.System.Runtime.CompilerServices
-					.IndexerName);
+			CSharpLightAttributeBuilder attribute = new CSharpLightAttributeBuilder(propertyEntry, DotNetTypes.System.Runtime.CompilerServices.IndexerName);
 
 			attribute.addParameterExpression(name);
 
@@ -75,6 +81,31 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 
 		DotNetParameter firstParameter = p.getSecond().getParameters()[0];
 		myParameters = new DotNetParameter[]{new MsilParameterAsCSharpParameter(this, firstParameter, this, 0)};
+
+		myTypeForImplementValue = NullableLazyValue.of(() ->
+		{
+			String nameFromBytecode = myOriginal.getNameFromBytecode();
+			String typeBeforeDot = StringUtil.getPackageName(nameFromBytecode);
+			SomeType someType = SomeTypeParser.parseType(typeBeforeDot, nameFromBytecode);
+			if(someType != null)
+			{
+				return new DummyType(getProject(), MsilPropertyAsCSharpIndexMethodDeclaration.this, someType);
+			}
+			return null;
+		});
+
+		myReturnTypeRefValue = NotNullLazyValue.createValue(() -> MsilToCSharpUtil.extractToCSharp(myOriginal.toTypeRef(false), myOriginal));
+		myParameterTypeRefsValue = NotNullLazyValue.createValue(() ->
+		{
+			DotNetParameter[] parameters = getParameters();
+			DotNetTypeRef[] typeRefs = new DotNetTypeRef[parameters.length];
+			for(int i = 0; i < parameters.length; i++)
+			{
+				DotNetParameter parameter = parameters[i];
+				typeRefs[i] = parameter.toTypeRef(false);
+			}
+			return typeRefs;
+		});
 	}
 
 	@Override
@@ -143,10 +174,9 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 	@RequiredReadAction
 	@NotNull
 	@Override
-	@Lazy
 	public DotNetTypeRef getReturnTypeRef()
 	{
-		return MsilToCSharpUtil.extractToCSharp(myOriginal.toTypeRef(false), myOriginal);
+		return myReturnTypeRefValue.getValue();
 	}
 
 	@NotNull
@@ -173,17 +203,9 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 
 	@NotNull
 	@Override
-	@Lazy
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
-		DotNetParameter[] parameters = getParameters();
-		DotNetTypeRef[] typeRefs = new DotNetTypeRef[parameters.length];
-		for(int i = 0; i < parameters.length; i++)
-		{
-			DotNetParameter parameter = parameters[i];
-			typeRefs[i] = parameter.toTypeRef(false);
-		}
-		return typeRefs;
+		return myParameterTypeRefsValue.getValue();
 	}
 
 	@Nullable
@@ -229,22 +251,13 @@ public class MsilPropertyAsCSharpIndexMethodDeclaration extends MsilElementWrapp
 
 	@Nullable
 	@Override
-	@Lazy(notNull = false)
 	public DotNetType getTypeForImplement()
 	{
-		String nameFromBytecode = myOriginal.getNameFromBytecode();
-		String typeBeforeDot = StringUtil.getPackageName(nameFromBytecode);
-		SomeType someType = SomeTypeParser.parseType(typeBeforeDot, nameFromBytecode);
-		if(someType != null)
-		{
-			return new DummyType(getProject(), MsilPropertyAsCSharpIndexMethodDeclaration.this, someType);
-		}
-		return null;
+		return myTypeForImplementValue.getValue();
 	}
 
 	@NotNull
 	@Override
-	@Lazy
 	public DotNetTypeRef getTypeRefForImplement()
 	{
 		DotNetType typeForImplement = getTypeForImplement();

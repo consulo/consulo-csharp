@@ -16,9 +16,13 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.methodResolving.context;
 
-import consulo.lombok.annotations.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.util.NotNullLazyValue;
+import com.intellij.openapi.util.Trinity;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.ArrayUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
@@ -26,10 +30,6 @@ import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetParameterListOwner;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.util.ArrayUtil2;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.Trinity;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.ArrayUtil;
 
 /**
  * @author VISTALL
@@ -42,6 +42,9 @@ public class MethodParameterResolveContext implements ParameterResolveContext<Do
 	private final DotNetParameter[] myParameters;
 	private DotNetParameter myParamsParameter;
 
+	private final NotNullLazyValue<DotNetTypeRef> myInnerParamsParameterTypeRefValue;
+	private final NotNullLazyValue<DotNetTypeRef> myParamsParameterTypeRefValue;
+
 	public MethodParameterResolveContext(DotNetParameterListOwner parameterListOwner, PsiElement scope, boolean resolveFromParent)
 	{
 		myScope = scope;
@@ -52,22 +55,24 @@ public class MethodParameterResolveContext implements ParameterResolveContext<Do
 		{
 			myParamsParameter = null;
 		}
+
+		myInnerParamsParameterTypeRefValue = NotNullLazyValue.createValue(() -> myParamsParameter == null ? DotNetTypeRef.ERROR_TYPE : CSharpResolveUtil.resolveIterableType(myScope,
+				getParamsParameterTypeRef()));
+		myParamsParameterTypeRefValue = NotNullLazyValue.createValue(() -> myParamsParameter == null ? DotNetTypeRef.ERROR_TYPE : myParamsParameter.toTypeRef(true));
 	}
 
 	@Override
 	@NotNull
-	@Lazy
 	public DotNetTypeRef getInnerParamsParameterTypeRef()
 	{
-		return myParamsParameter == null ? DotNetTypeRef.ERROR_TYPE : CSharpResolveUtil.resolveIterableType(myScope, getParamsParameterTypeRef());
+		return myInnerParamsParameterTypeRefValue.getValue();
 	}
 
 	@Override
 	@NotNull
-	@Lazy
 	public DotNetTypeRef getParamsParameterTypeRef()
 	{
-		return myParamsParameter == null ? DotNetTypeRef.ERROR_TYPE : myParamsParameter.toTypeRef(true);
+		return myParamsParameterTypeRefValue.getValue();
 	}
 
 	@Override

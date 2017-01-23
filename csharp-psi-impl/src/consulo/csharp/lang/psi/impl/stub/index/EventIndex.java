@@ -16,12 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.stub.index;
 
-import consulo.lombok.annotations.Lazy;
 import org.jetbrains.annotations.NotNull;
-import consulo.dotnet.psi.DotNetEventDeclaration;
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
+import consulo.dotnet.psi.DotNetEventDeclaration;
 
 /**
  * @author VISTALL
@@ -30,7 +29,6 @@ import com.intellij.psi.stubs.StubIndexKey;
 public class EventIndex extends StringStubIndexExtension<DotNetEventDeclaration>
 {
 	@NotNull
-	@Lazy
 	public static EventIndex getInstance()
 	{
 		return StubIndexExtension.EP_NAME.findExtension(EventIndex.class);

@@ -17,12 +17,11 @@
 package consulo.csharp.lang;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.impl.source.injection.CSharpInjectExpressionElementType;
 import com.intellij.psi.tree.IElementType;
 import consulo.csharp.cfs.lang.BaseExpressionCfsLanguageVersion;
 import consulo.csharp.cfs.lang.CfsLanguage;
-import consulo.lombok.annotations.Lazy;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.impl.source.injection.CSharpInjectExpressionElementType;
 
 /**
  * @author VISTALL
@@ -31,7 +30,6 @@ import consulo.lombok.annotations.Lazy;
 public class CSharpCfsLanguageVersion extends BaseExpressionCfsLanguageVersion
 {
 	@NotNull
-	@Lazy
 	public static CSharpCfsLanguageVersion getInstance()
 	{
 		return CfsLanguage.INSTANCE.findVersionByClass(CSharpCfsLanguageVersion.class);

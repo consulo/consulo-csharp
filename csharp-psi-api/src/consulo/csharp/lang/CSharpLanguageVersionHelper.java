@@ -17,17 +17,22 @@
 package consulo.csharp.lang;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.components.ServiceManager;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.lang.LanguageVersion;
-import consulo.lombok.annotations.ApplicationService;
 
 /**
  * @author VISTALL
  * @since 14.12.13.
  */
-@ApplicationService
 public abstract class CSharpLanguageVersionHelper
 {
+	@NotNull
+	public static CSharpLanguageVersionHelper getInstance()
+	{
+		return ServiceManager.getService(CSharpLanguageVersionHelper.class);
+	}
+
 	@NotNull
 	public abstract LanguageVersion getHighestVersion();
 

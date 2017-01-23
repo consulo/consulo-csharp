@@ -16,13 +16,29 @@
 
 package consulo.csharp;
 
-import consulo.lombok.annotations.Bundle;
+import org.jetbrains.annotations.PropertyKey;
+import com.intellij.AbstractBundle;
 
 /**
  * @author VISTALL
  * @since 15.05.14
  */
-@Bundle
-public class CSharpBundle
+public class CSharpBundle extends AbstractBundle
 {
+	private static final CSharpBundle ourInstance = new CSharpBundle();
+
+	private CSharpBundle()
+	{
+		super("messages.CSharpBundle");
+	}
+
+	public static String message(@PropertyKey(resourceBundle = "messages.CSharpBundle") String key)
+	{
+		return ourInstance.getMessage(key);
+	}
+
+	public static String message(@PropertyKey(resourceBundle = "messages.CSharpBundle") String key, Object... params)
+	{
+		return ourInstance.getMessage(key, params);
+	}
 }

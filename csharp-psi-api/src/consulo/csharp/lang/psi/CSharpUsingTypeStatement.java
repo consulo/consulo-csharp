@@ -18,17 +18,28 @@ package consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.util.ArrayFactory;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.lombok.annotations.ArrayFactoryFields;
 
 /**
  * @author VISTALL
  * @since 11.12.14
  */
-@ArrayFactoryFields
 public interface CSharpUsingTypeStatement extends CSharpUsingListChild
 {
+	public static final CSharpUsingTypeStatement[] EMPTY_ARRAY = new CSharpUsingTypeStatement[0];
+
+	public static ArrayFactory<CSharpUsingTypeStatement> ARRAY_FACTORY = new ArrayFactory<CSharpUsingTypeStatement>()
+	{
+		@NotNull
+		@Override
+		public CSharpUsingTypeStatement[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new CSharpUsingTypeStatement[count];
+		}
+	};
+
 	@NotNull
 	DotNetTypeRef getTypeRef();
 

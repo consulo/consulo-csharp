@@ -19,11 +19,10 @@ package consulo.csharp.lang.psi.impl.partial;
 import java.util.Collection;
 import java.util.Map;
 
-import consulo.lombok.annotations.ProjectService;
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import com.intellij.ProjectTopics;
 import com.intellij.openapi.Disposable;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootAdapter;
 import com.intellij.openapi.roots.ModuleRootEvent;
@@ -31,14 +30,20 @@ import com.intellij.openapi.util.Factory;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 
 /**
  * @author VISTALL
  * @since 02.05.2015
  */
-@ProjectService
 public class CSharpPartialElementManager implements Disposable
 {
+	@NotNull
+	public static CSharpPartialElementManager getInstance(@NotNull Project project)
+	{
+		return ServiceManager.getService(project, CSharpPartialElementManager.class);
+	}
+
 	private final Map<GlobalSearchScope, Map<String, CSharpTypeDeclaration>> myCache = ContainerUtil.createConcurrentWeakMap();
 	private long myOutOfCodeModification;
 	private final Project myProject;

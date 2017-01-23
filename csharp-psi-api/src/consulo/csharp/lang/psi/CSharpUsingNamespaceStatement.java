@@ -16,8 +16,9 @@
 
 package consulo.csharp.lang.psi;
 
-import consulo.lombok.annotations.ArrayFactoryFields;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetReferenceExpression;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
@@ -26,9 +27,20 @@ import consulo.dotnet.resolve.DotNetNamespaceAsElement;
  * @author VISTALL
  * @since 18.10.14
  */
-@ArrayFactoryFields
 public interface CSharpUsingNamespaceStatement extends CSharpUsingListChild
 {
+	public static final CSharpUsingNamespaceStatement[] EMPTY_ARRAY = new CSharpUsingNamespaceStatement[0];
+
+	public static ArrayFactory<CSharpUsingNamespaceStatement> ARRAY_FACTORY = new ArrayFactory<CSharpUsingNamespaceStatement>()
+	{
+		@NotNull
+		@Override
+		public CSharpUsingNamespaceStatement[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new CSharpUsingNamespaceStatement[count];
+		}
+	};
+
 	@Nullable
 	@RequiredReadAction
 	String getReferenceText();

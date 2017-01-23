@@ -16,22 +16,33 @@
 
 package consulo.csharp.lang.psi;
 
-import consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.PsiNameIdentifierOwner;
 
 /**
  * @author VISTALL
  * @since 18.10.14
  */
-@ArrayFactoryFields
 public interface CSharpTypeDefStatement extends DotNetNamedElement, PsiNameIdentifierOwner, CSharpUsingListChild
 {
+	public static final CSharpTypeDefStatement[] EMPTY_ARRAY = new CSharpTypeDefStatement[0];
+
+	public static ArrayFactory<CSharpTypeDefStatement> ARRAY_FACTORY = new ArrayFactory<CSharpTypeDefStatement>()
+	{
+		@NotNull
+		@Override
+		public CSharpTypeDefStatement[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new CSharpTypeDefStatement[count];
+		}
+	};
+
 	@Nullable
 	@RequiredReadAction
 	DotNetType getType();

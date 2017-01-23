@@ -17,17 +17,28 @@
 package consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.lombok.annotations.ArrayFactoryFields;
 
 /**
  * @author VISTALL
  * @since 06.11.14
  */
-@ArrayFactoryFields
 public interface CSharpSimpleLikeMethod
 {
+	public static final CSharpSimpleLikeMethod[] EMPTY_ARRAY = new CSharpSimpleLikeMethod[0];
+
+	public static ArrayFactory<CSharpSimpleLikeMethod> ARRAY_FACTORY = new ArrayFactory<CSharpSimpleLikeMethod>()
+	{
+		@NotNull
+		@Override
+		public CSharpSimpleLikeMethod[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new CSharpSimpleLikeMethod[count];
+		}
+	};
+
 	@NotNull
 	@RequiredReadAction
 	CSharpSimpleParameterInfo[] getParameterInfos();

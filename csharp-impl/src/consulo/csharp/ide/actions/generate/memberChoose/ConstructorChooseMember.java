@@ -22,6 +22,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.codeInsight.generation.ClassMember;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.ArrayFactory;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
@@ -31,19 +36,25 @@ import consulo.dotnet.psi.DotNetConstructorDeclaration;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
-import com.intellij.codeInsight.generation.ClassMember;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.containers.ContainerUtil;
-import consulo.lombok.annotations.ArrayFactoryFields;
 
 /**
  * @author VISTALL
  * @since 25.06.14
  */
-@ArrayFactoryFields
 public class ConstructorChooseMember extends CSharpMemberChooseObject<DotNetConstructorDeclaration> implements ClassMember
 {
+	public static final ConstructorChooseMember[] EMPTY_ARRAY = new ConstructorChooseMember[0];
+
+	public static ArrayFactory<ConstructorChooseMember> ARRAY_FACTORY = new ArrayFactory<ConstructorChooseMember>()
+	{
+		@NotNull
+		@Override
+		public ConstructorChooseMember[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new ConstructorChooseMember[count];
+		}
+	};
+
 	public ConstructorChooseMember(DotNetConstructorDeclaration declaration)
 	{
 		super(declaration);

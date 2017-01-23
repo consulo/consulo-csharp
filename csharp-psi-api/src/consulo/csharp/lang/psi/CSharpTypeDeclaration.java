@@ -16,14 +16,25 @@
 
 package consulo.csharp.lang.psi;
 
-import consulo.lombok.annotations.ArrayFactoryFields;
+import org.jetbrains.annotations.NotNull;
+import com.intellij.util.ArrayFactory;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 
 /**
  * @author VISTALL
  * @since 30.11.13.
  */
-@ArrayFactoryFields
 public interface CSharpTypeDeclaration extends DotNetTypeDeclaration, CSharpGenericConstraintOwner, CSharpBodyWithBraces
 {
+	public static final CSharpTypeDeclaration[] EMPTY_ARRAY = new CSharpTypeDeclaration[0];
+
+	public static ArrayFactory<CSharpTypeDeclaration> ARRAY_FACTORY = new ArrayFactory<CSharpTypeDeclaration>()
+	{
+		@NotNull
+		@Override
+		public CSharpTypeDeclaration[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new CSharpTypeDeclaration[count];
+		}
+	};
 }

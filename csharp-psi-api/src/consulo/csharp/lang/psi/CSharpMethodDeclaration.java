@@ -16,19 +16,31 @@
 
 package consulo.csharp.lang.psi;
 
-import consulo.lombok.annotations.ArrayFactoryFields;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetMethodDeclaration;
-import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
  * @since 30.11.13.
  */
-@ArrayFactoryFields
 public interface CSharpMethodDeclaration extends DotNetMethodDeclaration, CSharpGenericConstraintOwner, CSharpSimpleLikeMethodAsElement
 {
+	public static final CSharpMethodDeclaration[] EMPTY_ARRAY = new CSharpMethodDeclaration[0];
+
+	public static ArrayFactory<CSharpMethodDeclaration> ARRAY_FACTORY = new ArrayFactory<CSharpMethodDeclaration>()
+	{
+		@NotNull
+		@Override
+		public CSharpMethodDeclaration[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new CSharpMethodDeclaration[count];
+		}
+	};
+
 	boolean isDelegate();
 
 	boolean isOperator();

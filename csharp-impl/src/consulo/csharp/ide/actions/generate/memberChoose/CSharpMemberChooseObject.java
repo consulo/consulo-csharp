@@ -18,26 +18,37 @@ package consulo.csharp.ide.actions.generate.memberChoose;
 
 import javax.swing.JTree;
 
-import consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
+import com.intellij.codeInsight.generation.ClassMember;
+import com.intellij.codeInsight.generation.MemberChooserObject;
+import com.intellij.openapi.util.Iconable;
+import com.intellij.psi.PsiElement;
+import com.intellij.ui.SimpleColoredComponent;
+import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
-import com.intellij.codeInsight.generation.ClassMember;
-import com.intellij.codeInsight.generation.MemberChooserObject;
 import consulo.ide.IconDescriptorUpdaters;
-import com.intellij.openapi.util.Iconable;
-import com.intellij.psi.PsiElement;
-import com.intellij.ui.SimpleColoredComponent;
 
 /**
  * @author VISTALL
  * @since 25.06.14
  */
-@ArrayFactoryFields
 public abstract class CSharpMemberChooseObject<T extends DotNetElement> implements MemberChooserObject, ClassMember
 {
+	public static final CSharpMemberChooseObject[] EMPTY_ARRAY = new CSharpMemberChooseObject[0];
+
+	public static ArrayFactory<CSharpMemberChooseObject> ARRAY_FACTORY = new ArrayFactory<CSharpMemberChooseObject>()
+	{
+		@NotNull
+		@Override
+		public CSharpMemberChooseObject[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new CSharpMemberChooseObject[count];
+		}
+	};
+
 	protected T myDeclaration;
 
 	public CSharpMemberChooseObject(T declaration)

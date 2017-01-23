@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import consulo.lombok.annotations.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.NotNullLazyValue;
+import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.CSharpCastType;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.operatorResolving.ImplicitCastInfo;
@@ -31,8 +33,6 @@ import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpArrayTypeRef;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.PsiElement;
-import consulo.csharp.lang.CSharpCastType;
 
 /**
  * @author VISTALL
@@ -42,11 +42,28 @@ public class NParamsCallArgument extends NCallArgument
 {
 	@NotNull
 	private final List<CSharpCallArgument> myCallArguments;
+	private final NotNullLazyValue<DotNetTypeRef> myTypeRefValue;
 
 	public NParamsCallArgument(@NotNull List<CSharpCallArgument> callArguments, @Nullable DotNetParameter parameter)
 	{
 		super(DotNetTypeRef.ERROR_TYPE, null, parameter);
 		myCallArguments = callArguments;
+		myTypeRefValue = NotNullLazyValue.createValue(() ->
+		{
+			assert !myCallArguments.isEmpty();
+			List<DotNetTypeRef> typeRefs = new ArrayList<DotNetTypeRef>(myCallArguments.size());
+			for(CSharpCallArgument expression : myCallArguments)
+			{
+				DotNetExpression argumentExpression = expression.getArgumentExpression();
+				if(argumentExpression == null)
+				{
+					continue;
+				}
+				typeRefs.add(argumentExpression.toTypeRef(false));
+			}
+
+			return new CSharpArrayTypeRef(myCallArguments.get(0), typeRefs.get(0), 0);
+		});
 	}
 
 	@Override
@@ -82,22 +99,9 @@ public class NParamsCallArgument extends NCallArgument
 
 	@NotNull
 	@Override
-	@Lazy
 	public DotNetTypeRef getTypeRef()
 	{
-		assert !myCallArguments.isEmpty();
-		List<DotNetTypeRef> typeRefs = new ArrayList<DotNetTypeRef>(myCallArguments.size());
-		for(CSharpCallArgument expression : myCallArguments)
-		{
-			DotNetExpression argumentExpression = expression.getArgumentExpression();
-			if(argumentExpression == null)
-			{
-				continue;
-			}
-			typeRefs.add(argumentExpression.toTypeRef(false));
-		}
-
-		return new CSharpArrayTypeRef(myCallArguments.get(0), typeRefs.get(0), 0);
+		return myTypeRefValue.getValue();
 	}
 
 	@NotNull

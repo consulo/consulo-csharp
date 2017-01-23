@@ -16,12 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.stub.index;
 
-import consulo.lombok.annotations.Lazy;
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 
 /**
  * @author VISTALL
@@ -30,7 +29,6 @@ import com.intellij.psi.stubs.StubIndexKey;
 public class TypeIndex extends StringStubIndexExtension<CSharpTypeDeclaration>
 {
 	@NotNull
-	@Lazy
 	public static TypeIndex getInstance()
 	{
 		return StubIndexExtension.EP_NAME.findExtension(TypeIndex.class);

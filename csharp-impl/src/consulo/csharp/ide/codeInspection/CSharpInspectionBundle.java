@@ -16,13 +16,29 @@
 
 package consulo.csharp.ide.codeInspection;
 
-import consulo.lombok.annotations.Bundle;
+import org.jetbrains.annotations.PropertyKey;
+import com.intellij.AbstractBundle;
 
 /**
  * @author VISTALL
  * @since 28.08.14
  */
-@Bundle
-public class CSharpInspectionBundle
+public class CSharpInspectionBundle extends AbstractBundle
 {
+	private static final CSharpInspectionBundle ourInstance = new CSharpInspectionBundle();
+
+	private CSharpInspectionBundle()
+	{
+		super("messages.CSharpInspectionBundle");
+	}
+
+	public static String message(@PropertyKey(resourceBundle = "messages.CSharpInspectionBundle") String key)
+	{
+		return ourInstance.getMessage(key);
+	}
+
+	public static String message(@PropertyKey(resourceBundle = "messages.CSharpInspectionBundle") String key, Object... params)
+	{
+		return ourInstance.getMessage(key, params);
+	}
 }

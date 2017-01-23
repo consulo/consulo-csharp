@@ -16,9 +16,11 @@
 
 package consulo.csharp.lang.psi.impl.msil.transformer;
 
-import consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.ToNativeElementTransformer;
 import consulo.csharp.lang.psi.impl.msil.MsilMethodAsCSharpMethodDeclaration;
@@ -27,16 +29,15 @@ import consulo.dotnet.psi.DotNetMemberOwner;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.msil.lang.psi.MsilClassEntry;
 import consulo.msil.lang.psi.MsilFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 
 /**
  * @author VISTALL
  * @since 15.03.2016
  */
-@Logger
 public class MsilToNativeElementTransformer implements ToNativeElementTransformer
 {
+	private static final Logger LOGGER = Logger.getInstance(MsilToNativeElementTransformer.class);
+
 	@RequiredReadAction
 	@Nullable
 	@Override

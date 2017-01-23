@@ -18,6 +18,7 @@ package consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -32,7 +33,6 @@ import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import consulo.lombok.annotations.Lazy;
 
 /**
  * @author VISTALL
@@ -76,50 +76,59 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 
 	public static class LambdaResult extends Result<CSharpMethodDeclaration> implements CSharpLambdaResolveResult
 	{
+		private final NotNullLazyValue<CSharpSimpleParameterInfo[]> myParameterInfosValue;
+		private final NotNullLazyValue<PsiElement> myElementValue;
+		private final NotNullLazyValue<DotNetTypeRef> myReturnTypRefValue;
+		private final NotNullLazyValue<DotNetTypeRef[]> myParameterTypeRefsValue;
 		private final PsiElement myScope;
 
+		@RequiredReadAction
 		public LambdaResult(@NotNull PsiElement scope, @NotNull CSharpMethodDeclaration element, @NotNull DotNetGenericExtractor extractor)
 		{
 			super(element, extractor);
 			myScope = scope;
+			myParameterInfosValue = NotNullLazyValue.createValue(() ->
+			{
+				CSharpSimpleParameterInfo[] parameterInfos = myElement.getParameterInfos();
+				if(myExtractor == DotNetGenericExtractor.EMPTY)
+				{
+					return parameterInfos;
+				}
+				CSharpSimpleParameterInfo[] temp = new CSharpSimpleParameterInfo[parameterInfos.length];
+				for(int i = 0; i < parameterInfos.length; i++)
+				{
+					CSharpSimpleParameterInfo parameterInfo = parameterInfos[i];
+					DotNetTypeRef typeRef = GenericUnwrapTool.exchangeTypeRef(parameterInfo.getTypeRef(), getGenericExtractor(), myScope);
+					temp[i] = new CSharpSimpleParameterInfo(parameterInfo.getIndex(), parameterInfo.getName(), parameterInfo.getElement(), typeRef);
+				}
+				return temp;
+			});
+			myElementValue = NotNullLazyValue.createValue(() -> CSharpLambdaResolveResultUtil.createTypeFromDelegate(myElement));
+			myReturnTypRefValue = NotNullLazyValue.createValue(() -> GenericUnwrapTool.exchangeTypeRef(myElement.getReturnTypeRef(), getGenericExtractor(), scope));
+			myParameterTypeRefsValue = NotNullLazyValue.createValue(() -> GenericUnwrapTool.exchangeTypeRefs(myElement.getParameterTypeRefs(), getGenericExtractor(), myScope));
 		}
 
 		@NotNull
 		@Override
 		@RequiredReadAction
-		@Lazy
 		public CSharpSimpleParameterInfo[] getParameterInfos()
 		{
-			CSharpSimpleParameterInfo[] parameterInfos = myElement.getParameterInfos();
-			if(myExtractor == DotNetGenericExtractor.EMPTY)
-			{
-				return parameterInfos;
-			}
-			CSharpSimpleParameterInfo[] temp = new CSharpSimpleParameterInfo[parameterInfos.length];
-			for(int i = 0; i < parameterInfos.length; i++)
-			{
-				CSharpSimpleParameterInfo parameterInfo = parameterInfos[i];
-				DotNetTypeRef typeRef = GenericUnwrapTool.exchangeTypeRef(parameterInfo.getTypeRef(), getGenericExtractor(), myScope);
-				temp[i] = new CSharpSimpleParameterInfo(parameterInfo.getIndex(), parameterInfo.getName(), parameterInfo.getElement(), typeRef);
-			}
-			return temp;
+			return myParameterInfosValue.getValue();
 		}
 
 		@Nullable
 		@Override
-		@Lazy
 		public PsiElement getElement()
 		{
-			return CSharpLambdaResolveResultUtil.createTypeFromDelegate(myElement);
+			return myElementValue.getValue();
 		}
 
 		@RequiredReadAction
 		@NotNull
 		@Override
-		@Lazy
 		public DotNetTypeRef getReturnTypeRef()
 		{
-			return GenericUnwrapTool.exchangeTypeRef(myElement.getReturnTypeRef(), getGenericExtractor(), myScope);
+			return myReturnTypRefValue.getValue();
 		}
 
 		@RequiredReadAction
@@ -132,10 +141,9 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 		@RequiredReadAction
 		@NotNull
 		@Override
-		@Lazy
 		public DotNetTypeRef[] getParameterTypeRefs()
 		{
-			return GenericUnwrapTool.exchangeTypeRefs(myElement.getParameterTypeRefs(), getGenericExtractor(), myScope);
+			return myParameterTypeRefsValue.getValue();
 		}
 
 		@RequiredReadAction

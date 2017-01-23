@@ -24,15 +24,15 @@ import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.doc.ide.highlight.CSharpDocHighlightKey;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.options.OptionsBundle;
 import com.intellij.openapi.options.colors.AttributesDescriptor;
 import com.intellij.openapi.options.colors.ColorDescriptor;
 import com.intellij.openapi.options.colors.ColorSettingsPage;
+import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.openapi.util.io.FileUtil;
-import consulo.lombok.annotations.Lazy;
+import consulo.csharp.lang.doc.ide.highlight.CSharpDocHighlightKey;
 
 /**
  * @author VISTALL
@@ -106,6 +106,18 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 		}
 	};
 
+	private final NotNullLazyValue<String> myDemoTextValue = NotNullLazyValue.createValue(() ->
+	{
+		try
+		{
+			return FileUtil.loadTextAndClose(getClass().getResourceAsStream("/colorSettingsPage/C#.txt"), true);
+		}
+		catch(IOException e)
+		{
+			throw new Error(e);
+		}
+	});
+
 	@Nullable
 	@Override
 	public Icon getIcon()
@@ -122,17 +134,9 @@ public class CSharpColorSettingsPage implements ColorSettingsPage
 
 	@NotNull
 	@Override
-	@Lazy
 	public String getDemoText()
 	{
-		try
-		{
-			return FileUtil.loadTextAndClose(getClass().getResourceAsStream("/colorSettingsPage/C#.txt"), true);
-		}
-		catch(IOException e)
-		{
-			throw new Error(e);
-		}
+		return myDemoTextValue.getValue();
 	}
 
 	@Nullable

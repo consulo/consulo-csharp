@@ -16,20 +16,31 @@
 
 package consulo.csharp.lang.psi;
 
-import consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetElement;
-import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
  * @since 11.02.14
  */
-@ArrayFactoryFields
 public interface CSharpUsingListChild extends DotNetElement
 {
+	public static final CSharpUsingListChild[] EMPTY_ARRAY = new CSharpUsingListChild[0];
+
+	public static ArrayFactory<CSharpUsingListChild> ARRAY_FACTORY = new ArrayFactory<CSharpUsingListChild>()
+	{
+		@NotNull
+		@Override
+		public CSharpUsingListChild[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new CSharpUsingListChild[count];
+		}
+	};
+
 	@NotNull
 	@RequiredReadAction
 	PsiElement getUsingKeywordElement();

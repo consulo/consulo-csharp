@@ -21,12 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.CSharpAccessModifier;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import consulo.csharp.lang.psi.impl.msil.typeParsing.SomeType;
-import consulo.csharp.lang.psi.impl.msil.typeParsing.SomeTypeParser;
+import com.intellij.openapi.util.NullableLazyValue;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -34,11 +29,16 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpAccessModifier;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
+import consulo.csharp.lang.psi.impl.msil.typeParsing.SomeType;
+import consulo.csharp.lang.psi.impl.msil.typeParsing.SomeTypeParser;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetXXXAccessor;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.lombok.annotations.Lazy;
 import consulo.msil.lang.psi.MsilClassEntry;
 import consulo.msil.lang.psi.MsilMethodEntry;
 import consulo.msil.lang.psi.MsilPropertyEntry;
@@ -52,16 +52,28 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 {
 	private DotNetXXXAccessor[] myAccessors;
 
-	public MsilPropertyAsCSharpPropertyDeclaration(PsiElement parent,
-			MsilPropertyEntry variable,
-			List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
+	private final NullableLazyValue<DotNetType> myTypeForImplementValue;
+
+	@RequiredReadAction
+	public MsilPropertyAsCSharpPropertyDeclaration(PsiElement parent, MsilPropertyEntry variable, List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
 	{
 		super(parent, getAdditionalModifiers(variable, pairs), variable);
 		myAccessors = buildAccessors(this, pairs);
+
+		myTypeForImplementValue = NullableLazyValue.of(() ->
+		{
+			String nameFromBytecode = getVariable().getNameFromBytecode();
+			String typeBeforeDot = StringUtil.getPackageName(nameFromBytecode);
+			SomeType someType = SomeTypeParser.parseType(typeBeforeDot, nameFromBytecode);
+			if(someType != null)
+			{
+				return new DummyType(getProject(), MsilPropertyAsCSharpPropertyDeclaration.this, someType);
+			}
+			return null;
+		});
 	}
 
-	public static DotNetXXXAccessor[] buildAccessors(@NotNull PsiElement parent,
-			@NotNull List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
+	public static DotNetXXXAccessor[] buildAccessors(@NotNull PsiElement parent, @NotNull List<Pair<DotNetXXXAccessor, MsilMethodEntry>> pairs)
 	{
 		List<DotNetXXXAccessor> accessors = new ArrayList<DotNetXXXAccessor>(2);
 
@@ -183,22 +195,13 @@ public class MsilPropertyAsCSharpPropertyDeclaration extends MsilVariableAsCShar
 
 	@Nullable
 	@Override
-	@Lazy(notNull = false)
 	public DotNetType getTypeForImplement()
 	{
-		String nameFromBytecode = getVariable().getNameFromBytecode();
-		String typeBeforeDot = StringUtil.getPackageName(nameFromBytecode);
-		SomeType someType = SomeTypeParser.parseType(typeBeforeDot, nameFromBytecode);
-		if(someType != null)
-		{
-			return new DummyType(getProject(), MsilPropertyAsCSharpPropertyDeclaration.this, someType);
-		}
-		return null;
+		return myTypeForImplementValue.getValue();
 	}
 
 	@NotNull
 	@Override
-	@Lazy
 	public DotNetTypeRef getTypeRefForImplement()
 	{
 		DotNetType typeForImplement = getTypeForImplement();

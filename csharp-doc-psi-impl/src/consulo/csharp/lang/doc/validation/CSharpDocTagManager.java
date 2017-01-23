@@ -22,16 +22,21 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.components.ServiceManager;
 import consulo.annotations.Immutable;
-import consulo.lombok.annotations.ApplicationService;
 
 /**
  * @author VISTALL
  * @since 03.03.2015
  */
-@ApplicationService
 public class CSharpDocTagManager
 {
+	@NotNull
+	public static CSharpDocTagManager getInstance()
+	{
+		return ServiceManager.getService(CSharpDocTagManager.class);
+	}
+
 	private Map<String, CSharpDocTagInfo> myTags = new HashMap<String, CSharpDocTagInfo>();
 
 	public CSharpDocTagManager()

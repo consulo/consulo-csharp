@@ -16,18 +16,30 @@
 
 package consulo.csharp.lang.psi;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.util.ArrayFactory;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetExpression;
-import consulo.lombok.annotations.ArrayFactoryFields;
 
 /**
  * @author VISTALL
  * @since 15.09.14
  */
-@ArrayFactoryFields
 public interface CSharpCallArgument extends DotNetElement
 {
+	public static final CSharpCallArgument[] EMPTY_ARRAY = new CSharpCallArgument[0];
+
+	public static ArrayFactory<CSharpCallArgument> ARRAY_FACTORY = new ArrayFactory<CSharpCallArgument>()
+	{
+		@NotNull
+		@Override
+		public CSharpCallArgument[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new CSharpCallArgument[count];
+		}
+	};
+
 	@Nullable
 	DotNetExpression getArgumentExpression();
 }

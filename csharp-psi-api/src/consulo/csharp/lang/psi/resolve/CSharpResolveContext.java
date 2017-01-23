@@ -16,27 +16,38 @@
 
 package consulo.csharp.lang.psi.resolve;
 
-import consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.UserDataHolder;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.util.ArrayFactory;
+import com.intellij.util.Processor;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.CSharpCastType;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import com.intellij.openapi.util.UserDataHolder;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.Processor;
-import consulo.csharp.lang.CSharpCastType;
 
 /**
  * @author VISTALL
  * @since 29.09.14
  */
-@ArrayFactoryFields
 public interface CSharpResolveContext
 {
+	public static final CSharpResolveContext[] EMPTY_ARRAY = new CSharpResolveContext[0];
+
+	public static ArrayFactory<CSharpResolveContext> ARRAY_FACTORY = new ArrayFactory<CSharpResolveContext>()
+	{
+		@NotNull
+		@Override
+		public CSharpResolveContext[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new CSharpResolveContext[count];
+		}
+	};
+
 	CSharpResolveContext EMPTY = new CSharpResolveContextAdapter();
 
 	@Nullable

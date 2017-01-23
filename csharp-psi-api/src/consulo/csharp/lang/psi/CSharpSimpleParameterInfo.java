@@ -19,18 +19,29 @@ package consulo.csharp.lang.psi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.lombok.annotations.ArrayFactoryFields;
 
 /**
  * @author VISTALL
  * @since 06.11.14
  */
-@ArrayFactoryFields
 public class CSharpSimpleParameterInfo
 {
+	public static final CSharpSimpleParameterInfo[] EMPTY_ARRAY = new CSharpSimpleParameterInfo[0];
+
+	public static ArrayFactory<CSharpSimpleParameterInfo> ARRAY_FACTORY = new ArrayFactory<CSharpSimpleParameterInfo>()
+	{
+		@NotNull
+		@Override
+		public CSharpSimpleParameterInfo[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new CSharpSimpleParameterInfo[count];
+		}
+	};
+
 	@NotNull
 	public static DotNetTypeRef[] toTypeRefs(@NotNull CSharpSimpleParameterInfo[] parameterInfos)
 	{

@@ -18,6 +18,7 @@ package consulo.csharp.lang.psi.impl.source.resolve;
 
 import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.ArrayFactory;
 import consulo.csharp.lang.psi.*;
 import consulo.csharp.lang.psi.impl.source.CSharpLabeledStatementImpl;
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
@@ -25,13 +26,11 @@ import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
-import consulo.lombok.annotations.ArrayFactoryFields;
 
 /**
  * @author VISTALL
  * @since 09.10.14
  */
-@ArrayFactoryFields
 public enum ExecuteTarget
 {
 	LABEL
@@ -141,6 +140,18 @@ public enum ExecuteTarget
 							element instanceof CSharpLambdaParameter;
 				}
 			};
+
+	public static final ExecuteTarget[] EMPTY_ARRAY = new ExecuteTarget[0];
+
+	public static ArrayFactory<ExecuteTarget> ARRAY_FACTORY = new ArrayFactory<ExecuteTarget>()
+	{
+		@NotNull
+		@Override
+		public ExecuteTarget[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new ExecuteTarget[count];
+		}
+	};
 
 	public abstract boolean isMyElement(@NotNull PsiElement element);
 }

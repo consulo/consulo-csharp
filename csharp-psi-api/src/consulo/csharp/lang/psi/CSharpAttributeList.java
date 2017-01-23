@@ -17,16 +17,27 @@
 package consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.util.ArrayFactory;
 import consulo.dotnet.psi.DotNetAttributeList;
-import consulo.lombok.annotations.ArrayFactoryFields;
 
 /**
  * @author VISTALL
  * @since 17.10.14
  */
-@ArrayFactoryFields
 public interface CSharpAttributeList extends DotNetAttributeList
 {
+	public static final CSharpAttributeList[] EMPTY_ARRAY = new CSharpAttributeList[0];
+
+	public static ArrayFactory<CSharpAttributeList> ARRAY_FACTORY = new ArrayFactory<CSharpAttributeList>()
+	{
+		@NotNull
+		@Override
+		public CSharpAttributeList[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new CSharpAttributeList[count];
+		}
+	};
+
 	@NotNull
 	@Override
 	CSharpAttribute[] getAttributes();

@@ -23,20 +23,12 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.module.extension.CSharpModuleExtension;
-import consulo.dotnet.DotNetTarget;
-import consulo.dotnet.compiler.DotNetCompileFailedException;
-import consulo.dotnet.compiler.DotNetCompilerMessage;
-import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
-import consulo.dotnet.compiler.DotNetCompilerUtil;
-import consulo.dotnet.compiler.DotNetMacroUtil;
-import consulo.dotnet.module.extension.DotNetModuleExtension;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.compiler.CompilerMessageCategory;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.projectRoots.Sdk;
@@ -46,14 +38,23 @@ import com.intellij.openapi.vfs.StandardFileSystems;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.util.Function;
+import consulo.csharp.module.extension.CSharpModuleExtension;
+import consulo.dotnet.DotNetTarget;
+import consulo.dotnet.compiler.DotNetCompileFailedException;
+import consulo.dotnet.compiler.DotNetCompilerMessage;
+import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
+import consulo.dotnet.compiler.DotNetCompilerUtil;
+import consulo.dotnet.compiler.DotNetMacroUtil;
+import consulo.dotnet.module.extension.DotNetModuleExtension;
 
 /**
  * @author VISTALL
  * @since 26.11.13.
  */
-@Logger
 public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptionsBuilder
 {
+	private static final Logger LOGGER = Logger.getInstance(MSBaseDotNetCompilerOptionsBuilder.class);
+
 	// impl from monolipse
 	// monolipse.core/src/monolipse/core/runtime/CSharpCompilerLauncher.java
 	// added support for column parsing by VISTALL

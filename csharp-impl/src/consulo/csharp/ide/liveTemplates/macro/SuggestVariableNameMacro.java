@@ -21,14 +21,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import consulo.lombok.annotations.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.annotations.RequiredDispatchThread;
-import consulo.csharp.ide.lineMarkerProvider.CSharpLineMarkerUtil;
-import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.dotnet.psi.DotNetVariable;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.codeInsight.template.Expression;
@@ -37,6 +31,7 @@ import com.intellij.codeInsight.template.Macro;
 import com.intellij.codeInsight.template.Result;
 import com.intellij.codeInsight.template.TextResult;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
@@ -45,14 +40,20 @@ import com.intellij.psi.text.BlockSupport;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.annotations.RequiredDispatchThread;
+import consulo.csharp.ide.lineMarkerProvider.CSharpLineMarkerUtil;
+import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
+import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.dotnet.psi.DotNetVariable;
 
 /**
  * @author VISTALL
  * @since 11.06.14
  */
-@Logger
 public class SuggestVariableNameMacro extends Macro
 {
+	private static final Logger LOGGER = Logger.getInstance(SuggestVariableNameMacro.class);
+
 	@Override
 	public String getName()
 	{

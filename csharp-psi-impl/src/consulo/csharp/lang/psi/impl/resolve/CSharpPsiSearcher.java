@@ -21,8 +21,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import consulo.lombok.annotations.ProjectService;
 import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.project.DumbService;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.stubs.StubIndexKey;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -34,18 +38,19 @@ import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import consulo.dotnet.resolve.impl.IndexBasedDotNetPsiSearcher;
-import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.stubs.StubIndexKey;
 
 /**
  * @author VISTALL
  * @since 13.07.14
  */
-@ProjectService
 public class CSharpPsiSearcher extends IndexBasedDotNetPsiSearcher
 {
+	@NotNull
+	public static CSharpPsiSearcher getInstance(@NotNull Project project)
+	{
+		return ServiceManager.getService(project, CSharpPsiSearcher.class);
+	}
+
 	public CSharpPsiSearcher(Project project)
 	{
 		super(project);

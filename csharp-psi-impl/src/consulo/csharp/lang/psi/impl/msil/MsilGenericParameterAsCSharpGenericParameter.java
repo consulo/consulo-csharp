@@ -19,9 +19,14 @@ package consulo.csharp.lang.psi.impl.msil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.NotNullLazyValue;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredReadAction;
+import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
+import consulo.csharp.lang.psi.CSharpGenericParameter;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.dotnet.psi.DotNetAttribute;
 import consulo.dotnet.psi.DotNetAttributeListOwner;
@@ -29,10 +34,6 @@ import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
-import consulo.csharp.lang.psi.CSharpGenericParameter;
-import consulo.lombok.annotations.Lazy;
 
 /**
  * @author VISTALL
@@ -40,9 +41,13 @@ import consulo.lombok.annotations.Lazy;
  */
 public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWrapper<DotNetGenericParameter> implements CSharpGenericParameter, DotNetAttributeListOwner
 {
+	private final NotNullLazyValue<DotNetTypeRef[]> myExtendTypeRefsValue;
+
+	@RequiredReadAction
 	public MsilGenericParameterAsCSharpGenericParameter(@NotNull PsiElement parent, DotNetGenericParameter msilElement)
 	{
 		super(parent, msilElement);
+		myExtendTypeRefsValue = NotNullLazyValue.createValue(() -> CSharpGenericConstraintUtil.getExtendTypes(this));
 	}
 
 	@RequiredReadAction
@@ -79,6 +84,7 @@ public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWra
 		return super.isEquivalentTo(another);
 	}
 
+	@RequiredReadAction
 	@Override
 	public String getName()
 	{
@@ -97,6 +103,7 @@ public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWra
 		return "MsilGenericParameterAsCSharpGenericParameter: " + myOriginal.getName();
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getNameIdentifier()
@@ -104,6 +111,7 @@ public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWra
 		return null;
 	}
 
+	@RequiredWriteAction
 	@Override
 	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
 	{
@@ -127,9 +135,8 @@ public class MsilGenericParameterAsCSharpGenericParameter extends MsilElementWra
 	@RequiredReadAction
 	@NotNull
 	@Override
-	@Lazy
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{
-		return CSharpGenericConstraintUtil.getExtendTypes(MsilGenericParameterAsCSharpGenericParameter.this);
+		return myExtendTypeRefsValue.getValue();
 	}
 }

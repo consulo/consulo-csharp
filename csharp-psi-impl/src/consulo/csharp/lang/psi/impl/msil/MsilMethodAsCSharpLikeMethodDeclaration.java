@@ -19,15 +19,16 @@ package consulo.csharp.lang.psi.impl.msil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.CSharpModifier;
-import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
-import consulo.csharp.lang.psi.impl.light.CSharpLightGenericConstraintList;
-import consulo.csharp.lang.psi.impl.source.CSharpLikeMethodDeclarationImplUtil;
+import com.intellij.openapi.util.NotNullLazyValue;
 import com.intellij.openapi.util.NullableLazyValue;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
+import consulo.csharp.lang.psi.impl.light.CSharpLightGenericConstraintList;
+import consulo.csharp.lang.psi.impl.source.CSharpLikeMethodDeclarationImplUtil;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterList;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
@@ -38,7 +39,6 @@ import consulo.dotnet.psi.DotNetParameter;
 import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import consulo.lombok.annotations.Lazy;
 import consulo.msil.lang.psi.MsilMethodEntry;
 import consulo.msil.lang.psi.MsilTokens;
 
@@ -52,15 +52,32 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 	private DotNetGenericParameterList myGenericParameterList;
 	protected NullableLazyValue<CSharpLightGenericConstraintList> myGenericConstraintListValue;
 
+	private final NotNullLazyValue<DotNetTypeRef> myReturnTypeRefValue;
+	private final NotNullLazyValue<DotNetTypeRef[]> myParameterTypeRefsValue;
+
+	@RequiredReadAction
 	public MsilMethodAsCSharpLikeMethodDeclaration(PsiElement parent, MsilMethodEntry methodEntry)
 	{
 		this(parent, CSharpModifier.EMPTY_ARRAY, methodEntry);
 	}
 
+	@RequiredReadAction
 	public MsilMethodAsCSharpLikeMethodDeclaration(PsiElement parent, @NotNull CSharpModifier[] modifiers, MsilMethodEntry methodEntry)
 	{
 		super(parent, methodEntry);
 		myModifierList = new MsilModifierListToCSharpModifierList(modifiers, this, methodEntry.getModifierList());
+
+		myReturnTypeRefValue = NotNullLazyValue.createValue(() -> MsilToCSharpUtil.extractToCSharp(myOriginal.getReturnTypeRef(), myOriginal));
+		myParameterTypeRefsValue = NotNullLazyValue.createValue(() ->
+		{
+			DotNetTypeRef[] parameters = myOriginal.getParameterTypeRefs();
+			DotNetTypeRef[] refs = new DotNetTypeRef[parameters.length];
+			for(int i = 0; i < parameters.length; i++)
+			{
+				refs[i] = MsilToCSharpUtil.extractToCSharp(parameters[i], myOriginal);
+			}
+			return refs;
+		});
 	}
 
 	protected void setGenericParameterList(@NotNull DotNetGenericParameterListOwner owner, @NotNull GenericParameterContext genericParameterContext)
@@ -109,10 +126,9 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 	@RequiredReadAction
 	@NotNull
 	@Override
-	@Lazy
 	public DotNetTypeRef getReturnTypeRef()
 	{
-		return MsilToCSharpUtil.extractToCSharp(myOriginal.getReturnTypeRef(), myOriginal);
+		return myReturnTypeRefValue.getValue();
 	}
 
 	@Nullable
@@ -159,16 +175,9 @@ public abstract class MsilMethodAsCSharpLikeMethodDeclaration extends MsilElemen
 
 	@NotNull
 	@Override
-	@Lazy
 	public DotNetTypeRef[] getParameterTypeRefs()
 	{
-		DotNetTypeRef[] parameters = myOriginal.getParameterTypeRefs();
-		DotNetTypeRef[] refs = new DotNetTypeRef[parameters.length];
-		for(int i = 0; i < parameters.length; i++)
-		{
-			refs[i] = MsilToCSharpUtil.extractToCSharp(parameters[i], myOriginal);
-		}
-		return refs;
+		return myParameterTypeRefsValue.getValue();
 	}
 
 	@Nullable

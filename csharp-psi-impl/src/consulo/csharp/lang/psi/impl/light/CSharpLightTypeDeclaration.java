@@ -16,10 +16,12 @@
 
 package consulo.csharp.lang.psi.impl.light;
 
-import consulo.lombok.annotations.Lazy;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.NotNullLazyValue;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.IncorrectOperationException;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpGenericConstraint;
@@ -34,8 +36,6 @@ import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetTypeList;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author VISTALL
@@ -43,12 +43,23 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTypeDeclaration> implements CSharpTypeDeclaration
 {
+	private final NotNullLazyValue<DotNetNamedElement[]> myMembersValue;
 	private DotNetGenericExtractor myExtractor;
 
 	public CSharpLightTypeDeclaration(CSharpTypeDeclaration original, DotNetGenericExtractor extractor)
 	{
 		super(original);
 		myExtractor = extractor;
+		myMembersValue = NotNullLazyValue.createValue(() ->
+		{
+			DotNetNamedElement[] originalMembers = myOriginal.getMembers();
+			DotNetNamedElement[] members = new DotNetNamedElement[originalMembers.length];
+			for(int i = 0; i < originalMembers.length; i++)
+			{
+				members[i] = GenericUnwrapTool.extract(originalMembers[i], myExtractor, CSharpLightTypeDeclaration.this);
+			}
+			return members;
+		});
 	}
 
 	@RequiredReadAction
@@ -188,17 +199,10 @@ public class CSharpLightTypeDeclaration extends CSharpLightNamedElement<CSharpTy
 
 	@NotNull
 	@Override
-	@Lazy
 	@RequiredReadAction
 	public DotNetNamedElement[] getMembers()
 	{
-		DotNetNamedElement[] originalMembers = myOriginal.getMembers();
-		DotNetNamedElement[] members = new DotNetNamedElement[originalMembers.length];
-		for(int i = 0; i < originalMembers.length; i++)
-		{
-			members[i] = GenericUnwrapTool.extract(originalMembers[i], myExtractor, CSharpLightTypeDeclaration.this);
-		}
-		return members;
+		return myMembersValue.getValue();
 	}
 
 	@RequiredReadAction

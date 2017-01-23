@@ -16,17 +16,29 @@
 
 package consulo.csharp.lang.psi;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.util.ArrayFactory;
 import consulo.dotnet.psi.DotNetAttribute;
-import consulo.lombok.annotations.ArrayFactoryFields;
 
 /**
  * @author VISTALL
  * @since 19.08.14
  */
-@ArrayFactoryFields
 public interface CSharpAttribute extends DotNetAttribute, CSharpCallArgumentListOwner
 {
+	public static final CSharpAttribute[] EMPTY_ARRAY = new CSharpAttribute[0];
+
+	public static ArrayFactory<CSharpAttribute> ARRAY_FACTORY = new ArrayFactory<CSharpAttribute>()
+	{
+		@NotNull
+		@Override
+		public CSharpAttribute[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new CSharpAttribute[count];
+		}
+	};
+
 	@Nullable
 	CSharpReferenceExpression getReferenceExpression();
 }

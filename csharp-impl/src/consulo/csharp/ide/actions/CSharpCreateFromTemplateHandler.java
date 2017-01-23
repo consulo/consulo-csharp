@@ -21,7 +21,6 @@ import java.util.UUID;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.CSharpFileType;
 import com.intellij.ide.fileTemplates.DefaultCreateFromTemplateHandler;
 import com.intellij.ide.fileTemplates.FileTemplate;
 import com.intellij.openapi.fileTypes.FileType;
@@ -34,8 +33,8 @@ import com.intellij.openapi.vfs.VirtualFileSystem;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.testFramework.LightVirtualFile;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.CSharpFileType;
 import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
-import consulo.lombok.annotations.Lazy;
 import consulo.roots.ContentEntryFileListener;
 
 /**
@@ -45,7 +44,6 @@ import consulo.roots.ContentEntryFileListener;
 public class CSharpCreateFromTemplateHandler extends DefaultCreateFromTemplateHandler
 {
 	@NotNull
-	@Lazy
 	public static CSharpCreateFromTemplateHandler getInstance()
 	{
 		return EP_NAME.findExtension(CSharpCreateFromTemplateHandler.class);
