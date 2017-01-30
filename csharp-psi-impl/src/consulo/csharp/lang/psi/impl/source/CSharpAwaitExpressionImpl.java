@@ -18,6 +18,7 @@ package consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
 import com.intellij.lang.ASTNode;
@@ -30,7 +31,7 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  * @author VISTALL
  * @since 09.09.14
  */
-public class CSharpAwaitExpressionImpl extends CSharpElementImpl implements DotNetExpression
+public class CSharpAwaitExpressionImpl extends CSharpExpressionImpl implements DotNetExpression
 {
 	public CSharpAwaitExpressionImpl(@NotNull ASTNode node)
 	{
@@ -49,9 +50,10 @@ public class CSharpAwaitExpressionImpl extends CSharpElementImpl implements DotN
 		visitor.visitAwaitExpression(this);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public DotNetTypeRef toTypeRef(boolean b)
+	public DotNetTypeRef toTypeRefImpl(boolean b)
 	{
 		DotNetExpression innerExpression = getInnerExpression();
 		if(innerExpression == null)
