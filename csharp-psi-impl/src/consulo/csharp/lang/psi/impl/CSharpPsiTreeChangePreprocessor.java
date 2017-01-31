@@ -18,18 +18,17 @@ package consulo.csharp.lang.psi.impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.impl.PsiTreeChangeEventImpl;
+import com.intellij.psi.impl.PsiTreeChangePreprocessorBase;
+import com.intellij.psi.util.PsiTreeUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpFile;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.psi.DotNetStatement;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.impl.PsiTreeChangePreprocessorBase;
-import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
@@ -37,27 +36,26 @@ import com.intellij.psi.util.PsiTreeUtil;
  */
 public class CSharpPsiTreeChangePreprocessor extends PsiTreeChangePreprocessorBase
 {
-	public CSharpPsiTreeChangePreprocessor(@NotNull Project project)
+	public CSharpPsiTreeChangePreprocessor(@NotNull PsiManager psiManager)
 	{
-		super(project);
+		super(psiManager);
 	}
 
 	@Override
-	protected boolean isMaybeMyElement(@Nullable PsiElement element)
+	protected boolean acceptsEvent(@NotNull PsiTreeChangeEventImpl event)
 	{
-		// directories can contains c# files - need update them
-		return element instanceof PsiDirectory;
-	}
-
-	@Override
-	protected boolean isMyFile(@NotNull PsiFile file)
-	{
-		return file instanceof CSharpFile;
+		return event.getFile() instanceof CSharpFile;
 	}
 
 	@Override
 	@RequiredReadAction
-	protected boolean isInsideCodeBlock(@Nullable PsiElement element)
+	protected boolean isOutOfCodeBlock(@NotNull PsiElement element)
+	{
+		return !isInsideCodeBlock(element);
+	}
+
+	@RequiredReadAction
+	private boolean isInsideCodeBlock(@Nullable PsiElement element)
 	{
 		if(PsiTreeUtil.getParentOfType(element, DotNetStatement.class, false) != null)
 		{
