@@ -24,7 +24,6 @@
 	<depends>consulo.dotnet</depends>
 	<depends>com.intellij.xml</depends>
 	<depends config-file="CSharpSpellchecker.xml" optional="true">com.intellij.spellchecker</depends>
-	<depends config-file="MSBuild.xml" optional="true">consulo.msbuild</depends>
 	<depends config-file="microsoft-csharp.xml" optional="true">consulo.dotnet.microsoft</depends>
 	<depends config-file="mono-csharp.xml" optional="true">consulo.dotnet.mono</depends>
 

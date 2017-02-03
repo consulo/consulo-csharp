@@ -152,21 +152,6 @@
           <orderEntry type="library" name="consulo-plugin: consulo.dotnet" level="project" />
         </module-layer>
       </module>
-      <module name="csharp-msbuild-impl" dirurl="file://$PROJECT_DIR$/csharp-msbuild-impl" current-layer="Default">
-        <module-layer name="Default">
-          <extension id="consulo-plugin" sdk-module-name="consulo-csharp" />
-          <extension id="java" sdk-module-name="consulo-csharp" language-level-module-name="consulo-csharp" />
-          <content url="file://$MODULE_DIR$">
-            <content-folder type="PRODUCTION" url="file://$MODULE_DIR$/src" />
-          </content>
-          <orderEntry type="module-extension-sdk" extension-id="consulo-plugin" />
-          <orderEntry type="module-extension-sdk" extension-id="java" />
-          <orderEntry type="sourceFolder" />
-          <orderEntry type="module" module-name="csharp-impl" />
-          <orderEntry type="library" name="consulo-plugin: consulo.dotnet" level="project" />
-          <orderEntry type="library" name="consulo-plugin: consulo.msbuild" level="project" />
-        </module-layer>
-      </module>
     </modules>
   </component>
 </project>
