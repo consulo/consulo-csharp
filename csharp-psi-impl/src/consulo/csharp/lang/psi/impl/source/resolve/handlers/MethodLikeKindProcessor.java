@@ -21,6 +21,9 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
+import com.intellij.util.Processor;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -40,9 +43,6 @@ import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
-import com.intellij.util.Processor;
 
 /**
  * @author VISTALL
@@ -65,7 +65,7 @@ public class MethodLikeKindProcessor implements KindProcessor
 			return;
 		}
 
-		final List<MethodResolveResult> methodResolveResults = new ArrayList<MethodResolveResult>();
+		final List<MethodResolveResult> methodResolveResults = new ArrayList<>();
 
 		CSharpReferenceExpressionImplUtil.processAnyMember(options, defaultExtractor, forceQualifierElement, new Processor<ResolveResult>()
 		{
@@ -85,18 +85,15 @@ public class MethodLikeKindProcessor implements KindProcessor
 						{
 							if(psiElement instanceof DotNetLikeMethodDeclaration)
 							{
-								GenericInferenceUtil.GenericInferenceResult inferenceResult = psiElement.getUserData(GenericInferenceUtil
-										.INFERENCE_RESULT);
+								GenericInferenceUtil.GenericInferenceResult inferenceResult = psiElement.getUserData(GenericInferenceUtil.INFERENCE_RESULT);
 
 								if(inferenceResult == null && !CSharpReferenceExpressionImplUtil.isConstructorKind(kind))
 								{
-									inferenceResult = GenericInferenceUtil.inferenceGenericExtractor(element, callArgumentListOwner,
-											(DotNetLikeMethodDeclaration) psiElement);
+									inferenceResult = GenericInferenceUtil.inferenceGenericExtractor(element, callArgumentListOwner, (DotNetLikeMethodDeclaration) psiElement);
 									psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, inferenceResult.getExtractor());
 								}
 
-								MethodCalcResult calcResult = MethodResolver.calc(callArgumentListOwner, (DotNetLikeMethodDeclaration) psiElement,
-										element);
+								MethodCalcResult calcResult = MethodResolver.calc(callArgumentListOwner, (DotNetLikeMethodDeclaration) psiElement, element);
 
 								if(inferenceResult == null || inferenceResult.isSuccess())
 								{
@@ -121,8 +118,7 @@ public class MethodLikeKindProcessor implements KindProcessor
 					{
 						CSharpLambdaResolveResult lambdaTypeResolveResult = (CSharpLambdaResolveResult) maybeLambdaResolveResult;
 
-						MethodCalcResult calcResult = MethodResolver.calc(callArgumentListOwner, lambdaTypeResolveResult.getParameterInfos(),
-								element);
+						MethodCalcResult calcResult = MethodResolver.calc(callArgumentListOwner, lambdaTypeResolveResult.getParameterInfos(), element);
 
 						methodResolveResults.add(MethodResolveResult.createResult(calcResult, maybeElementGroup, result));
 					}
