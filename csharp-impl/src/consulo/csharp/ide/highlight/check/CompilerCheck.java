@@ -56,16 +56,16 @@ import com.intellij.psi.PsiElement;
  */
 public abstract class CompilerCheck<T extends PsiElement>
 {
-	public static abstract class HighlightInfoFactory implements NullableFactory<HighlightInfo>
+	public static interface HighlightInfoFactory extends NullableFactory<HighlightInfo>
 	{
 		@NotNull
-		public List<IntentionAction> getQuickFixes()
+		default List<IntentionAction> getQuickFixes()
 		{
 			return Collections.emptyList();
 		}
 	}
 
-	public static class CompilerCheckBuilder extends HighlightInfoFactory
+	public static class CompilerCheckBuilder implements HighlightInfoFactory
 	{
 		private String myText;
 		private TextRange myTextRange;
@@ -122,7 +122,7 @@ public abstract class CompilerCheck<T extends PsiElement>
 		{
 			if(myQuickFixes.isEmpty())
 			{
-				myQuickFixes = new ArrayList<IntentionAction>(3);
+				myQuickFixes = new ArrayList<>(3);
 			}
 			myQuickFixes.add(a);
 			return this;

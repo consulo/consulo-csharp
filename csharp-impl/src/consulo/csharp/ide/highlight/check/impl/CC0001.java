@@ -122,7 +122,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 
 		ResolveResult goodResult = CSharpResolveUtil.findFirstValidResult(resolveResults);
 
-		List<HighlightInfoFactory> list = new ArrayList<HighlightInfoFactory>(2);
+		List<HighlightInfoFactory> list = new ArrayList<>(2);
 		if(goodResult == null)
 		{
 			if(resolveResults.length == 0)
@@ -186,15 +186,7 @@ public class CC0001 extends CompilerCheck<CSharpReferenceExpression>
 					return list;
 				}
 
-				list.add(new HighlightInfoFactory()
-				{
-					@Nullable
-					@Override
-					public HighlightInfo create()
-					{
-						return highlightInfo;
-					}
-				});
+				list.add(() -> highlightInfo);
 			}
 		}
 		return list;
