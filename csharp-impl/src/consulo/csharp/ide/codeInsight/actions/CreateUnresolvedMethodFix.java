@@ -20,11 +20,16 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.codeInsight.template.Template;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.util.PsiTreeUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import consulo.csharp.ide.completion.expected.ExpectedTypeVisitor;
 import consulo.csharp.ide.liveTemplates.expression.ReturnStatementExpression;
 import consulo.csharp.ide.liveTemplates.expression.TypeRefExpression;
+import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.csharp.lang.psi.CSharpContextUtil;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -35,10 +40,6 @@ import consulo.dotnet.psi.DotNetMemberOwner;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.codeInsight.template.Template;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
@@ -60,6 +61,7 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
 
 	@Override
 	@Nullable
+	@RequiredReadAction
 	protected CreateUnresolvedElementFixContext createGenerateContext()
 	{
 		CSharpReferenceExpression element = myPointer.getElement();
@@ -87,17 +89,14 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
 			}
 			else
 			{
-				if(qualifier instanceof DotNetExpression)
+				DotNetTypeRef typeRef = ((DotNetExpression) qualifier).toTypeRef(true);
+
+				DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
+
+				PsiElement typeResolveResultElement = typeResolveResult.getElement();
+				if(typeResolveResultElement instanceof DotNetMemberOwner && typeResolveResultElement.isWritable())
 				{
-					DotNetTypeRef typeRef = ((DotNetExpression) qualifier).toTypeRef(true);
-
-					DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
-
-					PsiElement typeResolveResultElement = typeResolveResult.getElement();
-					if(typeResolveResultElement instanceof DotNetMemberOwner && typeResolveResultElement.isWritable())
-					{
-						return new CreateUnresolvedElementFixContext(element, (DotNetMemberOwner) typeResolveResultElement);
-					}
+					return new CreateUnresolvedElementFixContext(element, (DotNetMemberOwner) typeResolveResultElement);
 				}
 			}
 		}
@@ -112,7 +111,8 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
 
 		if(!forInterface)
 		{
-			template.addTextSegment("public ");
+			template.addTextSegment(calcModifier(context).getPresentableText());
+			template.addTextSegment(" ");
 			if(contextType == CSharpContextUtil.ContextType.STATIC)
 			{
 				template.addTextSegment("static ");
@@ -149,5 +149,22 @@ public class CreateUnresolvedMethodFix extends CreateUnresolvedLikeMethodFix
 
 			template.addTextSegment("}");
 		}
+	}
+
+	@NotNull
+	static CSharpAccessModifier calcModifier(@NotNull CreateUnresolvedElementFixContext context)
+	{
+		final CSharpTypeDeclaration thisType = PsiTreeUtil.getParentOfType(context.getExpression(), CSharpTypeDeclaration.class);
+		if(thisType == null)
+		{
+			return CSharpAccessModifier.PUBLIC;
+		}
+
+		if(context.getTargetForGenerate() == thisType)
+		{
+			return CSharpAccessModifier.PRIVATE;
+		}
+
+		return CSharpAccessModifier.PUBLIC;
 	}
 }

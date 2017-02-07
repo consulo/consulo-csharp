@@ -142,7 +142,8 @@ public class CreateUnresolvedMethodByLambdaTypeFix extends CreateUnresolvedEleme
 	@Override
 	public void buildTemplate(@NotNull CreateUnresolvedElementFixContext context, CSharpContextUtil.ContextType contextType, @NotNull PsiFile file, @NotNull Template template)
 	{
-		template.addTextSegment("public ");
+		template.addTextSegment(CreateUnresolvedMethodFix.calcModifier(context).getPresentableText());
+		template.addTextSegment(" ");
 		if(contextType == CSharpContextUtil.ContextType.STATIC)
 		{
 			template.addTextSegment("static ");
