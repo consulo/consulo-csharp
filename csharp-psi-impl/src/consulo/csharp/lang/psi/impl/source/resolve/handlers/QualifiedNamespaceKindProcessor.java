@@ -16,23 +16,28 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.handlers;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
-import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.StubScopeProcessor;
-import consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
-import consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
-import consulo.dotnet.resolve.DotNetGenericExtractor;
-import consulo.dotnet.resolve.DotNetNamespaceAsElement;
-import consulo.dotnet.resolve.DotNetPsiSearcher;
 import com.intellij.openapi.util.text.CharFilter;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
 import com.intellij.util.Processor;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
+import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
+import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
+import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
+import consulo.csharp.lang.psi.impl.source.resolve.StubScopeProcessor;
+import consulo.dotnet.lang.psi.impl.BaseDotNetNamespaceAsElement;
+import consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
+import consulo.dotnet.psi.DotNetReferenceExpression;
+import consulo.dotnet.resolve.DotNetGenericExtractor;
+import consulo.dotnet.resolve.DotNetNamespaceAsElement;
+import consulo.dotnet.resolve.DotNetPsiSearcher;
 
 /**
  * @author VISTALL
@@ -55,54 +60,94 @@ public class QualifiedNamespaceKindProcessor implements KindProcessor
 
 		PsiElement qualifier = options.getQualifier();
 
+		PsiElement parent = element.getParent();
 		if(!options.isCompletion())
 		{
-			namespace = DotNetPsiSearcher.getInstance(element.getProject()).findNamespace(qName, element.getResolveScope());
-
-			if(namespace == null)
+			if(parent instanceof CSharpUsingNamespaceStatement)
 			{
-				return;
+				DotNetNamespaceAsElement namespaceAsElement = ((CSharpUsingNamespaceStatement) parent).resolve();
+				if(namespaceAsElement != null)
+				{
+					processor.process(new CSharpResolveResult(namespaceAsElement));
+				}
 			}
-			processor.process(new CSharpResolveResult(namespace));
+			else
+			{
+				namespace = DotNetPsiSearcher.getInstance(element.getProject()).findNamespace(qName, element.getResolveScope());
+
+				if(namespace != null)
+				{
+					processor.process(new CSharpResolveResult(namespace));
+				}
+			}
 		}
 		else
 		{
-			String qualifiedText = "";
-			if(qualifier != null)
-			{
-				qualifiedText = StringUtil.strip(qualifier.getText(), CharFilter.NOT_WHITESPACE_FILTER);
-			}
+			processDefaultCompletion(processor, element, qualifier);
 
-			namespace = DotNetPsiSearcher.getInstance(element.getProject()).findNamespace(qualifiedText, element.getResolveScope());
-
-			if(namespace == null)
+			if(parent instanceof CSharpUsingNamespaceStatement)
 			{
-				return;
-			}
-
-			StubScopeProcessor scopeProcessor = new StubScopeProcessor()
-			{
-				@RequiredReadAction
-				@Override
-				public boolean execute(@NotNull PsiElement element, ResolveState state)
+				PsiElement parentOfStatement = parent.getParent();
+				if(parentOfStatement instanceof CSharpNamespaceDeclaration)
 				{
-					if(element instanceof DotNetNamespaceAsElement)
+					DotNetReferenceExpression namespaceReference = ((CSharpNamespaceDeclaration) parentOfStatement).getNamespaceReference();
+					if(namespaceReference != null)
 					{
-						if(StringUtil.equals(((DotNetNamespaceAsElement) element).getPresentableQName(),
-								DotNetNamespaceStubUtil.ROOT_FOR_INDEXING))
+						PsiElement resolvedElement = namespaceReference.resolve();
+						if(resolvedElement instanceof DotNetNamespaceAsElement)
 						{
-							return true;
+							processNamespaceChildren(processor, element, (DotNetNamespaceAsElement) resolvedElement);
 						}
-						processor.process(new CSharpResolveResult(element));
 					}
-					return true;
 				}
-			};
-
-			ResolveState state = ResolveState.initial();
-			state = state.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
-			state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, element.getResolveScope());
-			namespace.processDeclarations(scopeProcessor, state, null, element);
+			}
 		}
+	}
+
+	@RequiredReadAction
+	private void processDefaultCompletion(@NotNull Processor<ResolveResult> processor, PsiElement element, PsiElement qualifier)
+	{
+		DotNetNamespaceAsElement namespace;
+		String qualifiedText = "";
+		if(qualifier != null)
+		{
+			qualifiedText = StringUtil.strip(qualifier.getText(), CharFilter.NOT_WHITESPACE_FILTER);
+		}
+
+		namespace = DotNetPsiSearcher.getInstance(element.getProject()).findNamespace(qualifiedText, element.getResolveScope());
+
+		if(namespace == null)
+		{
+			return;
+		}
+
+		processNamespaceChildren(processor, element, namespace);
+	}
+
+	@RequiredReadAction
+	private void processNamespaceChildren(@NotNull final Processor<ResolveResult> processor, PsiElement element, DotNetNamespaceAsElement namespace)
+	{
+		StubScopeProcessor scopeProcessor = new StubScopeProcessor()
+		{
+			@RequiredReadAction
+			@Override
+			public boolean execute(@NotNull PsiElement element, ResolveState state)
+			{
+				if(element instanceof DotNetNamespaceAsElement)
+				{
+					if(StringUtil.equals(((DotNetNamespaceAsElement) element).getPresentableQName(), DotNetNamespaceStubUtil.ROOT_FOR_INDEXING))
+					{
+						return true;
+					}
+					processor.process(new CSharpResolveResult(element));
+				}
+				return true;
+			}
+		};
+
+		ResolveState state = ResolveState.initial();
+		state = state.put(BaseDotNetNamespaceAsElement.FILTER, DotNetNamespaceAsElement.ChildrenFilter.NONE);
+		state = state.put(BaseDotNetNamespaceAsElement.RESOLVE_SCOPE, element.getResolveScope());
+		namespace.processDeclarations(scopeProcessor, state, null, element);
 	}
 }

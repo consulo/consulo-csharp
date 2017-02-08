@@ -28,6 +28,7 @@ import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
@@ -40,8 +41,7 @@ import consulo.dotnet.resolve.DotNetPsiSearcher;
  * @author VISTALL
  * @since 28.11.13.
  */
-public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSharpWithStringValueStub<CSharpUsingNamespaceStatement>> implements
-		CSharpUsingNamespaceStatement
+public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSharpWithStringValueStub<CSharpUsingNamespaceStatement>> implements CSharpUsingNamespaceStatement
 {
 	public static final CSharpUsingNamespaceStatementImpl[] EMPTY_ARRAY = new CSharpUsingNamespaceStatementImpl[0];
 
@@ -93,23 +93,35 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 	@Nullable
 	public DotNetNamespaceAsElement resolve()
 	{
+		return CachedValuesManager.getManager(getProject()).createCachedValue(() -> CachedValueProvider.Result.create(resolveInner(), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT),
+				false).getValue();
+	}
+
+	@Nullable
+	@RequiredReadAction
+	private DotNetNamespaceAsElement resolveInner()
+	{
 		String referenceText = getReferenceText();
 		if(referenceText == null)
 		{
 			return null;
 		}
+
 		final String qName = StringUtil.strip(referenceText, CharFilter.NOT_WHITESPACE_FILTER);
-		return CachedValuesManager.getManager(getProject()).createCachedValue(new CachedValueProvider<DotNetNamespaceAsElement>()
+
+		PsiElement parent = getParent();
+		DotNetPsiSearcher psiSearcher = DotNetPsiSearcher.getInstance(getProject());
+		if(parent instanceof CSharpNamespaceDeclaration)
 		{
-			@Nullable
-			@Override
-			@RequiredReadAction
-			public Result<DotNetNamespaceAsElement> compute()
+			String newNamespaceName = ((CSharpNamespaceDeclaration) parent).getPresentableQName() + "." + qName;
+			DotNetNamespaceAsElement namespace = psiSearcher.findNamespace(newNamespaceName, getResolveScope());
+			if(namespace != null)
 			{
-				return Result.create(DotNetPsiSearcher.getInstance(getProject()).findNamespace(qName, getResolveScope()),
-						PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+				return namespace;
 			}
-		}, false).getValue();
+		}
+
+		return psiSearcher.findNamespace(qName, getResolveScope());
 	}
 
 	@Override

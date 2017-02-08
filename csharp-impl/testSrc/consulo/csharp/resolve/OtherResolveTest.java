@@ -46,6 +46,10 @@ public class OtherResolveTest extends ResolvingTestCase
 	{
 	}
 
+	public void testIssue451()
+	{
+	}
+
 	public void testIssue384_csharp()
 	{
 	}
