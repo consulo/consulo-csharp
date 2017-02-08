@@ -1,0 +1,9 @@
+TOutput(35,42): generic-parameter[TOutput]=true|true
+TInput(76,82): generic-parameter[TInput]=true|true
+GetInput(126,134): method[GetInput<T>(transform:AA.SomeFunc<string, int>):int]=true|true
+AA(135,137): type[AA]=true|true
+AA.Parse(135,143): method[Parse(s:string):int]=true|true
+T(158,159): generic-parameter[T]=true|true
+T(189,190): generic-parameter[T]=true|true
+SomeFunc<string, T>(172,191): delegate-method[SomeFunc<TInput, TOutput>(input:string):T]=true|true
+T(223,224): generic-parameter[T]=true|true

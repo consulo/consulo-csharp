@@ -22,6 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.util.Key;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.util.PsiTreeUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -31,6 +35,7 @@ import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImplUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpFastImplicitTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
@@ -43,10 +48,6 @@ import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import consulo.dotnet.util.ArrayUtil2;
-import com.intellij.openapi.util.Key;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
@@ -117,7 +118,7 @@ public class GenericInferenceUtil
 			return new GenericInferenceResult(true, DotNetGenericExtractor.EMPTY);
 		}
 
-		final Map<DotNetGenericParameter, DotNetTypeRef> map = new THashMap<DotNetGenericParameter, DotNetTypeRef>();
+		final Map<DotNetGenericParameter, DotNetTypeRef> map = new THashMap<>();
 
 		for(NCallArgument nCallArgument : methodCallArguments)
 		{
@@ -128,6 +129,14 @@ public class GenericInferenceUtil
 			}
 
 			DotNetTypeRef expressionTypeRef = unwrapPossibleGenericTypeRefs(nCallArgument, parameterTypeRef, map, scope);
+			if(expressionTypeRef instanceof CSharpFastImplicitTypeRef)
+			{
+				DotNetTypeRef mirror = ((CSharpFastImplicitTypeRef) expressionTypeRef).doMirror(parameterTypeRef, scope);
+				if(mirror != null)
+				{
+					expressionTypeRef = mirror;
+				}
+			}
 
 			DotNetTypeResolveResult parameterTypeResolveResult = parameterTypeRef.resolve();
 			DotNetTypeResolveResult expressionTypeResolveResult = expressionTypeRef.resolve();
