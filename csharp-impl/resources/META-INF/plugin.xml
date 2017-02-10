@@ -305,8 +305,6 @@
 		<refactoring.moveHandler implementation="consulo.csharp.ide.refactoring.move.CSharpMoveHandlerDelegate"/>
 		<refactoring.copyHandler implementation="consulo.csharp.ide.refactoring.copy.CSharpCopyClassHandlerDelegate"/>
 
-		<filePropertyPusher implementation="consulo.csharp.lang.CSharpFilePropertyPusher"/>
-
 		<highlightUsagesHandlerFactory implementation="consulo.csharp.lang.doc.ide.highlight.CSharpDocHighlightUsagesHandlerFactory"/>
 		<highlightUsagesHandlerFactory implementation="consulo.csharp.ide.highlight.CSharpHighlightUsagesHandlerFactory"/>
 		<newModuleBuilder implementation="consulo.csharp.ide.newProjectOrModule.CSharpNewModuleBuilder"/>

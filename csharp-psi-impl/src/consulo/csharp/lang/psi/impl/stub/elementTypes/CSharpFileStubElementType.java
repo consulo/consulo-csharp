@@ -23,17 +23,15 @@ import java.util.List;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.CSharpFilePropertyPusher;
-import consulo.csharp.lang.CSharpLanguage;
-import consulo.csharp.lang.CSharpLanguageVersionWrapper;
-import consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
-import consulo.csharp.lang.psi.impl.stub.CSharpFileStub;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.LanguageParserDefinitions;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilderFactory;
 import com.intellij.lang.PsiParser;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -48,6 +46,11 @@ import com.intellij.psi.tree.IStubFileElementType;
 import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.util.indexing.IndexingDataKeys;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.CSharpLanguageVersionWrapper;
+import consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
+import consulo.csharp.lang.psi.impl.stub.CSharpFileStub;
+import consulo.dotnet.module.extension.DotNetSimpleModuleExtension;
 import consulo.lang.LanguageVersion;
 
 /**
@@ -109,7 +112,7 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 		Set<String> defVariables = Collections.emptySet();
 		if(virtualFile != null)
 		{
-			List<String> variables = virtualFile.getUserData(CSharpFilePropertyPusher.ourKey);
+			List<String> variables = findVariables(virtualFile, project);
 
 			if(variables != null)
 			{
@@ -122,6 +125,23 @@ public class CSharpFileStubElementType extends IStubFileElementType<CSharpFileSt
 
 		final PsiParser parser = LanguageParserDefinitions.INSTANCE.forLanguage(languageForParser).createParser(languageVersion);
 		return parser.parse(this, builder, languageVersion).getFirstChildNode();
+	}
+
+	@Nullable
+	@RequiredReadAction
+	private static List<String> findVariables(@NotNull VirtualFile virtualFile, @NotNull Project project)
+	{
+		Module module = ModuleUtilCore.findModuleForFile(virtualFile, project);
+		if(module == null)
+		{
+			return null;
+		}
+		DotNetSimpleModuleExtension<?> extension = ModuleUtilCore.getExtension(module, DotNetSimpleModuleExtension.class);
+		if(extension != null)
+		{
+			return extension.getVariables();
+		}
+		return null;
 	}
 
 	@NotNull
