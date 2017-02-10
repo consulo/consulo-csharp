@@ -28,7 +28,7 @@ CSHARP_FILE
       PsiWhiteSpace(' ')
       CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
         CSharpReferenceExpressionImpl(REFERENCE_EXPRESSION)
-          PsiElement(IDENTIFIER)('Test')
+          PsiElement(IDENTIFIER)('NamespaceInsideClass')
         PsiElement(DOT)('.')
         PsiElement(IDENTIFIER)('AA')
       PsiWhiteSpace('\n    ')

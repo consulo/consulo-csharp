@@ -150,6 +150,7 @@ public enum CSharpImplicitReturnModel
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public static CSharpImplicitReturnModel getImplicitReturnModel(CSharpReturnStatementImpl element, CSharpSimpleLikeMethodAsElement pseudoMethod)
 	{
 		for(CSharpImplicitReturnModel implicitReturnModel : CSharpImplicitReturnModel.values())

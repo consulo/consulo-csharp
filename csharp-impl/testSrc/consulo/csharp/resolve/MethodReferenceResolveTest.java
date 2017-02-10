@@ -54,6 +54,10 @@ public class MethodReferenceResolveTest extends ResolvingTestCase
 	{
 	}
 
+	public void testIssue461()
+	{
+	}
+
 	@NotNull
 	@Override
 	protected TestModuleDescriptor createTestModuleDescriptor()

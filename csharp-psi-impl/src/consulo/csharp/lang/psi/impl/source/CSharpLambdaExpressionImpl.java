@@ -21,15 +21,6 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpLambdaParameter;
-import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
-import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
@@ -37,8 +28,17 @@ import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpLambdaParameter;
 import consulo.csharp.lang.psi.CSharpLambdaParameterList;
+import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
+import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
+import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetModifier;
@@ -70,15 +70,8 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 	@Override
 	public DotNetModifierList getModifierList()
 	{
-		return CachedValuesManager.getManager(getProject()).createCachedValue(new CachedValueProvider<DotNetModifierList>()
-		{
-			@Nullable
-			@Override
-			public Result<DotNetModifierList> compute()
-			{
-				return Result.<DotNetModifierList>create(new CSharpAnonymousModifierListImpl(CSharpLambdaExpressionImpl.this), CSharpLambdaExpressionImpl.this);
-			}
-		}, false).getValue();
+		return CachedValuesManager.getManager(getProject()).createCachedValue(() -> CachedValueProvider.Result.<DotNetModifierList>create(new CSharpAnonymousModifierListImpl
+				(CSharpLambdaExpressionImpl.this), CSharpLambdaExpressionImpl.this), false).getValue();
 	}
 
 	@Nullable
@@ -94,6 +87,7 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public PsiElement getDArrow()
 	{
 		return findNotNullChildByType(CSharpTokens.DARROW);
@@ -140,6 +134,7 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public DotNetTypeRef toTypeRefForInference()
 	{
 		return new CSharpLambdaTypeRef(this, null, getParameterInfos(true), findPossibleReturnTypeRef());
@@ -160,7 +155,7 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 			return DotNetTypeRef.ERROR_TYPE;
 		}
 
-		final List<DotNetTypeRef> typeRefs = new ArrayList<DotNetTypeRef>();
+		final List<DotNetTypeRef> typeRefs = new ArrayList<>();
 		codeBlock.accept(new CSharpRecursiveElementVisitor()
 		{
 			@Override
@@ -230,6 +225,7 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public CSharpSimpleParameterInfo[] getParameterInfos(boolean resolveFromParent)
 	{
 		CSharpLambdaParameter[] parameters = getParameters();

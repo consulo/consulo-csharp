@@ -20,7 +20,6 @@ import java.io.File;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.module.extension.CSharpSimpleMutableModuleExtension;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ContentEntry;
@@ -31,6 +30,7 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.testFramework.TestModuleDescriptor;
 import com.intellij.util.Consumer;
+import consulo.csharp.module.extension.CSharpSimpleMutableModuleExtension;
 import consulo.dotnet.module.extension.DotNetSimpleMutableModuleExtension;
 import consulo.roots.types.BinariesOrderRootType;
 import consulo.testFramework.util.TestPathUtil;

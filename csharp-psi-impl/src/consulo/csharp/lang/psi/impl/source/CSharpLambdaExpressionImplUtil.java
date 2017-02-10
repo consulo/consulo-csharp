@@ -220,6 +220,27 @@ public class CSharpLambdaExpressionImplUtil
 				}
 			}
 		}
+		else if(parent instanceof CSharpLambdaExpressionImpl)
+		{
+			if(((CSharpLambdaExpressionImpl) parent).getCodeBlock() != target)
+			{
+				return null;
+			}
+
+			DotNetTypeRef typeRef = ((CSharpLambdaExpressionImpl) parent).toTypeRef(true);
+
+			DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
+			if(typeResolveResult instanceof CSharpLambdaResolveResult)
+			{
+				DotNetTypeRef returnTypeRef = ((CSharpLambdaResolveResult) typeResolveResult).getReturnTypeRef();
+
+				DotNetTypeResolveResult returnTypeResult = returnTypeRef.resolve();
+				if(returnTypeResult instanceof CSharpLambdaResolveResult)
+				{
+					return (CSharpLambdaResolveResult) returnTypeResult;
+				}
+			}
+		}
 
 		return null;
 	}
