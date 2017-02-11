@@ -1,6 +1,6 @@
 namespace A.B.C.D
 {
-	public class Test
+	public class ABCDTestClass
 	{
 	}
 
@@ -12,6 +12,6 @@ namespace A.B.C
 
 	public class SomeClass
 	{
-		public Test a;
+		public ABCDTestClass a;
 	}
 }
