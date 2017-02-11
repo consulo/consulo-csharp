@@ -54,7 +54,7 @@ public class MethodResolver
 	@NotNull
 	private static List<NCallArgument> buildCallArguments(@NotNull DotNetTypeRef[] callArgumentTypeRefs, @NotNull DotNetTypeRef[] parameterTypeRefs)
 	{
-		List<NCallArgument> list = new ArrayList<NCallArgument>(callArgumentTypeRefs.length);
+		List<NCallArgument> list = new ArrayList<>(callArgumentTypeRefs.length);
 
 		for(int i = 0; i < callArgumentTypeRefs.length; i++)
 		{
@@ -94,9 +94,9 @@ public class MethodResolver
 	@RequiredReadAction
 	private static <T> List<NCallArgument> buildCallArguments(@NotNull CSharpCallArgument[] callArguments, @NotNull PsiElement scope, @NotNull ParameterResolveContext<T> context)
 	{
-		List<NCallArgument> list = new ArrayList<NCallArgument>(context.getParametersSize());
+		List<NCallArgument> list = new ArrayList<>(context.getParametersSize());
 
-		List<CSharpCallArgument> paramsArguments = new SmartList<CSharpCallArgument>();
+		List<CSharpCallArgument> paramsArguments = new SmartList<>();
 
 		int i = 0;
 		for(CSharpCallArgument argument : callArguments)
@@ -178,8 +178,7 @@ public class MethodResolver
 							// if params type equal expression parameter pull it as argument of parameter
 							else if(CSharpTypeUtil.isInheritableWithImplicit(context.getParamsParameterTypeRef(), expressionTypeRef, scope))
 							{
-								final NCallArgument callArgument = new NCallArgument(expressionTypeRef, argument, paramsParameter);
-								list.add(callArgument);
+								list.add(new NCallArgument(expressionTypeRef, argument, paramsParameter));
 							}
 							else
 							{
