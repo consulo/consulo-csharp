@@ -1,0 +1,5 @@
+T(57,58): generic-parameter[T]=true|true
+T(151,152): generic-parameter[T]=true|true
+Function<T>(142,153): delegate-method[Function<T>(value:T):bool]=true|true
+Test<int>(199,208): method[Test<T>(func:Issue46.Function<int>, b:int):void]=true|true
+TestDelegate(209,221): method[TestDelegate(aValue:int):bool]=true|true
