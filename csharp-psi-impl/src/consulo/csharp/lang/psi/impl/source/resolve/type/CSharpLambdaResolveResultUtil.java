@@ -19,6 +19,8 @@ package consulo.csharp.lang.psi.impl.source.resolve.type;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -27,13 +29,13 @@ import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightMethodDeclarationBuilder;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightTypeDeclarationBuilder;
+import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetParameter;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
+import consulo.dotnet.resolve.DotNetGenericExtractor;
 
 /**
  * @author VISTALL
@@ -49,7 +51,7 @@ public class CSharpLambdaResolveResultUtil
 
 	@NotNull
 	@RequiredReadAction
-	public static CSharpTypeDeclaration createTypeFromDelegate(@NotNull CSharpMethodDeclaration declaration)
+	public static CSharpTypeDeclaration createTypeFromDelegate(@NotNull CSharpMethodDeclaration declaration, @NotNull DotNetGenericExtractor extractor)
 	{
 		Project project = declaration.getProject();
 
@@ -65,7 +67,7 @@ public class CSharpLambdaResolveResultUtil
 
 		builder.setNavigationElement(declaration);
 
-		builder.putUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE, declaration);
+		builder.putUserData(CSharpResolveUtil.DELEGATE_METHOD_TYPE, GenericUnwrapTool.extract(declaration, extractor));
 
 		builder.addExtendType(new CSharpTypeRefByQName(declaration, DotNetTypes.System.MulticastDelegate));
 

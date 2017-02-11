@@ -103,7 +103,7 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 				}
 				return temp;
 			});
-			myElementValue = NotNullLazyValue.createValue(() -> CSharpLambdaResolveResultUtil.createTypeFromDelegate(myElement));
+			myElementValue = NotNullLazyValue.createValue(() -> CSharpLambdaResolveResultUtil.createTypeFromDelegate(myElement, myExtractor));
 			myReturnTypRefValue = NotNullLazyValue.createValue(() -> GenericUnwrapTool.exchangeTypeRef(myElement.getReturnTypeRef(), getGenericExtractor(), scope));
 			myParameterTypeRefsValue = NotNullLazyValue.createValue(() -> GenericUnwrapTool.exchangeTypeRefs(myElement.getParameterTypeRefs(), getGenericExtractor(), myScope));
 		}

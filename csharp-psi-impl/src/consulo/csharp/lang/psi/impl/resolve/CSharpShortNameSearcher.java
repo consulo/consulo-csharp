@@ -28,6 +28,7 @@ import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetShortNameSearcher;
 
 /**
@@ -63,7 +64,7 @@ public class CSharpShortNameSearcher extends DotNetShortNameSearcher
 			@Override
 			public boolean process(CSharpMethodDeclaration methodDeclaration)
 			{
-				CSharpTypeDeclaration typeFromDelegate = CSharpLambdaResolveResultUtil.createTypeFromDelegate(methodDeclaration);
+				CSharpTypeDeclaration typeFromDelegate = CSharpLambdaResolveResultUtil.createTypeFromDelegate(methodDeclaration, DotNetGenericExtractor.EMPTY);
 				return processor.process(typeFromDelegate);
 			}
 		});

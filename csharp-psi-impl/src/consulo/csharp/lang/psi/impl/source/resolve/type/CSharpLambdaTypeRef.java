@@ -55,7 +55,7 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 			{
 				return DotNetPsiSearcher.getInstance(myScope.getProject()).findType(DotNetTypes.System.MulticastDelegate, myScope.getResolveScope(), CSharpTransform.INSTANCE);
 			}
-			return CSharpLambdaResolveResultUtil.createTypeFromDelegate(myTarget);
+			return CSharpLambdaResolveResultUtil.createTypeFromDelegate(myTarget, myExtractor);
 		}
 
 		@NotNull
