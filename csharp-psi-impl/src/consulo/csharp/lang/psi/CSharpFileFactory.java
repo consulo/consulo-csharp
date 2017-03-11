@@ -18,11 +18,6 @@ package consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.CSharpFileType;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpFileWithScopeImpl;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -32,7 +27,11 @@ import com.intellij.psi.SingleRootFileViewProvider;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.testFramework.LightVirtualFile;
 import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.psi.CSharpLocalVariable;
+import consulo.csharp.lang.CSharpFileType;
+import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpFileWithScopeImpl;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
@@ -157,7 +156,7 @@ public class CSharpFileFactory
 	public static DotNetExpression createExpression(@NotNull Project project, @NotNull String text)
 	{
 		DotNetStatement statement = createStatement(project, text);
-		assert statement instanceof CSharpExpressionStatementImpl;
+		assert statement instanceof CSharpExpressionStatementImpl : "'" + text + "'";
 		return ((CSharpExpressionStatementImpl) statement).getExpression();
 	}
 
