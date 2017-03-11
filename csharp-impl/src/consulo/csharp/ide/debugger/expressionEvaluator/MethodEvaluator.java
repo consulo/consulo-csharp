@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.application.ReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -72,7 +73,7 @@ public class MethodEvaluator extends Evaluator
 		}
 		else
 		{
-			typeMirror = findTypeMirror(context, myTypeDeclaration);
+			typeMirror = ReadAction.compute(() -> findTypeMirror(context, myTypeDeclaration));
 		}
 
 		if(typeMirror == null)
@@ -83,7 +84,8 @@ public class MethodEvaluator extends Evaluator
 		DotNetTypeProxy[] parameterTypeMirrors = new DotNetTypeProxy[myParameterTypes.size()];
 		for(int i = 0; i < parameterTypeMirrors.length; i++)
 		{
-			DotNetTypeProxy parameterTypeMirror = findTypeMirror(context, myParameterTypes.get(i));
+			final int temp = i;
+			DotNetTypeProxy parameterTypeMirror = ReadAction.compute(() -> findTypeMirror(context, myParameterTypes.get(temp)));
 			if(parameterTypeMirror == null)
 			{
 				throw new IllegalArgumentException("cant find parameter type mirror");

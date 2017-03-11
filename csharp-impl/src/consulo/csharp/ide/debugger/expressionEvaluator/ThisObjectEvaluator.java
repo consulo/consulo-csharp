@@ -18,10 +18,9 @@ package consulo.csharp.ide.debugger.expressionEvaluator;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.ide.debugger.CSharpEvaluateContext;
-import com.intellij.openapi.util.Condition;
 import com.intellij.util.ObjectUtil;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.dotnet.debugger.nodes.DotNetDebuggerCompilerGenerateUtil;
 import consulo.dotnet.debugger.proxy.DotNetAbsentInformationException;
 import consulo.dotnet.debugger.proxy.DotNetFieldProxy;
@@ -85,14 +84,10 @@ public class ThisObjectEvaluator extends Evaluator
 
 				DotNetFieldProxy[] fields = type.getFields();
 
-				final DotNetFieldProxy thisFieldMirror = ContainerUtil.find(fields, new Condition<DotNetFieldProxy>()
+				final DotNetFieldProxy thisFieldMirror = ContainerUtil.find(fields, fieldMirror ->
 				{
-					@Override
-					public boolean value(DotNetFieldProxy fieldMirror)
-					{
-						String name = fieldMirror.getName();
-						return DotNetDebuggerCompilerGenerateUtil.isYieldOrAsyncThisField(name);
-					}
+					String name = fieldMirror.getName();
+					return DotNetDebuggerCompilerGenerateUtil.isYieldOrAsyncThisField(name);
 				});
 
 				if(thisFieldMirror != null)

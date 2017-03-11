@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.application.ReadAction;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.ide.debugger.CSharpStaticValueProxy;
@@ -63,7 +64,6 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 	}
 
 	@Override
-	@RequiredReadAction
 	public void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetThrowValueException
 	{
 		DotNetValueProxy popValue = context.popValue();
@@ -72,14 +72,14 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 			throw new IllegalArgumentException("no pop value");
 		}
 
-		DotNetTypeProxy typeMirror = null;
+		DotNetTypeProxy typeMirror;
 		if(myTypeDeclaration == null)
 		{
 			typeMirror = popValue.getType();
 		}
 		else
 		{
-			typeMirror = findTypeMirror(context, myTypeDeclaration);
+			typeMirror = ReadAction.compute(() -> findTypeMirror(context, myTypeDeclaration));
 		}
 
 		if(typeMirror == null)
@@ -87,7 +87,7 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 			throw new IllegalArgumentException("cant calculate type");
 		}
 
-		String name = getName();
+		String name = ReadAction.compute(this::getName);
 		if(name == null)
 		{
 			throw new IllegalArgumentException("invalid name");
@@ -111,7 +111,7 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 				}
 			}
 		}
-		else if(popValue == CSharpStaticValueProxy.INSTANCE && myElement.hasModifier(DotNetModifier.STATIC))
+		else if(popValue == CSharpStaticValueProxy.INSTANCE && ReadAction.compute(() -> myElement.hasModifier(DotNetModifier.STATIC)))
 		{
 			if(invokeFieldOrProperty(context, name, popValue, typeMirror))
 			{

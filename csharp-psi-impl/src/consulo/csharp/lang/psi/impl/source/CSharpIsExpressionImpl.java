@@ -17,11 +17,10 @@
 package consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.lang.ASTNode;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
-import com.intellij.lang.ASTNode;
-import consulo.annotations.RequiredDispatchThread;
-import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetType;
@@ -39,7 +38,7 @@ public class CSharpIsExpressionImpl extends CSharpExpressionImpl implements DotN
 	}
 
 	@NotNull
-	@RequiredDispatchThread
+	@RequiredReadAction
 	public DotNetTypeRef getIsTypeRef()
 	{
 		DotNetType type = findChildByClass(DotNetType.class);

@@ -64,11 +64,10 @@ public class IndexMethodEvaluator extends FieldOrPropertyEvaluator<CSharpIndexMe
 		return "Item";
 	}
 
-	@RequiredReadAction
 	@Override
 	public void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetThrowValueException
 	{
-		myArgumentValues = new ArrayList<DotNetValueProxy>(myParameterTypes.size());
+		myArgumentValues = new ArrayList<>(myParameterTypes.size());
 		for(int i = 0; i < myParameterTypes.size(); i++)
 		{
 			DotNetValueProxy argumentValue = context.popValue();

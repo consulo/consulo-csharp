@@ -17,6 +17,7 @@
 package consulo.csharp.ide.debugger.expressionEvaluator;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.application.ReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.lang.psi.impl.source.CSharpIsExpressionImpl;
 import consulo.dotnet.resolve.DotNetTypeRef;
@@ -54,10 +55,10 @@ public class IsExpressionEvaluator extends Evaluator
 			return;
 		}
 
-		DotNetTypeRef typeRef = myExpression.getIsTypeRef();
-		PsiElement element = typeRef.resolve().getElement();
+		DotNetTypeRef typeRef = ReadAction.compute(() -> myExpression.getIsTypeRef());
+		PsiElement element = ReadAction.compute(() -> typeRef.resolve().getElement());
 
-		DotNetTypeProxy typeMirror = findTypeMirror(context, element);
+		DotNetTypeProxy typeMirror = ReadAction.compute(() -> findTypeMirror(context, element));
 		if(typeMirror == null)
 		{
 			return;
