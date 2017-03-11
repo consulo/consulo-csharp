@@ -64,11 +64,12 @@ public abstract class CSharpMemberImpl extends CSharpElementImpl implements PsiN
 		return modifierList != null && modifierList.hasModifier(modifier);
 	}
 
-	@Override
+	@RequiredReadAction
 	@Nullable
+	@Override
 	public PsiElement getNameIdentifier()
 	{
-		return findNotNullChildByClass(CSharpIdentifier.class);
+		return findChildByClass(CSharpIdentifier.class);
 	}
 
 	@Override

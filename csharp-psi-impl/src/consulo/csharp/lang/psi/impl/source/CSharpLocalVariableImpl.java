@@ -139,6 +139,7 @@ public class CSharpLocalVariableImpl extends CSharpVariableImpl implements CShar
 		return CSharpPsiUtilImpl.getNameWithoutAt(this);
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement getNameIdentifier()
