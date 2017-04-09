@@ -20,6 +20,14 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.BundleBase;
+import com.intellij.codeInsight.template.Template;
+import com.intellij.codeInsight.template.impl.ConstantNode;
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.impl.PsiTreeDebugBuilder;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
@@ -32,12 +40,6 @@ import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.BundleBase;
-import com.intellij.codeInsight.template.Template;
-import com.intellij.codeInsight.template.impl.ConstantNode;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -45,6 +47,8 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElementFix
 {
+	private static final Logger LOGGER = Logger.getInstance(CreateUnresolvedLikeMethodFix.class);
+
 	public CreateUnresolvedLikeMethodFix(CSharpReferenceExpression expression)
 	{
 		super(expression);
@@ -80,7 +84,11 @@ public abstract class CreateUnresolvedLikeMethodFix extends CreateUnresolvedElem
 
 		CSharpCallArgumentListOwner parent = PsiTreeUtil.getParentOfType(element, CSharpCallArgumentListOwner.class);
 
-		assert parent != null;
+		if(parent == null)
+		{
+			LOGGER.error("Can't find parent by 'CSharpCallArgumentListOwner'. Element: " + new PsiTreeDebugBuilder().psiToString(element));
+			return null;
+		}
 
 		CSharpCallArgument[] callArguments = parent.getCallArguments();
 
