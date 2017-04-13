@@ -126,7 +126,7 @@ public class CSharpCreateFileAction extends CreateFromTemplateAction<PsiFile>
 	@RequiredReadAction
 	protected PsiFile createFile(String name, String templateName, final PsiDirectory dir)
 	{
-		FileTemplate template = FileTemplateManager.getInstance().getInternalTemplate(templateName);
+		FileTemplate template = FileTemplateManager.getInstance(dir.getProject()).getInternalTemplate(templateName);
 		try
 		{
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -158,7 +158,7 @@ public class CSharpCreateFileAction extends CreateFromTemplateAction<PsiFile>
 		addKind(builder, used, "Empty File", CSharpFileType.INSTANCE.getIcon(), "CSharpFile");
 
 		final CSharpCreateFromTemplateHandler handler = CSharpCreateFromTemplateHandler.getInstance();
-		for(FileTemplate template : FileTemplateManager.getInstance().getAllTemplates())
+		for(FileTemplate template : FileTemplateManager.getInstance(project).getAllTemplates())
 		{
 			if(handler.handlesTemplate(template))
 			{
