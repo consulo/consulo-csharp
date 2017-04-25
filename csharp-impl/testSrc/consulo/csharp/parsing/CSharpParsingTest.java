@@ -125,6 +125,12 @@ public class CSharpParsingTest extends CSharpParsingTestCase
 		doTest(true);
 	}
 
+	@SetLanguageVersion(version = CSharpLanguageVersion._6_0)
+	public void testIssue469()
+	{
+		doTest(true);
+	}
+
 	@SetLanguageVersion(version = CSharpLanguageVersion._5_0)
 	public void testNameOfNotAllowed()
 	{

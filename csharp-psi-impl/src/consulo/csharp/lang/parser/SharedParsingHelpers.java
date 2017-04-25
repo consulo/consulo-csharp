@@ -210,6 +210,24 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.POINTER_TYPE : CSharpElements.POINTER_TYPE);
 		}
 
+		boolean alreadyNullable = false;
+		if(!BitUtil.isSet(flags, WITHOUT_NULLABLE))
+		{
+			if(builder.getTokenType() == QUEST)
+			{
+				typeInfo = new TypeInfo();
+				typeInfo.isNullable = true;
+
+				marker = marker.precede();
+
+				builder.advanceLexer();
+
+				marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.NULLABLE_TYPE : CSharpElements.NULLABLE_TYPE);
+
+				alreadyNullable = true;
+			}
+		}
+
 		while(builder.getTokenType() == LBRACKET)
 		{
 			PsiBuilder.Marker newMarker = marker.precede();
@@ -279,7 +297,7 @@ public class SharedParsingHelpers implements CSharpTokenSets, CSharpTokens, CSha
 			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.POINTER_TYPE : CSharpElements.POINTER_TYPE);
 		}
 
-		if(!typeInfo.isArray)
+		if(!typeInfo.isArray && !alreadyNullable)
 		{
 			if(!BitUtil.isSet(flags, WITHOUT_NULLABLE))
 			{
