@@ -21,15 +21,6 @@ import gnu.trove.THashSet;
 import java.util.Collections;
 import java.util.Set;
 
-import consulo.csharp.ide.codeInsight.actions.AddUsingAction;
-import consulo.csharp.ide.completion.item.CSharpTypeLikeLookupElement;
-import consulo.csharp.ide.completion.util.LtGtInsertHandler;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpUsingListChild;
-import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import consulo.dotnet.libraryAnalyzer.NamespaceReference;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResult;
@@ -56,7 +47,16 @@ import com.intellij.util.indexing.IdFilter;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
+import consulo.csharp.ide.codeInsight.actions.AddUsingAction;
+import consulo.csharp.ide.completion.item.CSharpTypeLikeLookupElement;
+import consulo.csharp.ide.completion.util.LtGtInsertHandler;
+import consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpUsingListChild;
+import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
+import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.DotNetTypes;
+import consulo.dotnet.libraryAnalyzer.NamespaceReference;
 import consulo.dotnet.psi.DotNetAttributeUtil;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetQualifiedElement;
@@ -84,7 +84,7 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 		public ResultTracker(CompletionResultSet result)
 		{
 			myResult = result;
-			betterMatcher = new BetterPrefixMatcher(result);
+			betterMatcher = new BetterPrefixMatcher.AutoRestarting(result);
 		}
 
 		@Override
@@ -137,10 +137,8 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 		}
 		else
 		{
-			if(parameters.getCompletionType() == CompletionType.BASIC &&
-					parameters.getInvocationCount() <= 1 &&
-					CSharpCompletionUtil.mayStartClassName(result) &&
-					CSharpCompletionUtil.isClassNamePossible(parameters))
+			if(parameters.getCompletionType() == CompletionType.BASIC && parameters.getInvocationCount() <= 1 && CSharpCompletionUtil.mayStartClassName(result) && CSharpCompletionUtil
+					.isClassNamePossible(parameters))
 			{
 				addTypesForUsing(parameters, CSharpCompletionSorting.modifyResultSet(parameters, result.withPrefixMatcher(tracker.betterMatcher)), holder);
 			}
@@ -153,9 +151,7 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 		if(parameters.getCompletionType() == CompletionType.BASIC)
 		{
 			PsiElement position = parameters.getPosition();
-			if(parameters.getInvocationCount() <= 1 &&
-					CSharpCompletionUtil.mayStartClassName(result) &&
-					CSharpCompletionUtil.isClassNamePossible(parameters))
+			if(parameters.getInvocationCount() <= 1 && CSharpCompletionUtil.mayStartClassName(result) && CSharpCompletionUtil.isClassNamePossible(parameters))
 			{
 				addTypesForUsing(parameters, result, inheritorsHolder);
 				return;
