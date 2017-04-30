@@ -25,11 +25,13 @@ import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.ide.debugger.CSharpStaticValueProxy;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.impl.DotNetTypes2;
 import consulo.dotnet.debugger.DotNetDebuggerSearchUtil;
 import consulo.dotnet.debugger.proxy.DotNetFieldOrPropertyProxy;
 import consulo.dotnet.debugger.proxy.DotNetNotSuspendedException;
 import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
 import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
+import consulo.dotnet.debugger.proxy.value.DotNetNullValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetStructValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
@@ -125,6 +127,11 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 			if(objectValueMirror != null && invokeFieldOrProperty(context, name, objectValueMirror, typeMirror))
 			{
 				return;
+			}
+
+			if(popValue instanceof DotNetNullValueProxy)
+			{
+				throw new DotNetThrowValueException(DotNetTypes2.System.NullReferenceException, null);
 			}
 
 			if(tryEvaluateNonObjectValue(context, popValue))
