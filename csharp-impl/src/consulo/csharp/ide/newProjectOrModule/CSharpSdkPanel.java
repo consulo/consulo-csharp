@@ -34,6 +34,7 @@ import com.intellij.ui.ColoredListCellRenderer;
 import com.intellij.util.SmartList;
 import consulo.dotnet.DotNetTarget;
 import consulo.module.extension.ModuleExtensionProviderEP;
+import consulo.module.extension.impl.ModuleExtensionProviders;
 import consulo.roots.ui.configuration.SdkComboBox;
 
 /**
@@ -66,7 +67,7 @@ public class CSharpSdkPanel extends JPanel
 		for(Map.Entry<String, String[]> entry : CSharpNewModuleBuilder.ourExtensionMapping.entrySet())
 		{
 			// need check C# extension
-			ModuleExtensionProviderEP providerEP = ModuleExtensionProviderEP.findProviderEP(entry.getValue()[1]);
+			ModuleExtensionProviderEP providerEP = ModuleExtensionProviders.findProvider(entry.getValue()[1]);
 			if(providerEP == null)
 			{
 				continue;
