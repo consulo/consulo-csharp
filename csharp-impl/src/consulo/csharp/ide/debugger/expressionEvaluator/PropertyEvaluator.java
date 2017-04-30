@@ -23,6 +23,7 @@ import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.debugger.proxy.DotNetFieldOrPropertyProxy;
 import consulo.dotnet.debugger.proxy.DotNetMethodProxy;
+import consulo.dotnet.debugger.proxy.DotNetNotSuspendedException;
 import consulo.dotnet.debugger.proxy.DotNetPropertyProxy;
 import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
@@ -45,7 +46,9 @@ public class PropertyEvaluator extends FieldOrPropertyEvaluator<CSharpPropertyDe
 	}
 
 	@Override
-	protected boolean invoke(@NotNull DotNetPropertyProxy mirror, @NotNull CSharpEvaluateContext context, @Nullable DotNetValueProxy popValue)  throws DotNetThrowValueException
+	protected boolean invoke(@NotNull DotNetPropertyProxy mirror,
+			@NotNull CSharpEvaluateContext context,
+			@Nullable DotNetValueProxy popValue) throws DotNetThrowValueException, DotNetNotSuspendedException
 	{
 		DotNetMethodProxy methodMirror = mirror.getGetMethod();
 		if(methodMirror == null)

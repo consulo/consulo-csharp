@@ -18,17 +18,18 @@ package consulo.csharp.ide.debugger.expressionEvaluator;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiUtilCore;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.ide.debugger.CSharpStaticValueProxy;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiUtilCore;
 import consulo.dotnet.debugger.DotNetDebugContext;
 import consulo.dotnet.debugger.proxy.DotNetAbsentInformationException;
 import consulo.dotnet.debugger.proxy.DotNetInvalidObjectException;
 import consulo.dotnet.debugger.proxy.DotNetInvalidStackFrameException;
+import consulo.dotnet.debugger.proxy.DotNetNotSuspendedException;
 import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
 import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
@@ -40,7 +41,7 @@ import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 public abstract class Evaluator
 {
 	public abstract void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetInvalidObjectException, DotNetThrowValueException, DotNetInvalidStackFrameException,
-			DotNetAbsentInformationException;
+			DotNetAbsentInformationException, DotNetNotSuspendedException;
 
 	@Nullable
 	public static DotNetValueProxy substituteStaticContext(@NotNull DotNetValueProxy proxy)

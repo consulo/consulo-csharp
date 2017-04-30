@@ -26,14 +26,15 @@ import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.lang.psi.CSharpAttributeUtil;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.dotnet.DotNetTypes;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.debugger.proxy.DotNetFieldOrPropertyProxy;
 import consulo.dotnet.debugger.proxy.DotNetMethodProxy;
+import consulo.dotnet.debugger.proxy.DotNetNotSuspendedException;
 import consulo.dotnet.debugger.proxy.DotNetPropertyProxy;
 import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
 import consulo.dotnet.debugger.proxy.value.DotNetArrayValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetNumberValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
 
 /**
  * @author VISTALL
@@ -65,7 +66,7 @@ public class IndexMethodEvaluator extends FieldOrPropertyEvaluator<CSharpIndexMe
 	}
 
 	@Override
-	public void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetThrowValueException
+	public void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetThrowValueException, DotNetNotSuspendedException
 	{
 		myArgumentValues = new ArrayList<>(myParameterTypes.size());
 		for(int i = 0; i < myParameterTypes.size(); i++)
@@ -93,7 +94,9 @@ public class IndexMethodEvaluator extends FieldOrPropertyEvaluator<CSharpIndexMe
 	}
 
 	@Override
-	protected boolean invoke(@NotNull DotNetPropertyProxy mirror, @NotNull CSharpEvaluateContext context, @Nullable DotNetValueProxy popValue) throws DotNetThrowValueException
+	protected boolean invoke(@NotNull DotNetPropertyProxy mirror,
+			@NotNull CSharpEvaluateContext context,
+			@Nullable DotNetValueProxy popValue) throws DotNetThrowValueException, DotNetNotSuspendedException
 	{
 		assert myArgumentValues != null;
 

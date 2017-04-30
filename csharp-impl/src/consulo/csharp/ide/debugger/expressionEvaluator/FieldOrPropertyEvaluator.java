@@ -25,16 +25,17 @@ import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.ide.debugger.CSharpStaticValueProxy;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.dotnet.psi.DotNetModifier;
-import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetQualifiedElement;
 import consulo.dotnet.debugger.DotNetDebuggerSearchUtil;
 import consulo.dotnet.debugger.proxy.DotNetFieldOrPropertyProxy;
+import consulo.dotnet.debugger.proxy.DotNetNotSuspendedException;
 import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
 import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetStructValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
+import consulo.dotnet.psi.DotNetModifier;
+import consulo.dotnet.psi.DotNetModifierListOwner;
+import consulo.dotnet.psi.DotNetQualifiedElement;
 
 /**
  * @author VISTALL
@@ -54,7 +55,7 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 
 	protected abstract boolean isMyMirror(@NotNull DotNetFieldOrPropertyProxy mirror);
 
-	protected abstract boolean invoke(@NotNull M mirror, @NotNull CSharpEvaluateContext context, @Nullable DotNetValueProxy popValue) throws DotNetThrowValueException;
+	protected abstract boolean invoke(@NotNull M mirror, @NotNull CSharpEvaluateContext context, @Nullable DotNetValueProxy popValue) throws DotNetThrowValueException, DotNetNotSuspendedException;
 
 	@Nullable
 	@RequiredReadAction
@@ -64,7 +65,7 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 	}
 
 	@Override
-	public void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetThrowValueException
+	public void evaluate(@NotNull CSharpEvaluateContext context) throws DotNetThrowValueException, DotNetNotSuspendedException
 	{
 		DotNetValueProxy popValue = context.popValue();
 		if(popValue == null)
@@ -143,7 +144,7 @@ public abstract class FieldOrPropertyEvaluator<T extends DotNetQualifiedElement 
 	private boolean invokeFieldOrProperty(@NotNull CSharpEvaluateContext context,
 			@NotNull String name,
 			@NotNull DotNetValueProxy popValue,
-			@NotNull DotNetTypeProxy typeMirror) throws DotNetThrowValueException
+			@NotNull DotNetTypeProxy typeMirror) throws DotNetThrowValueException, DotNetNotSuspendedException
 	{
 		DotNetFieldOrPropertyProxy[] fieldOrPropertyMirrors = DotNetDebuggerSearchUtil.getFieldAndProperties(typeMirror, true);
 		for(DotNetFieldOrPropertyProxy fieldOrPropertyMirror : fieldOrPropertyMirrors)

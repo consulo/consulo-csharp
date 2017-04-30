@@ -22,13 +22,14 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.ide.debugger.expressionEvaluator.Evaluator;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
+import consulo.csharp.ide.debugger.expressionEvaluator.Evaluator;
 import consulo.dotnet.debugger.DotNetDebugContext;
 import consulo.dotnet.debugger.proxy.DotNetAbsentInformationException;
 import consulo.dotnet.debugger.proxy.DotNetInvalidObjectException;
 import consulo.dotnet.debugger.proxy.DotNetInvalidStackFrameException;
+import consulo.dotnet.debugger.proxy.DotNetNotSuspendedException;
 import consulo.dotnet.debugger.proxy.DotNetStackFrameProxy;
 import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
@@ -85,7 +86,7 @@ public class CSharpEvaluateContext
 		myStack.addFirst(Pair.<DotNetValueProxy, Object>create(o, provider));
 	}
 
-	public void evaluate(List<Evaluator> evaluators) throws DotNetThrowValueException, DotNetInvalidObjectException, DotNetInvalidStackFrameException, DotNetAbsentInformationException
+	public void evaluate(List<Evaluator> evaluators) throws DotNetThrowValueException, DotNetInvalidObjectException, DotNetInvalidStackFrameException, DotNetAbsentInformationException, DotNetNotSuspendedException
 	{
 		for(Evaluator evaluator : evaluators)
 		{

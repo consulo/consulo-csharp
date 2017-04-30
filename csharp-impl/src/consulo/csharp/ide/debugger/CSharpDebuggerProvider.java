@@ -28,6 +28,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -50,7 +51,9 @@ import consulo.dotnet.debugger.nodes.DotNetFieldOrPropertyValueNode;
 import consulo.dotnet.debugger.nodes.DotNetStructValueInfo;
 import consulo.dotnet.debugger.proxy.DotNetFieldOrPropertyProxy;
 import consulo.dotnet.debugger.proxy.DotNetInvalidObjectException;
+import consulo.dotnet.debugger.proxy.DotNetNotSuspendedException;
 import consulo.dotnet.debugger.proxy.DotNetStackFrameProxy;
+import consulo.dotnet.debugger.proxy.DotNetThrowValueException;
 import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetObjectValueProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetStructValueProxy;
@@ -69,10 +72,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 
 	@NotNull
 	@Override
-	public PsiFile createExpressionCodeFragment(@NotNull Project project,
-			@NotNull PsiElement sourcePosition,
-			@NotNull String text,
-			boolean isPhysical)
+	public PsiFile createExpressionCodeFragment(@NotNull Project project, @NotNull PsiElement sourcePosition, @NotNull String text, boolean isPhysical)
 	{
 		return CSharpFragmentFactory.createExpressionFragment(project, text, sourcePosition);
 	}
@@ -110,8 +110,7 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 			}
 		}
 
-		CSharpFragmentFileImpl expressionFragment = CSharpFragmentFactory.createExpressionFragment(debuggerContext.getProject(), expression,
-				elementAt);
+		CSharpFragmentFileImpl expressionFragment = CSharpFragmentFactory.createExpressionFragment(debuggerContext.getProject(), expression, elementAt);
 
 		PsiElement[] children = expressionFragment.getChildren();
 		if(children.length == 0)
@@ -155,6 +154,14 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 				callback.errorOccurred("no value");
 			}
 		}
+		catch(DotNetThrowValueException e)
+		{
+			callback.errorOccurred(StringUtil.notNullize(e.getMessage(), "unknown exception"));
+		}
+		catch(DotNetNotSuspendedException e)
+		{
+			callback.errorOccurred("not suspended");
+		}
 		catch(DotNetInvalidObjectException e)
 		{
 			callback.errorOccurred("invalid object");
@@ -180,7 +187,8 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 	{
 		try
 		{
-			List<Evaluator> evaluators = ApplicationManager.getApplication().runReadAction((Computable<List<Evaluator>>) () -> {
+			List<Evaluator> evaluators = ApplicationManager.getApplication().runReadAction((Computable<List<Evaluator>>) () ->
+			{
 				PsiElement resolvedElement = referenceExpression.resolve();
 				if(referenceExpression.getParent() instanceof CSharpMethodCallExpressionImpl || resolvedElement instanceof DotNetLikeMethodDeclaration)
 				{
@@ -215,22 +223,20 @@ public class CSharpDebuggerProvider extends DotNetDebuggerProvider
 				DotNetTypeProxy type = thisObjectValue.getType();
 				if(thisObjectValue instanceof DotNetObjectValueProxy && parent.equals(type))
 				{
-					consumer.consume(new DotNetFieldOrPropertyValueNode(debuggerContext, fieldOrPropertyMirror, frame, (DotNetObjectValueProxy)
-							thisObjectValue));
+					consumer.consume(new DotNetFieldOrPropertyValueNode(debuggerContext, fieldOrPropertyMirror, frame, (DotNetObjectValueProxy) thisObjectValue));
 				}
 				else if(thisObjectValue instanceof DotNetStructValueProxy && parent.equals(type))
 				{
 					DotNetStructValueProxy structValueMirror = (DotNetStructValueProxy) thisObjectValue;
 
-					DotNetStructValueInfo valueInfo = new DotNetStructValueInfo(structValueMirror, null, fieldOrPropertyMirror, objectPair.getFirst
-							());
+					DotNetStructValueInfo valueInfo = new DotNetStructValueInfo(structValueMirror, null, fieldOrPropertyMirror, objectPair.getFirst());
 
 					consumer.consume(new DotNetFieldOrPropertyValueNode(debuggerContext, fieldOrPropertyMirror, frame, null, valueInfo));
 				}
 				else
 				{
-					consumer.consume(new CSharpWatcherNode(debuggerContext, ApplicationManager.getApplication().runReadAction
-							((Computable<String>) referenceExpression::getText), frame, objectPair.getFirst()));
+					consumer.consume(new CSharpWatcherNode(debuggerContext, ApplicationManager.getApplication().runReadAction((Computable<String>) referenceExpression::getText), frame, objectPair
+							.getFirst()));
 				}
 			}
 		}
