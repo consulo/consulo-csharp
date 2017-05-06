@@ -20,22 +20,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 
-import org.jboss.netty.util.internal.ConcurrentWeakKeyHashMap;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.Task;
-import com.intellij.openapi.project.DumbModeAction;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.util.PathUtil;
 import com.intellij.util.containers.MultiMap;
 import com.intellij.util.messages.MessageBusConnection;
 import consulo.dotnet.module.extension.DotNetLibraryOpenCache;
@@ -47,7 +41,6 @@ import consulo.internal.dotnet.asm.parse.MSILParseException;
 import consulo.internal.dotnet.msil.decompiler.util.MsilHelper;
 import consulo.module.extension.ModuleExtension;
 import consulo.module.extension.ModuleExtensionChangeListener;
-import consulo.roots.types.BinariesOrderRootType;
 
 /**
  * @author VISTALL
@@ -70,6 +63,12 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 		{
 			return getName();
 		}
+
+		@Override
+		public boolean isAvailable()
+		{
+			return false;
+		}
 	}
 
 	@NotNull
@@ -89,8 +88,7 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 	 * - p1 - libraryName
 	 * - p2 - namespace
 	 */
-	private final Map<Module, MultiMap<String, NamespaceReference>> myCacheMap = new ConcurrentWeakKeyHashMap<Module, MultiMap<String,
-			NamespaceReference>>();
+	//private final Map<Module, MultiMap<String, NamespaceReference>> myCacheMap = new ConcurrentWeakKeyHashMap<Module, MultiMap<String, NamespaceReference>>();
 
 	public DotNetLibraryAnalyzerComponent(Project project)
 	{
@@ -154,7 +152,7 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 
 	private void runAnalyzerFor(@NotNull final DotNetSimpleModuleExtension<?> extension)
 	{
-		new Task.Backgroundable(extension.getProject(), "Analyzing .NET libraries for module: " + extension.getModule().getName())
+		/*new Task.Backgroundable(extension.getProject(), "Analyzing .NET libraries for module: " + extension.getModule().getName())
 		{
 			@Override
 			public void run(@NotNull ProgressIndicator indicator)
@@ -190,7 +188,7 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 			{
 				return DumbModeAction.WAIT;
 			}
-		}.queue();
+		}.queue(); */
 	}
 
 	private static MultiMap<String, NamespaceReference> buildCache(File key, String libraryName)
@@ -236,23 +234,25 @@ public class DotNetLibraryAnalyzerComponent extends AbstractProjectComponent
 	@NotNull
 	public Collection<NamespaceReference> get(@NotNull Module module, @NotNull String typeName)
 	{
-		MultiMap<String, NamespaceReference> map = myCacheMap.get(module);
+		/*MultiMap<String, NamespaceReference> map = myCacheMap.get(module);
 		if(map == null)
 		{
 			return Collections.emptyList();
 		}
-		return map.get(typeName);
+		return map.get(typeName); */
+		return Collections.emptyList();
 	}
 
 	@NotNull
 	@SuppressWarnings("unchecked")
 	public Collection<NamespaceReference> getAll(@NotNull Module module)
 	{
-		MultiMap<String, NamespaceReference> map = myCacheMap.get(module);
+		/*MultiMap<String, NamespaceReference> map = myCacheMap.get(module);
 		if(map == null)
 		{
 			return Collections.emptyList();
 		}
-		return (Collection<NamespaceReference>) map.values();
+		return (Collection<NamespaceReference>) map.values();  */
+		return Collections.emptyList();
 	}
 }
