@@ -317,5 +317,8 @@
 										  id="csharp"/>
 
 		<smartPointerAnchorProvider implementation="consulo.csharp.lang.psi.impl.CSharpAnchorProvider"/>
+
+		<idIndexer filetype="C#" implementationClass="consulo.csharp.ide.idCache.CSharpIdIndexer" />
+		<todoIndexer filetype="C#" implementationClass="consulo.csharp.ide.idCache.CSharpTodoIndexer" />
 	</extensions>
 </idea-plugin>
