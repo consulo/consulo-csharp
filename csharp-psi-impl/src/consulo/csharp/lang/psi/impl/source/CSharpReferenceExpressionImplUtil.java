@@ -37,6 +37,9 @@ import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtil;
 import com.intellij.psi.impl.source.tree.injected.Place;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.CommonProcessors;
@@ -312,6 +315,13 @@ public class CSharpReferenceExpressionImplUtil
 	@NotNull
 	@RequiredReadAction
 	public static ResolveToKind kind(@NotNull CSharpReferenceExpression referenceExpression)
+	{
+		return CachedValuesManager.getCachedValue(referenceExpression, () -> CachedValueProvider.Result.create(kindImpl(referenceExpression), PsiModificationTracker.MODIFICATION_COUNT));
+	}
+
+	@NotNull
+	@RequiredReadAction
+	private static ResolveToKind kindImpl(@NotNull CSharpReferenceExpression referenceExpression)
 	{
 		if(referenceExpression.isGlobalElement())
 		{
