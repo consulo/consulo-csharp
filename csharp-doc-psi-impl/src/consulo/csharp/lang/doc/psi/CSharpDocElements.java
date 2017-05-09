@@ -20,17 +20,19 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
+import com.intellij.lang.LanguageParserDefinitions;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilderFactory;
 import com.intellij.lang.PsiParser;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.impl.source.tree.LazyParseableElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.ILazyParseableElementType;
 import com.intellij.psi.tree.TokenSet;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.doc.CSharpDocLanguage;
+import consulo.csharp.lang.doc.lexer.DeprecatedCSharpDocLexer;
 import consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.parser.SharedParsingHelpers;
 import consulo.csharp.lang.parser.exp.ExpressionParsing;
@@ -39,6 +41,8 @@ import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.impl.source.injection.CSharpForInjectionFragmentHolder;
 import consulo.csharp.lang.psi.impl.source.injection.CSharpInjectExpressionElementType;
+import consulo.lang.LanguageVersion;
+import consulo.lang.util.LanguageVersionUtil;
 import consulo.psi.tree.ElementTypeAsPsiFactory;
 
 /**
@@ -49,23 +53,29 @@ public interface CSharpDocElements
 {
 	ElementTypeAsPsiFactory TAG = new ElementTypeAsPsiFactory("TAG", CSharpDocLanguage.INSTANCE, CSharpDocTag.class);
 	ElementTypeAsPsiFactory ATTRIBUTE = new ElementTypeAsPsiFactory("ATTRIBUTE", CSharpDocLanguage.INSTANCE, CSharpDocAttribute.class);
-	ElementTypeAsPsiFactory ATTRIBUTE_VALUE = new ElementTypeAsPsiFactory("ATTRIBUTE_VALUE", CSharpDocLanguage.INSTANCE,
-			CSharpDocAttributeValue.class);
+	ElementTypeAsPsiFactory ATTRIBUTE_VALUE = new ElementTypeAsPsiFactory("ATTRIBUTE_VALUE", CSharpDocLanguage.INSTANCE, CSharpDocAttributeValue.class);
 	ElementTypeAsPsiFactory TEXT = new ElementTypeAsPsiFactory("TEXT", CSharpDocLanguage.INSTANCE, CSharpDocText.class);
 
 	IElementType LINE_DOC_COMMENT = new ILazyParseableElementType("LINE_DOC_COMMENT", CSharpDocLanguage.INSTANCE)
 	{
 		@Override
-		protected Language getLanguageForParser(PsiElement psi)
+		@RequiredReadAction
+		protected ASTNode doParseContents(@NotNull final ASTNode chameleon, @NotNull final PsiElement psi)
 		{
-			return CSharpDocLanguage.INSTANCE;
+			final Project project = psi.getProject();
+			CSharpDocLanguage docLanguage = CSharpDocLanguage.INSTANCE;
+			final LanguageVersion languageVersion = LanguageVersionUtil.findDefaultVersion(docLanguage);
+			DeprecatedCSharpDocLexer docLexer = new DeprecatedCSharpDocLexer();
+			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, docLexer, docLanguage, languageVersion, chameleon.getChars());
+			final PsiParser parser = LanguageParserDefinitions.INSTANCE.forLanguage(docLanguage).createParser(languageVersion);
+			return parser.parse(this, builder, languageVersion).getFirstChildNode();
 		}
 
 		@Nullable
 		@Override
 		public ASTNode createNode(CharSequence text)
 		{
-			return new LazyParseableElement(this, text);
+			return new CSharpDocRoot(this, text);
 		}
 	};
 
@@ -150,8 +160,7 @@ public interface CSharpDocElements
 				commaEntered = false;
 
 				PsiBuilder.Marker argumentMarker = builder.mark();
-				SharedParsingHelpers.TypeInfo marker = SharedParsingHelpers.parseType(builder, SharedParsingHelpers.VAR_SUPPORT |
-						SharedParsingHelpers.INSIDE_DOC);
+				SharedParsingHelpers.TypeInfo marker = SharedParsingHelpers.parseType(builder, SharedParsingHelpers.VAR_SUPPORT | SharedParsingHelpers.INSIDE_DOC);
 				if(marker == null)
 				{
 					PsiBuilder.Marker errorMarker = builder.mark();
@@ -179,8 +188,7 @@ public interface CSharpDocElements
 		{
 			final Project project = psi.getProject();
 			final Language languageForParser = getLanguageForParser(psi);
-			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser,
-					languageForParser.getVersions()[0], chameleon.getChars());
+			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageForParser.getVersions()[0], chameleon.getChars());
 			return myParser.parse(this, builder, languageForParser.getVersions()[0]).getFirstChildNode();
 		}
 
@@ -198,9 +206,8 @@ public interface CSharpDocElements
 		}
 	};
 
-	IElementType PARAMETER_EXPRESSION = new CSharpInjectExpressionElementType("PARAMETER_REFERENCE", CSharpDocLanguage.INSTANCE,
-			CSharpReferenceExpression.ResolveToKind.PARAMETER_FROM_PARENT);
+	IElementType PARAMETER_EXPRESSION = new CSharpInjectExpressionElementType("PARAMETER_REFERENCE", CSharpDocLanguage.INSTANCE, CSharpReferenceExpression.ResolveToKind.PARAMETER_FROM_PARENT);
 
-	IElementType GENERIC_PARAMETER_EXPRESSION = new CSharpInjectExpressionElementType("GENERIC_PARAMETER_EXPRESSION", CSharpDocLanguage.INSTANCE,
-			CSharpReferenceExpression.ResolveToKind.GENERIC_PARAMETER_FROM_PARENT);
+	IElementType GENERIC_PARAMETER_EXPRESSION = new CSharpInjectExpressionElementType("GENERIC_PARAMETER_EXPRESSION", CSharpDocLanguage.INSTANCE, CSharpReferenceExpression.ResolveToKind
+			.GENERIC_PARAMETER_FROM_PARENT);
 }

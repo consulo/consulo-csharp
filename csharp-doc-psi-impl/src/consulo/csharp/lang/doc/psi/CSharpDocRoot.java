@@ -20,20 +20,19 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.Condition;
+import com.intellij.psi.impl.source.tree.LazyParseablePsiElement;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
  * @since 03.03.2015
  */
-public class CSharpDocRoot extends ASTWrapperPsiElement
+public class CSharpDocRoot extends LazyParseablePsiElement
 {
-	public CSharpDocRoot(@NotNull ASTNode node)
+	public CSharpDocRoot(@NotNull IElementType type, @Nullable CharSequence buffer)
 	{
-		super(node);
+		super(type, buffer);
 	}
 
 	@Nullable
@@ -53,19 +52,18 @@ public class CSharpDocRoot extends ASTWrapperPsiElement
 	@NotNull
 	public List<CSharpDocTag> findTagElements(@NotNull final String tagName)
 	{
-		return ContainerUtil.filter(getTagElements(), new Condition<CSharpDocTag>()
-		{
-			@Override
-			public boolean value(CSharpDocTag docTag)
-			{
-				return tagName.equals(docTag.getName());
-			}
-		});
+		return ContainerUtil.filter(getTagElements(), docTag -> tagName.equals(docTag.getName()));
 	}
 
 	@NotNull
 	public CSharpDocTag[] getTagElements()
 	{
 		return findChildrenByClass(CSharpDocTag.class);
+	}
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + "(" + getElementType().toString() + ")";
 	}
 }

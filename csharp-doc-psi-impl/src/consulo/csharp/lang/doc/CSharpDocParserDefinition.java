@@ -17,11 +17,6 @@
 package consulo.csharp.lang.doc;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.doc.lexer.DeprecatedCSharpDocLexer;
-import consulo.csharp.lang.doc.parser.CSharpDocParser;
-import consulo.csharp.lang.doc.psi.CSharpDocElements;
-import consulo.csharp.lang.doc.psi.CSharpDocRoot;
-import consulo.csharp.lang.doc.psi.CSharpDocTokenType;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.ParserDefinition;
@@ -32,6 +27,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.doc.lexer.DeprecatedCSharpDocLexer;
+import consulo.csharp.lang.doc.parser.CSharpDocParser;
+import consulo.csharp.lang.doc.psi.CSharpDocTokenType;
 import consulo.lang.LanguageVersion;
 
 /**
@@ -82,19 +81,16 @@ public class CSharpDocParserDefinition implements ParserDefinition
 		return TokenSet.EMPTY;
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
-	public PsiElement createElement(ASTNode node)
+	public PsiElement createElement(@NotNull ASTNode node)
 	{
-		if(node.getElementType() == CSharpDocElements.LINE_DOC_COMMENT)
-		{
-			return new CSharpDocRoot(node);
-		}
 		return new ASTWrapperPsiElement(node);
 	}
 
 	@Override
-	public PsiFile createFile(FileViewProvider viewProvider)
+	public PsiFile createFile(@NotNull FileViewProvider viewProvider)
 	{
 		throw new UnsupportedOperationException();
 	}
