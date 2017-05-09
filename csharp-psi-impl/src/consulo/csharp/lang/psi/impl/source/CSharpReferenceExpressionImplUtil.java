@@ -111,7 +111,7 @@ public class CSharpReferenceExpressionImplUtil
 	public static final TokenSet ourReferenceElements = TokenSet.orSet(CSharpTokenSets.NATIVE_TYPES, TokenSet.create(CSharpTokens.THIS_KEYWORD, CSharpTokens.BASE_KEYWORD, CSharpTokens.IDENTIFIER,
 			CSharpSoftTokens.GLOBAL_KEYWORD));
 
-	public static final TokenSet ourAccessTokens = TokenSet.create(CSharpTokens.ARROW, CSharpTokens.DOT, CSharpTokens.COLONCOLON, CSharpTokens.NULLABE_CALL);
+	public static final TokenSet ourAccessTokens = TokenSet.create(CSharpTokens.ARROW, CSharpTokens.DOT, CSharpTokens.PLUS, CSharpTokens.COLONCOLON, CSharpTokens.NULLABE_CALL);
 
 	private static KindProcessor[] ourProcessors = new KindProcessor[ResolveToKind.VALUES.length];
 
@@ -998,10 +998,7 @@ public class CSharpReferenceExpressionImplUtil
 				}
 				break;
 			}
-			else if(temp instanceof DotNetFieldDeclaration ||
-					temp instanceof DotNetPropertyDeclaration ||
-					temp instanceof DotNetEventDeclaration ||
-					temp instanceof DotNetLikeMethodDeclaration)
+			else if(temp instanceof DotNetFieldDeclaration || temp instanceof DotNetPropertyDeclaration || temp instanceof DotNetEventDeclaration || temp instanceof DotNetLikeMethodDeclaration)
 			{
 				last = temp.getParent();
 				targetToWalkChildren = temp.getParent();

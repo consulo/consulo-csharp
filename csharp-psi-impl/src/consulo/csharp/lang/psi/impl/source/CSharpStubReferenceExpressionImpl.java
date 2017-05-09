@@ -299,6 +299,10 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		{
 			return AccessType.NULLABLE_CALL;
 		}
+		else if(elementType == CSharpTokens.PLUS)
+		{
+			return AccessType.NESTED_TYPE;
+		}
 		return AccessType.DOT;
 	}
 

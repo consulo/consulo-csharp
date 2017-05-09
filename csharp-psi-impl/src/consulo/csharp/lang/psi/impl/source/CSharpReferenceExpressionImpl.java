@@ -266,6 +266,10 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 		{
 			return AccessType.NULLABLE_CALL;
 		}
+		else if(elementType == CSharpTokens.PLUS)
+		{
+			return AccessType.NESTED_TYPE;
+		}
 		return AccessType.DOT;
 	}
 

@@ -70,7 +70,8 @@ public interface CSharpReferenceExpression extends DotNetReferenceExpression, Ps
 		DOT,
 		ARROW,
 		COLONCOLON,
-		NULLABLE_CALL;
+		NULLABLE_CALL,
+		NESTED_TYPE;
 
 		@NotNull
 		@Immutable

@@ -1860,7 +1860,8 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 			marker.done(BitUtil.isSet(flags, STUB_SUPPORT) ? CSharpStubElements.REFERENCE_EXPRESSION : CSharpElements.REFERENCE_EXPRESSION);
 
-			if(builder.getTokenType() == DOT)
+			// inside doc - PLUS used for nested type reference
+			if(builder.getTokenType() == DOT || BitUtil.isSet(flags, INSIDE_DOC) && builder.getTokenType() == PLUS)
 			{
 				// if after dot we found stoppers, name expected - but we done
 				if(nameStopperSet.contains(builder.lookAhead(1)) || nameStopperSet.contains(builder.lookAhead(2)))
