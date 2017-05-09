@@ -18,16 +18,6 @@ package consulo.csharp.lang.doc.psi;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.CSharpLanguage;
-import consulo.csharp.lang.doc.CSharpDocLanguage;
-import consulo.csharp.lang.parser.CSharpBuilderWrapper;
-import consulo.csharp.lang.parser.SharedParsingHelpers;
-import consulo.csharp.lang.parser.exp.ExpressionParsing;
-import consulo.csharp.lang.psi.CSharpElements;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.injection.CSharpForInjectionFragmentHolder;
-import consulo.csharp.lang.psi.impl.source.injection.CSharpInjectExpressionElementType;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.PsiBuilder;
@@ -39,7 +29,16 @@ import com.intellij.psi.impl.source.tree.LazyParseableElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.ILazyParseableElementType;
 import com.intellij.psi.tree.TokenSet;
-import consulo.lang.LanguageVersion;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.doc.CSharpDocLanguage;
+import consulo.csharp.lang.parser.CSharpBuilderWrapper;
+import consulo.csharp.lang.parser.SharedParsingHelpers;
+import consulo.csharp.lang.parser.exp.ExpressionParsing;
+import consulo.csharp.lang.psi.CSharpElements;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.impl.source.injection.CSharpForInjectionFragmentHolder;
+import consulo.csharp.lang.psi.impl.source.injection.CSharpInjectExpressionElementType;
 import consulo.psi.tree.ElementTypeAsPsiFactory;
 
 /**
@@ -72,42 +71,37 @@ public interface CSharpDocElements
 
 	IElementType TYPE = new ILazyParseableElementType("TYPE", CSharpDocLanguage.INSTANCE)
 	{
-		private final PsiParser myParser = new PsiParser()
+		private final PsiParser myParser = (elementType, builder, languageVersion) ->
 		{
-			@NotNull
-			@Override
-			public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
-			{
-				PsiBuilder.Marker mark = builder.mark();
+			PsiBuilder.Marker mark = builder.mark();
 
-				CSharpBuilderWrapper builderWrapper = new CSharpBuilderWrapper(builder, languageVersion);
-				SharedParsingHelpers.parseType(builderWrapper, SharedParsingHelpers.VAR_SUPPORT | SharedParsingHelpers.INSIDE_DOC);
+			CSharpBuilderWrapper builderWrapper = new CSharpBuilderWrapper(builder, languageVersion);
+			SharedParsingHelpers.parseType(builderWrapper, SharedParsingHelpers.VAR_SUPPORT | SharedParsingHelpers.INSIDE_DOC);
+
+			if(builder.getTokenType() == CSharpTokens.LPAR)
+			{
+				mark.rollbackTo();
+
+				mark = builder.mark();
+
+				PsiBuilder.Marker tempMarker = builder.mark();
+
+				ExpressionParsing.parseQualifiedReference(builderWrapper, null, SharedParsingHelpers.INSIDE_DOC, TokenSet.EMPTY);
 
 				if(builder.getTokenType() == CSharpTokens.LPAR)
 				{
-					mark.rollbackTo();
-
-					mark = builder.mark();
-
-					PsiBuilder.Marker tempMarker = builder.mark();
-
-					ExpressionParsing.parseQualifiedReference(builderWrapper, null, SharedParsingHelpers.INSIDE_DOC, TokenSet.EMPTY);
-
-					if(builder.getTokenType() == CSharpTokens.LPAR)
-					{
-						parseArgumentList(builderWrapper);
-					}
-					tempMarker.done(CSharpElements.METHOD_CALL_EXPRESSION);
+					parseArgumentList(builderWrapper);
 				}
-
-				while(!builder.eof())
-				{
-					builder.error("Unexpected token");
-					builder.advanceLexer();
-				}
-				mark.done(elementType);
-				return builder.getTreeBuilt();
+				tempMarker.done(CSharpElements.METHOD_CALL_EXPRESSION);
 			}
+
+			while(!builder.eof())
+			{
+				builder.error("Unexpected token");
+				builder.advanceLexer();
+			}
+			mark.done(elementType);
+			return builder.getTreeBuilt();
 		};
 
 		public void parseArgumentList(CSharpBuilderWrapper builder)
