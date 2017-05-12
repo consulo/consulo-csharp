@@ -188,6 +188,9 @@
 		<typedHandler implementation="consulo.csharp.ide.completion.CSharpTypedHandler" id="csharp"/>
 		<typedHandler implementation="consulo.csharp.lang.doc.ide.codeInsight.editorActions.CSharpDocGtTypedHandler" id="csharpdoc"/>
 
+		<statementUpDownMover implementation="consulo.csharp.ide.codeInsight.moveUpDown.CSharpStatementMover" id="csharp-statement"/>
+		<statementUpDownMover implementation="consulo.csharp.ide.codeInsight.moveUpDown.CSharpDeclarationMover" id="csharp-declaration"/>
+
 		<renamePsiElementProcessor implementation="consulo.csharp.ide.refactoring.rename.CSharpTypeRenamePsiElementProcessor"/>
 		<renamePsiElementProcessor implementation="consulo.csharp.ide.refactoring.rename.CSharpOverrideElementProcessor"/>
 		<gotoClassContributor implementation="consulo.csharp.ide.navigation.CSharpTypeNameContributor"/>
@@ -221,7 +224,7 @@
 								  implementationClass="consulo.csharp.ide.presentation.CSharpQualifiedElementPresentationProvider"/>
 
 		<lang.elementManipulator forClass="consulo.csharp.lang.psi.impl.source.CSharpConstantExpressionImpl"
-								 implementationClass="consulo.csharp.lang.psi.impl.manipulator.CSharpConstantExpressionElementManipulator" />
+								 implementationClass="consulo.csharp.lang.psi.impl.manipulator.CSharpConstantExpressionElementManipulator"/>
 
 		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.TypeIndex"/>
 		<stubIndex implementation="consulo.csharp.lang.psi.impl.stub.index.TypeByQNameIndex"/>
@@ -256,8 +259,8 @@
 		<referencesSearch implementation="consulo.csharp.ide.findUsage.referenceSearch.CSharpConstructorPlusTypeReferenceSearch"/>
 		<referencesSearch implementation="consulo.csharp.ide.findUsage.referenceSearch.CSharpImplementedReferenceSearch"/>
 
-		<definitionsScopedSearch implementation="consulo.csharp.ide.navigation.CSharpMethodImplementationsSearcher" />
-		<definitionsScopedSearch implementation="consulo.csharp.ide.navigation.CSharpTypeImplementationSearcher" />
+		<definitionsScopedSearch implementation="consulo.csharp.ide.navigation.CSharpMethodImplementationsSearcher"/>
+		<definitionsScopedSearch implementation="consulo.csharp.ide.navigation.CSharpTypeImplementationSearcher"/>
 
 		<bundleLiveTemplateSet path="liveTemplates/output"/>
 		<bundleLiveTemplateSet path="liveTemplates/main"/>
@@ -313,12 +316,12 @@
 		<eapDescriptor implementation="consulo.csharp.ide.highlight.check.impl.CS0030$CS0030TypeCast"/>
 
 		<xdebugger.lineBreakpointTypeResolver filetype="C#"
-										  implementationClass="consulo.dotnet.debugger.breakpoint.DotNetLineBreakpointTypeResolver"
-										  id="csharp"/>
+											  implementationClass="consulo.dotnet.debugger.breakpoint.DotNetLineBreakpointTypeResolver"
+											  id="csharp"/>
 
 		<smartPointerAnchorProvider implementation="consulo.csharp.lang.psi.impl.CSharpAnchorProvider"/>
 
-		<idIndexer filetype="C#" implementationClass="consulo.csharp.ide.idCache.CSharpIdIndexer" />
-		<todoIndexer filetype="C#" implementationClass="consulo.csharp.ide.idCache.CSharpTodoIndexer" />
+		<idIndexer filetype="C#" implementationClass="consulo.csharp.ide.idCache.CSharpIdIndexer"/>
+		<todoIndexer filetype="C#" implementationClass="consulo.csharp.ide.idCache.CSharpTodoIndexer"/>
 	</extensions>
 </idea-plugin>
