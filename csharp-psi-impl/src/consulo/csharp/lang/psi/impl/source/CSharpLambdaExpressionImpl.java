@@ -22,6 +22,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.RecursionManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
@@ -137,7 +138,13 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 	@RequiredReadAction
 	public DotNetTypeRef toTypeRefForInference()
 	{
-		return new CSharpLambdaTypeRef(this, null, getParameterInfos(true), findPossibleReturnTypeRef());
+		// recursion when child lambda reference to parameter from parent lambda
+		DotNetTypeRef returnType = RecursionManager.doPreventingRecursion(" C#lambda return type", false, this::findPossibleReturnTypeRef);
+		if(returnType == null)
+		{
+			returnType = DotNetTypeRef.ERROR_TYPE;
+		}
+		return new CSharpLambdaTypeRef(this, null, getParameterInfos(true), returnType);
 	}
 
 	@NotNull
