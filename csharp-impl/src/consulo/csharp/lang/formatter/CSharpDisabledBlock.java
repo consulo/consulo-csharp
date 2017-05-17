@@ -86,7 +86,7 @@ public class CSharpDisabledBlock extends UserDataHolderBase implements ASTNode, 
 	@Override
 	public int getTextLength()
 	{
-		throw new UnsupportedOperationException();
+		return getTextRange().getLength();
 	}
 
 	@RequiredReadAction

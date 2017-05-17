@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.formatting.ASTBlock;
 import com.intellij.formatting.Alignment;
 import com.intellij.formatting.Block;
 import com.intellij.formatting.ChildAttributes;
@@ -36,7 +37,7 @@ import consulo.annotations.RequiredReadAction;
  * @author VISTALL
  * @since 17-May-17
  */
-public class CSharpDisabledFormattingBlock implements Block, BlockWithParent
+public class CSharpDisabledFormattingBlock implements Block, BlockWithParent, ASTBlock
 {
 	private final ASTNode myNode;
 	private BlockWithParent myParent;
@@ -44,6 +45,12 @@ public class CSharpDisabledFormattingBlock implements Block, BlockWithParent
 	public CSharpDisabledFormattingBlock(ASTNode node)
 	{
 		myNode = node;
+	}
+
+	@Override
+	public ASTNode getNode()
+	{
+		return myNode;
 	}
 
 	@NotNull
