@@ -24,15 +24,6 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
-import consulo.csharp.lang.CSharpLanguage;
-import consulo.csharp.lang.formatter.processors.CSharpIndentProcessor;
-import consulo.csharp.lang.formatter.processors.CSharpSpacingProcessor;
-import consulo.csharp.lang.formatter.processors.CSharpWrappingProcessor;
-import consulo.csharp.lang.psi.CSharpElements;
-import consulo.csharp.lang.psi.CSharpTokenSets;
-import consulo.csharp.lang.psi.CSharpTokens;
 import com.intellij.formatting.ASTBlock;
 import com.intellij.formatting.Alignment;
 import com.intellij.formatting.Block;
@@ -47,7 +38,17 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.formatter.FormatterUtil;
 import com.intellij.psi.formatter.common.AbstractBlock;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.formatter.processors.CSharpIndentProcessor;
+import consulo.csharp.lang.formatter.processors.CSharpSpacingProcessor;
+import consulo.csharp.lang.formatter.processors.CSharpWrappingProcessor;
+import consulo.csharp.lang.psi.CSharpElements;
+import consulo.csharp.lang.psi.CSharpTokenSets;
+import consulo.csharp.lang.psi.CSharpTokens;
 
 /**
  * @author VISTALL
@@ -85,7 +86,7 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 	@Override
 	public boolean isLeaf()
 	{
-		return getNode().getFirstChildNode() == null;
+		return getNode().getFirstChildNode() == null || getNode().getElementType() == NON_ACTIVE_SYMBOL;
 	}
 
 	@NotNull
@@ -108,43 +109,106 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 			return EMPTY;
 		}
 
-		List<Block> children = new ArrayList<Block>(5);
-		Deque<ASTNode> nodes = new ArrayDeque<ASTNode>(5);
+		List<ASTNode> rawNodes = new ArrayList<>();
 
 		for(ASTNode childNode = getNode().getFirstChildNode(); childNode != null; childNode = childNode.getTreeNext())
 		{
-			if(FormatterUtil.containsWhiteSpacesOnly(childNode))
+			rawNodes.add(childNode);
+		}
+		rawNodes.addAll(myAdditionalNodes);
+
+
+		Deque<ASTNode> nodes = new ArrayDeque<>();
+
+		List<ASTNode> whitespaces = null;
+
+		List<ASTNode> disabledNodes = null;
+
+		for(ASTNode rawNode : rawNodes)
+		{
+			// if its whitespace node - add it to tempWhitespaceHolder or to disabled block
+			if(FormatterUtil.containsWhiteSpacesOnly(rawNode))
 			{
+				if(disabledNodes != null)
+				{
+					disabledNodes.add(rawNode);
+				}
+				else
+				{
+					if(whitespaces == null)
+					{
+						whitespaces = new SmartList<>();
+					}
+
+					whitespaces.add(rawNode);
+				}
+
 				continue;
 			}
 
-			nodes.add(childNode);
-		}
-		nodes.addAll(myAdditionalNodes);
+			if(rawNode.getElementType() == CSharpTokens.NON_ACTIVE_SYMBOL)
+			{
+				if(disabledNodes == null)
+				{
+					disabledNodes = new ArrayList<>();
+				}
 
+				disabledNodes.add(rawNode);
+			}
+			else
+			{
+				if(disabledNodes != null)
+				{
+					nodes.add(new CSharpDisabledBlock(disabledNodes));
+				}
+
+				// drop disable nodes
+				// drop whitespaces if defined
+				disabledNodes = null;
+				whitespaces = null;
+
+				nodes.add(rawNode);
+			}
+		}
+
+		List<Block> children = new ArrayList<>();
 		ASTNode next;
 		while((next = nodes.poll()) != null)
 		{
-			final CSharpFormattingBlock childBlock = new CSharpFormattingBlock(next, null, null, mySettings);
-			childBlock.setParent(this);
-
-			IElementType elementType = next.getElementType();
-			if(elementType == SWITCH_LABEL_STATEMENT)
+			BlockWithParent blockWithParent = null;
+			if(next instanceof CSharpDisabledBlock)
 			{
-				ASTNode someNextElement;
-				while((someNextElement = nodes.poll()) != null)
+				blockWithParent = new CSharpDisabledFormattingBlock(next);
+			}
+			else
+			{
+				/*if(FormatterUtil.containsWhiteSpacesOnly(next))
 				{
-					IElementType someNextElementType = someNextElement.getElementType();
-					if(someNextElementType == SWITCH_LABEL_STATEMENT || someNextElementType == RBRACE)
+					continue;
+				} */
+
+				final CSharpFormattingBlock childBlock = new CSharpFormattingBlock(next, null, null, mySettings);
+				blockWithParent = childBlock;
+
+				IElementType elementType = next.getElementType();
+				if(elementType == SWITCH_LABEL_STATEMENT)
+				{
+					ASTNode someNextElement;
+					while((someNextElement = nodes.poll()) != null)
 					{
-						nodes.addFirst(someNextElement);
-						break;
+						IElementType someNextElementType = someNextElement.getElementType();
+						if(someNextElementType == SWITCH_LABEL_STATEMENT || someNextElementType == RBRACE)
+						{
+							nodes.addFirst(someNextElement);
+							break;
+						}
+						childBlock.addAdditionalNode(someNextElement);
 					}
-					childBlock.addAdditionalNode(someNextElement);
 				}
 			}
 
-			children.add(childBlock);
+			blockWithParent.setParent(this);
+			children.add((Block) blockWithParent);
 		}
 		return children;
 	}
@@ -153,7 +217,7 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 	{
 		if(myAdditionalNodes.isEmpty())
 		{
-			myAdditionalNodes = new ArrayList<ASTNode>(5);
+			myAdditionalNodes = new ArrayList<>(5);
 		}
 		myAdditionalNodes.add(node);
 	}

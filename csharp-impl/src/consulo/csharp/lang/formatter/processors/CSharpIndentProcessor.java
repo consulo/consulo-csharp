@@ -65,6 +65,11 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 		}
 
 		final IElementType elementType = node.getElementType();
+		if(elementType == NON_ACTIVE_SYMBOL)
+		{
+			return null;
+		}
+
 		if(elementType == NAMESPACE_DECLARATION ||
 				elementType == TYPE_DECLARATION ||
 				elementType == METHOD_DECLARATION ||

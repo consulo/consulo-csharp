@@ -18,10 +18,6 @@ package consulo.csharp.ide.highlight;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.CSharpCfsLanguageVersion;
-import consulo.csharp.lang.doc.ide.highlight.CSharpDocSyntaxHighlighter;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.CSharpTokensImpl;
 import com.intellij.lexer.Lexer;
 import com.intellij.lexer.StringLiteralLexer;
 import com.intellij.openapi.editor.colors.EditorColorsScheme;
@@ -32,6 +28,10 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.tree.IElementType;
 import consulo.csharp.cfs.ide.highlight.CfsSyntaxHighlighter;
 import consulo.csharp.cfs.lang.CfsTokens;
+import consulo.csharp.lang.CSharpCfsLanguageVersion;
+import consulo.csharp.lang.doc.ide.highlight.CSharpDocSyntaxHighlighter;
+import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.CSharpTokensImpl;
 
 /**
  * @author VISTALL
@@ -75,5 +75,6 @@ public class CSharpEditorHighlighter extends LayeredLexerEditorHighlighter
 				return super.getTokenHighlights(elementType);
 			}
 		}, ""));
+		//registerLayer(CSharpTemplateTokens.MACRO_FRAGMENT, new LayerDescriptor(new CSharpMacroSyntaxHighlighter(), ""));
 	}
 }

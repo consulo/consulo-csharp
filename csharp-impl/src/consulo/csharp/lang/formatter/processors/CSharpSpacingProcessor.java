@@ -353,6 +353,13 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 	@Nullable
 	public Spacing getSpacing(@Nullable ASTBlock child1, @NotNull ASTBlock child2)
 	{
+		IElementType elementType1 = PsiUtilCore.getElementType(child1 == null ? null : child1.getNode());
+		IElementType elementType2 = PsiUtilCore.getElementType(child2.getNode());
+		if(elementType1 == NON_ACTIVE_SYMBOL || elementType2 == NON_ACTIVE_SYMBOL)
+		{
+			return null;
+		}
+
 		for(OperatorReferenceSpacingBuilder operatorReferenceSpacingBuilder : myOperatorReferenceSpacingBuilders)
 		{
 			if(operatorReferenceSpacingBuilder.match(child1, child2))
@@ -361,8 +368,6 @@ public class CSharpSpacingProcessor implements CSharpTokens, CSharpElements
 			}
 		}
 
-		IElementType elementType1 = PsiUtilCore.getElementType(child1 == null ? null : child1.getNode());
-		IElementType elementType2 = PsiUtilCore.getElementType(child2.getNode());
 		if(ourMultiDeclarationSet.contains(elementType1) && elementType1 == elementType2)
 		{
 			ASTNode commaNode = child1.getNode().findChildByType(CSharpTokens.COMMA);

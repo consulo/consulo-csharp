@@ -28,6 +28,10 @@ import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.PsiBuilder;
+import com.intellij.lang.impl.PsiBuilderAdapter;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
 import consulo.csharp.lang.CSharpLanguageVersionWrapper;
 import consulo.csharp.lang.parser.preprocessor.DefinePreprocessorDirective;
 import consulo.csharp.lang.parser.preprocessor.ElsePreprocessorDirective;
@@ -42,10 +46,6 @@ import consulo.csharp.lang.psi.impl.stub.elementTypes.CSharpFileStubElementType;
 import consulo.csharp.lang.psi.impl.stub.elementTypes.macro.MacroEvaluator;
 import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.lang.LanguageVersion;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.impl.PsiBuilderAdapter;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
 
 /**
  * @author VISTALL
@@ -53,7 +53,7 @@ import com.intellij.psi.tree.TokenSet;
  */
 public class CSharpBuilderWrapper extends PsiBuilderAdapter
 {
-	private static Map<String, IElementType> ourIdentifierToSoftKeywords = new THashMap<String, IElementType>();
+	private static Map<String, IElementType> ourIdentifierToSoftKeywords = new THashMap<>();
 
 	static
 	{
@@ -66,7 +66,7 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 
 	static class PreprocessorState
 	{
-		Deque<Boolean> ifDirectives = new ArrayDeque<Boolean>();
+		Deque<Boolean> ifDirectives = new ArrayDeque<>();
 
 		public PreprocessorState(@NotNull Boolean initialValue)
 		{
@@ -95,7 +95,7 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 	private TokenSet mySoftSet = TokenSet.EMPTY;
 	private LanguageVersion myLanguageVersion;
 
-	private Deque<PreprocessorState> myStates = new ArrayDeque<PreprocessorState>();
+	private Deque<PreprocessorState> myStates = new ArrayDeque<>();
 
 	public CSharpBuilderWrapper(PsiBuilder delegate, LanguageVersion languageVersion)
 	{
@@ -223,7 +223,7 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 		if(tokenType == CSharpTemplateTokens.MACRO_FRAGMENT)
 		{
 			Set<String> variables = getUserData(CSharpFileStubElementType.PREPROCESSOR_VARIABLES);
-
+			assert variables != null;
 			PreprocessorDirective directive = PreprocessorParser.parse(super.getTokenText());
 			if(directive instanceof DefinePreprocessorDirective)
 			{
@@ -235,7 +235,7 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 					return CSharpTokens.NON_ACTIVE_SYMBOL;
 				}
 
-				Set<String> newVariables = new HashSet<String>(variables);
+				Set<String> newVariables = new HashSet<>(variables);
 
 				if(((DefinePreprocessorDirective) directive).isUndef())
 				{

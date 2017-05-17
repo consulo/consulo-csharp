@@ -62,6 +62,10 @@ public class CSharpWrappingProcessor
 	public Wrap getWrap()
 	{
 		IElementType elementType = myNode.getElementType();
+		if(elementType == CSharpTokens.NON_ACTIVE_SYMBOL)
+		{
+			return null;
+		}
 
 		PsiElement psi = myNode.getPsi();
 		PsiElement parentPsi = psi.getParent();
