@@ -87,12 +87,6 @@ public abstract class CSharpStubElementImpl<S extends StubElement> extends StubB
 		return ItemPresentationProviders.getItemPresentation(this);
 	}
 
-	@Override
-	public PsiElement getParent()
-	{
-		return getParentByStub();
-	}
-
 	public CSharpStubElementImpl(@NotNull S stub, @NotNull IStubElementType<? extends S, ?> nodeType)
 	{
 		super(stub, nodeType);

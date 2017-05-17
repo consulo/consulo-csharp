@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.application.ReadAction;
 import consulo.csharp.lang.psi.impl.stub.index.ExtendsListIndex;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
@@ -89,38 +90,24 @@ public class CSharpDirectTypeInheritorsSearcherExecutor implements QueryExecutor
 			return true;
 		}
 
-		Collection<DotNetTypeList> candidates = ApplicationManager.getApplication().runReadAction(new Computable<Collection<DotNetTypeList>>()
-		{
-			@Override
-			public Collection<DotNetTypeList> compute()
-			{
-				return ExtendsListIndex.getInstance().get(searchKey, p.getProject(), scope);
-			}
-		});
+		Collection<DotNetTypeList> candidates = ApplicationManager.getApplication().runReadAction((Computable<Collection<DotNetTypeList>>) () -> ExtendsListIndex.getInstance().get(searchKey, p.getProject(), scope));
 
-		Map<String, List<DotNetTypeDeclaration>> classes = new HashMap<String, List<DotNetTypeDeclaration>>();
+		Map<String, List<DotNetTypeDeclaration>> classes = new HashMap<>();
 
 		for(DotNetTypeList referenceList : candidates)
 		{
 			ProgressIndicatorProvider.checkCanceled();
-			final DotNetTypeDeclaration candidate = (DotNetTypeDeclaration) referenceList.getParent();
+			final DotNetTypeDeclaration candidate = ReadAction.compute(() -> (DotNetTypeDeclaration) referenceList.getParent());
 			if(!checkInheritance(p, vmQName, candidate))
 			{
 				continue;
 			}
 
-			String fqn = ApplicationManager.getApplication().runReadAction(new Computable<String>()
-			{
-				@Override
-				public String compute()
-				{
-					return candidate.getPresentableQName();
-				}
-			});
+			String fqn = ReadAction.compute(candidate::getPresentableQName);
 			List<DotNetTypeDeclaration> list = classes.get(fqn);
 			if(list == null)
 			{
-				list = new ArrayList<DotNetTypeDeclaration>();
+				list = new ArrayList<>();
 				classes.put(fqn, list);
 			}
 			list.add(candidate);
@@ -144,13 +131,6 @@ public class CSharpDirectTypeInheritorsSearcherExecutor implements QueryExecutor
 			final String vmQName,
 			final DotNetTypeDeclaration candidate)
 	{
-		return ApplicationManager.getApplication().runReadAction(new Computable<Boolean>()
-		{
-			@Override
-			public Boolean compute()
-			{
-				return !p.isCheckInheritance() || candidate.isInheritor(vmQName, false);
-			}
-		});
+		return ApplicationManager.getApplication().runReadAction((Computable<Boolean>) () -> !p.isCheckInheritance() || candidate.isInheritor(vmQName, false));
 	}
 }
