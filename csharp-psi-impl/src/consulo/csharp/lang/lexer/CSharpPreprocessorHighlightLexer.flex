@@ -8,16 +8,13 @@ import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 %%
 
 %public
-%class _CSharpMacroLexer
+%class CSharpPreprocessorHightlightLexer
 %extends LexerBase
 %unicode
 %function advanceImpl
 %type IElementType
 %eof{  return;
 %eof}
-
-%state MACRO_ENTERED
-%state MACRO_EXPRESSION
 
 DIGIT=[0-9]
 LETTER=[a-z]|[A-Z]
@@ -36,7 +33,6 @@ IDENTIFIER=[:jletter:] [:jletterdigit:]*
 
 WHITE_SPACE=[ \n\r\t\f]+
 
-
 MACRO_WHITE_SPACE=[ \t\f]+
 MACRO_NEW_LINE=\r\n|\n|\r
 
@@ -51,18 +47,24 @@ MACRO_ELSE={MACRO_START}"else"
 MACRO_ELIF={MACRO_START}"elif"
 %%
 
-
-<MACRO_ENTERED>
+<YYINITIAL>
 {
-	{IDENTIFIER}         { return CSharpPreprocesorTokens.IDENTIFIER; }
+	{MACRO_IF}           { return CSharpPreprocesorTokens.MACRO_IF_KEYWORD; }
 
-	{WHITE_SPACE}        { return CSharpPreprocesorTokens.WHITE_SPACE; }
+	{MACRO_ELIF}         { return CSharpPreprocesorTokens.MACRO_ELIF_KEYWORD; }
 
-	.                    { return CSharpPreprocesorTokens.BAD_CHARACTER; }
-}
+	{MACRO_ELSE}         { return CSharpPreprocesorTokens.MACRO_ELSE_KEYWORD; }
 
-<MACRO_EXPRESSION>
-{
+	{MACRO_ENDIF}        { return CSharpPreprocesorTokens.MACRO_ENDIF_KEYWORD; }
+
+	{MACRO_DEFINE}       { return CSharpPreprocesorTokens.MACRO_DEFINE_KEYWORD; }
+
+	{MACRO_UNDEF}        { return CSharpPreprocesorTokens.MACRO_UNDEF_KEYWORD; }
+
+	{MACRO_REGION}       { return CSharpPreprocesorTokens.MACRO_REGION_KEYWORD; }
+
+	{MACRO_ENDREGION}        { return CSharpPreprocesorTokens.MACRO_ENDREGION_KEYWORD; }
+
 	"("                  { return CSharpPreprocesorTokens.LPAR; }
 
 	")"                  { return CSharpPreprocesorTokens.RPAR; }
@@ -74,30 +76,6 @@ MACRO_ELIF={MACRO_START}"elif"
 	"||"                 { return CSharpPreprocesorTokens.OROR; }
 
 	{IDENTIFIER}         { return CSharpPreprocesorTokens.IDENTIFIER; }
-
-	{WHITE_SPACE}        { return CSharpPreprocesorTokens.WHITE_SPACE; }
-
-	.                    { return CSharpPreprocesorTokens.BAD_CHARACTER; }
-}
-
-<YYINITIAL>
-{
-	{MACRO_IF}           { yybegin(MACRO_EXPRESSION); return CSharpPreprocesorTokens.MACRO_IF_KEYWORD; }
-
-	{MACRO_ELIF}         { yybegin(MACRO_EXPRESSION); return CSharpPreprocesorTokens.MACRO_ELIF_KEYWORD; }
-
-	{MACRO_ELSE}         { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_ELSE_KEYWORD; }
-
-	{MACRO_ENDIF}        { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_ENDIF_KEYWORD; }
-
-	{MACRO_DEFINE}       { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_DEFINE_KEYWORD; }
-
-	{MACRO_UNDEF}        { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_UNDEF_KEYWORD; }
-
-	{MACRO_REGION}       { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_REGION_KEYWORD; }
-
-	{MACRO_ENDREGION}    { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_ENDREGION_KEYWORD; }
-
 
 	{WHITE_SPACE}        {  return CSharpPreprocesorTokens.WHITE_SPACE; }
 

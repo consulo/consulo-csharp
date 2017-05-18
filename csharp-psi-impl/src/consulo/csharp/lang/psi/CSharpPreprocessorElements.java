@@ -16,13 +16,22 @@
 
 package consulo.csharp.lang.psi;
 
+import org.jetbrains.annotations.NotNull;
+import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
+import com.intellij.lang.LanguageParserDefinitions;
+import com.intellij.lang.PsiBuilder;
+import com.intellij.lang.PsiBuilderFactory;
+import com.intellij.lang.PsiParser;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.ILazyParseableElementType;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.CSharpPreprocessorLanguage;
+import consulo.csharp.lang.lexer._CSharpMacroLexer;
 import consulo.csharp.lang.psi.impl.source.*;
+import consulo.lang.LanguageVersion;
 import consulo.psi.tree.ElementTypeAsPsiFactory;
 
 /**
@@ -34,33 +43,45 @@ public interface CSharpPreprocessorElements
 	IElementType PREPROCESSOR_DIRECTIVE = new ILazyParseableElementType("PREPROCESSOR_DIRECTIVE", CSharpLanguage.INSTANCE)
 	{
 		@Override
+		protected ASTNode doParseContents(@NotNull ASTNode chameleon, @NotNull PsiElement psi)
+		{
+			final Project project = psi.getProject();
+			final Language languageForParser = getLanguageForParser(psi);
+			final LanguageVersion tempLanguageVersion = chameleon.getUserData(LanguageVersion.KEY);
+			final LanguageVersion languageVersion = tempLanguageVersion == null ? psi.getLanguageVersion() : tempLanguageVersion;
+			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, new _CSharpMacroLexer(), languageForParser, languageVersion, chameleon.getChars());
+			final PsiParser parser = LanguageParserDefinitions.INSTANCE.forLanguage(languageForParser).createParser(languageVersion);
+			return parser.parse(this, builder, languageVersion).getFirstChildNode();
+		}
+
+		@Override
 		protected Language getLanguageForParser(PsiElement psi)
 		{
 			return CSharpPreprocessorLanguage.INSTANCE;
 		}
 	};
 
-	IElementType MACRO_DEFINE = new ElementTypeAsPsiFactory("MACRO_DEFINE", CSharpPreprocessorLanguage.INSTANCE, CSharpMacroDefineImpl.class);
+	IElementType MACRO_DEFINE = new ElementTypeAsPsiFactory("MACRO_DEFINE", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorDefineImpl.class);
 
-	IElementType MACRO_UNDEF = new ElementTypeAsPsiFactory("MACRO_UNDEF", CSharpPreprocessorLanguage.INSTANCE, CSharpMacroDefineImpl.class);
+	IElementType MACRO_UNDEF = new ElementTypeAsPsiFactory("MACRO_UNDEF", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorDefineImpl.class);
 
-	IElementType MACRO_IF = new ElementTypeAsPsiFactory("MACRO_IF", CSharpPreprocessorLanguage.INSTANCE, CSharpMacroIfImpl.class);
+	IElementType MACRO_IF = new ElementTypeAsPsiFactory("MACRO_IF", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorIfImpl.class);
 
-	IElementType MACRO_IF_CONDITION_BLOCK = new ElementTypeAsPsiFactory("MACRO_IF_CONDITION_BLOCK", CSharpPreprocessorLanguage.INSTANCE, CSharpMacroIfConditionBlockImpl.class);
+	IElementType MACRO_IF_CONDITION_BLOCK = new ElementTypeAsPsiFactory("MACRO_IF_CONDITION_BLOCK", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorIfConditionBlockImpl.class);
 
-	IElementType MACRO_BLOCK_START = new ElementTypeAsPsiFactory("MACRO_BLOCK_START", CSharpPreprocessorLanguage.INSTANCE, CSharpMacroBlockStartImpl.class);
+	IElementType MACRO_BLOCK_START = new ElementTypeAsPsiFactory("MACRO_BLOCK_START", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorBlockStartImpl.class);
 
-	IElementType MACRO_BLOCK = new ElementTypeAsPsiFactory("MACRO_BLOCK", CSharpPreprocessorLanguage.INSTANCE, CSharpMacroBlockImpl.class);
+	IElementType MACRO_BLOCK = new ElementTypeAsPsiFactory("MACRO_BLOCK", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorBlockImpl.class);
 
-	IElementType MACRO_BLOCK_STOP = new ElementTypeAsPsiFactory("MACRO_BLOCK_STOP", CSharpPreprocessorLanguage.INSTANCE, CSharpMacroBlockStopImpl.class);
+	IElementType MACRO_BLOCK_STOP = new ElementTypeAsPsiFactory("MACRO_BLOCK_STOP", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorBlockStopImpl.class);
 
-	IElementType PREFIX_EXPRESSION = new ElementTypeAsPsiFactory("PREFIX_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpMacroPrefixExpressionImpl.class);
+	IElementType PREFIX_EXPRESSION = new ElementTypeAsPsiFactory("PREFIX_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorPrefixExpressionImpl.class);
 
-	IElementType POLYADIC_EXPRESSION = new ElementTypeAsPsiFactory("POLYADIC_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpMacroPolyadicExpressionImpl.class);
+	IElementType POLYADIC_EXPRESSION = new ElementTypeAsPsiFactory("POLYADIC_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorPolyadicExpressionImpl.class);
 
-	IElementType BINARY_EXPRESSION = new ElementTypeAsPsiFactory("BINARY_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpMacroBinaryExpressionImpl.class);
+	IElementType BINARY_EXPRESSION = new ElementTypeAsPsiFactory("BINARY_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorBinaryExpressionImpl.class);
 
-	IElementType REFERENCE_EXPRESSION = new ElementTypeAsPsiFactory("REFERENCE_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpMacroReferenceExpressionImpl.class);
+	IElementType REFERENCE_EXPRESSION = new ElementTypeAsPsiFactory("REFERENCE_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorReferenceExpressionImpl.class);
 
-	IElementType PARENTHESES_EXPRESSION = new ElementTypeAsPsiFactory("PARENTHESES_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpMacroParenthesesExpressionImpl.class);
+	IElementType PARENTHESES_EXPRESSION = new ElementTypeAsPsiFactory("PARENTHESES_EXPRESSION", CSharpPreprocessorLanguage.INSTANCE, CSharpPreprocessorParenthesesExpressionImpl.class);
 }

@@ -28,17 +28,17 @@ import com.intellij.psi.tree.TokenSet;
  * @author VISTALL
  * @since 18.12.13.
  */
-public class CSharpMacroBlockStartImpl extends CSharpMacroElementImpl
+public class CSharpPreprocessorBlockStartImpl extends CSharpPreprocessorElementImpl
 {
-	public CSharpMacroBlockStartImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorBlockStartImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
 	@Nullable
-	public CSharpMacroExpression getValue()
+	public CSharpPreprocessorExpression getValue()
 	{
-		return findChildByClass(CSharpMacroExpression.class);
+		return findChildByClass(CSharpPreprocessorExpression.class);
 	}
 
 	@NotNull

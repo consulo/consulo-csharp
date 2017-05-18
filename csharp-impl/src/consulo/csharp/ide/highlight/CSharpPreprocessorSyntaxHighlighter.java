@@ -20,20 +20,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.lexer.CSharpMacroLexer;
-import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
+import consulo.csharp.lang.lexer.CSharpPreprocessorHightlightLexer;
+import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 
 /**
  * @author VISTALL
  * @since 24.01.14
  */
-public class CSharpMacroSyntaxHighlighter extends SyntaxHighlighterBase
+public class CSharpPreprocessorSyntaxHighlighter extends SyntaxHighlighterBase
 {
-	private static Map<IElementType, TextAttributesKey> ourKeys = new HashMap<IElementType, TextAttributesKey>();
+	private static Map<IElementType, TextAttributesKey> ourKeys = new HashMap<>();
 
 	static
 	{
@@ -51,7 +51,7 @@ public class CSharpMacroSyntaxHighlighter extends SyntaxHighlighterBase
 	@Override
 	public Lexer getHighlightingLexer()
 	{
-		return new CSharpMacroLexer();
+		return new CSharpPreprocessorHightlightLexer();
 	}
 
 	@NotNull

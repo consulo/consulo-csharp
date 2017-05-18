@@ -25,8 +25,8 @@ import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import consulo.csharp.lang.lexer.CSharpMacroLexer;
-import consulo.csharp.lang.parser.CSharpMacroParser;
+import consulo.csharp.lang.lexer._CSharpMacroLexer;
+import consulo.csharp.lang.parser.CSharpPreprocessorParser;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.lang.LanguageVersion;
 
@@ -42,14 +42,14 @@ public class CSharpPreprocessorParserDefinition implements ParserDefinition
 	@Override
 	public Lexer createLexer(@NotNull LanguageVersion languageVersion)
 	{
-		return new CSharpMacroLexer();
+		return new _CSharpMacroLexer();
 	}
 
 	@NotNull
 	@Override
 	public PsiParser createParser(@NotNull LanguageVersion languageVersion)
 	{
-		return new CSharpMacroParser();
+		return new CSharpPreprocessorParser();
 	}
 
 	@NotNull

@@ -25,57 +25,57 @@ import consulo.csharp.lang.psi.impl.source.*;
  */
 public class CSharpMacroElementVisitor extends PsiElementVisitor
 {
-	public void visitMacroDefine(CSharpMacroDefine cSharpMacroDefine)
+	public void visitMacroDefine(CSharpPreprocessorDefine cSharpMacroDefine)
 	{
 		visitElement(cSharpMacroDefine);
 	}
 
-	public void visitMacroBlockStart(CSharpMacroBlockStartImpl start)
+	public void visitMacroBlockStart(CSharpPreprocessorBlockStartImpl start)
 	{
 		visitElement(start);
 	}
 
-	public void visitMacroBlockStop(CSharpMacroBlockStopImpl stop)
+	public void visitMacroBlockStop(CSharpPreprocessorBlockStopImpl stop)
 	{
 		visitElement(stop);
 	}
 
-	public void visitMacroBlock(CSharpMacroBlockImpl block)
+	public void visitMacroBlock(CSharpPreprocessorBlockImpl block)
 	{
 		visitElement(block);
 	}
 
-	public void visitPrefixExpression(CSharpMacroPrefixExpressionImpl expression)
+	public void visitPrefixExpression(CSharpPreprocessorPrefixExpressionImpl expression)
 	{
 		visitElement(expression);
 	}
 
-	public void visitPolyadicExpression(CSharpMacroPolyadicExpressionImpl expression)
+	public void visitPolyadicExpression(CSharpPreprocessorPolyadicExpressionImpl expression)
 	{
 		visitElement(expression);
 	}
 
-	public void visitBinaryExpression(CSharpMacroBinaryExpressionImpl expression)
+	public void visitBinaryExpression(CSharpPreprocessorBinaryExpressionImpl expression)
 	{
 		visitElement(expression);
 	}
 
-	public void visitReferenceExpression(CSharpMacroReferenceExpressionImpl expression)
+	public void visitReferenceExpression(CSharpPreprocessorReferenceExpressionImpl expression)
 	{
 		visitElement(expression);
 	}
 
-	public void visitParenthesesExpression(CSharpMacroParenthesesExpressionImpl expression)
+	public void visitParenthesesExpression(CSharpPreprocessorParenthesesExpressionImpl expression)
 	{
 		visitElement(expression);
 	}
 
-	public void visitMacroIf(CSharpMacroIfImpl element)
+	public void visitMacroIf(CSharpPreprocessorIfImpl element)
 	{
 		visitElement(element);
 	}
 
-	public void visitMacroIfConditionBlock(CSharpMacroIfConditionBlockImpl element)
+	public void visitMacroIfConditionBlock(CSharpPreprocessorIfConditionBlockImpl element)
 	{
 		visitElement(element);
 	}

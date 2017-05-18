@@ -17,23 +17,39 @@
 package consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
+import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.TokenSet;
 
 /**
  * @author VISTALL
- * @since 24.01.14
+ * @since 18.12.13.
  */
-public class CSharpMacroParenthesesExpressionImpl extends CSharpMacroElementImpl implements CSharpMacroExpression
+public class CSharpPreprocessorBlockStopImpl extends CSharpPreprocessorElementImpl
 {
-	public CSharpMacroParenthesesExpressionImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorBlockStopImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	public PsiElement getKeywordElement()
+	{
+		TokenSet tokenSet = TokenSet.create(CSharpPreprocesorTokens.MACRO_ENDIF_KEYWORD, CSharpPreprocesorTokens.MACRO_ENDREGION_KEYWORD);
+		return findNotNullChildByType(tokenSet);
+	}
+
+	@Nullable
+	public PsiElement getStopElement()
+	{
+		return findChildByType(CSharpPreprocesorTokens.MACRO_STOP);
 	}
 
 	@Override
 	public void accept(@NotNull CSharpMacroElementVisitor visitor)
 	{
-		visitor.visitParenthesesExpression(this);
+		visitor.visitMacroBlockStop(this);
 	}
 }

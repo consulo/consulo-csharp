@@ -54,14 +54,13 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 	@Override
 	public WordsScanner getWordsScanner()
 	{
-		return new DefaultWordsScanner(new CSharpLexer(), TokenSet.create(CSharpTokens.IDENTIFIER), CSharpTokenSets.COMMENTS,
-				CSharpTokenSets.LITERALS);
+		return new DefaultWordsScanner(new CSharpLexer(), TokenSet.create(CSharpTokens.IDENTIFIER), CSharpTokenSets.COMMENTS, CSharpTokenSets.LITERALS);
 	}
 
 	@Override
 	public boolean canFindUsagesFor(@NotNull PsiElement element)
 	{
-		return element instanceof DotNetNamedElement;
+		return element instanceof DotNetNamedElement || element instanceof CSharpPreprocessorVariable;
 	}
 
 	@Nullable
@@ -147,6 +146,10 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 		{
 			return "label";
 		}
+		else if(element instanceof CSharpPreprocessorVariable)
+		{
+			return "preprocessor variable";
+		}
 		return "getType " + element.getNode().getElementType();
 	}
 
@@ -154,6 +157,10 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 	@Override
 	public String getDescriptiveName(@NotNull PsiElement element)
 	{
+		if(element instanceof CSharpPreprocessorVariable)
+		{
+			return ((CSharpPreprocessorVariable) element).getName();
+		}
 		if(element instanceof DotNetNamedElement)
 		{
 			String name = ((DotNetNamedElement) element).getName();
@@ -178,6 +185,11 @@ public class CSharpFindUsagesProvider implements FindUsagesProvider
 	@RequiredReadAction
 	public String getNodeText(@NotNull PsiElement element, boolean useFullName)
 	{
+		if(element instanceof CSharpPreprocessorVariable)
+		{
+			return ((CSharpPreprocessorVariable) element).getName();
+		}
+
 		CSharpMethodDeclaration original = element.getUserData(CSharpResolveUtil.EXTENSION_METHOD_WRAPPER);
 		if(original != null)
 		{

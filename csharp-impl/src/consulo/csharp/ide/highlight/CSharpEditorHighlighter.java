@@ -30,6 +30,7 @@ import consulo.csharp.cfs.ide.highlight.CfsSyntaxHighlighter;
 import consulo.csharp.cfs.lang.CfsTokens;
 import consulo.csharp.lang.CSharpCfsLanguageVersion;
 import consulo.csharp.lang.doc.ide.highlight.CSharpDocSyntaxHighlighter;
+import consulo.csharp.lang.psi.CSharpTemplateTokens;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.CSharpTokensImpl;
 
@@ -75,6 +76,6 @@ public class CSharpEditorHighlighter extends LayeredLexerEditorHighlighter
 				return super.getTokenHighlights(elementType);
 			}
 		}, ""));
-		//registerLayer(CSharpTemplateTokens.MACRO_FRAGMENT, new LayerDescriptor(new CSharpMacroSyntaxHighlighter(), ""));
+		registerLayer(CSharpTemplateTokens.PREPROCESSOR_FRAGMENT, new LayerDescriptor(new CSharpPreprocessorSyntaxHighlighter(), ""));
 	}
 }

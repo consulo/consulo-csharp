@@ -29,7 +29,7 @@ import consulo.csharp.ide.completion.item.CSharpTypeLikeLookupElement;
 import consulo.csharp.ide.completion.util.LtGtInsertHandler;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpMacroDefine;
+import consulo.csharp.lang.psi.CSharpPreprocessorDefine;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodUtil;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
@@ -396,9 +396,9 @@ public class CSharpLookupElementBuilder
 				}
 			});
 		}
-		else if(element instanceof CSharpMacroDefine)
+		else if(element instanceof CSharpPreprocessorDefine)
 		{
-			builder = LookupElementBuilder.create((CSharpMacroDefine) element);
+			builder = LookupElementBuilder.create((CSharpPreprocessorDefine) element);
 			builder = builder.withIcon(IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY));
 		}
 		else if(element instanceof CSharpTypeDeclaration)

@@ -25,5 +25,5 @@ import com.intellij.psi.tree.IElementType;
  */
 public interface CSharpTemplateTokens
 {
-	IElementType MACRO_FRAGMENT = new IElementType("MACRO_FRAGMENT", CSharpLanguage.INSTANCE);
+	IElementType PREPROCESSOR_FRAGMENT = new IElementType("PREPROCESSOR_FRAGMENT", CSharpLanguage.INSTANCE);
 }

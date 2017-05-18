@@ -70,9 +70,9 @@ MACRO_START={MACRO_NEW_LINE}?{MACRO_WHITE_SPACE}?"#"
 {
 	{MACRO_NEW_LINE}     {  yybegin(YYINITIAL); return CSharpTokens.WHITE_SPACE; }
 
-	{MACRO_WHITE_SPACE}  {  return CSharpTemplateTokens.MACRO_FRAGMENT; }
+	{MACRO_WHITE_SPACE}  {  return CSharpTemplateTokens.PREPROCESSOR_FRAGMENT; }
 
-	[^]                    {  return CSharpTemplateTokens.MACRO_FRAGMENT; }
+	[^]                    {  return CSharpTemplateTokens.PREPROCESSOR_FRAGMENT; }
 }
 
 <YYINITIAL>

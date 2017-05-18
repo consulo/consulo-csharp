@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package consulo.csharp.lang.lexer;
+package consulo.csharp.lang.psi.impl.source;
 
-import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
-import com.intellij.lexer.MergingLexerAdapter;
-import com.intellij.psi.tree.TokenSet;
+import consulo.dotnet.psi.DotNetElement;
 
 /**
  * @author VISTALL
- * @since 23.01.14
+ * @since 24.01.14
  */
-public class CSharpMacroLexer extends MergingLexerAdapter
+public interface CSharpPreprocessorExpression extends DotNetElement
 {
-	private static final TokenSet ourMergeSet = TokenSet.create(CSharpPreprocesorTokens.CSHARP_FRAGMENT);
-
-	public CSharpMacroLexer()
-	{
-		super(new _CSharpMacroLexer(), ourMergeSet);
-	}
 }

@@ -24,6 +24,8 @@ import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.daemon.impl.HighlightVisitor;
 import com.intellij.codeInsight.daemon.impl.analysis.HighlightInfoHolder;
 import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
+import com.intellij.codeInsight.template.impl.TemplateColors;
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.colors.EditorColors;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
@@ -45,6 +47,7 @@ import consulo.csharp.lang.psi.impl.source.CSharpIndexAccessExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpLinqExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpPreprocessorReferenceExpressionImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodCalcResult;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
@@ -72,9 +75,44 @@ public class CSharpHighlightVisitor extends CSharpElementVisitor implements High
 	}
 
 	@Override
+	@RequiredReadAction
 	public void visit(@NotNull PsiElement element)
 	{
-		element.accept(this);
+		if(element instanceof CSharpPreprocessorReferenceExpressionImpl)
+		{
+			if(((CSharpPreprocessorReferenceExpressionImpl) element).resolve() != null)
+			{
+				myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(element).textAttributes(TemplateColors.TEMPLATE_VARIABLE_ATTRIBUTES).create());
+			}
+			else
+			{
+				myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(element).textAttributes(DefaultLanguageHighlighterColors.LINE_COMMENT).create());
+			}
+		}
+		else if(element instanceof CSharpPreprocessorDefine)
+		{
+			if(((CSharpPreprocessorDefine) element).isUnDef())
+			{
+				PsiElement varElement = ((CSharpPreprocessorDefine) element).getVarElement();
+				if(varElement != null)
+				{
+					myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(varElement).textAttributes(DefaultLanguageHighlighterColors.LINE_COMMENT).create());
+				}
+			}
+			else
+			{
+				CSharpPreprocessorVariable variable = ((CSharpPreprocessorDefine) element).getVariable();
+				if(variable != null)
+				{
+					myHighlightInfoHolder.add(HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(variable.getNameIdentifier()).textAttributes(TemplateColors
+							.TEMPLATE_VARIABLE_ATTRIBUTES).create());
+				}
+			}
+		}
+		else
+		{
+			element.accept(this);
+		}
 	}
 
 	@Override

@@ -24,9 +24,9 @@ import com.intellij.lang.ASTNode;
  * @author VISTALL
  * @since 24.01.14
  */
-public class CSharpMacroBinaryExpressionImpl extends CSharpMacroElementImpl implements CSharpMacroExpression
+public class CSharpPreprocessorParenthesesExpressionImpl extends CSharpPreprocessorElementImpl implements CSharpPreprocessorExpression
 {
-	public CSharpMacroBinaryExpressionImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorParenthesesExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
@@ -34,6 +34,6 @@ public class CSharpMacroBinaryExpressionImpl extends CSharpMacroElementImpl impl
 	@Override
 	public void accept(@NotNull CSharpMacroElementVisitor visitor)
 	{
-		visitor.visitBinaryExpression(this);
+		visitor.visitParenthesesExpression(this);
 	}
 }

@@ -17,12 +17,18 @@
 package consulo.csharp.lang.psi;
 
 import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.util.ArrayFactory;
 
 /**
  * @author VISTALL
- * @since 26.01.14
+ * @since 18-May-17
  */
-public interface CSharpMacroDefine extends PsiNameIdentifierOwner
+public interface CSharpPreprocessorVariable extends PsiNamedElement, PsiNameIdentifierOwner
 {
-	boolean isUnDef();
+	CSharpPreprocessorVariable[] EMPTY_ARRAY = new CSharpPreprocessorVariable[0];
+
+	ArrayFactory<CSharpPreprocessorVariable> ARRAY_FACTORY = i -> i == 0 ? EMPTY_ARRAY : new CSharpPreprocessorVariable[i];
+
+	boolean isGlobal();
 }

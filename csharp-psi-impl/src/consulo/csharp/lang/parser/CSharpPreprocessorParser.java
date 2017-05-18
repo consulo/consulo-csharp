@@ -14,26 +14,34 @@
  * limitations under the License.
  */
 
-package consulo.csharp.lang.psi.impl.source;
+package consulo.csharp.lang.parser;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.PsiBuilder;
+import com.intellij.lang.PsiParser;
+import com.intellij.psi.tree.IElementType;
+import consulo.csharp.lang.parser.macro.PreprocessorParsing;
+import consulo.lang.LanguageVersion;
 
 /**
  * @author VISTALL
- * @since 24.01.14
+ * @since 23.01.14
  */
-public class CSharpMacroPolyadicExpressionImpl extends CSharpMacroElementImpl implements CSharpMacroExpression
+public class CSharpPreprocessorParser implements PsiParser
 {
-	public CSharpMacroPolyadicExpressionImpl(@NotNull ASTNode node)
-	{
-		super(node);
-	}
-
+	@NotNull
 	@Override
-	public void accept(@NotNull CSharpMacroElementVisitor visitor)
+	public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
 	{
-		visitor.visitPolyadicExpression(this);
+		PsiBuilder.Marker mark = builder.mark();
+
+		while(!builder.eof())
+		{
+			PreprocessorParsing.parse(builder);
+		}
+
+		mark.done(elementType);
+		return builder.getTreeBuilt();
 	}
 }

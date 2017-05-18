@@ -29,9 +29,9 @@ import com.intellij.psi.search.GlobalSearchScope;
  * @author VISTALL
  * @since 24.01.14
  */
-public abstract class CSharpMacroElementImpl extends ASTWrapperPsiElement
+public abstract class CSharpPreprocessorElementImpl extends ASTWrapperPsiElement
 {
-	public CSharpMacroElementImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorElementImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}

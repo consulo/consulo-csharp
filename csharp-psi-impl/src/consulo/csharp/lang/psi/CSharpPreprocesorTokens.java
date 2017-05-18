@@ -42,8 +42,6 @@ public interface CSharpPreprocesorTokens extends TokenType
 
 	IElementType MACRO_UNDEF_KEYWORD = new IElementType("MACRO_UNDEF_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
 
-	IElementType MACRO_VALUE = new IElementType("MACRO_VALUE", CSharpPreprocessorLanguage.INSTANCE);
-
 	IElementType MACRO_STOP = new IElementType("MACRO_STOP", CSharpPreprocessorLanguage.INSTANCE);
 
 	IElementType IDENTIFIER = new IElementType("IDENTIFIER", CSharpPreprocessorLanguage.INSTANCE);
@@ -57,6 +55,4 @@ public interface CSharpPreprocesorTokens extends TokenType
 	IElementType RPAR = new IElementType("RPAR =", CSharpPreprocessorLanguage.INSTANCE);
 
 	IElementType EXCL = new IElementType("EXCL", CSharpPreprocessorLanguage.INSTANCE);
-
-	IElementType CSHARP_FRAGMENT = new IElementType("CSHARP_FRAGMENT", CSharpPreprocessorLanguage.INSTANCE);
 }

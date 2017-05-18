@@ -14,34 +14,36 @@
  * limitations under the License.
  */
 
-package consulo.csharp.lang.parser;
+package consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.parser.macro.PreprocessorParsing;
+import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import com.intellij.lang.ASTNode;
-import consulo.lang.LanguageVersion;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiParser;
-import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
- * @since 23.01.14
+ * @since 18.12.13.
  */
-public class CSharpMacroParser implements PsiParser
+public class CSharpPreprocessorBlockImpl extends CSharpPreprocessorElementImpl
 {
-	@NotNull
-	@Override
-	public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion)
+	public CSharpPreprocessorBlockImpl(@NotNull ASTNode node)
 	{
-		PsiBuilder.Marker mark = builder.mark();
+		super(node);
+	}
 
-		while(!builder.eof())
-		{
-			PreprocessorParsing.parse(builder);
-		}
+	public CSharpPreprocessorBlockStartImpl getStartElement()
+	{
+		return findChildByClass(CSharpPreprocessorBlockStartImpl.class);
+	}
 
-		mark.done(elementType);
-		return builder.getTreeBuilt();
+	public CSharpPreprocessorBlockStopImpl getStopElement()
+	{
+		return findChildByClass(CSharpPreprocessorBlockStopImpl.class);
+	}
+
+	@Override
+	public void accept(@NotNull CSharpMacroElementVisitor visitor)
+	{
+		visitor.visitMacroBlock(this);
 	}
 }

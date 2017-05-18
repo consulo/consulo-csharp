@@ -139,7 +139,7 @@
 		<typeDeclarationProvider implementation="consulo.csharp.ide.actions.navigate.GotoTypeDeclarationProvider"/>
 		<projectService serviceImplementation="consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher"/>
 		<syntaxHighlighter key="C#" implementationClass="consulo.csharp.ide.highlight.CSharpSyntaxHighlighter"/>
-		<syntaxHighlighter key="C#Preprocesssor" implementationClass="consulo.csharp.ide.highlight.CSharpMacroSyntaxHighlighter"/>
+		<syntaxHighlighter key="C#Preprocesssor" implementationClass="consulo.csharp.ide.highlight.CSharpPreprocessorSyntaxHighlighter"/>
 		<copyright.updater filetype="C#" implementationClass="consulo.csharp.ide.copyright.CSharpUpdateCopyrightsProvider"/>
 		<highlightVisitor implementation="consulo.csharp.ide.highlight.CSharpHighlightVisitor"/>
 		<highlightVisitor implementation="consulo.csharp.ide.highlight.check.CSharpCompilerCheckVisitor"/>
@@ -157,6 +157,7 @@
 		<fileStructureGroupRuleProvider implementation="consulo.csharp.ide.findUsage.groupingRule.CSharpCodeBlockOwnerGroupRuleProvider"/>
 		<usageTypeProvider implementation="consulo.csharp.ide.findUsage.usageType.CSharpUsageTypeProvider"/>
 		<lang.findUsagesProvider language="C#" implementationClass="consulo.csharp.ide.findUsage.CSharpFindUsagesProvider"/>
+		<lang.findUsagesProvider language="C#Preprocessor" implementationClass="consulo.csharp.ide.findUsage.CSharpFindUsagesProvider"/>
 
 		<codeInsight.unresolvedReferenceQuickFixProvider
 				implementation="consulo.csharp.ide.codeInsight.CSharpUnresolvedReferenceQuickFixProvider"/>
@@ -172,7 +173,6 @@
 		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpNoVariantsDelegator"/>
 
 		<completion.confidence language="C#" implementationClass="com.intellij.codeInsight.completion.SkipAutopopupInStrings"/>
-		<completion.confidence language="C#" implementationClass="com.intellij.codeInsight.completion.UnfocusedNameIdentifier"/>
 
 		<completion.contributor language="C#Doc"
 								implementationClass="consulo.csharp.lang.doc.ide.competion.CSharpDocCompletionContributor"/>
@@ -294,7 +294,7 @@
 		<lang.braceMatcher language="C#" implementationClass="consulo.csharp.lang.CSharpPairedBraceMatcher"/>
 		<lang.importOptimizer language="C#" implementationClass="consulo.csharp.lang.CSharpImportOptimizer"/>
 		<lang.foldingBuilder language="C#" implementationClass="consulo.csharp.lang.CSharpFoldingBuilder"/>
-		<lang.syntaxHighlighterFactory key="C#" implementationClass="consulo.csharp.ide.highlight.CSharpSyntaxHighlighterFactory"/>
+		<lang.syntaxHighlighterFactory language="C#" implementationClass="consulo.csharp.ide.highlight.CSharpSyntaxHighlighterFactory"/>
 		<lang.refactoringSupport language="C#" implementationClass="consulo.csharp.ide.refactoring.CSharpRefactoringSupportProvider"/>
 		<refactoring.changeSignatureUsageProcessor
 				implementation="consulo.csharp.ide.refactoring.changeSignature.CSharpChangeSignatureUsageProcessor"/>

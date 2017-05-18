@@ -221,7 +221,7 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 			return null;
 		}
 
-		if(tokenType == CSharpTemplateTokens.MACRO_FRAGMENT)
+		if(tokenType == CSharpTemplateTokens.PREPROCESSOR_FRAGMENT)
 		{
 			Set<String> variables = getUserData(CSharpFileStubElementType.PREPROCESSOR_VARIABLES);
 			assert variables != null;

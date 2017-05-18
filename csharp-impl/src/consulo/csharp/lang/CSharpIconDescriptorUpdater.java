@@ -65,7 +65,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 			iconDescriptor.setMainIcon(AllIcons.Nodes.Lambda);
 			return;
 		}
-		else if(element instanceof CSharpMacroDefine)
+		else if(element instanceof CSharpPreprocessorDefine)
 		{
 			iconDescriptor.setMainIcon(AllIcons.Nodes.Value);
 			return;
@@ -84,8 +84,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 
 		if(element instanceof DotNetLikeMethodDeclaration)
 		{
-			iconDescriptor.setMainIcon(((DotNetLikeMethodDeclaration) element).hasModifier(CSharpModifier.ABSTRACT) ? AllIcons.Nodes.AbstractMethod
-					: AllIcons.Nodes.Method);
+			iconDescriptor.setMainIcon(((DotNetLikeMethodDeclaration) element).hasModifier(CSharpModifier.ABSTRACT) ? AllIcons.Nodes.AbstractMethod : AllIcons.Nodes.Method);
 
 			processModifierListOwner(element, iconDescriptor, flags);
 		}
@@ -167,6 +166,18 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 
 			processModifierListOwner(element, iconDescriptor, flags);
 		}
+		else if(element instanceof CSharpPreprocessorVariable)
+		{
+			iconDescriptor.setMainIcon(AllIcons.Nodes.Variable);
+			if(((CSharpPreprocessorVariable) element).isGlobal())
+			{
+				iconDescriptor.setRightIcon(AllIcons.Nodes.C_public);
+			}
+			else
+			{
+				iconDescriptor.setRightIcon(AllIcons.Nodes.C_private);
+			}
+		}
 		else if(element instanceof CSharpNamespaceDeclaration)
 		{
 			iconDescriptor.setMainIcon(AllIcons.Nodes.Package);  //TODO [VISTALL] icon
@@ -241,8 +252,7 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 			}
 		}
 
-		if(owner.hasModifier(CSharpModifier.SEALED) || owner.hasModifier(CSharpModifier.READONLY) || element instanceof DotNetVariable && (
-				(DotNetVariable) element).isConstant())
+		if(owner.hasModifier(CSharpModifier.SEALED) || owner.hasModifier(CSharpModifier.READONLY) || element instanceof DotNetVariable && ((DotNetVariable) element).isConstant())
 		{
 			iconDescriptor.addLayerIcon(AllIcons.Nodes.FinalMark);
 		}
@@ -250,8 +260,8 @@ public class CSharpIconDescriptorUpdater implements IconDescriptorUpdater
 		// dont check it for msil wrappers
 		if(!(element instanceof MsilElementWrapper))
 		{
-			if(element instanceof DotNetTypeDeclaration && DotNetRunUtil.hasEntryPoint((DotNetTypeDeclaration) element) || element instanceof
-					DotNetMethodDeclaration && DotNetRunUtil.isEntryPoint((DotNetMethodDeclaration) element))
+			if(element instanceof DotNetTypeDeclaration && DotNetRunUtil.hasEntryPoint((DotNetTypeDeclaration) element) || element instanceof DotNetMethodDeclaration && DotNetRunUtil.isEntryPoint(
+					(DotNetMethodDeclaration) element))
 
 			{
 				iconDescriptor.addLayerIcon(AllIcons.Nodes.RunnableMark);

@@ -32,7 +32,7 @@ import com.intellij.psi.tree.TokenSet;
  */
 public class CSharpLexer extends MergingLexerAdapterBase
 {
-	private static final TokenSet ourMergeSet = TokenSet.create(CSharpTemplateTokens.MACRO_FRAGMENT, CSharpTokensImpl.LINE_DOC_COMMENT);
+	private static final TokenSet ourMergeSet = TokenSet.create(CSharpTemplateTokens.PREPROCESSOR_FRAGMENT, CSharpTokensImpl.LINE_DOC_COMMENT);
 
 	private static class MyMergeFunction implements MergeFunction
 	{

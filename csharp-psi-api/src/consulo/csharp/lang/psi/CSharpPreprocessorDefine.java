@@ -14,39 +14,30 @@
  * limitations under the License.
  */
 
-package consulo.csharp.lang.psi.impl.source;
+package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
-import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import consulo.annotations.RequiredReadAction;
 
 /**
  * @author VISTALL
  * @since 26.01.14
  */
-public class CSharpMacroIfImpl extends CSharpMacroElementImpl
+public interface CSharpPreprocessorDefine extends PsiElement
 {
-	public CSharpMacroIfImpl(@NotNull ASTNode node)
-	{
-		super(node);
-	}
-
-	@NotNull
-	public CSharpMacroIfConditionBlockImpl[] getConditionBlocks()
-	{
-		return findChildrenByClass(CSharpMacroIfConditionBlockImpl.class);
-	}
+	@RequiredReadAction
+	@Nullable
+	String getVarName();
 
 	@Nullable
-	public CSharpMacroBlockStopImpl getCloseTag()
-	{
-		return findChildByClass(CSharpMacroBlockStopImpl.class);
-	}
+	@RequiredReadAction
+	PsiElement getVarElement();
 
-	@Override
-	public void accept(@NotNull CSharpMacroElementVisitor visitor)
-	{
-		visitor.visitMacroIf(this);
-	}
+	@Nullable
+	@RequiredReadAction
+	CSharpPreprocessorVariable getVariable();
+
+	@RequiredReadAction
+	boolean isUnDef();
 }

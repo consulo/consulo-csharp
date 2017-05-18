@@ -16,23 +16,24 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.CSharpMacroDefine;
-import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
-import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
+import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
+import consulo.csharp.lang.psi.CSharpPreprocessorDefine;
+import consulo.csharp.lang.psi.CSharpPreprocessorVariable;
+import consulo.csharp.lang.psi.impl.light.CSharpPreprocessorLightVariable;
 
 /**
  * @author VISTALL
  * @since 18.12.13.
  */
-public class CSharpMacroDefineImpl extends CSharpMacroElementImpl implements CSharpMacroDefine
+public class CSharpPreprocessorDefineImpl extends CSharpPreprocessorElementImpl implements CSharpPreprocessorDefine
 {
-	public CSharpMacroDefineImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorDefineImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
@@ -43,33 +44,42 @@ public class CSharpMacroDefineImpl extends CSharpMacroElementImpl implements CSh
 		visitor.visitMacroDefine(this);
 	}
 
-	@Override
-	public PsiElement setName(@NonNls @NotNull String s) throws IncorrectOperationException
-	{
-		return null;
-	}
-
-	@Override
-	public String getName()
-	{
-		PsiElement nameIdentifier = getNameIdentifier();
-		return nameIdentifier == null ? null : nameIdentifier.getText();
-	}
-
+	@RequiredReadAction
 	@Nullable
 	@Override
-	public PsiElement getNameIdentifier()
+	public String getVarName()
 	{
-		return findChildByType(CSharpPreprocesorTokens.MACRO_VALUE);
+		PsiElement nameIdentifier = getVarElement();
+		return nameIdentifier != null ? nameIdentifier.getText() : null;
 	}
 
+	@RequiredReadAction
+	@Nullable
 	@Override
-	public int getTextOffset()
+	public PsiElement getVarElement()
 	{
-		PsiElement nameIdentifier = getNameIdentifier();
-		return nameIdentifier == null ? super.getTextOffset() : nameIdentifier.getTextOffset();
+		return findChildByType(CSharpPreprocesorTokens.IDENTIFIER);
 	}
 
+	@RequiredReadAction
+	@Nullable
+	@Override
+	public CSharpPreprocessorVariable getVariable()
+	{
+		if(isUnDef())
+		{
+			return null;
+		}
+
+		PsiElement nameIdentifier = getVarElement();
+		if(nameIdentifier == null)
+		{
+			return null;
+		}
+		return new CSharpPreprocessorLightVariable(null, nameIdentifier, getVarName());
+	}
+
+	@RequiredReadAction
 	@Override
 	public boolean isUnDef()
 	{

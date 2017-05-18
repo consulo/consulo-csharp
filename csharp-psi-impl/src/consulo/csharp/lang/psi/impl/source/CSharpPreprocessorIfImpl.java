@@ -17,33 +17,36 @@
 package consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import com.intellij.lang.ASTNode;
 
 /**
  * @author VISTALL
- * @since 18.12.13.
+ * @since 26.01.14
  */
-public class CSharpMacroBlockImpl extends CSharpMacroElementImpl
+public class CSharpPreprocessorIfImpl extends CSharpPreprocessorElementImpl
 {
-	public CSharpMacroBlockImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorIfImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	public CSharpMacroBlockStartImpl getStartElement()
+	@NotNull
+	public CSharpPreprocessorIfConditionBlockImpl[] getConditionBlocks()
 	{
-		return findChildByClass(CSharpMacroBlockStartImpl.class);
+		return findChildrenByClass(CSharpPreprocessorIfConditionBlockImpl.class);
 	}
 
-	public CSharpMacroBlockStopImpl getStopElement()
+	@Nullable
+	public CSharpPreprocessorBlockStopImpl getCloseTag()
 	{
-		return findChildByClass(CSharpMacroBlockStopImpl.class);
+		return findChildByClass(CSharpPreprocessorBlockStopImpl.class);
 	}
 
 	@Override
 	public void accept(@NotNull CSharpMacroElementVisitor visitor)
 	{
-		visitor.visitMacroBlock(this);
+		visitor.visitMacroIf(this);
 	}
 }

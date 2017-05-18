@@ -17,10 +17,10 @@
 package consulo.csharp.lang.parser.preprocessor;
 
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.lexer.CSharpMacroLexer;
-import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.tree.IElementType;
+import consulo.csharp.lang.lexer._CSharpMacroLexer;
+import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 
 /**
  * @author VISTALL
@@ -55,7 +55,7 @@ public class PreprocessorParser
 	@Nullable
 	public static PreprocessorDirective parse(String text)
 	{
-		CSharpMacroLexer lexer = new CSharpMacroLexer();
+		_CSharpMacroLexer lexer = new _CSharpMacroLexer();
 		lexer.start(text);
 
 		State state = State.NONE;
@@ -112,7 +112,7 @@ public class PreprocessorParser
 							if(elementType == CSharpPreprocesorTokens.WHITE_SPACE)
 							{
 							}
-							else if(elementType == CSharpPreprocesorTokens.MACRO_VALUE)
+							else if(elementType == CSharpPreprocesorTokens.IDENTIFIER)
 							{
 								value = lexer.getTokenText();
 								state = State.VALUE;

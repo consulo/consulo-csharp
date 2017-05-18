@@ -22,18 +22,24 @@ import com.intellij.lang.ASTNode;
 
 /**
  * @author VISTALL
- * @since 24.01.14
+ * @since 26.01.14
  */
-public class CSharpMacroPrefixExpressionImpl extends CSharpMacroElementImpl implements CSharpMacroExpression
+public class CSharpPreprocessorIfConditionBlockImpl extends CSharpPreprocessorElementImpl
 {
-	public CSharpMacroPrefixExpressionImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorIfConditionBlockImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	@NotNull
+	public CSharpPreprocessorBlockStartImpl getDeclarationTag()
+	{
+		return findNotNullChildByClass(CSharpPreprocessorBlockStartImpl.class);
 	}
 
 	@Override
 	public void accept(@NotNull CSharpMacroElementVisitor visitor)
 	{
-		visitor.visitPrefixExpression(this);
+		visitor.visitMacroIfConditionBlock(this);
 	}
 }

@@ -151,7 +151,7 @@ public class CSharpHighlightUtil
 				key = ((DotNetModifierListOwner) element).hasModifier(CSharpModifier.STATIC) ? CSharpHighlightKey.STATIC_METHOD_CALL : CSharpHighlightKey.INSTANCE_METHOD_CALL;
 			}
 		}
-		else if(element instanceof CSharpMacroDefine)
+		else if(element instanceof CSharpPreprocessorDefine)
 		{
 			key = CSharpHighlightKey.MACRO_VARIABLE;
 		}
