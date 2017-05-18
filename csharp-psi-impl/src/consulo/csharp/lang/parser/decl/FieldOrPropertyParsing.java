@@ -16,11 +16,11 @@
 
 package consulo.csharp.lang.parser.decl;
 
+import com.intellij.lang.PsiBuilder;
+import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.parser.CSharpBuilderWrapper;
 import consulo.csharp.lang.parser.ModifierSet;
 import consulo.csharp.lang.parser.exp.ExpressionParsing;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
@@ -61,7 +61,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 				expect(builder, SEMICOLON, "';' expected");
 			}
 
-			marker.done(to);
+			done(marker, to);
 			return false;
 		}
 	}
@@ -134,7 +134,7 @@ public class FieldOrPropertyParsing extends MemberWithBodyParsing
 				expect(builderWrapper, SEMICOLON, "';' expected");
 			}
 
-			marker.done(PROPERTY_DECLARATION);
+			done(marker, PROPERTY_DECLARATION);
 		}
 		else
 		{
