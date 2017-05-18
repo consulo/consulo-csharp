@@ -230,13 +230,13 @@ public class CSharpDisabledBlock extends UserDataHolderBase implements ASTNode, 
 	@Override
 	public PsiElement getPsi()
 	{
-		throw new UnsupportedOperationException();
+		return null;
 	}
 
 	@Nullable
 	@Override
 	public <T extends PsiElement> T getPsi(Class<T> clazz)
 	{
-		throw new UnsupportedOperationException();
+		return null;
 	}
 }
