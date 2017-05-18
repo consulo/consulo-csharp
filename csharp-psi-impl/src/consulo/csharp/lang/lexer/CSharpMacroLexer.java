@@ -16,7 +16,7 @@
 
 package consulo.csharp.lang.lexer;
 
-import consulo.csharp.lang.psi.CSharpMacroTokens;
+import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 import com.intellij.lexer.MergingLexerAdapter;
 import com.intellij.psi.tree.TokenSet;
 
@@ -26,7 +26,7 @@ import com.intellij.psi.tree.TokenSet;
  */
 public class CSharpMacroLexer extends MergingLexerAdapter
 {
-	private static final TokenSet ourMergeSet = TokenSet.create(CSharpMacroTokens.CSHARP_FRAGMENT);
+	private static final TokenSet ourMergeSet = TokenSet.create(CSharpPreprocesorTokens.CSHARP_FRAGMENT);
 
 	public CSharpMacroLexer()
 	{

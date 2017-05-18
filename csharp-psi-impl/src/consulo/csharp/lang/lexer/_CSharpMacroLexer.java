@@ -18,7 +18,7 @@
 
 package consulo.csharp.lang.lexer;
 
-import consulo.csharp.lang.psi.CSharpMacroTokens;
+import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 import com.intellij.lexer.LexerBase;
 import com.intellij.psi.tree.IElementType;
 
@@ -627,71 +627,71 @@ class _CSharpMacroLexer extends LexerBase {
 
       switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
         case 5: 
-          { yybegin(YYINITIAL); return CSharpMacroTokens.MACRO_STOP;
+          { yybegin(YYINITIAL); return CSharpPreprocesorTokens.MACRO_STOP;
           }
         case 21: break;
         case 20: 
-          { yybegin(MACRO_ENTERED); return CSharpMacroTokens.MACRO_ENDREGION_KEYWORD;
+          { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_ENDREGION_KEYWORD;
           }
         case 22: break;
         case 13: 
-          { yybegin(MACRO_EXPRESSION); return CSharpMacroTokens.MACRO_IF_KEYWORD;
+          { yybegin(MACRO_EXPRESSION); return CSharpPreprocesorTokens.MACRO_IF_KEYWORD;
           }
         case 23: break;
         case 6: 
-          { return CSharpMacroTokens.MACRO_VALUE;
+          { return CSharpPreprocesorTokens.MACRO_VALUE;
           }
         case 24: break;
         case 4: 
-          { return CSharpMacroTokens.WHITE_SPACE;
+          { return CSharpPreprocesorTokens.WHITE_SPACE;
           }
         case 25: break;
         case 9: 
-          { return CSharpMacroTokens.RPAR;
+          { return CSharpPreprocesorTokens.RPAR;
           }
         case 26: break;
         case 15: 
-          { yybegin(MACRO_ENTERED); return CSharpMacroTokens.MACRO_ELSE_KEYWORD;
+          { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_ELSE_KEYWORD;
           }
         case 27: break;
         case 16: 
-          { yybegin(MACRO_ENTERED); return CSharpMacroTokens.MACRO_ENDIF_KEYWORD;
+          { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_ENDIF_KEYWORD;
           }
         case 28: break;
         case 18: 
-          { yybegin(MACRO_ENTERED); return CSharpMacroTokens.MACRO_DEFINE_KEYWORD;
+          { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_DEFINE_KEYWORD;
           }
         case 29: break;
         case 14: 
-          { yybegin(MACRO_EXPRESSION); return CSharpMacroTokens.MACRO_ELIF_KEYWORD;
+          { yybegin(MACRO_EXPRESSION); return CSharpPreprocesorTokens.MACRO_ELIF_KEYWORD;
           }
         case 30: break;
         case 7: 
-          { return CSharpMacroTokens.IDENTIFIER;
+          { return CSharpPreprocesorTokens.IDENTIFIER;
           }
         case 31: break;
         case 3: 
-          { return CSharpMacroTokens.BAD_CHARACTER;
+          { return CSharpPreprocesorTokens.BAD_CHARACTER;
           }
         case 32: break;
         case 12: 
-          { return CSharpMacroTokens.OROR;
+          { return CSharpPreprocesorTokens.OROR;
           }
         case 33: break;
         case 1: 
-          { return CSharpMacroTokens.CSHARP_FRAGMENT;
+          { return CSharpPreprocesorTokens.CSHARP_FRAGMENT;
           }
         case 34: break;
         case 10: 
-          { return CSharpMacroTokens.EXCL;
+          { return CSharpPreprocesorTokens.EXCL;
           }
         case 35: break;
         case 11: 
-          { return CSharpMacroTokens.ANDAND;
+          { return CSharpPreprocesorTokens.ANDAND;
           }
         case 36: break;
         case 17: 
-          { yybegin(MACRO_ENTERED); return CSharpMacroTokens.MACRO_UNDEF_KEYWORD;
+          { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_UNDEF_KEYWORD;
           }
         case 37: break;
         case 2: 
@@ -700,11 +700,11 @@ class _CSharpMacroLexer extends LexerBase {
           }
         case 38: break;
         case 8: 
-          { return CSharpMacroTokens.LPAR;
+          { return CSharpPreprocesorTokens.LPAR;
           }
         case 39: break;
         case 19: 
-          { yybegin(MACRO_ENTERED); return CSharpMacroTokens.MACRO_REGION_KEYWORD;
+          { yybegin(MACRO_ENTERED); return CSharpPreprocesorTokens.MACRO_REGION_KEYWORD;
           }
         case 40: break;
         default:

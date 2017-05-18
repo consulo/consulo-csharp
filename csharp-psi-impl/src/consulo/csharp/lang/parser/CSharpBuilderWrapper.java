@@ -39,6 +39,7 @@ import consulo.csharp.lang.parser.preprocessor.EndIfPreprocessorDirective;
 import consulo.csharp.lang.parser.preprocessor.IfPreprocessorDirective;
 import consulo.csharp.lang.parser.preprocessor.PreprocessorDirective;
 import consulo.csharp.lang.parser.preprocessor.PreprocessorParser;
+import consulo.csharp.lang.psi.CSharpPreprocessorElements;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpTemplateTokens;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -192,7 +193,7 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 		while(!super.eof())
 		{
 			IElementType tokenType = getTokenTypeImpl();
-			if(tokenType == CSharpTokens.NON_ACTIVE_SYMBOL || tokenType == CSharpTokens.PREPROCESSOR_DIRECTIVE)
+			if(tokenType == CSharpTokens.NON_ACTIVE_SYMBOL || tokenType == CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE)
 			{
 				super.advanceLexer();
 			}
@@ -296,8 +297,8 @@ public class CSharpBuilderWrapper extends PsiBuilderAdapter
 				myStates.pollLast();
 			}
 
-			remapCurrentToken(CSharpTokens.PREPROCESSOR_DIRECTIVE);
-			return CSharpTokens.PREPROCESSOR_DIRECTIVE;
+			remapCurrentToken(CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE);
+			return CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE;
 		}
 
 		PreprocessorState preprocessorState = myStates.peekLast();

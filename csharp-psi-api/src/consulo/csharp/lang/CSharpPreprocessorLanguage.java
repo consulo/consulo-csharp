@@ -23,13 +23,13 @@ import com.intellij.psi.templateLanguages.TemplateLanguage;
  * @author VISTALL
  * @since 23.01.14
  */
-public class CSharpMacroLanguage extends Language implements TemplateLanguage
+public class CSharpPreprocessorLanguage extends Language implements TemplateLanguage
 {
-	public static final CSharpMacroLanguage INSTANCE = new CSharpMacroLanguage();
+	public static final CSharpPreprocessorLanguage INSTANCE = new CSharpPreprocessorLanguage();
 
-	private CSharpMacroLanguage()
+	private CSharpPreprocessorLanguage()
 	{
-		super("C#Macro");
+		super("C#Preprocessor");
 	}
 
 	@Override

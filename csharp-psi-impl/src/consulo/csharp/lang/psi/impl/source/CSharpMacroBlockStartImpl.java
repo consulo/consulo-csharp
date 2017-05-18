@@ -19,7 +19,7 @@ package consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
-import consulo.csharp.lang.psi.CSharpMacroTokens;
+import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
@@ -44,20 +44,20 @@ public class CSharpMacroBlockStartImpl extends CSharpMacroElementImpl
 	@NotNull
 	public PsiElement getKeywordElement()
 	{
-		TokenSet tokenSet = TokenSet.create(CSharpMacroTokens.MACRO_IF_KEYWORD, CSharpMacroTokens.MACRO_REGION_KEYWORD,
-				CSharpMacroTokens.MACRO_ELIF_KEYWORD, CSharpMacroTokens.MACRO_ELSE_KEYWORD);
+		TokenSet tokenSet = TokenSet.create(CSharpPreprocesorTokens.MACRO_IF_KEYWORD, CSharpPreprocesorTokens.MACRO_REGION_KEYWORD,
+				CSharpPreprocesorTokens.MACRO_ELIF_KEYWORD, CSharpPreprocesorTokens.MACRO_ELSE_KEYWORD);
 		return findNotNullChildByType(tokenSet);
 	}
 
 	public boolean isElse()
 	{
-		return findChildByType(CSharpMacroTokens.MACRO_ELSE_KEYWORD) != null;
+		return findChildByType(CSharpPreprocesorTokens.MACRO_ELSE_KEYWORD) != null;
 	}
 
 	@Nullable
 	public PsiElement getStopElement()
 	{
-		return findChildByType(CSharpMacroTokens.MACRO_STOP);
+		return findChildByType(CSharpPreprocesorTokens.MACRO_STOP);
 	}
 
 	@Override

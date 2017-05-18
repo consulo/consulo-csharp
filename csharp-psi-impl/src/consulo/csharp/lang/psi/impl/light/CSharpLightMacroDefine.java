@@ -19,7 +19,7 @@ package consulo.csharp.lang.psi.impl.light;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.CSharpMacroLanguage;
+import consulo.csharp.lang.CSharpPreprocessorLanguage;
 import consulo.csharp.lang.psi.CSharpMacroDefine;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.ui.configuration.ProjectSettingsService;
@@ -40,7 +40,7 @@ public class CSharpLightMacroDefine extends LightElement implements CSharpMacroD
 
 	public CSharpLightMacroDefine(@NotNull Module module, @NotNull String variableName)
 	{
-		super(PsiManager.getInstance(module.getProject()), CSharpMacroLanguage.INSTANCE);
+		super(PsiManager.getInstance(module.getProject()), CSharpPreprocessorLanguage.INSTANCE);
 		myModule = module;
 
 		myVariableName = variableName;

@@ -17,7 +17,7 @@
 package consulo.csharp.lang.parser;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.parser.macro.MacroParsing;
+import consulo.csharp.lang.parser.macro.PreprocessorParsing;
 import com.intellij.lang.ASTNode;
 import consulo.lang.LanguageVersion;
 import com.intellij.lang.PsiBuilder;
@@ -38,7 +38,7 @@ public class CSharpMacroParser implements PsiParser
 
 		while(!builder.eof())
 		{
-			MacroParsing.parse(builder);
+			PreprocessorParsing.parse(builder);
 		}
 
 		mark.done(elementType);

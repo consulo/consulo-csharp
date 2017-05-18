@@ -24,22 +24,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.parser.preprocessor.EndRegionPreprocessorDirective;
-import consulo.csharp.lang.parser.preprocessor.PreprocessorDirective;
-import consulo.csharp.lang.parser.preprocessor.PreprocessorParser;
-import consulo.csharp.lang.parser.preprocessor.RegionPreprocessorDirective;
-import consulo.csharp.lang.psi.CSharpBodyWithBraces;
-import consulo.csharp.lang.psi.CSharpEventDeclaration;
-import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
-import consulo.csharp.lang.psi.CSharpStubElements;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.CSharpTokensImpl;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.CSharpUsingListChild;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import com.intellij.codeInsight.folding.CodeFoldingSettings;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.CustomFoldingBuilder;
@@ -55,6 +39,14 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.parser.preprocessor.EndRegionPreprocessorDirective;
+import consulo.csharp.lang.parser.preprocessor.PreprocessorDirective;
+import consulo.csharp.lang.parser.preprocessor.PreprocessorParser;
+import consulo.csharp.lang.parser.preprocessor.RegionPreprocessorDirective;
+import consulo.csharp.lang.psi.*;
+import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
+import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 
 /**
  * @author VISTALL
@@ -76,7 +68,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 			{
 				super.visitElement(element);
 				IElementType elementType = PsiUtilCore.getElementType(element);
-				if(elementType == CSharpTokens.PREPROCESSOR_DIRECTIVE)
+				if(elementType == CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE)
 				{
 					PreprocessorDirective directive = PreprocessorParser.parse(element.getText());
 					if(directive instanceof RegionPreprocessorDirective)
@@ -158,7 +150,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 							break;
 						}
 					}
-					else if(elementType == CSharpTokens.PREPROCESSOR_DIRECTIVE)
+					else if(elementType == CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE)
 					{
 						break;
 					}
@@ -249,7 +241,7 @@ public class CSharpFoldingBuilder extends CustomFoldingBuilder
 		}
 
 		IElementType elementType = PsiUtilCore.getElementType(psi);
-		if(elementType == CSharpTokens.PREPROCESSOR_DIRECTIVE)
+		if(elementType == CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE)
 		{
 			return psi.getText().trim();
 		}

@@ -17,8 +17,8 @@
 package consulo.csharp.lang.parser.macro;
 
 import consulo.csharp.lang.parser.SharedParsingHelpers;
-import consulo.csharp.lang.psi.CSharpMacroElements;
-import consulo.csharp.lang.psi.CSharpMacroTokens;
+import consulo.csharp.lang.psi.CSharpPreprocessorElements;
+import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
@@ -27,7 +27,7 @@ import com.intellij.psi.tree.TokenSet;
  * @author VISTALL
  * @since 18.12.13.
  */
-public class MacroParsing implements CSharpMacroTokens, CSharpMacroElements
+public class PreprocessorParsing implements CSharpPreprocesorTokens, CSharpPreprocessorElements
 {
 	private static final TokenSet COND_STOPPERS = TokenSet.create(MACRO_ENDIF_KEYWORD, MACRO_ELSE_KEYWORD, MACRO_ELIF_KEYWORD);
 
@@ -60,7 +60,7 @@ public class MacroParsing implements CSharpMacroTokens, CSharpMacroElements
 
 			builder.advanceLexer();
 
-			PsiBuilder.Marker parse = MacroExpressionParsing.parse(builder);
+			PsiBuilder.Marker parse = PreprocessorExpressionParsing.parse(builder);
 			if(parse == null)
 			{
 				builder.error("Expression expected");
@@ -193,7 +193,7 @@ public class MacroParsing implements CSharpMacroTokens, CSharpMacroElements
 				break;
 			}
 
-			MacroParsing.parse(builder);
+			PreprocessorParsing.parse(builder);
 		}
 
 		marker.done(MACRO_IF_CONDITION_BLOCK);
@@ -212,7 +212,7 @@ public class MacroParsing implements CSharpMacroTokens, CSharpMacroElements
 
 		builder.advanceLexer();
 
-		PsiBuilder.Marker parse = MacroExpressionParsing.parse(builder);
+		PsiBuilder.Marker parse = PreprocessorExpressionParsing.parse(builder);
 		if(parse == null)
 		{
 			builder.error("Expression expected");
@@ -229,7 +229,7 @@ public class MacroParsing implements CSharpMacroTokens, CSharpMacroElements
 				break;
 			}
 
-			MacroParsing.parse(builder);
+			PreprocessorParsing.parse(builder);
 		}
 
 		mark.done(MACRO_IF_CONDITION_BLOCK);

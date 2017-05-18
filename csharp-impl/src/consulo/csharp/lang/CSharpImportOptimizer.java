@@ -26,19 +26,6 @@ import java.util.TreeSet;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.ide.codeInspection.unusedUsing.UnusedUsingVisitor;
-import consulo.csharp.lang.psi.CSharpFile;
-import consulo.csharp.lang.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
-import consulo.csharp.lang.psi.CSharpStubElements;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.CSharpUsingListChild;
-import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
-import consulo.csharp.lang.psi.CSharpUsingTypeStatement;
-import consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
-import consulo.dotnet.psi.DotNetReferenceExpression;
-import consulo.dotnet.psi.DotNetType;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.ImportOptimizer;
 import com.intellij.openapi.util.Pair;
@@ -49,6 +36,19 @@ import com.intellij.psi.PsiRecursiveElementVisitor;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.ide.codeInspection.unusedUsing.UnusedUsingVisitor;
+import consulo.csharp.lang.psi.CSharpFile;
+import consulo.csharp.lang.psi.CSharpFileFactory;
+import consulo.csharp.lang.psi.CSharpPreprocessorElements;
+import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
+import consulo.csharp.lang.psi.CSharpStubElements;
+import consulo.csharp.lang.psi.CSharpUsingListChild;
+import consulo.csharp.lang.psi.CSharpUsingNamespaceStatement;
+import consulo.csharp.lang.psi.CSharpUsingTypeStatement;
+import consulo.csharp.lang.psi.impl.source.CSharpTypeDefStatementImpl;
+import consulo.dotnet.psi.DotNetReferenceExpression;
+import consulo.dotnet.psi.DotNetType;
 
 /**
  * @author VISTALL
@@ -143,7 +143,7 @@ public class CSharpImportOptimizer implements ImportOptimizer
 									break;
 								}
 							}
-							else if(elementType == CSharpTokens.PREPROCESSOR_DIRECTIVE)
+							else if(elementType == CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE)
 							{
 								break;
 							}

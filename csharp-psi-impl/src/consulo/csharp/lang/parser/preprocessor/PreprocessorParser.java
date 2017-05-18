@@ -18,7 +18,7 @@ package consulo.csharp.lang.parser.preprocessor;
 
 import org.jetbrains.annotations.Nullable;
 import consulo.csharp.lang.lexer.CSharpMacroLexer;
-import consulo.csharp.lang.psi.CSharpMacroTokens;
+import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.tree.IElementType;
 
@@ -69,32 +69,32 @@ public class PreprocessorParser
 			switch(state)
 			{
 				case NONE:
-					if(elementType == CSharpMacroTokens.MACRO_DEFINE_KEYWORD || elementType == CSharpMacroTokens.MACRO_UNDEF_KEYWORD)
+					if(elementType == CSharpPreprocesorTokens.MACRO_DEFINE_KEYWORD || elementType == CSharpPreprocesorTokens.MACRO_UNDEF_KEYWORD)
 					{
 						state = State.DIRECTIVE;
-						directive = elementType == CSharpMacroTokens.MACRO_DEFINE_KEYWORD ? Directive.DEFINE : Directive.UNDEF;
+						directive = elementType == CSharpPreprocesorTokens.MACRO_DEFINE_KEYWORD ? Directive.DEFINE : Directive.UNDEF;
 					}
-					else if(elementType == CSharpMacroTokens.MACRO_IF_KEYWORD || elementType == CSharpMacroTokens.MACRO_ELIF_KEYWORD)
+					else if(elementType == CSharpPreprocesorTokens.MACRO_IF_KEYWORD || elementType == CSharpPreprocesorTokens.MACRO_ELIF_KEYWORD)
 					{
 						state = State.DIRECTIVE;
-						directive = elementType == CSharpMacroTokens.MACRO_IF_KEYWORD ? Directive.IF : Directive.ELIF;
+						directive = elementType == CSharpPreprocesorTokens.MACRO_IF_KEYWORD ? Directive.IF : Directive.ELIF;
 					}
-					else if(elementType == CSharpMacroTokens.MACRO_ENDIF_KEYWORD)
+					else if(elementType == CSharpPreprocesorTokens.MACRO_ENDIF_KEYWORD)
 					{
 						state = State.DIRECTIVE;
 						directive = Directive.ENDIF;
 					}
-					else if(elementType == CSharpMacroTokens.MACRO_REGION_KEYWORD)
+					else if(elementType == CSharpPreprocesorTokens.MACRO_REGION_KEYWORD)
 					{
 						state = State.DIRECTIVE;
 						directive = Directive.REGION;
 					}
-					else if(elementType == CSharpMacroTokens.MACRO_ENDREGION_KEYWORD)
+					else if(elementType == CSharpPreprocesorTokens.MACRO_ENDREGION_KEYWORD)
 					{
 						state = State.DIRECTIVE;
 						directive = Directive.ENDREGION;
 					}
-					else if(elementType == CSharpMacroTokens.MACRO_ELSE_KEYWORD)
+					else if(elementType == CSharpPreprocesorTokens.MACRO_ELSE_KEYWORD)
 					{
 						state = State.DIRECTIVE;
 						directive = Directive.ELSE;
@@ -109,10 +109,10 @@ public class PreprocessorParser
 					{
 						case DEFINE:
 						case UNDEF:
-							if(elementType == CSharpMacroTokens.WHITE_SPACE)
+							if(elementType == CSharpPreprocesorTokens.WHITE_SPACE)
 							{
 							}
-							else if(elementType == CSharpMacroTokens.MACRO_VALUE)
+							else if(elementType == CSharpPreprocesorTokens.MACRO_VALUE)
 							{
 								value = lexer.getTokenText();
 								state = State.VALUE;

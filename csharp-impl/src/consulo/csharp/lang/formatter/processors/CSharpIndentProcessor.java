@@ -100,7 +100,7 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 			}
 			return Indent.getNoneIndent();
 		}
-		else if(elementType == CSharpTokens.PREPROCESSOR_DIRECTIVE)
+		else if(elementType == CSharpMacroElements.PREPROCESSOR_DIRECTIVE)
 		{
 			return Indent.getAbsoluteNoneIndent();
 		}

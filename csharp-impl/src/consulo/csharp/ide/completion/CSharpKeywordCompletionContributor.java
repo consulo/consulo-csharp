@@ -68,7 +68,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 
 	public CSharpKeywordCompletionContributor()
 	{
-		extend(CompletionType.BASIC, psiElement(CSharpTokens.PREPROCESSOR_DIRECTIVE), new CompletionProvider()
+		extend(CompletionType.BASIC, psiElement(CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -248,7 +248,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 							prevSibling.getNode().getElementType() == CSharpTokens.COMMA ||
 							prevSibling.getNode().getElementType() == CSharpTokens.RBRACKET ||
 							prevSibling.getNode().getElementType() == CSharpTokens.SEMICOLON ||
-							prevSibling.getNode().getElementType() == CSharpTokens.PREPROCESSOR_DIRECTIVE ||
+							prevSibling.getNode().getElementType() == CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE ||
 							CSharpTokenSets.MODIFIERS.contains(prevSibling.getNode().getElementType()))
 					{
 						TokenSet tokenVal = TokenSet.orSet(CSharpTokenSets.MODIFIERS, CSharpTokenSets.TYPE_DECLARATION_START, TokenSet.create(CSharpTokens.DELEGATE_KEYWORD,

@@ -139,7 +139,7 @@
 		<typeDeclarationProvider implementation="consulo.csharp.ide.actions.navigate.GotoTypeDeclarationProvider"/>
 		<projectService serviceImplementation="consulo.csharp.lang.psi.impl.resolve.CSharpPsiSearcher"/>
 		<syntaxHighlighter key="C#" implementationClass="consulo.csharp.ide.highlight.CSharpSyntaxHighlighter"/>
-		<syntaxHighlighter key="C#Macro" implementationClass="consulo.csharp.ide.highlight.CSharpMacroSyntaxHighlighter"/>
+		<syntaxHighlighter key="C#Preprocesssor" implementationClass="consulo.csharp.ide.highlight.CSharpMacroSyntaxHighlighter"/>
 		<copyright.updater filetype="C#" implementationClass="consulo.csharp.ide.copyright.CSharpUpdateCopyrightsProvider"/>
 		<highlightVisitor implementation="consulo.csharp.ide.highlight.CSharpHighlightVisitor"/>
 		<highlightVisitor implementation="consulo.csharp.ide.highlight.check.CSharpCompilerCheckVisitor"/>
@@ -301,6 +301,7 @@
 		<inlineActionHandler implementation="consulo.csharp.ide.refactoring.inlineAction.CSharpLocalVariableInlineActionHandler"/>
 		<lang.parserDefinition language="C#" implementationClass="consulo.csharp.lang.CSharpParserDefinition"/>
 		<lang.parserDefinition language="C#Doc" implementationClass="consulo.csharp.lang.doc.CSharpDocParserDefinition"/>
+		<lang.parserDefinition language="C#Preprocessor" implementationClass="consulo.csharp.lang.CSharpPreprocessorParserDefinition"/>
 		<lang.versionResolver language="C#" implementationClass="consulo.csharp.lang.CSharpLanguageVersionResolver"/>
 		<lang.documentationProvider language="C#" implementationClass="consulo.csharp.ide.documentation.CSharpDocumentationProvider"/>
 		<lang.braceMatcher language="C#Doc" implementationClass="consulo.csharp.lang.doc.CSharpDocBraceMatcher"/>

@@ -18,13 +18,13 @@ package consulo.csharp.lang.parser.macro;
 
 import org.jetbrains.annotations.Nullable;
 import consulo.csharp.lang.parser.SharedParsingHelpers;
-import consulo.csharp.lang.psi.CSharpMacroElements;
-import consulo.csharp.lang.psi.CSharpMacroTokens;
+import consulo.csharp.lang.psi.CSharpPreprocessorElements;
+import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 
-public class MacroExpressionParsing implements CSharpMacroTokens, CSharpMacroElements
+public class PreprocessorExpressionParsing implements CSharpPreprocesorTokens, CSharpPreprocessorElements
 {
 	private enum ExprType
 	{

@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import consulo.csharp.lang.psi.CSharpMacroDefine;
 import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
-import consulo.csharp.lang.psi.CSharpMacroTokens;
+import consulo.csharp.lang.psi.CSharpPreprocesorTokens;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
@@ -60,7 +60,7 @@ public class CSharpMacroDefineImpl extends CSharpMacroElementImpl implements CSh
 	@Override
 	public PsiElement getNameIdentifier()
 	{
-		return findChildByType(CSharpMacroTokens.MACRO_VALUE);
+		return findChildByType(CSharpPreprocesorTokens.MACRO_VALUE);
 	}
 
 	@Override
@@ -73,6 +73,6 @@ public class CSharpMacroDefineImpl extends CSharpMacroElementImpl implements CSh
 	@Override
 	public boolean isUnDef()
 	{
-		return findChildByType(CSharpMacroTokens.MACRO_UNDEF_KEYWORD) != null;
+		return findChildByType(CSharpPreprocesorTokens.MACRO_UNDEF_KEYWORD) != null;
 	}
 }
