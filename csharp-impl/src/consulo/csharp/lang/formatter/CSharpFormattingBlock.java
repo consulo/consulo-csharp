@@ -40,6 +40,7 @@ import com.intellij.psi.formatter.FormatterUtil;
 import com.intellij.psi.formatter.common.AbstractBlock;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.SmartList;
+import com.intellij.util.codeInsight.CommentUtilCore;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
@@ -122,7 +123,6 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 		}
 		rawNodes.addAll(myAdditionalNodes);
 
-
 		Deque<ASTNode> nodes = new ArrayDeque<>();
 
 		List<ASTNode> whitespaces = null;
@@ -148,6 +148,12 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 					whitespaces.add(rawNode);
 				}
 
+				continue;
+			}
+
+			if(disabledNodes != null && CommentUtilCore.isComment(rawNode))
+			{
+				disabledNodes.add(rawNode);
 				continue;
 			}
 
