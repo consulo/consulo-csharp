@@ -21,6 +21,7 @@ import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeStyle.CSharpCodeStyleSettings;
 import consulo.csharp.lang.formatter.CSharpFormattingBlock;
 import consulo.csharp.lang.psi.CSharpElements;
+import consulo.csharp.lang.psi.CSharpPreprocessorElements;
 import consulo.csharp.lang.psi.CSharpStatementAsStatementOwner;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTokens;
@@ -100,7 +101,7 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 			}
 			return Indent.getNoneIndent();
 		}
-		else if(elementType == CSharpMacroElements.PREPROCESSOR_DIRECTIVE)
+		else if(elementType == CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE)
 		{
 			return Indent.getAbsoluteNoneIndent();
 		}
