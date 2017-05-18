@@ -181,6 +181,14 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 			}
 		}
 
+		if(disabledNodes != null)
+		{
+			nodes.add(new CSharpDisabledBlock(disabledNodes));
+
+			disabledNodes = null;
+			whitespaces = null;
+		}
+
 		List<Block> children = new ArrayList<>();
 		ASTNode next;
 		while((next = nodes.poll()) != null)
