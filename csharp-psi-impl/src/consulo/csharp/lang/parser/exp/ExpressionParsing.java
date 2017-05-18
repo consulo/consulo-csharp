@@ -1250,9 +1250,28 @@ public class ExpressionParsing extends SharedParsingHelpers
 
 			mark.done(CSharpElements.LAMBDA_PARAMETER);
 		}
+		else if(builder.getTokenType() == CSharpTokens.OUT_KEYWORD || builder.getTokenType() == CSharpTokens.REF_KEYWORD)
+		{
+			PsiBuilder.Marker modifierList = builder.mark();
+			builder.advanceLexer();
+			modifierList.done(CSharpElements.MODIFIER_LIST);
+
+			if(parseType(builder) != null)
+			{
+				expectOrReportIdentifier(builder, 0);
+
+				mark.done(LAMBDA_PARAMETER);
+			}
+			else
+			{
+				mark.error("Identifier expected");
+			}
+		}
 		else
 		{
 			boolean wasIdentifier = builder.getTokenType() == CSharpTokens.IDENTIFIER;
+
+			emptyElement(builder, CSharpElements.MODIFIER_LIST);
 
 			TypeInfo typeInfo = parseType(builder);
 

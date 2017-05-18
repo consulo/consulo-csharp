@@ -24,4 +24,5 @@ import consulo.dotnet.psi.DotNetVariable;
  */
 public interface CSharpLambdaParameter extends DotNetVariable
 {
+	int getIndex();
 }

@@ -149,15 +149,7 @@ public class CSharpDelegateExpressionImpl extends CSharpExpressionImpl implement
 	@Override
 	public DotNetModifierList getModifierList()
 	{
-		return CachedValuesManager.getManager(getProject()).createCachedValue(new CachedValueProvider<DotNetModifierList>()
-		{
-			@Nullable
-			@Override
-			public Result<DotNetModifierList> compute()
-			{
-				return Result.<DotNetModifierList>create(new CSharpAnonymousModifierListImpl(CSharpDelegateExpressionImpl.this), CSharpDelegateExpressionImpl.this);
-			}
-		}, false).getValue();
+		return CachedValuesManager.getManager(getProject()).createCachedValue(() -> CachedValueProvider.Result.<DotNetModifierList>create(new CSharpAnonymousModifierListImpl(CSharpDelegateExpressionImpl.this), CSharpDelegateExpressionImpl.this), false).getValue();
 	}
 
 	@Nullable

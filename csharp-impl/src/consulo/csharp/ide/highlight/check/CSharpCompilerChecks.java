@@ -116,6 +116,7 @@ public enum CSharpCompilerChecks
 	CS1644(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // features checks
 	CS1656(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // value can't be set to foreach
 	CS1674(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // using statement expression or variable must be System.IDisposable
+	CS1676(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // lambda parameter validation with out / ref params
 	CS1722(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // base type must be first in extend list
 	CS1737(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // parameter default values check for order
 	CS1738(CSharpLanguageVersion._1_0, HighlightInfoType.ERROR), // parameter default values check for order

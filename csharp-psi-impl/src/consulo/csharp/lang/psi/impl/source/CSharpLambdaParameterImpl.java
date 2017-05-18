@@ -32,6 +32,9 @@ import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.ide.refactoring.CSharpRefactoringUtil;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpLambdaParameter;
+import consulo.csharp.lang.psi.CSharpLambdaParameterList;
+import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
@@ -69,6 +72,22 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromInitializer)
 	{
+		DotNetTypeRef typeRef = toTypeRefImpl0(resolveFromInitializer);
+		if(hasModifier(CSharpModifier.REF))
+		{
+			return new CSharpRefTypeRef(CSharpRefTypeRef.Type.ref, typeRef);
+		}
+		else if(hasModifier(CSharpModifier.OUT))
+		{
+			return new CSharpRefTypeRef(CSharpRefTypeRef.Type.out, typeRef);
+		}
+		return typeRef;
+	}
+
+	@RequiredReadAction
+	@NotNull
+	private DotNetTypeRef toTypeRefImpl0(boolean resolveFromInitializer)
+	{
 		DotNetType type = getType();
 		if(type == null)
 		{
@@ -95,7 +114,7 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 		{
 			return DotNetTypeRef.UNKNOWN_TYPE;
 		}
-		CSharpLambdaParameter[] parameters = ((CSharpLambdaParameterListImpl)getParent()).getParameters();
+		CSharpLambdaParameter[] parameters = ((CSharpLambdaParameterListImpl) getParent()).getParameters();
 
 		int i = ArrayUtil.indexOf(parameters, this);
 
@@ -115,5 +134,13 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 	public SearchScope getUseScope()
 	{
 		return new LocalSearchScope(getParent().getParent());
+	}
+
+	@Override
+	public int getIndex()
+	{
+		CSharpLambdaParameterList parameterList = PsiTreeUtil.getParentOfType(this, CSharpLambdaParameterList.class);
+		assert parameterList != null;
+		return ArrayUtil.indexOf(parameterList.getParameters(), this);
 	}
 }

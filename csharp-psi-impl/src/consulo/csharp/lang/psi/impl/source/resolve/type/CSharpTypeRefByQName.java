@@ -17,6 +17,7 @@
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.util.ExceptionUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -41,6 +42,8 @@ public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult
 	private final GlobalSearchScope mySearchScope;
 	@NotNull
 	private final String myQualifiedName;
+
+	private String myThrowableText = ExceptionUtil.getThrowableText(new Exception());
 
 	public CSharpTypeRefByQName(@NotNull Project project, @NotNull GlobalSearchScope searchScope, @NotNull String qualifiedName)
 	{

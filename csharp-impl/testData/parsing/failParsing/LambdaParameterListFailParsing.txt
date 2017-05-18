@@ -46,6 +46,8 @@ CSHARP_FILE
                   CSharpLambdaParameterListImpl(LAMBDA_PARAMETER_LIST)
                     PsiElement(LPAR)('(')
                     CSharpLambdaParameterImpl(LAMBDA_PARAMETER)
+                      CSharpModifierListImpl(MODIFIER_LIST)
+                        <empty list>
                       CSharpNativeTypeImpl(NATIVE_TYPE)
                         PsiElement(INT_KEYWORD)('int')
                       PsiWhiteSpace(' ')
@@ -53,8 +55,9 @@ CSHARP_FILE
                         PsiElement(IDENTIFIER)('i')
                     PsiElement(COMMA)(',')
                     PsiErrorElement:Identifier expected
-                      <empty list>
-                    PsiWhiteSpace(' ')
+                      PsiWhiteSpace(' ')
+                      CSharpModifierListImpl(MODIFIER_LIST)
+                        <empty list>
                     PsiElement(RPAR)(')')
                   PsiWhiteSpace(' ')
                   PsiElement(DARROW)('=>')
@@ -76,12 +79,15 @@ CSHARP_FILE
                   CSharpLambdaParameterListImpl(LAMBDA_PARAMETER_LIST)
                     PsiElement(LPAR)('(')
                     CSharpLambdaParameterImpl(LAMBDA_PARAMETER)
+                      CSharpModifierListImpl(MODIFIER_LIST)
+                        <empty list>
                       CSharpIdentifierImpl(IDENTIFIER)
                         PsiElement(IDENTIFIER)('i')
                     PsiElement(COMMA)(',')
                     PsiErrorElement:Identifier expected
-                      <empty list>
-                    PsiWhiteSpace(' ')
+                      PsiWhiteSpace(' ')
+                      CSharpModifierListImpl(MODIFIER_LIST)
+                        <empty list>
                     PsiElement(RPAR)(')')
                   PsiWhiteSpace(' ')
                   PsiElement(DARROW)('=>')
@@ -102,12 +108,10 @@ CSHARP_FILE
                 CSharpLambdaExpressionImpl(LAMBDA_EXPRESSION)
                   CSharpLambdaParameterListImpl(LAMBDA_PARAMETER_LIST)
                     PsiElement(LPAR)('(')
-                    PsiErrorElement:Identifier expected
-                      <empty list>
-                    PsiErrorElement:Expected comma
-                      PsiElement(REF_KEYWORD)('ref')
-                    PsiWhiteSpace(' ')
                     CSharpLambdaParameterImpl(LAMBDA_PARAMETER)
+                      CSharpModifierListImpl(MODIFIER_LIST)
+                        PsiElement(REF_KEYWORD)('ref')
+                      PsiWhiteSpace(' ')
                       CSharpNativeTypeImpl(NATIVE_TYPE)
                         PsiElement(INT_KEYWORD)('int')
                       PsiWhiteSpace(' ')
@@ -115,8 +119,9 @@ CSHARP_FILE
                         PsiElement(IDENTIFIER)('i')
                     PsiElement(COMMA)(',')
                     PsiErrorElement:Identifier expected
-                      <empty list>
-                    PsiWhiteSpace(' ')
+                      PsiWhiteSpace(' ')
+                      CSharpModifierListImpl(MODIFIER_LIST)
+                        <empty list>
                     PsiElement(RPAR)(')')
                   PsiWhiteSpace(' ')
                   PsiElement(DARROW)('=>')
