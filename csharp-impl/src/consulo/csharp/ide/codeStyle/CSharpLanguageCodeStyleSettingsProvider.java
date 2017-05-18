@@ -124,6 +124,8 @@ public class CSharpLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSe
 			consumer.showCustomOption(CSharpCodeStyleSettings.class, "KEEP_AUTO_PROPERTY_IN_ONE_LINE", "Simple property(event, " +
 					"" + "index methods) in single line", CodeStyleSettingsCustomizable.WRAPPING_KEEP);
 
+			consumer.showCustomOption(CSharpCodeStyleSettings.class, "PREPROCESSOR_DIRECTIVES_AT_FIRST_COLUMN", "Preprocessor directives at first column", CodeStyleSettingsCustomizable.WRAPPING_KEEP);
+
 			consumer.showCustomOption(CSharpCodeStyleSettings.class, "NAMESPACE_BRACE_STYLE", "In namespace declaration", CodeStyleSettingsCustomizable.WRAPPING_BRACES,
 					CodeStyleSettingsCustomizable.OptionAnchor.BEFORE, "CLASS_BRACE_STYLE", CodeStyleSettingsCustomizable.BRACE_PLACEMENT_OPTIONS,
 					CodeStyleSettingsCustomizable.BRACE_PLACEMENT_VALUES);

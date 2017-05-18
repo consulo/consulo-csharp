@@ -99,7 +99,7 @@ public class PreprocessorParser
 						state = State.DIRECTIVE;
 						directive = Directive.ELSE;
 					}
-					else
+					else if(elementType != CSharpPreprocesorTokens.WHITE_SPACE)
 					{
 						break loop;
 					}
@@ -109,15 +109,12 @@ public class PreprocessorParser
 					{
 						case DEFINE:
 						case UNDEF:
-							if(elementType == CSharpPreprocesorTokens.WHITE_SPACE)
-							{
-							}
-							else if(elementType == CSharpPreprocesorTokens.IDENTIFIER)
+							if(elementType == CSharpPreprocesorTokens.IDENTIFIER)
 							{
 								value = lexer.getTokenText();
 								state = State.VALUE;
 							}
-							else
+							else if(elementType != CSharpPreprocesorTokens.WHITE_SPACE)
 							{
 								break loop;
 							}
@@ -132,7 +129,10 @@ public class PreprocessorParser
 					}
 					break;
 				default:
-					break loop;
+					if(elementType != CSharpPreprocesorTokens.WHITE_SPACE)
+					{
+						break loop;
+					}
 			}
 
 			lexer.advance();

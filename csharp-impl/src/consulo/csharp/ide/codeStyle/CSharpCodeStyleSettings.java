@@ -144,6 +144,8 @@ public class CSharpCodeStyleSettings extends CustomCodeStyleSettings
 	 */
 	public boolean SPACE_BEFORE_FIXED_LBRACE = true;
 
+	public boolean PREPROCESSOR_DIRECTIVES_AT_FIRST_COLUMN = true;
+
 	public CSharpCodeStyleSettings(CodeStyleSettings container)
 	{
 		super("csharp-settings", container);

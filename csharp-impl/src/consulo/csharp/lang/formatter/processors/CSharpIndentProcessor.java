@@ -47,11 +47,13 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 {
 	private final CSharpFormattingBlock myBlock;
 	private final CommonCodeStyleSettings myCodeStyleSettings;
+	private final CSharpCodeStyleSettings myCustomSettings;
 
 	public CSharpIndentProcessor(CSharpFormattingBlock block, CommonCodeStyleSettings codeStyleSettings, CSharpCodeStyleSettings customSettings)
 	{
 		myBlock = block;
 		myCodeStyleSettings = codeStyleSettings;
+		myCustomSettings = customSettings;
 	}
 
 	@RequiredReadAction
@@ -66,10 +68,6 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 		}
 
 		final IElementType elementType = node.getElementType();
-		if(elementType == NON_ACTIVE_SYMBOL)
-		{
-			return null;
-		}
 
 		if(elementType == NAMESPACE_DECLARATION ||
 				elementType == TYPE_DECLARATION ||
@@ -103,7 +101,7 @@ public class CSharpIndentProcessor implements CSharpTokens, CSharpElements
 		}
 		else if(elementType == CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE)
 		{
-			return Indent.getAbsoluteNoneIndent();
+			return myCustomSettings.PREPROCESSOR_DIRECTIVES_AT_FIRST_COLUMN ? Indent.getAbsoluteNoneIndent() : Indent.getNormalIndent();
 		}
 		else if(elementType == DICTIONARY_INITIALIZER)
 		{
