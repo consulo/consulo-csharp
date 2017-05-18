@@ -33,6 +33,7 @@ import com.intellij.formatting.Wrap;
 import com.intellij.formatting.templateLanguages.BlockWithParent;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.formatter.FormatterUtil;
@@ -80,6 +81,10 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 	@Override
 	public Spacing getSpacing(@Nullable Block child1, @NotNull Block child2)
 	{
+		if((!(child1 instanceof ASTBlock) || !(child2 instanceof ASTBlock)))
+		{
+			return null;
+		}
 		return mySpacingProcessor.getSpacing((ASTBlock) child1, (ASTBlock) child2);
 	}
 
@@ -159,6 +164,11 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 			{
 				if(disabledNodes != null)
 				{
+					ASTNode node = disabledNodes.get(disabledNodes.size() - 1);
+					if(StringUtil.containsLineBreak(node.getChars()))
+					{
+						disabledNodes.remove(disabledNodes.remove(disabledNodes.size() - 1));
+					}
 					nodes.add(new CSharpDisabledBlock(disabledNodes));
 				}
 
@@ -182,11 +192,6 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 			}
 			else
 			{
-				/*if(FormatterUtil.containsWhiteSpacesOnly(next))
-				{
-					continue;
-				} */
-
 				final CSharpFormattingBlock childBlock = new CSharpFormattingBlock(next, null, null, mySettings);
 				blockWithParent = childBlock;
 
