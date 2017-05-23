@@ -72,7 +72,7 @@ public class PreprocessorParsing implements CSharpPreprocesorTokens, CSharpPrepr
 		{
 			builder.advanceLexer();
 
-			mark.drop();
+			mark.error("Expected directive");
 			return false;
 		}
 	}

@@ -42,6 +42,8 @@ public interface CSharpPreprocesorTokens extends TokenType
 
 	IElementType MACRO_UNDEF_KEYWORD = new IElementType("MACRO_UNDEF_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
 
+	IElementType ILLEGAL_KEYWORD = new IElementType("ILLEGAL_KEYWORD", CSharpPreprocessorLanguage.INSTANCE);
+
 	IElementType MACRO_STOP = new IElementType("MACRO_STOP", CSharpPreprocessorLanguage.INSTANCE);
 
 	IElementType IDENTIFIER = new IElementType("IDENTIFIER", CSharpPreprocessorLanguage.INSTANCE);

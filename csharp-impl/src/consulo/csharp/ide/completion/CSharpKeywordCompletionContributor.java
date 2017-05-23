@@ -16,19 +16,12 @@
 
 package consulo.csharp.ide.completion;
 
-import static com.intellij.patterns.StandardPatterns.or;
 import static com.intellij.patterns.StandardPatterns.psiElement;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.ide.completion.patterns.CSharpPatterns;
-import consulo.csharp.ide.completion.util.SpaceInsertHandler;
-import consulo.csharp.lang.psi.*;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.module.extension.CSharpLanguageVersion;
-import consulo.csharp.module.extension.CSharpModuleUtil;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -45,6 +38,11 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.util.ProcessingContext;
 import consulo.annotations.RequiredReadAction;
 import consulo.codeInsight.completion.CompletionProvider;
+import consulo.csharp.ide.completion.patterns.CSharpPatterns;
+import consulo.csharp.ide.completion.util.SpaceInsertHandler;
+import consulo.csharp.lang.psi.*;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
+import consulo.csharp.module.extension.CSharpModuleUtil;
 import consulo.dotnet.DotNetRunUtil;
 import consulo.dotnet.psi.*;
 
@@ -68,7 +66,7 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 
 	public CSharpKeywordCompletionContributor()
 	{
-		extend(CompletionType.BASIC, psiElement(CSharpPreprocessorElements.PREPROCESSOR_DIRECTIVE), new CompletionProvider()
+		extend(CompletionType.BASIC, psiElement(CSharpPreprocesorTokens.ILLEGAL_KEYWORD), new CompletionProvider()
 		{
 			@RequiredReadAction
 			@Override
@@ -83,25 +81,6 @@ public class CSharpKeywordCompletionContributor extends CompletionContributor
 				for(Map.Entry<String, Boolean> entry : ourPreprocessorDirectives.entrySet())
 				{
 					LookupElementBuilder element = LookupElementBuilder.create(entry.getKey()).withPresentableText("#" + entry.getKey());
-					if(entry.getValue())
-					{
-						element = element.withInsertHandler(SpaceInsertHandler.INSTANCE);
-					}
-					element = element.bold();
-					result.addElement(element);
-				}
-			}
-		});
-
-		extend(CompletionType.BASIC, or(CSharpPatterns.field(), CSharpPatterns.statementStart()), new CompletionProvider()
-		{
-			@RequiredReadAction
-			@Override
-			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
-			{
-				for(Map.Entry<String, Boolean> entry : ourPreprocessorDirectives.entrySet())
-				{
-					LookupElementBuilder element = LookupElementBuilder.create("#" + entry.getKey()).withPresentableText("#" + entry.getKey());
 					if(entry.getValue())
 					{
 						element = element.withInsertHandler(SpaceInsertHandler.INSTANCE);
