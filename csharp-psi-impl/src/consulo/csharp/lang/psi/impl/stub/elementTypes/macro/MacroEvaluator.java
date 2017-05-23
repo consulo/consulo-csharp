@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.stub.elementTypes.macro;
 
+import gnu.jel.CompilationException;
 import gnu.jel.CompiledExpression;
 import gnu.jel.DVMap;
 import gnu.jel.Evaluator;
@@ -42,7 +43,7 @@ public class MacroEvaluator
 
 	public static boolean evaluate(String text, Set<String> variables)
 	{
-		if(StringUtil.isEmpty(text))
+		if(StringUtil.isEmptyOrSpaces(text))
 		{
 			return true;
 		}
@@ -53,7 +54,8 @@ public class MacroEvaluator
 		}
 		catch(Throwable throwable)
 		{
-			return false;
+			// if expression is invalid do not break the code
+			return throwable instanceof CompilationException;
 		}
 	}
 }
