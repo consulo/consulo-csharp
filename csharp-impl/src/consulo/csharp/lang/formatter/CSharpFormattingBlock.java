@@ -132,7 +132,7 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 		for(ASTNode rawNode : rawNodes)
 		{
 			// if its whitespace node - add it to tempWhitespaceHolder or to disabled block
-			if(FormatterUtil.containsWhiteSpacesOnly(rawNode))
+			if(!(rawNode instanceof CSharpDisabledBlock) && FormatterUtil.containsWhiteSpacesOnly(rawNode))
 			{
 				if(disabledNodes != null)
 				{
