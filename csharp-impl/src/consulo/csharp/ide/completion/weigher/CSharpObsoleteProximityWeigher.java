@@ -20,22 +20,30 @@ import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.ProximityLocation;
 import com.intellij.psi.util.proximity.ProximityWeigher;
-import consulo.csharp.lang.CSharpLanguage;
-import consulo.dotnet.psi.DotNetGenericParameterListOwner;
+import consulo.annotations.RequiredReadAction;
+import consulo.dotnet.DotNetTypes;
+import consulo.dotnet.psi.DotNetAttributeUtil;
 
 /**
  * @author VISTALL
- * @since 17.11.2015
+ * @since 27.07.2015
  */
-public class CSharpByGenericParameterWeigher extends ProximityWeigher
+public class CSharpObsoleteProximityWeigher extends ProximityWeigher
 {
+	public enum Access
+	{
+		OBSOLETE,
+		NORMAL,
+	}
+
+	@RequiredReadAction
 	@Override
 	public Comparable weigh(@NotNull PsiElement psiElement, @NotNull ProximityLocation proximityLocation)
 	{
-		if(psiElement instanceof DotNetGenericParameterListOwner && psiElement.getLanguage() == CSharpLanguage.INSTANCE)
+		if(DotNetAttributeUtil.hasAttribute(psiElement, DotNetTypes.System.ObsoleteAttribute))
 		{
-			return -((DotNetGenericParameterListOwner) psiElement).getGenericParametersCount();
+			return Access.OBSOLETE;
 		}
-		return 0;
+		return Access.NORMAL;
 	}
 }

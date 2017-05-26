@@ -20,8 +20,17 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.codeInsight.completion.CompletionLocation;
+import com.intellij.codeInsight.completion.CompletionWeigher;
+import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.openapi.util.NotNullLazyKey;
+import com.intellij.openapi.util.Pair;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.PsiTreeUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.completion.CSharpCompletionUtil;
+import consulo.csharp.ide.completion.CSharpExpressionCompletionContributor;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import consulo.csharp.ide.completion.item.CSharpTypeLikeLookupElement;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
@@ -40,54 +49,41 @@ import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementWeigher;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author VISTALL
  * @since 27.07.2015
  */
-public class CSharpInheritProximityWeigher extends LookupElementWeigher
+public class CSharpInheritCompletionWeighter extends CompletionWeigher
 {
 	public enum Position
 	{
-		HIGH,
-		UP_KEYWORD,
-		UP_REF,
-		NONE,
 		DOWN,
+		UP_REF,
+		UP_KEYWORD,
+		HIGH
 	}
 
-	private PsiElement myPosition;
-	private List<ExpectedTypeInfo> myExpectedTypeInfos;
+	private static final NotNullLazyKey<List<ExpectedTypeInfo>, CompletionLocation> ourExpectedInfoTypes = NotNullLazyKey.create("ourExpectedInfoTypes", proximityLocation ->
+			CSharpExpressionCompletionContributor.getExpectedTypeInfosForExpression(proximityLocation.getCompletionParameters().getPosition(), null));
 
-	public CSharpInheritProximityWeigher(PsiElement position, List<ExpectedTypeInfo> expectedTypeInfos)
-	{
-		super("CSharpInheritProximityWeigher");
-		myPosition = position;
-		myExpectedTypeInfos = expectedTypeInfos;
-	}
-
-	@Nullable
 	@Override
 	@RequiredReadAction
-	public Comparable weigh(@NotNull LookupElement element)
+	public Comparable weigh(@NotNull LookupElement element, @NotNull CompletionLocation completionLocation)
 	{
 		if(element.getPsiElement() instanceof CSharpConstructorDeclaration)
 		{
 			return null;
 		}
 
-		if(myExpectedTypeInfos.isEmpty())
+		List<ExpectedTypeInfo> expectedTypeInfoList = ourExpectedInfoTypes.getValue(completionLocation);
+
+		if(expectedTypeInfoList.isEmpty())
 		{
-			return Position.NONE;
+			return null;
 		}
 
-		CSharpReferenceExpressionEx referenceExpressionEx = (CSharpReferenceExpressionEx) myPosition.getParent();
+		CSharpReferenceExpressionEx referenceExpressionEx = (CSharpReferenceExpressionEx) completionLocation.getCompletionParameters().getPosition().getParent();
 
 		DotNetGenericExtractor extractor = DotNetGenericExtractor.EMPTY;
 		if(element instanceof CSharpTypeLikeLookupElement)
@@ -103,20 +99,20 @@ public class CSharpInheritProximityWeigher extends LookupElementWeigher
 				DotNetTypeRef typeRef = typeRefFromTokeType((IElementType) object, referenceExpressionEx);
 				if(typeRef == null)
 				{
-					return Position.NONE;
+					return null;
 				}
 				PsiElement resolvedElement = typeRef.resolve().getElement();
 				if(resolvedElement == null)
 				{
-					return Position.NONE;
+					return null;
 				}
-				return weighElement(resolvedElement, extractor, referenceExpressionEx, myExpectedTypeInfos, Position.UP_KEYWORD);
+				return weighElement(resolvedElement, extractor, referenceExpressionEx, expectedTypeInfoList, Position.UP_KEYWORD);
 			}
-			return Position.NONE;
+			return null;
 		}
 		else
 		{
-			return weighElement(psiElement, extractor, referenceExpressionEx, myExpectedTypeInfos, Position.UP_REF);
+			return weighElement(psiElement, extractor, referenceExpressionEx, expectedTypeInfoList, Position.UP_REF);
 		}
 	}
 
@@ -183,7 +179,7 @@ public class CSharpInheritProximityWeigher extends LookupElementWeigher
 			}
 		}
 
-		return Position.NONE;
+		return null;
 	}
 
 	@Nullable

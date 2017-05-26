@@ -172,6 +172,11 @@
 		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpExpressionCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpNoVariantsDelegator"/>
 
+		<weigher key="proximity" implementationClass="consulo.csharp.ide.completion.weigher.CSharpObsoleteProximityWeigher" id="csharpObsoleteWeighter"/>
+		<weigher key="proximity" implementationClass="consulo.csharp.ide.completion.weigher.CSharpByGenericParameterWeigher" id="csharpByGenericParameterWeigher"/>
+
+		<weigher key="completion" implementationClass="consulo.csharp.ide.completion.weigher.CSharpInheritCompletionWeighter" order="before stats"/>
+
 		<completion.confidence language="C#" implementationClass="com.intellij.codeInsight.completion.SkipAutopopupInStrings"/>
 
 		<completion.contributor language="C#Doc"

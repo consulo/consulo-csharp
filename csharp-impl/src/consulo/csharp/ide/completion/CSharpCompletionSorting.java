@@ -21,21 +21,6 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
-import consulo.csharp.ide.completion.weigher.CSharpByGenericParameterWeigher;
-import consulo.csharp.ide.completion.weigher.CSharpInheritProximityWeigher;
-import consulo.csharp.ide.completion.weigher.CSharpObsoleteWeigher;
-import consulo.csharp.ide.completion.weigher.CSharpRecursiveGuardWeigher;
-import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
-import consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
-import consulo.csharp.lang.psi.CSharpEventDeclaration;
-import consulo.csharp.lang.psi.CSharpFieldDeclaration;
-import consulo.csharp.lang.psi.CSharpLocalVariable;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import consulo.dotnet.psi.DotNetParameter;
-import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionSorter;
@@ -47,6 +32,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.ide.completion.weigher.CSharpRecursiveGuardWeigher;
+import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
+import consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
+import consulo.csharp.lang.psi.CSharpEventDeclaration;
+import consulo.csharp.lang.psi.CSharpFieldDeclaration;
+import consulo.csharp.lang.psi.CSharpLocalVariable;
+import consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
+import consulo.dotnet.psi.DotNetParameter;
+import consulo.dotnet.resolve.DotNetNamespaceAsElement;
 
 /**
  * @author VISTALL
@@ -164,19 +160,12 @@ public class CSharpCompletionSorting
 	public static CompletionResultSet modifyResultSet(CompletionParameters completionParameters, CompletionResultSet result)
 	{
 		CompletionSorter sorter = CompletionSorter.defaultSorter(completionParameters, result.getPrefixMatcher());
-		List<LookupElementWeigher> afterPrefix = new ArrayList<LookupElementWeigher>();
-		List<ExpectedTypeInfo> expectedTypeInfos = CSharpExpressionCompletionContributor.getExpectedTypeInfosForExpression(completionParameters, null);
-		if(!expectedTypeInfos.isEmpty())
-		{
-			afterPrefix.add(new CSharpInheritProximityWeigher(completionParameters.getPosition(), expectedTypeInfos));
-		}
+		List<LookupElementWeigher> afterStats = new ArrayList<>();
 
-		ContainerUtil.addIfNotNull(afterPrefix, recursiveSorter(completionParameters, result));
-		afterPrefix.add(new KindSorter());
-		afterPrefix.add(new CSharpByGenericParameterWeigher());
-		afterPrefix.add(new CSharpObsoleteWeigher());
+		ContainerUtil.addIfNotNull(afterStats, recursiveSorter(completionParameters, result));
+		afterStats.add(new KindSorter());
 
-		sorter = sorter.weighAfter("prefix", afterPrefix.toArray(new LookupElementWeigher[afterPrefix.size()]));
+		sorter = sorter.weighAfter("stats", afterStats.toArray(new LookupElementWeigher[afterStats.size()]));
 		result = result.withRelevanceSorter(sorter);
 		return result;
 	}
