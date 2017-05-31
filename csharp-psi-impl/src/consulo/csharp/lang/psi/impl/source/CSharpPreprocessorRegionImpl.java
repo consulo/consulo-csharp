@@ -17,29 +17,23 @@
 package consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 import com.intellij.lang.ASTNode;
+import consulo.csharp.lang.psi.CSharpMacroElementVisitor;
 
 /**
  * @author VISTALL
- * @since 26.01.14
+ * @since 5/31/17
  */
-public class CSharpPreprocessorIfConditionBlockImpl extends CSharpPreprocessorElementImpl
+public class CSharpPreprocessorRegionImpl extends CSharpPreprocessorElementImpl
 {
-	public CSharpPreprocessorIfConditionBlockImpl(@NotNull ASTNode node)
+	public CSharpPreprocessorRegionImpl(@NotNull ASTNode node)
 	{
 		super(node);
-	}
-
-	@NotNull
-	public CSharpPreprocessorBlockStartImpl getDeclarationTag()
-	{
-		return findNotNullChildByClass(CSharpPreprocessorBlockStartImpl.class);
 	}
 
 	@Override
 	public void accept(@NotNull CSharpMacroElementVisitor visitor)
 	{
-		visitor.visitMacroIfConditionBlock(this);
+		visitor.visitRegionDirective(this);
 	}
 }

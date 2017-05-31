@@ -30,19 +30,9 @@ public class CSharpMacroElementVisitor extends PsiElementVisitor
 		visitElement(cSharpMacroDefine);
 	}
 
-	public void visitMacroBlockStart(CSharpPreprocessorBlockStartImpl start)
-	{
-		visitElement(start);
-	}
-
 	public void visitMacroBlockStop(CSharpPreprocessorBlockStopImpl stop)
 	{
 		visitElement(stop);
-	}
-
-	public void visitMacroBlock(CSharpPreprocessorBlockImpl block)
-	{
-		visitElement(block);
 	}
 
 	public void visitPrefixExpression(CSharpPreprocessorPrefixExpressionImpl expression)
@@ -75,7 +65,12 @@ public class CSharpMacroElementVisitor extends PsiElementVisitor
 		visitElement(element);
 	}
 
-	public void visitMacroIfConditionBlock(CSharpPreprocessorIfConditionBlockImpl element)
+	public void visitRegionDirective(CSharpPreprocessorRegionImpl element)
+	{
+		visitElement(element);
+	}
+
+	public void visitEndRegionDirective(CSharpPreprocessorEndRegionImpl element)
 	{
 		visitElement(element);
 	}
