@@ -68,6 +68,18 @@ public class PreprocessorParsing implements CSharpPreprocesorTokens, CSharpPrepr
 			mark.done(MACRO_BLOCK_STOP);
 			return true;
 		}
+		else if(token == MACRO_REGION_KEYWORD || token == MACRO_ENDREGION_KEYWORD)
+		{
+			builder.advanceLexer();
+
+			while(!builder.eof())
+			{
+				builder.advanceLexer();
+			}
+
+			mark.done(token == MACRO_REGION_KEYWORD ? CSharpPreprocessorElements.REGION_DIRECTIVE : CSharpPreprocessorElements.ENDREGION_DIRECTIVE);
+			return true;
+		}
 		else
 		{
 			builder.advanceLexer();

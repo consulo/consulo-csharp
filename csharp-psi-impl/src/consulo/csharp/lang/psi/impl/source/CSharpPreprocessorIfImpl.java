@@ -32,12 +32,6 @@ public class CSharpPreprocessorIfImpl extends CSharpPreprocessorElementImpl
 		super(node);
 	}
 
-	@NotNull
-	public CSharpPreprocessorIfConditionBlockImpl[] getConditionBlocks()
-	{
-		return findChildrenByClass(CSharpPreprocessorIfConditionBlockImpl.class);
-	}
-
 	@Nullable
 	public CSharpPreprocessorBlockStopImpl getCloseTag()
 	{
