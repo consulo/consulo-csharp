@@ -171,7 +171,7 @@ public class CSharpFormattingBlock extends AbstractBlock implements CSharpElemen
 				if(disabledNodes != null)
 				{
 					ASTNode node = disabledNodes.get(disabledNodes.size() - 1);
-					if(StringUtil.containsLineBreak(node.getChars()))
+					if(!(node instanceof CSharpDisabledBlock) && StringUtil.containsLineBreak(node.getChars()))
 					{
 						disabledNodes.remove(disabledNodes.remove(disabledNodes.size() - 1));
 					}
