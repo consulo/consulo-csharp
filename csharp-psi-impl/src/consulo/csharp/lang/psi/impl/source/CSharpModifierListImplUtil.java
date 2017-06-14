@@ -20,7 +20,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiParserFacade;
+import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.tree.IElementType;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
 import consulo.csharp.lang.psi.CSharpFieldDeclaration;
 import consulo.csharp.lang.psi.CSharpFileFactory;
@@ -34,10 +39,6 @@ import consulo.dotnet.psi.DotNetModifierListOwner;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import consulo.dotnet.psi.DotNetXXXAccessor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiParserFacade;
-import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
@@ -99,6 +100,24 @@ public class CSharpModifierListImplUtil
 					return true;
 				}
 				break;
+			case PRIVATE:
+				if(parent instanceof CSharpTypeDeclaration && parent.getParent() instanceof CSharpTypeDeclaration)
+				{
+					if(findModifier(modifierList, cSharpModifier) == CSharpAccessModifier.NONE)
+					{
+						return true;
+					}
+				}
+				break;
+			case INTERNAL:
+				if(parent instanceof CSharpTypeDeclaration && !(parent.getParent() instanceof CSharpTypeDeclaration))
+				{
+					if(findModifier(modifierList, cSharpModifier) == CSharpAccessModifier.NONE)
+					{
+						return true;
+					}
+				}
+				break;
 			case STATIC:
 				if(parent instanceof CSharpFieldDeclaration)
 				{
@@ -157,6 +176,34 @@ public class CSharpModifierListImplUtil
 				break;
 		}
 		return false;
+	}
+
+	@NotNull
+	@RequiredReadAction
+	private static CSharpAccessModifier findModifier(@NotNull CSharpModifierList list, CSharpModifier skipModifier)
+	{
+		loop: for(CSharpAccessModifier value : CSharpAccessModifier.VALUES)
+		{
+			if(value == CSharpAccessModifier.NONE)
+			{
+				continue;
+			}
+
+			if(value.getModifiers().length == 1 && value.getModifiers()[0] == skipModifier)
+			{
+				continue;
+			}
+
+			for(CSharpModifier modifier : value.getModifiers())
+			{
+				if(!hasModifier(list, modifier))
+				{
+					continue loop;
+				}
+			}
+			return value;
+		}
+		return CSharpAccessModifier.NONE;
 	}
 
 	@RequiredReadAction

@@ -16,28 +16,19 @@
 
 package consulo.csharp.lang.psi.impl;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.lang.evaluator.ConstantExpressionEvaluator;
-import consulo.csharp.lang.psi.CSharpAccessModifier;
-import consulo.csharp.lang.psi.CSharpAttribute;
-import consulo.csharp.lang.psi.CSharpAttributeList;
-import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
-import consulo.csharp.lang.psi.impl.stub.index.AttributeListIndex;
-import consulo.dotnet.module.DotNetAssemblyUtil;
-import consulo.dotnet.psi.DotNetAttributeTargetType;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetInheritUtil;
-import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetTypeDeclaration;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.SmartList;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpAccessModifier;
+import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
+import consulo.csharp.lang.psi.impl.runtime.AssemblyModule;
+import consulo.dotnet.psi.DotNetInheritUtil;
+import consulo.dotnet.psi.DotNetModifierListOwner;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
 
 /**
  * @author VISTALL
@@ -62,30 +53,17 @@ public class CSharpVisibilityUtil
 			case PROTECTED_INTERNAL:
 				return isVisible(target, place, CSharpAccessModifier.INTERNAL);
 			case INTERNAL:
-				Module targetModule = ModuleUtilCore.findModuleForPsiElement(target);
-				Module placeModule = ModuleUtilCore.findModuleForPsiElement(place);
-				if(targetModule != null)
+				AssemblyModule targetModule = AssemblyModule.resolve(target);
+				AssemblyModule placeModule = AssemblyModule.resolve(place);
+
+				if(targetModule.equals(placeModule))
 				{
-					if(targetModule.equals(placeModule))
-					{
-						return true;
-					}
-
-					if(placeModule == null)
-					{
-						return false;
-					}
-
-					String placeAssemblyName = DotNetAssemblyUtil.getAssemblyTitle(place);
-					if(placeAssemblyName == null)
-					{
-						return false;
-					}
-
-					List<String> allowListForInternal = findAllowListForInternal(targetModule);
-					return allowListForInternal.contains(placeAssemblyName);
+					return true;
 				}
-				return false;
+
+				String placeAssemblyName = placeModule.getName();
+
+				return targetModule.isAllowedAssembly(placeAssemblyName);
 			case PROTECTED:
 			{
 				List<DotNetTypeDeclaration> targetTypes = collectAllTypes(target);
@@ -127,51 +105,10 @@ public class CSharpVisibilityUtil
 		return false;
 	}
 
-	@RequiredReadAction
-	@NotNull
-	public static List<String> findAllowListForInternal(@NotNull Module targetModule)
-	{
-		Collection<CSharpAttributeList> attributeLists = AttributeListIndex.getInstance().get(DotNetAttributeTargetType.ASSEMBLY, targetModule.getProject(), targetModule.getModuleScope());
-
-		List<String> list = new SmartList<String>();
-		for(CSharpAttributeList attributeList : attributeLists)
-		{
-			for(CSharpAttribute attribute : attributeList.getAttributes())
-			{
-				DotNetTypeDeclaration dotNetTypeDeclaration = attribute.resolveToType();
-				if(dotNetTypeDeclaration == null)
-				{
-					continue;
-				}
-
-				if(DotNetTypes2.System.Runtime.CompilerServices.InternalsVisibleToAttribute.equalsIgnoreCase(dotNetTypeDeclaration.getVmQName()))
-				{
-					Module attributeModule = ModuleUtilCore.findModuleForPsiElement(attribute);
-					if(attributeModule == null || !attributeModule.equals(targetModule))
-					{
-						continue;
-					}
-
-					DotNetExpression[] parameterExpressions = attribute.getParameterExpressions();
-					if(parameterExpressions.length == 0)
-					{
-						continue;
-					}
-					String valueAs = new ConstantExpressionEvaluator(parameterExpressions[0]).getValueAs(String.class);
-					if(valueAs != null)
-					{
-						list.add(valueAs);
-					}
-				}
-			}
-		}
-		return list;
-	}
-
 	@NotNull
 	private static List<DotNetTypeDeclaration> collectAllTypes(PsiElement place)
 	{
-		List<DotNetTypeDeclaration> typeDeclarations = new SmartList<DotNetTypeDeclaration>();
+		List<DotNetTypeDeclaration> typeDeclarations = new SmartList<>();
 		PsiElement type = place;
 		while((type = PsiTreeUtil.getContextOfType(type, DotNetTypeDeclaration.class)) != null)
 		{

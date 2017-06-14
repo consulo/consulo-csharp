@@ -99,7 +99,7 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 	{
 		if(myAdditionalAttributes.isEmpty())
 		{
-			myAdditionalAttributes = new ArrayList<DotNetAttribute>(5);
+			myAdditionalAttributes = new ArrayList<>(5);
 		}
 		myAdditionalAttributes.add(attribute);
 	}
@@ -126,7 +126,7 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 	@Override
 	public DotNetModifier[] getModifiers()
 	{
-		List<CSharpModifier> list = new ArrayList<CSharpModifier>();
+		List<CSharpModifier> list = new ArrayList<>();
 		for(CSharpModifier cSharpModifier : CSharpModifier.values())
 		{
 			if(MsilToCSharpUtil.hasCSharpInMsilModifierList(cSharpModifier, myModifierList))
@@ -138,12 +138,13 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 		return list.toArray(new DotNetModifier[list.size()]);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetAttribute[] getAttributes()
 	{
 		DotNetAttribute[] oldAttributes = myModifierList.getAttributes();
-		List<DotNetAttribute> attributes = new ArrayList<DotNetAttribute>(oldAttributes.length + myAdditionalAttributes.size());
+		List<DotNetAttribute> attributes = new ArrayList<>(oldAttributes.length + myAdditionalAttributes.size());
 		for(DotNetAttribute oldAttribute : oldAttributes)
 		{
 			DotNetTypeDeclaration resolvedType = oldAttribute.resolveToType();
