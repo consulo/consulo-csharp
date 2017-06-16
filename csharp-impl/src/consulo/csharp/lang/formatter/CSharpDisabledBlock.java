@@ -80,7 +80,7 @@ public class CSharpDisabledBlock extends UserDataHolderBase implements ASTNode, 
 	@Override
 	public int getStartOffset()
 	{
-		throw new UnsupportedOperationException();
+		return myNodes.get(0).getStartOffset();
 	}
 
 	@Override
