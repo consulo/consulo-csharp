@@ -101,7 +101,10 @@ public class CSharpCreateFileAction extends CreateFromTemplateAction<PsiFile>
 	private static Module findModule(DataContext dataContext)
 	{
 		Project project = CommonDataKeys.PROJECT.getData(dataContext);
-		assert project != null;
+		if(project == null)
+		{
+			return null;
+		}
 		final IdeView view = LangDataKeys.IDE_VIEW.getData(dataContext);
 		if(view == null)
 		{
