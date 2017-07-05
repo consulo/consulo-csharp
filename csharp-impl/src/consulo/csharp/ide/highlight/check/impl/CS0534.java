@@ -68,6 +68,12 @@ public class CS0534 extends CompilerCheck<CSharpTypeDeclaration>
 		}
 
 		@Override
+		public boolean startInWriteAction()
+		{
+			return false;
+		}
+
+		@Override
 		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			new ImplementMethodsHandler().invoke(project, editor, file);
