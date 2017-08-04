@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayFactory;
@@ -31,18 +30,11 @@ public interface CSharpMethodDeclaration extends DotNetMethodDeclaration, CSharp
 {
 	public static final CSharpMethodDeclaration[] EMPTY_ARRAY = new CSharpMethodDeclaration[0];
 
-	public static ArrayFactory<CSharpMethodDeclaration> ARRAY_FACTORY = new ArrayFactory<CSharpMethodDeclaration>()
-	{
-		@NotNull
-		@Override
-		public CSharpMethodDeclaration[] create(int count)
-		{
-			return count == 0 ? EMPTY_ARRAY : new CSharpMethodDeclaration[count];
-		}
-	};
+	public static ArrayFactory<CSharpMethodDeclaration> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpMethodDeclaration[count];
 
 	boolean isDelegate();
 
+	@RequiredReadAction
 	boolean isOperator();
 
 	boolean isExtension();

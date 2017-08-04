@@ -99,6 +99,7 @@ public class CSharpMethodDeclarationImpl extends CSharpLikeMethodDeclarationImpl
 		return findChildByType(CSharpTokens.DELEGATE_KEYWORD) != null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean isOperator()
 	{

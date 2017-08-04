@@ -62,6 +62,7 @@ public class CSharpLightMethodDeclarationBuilder extends CSharpLightLikeMethodDe
 		return false;
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean isOperator()
 	{

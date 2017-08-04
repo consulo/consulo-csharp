@@ -50,6 +50,7 @@ public class CSharpLightMethodDeclaration extends CSharpLightLikeMethodDeclarati
 		return myOriginal.isDelegate();
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean isOperator()
 	{

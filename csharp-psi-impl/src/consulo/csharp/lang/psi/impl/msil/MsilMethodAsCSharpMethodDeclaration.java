@@ -166,6 +166,7 @@ public class MsilMethodAsCSharpMethodDeclaration extends MsilMethodAsCSharpLikeM
 		return myDelegate != null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean isOperator()
 	{

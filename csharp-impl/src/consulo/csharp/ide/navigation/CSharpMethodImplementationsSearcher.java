@@ -19,6 +19,7 @@ package consulo.csharp.ide.navigation;
 import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.application.ReadAction;
 import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import com.intellij.psi.PsiElement;
@@ -39,7 +40,7 @@ public class CSharpMethodImplementationsSearcher implements QueryExecutor<PsiEle
 		PsiElement element = queryParameters.getElement();
 		if(element instanceof DotNetVirtualImplementOwner)
 		{
-			Collection<DotNetVirtualImplementOwner> members = OverrideUtil.collectOverridenMembers((DotNetVirtualImplementOwner) element);
+			Collection<DotNetVirtualImplementOwner> members = ReadAction.compute(() -> OverrideUtil.collectOverridenMembers((DotNetVirtualImplementOwner) element));
 			return ContainerUtil.process(members, consumer);
 		}
 		return true;
