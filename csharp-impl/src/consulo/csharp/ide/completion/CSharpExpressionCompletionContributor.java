@@ -169,30 +169,42 @@ public class CSharpExpressionCompletionContributor extends CompletionContributor
 			private Icon getIconForInnerTypeRef(@NotNull CSharpArrayTypeRef typeRef, @NotNull PsiElement scope)
 			{
 				DotNetTypeRef innerTypeRef = typeRef.getInnerTypeRef();
-				if(!(innerTypeRef instanceof CSharpArrayTypeRef))
+				if(innerTypeRef instanceof CSharpArrayTypeRef)
 				{
-					PsiElement element = innerTypeRef.resolve().getElement();
-					if(element != null)
+					DotNetTypeRef innerNext = ((CSharpArrayTypeRef) innerTypeRef).getInnerTypeRef();
+					if(innerNext instanceof CSharpArrayTypeRef)
 					{
-						if(element instanceof DotNetTypeDeclaration)
-						{
-							String vmQName = ((DotNetTypeDeclaration) element).getVmQName();
-							String keyword = CSharpTypeRefPresentationUtil.ourTypesAsKeywords.get(vmQName);
-							if(keyword != null && CSharpCodeGenerationSettings.getInstance(scope.getProject()).USE_LANGUAGE_DATA_TYPES)
-							{
-								return null;
-							}
-						}
-						return IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY);
+						return getIconForInnerTypeRef((CSharpArrayTypeRef) innerNext, scope);
 					}
-					else
-					{
-						return AllIcons.Nodes.Class;
-					}
+					return getIconForInnerTypeRef(innerTypeRef, scope);
 				}
 				else
 				{
-					return getIconForInnerTypeRef((CSharpArrayTypeRef) ((CSharpArrayTypeRef) innerTypeRef).getInnerTypeRef(), scope);
+					return getIconForInnerTypeRef(innerTypeRef, scope);
+				}
+			}
+
+			@Nullable
+			@RequiredReadAction
+			private Icon getIconForInnerTypeRef(DotNetTypeRef innerTypeRef, @NotNull PsiElement scope)
+			{
+				PsiElement element = innerTypeRef.resolve().getElement();
+				if(element != null)
+				{
+					if(element instanceof DotNetTypeDeclaration)
+					{
+						String vmQName = ((DotNetTypeDeclaration) element).getVmQName();
+						String keyword = CSharpTypeRefPresentationUtil.ourTypesAsKeywords.get(vmQName);
+						if(keyword != null && CSharpCodeGenerationSettings.getInstance(scope.getProject()).USE_LANGUAGE_DATA_TYPES)
+						{
+							return null;
+						}
+					}
+					return IconDescriptorUpdaters.getIcon(element, Iconable.ICON_FLAG_VISIBILITY);
+				}
+				else
+				{
+					return AllIcons.Nodes.Class;
 				}
 			}
 		});
