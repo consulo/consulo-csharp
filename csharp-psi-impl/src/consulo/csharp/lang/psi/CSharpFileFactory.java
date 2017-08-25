@@ -18,6 +18,11 @@ package consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.extapi.psi.PsiFileBase;
+import com.intellij.lang.ASTNode;
+import com.intellij.lang.Language;
+import com.intellij.lang.PsiBuilder;
+import com.intellij.lang.PsiBuilderFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -25,11 +30,17 @@ import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.SingleRootFileViewProvider;
 import com.intellij.psi.StubBasedPsiElement;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.IFileElementType;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.testFramework.LightVirtualFile;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.CSharpFileType;
-import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpExpressionStatementImpl;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.parser.CSharpBuilderWrapper;
+import consulo.csharp.lang.parser.ModifierSet;
+import consulo.csharp.lang.parser.exp.ExpressionParsing;
+import consulo.csharp.lang.parser.stmt.StatementParsing;
 import consulo.csharp.lang.psi.impl.source.CSharpFileImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpFileWithScopeImpl;
 import consulo.dotnet.psi.DotNetExpression;
@@ -38,6 +49,7 @@ import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetStatement;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
+import consulo.lang.LanguageVersion;
 
 /**
  * @author VISTALL
@@ -153,26 +165,72 @@ public class CSharpFileFactory
 		return referenceElement;
 	}
 
+	private static final IElementType ourExpressionElementType = new IFileElementType("expression-element-type", CSharpLanguage.INSTANCE)
+	{
+		@Override
+		protected ASTNode doParseContents(@NotNull ASTNode chameleon, @NotNull PsiElement psi)
+		{
+			final Project project = psi.getProject();
+			final Language languageForParser = getLanguageForParser(psi);
+			final LanguageVersion tempLanguageVersion = chameleon.getUserData(LanguageVersion.KEY);
+			final LanguageVersion languageVersion = tempLanguageVersion == null ? psi.getLanguageVersion() : tempLanguageVersion;
+			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion, chameleon.getChars());
+			ExpressionParsing.parse(new CSharpBuilderWrapper(builder, languageVersion), ModifierSet.EMPTY);
+			while(!builder.eof())
+			{
+				builder.advanceLexer();
+			}
+			return builder.getTreeBuilt();
+		}
+	};
+
+	@RequiredReadAction
+	@NotNull
 	public static DotNetExpression createExpression(@NotNull Project project, @NotNull String text)
 	{
-		DotNetStatement statement = createStatement(project, text);
-		assert statement instanceof CSharpExpressionStatementImpl : "'" + text + "'";
-		return ((CSharpExpressionStatementImpl) statement).getExpression();
+		return parseFile(text, project, DotNetExpression.class, ourExpressionElementType);
 	}
 
+	private static final IElementType ourStatementElementType = new IFileElementType("statement-element-type", CSharpLanguage.INSTANCE)
+	{
+		@Override
+		protected ASTNode doParseContents(@NotNull ASTNode chameleon, @NotNull PsiElement psi)
+		{
+			final Project project = psi.getProject();
+			final Language languageForParser = getLanguageForParser(psi);
+			final LanguageVersion tempLanguageVersion = chameleon.getUserData(LanguageVersion.KEY);
+			final LanguageVersion languageVersion = tempLanguageVersion == null ? psi.getLanguageVersion() : tempLanguageVersion;
+			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion, chameleon.getChars());
+			StatementParsing.parse(new CSharpBuilderWrapper(builder, languageVersion), ModifierSet.EMPTY);
+			while(!builder.eof())
+			{
+				builder.advanceLexer();
+			}
+			return builder.getTreeBuilt();
+		}
+	};
+
+	@RequiredReadAction
+	@NotNull
 	public static DotNetStatement createStatement(@NotNull Project project, @NotNull CharSequence text)
 	{
-		String clazz = "class _Dummy { " +
-				"void test() {" +
-				text +
-				"}" +
-				" }";
+		return parseFile(text, project, DotNetStatement.class, ourStatementElementType);
+	}
 
-		CSharpFileImpl psiFile = createTypeDeclarationWithScope(project, clazz);
+	@RequiredReadAction
+	private static <T extends PsiElement> T parseFile(CharSequence text, Project project, Class<T> clazz, IElementType elementType)
+	{
+		LightVirtualFile virtualFile = new LightVirtualFile("dummy.cs", CSharpFileType.INSTANCE, text, System.currentTimeMillis());
+		SingleRootFileViewProvider viewProvider = new SingleRootFileViewProvider(PsiManager.getInstance(project), virtualFile, false);
 
-		DotNetTypeDeclaration typeDeclaration = (DotNetTypeDeclaration) psiFile.getMembers()[0];
-		CSharpMethodDeclaration dotNetNamedElement = (CSharpMethodDeclaration) typeDeclaration.getMembers()[0];
-		return ((CSharpBlockStatementImpl) dotNetNamedElement.getCodeBlock()).getStatements()[0];
+		PsiFileBase file = new PsiFileBase(viewProvider, CSharpLanguage.INSTANCE)
+		{
+			{
+				init(elementType, elementType);
+			}
+		};
+
+		return PsiTreeUtil.findChildOfType(file, clazz);
 	}
 
 	@NotNull
