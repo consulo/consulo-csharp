@@ -16,6 +16,8 @@
 
 package consulo.csharp.lang.psi;
 
+import java.util.function.BiConsumer;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.extapi.psi.PsiFileBase;
@@ -165,24 +167,11 @@ public class CSharpFileFactory
 		return referenceElement;
 	}
 
-	private static final IElementType ourExpressionElementType = new IFileElementType("expression-element-type", CSharpLanguage.INSTANCE)
-	{
-		@Override
-		protected ASTNode doParseContents(@NotNull ASTNode chameleon, @NotNull PsiElement psi)
-		{
-			final Project project = psi.getProject();
-			final Language languageForParser = getLanguageForParser(psi);
-			final LanguageVersion tempLanguageVersion = chameleon.getUserData(LanguageVersion.KEY);
-			final LanguageVersion languageVersion = tempLanguageVersion == null ? psi.getLanguageVersion() : tempLanguageVersion;
-			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion, chameleon.getChars());
-			ExpressionParsing.parse(new CSharpBuilderWrapper(builder, languageVersion), ModifierSet.EMPTY);
-			while(!builder.eof())
-			{
-				builder.advanceLexer();
-			}
-			return builder.getTreeBuilt();
-		}
-	};
+	private static final IElementType ourExpressionElementType = createElementType("expression-element-type", (builder, languageVersion) -> ExpressionParsing.parse(new CSharpBuilderWrapper(builder,
+			languageVersion), ModifierSet.EMPTY));
+
+	private static final IElementType ourStatementElementType = createElementType("statement-element-type", (builder, languageVersion) -> StatementParsing.parse(new CSharpBuilderWrapper(builder,
+			languageVersion), ModifierSet.EMPTY));
 
 	@RequiredReadAction
 	@NotNull
@@ -190,25 +179,6 @@ public class CSharpFileFactory
 	{
 		return parseFile(text, project, DotNetExpression.class, ourExpressionElementType);
 	}
-
-	private static final IElementType ourStatementElementType = new IFileElementType("statement-element-type", CSharpLanguage.INSTANCE)
-	{
-		@Override
-		protected ASTNode doParseContents(@NotNull ASTNode chameleon, @NotNull PsiElement psi)
-		{
-			final Project project = psi.getProject();
-			final Language languageForParser = getLanguageForParser(psi);
-			final LanguageVersion tempLanguageVersion = chameleon.getUserData(LanguageVersion.KEY);
-			final LanguageVersion languageVersion = tempLanguageVersion == null ? psi.getLanguageVersion() : tempLanguageVersion;
-			final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion, chameleon.getChars());
-			StatementParsing.parse(new CSharpBuilderWrapper(builder, languageVersion), ModifierSet.EMPTY);
-			while(!builder.eof())
-			{
-				builder.advanceLexer();
-			}
-			return builder.getTreeBuilt();
-		}
-	};
 
 	@RequiredReadAction
 	@NotNull
@@ -231,6 +201,29 @@ public class CSharpFileFactory
 		};
 
 		return PsiTreeUtil.findChildOfType(file, clazz);
+	}
+
+	@NotNull
+	private static IElementType createElementType(String id, BiConsumer<PsiBuilder, LanguageVersion> consumer)
+	{
+		return new IFileElementType(id, CSharpLanguage.INSTANCE)
+		{
+			@Override
+			protected ASTNode doParseContents(@NotNull ASTNode chameleon, @NotNull PsiElement psi)
+			{
+				final Project project = psi.getProject();
+				final Language languageForParser = getLanguageForParser(psi);
+				final LanguageVersion tempLanguageVersion = chameleon.getUserData(LanguageVersion.KEY);
+				final LanguageVersion languageVersion = tempLanguageVersion == null ? psi.getLanguageVersion() : tempLanguageVersion;
+				final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, languageVersion, chameleon.getChars());
+				consumer.accept(builder, languageVersion);
+				while(!builder.eof())
+				{
+					builder.advanceLexer();
+				}
+				return builder.getTreeBuilt();
+			}
+		};
 	}
 
 	@NotNull
