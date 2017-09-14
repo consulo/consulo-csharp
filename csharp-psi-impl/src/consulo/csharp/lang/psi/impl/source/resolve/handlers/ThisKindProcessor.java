@@ -22,7 +22,12 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.Processor;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.impl.partial.CSharpCompositeTypeDeclaration;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveOptions;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResultWithExtractor;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericExtractor;
@@ -31,10 +36,6 @@ import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.Processor;
 
 /**
  * @author VISTALL
@@ -52,11 +53,13 @@ public class ThisKindProcessor implements KindProcessor
 		DotNetTypeDeclaration thisTypeDeclaration = PsiTreeUtil.getContextOfType(options.getElement(), DotNetTypeDeclaration.class);
 		if(thisTypeDeclaration != null)
 		{
+			thisTypeDeclaration = CSharpCompositeTypeDeclaration.selectCompositeOrSelfType(thisTypeDeclaration);
+
 			DotNetGenericExtractor genericExtractor = DotNetGenericExtractor.EMPTY;
 			int genericParametersCount = thisTypeDeclaration.getGenericParametersCount();
 			if(genericParametersCount > 0)
 			{
-				Map<DotNetGenericParameter, DotNetTypeRef> map = new THashMap<DotNetGenericParameter, DotNetTypeRef>(genericParametersCount);
+				Map<DotNetGenericParameter, DotNetTypeRef> map = new THashMap<>(genericParametersCount);
 				for(DotNetGenericParameter genericParameter : thisTypeDeclaration.getGenericParameters())
 				{
 					map.put(genericParameter, new CSharpTypeRefFromGenericParameter(genericParameter));

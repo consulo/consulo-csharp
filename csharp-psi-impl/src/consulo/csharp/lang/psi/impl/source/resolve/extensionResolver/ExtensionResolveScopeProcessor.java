@@ -64,7 +64,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 	private final CSharpCallArgumentListOwner myCallArgumentListOwner;
 	private final DotNetTypeRef myQualifierTypeRef;
 
-	private final List<CSharpMethodDeclaration> myResolvedElements = new SmartList<CSharpMethodDeclaration>();
+	private final List<CSharpMethodDeclaration> myResolvedElements = new SmartList<>();
 
 	private ExtensionQualifierAsCallArgumentWrapper myArgumentWrapper;
 
@@ -168,6 +168,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 	}
 
 	@NotNull
+	@RequiredReadAction
 	public GenericInferenceUtil.GenericInferenceResult inferenceGenericExtractor(CSharpMethodDeclaration methodDeclaration)
 	{
 		CSharpCallArgument[] arguments = myCallArgumentListOwner == null ? CSharpCallArgument.EMPTY_ARRAY : myCallArgumentListOwner.getCallArguments();
@@ -181,6 +182,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 		return GenericInferenceUtil.inferenceGenericExtractor(newArguments, typeArgumentRefs, myExpression, methodDeclaration);
 	}
 
+	@RequiredReadAction
 	public void consumeAsMethodGroup()
 	{
 		if(myResolvedElements.isEmpty())
@@ -190,7 +192,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 
 		CSharpMethodDeclaration methodDeclaration = myResolvedElements.get(0);
 		assert methodDeclaration != null;
-		CSharpElementGroupImpl element = new CSharpElementGroupImpl<CSharpMethodDeclaration>(myExpression.getProject(), methodDeclaration.getName(), myResolvedElements);
+		CSharpElementGroupImpl element = new CSharpElementGroupImpl<>(myExpression.getProject(), methodDeclaration.getName(), myResolvedElements);
 		myProcessor.pushResultExternally(new CSharpResolveResult(element, true));
 	}
 
@@ -204,6 +206,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 		return GenericUnwrapTool.exchangeTypeRef(parameters[0].toTypeRef(false), extractor, myExpression);
 	}
 
+	@RequiredReadAction
 	private static CSharpMethodDeclaration transform(final CSharpMethodDeclaration methodDeclaration, @NotNull GenericInferenceUtil.GenericInferenceResult inferenceResult,
 			@Nullable PsiElement providerElement)
 	{

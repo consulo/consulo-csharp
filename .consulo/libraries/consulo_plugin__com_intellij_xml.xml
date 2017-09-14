@@ -9,7 +9,7 @@
       <root url="jar://$PROJECT_DIR$/dep/com.intellij.xml/lib/resolver.jar!/" />
       <root url="zip://$PROJECT_DIR$/dep/com.intellij.xml/lib/rngom-src.zip!/" />
       <root url="jar://$PROJECT_DIR$/dep/com.intellij.xml/lib/trang-core.jar!/" />
-      <root url="jar://$PROJECT_DIR$/dep/com.intellij.xml/lib/jsr173_1.0_api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dep/com.intellij.xml/lib/xmlbeans-2.6.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/dep/com.intellij.xml/lib/rngom-20051226-patched.jar!/" />
     </binaries>
   </library>
