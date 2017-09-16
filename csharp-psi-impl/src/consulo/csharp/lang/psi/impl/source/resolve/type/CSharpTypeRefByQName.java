@@ -17,7 +17,10 @@
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
-import com.intellij.util.ExceptionUtil;
+import com.intellij.openapi.project.DumbService;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.msil.CSharpTransform;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
@@ -25,10 +28,6 @@ import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetPsiSearcher;
 import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.GlobalSearchScope;
 
 /**
  * @author VISTALL
@@ -42,8 +41,6 @@ public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult
 	private final GlobalSearchScope mySearchScope;
 	@NotNull
 	private final String myQualifiedName;
-
-	private String myThrowableText = ExceptionUtil.getThrowableText(new Exception());
 
 	public CSharpTypeRefByQName(@NotNull Project project, @NotNull GlobalSearchScope searchScope, @NotNull String qualifiedName)
 	{
@@ -75,7 +72,7 @@ public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult
 			return DotNetTypeResolveResult.EMPTY;
 		}
 
-		return new CSharpUserTypeRef.Result<DotNetTypeDeclaration>(type, DotNetGenericExtractor.EMPTY);
+		return new CSharpUserTypeRef.Result<>(type, DotNetGenericExtractor.EMPTY);
 	}
 
 	@RequiredReadAction
