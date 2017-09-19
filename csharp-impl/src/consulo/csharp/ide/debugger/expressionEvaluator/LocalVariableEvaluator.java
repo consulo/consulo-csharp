@@ -17,14 +17,17 @@
 package consulo.csharp.ide.debugger.expressionEvaluator;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.util.text.StringUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.debugger.CSharpEvaluateContext;
 import consulo.csharp.lang.psi.CSharpLocalVariable;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.text.StringUtil;
+import consulo.dotnet.debugger.nodes.DotNetDebuggerCompilerGenerateUtil;
+import consulo.dotnet.debugger.proxy.DotNetFieldProxy;
 import consulo.dotnet.debugger.proxy.DotNetLocalVariableProxy;
 import consulo.dotnet.debugger.proxy.DotNetMethodProxy;
 import consulo.dotnet.debugger.proxy.DotNetStackFrameProxy;
+import consulo.dotnet.debugger.proxy.DotNetTypeProxy;
 import consulo.dotnet.debugger.proxy.value.DotNetValueProxy;
 
 /**
@@ -45,6 +48,7 @@ public class LocalVariableEvaluator extends LocalVariableOrParameterEvaluator<CS
 		DotNetLocalVariableProxy[] locals = method.getLocalVariables(frame);
 
 		DotNetLocalVariableProxy mirror = null;
+		DotNetFieldProxy wrappedFieldLocal = null;
 		for(DotNetLocalVariableProxy local : locals)
 		{
 			String name = local.getName();
@@ -58,12 +62,45 @@ public class LocalVariableEvaluator extends LocalVariableOrParameterEvaluator<CS
 				mirror = local;
 				break;
 			}
+
+			if(DotNetDebuggerCompilerGenerateUtil.isLocalVarWrapper(name))
+			{
+				DotNetTypeProxy type = local.getType();
+				if(type == null)
+				{
+					continue;
+				}
+
+				DotNetFieldProxy[] fields = type.getFields();
+				if(fields.length != 1)
+				{
+					continue;
+				}
+
+				DotNetFieldProxy field = fields[0];
+				if(Comparing.equal(myName, field.getName()))
+				{
+					mirror = local;
+					wrappedFieldLocal = field;
+					break;
+				}
+			}
 		}
 
 		if(mirror != null)
 		{
 			DotNetValueProxy value = frame.getLocalValue(mirror);
-			if(value != null)
+
+			if(wrappedFieldLocal != null && value != null)
+			{
+				DotNetValueProxy localValue = wrappedFieldLocal.getValue(frame, value);
+				if(localValue != null)
+				{
+					context.pull(localValue, mirror);
+					return true;
+				}
+			}
+			else if(value != null)
 			{
 				context.pull(value, mirror);
 				return true;
