@@ -198,54 +198,52 @@ public class GenericInferenceUtil
 			}
 		}
 
-		DotNetTypeResolveResult typeRefFromExtends = CSharpTypeUtil.findTypeRefFromExtends(expressionTypeRef, parameterTypeRef, scope);
-		if(typeRefFromExtends == null)
+		DotNetTypeResolveResult expressionResultResult = CSharpTypeUtil.findTypeRefFromExtends(expressionTypeRef, parameterTypeRef, scope);
+		if(expressionResultResult == null)
 		{
 			return;
 		}
 
-		PsiElement element = typeRefFromExtends.getElement();
-		DotNetGenericExtractor genericExtractor = typeRefFromExtends.getGenericExtractor();
+		PsiElement expressionElement = expressionResultResult.getElement();
+		DotNetGenericExtractor expressionExtractor = expressionResultResult.getGenericExtractor();
 
-		if(element instanceof DotNetGenericParameterListOwner)
+		if(expressionElement instanceof DotNetGenericParameterListOwner)
 		{
-			DotNetGenericParameter[] genericParametersOfResolved = ((DotNetGenericParameterListOwner) element).getGenericParameters();
+			DotNetGenericParameter[] expressionGenericParameters = ((DotNetGenericParameterListOwner) expressionElement).getGenericParameters();
 
-			for(DotNetGenericParameter genericParameter : methodGenericParameters)
+			for(DotNetGenericParameter methodGenericParameter : methodGenericParameters)
 			{
-				if(map.containsKey(genericParameter))
+				if(map.containsKey(methodGenericParameter))
 				{
 					continue;
 				}
 
-				int indexOfGeneric = findIndexOfGeneric(parameterTypeResolveResult, genericParameter);
-				if(indexOfGeneric == -1)
+				int indexOfGeneric = findIndexOfGeneric(parameterTypeResolveResult, methodGenericParameter);
+				if(indexOfGeneric != -1)
 				{
-					continue;
-				}
+					DotNetGenericParameter genericParameterOfResolved = ArrayUtil2.safeGet(expressionGenericParameters, indexOfGeneric);
+					if(genericParameterOfResolved == null)
+					{
+						continue;
+					}
 
-				DotNetGenericParameter genericParameterOfResolved = ArrayUtil2.safeGet(genericParametersOfResolved, indexOfGeneric);
-				if(genericParameterOfResolved == null)
-				{
-					continue;
-				}
-
-				DotNetTypeRef extract = genericExtractor.extract(genericParameterOfResolved);
-				if(extract != null)
-				{
-					map.put(genericParameter, extract);
+					DotNetTypeRef extract = expressionExtractor.extract(genericParameterOfResolved);
+					if(extract != null)
+					{
+						map.put(methodGenericParameter, extract);
+					}
 				}
 			}
 		}
 	}
 
 	@RequiredReadAction
-	private static int findIndexOfGeneric(DotNetTypeResolveResult parameterTypeResolveResult, DotNetGenericParameter parameter)
+	private static int findIndexOfGeneric(DotNetTypeResolveResult parameterTypeResolveResult, DotNetGenericParameter methodGenericParameter)
 	{
-		PsiElement element = parameterTypeResolveResult.getElement();
-		if(element instanceof DotNetGenericParameterListOwner)
+		PsiElement parameterElement = parameterTypeResolveResult.getElement();
+		if(parameterElement instanceof DotNetGenericParameterListOwner)
 		{
-			DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) element).getGenericParameters();
+			DotNetGenericParameter[] genericParameters = ((DotNetGenericParameterListOwner) parameterElement).getGenericParameters();
 			if(genericParameters.length == 0)
 			{
 				return -1;
@@ -261,7 +259,7 @@ public class GenericInferenceUtil
 					continue;
 				}
 				DotNetTypeResolveResult extractedTypeResolveResult = extractedTypeRef.resolve();
-				if(parameter.isEquivalentTo(extractedTypeResolveResult.getElement()))
+				if(methodGenericParameter.isEquivalentTo(extractedTypeResolveResult.getElement()))
 				{
 					return i;
 				}
