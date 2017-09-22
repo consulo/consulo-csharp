@@ -21,6 +21,14 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
+import com.intellij.util.ArrayUtil;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;
@@ -38,7 +46,6 @@ import consulo.dotnet.psi.DotNetInheritUtil;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetModifierListOwner;
-import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetGenericWrapperTypeRef;
 import consulo.dotnet.resolve.DotNetPointerTypeRef;
@@ -52,13 +59,6 @@ import consulo.msil.lang.psi.impl.type.MsilArrayTypRefImpl;
 import consulo.msil.lang.psi.impl.type.MsilNativeTypeRefImpl;
 import consulo.msil.lang.psi.impl.type.MsilPointerTypeRefImpl;
 import consulo.msil.lang.psi.impl.type.MsilRefTypeRefImpl;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -66,8 +66,6 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class MsilToCSharpUtil
 {
-	private static final Key<PsiElement> MSIL_WRAPPER_VALUE = Key.create("msil.to.csharp.wrapper.key");
-
 	@RequiredReadAction
 	public static boolean hasCSharpInMsilModifierList(CSharpModifier modifier, DotNetModifierList modifierList)
 	{
@@ -185,34 +183,35 @@ public class MsilToCSharpUtil
 	{
 		if(element instanceof MsilClassEntry)
 		{
-			PsiElement wrapElement = null;
-			if(parent == null)
+			if(parent != null)
 			{
-				// do not return already wrapped element when we have parent(for nested classes) due we will override parent
-				wrapElement = element.getUserData(MSIL_WRAPPER_VALUE);
-				if(wrapElement != null)
+				PsiElement wrapElement = wrapToDelegateMethod((MsilClassEntry) element, parent, context);
+				if(wrapElement == null)
 				{
-					return wrapElement;
+					wrapElement = new MsilClassAsCSharpTypeDefinition(parent, (MsilClassEntry) element, context);
 				}
+				return wrapElement;
 			}
-
-			if(parent == null)
+			else
 			{
-				String parentQName = ((MsilClassEntry) element).getPresentableParentQName();
-				if(!StringUtil.isEmpty(parentQName))
+				return CachedValuesManager.getCachedValue(element, () ->
 				{
-					parent = new CSharpLightNamespaceDeclarationBuilder(element.getProject(), parentQName);
-				}
-			}
+					PsiElement thisParent = null;
+					String parentQName = ((MsilClassEntry) element).getPresentableParentQName();
+					if(!StringUtil.isEmpty(parentQName))
+					{
+						thisParent = new CSharpLightNamespaceDeclarationBuilder(element.getProject(), parentQName);
+					}
 
-			wrapElement = wrapToDelegateMethod((MsilClassEntry) element, parent, context);
-			if(wrapElement == null)
-			{
-				wrapElement = new MsilClassAsCSharpTypeDefinition(parent, (MsilClassEntry) element, context);
-			}
+					PsiElement wrapElement = wrapToDelegateMethod((MsilClassEntry) element, thisParent, context);
+					if(wrapElement == null)
+					{
+						wrapElement = new MsilClassAsCSharpTypeDefinition(thisParent, (MsilClassEntry) element, context);
+					}
 
-			element.putUserData(MSIL_WRAPPER_VALUE, wrapElement);
-			return wrapElement;
+					return CachedValueProvider.Result.create(wrapElement, PsiModificationTracker.MODIFICATION_COUNT);
+				});
+			}
 		}
 		return element;
 	}
@@ -223,14 +222,7 @@ public class MsilToCSharpUtil
 	{
 		if(DotNetInheritUtil.isInheritor(typeDeclaration, DotNetTypes.System.MulticastDelegate, false))
 		{
-			MsilMethodEntry msilMethodEntry = (MsilMethodEntry) ContainerUtil.find((typeDeclaration).getMembers(), new Condition<DotNetNamedElement>()
-			{
-				@Override
-				public boolean value(DotNetNamedElement element)
-				{
-					return element instanceof MsilMethodEntry && Comparing.equal(element.getName(), "Invoke");
-				}
-			});
+			MsilMethodEntry msilMethodEntry = (MsilMethodEntry) ContainerUtil.find((typeDeclaration).getMembers(), element -> element instanceof MsilMethodEntry && Comparing.equal(element.getName(), "Invoke"));
 
 			assert msilMethodEntry != null : typeDeclaration.getPresentableQName();
 
