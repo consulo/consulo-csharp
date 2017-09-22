@@ -25,8 +25,6 @@ import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.SmartList;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
@@ -357,13 +355,8 @@ public class GenericInferenceUtil
 		CSharpLambdaTypeRef baseTypeRefOfLambda = new CSharpLambdaTypeRef(scope, null, ((CSharpLambdaExpressionImpl) argumentExpression).getParameterInfos(), DotNetTypeRef.AUTO_TYPE);
 		if(CSharpTypeUtil.isInheritable(parameterTypeRef, baseTypeRefOfLambda, scope))
 		{
-			//TODO [VISTALL] find another way to duplicate expression
-			final PsiFile fileCopy = (PsiFile) argumentExpression.getContainingFile().copy();
-
-			PsiElement elementAt = fileCopy.findElementAt(argumentExpression.getTextOffset());
-			CSharpLambdaExpressionImpl copy = PsiTreeUtil.getParentOfType(elementAt, CSharpLambdaExpressionImpl.class);
-
-			assert copy != null;
+			CSharpLambdaExpressionImpl copy = (CSharpLambdaExpressionImpl) argumentExpression.copy();
+			copy.setForceResolveParent(argumentExpression.getParent());
 
 			DotNetGenericExtractor extractor = CSharpGenericExtractor.create(map);
 			DotNetTypeRef newParameterTypeRef = GenericUnwrapTool.exchangeTypeRef(parameterTypeRef, extractor, scope);

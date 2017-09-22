@@ -54,9 +54,26 @@ import consulo.dotnet.resolve.DotNetTypeRefUtil;
  */
 public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements CSharpAnonymousMethodExpression
 {
+	private PsiElement myForceResolveParent;
+
 	public CSharpLambdaExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
+	}
+
+	@Override
+	public PsiElement getParent()
+	{
+		if(myForceResolveParent != null)
+		{
+			return myForceResolveParent;
+		}
+		return super.getParent();
+	}
+
+	public void setForceResolveParent(PsiElement forceResolveParent)
+	{
+		myForceResolveParent = forceResolveParent;
 	}
 
 	@RequiredReadAction
