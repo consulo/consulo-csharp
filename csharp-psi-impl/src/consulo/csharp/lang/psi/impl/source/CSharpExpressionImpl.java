@@ -53,6 +53,6 @@ public abstract class CSharpExpressionImpl extends CSharpElementImpl implements 
 	@RequiredReadAction
 	public final DotNetTypeRef toTypeRef(boolean resolveFromParent)
 	{
-		return ourCacheSystem.toTypeRef(this, resolveFromParent);
+		return CSharpTypeRefCacher.ENABLED ? ourCacheSystem.toTypeRef(this, resolveFromParent) : toTypeRefImpl(resolveFromParent);
 	}
 }
