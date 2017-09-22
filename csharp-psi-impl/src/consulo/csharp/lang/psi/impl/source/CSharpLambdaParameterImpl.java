@@ -47,15 +47,7 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 {
 	public static final CSharpLambdaParameterImpl[] EMPTY_ARRAY = new CSharpLambdaParameterImpl[0];
 
-	public static ArrayFactory<CSharpLambdaParameterImpl> ARRAY_FACTORY = new ArrayFactory<CSharpLambdaParameterImpl>()
-	{
-		@NotNull
-		@Override
-		public CSharpLambdaParameterImpl[] create(int count)
-		{
-			return count == 0 ? EMPTY_ARRAY : new CSharpLambdaParameterImpl[count];
-		}
-	};
+	public static ArrayFactory<CSharpLambdaParameterImpl> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpLambdaParameterImpl[count];
 
 	public CSharpLambdaParameterImpl(@NotNull ASTNode node)
 	{
