@@ -22,6 +22,12 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.AtomicNullableLazyValue;
+import com.intellij.openapi.util.Ref;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.Consumer;
+import com.intellij.util.SmartList;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.impl.resolve.CSharpAdditionalMemberProvider;
@@ -31,13 +37,6 @@ import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapToo
 import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
-import com.intellij.openapi.util.AtomicNullableLazyValue;
-import com.intellij.openapi.util.Ref;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.Consumer;
-import com.intellij.util.Function;
-import com.intellij.util.SmartList;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author VISTALL
@@ -45,7 +44,7 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public abstract class SimpleElementGroupCollector<E extends PsiElement> extends ElementGroupCollector<E>
 {
-	private volatile AtomicNullableLazyValue<CSharpElementGroup<E>> myGroupValue = new AtomicNullableLazyValue<CSharpElementGroup<E>>()
+	private AtomicNullableLazyValue<CSharpElementGroup<E>> myGroupValue = new AtomicNullableLazyValue<CSharpElementGroup<E>>()
 	{
 		@Nullable
 		@Override
@@ -56,15 +55,7 @@ public abstract class SimpleElementGroupCollector<E extends PsiElement> extends 
 			final DotNetGenericExtractor extractor = getExtractor();
 			if(extractor != DotNetGenericExtractor.EMPTY)
 			{
-				elements = ContainerUtil.map(elements, new Function<E, E>()
-				{
-					@Override
-					@SuppressWarnings("unchecked")
-					public E fun(final E element)
-					{
-						return element instanceof DotNetNamedElement ? (E) GenericUnwrapTool.extract((DotNetNamedElement) element, extractor) : element;
-					}
-				});
+				elements = ContainerUtil.map(elements, element -> element instanceof DotNetNamedElement ? (E) GenericUnwrapTool.extract((DotNetNamedElement) element, extractor) : element);
 			}
 
 			return elements.isEmpty() ? null : new CSharpElementGroupImpl<E>(getProject(), myKey, elements);
@@ -85,19 +76,15 @@ public abstract class SimpleElementGroupCollector<E extends PsiElement> extends 
 	private Collection<E> calcElements()
 	{
 		final Ref<List<E>> listRef = Ref.create();
-		Consumer consumer = new Consumer<E>()
+		Consumer consumer = e ->
 		{
-			@Override
-			public void consume(PsiElement e)
+			List<E> es = listRef.get();
+			if(es == null)
 			{
-				List<E> es = listRef.get();
-				if(es == null)
-				{
-					listRef.set(es = new SmartList<E>());
-				}
-
-				es.add((E) e);
+				listRef.set(es = new SmartList<>());
 			}
+
+			es.add((E) e);
 		};
 
 		CSharpElementVisitor visitor = createVisitor(consumer);
