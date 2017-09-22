@@ -44,7 +44,7 @@ public class CSharpGenericConstraintUtil
 			return new DotNetTypeRef[] {new CSharpTypeRefByQName(parameter, DotNetTypes.System.Object)};
 		}
 
-		List<DotNetTypeRef> superTypes = new SmartList<DotNetTypeRef>();
+		List<DotNetTypeRef> superTypes = new SmartList<>();
 		for(CSharpGenericConstraintValue value : genericConstraint.getGenericConstraintValues())
 		{
 			if(value instanceof CSharpGenericConstraintTypeValue)

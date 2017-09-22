@@ -21,18 +21,11 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.ide.highlight.CSharpHighlightContext;
-import consulo.csharp.ide.highlight.check.CompilerCheck;
-import consulo.csharp.lang.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import consulo.csharp.lang.psi.impl.source.CSharpBinaryExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
-import consulo.csharp.module.extension.CSharpLanguageVersion;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
@@ -41,8 +34,19 @@ import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.MultiMap;
 import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
+import consulo.csharp.ide.highlight.CSharpHighlightContext;
+import consulo.csharp.ide.highlight.check.CompilerCheck;
+import consulo.csharp.lang.psi.CSharpFileFactory;
+import consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
+import consulo.csharp.lang.psi.CSharpTokens;
+import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
+import consulo.csharp.lang.psi.impl.source.CSharpBinaryExpressionImpl;
+import consulo.csharp.lang.psi.impl.source.CSharpOperatorReferenceImpl;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpNullTypeRef;
+import consulo.csharp.module.extension.CSharpLanguageVersion;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
@@ -152,6 +156,13 @@ public class CS0019 extends CompilerCheck<CSharpBinaryExpressionImpl>
 
 			if(!applicable)
 			{
+				PsiElement leftElement = leftType.resolve().getElement();
+				if(leftElement instanceof DotNetGenericParameter && CSharpGenericConstraintUtil.findGenericConstraint((DotNetGenericParameter) leftElement) == null && rightType instanceof
+						CSharpNullTypeRef)
+				{
+					return null;
+				}
+
 				Pair<String, DotNetTypeDeclaration> leftPair = CSharpTypeUtil.resolveTypeElement(leftType);
 				if(leftPair != null)
 				{
@@ -164,8 +175,8 @@ public class CS0019 extends CompilerCheck<CSharpBinaryExpressionImpl>
 					}
 				}
 
-				return newBuilder(operatorElement, operatorElement.getCanonicalText(), formatTypeRef(leftType, element), formatTypeRef(rightType,
-						element)).addQuickFix(new ReplaceByEqualsCallFix(element));
+				return newBuilder(operatorElement, operatorElement.getCanonicalText(), formatTypeRef(leftType, element), formatTypeRef(rightType, element)).addQuickFix(new ReplaceByEqualsCallFix
+						(element));
 			}
 		}
 		return null;
