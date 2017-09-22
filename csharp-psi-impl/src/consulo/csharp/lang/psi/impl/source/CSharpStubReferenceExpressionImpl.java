@@ -37,6 +37,7 @@ import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpStubElements;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
+import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.csharp.lang.psi.impl.stub.CSharpReferenceExpressionStub;
 import consulo.dotnet.psi.DotNetExpression;
@@ -143,7 +144,12 @@ public class CSharpStubReferenceExpressionImpl extends CSharpStubElementImpl<CSh
 		{
 			return ResolveResult.EMPTY_ARRAY;
 		}
-		return CSharpResolveCache.getInstance(getProject()).resolveWithCaching(this, CSharpReferenceExpressionImplUtil.OurResolver.INSTANCE, true, incompleteCode, resolveFromParent);
+		CSharpReferenceExpressionImplUtil.OurResolver resolver = CSharpReferenceExpressionImplUtil.OurResolver.INSTANCE;
+		if(GenericInferenceUtil.isInsideGenericInferenceSession())
+		{
+			return resolver.resolve(this, incompleteCode, resolveFromParent);
+		}
+		return CSharpResolveCache.getInstance(getProject()).resolveWithCaching(this, resolver, true, incompleteCode, resolveFromParent);
 	}
 
 	@RequiredReadAction

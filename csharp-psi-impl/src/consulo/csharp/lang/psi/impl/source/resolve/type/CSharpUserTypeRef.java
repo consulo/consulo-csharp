@@ -79,7 +79,6 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 		private final NotNullLazyValue<CSharpSimpleParameterInfo[]> myParameterInfosValue;
 		private final NotNullLazyValue<PsiElement> myElementValue;
 		private final NotNullLazyValue<DotNetTypeRef> myReturnTypRefValue;
-		private final NotNullLazyValue<DotNetTypeRef[]> myParameterTypeRefsValue;
 		private final PsiElement myScope;
 
 		@RequiredReadAction
@@ -105,7 +104,6 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 			});
 			myElementValue = NotNullLazyValue.createValue(() -> CSharpLambdaResolveResultUtil.createTypeFromDelegate(myElement, myExtractor));
 			myReturnTypRefValue = NotNullLazyValue.createValue(() -> GenericUnwrapTool.exchangeTypeRef(myElement.getReturnTypeRef(), getGenericExtractor(), scope));
-			myParameterTypeRefsValue = NotNullLazyValue.createValue(() -> GenericUnwrapTool.exchangeTypeRefs(myElement.getParameterTypeRefs(), getGenericExtractor(), myScope));
 		}
 
 		@NotNull
@@ -139,14 +137,6 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 		}
 
 		@RequiredReadAction
-		@NotNull
-		@Override
-		public DotNetTypeRef[] getParameterTypeRefs()
-		{
-			return myParameterTypeRefsValue.getValue();
-		}
-
-		@RequiredReadAction
 		@Override
 		public boolean isNullableImpl()
 		{
@@ -157,7 +147,7 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 		@Override
 		public CSharpMethodDeclaration getTarget()
 		{
-			return myElement;
+			return GenericUnwrapTool.extract(myElement, getGenericExtractor());
 		}
 	}
 

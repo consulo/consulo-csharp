@@ -18,6 +18,11 @@ package consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
+import consulo.annotations.DeprecationInfo;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -32,11 +37,6 @@ import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResul
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResultUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapTool;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
-import consulo.annotations.DeprecationInfo;
-import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRef;
@@ -169,6 +169,7 @@ public class CSharpMethodCallExpressionImpl extends CSharpExpressionImpl impleme
 			{
 				return ((CSharpLambdaResolveResult) typeResolveResult).getReturnTypeRef();
 			}
+			return DotNetTypeRef.ERROR_TYPE;
 		}
 		if(resolvedElement instanceof CSharpSimpleLikeMethodAsElement)
 		{

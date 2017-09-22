@@ -108,7 +108,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			{
 				ResolveResult[] resolveResults = reference.multiResolve(false);
 
-				List<ResolveResult> filter = new SmartList<ResolveResult>();
+				List<ResolveResult> filter = new SmartList<>();
 				for(ResolveResult resolveResult : resolveResults)
 				{
 					if(resolveResult.isValidResult())
@@ -126,7 +126,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		{
 			Object o = reference.resolveImpl();
 
-			List<ResolveResult> elements = new SmartList<ResolveResult>();
+			List<ResolveResult> elements = new SmartList<>();
 			if(o instanceof MethodResolveResult[])
 			{
 				MethodResolveResult[] array = (MethodResolveResult[]) o;
@@ -301,7 +301,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 				return new CSharpTypeRefByQName(this, DotNetTypes.System.Void);
 			}
 
-			final Set<MethodResolveResult> resolveResults = new LinkedHashSet<MethodResolveResult>();
+			final Set<MethodResolveResult> resolveResults = new LinkedHashSet<>();
 
 			for(final DotNetExpression dotNetExpression : parameterExpressions)
 			{
@@ -424,7 +424,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			{
 				return Collections.emptySet();
 			}
-			Set<PsiElement> elements = new HashSet<PsiElement>();
+			Set<PsiElement> elements = new HashSet<>();
 			for(String pointerArgumentType : ourPointerArgumentTypes)
 			{
 				elements.add(buildOperatorForPointer(elementType, typeRef, pointerArgumentType));

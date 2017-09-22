@@ -106,19 +106,11 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 			return GenericUnwrapTool.exchangeTypeRef(myReturnType, getGenericExtractor(), myScope);
 		}
 
-		@RequiredReadAction
-		@NotNull
-		@Override
-		public DotNetTypeRef[] getParameterTypeRefs()
-		{
-			return CSharpSimpleParameterInfo.toTypeRefs(getParameterInfos());
-		}
-
 		@Nullable
 		@Override
 		public CSharpMethodDeclaration getTarget()
 		{
-			return myTarget;
+			return GenericUnwrapTool.extract(myTarget, getGenericExtractor());
 		}
 	}
 

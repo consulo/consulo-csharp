@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpSimpleLikeMethod;
+import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 
@@ -35,7 +36,10 @@ public interface CSharpLambdaResolveResult extends DotNetTypeResolveResult, CSha
 
 	@NotNull
 	@RequiredReadAction
-	DotNetTypeRef[] getParameterTypeRefs();
+	default DotNetTypeRef[] getParameterTypeRefs()
+	{
+		return CSharpSimpleParameterInfo.toTypeRefs(getParameterInfos());
+	}
 
 	@Nullable
 	CSharpMethodDeclaration getTarget();

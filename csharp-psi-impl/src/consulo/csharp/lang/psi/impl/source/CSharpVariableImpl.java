@@ -18,15 +18,16 @@ package consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.annotations.RequiredReadAction;
-import consulo.dotnet.psi.DotNetExpression;
-import consulo.dotnet.psi.DotNetType;
-import consulo.dotnet.psi.DotNetVariable;
-import consulo.dotnet.resolve.DotNetTypeRef;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.NullableComputable;
 import com.intellij.openapi.util.RecursionManager;
 import com.intellij.psi.PsiElement;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
+import consulo.dotnet.psi.DotNetExpression;
+import consulo.dotnet.psi.DotNetType;
+import consulo.dotnet.psi.DotNetVariable;
+import consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
  * @author VISTALL
@@ -63,6 +64,10 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 	@Override
 	public DotNetTypeRef toTypeRef(boolean resolveFromInitializer)
 	{
+		if(GenericInferenceUtil.isInsideGenericInferenceSession())
+		{
+			return toTypeRefImpl(resolveFromInitializer);
+		}
 		return CSharpTypeRefCacher.ENABLED ? ourCacheSystem.toTypeRef(this, resolveFromInitializer) : toTypeRefImpl(resolveFromInitializer);
 	}
 

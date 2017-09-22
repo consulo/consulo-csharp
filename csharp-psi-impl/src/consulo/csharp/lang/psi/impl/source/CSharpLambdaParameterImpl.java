@@ -34,6 +34,7 @@ import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpLambdaParameter;
 import consulo.csharp.lang.psi.CSharpLambdaParameterList;
 import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpRefTypeRef;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.resolve.DotNetTypeRef;
@@ -91,6 +92,11 @@ public class CSharpLambdaParameterImpl extends CSharpVariableImpl implements CSh
 		DotNetType type = getType();
 		if(type == null)
 		{
+			if(GenericInferenceUtil.isInsideGenericInferenceSession(PsiTreeUtil.getParentOfType(this, CSharpLambdaExpressionImpl.class)))
+			{
+				return resolveTypeForParameter();
+			}
+
 			return resolveFromInitializer ? resolveTypeForParameter() : DotNetTypeRef.AUTO_TYPE;
 		}
 

@@ -21,6 +21,12 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.ObjectUtil;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
 import consulo.csharp.lang.psi.CSharpNamedFieldOrPropertySet;
@@ -31,13 +37,6 @@ import consulo.csharp.lang.psi.impl.source.resolve.MethodResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import com.intellij.openapi.util.Key;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ObjectUtil;
-import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRef;
@@ -50,8 +49,6 @@ import consulo.dotnet.util.ArrayUtil2;
  */
 public class CSharpLambdaExpressionImplUtil
 {
-	public static final Key<DotNetTypeRef> TYPE_REF_OF_LAMBDA = Key.create("type.ref.of.lambda");
-
 	@NotNull
 	@RequiredReadAction
 	public static DotNetTypeRef resolveTypeForParameter(CSharpLambdaExpressionImpl target, int parameterIndex)
@@ -70,15 +67,18 @@ public class CSharpLambdaExpressionImplUtil
 	@RequiredReadAction
 	public static CSharpLambdaResolveResult resolveLeftLambdaTypeRef(PsiElement target)
 	{
-		DotNetTypeRef typeRefOfLambda = target.getUserData(TYPE_REF_OF_LAMBDA);
-		if(typeRefOfLambda != null)
+		if(target instanceof CSharpLambdaExpressionImpl)
 		{
-			DotNetTypeResolveResult typeResolveResult = typeRefOfLambda.resolve();
-			if(typeResolveResult instanceof CSharpLambdaResolveResult)
+			DotNetTypeRef typeRefOfLambda = ((CSharpLambdaExpressionImpl) target).getInferenceSessionTypeRef();
+			if(typeRefOfLambda != null)
 			{
-				return (CSharpLambdaResolveResult) typeResolveResult;
+				DotNetTypeResolveResult typeResolveResult = typeRefOfLambda.resolve();
+				if(typeResolveResult instanceof CSharpLambdaResolveResult)
+				{
+					return (CSharpLambdaResolveResult) typeResolveResult;
+				}
+				return null;
 			}
-			return null;
 		}
 
 		return resolveLambdaTypeRefFromParent(target);

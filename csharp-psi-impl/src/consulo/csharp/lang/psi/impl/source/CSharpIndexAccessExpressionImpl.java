@@ -28,6 +28,7 @@ import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
+import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import com.intellij.lang.ASTNode;
@@ -170,8 +171,13 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 
 	@NotNull
 	@Override
+	@RequiredReadAction
 	public ResolveResult[] multiResolve(boolean incompleteCode)
 	{
+		if(GenericInferenceUtil.isInsideGenericInferenceSession())
+		{
+			return OurResolver.INSTANCE.resolve(this, incompleteCode, true);
+		}
 		return CSharpResolveCache.getInstance(getProject()).resolveWithCaching(this, OurResolver.INSTANCE, true, incompleteCode, true);
 	}
 

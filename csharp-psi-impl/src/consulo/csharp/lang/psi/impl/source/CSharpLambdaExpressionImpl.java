@@ -36,6 +36,7 @@ import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
 import consulo.csharp.lang.psi.CSharpTokens;
 import consulo.csharp.lang.psi.impl.CSharpImplicitReturnModel;
+import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaTypeRef;
@@ -54,26 +55,16 @@ import consulo.dotnet.resolve.DotNetTypeRefUtil;
  */
 public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements CSharpAnonymousMethodExpression
 {
-	private PsiElement myForceResolveParent;
-
 	public CSharpLambdaExpressionImpl(@NotNull ASTNode node)
 	{
 		super(node);
 	}
 
-	@Override
-	public PsiElement getParent()
+	@Nullable
+	public DotNetTypeRef getInferenceSessionTypeRef()
 	{
-		if(myForceResolveParent != null)
-		{
-			return myForceResolveParent;
-		}
-		return super.getParent();
-	}
-
-	public void setForceResolveParent(PsiElement forceResolveParent)
-	{
-		myForceResolveParent = forceResolveParent;
+		GenericInferenceUtil.InferenceSessionData inferenceSessionData = GenericInferenceUtil.ourInsideInferenceSession.get();
+		return inferenceSessionData != null ? inferenceSessionData.getTypeRef(this) : null;
 	}
 
 	@RequiredReadAction
@@ -148,6 +139,11 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
+		DotNetTypeRef forceTypeRef = getInferenceSessionTypeRef();
+		if(forceTypeRef != null)
+		{
+			return forceTypeRef;
+		}
 		return new CSharpLambdaTypeRef(this, null, getParameterInfos(resolveFromParent), resolveFromParent ? getReturnTypeRef() : DotNetTypeRef.AUTO_TYPE);
 	}
 
@@ -156,7 +152,7 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 	public DotNetTypeRef toTypeRefForInference()
 	{
 		// recursion when child lambda reference to parameter from parent lambda
-		DotNetTypeRef returnType = RecursionManager.doPreventingRecursion(" C#lambda return type", false, this::findPossibleReturnTypeRef);
+		DotNetTypeRef returnType = RecursionManager.doPreventingRecursion("C# lambda return type", false, this::findPossibleReturnTypeRef);
 		if(returnType == null)
 		{
 			returnType = DotNetTypeRef.ERROR_TYPE;

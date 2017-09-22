@@ -18,10 +18,12 @@ package consulo.csharp.lang.psi.impl.source.resolve.genericInference;
 
 import gnu.trove.THashMap;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
@@ -29,10 +31,10 @@ import com.intellij.util.SmartList;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
+import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.CSharpLambdaExpressionImplUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
 import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.arguments.NCallArgument;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpFastImplicitTypeRef;
@@ -79,6 +81,46 @@ public class GenericInferenceUtil
 		{
 			return myExtractor;
 		}
+	}
+
+	public static class InferenceSessionData
+	{
+		private final Map<PsiElement, DotNetTypeRef> myData = new HashMap<>();
+
+		public InferenceSessionData append(@NotNull PsiElement element, @NotNull DotNetTypeRef typeRef)
+		{
+			myData.put(element, typeRef);
+			return this;
+		}
+
+		public boolean finish(@NotNull PsiElement element)
+		{
+			myData.remove(element);
+			return myData.isEmpty();
+		}
+
+		@Nullable
+		public DotNetTypeRef getTypeRef(@NotNull PsiElement element)
+		{
+			return myData.get(element);
+		}
+	}
+
+	public static final ThreadLocal<InferenceSessionData> ourInsideInferenceSession = new ThreadLocal<>();
+
+	public static boolean isInsideGenericInferenceSession()
+	{
+		return ourInsideInferenceSession.get() != null;
+	}
+
+	public static boolean isInsideGenericInferenceSession(@Nullable  PsiElement element)
+	{
+		if(element == null)
+		{
+			return false;
+		}
+		InferenceSessionData inferenceSessionData = ourInsideInferenceSession.get();
+		return inferenceSessionData != null && inferenceSessionData.myData.containsKey(element);
 	}
 
 	@NotNull
@@ -352,17 +394,44 @@ public class GenericInferenceUtil
 			return expressionTypeRef;
 		}
 
-		CSharpLambdaTypeRef baseTypeRefOfLambda = new CSharpLambdaTypeRef(scope, null, ((CSharpLambdaExpressionImpl) argumentExpression).getParameterInfos(), DotNetTypeRef.AUTO_TYPE);
+		CSharpLambdaExpressionImpl lambdaExpression = (CSharpLambdaExpressionImpl) argumentExpression;
+
+		CSharpLambdaTypeRef baseTypeRefOfLambda = new CSharpLambdaTypeRef(scope, null, lambdaExpression.getParameterInfos(), DotNetTypeRef.AUTO_TYPE);
 		if(CSharpTypeUtil.isInheritable(parameterTypeRef, baseTypeRefOfLambda, scope))
 		{
-			CSharpLambdaExpressionImpl copy = (CSharpLambdaExpressionImpl) argumentExpression.copy();
-			copy.setForceResolveParent(argumentExpression.getParent());
+			DotNetTypeResolveResult parameterTypeResult = parameterTypeRef.resolve();
+			if(!(parameterTypeResult instanceof CSharpLambdaResolveResult))
+			{
+				return expressionTypeRef;
+			}
+
+			CSharpMethodDeclaration target = ((CSharpLambdaResolveResult) parameterTypeResult).getTarget();
+
+			assert target != null;
 
 			DotNetGenericExtractor extractor = CSharpGenericExtractor.create(map);
-			DotNetTypeRef newParameterTypeRef = GenericUnwrapTool.exchangeTypeRef(parameterTypeRef, extractor, scope);
-			copy.putUserData(CSharpLambdaExpressionImplUtil.TYPE_REF_OF_LAMBDA, newParameterTypeRef);
 
-			return copy.toTypeRefForInference();
+			CSharpMethodDeclaration extractedMethod = GenericUnwrapTool.extract(target, extractor);
+
+			try
+			{
+				InferenceSessionData inferenceSessionData = ourInsideInferenceSession.get();
+				if(inferenceSessionData == null)
+				{
+					ourInsideInferenceSession.set(inferenceSessionData = new InferenceSessionData());
+				}
+
+				inferenceSessionData.append(lambdaExpression, GenericUnwrapTool.exchangeTypeRef(new CSharpLambdaTypeRef(extractedMethod), extractor, scope));
+
+				return lambdaExpression.toTypeRefForInference();
+			}
+			finally
+			{
+				if(ourInsideInferenceSession.get().finish(lambdaExpression))
+				{
+					ourInsideInferenceSession.set(null);
+				}
+			}
 		}
 
 		return expressionTypeRef;
