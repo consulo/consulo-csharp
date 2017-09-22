@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.compiler.CompilerMessageCategory;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
@@ -46,6 +45,7 @@ import consulo.dotnet.compiler.DotNetCompilerOptionsBuilder;
 import consulo.dotnet.compiler.DotNetCompilerUtil;
 import consulo.dotnet.compiler.DotNetMacroUtil;
 import consulo.dotnet.module.extension.DotNetModuleExtension;
+import consulo.util.SandboxUtil;
 
 /**
  * @author VISTALL
@@ -113,7 +113,7 @@ public class MSBaseDotNetCompilerOptionsBuilder implements DotNetCompilerOptions
 				int codeLine = Integer.parseInt(matcher.group(2));
 				int codeColumn = Integer.parseInt(matcher.group(3));
 				String message = matcher.group(6);
-				if(ApplicationManager.getApplication().isInternal())
+				if(SandboxUtil.isInsideSandbox())
 				{
 					message += "(" + matcher.group(5) + ")";
 				}

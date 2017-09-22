@@ -23,6 +23,14 @@ import java.util.Locale;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.codeInsight.daemon.impl.HighlightInfo;
+import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
+import com.intellij.codeInsight.intention.IntentionAction;
+import com.intellij.openapi.editor.colors.TextAttributesKey;
+import com.intellij.openapi.util.NullableFactory;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.ide.CSharpErrorBundle;
@@ -40,15 +48,7 @@ import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.psi.DotNetXXXAccessor;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.util.NullableFactory;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
+import consulo.util.SandboxUtil;
 
 /**
  * @author VISTALL
@@ -207,7 +207,7 @@ public abstract class CompilerCheck<T extends PsiElement>
 	{
 		String id = aClass.getSimpleName();
 		String message = CSharpErrorBundle.message(id, args);
-		if(ApplicationManager.getApplication().isInternal())
+		if(SandboxUtil.isInsideSandbox())
 		{
 			message = id + ": " + message;
 		}
