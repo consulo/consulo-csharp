@@ -19,7 +19,6 @@ package consulo.csharp.lang.psi.impl.source;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.RecursionManager;
 import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.psi.DotNetExpression;
@@ -43,6 +42,8 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 			return element.toTypeRefImpl(resolveFromParentOrInitializer);
 		}
 	};
+
+	private final ThreadLocal<Boolean> myTypeRefProcessing = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
 	public CSharpVariableImpl(@NotNull ASTNode node)
 	{
@@ -84,8 +85,20 @@ public abstract class CSharpVariableImpl extends CSharpMemberImpl implements Dot
 				return DotNetTypeRef.ERROR_TYPE;
 			}
 
-			DotNetTypeRef resolvedTypeRef = RecursionManager.doPreventingRecursion(this, false, () -> initializer.toTypeRef(true));
-			return resolvedTypeRef == null ? DotNetTypeRef.AUTO_TYPE : resolvedTypeRef;
+			if(myTypeRefProcessing.get())
+			{
+				return DotNetTypeRef.AUTO_TYPE;
+			}
+
+			try
+			{
+				myTypeRefProcessing.set(Boolean.TRUE);
+				return initializer.toTypeRef(true);
+			}
+			finally
+			{
+				myTypeRefProcessing.set(Boolean.FALSE);
+			}
 		}
 		else
 		{
