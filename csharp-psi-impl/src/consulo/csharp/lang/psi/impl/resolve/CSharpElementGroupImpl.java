@@ -57,6 +57,8 @@ public class CSharpElementGroupImpl<T extends PsiElement> extends LightElement i
 	{
 		for(T element : myElements)
 		{
+			ProgressManager.checkCanceled();
+
 			if(!processor.execute(element, state))
 			{
 				return false;

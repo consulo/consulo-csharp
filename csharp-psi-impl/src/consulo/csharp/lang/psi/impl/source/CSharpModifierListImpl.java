@@ -59,7 +59,7 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements CSharpM
 		{
 			return DotNetAttribute.EMPTY_ARRAY;
 		}
-		List<DotNetAttribute> attributes = new ArrayList<DotNetAttribute>();
+		List<DotNetAttribute> attributes = new ArrayList<>();
 		for(DotNetAttributeList attributeList : attributeLists)
 		{
 			Collections.addAll(attributes, attributeList.getAttributes());
@@ -83,28 +83,19 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements CSharpM
 	@Override
 	public CSharpModifier[] getModifiers()
 	{
-		List<CSharpModifier> list = new ArrayList<CSharpModifier>();
-		for(CSharpModifier modifier : CSharpModifier.values())
-		{
-			if(hasModifier(modifier))
-			{
-				list.add(modifier);
-			}
-		}
-		return list.toArray(new CSharpModifier[list.size()]);
+		return CSharpModifierListImplUtil.getModifiersCached(this).toArray(new CSharpModifier[0]);
 	}
 
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		return CSharpModifierListImplUtil.hasModifier(this, modifier);
+		return CSharpModifierListImplUtil.getModifiersCached(this).contains(CSharpModifier.as(modifier));
 	}
 
 	@Override
 	public boolean hasModifierInTree(@NotNull DotNetModifier modifier)
 	{
-		IElementType iElementType = CSharpModifierListImplUtil.ourModifiers.get(CSharpModifier.as(modifier));
-		return findChildByType(iElementType) != null;
+		return CSharpModifierListImplUtil.getModifiersTreeCached(this).contains(CSharpModifier.as(modifier));
 	}
 
 	@Nullable

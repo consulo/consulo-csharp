@@ -16,14 +16,21 @@
 
 package consulo.csharp.lang.psi.impl.source;
 
+import gnu.trove.THashSet;
+
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.csharp.lang.psi.CSharpEnumConstantDeclaration;
@@ -71,6 +78,42 @@ public class CSharpModifierListImplUtil
 			put(CSharpModifier.EXTERN, CSharpSoftTokens.EXTERN_KEYWORD);
 		}
 	};
+
+	@NotNull
+	@RequiredReadAction
+	public static EnumSet<CSharpModifier> getModifiersCached(@NotNull CSharpModifierList modifierList)
+	{
+		return CachedValuesManager.getCachedValue(modifierList, () ->
+		{
+			Set<CSharpModifier> modifiers = new THashSet<>();
+			for(CSharpModifier modifier : CSharpModifier.values())
+			{
+				if(hasModifier(modifierList, modifier))
+				{
+					modifiers.add(modifier);
+				}
+			}
+			return CachedValueProvider.Result.create(modifiers.isEmpty() ? EnumSet.noneOf(CSharpModifier.class) : EnumSet.copyOf(modifiers), PsiModificationTracker.MODIFICATION_COUNT);
+		});
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public static EnumSet<CSharpModifier> getModifiersTreeCached(@NotNull CSharpModifierList modifierList)
+	{
+		return CachedValuesManager.getCachedValue(modifierList, () ->
+		{
+			Set<CSharpModifier> modifiers = new THashSet<>();
+			for(CSharpModifier modifier : CSharpModifier.values())
+			{
+				if(modifierList.getModifierElement(modifier) != null)
+				{
+					modifiers.add(modifier);
+				}
+			}
+			return CachedValueProvider.Result.create(modifiers.isEmpty() ? EnumSet.noneOf(CSharpModifier.class) : EnumSet.copyOf(modifiers), PsiModificationTracker.MODIFICATION_COUNT);
+		});
+	}
 
 	@RequiredReadAction
 	public static boolean hasModifier(@NotNull CSharpModifierList modifierList, @NotNull DotNetModifier modifier)
@@ -182,7 +225,8 @@ public class CSharpModifierListImplUtil
 	@RequiredReadAction
 	private static CSharpAccessModifier findModifier(@NotNull CSharpModifierList list, CSharpModifier skipModifier)
 	{
-		loop: for(CSharpAccessModifier value : CSharpAccessModifier.VALUES)
+		loop:
+		for(CSharpAccessModifier value : CSharpAccessModifier.VALUES)
 		{
 			if(value == CSharpAccessModifier.NONE)
 			{

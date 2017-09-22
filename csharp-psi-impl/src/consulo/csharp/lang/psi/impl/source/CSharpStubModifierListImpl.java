@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpAttributeList;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpModifier;
@@ -58,6 +59,7 @@ public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModi
 		visitor.visitModifierList(this);
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public DotNetAttribute[] getAttributes()
@@ -67,7 +69,7 @@ public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModi
 		{
 			return DotNetAttribute.EMPTY_ARRAY;
 		}
-		List<DotNetAttribute> attributes = new ArrayList<DotNetAttribute>();
+		List<DotNetAttribute> attributes = new ArrayList<>();
 		for(DotNetAttributeList attributeList : attributeLists)
 		{
 			Collections.addAll(attributes, attributeList.getAttributes());
@@ -91,21 +93,13 @@ public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModi
 	@Override
 	public CSharpModifier[] getModifiers()
 	{
-		List<CSharpModifier> list = new ArrayList<CSharpModifier>();
-		for(CSharpModifier modifier : CSharpModifier.values())
-		{
-			if(hasModifier(modifier))
-			{
-				list.add(modifier);
-			}
-		}
-		return list.toArray(new CSharpModifier[list.size()]);
+		return CSharpModifierListImplUtil.getModifiersCached(this).toArray(new CSharpModifier[0]);
 	}
 
 	@Override
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		return CSharpModifierListImplUtil.hasModifier(this, modifier);
+		return CSharpModifierListImplUtil.getModifiersCached(this).contains(CSharpModifier.as(modifier));
 	}
 
 	@Override
@@ -118,8 +112,7 @@ public class CSharpStubModifierListImpl extends CSharpStubElementImpl<CSharpModi
 			return stub.hasModifier(sharpModifier);
 		}
 
-		IElementType iElementType = CSharpModifierListImplUtil.ourModifiers.get(sharpModifier);
-		return findChildByType(iElementType) != null;
+		return CSharpModifierListImplUtil.getModifiersTreeCached(this).contains(CSharpModifier.as(modifier));
 	}
 
 	@Nullable

@@ -182,9 +182,10 @@ public class MsilModifierListToCSharpModifierList extends MsilElementWrapper<Dot
 	}
 
 	@Override
+	@RequiredReadAction
 	public boolean hasModifier(@NotNull DotNetModifier modifier)
 	{
-		return CSharpModifierListImplUtil.hasModifier(this, modifier);
+		return CSharpModifierListImplUtil.getModifiersCached(this).contains(CSharpModifier.as(modifier));
 	}
 
 	@Override
