@@ -17,18 +17,18 @@
 package consulo.csharp.lang.psi;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.util.Comparing;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.BitUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.CSharpTypeUtil;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
 import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetParameterListOwner;
 import consulo.dotnet.psi.DotNetType;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.BitUtil;
 
 /**
  * @author VISTALL
@@ -58,6 +58,8 @@ public class CSharpElementCompareUtil
 		{
 			return true;
 		}
+
+		ProgressManager.checkCanceled();
 
 		if(element instanceof CSharpPropertyDeclaration && element2 instanceof CSharpPropertyDeclaration)
 		{

@@ -62,7 +62,7 @@ public abstract class MapElementGroupCollector<K, E extends PsiElement> extends 
 			}
 			else
 			{
-				map = new THashMap<K, CSharpElementGroup<E>>();
+				map = new THashMap<>();
 				final DotNetGenericExtractor extractor = getExtractor();
 				final DotNetModifierListOwner parent = myResolveContext.getElement();
 				final Project project = getProject();
@@ -86,7 +86,7 @@ public abstract class MapElementGroupCollector<K, E extends PsiElement> extends 
 
 					}
 
-					CSharpElementGroup<E> group = new CSharpElementGroupImpl<E>(project, key, value);
+					CSharpElementGroup<E> group = new CSharpElementGroupImpl<>(project, key, value);
 					map.put(key, group);
 				}
 			}
@@ -105,7 +105,7 @@ public abstract class MapElementGroupCollector<K, E extends PsiElement> extends 
 	@SuppressWarnings("unchecked")
 	private MultiMap<K, E> calcElements()
 	{
-		final MultiMap<K, E> multiMap = new MultiMap<K, E>();
+		final MultiMap<K, E> multiMap = new MultiMap<>();
 		Consumer consumer = new Consumer<E>()
 		{
 			@Override

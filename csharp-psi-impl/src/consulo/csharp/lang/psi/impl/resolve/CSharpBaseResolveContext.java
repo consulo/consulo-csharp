@@ -142,7 +142,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	@RequiredReadAction
 	private CSharpResolveContext getSuperContext()
 	{
-		THashSet<PsiElement> alreadyProcessedItem = new THashSet<PsiElement>();
+		THashSet<PsiElement> alreadyProcessedItem = new THashSet<>();
 		if(myRecursiveGuardSet != null)
 		{
 			alreadyProcessedItem.addAll(myRecursiveGuardSet);
@@ -161,7 +161,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 			return EMPTY;
 		}
 
-		List<CSharpResolveContext> contexts = new ArrayList<CSharpResolveContext>(superTypes.size());
+		List<CSharpResolveContext> contexts = new ArrayList<>(superTypes.size());
 		for(DotNetTypeRef dotNetTypeRef : superTypes)
 		{
 			DotNetTypeResolveResult typeResolveResult = dotNetTypeRef.resolve();
@@ -201,7 +201,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 			{
 				return elementGroup;
 			}
-			return new CSharpCompositeElementGroupImpl<CSharpIndexMethodDeclaration>(myElement.getProject(), Arrays.asList(elementGroup, deepGroup));
+			return new CSharpCompositeElementGroupImpl<>(myElement.getProject(), Arrays.asList(elementGroup, deepGroup));
 		}
 	}
 
@@ -245,7 +245,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 			{
 				return deepGroup;
 			}
-			return new CSharpCompositeElementGroupImpl<CSharpMethodDeclaration>(myElement.getProject(), Arrays.asList(thisGroup, deepGroup));
+			return new CSharpCompositeElementGroupImpl<>(myElement.getProject(), Arrays.asList(thisGroup, deepGroup));
 		}
 	}
 
@@ -273,7 +273,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 			{
 				return deepGroup;
 			}
-			return new CSharpCompositeElementGroupImpl<CSharpConversionMethodDeclaration>(myElement.getProject(), Arrays.asList(thisGroup, deepGroup));
+			return new CSharpCompositeElementGroupImpl<>(myElement.getProject(), Arrays.asList(thisGroup, deepGroup));
 		}
 	}
 
@@ -299,7 +299,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 	@Nullable
 	private static CSharpElementGroup<CSharpMethodDeclaration> filterElementGroupToExtensionGroup(CSharpElementGroup<PsiElement> elementGroup)
 	{
-		final List<CSharpMethodDeclaration> extensions = new SmartList<CSharpMethodDeclaration>();
+		final List<CSharpMethodDeclaration> extensions = new SmartList<>();
 		elementGroup.process(new Processor<PsiElement>()
 		{
 			@Override
@@ -316,7 +316,7 @@ public abstract class CSharpBaseResolveContext<T extends DotNetElement & DotNetM
 		{
 			return null;
 		}
-		return new CSharpElementGroupImpl<CSharpMethodDeclaration>(elementGroup.getProject(), elementGroup.getKey(), extensions);
+		return new CSharpElementGroupImpl<>(elementGroup.getProject(), elementGroup.getKey(), extensions);
 	}
 
 	@RequiredReadAction

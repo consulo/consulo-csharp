@@ -22,6 +22,8 @@ import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.psi.PsiElement;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -29,7 +31,6 @@ import consulo.csharp.lang.psi.impl.source.resolve.type.wrapper.GenericUnwrapToo
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.psi.PsiElement;
 
 /**
  * @author VISTALL
@@ -38,9 +39,7 @@ import com.intellij.psi.PsiElement;
 public class CSharpTypeResolveContext extends CSharpBaseResolveContext<CSharpTypeDeclaration>
 {
 	@RequiredReadAction
-	public CSharpTypeResolveContext(@NotNull CSharpTypeDeclaration element,
-			@NotNull DotNetGenericExtractor genericExtractor,
-			@Nullable Set<PsiElement> recursiveGuardSet)
+	public CSharpTypeResolveContext(@NotNull CSharpTypeDeclaration element, @NotNull DotNetGenericExtractor genericExtractor, @Nullable Set<PsiElement> recursiveGuardSet)
 	{
 		super(element, genericExtractor, recursiveGuardSet);
 	}
@@ -50,6 +49,8 @@ public class CSharpTypeResolveContext extends CSharpBaseResolveContext<CSharpTyp
 	{
 		for(DotNetNamedElement element : myElement.getMembers())
 		{
+			ProgressManager.checkCanceled();
+
 			element.accept(visitor);
 		}
 	}

@@ -20,9 +20,7 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.CSharpLanguage;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
-import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
@@ -34,6 +32,9 @@ import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.Processor;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpOperatorNameHelper;
+import consulo.csharp.lang.psi.resolve.CSharpElementGroup;
 
 /**
  * @author VISTALL
@@ -52,10 +53,7 @@ public class CSharpElementGroupImpl<T extends PsiElement> extends LightElement i
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
-			@NotNull ResolveState state,
-			PsiElement lastParent,
-			@NotNull PsiElement place)
+	public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place)
 	{
 		for(T element : myElements)
 		{
@@ -103,6 +101,8 @@ public class CSharpElementGroupImpl<T extends PsiElement> extends LightElement i
 	{
 		for(T element : myElements)
 		{
+			ProgressManager.checkCanceled();
+
 			if(!processor.process(element))
 			{
 				return false;

@@ -25,7 +25,6 @@ import java.util.ListIterator;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.ResolveResult;
@@ -280,6 +279,8 @@ public class OverrideUtil
 		ListIterator<DotNetVirtualImplementOwner> listIterator = results.listIterator();
 		while(listIterator.hasNext())
 		{
+			ProgressManager.checkCanceled();
+
 			DotNetVirtualImplementOwner next = listIterator.next();
 			if(!CSharpElementCompareUtil.isEqual(next, target, CSharpElementCompareUtil.CHECK_RETURN_TYPE, target))
 			{
@@ -358,6 +359,8 @@ public class OverrideUtil
 		List<DotNetModifierListOwner> psiElements = new SmartList<>();
 		for(PsiElement psiElement : getAllMembers(element, element.getResolveScope(), extractor, false, true))
 		{
+			ProgressManager.checkCanceled();
+			
 			if(psiElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) psiElement).hasModifier(modifier))
 			{
 				psiElements.add((DotNetModifierListOwner) psiElement);
@@ -394,22 +397,16 @@ public class OverrideUtil
 		if(overrideTool)
 		{
 			// filter self methods, we need it in circular extends
-			elements = ContainerUtil.filter(elements, new Condition<PsiElement>()
+			elements = ContainerUtil.filter(elements, element ->
 			{
-				@Override
-				public boolean value(PsiElement element)
-				{
-					return element.getParent() != targetTypeDeclaration;
-				}
+				ProgressManager.checkCanceled();
+				return element.getParent() != targetTypeDeclaration;
 			});
 		}
-		return completion ? elements : ContainerUtil.filter(elements, new Condition<PsiElement>()
+		return completion ? elements : ContainerUtil.filter(elements, element ->
 		{
-			@Override
-			public boolean value(PsiElement element)
-			{
-				return !(element instanceof DotNetTypeDeclaration);
-			}
+			ProgressManager.checkCanceled();
+			return !(element instanceof DotNetTypeDeclaration);
 		});
 	}
 }
