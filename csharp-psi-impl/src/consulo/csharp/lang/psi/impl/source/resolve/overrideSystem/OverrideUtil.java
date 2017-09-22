@@ -24,6 +24,7 @@ import java.util.ListIterator;
 
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
@@ -86,8 +87,7 @@ public class OverrideUtil
 			return null;
 		}
 
-		if(modifierList.hasModifierInTree(CSharpModifier.ABSTRACT) || modifierList.hasModifierInTree(CSharpModifier.VIRTUAL) || modifierList
-				.hasModifierInTree(CSharpModifier.OVERRIDE))
+		if(modifierList.hasModifierInTree(CSharpModifier.ABSTRACT) || modifierList.hasModifierInTree(CSharpModifier.VIRTUAL) || modifierList.hasModifierInTree(CSharpModifier.OVERRIDE))
 		{
 			return CSharpModifier.OVERRIDE;
 		}
@@ -117,14 +117,14 @@ public class OverrideUtil
 
 	@NotNull
 	@SuppressWarnings("unchecked")
-	public static PsiElement[] filterOverrideElements(@NotNull PsiElement scopeElement,
-			@NotNull Collection<PsiElement> elements,
-			@NotNull OverrideProcessor overrideProcessor)
+	public static PsiElement[] filterOverrideElements(@NotNull PsiElement scopeElement, @NotNull Collection<PsiElement> elements, @NotNull OverrideProcessor overrideProcessor)
 	{
-		List<PsiElement> copyElements = new ArrayList<PsiElement>(elements);
+		List<PsiElement> copyElements = new ArrayList<>(elements);
 
 		for(PsiElement element : elements)
 		{
+			ProgressManager.checkCanceled();
+
 			if(!copyElements.contains(element))
 			{
 				continue;
@@ -148,6 +148,8 @@ public class OverrideUtil
 						continue;
 					}
 
+					ProgressManager.checkCanceled();
+
 					if(CSharpElementCompareUtil.isEqual(tempIterateElement, element, CSharpElementCompareUtil.CHECK_RETURN_TYPE, scopeElement))
 					{
 						if(!overrideProcessor.elementOverride(virtualImplementOwner, (DotNetVirtualImplementOwner) tempIterateElement))
@@ -166,11 +168,13 @@ public class OverrideUtil
 			}
 		}
 
-		List<PsiElement> groupElements = new SmartList<PsiElement>();
-		List<PsiElement> elseElements = new SmartList<PsiElement>();
+		List<PsiElement> groupElements = new SmartList<>();
+		List<PsiElement> elseElements = new SmartList<>();
 
 		for(PsiElement copyElement : copyElements)
 		{
+			ProgressManager.checkCanceled();
+
 			if(copyElement instanceof DotNetLikeMethodDeclaration)
 			{
 				groupElements.add(copyElement);
@@ -188,7 +192,7 @@ public class OverrideUtil
 		else if(elseElements.isEmpty())
 		{
 			return new PsiElement[]{
-					new CSharpElementGroupImpl<PsiElement>(scopeElement.getProject(), getNameForGroup(groupElements), groupElements)
+					new CSharpElementGroupImpl<>(scopeElement.getProject(), getNameForGroup(groupElements), groupElements)
 			};
 		}
 		else if(groupElements.isEmpty())
@@ -197,7 +201,7 @@ public class OverrideUtil
 		}
 		else
 		{
-			elseElements.add(new CSharpElementGroupImpl<PsiElement>(scopeElement.getProject(), getNameForGroup(groupElements), groupElements));
+			elseElements.add(new CSharpElementGroupImpl<>(scopeElement.getProject(), getNameForGroup(groupElements), groupElements));
 			return ContainerUtil.toArray(elseElements, PsiElement.ARRAY_FACTORY);
 		}
 	}
@@ -230,8 +234,7 @@ public class OverrideUtil
 
 	public static boolean isAllowForOverride(PsiElement parent)
 	{
-		if(parent instanceof CSharpMethodDeclaration &&
-				!((CSharpMethodDeclaration) parent).isDelegate() && !((CSharpMethodDeclaration) parent).hasModifier(DotNetModifier.STATIC))
+		if(parent instanceof CSharpMethodDeclaration && !((CSharpMethodDeclaration) parent).isDelegate() && !((CSharpMethodDeclaration) parent).hasModifier(DotNetModifier.STATIC))
 		{
 			return true;
 		}
@@ -249,8 +252,7 @@ public class OverrideUtil
 		}
 		OverrideProcessor.Collector overrideProcessor = new OverrideProcessor.Collector();
 
-		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(parent, CommonProcessors.<ResolveResult>alwaysTrue(),
-				new ExecuteTarget[]{
+		MemberResolveScopeProcessor processor = new MemberResolveScopeProcessor(parent, CommonProcessors.<ResolveResult>alwaysTrue(), new ExecuteTarget[]{
 				ExecuteTarget.MEMBER,
 				ExecuteTarget.ELEMENT_GROUP
 		}, overrideProcessor);
@@ -320,7 +322,7 @@ public class OverrideUtil
 		}
 		final GlobalSearchScope resolveScope = target.getResolveScope();
 
-		final List<DotNetVirtualImplementOwner> list = new ArrayList<DotNetVirtualImplementOwner>();
+		final List<DotNetVirtualImplementOwner> list = new ArrayList<>();
 		Query<DotNetTypeDeclaration> search = TypeInheritorsSearch.search((DotNetTypeDeclaration) parent, true, CSharpTransform.INSTANCE);
 		search.forEach(new Processor<DotNetTypeDeclaration>()
 		{
@@ -351,11 +353,9 @@ public class OverrideUtil
 
 	@NotNull
 	@RequiredReadAction
-	public static Collection<DotNetModifierListOwner> collectMembersWithModifier(@NotNull PsiElement element,
-			@NotNull DotNetGenericExtractor extractor,
-			@NotNull CSharpModifier modifier)
+	public static Collection<DotNetModifierListOwner> collectMembersWithModifier(@NotNull PsiElement element, @NotNull DotNetGenericExtractor extractor, @NotNull CSharpModifier modifier)
 	{
-		List<DotNetModifierListOwner> psiElements = new SmartList<DotNetModifierListOwner>();
+		List<DotNetModifierListOwner> psiElements = new SmartList<>();
 		for(PsiElement psiElement : getAllMembers(element, element.getResolveScope(), extractor, false, true))
 		{
 			if(psiElement instanceof DotNetModifierListOwner && ((DotNetModifierListOwner) psiElement).hasModifier(modifier))
@@ -374,7 +374,7 @@ public class OverrideUtil
 			boolean completion,
 			boolean overrideTool)
 	{
-		final CommonProcessors.CollectProcessor<PsiElement> collectProcessor = new CommonProcessors.CollectProcessor<PsiElement>();
+		final CommonProcessors.CollectProcessor<PsiElement> collectProcessor = new CommonProcessors.CollectProcessor<>();
 		CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, scope, targetTypeDeclaration);
 		// process method & properties
 		context.processElements(collectProcessor, true);
