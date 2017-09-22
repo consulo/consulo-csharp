@@ -22,10 +22,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.SmartList;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -44,6 +46,7 @@ import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.psi.DotNetGenericParameterListOwner;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
+import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -211,28 +214,90 @@ public class GenericInferenceUtil
 		{
 			DotNetGenericParameter[] expressionGenericParameters = ((DotNetGenericParameterListOwner) expressionElement).getGenericParameters();
 
-			for(DotNetGenericParameter methodGenericParameter : methodGenericParameters)
+			tryToFindTypeArgumentsForParameters(methodGenericParameters, map, parameterTypeResolveResult, expressionExtractor, expressionGenericParameters);
+
+			// inference ended
+			if(map.size() == methodGenericParameters.length)
 			{
-				if(map.containsKey(methodGenericParameter))
+				return;
+			}
+
+			// list of deep type arguments <expression, parameter>
+			List<Couple<DotNetTypeResolveResult>> levels = new SmartList<>();
+
+			pushTypeArgumentsDeep(levels, expressionGenericParameters, expressionExtractor, parameterTypeResolveResult.getGenericExtractor());
+
+			for(Couple<DotNetTypeResolveResult> level : levels)
+			{
+				DotNetTypeResolveResult expressionTypeResult = level.getFirst();
+				DotNetTypeResolveResult parameterTypeResult = level.getSecond();
+
+				DotNetGenericParameter[] otherExpressionGenericParameters = ((DotNetTypeDeclaration) expressionTypeResult.getElement()).getGenericParameters();
+
+				tryToFindTypeArgumentsForParameters(methodGenericParameters, map, parameterTypeResult, expressionTypeResult.getGenericExtractor(), otherExpressionGenericParameters);
+			}
+		}
+	}
+
+	@RequiredReadAction
+	private static void tryToFindTypeArgumentsForParameters(DotNetGenericParameter[] methodGenericParameters,
+			Map<DotNetGenericParameter, DotNetTypeRef> map,
+			DotNetTypeResolveResult parameterTypeResolveResult,
+			DotNetGenericExtractor expressionExtractor,
+			DotNetGenericParameter[] expressionGenericParameters)
+	{
+		for(DotNetGenericParameter methodGenericParameter : methodGenericParameters)
+		{
+			if(map.containsKey(methodGenericParameter))
+			{
+				continue;
+			}
+
+			int indexOfGeneric = findIndexOfGeneric(parameterTypeResolveResult, methodGenericParameter);
+			if(indexOfGeneric != -1)
+			{
+				DotNetGenericParameter genericParameterOfResolved = ArrayUtil2.safeGet(expressionGenericParameters, indexOfGeneric);
+				if(genericParameterOfResolved == null)
 				{
 					continue;
 				}
 
-				int indexOfGeneric = findIndexOfGeneric(parameterTypeResolveResult, methodGenericParameter);
-				if(indexOfGeneric != -1)
+				DotNetTypeRef extract = expressionExtractor.extract(genericParameterOfResolved);
+				if(extract != null)
 				{
-					DotNetGenericParameter genericParameterOfResolved = ArrayUtil2.safeGet(expressionGenericParameters, indexOfGeneric);
-					if(genericParameterOfResolved == null)
-					{
-						continue;
-					}
-
-					DotNetTypeRef extract = expressionExtractor.extract(genericParameterOfResolved);
-					if(extract != null)
-					{
-						map.put(methodGenericParameter, extract);
-					}
+					map.put(methodGenericParameter, extract);
 				}
+			}
+		}
+	}
+
+	@RequiredReadAction
+	private static void pushTypeArgumentsDeep(@NotNull List<Couple<DotNetTypeResolveResult>> levels,
+			@NotNull DotNetGenericParameter[] expressionGenericParameters,
+			@NotNull DotNetGenericExtractor expressionExtractor,
+			@NotNull DotNetGenericExtractor parameterExtractor)
+	{
+		for(DotNetGenericParameter expressionGenericParameter : expressionGenericParameters)
+		{
+			DotNetTypeRef expressionTypeRefFromGenericParameter = expressionExtractor.extract(expressionGenericParameter);
+
+			DotNetTypeRef parameterTypeRefFromGenericParameter = parameterExtractor.extract(expressionGenericParameter);
+
+			if(expressionTypeRefFromGenericParameter == null || parameterTypeRefFromGenericParameter == null)
+			{
+				continue;
+			}
+
+			DotNetTypeResolveResult exprTypeResult = expressionTypeRefFromGenericParameter.resolve();
+			DotNetTypeResolveResult paramTypeResult = parameterTypeRefFromGenericParameter.resolve();
+
+			// check is type equal 'Genre<System.String>' to 'Genre<T>'
+			if(exprTypeResult.getElement() instanceof DotNetTypeDeclaration && exprTypeResult.getElement().isEquivalentTo(paramTypeResult.getElement()))
+			{
+				levels.add(Couple.of(exprTypeResult, paramTypeResult));
+
+				DotNetGenericParameter[] genericParameters = ((DotNetTypeDeclaration) exprTypeResult.getElement()).getGenericParameters();
+				pushTypeArgumentsDeep(levels, genericParameters, exprTypeResult.getGenericExtractor(), paramTypeResult.getGenericExtractor());
 			}
 		}
 	}
