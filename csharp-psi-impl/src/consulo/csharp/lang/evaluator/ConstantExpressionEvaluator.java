@@ -17,6 +17,7 @@
 package consulo.csharp.lang.evaluator;
 
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.progress.ProcessCanceledException;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpModifier;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -53,6 +54,10 @@ public class ConstantExpressionEvaluator extends CSharpElementVisitor
 		try
 		{
 			myValue = expression.getValue();
+		}
+		catch(ProcessCanceledException e)
+		{
+			throw e;
 		}
 		catch(Exception e)
 		{

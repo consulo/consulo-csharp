@@ -24,6 +24,7 @@ import org.joou.UByte;
 import org.joou.UInteger;
 import org.joou.ULong;
 import org.joou.UShort;
+import com.intellij.openapi.progress.ProcessCanceledException;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpTokenSets;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
@@ -78,6 +79,10 @@ public class CSharpConstantTypeRef extends CSharpConstantBaseTypeRef
 			try
 			{
 				value = expression.getValue(prefix);
+			}
+			catch(ProcessCanceledException e)
+			{
+				throw e;
 			}
 			catch(Exception e)
 			{

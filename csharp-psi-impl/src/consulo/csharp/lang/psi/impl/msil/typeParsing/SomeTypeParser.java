@@ -22,10 +22,10 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.IntArrayList;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpGenericWrapperTypeRef;
@@ -55,7 +55,7 @@ public class SomeTypeParser
 
 	public static DotNetTypeRef convert(@NotNull SomeType type, @NotNull final PsiElement scope)
 	{
-		final Ref<DotNetTypeRef> typeRefRef = new Ref<DotNetTypeRef>();
+		final Ref<DotNetTypeRef> typeRefRef = new Ref<>();
 		type.accept(new SomeTypeVisitor()
 		{
 			@Override
@@ -68,7 +68,7 @@ public class SomeTypeParser
 			public void visitGenericWrapperType(GenericWrapperType genericWrapperType)
 			{
 				List<SomeType> arguments = genericWrapperType.getArguments();
-				List<DotNetTypeRef> typeRefs = new ArrayList<DotNetTypeRef>(arguments.size());
+				List<DotNetTypeRef> typeRefs = new ArrayList<>(arguments.size());
 				for(SomeType argument : arguments)
 				{
 					typeRefs.add(convert(argument, scope));
@@ -100,20 +100,17 @@ public class SomeTypeParser
 
 				List<String> types = splitButIgnoreInsideLtGt(argumentsList);
 
-				List<SomeType> map = ContainerUtil.map(types, new Function<String, SomeType>()
-				{
-					@Override
-					public SomeType fun(String s)
-					{
-						return parseType(s, nameFromBytecode);
-					}
-				});
+				List<SomeType> map = ContainerUtil.map(types, s -> parseType(s, nameFromBytecode));
 				return new GenericWrapperType(new UserType(innerType), map);
 			}
 			else
 			{
 				return new UserType(text);
 			}
+		}
+		catch(ProcessCanceledException e)
+		{
+			throw e;
 		}
 		catch(Exception e)
 		{
@@ -150,7 +147,7 @@ public class SomeTypeParser
 
 		list.add(text.length());
 
-		List<String> split = new ArrayList<String>(list.size());
+		List<String> split = new ArrayList<>(list.size());
 		int last = 0;
 		for(int i : list.toArray())
 		{
