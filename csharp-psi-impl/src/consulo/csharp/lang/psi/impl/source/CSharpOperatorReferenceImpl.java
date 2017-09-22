@@ -27,7 +27,26 @@ import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiPolyVariantReference;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.ResolveResult;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.impl.source.resolve.ResolveCache;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
+import com.intellij.psi.util.PsiUtilCore;
+import com.intellij.util.Consumer;
+import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.ObjectUtil;
+import com.intellij.util.SmartList;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
+import consulo.annotations.RequiredWriteAction;
+import consulo.csharp.lang.CSharpCastType;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -65,25 +84,6 @@ import consulo.dotnet.resolve.DotNetPointerTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
 import consulo.dotnet.util.ArrayUtil2;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.impl.source.resolve.ResolveCache;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.Consumer;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.ObjectUtil;
-import com.intellij.util.SmartList;
-import com.intellij.util.containers.ContainerUtil;
-import consulo.csharp.lang.CSharpCastType;
 
 /**
  * @author VISTALL
@@ -192,12 +192,14 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		visitor.visitOperatorReference(this);
 	}
 
+	@RequiredReadAction
 	@Override
 	public PsiElement getElement()
 	{
 		return this;
 	}
 
+	@NotNull
 	@Override
 	@RequiredReadAction
 	public TextRange getRangeInElement()
@@ -220,6 +222,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		return PsiUtilCore.getElementType(getOperatorElement());
 	}
 
+	@RequiredReadAction
 	@Nullable
 	@Override
 	public PsiElement resolve()
@@ -374,6 +377,8 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 			return ((StubElementResolveResult) resolveResult).getTypeRef();
 		}
 
+		assert resolveResult != null;
+
 		PsiElement element = resolveResult.getElement();
 
 		if(element instanceof CSharpSimpleLikeMethodAsElement)
@@ -481,31 +486,28 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 		return operatorName;
 	}
 
+	@RequiredWriteAction
 	@Override
 	public PsiElement handleElementRename(String s) throws IncorrectOperationException
 	{
 		return null;
 	}
 
+	@RequiredWriteAction
 	@Override
 	public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException
 	{
 		return null;
 	}
 
+	@RequiredReadAction
 	@Override
 	public boolean isReferenceTo(PsiElement element)
 	{
 		return resolve() == element;
 	}
 
-	@NotNull
-	@Override
-	public Object[] getVariants()
-	{
-		return ArrayUtil.EMPTY_OBJECT_ARRAY;
-	}
-
+	@RequiredReadAction
 	@Override
 	public boolean isSoft()
 	{
@@ -540,11 +542,13 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 
 	@Nullable
 	@Override
+	@RequiredReadAction
 	public PsiElement resolveToCallable()
 	{
 		return resolve();
 	}
 
+	@RequiredReadAction
 	@NotNull
 	@Override
 	public ResolveResult[] multiResolve(boolean incompleteCode)
