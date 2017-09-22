@@ -25,7 +25,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpNamespaceDeclaration;
@@ -43,18 +42,6 @@ import consulo.dotnet.resolve.DotNetPsiSearcher;
  */
 public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSharpWithStringValueStub<CSharpUsingNamespaceStatement>> implements CSharpUsingNamespaceStatement
 {
-	public static final CSharpUsingNamespaceStatementImpl[] EMPTY_ARRAY = new CSharpUsingNamespaceStatementImpl[0];
-
-	public static ArrayFactory<CSharpUsingNamespaceStatementImpl> ARRAY_FACTORY = new ArrayFactory<CSharpUsingNamespaceStatementImpl>()
-	{
-		@NotNull
-		@Override
-		public CSharpUsingNamespaceStatementImpl[] create(int count)
-		{
-			return count == 0 ? EMPTY_ARRAY : new CSharpUsingNamespaceStatementImpl[count];
-		}
-	};
-
 	public CSharpUsingNamespaceStatementImpl(@NotNull ASTNode node)
 	{
 		super(node);

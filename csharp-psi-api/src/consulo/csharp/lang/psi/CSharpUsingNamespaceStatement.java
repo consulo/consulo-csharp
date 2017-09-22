@@ -16,7 +16,6 @@
 
 package consulo.csharp.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredReadAction;
@@ -31,15 +30,7 @@ public interface CSharpUsingNamespaceStatement extends CSharpUsingListChild
 {
 	public static final CSharpUsingNamespaceStatement[] EMPTY_ARRAY = new CSharpUsingNamespaceStatement[0];
 
-	public static ArrayFactory<CSharpUsingNamespaceStatement> ARRAY_FACTORY = new ArrayFactory<CSharpUsingNamespaceStatement>()
-	{
-		@NotNull
-		@Override
-		public CSharpUsingNamespaceStatement[] create(int count)
-		{
-			return count == 0 ? EMPTY_ARRAY : new CSharpUsingNamespaceStatement[count];
-		}
-	};
+	public static ArrayFactory<CSharpUsingNamespaceStatement> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpUsingNamespaceStatement[count];
 
 	@Nullable
 	@RequiredReadAction
