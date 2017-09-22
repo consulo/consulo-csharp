@@ -18,6 +18,7 @@ package consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.project.Project;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpFastImplicitTypeRef;
 import com.intellij.lang.ASTNode;
@@ -37,6 +38,11 @@ public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpExpre
 {
 	private static class ImplicitArrayInitializationTypeRef extends DotNetTypeRefWithCachedResult implements CSharpFastImplicitTypeRef
 	{
+		protected ImplicitArrayInitializationTypeRef(Project project)
+		{
+			super(project);
+		}
+
 		@RequiredReadAction
 		@NotNull
 		@Override
@@ -94,7 +100,7 @@ public class CSharpImplicitArrayInitializationExpressionImpl extends CSharpExpre
 	@Override
 	public DotNetTypeRef toTypeRefImpl(boolean resolveFromParent)
 	{
-		return new ImplicitArrayInitializationTypeRef();
+		return new ImplicitArrayInitializationTypeRef(getProject());
 	}
 
 	@Nullable

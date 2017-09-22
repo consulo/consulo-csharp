@@ -223,7 +223,7 @@ public class CSharpLambdaExpressionImpl extends CSharpExpressionImpl implements 
 					}
 					else
 					{
-						typeRefs.add(new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(statement, implicitReturnModel.getGenericVmQName()), expectedTypeRef));
+						typeRefs.add(new CSharpGenericWrapperTypeRef(statement.getProject(), new CSharpTypeRefByQName(statement, implicitReturnModel.getGenericVmQName()), expectedTypeRef));
 					}
 				}
 			}

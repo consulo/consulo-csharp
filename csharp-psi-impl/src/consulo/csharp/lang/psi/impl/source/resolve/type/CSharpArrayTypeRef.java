@@ -146,6 +146,7 @@ public class CSharpArrayTypeRef extends DotNetTypeRefWithCachedResult implements
 
 	public CSharpArrayTypeRef(@NotNull PsiElement scope, @NotNull DotNetTypeRef innerType, int dimensions)
 	{
+		super(scope.getProject());
 		myScope = scope;
 		myInnerType = innerType;
 		myDimensions = dimensions;

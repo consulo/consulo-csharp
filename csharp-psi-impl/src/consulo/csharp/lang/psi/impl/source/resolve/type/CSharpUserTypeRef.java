@@ -155,6 +155,7 @@ public class CSharpUserTypeRef extends DotNetTypeRefWithCachedResult
 
 	public CSharpUserTypeRef(@NotNull CSharpReferenceExpression referenceExpression)
 	{
+		super(referenceExpression.getProject());
 		myReferenceExpression = referenceExpression;
 	}
 

@@ -86,11 +86,11 @@ public class CSharpStubParameterImpl extends CSharpStubElementImpl<CSharpVariabl
 		DotNetTypeRef typeRef = type.toTypeRef();
 		if(hasModifier(CSharpModifier.REF))
 		{
-			return new CSharpRefTypeRef(CSharpRefTypeRef.Type.ref, typeRef);
+			return new CSharpRefTypeRef(getProject(), CSharpRefTypeRef.Type.ref, typeRef);
 		}
 		else if(hasModifier(CSharpModifier.OUT))
 		{
-			return new CSharpRefTypeRef(CSharpRefTypeRef.Type.out, typeRef);
+			return new CSharpRefTypeRef(getProject(), CSharpRefTypeRef.Type.out, typeRef);
 		}
 		return typeRef;
 	}

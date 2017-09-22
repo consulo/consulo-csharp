@@ -33,6 +33,7 @@ public class CSharpTypeRefFromNamespace extends DotNetTypeRefWithCachedResult
 
 	public CSharpTypeRefFromNamespace(DotNetNamespaceAsElement namespaceAsElement)
 	{
+		super(namespaceAsElement.getProject());
 		myNamespaceAsElement = namespaceAsElement;
 	}
 

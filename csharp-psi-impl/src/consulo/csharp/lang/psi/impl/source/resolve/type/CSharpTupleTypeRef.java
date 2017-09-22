@@ -42,6 +42,7 @@ public class CSharpTupleTypeRef extends DotNetTypeRefWithCachedResult
 
 	public CSharpTupleTypeRef(PsiElement scope, DotNetTypeRef[] typeRefs, @NotNull PsiNameIdentifierOwner[] variables)
 	{
+		super(scope.getProject());
 		myScope = scope;
 		myTypeRefs = typeRefs;
 		myVariables = variables;

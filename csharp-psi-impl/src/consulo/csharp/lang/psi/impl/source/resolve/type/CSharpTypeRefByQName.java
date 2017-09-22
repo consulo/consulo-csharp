@@ -36,15 +36,13 @@ import consulo.dotnet.resolve.DotNetTypeResolveResult;
 public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult
 {
 	@NotNull
-	private final Project myProject;
-	@NotNull
 	private final GlobalSearchScope mySearchScope;
 	@NotNull
 	private final String myQualifiedName;
 
 	public CSharpTypeRefByQName(@NotNull Project project, @NotNull GlobalSearchScope searchScope, @NotNull String qualifiedName)
 	{
-		myProject = project;
+		super(project);
 		mySearchScope = searchScope;
 		myQualifiedName = qualifiedName;
 	}
@@ -60,12 +58,12 @@ public class CSharpTypeRefByQName extends DotNetTypeRefWithCachedResult
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
-		if(DumbService.isDumb(myProject))
+		if(DumbService.isDumb(getProject()))
 		{
 			return DotNetTypeResolveResult.EMPTY;
 		}
 
-		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(myProject).findType(myQualifiedName, mySearchScope, CSharpTransform.INSTANCE);
+		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(getProject()).findType(myQualifiedName, mySearchScope, CSharpTransform.INSTANCE);
 
 		if(type == null)
 		{

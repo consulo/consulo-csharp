@@ -136,7 +136,7 @@ public class CSharpLinqVariableImpl extends CSharpElementImpl implements CSharpL
 				CSharpLinqVariableImpl variable = ((CSharpLinqJoinClauseImpl) nextParent).getVariable();
 				if(variable != null)
 				{
-					return new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(this, DotNetTypes2.System.Collections.Generic.IEnumerable$1), variable.toTypeRef(true));
+					return new CSharpGenericWrapperTypeRef(getProject(), new CSharpTypeRefByQName(this, DotNetTypes2.System.Collections.Generic.IEnumerable$1), variable.toTypeRef(true));
 				}
 			}
 			else if(nextParent instanceof CSharpLinqQueryContinuationImpl)

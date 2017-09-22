@@ -143,6 +143,7 @@ public class CSharpLambdaTypeRef extends DotNetTypeRefWithCachedResult
 	@RequiredReadAction
 	public CSharpLambdaTypeRef(@NotNull PsiElement scope, @Nullable CSharpMethodDeclaration target, @NotNull CSharpSimpleParameterInfo[] parameterInfos, @NotNull DotNetTypeRef returnType, boolean inheritParameters)
 	{
+		super(scope.getProject());
 		myElement = scope;
 		myTarget = target;
 		myParameterInfos = parameterInfos;

@@ -35,12 +35,11 @@ import com.intellij.psi.search.GlobalSearchScope;
  */
 public class CSharpDynamicTypeRef extends DotNetTypeRefWithCachedResult
 {
-	private Project myProject;
 	private GlobalSearchScope mySearchScope;
 
 	public CSharpDynamicTypeRef(Project project, GlobalSearchScope searchScope)
 	{
-		myProject = project;
+		super(project);
 		mySearchScope = searchScope;
 	}
 
@@ -49,7 +48,7 @@ public class CSharpDynamicTypeRef extends DotNetTypeRefWithCachedResult
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
-		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(myProject).findType(DotNetTypes.System.Object, mySearchScope, CSharpTransform.INSTANCE);
+		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(getProject()).findType(DotNetTypes.System.Object, mySearchScope, CSharpTransform.INSTANCE);
 		if(type == null)
 		{
 			return DotNetTypeResolveResult.EMPTY;

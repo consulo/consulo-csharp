@@ -69,14 +69,14 @@ public class CSharpNullableTypeUtil
 		{
 			return typeRef;
 		}
-		return new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(scope, DotNetTypes.System.Nullable$1), typeRef);
+		return new CSharpGenericWrapperTypeRef(scope.getProject(), new CSharpTypeRefByQName(scope, DotNetTypes.System.Nullable$1), typeRef);
 	}
 
 	@NotNull
 	@RequiredReadAction
 	public static DotNetTypeRef box(@NotNull PsiElement scope, @NotNull DotNetTypeRef typeRef)
 	{
-		return new CSharpGenericWrapperTypeRef(new CSharpTypeRefByQName(scope, DotNetTypes.System.Nullable$1), typeRef);
+		return new CSharpGenericWrapperTypeRef(scope.getProject(), new CSharpTypeRefByQName(scope, DotNetTypes.System.Nullable$1), typeRef);
 	}
 
 	@NotNull

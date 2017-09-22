@@ -39,6 +39,7 @@ public abstract class CSharpConstantBaseTypeRef extends DotNetTypeRefWithCachedR
 
 	public CSharpConstantBaseTypeRef(CSharpConstantExpressionImpl expression, DotNetTypeRef delegate)
 	{
+		super(expression.getProject());
 		myExpression = expression;
 		myDelegate = delegate;
 	}

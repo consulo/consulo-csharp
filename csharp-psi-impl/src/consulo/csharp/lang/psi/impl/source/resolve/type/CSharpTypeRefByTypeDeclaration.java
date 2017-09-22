@@ -43,6 +43,7 @@ public class CSharpTypeRefByTypeDeclaration extends DotNetTypeRefWithCachedResul
 
 	public CSharpTypeRefByTypeDeclaration(@NotNull DotNetTypeDeclaration element, @NotNull DotNetGenericExtractor extractor)
 	{
+		super(element.getProject());
 		myElement = element;
 		myExtractor = extractor;
 	}

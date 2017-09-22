@@ -65,7 +65,7 @@ public class CSharpOutRefWrapExpressionImpl extends CSharpExpressionImpl impleme
 		{
 			type = CSharpRefTypeRef.Type.out;
 		}
-		return new CSharpRefTypeRef(type, typeRef);
+		return new CSharpRefTypeRef(getProject(), type, typeRef);
 	}
 
 	@NotNull

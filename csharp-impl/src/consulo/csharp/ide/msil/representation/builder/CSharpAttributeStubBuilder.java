@@ -216,7 +216,7 @@ public class CSharpAttributeStubBuilder
 			{
 				innerTypeRefs[i] = toTypeRef(scope, genericArguments.get(i), false);
 			}
-			return new CSharpGenericWrapperTypeRef(toTypeRef(scope, typeSignatureWithGenericParameters.getSignature(), false), innerTypeRefs);
+			return new CSharpGenericWrapperTypeRef(scope.getProject(), toTypeRef(scope, typeSignatureWithGenericParameters.getSignature(), false), innerTypeRefs);
 		}
 		else if(typeSignature instanceof ArrayTypeSignature)
 		{
@@ -235,7 +235,7 @@ public class CSharpAttributeStubBuilder
 			{
 				if(StringUtil.containsChar(fullName, MsilHelper.GENERIC_MARKER_IN_NAME))
 				{
-					return new CSharpEmptyGenericWrapperTypeRef(innerTypeRef);
+					return new CSharpEmptyGenericWrapperTypeRef(scope.getProject(), innerTypeRef);
 				}
 			}
 			return innerTypeRef;

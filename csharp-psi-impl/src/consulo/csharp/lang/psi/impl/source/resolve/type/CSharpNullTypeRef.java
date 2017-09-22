@@ -36,7 +36,6 @@ import com.intellij.psi.search.GlobalSearchScope;
  */
 public class CSharpNullTypeRef extends DotNetTypeRefWithCachedResult
 {
-	private Project myProject;
 	private GlobalSearchScope myScope;
 
 	@RequiredReadAction
@@ -48,7 +47,7 @@ public class CSharpNullTypeRef extends DotNetTypeRefWithCachedResult
 	@RequiredReadAction
 	public CSharpNullTypeRef(@NotNull Project project, @NotNull GlobalSearchScope scope)
 	{
-		myProject = project;
+		super(project);
 		myScope = scope;
 	}
 
@@ -57,7 +56,7 @@ public class CSharpNullTypeRef extends DotNetTypeRefWithCachedResult
 	@Override
 	protected DotNetTypeResolveResult resolveResult()
 	{
-		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(myProject).findType(DotNetTypes.System.Object, myScope, CSharpTransform.INSTANCE);
+		DotNetTypeDeclaration type = DotNetPsiSearcher.getInstance(getProject()).findType(DotNetTypes.System.Object, myScope, CSharpTransform.INSTANCE);
 		if(type == null)
 		{
 			return DotNetTypeResolveResult.EMPTY;

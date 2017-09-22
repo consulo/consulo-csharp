@@ -114,7 +114,7 @@ public class CSharpNewExpressionImpl extends CSharpExpressionImpl implements CSh
 
 				if(arguments.length != 0)
 				{
-					typeRef = new CSharpGenericWrapperTypeRef(typeRef, arguments);
+					typeRef = new CSharpGenericWrapperTypeRef(getProject(), typeRef, arguments);
 				}
 			}
 			else

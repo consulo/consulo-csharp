@@ -16,6 +16,7 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
+import com.intellij.openapi.project.Project;
 import consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
@@ -24,8 +25,8 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  */
 public class CSharpEmptyGenericWrapperTypeRef extends CSharpGenericWrapperTypeRef
 {
-	public CSharpEmptyGenericWrapperTypeRef(DotNetTypeRef innerTypeRef)
+	public CSharpEmptyGenericWrapperTypeRef(Project project, DotNetTypeRef innerTypeRef)
 	{
-		super(innerTypeRef, EMPTY_ARRAY);
+		super(project, innerTypeRef, EMPTY_ARRAY);
 	}
 }

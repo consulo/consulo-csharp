@@ -71,6 +71,7 @@ public class CSharpAnonymTypeRef extends DotNetTypeRefWithCachedResult
 
 	public CSharpAnonymTypeRef(PsiFile containingFile, CSharpFieldOrPropertySet[] sets)
 	{
+		super(containingFile.getProject());
 		myContainingFile = containingFile;
 		mySets = sets;
 	}

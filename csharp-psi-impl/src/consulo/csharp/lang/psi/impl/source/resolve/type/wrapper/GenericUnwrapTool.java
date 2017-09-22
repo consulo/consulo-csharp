@@ -282,7 +282,7 @@ public class GenericUnwrapTool
 				DotNetTypeRef oldArgument = oldArguments[i];
 				arguments[i] = exchangeTypeRef(oldArgument, func, scope);
 			}
-			return new CSharpGenericWrapperTypeRef(inner, arguments);
+			return new CSharpGenericWrapperTypeRef(scope.getProject(), inner, arguments);
 		}
 		else if(typeRef instanceof DotNetPointerTypeRef)
 		{
@@ -290,7 +290,7 @@ public class GenericUnwrapTool
 		}
 		else if(typeRef instanceof CSharpRefTypeRef)
 		{
-			return new CSharpRefTypeRef(((CSharpRefTypeRef) typeRef).getType(), exchangeTypeRef(((CSharpRefTypeRef) typeRef).getInnerTypeRef(), func, scope));
+			return new CSharpRefTypeRef(scope.getProject(), ((CSharpRefTypeRef) typeRef).getType(), exchangeTypeRef(((CSharpRefTypeRef) typeRef).getInnerTypeRef(), func, scope));
 		}
 		else if(typeRef instanceof CSharpArrayTypeRef)
 		{
@@ -308,7 +308,7 @@ public class GenericUnwrapTool
 			if(pair.getFirst() == null && pair.getSecond() == null)
 			{
 				String referenceName = referenceExpression.getReferenceName();
-				innerTypeRef = referenceName == null ? DotNetTypeRef.ERROR_TYPE : new CSharpErrorTypeRef(referenceName);
+				innerTypeRef = referenceName == null ? DotNetTypeRef.ERROR_TYPE : new CSharpErrorTypeRef(scope.getProject(), referenceName);
 			}
 			else if(pair.getFirst() != null)
 			{
@@ -334,7 +334,7 @@ public class GenericUnwrapTool
 			}
 
 			DotNetTypeRef[] typeRefs = exchangeTypeRefs(typeArgumentListRefs, func, scope);
-			return new CSharpGenericWrapperTypeRef(innerTypeRef, typeRefs);
+			return new CSharpGenericWrapperTypeRef(scope.getProject(), innerTypeRef, typeRefs);
 		}
 		else
 		{

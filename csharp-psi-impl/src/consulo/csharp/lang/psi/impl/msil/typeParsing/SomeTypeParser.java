@@ -74,8 +74,7 @@ public class SomeTypeParser
 					typeRefs.add(convert(argument, scope));
 				}
 
-				typeRefRef.set(new CSharpGenericWrapperTypeRef(convert(genericWrapperType.getTarget(), scope),
-						typeRefs.toArray(new DotNetTypeRef[typeRefs.size()])));
+				typeRefRef.set(new CSharpGenericWrapperTypeRef(scope.getProject(), convert(genericWrapperType.getTarget(), scope), typeRefs.toArray(new DotNetTypeRef[typeRefs.size()])));
 			}
 		});
 		return typeRefRef.get();

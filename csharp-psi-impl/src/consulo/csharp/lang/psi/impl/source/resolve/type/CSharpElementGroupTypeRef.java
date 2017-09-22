@@ -39,6 +39,7 @@ public class CSharpElementGroupTypeRef extends DotNetTypeRefWithCachedResult imp
 
 	public CSharpElementGroupTypeRef(CSharpElementGroup<?> elementGroup)
 	{
+		super(elementGroup.getProject());
 		myElementGroup = elementGroup;
 	}
 

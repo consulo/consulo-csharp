@@ -39,6 +39,7 @@ public class CSharpPointerTypeRef extends DotNetTypeRefWithCachedResult implemen
 
 	public CSharpPointerTypeRef(@NotNull PsiElement scope, @NotNull DotNetTypeRef innerTypeRef)
 	{
+		super(scope.getProject());
 		myScope = scope;
 		myInnerTypeRef = innerTypeRef;
 	}

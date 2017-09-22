@@ -16,47 +16,20 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
-import org.jetbrains.annotations.NotNull;
-import consulo.annotations.RequiredReadAction;
-import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
-import consulo.dotnet.resolve.DotNetTypeResolveResult;
+import consulo.dotnet.resolve.DotNetTypeRef;
 
 /**
  * @author VISTALL
  * @since 29.12.13.
  */
-public class CSharpStaticTypeRef extends DotNetTypeRefWithCachedResult
+public class CSharpStaticTypeRef extends DotNetTypeRef.AdapterInternal
 {
 	public static final CSharpStaticTypeRef IMPLICIT = new CSharpStaticTypeRef("implicit");
 	public static final CSharpStaticTypeRef EXPLICIT = new CSharpStaticTypeRef("explicit");
 	public static final CSharpStaticTypeRef __ARGLIST_TYPE = new CSharpStaticTypeRef("__arglist");
 
-	private final String myPresentableText;
-
 	private CSharpStaticTypeRef(String presentableText)
 	{
-		myPresentableText = presentableText;
-	}
-
-	@NotNull
-	public String getText()
-	{
-		return myPresentableText;
-	}
-
-	@RequiredReadAction
-	@NotNull
-	@Override
-	protected DotNetTypeResolveResult resolveResult()
-	{
-		return DotNetTypeResolveResult.EMPTY;
-	}
-
-	@RequiredReadAction
-	@NotNull
-	@Override
-	public String toString()
-	{
-		return myPresentableText;
+		super(presentableText);
 	}
 }

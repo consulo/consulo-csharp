@@ -37,6 +37,7 @@ public class CSharpTypeRefFromText extends DotNetTypeRefWithCachedResult
 
 	public CSharpTypeRefFromText(final String text, final PsiElement owner)
 	{
+		super(owner.getProject());
 		myText = text;
 		myOwner = owner;
 	}

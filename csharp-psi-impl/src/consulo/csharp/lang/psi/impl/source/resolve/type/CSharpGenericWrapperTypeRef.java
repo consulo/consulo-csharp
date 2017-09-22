@@ -17,6 +17,7 @@
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.project.Project;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.dotnet.psi.DotNetGenericParameter;
@@ -37,8 +38,9 @@ public class CSharpGenericWrapperTypeRef extends DotNetTypeRefWithCachedResult i
 	private final DotNetTypeRef myInnerTypeRef;
 	private final DotNetTypeRef[] myArguments;
 
-	public CSharpGenericWrapperTypeRef(@NotNull DotNetTypeRef innerTypeRef, @NotNull DotNetTypeRef... rArguments)
+	public CSharpGenericWrapperTypeRef(Project project, @NotNull DotNetTypeRef innerTypeRef, @NotNull DotNetTypeRef... rArguments)
 	{
+		super(project);
 		myInnerTypeRef = innerTypeRef;
 		myArguments = rArguments;
 	}

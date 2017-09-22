@@ -17,6 +17,7 @@
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.project.Project;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.resolve.DotNetRefTypeRef;
 import consulo.dotnet.resolve.DotNetTypeRef;
@@ -38,8 +39,9 @@ public class CSharpRefTypeRef extends DotNetTypeRefWithCachedResult implements D
 	private final Type myType;
 	private DotNetTypeRef myTypeRef;
 
-	public CSharpRefTypeRef(@NotNull Type type, @NotNull DotNetTypeRef typeRef)
+	public CSharpRefTypeRef(Project project, @NotNull Type type, @NotNull DotNetTypeRef typeRef)
 	{
+		super(project);
 		myType = type;
 		myTypeRef = typeRef;
 	}

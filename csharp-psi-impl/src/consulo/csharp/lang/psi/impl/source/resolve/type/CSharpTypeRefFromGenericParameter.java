@@ -34,6 +34,7 @@ public class CSharpTypeRefFromGenericParameter extends DotNetTypeRefWithCachedRe
 
 	public CSharpTypeRefFromGenericParameter(DotNetGenericParameter genericParameter)
 	{
+		super(genericParameter.getProject());
 		myGenericParameter = genericParameter;
 	}
 

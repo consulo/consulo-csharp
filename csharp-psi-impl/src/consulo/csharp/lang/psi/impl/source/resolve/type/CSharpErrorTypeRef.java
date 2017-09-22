@@ -17,6 +17,7 @@
 package consulo.csharp.lang.psi.impl.source.resolve.type;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.project.Project;
 import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.resolve.DotNetTypeRefWithCachedResult;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
@@ -29,8 +30,9 @@ public class CSharpErrorTypeRef extends DotNetTypeRefWithCachedResult
 {
 	private String myText;
 
-	public CSharpErrorTypeRef(@NotNull String text)
+	public CSharpErrorTypeRef(@NotNull Project project, @NotNull String text)
 	{
+		super(project);
 		myText = text;
 	}
 

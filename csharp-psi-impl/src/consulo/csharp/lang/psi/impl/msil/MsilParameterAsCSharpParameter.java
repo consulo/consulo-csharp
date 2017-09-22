@@ -217,7 +217,7 @@ public class MsilParameterAsCSharpParameter extends MsilVariableAsCSharpVariable
 				return typeRef;
 			}
 
-			return new CSharpRefTypeRef(CSharpRefTypeRef.Type.out, ((DotNetRefTypeRef) typeRef).getInnerTypeRef());
+			return new CSharpRefTypeRef(getProject(), CSharpRefTypeRef.Type.out, ((DotNetRefTypeRef) typeRef).getInnerTypeRef());
 		}
 		return typeRef;
 	}

@@ -267,7 +267,7 @@ public class MsilToCSharpUtil
 		else if(typeRef instanceof MsilRefTypeRefImpl)
 		{
 			DotNetTypeRef innerTypeRef = extractToCSharp(((DotNetRefTypeRef) typeRef).getInnerTypeRef(), scope);
-			return new CSharpRefTypeRef(CSharpRefTypeRef.Type.ref, innerTypeRef);
+			return new CSharpRefTypeRef(scope.getProject(), CSharpRefTypeRef.Type.ref, innerTypeRef);
 		}
 		else if(typeRef instanceof DotNetGenericWrapperTypeRef)
 		{
@@ -294,7 +294,7 @@ public class MsilToCSharpUtil
 
 				list = ContainerUtil.reverse(list);
 
-				return new CSharpGenericWrapperTypeRef(inner, ContainerUtil.toArray(list, DotNetTypeRef.ARRAY_FACTORY));
+				return new CSharpGenericWrapperTypeRef(scope.getProject(), inner, ContainerUtil.toArray(list, DotNetTypeRef.ARRAY_FACTORY));
 			}
 			else  // fallback
 			{
@@ -304,7 +304,7 @@ public class MsilToCSharpUtil
 					newArguments[i] = extractToCSharp(arguments[i], scope);
 				}
 
-				return new CSharpGenericWrapperTypeRef(inner, newArguments);
+				return new CSharpGenericWrapperTypeRef(scope.getProject(), inner, newArguments);
 			}
 		}
 		return new MsilDelegateTypeRef(scope, typeRef);
