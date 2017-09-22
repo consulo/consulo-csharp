@@ -80,8 +80,7 @@ public class CSharpUsingNamespaceStatementImpl extends CSharpStubElementImpl<CSh
 	@Nullable
 	public DotNetNamespaceAsElement resolve()
 	{
-		return CachedValuesManager.getManager(getProject()).createCachedValue(() -> CachedValueProvider.Result.create(resolveInner(), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT),
-				false).getValue();
+		return CachedValuesManager.getCachedValue(this, () -> CachedValueProvider.Result.create(resolveInner(), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT));
 	}
 
 	@Nullable
