@@ -82,27 +82,11 @@ public class CSharpResolveContextUtil
 		}
 		else if(element instanceof CSharpUsingNamespaceStatement || element instanceof CSharpUsingTypeStatement)
 		{
-			return cacheSimple((CSharpUsingListChild) element, new NotNullFunction<CSharpUsingListChild, CSharpResolveContext>()
-			{
-				@NotNull
-				@Override
-				public CSharpResolveContext fun(CSharpUsingListChild usingList)
-				{
-					return new CSharpUsingNamespaceOrTypeResolveContext(usingList);
-				}
-			});
+			return cacheSimple((CSharpUsingListChild) element, CSharpUsingNamespaceOrTypeResolveContext::new);
 		}
 		else if(element instanceof CSharpTypeDefStatement)
 		{
-			return cacheSimple((CSharpTypeDefStatement) element, new NotNullFunction<CSharpTypeDefStatement, CSharpResolveContext>()
-			{
-				@NotNull
-				@Override
-				public CSharpResolveContext fun(CSharpTypeDefStatement statement)
-				{
-					return new CSharpTypeDefResolveContext(statement);
-				}
-			});
+			return cacheSimple((CSharpTypeDefStatement) element, CSharpTypeDefResolveContext::new);
 		}
 		else if(element instanceof DotNetGenericParameter)
 		{
@@ -188,15 +172,7 @@ public class CSharpResolveContextUtil
 			return provider.getValue();
 		}
 
-		CachedValue<CSharpResolveContext> cachedValue = CachedValuesManager.getManager(element.getProject()).createCachedValue(new CachedValueProvider<CSharpResolveContext>()
-		{
-			@Nullable
-			@Override
-			public Result<CSharpResolveContext> compute()
-			{
-				return Result.create(fun.fun(element), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
-			}
-		}, false);
+		CachedValue<CSharpResolveContext> cachedValue = CachedValuesManager.getManager(element.getProject()).createCachedValue(() -> CachedValueProvider.Result.create(fun.fun(element), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT), false);
 		element.putUserData(RESOLVE_CONTEXT, cachedValue);
 		return cachedValue.getValue();
 	}
