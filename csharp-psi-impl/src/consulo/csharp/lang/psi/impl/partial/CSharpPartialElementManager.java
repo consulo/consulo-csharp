@@ -27,8 +27,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootAdapter;
 import com.intellij.openapi.roots.ModuleRootEvent;
 import com.intellij.openapi.util.Factory;
+import com.intellij.psi.impl.AnyPsiChangeListener;
+import com.intellij.psi.impl.PsiManagerImpl;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 
@@ -45,23 +46,17 @@ public class CSharpPartialElementManager implements Disposable
 	}
 
 	private final Map<GlobalSearchScope, Map<String, CSharpTypeDeclaration>> myCache = ContainerUtil.createConcurrentWeakMap();
-	private long myOutOfCodeModification;
 	private final Project myProject;
 
-	public CSharpPartialElementManager(@NotNull Project project, @NotNull final PsiModificationTracker modificationTracker)
+	public CSharpPartialElementManager(@NotNull Project project)
 	{
 		myProject = project;
-		project.getMessageBus().connect().subscribe(PsiModificationTracker.TOPIC, new PsiModificationTracker.Listener()
+		project.getMessageBus().connect().subscribe(PsiManagerImpl.ANY_PSI_CHANGE_TOPIC, new AnyPsiChangeListener.Adapter()
 		{
 			@Override
-			public void modificationCountChanged()
+			public void beforePsiChanged(boolean isPhysical)
 			{
-				long l = modificationTracker.getOutOfCodeBlockModificationCount();
-				if(l != myOutOfCodeModification)
-				{
-					myOutOfCodeModification = l;
-					myCache.clear();
-				}
+				myCache.clear();
 			}
 		});
 
@@ -78,23 +73,10 @@ public class CSharpPartialElementManager implements Disposable
 	@NotNull
 	public CSharpTypeDeclaration getOrCreateCompositeType(@NotNull final GlobalSearchScope scope, @NotNull final String vmQName, @NotNull final Collection<CSharpTypeDeclaration> typeDeclarations)
 	{
-		Map<String, CSharpTypeDeclaration> scopeMap = ContainerUtil.getOrCreate(myCache, scope, new Factory<Map<String, CSharpTypeDeclaration>>()
-		{
-			@Override
-			public Map<String, CSharpTypeDeclaration> create()
-			{
-				return ContainerUtil.createConcurrentWeakValueMap();
-			}
-		});
+		Map<String, CSharpTypeDeclaration> scopeMap = ContainerUtil.getOrCreate(myCache, scope, (Factory<Map<String, CSharpTypeDeclaration>>) ContainerUtil::createConcurrentWeakValueMap);
 
-		return ContainerUtil.getOrCreate(scopeMap, vmQName, new Factory<CSharpTypeDeclaration>()
-		{
-			@Override
-			public CSharpTypeDeclaration create()
-			{
-				return new CSharpCompositeTypeDeclaration(myProject, scope, ContainerUtil.toArray(typeDeclarations, CSharpTypeDeclaration.ARRAY_FACTORY));
-			}
-		});
+		return ContainerUtil.getOrCreate(scopeMap, vmQName, (Factory<CSharpTypeDeclaration>) () -> new CSharpCompositeTypeDeclaration(myProject, scope, ContainerUtil.toArray(typeDeclarations,
+				CSharpTypeDeclaration.ARRAY_FACTORY)));
 	}
 
 	@Override

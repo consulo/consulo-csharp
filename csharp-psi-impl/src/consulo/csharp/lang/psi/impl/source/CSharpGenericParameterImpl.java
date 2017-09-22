@@ -17,11 +17,6 @@
 package consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.CSharpElementVisitor;
-import consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
-import consulo.csharp.lang.psi.CSharpStubElements;
-import consulo.csharp.lang.psi.impl.stub.CSharpGenericParameterStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.CachedValueProvider;
@@ -29,7 +24,11 @@ import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.ArrayUtil;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpElementVisitor;
+import consulo.csharp.lang.psi.CSharpGenericConstraintUtil;
 import consulo.csharp.lang.psi.CSharpGenericParameter;
+import consulo.csharp.lang.psi.CSharpStubElements;
+import consulo.csharp.lang.psi.impl.stub.CSharpGenericParameterStub;
 import consulo.dotnet.psi.DotNetAttribute;
 import consulo.dotnet.psi.DotNetGenericParameterList;
 import consulo.dotnet.psi.DotNetModifierList;
@@ -86,15 +85,7 @@ public class CSharpGenericParameterImpl extends CSharpStubMemberImpl<CSharpGener
 	@Override
 	public DotNetTypeRef[] getExtendTypeRefs()
 	{
-		return CachedValuesManager.getCachedValue(this, new CachedValueProvider<DotNetTypeRef[]>()
-		{
-			@Nullable
-			@Override
-			@RequiredReadAction
-			public Result<DotNetTypeRef[]> compute()
-			{
-				return Result.create(CSharpGenericConstraintUtil.getExtendTypes(CSharpGenericParameterImpl.this), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
-			}
-		});
+		return CachedValuesManager.getCachedValue(this, () -> CachedValueProvider.Result.create(CSharpGenericConstraintUtil.getExtendTypes(CSharpGenericParameterImpl.this), PsiModificationTracker
+				.MODIFICATION_COUNT));
 	}
 }

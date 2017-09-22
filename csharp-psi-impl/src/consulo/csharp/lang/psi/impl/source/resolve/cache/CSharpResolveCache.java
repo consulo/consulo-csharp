@@ -21,7 +21,6 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.annotations.RequiredReadAction;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -37,16 +36,18 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.ResolveResult;
-import com.intellij.psi.util.PsiModificationTracker;
+import com.intellij.psi.impl.AnyPsiChangeListener;
+import com.intellij.psi.impl.PsiManagerImpl;
 import com.intellij.reference.SoftReference;
 import com.intellij.util.containers.ConcurrentWeakHashMap;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.messages.MessageBus;
+import consulo.annotations.RequiredReadAction;
 
 /**
  * @author VISTALl
  * @since 18:06 26.10.2014
- * <p/>
+ * <p>
  * This is variant of {@link com.intellij.psi.impl.source.resolve.ResolveCache} with 'resolveFromParent' and 'incompleteCode'
  */
 public class CSharpResolveCache
@@ -84,13 +85,12 @@ public class CSharpResolveCache
 		{
 			myMaps[i] = createWeakMap();
 		}
-		messageBus.connect().subscribe(PsiModificationTracker.TOPIC, new PsiModificationTracker.Listener()
+		messageBus.connect().subscribe(PsiManagerImpl.ANY_PSI_CHANGE_TOPIC, new AnyPsiChangeListener.Adapter()
 		{
 			@Override
-			public void modificationCountChanged()
+			public void beforePsiChanged(boolean isPhysical)
 			{
-				clearCache(true);
-				clearCache(false);
+				clearCache(isPhysical);
 			}
 		});
 	}
@@ -142,8 +142,7 @@ public class CSharpResolveCache
 		}
 
 		RecursionGuard.StackStamp stamp = myGuard.markStack();
-		result = needToPreventRecursion ? myGuard.doPreventingRecursion(Quaternary.create(ref, incompleteCode, resolveFromParent, isPoly), true,
-				new Computable<TResult>()
+		result = needToPreventRecursion ? myGuard.doPreventingRecursion(Quaternary.create(ref, incompleteCode, resolveFromParent, isPoly), true, new Computable<TResult>()
 		{
 			@Override
 			@RequiredReadAction
@@ -182,17 +181,12 @@ public class CSharpResolveCache
 			boolean resolveFromParent,
 			@NotNull PsiFile containingFile)
 	{
-		ResolveResult[] result = resolve(ref, resolver, needToPreventRecursion, incompleteCode, resolveFromParent, true,
-				containingFile.isPhysical());
+		ResolveResult[] result = resolve(ref, resolver, needToPreventRecursion, incompleteCode, resolveFromParent, true, containingFile.isPhysical());
 		return result == null ? ResolveResult.EMPTY_ARRAY : result;
 	}
 
 	@Nullable
-	public <T extends PsiPolyVariantReference & PsiElement> ResolveResult[] getCachedResults(@NotNull T ref,
-			boolean physical,
-			boolean incompleteCode,
-			boolean resolveFromParent,
-			boolean isPoly)
+	public <T extends PsiPolyVariantReference & PsiElement> ResolveResult[] getCachedResults(@NotNull T ref, boolean physical, boolean incompleteCode, boolean resolveFromParent, boolean isPoly)
 	{
 		Map<T, Getter<ResolveResult[]>> map = getMap(physical, incompleteCode, resolveFromParent, isPoly);
 		Getter<ResolveResult[]> reference = map.get(ref);
@@ -210,10 +204,7 @@ public class CSharpResolveCache
 		return resolve(ref, resolver, needToPreventRecursion, incompleteCode, resolveFromParent, false, ref.isPhysical());
 	}
 
-	private <TRef extends PsiElement, TResult> ConcurrentMap<TRef, Getter<TResult>> getMap(boolean physical,
-			boolean incompleteCode,
-			boolean resolveFromParent,
-			boolean isPoly)
+	private <TRef extends PsiElement, TResult> ConcurrentMap<TRef, Getter<TResult>> getMap(boolean physical, boolean incompleteCode, boolean resolveFromParent, boolean isPoly)
 	{
 		//noinspection unchecked
 		return myMaps[(physical ? 0 : 1) * 8 + (incompleteCode ? 0 : 1) * 4 + (resolveFromParent ? 0 : 1) * 2 + (isPoly ? 0 : 1)];
@@ -230,10 +221,7 @@ public class CSharpResolveCache
 	private static final Getter<ResolveResult[]> EMPTY_POLY_RESULT = new StaticGetter<ResolveResult[]>(ResolveResult.EMPTY_ARRAY);
 	private static final Getter<Object> NULL_RESULT = new StaticGetter<Object>(null);
 
-	private static <TRef extends PsiElement, TResult> void cache(@NotNull TRef ref,
-			@NotNull ConcurrentMap<TRef, Getter<TResult>> map,
-			TResult result,
-			boolean isPoly)
+	private static <TRef extends PsiElement, TResult> void cache(@NotNull TRef ref, @NotNull ConcurrentMap<TRef, Getter<TResult>> map, TResult result, boolean isPoly)
 	{
 		// optimization: less contention
 		Getter<TResult> cached = map.get(ref);
