@@ -522,7 +522,7 @@ public abstract class CSharpIntroduceHandler implements RefactoringActionHandler
 		InitializerTextBuilder builder = new InitializerTextBuilder();
 		initializer.accept(builder);
 		String assignmentText = getDeclarationString(operation, builder.result());
-		return CSharpFileFactory.createStatement(project, assignmentText);
+		return CSharpFileFactory.createStatement(project, assignmentText.trim());
 	}
 
 	@NotNull
