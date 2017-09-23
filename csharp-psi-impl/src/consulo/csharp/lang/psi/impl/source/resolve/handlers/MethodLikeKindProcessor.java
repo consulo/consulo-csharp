@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.util.Processor;
@@ -67,64 +68,58 @@ public class MethodLikeKindProcessor implements KindProcessor
 
 		final List<MethodResolveResult> methodResolveResults = new ArrayList<>();
 
-		CSharpReferenceExpressionImplUtil.processAnyMember(options, defaultExtractor, forceQualifierElement, new Processor<ResolveResult>()
+		CSharpReferenceExpressionImplUtil.processAnyMember(options, defaultExtractor, forceQualifierElement, result ->
 		{
-			@Override
-			@RequiredReadAction
-			public boolean process(final ResolveResult result)
+			ProgressManager.checkCanceled();
+
+			PsiElement maybeElementGroup = result.getElement();
+			if(maybeElementGroup instanceof CSharpElementGroup)
 			{
-				PsiElement maybeElementGroup = result.getElement();
-				if(maybeElementGroup instanceof CSharpElementGroup)
+				//noinspection unchecked
+				((CSharpElementGroup<PsiElement>) maybeElementGroup).process(psiElement ->
 				{
-					//noinspection unchecked
-					((CSharpElementGroup<PsiElement>) maybeElementGroup).process(new Processor<PsiElement>()
+					ProgressManager.checkCanceled();
+
+					if(psiElement instanceof DotNetLikeMethodDeclaration)
 					{
-						@Override
-						@RequiredReadAction
-						public boolean process(PsiElement psiElement)
+						GenericInferenceUtil.GenericInferenceResult inferenceResult = psiElement.getUserData(GenericInferenceUtil.INFERENCE_RESULT);
+
+						if(inferenceResult == null && !CSharpReferenceExpressionImplUtil.isConstructorKind(kind))
 						{
-							if(psiElement instanceof DotNetLikeMethodDeclaration)
-							{
-								GenericInferenceUtil.GenericInferenceResult inferenceResult = psiElement.getUserData(GenericInferenceUtil.INFERENCE_RESULT);
-
-								if(inferenceResult == null && !CSharpReferenceExpressionImplUtil.isConstructorKind(kind))
-								{
-									inferenceResult = GenericInferenceUtil.inferenceGenericExtractor(element, callArgumentListOwner, (DotNetLikeMethodDeclaration) psiElement);
-									psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, inferenceResult.getExtractor());
-								}
-
-								MethodCalcResult calcResult = MethodResolver.calc(callArgumentListOwner, (DotNetLikeMethodDeclaration) psiElement, element);
-
-								if(inferenceResult == null || inferenceResult.isSuccess())
-								{
-									methodResolveResults.add(MethodResolveResult.createResult(calcResult, psiElement, result));
-								}
-								else
-								{
-									methodResolveResults.add(MethodResolveResult.createResult(calcResult.dupNoResult(-4000000), psiElement, result));
-								}
-							}
-							return true;
+							inferenceResult = GenericInferenceUtil.inferenceGenericExtractor(element, callArgumentListOwner, (DotNetLikeMethodDeclaration) psiElement);
+							psiElement = GenericUnwrapTool.extract((DotNetNamedElement) psiElement, inferenceResult.getExtractor());
 						}
-					});
-				}
-				else if(maybeElementGroup instanceof DotNetVariable)
-				{
-					DotNetTypeRef dotNetTypeRef = ((DotNetVariable) maybeElementGroup).toTypeRef(true);
 
-					DotNetTypeResolveResult maybeLambdaResolveResult = dotNetTypeRef.resolve();
+						MethodCalcResult calcResult = MethodResolver.calc(callArgumentListOwner, (DotNetLikeMethodDeclaration) psiElement, element);
 
-					if(maybeLambdaResolveResult instanceof CSharpLambdaResolveResult)
-					{
-						CSharpLambdaResolveResult lambdaTypeResolveResult = (CSharpLambdaResolveResult) maybeLambdaResolveResult;
-
-						MethodCalcResult calcResult = MethodResolver.calc(callArgumentListOwner, lambdaTypeResolveResult.getParameterInfos(), element);
-
-						methodResolveResults.add(MethodResolveResult.createResult(calcResult, maybeElementGroup, result));
+						if(inferenceResult == null || inferenceResult.isSuccess())
+						{
+							methodResolveResults.add(MethodResolveResult.createResult(calcResult, psiElement, result));
+						}
+						else
+						{
+							methodResolveResults.add(MethodResolveResult.createResult(calcResult.dupNoResult(-4000000), psiElement, result));
+						}
 					}
-				}
-				return true;
+					return true;
+				});
 			}
+			else if(maybeElementGroup instanceof DotNetVariable)
+			{
+				DotNetTypeRef dotNetTypeRef = ((DotNetVariable) maybeElementGroup).toTypeRef(true);
+
+				DotNetTypeResolveResult maybeLambdaResolveResult = dotNetTypeRef.resolve();
+
+				if(maybeLambdaResolveResult instanceof CSharpLambdaResolveResult)
+				{
+					CSharpLambdaResolveResult lambdaTypeResolveResult = (CSharpLambdaResolveResult) maybeLambdaResolveResult;
+
+					MethodCalcResult calcResult = MethodResolver.calc(callArgumentListOwner, lambdaTypeResolveResult.getParameterInfos(), element);
+
+					methodResolveResults.add(MethodResolveResult.createResult(calcResult, maybeElementGroup, result));
+				}
+			}
+			return true;
 		});
 
 		WeightUtil.sortAndProcess(methodResolveResults, processor, options.getElement());

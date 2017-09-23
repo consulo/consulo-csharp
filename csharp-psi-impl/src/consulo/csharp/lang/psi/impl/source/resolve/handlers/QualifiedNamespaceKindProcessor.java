@@ -16,10 +16,9 @@
 
 package consulo.csharp.lang.psi.impl.source.resolve.handlers;
 
-import java.util.List;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.text.CharFilter;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -133,6 +132,8 @@ public class QualifiedNamespaceKindProcessor implements KindProcessor
 			@Override
 			public boolean execute(@NotNull PsiElement element, ResolveState state)
 			{
+				ProgressManager.checkCanceled();
+
 				if(element instanceof DotNetNamespaceAsElement)
 				{
 					if(StringUtil.equals(((DotNetNamespaceAsElement) element).getPresentableQName(), DotNetNamespaceStubUtil.ROOT_FOR_INDEXING))

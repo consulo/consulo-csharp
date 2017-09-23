@@ -22,6 +22,12 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveResult;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.util.Processor;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
@@ -40,12 +46,6 @@ import consulo.csharp.lang.psi.resolve.CSharpResolveSelector;
 import consulo.dotnet.psi.DotNetGenericParameter;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.Processor;
 
 /**
  * @author VISTALL
@@ -143,6 +143,8 @@ public class MemberResolveScopeProcessor extends StubScopeProcessor
 
 		for(int i = 0; i < psiElements.length; i++)
 		{
+			ProgressManager.checkCanceled();
+
 			PsiElement psiElement = psiElements[i];
 			if(psiElement instanceof CSharpElementGroup)
 			{

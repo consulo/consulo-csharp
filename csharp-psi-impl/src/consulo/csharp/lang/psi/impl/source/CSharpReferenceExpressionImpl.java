@@ -34,8 +34,6 @@ import consulo.csharp.lang.psi.CSharpFileFactory;
 import consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import consulo.csharp.lang.psi.CSharpSoftTokens;
 import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
-import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetTypeList;
@@ -126,16 +124,7 @@ public class CSharpReferenceExpressionImpl extends CSharpExpressionImpl implemen
 	@NotNull
 	public ResolveResult[] multiResolve(final boolean incompleteCode, final boolean resolveFromParent)
 	{
-		if(!isValid())
-		{
-			return ResolveResult.EMPTY_ARRAY;
-		}
-		CSharpReferenceExpressionImplUtil.OurResolver resolver = CSharpReferenceExpressionImplUtil.OurResolver.INSTANCE;
-		if(GenericInferenceUtil.isInsideGenericInferenceSession())
-		{
-			return resolver.resolve(this, incompleteCode, resolveFromParent);
-		}
-		return CSharpResolveCache.getInstance(getProject()).resolveWithCaching(this, resolver, true, incompleteCode, resolveFromParent);
+		return CSharpReferenceExpressionImplUtil.multiResolve(this, incompleteCode, resolveFromParent);
 	}
 
 	@RequiredReadAction

@@ -21,6 +21,11 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.pom.Navigatable;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.ResolveState;
+import com.intellij.util.SmartList;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -45,11 +50,6 @@ import consulo.dotnet.psi.DotNetParameterList;
 import consulo.dotnet.psi.DotNetParameterListOwner;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.pom.Navigatable;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
-import com.intellij.util.Processor;
-import com.intellij.util.SmartList;
 
 /**
  * @author VISTALL
@@ -93,28 +93,25 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 
 			CSharpResolveContext context = CSharpResolveContextUtil.createContext(extractor, myExpression.getResolveScope(), element);
 
-			context.processExtensionMethodGroups(new Processor<CSharpElementGroup<CSharpMethodDeclaration>>()
+			context.processExtensionMethodGroups(elementGroup ->
 			{
-				@Override
-				@RequiredReadAction
-				public boolean process(CSharpElementGroup<CSharpMethodDeclaration> elementGroup)
+				Collection<CSharpMethodDeclaration> elements = elementGroup.getElements();
+				for(CSharpMethodDeclaration psiElement : elements)
 				{
-					Collection<CSharpMethodDeclaration> elements = elementGroup.getElements();
-					for(CSharpMethodDeclaration psiElement : elements)
+					ProgressManager.checkCanceled();
+					
+					GenericInferenceUtil.GenericInferenceResult inferenceResult = inferenceGenericExtractor(psiElement);
+
+					DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(psiElement, inferenceResult.getExtractor());
+
+					if(!CSharpTypeUtil.isInheritableWithImplicit(firstParameterTypeRef, myQualifierTypeRef, myExpression))
 					{
-						GenericInferenceUtil.GenericInferenceResult inferenceResult = inferenceGenericExtractor(psiElement);
-
-						DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(psiElement, inferenceResult.getExtractor());
-
-						if(!CSharpTypeUtil.isInheritableWithImplicit(firstParameterTypeRef, myQualifierTypeRef, myExpression))
-						{
-							continue;
-						}
-
-						myProcessor.pushResultExternally(new CSharpResolveResult(transform(psiElement, inferenceResult, null)));
+						continue;
 					}
-					return true;
+
+					myProcessor.pushResultExternally(new CSharpResolveResult(transform(psiElement, inferenceResult, null)));
 				}
+				return true;
 			});
 		}
 		else

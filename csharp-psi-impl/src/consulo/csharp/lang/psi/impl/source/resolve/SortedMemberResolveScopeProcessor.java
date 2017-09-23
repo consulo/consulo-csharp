@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.ResolveResult;
 import com.intellij.util.CommonProcessors;
 import com.intellij.util.Processor;
@@ -47,7 +48,7 @@ public class SortedMemberResolveScopeProcessor extends MemberResolveScopeProcess
 
 	private void initThisProcessor()
 	{
-		myResultProcessor = new CommonProcessors.CollectProcessor<ResolveResult>(new LinkedHashSet<ResolveResult>()) ;
+		myResultProcessor = new CommonProcessors.CollectProcessor<>(new LinkedHashSet<>());
 	}
 
 	public void consumeAll()
@@ -58,6 +59,8 @@ public class SortedMemberResolveScopeProcessor extends MemberResolveScopeProcess
 
 		for(ResolveResult result : resolveResults)
 		{
+			ProgressManager.checkCanceled();
+
 			if(!myOriginalProcessor.process(result))
 			{
 				return;

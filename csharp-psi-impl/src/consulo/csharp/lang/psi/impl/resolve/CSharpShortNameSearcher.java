@@ -18,7 +18,7 @@ package consulo.csharp.lang.psi.impl.resolve;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResultUtil;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
@@ -26,6 +26,7 @@ import com.intellij.util.Processor;
 import com.intellij.util.indexing.IdFilter;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpLambdaResolveResultUtil;
 import consulo.csharp.lang.psi.impl.stub.index.CSharpIndexKeys;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
@@ -50,23 +51,16 @@ public class CSharpShortNameSearcher extends DotNetShortNameSearcher
 	}
 
 	@Override
-	public void collectTypes(@NotNull String s,
-			@NotNull GlobalSearchScope searchScope,
-			@Nullable IdFilter filter,
-			@NotNull final Processor<DotNetTypeDeclaration> processor)
+	public void collectTypes(@NotNull String s, @NotNull GlobalSearchScope searchScope, @Nullable IdFilter filter, @NotNull final Processor<DotNetTypeDeclaration> processor)
 	{
-		StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_INDEX, s, myProject, searchScope, filter, CSharpTypeDeclaration.class,
-				processor);
+		StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_INDEX, s, myProject, searchScope, filter, CSharpTypeDeclaration.class, processor);
 
-		StubIndex.getInstance().processElements(CSharpIndexKeys.DELEGATE_METHOD_BY_NAME_INDEX, s, myProject, searchScope, filter,
-				CSharpMethodDeclaration.class, new Processor<CSharpMethodDeclaration>()
+		StubIndex.getInstance().processElements(CSharpIndexKeys.DELEGATE_METHOD_BY_NAME_INDEX, s, myProject, searchScope, filter, CSharpMethodDeclaration.class, methodDeclaration ->
 		{
-			@Override
-			public boolean process(CSharpMethodDeclaration methodDeclaration)
-			{
-				CSharpTypeDeclaration typeFromDelegate = CSharpLambdaResolveResultUtil.createTypeFromDelegate(methodDeclaration, DotNetGenericExtractor.EMPTY);
-				return processor.process(typeFromDelegate);
-			}
+			ProgressManager.checkCanceled();
+
+			CSharpTypeDeclaration typeFromDelegate = CSharpLambdaResolveResultUtil.createTypeFromDelegate(methodDeclaration, DotNetGenericExtractor.EMPTY);
+			return processor.process(typeFromDelegate);
 		});
 	}
 }

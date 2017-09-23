@@ -16,26 +16,13 @@
 
 package consulo.csharp.ide.codeInsight.actions;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.psi.CSharpAttribute;
-import consulo.csharp.lang.psi.CSharpCallArgument;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpNewExpression;
-import consulo.csharp.lang.psi.CSharpReferenceExpression;
-import consulo.csharp.lang.psi.CSharpUserType;
-import consulo.csharp.lang.psi.CSharpUsingListChild;
-import consulo.csharp.lang.psi.impl.light.CSharpLightCallArgument;
-import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
-import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
-import consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodIndex;
-import consulo.csharp.lang.psi.impl.stub.index.MethodIndex;
-import consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
-import consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent;
-import consulo.dotnet.libraryAnalyzer.NamespaceReference;
 import com.intellij.codeInsight.daemon.impl.ShowAutoImportPass;
 import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.codeInsight.intention.HighPriorityAction;
@@ -53,11 +40,26 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.CommonProcessors;
 import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.Processors;
 import com.intellij.util.containers.ArrayListSet;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.psi.CSharpAttribute;
+import consulo.csharp.lang.psi.CSharpCallArgument;
+import consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.csharp.lang.psi.CSharpNewExpression;
+import consulo.csharp.lang.psi.CSharpReferenceExpression;
+import consulo.csharp.lang.psi.CSharpUserType;
+import consulo.csharp.lang.psi.CSharpUsingListChild;
+import consulo.csharp.lang.psi.impl.light.CSharpLightCallArgument;
+import consulo.csharp.lang.psi.impl.source.CSharpMethodCallExpressionImpl;
+import consulo.csharp.lang.psi.impl.source.resolve.methodResolving.MethodResolver;
+import consulo.csharp.lang.psi.impl.stub.index.ExtensionMethodIndex;
+import consulo.csharp.lang.psi.impl.stub.index.MethodIndex;
+import consulo.csharp.lang.psi.resolve.AttributeByNameSelector;
 import consulo.dotnet.DotNetBundle;
+import consulo.dotnet.libraryAnalyzer.DotNetLibraryAnalyzerComponent;
+import consulo.dotnet.libraryAnalyzer.NamespaceReference;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.psi.DotNetInheritUtil;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -248,12 +250,12 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 
 	private static Collection<DotNetTypeDeclaration> getTypesWithGeneric(CSharpReferenceExpression ref, final String refName)
 	{
-		CommonProcessors.CollectProcessor<DotNetTypeDeclaration> processor = new CommonProcessors.CollectProcessor<DotNetTypeDeclaration>();
+		List<DotNetTypeDeclaration> collection = new ArrayList<>();
 
 		GlobalSearchScopeFilter filter = new GlobalSearchScopeFilter(ref.getResolveScope());
-		DotNetShortNameSearcher.getInstance(ref.getProject()).collectTypes(refName, ref.getResolveScope(), filter, processor);
+		DotNetShortNameSearcher.getInstance(ref.getProject()).collectTypes(refName, ref.getResolveScope(), filter, Processors.cancelableCollectProcessor(collection));
 
-		return processor.getResults();
+		return collection;
 	}
 
 	@RequiredReadAction

@@ -31,8 +31,10 @@ import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
+import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.ResolveState;
+import com.intellij.psi.impl.source.resolve.ResolveCache;
 import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtil;
 import com.intellij.psi.impl.source.tree.injected.Place;
 import com.intellij.psi.tree.IElementType;
@@ -58,8 +60,8 @@ import consulo.csharp.lang.psi.impl.source.resolve.MemberResolveScopeProcessor;
 import consulo.csharp.lang.psi.impl.source.resolve.SimpleNamedScopeProcessor;
 import consulo.csharp.lang.psi.impl.source.resolve.SortedMemberResolveScopeProcessor;
 import consulo.csharp.lang.psi.impl.source.resolve.StubScopeProcessor;
-import consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
 import consulo.csharp.lang.psi.impl.source.resolve.extensionResolver.ExtensionResolveScopeProcessor;
+import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
 import consulo.csharp.lang.psi.impl.source.resolve.handlers.*;
 import consulo.csharp.lang.psi.impl.source.resolve.sorter.StaticVsInstanceComparator;
 import consulo.csharp.lang.psi.impl.source.resolve.sorter.TypeLikeComparator;
@@ -91,23 +93,16 @@ import consulo.dotnet.util.ArrayUtil2;
  */
 public class CSharpReferenceExpressionImplUtil
 {
-	public static class OurResolver implements CSharpResolveCache.PolyVariantResolver<CSharpReferenceExpressionEx>
+	public static class OurResolver implements ResolveCache.PolyVariantResolver<CSharpReferenceExpressionEx>
 	{
 		public static final OurResolver INSTANCE = new OurResolver();
 
 		@RequiredReadAction
 		@NotNull
 		@Override
-		public ResolveResult[] resolve(@NotNull CSharpReferenceExpressionEx ref, boolean incompleteCode, boolean resolveFromParent)
+		public ResolveResult[] resolve(@NotNull CSharpReferenceExpressionEx ref, boolean resolveFromParent)
 		{
-			if(!incompleteCode)
-			{
-				return ref.multiResolveImpl(ref.kind(), resolveFromParent);
-			}
-			else
-			{
-				return CSharpResolveUtil.filterValidResults(ref.multiResolve(false, resolveFromParent));
-			}
+			return ref.multiResolveImpl(ref.kind(), resolveFromParent);
 		}
 	}
 
@@ -183,7 +178,7 @@ public class CSharpReferenceExpressionImplUtil
 	}
 
 	@RequiredReadAction
-	public static boolean isReferenceTo(CSharpReferenceExpression referenceExpression, PsiElement element)
+	public static boolean isReferenceTo(PsiPolyVariantReference referenceExpression, PsiElement element)
 	{
 		final ResolveResult firstValidResult = CSharpResolveUtil.findValidOrFirstMaybeResult(referenceExpression.multiResolve(false));
 		if(firstValidResult == null)
@@ -191,6 +186,36 @@ public class CSharpReferenceExpressionImplUtil
 			return false;
 		}
 		return isReferenceTo(firstValidResult, element);
+	}
+
+	@RequiredReadAction
+	@NotNull
+	public static ResolveResult[] multiResolve(CSharpReferenceExpressionEx expression, final boolean incompleteCode, final boolean resolveFromParent)
+	{
+		if(!expression.isValid())
+		{
+			return ResolveResult.EMPTY_ARRAY;
+		}
+
+		ResolveResult[] resolveResults;
+		CSharpReferenceExpressionImplUtil.OurResolver resolver = CSharpReferenceExpressionImplUtil.OurResolver.INSTANCE;
+		if(GenericInferenceUtil.isInsideGenericInferenceSession())
+		{
+			resolveResults = resolver.resolve(expression, resolveFromParent);
+		}
+		else
+		{
+			resolveResults = ResolveCache.getInstance(expression.getProject()).resolveWithCaching(expression, resolver, false, resolveFromParent);
+		}
+
+		if(!incompleteCode)
+		{
+			return resolveResults;
+		}
+		else
+		{
+			return CSharpResolveUtil.filterValidResults(resolveResults);
+		}
 	}
 
 	@RequiredReadAction

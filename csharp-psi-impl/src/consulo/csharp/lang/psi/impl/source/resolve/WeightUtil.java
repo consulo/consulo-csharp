@@ -20,11 +20,12 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.annotations.RequiredReadAction;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.annotations.RequiredReadAction;
 
 /**
  * @author VISTALL
@@ -34,14 +35,7 @@ public class WeightUtil
 {
 	public static final int MAX_WEIGHT = Integer.MIN_VALUE;
 
-	public static final Comparator<MethodResolveResult> ourComparator = new Comparator<MethodResolveResult>()
-	{
-		@Override
-		public int compare(MethodResolveResult o1, MethodResolveResult o2)
-		{
-			return o2.getCalcResult().getWeight() - o1.getCalcResult().getWeight();
-		}
-	};
+	public static final Comparator<MethodResolveResult> ourComparator = (o1, o2) -> o2.getCalcResult().getWeight() - o1.getCalcResult().getWeight();
 
 	@RequiredReadAction
 	public static void sortAndProcess(@NotNull List<MethodResolveResult> list, @NotNull Processor<ResolveResult> processor, @NotNull PsiElement place)
@@ -55,6 +49,8 @@ public class WeightUtil
 
 		for(MethodResolveResult methodResolveResult : list)
 		{
+			ProgressManager.checkCanceled();
+
 			methodResolveResult.setAssignable(place);
 
 			if(!processor.process(methodResolveResult))

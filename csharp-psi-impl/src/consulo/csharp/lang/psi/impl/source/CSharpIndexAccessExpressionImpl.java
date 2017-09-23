@@ -18,6 +18,15 @@ package consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiPolyVariantReference;
+import com.intellij.psi.ResolveResult;
+import com.intellij.psi.impl.source.resolve.ResolveCache;
+import com.intellij.util.IncorrectOperationException;
+import consulo.annotations.RequiredReadAction;
+import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentList;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -26,18 +35,13 @@ import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpQualifiedNonReference;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpTokens;
-import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
-import consulo.csharp.lang.psi.impl.source.resolve.cache.CSharpResolveCache;
-import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
-import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
-import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveResult;
-import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.impl.CSharpNullableTypeUtil;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightIndexMethodDeclarationBuilder;
 import consulo.csharp.lang.psi.impl.light.builder.CSharpLightParameterBuilder;
+import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
+import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
+import consulo.csharp.lang.psi.impl.source.resolve.type.CSharpTypeRefByQName;
+import consulo.csharp.lang.psi.impl.source.resolve.util.CSharpResolveUtil;
 import consulo.dotnet.DotNetTypes;
 import consulo.dotnet.psi.DotNetExpression;
 import consulo.dotnet.resolve.DotNetPointerTypeRef;
@@ -47,16 +51,16 @@ import consulo.dotnet.resolve.DotNetTypeRef;
  * @author VISTALL
  * @since 04.01.14.
  */
-public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implements DotNetExpression, CSharpCallArgumentListOwner, CSharpQualifiedNonReference
+public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implements DotNetExpression, CSharpCallArgumentListOwner, CSharpQualifiedNonReference, PsiPolyVariantReference
 {
-	public static class OurResolver implements CSharpResolveCache.PolyVariantResolver<CSharpIndexAccessExpressionImpl>
+	public static class OurResolver implements ResolveCache.PolyVariantResolver<CSharpIndexAccessExpressionImpl>
 	{
 		public static final OurResolver INSTANCE = new OurResolver();
 
 		@RequiredReadAction
 		@NotNull
 		@Override
-		public ResolveResult[] resolve(@NotNull CSharpIndexAccessExpressionImpl expression, boolean incompleteCode, boolean resolveFromParent)
+		public ResolveResult[] resolve(@NotNull CSharpIndexAccessExpressionImpl expression, boolean incompleteCode)
 		{
 			DotNetExpression qualifier = expression.getQualifier();
 			DotNetTypeRef typeRef = qualifier.toTypeRef(true);
@@ -176,14 +180,73 @@ public class CSharpIndexAccessExpressionImpl extends CSharpExpressionImpl implem
 	{
 		if(GenericInferenceUtil.isInsideGenericInferenceSession())
 		{
-			return OurResolver.INSTANCE.resolve(this, incompleteCode, true);
+			return OurResolver.INSTANCE.resolve(this, incompleteCode);
 		}
-		return CSharpResolveCache.getInstance(getProject()).resolveWithCaching(this, OurResolver.INSTANCE, true, incompleteCode, true);
+		return ResolveCache.getInstance(getProject()).resolveWithCaching(this, OurResolver.INSTANCE, true, incompleteCode);
 	}
 
 	@RequiredReadAction
 	public boolean isNullable()
 	{
 		return findChildByType(CSharpTokens.QUEST) != null;
+	}
+
+	@RequiredReadAction
+	@Override
+	public PsiElement getElement()
+	{
+		return this;
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	public TextRange getRangeInElement()
+	{
+		return new TextRange(0, getTextLength());
+	}
+
+	@RequiredReadAction
+	@Nullable
+	@Override
+	public PsiElement resolve()
+	{
+		return CSharpResolveUtil.findFirstValidElement(multiResolve(false));
+	}
+
+	@RequiredReadAction
+	@NotNull
+	@Override
+	public String getCanonicalText()
+	{
+		return getText();
+	}
+
+	@RequiredWriteAction
+	@Override
+	public PsiElement handleElementRename(String s) throws IncorrectOperationException
+	{
+		return null;
+	}
+
+	@RequiredWriteAction
+	@Override
+	public PsiElement bindToElement(@NotNull PsiElement psiElement) throws IncorrectOperationException
+	{
+		return null;
+	}
+
+	@RequiredReadAction
+	@Override
+	public boolean isReferenceTo(PsiElement element)
+	{
+		return CSharpReferenceExpressionImplUtil.isReferenceTo(this, element);
+	}
+
+	@RequiredReadAction
+	@Override
+	public boolean isSoft()
+	{
+		return false;
 	}
 }

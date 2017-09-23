@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Trinity;
 import com.intellij.psi.PsiElement;
@@ -101,6 +102,8 @@ public class MethodResolver
 		int i = 0;
 		for(CSharpCallArgument argument : callArguments)
 		{
+			ProgressManager.checkCanceled();
+
 			DotNetTypeRef expressionTypeRef = DotNetTypeRef.ERROR_TYPE;
 			String name;
 

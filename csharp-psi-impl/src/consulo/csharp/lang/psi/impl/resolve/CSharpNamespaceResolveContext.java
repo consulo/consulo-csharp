@@ -24,7 +24,19 @@ import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.UserDataHolder;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.stubs.StubIndex;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.util.Processor;
+import com.intellij.util.Processors;
+import com.intellij.util.SmartList;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.lang.CSharpCastType;
 import consulo.csharp.lang.psi.CSharpConstructorDeclaration;
 import consulo.csharp.lang.psi.CSharpConversionMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
@@ -43,18 +55,6 @@ import consulo.dotnet.lang.psi.impl.stub.DotNetNamespaceStubUtil;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetNamespaceAsElement;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.UserDataHolder;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.stubs.StubIndex;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.CommonProcessors;
-import com.intellij.util.Processor;
-import com.intellij.util.SmartList;
-import consulo.csharp.lang.CSharpCastType;
 
 /**
  * @author VISTALL
@@ -124,10 +124,12 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		{
 			return null;
 		}
-		List<CSharpElementGroup<CSharpMethodDeclaration>> list = new SmartList<CSharpElementGroup<CSharpMethodDeclaration>>();
-		Set<String> processed = new THashSet<String>();
+		List<CSharpElementGroup<CSharpMethodDeclaration>> list = new SmartList<>();
+		Set<String> processed = new THashSet<>();
 		for(DotNetTypeDeclaration typeDeclaration : decls)
 		{
+			ProgressManager.checkCanceled();
+
 			PsiElement wrappedDeclaration = ToNativeElementTransformers.transform(typeDeclaration);
 
 			if(typeDeclaration instanceof CSharpTypeDeclaration && typeDeclaration.hasModifier(CSharpModifier.PARTIAL))
@@ -148,7 +150,7 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 				list.add(extensionMethodByName);
 			}
 		}
-		return new CSharpCompositeElementGroupImpl<CSharpMethodDeclaration>(myNamespaceAsElement.getProject(), list);
+		return new CSharpCompositeElementGroupImpl<>(myNamespaceAsElement.getProject(), list);
 	}
 
 	@RequiredReadAction
@@ -170,13 +172,14 @@ public class CSharpNamespaceResolveContext implements CSharpResolveContext
 		}
 		String indexableName = DotNetNamespaceStubUtil.getIndexableNamespace(qName);
 
-		CommonProcessors.CollectUniquesProcessor<DotNetTypeDeclaration> collect = new CommonProcessors.CollectUniquesProcessor<DotNetTypeDeclaration>();
+		Set<DotNetTypeDeclaration> result = new THashSet<>();
 
-		StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_WITH_EXTENSION_METHODS_INDEX, indexableName, project, scope, DotNetTypeDeclaration.class, collect);
+		StubIndex.getInstance().processElements(CSharpIndexKeys.TYPE_WITH_EXTENSION_METHODS_INDEX, indexableName, project, scope, DotNetTypeDeclaration.class, Processors.cancelableCollectProcessor
+				(result));
 
-		Set<String> processed = new THashSet<String>();
+		Set<String> processed = new THashSet<>();
 
-		for(DotNetTypeDeclaration typeDeclaration : collect.getResults())
+		for(DotNetTypeDeclaration typeDeclaration : result)
 		{
 			ProgressManager.checkCanceled();
 

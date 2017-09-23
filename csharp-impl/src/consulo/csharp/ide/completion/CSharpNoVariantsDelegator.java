@@ -210,21 +210,18 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 				ProgressManager.checkCanceled();
 			}
 
-			shortNameSearcher.collectTypes(key, resolveScope, projectIdFilter, new Processor<DotNetTypeDeclaration>()
+			shortNameSearcher.collectTypes(key, resolveScope, projectIdFilter, typeDeclaration ->
 			{
-				@Override
-				@RequiredReadAction
-				public boolean process(DotNetTypeDeclaration typeDeclaration)
+				ProgressManager.checkCanceled();
+
+				if(inheritorsHolder.alreadyProcessed(typeDeclaration))
 				{
-					if(inheritorsHolder.alreadyProcessed(typeDeclaration))
-					{
-						return true;
-					}
-
-					targets.add(typeDeclaration);
-
 					return true;
 				}
+
+				targets.add(typeDeclaration);
+
+				return true;
 			});
 		}
 
