@@ -97,24 +97,6 @@ public class CSharpModifierListImplUtil
 		});
 	}
 
-	@NotNull
-	@RequiredReadAction
-	public static EnumSet<CSharpModifier> getModifiersTreeCached(@NotNull CSharpModifierList modifierList)
-	{
-		return CachedValuesManager.getCachedValue(modifierList, () ->
-		{
-			Set<CSharpModifier> modifiers = new THashSet<>();
-			for(CSharpModifier modifier : CSharpModifier.values())
-			{
-				if(modifierList.getModifierElement(modifier) != null)
-				{
-					modifiers.add(modifier);
-				}
-			}
-			return CachedValueProvider.Result.create(modifiers.isEmpty() ? EnumSet.noneOf(CSharpModifier.class) : EnumSet.copyOf(modifiers), PsiModificationTracker.MODIFICATION_COUNT);
-		});
-	}
-
 	@RequiredReadAction
 	public static boolean hasModifier(@NotNull CSharpModifierList modifierList, @NotNull DotNetModifier modifier)
 	{

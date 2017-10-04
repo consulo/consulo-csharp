@@ -22,6 +22,9 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import consulo.csharp.lang.psi.CSharpAttributeList;
 import consulo.csharp.lang.psi.CSharpElementVisitor;
 import consulo.csharp.lang.psi.CSharpModifier;
@@ -29,9 +32,6 @@ import consulo.csharp.lang.psi.CSharpModifierList;
 import consulo.dotnet.psi.DotNetAttribute;
 import consulo.dotnet.psi.DotNetAttributeList;
 import consulo.dotnet.psi.DotNetModifier;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
 
 /**
  * @author VISTALL
@@ -95,7 +95,8 @@ public class CSharpModifierListImpl extends CSharpElementImpl implements CSharpM
 	@Override
 	public boolean hasModifierInTree(@NotNull DotNetModifier modifier)
 	{
-		return CSharpModifierListImplUtil.getModifiersTreeCached(this).contains(CSharpModifier.as(modifier));
+		IElementType iElementType = CSharpModifierListImplUtil.ourModifiers.get(CSharpModifier.as(modifier));
+		return findChildByType(iElementType) != null;
 	}
 
 	@Nullable
