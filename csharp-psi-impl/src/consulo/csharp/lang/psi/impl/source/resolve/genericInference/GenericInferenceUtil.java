@@ -26,8 +26,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.RecursionManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.SmartList;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpCallArgument;
 import consulo.csharp.lang.psi.CSharpCallArgumentListOwner;
@@ -154,9 +156,9 @@ public class GenericInferenceUtil
 			return new GenericInferenceResult(genericParameters.length == typeArgumentListRefs.length, extractor);
 		}
 
-		List<NCallArgument> methodCallArguments = MethodResolver.buildCallArguments(callArguments, methodDeclaration, scope);
+		List<NCallArgument> methodCallArguments = RecursionManager.doPreventingRecursion(methodDeclaration, false, () -> MethodResolver.buildCallArguments(callArguments, methodDeclaration, scope));
 
-		if(methodCallArguments.isEmpty())
+		if(ContainerUtil.isEmpty(methodCallArguments))
 		{
 			return new GenericInferenceResult(true, DotNetGenericExtractor.EMPTY);
 		}
