@@ -21,17 +21,18 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.ide.codeInsight.problems.CSharpLocationUtil;
-import consulo.csharp.lang.psi.CSharpFile;
-import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
-import consulo.dotnet.psi.DotNetMemberOwner;
-import consulo.dotnet.psi.DotNetNamedElement;
 import com.intellij.ide.projectView.SelectableTreeStructureProvider;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import consulo.annotations.RequiredDispatchThread;
+import consulo.csharp.ide.codeInsight.problems.CSharpLocationUtil;
+import consulo.csharp.lang.psi.CSharpFile;
+import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
+import consulo.dotnet.psi.DotNetMemberOwner;
+import consulo.dotnet.psi.DotNetNamedElement;
 
 /**
  * @author VISTALL
@@ -54,8 +55,8 @@ public class CSharpProjectViewProvider implements SelectableTreeStructureProvide
 	}
 
 	@Override
-	public Collection<AbstractTreeNode> modify(AbstractTreeNode abstractTreeNode, Collection<AbstractTreeNode> abstractTreeNodes, ViewSettings
-			settings)
+	@RequiredDispatchThread
+	public Collection<AbstractTreeNode> modify(AbstractTreeNode abstractTreeNode, Collection<AbstractTreeNode> abstractTreeNodes, ViewSettings settings)
 	{
 		List<AbstractTreeNode> nodes = new ArrayList<AbstractTreeNode>(abstractTreeNodes.size());
 		for(AbstractTreeNode treeNode : abstractTreeNodes)
@@ -64,19 +65,19 @@ public class CSharpProjectViewProvider implements SelectableTreeStructureProvide
 
 			if(value instanceof PsiFile)
 			{
-				CSharpFile cSharpFile = CSharpPsiUtilImpl.findCSharpFile((PsiFile) value);
-				if(cSharpFile != null)
+				CSharpFile file = CSharpPsiUtilImpl.findCSharpFile((PsiFile) value);
+				if(file != null)
 				{
 					if(CSharpLocationUtil.isValidLocation(myProject, ((PsiFile) value).getVirtualFile()))
 					{
-						DotNetNamedElement singleElement = CSharpPsiUtilImpl.findSingleElement(cSharpFile);
+						DotNetNamedElement singleElement = CSharpPsiUtilImpl.findSingleElementNoNameCheck(file);
 						if(singleElement != null)
 						{
-							nodes.add(new CSharpElementTreeNode(singleElement, settings));
+							nodes.add(new CSharpElementTreeNode(singleElement, settings, CSharpElementTreeNode.ALLOW_GRAY_FILE_NAME));
 						}
 						else
 						{
-							nodes.add(new CSharpElementTreeNode(cSharpFile, settings));
+							nodes.add(new CSharpElementTreeNode(file, settings, CSharpElementTreeNode.FORCE_EXPAND));
 						}
 					}
 					else
@@ -93,7 +94,7 @@ public class CSharpProjectViewProvider implements SelectableTreeStructureProvide
 			{
 				if(value instanceof DotNetMemberOwner)
 				{
-					nodes.add(new CSharpElementTreeNode((DotNetMemberOwner) value, settings));
+					nodes.add(new CSharpElementTreeNode((DotNetMemberOwner) value, settings, 0));
 				}
 				else
 				{

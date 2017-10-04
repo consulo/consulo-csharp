@@ -18,6 +18,12 @@ package consulo.csharp.lang.psi.impl.source;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.psi.FileViewProvider;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.CSharpLanguage;
 import consulo.csharp.lang.psi.CSharpFile;
@@ -26,12 +32,6 @@ import consulo.csharp.lang.psi.CSharpMethodUtil;
 import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetNamedElement;
 import consulo.dotnet.psi.DotNetNamespaceDeclaration;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.psi.FileViewProvider;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNameIdentifierOwner;
 
 /**
  * @author VISTALL
@@ -87,6 +87,18 @@ public class CSharpPsiUtilImpl
 	@RequiredReadAction
 	public static DotNetNamedElement findSingleElement(@NotNull CSharpFile file)
 	{
+		DotNetNamedElement member = findSingleElementNoNameCheck(file);
+		if(member != null && Comparing.equal(FileUtil.getNameWithoutExtension(file.getName()), member.getName()))
+		{
+			return member;
+		}
+		return null;
+	}
+
+	@Nullable
+	@RequiredReadAction
+	public static DotNetNamedElement findSingleElementNoNameCheck(@NotNull CSharpFile file)
+	{
 		DotNetNamedElement[] members = file.getMembers();
 		if(members.length != 1)
 		{
@@ -107,22 +119,12 @@ public class CSharpPsiUtilImpl
 			{
 				return null;
 			}
-
-			if(Comparing.equal(FileUtil.getNameWithoutExtension(file.getName()), namespaceChildren.getName()))
-			{
-				return namespaceChildren;
-			}
-			return null;
+			return namespaceChildren;
 		}
 		else
 		{
-			if(Comparing.equal(FileUtil.getNameWithoutExtension(file.getName()), member.getName()))
-			{
-				return member;
-			}
+			return member;
 		}
-
-		return null;
 	}
 
 	@Nullable

@@ -22,19 +22,27 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
+import com.intellij.ide.projectView.PresentationData;
+import com.intellij.ide.projectView.ViewSettings;
+import com.intellij.ide.util.treeView.AbstractTreeNode;
+import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.util.Iconable;
+import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.util.BitUtil;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
+import consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.csharp.lang.psi.CSharpRecursiveElementVisitor;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.ide.DotNetElementPresentationUtil;
 import consulo.dotnet.psi.*;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.ide.IconDescriptorUpdaters;
-import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
-import com.intellij.openapi.util.Iconable;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
 
 /**
  * @author VISTALL
@@ -89,9 +97,17 @@ public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetN
 		return 0;
 	}
 
-	public CSharpElementTreeNode(DotNetNamedElement dotNetMemberOwner, ViewSettings viewSettings)
+	// force expand members for root file nodes (if not that one)
+	public static final int FORCE_EXPAND = 1 << 0;
+	// if we have solo type - but file name is not equal
+	public static final int ALLOW_GRAY_FILE_NAME = 1 << 1;
+
+	private final int myFlags;
+
+	public CSharpElementTreeNode(DotNetNamedElement dotNetMemberOwner, ViewSettings viewSettings, int flags)
 	{
 		super(dotNetMemberOwner.getProject(), dotNetMemberOwner, viewSettings);
+		myFlags = flags;
 	}
 
 	@Override
@@ -116,29 +132,77 @@ public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetN
 
 	@Nullable
 	@Override
+	@RequiredDispatchThread
 	protected Collection<AbstractTreeNode> getChildrenImpl()
 	{
-		if(!getSettings().isShowMembers())
+		final ViewSettings settings = getSettings();
+		if(!settings.isShowMembers() && !BitUtil.isSet(myFlags, FORCE_EXPAND))
 		{
 			return Collections.emptyList();
 		}
-		DotNetElement value = getValue();
-		if(value instanceof DotNetMemberOwner)
+
+		DotNetNamedElement[] members = filterNamespaces(getValue());
+		if(members.length == 0)
 		{
-			DotNetNamedElement[] members = ((DotNetMemberOwner) value).getMembers();
-			if(members.length == 0)
-			{
-				return Collections.emptyList();
-			}
-			List<AbstractTreeNode> list = new ArrayList<AbstractTreeNode>(members.length);
-			for(DotNetNamedElement dotNetElement : members)
-			{
-				list.add(new CSharpElementTreeNode(dotNetElement, getSettings()));
-			}
-			return list;
+			return Collections.emptyList();
 		}
 
-		return Collections.emptyList();
+		List<AbstractTreeNode> list = new ArrayList<>(members.length);
+		for(DotNetNamedElement dotNetElement : members)
+		{
+			list.add(new CSharpElementTreeNode(dotNetElement, settings, 0));
+		}
+		return list;
+	}
+
+	@RequiredReadAction
+	private static DotNetNamedElement[] filterNamespaces(DotNetElement declaration)
+	{
+		if(declaration instanceof DotNetMemberOwner)
+		{
+			List<DotNetNamedElement> elements = new ArrayList<>();
+
+			DotNetNamedElement[] members = ((DotNetMemberOwner) declaration).getMembers();
+			for(DotNetNamedElement member : members)
+			{
+				if(member instanceof DotNetNamespaceDeclaration)
+				{
+					member.accept(new CSharpRecursiveElementVisitor()
+					{
+						@Override
+						public void visitTypeDeclaration(CSharpTypeDeclaration declaration)
+						{
+							if(!declaration.isNested())
+							{
+								elements.add(declaration);
+							}
+						}
+
+						@Override
+						public void visitMethodDeclaration(CSharpMethodDeclaration declaration)
+						{
+							if(declaration.isDelegate())
+							{
+								elements.add(declaration);
+							}
+						}
+					});
+				}
+				else
+				{
+					elements.add(member);
+				}
+			}
+
+			return ContainerUtil.toArray(elements, DotNetNamedElement.ARRAY_FACTORY);
+		}
+		return DotNetNamedElement.EMPTY_ARRAY;
+	}
+
+	@Override
+	public boolean isAlwaysExpand()
+	{
+		return super.isAlwaysExpand() || BitUtil.isSet(myFlags, FORCE_EXPAND);
 	}
 
 	@Override
@@ -150,6 +214,18 @@ public class CSharpElementTreeNode extends CSharpAbstractElementTreeNode<DotNetN
 		presentationData.setIcon(IconDescriptorUpdaters.getIcon(value, Iconable.ICON_FLAG_VISIBILITY));
 
 		presentationData.setPresentableText(getPresentableText(value));
+
+		if(BitUtil.isSet(myFlags, ALLOW_GRAY_FILE_NAME))
+		{
+			PsiFile containingFile = value.getContainingFile();
+			if(containingFile != null)
+			{
+				if(!Comparing.equal(FileUtil.getNameWithoutExtension(containingFile.getName()), value.getName()))
+				{
+					presentationData.setLocationString(containingFile.getName());
+				}
+			}
+		}
 	}
 
 	@RequiredReadAction
