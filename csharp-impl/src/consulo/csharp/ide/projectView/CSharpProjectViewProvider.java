@@ -30,6 +30,7 @@ import com.intellij.psi.PsiFile;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.csharp.ide.codeInsight.problems.CSharpLocationUtil;
 import consulo.csharp.lang.psi.CSharpFile;
+import consulo.csharp.lang.psi.impl.source.CSharpDummyDeclarationImpl;
 import consulo.csharp.lang.psi.impl.source.CSharpPsiUtilImpl;
 import consulo.dotnet.psi.DotNetMemberOwner;
 import consulo.dotnet.psi.DotNetNamedElement;
@@ -56,10 +57,10 @@ public class CSharpProjectViewProvider implements SelectableTreeStructureProvide
 
 	@Override
 	@RequiredDispatchThread
-	public Collection<AbstractTreeNode> modify(AbstractTreeNode abstractTreeNode, Collection<AbstractTreeNode> abstractTreeNodes, ViewSettings settings)
+	public Collection<AbstractTreeNode> modify(AbstractTreeNode abstractTreeNode, Collection<AbstractTreeNode> oldNodes, ViewSettings settings)
 	{
-		List<AbstractTreeNode> nodes = new ArrayList<AbstractTreeNode>(abstractTreeNodes.size());
-		for(AbstractTreeNode treeNode : abstractTreeNodes)
+		List<AbstractTreeNode> nodes = new ArrayList<>(oldNodes.size());
+		for(AbstractTreeNode treeNode : oldNodes)
 		{
 			Object value = treeNode.getValue();
 
@@ -71,7 +72,11 @@ public class CSharpProjectViewProvider implements SelectableTreeStructureProvide
 					if(CSharpLocationUtil.isValidLocation(myProject, ((PsiFile) value).getVirtualFile()))
 					{
 						DotNetNamedElement singleElement = CSharpPsiUtilImpl.findSingleElementNoNameCheck(file);
-						if(singleElement != null)
+						if(singleElement instanceof CSharpDummyDeclarationImpl)
+						{
+							nodes.add(new CSharpElementTreeNode(file, settings, 0));
+						}
+						else if(singleElement != null)
 						{
 							nodes.add(new CSharpElementTreeNode(singleElement, settings, CSharpElementTreeNode.ALLOW_GRAY_FILE_NAME));
 						}
