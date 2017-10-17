@@ -109,11 +109,4 @@ public class CSharpProjectViewProvider implements SelectableTreeStructureProvide
 		}
 		return nodes;
 	}
-
-	@Nullable
-	@Override
-	public Object getData(Collection<AbstractTreeNode> abstractTreeNodes, String s)
-	{
-		return null;
-	}
 }

@@ -20,16 +20,14 @@ import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import consulo.csharp.lang.CSharpLanguage;
-import consulo.ide.IconDescriptorUpdaters;
 import com.intellij.lang.findUsages.LanguageFindUsages;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.navigation.NavigationItemFileStatus;
-import com.intellij.openapi.actionSystem.DataKey;
 import com.intellij.openapi.actionSystem.DataSink;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.TypeSafeDataProvider;
 import com.intellij.openapi.util.Iconable;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vcs.FileStatus;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
@@ -38,6 +36,8 @@ import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.usageView.UsageInfo;
 import com.intellij.usages.UsageGroup;
 import com.intellij.usages.UsageView;
+import consulo.csharp.lang.CSharpLanguage;
+import consulo.ide.IconDescriptorUpdaters;
 
 /**
  * @author VISTALL
@@ -131,7 +131,7 @@ public class CSharpBaseGroupingRule<T extends PsiElement> implements UsageGroup,
 	}
 
 	@Override
-	public void calcData(final DataKey key, final DataSink sink)
+	public void calcData(final Key<?> key, final DataSink sink)
 	{
 		T element = myPointer.getElement();
 		if(element == null)

@@ -70,14 +70,14 @@ public class CSharpMoveHandlerDelegate extends MoveHandlerDelegate
 	@Override
 	public boolean canMove(DataContext dataContext)
 	{
-		PsiElement psiElement = CommonDataKeys.PSI_ELEMENT.getData(dataContext);
+		PsiElement psiElement = dataContext.getData(CommonDataKeys.PSI_ELEMENT);
 		return canMove(new PsiElement[] {psiElement}, null);
 	}
 
 	@Override
 	public void collectFilesOrDirsFromContext(DataContext dataContext, Set<PsiElement> filesOrDirs)
 	{
-		PsiElement psiElement = CommonDataKeys.PSI_ELEMENT.getData(dataContext);
+		PsiElement psiElement = dataContext.getData(CommonDataKeys.PSI_ELEMENT);
 		if(psiElement instanceof CSharpTypeDeclaration)
 		{
 			CSharpFile containingFile = (CSharpFile) psiElement.getContainingFile();

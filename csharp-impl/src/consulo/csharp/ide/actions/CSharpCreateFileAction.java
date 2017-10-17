@@ -75,7 +75,7 @@ public class CSharpCreateFileAction extends CreateFromTemplateAction<PsiFile>
 			DotNetModuleExtension extension = ModuleUtilCore.getExtension(module, DotNetModuleExtension.class);
 			if(extension != null && extension.isAllowSourceRoots())
 			{
-				final IdeView view = LangDataKeys.IDE_VIEW.getData(dataContext);
+				final IdeView view = dataContext.getData(LangDataKeys.IDE_VIEW);
 				if(view == null)
 				{
 					return false;
@@ -100,12 +100,12 @@ public class CSharpCreateFileAction extends CreateFromTemplateAction<PsiFile>
 	@RequiredReadAction
 	private static Module findModule(DataContext dataContext)
 	{
-		Project project = CommonDataKeys.PROJECT.getData(dataContext);
+		Project project = dataContext.getData(CommonDataKeys.PROJECT);
 		if(project == null)
 		{
 			return null;
 		}
-		final IdeView view = LangDataKeys.IDE_VIEW.getData(dataContext);
+		final IdeView view = dataContext.getData(LangDataKeys.IDE_VIEW);
 		if(view == null)
 		{
 			return null;
@@ -122,7 +122,7 @@ public class CSharpCreateFileAction extends CreateFromTemplateAction<PsiFile>
 		{
 			return resolve;
 		}
-		return LangDataKeys.MODULE.getData(dataContext);
+		return dataContext.getData(LangDataKeys.MODULE);
 	}
 
 	@Override
