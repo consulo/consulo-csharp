@@ -37,6 +37,7 @@ import consulo.csharp.lang.psi.impl.light.CSharpLightMethodDeclaration;
 import consulo.csharp.lang.psi.impl.light.CSharpLightParameterList;
 import consulo.csharp.lang.psi.impl.resolve.CSharpElementGroupImpl;
 import consulo.csharp.lang.psi.impl.resolve.CSharpResolveContextUtil;
+import consulo.csharp.lang.psi.impl.source.CSharpExpressionWithOperatorImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.CSharpResolveResult;
 import consulo.csharp.lang.psi.impl.source.resolve.StubScopeProcessor;
 import consulo.csharp.lang.psi.impl.source.resolve.genericInference.GenericInferenceUtil;
@@ -99,7 +100,7 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 				for(CSharpMethodDeclaration psiElement : elements)
 				{
 					ProgressManager.checkCanceled();
-					
+
 					GenericInferenceUtil.GenericInferenceResult inferenceResult = inferenceGenericExtractor(psiElement);
 
 					DotNetTypeRef firstParameterTypeRef = getFirstTypeRefOrParameter(psiElement, inferenceResult.getExtractor());
@@ -168,14 +169,33 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 	@RequiredReadAction
 	public GenericInferenceUtil.GenericInferenceResult inferenceGenericExtractor(CSharpMethodDeclaration methodDeclaration)
 	{
-		CSharpCallArgument[] arguments = myCallArgumentListOwner == null ? CSharpCallArgument.EMPTY_ARRAY : myCallArgumentListOwner.getCallArguments();
+		CSharpCallArgument[] newArguments;
+		DotNetTypeRef[] typeArgumentRefs;
 
-		CSharpCallArgument[] newArguments = new CSharpCallArgument[arguments.length + 1];
-		System.arraycopy(arguments, 0, newArguments, 1, arguments.length);
+		// situation
+		// using System.Linq;
+		// ..
+		//  if(index < _dictionary.Count)
+		// ..
+		// We try to search .Count - but without parameters
+		// or we will get recursion search - due it will map call to
+		// _dictionary.Count(index, _dictionary.Count);
+		if(myCallArgumentListOwner instanceof CSharpExpressionWithOperatorImpl)
+		{
+			newArguments = CSharpCallArgument.EMPTY_ARRAY;
+			typeArgumentRefs = DotNetTypeRef.EMPTY_ARRAY;
+		}
+		else
+		{
+			CSharpCallArgument[] arguments = myCallArgumentListOwner == null ? CSharpCallArgument.EMPTY_ARRAY : myCallArgumentListOwner.getCallArguments();
+			newArguments = new CSharpCallArgument[arguments.length + 1];
+			System.arraycopy(arguments, 0, newArguments, 1, arguments.length);
 
-		newArguments[0] = myArgumentWrapper;
+			newArguments[0] = myArgumentWrapper;
 
-		DotNetTypeRef[] typeArgumentRefs = myExpression.getTypeArgumentListRefs();
+			typeArgumentRefs = myExpression.getTypeArgumentListRefs();
+		}
+
 		return GenericInferenceUtil.inferenceGenericExtractor(newArguments, typeArgumentRefs, myExpression, methodDeclaration);
 	}
 
@@ -204,7 +224,8 @@ public class ExtensionResolveScopeProcessor extends StubScopeProcessor
 	}
 
 	@RequiredReadAction
-	private static CSharpMethodDeclaration transform(final CSharpMethodDeclaration methodDeclaration, @NotNull GenericInferenceUtil.GenericInferenceResult inferenceResult,
+	private static CSharpMethodDeclaration transform(final CSharpMethodDeclaration methodDeclaration,
+			@NotNull GenericInferenceUtil.GenericInferenceResult inferenceResult,
 			@Nullable PsiElement providerElement)
 	{
 		DotNetParameterList parameterList = methodDeclaration.getParameterList();

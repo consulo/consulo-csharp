@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.RecursionManager;
@@ -115,7 +116,7 @@ public class GenericInferenceUtil
 		return ourInsideInferenceSession.get() != null;
 	}
 
-	public static boolean isInsideGenericInferenceSession(@Nullable  PsiElement element)
+	public static boolean isInsideGenericInferenceSession(@Nullable PsiElement element)
 	{
 		if(element == null)
 		{
@@ -167,6 +168,8 @@ public class GenericInferenceUtil
 
 		for(NCallArgument nCallArgument : methodCallArguments)
 		{
+			ProgressManager.checkCanceled();
+
 			DotNetTypeRef parameterTypeRef = nCallArgument.getParameterTypeRef();
 			if(parameterTypeRef == null)
 			{
@@ -225,6 +228,8 @@ public class GenericInferenceUtil
 		{
 			return;
 		}
+
+		ProgressManager.checkCanceled();
 
 		DotNetTypeResolveResult parameterTypeResolveResult = parameterTypeRef.resolve();
 
@@ -295,6 +300,8 @@ public class GenericInferenceUtil
 				continue;
 			}
 
+			ProgressManager.checkCanceled();
+
 			int indexOfGeneric = findIndexOfGeneric(parameterTypeResolveResult, methodGenericParameter);
 			if(indexOfGeneric != -1)
 			{
@@ -321,6 +328,8 @@ public class GenericInferenceUtil
 	{
 		for(DotNetGenericParameter expressionGenericParameter : expressionGenericParameters)
 		{
+			ProgressManager.checkCanceled();
+
 			DotNetTypeRef expressionTypeRefFromGenericParameter = expressionExtractor.extract(expressionGenericParameter);
 
 			DotNetTypeRef parameterTypeRefFromGenericParameter = parameterExtractor.extract(expressionGenericParameter);
