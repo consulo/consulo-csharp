@@ -17,13 +17,15 @@
 package consulo.csharp.ide.actions.generate.memberChoose;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.PairConsumer;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
+import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.PairConsumer;
 
 /**
  * @author VISTALL
@@ -61,7 +63,10 @@ public class MethodChooseMember extends ImplementMemberChooseObject<CSharpMethod
 
 		myAdditionalModifiersAppender.consume(myDeclaration, builder);
 
-		builder.append(getPresentationText());
+		int flags = CSharpElementPresentationUtil.METHOD_WITH_RETURN_TYPE | CSharpElementPresentationUtil.METHOD_PARAMETER_NAME | CSharpElementPresentationUtil.NON_QUALIFIED_TYPE;
+		String text = CSharpElementPresentationUtil.formatMethod(myDeclaration, flags);
+		builder.append(text);
+
 		if(myCanGenerateBlock)
 		{
 			builder.append(" {\n");
@@ -73,5 +78,13 @@ public class MethodChooseMember extends ImplementMemberChooseObject<CSharpMethod
 			builder.append(";");
 		}
 		return builder.toString();
+	}
+
+	@RequiredReadAction
+	@Nullable
+	@Override
+	public ExpectedUsingInfo getExpectedUsingInfo()
+	{
+		return ExpectedUsingInfo.calculateFrom(myDeclaration);
 	}
 }

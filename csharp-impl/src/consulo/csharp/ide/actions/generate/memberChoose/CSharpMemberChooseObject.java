@@ -19,6 +19,7 @@ package consulo.csharp.ide.actions.generate.memberChoose;
 import javax.swing.JTree;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.generation.ClassMember;
 import com.intellij.codeInsight.generation.MemberChooserObject;
 import com.intellij.openapi.util.Iconable;
@@ -27,6 +28,7 @@ import com.intellij.ui.SimpleColoredComponent;
 import com.intellij.util.ArrayFactory;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
+import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetTypeDeclaration;
 import consulo.ide.IconDescriptorUpdaters;
@@ -39,15 +41,7 @@ public abstract class CSharpMemberChooseObject<T extends DotNetElement> implemen
 {
 	public static final CSharpMemberChooseObject[] EMPTY_ARRAY = new CSharpMemberChooseObject[0];
 
-	public static ArrayFactory<CSharpMemberChooseObject> ARRAY_FACTORY = new ArrayFactory<CSharpMemberChooseObject>()
-	{
-		@NotNull
-		@Override
-		public CSharpMemberChooseObject[] create(int count)
-		{
-			return count == 0 ? EMPTY_ARRAY : new CSharpMemberChooseObject[count];
-		}
-	};
+	public static ArrayFactory<CSharpMemberChooseObject> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpMemberChooseObject[count];
 
 	protected T myDeclaration;
 
@@ -68,6 +62,13 @@ public abstract class CSharpMemberChooseObject<T extends DotNetElement> implemen
 	{
 		component.setIcon(IconDescriptorUpdaters.getIconWithoutCache(myDeclaration, Iconable.ICON_FLAG_VISIBILITY));
 		component.append(getPresentationText());
+	}
+
+	@Nullable
+	@RequiredReadAction
+	public ExpectedUsingInfo getExpectedUsingInfo()
+	{
+		return null;
 	}
 
 	@NotNull

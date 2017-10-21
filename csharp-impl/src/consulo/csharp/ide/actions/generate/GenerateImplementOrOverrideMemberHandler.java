@@ -21,18 +21,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.annotations.RequiredDispatchThread;
-import consulo.annotations.RequiredReadAction;
-import consulo.csharp.ide.actions.generate.memberChoose.CSharpMemberChooseObject;
-import consulo.csharp.ide.actions.generate.memberChoose.MethodChooseMember;
-import consulo.csharp.ide.actions.generate.memberChoose.XXXAccessorOwnerChooseMember;
-import consulo.csharp.lang.psi.CSharpFileFactory;
-import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpMethodDeclaration;
-import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
-import consulo.csharp.lang.psi.CSharpXXXAccessorOwner;
-import consulo.dotnet.psi.DotNetNamedElement;
 import com.intellij.ide.util.MemberChooser;
 import com.intellij.ide.util.MemberChooserBuilder;
 import com.intellij.lang.LanguageCodeInsightActionHandler;
@@ -46,6 +34,19 @@ import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.util.PairConsumer;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.annotations.RequiredDispatchThread;
+import consulo.annotations.RequiredReadAction;
+import consulo.csharp.ide.actions.generate.memberChoose.CSharpMemberChooseObject;
+import consulo.csharp.ide.actions.generate.memberChoose.MethodChooseMember;
+import consulo.csharp.ide.actions.generate.memberChoose.XXXAccessorOwnerChooseMember;
+import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
+import consulo.csharp.lang.psi.CSharpFileFactory;
+import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
+import consulo.csharp.lang.psi.CSharpMethodDeclaration;
+import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
+import consulo.csharp.lang.psi.CSharpXXXAccessorOwner;
+import consulo.dotnet.psi.DotNetNamedElement;
 
 /**
  * @author VISTALL
@@ -70,7 +71,7 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 		}
 
 		boolean canGenerateBlock = !typeDeclaration.isInterface();
-		List<CSharpMemberChooseObject> memberChooseObjects = new ArrayList<CSharpMemberChooseObject>(psiElements.size());
+		List<CSharpMemberChooseObject> memberChooseObjects = new ArrayList<>(psiElements.size());
 		PairConsumer<PsiElement, StringBuilder> returnAppender = new PairConsumer<PsiElement, StringBuilder>()
 		{
 			@Override
@@ -102,7 +103,7 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 			}
 		}
 
-		final MemberChooserBuilder<CSharpMemberChooseObject<?>> builder = new MemberChooserBuilder<CSharpMemberChooseObject<?>>(project);
+		final MemberChooserBuilder<CSharpMemberChooseObject<?>> builder = new MemberChooserBuilder<>(project);
 		builder.setTitle(getTitle());
 		builder.allowMultiSelection(true);
 
@@ -158,6 +159,8 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 			elementAt = file.findElementAt(brace.getTextOffset() + 1);
 		}
 
+		ExpectedUsingInfo expectedUsingInfo = chooseMember.getExpectedUsingInfo();
+
 		final PsiElement temp = elementAt;
 		new WriteCommandAction.Simple<Object>(file.getProject(), file)
 		{
@@ -165,7 +168,13 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 			protected void run() throws Throwable
 			{
 				final PsiElement psiElement = typeDeclaration.addAfter(namedElement, temp);
+
 				typeDeclaration.addAfter(PsiParserFacade.SERVICE.getInstance(file.getProject()).createWhiteSpaceFromText("\n"), psiElement);
+
+				if(expectedUsingInfo != null)
+				{
+					expectedUsingInfo.insertUsingBefore(typeDeclaration);
+				}
 
 				PsiDocumentManager documentManager = PsiDocumentManager.getInstance(getProject());
 
@@ -185,6 +194,7 @@ public abstract class GenerateImplementOrOverrideMemberHandler implements Langua
 	}
 
 	@Override
+	@RequiredReadAction
 	public boolean isValidFor(Editor editor, PsiFile file)
 	{
 		CSharpTypeDeclaration typeDeclaration = CSharpGenerateAction.findTypeDeclaration(editor, file);

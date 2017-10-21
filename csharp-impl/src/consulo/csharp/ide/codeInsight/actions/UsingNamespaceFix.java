@@ -182,9 +182,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 			return Collections.emptySet();
 		}
 		Set<NamespaceReference> resultSet = new ArrayListSet<NamespaceReference>();
-		if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE ||
-				kind == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR ||
-				ref.getQualifier() == null)
+		if(kind == CSharpReferenceExpression.ResolveToKind.TYPE_LIKE || kind == CSharpReferenceExpression.ResolveToKind.CONSTRUCTOR || ref.getQualifier() == null)
 		{
 			collectAvailableNamespaces(ref, resultSet, referenceName);
 		}
@@ -213,14 +211,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 		PsiElement parent = ref.getParent();
 		if(parent instanceof CSharpAttribute)
 		{
-			final Condition<DotNetTypeDeclaration> cond = new Condition<DotNetTypeDeclaration>()
-			{
-				@Override
-				public boolean value(DotNetTypeDeclaration typeDeclaration)
-				{
-					return DotNetInheritUtil.isAttribute(typeDeclaration);
-				}
-			};
+			final Condition<DotNetTypeDeclaration> cond = typeDeclaration -> DotNetInheritUtil.isAttribute(typeDeclaration);
 
 			tempTypes = getTypesWithGeneric(ref, referenceName);
 			collect(set, tempTypes, cond);
@@ -236,15 +227,8 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 
 			tempMethods = MethodIndex.getInstance().get(referenceName, ref.getProject(), ref.getResolveScope());
 
-			collect(set, tempMethods, new Condition<DotNetLikeMethodDeclaration>()
-			{
-				@Override
-				public boolean value(DotNetLikeMethodDeclaration method)
-				{
-					return (method.getParent() instanceof DotNetNamespaceDeclaration || method.getParent() instanceof PsiFile) && method instanceof
-							CSharpMethodDeclaration && ((CSharpMethodDeclaration) method).isDelegate();
-				}
-			});
+			collect(set, tempMethods, method -> (method.getParent() instanceof DotNetNamespaceDeclaration || method.getParent() instanceof PsiFile) && method instanceof CSharpMethodDeclaration && (
+					(CSharpMethodDeclaration) method).isDelegate());
 		}
 	}
 
@@ -259,9 +243,7 @@ public class UsingNamespaceFix implements HintAction, HighPriorityAction
 	}
 
 	@RequiredReadAction
-	private static void collectAvailableNamespacesForMethodExtensions(CSharpReferenceExpression ref,
-			Set<NamespaceReference> set,
-			String referenceName)
+	private static void collectAvailableNamespacesForMethodExtensions(CSharpReferenceExpression ref, Set<NamespaceReference> set, String referenceName)
 	{
 		PsiElement qualifier = ref.getQualifier();
 		if(qualifier == null)

@@ -19,8 +19,6 @@ package consulo.csharp.ide.completion;
 import static com.intellij.patterns.StandardPatterns.psiElement;
 
 import org.jetbrains.annotations.NotNull;
-import consulo.csharp.lang.psi.CSharpFieldDeclaration;
-import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -31,6 +29,8 @@ import com.intellij.util.Consumer;
 import com.intellij.util.ProcessingContext;
 import consulo.annotations.RequiredReadAction;
 import consulo.codeInsight.completion.CompletionProvider;
+import consulo.csharp.lang.psi.CSharpFieldDeclaration;
+import consulo.csharp.lang.psi.CSharpTypeDeclaration;
 import consulo.dotnet.psi.DotNetModifierList;
 import consulo.dotnet.psi.DotNetQualifiedElement;
 
@@ -71,15 +71,10 @@ public abstract class CSharpMemberAddByCompletionContributor extends CompletionC
 				assert typeDeclaration != null;
 
 				final CompletionResultSet delegateResultSet = CSharpCompletionSorting.modifyResultSet(parameters, result);
-				Consumer<LookupElement> delegate = new Consumer<LookupElement>()
+				Consumer<LookupElement> delegate = lookupElement ->
 				{
-					@Override
-					public void consume(LookupElement lookupElement)
+					if(lookupElement != null)
 					{
-						if(lookupElement == null)
-						{
-							return;
-						}
 						CSharpCompletionSorting.force(lookupElement, CSharpCompletionSorting.KindSorter.Type.overrideMember);
 						delegateResultSet.consume(lookupElement);
 					}

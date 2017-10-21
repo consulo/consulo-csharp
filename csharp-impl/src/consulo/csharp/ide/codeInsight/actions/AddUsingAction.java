@@ -21,6 +21,7 @@ import java.util.Set;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.actions.OptimizeImportsProcessor;
 import com.intellij.codeInsight.hint.QuestionAction;
 import com.intellij.icons.AllIcons;
@@ -49,6 +50,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredDispatchThread;
 import consulo.annotations.RequiredReadAction;
+import consulo.annotations.RequiredWriteAction;
 import consulo.csharp.ide.codeInsight.CSharpCodeInsightSettings;
 import consulo.csharp.lang.psi.CSharpCodeFragment;
 import consulo.csharp.lang.psi.CSharpFile;
@@ -70,12 +72,13 @@ public class AddUsingAction implements QuestionAction
 {
 	private static final Logger LOGGER = Logger.getInstance(AddUsingAction.class);
 
+	@Nullable
 	private final Editor myEditor;
 	private final Project myProject;
 	private final PsiFile myFile;
 	private final Set<NamespaceReference> myElements;
 
-	public AddUsingAction(Editor editor, PsiFile file, Set<NamespaceReference> references)
+	public AddUsingAction(@Nullable Editor editor, PsiFile file, Set<NamespaceReference> references)
 	{
 		myEditor = editor;
 		myFile = file;
@@ -83,7 +86,7 @@ public class AddUsingAction implements QuestionAction
 		myElements = references;
 	}
 
-	public AddUsingAction(Editor editor, CSharpReferenceExpression ref, Set<NamespaceReference> references)
+	public AddUsingAction(@Nullable Editor editor, CSharpReferenceExpression ref, Set<NamespaceReference> references)
 	{
 		myEditor = editor;
 		myFile = ref.getContainingFile();
@@ -120,8 +123,7 @@ public class AddUsingAction implements QuestionAction
 		}
 		else
 		{
-			BaseListPopupStep<NamespaceReference> step = new BaseListPopupStep<NamespaceReference>(DotNetBundle.message("add.using"),
-					myElements.toArray(new NamespaceReference[myElements.size()]))
+			BaseListPopupStep<NamespaceReference> step = new BaseListPopupStep<NamespaceReference>(DotNetBundle.message("add.using"), myElements.toArray(new NamespaceReference[myElements.size()]))
 			{
 				@Override
 				public Icon getIconFor(NamespaceReference aValue)
@@ -136,7 +138,8 @@ public class AddUsingAction implements QuestionAction
 					return formatMessage(value);
 				}
 
-				@Override@RequiredDispatchThread
+				@Override
+				@RequiredDispatchThread
 
 				public PopupStep onChosen(final NamespaceReference selectedValue, boolean finalChoice)
 				{
@@ -204,7 +207,49 @@ public class AddUsingAction implements QuestionAction
 	}
 
 	@RequiredReadAction
-	private void addUsing(String qName)
+	public void addUsing(String qName)
+	{
+		addUsingNoCaretMoving(qName);
+
+		assert myEditor != null;
+
+		int caretOffset = myEditor.getCaretModel().getOffset();
+		RangeMarker caretMarker = myEditor.getDocument().createRangeMarker(caretOffset, caretOffset);
+		int colByOffset = myEditor.offsetToLogicalPosition(caretOffset).column;
+		int col = myEditor.getCaretModel().getLogicalPosition().column;
+		int virtualSpace = col == colByOffset ? 0 : col - colByOffset;
+		int line = myEditor.getCaretModel().getLogicalPosition().line;
+		LogicalPosition pos = new LogicalPosition(line, 0);
+		myEditor.getCaretModel().moveToLogicalPosition(pos);
+
+		try
+		{
+			if(CSharpCodeInsightSettings.getInstance().OPTIMIZE_IMPORTS_ON_THE_FLY)
+			{
+				Document document = myEditor.getDocument();
+				PsiFile psiFile = PsiDocumentManager.getInstance(myProject).getPsiFile(document);
+				new OptimizeImportsProcessor(myProject, psiFile).runWithoutProgress();
+			}
+		}
+		catch(IncorrectOperationException e)
+		{
+			LOGGER.error(e);
+		}
+
+		line = myEditor.getCaretModel().getLogicalPosition().line;
+		LogicalPosition pos1 = new LogicalPosition(line, col);
+		myEditor.getCaretModel().moveToLogicalPosition(pos1);
+		if(caretMarker.isValid())
+		{
+			LogicalPosition pos2 = myEditor.offsetToLogicalPosition(caretMarker.getStartOffset());
+			int newCol = pos2.column + virtualSpace;
+			myEditor.getCaretModel().moveToLogicalPosition(new LogicalPosition(pos2.line, newCol));
+			myEditor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
+		}
+	}
+
+	@RequiredWriteAction
+	public void addUsingNoCaretMoving(String qName)
 	{
 		PsiElement elementForBeforeAdd = getElementForBeforeAdd();
 
@@ -231,40 +276,6 @@ public class AddUsingAction implements QuestionAction
 			PsiElement whiteSpaceFromText = PsiParserFacade.SERVICE.getInstance(myProject).createWhiteSpaceFromText("\n\n");
 
 			elementForBeforeAdd.addAfter(whiteSpaceFromText, usingStatementNew);
-		}
-
-		int caretOffset = myEditor.getCaretModel().getOffset();
-		RangeMarker caretMarker = myEditor.getDocument().createRangeMarker(caretOffset, caretOffset);
-		int colByOffset = myEditor.offsetToLogicalPosition(caretOffset).column;
-		int col = myEditor.getCaretModel().getLogicalPosition().column;
-		int virtualSpace = col == colByOffset ? 0 : col - colByOffset;
-		int line = myEditor.getCaretModel().getLogicalPosition().line;
-		LogicalPosition pos = new LogicalPosition(line, 0);
-		myEditor.getCaretModel().moveToLogicalPosition(pos);
-
-		try
-		{
-			if(CSharpCodeInsightSettings.getInstance().OPTIMIZE_IMPORTS_ON_THE_FLY)
-			{
-				Document document = myEditor.getDocument();
-				PsiFile psiFile = PsiDocumentManager.getInstance(myProject).getPsiFile(document);
-				new OptimizeImportsProcessor(myProject, psiFile).runWithoutProgress();
-			}
-		}
-		catch(IncorrectOperationException e)
-		{
-			AddUsingAction.LOGGER.error(e);
-		}
-
-		line = myEditor.getCaretModel().getLogicalPosition().line;
-		LogicalPosition pos1 = new LogicalPosition(line, col);
-		myEditor.getCaretModel().moveToLogicalPosition(pos1);
-		if(caretMarker.isValid())
-		{
-			LogicalPosition pos2 = myEditor.offsetToLogicalPosition(caretMarker.getStartOffset());
-			int newCol = pos2.column + virtualSpace;
-			myEditor.getCaretModel().moveToLogicalPosition(new LogicalPosition(pos2.line, newCol));
-			myEditor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
 		}
 	}
 

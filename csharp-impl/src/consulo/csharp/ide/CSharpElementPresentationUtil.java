@@ -17,6 +17,9 @@
 package consulo.csharp.ide;
 
 import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.util.BitUtil;
+import com.intellij.util.Function;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpTypeRefPresentationUtil;
@@ -30,9 +33,6 @@ import consulo.dotnet.psi.DotNetPropertyDeclaration;
 import consulo.dotnet.psi.DotNetVirtualImplementOwner;
 import consulo.dotnet.resolve.DotNetGenericExtractor;
 import consulo.dotnet.resolve.DotNetTypeRef;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.util.BitUtil;
-import com.intellij.util.Function;
 
 /**
  * @author VISTALL
@@ -44,6 +44,7 @@ public class CSharpElementPresentationUtil
 	public static final int METHOD_WITH_RETURN_TYPE = 1 << 1;
 	public static final int METHOD_PARAMETER_NAME = 1 << 2;
 	public static final int WITH_VIRTUAL_IMPL_TYPE = 1 << 4;
+	public static final int NON_QUALIFIED_TYPE = 1 << 5;
 
 	public static final int PROPERTY_SCALA_LIKE_FULL = SCALA_FORMAT | WITH_VIRTUAL_IMPL_TYPE;
 	public static final int METHOD_SCALA_LIKE_FULL = SCALA_FORMAT | METHOD_WITH_RETURN_TYPE | METHOD_PARAMETER_NAME | WITH_VIRTUAL_IMPL_TYPE;
@@ -52,10 +53,17 @@ public class CSharpElementPresentationUtil
 	@RequiredReadAction
 	public static String formatField(@NotNull DotNetFieldDeclaration fieldDeclaration)
 	{
+		return formatField(fieldDeclaration, 0);
+	}
+
+	@NotNull
+	@RequiredReadAction
+	public static String formatField(@NotNull DotNetFieldDeclaration fieldDeclaration, int flags)
+	{
 		StringBuilder builder = new StringBuilder();
 		builder.append(fieldDeclaration.getName());
 		builder.append(":");
-		CSharpTypeRefPresentationUtil.appendTypeRef(fieldDeclaration, builder, fieldDeclaration.toTypeRef(true), CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
+		CSharpTypeRefPresentationUtil.appendTypeRef(fieldDeclaration, builder, fieldDeclaration.toTypeRef(true), typeRefMask(flags));
 		return builder.toString();
 	}
 
@@ -70,7 +78,7 @@ public class CSharpElementPresentationUtil
 			DotNetTypeRef typeRefForImplement = propertyDeclaration.getTypeRefForImplement();
 			if(typeRefForImplement != DotNetTypeRef.ERROR_TYPE)
 			{
-				CSharpTypeRefPresentationUtil.appendTypeRef(propertyDeclaration, builder, typeRefForImplement, CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
+				CSharpTypeRefPresentationUtil.appendTypeRef(propertyDeclaration, builder, typeRefForImplement, typeRefMask(flags));
 				builder.append(".");
 			}
 		}
@@ -79,12 +87,12 @@ public class CSharpElementPresentationUtil
 		{
 			builder.append(propertyDeclaration.getName());
 			builder.append(":");
-			CSharpTypeRefPresentationUtil.appendTypeRef(propertyDeclaration, builder, propertyDeclaration.toTypeRef(true), CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
+			CSharpTypeRefPresentationUtil.appendTypeRef(propertyDeclaration, builder, propertyDeclaration.toTypeRef(true), typeRefMask(flags));
 
 		}
 		else
 		{
-			CSharpTypeRefPresentationUtil.appendTypeRef(propertyDeclaration, builder, propertyDeclaration.toTypeRef(true), CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
+			CSharpTypeRefPresentationUtil.appendTypeRef(propertyDeclaration, builder, propertyDeclaration.toTypeRef(true), typeRefMask(flags));
 
 			builder.append(" ");
 			builder.append(propertyDeclaration.getName());
@@ -102,7 +110,7 @@ public class CSharpElementPresentationUtil
 		{
 			if(!(methodDeclaration instanceof DotNetConstructorDeclaration))
 			{
-				CSharpTypeRefPresentationUtil.appendTypeRef(methodDeclaration, builder, methodDeclaration.getReturnTypeRef(), CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
+				CSharpTypeRefPresentationUtil.appendTypeRef(methodDeclaration, builder, methodDeclaration.getReturnTypeRef(), typeRefMask(flags));
 				builder.append(" ");
 			}
 		}
@@ -119,7 +127,7 @@ public class CSharpElementPresentationUtil
 				DotNetTypeRef typeRefForImplement = ((DotNetVirtualImplementOwner) methodDeclaration).getTypeRefForImplement();
 				if(typeRefForImplement != DotNetTypeRef.ERROR_TYPE)
 				{
-					CSharpTypeRefPresentationUtil.appendTypeRef(methodDeclaration, builder, typeRefForImplement, CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
+					CSharpTypeRefPresentationUtil.appendTypeRef(methodDeclaration, builder, typeRefForImplement, typeRefMask(flags));
 					builder.append(".");
 				}
 			}
@@ -182,9 +190,18 @@ public class CSharpElementPresentationUtil
 			if(!(methodDeclaration instanceof DotNetConstructorDeclaration))
 			{
 				builder.append(":");
-				CSharpTypeRefPresentationUtil.appendTypeRef(methodDeclaration, builder, methodDeclaration.getReturnTypeRef(), CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
+				CSharpTypeRefPresentationUtil.appendTypeRef(methodDeclaration, builder, methodDeclaration.getReturnTypeRef(), typeRefMask(flags));
 			}
 		}
+	}
+
+	private static int typeRefMask(int flags)
+	{
+		if(BitUtil.isSet(flags, NON_QUALIFIED_TYPE))
+		{
+			return CSharpTypeRefPresentationUtil.TYPE_KEYWORD;
+		}
+		return CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD;
 	}
 
 	public static void formatTypeGenericParameters(@NotNull DotNetGenericParameter[] parameters, @NotNull StringBuilder builder)

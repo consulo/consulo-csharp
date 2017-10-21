@@ -31,15 +31,7 @@ public interface CSharpUsingListChild extends DotNetElement
 {
 	public static final CSharpUsingListChild[] EMPTY_ARRAY = new CSharpUsingListChild[0];
 
-	public static ArrayFactory<CSharpUsingListChild> ARRAY_FACTORY = new ArrayFactory<CSharpUsingListChild>()
-	{
-		@NotNull
-		@Override
-		public CSharpUsingListChild[] create(int count)
-		{
-			return count == 0 ? EMPTY_ARRAY : new CSharpUsingListChild[count];
-		}
-	};
+	public static ArrayFactory<CSharpUsingListChild> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpUsingListChild[count];
 
 	@NotNull
 	@RequiredReadAction

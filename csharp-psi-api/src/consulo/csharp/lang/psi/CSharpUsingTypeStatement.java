@@ -30,15 +30,7 @@ public interface CSharpUsingTypeStatement extends CSharpUsingListChild
 {
 	public static final CSharpUsingTypeStatement[] EMPTY_ARRAY = new CSharpUsingTypeStatement[0];
 
-	public static ArrayFactory<CSharpUsingTypeStatement> ARRAY_FACTORY = new ArrayFactory<CSharpUsingTypeStatement>()
-	{
-		@NotNull
-		@Override
-		public CSharpUsingTypeStatement[] create(int count)
-		{
-			return count == 0 ? EMPTY_ARRAY : new CSharpUsingTypeStatement[count];
-		}
-	};
+	public static ArrayFactory<CSharpUsingTypeStatement> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new CSharpUsingTypeStatement[count];
 
 	@NotNull
 	DotNetTypeRef getTypeRef();

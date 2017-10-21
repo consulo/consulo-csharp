@@ -25,10 +25,23 @@ import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.codeInsight.completion.CompletionParameters;
+import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.icons.AllIcons;
+import com.intellij.openapi.editor.CaretModel;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.codeStyle.CodeStyleManager;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.Consumer;
+import com.intellij.util.ProcessingContext;
+import consulo.annotations.RequiredReadAction;
 import consulo.csharp.CSharpIcons;
 import consulo.csharp.ide.CSharpElementPresentationUtil;
 import consulo.csharp.ide.actions.generate.GenerateImplementMemberHandler;
 import consulo.csharp.ide.actions.generate.GenerateOverrideMemberHandler;
+import consulo.csharp.ide.completion.expected.ExpectedUsingInfo;
 import consulo.csharp.lang.psi.CSharpAccessModifier;
 import consulo.csharp.lang.psi.CSharpIndexMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
@@ -40,21 +53,6 @@ import consulo.csharp.lang.psi.CSharpXXXAccessorOwner;
 import consulo.csharp.lang.psi.impl.CSharpVisibilityUtil;
 import consulo.csharp.lang.psi.impl.source.CSharpBlockStatementImpl;
 import consulo.csharp.lang.psi.impl.source.resolve.overrideSystem.OverrideUtil;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.editor.CaretModel;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.Consumer;
-import com.intellij.util.ProcessingContext;
-import consulo.annotations.RequiredDispatchThread;
-import consulo.annotations.RequiredReadAction;
 import consulo.dotnet.ide.DotNetElementPresentationUtil;
 import consulo.dotnet.psi.DotNetElement;
 import consulo.dotnet.psi.DotNetLikeMethodDeclaration;
@@ -155,7 +153,7 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 			CSharpXXXAccessorOwner accessorOwner = (CSharpXXXAccessorOwner) element;
 			StringBuilder builder = new StringBuilder();
 
-			CSharpAccessModifier modifier = hide || typeDeclaration.isInterface() ? CSharpAccessModifier.NONE : CSharpAccessModifier.findModifier((DotNetModifierListOwner) accessorOwner);
+			CSharpAccessModifier modifier = hide || typeDeclaration.isInterface() ? CSharpAccessModifier.NONE : CSharpAccessModifier.findModifier(accessorOwner);
 			if(modifier != CSharpAccessModifier.NONE)
 			{
 				builder.append(modifier.getPresentableText()).append(" ");
@@ -224,47 +222,50 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 		{
 			lookupElementBuilder = lookupElementBuilder.withTypeText(DotNetElementPresentationUtil.formatTypeWithGenericParameters((DotNetTypeDeclaration) parent));
 		}
-		lookupElementBuilder = lookupElementBuilder.withInsertHandler(new InsertHandler<LookupElement>()
+
+		ExpectedUsingInfo expectedUsingInfo = ExpectedUsingInfo.calculateFrom(element);
+
+		lookupElementBuilder = lookupElementBuilder.withInsertHandler((context, item) ->
 		{
-			@Override
-			@RequiredDispatchThread
-			public void handleInsert(InsertionContext context, LookupElement item)
+			CaretModel caretModel = context.getEditor().getCaretModel();
+
+			PsiElement elementAt = context.getFile().findElementAt(caretModel.getOffset() - 1);
+			if(elementAt == null)
 			{
-				CaretModel caretModel = context.getEditor().getCaretModel();
+				return;
+			}
 
-				PsiElement elementAt = context.getFile().findElementAt(caretModel.getOffset() - 1);
-				if(elementAt == null)
-				{
-					return;
-				}
+			if(expectedUsingInfo != null)
+			{
+				expectedUsingInfo.insertUsingBefore(elementAt);
+			}
 
-				DotNetVirtualImplementOwner virtualImplementOwner = PsiTreeUtil.getParentOfType(elementAt, DotNetVirtualImplementOwner.class);
-				if(virtualImplementOwner == null)
-				{
-					return;
-				}
+			DotNetVirtualImplementOwner virtualImplementOwner = PsiTreeUtil.getParentOfType(elementAt, DotNetVirtualImplementOwner.class);
+			if(virtualImplementOwner == null)
+			{
+				return;
+			}
 
-				if(virtualImplementOwner instanceof CSharpMethodDeclaration)
+			if(virtualImplementOwner instanceof CSharpMethodDeclaration)
+			{
+				PsiElement codeBlock = ((CSharpMethodDeclaration) virtualImplementOwner).getCodeBlock();
+				if(codeBlock instanceof CSharpBlockStatementImpl)
 				{
-					PsiElement codeBlock = ((CSharpMethodDeclaration) virtualImplementOwner).getCodeBlock();
-					if(codeBlock instanceof CSharpBlockStatementImpl)
+					DotNetStatement[] statements = ((CSharpBlockStatementImpl) codeBlock).getStatements();
+					if(statements.length > 0)
 					{
-						DotNetStatement[] statements = ((CSharpBlockStatementImpl) codeBlock).getStatements();
-						if(statements.length > 0)
-						{
-							caretModel.moveToOffset(statements[0].getTextOffset() + statements[0].getTextLength());
-						}
-						else
-						{
-							caretModel.moveToOffset(((CSharpBlockStatementImpl) codeBlock).getLeftBrace().getTextOffset() + 1);
-						}
+						caretModel.moveToOffset(statements[0].getTextOffset() + statements[0].getTextLength());
+					}
+					else
+					{
+						caretModel.moveToOffset(((CSharpBlockStatementImpl) codeBlock).getLeftBrace().getTextOffset() + 1);
 					}
 				}
-
-				context.commitDocument();
-
-				CodeStyleManager.getInstance(context.getProject()).reformat(virtualImplementOwner);
 			}
+
+			context.commitDocument();
+
+			CodeStyleManager.getInstance(context.getProject()).reformat(virtualImplementOwner);
 		});
 
 		return lookupElementBuilder;
@@ -322,7 +323,7 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 		{
 			CSharpPropertyDeclaration propertyDeclaration = (CSharpPropertyDeclaration) element;
 
-			CSharpTypeRefPresentationUtil.appendTypeRef(element, builder, propertyDeclaration.toTypeRef(true), CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
+			CSharpTypeRefPresentationUtil.appendTypeRef(element, builder, propertyDeclaration.toTypeRef(true), CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
 
 			builder.append(" ");
 
@@ -338,7 +339,7 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 		{
 			DotNetLikeMethodDeclaration likeMethodDeclaration = (DotNetLikeMethodDeclaration) element;
 
-			CSharpTypeRefPresentationUtil.appendTypeRef(element, builder, likeMethodDeclaration.getReturnTypeRef(), CSharpTypeRefPresentationUtil.QUALIFIED_NAME_WITH_KEYWORD);
+			CSharpTypeRefPresentationUtil.appendTypeRef(element, builder, likeMethodDeclaration.getReturnTypeRef(), CSharpTypeRefPresentationUtil.TYPE_KEYWORD);
 			builder.append(" ");
 
 			if(hide)
@@ -356,8 +357,8 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 				builder.append(((PsiNamedElement) element).getName());
 			}
 			CSharpElementPresentationUtil.formatTypeGenericParameters(likeMethodDeclaration.getGenericParameters(), builder);
-			CSharpElementPresentationUtil.formatParameters(likeMethodDeclaration, builder, CSharpElementPresentationUtil.METHOD_WITH_RETURN_TYPE | CSharpElementPresentationUtil
-					.METHOD_PARAMETER_NAME);
+			CSharpElementPresentationUtil.formatParameters(likeMethodDeclaration, builder, CSharpElementPresentationUtil.METHOD_WITH_RETURN_TYPE | CSharpElementPresentationUtil.METHOD_PARAMETER_NAME
+					| CSharpElementPresentationUtil.NON_QUALIFIED_TYPE);
 		}
 		else
 		{
@@ -371,7 +372,7 @@ public class CSharpOverrideOrImplementCompletionContributor extends CSharpMember
 	{
 		Collection<PsiElement> allMembers = OverrideUtil.getAllMembers(typeDeclaration, typeDeclaration.getResolveScope(), DotNetGenericExtractor.EMPTY, false, true);
 
-		List<DotNetModifierListOwner> elements = new ArrayList<DotNetModifierListOwner>();
+		List<DotNetModifierListOwner> elements = new ArrayList<>();
 		for(PsiElement element : allMembers)
 		{
 			if(element instanceof DotNetModifierListOwner)

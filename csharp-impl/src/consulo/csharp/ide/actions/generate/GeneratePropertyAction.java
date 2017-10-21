@@ -58,7 +58,7 @@ public class GeneratePropertyAction extends CSharpGenerateAction
 	@RequiredReadAction
 	public static List<DotNetFieldDeclaration> getFields(CSharpTypeDeclaration typeDeclaration)
 	{
-		List<DotNetFieldDeclaration> fieldDeclarations = new ArrayList<DotNetFieldDeclaration>(5);
+		List<DotNetFieldDeclaration> fieldDeclarations = new ArrayList<>(5);
 		for(DotNetNamedElement dotNetNamedElement : typeDeclaration.getMembers())
 		{
 			if(dotNetNamedElement instanceof DotNetFieldDeclaration)
