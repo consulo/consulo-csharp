@@ -304,6 +304,11 @@ public class CSharpNameSuggesterUtil
 	@NotNull
 	public static Collection<String> generateNames(@NotNull String name)
 	{
+		if(name.length() > 2 && name.charAt(0) == 'I' && Character.isUpperCase(name.charAt(1)))
+		{
+			name = name.substring(1, name.length());
+		}
+
 		name = StringUtil.decapitalize(deleteNonLetterFromString(StringUtil.unquoteString(name.replace('.', '_'))));
 		if(name.startsWith("get"))
 		{
@@ -320,11 +325,6 @@ public class CSharpNameSuggesterUtil
 		while(name.endsWith("_"))
 		{
 			name = name.substring(0, name.length() - 1);
-		}
-
-		if(name.length() > 2 && name.charAt(0) == 'I' && Character.isUpperCase(name.charAt(1)))
-		{
-			name = name.substring(1, name.length());
 		}
 
 		final int length = name.length();
