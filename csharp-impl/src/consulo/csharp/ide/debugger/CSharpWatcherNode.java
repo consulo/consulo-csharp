@@ -45,7 +45,7 @@ public class CSharpWatcherNode extends DotNetAbstractVariableValueNode
 
 	@NotNull
 	@Override
-	public Icon getIconForVariable(@Nullable Ref<DotNetValueProxy> ref)
+	public Icon getIconForVariable(@Nullable Ref<DotNetValueProxy> alreadyCalledValue)
 	{
 		return AllIcons.Debugger.Watch;
 	}
