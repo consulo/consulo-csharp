@@ -177,4 +177,87 @@ public class CSharpMsilFileRepresentationProvider implements MsilFileRepresentat
 		}.execute();
 		return file;
 	}
+
+	@NotNull
+	@RequiredReadAction
+	public CharSequence buildContent(String fileName, @NotNull final MsilFile msilFile)
+	{
+		List<StubBlock> list = new ArrayList<>();
+
+		VirtualFile virtualFile = msilFile.getVirtualFile();
+		if(virtualFile != null)
+		{
+			VirtualFile archiveRoot = ArchiveVfsUtil.getVirtualFileForArchive(virtualFile);
+			if(archiveRoot != null)
+			{
+				list.add(new LineStubBlock("// Library: " + archiveRoot.getPath()));
+				String path = virtualFile.getPath();
+				int i = path.indexOf(URLUtil.ARCHIVE_SEPARATOR);
+				assert i != -1;
+				list.add(new LineStubBlock("// IL File: " + path.substring(i + 2, path.length())));
+			}
+			else
+			{
+				list.add(new LineStubBlock("// File: " + virtualFile.getPath()));
+			}
+		}
+
+		DotNetNamedElement[] msilFileMembers = msilFile.getMembers();
+		if(msilFile.getName().equals(DotNetAssemblyFileArchiveEntry.AssemblyInfo))
+		{
+			MsilAssemblyEntry assemblyEntry = (MsilAssemblyEntry) ContainerUtil.find(msilFileMembers, element -> element instanceof MsilAssemblyEntry);
+
+			if(assemblyEntry != null)
+			{
+				CSharpStubBuilderVisitor.processAttributeListAsLine(assemblyEntry, list, DotNetAttributeTargetType.ASSEMBLY, assemblyEntry.getAttributes());
+			}
+		}
+		else
+		{
+			List<DotNetQualifiedElement> wrapped = new ArrayList<>(msilFileMembers.length);
+			for(DotNetNamedElement member : msilFileMembers)
+			{
+				PsiElement wrap = MsilToCSharpUtil.wrap(member, null);
+				if(wrap != member)  // wrapped
+				{
+					wrapped.add((DotNetQualifiedElement) wrap);
+				}
+			}
+
+			final Map<String, StubBlock> namespaces = new HashMap<>();
+			for(DotNetQualifiedElement msilWrapperElement : wrapped)
+			{
+				String presentableParentQName = msilWrapperElement.getPresentableParentQName();
+
+				boolean namespace = !StringUtil.isEmpty(presentableParentQName);
+
+				if(namespace)
+				{
+					List<StubBlock> toAdd = null;
+
+					StubBlock stubBlock = namespaces.get(presentableParentQName);
+					if(stubBlock == null)
+					{
+						namespaces.put(presentableParentQName, stubBlock = new StubBlock("namespace " + presentableParentQName, null, StubBlock.BRACES));
+
+						list.add(stubBlock);
+
+						toAdd = stubBlock.getBlocks();
+					}
+					else
+					{
+						toAdd = stubBlock.getBlocks();
+					}
+
+					toAdd.addAll(CSharpStubBuilderVisitor.buildBlocks(msilWrapperElement));
+				}
+				else
+				{
+					list.addAll(CSharpStubBuilderVisitor.buildBlocks(msilWrapperElement));
+				}
+			}
+		}
+
+		return StubBlockUtil.buildText(list);
+	}
 }
