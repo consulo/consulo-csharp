@@ -31,6 +31,12 @@ import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotations.RequiredReadAction;
 import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.lang.lexer.CSharpLexer;
@@ -52,17 +58,10 @@ import consulo.dotnet.psi.DotNetModifier;
 import consulo.dotnet.psi.DotNetVariable;
 import consulo.dotnet.resolve.DotNetTypeRef;
 import consulo.dotnet.resolve.DotNetTypeResolveResult;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author Fedor.Korotkov
- *         <p/>
+ *         <p>
  *         from google-dart
  */
 public class CSharpNameSuggesterUtil
@@ -102,14 +101,7 @@ public class CSharpNameSuggesterUtil
 
 		if(variable instanceof CSharpPropertyDeclaration)
 		{
-			suggestedNames = ContainerUtil.map(suggestedNames, new Function<String, String>()
-			{
-				@Override
-				public String fun(String variableName)
-				{
-					return StringUtil.capitalize(variableName);
-				}
-			});
+			suggestedNames = ContainerUtil.map(suggestedNames, StringUtil::capitalize);
 		}
 
 		CSharpCodeGenerationSettings settings = CSharpCodeGenerationSettings.getInstance(variable.getProject());
@@ -133,21 +125,17 @@ public class CSharpNameSuggesterUtil
 			suffix = null;
 		}
 
-		return ContainerUtil.map(suggestedNames, new Function<String, String>()
+		return ContainerUtil.map(suggestedNames, name ->
 		{
-			@Override
-			public String fun(String name)
+			if(prefix == null && suffix == null)
 			{
-				if(prefix == null && suffix == null)
-				{
-					return name;
-				}
-				if(StringUtil.isEmpty(prefix))
-				{
-					return name + StringUtil.notNullize(suffix);
-				}
-				return StringUtil.notNullize(prefix) + StringUtil.capitalize(name) + StringUtil.notNullize(suffix);
+				return name;
 			}
+			if(StringUtil.isEmpty(prefix))
+			{
+				return name + StringUtil.notNullize(suffix);
+			}
+			return StringUtil.notNullize(prefix) + StringUtil.capitalize(name) + StringUtil.notNullize(suffix);
 		});
 	}
 
@@ -155,7 +143,7 @@ public class CSharpNameSuggesterUtil
 	@RequiredReadAction
 	public static Set<String> getSuggestedNames(final DotNetTypeRef typeRef, PsiElement scope)
 	{
-		Collection<String> candidates = new LinkedHashSet<String>();
+		Collection<String> candidates = new LinkedHashSet<>();
 
 		DotNetTypeResolveResult resolveResult = CSharpTypeUtil.findTypeRefFromExtends(typeRef, new CSharpTypeRefByQName(scope, DotNetTypes.System.Collections.Generic.IEnumerable$1), scope);
 		if(resolveResult != null)
@@ -176,7 +164,7 @@ public class CSharpNameSuggesterUtil
 
 		final Set<String> usedNames = CSharpRefactoringUtil.collectUsedNames(scope, scope);
 
-		final List<String> result = new ArrayList<String>();
+		final List<String> result = new ArrayList<>();
 
 		for(String candidate : candidates)
 		{
@@ -203,7 +191,7 @@ public class CSharpNameSuggesterUtil
 				iterator.set(String.valueOf(next.charAt(0)));
 			}
 		}
-		return new TreeSet<String>(result);
+		return new TreeSet<>(result);
 	}
 
 	@NotNull
@@ -217,7 +205,7 @@ public class CSharpNameSuggesterUtil
 	@RequiredReadAction
 	private static Set<String> getSuggestedNames(@NotNull DotNetExpression expression, @Nullable Collection<String> additionalUsedNames, @Nullable PsiElement toSkip)
 	{
-		Set<String> candidates = new LinkedHashSet<String>();
+		Set<String> candidates = new LinkedHashSet<>();
 
 		String text = expression.getText();
 		if(expression.getParent() instanceof CSharpForeachStatementImpl)
@@ -254,7 +242,7 @@ public class CSharpNameSuggesterUtil
 		{
 			usedNames.addAll(additionalUsedNames);
 		}
-		final List<String> result = new ArrayList<String>();
+		final List<String> result = new ArrayList<>();
 
 		for(String candidate : candidates)
 		{
@@ -281,7 +269,7 @@ public class CSharpNameSuggesterUtil
 				iterator.set(String.valueOf(next.charAt(0)));
 			}
 		}
-		return new THashSet<String>(result);
+		return new THashSet<>(result);
 	}
 
 	public static boolean isKeyword(String text)
@@ -333,8 +321,14 @@ public class CSharpNameSuggesterUtil
 		{
 			name = name.substring(0, name.length() - 1);
 		}
+
+		if(name.length() > 2 && name.charAt(0) == 'I' && Character.isUpperCase(name.charAt(1)))
+		{
+			name = name.substring(1, name.length());
+		}
+
 		final int length = name.length();
-		final Collection<String> possibleNames = new LinkedHashSet<String>();
+		final Collection<String> possibleNames = new LinkedHashSet<>();
 		for(int i = 0; i < length; i++)
 		{
 			if(Character.isLetter(name.charAt(i)) && (i == 0 || name.charAt(i - 1) == '_' || (Character.isLowerCase(name.charAt(i - 1)) && Character.isUpperCase(name.charAt(i)))))
@@ -347,20 +341,16 @@ public class CSharpNameSuggesterUtil
 			}
 		}
 		// prefer shorter names
-		ArrayList<String> reversed = new ArrayList<String>(possibleNames);
+		ArrayList<String> reversed = new ArrayList<>(possibleNames);
 		Collections.reverse(reversed);
-		return ContainerUtil.map(reversed, new Function<String, String>()
+		return ContainerUtil.map(reversed, name1 ->
 		{
-			@Override
-			public String fun(String name)
+			if(name1.indexOf('_') == -1)
 			{
-				if(name.indexOf('_') == -1)
-				{
-					return name;
-				}
-				name = StringUtil.capitalizeWords(name, "_", true, true);
-				return StringUtil.decapitalize(name.replaceAll("_", ""));
+				return name1;
 			}
+			name1 = StringUtil.capitalizeWords(name1, "_", true, true);
+			return StringUtil.decapitalize(name1.replaceAll("_", ""));
 		});
 	}
 }
