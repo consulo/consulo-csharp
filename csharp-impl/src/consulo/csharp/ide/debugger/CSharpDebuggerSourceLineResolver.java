@@ -38,7 +38,7 @@ public class CSharpDebuggerSourceLineResolver extends DotNetDefaultDebuggerSourc
 	@Override
 	public Set<PsiElement> getAllExecutableChildren(@NotNull PsiElement root)
 	{
-		final Set<PsiElement> lambdas = new LinkedHashSet<PsiElement>();
+		final Set<PsiElement> lambdas = new LinkedHashSet<>();
 		root.accept(new CSharpRecursiveElementVisitor()
 		{
 			@Override

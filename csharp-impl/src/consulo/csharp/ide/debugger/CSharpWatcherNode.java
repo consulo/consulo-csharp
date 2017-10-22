@@ -21,6 +21,8 @@ import javax.swing.Icon;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.util.Ref;
+import com.intellij.xdebugger.frame.XValueModifier;
 import consulo.dotnet.debugger.DotNetDebugContext;
 import consulo.dotnet.debugger.nodes.DotNetAbstractVariableValueNode;
 import consulo.dotnet.debugger.proxy.DotNetStackFrameProxy;
@@ -43,9 +45,16 @@ public class CSharpWatcherNode extends DotNetAbstractVariableValueNode
 
 	@NotNull
 	@Override
-	public Icon getIconForVariable()
+	public Icon getIconForVariable(@Nullable Ref<DotNetValueProxy> ref)
 	{
 		return AllIcons.Debugger.Watch;
+	}
+
+	@Nullable
+	@Override
+	public XValueModifier getModifier()
+	{
+		return null;
 	}
 
 	@Nullable
@@ -63,7 +72,7 @@ public class CSharpWatcherNode extends DotNetAbstractVariableValueNode
 
 	@Nullable
 	@Override
-	public DotNetTypeProxy getTypeOfVariable()
+	public DotNetTypeProxy getTypeOfVariableImpl()
 	{
 		return null;
 	}
