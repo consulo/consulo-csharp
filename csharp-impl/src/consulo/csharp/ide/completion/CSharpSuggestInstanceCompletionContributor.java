@@ -57,6 +57,7 @@ import consulo.csharp.ide.completion.weigher.CSharpInheritCompletionWeighter;
 import consulo.csharp.ide.refactoring.util.CSharpNameSuggesterUtil;
 import consulo.csharp.lang.psi.CSharpMethodDeclaration;
 import consulo.csharp.lang.psi.CSharpModifier;
+import consulo.csharp.lang.psi.CSharpPropertyDeclaration;
 import consulo.csharp.lang.psi.CSharpReferenceExpression;
 import consulo.csharp.lang.psi.CSharpReferenceExpressionEx;
 import consulo.csharp.lang.psi.CSharpSimpleParameterInfo;
@@ -306,9 +307,21 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 					DotNetNamedElement[] members = declaration.getMembers();
 					for(DotNetNamedElement member : members)
 					{
-						if(member instanceof CSharpMethodDeclaration && ((CSharpMethodDeclaration) member).hasModifier(CSharpModifier.STATIC))
+						if((member instanceof CSharpMethodDeclaration || member instanceof CSharpPropertyDeclaration) && ((DotNetModifierListOwner) member).hasModifier(CSharpModifier.STATIC))
 						{
-							DotNetTypeRef returnTypeRef = ((CSharpMethodDeclaration) member).getReturnTypeRef();
+							DotNetTypeRef returnTypeRef;
+							if(member instanceof CSharpMethodDeclaration)
+							{
+								returnTypeRef = ((CSharpMethodDeclaration) member).getReturnTypeRef();
+							}
+							else if(member instanceof CSharpPropertyDeclaration)
+							{
+								returnTypeRef = ((CSharpPropertyDeclaration) member).toTypeRef(true);
+							}
+							else
+							{
+								throw new UnsupportedOperationException();
+							}
 
 							if(CSharpTypeUtil.isInheritable(expectedTypeRef.getTypeRef(), returnTypeRef, expression) && CSharpVisibilityUtil.isVisible((DotNetModifierListOwner) member, expression))
 							{
@@ -317,16 +330,19 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 								builder = builder.withLookupString(member.getName());
 								builder = builder.withTypeText(CSharpTypeRefPresentationUtil.buildShortText(returnTypeRef, expression));
 								builder = builder.withIcon(IconDescriptorUpdaters.getIcon(member, Iconable.ICON_FLAG_VISIBILITY));
-								builder = builder.withInsertHandler(new CSharpParenthesesWithSemicolonInsertHandler((CSharpMethodDeclaration) member));
+								builder = builder.withInsertHandler(new CSharpParenthesesWithSemicolonInsertHandler(member));
 
-								final CSharpSimpleParameterInfo[] parameterInfos = ((CSharpMethodDeclaration) member).getParameterInfos();
+								if(member instanceof CSharpMethodDeclaration)
+								{
+									final CSharpSimpleParameterInfo[] parameterInfos = ((CSharpMethodDeclaration) member).getParameterInfos();
 
-								String genericText = DotNetElementPresentationUtil.formatGenericParameters((DotNetGenericParameterListOwner) member);
+									String genericText = DotNetElementPresentationUtil.formatGenericParameters((DotNetGenericParameterListOwner) member);
 
-								String parameterText = genericText + "(" + StringUtil.join(parameterInfos, parameter -> CSharpTypeRefPresentationUtil.buildShortText(parameter.getTypeRef(), member) +
-										" " + parameter.getNotNullName(), ", ") + ")";
+									String parameterText = genericText + "(" + StringUtil.join(parameterInfos, parameter -> CSharpTypeRefPresentationUtil.buildShortText(parameter.getTypeRef(), member) +
+											" " + parameter.getNotNullName(), ", ") + ")";
 
-								builder = builder.withTailText(parameterText, false);
+									builder = builder.withTailText(parameterText, false);
+								}
 
 								result.addElement(PrioritizedLookupElement.withPriority(builder, 1));
 							}

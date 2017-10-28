@@ -39,9 +39,9 @@ import consulo.dotnet.resolve.DotNetTypeRefUtil;
  */
 public class CSharpParenthesesWithSemicolonInsertHandler implements InsertHandler<LookupElement>
 {
-	private DotNetLikeMethodDeclaration myDeclaration;
+	private PsiElement myDeclaration;
 
-	public CSharpParenthesesWithSemicolonInsertHandler(DotNetLikeMethodDeclaration declaration)
+	public CSharpParenthesesWithSemicolonInsertHandler(PsiElement declaration)
 	{
 		myDeclaration = declaration;
 	}
@@ -50,7 +50,11 @@ public class CSharpParenthesesWithSemicolonInsertHandler implements InsertHandle
 	@RequiredDispatchThread
 	public void handleInsert(InsertionContext context, LookupElement item)
 	{
-		new CSharpParenthesesInsertHandler(myDeclaration).handleInsert(context, item);
+		boolean isMethodLike = myDeclaration instanceof DotNetLikeMethodDeclaration;
+		if(isMethodLike)
+		{
+			new CSharpParenthesesInsertHandler((DotNetLikeMethodDeclaration) myDeclaration).handleInsert(context, item);
+		}
 
 		if(context.getCompletionChar() != '\n' || context.getFile() instanceof CSharpCodeFragment)
 		{
@@ -58,7 +62,8 @@ public class CSharpParenthesesWithSemicolonInsertHandler implements InsertHandle
 		}
 
 		// for void method we always insert semicolon
-		if(!(myDeclaration instanceof CSharpConstructorDeclaration) && DotNetTypeRefUtil.isVmQNameEqual(myDeclaration.getReturnTypeRef(), myDeclaration, DotNetTypes.System.Void))
+		if(isMethodLike && !(myDeclaration instanceof CSharpConstructorDeclaration) && DotNetTypeRefUtil.isVmQNameEqual(((DotNetLikeMethodDeclaration) myDeclaration).getReturnTypeRef(),
+				myDeclaration, DotNetTypes.System.Void))
 		{
 			if(TailType.SEMICOLON.isApplicable(context))
 			{
