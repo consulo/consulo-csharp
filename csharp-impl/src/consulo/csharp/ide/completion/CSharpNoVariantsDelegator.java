@@ -41,7 +41,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Consumer;
-import com.intellij.util.Function;
 import com.intellij.util.Processor;
 import com.intellij.util.indexing.IdFilter;
 import consulo.annotations.RequiredDispatchThread;
@@ -256,14 +255,7 @@ public class CSharpNoVariantsDelegator extends CompletionContributor
 		DotNetGenericParameter[] genericParameters = someType.getGenericParameters();
 		if((genericCount = genericParameters.length) > 0)
 		{
-			presentationText += "<" + StringUtil.join(genericParameters, new Function<DotNetGenericParameter, String>()
-			{
-				@Override
-				public String fun(DotNetGenericParameter parameter)
-				{
-					return parameter.getName();
-				}
-			}, ", ");
+			presentationText += "<" + StringUtil.join(genericParameters, parameter -> parameter.getName(), ", ");
 			presentationText += ">";
 		}
 
