@@ -162,6 +162,7 @@ public class CSharpOperatorReferenceImpl extends CSharpElementImpl implements Ps
 	{
 		{
 			put(CSharpTokens.MULEQ, CSharpTokens.MUL);
+			put(CSharpTokens.PERCEQ, CSharpTokens.PERC);
 			put(CSharpTokens.PLUSEQ, CSharpTokens.PLUS);
 			put(CSharpTokens.MINUSEQ, CSharpTokens.MINUS);
 			put(CSharpTokens.DIVEQ, CSharpTokens.DIV);
