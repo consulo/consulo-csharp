@@ -46,7 +46,6 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
-import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -60,7 +59,6 @@ import consulo.annotations.RequiredReadAction;
 import consulo.annotations.RequiredWriteAction;
 import consulo.codeInsight.completion.CompletionProvider;
 import consulo.csharp.ide.CSharpLookupElementBuilder;
-import consulo.csharp.ide.codeInsight.actions.MethodGenerateUtil;
 import consulo.csharp.ide.codeStyle.CSharpCodeGenerationSettings;
 import consulo.csharp.ide.completion.expected.ExpectedTypeInfo;
 import consulo.csharp.ide.completion.insertHandler.CSharpTailInsertHandler;
@@ -179,152 +177,6 @@ class CSharpExpressionCompletionContributor
 					});
 				}
 			}
-		});
-
-		contributor.extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()
-		{
-			@RequiredReadAction
-			@Override
-			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
-			{
-				CSharpReferenceExpressionEx parent = (CSharpReferenceExpressionEx) parameters.getPosition().getParent();
-				if(parent.getQualifier() != null || parent.kind() != CSharpReferenceExpression.ResolveToKind.ANY_MEMBER)
-				{
-					return;
-				}
-
-				boolean allowAsync = CSharpModuleUtil.findLanguageVersion(parent).isAtLeast(CSharpLanguageVersion._4_0);
-				List<ExpectedTypeInfo> expectedTypeRefs = CSharpInheritCompletionWeighter.getExpectedTypeInfosForExpression(parameters, context);
-				for(ExpectedTypeInfo expectedTypeRef : expectedTypeRefs)
-				{
-					DotNetTypeRef typeRef = expectedTypeRef.getTypeRef();
-					DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
-					if(typeResolveResult instanceof CSharpLambdaResolveResult)
-					{
-						addLambdaExpressionLookup((CSharpLambdaResolveResult) typeResolveResult, result, false);
-
-						if(allowAsync)
-						{
-							addLambdaExpressionLookup((CSharpLambdaResolveResult) typeResolveResult, result, true);
-						}
-
-						addDelegateExpressionLookup((CSharpLambdaResolveResult) typeResolveResult, result, parent, false);
-
-						if(allowAsync)
-						{
-							addDelegateExpressionLookup((CSharpLambdaResolveResult) typeResolveResult, result, parent, true);
-						}
-					}
-				}
-			}
-
-			@RequiredReadAction
-			private void addLambdaExpressionLookup(CSharpLambdaResolveResult typeResolveResult, CompletionResultSet result, boolean async)
-			{
-				CSharpSimpleParameterInfo[] parameterInfos = typeResolveResult.getParameterInfos();
-
-				StringBuilder builder = new StringBuilder();
-				if(async)
-				{
-					builder.append("async ");
-				}
-				if(parameterInfos.length == 0 || parameterInfos.length > 1)
-				{
-					builder.append("(");
-				}
-				for(int i = 0; i < parameterInfos.length; i++)
-				{
-					CSharpSimpleParameterInfo parameterInfo = parameterInfos[i];
-					if(i != 0)
-					{
-						builder.append(", ");
-					}
-					builder.append(parameterInfo.getNotNullName());
-				}
-				if(parameterInfos.length == 0 || parameterInfos.length > 1)
-				{
-					builder.append(")");
-				}
-				builder.append(" => ");
-
-				LookupElementBuilder lookupElementBuilder = LookupElementBuilder.create(builder.toString());
-				lookupElementBuilder = lookupElementBuilder.withPresentableText(builder.append("{ }").toString());
-				lookupElementBuilder = lookupElementBuilder.withIcon(AllIcons.Nodes.Lambda);
-
-				CSharpCompletionSorting.force(lookupElementBuilder, CSharpCompletionSorting.KindSorter.Type.top);
-				result.addElement(lookupElementBuilder);
-			}
-
-			@RequiredReadAction
-			private void addDelegateExpressionLookup(CSharpLambdaResolveResult typeResolveResult, CompletionResultSet result, PsiElement parent, boolean async)
-			{
-				CSharpSimpleParameterInfo[] parameterInfos = typeResolveResult.getParameterInfos();
-
-				StringBuilder builder = new StringBuilder();
-				if(async)
-				{
-					builder.append("async ");
-				}
-				builder.append("delegate ");
-				if(parameterInfos.length > 0)
-				{
-					builder.append("(");
-				}
-				for(int i = 0; i < parameterInfos.length; i++)
-				{
-					CSharpSimpleParameterInfo parameterInfo = parameterInfos[i];
-					if(i != 0)
-					{
-						builder.append(", ");
-					}
-					builder.append(CSharpTypeRefPresentationUtil.buildShortText(parameterInfo.getTypeRef(), parent));
-					builder.append(" ");
-					builder.append(parameterInfo.getNotNullName());
-				}
-				if(parameterInfos.length > 0)
-				{
-					builder.append(")");
-				}
-
-				DotNetTypeRef returnTypeRef = typeResolveResult.getReturnTypeRef();
-				String defaultValueForType = MethodGenerateUtil.getDefaultValueForType(returnTypeRef, parent);
-				builder.append(" { ");
-				if(defaultValueForType != null)
-				{
-					builder.append("return ").append(defaultValueForType).append(";");
-				}
-				builder.append(" }");
-
-				LookupElementBuilder lookupElementBuilder = LookupElementBuilder.create(builder.toString());
-				lookupElementBuilder = lookupElementBuilder.withIcon(AllIcons.Nodes.Lambda);
-				lookupElementBuilder = reformatInsertHandler(lookupElementBuilder);
-
-				CSharpCompletionSorting.force(lookupElementBuilder, CSharpCompletionSorting.KindSorter.Type.delegate);
-				result.addElement(lookupElementBuilder);
-			}
-
-			private LookupElementBuilder reformatInsertHandler(LookupElementBuilder lookupElementBuilder)
-			{
-				lookupElementBuilder = lookupElementBuilder.withInsertHandler(new InsertHandler<LookupElement>()
-				{
-					@Override
-					@RequiredReadAction
-					public void handleInsert(InsertionContext context, LookupElement item)
-					{
-						PsiElement elementAt = context.getFile().findElementAt(context.getEditor().getCaretModel().getOffset() - 1);
-						if(elementAt != null)
-						{
-							CSharpAnonymousMethodExpression methodExpression = PsiTreeUtil.getParentOfType(elementAt, CSharpAnonymousMethodExpression.class);
-							if(methodExpression != null)
-							{
-								CodeStyleManager.getInstance(context.getProject()).reformat(methodExpression);
-							}
-						}
-					}
-				});
-				return lookupElementBuilder;
-			}
-
 		});
 
 		contributor.extend(CompletionType.BASIC, CSharpPatterns.referenceExpression(), new CompletionProvider()

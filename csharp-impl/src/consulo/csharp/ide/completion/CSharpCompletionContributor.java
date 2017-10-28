@@ -36,8 +36,6 @@ public class CSharpCompletionContributor extends CompletionContributor
 
 		CSharpAccessorCompletionContributor.extend(this);
 
-		CSharpSuggestInstanceCompletionContributor.extend(this);
-
 		CSharpStatementCompletionContributor.extend(this);
 
 		CSharpKeywordCompletionContributor.extend(this);

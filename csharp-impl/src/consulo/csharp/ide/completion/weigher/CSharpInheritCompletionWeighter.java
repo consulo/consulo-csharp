@@ -119,9 +119,9 @@ public class CSharpInheritCompletionWeighter extends CompletionWeigher
 		}
 
 		CSharpCompletionSorting.KindSorter.Type sort = CSharpCompletionSorting.getSort(element);
-		if(sort == CSharpCompletionSorting.KindSorter.Type.top)
+		if(sort == CSharpCompletionSorting.KindSorter.Type.top1)
 		{
-			return Position.UP_KEYWORD;
+			return Position.HIGH;
 		}
 
 		List<ExpectedTypeInfo> expectedTypeInfoList = ourExpectedInfoTypes.getValue(completionLocation);

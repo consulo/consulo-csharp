@@ -164,6 +164,7 @@
 		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpMemberNameCompletionContributor"/>
 		<completion.contributor language="C#"
 								implementationClass="consulo.csharp.ide.completion.CSharpOverrideOrImplementCompletionContributor"/>
+		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpSuggestInstanceCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpCompletionContributor"/>
 		<completion.contributor language="C#" implementationClass="consulo.csharp.ide.completion.CSharpNoVariantsDelegator"/>
 

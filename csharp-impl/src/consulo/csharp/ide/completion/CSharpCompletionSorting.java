@@ -57,7 +57,8 @@ public class CSharpCompletionSorting
 
 		public enum Type
 		{
-			top,
+			top1,
+			top2,
 			delegate,
 			localVariableOrParameter,
 			parameterInCall,
