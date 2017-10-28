@@ -296,7 +296,7 @@ public class CSharpExtractMethodHandler implements RefactoringActionHandler
 	public static CharSequence buildText(@NotNull DotNetLikeMethodDeclaration methodDeclaration, DotNetStatement[] statements, @NotNull String statementsText)
 	{
 		List<StubBlock> stubBlocks = CSharpStubBuilderVisitor.buildBlocks(methodDeclaration, false);
-		StringBuilder builder = (StringBuilder) DeprecatedStubBlockUtil.buildText(stubBlocks);
+		StringBuilder builder = (StringBuilder) StubBlockUtil.buildText(stubBlocks);
 
 		builder.append("{\n");
 		builder.append(statementsText);
