@@ -95,7 +95,7 @@ public class CSharpInheritCompletionWeighter extends CompletionWeigher
 			return Collections.emptyList();
 		}
 
-		List<ExpectedTypeInfo> expectedTypeInfos = context == null ? null : context.get(ExpectedTypeVisitor.EXPECTED_TYPE_INFOS);
+		List<ExpectedTypeInfo> expectedTypeInfos = context == null ? null : context.getSharedContext().get(ExpectedTypeVisitor.EXPECTED_TYPE_INFOS);
 		if(expectedTypeInfos != null)
 		{
 			return expectedTypeInfos;
@@ -104,7 +104,7 @@ public class CSharpInheritCompletionWeighter extends CompletionWeigher
 		expectedTypeInfos = ExpectedTypeVisitor.findExpectedTypeRefs(parent);
 		if(context != null)
 		{
-			context.put(ExpectedTypeVisitor.EXPECTED_TYPE_INFOS, expectedTypeInfos);
+			context.getSharedContext().put(ExpectedTypeVisitor.EXPECTED_TYPE_INFOS, expectedTypeInfos);
 		}
 		return expectedTypeInfos;
 	}

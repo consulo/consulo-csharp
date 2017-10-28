@@ -86,7 +86,7 @@ import consulo.ide.IconDescriptorUpdaters;
  */
 public class CSharpSuggestInstanceCompletionContributor extends CompletionContributor
 {
-	private static final Key<Boolean> ourVisitedLambda = Key.create("ourVisitedLambda");
+	public static final Key<Boolean> ourDefaultNewKeyword = Key.create("ourDefaultNewKeyword");
 
 	public CSharpSuggestInstanceCompletionContributor()
 	{
@@ -116,7 +116,7 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 					DotNetTypeResolveResult typeResolveResult = typeRef.resolve();
 					if(typeResolveResult instanceof CSharpLambdaResolveResult)
 					{
-						context.put(ourVisitedLambda, Boolean.TRUE);
+						context.getSharedContext().put(ourDefaultNewKeyword, Boolean.FALSE);
 
 						addLambdaExpressionLookup((CSharpLambdaResolveResult) typeResolveResult, result, parent, false);
 
@@ -282,16 +282,14 @@ public class CSharpSuggestInstanceCompletionContributor extends CompletionContri
 					return;
 				}
 
-				CSharpCompletionSorting.KindSorter.Type top = context.get(ourVisitedLambda) == Boolean.TRUE ? CSharpCompletionSorting.KindSorter.Type.top2 : CSharpCompletionSorting.KindSorter.Type
-						.top1;
-
 				// do not force new keyword if lambda
-				if(context.get(ourVisitedLambda) == null)
+				if(context.get(ourDefaultNewKeyword) == null)
 				{
+					context.getSharedContext().put(ourDefaultNewKeyword, Boolean.FALSE);
+
 					CSharpCompletionUtil.elementToLookup(result, CSharpTokens.NEW_KEYWORD, (b, t) ->
 					{
 						b = b.withInsertHandler(SpaceInsertHandler.INSTANCE);
-						CSharpCompletionSorting.force(b, top);
 						return b;
 					}, null);
 				}

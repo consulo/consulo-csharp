@@ -148,6 +148,10 @@ class CSharpExpressionCompletionContributor
 						@RequiredReadAction
 						public boolean value(IElementType elementType)
 						{
+							if(elementType == CSharpTokens.NEW_KEYWORD)
+							{
+								return context.getSharedContext().get(CSharpSuggestInstanceCompletionContributor.ourDefaultNewKeyword) == null;
+							}
 							if(elementType == CSharpTokens.BASE_KEYWORD || elementType == CSharpTokens.THIS_KEYWORD)
 							{
 								DotNetModifierListOwner owner = (DotNetModifierListOwner) PsiTreeUtil.getContextOfType(parent, DotNetQualifiedElement.class);
